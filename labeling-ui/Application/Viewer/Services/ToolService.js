@@ -47,7 +47,7 @@ class ToolService {
     this._loggerService = loggerService;
 
     /**
-     * @type {Map}
+     * @type {DeepMap}
      * @private
      */
     this._toolCache = new DeepMap();
@@ -56,20 +56,20 @@ class ToolService {
      * @type {Object}
      * @private
      */
-    this._classes = {
-      'rectangle-move': RectangleMoveTool,
-      'rectangle-scale': RectangleScaleTool,
-      'rectangle-creation': RectangleDrawingTool,
-      'pedestrian-move': PedestrianMoveTool,
-      'pedestrian-scale': PedestrianScaleTool,
-      'pedestrian-creation': PedestrianDrawingTool,
-      'cuboid-move': CuboidMoveTool,
-      'cuboid-scale': CuboidScaleTool,
-      'cuboid-creation': CuboidDrawingTool,
-      'polygon-creation': PolygonDrawingTool,
-      'polygon-scale': PolygonScaleTool,
-      'polygon-move': PolygonMoveTool,
-    };
+    this._classes = [
+      RectangleMoveTool,
+      RectangleScaleTool,
+      RectangleDrawingTool,
+      PedestrianMoveTool,
+      PedestrianScaleTool,
+      PedestrianDrawingTool,
+      CuboidMoveTool,
+      CuboidScaleTool,
+      CuboidDrawingTool,
+      PolygonDrawingTool,
+      PolygonScaleTool,
+      PolygonMoveTool,
+    ];
   }
 
   /**
@@ -80,21 +80,35 @@ class ToolService {
    */
   getTool(context, shapeClass, actionIdentifier = 'creation') {
     this._loggerService.groupStart('toolService:getTool', 'Trying to get the tool for the given tool identifier');
-    const toolIdentifier = `${shapeClass}-${actionIdentifier}`;
 
-    if (this._classes[toolIdentifier] === undefined) {
-      throw new Error(`Cannot map tool identifier '${toolIdentifier}' to class`);
+    if (this._toolCache.has(context, shapeClass, actionIdentifier) === false) {
+      this._loggerService.log('toolService:getTool', `Tool "${shapeClass}-${actionIdentifier}" was not created prior. Creating now.`);
+      const toolClass = this._findToolClassByShapeClassAndActionIdentifier(shapeClass, actionIdentifier);
+      const toolInstance = this._$injector.instantiate(toolClass, {drawingContext: context});
+      this._toolCache.set(context, shapeClass, actionIdentifier, toolInstance);
     }
 
-    if (this._toolCache.has(context, toolIdentifier) === false) {
-      this._loggerService.log('toolService:getTool', `Tool "${toolIdentifier}" was not created prior. Creating now.`);
-      const toolInstance = this._$injector.instantiate(this._classes[toolIdentifier], {drawingContext: context});
-      this._toolCache.set(context, toolIdentifier, toolInstance);
-    }
-    this._loggerService.log('toolService:getTool', `Returning tool "${toolIdentifier}"`);
+    this._loggerService.log('toolService:getTool', `Returning tool "${shapeClass}-${actionIdentifier}"`);
     this._loggerService.groupEnd('toolService:getTool');
 
-    return this._toolCache.get(context, toolIdentifier);
+    return this._toolCache.get(context, shapeClass, actionIdentifier);
+  }
+
+  /**
+   * @param {string} shapeClass
+   * @param {string} actionIdentifier
+   * @private
+   */
+  _findToolClassByShapeClassAndActionIdentifier(shapeClass, actionIdentifier) {
+    const toolClass = this._classes.find(
+      candidate => candidate.getSupportedShapeClass() === shapeClass && candidate.getSupportedActionIdentifiers().includes(actionIdentifier)
+    );
+
+    if (toolClass === undefined) {
+      throw new Error(`Cannot map tool identifier '${shapeClass}-${actionIdentifier}' to class`);
+    }
+
+    return toolClass;
   }
 }
 

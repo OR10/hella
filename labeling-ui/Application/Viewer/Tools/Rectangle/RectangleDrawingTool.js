@@ -42,22 +42,6 @@ class RectangleDrawingTool extends CreationTool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'rectangle';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'creation',
-    ];
-  }
-
-  /**
    * @param {paper.Event} event
    */
   onMouseDown(event) {
@@ -195,6 +179,42 @@ class RectangleDrawingTool extends CreationTool {
   }
 
 }
+
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+RectangleDrawingTool.getSupportedShapeClass = function() {
+  return 'rectangle';
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+RectangleDrawingTool.getSupportedActionIdentifiers = function() {
+  return [
+    'creation',
+  ];
+};
 
 RectangleDrawingTool.$inject = [
   'drawingContext',

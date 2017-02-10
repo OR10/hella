@@ -33,22 +33,6 @@ class PolygonMoveTool extends MovingTool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'polygon';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'move',
-    ];
-  }
-
-  /**
    * @param {MovingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */
@@ -122,6 +106,41 @@ class PolygonMoveTool extends MovingTool {
   }
 }
 
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+PolygonMoveTool.getSupportedShapeClass = function() {
+  return 'polygon';
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+PolygonMoveTool.getSupportedActionIdentifiers = function() {
+  return [
+    'move',
+  ];
+};
 PolygonMoveTool.$inject = [
   'drawingContext',
   '$rootScope',

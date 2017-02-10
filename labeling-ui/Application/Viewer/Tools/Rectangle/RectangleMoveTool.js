@@ -35,22 +35,6 @@ class RectangleMoveTool extends MovingTool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'rectangle';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'move',
-    ];
-  }
-
-  /**
    * @param {MovingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */
@@ -123,6 +107,42 @@ class RectangleMoveTool extends MovingTool {
     });
   }
 }
+
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+RectangleMoveTool.getSupportedShapeClass = function() {
+  return 'rectangle';
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+RectangleMoveTool.getSupportedActionIdentifiers = function() {
+  return [
+    'move',
+  ];
+};
 
 RectangleMoveTool.$inject = [
   'drawingContext',

@@ -35,22 +35,6 @@ class PolygonDrawingTool extends CreationTool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'polygon';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'creation',
-    ];
-  }
-
-  /**
    * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
    */
@@ -196,6 +180,42 @@ class PolygonDrawingTool extends CreationTool {
     return {minHandles, maxHandles};
   }
 }
+
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+PolygonDrawingTool.getSupportedShapeClass = function() {
+  return 'polygon';
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+PolygonDrawingTool.getSupportedActionIdentifiers = function() {
+  return [
+    'creation',
+  ];
+};
 
 PolygonDrawingTool.$inject = [
   'drawingContext',

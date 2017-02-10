@@ -1,6 +1,9 @@
 import Tool from './NewTool';
 import NotModifiedError from './Errors/NotModifiedError';
 
+/**
+ * @abstract
+ */
 class NoOperationTool extends Tool {
   constructor(drawingContext, $scope, $q, loggerService) {
     super(drawingContext, $scope, $q, loggerService);

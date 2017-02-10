@@ -24,22 +24,6 @@ class PedestrianScaleTool extends ScalingTool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'pedestrian';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'scale',
-    ];
-  }
-
-  /**
    * @param {ScalingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */
@@ -92,6 +76,42 @@ class PedestrianScaleTool extends ScalingTool {
     });
   }
 }
+
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+PedestrianScaleTool.getSupportedShapeClass = function() {
+  return 'pedestrian';
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+PedestrianScaleTool.getSupportedActionIdentifiers = function() {
+  return [
+    'scale',
+  ];
+};
 
 PedestrianScaleTool.$inject = [
   'drawingContext',

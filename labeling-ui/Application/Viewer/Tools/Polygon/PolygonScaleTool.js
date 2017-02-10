@@ -25,22 +25,6 @@ class PolygonScaleTool extends ScalingTool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'polygon';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'scale',
-    ];
-  }
-
-  /**
    * @param {ScalingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */
@@ -84,6 +68,42 @@ class PolygonScaleTool extends ScalingTool {
     });
   }
 }
+
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+PolygonScaleTool.getSupportedShapeClass = function() {
+  return 'polygon';
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+PolygonScaleTool.getSupportedActionIdentifiers = function() {
+  return [
+    'scale',
+  ];
+};
 
 PolygonScaleTool.$inject = [
   'drawingContext',

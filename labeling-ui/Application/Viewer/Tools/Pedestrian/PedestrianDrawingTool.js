@@ -41,22 +41,6 @@ class PedestrianDrawingTool extends CreationTool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'pedestrian';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'creation',
-    ];
-  }
-
-  /**
    * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
    */
@@ -214,6 +198,42 @@ class PedestrianDrawingTool extends CreationTool {
     return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
   }
 }
+
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+PedestrianDrawingTool.getSupportedShapeClass = function() {
+  return 'pedestrian';
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+PedestrianDrawingTool.getSupportedActionIdentifiers = function() {
+  return [
+    'creation',
+  ];
+};
 
 PedestrianDrawingTool.$inject = [
   'drawingContext',

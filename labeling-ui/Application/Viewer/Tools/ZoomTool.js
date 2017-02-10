@@ -25,23 +25,6 @@ class ZoomTool extends Tool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'zoom';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'in',
-      'out',
-    ];
-  }
-
-  /**
    * @param {ZoomToolActionStruct} zoomToolActionStruct
    */
   invoke(zoomToolActionStruct) {
@@ -76,6 +59,43 @@ class ZoomTool extends Tool {
     this._complete(true);
   }
 }
+
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+ZoomTool.getSupportedShapeClass = function() {
+  return 'zoom';
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+ZoomTool.getSupportedActionIdentifiers = function() {
+  return [
+    'in',
+    'out'
+  ];
+};
 
 ZoomTool.$inject = [
   'drawingContext',

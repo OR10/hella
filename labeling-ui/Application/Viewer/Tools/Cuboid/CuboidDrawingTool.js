@@ -85,22 +85,6 @@ class CuboidDrawingTool extends CreationTool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'cuboid';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'creation',
-    ];
-  }
-
-  /**
    * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
    */
@@ -468,6 +452,42 @@ class CuboidDrawingTool extends CreationTool {
     this._projection3d = new FlatWorld(calibration);
   }
 }
+
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+CuboidDrawingTool.getSupportedShapeClass = function() {
+  return 'cuboid';
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+CuboidDrawingTool.getSupportedActionIdentifiers = function() {
+  return [
+    'creation',
+  ];
+};
 
 CuboidDrawingTool.$inject = [
   'drawingContext',

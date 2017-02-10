@@ -65,24 +65,6 @@ class MultiTool extends Tool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'multi';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'creation',
-      'move',
-      'scale',
-    ];
-  }
-
-  /**
    * @param {MultiToolActionStruct} toolActionStruct
    * @return {Promise}
    */
@@ -595,20 +577,21 @@ class MultiTool extends Tool {
   //   }
   // }
   //
+
   // /**
   //  * @param {boolean} clockwise
   //  * @private
   //  */
   // _rotateCuboidFaces(clockwise) {
   //   // TODO: refactor this into a separate cuboid-rotate tool !!!
-  //   const shape = this._$scope.vm.selectedPaperShape;
+  //   const {shape} = this._toolActionStruct;
   //   if (shape instanceof PaperCuboid) {
   //     this._context.withScope(scope => {
   //       shape.rotateFaces(clockwise);
   //       shape.updatePrimaryCorner();
   //       scope.view.update();
-  //       this.emit('shape:update', shape);
   //     });
+  //       this.emit('shape:update', shape);
   //   }
   // }
   //
@@ -640,6 +623,44 @@ class MultiTool extends Tool {
   //   });
   // }
 }
+
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+MultiTool.getSupportedShapeClass = function() {
+  return 'multi';
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+MultiTool.getSupportedActionIdentifiers = function() {
+  return [
+    'creation',
+    'scale',
+    'move',
+  ];
+};
 
 MultiTool.$inject = [
   'drawingContext',

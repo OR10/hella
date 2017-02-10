@@ -69,50 +69,6 @@ class Tool {
   }
 
   /**
-   * Get the name of the Tool.
-   *
-   * The name specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
-   *
-   * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
-   * `rectangle` and `scale`, ...)
-   *
-   * @return {string}
-   * @public
-   * @abstract
-   */
-  getToolName() {
-    throw new Error('Abstract method _getToolName: Every tool needs to implement this method.');
-  }
-
-  /**
-   * Retrieve a list of actions this tool is used for.
-   *
-   * Currently supported actions are:
-   * - `creating`
-   * - `scale`
-   * - `move`
-   *
-   * @return {Array.<string>}
-   * @public
-   * @abstract
-   */
-  getActionIdentifiers() {
-    throw new Error('Abstract method _getActionIdentifiers: Every tool needs to implement this method.');
-  }
-
-  /**
-   * @returns {Array.<string>}
-   * @public
-   */
-  getFullyQualifiedToolIdentifiers() {
-    const name = this.getToolName();
-    const actions = this.getActionIdentifiers();
-    const fqdnIdentifiers = actions.map(action => `${name}-${action}`);
-
-    return fqdnIdentifiers;
-  }
-
-  /**
    * @param {string} type
    * @param {paper.Event} event
    * @private
@@ -258,7 +214,8 @@ class Tool {
    * @protected
    */
   _invoke(toolActionStruct) {
-    this._logger.groupStartOpened('tool:invocation', `Invocation ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, toolActionStruct);
+    const staticSelf = this.constructor;
+    this._logger.groupStartOpened('tool:invocation', `Invocation ${staticSelf.getSupportedShapeClass()} (${staticSelf.getSupportedActionIdentifiers().join(', ')})`, toolActionStruct);
 
     this._dragEventCount = 0;
 
@@ -289,7 +246,8 @@ class Tool {
    * @protected
    */
   _reject(reason) {
-    this._logger.log('tool:invocation', `Rejected ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, reason);
+    const staticSelf = this.constructor;
+    this._logger.log('tool:invocation', `Rejected ${staticSelf.getSupportedShapeClass()} (${staticSelf.getSupportedActionIdentifiers().join(', ')})`, reason);
     this._logger.groupEnd('tool:invocation');
 
     this._disableInternalPaperTool();
@@ -307,7 +265,8 @@ class Tool {
    * @protected
    */
   _complete(result) {
-    this._logger.log('tool:invocation', `Resolved ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, result);
+    const staticSelf = this.constructor;
+    this._logger.log('tool:invocation', `Resolved ${staticSelf.getSupportedShapeClass()} (${staticSelf.getSupportedActionIdentifiers().join(', ')})`, result);
     this._logger.groupEnd('tool:invocation');
 
     this._disableInternalPaperTool();
@@ -364,6 +323,41 @@ class Tool {
     return Math.max(minClamp, Math.min(maxClamp, value));
   }
 }
+
+/**
+ * Get the supported shape class of the tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+Tool.getSupportedShapeClass = function() {
+  throw new Error('Abstract method getSupportedShapeClass: Every tool needs to implement this method.');
+};
+
+/**
+ * Retrieve a list of actions this tool is used for.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {Array.<string>}
+ * @public
+ * @abstract
+ * @static
+ */
+Tool.getSupportedActionIdentifiers = function() {
+  throw new Error('Abstract method getSupportedActionIdentifiers: Every tool needs to implement this method.');
+};
+
 
 Tool.$inject = [
   'drawingContext',
