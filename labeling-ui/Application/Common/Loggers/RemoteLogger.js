@@ -63,6 +63,10 @@ class RemoteLogger {
     this._groupId = uuid.v4();
   }
 
+  groupStartOpened(context, ...args) { // eslint-disable-line no-unused-vars
+    this._groupId = uuid.v4();
+  }
+
   groupEnd(context) { // eslint-disable-line no-unused-vars
     this._groupId = null;
   }

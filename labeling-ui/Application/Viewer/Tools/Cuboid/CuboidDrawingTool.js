@@ -120,6 +120,7 @@ class CuboidDrawingTool extends CreationTool {
 
   /**
    * @param {CreationToolActionStruct} toolActionStruct
+   * @return {Promise.<PaperShape>}
    */
   invokeDefaultShapeCreation(toolActionStruct) {
     super.invokeDefaultShapeCreation(toolActionStruct);
@@ -185,7 +186,7 @@ class CuboidDrawingTool extends CreationTool {
       cuboid.remove();
     });
 
-    this._complete(cuboid);
+    return this._complete(cuboid);
   }
 
   /**

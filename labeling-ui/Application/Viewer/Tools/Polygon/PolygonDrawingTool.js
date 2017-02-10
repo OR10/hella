@@ -63,9 +63,10 @@ class PolygonDrawingTool extends CreationTool {
 
   /**
    * @param {CreationToolActionStruct} toolActionStruct
+   * @return {Promise.<PaperShape>}
    */
   invokeDefaultShapeCreation(toolActionStruct) {
-    super.invokeDefaultShapeCreation(toolActionStruct);
+    const promise = super.invokeDefaultShapeCreation(toolActionStruct);
     const {video} = toolActionStruct;
 
     const center = new paper.Point(
@@ -90,10 +91,10 @@ class PolygonDrawingTool extends CreationTool {
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
+      polygon.remove();
     });
 
-    polygon.remove();
-    this._complete(polygon);
+    return this._complete(polygon);
   }
 
   /**

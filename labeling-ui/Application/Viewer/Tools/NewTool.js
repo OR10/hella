@@ -258,7 +258,7 @@ class Tool {
    * @protected
    */
   _invoke(toolActionStruct) {
-    this._logger.groupStart('tool:invocation', `Invocation ${this.getToolName()} (${this.getActionIdentifiers().join(', ')}`, toolActionStruct);
+    this._logger.groupStartOpened('tool:invocation', `Invocation ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, toolActionStruct);
 
     this._dragEventCount = 0;
 
@@ -303,6 +303,7 @@ class Tool {
    * Internal function that is called after the tool workflow has finished
    *
    * @param {*} result
+   * @return {Promise}
    * @protected
    */
   _complete(result) {
@@ -311,7 +312,10 @@ class Tool {
 
     this._disableInternalPaperTool();
     this._deferred.resolve(result);
+    const promise = this._deferred.promise;
     this._deferred = null;
+
+    return promise;
   }
 
   _disableInternalPaperTool() {

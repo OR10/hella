@@ -28,6 +28,10 @@ class LoggerService {
     this._dispatch('groupStart', context, ...args);
   }
 
+  groupStartOpened(context, ...args) {
+    this._dispatch('groupStartOpened', context, ...args);
+  }
+
   groupEnd(context) {
     this._dispatch('groupEnd', context);
   }

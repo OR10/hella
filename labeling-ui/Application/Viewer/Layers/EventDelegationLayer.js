@@ -136,6 +136,7 @@ class EventDelegationLayer extends EventEmitter {
    */
   _onDelegateEvent(event) {
     this.emit('event:new', this, event);
+    event.preventDefault();
   }
 }
 

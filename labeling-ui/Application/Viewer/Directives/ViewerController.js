@@ -22,7 +22,6 @@ import Environment from '../../Common/Support/Environment';
  * @property {string} playbackDirection
  * @property {Viewport} viewport
  * @property {boolean} hideLabeledThingsInFrame
- * @property {string} multiTool
  * @property {integer} bookmarkedFrameIndex
  * @property {integer} fps
  * @property {integer} frameSkip
@@ -691,6 +690,7 @@ class ViewerController {
       this._$scope.$new(),
       this._$injector,
       this._drawingContextService,
+      this._toolService,
       this._paperShapeFactory,
       this._logger,
       this._$timeout,
