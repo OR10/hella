@@ -95,39 +95,54 @@ class CuboidScaleTool extends ScalingTool {
 }
 
 /**
- * Get the supported shape class of the tool.
- *
- * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
- *
- * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
- * `rectangle` and `scale`, ...)
+ * Return the name of the tool. The name needs to be unique within the application.
+ * Therefore something like a prefix followed by the className is advisable.
  *
  * @return {string}
  * @public
  * @abstract
  * @static
  */
-CuboidScaleTool.getSupportedShapeClass = function() {
-  return 'cuboid';
+CuboidScaleTool.getToolName = function () {
+  return 'CuboidScaleTool';
 };
 
 /**
- * Retrieve a list of actions this tool is used for.
+ * Check if the given ShapeClass ({@link PaperShape#getClass}) is supported by this Tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {bool}
+ * @public
+ * @abstract
+ * @static
+ */
+CuboidScaleTool.isShapeClassSupported = function (shapeClass) {
+  return [
+    'cuboid',
+  ].includes(shapeClass);
+};
+
+/**
+ * Check if the given actionIdentifer is supported by this tool.
  *
  * Currently supported actions are:
  * - `creating`
  * - `scale`
  * - `move`
  *
- * @return {Array.<string>}
+ * @return {bool}
  * @public
  * @abstract
  * @static
  */
-CuboidScaleTool.getSupportedActionIdentifiers = function() {
+CuboidScaleTool.isActionIdentifierSupported = function (actionIdentifier) {
   return [
     'scale',
-  ];
+  ].includes(actionIdentifier);
 };
 
 CuboidScaleTool.$inject = [

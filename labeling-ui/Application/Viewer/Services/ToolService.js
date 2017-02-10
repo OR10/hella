@@ -69,6 +69,7 @@ class ToolService {
       PolygonDrawingTool,
       PolygonScaleTool,
       PolygonMoveTool,
+      NoOperationTool,
     ];
   }
 
@@ -101,7 +102,7 @@ class ToolService {
    */
   _findToolClassByShapeClassAndActionIdentifier(shapeClass, actionIdentifier) {
     const toolClass = this._classes.find(
-      candidate => candidate.getSupportedShapeClass() === shapeClass && candidate.getSupportedActionIdentifiers().includes(actionIdentifier)
+      candidate => candidate.isShapeClassSupported(shapeClass) && candidate.isActionIdentifierSupported(actionIdentifier)
     );
 
     if (toolClass === undefined) {
