@@ -1,4 +1,4 @@
-import Tool from './NewTool';
+import PaperTool from './PaperTool';
 import paper from 'paper';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
 import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
@@ -18,7 +18,7 @@ import ScalingToolActionStruct from './ToolActionStructs/ScalingToolActionStruct
  *
  * @extends Tool
  */
-class MultiTool extends Tool {
+class MultiTool extends PaperTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {$rootScope.Scope} $scope

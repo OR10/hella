@@ -1,8 +1,8 @@
-import Tool from './NewTool';
+import PaperTool from './PaperTool';
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
-class CreationTool extends Tool {
+class CreationTool extends PaperTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {$rootScope.Scope} $rootScope

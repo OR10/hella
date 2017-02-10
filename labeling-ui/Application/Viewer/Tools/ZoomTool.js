@@ -1,12 +1,12 @@
 import paper from 'paper';
-import Tool from './NewTool';
+import PaperTool from './PaperTool';
 
 /**
  * A Tool for Zooming in and out
  *
  * @extends Tool
  */
-class ZoomTool extends Tool {
+class ZoomTool extends PaperTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {$scope} $rootScope

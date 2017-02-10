@@ -1,10 +1,10 @@
-import Tool from './NewTool';
+import PaperTool from './PaperTool';
 import NotModifiedError from './Errors/NotModifiedError';
 
 /**
  * @abstract
  */
-class NoOperationTool extends Tool {
+class NoOperationTool extends PaperTool {
   constructor(drawingContext, $scope, $q, loggerService) {
     super(drawingContext, $scope, $q, loggerService);
   }
