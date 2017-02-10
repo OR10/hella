@@ -84,6 +84,8 @@ class Import
     /**
      * @param            $xmlImportFilePath
      * @param Model\User $user
+     *
+     * @return array
      */
     public function importXml($xmlImportFilePath, Model\User $user)
     {
@@ -113,13 +115,16 @@ class Import
         }
 
         $videoElements = $xpath->query('/x:export/x:video');
+        $tasks = [];
         foreach ($videoElements as $videoElement) {
             $video = $this->createVideo($videoElement, $project, dirname($xmlImportFilePath));
-            $this->createTasks($project, $video, $requirementsXml);
+            $tasks = array_merge($this->createTasks($project, $video, $requirementsXml), $tasks);
 
             $job = new Jobs\ThingImporter($xmlImportFilePath, $this->tasks);
             $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
         }
+
+        return $tasks;
     }
 
     /**
@@ -177,6 +182,19 @@ class Import
             throw new \Exception('Invalid sha256 hash');
         }
 
+        $requirements = $this->requirementsXmlFacade->getTaskConfigurationByUserAndMd5Hash(
+            $user,
+            $requirementsElement->item(0)->getAttribute('name'),
+            sprintf('%s.xml', $requirementsElement->item(0)->getAttribute('name')),
+            $expectedHash
+        );
+
+        $requirements = reset($requirements);
+
+        if ($requirements instanceof Model\TaskConfiguration\RequirementsXml) {
+            return $requirements;
+        }
+
         $requirements = new Model\TaskConfiguration\RequirementsXml(
             $requirementsElement->item(0)->getAttribute('name'),
             sprintf('%s.xml', $requirementsElement->item(0)->getAttribute('name')),
@@ -223,6 +241,8 @@ class Import
      * @param Model\Project                           $project
      * @param Model\Video                             $video
      * @param Model\TaskConfiguration\RequirementsXml $requirementsXml
+     *
+     * @return array
      */
     private function createTasks(
         Model\Project $project,
@@ -267,6 +287,7 @@ class Import
             );
         }
 
+        $tasks = [];
         foreach ($frameMappingChunks as $frameNumberMapping) {
             $task = new Model\LabelingTask(
                 $video,
@@ -286,6 +307,9 @@ class Import
             foreach ($frameNumberMapping as $frameNumber) {
                 $this->tasks[$frameNumber] = $task;
             }
+            $tasks[] = $task;
         }
+
+        return $tasks;
     }
 }

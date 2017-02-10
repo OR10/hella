@@ -172,7 +172,7 @@ class TaskConfiguration extends Controller\Base
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function uploadSimpleRequirementsFileAction(HttpFoundation\Request $request)
+    public function uploadRequirementsXmlFileAction(HttpFoundation\Request $request)
     {
         if (!$request->files->has('file') || !$request->get('name')) {
             return View\View::create()
@@ -280,65 +280,5 @@ class TaskConfiguration extends Controller\Base
         }
 
         return $ids;
-    }
-
-    /**
-     * @Rest\Post("/simple")
-     *
-     * @CheckPermissions({"canUploadTaskConfiguration"})
-     *
-     * @param HttpFoundation\Request $request
-     *
-     * @return \FOS\RestBundle\View\View
-     */
-    public function uploadSimpleXmlFileAction(HttpFoundation\Request $request)
-    {
-        if (!$request->files->has('file') || !$request->get('name')) {
-            return View\View::create()
-                ->setData(['error' => 'Invalid data'])
-                ->setStatusCode(400);
-        }
-
-        $user = $this->tokenStorage->getToken()->getUser();
-        $name = $request->get('name');
-        if (count($this->taskConfigurationFacade->getTaskConfigurationsByUserAndName($user, $name)) > 0) {
-            return View\View::create()
-                ->setData(['error' => sprintf(
-                    'A Task Configuration with the name %s already exists',
-                    $name
-                )])
-                ->setStatusCode(409);
-        }
-
-        $xml = new \DOMDocument();
-        $xml->load($request->files->get('file'));
-        $errorMessage = $this->simpleXmlValidator->validate($xml);
-        if ($errorMessage !== null) {
-            return View\View::create()
-                ->setData(['error' => $errorMessage])
-                ->setStatusCode(406);
-        }
-
-        $file    = $request->files->get('file');
-        $xmlData = file_get_contents($file->getPathName());
-        $user    = $this->tokenStorage->getToken()->getUser();
-
-        $taskConfigurationXmlConverter = $this->configurationXmlConverterFactory->createConverter(
-            $xmlData,
-            Model\TaskConfiguration\SimpleXml::TYPE
-        );
-
-        $taskConfiguration = new TaskConfigurationModel\SimpleXml(
-            $name,
-            $file->getClientOriginalName(),
-            $file->getMimeType(),
-            $xmlData,
-            $user->getId(),
-            $taskConfigurationXmlConverter->convertToJson()
-        );
-
-        $this->taskConfigurationFacade->save($taskConfiguration);
-
-        return View\View::create()->setData(['result' => $taskConfiguration]);
     }
 }

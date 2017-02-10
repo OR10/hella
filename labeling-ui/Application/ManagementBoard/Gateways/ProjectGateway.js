@@ -167,19 +167,6 @@ class ProjectGateway {
         throw new Error(`Failed creating the project`);
       });
   }
-
-  markUploadAsFinished(projectId) {
-    const url = this._apiService.getApiUrl(`/project/batchUpload/${projectId}/complete`);
-
-    return this._bufferedHttp.post(url, undefined, undefined, 'project')
-      .then(response => {
-        if (response.data && response.data.result) {
-          return response.data.result;
-        }
-
-        throw new Error(`Failed marking the upload as complete`);
-      });
-  }
 }
 
 ProjectGateway.$inject = ['ApiService', 'bufferedHttp'];

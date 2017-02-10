@@ -8,112 +8,13 @@
                show-logout-button="true"
     >
     </title-bar>
-    <div class="grid-block vertical"
-         flow-init="{target: vm.targetPath, testChunks: false}"
-         flow-name="vm.$flow"
-         flow-complete="vm.uploadComplete()"
-         flow-upload-started="vm.uploadStarted()"
-         flow-file-error="vm.fileError($file, $message, $flow)"
-         flow-file-added="vm.fileAdded($file, $event, $flow)"
-         flow-files-added="vm.filesAdded($files, $event, $flow)"
-    >
 
-        <div class="grid-block align-center shrink">
-            <loading-mask ng-if="vm.uploadInProgress" spinner="true"></loading-mask>
-            <div class="grid-content drop-area"
-                 flow-drop
-                 ng-class="class"
-                 flow-drag-enter="class='drop-area-active'"
-                 flow-drag-leave="class=''"
-            >
-                <h2><i class="fa fa-cloud-upload"></i> Select/Drop files for Project: "{{vm.project.name}}"</h2>
-                <input
-                        type="file"
-                        flow-btn
-                        multiple
-                        style="margin: 0 auto;"
-                />
-            </div>
-        </div>
-
-        <div class="grid-content">
-            <h3 style="margin-top: 1em;">Selected files</h3>
-            <table class="table table-hover table-bordered table-striped" flow-transfers>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Size</th>
-                    <th>Progress</th>
-                    <th width="150px">Status</th>
-                    <th width="150px"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="file in transfers">
-                    <td>{{file.name}}</td>
-                    <td>{{file.size | fileSize}}</td>
-                    <td>
-                        <div class="progress">
-                            <div class="progress-meter success"
-                                 ng-style="{ 'width': (file.progress() * 100) + '%'}"
-                            ></div>
-                        </div>
-                    </td>
-                    <td>
-                        <i class="fa fa-spinner fa-pulse"
-                           ng-style="{display: file.isUploading() ? 'inline-block' : 'none'}">
-                            <!-- For unknown reasons ng-show or ng-if have a strange 'delay' here. Therefore the style hack is used -->
-                        </i>
-                        <i class="fa fa-check"
-                           ng-if="!file.isUploading() && file.isComplete() && file.errorMessage.message == undefined">
-                        </i>
-                        <i class="fa fa-warning"
-                           ng-if="!file.isUploading() && file.isComplete() && file.hasUploadError()"
-                           tooltip="{{file.errorMessage.message}}">
-                        </i>
-                    </td>
-                    <td>
-                        <button tooltip="Pause upload for this file"
-                                ng-show="file.isUploading()"
-                                ng-click="file.pause()">
-                            <i class="fa fa-pause"></i>
-                        </button>
-                        <button tooltip="Resume upload for this file"
-                                ng-show="file.paused"
-                                ng-click="file.resume()">
-                            <i class="fa fa-cloud-upload"></i>
-                        </button>
-                        <button tooltip="Remove upload from list"
-                                ng-hide="file.isComplete()"
-                                ng-click="file.cancel()">
-                            <i class="fa fa-close"></i>
-                        </button>
-                        <!--<button tooltip="Retry upload for this file"-->
-                                <!--ng-show="file.error"-->
-                                <!--ng-click="file.retry()">-->
-                            <!--<i class="fa fa-refresh"></i>-->
-                        <!--</button>-->
-
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <div class="button-area"
-                 style="margin-top: 2em"
-            >
-                <button class="pull-right"
-                        ng-click="vm.$flow.upload()"
-                >
-                    <i class="fa fa-cloud-upload"></i> Upload
-                </button>
-                <button class="pull-right divider"
-                        ng-click="vm.$flow.cancel()"
-                >
-                    <i class="fa fa-close"></i> Clear list
-                </button>
-            </div>
-        </div>
-    </div>
-
+    <upload-form
+            class="grid-block"
+            project="vm.project"
+            upload-path="/project/batchUpload/{{vm.project.id}}"
+            upload-complete-path="/project/batchUpload/{{vm.project.id}}/complete"
+            upload-complete-message="Your upload is complete and the task creation process has started. This may take a while. You can check the progress of the job creation for your project in the ToDo Tab. Do you want to go to the project list to view this project?"
+            upload-additional-for-text=" for Project: '{{vm.project.name}}'"
+    ></upload-form>
 </div>

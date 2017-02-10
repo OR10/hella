@@ -219,23 +219,38 @@ class CouchDbTestCase extends Tests\WebTestCase
         Model\User $user,
         $name = 'testconfig',
         $filename = 'testconfig.xml',
-        $contentType = 'application/xml'
+        $contentType = 'application/xml',
+        $type = 'simpleXml'
     ) {
         $taskConfigurationXmlConverter = $this->taskConfigurationXmlConverterService->createConverter(
             $binaryData,
             Model\TaskConfiguration\SimpleXml::TYPE
         );
 
-        return $this->taskConfigurationFacade->save(
-            new TaskConfiguration\SimpleXml(
-                $name,
-                $filename,
-                $contentType,
-                $binaryData,
-                $user->getId(),
-                $taskConfigurationXmlConverter->convertToJson()
-            )
-        );
+        switch($type) {
+            case 'simpleXml':
+                $configuration = new TaskConfiguration\SimpleXml(
+                    $name,
+                    $filename,
+                    $contentType,
+                    $binaryData,
+                    $user->getId(),
+                    $taskConfigurationXmlConverter->convertToJson()
+                );
+                break;
+            case 'requirementsXml':
+                $configuration = new TaskConfiguration\RequirementsXml(
+                    $name,
+                    $filename,
+                    $contentType,
+                    $binaryData,
+                    $user->getId(),
+                    $taskConfigurationXmlConverter->convertToJson()
+                );
+                break;
+        }
+
+        return $this->taskConfigurationFacade->save($configuration);
     }
 
     protected function setUpImplementation()

@@ -12,6 +12,7 @@
     <define name="Requirements">
         <element name="r:requirements">
             <interleave>
+                <ref name="Metadata"/>
                 <zeroOrMore>
                     <ref name="Thing"/>
                 </zeroOrMore>
@@ -30,6 +31,13 @@
         <zeroOrMore>
             <ref name="Class"/>
         </zeroOrMore>
+    </define>
+    <define name="Metadata">
+        <element name="r:metadata">
+            <element name="r:export-postfix">
+                <text/>
+            </element>
+        </element>
     </define>
     <define name="Thing">
         <element name="r:thing">
