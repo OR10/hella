@@ -21,6 +21,11 @@ class LabeledThingGroupInFrame
     private $rev;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $labeledThingGroupId;
+
+    /**
      * @CouchDB\Field(type="mixed")
      */
     private $classes;
@@ -30,10 +35,11 @@ class LabeledThingGroupInFrame
      */
     private $frameIndex;
 
-    public function __construct($frameIndex, $classes = [])
+    public function __construct($labeledThingGroupId, $frameIndex, $classes = [])
     {
-        $this->frameIndex = $frameIndex;
-        $this->classes    = $classes;
+        $this->frameIndex          = $frameIndex;
+        $this->classes             = $classes;
+        $this->labeledThingGroupId = $labeledThingGroupId;
     }
 
     /**

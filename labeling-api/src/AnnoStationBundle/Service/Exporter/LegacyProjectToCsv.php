@@ -191,7 +191,18 @@ class LegacyProjectToCsv implements Service\ProjectExporter
                         str_replace(' ', '_', $video->getName())
                     );
 
-                    $zipData[$filename] = $this->getCsv($videoData);
+                    if (!isset($zipData[$filename])) {
+                        $zipData[$filename] = $this->getCsv($videoData);
+                    }else{
+                        $filename = sprintf(
+                            'export_%s_%s_%s_duplicate_%s.csv',
+                            str_replace(' ', '_', $project->getName()),
+                            $groupName,
+                            str_replace(' ', '_', $video->getName()),
+                            substr(base64_encode(random_bytes(10)), 0, 10)
+                        );
+                        $zipData[$filename] = $this->getCsv($videoData);
+                    }
                 }
             }
 

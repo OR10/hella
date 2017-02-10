@@ -44,12 +44,12 @@ class VideoFrameSplitter
     /**
      * FrameCdnSplitter constructor.
      *
-     * @param AnnoStationService\FrameCdn $frameCdn
+     * @param Service\FrameCdn $frameCdn
      * @param string                      $ffmpegExecutable
      * @param Flysystem\Filesystem        $fileSystem
      */
     public function __construct(
-        AnnoStationService\FrameCdn $frameCdn,
+        Service\FrameCdn $frameCdn,
         $ffmpegExecutable,
         Flysystem\Filesystem $fileSystem
     ) {
@@ -63,7 +63,7 @@ class VideoFrameSplitter
      * @param                $sourceFileFilename
      * @param ImageType\Base $type
      *
-     * @throws \Exception
+     * @return array
      */
     public function splitVideoInFrames(Model\Video $video, $sourceFileFilename, ImageType\Base $type)
     {
@@ -93,18 +93,22 @@ class VideoFrameSplitter
             );
 
             $this->frameCdn->beginBatchTransaction($video);
+            $frameSizesInBytes = [];
             foreach ($files as $file) {
                 $this->imageSizes[(int) $file['basename']] = getimagesizefromstring(
                     $this->fileSystem->read($file['path'])
                 );
-                $this->frameCdn->save(
+                $cdnPath = $this->frameCdn->save(
                     $video,
                     $type,
                     (int) $file['basename'],
                     $this->fileSystem->read($file['path'])
                 );
+                $frameSizesInBytes[$cdnPath] = $this->fileSystem->getSize($file['path']);
             }
             $this->frameCdn->commit();
+
+            return $frameSizesInBytes;
         } finally {
             if (!$this->fileSystem->deleteDir($tempDir)) {
                 throw new \RuntimeException("Error removing temporary directory '{$tempDir}'");

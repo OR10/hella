@@ -182,6 +182,15 @@ class Video
     }
 
     /**
+     * @param $type
+     * @param $frameSizesInBytes
+     */
+    public function setImageSizesForType($type, $frameSizesInBytes)
+    {
+        $this->imageTypes[$type]['sizeInBytes'] = $frameSizesInBytes;
+    }
+
+    /**
      * @param $calibrationId
      */
     public function setCalibrationId($calibrationId)

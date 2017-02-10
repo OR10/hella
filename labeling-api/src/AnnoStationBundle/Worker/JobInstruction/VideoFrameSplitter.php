@@ -100,10 +100,10 @@ class VideoFrameSplitter extends JobInstruction
                 throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
             }
 
-            $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
+            $frameSizesInBytes = $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
             $imageSizes = $this->videoFrameSplitter->getImageSizes();
 
-            $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1]);
+            $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1], $frameSizesInBytes);
 
             $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
 
@@ -145,6 +145,7 @@ class VideoFrameSplitter extends JobInstruction
      * @param ImageType\Base $imageType
      * @param                $width
      * @param                $height
+     * @param                $frameSizesInBytes
      * @param int            $retryCount
      * @param int            $maxRetries
      *
@@ -156,6 +157,7 @@ class VideoFrameSplitter extends JobInstruction
         ImageType\Base $imageType,
         $width,
         $height,
+        $frameSizesInBytes,
         $retryCount = 0,
         $maxRetries = 1
     ) {
@@ -166,12 +168,13 @@ class VideoFrameSplitter extends JobInstruction
             $video->setImageType($imageTypeName, 'failed', false);
             $video->setImageType($imageTypeName, 'width', $width);
             $video->setImageType($imageTypeName, 'height', $height);
+            $video->setImageSizesForType($imageTypeName, $frameSizesInBytes);
             $this->videoFacade->update();
         } catch (CouchDB\UpdateConflictException $updateConflictException) {
             if ($retryCount > $maxRetries) {
                 throw $updateConflictException;
             }
-            $this->updateDocument($video, $retryCount + 1, $width, $height);
+            $this->updateDocument($video, $imageType, $retryCount + 1, $width, $height, $frameSizesInBytes);
         }
     }
 

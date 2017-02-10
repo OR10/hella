@@ -66,9 +66,15 @@ class LabeledThingGroupTest extends Tests\CouchDbTestCase
     {
         $labeledThing = $this->createLabeledThing($this->task);
 
-        $labeledThingGroup1 = new Model\LabeledThingGroup('LabeledThingGroupId-1', 22);
+        $labeledThingGroup1 = new Model\LabeledThingGroup(
+            'LabeledThingGroupId-1',
+            ['7920ae3e-2547-46de-9ed0-682724144394']
+        );
         $this->labeledThingGroupFacade->save($labeledThingGroup1);
-        $labeledThingGroup2 = new Model\LabeledThingGroup('LabeledThingGroupId-2', 22);
+        $labeledThingGroup2 = new Model\LabeledThingGroup(
+            'LabeledThingGroupId-2',
+            ['bdbec977-58a2-499f-a8b1-b724d8b9834e']
+        );
         $this->labeledThingGroupFacade->save($labeledThingGroup2);
 
         $labeledThing->setGroupIds([$labeledThingGroup1->getId(), $labeledThingGroup2->getId()]);
@@ -83,22 +89,57 @@ class LabeledThingGroupTest extends Tests\CouchDbTestCase
             ->getResponse();
 
         $response = \json_decode($response->getContent(), true);
+
+        $labeledThingGroupsInFrames = array_map(
+            function ($labeledThingGroupsInFrame) {
+                unset($labeledThingGroupsInFrame['id']);
+
+                return $labeledThingGroupsInFrame;
+            },
+            $response['result']['labeledThingGroupsInFrame']
+        );
+        $labeledThingGroups         = array_map(
+            function ($labeledThingGroup) {
+                unset($labeledThingGroup['rev']);
+
+                return $labeledThingGroup;
+            },
+            $response['result']['labeledThingGroups']
+        );
+        
         $this->assertEquals(
             [
-                [
-                    'id'         => '11111111-0000-0000-0000-111111111111',
-                    'rev'        => null,
-                    'classes'    => [],
-                    'frameIndex' => '22',
+                'labeledThingGroupsInFrame' => [
+                    [
+                        'rev'                 => null,
+                        'labeledThingGroupId' => $labeledThingGroup2->getId(),
+                        'classes'             => [],
+                        'frameIndex'          => '22',
+                    ],
+                    [
+                        'rev'        => null,
+                        'labeledThingGroupId' => $labeledThingGroup1->getId(),
+                        'classes'    => [],
+                        'frameIndex' => '22',
+                    ],
                 ],
-                [
-                    'id'         => '11111111-0000-0000-0000-111111111111',
-                    'rev'        => null,
-                    'classes'    => [],
-                    'frameIndex' => '22',
+                'labeledThingGroups'        => [
+                    [
+                        'id'        => $labeledThingGroup2->getId(),
+                        'groupType' => 'LabeledThingGroupId-2',
+                        'groupIds'  => ['bdbec977-58a2-499f-a8b1-b724d8b9834e'],
+                    ],
+                    [
+                        'id'        => $labeledThingGroup1->getId(),
+                        'groupType' => 'LabeledThingGroupId-1',
+                        'groupIds'  => ['7920ae3e-2547-46de-9ed0-682724144394'],
+                    ],
                 ],
             ],
-            $response['result']
+            [
+                'labeledThingGroupsInFrame' => $labeledThingGroupsInFrames,
+                'labeledThingGroups'        => $labeledThingGroups,
+            ]
         );
     }
 

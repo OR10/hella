@@ -2,9 +2,9 @@
 namespace AppBundle\Database\Facade;
 
 use AppBundle\Model;
+use Doctrine\ODM\CouchDB;
 use Doctrine\ORM;
 use FOS\UserBundle\Model as FosUserModel;
-use Doctrine\ODM\CouchDB;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 class User
@@ -47,10 +47,11 @@ class User
      * @param string $password
      * @param bool   $enabled
      * @param bool   $locked
+     * @param array  $settings
      *
      * @return FosUserModel\UserInterface
      */
-    public function createUser($username, $email, $password, $enabled = true, $locked = false)
+    public function createUser($username, $email, $password, $enabled = true, $locked = false, $settings = [])
     {
         $user = $this->userManager->createUser();
         $user->setUsername($username);
@@ -58,6 +59,7 @@ class User
         $user->setPlainPassword($password);
         $user->setEnabled($enabled);
         $user->setLocked($locked);
+        $user->setSettings($settings);
 
         $this->userManager->updateUser($user);
 
@@ -71,6 +73,30 @@ class User
      */
     public function updateUser(Model\User $user)
     {
+        $this->userManager->updateUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param array $settings
+     */
+    public function updateSettingsForCurrentUser(array $settings)
+    {
+        $user = $this->getCurrentUser();
+        $user->setSettings(array_merge($user->getSettings(), $settings));
+        $this->userManager->updateUser($user);
+    }
+
+    /**
+     * @param Model\User $user
+     * @param array      $settings
+     *
+     * @return Model\User
+     */
+    public function updateSettings(Model\User $user, array $settings)
+    {
+        $user->setSettings($settings);
         $this->userManager->updateUser($user);
 
         return $user;
@@ -113,6 +139,14 @@ class User
     public function getUserByToken($token)
     {
         return $this->userManager->findUserBy(array('token' => $token));
+    }
+
+    /**
+     * @return FosUserModel\UserInterface
+     */
+    public function getCurrentUser()
+    {
+        return $this->tokenStorage->getToken()->getUser();
     }
 
     /**
