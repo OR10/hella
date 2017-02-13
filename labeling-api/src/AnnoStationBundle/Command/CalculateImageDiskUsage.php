@@ -73,11 +73,12 @@ class CalculateImageDiskUsage extends Command\Base
             $numberOfImagesToGet += $video->getMetaData()->numberOfFrames * count($video->getImageTypes());
         }
         $progress = new ProgressBar($output, $numberOfImagesToGet);
-        $progress->setFormat("%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% (%size%)");
+        $progress->setFormat("%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% (%size%) [%videoId%]");
 
         /** @var Model\Video $video */
         $calculatedBytesInThisRun = 0;
         foreach ($videos as $video) {
+            $progress->setMessage($video->getId(), 'videoId');
             $frameRange = range(1, $video->getMetaData()->numberOfFrames);
 
             if ($video->getImageTypes() === null) {
