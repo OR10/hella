@@ -86,6 +86,10 @@ class CalculateImageDiskUsage extends Command\Base
 
             foreach ($video->getImageTypes() as $type => $data) {
                 if (isset($data['sizeInBytes']) && !empty($data['sizeInBytes']) && !$force) {
+                    foreach ($data['sizeInBytes'] as $bytes) {
+                        $calculatedBytesInThisRun += $bytes;
+                    }
+                    $progress->setMessage($this->formatBytes($calculatedBytesInThisRun), 'size');
                     $progress->advance(count($frameRange));
                     continue;
                 }
