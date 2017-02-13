@@ -46,11 +46,18 @@ class CalculateImageDiskUsage extends Command\Base
     {
         $this->setName('annostation:calculateImageDiskUsage');
         $this->addOption('dry-run', null, Console\Input\InputOption::VALUE_NONE, "Don't actually change anything.");
+        $this->addOption(
+            'force',
+            null,
+            Console\Input\InputOption::VALUE_NONE,
+            "Recalculate all videos instead of missing calculations only"
+        );
     }
 
     protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output)
     {
         $dryRun = $input->getOption('dry-run');
+        $force  = $input->getOption('force');
 
         if ($dryRun) {
             $this->writeInfo($output, 'dry run');
@@ -78,6 +85,10 @@ class CalculateImageDiskUsage extends Command\Base
             }
 
             foreach ($video->getImageTypes() as $type => $data) {
+                if (isset($data['sizeInBytes']) && !empty($data['sizeInBytes']) && !$force) {
+                    $progress->advance(count($frameRange));
+                    continue;
+                }
                 switch ($type) {
                     case 'source':
                         $extension = 'png';
