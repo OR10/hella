@@ -105,6 +105,7 @@ class CalculateImageDiskUsage extends Command\Base
                     }
                     $progress->setMessage($this->formatBytes($calculatedBytesInThisRun), 'size');
                     $progress->advance(count($frameRange));
+                    $this->documentManager->detach($video);
                     continue;
                 }
                 switch ($type) {
