@@ -85,6 +85,7 @@ class CalculateImageDiskUsage extends Command\Base
                 continue;
             }
 
+            $videoModified = false;
             foreach ($video->getImageTypes() as $type => $data) {
                 if (isset($data['sizeInBytes']) && !empty($data['sizeInBytes']) && !$force) {
                     foreach ($data['sizeInBytes'] as $bytes) {
@@ -131,9 +132,10 @@ class CalculateImageDiskUsage extends Command\Base
                 }
                 if (!$dryRun) {
                     $video->setImageSizesForType($type, $imageSizeForType);
+                    $videoModified = true;
                 }
             }
-            if (!$dryRun) {
+            if (!$dryRun && $videoModified) {
                 $this->videoFacade->save($video);
             }
         }
