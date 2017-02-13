@@ -27,19 +27,27 @@ class CalculateImageDiskUsage extends Command\Base
     private $kernelEnvironment;
 
     /**
-     * @param Facade\Video $videoFacade
-     * @param              $frameCdnBaseUrl
-     * @param              $kernelEnvironment
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
+    /**
+     * @param Facade\Video            $videoFacade
+     * @param                         $frameCdnBaseUrl
+     * @param                         $kernelEnvironment
+     * @param CouchDB\DocumentManager $documentManager
      */
     public function __construct(
         Facade\Video $videoFacade,
         $frameCdnBaseUrl,
-        $kernelEnvironment
+        $kernelEnvironment,
+        CouchDB\DocumentManager $documentManager
     ) {
         parent::__construct();
         $this->videoFacade       = $videoFacade;
         $this->frameCdnBaseUrl   = $frameCdnBaseUrl;
         $this->kernelEnvironment = $kernelEnvironment;
+        $this->documentManager   = $documentManager;
     }
 
     protected function configure()
@@ -64,6 +72,7 @@ class CalculateImageDiskUsage extends Command\Base
         }
 
         $videos = $this->videoFacade->findAll();
+        $this->documentManager->clear();
 
         $curlHandle = $this->initCurl();
 
@@ -78,6 +87,9 @@ class CalculateImageDiskUsage extends Command\Base
         /** @var Model\Video $video */
         $calculatedBytesInThisRun = 0;
         foreach ($videos as $video) {
+            /** refresh doctrine map */
+            $video = $this->videoFacade->find($video->getId());
+
             $progress->setMessage($video->getId(), 'videoId');
             $frameRange = range(1, $video->getMetaData()->numberOfFrames);
 
@@ -85,8 +97,8 @@ class CalculateImageDiskUsage extends Command\Base
                 continue;
             }
 
-            $videoModified = false;
             foreach ($video->getImageTypes() as $type => $data) {
+
                 if (isset($data['sizeInBytes']) && !empty($data['sizeInBytes']) && !$force) {
                     foreach ($data['sizeInBytes'] as $bytes) {
                         $calculatedBytesInThisRun += $bytes;
@@ -132,11 +144,11 @@ class CalculateImageDiskUsage extends Command\Base
                 }
                 if (!$dryRun) {
                     $video->setImageSizesForType($type, $imageSizeForType);
-                    $videoModified = true;
                 }
             }
-            if (!$dryRun && $videoModified) {
+            if (!$dryRun) {
                 $this->videoFacade->save($video);
+                $this->documentManager->detach($video);
             }
         }
         $this->closeCurl($curlHandle);

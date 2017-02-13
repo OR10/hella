@@ -156,6 +156,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument>%frame_cdn_base_url%</argument>
             <argument>%kernel.environment%</argument>
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <tag name="console.command"/>
         </service>
     </services>
