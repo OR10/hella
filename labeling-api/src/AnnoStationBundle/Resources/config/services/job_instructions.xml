@@ -58,5 +58,11 @@
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.project"/>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.project_deleter" class="AnnoStationBundle\Worker\JobInstruction\ProjectDeleter">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.project"/>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
     </services>
 </container>
