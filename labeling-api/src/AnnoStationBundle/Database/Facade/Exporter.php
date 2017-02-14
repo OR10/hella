@@ -43,6 +43,15 @@ class Exporter
     }
 
     /**
+     * @param Model\Export $export
+     */
+    public function delete(Model\Export $export)
+    {
+        $this->documentManager->remove($export);
+        $this->documentManager->flush();
+    }
+
+    /**
      * @param Model\Project $project
      *
      * @return Model\Export[]
