@@ -468,6 +468,15 @@ class LabelingTask
     }
 
     /**
+     * @param Model\TaskTimer $taskTimer
+     */
+    public function deleteTimer(Model\TaskTimer $taskTimer)
+    {
+        $this->documentManager->remove($taskTimer);
+        $this->documentManager->flush();
+    }
+
+    /**
      * @param array|null $tasks
      *
      * @return array
