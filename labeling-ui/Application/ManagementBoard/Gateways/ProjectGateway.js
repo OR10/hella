@@ -140,9 +140,25 @@ class ProjectGateway {
    * @param {string} projectId
    * @returns {AbortablePromise}
    */
-  deleteProject(projectId, message) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/delete`);
+  setProjectStatusToDeleted(projectId, message) {
+    const url = this._apiService.getApiUrl(`/project/${projectId}/status/deleted`);
     return this._bufferedHttp.post(url, {message}, undefined, 'project')
+      .then(response => {
+        if (response.data && response.data.result && response.data.result.success === true) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed to set delete status for project: ${projectId}.`);
+      });
+  }
+
+  /**
+   * @param {string} projectId
+   * @returns {AbortablePromise}
+   */
+  deleteProject(projectId) {
+    const url = this._apiService.getApiUrl(`/project/${projectId}/delete`);
+    return this._bufferedHttp.post(url, {}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result && response.data.result.success === true) {
           return response.data.result;

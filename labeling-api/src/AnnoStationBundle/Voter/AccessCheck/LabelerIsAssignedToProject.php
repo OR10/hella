@@ -30,7 +30,7 @@ class LabelerIsAssignedToProject extends Voter\AccessCheck
             throw new \RuntimeException('Project AccessCheck got non Project as object.');
         }
 
-        if ($object->isDeleted()) {
+        if ($object->isDeleted() && !$user->hasRole(Model\User::ROLE_ADMIN)) {
             return false;
         }
 

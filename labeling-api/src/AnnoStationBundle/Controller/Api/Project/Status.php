@@ -141,4 +141,41 @@ class Status extends Controller\Base
 
         return View\View::create()->setData(['result' => true]);
     }
+
+    /**
+     * @Rest\Post("/{project}/status/deleted")
+     *
+     * @return View\View
+     */
+    public function setProjectStatusToDeletedAction(HttpFoundation\Request $request, Model\Project $project)
+    {
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT])) {
+            throw new Exception\AccessDeniedHttpException('You are not allowed to deleted this project.');
+        }
+
+        $projectStatus = $project->getStatus();
+        if ($projectStatus !== Model\Project::STATUS_DONE && $projectStatus !== Model\Project::STATUS_TODO) {
+            throw new Exception\NotAcceptableHttpException(
+                sprintf(
+                    'Its not allowed to delete a project with state "%s"',
+                    $projectStatus
+                )
+            );
+        }
+
+        $project->setDeletedReason($request->get('message'));
+        $project->addStatusHistory(
+            new \DateTime('now', new \DateTimeZone('UTC')),
+            Model\Project::STATUS_DELETED,
+            $user
+        );
+        $this->projectFacade->save($project);
+
+        return View\View::create()->setData(['result' => ['success' => true]]);
+    }
 }

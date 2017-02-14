@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use AnnoStationBundle\Response;
+use crosscan\WorkerPool\AMQP;
+use AnnoStationBundle\Worker\Jobs;
 
 /**
  * @Rest\Prefix("/api/project")
@@ -60,12 +62,18 @@ class Project extends Controller\Base
     private $authorizationService;
 
     /**
+     * @var AMQP\FacadeAMQP
+     */
+    private $amqpFacade;
+
+    /**
      * @param Facade\Project             $projectFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Storage\TokenStorage       $tokenStorage
      * @param AppFacade\User             $userFacade
      * @param Service\Authorization      $authorizationService
+     * @param AMQP\FacadeAMQP            $amqpFacade
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -73,7 +81,8 @@ class Project extends Controller\Base
         Facade\LabelingTask $labelingTaskFacade,
         Storage\TokenStorage $tokenStorage,
         AppFacade\User $userFacade,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        AMQP\FacadeAMQP $amqpFacade
     ) {
         $this->projectFacade             = $projectFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
@@ -81,6 +90,7 @@ class Project extends Controller\Base
         $this->tokenStorage              = $tokenStorage;
         $this->userFacade                = $userFacade;
         $this->authorizationService      = $authorizationService;
+        $this->amqpFacade                = $amqpFacade;
     }
 
     /**
@@ -125,6 +135,7 @@ class Project extends Controller\Base
             Model\Project::STATUS_IN_PROGRESS => array(),
             Model\Project::STATUS_TODO        => array(),
             Model\Project::STATUS_DONE        => array(),
+            Model\Project::STATUS_DELETED     => array(),
             null                              => array() //@TODO remove this later
         );
 
@@ -253,6 +264,7 @@ class Project extends Controller\Base
                     $result[Model\Project::STATUS_IN_PROGRESS],
                     $result[Model\Project::STATUS_TODO],
                     $result[Model\Project::STATUS_DONE],
+                    $result[Model\Project::STATUS_DELETED],
                     $result[null] //@TODO remove this later
                 ),
                 'users' => $users->getResult(),
@@ -446,7 +458,7 @@ class Project extends Controller\Base
         }
 
         $projectStatus = $project->getStatus();
-        if ($projectStatus !== Model\Project::STATUS_DONE && $projectStatus !== Model\Project::STATUS_TODO) {
+        if ($projectStatus !== Model\Project::STATUS_DELETED) {
             throw new Exception\NotAcceptableHttpException(
                 sprintf(
                     'Its not allowed to delete a project with state "%s"',
@@ -454,13 +466,12 @@ class Project extends Controller\Base
                 )
             );
         }
+        $project->setDeletedState(Model\Project::DELETED_PENDING);
 
-        $project->setDeleteFlag(
-            $user,
-            null,
-            $request->get('message')
-        );
         $this->projectFacade->save($project);
+
+        $job = new Jobs\ProjectDeleter($project->getId());
+        $this->amqpFacade->addJob($job);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }

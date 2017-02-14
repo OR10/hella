@@ -110,28 +110,16 @@ class Project
     private $userId;
 
     /**
-     * @var bool
-     * @CouchDB\Field(type="boolean")
-     */
-    private $deleted = false;
-
-    /**
-     * @var string
-     * @CouchDB\Field(type="string")
-     */
-    private $deletedByUserId;
-
-    /**
-     * @var \DateTime
-     * @CouchDB\Field(type="datetime")
-     */
-    private $deletedAt;
-
-    /**
      * @var string
      * @CouchDB\Field(type="string")
      */
     private $deletedReason;
+
+    /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $deletedState = self::DELETED_UNACCEPTED;
 
     /**
      * @var string
@@ -691,23 +679,6 @@ class Project
         ];
     }
 
-    /**
-     * @param User           $user
-     * @param \DateTime|null $date
-     * @param string         $reasonText
-     */
-    public function setDeleteFlag(User $user, \DateTime $date = null, $reasonText = '')
-    {
-        if ($date === null) {
-            $date = new \DateTime('now', new \DateTimeZone('UTC'));
-        }
-
-        $this->deleted         = true;
-        $this->deletedByUserId = $user->getId();
-        $this->deletedAt       = $date;
-        $this->deletedReason   = $reasonText;
-    }
-
     private function checkTaskInstructionProperty()
     {
         if ($this->taskInstructions === null) {
@@ -723,7 +694,7 @@ class Project
      */
     public function isDeleted()
     {
-        return $this->deleted;
+        return $this->getStatus() === Project::STATUS_DELETED;
     }
 
     /**
@@ -754,5 +725,29 @@ class Project
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @param string $deletedReason
+     */
+    public function setDeletedReason(string $deletedReason)
+    {
+        $this->deletedReason = $deletedReason;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeletedState(): string
+    {
+        return $this->deletedState;
+    }
+
+    /**
+     * @param string $deletedState
+     */
+    public function setDeletedState(string $deletedState)
+    {
+        $this->deletedState = $deletedState;
     }
 }

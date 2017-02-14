@@ -14,7 +14,7 @@ class HasAdminRole extends Voter\AccessCheck
      */
     public function userHasAccessToObject(Model\User $user, $object): bool
     {
-        if (($object instanceof Model\Project) && $object->isDeleted()) {
+        if (($object instanceof Model\Project) && $object->isDeleted() && !$user->hasRole(Model\User::ROLE_ADMIN)) {
             return false;
         }
 
