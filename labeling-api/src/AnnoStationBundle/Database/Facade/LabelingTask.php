@@ -459,6 +459,21 @@ class LabelingTask
     }
 
     /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return mixed
+     */
+    public function getTaskTimerByTask(Model\LabelingTask $labelingTask)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_task_timer', 'by_taskId_userId')
+            ->setStartKey([$labelingTask->getId()])
+            ->setEndKey([$labelingTask->getId(), []]);
+
+        return $query->onlyDocs(true)->execute()->toArray();
+    }
+
+    /**
      * @param Model\TaskTimer $taskTimer
      */
     public function saveTimer(Model\TaskTimer $taskTimer)
