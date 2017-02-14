@@ -287,6 +287,7 @@ class MediaControlsController {
     );
   }
 
+  // TODO: Do we need to delete this here? Maybe delegate to some better place...
   _deleteSelectedShape() {
     this._$rootScope.$emit('shape:delete:before', this.selectedPaperShape);
     const selectedLabeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
@@ -316,8 +317,8 @@ class MediaControlsController {
         .then(
           () => {
             this.selectedPaperShape = null;
-            this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
-              labeledThingInFrame => labeledThingInFrame.id !== selectedLabeledThingInFrame.id
+            this.paperThingShapes = this.paperThingShapes.filter(
+              paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
             );
             this._applicationState.enableAll();
             this._$rootScope.$emit('shape:delete:after');

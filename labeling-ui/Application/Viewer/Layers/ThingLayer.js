@@ -113,15 +113,17 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._selectedLabelStructureThing = null;
 
-    $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
-      const oldSet = new Set(oldLabeledThingsInFrame);
-      const newSet = new Set(newLabeledThingsInFrame);
 
-      const addedLabeledThingsInFrame = newLabeledThingsInFrame.filter(item => !oldSet.has(item));
-      const removedLabeledThingsInFrame = oldLabeledThingsInFrame.filter(item => !newSet.has(item));
 
-      this.addLabeledThingsInFrame(addedLabeledThingsInFrame, false);
-      this.removeLabeledThingsInFrame(removedLabeledThingsInFrame, false);
+    $scope.$watchCollection('vm.paperThingShapes', (newPaperThingShapes, oldPaperThingShapes) => {
+      const oldSet = new Set(oldPaperThingShapes);
+      const newSet = new Set(newPaperThingShapes);
+
+      const addedPaperThingShapes = newPaperThingShapes.filter(item => !oldSet.has(item));
+      const removedPaperThingShapes = oldPaperThingShapes.filter(item => !newSet.has(item));
+
+      this.addPaperThingShapes(addedPaperThingShapes, false);
+      this.removePaperThingShapes(removedPaperThingShapes, false);
 
       this._applyHiddenLabeledThingsInFrameFilter();
     });
@@ -137,11 +139,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
         });
 
         // Remove a Ghost upon deselection
-        const oldLabeledThingInFrame = oldShape.labeledThingInFrame;
-        if (oldLabeledThingInFrame.ghost === true) {
-          const index = this._$scope.vm.labeledThingsInFrame.indexOf(oldLabeledThingInFrame);
+        if (oldShape.labeledThingInFrame.ghost === true) {
+          const index = this._$scope.vm.paperThingShapes.indexOf(oldShape);
           if (index !== -1) {
-            this._$scope.vm.labeledThingsInFrame.splice(index, 1);
+            this._$scope.vm.paperThingShapes.splice(index, 1);
           }
         }
       }
@@ -475,12 +476,20 @@ class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * Adds the given thing to this layer and draws its respective shapes
    *
-   * @param {Array<LabeledThingInFrame>} labeledThingsInFrame
+   * @param {Array<LabeledThingInFrame>} paperThingShapes
    * @param {boolean?} update
    */
-  addLabeledThingsInFrame(labeledThingsInFrame, update = true) {
-    labeledThingsInFrame.forEach(labeledThingInFrame => {
-      this.addLabeledThingInFrame(labeledThingInFrame, false);
+  addPaperThingShapes(paperThingShapes, update = true) {
+    paperThingShapes.forEach(paperThingShape => {
+      this.addPaperThingShape(paperThingShape, false);
+    });
+
+    if (update) {
+      this._context.withScope(scope => {
+        scope.view.update();
+      });
+    }
+  }
     });
 
     if (update) {
@@ -496,29 +505,34 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * Optionally it may be specified if the view should be updated after adding the new shapes
    * By default it will be rerendered.
    *
-   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {PaperThingShape} paperThingShape
    * @param {boolean?} update
    * @param {boolean|undefined} selected
    * @return {Array.<paper.Shape>}
    */
-  addLabeledThingInFrame(labeledThingInFrame, update = true, selected = undefined) {
+  addPaperThingShape(paperThingShape, update = true, selected = undefined) {
     const selectedPaperShape = this._$scope.vm.selectedPaperShape;
     const selectedLabeledThingInFrame = selectedPaperShape ? selectedPaperShape.labeledThingInFrame : null;
     const selectedLabeledThing = selectedLabeledThingInFrame ? selectedLabeledThingInFrame.labeledThing : null;
 
-    const paperShapes = labeledThingInFrame.shapes.map(shape => {
-      // Transport selection between frame changes
-      let selectedByUserOrAcrossFrameChange = selected;
-      if (selected === undefined) {
-        selectedByUserOrAcrossFrameChange = (
-          selectedLabeledThingInFrame
-          && selectedLabeledThingInFrame !== labeledThingInFrame
-          && selectedLabeledThing.id === labeledThingInFrame.labeledThing.id
-        );
-      }
+    // Transport selection between frame changes
+    let selectedByUserOrAcrossFrameChange = selected;
+    if (selected === undefined) {
+      selectedByUserOrAcrossFrameChange = (
+        selectedLabeledThingInFrame
+        && selectedLabeledThingInFrame !== paperThingShape.labeledThingInFrame
+        && selectedLabeledThing.id === paperThingShape.labeledThingInFrame.labeledThing.id
+      );
+    }
 
-      return this._addShape(labeledThingInFrame, shape, selectedByUserOrAcrossFrameChange, false);
-    });
+    if (update) {
+      this._context.withScope(scope => {
+        scope.view.update();
+      });
+    }
+
+    this._updateSelectedShapeAndView(paperThingShape, selectedByUserOrAcrossFrameChange, false);
+  }
 
     if (update) {
       this._context.withScope(scope => {
@@ -598,21 +612,22 @@ class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * Remove all {@link PaperShape}s belonging to any of the given {@link LabeledThingInFrame}s
    *
-   * @param {Array.<LabeledThingInFrame>} labeledThingsInFrame
+   * @param {Array.<PaperThingShape>} paperThingShapes
    * @param {boolean?} update
    */
-  removeLabeledThingsInFrame(labeledThingsInFrame, update = true) {
-    this._context.withScope(
-      scope => {
-        scope.project.getItems({
-          labeledThingInFrame: value => labeledThingsInFrame.indexOf(value) !== -1,
-        }).forEach(item => item.remove());
+  removePaperThingShapes(paperThingShapes, update = true) {
+    this._context.withScope(scope => {
+      // Find all shapes and get their labeledThingInFrame
+      scope.project.getItems({
+        labeledThingInFrame: labeledThingInFrame => {
+          paperThingShapes.filter(paperThingShape => paperThingShape.labeledThingInFrame.id === labeledThingInFrame.id);
+        },
+      }).forEach(item => item.remove());
 
-        if (update) {
-          scope.view.update();
-        }
+      if (update) {
+        scope.view.update();
       }
-    );
+    });
   }
 
   attachToDom(element) {

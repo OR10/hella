@@ -488,11 +488,10 @@ class TaskController {
       return;
     }
     this._$timeout(() => {
-      const labeledThingInFrame = this.labeledThingsInFrame.find(element => {
-        return match === element.id;
+      const shape = this.paperThingShapes.find(element => {
+        return match === element.labeledThingInFrame.id;
       });
-      if (labeledThingInFrame) {
-        const shape = labeledThingInFrame.paperShapes[0];
+      if (shape) {
         this.selectedPaperShape = shape;
         this.thingLayer.update();
       }

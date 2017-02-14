@@ -9,7 +9,7 @@ import viewerTemplate from './ViewerDirective.html!';
 export default class ViewerDirective {
   constructor() {
     this.scope = {
-      labeledThingsInFrame: '=',
+      paperThingShapes: '=',
       selectedPaperShape: '=',
       activeTool: '=',
       selectedDrawingTool: '=',

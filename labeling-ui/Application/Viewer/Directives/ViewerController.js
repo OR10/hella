@@ -9,7 +9,7 @@ import paper from 'paper';
 import Environment from '../../Common/Support/Environment';
 
 /**
- * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
+ * @property {Array.<PaperThingShape>} paperThingShapes
  * @property {PaperShape|null} selectedPaperShape
  * @property {string} activeTool
  * @property {string} selectedDrawingTool
@@ -334,11 +334,11 @@ class ViewerController {
     this.selectedDrawingTool = null;
 
     /**
-     * A structure holding all LabeledThingInFrames for the currently active frame
+     * A structure holding all {@link PaperThingShape}s for the currently active frame
      *
-     * @type {Object<string|LabeledThingInFrame>|null}
+     * @type {Array.<PaperThingShape>|null}
      */
-    this.labeledThingsInFrame = [];
+    this.paperThingShapes = [];
 
     /**
      * A structure holding all LabeledThings for the currently active frame
@@ -850,7 +850,7 @@ class ViewerController {
     ).then(
       ([newFrameImage, labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
         this._frameChangeInProgress = false;
-        this.labeledThingsInFrame = [];
+        this.paperThingShapes = [];
         this.labeledFrame = null;
 
         // Update background
@@ -862,17 +862,18 @@ class ViewerController {
         );
         this._backgroundLayer.render();
 
-        // Update labeledThingsInFrame
-        this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
+        this._extractAndPersistPaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
 
-        if (ghostedLabeledThingInFrame) {
-          this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
-        }
         this.framePosition.lock.release();
       }
     );
   }
 
+  /**
+   * Update all {@link LabeledThingInFrame} for the current frame
+   *
+   * @private
+   */
   _updateLabeledThingsInFrame() {
     return this._$q.all(
       [
@@ -882,17 +883,44 @@ class ViewerController {
         this._fetchGhostedLabeledThingInFrame(this.framePosition.position),
       ]
     ).then(
-      ([labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
-        this.labeledThingsInFrame = [];
-
-        // Update labeledThingsInFrame
-        this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
-
-        if (ghostedLabeledThingInFrame) {
-          this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
-        }
+      ([labeledThingsInFrame, ghostedLabeledThingsInFrame]) => {
+        this._extractAndPersistPaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
       }
     );
+  }
+
+  /**
+   * Takes the given ltifs and ghostLtifs and converts them into {@link PaperThingShape}s.
+   * The resulting {@link PaperThingShape}s are then stored in the global `paperThingShapes` array.
+   *
+   * @param {Array.<LabeledThingInFrame>} labeledThingsInFrame
+   * @param {Array.<LabeledThingInFrame>} ghostedLabeledThingsInFrame
+   * @private
+   */
+  _extractAndPersistPaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame) {;
+    const newPaperThingShapes = labeledThingsInFrame.map(
+      ltif => {
+        return this._thingLayerContext.withScope(() => {
+          return this._paperShapeFactory.createPaperThingShape(ltif, ltif.shapes[0], this.video);
+        });
+      }
+    );
+
+    // Add new ltifs to the global array
+    this.paperThingShapes = this.paperThingShapes.concat(newPaperThingShapes);
+
+
+    if (ghostedLabeledThingsInFrame) {
+      const ghostedPaperShapes = ghostedLabeledThingsInFrame.map(
+        ghostLtif => {
+          return this._thingLayerContext.withScope(() => {
+            return this._paperShapeFactory.createPaperThingShape(ghostLtif, ghostLtif.shapes[0], this.video);
+          });
+        }
+      );
+
+      this.paperThingShapes.push(ghostedPaperShapes);
+    }
   }
 
   /**

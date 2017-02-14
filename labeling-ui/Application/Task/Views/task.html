@@ -6,7 +6,7 @@
                   read-only="{{vm.task.readOnly}}"
                   selected-paper-shape="vm.selectedPaperShape"
                   frame-position="vm.framePosition"
-                  labeled-things-in-frame="vm.labeledThingsInFrame"
+                  paper-thing-shapes="vm.paperThingShapes"
                   thing-layer="vm.thingLayer"
                   hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
                   label-instruction="vm.labelInstruction"
@@ -69,7 +69,7 @@
 
 
     <viewer class="grid-block align-center noscroll no-select"
-            labeled-things-in-frame="vm.labeledThingsInFrame"
+            paper-thing-shapes="vm.paperThingShapes"
             selected-paper-shape="vm.selectedPaperShape"
             selected-label-structure-thing="vm.selectedLabelStructureThing"
             active-tool="vm.activeTool"
@@ -111,7 +111,7 @@
     </div>
 </div>
 <media-controls read-only="{{vm.task.readOnly}}"
-                labeled-things-in-frame="vm.labeledThingsInFrame"
+                paper-thing-shapes="vm.paperThingShapes"
                 frame-position="vm.framePosition"
                 active-tool="vm.activeTool"
                 selected-drawing-tool="vm.selectedDrawingTool"

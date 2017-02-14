@@ -17,7 +17,7 @@ class MediaControlsDirective {
       selectedDrawingTool: '=',
       task: '=',
       selectedPaperShape: '=',
-      labeledThingsInFrame: '=',
+      paperThingShapes: '=',
       playing: '=',
       playbackSpeedFactor: '=',
       playbackDirection: '=',
