@@ -27,6 +27,15 @@ class Project
     }
 
     /**
+     * @param Model\Project $project
+     */
+    public function delete(Model\Project $project)
+    {
+        $this->documentManager->remove($project);
+        $this->documentManager->flush();
+    }
+
+    /**
      * @param null     $limit
      * @param int|null $offset
      * @return View\Result
