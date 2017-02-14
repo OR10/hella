@@ -405,6 +405,15 @@ class LabelingTask
     }
 
     /**
+     * @param Model\LabelingTask $labelingTask
+     */
+    public function delete(Model\LabelingTask $labelingTask)
+    {
+        $this->documentManager->remove($labelingTask);
+        $this->documentManager->flush();
+    }
+
+    /**
      * @param Model\LabelingTask $task
      * @param Model\User         $user
      *
