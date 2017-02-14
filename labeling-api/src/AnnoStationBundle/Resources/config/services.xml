@@ -14,6 +14,7 @@
         <import resource="services/voters.xml"/>
         <import resource="services/monitoring.xml"/>
         <import resource="services/param_converters.xml"/>
+        <import resource="services/project_deleter.xml"/>
     </imports>
 
     <services>
@@ -313,6 +314,13 @@
 
         <service id="annostation.labeling_api.service.project_importer.facade.video" class="AnnoStationBundle\Service\ProjectImporter\Facade\Video">
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.project_deleter.project" class="AnnoStationBundle\Service\ProjectDeleter\Project">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.exports"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.reports"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.labeling_tasks"/>
         </service>
     </services>
 </container>

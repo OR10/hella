@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="annostation.labeling_api.service.project_deleter.delete.exports"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\Exports">
+            <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>
+        </service>
+        <service id="annostation.labeling_api.service.project_deleter.delete.labeled_frames"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabeledFrames">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame"/>
+        </service>
+        <service id="annostation.labeling_api.service.project_deleter.delete.labeled_things"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabeledThings">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+        </service>
+        <service id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_in_frames"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabeledThingInFrames">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
+        </service>
+        <service id="annostation.labeling_api.service.project_deleter.delete.labeling_tasks"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabelingTasks">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.labeled_frames"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.labeled_things"/>
+            <argument type="service"
+                      id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_in_frames"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.task_timers"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.video"/>
+        </service>
+        <service id="annostation.labeling_api.service.project_deleter.delete.reports"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\Reports">
+            <argument type="service" id="annostation.labeling_api.database.facade.report"/>
+        </service>
+        <service id="annostation.labeling_api.service.project_deleter.delete.task_exports"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\TaskExports">
+            <argument type="service" id="annostation.labeling_api.database.facade.task_export"/>
+        </service>
+        <service id="annostation.labeling_api.service.project_deleter.delete.task_timers"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\TaskTimers">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+        </service>
+        <service id="annostation.labeling_api.service.project_deleter.delete.video"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\Video">
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
+            <argument type="service" id="annostation.labeling_api.service.frame_cdn.selected-alias"/>
+            <argument type="service" id="annostation.labeling_api.service.video_cdn.selected-alias"/>
+        </service>
+    </services>
+</container>
