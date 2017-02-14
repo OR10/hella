@@ -108,6 +108,7 @@ class Video
             return [];
         }
 
+        $videos = [];
         foreach ($this->findById($videoIds) as $video) {
             $videos[$video->getId()] = $video;
         }
