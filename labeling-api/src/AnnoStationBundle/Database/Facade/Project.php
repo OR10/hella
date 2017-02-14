@@ -55,6 +55,25 @@ class Project
     }
 
     /**
+     * @param null     $limit
+     * @param int|null $offset
+     * @return View\Result
+     */
+    public function findAllDeleted($limit = null, $offset = 0)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_deleted_projects', 'view')
+            ->onlyDocs(true);
+
+        if ($limit !== null) {
+            $query->setLimit((int) $limit)
+            ->setSkip((int) $offset);
+        }
+
+        return $query->execute();
+    }
+
+    /**
     * @return array
     */
     public function getTimePerProject()
