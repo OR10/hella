@@ -28,6 +28,15 @@ class Report
     }
 
     /**
+     * @param Model\Report $report
+     */
+    public function delete(Model\Report $report)
+    {
+        $this->documentManager->remove($report);
+        $this->documentManager->flush();
+    }
+
+    /**
      * @param Model\Project $project
      * @return View\Result
      */
