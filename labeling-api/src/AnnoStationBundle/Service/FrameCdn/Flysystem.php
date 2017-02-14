@@ -55,6 +55,33 @@ class Flysystem extends Service\FrameCdn
     }
 
     /**
+     * @param Model\Video    $video
+     * @param ImageType\Base $imageType
+     * @param int            $frameIndex
+     *
+     * @return mixed|void
+     */
+    public function delete(Model\Video $video, Model\Video\ImageType\Base $imageType, int $frameIndex)
+    {
+        $cdnPath  = sprintf('%s/%s', $video->getId(), $imageType->getName());
+        $filePath = sprintf('%s/%s.%s', $cdnPath, $frameIndex, $imageType->getExtension());
+
+        $this->fileSystem->delete($filePath);
+    }
+
+    /**
+     * @param Model\Video $video
+     *
+     * @return mixed|void
+     */
+    public function deleteVideoDirectory(Model\Video $video)
+    {
+        $cdnPath  = sprintf('%s', $video->getId());
+
+        $this->fileSystem->deleteDir($cdnPath);
+    }
+
+    /**
      * @param Model\LabelingTask          $labelingTask
      * @param ImageType\Base              $imageType
      * @param Model\FrameIndexRange|array $frameNumbers

@@ -81,6 +81,28 @@ abstract class FrameCdn
     );
 
     /**
+     * @param Model\Video    $video
+     * @param ImageType\Base $imageType
+     * @param int            $frameIndex
+     *
+     * @return mixed
+     */
+    abstract public function delete(
+        Model\Video $video,
+        Model\Video\ImageType\Base $imageType,
+        int $frameIndex
+    );
+
+    /**
+     * @param Model\Video    $video
+     *
+     * @return mixed
+     */
+    abstract public function deleteVideoDirectory(
+        Model\Video $video
+    );
+
+    /**
      * @param Model\LabelingTask $labeledFrame
      * @param ImageType\Base     $imageType
      * @param array              $frameNumbers

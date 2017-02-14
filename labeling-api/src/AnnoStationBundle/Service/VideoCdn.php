@@ -25,4 +25,13 @@ abstract class VideoCdn
     abstract public function getVideo(
         Model\Video $video
     );
+
+    /**
+     * @param Model\Video    $video
+     *
+     * @return mixed
+     */
+    abstract public function deleteVideoDirectory(
+        Model\Video $video
+    );
 }
