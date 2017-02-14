@@ -12,6 +12,11 @@ class Project
     const STATUS_TODO        = 'todo';
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_DONE        = 'done';
+    const STATUS_DELETED     = 'deleted';
+
+    const DELETED_UNACCEPTED  = 'unaccepted';
+    const DELETED_PENDING     = 'pending';
+    const DELETED_IN_PROGRESS = 'in_progress';
 
     /**
      * @CouchDB\Id
