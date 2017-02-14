@@ -23,6 +23,7 @@ class UserPermissions
         'canMoveProjectToDone'           => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
         'canViewClosedProjects'          => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER],
         'canViewTodoProjects'            => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER],
+        'canViewDeletedProjects'         => [Model\User::ROLE_ADMIN                                                                                       ],
         'canCreateProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                              ],
         'canMoveFinishedProjectToDone'   => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
         'canMoveInProgressProjectToDone' => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                              ],
