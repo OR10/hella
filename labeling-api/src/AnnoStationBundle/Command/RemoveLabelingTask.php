@@ -138,7 +138,7 @@ class RemoveLabelingTask extends Base
         $this->labeledThingsDeleter->delete($task);
         $io->success('✓ Deleted LabeledThings');
         $this->labeledThingInFrameDeleter->delete($task);
-        $io->success('✓ Deleted LabeledThingInFrame');
+        $io->success('✓ Deleted LabeledThingInFrames');
         $this->taskTimerDeleter->delete($task);
         $io->success('✓ Deleted TaskTimers');
         $this->videoDeleter->delete($task);
