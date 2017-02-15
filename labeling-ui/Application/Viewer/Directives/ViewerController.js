@@ -295,6 +295,18 @@ class ViewerController {
      */
     this._viewerMouseCursorService = viewerMouseCursorService;
 
+    /**
+     * @type {DrawingContext|null}
+     * @private
+     */
+    this._thingLayerContext = null;
+
+    /**
+     * @type {DrawingContext|null}
+     * @private
+     */
+    this._backgroupLayerContext = null;
+
     this._viewerMouseCursorService.on('cursor:updated', cursor => {
       this.actionMouseCursor = cursor;
     });
@@ -637,6 +649,8 @@ class ViewerController {
   }
 
   _setupBackgroundLayer() {
+    this._backgroupLayerContext = this._drawingContextService.createContext();
+
     /**
      * @type {BackgroundLayer}
      * @private
@@ -645,7 +659,7 @@ class ViewerController {
       this._contentWidth,
       this._contentHeight,
       this._$scope.$new(),
-      this._drawingContextService
+      this._backgroupLayerContext
     );
 
     this._backgroundLayer.attachToDom(this._$element.find('.background-layer')[0]);
@@ -684,12 +698,14 @@ class ViewerController {
   }
 
   _setupThingLayer() {
+    this._thingLayerContext = this._drawingContextService.createContext();
+
     this.thingLayer = new ThingLayer(
       this._contentWidth,
       this._contentHeight,
       this._$scope.$new(),
       this._$injector,
-      this._drawingContextService,
+      this._thingLayerContext,
       this._toolService,
       this._paperShapeFactory,
       this._logger,
