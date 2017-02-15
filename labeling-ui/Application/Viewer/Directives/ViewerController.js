@@ -878,7 +878,8 @@ class ViewerController {
         );
         this._backgroundLayer.render();
 
-        this._extractAndPersistPaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
+        this._extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
+        this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame);
 
         this.framePosition.lock.release();
       }
@@ -900,7 +901,7 @@ class ViewerController {
       ]
     ).then(
       ([labeledThingsInFrame, ghostedLabeledThingsInFrame]) => {
-        this._extractAndPersistPaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
+        this._extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
       }
     );
   }
@@ -913,7 +914,7 @@ class ViewerController {
    * @param {Array.<LabeledThingInFrame>} ghostedLabeledThingsInFrame
    * @private
    */
-  _extractAndPersistPaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame) {;
+  _extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame) {
     const newPaperThingShapes = labeledThingsInFrame.map(
       ltif => {
         return this._thingLayerContext.withScope(() => {
@@ -937,6 +938,30 @@ class ViewerController {
 
       this.paperThingShapes.push(ghostedPaperShapes);
     }
+  }
+
+  /**
+   * Takes th given ltgifs and converts them into {@link PaperGroupShape}s.
+   * The resulting {@link PaperGroupShape}s are then stored in the global `paperGroupShapes` array.
+   *
+   * @param {Array.<LabeledThingGroupInFrame>} labeledThingGroupsInFrame
+   * @private
+   */
+  _extractAndStorePaperGroupShapes(labeledThingGroupsInFrame) {
+    // debugger;
+    const newPaperGroupShapes = labeledThingGroupsInFrame.map(
+      ltgif => {
+        const shapesBelongingToGroup = this.paperThingShapes.filter(paperThingShape => {
+          return paperThingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(ltgif.id) !== -1;
+        });
+
+        return this._thingLayerContext.withScope(() => {
+          return this._paperShapeFactory.createPaperGroupShape(ltgif.labeledThingGroupInFrame, shapesBelongingToGroup);
+        });
+      }
+    );
+
+    this.paperGroupShapes.concat(newPaperGroupShapes);
   }
 
   /**
