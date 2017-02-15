@@ -165,7 +165,6 @@ class PedestrianDrawingTool extends CreationTool {
 
     // Fix bottom-right and top-left orientation
     this._pedestrian.fixOrientation();
-    this._pedestrian.remove();
 
     this._complete(this._pedestrian);
   }

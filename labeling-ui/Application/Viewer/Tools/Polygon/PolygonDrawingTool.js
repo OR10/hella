@@ -104,7 +104,6 @@ class PolygonDrawingTool extends CreationTool {
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
-      polygon.remove();
     });
 
     return this._complete(polygon);

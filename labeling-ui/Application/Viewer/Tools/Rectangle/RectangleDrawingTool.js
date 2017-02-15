@@ -102,7 +102,6 @@ class RectangleDrawingTool extends CreationTool {
     // Fix bottom-right and top-left orientation
     this._rect.fixOrientation();
 
-    this._rect.remove();
     this._complete(this._rect);
   }
 
