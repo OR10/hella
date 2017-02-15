@@ -9,15 +9,15 @@ import RectangleHandle from './Handles/Rectangle';
  */
 class PaperGroupRectangle extends PaperGroupShape {
   /**
-   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {LabeledThingGroupInFrame} labeledThingGroupInFrame
    * @param {string} shapeId
    * @param {Point} topLeft
    * @param {Point} bottomRight
    * @param {{primary: string, secondary: string}} color
    * @param {boolean} draft
    */
-  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, draft = false) {
-    super(labeledThingInFrame, shapeId, color, draft);
+  constructor(labeledThingGroupInFrame, shapeId, topLeft, bottomRight, color, draft = false) {
+    super(labeledThingGroupInFrame, shapeId, color, draft);
     /**
      * @type {Point}
      * @private
