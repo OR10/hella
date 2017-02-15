@@ -608,13 +608,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   removePaperThingShapes(paperThingShapes, update = true) {
     this._context.withScope(scope => {
-      // Find all shapes and get their labeledThingInFrame
-      scope.project.getItems({
-        labeledThingInFrame: labeledThingInFrame => {
-          paperThingShapes.filter(paperThingShape => paperThingShape.labeledThingInFrame.id === labeledThingInFrame.id);
-        },
-      }).forEach(item => item.remove());
-
+      paperThingShapes.forEach(shape => {
+        shape.remove();
+      });
       if (update) {
         scope.view.update();
       }
