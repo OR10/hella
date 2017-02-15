@@ -100,7 +100,7 @@ class PolygonDrawingTool extends CreationTool {
       polygon = new PaperPolygon(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-       s [from, to],
+        points,
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
