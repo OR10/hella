@@ -18,9 +18,22 @@ class RectangleDrawingTool extends CreationTool {
    * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
+   * @param {HierarchyCreationService} hierarchyCreationService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService) {
-    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService);
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
+    super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
+
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
+    this._entityColorService = entityColorService;
 
     /**
      * @type {PaperRectangle|null}
@@ -106,7 +119,7 @@ class RectangleDrawingTool extends CreationTool {
   }
 
   _startShape(from, to) {
-    const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
+    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     this._context.withScope(() => {
       this._rect = new PaperRectangle(
@@ -140,7 +153,7 @@ class RectangleDrawingTool extends CreationTool {
       (video.metaData.width / 2) + (width / 2),
       (video.metaData.height / 2) + (height / 2)
     );
-    const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
+    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     let rect;
     this._context.withScope(() => {
@@ -203,6 +216,7 @@ RectangleDrawingTool.$inject = [
   'loggerService',
   'entityIdService',
   'entityColorService',
+  'hierarchyCreationService',
 ];
 
 export default RectangleDrawingTool;

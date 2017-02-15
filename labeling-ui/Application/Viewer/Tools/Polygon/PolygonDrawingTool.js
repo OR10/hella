@@ -17,9 +17,22 @@ class PolygonDrawingTool extends CreationTool {
    * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
+   * @param {HierarchyCreationService} hierarchyCreationService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService) {
-    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService);
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
+    super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
+
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
+    this._entityColorService = entityColorService;
 
     /**
      * @type {PaperPolygon}
@@ -66,7 +79,7 @@ class PolygonDrawingTool extends CreationTool {
    * @return {Promise.<PaperShape>}
    */
   invokeDefaultShapeCreation(toolActionStruct) {
-    const promise = super.invokeDefaultShapeCreation(toolActionStruct);
+    super.invokeDefaultShapeCreation(toolActionStruct);
     const {video} = toolActionStruct;
 
     const center = new paper.Point(
@@ -80,7 +93,7 @@ class PolygonDrawingTool extends CreationTool {
       new paper.Point(center.x - 50, center.y),
       new paper.Point(center.x, center.y - 50),
     ];
-    const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
+    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     let polygon = null;
     this._context.withScope(() => {
@@ -117,7 +130,7 @@ class PolygonDrawingTool extends CreationTool {
 
     if (this._polygon && this._polygon.points.length > maxHandles) {
       this._$rootScope.$emit('drawingtool:exception', `To many points! You are only allowed to create up to ${maxHandles} points in this shape. The shape create process was finished and the shape is created!`);
-      this._polygon.remove();
+      // this._polygon.remove();
       this._complete(this._polygon);
       return;
     }
@@ -139,7 +152,7 @@ class PolygonDrawingTool extends CreationTool {
     if (this._polygon) {
       this._polygon.setSecondPoint(point);
     } else {
-      this._startShape(this._startPosition, point)
+      this._startShape(this._startPosition, point);
     }
   }
 
@@ -171,7 +184,7 @@ class PolygonDrawingTool extends CreationTool {
    * @private
    */
   _startShape(from, to) {
-    const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
+    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     this._context.withScope(() => {
       this._polygon = new PaperPolygon(
@@ -204,6 +217,7 @@ PolygonDrawingTool.$inject = [
   'loggerService',
   'entityIdService',
   'entityColorService',
+  'hierarchyCreationService',
 ];
 
 export default PolygonDrawingTool;

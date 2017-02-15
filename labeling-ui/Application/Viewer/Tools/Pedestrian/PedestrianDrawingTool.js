@@ -17,9 +17,22 @@ class PedestrianDrawingTool extends CreationTool {
    * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
+   * @param {HierarchyCreationService} hierarchyCreationService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService) {
-    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService);
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
+    super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
+
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
+    this._entityColorService = entityColorService;
 
     /**
      * @type {PaperPedestrian|null}
@@ -86,7 +99,7 @@ class PedestrianDrawingTool extends CreationTool {
       video.metaData.width / 2,
       (video.metaData.height / 2) + (height / 2)
     );
-    const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
+    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     let pedestrian = null;
     this._context.withScope(() => {
@@ -165,7 +178,7 @@ class PedestrianDrawingTool extends CreationTool {
    * @private
    */
   _startShape(from, to) {
-    const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
+    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     let topCenter;
     let bottomCenter;
@@ -222,6 +235,7 @@ PedestrianDrawingTool.$inject = [
   'loggerService',
   'entityIdService',
   'entityColorService',
+  'hierarchyCreationService',
 ];
 
 export default PedestrianDrawingTool;

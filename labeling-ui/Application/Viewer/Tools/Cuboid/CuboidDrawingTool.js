@@ -21,9 +21,22 @@ class CuboidDrawingTool extends CreationTool {
    * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
+   * @param {HierarchyCreationService} hierarchyCreationService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService) {
-    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService);
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
+    super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
+
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
+    this._entityColorService = entityColorService;
 
     /**
      * @type {PaperCuboid}
@@ -170,7 +183,7 @@ class CuboidDrawingTool extends CreationTool {
       ],
     ];
 
-    const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
+    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     let cuboid = null;
     this._context.withScope(() => {
@@ -276,7 +289,7 @@ class CuboidDrawingTool extends CreationTool {
       this._heightLine.remove();
       this._widthLine.remove();
 
-      const labeledThingInFrame = this._createLabeledThingInFrameWithHierarchy();
+      const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
       const bottom = this._projection3d.projectBottomCoordinateTo3d(new Vector3(this._bottomPoint.x, this._bottomPoint.y, 1));
       const top = this._projection3d.projectTopCoordinateTo3d(new Vector3(this._topPoint.x, this._topPoint.y, 1), bottom);
@@ -476,6 +489,7 @@ CuboidDrawingTool.$inject = [
   'loggerService',
   'entityIdService',
   'entityColorService',
+  'hierarchyCreationService',
 ];
 
 export default CuboidDrawingTool;

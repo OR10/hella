@@ -1,6 +1,4 @@
 import Tool from './NewTool';
-import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
-import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
 class CreationTool extends Tool {
   /**
@@ -8,23 +6,16 @@ class CreationTool extends Tool {
    * @param {$rootScope.Scope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
-   * @param {EntityIdService} entityIdService
-   * @param {EntityColorService} entityColorService
+   * @param {HierarchyCreationService} hierarchyCreationService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService) {
     super(drawingContext, $rootScope, $q, loggerService);
 
     /**
-     * @type {EntityIdService}
+     * @type {HierarchyCreationService}
      * @protected
      */
-    this._entityIdService = entityIdService;
-
-    /**
-     * @type {EntityColorService}
-     * @protected
-     */
-    this._entityColorService = entityColorService;
+    this._hierarchyCreationService = hierarchyCreationService;
   }
 
   /**
@@ -49,46 +40,6 @@ class CreationTool extends Tool {
    */
   invokeDefaultShapeCreation(toolActionStruct) {
     return this._invoke(toolActionStruct);
-  }
-
-  /**
-   * Create a new {@link LabeledThingInFrame} with an attached {@link LabeledThing}
-   *
-   * Both {@link LabeledObject}s are **NOT** stored to the backend.
-   *
-   * @return {LabeledThingInFrame}
-   * @protected
-   */
-  _createLabeledThingInFrameWithHierarchy() {
-    const {framePosition, task, requirementsThingOrGroupId} = this._toolActionStruct;
-    const newLabeledThingId = this._entityIdService.getUniqueId();
-    const newLabeledThingInFrameId = this._entityIdService.getUniqueId();
-    const color = this._entityColorService.getColorId();
-
-    const newLabeledThing = new LabeledThing({
-      task,
-      id: newLabeledThingId,
-      lineColor: color,
-      classes: task.predefinedClasses || [],
-      incomplete: true,
-      frameRange: {
-        startFrameIndex: framePosition.position,
-        endFrameIndex: framePosition.position,
-      },
-    });
-
-    const newLabeledThingInFrame = new LabeledThingInFrame({
-      id: newLabeledThingInFrameId,
-      classes: [],
-      ghostClasses: null,
-      incomplete: true,
-      frameIndex: framePosition.position,
-      labeledThing: newLabeledThing,
-      identifierName: requirementsThingOrGroupId,
-      shapes: [],
-    });
-
-    return newLabeledThingInFrame;
   }
 }
 
