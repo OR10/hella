@@ -17,25 +17,25 @@ class LabeledThingGroupService {
     });
   }
 
-  /**
-   *
-   * @param {Array.<PaperShape>} shapes
-   * @return {{x: number, y: number, width: number, height: number, point: paper.Point}}
-   */
   getBoundsForShapes(shapes) {
     const bounds = shapes.map(shape => shape.bounds);
-
-    const minX = bounds.reduce((prev, current) => {
-      return prev.x < current.x ? prev.x : current.x;
-    });
-    const minY = bounds.reduce((prev, current) => {
-      return prev.y < current.y ? prev.y : current.y;
-    });
-    const maxX = bounds.reduce((prev, current) => {
-      return prev.x > current.x ? prev.x : current.x;
-    });
-    const maxY = bounds.reduce((prev, current) => {
-      return prev.y > current.y ? prev.y : current.y;
+    let minX;
+    let minY;
+    let maxX;
+    let maxY;
+    bounds.forEach(bound => {
+      if (minX === undefined || bound.x < minX) {
+        minX = bound.x;
+      }
+      if (minY === undefined || bound.y < minY) {
+        minY = bound.y;
+      }
+      if (maxX === undefined || bound.x + bound.width > maxX) {
+        maxX = bound.x + bound.width;
+      }
+      if (maxY === undefined || bound.y + bound.height > maxY) {
+        maxY = bound.y + bound.height;
+      }
     });
 
     return {
