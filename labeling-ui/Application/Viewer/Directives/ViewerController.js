@@ -315,8 +315,8 @@ class ViewerController {
      * @type {Debouncer}
      * @private
      */
-    this._debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
-      (shape, frameIndex) => this._onUpdatedShape(shape, frameIndex),
+    this._debouncedOnThingUpdate = this._debouncerService.multiplexDebounce(
+      (shape, frameIndex) => this._onThingShape(shape, frameIndex),
       (shape, frameIndex) => shape.labeledThingInFrame.ghost
         ? `${frameIndex}.${shape.id}`
         : `${shape.labeledThingInFrame.frameIndex}.${shape.id}`,
@@ -353,11 +353,11 @@ class ViewerController {
     this.paperThingShapes = [];
 
     /**
-     * A structure holding all LabeledThings for the currently active frame
+     * A structure holding all {@ling PaperGroupShape}s for the currently active frame
      *
-     * @type {Object<string|LabeledThing>|null}
+     * @type {Array.<PaperGroupShape|null>}
      */
-    this.labeledThings = null;
+    this.paperGroupShapes = [];
 
     /**
      * @type {Object}
@@ -494,7 +494,7 @@ class ViewerController {
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
     $scope.$watch('vm.framePosition.position', newPosition => {
-      this._debouncedOnShapeUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
+      this._debouncedOnThingUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
     $scope.$watch(
@@ -716,11 +716,10 @@ class ViewerController {
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
 
-    this.thingLayer.on('shape:create', shape => this._onShapeCreate(shape));
-
-    this.thingLayer.on('shape:update', shape => {
+    this.thingLayer.on('thing:create', shape => this._onThingCreate(shape));
+    this.thingLayer.on('thing:update', shape => {
       const frameIndex = this.framePosition.position;
-      this._debouncedOnShapeUpdate.debounce(shape, frameIndex);
+      this._debouncedOnThingUpdate.debounce(shape, frameIndex);
     });
 
     this._layerManager.addLayer('annotations', this.thingLayer);
@@ -1048,7 +1047,7 @@ class ViewerController {
    * @param {Integer} frameIndex
    * @private
    */
-  _onUpdatedShape(shape, frameIndex) {
+  _onThingShape(shape, frameIndex) {
     const labeledThingInFrame = shape.labeledThingInFrame;
     const labeledThing = labeledThingInFrame.labeledThing;
 
@@ -1101,13 +1100,19 @@ class ViewerController {
    * Create a new {@link LabeledThingInFrame} with a corresponding {@link LabeledThing} and store both
    * {@link LabeledObject}s to the backend
    *
+   * @param {PaperThingShape} paperShape
    * @returns {AbortablePromise.<LabeledThingInFrame>}
    * @private
    */
-  _onShapeCreate(shape) {
+  _onThingCreate(paperShape) {
     this._$rootScope.$emit('shape:add:before');
-    const newLabeledThingInFrame = shape.labeledThingInFrame;
+    const newLabeledThingInFrame = paperShape.labeledThingInFrame;
     const newLabeledThing = newLabeledThingInFrame.labeledThing;
+
+    // Ensure the parent/child structure is intact
+    if (newLabeledThingInFrame.shapes.length === 0) {
+      newLabeledThingInFrame.shapes.push(paperShape.toJSON());
+    }
 
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
@@ -1131,8 +1136,11 @@ class ViewerController {
         );
       })
       .then(() => {
-        shape.publish();
-        this._$rootScope.$emit('shape:add:after', shape);
+        this._$rootScope.$emit('shape:add:after', paperShape);
+      });
+
+    this.bookmarkedFrameIndex = this.framePosition.position;
+  }
       });
 
     this.bookmarkedFrameIndex = this.framePosition.position;
