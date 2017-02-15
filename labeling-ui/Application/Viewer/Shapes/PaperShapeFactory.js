@@ -96,7 +96,7 @@ class PaperShapeFactory {
    * @param {Video} video
    * @returns {PaperShape}
    */
-  createPaperShape(labeledThingInFrame, shape, video = null) {
+  createPaperThingShape(labeledThingInFrame, shape, video = null) {
     const color = this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor);
     let result;
 
@@ -112,9 +112,6 @@ class PaperShapeFactory {
         break;
       case 'polygon':
         result = this._createPolygon(labeledThingInFrame, shape, color);
-        break;
-      case 'group-rectangle':
-        result = this._createGroupRectangle(labeledThingInFrame, shape, color);
         break;
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);

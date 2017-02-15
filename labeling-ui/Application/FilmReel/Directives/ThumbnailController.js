@@ -286,7 +286,7 @@ class ThumbnailController {
       const viewportScaleX = scope.view.viewSize.width / this.labeledThingViewport.width;
 
       this.labeledThingInFrame.shapes.forEach(
-        shape => this._paperShapeFactory.createPaperShape(this.labeledThingInFrame, shape, this.video)
+        shape => this._paperShapeFactory.createPaperThingShape(this.labeledThingInFrame, shape, this.video)
       );
 
       this._thingLayer.scale(viewportScaleX, new scope.Point(0, 0));
