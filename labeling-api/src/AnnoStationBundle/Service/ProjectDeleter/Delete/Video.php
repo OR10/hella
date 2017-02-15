@@ -29,16 +29,23 @@ class Video
     private $videoCdnService;
 
     /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
+
+    /**
      * Video constructor.
      *
      * @param Facade\Video           $videoFacade
      * @param Facade\CalibrationData $calibrationDataFacade
+     * @param Facade\LabelingTask    $labelingTaskFacade
      * @param Service\FrameCdn       $frameCdnService
      * @param Service\VideoCdn       $videoCdnService
      */
     public function __construct(
         Facade\Video $videoFacade,
         Facade\CalibrationData $calibrationDataFacade,
+        Facade\LabelingTask $labelingTaskFacade,
         Service\FrameCdn $frameCdnService,
         Service\VideoCdn $videoCdnService
     ) {
@@ -46,6 +53,7 @@ class Video
         $this->calibrationDataFacade = $calibrationDataFacade;
         $this->frameCdnService       = $frameCdnService;
         $this->videoCdnService       = $videoCdnService;
+        $this->labelingTaskFacade = $labelingTaskFacade;
     }
 
     /**
@@ -56,6 +64,9 @@ class Video
         $videos = $this->videoFacade->findAllForTasksIndexedById([$labelingTask]);
         /** @var Model\Video $video */
         foreach ($videos as $video) {
+            if (count($this->labelingTaskFacade->findByVideoIds([$video->getId()])) > 1) {
+                continue;
+            }
             $this->frameCdnService->deleteVideoDirectory($video);
             $this->videoCdnService->deleteVideoDirectory($video);
             $calibrationData = $this->calibrationDataFacade->findById($video->getCalibrationId());
