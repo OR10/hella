@@ -571,35 +571,29 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   /**
-   * Draw a given {@link Shape} to the Layer
-   *
-   * The drawn Paper Shape will be returned
-   *
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Shape} shape
+   * @param {PaperShape} paperShape
    * @param {boolean} selected
    * @param {boolean?} update
    * @returns {paper.Shape}
    * @private
    */
-  _addShape(labeledThingInFrame, shape, selected = false, update = true) {
-    return this._context.withScope(() => {
-      const paperShape = this._paperShapeFactory.createPaperShape(labeledThingInFrame, shape, this._$scope.vm.video);
+  _updateSelectedShapeAndView(paperShape, selected = false, update = true) {
+    if (selected) {
+      this._$scope.vm.selectedPaperShape = paperShape;
+    }
 
-      if (selected) {
-        this._$scope.vm.selectedPaperShape = paperShape;
-      }
+    if (update) {
+      this._context.withScope(scope => {
+        scope.view.update();
+      });
+    }
 
-      if (update) {
-        this._context.withScope(scope => {
-          scope.view.update();
-        });
-      }
-
-      return paperShape;
-    });
+    return paperShape;
   }
 
+  /**
+   * Update the scopes view
+   */
   update() {
     this._context.withScope(scope => {
       scope.view.update();
