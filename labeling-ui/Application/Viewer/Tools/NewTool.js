@@ -259,6 +259,7 @@ class Tool {
    */
   _invoke(toolActionStruct) {
     this._logger.groupStartOpened('tool:invocation', `Invocation ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, toolActionStruct);
+    this._notifyScope('invoked', toolActionStruct);
 
     this._dragEventCount = 0;
 
@@ -273,6 +274,15 @@ class Tool {
     this._deferred = this._$q.defer();
 
     return this._deferred.promise;
+  }
+
+  /**
+   * Emits an event on the rootScope named after the given action, passing the current tool and the given data.
+   *
+   * @protected
+   */
+  _notifyScope(action, data) {
+    this._$rootScope.$emit(`tool:${action}`, this, data);
   }
 
   /**
@@ -291,6 +301,7 @@ class Tool {
   _reject(reason) {
     this._logger.log('tool:invocation', `Rejected ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, reason);
     this._logger.groupEnd('tool:invocation');
+    this._notifyScope('abort', reason);
 
     this._disableInternalPaperTool();
     if (this._deferred !== null) {
@@ -309,6 +320,7 @@ class Tool {
   _complete(result) {
     this._logger.log('tool:invocation', `Resolved ${this.getToolName()} (${this.getActionIdentifiers().join(', ')})`, result);
     this._logger.groupEnd('tool:invocation');
+    this._notifyScope('abort', result);
 
     this._disableInternalPaperTool();
     this._deferred.resolve(result);
