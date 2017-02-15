@@ -78,5 +78,9 @@
             <argument type="service" id="fos_user.user_manager" />
         </service>
 
+
+        <service id="annostation.services.uuid_generator" class="AppBundle\Service\UuidGenerator">
+        </service>
+
     </services>
 </container>
