@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output;
 use Symfony\Component\Console\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class RemoveLabelingTask extends Base
+class RemoveLabelingTasks extends Base
 {
     /**
      * @var Facade\LabelingTask
@@ -50,7 +50,7 @@ class RemoveLabelingTask extends Base
      * @var Delete\TaskTimers
      */
     private $taskTimerDeleter;
-    
+
     /**
      * @var Delete\Video
      */
@@ -94,24 +94,13 @@ class RemoveLabelingTask extends Base
 
     protected function configure()
     {
-        $this->setName('annostation:RemoveLabelingTask');
-        $this->addArgument('taskId', null, 'Labeling Task id to delete');
+        $this->setName('annostation:RemoveLabelingTasks');
+        $this->addArgument('taskIds', null, 'Labeling Task ids to delete (comma separated)');
     }
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
     {
-        $io      = new SymfonyStyle($input, $output);
-        $taskId  = $input->getArgument('taskId');
-        $task    = $this->labelingTaskFacade->find($taskId);
-        if ($task === null) {
-            $io->error(sprintf('No task found for %s', $taskId));
-
-            return;
-        }
-
-        $project = $this->projectFacade->find($task->getProjectId());
-        $video   = $this->videoFacade->find($task->getVideoId());
-
+        $io = new SymfonyStyle($input, $output);
         $io->caution(
             array(
                 'This will delete all LabelingTask data like:',
@@ -119,31 +108,43 @@ class RemoveLabelingTask extends Base
             )
         );
 
-        $helper   = $this->getHelper('question');
-        $question = new Question\ConfirmationQuestion(
-            sprintf(
-                'Are you sure to delete Task "<fg=yellow;options=bold>%s</>" - "<fg=yellow;options=bold>%s</>" from Project "<fg=yellow;options=bold>%s</>"?',
-                $video->getName(),
-                $task->getLabelInstruction(),
-                $project->getName()
-            ), false
-        );
+        foreach (explode(',', $input->getArgument('taskIds')) as $taskId) {
+            $task = $this->labelingTaskFacade->find($taskId);
+            if ($task === null) {
+                $io->error(sprintf('No task found for %s', $taskId));
 
-        if (!$helper->ask($input, $output, $question)) {
-            return;
+                continue;
+            }
+
+            $project = $this->projectFacade->find($task->getProjectId());
+            $video   = $this->videoFacade->find($task->getVideoId());
+
+            $helper   = $this->getHelper('question');
+            $question = new Question\ConfirmationQuestion(
+                sprintf(
+                    'Are you sure to delete Task "<fg=yellow;options=bold>%s</>" - "<fg=yellow;options=bold>%s</>" from Project "<fg=yellow;options=bold>%s</>"?',
+                    $video->getName(),
+                    $task->getLabelInstruction(),
+                    $project->getName()
+                ), false
+            );
+
+            if (!$helper->ask($input, $output, $question)) {
+                return;
+            }
+
+            $this->labeledFramesDeleter->delete($task);
+            $io->success('✓ Deleted LabeledFrames');
+            $this->labeledThingsDeleter->delete($task);
+            $io->success('✓ Deleted LabeledThings');
+            $this->labeledThingInFrameDeleter->delete($task);
+            $io->success('✓ Deleted LabeledThingInFrames');
+            $this->taskTimerDeleter->delete($task);
+            $io->success('✓ Deleted TaskTimers');
+            $this->videoDeleter->delete($task);
+            $io->success('✓ Deleted Video (if last one)');
+            $this->labelingTaskFacade->delete($task);
+            $io->success('✓ Deleted LabelingTask itself');
         }
-
-        $this->labeledFramesDeleter->delete($task);
-        $io->success('✓ Deleted LabeledFrames');
-        $this->labeledThingsDeleter->delete($task);
-        $io->success('✓ Deleted LabeledThings');
-        $this->labeledThingInFrameDeleter->delete($task);
-        $io->success('✓ Deleted LabeledThingInFrames');
-        $this->taskTimerDeleter->delete($task);
-        $io->success('✓ Deleted TaskTimers');
-        $this->videoDeleter->delete($task);
-        $io->success('✓ Deleted Video (if last one)');
-        $this->labelingTaskFacade->delete($task);
-        $io->success('✓ Deleted LabelingTask itself');
     }
 }
