@@ -44,8 +44,25 @@ class GroupCreationTool extends CreationTool {
     this._rectangleCreationTool.onMouseDown(event);
   }
 
+
   /**
-   * @param toolActionStruct
+   * @returns {string}
+   */
+  getToolName() {
+    return 'group-rectangle';
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  getActionIdentifiers() {
+    return [
+      'creation',
+    ];
+  }
+
+  /**
+   * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
    */
   invokeShapeCreation(toolActionStruct) {
@@ -77,7 +94,6 @@ class GroupCreationTool extends CreationTool {
   invokeDefaultShapeCreation() {
     this._reject(new Error('Cannot create default shape for groups'));
   }
-
 }
 
 GroupCreationTool.$inject = [
