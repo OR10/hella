@@ -177,6 +177,12 @@ class MultiTool extends Tool {
 
       // Hit nothing
       if (!hitResult) {
+        // Deselction if there was a selection
+        if (this._toolActionStruct.selectedPaperShape !== null) {
+          this._complete({actionIdentifier: 'selection', paperShape: null});
+          return;
+        }
+        // Invoke shape creation
         this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
         this._activeTool.onMouseDown(event);
         return;
@@ -184,9 +190,15 @@ class MultiTool extends Tool {
 
       // Hit something
       const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-      const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
+
+      // If selected paperShape changed select the new one
+      if (this._toolActionStruct.selectedPaperShape !== hitShape) {
+        this._complete({actionIdentifier: 'selection', paperShape: hitShape});
+        return;
+      }
 
       // Invoke mutation tool
+      const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
       this._invokeToolDelegation(this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier), actionIdentifier, hitShape, hitHandle);
       this._activeTool.onMouseDown(event);
     });

@@ -113,6 +113,17 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._selectedLabelStructureThing = null;
 
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._mouseIsPressed = false;
+
+    /**
+     * @type {{x: Number, y: Number}|null}
+     * @private
+     */
+    this._lastMouseDownEvent = null;
 
 
     $scope.$watchCollection('vm.paperThingShapes', (newPaperThingShapes, oldPaperThingShapes) => {
@@ -180,6 +191,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
   dispatchDOMEvent(event) {
     this._context.withScope(() => {
       if (event.type === 'mouseleave') {
+        this._mouseIsPressed = false;
+        this._lastMouseDownEvent = null;
+
         this._abortActiveTool();
       } else if (event.type === 'mouseenter') {
         this._invokeActiveTool();
@@ -315,11 +329,34 @@ class ThingLayer extends PanAndZoomPaperLayer {
           const labeledThingInFrame = paperShape.labeledThingInFrame;
           labeledThingInFrame.shapes.push(paperShape.toJSON());
           this._onCreateShape(paperShape);
+        } else if (actionIdentifier === 'selection') {
+          this._$scope.vm.selectedPaperShape = paperShape;
         } else {
           this.emit('shape:update', paperShape);
         }
 
-        this._invokeActiveTool();
+
+        // Wait until the angular $digest is complete, before dispatching the event.
+        // This is needed for the selectedLabeledStructureThing to settle.
+        this._$timeout(() => {
+          this._invokeActiveTool();
+
+          this._context.withScope(scope => {
+            if (actionIdentifier === 'selection' && this._mouseIsPressed) {
+              const {offsetX, offsetY} = this._lastMouseDownEvent;
+              const projectPoint = scope.view.viewToProject(new paper.Point(offsetX, offsetY));
+              const paperEvent = new paper.MouseEvent(
+                'mousedown',
+                this._lastMouseDownEvent,
+                projectPoint,
+                this,
+                0
+              );
+
+              this._activeTool.onMouseDown(paperEvent);
+            }
+          });
+        });
       })
       .catch(reason => {
         switch (true) {
@@ -375,54 +412,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._logger.groupEnd('thinglayer:hiddenlabels');
 
       scope.view.update();
-    });
-  }
-
-  _onMouseDown(event) {
-    if (this._activeTool !== this._multiTool) {
-      return;
-    }
-
-    this._context.withScope(scope => {
-      const projectPoint = scope.view.viewToProject(new paper.Point(event.offsetX, event.offsetY));
-
-      const hitResult = scope.project.hitTest(projectPoint, {
-        fill: true,
-        bounds: false,
-        tolerance: 8,
-      });
-
-      if (hitResult) {
-        const [hitShape] = hitResolver.resolve(hitResult.item);
-        if (hitShape.shouldBeSelected(hitResult)) {
-          this._logger.log('thinglayer:selection', 'HitTest positive. Selecting: %o', hitShape);
-          this._$scope.vm.selectedPaperShape = hitShape;
-        } else {
-          this._logger.log('thinglayer:selection', 'Shape decided not to be selected. Deselecting');
-          this._$scope.vm.selectedPaperShape = null;
-        }
-      } else {
-        this._logger.log('thinglayer:selection', 'Nothing hit. Deselecting');
-        this._$scope.vm.selectedPaperShape = null;
-      }
-
-      this._abortActiveTool();
-
-      // Wait until the angular $digest is complete, before dispatching the event.
-      // This is needed for the selectedLabeledStructureThing to settle.
-      this._$timeout(() => {
-        // Create paper MouseEvent
-        const paperEvent = new paper.MouseEvent(
-          'mousedown',
-          event,
-          projectPoint,
-          this,
-          0
-        );
-
-        this._invokeMultiTool();
-        this._multiTool.onMouseDown(paperEvent);
-      });
     });
   }
 
@@ -630,12 +619,27 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
   }
 
+  _onMouseDown(event) {
+    this._mouseIsPressed = true;
+    this._lastMouseDownEvent = event;
+  }
+
+  _onMouseUp() {
+    this._mouseIsPressed = false;
+    this._lastMouseDownEvent = null;
+  }
+
   attachToDom(element) {
     // The event registration needs to be done before paper is initialized in the base class. This is needed for the
     // Layer to handle events, before tools are informed about them.
     angular.element(element).on(
       'mousedown',
       event => this._onMouseDown(event)
+    );
+
+    angular.element(element).on(
+      'mouseup',
+      event => this._onMouseUp(event)
     );
 
     super.attachToDom(element);
