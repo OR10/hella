@@ -1,3 +1,5 @@
+import clone from 'lodash.clone';
+
 class LabeledThingGroup {
   /**
    *
@@ -13,6 +15,11 @@ class LabeledThingGroup {
      * @type {string}
      */
     this.type = labeledThingGroupDocument.groupType;
+
+    /**
+     * @type {Array.<string>|null}
+     */
+    this.groupIds = labeledThingGroupDocument.groupIds;
   }
 
   /**
@@ -22,6 +29,7 @@ class LabeledThingGroup {
     return {
       id: this.id,
       groupType: this.type,
+      groupIds: clone(this.groupIds),
     };
   }
 }
