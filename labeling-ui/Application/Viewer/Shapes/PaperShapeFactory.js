@@ -17,6 +17,10 @@ class PaperShapeFactory {
    * @param {EntityColorService} entityColorService
    */
   constructor(entityColorService) {
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
     this._entityColorService = entityColorService;
   }
 
