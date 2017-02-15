@@ -15,13 +15,20 @@ import DepthBufferProjection2d from '../../ThirdDimension/Support/Projection2d/D
 class PaperShapeFactory {
   /**
    * @param {EntityColorService} entityColorService
+   * @param {LabeledThingGroupService} labeledThingGroupService
    */
-  constructor(entityColorService) {
+  constructor(entityColorService, labeledThingGroupService) {
     /**
      * @type {EntityColorService}
      * @private
      */
     this._entityColorService = entityColorService;
+
+    /**
+     * @type {LabeledThingGroupService}
+     * @private
+     */
+    this._labeledThingGroupService = labeledThingGroupService;
   }
 
   /**
@@ -125,6 +132,9 @@ class PaperShapeFactory {
   }
 }
 
-PaperShapeFactory.$inject = ['entityColorService'];
+PaperShapeFactory.$inject = [
+  'entityColorService',
+  'labeledThingGroupService',
+];
 
 export default PaperShapeFactory;
