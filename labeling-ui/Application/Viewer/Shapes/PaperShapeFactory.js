@@ -46,17 +46,17 @@ class PaperShapeFactory {
   }
 
   /**
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Object} shape
+   * @param {LabeledThingInFrame} labeledThingGroupInFrame
+   * @param {Object} bounds
    * @param {String} color
    * @returns {PaperGroupRectangle}
    * @private
    */
-  _createGroupRectangle(labeledThingInFrame, shape, color) {
-    const topLeft = new paper.Point(shape.topLeft.x, shape.topLeft.y);
-    const bottomRight = new paper.Point(shape.bottomRight.x, shape.bottomRight.y);
+  _createGroupRectangle(labeledThingGroupInFrame, bounds, color) {
+    const topLeft = new paper.Point(bounds.topLeft.x, bounds.topLeft.y);
+    const bottomRight = new paper.Point(bounds.bottomRight.x, bounds.bottomRight.y);
 
-    return new PaperGroupRectangle(labeledThingInFrame, shape.id, topLeft, bottomRight, color);
+    return new PaperGroupRectangle(labeledThingGroupInFrame, labeledThingGroupInFrame.id, topLeft, bottomRight, color);
   }
 
   /**
