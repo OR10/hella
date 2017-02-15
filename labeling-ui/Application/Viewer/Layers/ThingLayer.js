@@ -280,11 +280,19 @@ class ThingLayer extends PanAndZoomPaperLayer {
     );
     tool.invokeDefaultShapeCreation(creationToolStruct)
       .then(paperShape => {
-        // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
-        // Ensure the parent/child structure is intact
-        const labeledThingInFrame = paperShape.labeledThingInFrame;
-        labeledThingInFrame.shapes.push(paperShape.toJSON());
-        this._onCreateShape(paperShape);
+        switch (true) {
+          case paperShape instanceof PaperThingShape:
+            // Ensure the parent/child structure is intact
+            // const labeledThingInFrame = paperShape.labeledThingInFrame;
+            // labeledThingInFrame.shapes.push(paperShape.toJSON());
+
+            this._$scope.vm.paperThingShapes.push(paperShape);
+            this._$scope.vm.selectedPaperShape = paperShape;
+            this.emit('thing:create', paperShape);
+            break;
+          default:
+            throw new Error(`Can not handle shape creation of type: ${paperShape}`);
+        }
       })
       .catch(reason => {
         this._logger.warn('tool:error', 'Default creation Tool aborted', reason);
@@ -332,15 +340,30 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._activeTool.invoke(struct)
       .then(({paperShape, actionIdentifier}) => {
         if (actionIdentifier === 'creation') {
-          // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
-          // Ensure the parent/child structure is intact
-          const labeledThingInFrame = paperShape.labeledThingInFrame;
-          labeledThingInFrame.shapes.push(paperShape.toJSON());
-          this._onCreateShape(paperShape);
+          switch (true) {
+            case paperShape instanceof PaperThingShape:
+              // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
+              // Ensure the parent/child structure is intact
+              // const labeledThingInFrame = paperShape.labeledThingInFrame;
+              // labeledThingInFrame.shapes.push(paperShape.toJSON());
+
+              this._$scope.vm.paperThingShapes.push(paperShape);
+              this._$scope.vm.selectedPaperShape = paperShape;
+              this.emit('thing:create', paperShape);
+              break;
+            default:
+              throw new Error(`Can not handle shape creation of type: ${paperShape}`);
+          }
         } else if (actionIdentifier === 'selection') {
           this._$scope.vm.selectedPaperShape = paperShape;
         } else {
-          this.emit('shape:update', paperShape);
+          switch (true) {
+            case paperShape instanceof PaperThingShape:
+              this.emit('thing:update', paperShape);
+              break;
+            default:
+              throw new Error(`Can not handle shape update of type: ${paperShape}`);
+          }
         }
 
 
