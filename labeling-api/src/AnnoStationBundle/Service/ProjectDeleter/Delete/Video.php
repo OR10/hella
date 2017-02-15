@@ -69,8 +69,12 @@ class Video
             }
             $this->frameCdnService->deleteVideoDirectory($video);
             $this->videoCdnService->deleteVideoDirectory($video);
-            $calibrationData = $this->calibrationDataFacade->findById($video->getCalibrationId());
-            $this->calibrationDataFacade->delete($calibrationData);
+            if ($video->getCalibrationId() !== null) {
+                $calibrationData = $this->calibrationDataFacade->findById($video->getCalibrationId());
+                if ($calibrationData !== null) {
+                    $this->calibrationDataFacade->delete($calibrationData);
+                }
+            }
             $this->videoFacade->delete($video);
         }
     }
