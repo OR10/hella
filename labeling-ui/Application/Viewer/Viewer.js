@@ -7,6 +7,7 @@ import ToolService from './Services/ToolService';
 
 import ViewerMouseCursorService from './Services/ViewerMouseCursorService';
 import LabeledThingGroupService from './Services/LabeledThingGroupService';
+import HierarchyCreationService from './Services/HierarchyCreationService';
 
 import DrawingContextServiceProvider from './Providers/DrawingContextServiceProvider';
 
@@ -25,6 +26,7 @@ export default class Viewer extends Module {
     this.module.service('toolService', ToolService);
     this.module.service('viewerMouseCursorService', ViewerMouseCursorService);
     this.module.service('labeledThingGroupService', LabeledThingGroupService);
+    this.module.service('hierarchyCreationService', HierarchyCreationService);
 
     this.module.provider('drawingContextService', DrawingContextServiceProvider);
   }
