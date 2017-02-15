@@ -61,7 +61,10 @@ class LabeledThingGroupGateway {
     return this._bufferedHttp.get(url, undefined, 'LabeledThingGroup')
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result.map(ltgifDocument => {
+          return response.data.result.labeledThingGroupsInFrame.map(ltgifDocument => {
+            const labeledThingGroupDocument = response.data.result.labeledThingGroups.find(ltg => ltg.id === ltgifDocument.labeledThingGroupId);
+            ltgifDocument.labeledThingGroup = new LabeledThingGroup(labeledThingGroupDocument);
+
             return new LabeledThingGroupInFrame(ltgifDocument);
           });
         }
