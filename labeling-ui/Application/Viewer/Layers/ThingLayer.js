@@ -24,7 +24,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {int} height
    * @param {$rootScope.Scope} $scope
    * @param {$injector} $injector
-   * @param {DrawingContextService} drawingContextService
+   * @param {DrawingContext} drawingContext
    * @param {ToolService} toolService
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {LoggerService} logger
@@ -36,14 +36,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
               height,
               $scope,
               $injector,
-              drawingContextService,
+              drawingContext,
               toolService,
               paperShapeFactory,
               logger,
               $timeout,
               framePosition,
               viewerMouseCursorService) {
-    super(width, height, $scope, drawingContextService);
+    super(width, height, $scope, drawingContext);
 
     /**
      * @type {ToolService}
