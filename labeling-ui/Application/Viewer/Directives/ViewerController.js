@@ -62,6 +62,7 @@ class ViewerController {
    * @param {ModalService} modalService
    * @param {$state} $state
    * @param {ViewerMouseCursorService} viewerMouseCursorService
+   * @param {LabeledThingGroupService} labeledThingGroupService
    */
   constructor($scope,
               $rootScope,
@@ -93,7 +94,8 @@ class ViewerController {
               frameIndexService,
               modalService,
               $state,
-              viewerMouseCursorService) {
+              viewerMouseCursorService,
+              labeledThingGroupService) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -282,6 +284,12 @@ class ViewerController {
      * @private
      */
     this._$state = $state;
+
+    /**
+     * @type {LabeledThingGroupService}
+     * @private
+     */
+    this._labeledThingGroupService = labeledThingGroupService;
 
     /**
      * @type {LayerManager}
@@ -711,7 +719,8 @@ class ViewerController {
       this._logger,
       this._$timeout,
       this.framePosition,
-      this._viewerMouseCursorService
+      this._viewerMouseCursorService,
+      this._labeledThingGroupService
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1388,6 +1397,7 @@ ViewerController.$inject = [
   'modalService',
   '$state',
   'viewerMouseCursorService',
+  'labeledThingGroupService',
 ];
 
 export default ViewerController;

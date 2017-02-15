@@ -31,6 +31,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {$timeout} $timeout
    * @param {FramePosition} framePosition
    * @param {ViewerMouseCursorService} viewerMouseCursorService
+   * @param {LabeledThingGroupService} labeledThingGroupService
    */
   constructor(width,
               height,
@@ -42,7 +43,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
               logger,
               $timeout,
               framePosition,
-              viewerMouseCursorService) {
+              viewerMouseCursorService,
+              labeledThingGroupService) {
     super(width, height, $scope, drawingContext);
 
     /**
@@ -80,6 +82,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._viewerMouseCursorService = viewerMouseCursorService;
+
+    /**
+     * @type {LabeledThingGroupService}
+     * @private
+     */
+    this._labeledThingGroupService = labeledThingGroupService;
 
     /**
      * @type {Tool|null}
