@@ -151,7 +151,7 @@ class ProjectListController {
    * @param {string} projectId
    * @param {string} projectName
    */
-  deleteProject(projectId, projectName) {
+  setProjectStatusToDeleted(projectId, projectName) {
     this._modalService.show(
       new this._InputDialog(
         {
@@ -162,10 +162,30 @@ class ProjectListController {
         },
         input => {
           this.loadingInProgress = true;
-          this._projectGateway.deleteProject(projectId, input)
+          this._projectGateway.setProjectStatusToDeleted(projectId, input)
             .then(() => this._triggerReloadAll());
         }
       )
+    );
+  }
+
+  /**
+   * @param {string} projectId
+   * @param {string} projectName
+   */
+  deleteProject(projectId, projectName) {
+    this._modalService.info(
+      {
+        title: 'Delete this Project.',
+        headline: `You are about to delete the "${projectName}" project. Proceed?`,
+        message: 'Warning: All data related to this project will be deleted and they are no longer available. Note that this is an irreversible operation!',
+        confirmButtonText: 'Continue',
+      },
+      () => {
+        this.loadingInProgress = true;
+        this._projectGateway.deleteProject(projectId)
+          .then(() => this._triggerReloadAll());
+      }
     );
   }
 

@@ -57,6 +57,7 @@ class ProjectCount extends Controller\Base
             Model\Project::STATUS_TODO,
             Model\Project::STATUS_IN_PROGRESS,
             Model\Project::STATUS_DONE,
+            Model\Project::STATUS_DELETED,
         ];
 
         $sum = array();
