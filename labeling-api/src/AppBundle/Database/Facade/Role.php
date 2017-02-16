@@ -45,4 +45,24 @@ class Role
         return $role;
     }
 
+    /**
+     * @param string $projectId
+     * @param string $roleName
+     */
+    public function getPermissionsForRole(string $projectId, string $roleName)
+    {
+        $roles = $this->documentManager->createQuery('annostation_roles', 'roles_by_project_and_name')
+            ->onlyDocs(true)
+            ->setStartKey([$projectId, $roleName])
+            ->setEndKey([$projectId, $roleName])
+            ->execute()
+            ->toArray();
+
+        if (count($roles) != 1) {
+            throw new \InvalidArgumentException(sprintf("unknown role %s in project %s", $roleName, $projectId));
+        }
+
+        return $roles[0]->getPermissions();
+    }
+
 }
