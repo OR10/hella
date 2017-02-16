@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Voter\AccessCheck;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Voter;
+use AnnoStationBundle\Service\Authentication;
 
 class LabelerIsAssignedToProject extends Voter\AccessCheck
 {
@@ -12,10 +13,17 @@ class LabelerIsAssignedToProject extends Voter\AccessCheck
      */
     private $labelingGroupFacade;
 
+    /**
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
+
     public function __construct(
+        Authentication\UserPermissions $userPermissions,
         Facade\LabelingGroup $labelingGroupFacade
     ) {
         $this->labelingGroupFacade = $labelingGroupFacade;
+        $this->userPermissions     = $userPermissions;
     }
 
     /**
@@ -30,7 +38,7 @@ class LabelerIsAssignedToProject extends Voter\AccessCheck
             throw new \RuntimeException('Project AccessCheck got non Project as object.');
         }
 
-        if ($object->isDeleted() && !$user->hasRole(Model\User::ROLE_ADMIN)) {
+        if ($object->isDeleted() && !$this->userPermissions->hasPermission('canViewDeletedProjects')) {
             return false;
         }
 
