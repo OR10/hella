@@ -5,6 +5,10 @@ use AppBundle\Model as Model;
 use AppBundle\Service\UuidGenerator;
 use Doctrine\ODM\CouchDB\DocumentManager;
 
+/**
+ * Class Role
+ * @package AppBundle\Database\Facade
+ */
 class Role
 {
     /**
