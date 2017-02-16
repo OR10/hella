@@ -12,22 +12,29 @@ class Role
 {
 
     /**
+     * @var string
+     *
      * @CouchDB\Id(strategy="ASSIGNED")
      */
     private $id;
 
     /**
+     * @var string
+     *
      * @CouchDB\Field(type="string")
      */
     private $projectId;
 
     /**
+     * @var string
+     *
      * @CouchDB\Field(type="string")
      */
     private $name;
 
     /**
      * @var string[]
+     *
      * @CouchDB\Field(type="mixed")
      */
     private $permissions;
@@ -35,12 +42,12 @@ class Role
     /**
      * Role constructor.
      *
-     * @param string $id
-     * @param string $projectId
-     * @param string $name
-     * @param array  $permissions
+     * @param string   $id
+     * @param string   $projectId
+     * @param string   $name
+     * @param string[] $permissions
      */
-    public function __construct(string $id, string $projectId, string $name, array $permissions)
+    public function __construct(string $id, string $projectId, string $name, array $permissions = [])
     {
         $this->id          = $id;
         $this->projectId   = $projectId;
@@ -49,7 +56,7 @@ class Role
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getProjectId()
     {
@@ -57,7 +64,7 @@ class Role
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -65,7 +72,7 @@ class Role
     }
 
     /**
-     * @return \string[]
+     * @return string[]
      */
     public function getPermissions()
     {

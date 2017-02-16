@@ -118,11 +118,11 @@ class User extends BaseUser
 
     /**
      * @param string $projectId
-     * @param        $role
+     * @param string $role
      */
     public function assignRole(string $projectId, string $role)
     {
-        if ($this->rolesByProject == null) {
+        if ($this->rolesByProject === null) {
             $this->rolesByProject = [];
         }
 
