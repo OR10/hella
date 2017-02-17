@@ -6,12 +6,15 @@ import RectangleKeyboardTool from '../Tools/Rectangle/RectangleKeyboardTool';
 import PedestrianMoveTool from '../Tools/Pedestrian/PedestrianMoveTool';
 import PedestrianScaleTool from '../Tools/Pedestrian/PedestrianScaleTool';
 import PedestrianDrawingTool from '../Tools/Pedestrian/PedestrianDrawingTool';
+import PedestrianKeyboardTool from '../Tools/Pedestrian/PedestrianKeyboardTool';
 import CuboidDrawingTool from '../Tools/Cuboid/CuboidDrawingTool';
 import CuboidScaleTool from '../Tools/Cuboid/CuboidScaleTool';
 import CuboidMoveTool from '../Tools/Cuboid/CuboidMoveTool';
+import CuboidKeyboardTool from '../Tools/Cuboid/CuboidKeyboardTool';
 import PolygonDrawingTool from '../Tools/Polygon/PolygonDrawingTool';
 import PolygonMoveTool from '../Tools/Polygon/PolygonMoveTool';
 import PolygonScaleTool from '../Tools/Polygon/PolygonScaleTool';
+import PolygonKeyboardTool from '../Tools/Polygon/PolygonKeyboardTool';
 import NoOperationPaperTool from '../Tools/NoOperationPaperTool';
 
 class ToolService {
@@ -65,12 +68,15 @@ class ToolService {
       PedestrianMoveTool,
       PedestrianScaleTool,
       PedestrianDrawingTool,
+      PedestrianKeyboardTool,
       CuboidMoveTool,
       CuboidScaleTool,
       CuboidDrawingTool,
+      CuboidKeyboardTool,
       PolygonDrawingTool,
       PolygonScaleTool,
       PolygonMoveTool,
+      PolygonKeyboardTool,
       NoOperationPaperTool,
     ];
   }
