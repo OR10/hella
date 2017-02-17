@@ -75,7 +75,7 @@ class HierarchyCreationService {
     const newLabeledThingGroup = new LabeledThingGroup({
       id: this._entityIdService.getUniqueId(),
       lineColor: this._entityColorService.getColorId(),
-      type: creationToolActionStruct.requirementsThingOrGroupId,
+      groupType: creationToolActionStruct.requirementsThingOrGroupId,
       groupIds: [],
     });
 
