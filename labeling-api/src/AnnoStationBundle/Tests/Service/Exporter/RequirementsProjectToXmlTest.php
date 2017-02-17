@@ -26,13 +26,14 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $clientUser           = $this->createClientUser();
         $date                 = new \DateTime('2017-01-20 16:00:00', new \DateTimeZone('UTC'));
         $xmlTaskConfiguration = file_get_contents(__DIR__ . '/TaskConfiguration/Requirements.xml');
-        $project              = $this->createProject('project-id-1', $clientUser, $date);
-        $video                = $this->createVideo('video-id-1');
+        $project              = $this->createProject('project-id-1', $this->createOrganisation(), $clientUser, $date);
+        $video                = $this->createVideo($this->createOrganisation(), 'video-id-1');
         $task                 = $this->createTask(
             $project,
             $video,
             $this->createTaskConfiguration(
                 $xmlTaskConfiguration,
+                $this->createOrganisation(),
                 $clientUser,
                 'testconfig',
                 'testconfig.xml',

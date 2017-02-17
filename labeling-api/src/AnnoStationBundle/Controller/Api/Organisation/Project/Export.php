@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Controller\Api\Project;
+namespace AnnoStationBundle\Controller\Api\Organisation\Project;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
@@ -18,8 +18,8 @@ use AnnoStationBundle\Controller\Api\Project\Exception as ProjectException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
- * @Rest\Prefix("/api/project")
- * @Rest\Route(service="annostation.labeling_api.controller.api.project.export")
+ * @Rest\Prefix("/api/organisation")
+ * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.project.export")
  *
  * @CloseSession
  */
@@ -72,7 +72,7 @@ class Export extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{project}/export")
+     * @Rest\Get("/{organisation}/project/{project}/export")
      *
      * @CheckPermissions({"canExportProject"})
      *
@@ -95,7 +95,7 @@ class Export extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{project}/export/{exportId}")
+     * @Rest\Get("/{organisation}/project/{project}/export/{exportId}")
      *
      * @CheckPermissions({"canExportProject"})
      *
@@ -144,7 +144,7 @@ class Export extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{project}/export/csv")
+     * @Rest\Post("/{organisation}/project/{project}/export/csv")
      *
      * @CheckPermissions({"canExportProject"})
      *

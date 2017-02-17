@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Controller\Api\Project\Exception;
+namespace AnnoStationBundle\Controller\Api\Organisation\Project\Exception;
 
 use AppBundle\Exception;
 

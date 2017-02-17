@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests\Controller\Api\Task;
 
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
 use Symfony\Component\HttpFoundation;
@@ -267,6 +268,9 @@ class LabeledFrameTest extends Tests\WebTestCase
         $this->labelingTaskFacade  = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledFrameFacade  = $this->getAnnostationService('database.facade.labeled_frame');
         $this->labelingGroupFacade = $this->getAnnostationService('database.facade.labeling_group');
+        $organisationFacade        = $this->getAnnostationService('database.facade.organisation');
+
+        $organisation = $organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
@@ -274,11 +278,11 @@ class LabeledFrameTest extends Tests\WebTestCase
 
         $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$this->user->getId()]));
 
-        $this->project = Model\Project::create('test project', $this->user);
+        $this->project = Model\Project::create('test project', $organisation, $this->user);
         $this->project->setLabelingGroupId($labelingGroup->getId());
         $this->projectFacade->save($this->project);
 
-        $this->video = $this->videoFacade->save(Model\Video::create('foobar'));
+        $this->video = $this->videoFacade->save(Model\Video::create($organisation, 'foobar'));
 
         $task = Model\LabelingTask::create(
             $this->video,

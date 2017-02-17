@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Controller\Api\Project;
+namespace AnnoStationBundle\Controller\Api\Organisation\Project;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
@@ -16,8 +16,8 @@ use Symfony\Component\HttpKernel\Exception;
 use AnnoStationBundle\Response;
 
 /**
- * @Rest\Prefix("/api/project")
- * @Rest\Route(service="annostation.labeling_api.controller.api.project.attention")
+ * @Rest\Prefix("/api/organisation")
+ * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.project.attention")
  *
  * @CloseSession
  */
@@ -57,7 +57,7 @@ class Attention extends Controller\Base
 
     /**
      *
-     * @Rest\GET("/{project}/attentionTasks")
+     * @Rest\GET("/{organisation}/project/{project}/attentionTasks")
      *
      * @CheckPermissions({"canViewAttentionTasks"})
      *

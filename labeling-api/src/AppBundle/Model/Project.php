@@ -2,7 +2,9 @@
 
 namespace AppBundle\Model;
 
+use AnnoStationBundle\AnnoStationBundle;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 /**
  * @CouchDB\Document
@@ -128,23 +130,30 @@ class Project
     private $description;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    protected $organisationId;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
-     * @param string $name
+     * @param string                              $name
      *
-     * @param User   $user
-     * @param null   $creationDate
-     * @param null   $dueDate
-     * @param array  $labelingValidationProcesses
-     * @param int    $frameSkip
-     * @param int    $startFrameNumber
-     * @param int    $splitEach
-     * @param null   $description
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param User                                $user
+     * @param null                                $creationDate
+     * @param null                                $dueDate
+     * @param array                               $labelingValidationProcesses
+     * @param int                                 $frameSkip
+     * @param int                                 $startFrameNumber
+     * @param int                                 $splitEach
+     * @param null                                $description
      *
      * @return static
      */
     public static function create(
         $name,
+        AnnoStationBundleModel\Organisation $organisation,
         User $user = null,
         $creationDate = null,
         $dueDate = null,
@@ -156,6 +165,7 @@ class Project
     ) {
         return new static(
             $name,
+            $organisation,
             $user,
             $creationDate,
             $dueDate,
@@ -168,18 +178,20 @@ class Project
     }
 
     /**
-     * @param string $name
-     * @param User   $user
-     * @param null   $creationDate
-     * @param null   $dueDate
-     * @param array  $labelingValidationProcesses
-     * @param int    $frameSkip
-     * @param int    $startFrameNumber
-     * @param int    $splitEach
-     * @param null   $description
+     * @param string                              $name
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param User                                $user
+     * @param null                                $creationDate
+     * @param null                                $dueDate
+     * @param array                               $labelingValidationProcesses
+     * @param int                                 $frameSkip
+     * @param int                                 $startFrameNumber
+     * @param int                                 $splitEach
+     * @param null                                $description
      */
     public function __construct(
         $name,
+        AnnoStationBundleModel\Organisation $organisation,
         User $user = null,
         $creationDate = null,
         $dueDate = null,
@@ -198,6 +210,7 @@ class Project
         }
 
         $this->name                                  = (string) $name;
+        $this->organisationId                        = $organisation->getId();
         $this->creationDate                          = $creationDate;
         $this->dueDate                               = $dueDate;
         $this->labelingValidationProcesses           = $labelingValidationProcesses;

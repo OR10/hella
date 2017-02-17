@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model\TaskConfiguration;
 use AnnoStationBundle\Tests;
 use FOS\UserBundle\Util\UserManipulator;
@@ -69,6 +70,11 @@ class CouchDbTestCase extends Tests\WebTestCase
      * @var Facade\LabeledThingGroup
      */
     protected $labeledThingGroupFacade;
+
+    /**
+     * @var Facade\Organisation
+     */
+    protected $organisationFacade;
 
     /**
      * @param Model\Project           $project
@@ -150,9 +156,12 @@ class CouchDbTestCase extends Tests\WebTestCase
         return $user;
     }
 
-    protected function createVideo($name, Model\CalibrationData $calibrationData = null)
-    {
-        $video = Model\Video::create($name);
+    protected function createVideo(
+        AnnoStationBundleModel\Organisation $organisation,
+        $name,
+        Model\CalibrationData $calibrationData = null
+    ) {
+        $video = Model\Video::create($organisation, $name);
         if ($calibrationData !== null) {
             $video->setCalibrationId($calibrationData->getId());
         }
@@ -173,10 +182,22 @@ class CouchDbTestCase extends Tests\WebTestCase
         return $calibrationData;
     }
 
-    protected function createProject($name, Model\User $user = null, \DateTime $dateTime = null)
+    protected function createOrganisation($name = 'Test Organisation')
     {
+        $organisation = new AnnoStationBundleModel\Organisation($name);
+        $this->organisationFacade->save($organisation);
+
+        return $organisation;
+    }
+
+    protected function createProject(
+        $name,
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\User $user = null,
+        \DateTime $dateTime = null
+    ) {
         return $this->projectFacade->save(
-            Model\Project::create($name, $user, $dateTime)
+            Model\Project::create($name, $organisation, $user, $dateTime)
         );
     }
 
@@ -216,6 +237,7 @@ class CouchDbTestCase extends Tests\WebTestCase
 
     protected function createTaskConfiguration(
         $binaryData,
+        AnnoStationBundleModel\Organisation $organisation,
         Model\User $user,
         $name = 'testconfig',
         $filename = 'testconfig.xml',
@@ -230,6 +252,7 @@ class CouchDbTestCase extends Tests\WebTestCase
         switch($type) {
             case 'simpleXml':
                 $configuration = new TaskConfiguration\SimpleXml(
+                    $organisation,
                     $name,
                     $filename,
                     $contentType,
@@ -240,6 +263,7 @@ class CouchDbTestCase extends Tests\WebTestCase
                 break;
             case 'requirementsXml':
                 $configuration = new TaskConfiguration\RequirementsXml(
+                    $organisation,
                     $name,
                     $filename,
                     $contentType,
@@ -273,6 +297,9 @@ class CouchDbTestCase extends Tests\WebTestCase
         );
         $this->labeledThingGroupFacade              = $this->getAnnostationService(
             'database.facade.labeled_thing_group'
+        );
+        $this->organisationFacade                   = $this->getAnnostationService(
+            'database.facade.organisation'
         );
 
         $this->userManipulator = $this->getService('fos_user.util.user_manipulator');

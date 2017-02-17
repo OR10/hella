@@ -146,8 +146,8 @@ class LabeledThingGroupTest extends Tests\CouchDbTestCase
     protected function setUpImplementation()
     {
         parent::setUpImplementation();
-        $project    = $this->createProject('LabeledThingGroupTest');
-        $video      = $this->createVideo('video-1');
+        $project    = $this->createProject('LabeledThingGroupTest', $this->createOrganisation());
+        $video      = $this->createVideo($this->createOrganisation(), 'video-1');
         $this->task = $this->createTask($project, $video);
         $this->createDefaultUser();
     }

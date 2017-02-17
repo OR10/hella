@@ -5,6 +5,7 @@ namespace AnnoStationBundle\Tests\Controller\Api\Task;
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Database\Facade;
 use Doctrine\ODM\CouchDB;
 use JMS\Serializer;
@@ -295,6 +296,9 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
         $this->labelingThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
         $this->labelingGroupFacade        = $this->getAnnostationService('database.facade.labelingGroup');
         $this->serializer                 = $this->getService('serializer');
+        $organisationFacade        = $this->getAnnostationService('database.facade.organisation');
+
+        $organisation = $organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
 
         $user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
@@ -302,11 +306,11 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
         $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$user->getId()]));
 
-        $this->project = Model\Project::create('test project', $user);
+        $this->project = Model\Project::create('test project', $organisation, $user);
         $this->project->setLabelingGroupId($labelingGroup->getId());
         $this->projectFacade->save($this->project);
 
-        $this->video   = $this->videoFacade->save(Model\Video::create('foobar'));
+        $this->video   = $this->videoFacade->save(Model\Video::create($organisation, 'foobar'));
         $task          = Model\LabelingTask::create(
             $this->video,
             $this->project,

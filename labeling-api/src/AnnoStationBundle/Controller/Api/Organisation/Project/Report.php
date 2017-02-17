@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Controller\Api\Project;
+namespace AnnoStationBundle\Controller\Api\Organisation\Project;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
@@ -19,8 +19,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use AnnoStationBundle\Response;
 
 /**
- * @Rest\Prefix("/api/project")
- * @Rest\Route(service="annostation.labeling_api.controller.api.project.report")
+ * @Rest\Prefix("/api/organisation")
+ * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.project.report")
  *
  * @CloseSession
  */
@@ -83,7 +83,7 @@ class Report extends Controller\Base
     /**
      * Return the report with the given id
      *
-     * @Rest\Get("/{project}/report/{report}")
+     * @Rest\Get("/{organisation}/project/{project}/report/{report}")
      *
      * @CheckPermissions({"canViewProjectReport"})
      *
@@ -137,7 +137,7 @@ class Report extends Controller\Base
      *
      * @CheckPermissions({"canViewProjectReport"})
      *
-     * @Rest\Get("/{project}/report")
+     * @Rest\Get("/{organisation}/project/{project}/report")
      *
      * @param Model\Project $project
      *
@@ -159,7 +159,7 @@ class Report extends Controller\Base
      *
      * @CheckPermissions({"canViewProjectReport"})
      *
-     * @Rest\Post("/{project}/report")
+     * @Rest\Post("/{organisation}/project/{project}/report")
      *
      * @param Model\Project $project
      *

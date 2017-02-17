@@ -2,6 +2,7 @@
 namespace AppBundle\Database\Facade;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use Doctrine\ODM\CouchDB;
 use Doctrine\ORM;
 use FOS\UserBundle\Model as FosUserModel;
@@ -42,18 +43,27 @@ class User
     }
 
     /**
-     * @param string $username
-     * @param string $email
-     * @param string $password
-     * @param bool   $enabled
-     * @param bool   $locked
-     * @param array  $settings
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param string                              $username
+     * @param string                              $email
+     * @param string                              $password
+     * @param bool                                $enabled
+     * @param bool                                $locked
+     * @param array                               $settings
      *
      * @return FosUserModel\UserInterface
      */
-    public function createUser($username, $email, $password, $enabled = true, $locked = false, $settings = [])
-    {
+    public function createUser(
+        AnnoStationBundleModel\Organisation $organisation,
+        $username,
+        $email,
+        $password,
+        $enabled = true,
+        $locked = false,
+        $settings = []
+    ) {
         $user = $this->userManager->createUser();
+        $user->setOrganisation($organisation);
         $user->setUsername($username);
         $user->setEmail($email);
         $user->setPlainPassword($password);

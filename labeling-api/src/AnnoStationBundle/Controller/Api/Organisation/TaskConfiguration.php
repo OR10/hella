@@ -1,5 +1,5 @@
 <?php
-namespace AnnoStationBundle\Controller\Api;
+namespace AnnoStationBundle\Controller\Api\Organisation;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
@@ -18,8 +18,8 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
- * @Rest\Prefix("/api/taskConfiguration")
- * @Rest\Route(service="annostation.labeling_api.controller.api.task_configuration")
+ * @Rest\Prefix("/api/organisation")
+ * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.task_configuration")
  *
  * @CloseSession
  */
@@ -79,7 +79,7 @@ class TaskConfiguration extends Controller\Base
     }
 
     /**
-     * @Rest\Get("")
+     * @Rest\Get("/{organisation}/taskConfiguration")
      *
      * @param HttpFoundation\Request $request
      *
@@ -103,7 +103,7 @@ class TaskConfiguration extends Controller\Base
     }
 
     /**
-     * @Rest\Get("/{taskConfiguration}")
+     * @Rest\Get("/{organisation}/taskConfiguration/{taskConfiguration}")
      *
      * @param TaskConfigurationModel $taskConfiguration
      *
@@ -127,7 +127,7 @@ class TaskConfiguration extends Controller\Base
 
 
     /**
-     * @Rest\Get("/{taskConfiguration}/file")
+     * @Rest\Get("/{organisation}/taskConfiguration/{taskConfiguration}/file")
      *
      * @param TaskConfigurationModel $taskConfiguration
      *
@@ -153,7 +153,7 @@ class TaskConfiguration extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/requirements")
+     * @Rest\Post("/{organisation}/taskConfiguration/requirements")
      *
      * @CheckPermissions({"canUploadTaskConfiguration"})
      *

@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Tests\Service\Interpolation\Algorithm;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
 use AnnoStationBundle\Service;
@@ -50,6 +51,11 @@ class LinearTest extends Tests\KernelTestCase
      */
     private $calibrationDataFacade;
 
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
     public function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
@@ -60,6 +66,7 @@ class LinearTest extends Tests\KernelTestCase
         $this->algorithm                 = $this->getAnnostationService('service.interpolation.algorithm.linear');
         $this->calibrationFileConverter  = $this->getAnnostationService('service.calibration_file_converter');
         $this->calibrationDataFacade     = $this->getAnnostationService('database.facade.calibration_data');
+        $this->organisationFacade        = $this->getAnnostationService('database.facade.organisation');
     }
 
     /**
@@ -1029,7 +1036,8 @@ class LinearTest extends Tests\KernelTestCase
      */
     private function createTask($endFrameIndex = 10)
     {
-        $video = Model\Video::create('Testvideo');
+        $organisation = $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
+        $video = Model\Video::create($organisation, 'Testvideo');
         $this->calibrationFileConverter->setCalibrationData(__DIR__ . '/Calibration/Video.csv');
 
         $calibrationData = new Model\CalibrationData('Testvideo');
@@ -1046,7 +1054,7 @@ class LinearTest extends Tests\KernelTestCase
         return $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
                 $video,
-                $this->projectFacade->save(Model\Project::create('test project')),
+                $this->projectFacade->save(Model\Project::create('test project', $organisation)),
                 range(1, $endFrameIndex),
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )

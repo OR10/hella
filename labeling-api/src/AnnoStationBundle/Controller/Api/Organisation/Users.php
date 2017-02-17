@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Controller\Api;
+namespace AnnoStationBundle\Controller\Api\Organisation;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
@@ -16,8 +16,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
- * @Rest\Prefix("/api/users")
- * @Rest\Route(service="annostation.labeling_api.controller.api.users")
+ * @Rest\Prefix("/api/organisation")
+ * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.users")
  *
  * @CloseSession
  */
@@ -48,7 +48,7 @@ class Users extends Controller\Base
     /**
      * Get all users
      *
-     * @Rest\Get("")
+     * @Rest\Get("/{organisation}/users")
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @return \FOS\RestBundle\View\View
@@ -75,7 +75,7 @@ class Users extends Controller\Base
     /**
      * Get a single user
      *
-     * @Rest\Get("/{user}")
+     * @Rest\Get("/{organisation}/users/{user}")
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Model\User $user
@@ -91,7 +91,7 @@ class Users extends Controller\Base
     /**
      * Add a new User
      *
-     * @Rest\Post("")
+     * @Rest\Post("/{organisation}/users")
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param HttpFoundation\Request $request
@@ -119,7 +119,7 @@ class Users extends Controller\Base
     /**
      * Edit a User
      *
-     * @Rest\Put("/{user}")
+     * @Rest\Put("/{organizationId}/users/{user}")
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param HttpFoundation\Request $request
@@ -172,7 +172,7 @@ class Users extends Controller\Base
     /**
      * Delete a User
      *
-     * @Rest\Delete("/{user}")
+     * @Rest\Delete("/{organisation}/users/{user}")
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param $user

@@ -2,6 +2,7 @@
 namespace AnnoStationBundle\Service\ProjectImporter;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service\ProjectImporter\Facade;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Worker\Jobs;
@@ -82,12 +83,13 @@ class Import
     }
 
     /**
-     * @param            $xmlImportFilePath
-     * @param Model\User $user
+     * @param                                     $xmlImportFilePath
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
      *
      * @return array
      */
-    public function importXml($xmlImportFilePath, Model\User $user)
+    public function importXml($xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user)
     {
         $xmlImport = new \DOMDocument();
         $xmlImport->load($xmlImportFilePath);
@@ -101,14 +103,14 @@ class Import
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
 
         if ($this->requirementsXml === null) {
-            $requirementsXml       = $this->createRequirementsXml($xpath, dirname($xmlImportFilePath), $user);
+            $requirementsXml = $this->createRequirementsXml($xpath, dirname($xmlImportFilePath), $organisation, $user);
             $this->requirementsXml = $requirementsXml;
         } else {
             $requirementsXml = $this->requirementsXml;
         }
 
         if ($this->project === null) {
-            $project       = $this->createProject($xpath, $user, $requirementsXml);
+            $project       = $this->createProject($xpath, $organisation, $user, $requirementsXml);
             $this->project = $project;
         } else {
             $project = $this->project;
@@ -117,7 +119,7 @@ class Import
         $videoElements = $xpath->query('/x:export/x:video');
         $tasks = [];
         foreach ($videoElements as $videoElement) {
-            $video = $this->createVideo($videoElement, $project, dirname($xmlImportFilePath));
+            $video = $this->createVideo($organisation, $videoElement, $project, dirname($xmlImportFilePath));
             $tasks = array_merge($this->createTasks($project, $video, $requirementsXml), $tasks);
 
             $job = new Jobs\ThingImporter($xmlImportFilePath, $this->tasks);
@@ -129,18 +131,20 @@ class Import
 
     /**
      * @param \DOMXPath                               $xpath
+     * @param AnnoStationBundleModel\Organisation     $organisation
      * @param                                         $user
      * @param Model\TaskConfiguration\RequirementsXml $requirementsXml
      *
      * @return Model\Project
      */
-    private function createProject(\DOMXPath $xpath, $user, Model\TaskConfiguration\RequirementsXml $requirementsXml)
+    private function createProject(\DOMXPath $xpath, AnnoStationBundleModel\Organisation $organisation, $user, Model\TaskConfiguration\RequirementsXml $requirementsXml)
     {
 
         $projectElement = $xpath->query('/x:export/x:metadata/x:project');
 
         $project = new Model\Project(
             $projectElement->item(0)->getAttribute('name'),
+            $organisation,
             $user,
             null,
             null,
@@ -163,15 +167,20 @@ class Import
     }
 
     /**
-     * @param \DOMXPath  $xpath
-     * @param            $path
-     * @param Model\User $user
+     * @param \DOMXPath                           $xpath
+     * @param                                     $path
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
      *
      * @return Model\TaskConfiguration\RequirementsXml
      * @throws \Exception
      */
-    private function createRequirementsXml(\DOMXPath $xpath, $path, Model\User $user)
-    {
+    private function createRequirementsXml(
+        \DOMXPath $xpath,
+        $path,
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\User $user
+    ) {
         $requirementsElement = $xpath->query('/x:export/x:metadata/x:requirements');
 
         $filePath = sprintf('%s/%s', $path, $requirementsElement->item(0)->getAttribute('filename'));
@@ -196,6 +205,7 @@ class Import
         }
 
         $requirements = new Model\TaskConfiguration\RequirementsXml(
+            $organisation,
             $requirementsElement->item(0)->getAttribute('name'),
             sprintf('%s.xml', $requirementsElement->item(0)->getAttribute('name')),
             mime_content_type($filePath),
@@ -210,16 +220,22 @@ class Import
     }
 
     /**
-     * @param \DOMElement $xpath
-     * @param             $project
-     * @param             $directory
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param \DOMElement                         $xpath
+     * @param                                     $project
+     * @param                                     $directory
      *
      * @return Model\Video
      */
-    private function createVideo(\DOMElement $xpath, $project, $directory)
-    {
+    private function createVideo(
+        AnnoStationBundleModel\Organisation $organisation,
+        \DOMElement $xpath,
+        $project,
+        $directory
+    ) {
         $videoSourcePath = sprintf('%s/%s', $directory, $xpath->getAttribute('filename'));
         $video           = $this->videoImporter->importVideo(
+            $organisation,
             $project,
             $xpath->getAttribute('filename'),
             $videoSourcePath,

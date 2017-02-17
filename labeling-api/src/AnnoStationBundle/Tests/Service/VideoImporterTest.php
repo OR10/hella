@@ -9,6 +9,7 @@ use AppBundle\Tests;
 use AnnoStationBundle\Worker\JobInstruction;
 use AnnoStationBundle\Worker\Jobs;
 use crosscan\WorkerPool;
+use AnnoStationBundle\Tests\Helper;
 
 class VideoImporterTest extends Tests\KernelTestCase
 {
@@ -194,7 +195,9 @@ class VideoImporterTest extends Tests\KernelTestCase
             )
         );
 
+        $organisation = Helper\OrganisationBuilder::create()->build();
         $tasks = $this->videoImporterService->import(
+            $organisation,
             'testVideo',
             'testProject',
             $this->getTestVideoPath(),

@@ -105,10 +105,12 @@ class TaskTest extends Tests\CouchDbTestCase
         $this->token = $this->getMockBuilder(TokenInterface::class)->getMock();
         $this->token->method('getUser')->willReturn($this->user);
 
-        $this->video = $this->createVideo('video-1');
+        $organisation = $this->createOrganisation();
+        $this->video = $this->createVideo($organisation, 'video-1');
 
         $this->project = Model\Project::create(
             'project-1',
+            $organisation,
             $this->user
         );
         $this->project->setUserId($this->client->getId());

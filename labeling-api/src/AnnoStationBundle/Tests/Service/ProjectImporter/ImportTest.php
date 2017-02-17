@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests\Service\ProjectImporter;
 
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Tests\Helper\OrganisationBuilder;
 use AnnoStationBundle\Worker\JobInstruction;
 use AnnoStationBundle\Worker\Jobs;
 use AppBundle\Model;
@@ -36,6 +37,7 @@ class ImportTest extends Tests\KernelTestCase
 
     public function testImport()
     {
+        $organisation = OrganisationBuilder::create()->build();
         $jobs = [];
         $this->workerPoolFacade->expects($this->any())->method('addJob')->with(
             $this->callback(
@@ -57,6 +59,7 @@ class ImportTest extends Tests\KernelTestCase
 
         $tasks = $this->projectImporterService->importXml(
             __DIR__ . '/TestFiles/SMPC16C00103_SE-OOX687_20150629_185715_rgb_c.avi.xml',
+            $organisation,
             $this->defaultUser
         );
 

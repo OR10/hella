@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Controller\Api\Project;
+namespace AnnoStationBundle\Controller\Api\Organisation\Project;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
@@ -16,8 +16,8 @@ use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
- * @Rest\Prefix("/api/project")
- * @Rest\Route(service="annostation.labeling_api.controller.api.project.status")
+ * @Rest\Prefix("/api/organisation")
+ * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.project.status")
  *
  * @CloseSession
  */
@@ -64,7 +64,7 @@ class Status extends Controller\Base
     /**
      * Set the Project to status inProgress and assign the current user to this project
      *
-     * @Rest\POST("/{project}/status/accept")
+     * @Rest\POST("/{organisation}/project/{project}/status/accept")
      *
      * @CheckPermissions({"canAcceptProject"})
      *
@@ -102,7 +102,7 @@ class Status extends Controller\Base
     /**
      * Set the Project to status done
      *
-     * @Rest\POST("/{project}/status/done")
+     * @Rest\POST("/{organisation}/project/{project}/status/done")
      * @CheckPermissions({"canMoveFinishedProjectToDone", "canMoveInProgressProjectToDone"})
      *
      * @param $project
@@ -143,7 +143,7 @@ class Status extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{project}/status/deleted")
+     * @Rest\Post("/{organisation}/project/{project}/status/deleted")
      *
      * @return View\View
      */

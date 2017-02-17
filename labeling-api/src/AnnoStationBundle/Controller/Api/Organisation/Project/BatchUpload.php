@@ -1,13 +1,14 @@
 <?php
 
-namespace AnnoStationBundle\Controller\Api\Project;
+namespace AnnoStationBundle\Controller\Api\Organisation\Project;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
-use AnnoStationBundle\Controller\Api\Project\Exception as ProjectException;
+use AnnoStationBundle\Controller\Api\Organisation\Project\Exception as ProjectException;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service;
 use AppBundle\View;
 use crosscan\Logger\Facade\LoggerFacade;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpKernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
- * @Rest\Route("/api/project/batchUpload", service="annostation.labeling_api.controller.api.project.batch_upload")
+ * @Rest\Route("/api/organisation", service="annostation.labeling_api.controller.api.organisation.project.batch_upload")
  *
  * @CloseSession
  */
@@ -114,17 +115,21 @@ class BatchUpload extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{project}")
+     * @Rest\Post("/{organisation}/project/batchUpload/{project}")
      *
      * @CheckPermissions({"canUploadNewVideo"})
      *
-     * @param Model\Project          $project
-     * @param HttpFoundation\Request $request
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
+     * @param HttpFoundation\Request              $request
      *
      * @return View\View
      */
-    public function uploadAction(Model\Project $project, HttpFoundation\Request $request)
-    {
+    public function uploadAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        HttpFoundation\Request $request
+    ) {
         $this->authorizationService->denyIfProjectIsNotWritable($project);
         $this->denyIfProjectIsNotTodo($project);
 
@@ -186,7 +191,7 @@ class BatchUpload extends Controller\Base
 
                 if ($this->isVideoFile($flowRequest->getFileName())) {
                     // for now, we always use compressed images
-                    $this->videoImporter->importVideo($project, basename($targetPath), $targetPath, false);
+                    $this->videoImporter->importVideo($organisation, $project, basename($targetPath), $targetPath, false);
                 } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
                     $this->videoImporter->importCalibrationData($project, $targetPath);
                 } else {
@@ -206,7 +211,7 @@ class BatchUpload extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{project}/complete")
+     * @Rest\Post("/{organisation}/project/batchUpload/{project}/complete")
      *
      * @CheckPermissions({"canUploadNewVideo"})
      *

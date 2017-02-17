@@ -1,12 +1,13 @@
 <?php
 
-namespace AnnoStationBundle\Controller\Api;
+namespace AnnoStationBundle\Controller\Api\Organisation;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Database\Facade as AppFacade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Service;
@@ -19,8 +20,8 @@ use crosscan\WorkerPool\AMQP;
 use AnnoStationBundle\Worker\Jobs;
 
 /**
- * @Rest\Prefix("/api/project")
- * @Rest\Route(service="annostation.labeling_api.controller.api.project")
+ * @Rest\Prefix("/api/organisation")
+ * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.project")
  *
  * @CloseSession
  */
@@ -96,7 +97,7 @@ class Project extends Controller\Base
     /**
      * List all labeling tasks
      *
-     * @Rest\Get("")
+     * @Rest\Get("/{organisation}/project")
      *
      * @param HttpFoundation\Request $request
      *
@@ -279,15 +280,16 @@ class Project extends Controller\Base
     /**
      * Create a new Project
      *
-     * @Rest\Post("")
+     * @Rest\Post("/{organisation}/project")
      *
      * @CheckPermissions({"canCreateProject", "canCreateNewProject"})
      *
-     * @param HttpFoundation\Request $request
+     * @param HttpFoundation\Request              $request
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return View\View
      */
-    public function addProjectAction(HttpFoundation\Request $request)
+    public function addProjectAction(HttpFoundation\Request $request, AnnoStationBundleModel\Organisation $organisation)
     {
         $name             = $request->request->get('name');
         $review           = $request->request->get('review');
@@ -307,6 +309,7 @@ class Project extends Controller\Base
         try {
             $project = Model\Project::create(
                 $name,
+                $organisation,
                 $user,
                 null,
                 null,
@@ -427,13 +430,14 @@ class Project extends Controller\Base
     /**
      * Return the project with the given id
      *
-     * @Rest\Get("/{project}")
+     * @Rest\Get("/{organisation}/project/{project}")
      *
-     * @param $project
+     * @param Model\Project                       $project
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return View\View
      */
-    public function getProjectAction(Model\Project $project)
+    public function getProjectAction(Model\Project $project, AnnoStationBundleModel\Organisation $organisation)
     {
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
@@ -443,15 +447,19 @@ class Project extends Controller\Base
     /**
      * Return the project with the given id
      *
-     * @Rest\Post("/{project}/delete")
+     * @Rest\Post("/{organisation}/project/{project}/delete")
      *
-     * @param HttpFoundation\Request $request
-     * @param Model\Project          $project
+     * @param HttpFoundation\Request              $request
+     * @param Model\Project                       $project
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return View\View
      */
-    public function deleteProjectAction(HttpFoundation\Request $request, Model\Project $project)
-    {
+    public function deleteProjectAction(
+        HttpFoundation\Request $request,
+        Model\Project $project,
+        AnnoStationBundleModel\Organisation $organisation
+    ) {
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         /** @var Model\User $user */
@@ -485,7 +493,7 @@ class Project extends Controller\Base
      *
      * @CheckPermissions({"canAssignProject"})
      *
-     * @Rest\Post("/{project}/assign")
+     * @Rest\Post("/{organizationId}/project/{project}/assign")
      *
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project

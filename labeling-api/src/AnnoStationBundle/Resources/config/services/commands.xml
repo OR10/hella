@@ -28,6 +28,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
             <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <tag name="console.command"/>
         </service>
 

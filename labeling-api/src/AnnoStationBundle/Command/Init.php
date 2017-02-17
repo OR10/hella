@@ -5,6 +5,7 @@ namespace AnnoStationBundle\Command;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Database\Facade as AppFacade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\Model\TaskConfiguration;
 use Doctrine\CouchDB;
@@ -53,18 +54,31 @@ class Init extends Base
      * @var Model\User[]
      */
     private $users = [];
+
     /**
      * @var Facade\LabelingGroup
      */
     private $labelingGroupFacade;
+
     /**
      * @var Service\TaskConfigurationXmlConverterFactory
      */
     private $configurationXmlConverterFactory;
+
     /**
      * @var Facade\TaskConfiguration
      */
     private $taskConfigurationFacade;
+
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
+    /**
+     * @var AnnoStationBundleModel\Organisation
+     */
+    private $organisation;
 
     /**
      * Init constructor.
@@ -81,6 +95,7 @@ class Init extends Base
      * @param Facade\LabelingGroup                         $labelingGroupFacade
      * @param Facade\TaskConfiguration                     $taskConfigurationFacade
      * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
+     * @param Facade\Organisation                          $organisationFacade
      */
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
@@ -94,7 +109,8 @@ class Init extends Base
         Facade\Project $projectFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         Facade\TaskConfiguration $taskConfigurationFacade,
-        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
+        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
+        Facade\Organisation $organisationFacade
     ) {
         parent::__construct();
 
@@ -110,6 +126,7 @@ class Init extends Base
         $this->labelingGroupFacade              = $labelingGroupFacade;
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
         $this->taskConfigurationFacade          = $taskConfigurationFacade;
+        $this->organisationFacade               = $organisationFacade;
     }
 
     protected function configure()
@@ -251,6 +268,16 @@ class Init extends Base
         return true;
     }
 
+    private function getOrganisation()
+    {
+        if ($this->organisation === null) {
+            $organisation       = new AnnoStationBundleModel\Organisation('Default Organisation');
+            $this->organisation = $this->organisationFacade->save($organisation);
+        }
+
+        return $this->organisation;
+    }
+
     private function createUser(OutputInterface $output)
     {
         $this->writeSection($output, 'Creating users');
@@ -259,7 +286,7 @@ class Init extends Base
 
         if ($this->userPassword !== null) {
             foreach ($users as $username) {
-                $user = $this->userFacade->createUser($username, $username . '@example.com', $this->userPassword);
+                $user = $this->userFacade->createUser($this->getOrganisation(), $username, $username . '@example.com', $this->userPassword);
 
                 switch ($username) {
                     case 'admin':
@@ -385,6 +412,7 @@ class Init extends Base
             Model\TaskConfiguration\SimpleXml::TYPE
         );
         $config = new TaskConfiguration\SimpleXml(
+            $this->getOrganisation(),
             'Sample Configuration',
             'example.xml',
             'application/xml',

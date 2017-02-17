@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Service;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model\Video\ImageType;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
@@ -99,19 +100,19 @@ class VideoImporter
     }
 
     /**
-     * @param Model\Project $project
-     * @param string        $videoName
-     * @param string        $videoFilePath
-     * @param bool          $lossless
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
+     * @param string                              $videoName
+     * @param string                              $videoFilePath
+     * @param bool                                $lossless
      *
      * @return Model\Video
-     *
      * @throws CouchDB\UpdateConflictException
      */
-    public function importVideo(Model\Project $project, string $videoName, string $videoFilePath, bool $lossless)
+    public function importVideo(AnnoStationBundleModel\Organisation $organisation, Model\Project $project, string $videoName, string $videoFilePath, bool $lossless)
     {
         $imageTypes = $this->getImageTypes($lossless);
-        $video      = new Model\Video($videoName);
+        $video      = new Model\Video($organisation, $videoName);
 
         $video->setMetaData($this->metaDataReader->readMetaData($videoFilePath));
         $this->videoFacade->save($video, $videoFilePath);
@@ -193,29 +194,30 @@ class VideoImporter
     }
 
     /**
-     * @param string     $name The name for the video (usually the basename).
-     * @param string     $projectName
-     * @param string     $path The filesystem path to the video file.
-     * @param string     $calibrationFile
-     * @param bool       $lossless Wether or not the UI should use lossless compressed images.
-     * @param int        $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
-     * @param bool       $isObjectLabeling
-     * @param bool       $isMetaLabeling
-     * @param array      $labelInstructions
-     * @param int|null   $minimalVisibleShapeOverflow
-     * @param array      $drawingToolOptions
-     * @param int        $frameSkip
-     * @param int        $startFrame
-     * @param bool       $review
-     * @param bool       $revision
-     * @param Model\User $user
-     * @param bool       $legacyExport
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param string                              $name        The name for the video (usually the basename).
+     * @param string                              $projectName
+     * @param string                              $path        The filesystem path to the video file.
+     * @param string                              $calibrationFile
+     * @param bool                                $isObjectLabeling
+     * @param bool                                $isMetaLabeling
+     * @param array                               $labelInstructions
+     * @param bool                                $lossless    Wether or not the UI should use lossless compressed images.
+     * @param int                                 $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param int|null                            $minimalVisibleShapeOverflow
+     * @param array                               $drawingToolOptions
+     * @param int                                 $frameSkip
+     * @param int                                 $startFrame
+     * @param bool                                $review
+     * @param bool                                $revision
+     * @param Model\User                          $user
+     * @param bool                                $legacyExport
      *
      * @return Model\LabelingTask[]
-     *
      * @throws \Exception
      */
     public function import(
+        AnnoStationBundleModel\Organisation $organisation,
         $name,
         $projectName,
         $path,
@@ -234,7 +236,7 @@ class VideoImporter
         Model\User $user = null,
         $legacyExport = false
     ) {
-        $video = new Model\Video($name);
+        $video = new Model\Video($organisation, $name);
         $video->setMetaData($this->metaDataReader->readMetaData($path));
         if ($calibrationFile !== null) {
             $this->calibrationFileConverter->setCalibrationData($calibrationFile);
@@ -261,6 +263,7 @@ class VideoImporter
             }
             $project = new Model\Project(
                 $projectName,
+                $organisation,
                 null,
                 null,
                 null,

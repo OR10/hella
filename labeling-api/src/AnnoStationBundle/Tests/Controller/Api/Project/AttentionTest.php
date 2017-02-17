@@ -5,6 +5,7 @@ namespace AnnoStationBundle\Tests\Controller\Api\Project;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
 use Symfony\Component\HttpFoundation;
@@ -28,11 +29,16 @@ class AttentionTest extends Tests\WebTestCase
      */
     private $labelingTaskFacade;
 
+    /**
+     * @var AnnoStationBundleModel\Organisation
+     */
+    private $organisation;
+
     public function testListAttentionTasks()
     {
         $response = $this->createRequest(
-            '/api/project/%s/attentionTasks',
-            [$this->project->getId()],
+            '/api/organisation/%s/project/%s/attentionTasks',
+            [$this->organisation->getId(), $this->project->getId()],
             'label_coordinator',
             'label_coordinator'
         )
@@ -73,15 +79,17 @@ class AttentionTest extends Tests\WebTestCase
         /** @var AppFacade\User $userFacade */
         $userFacade               = $this->getAnnostationService('database.facade.user');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
+        $organisationFacade       = $this->getAnnostationService('database.facade.organisation');
 
         $coordinatorUser = $userFacade->updateUser(
             AppBundleHelper\UserBuilder::createDefaultLabelCoordinator()->build()
         );
 
-        $project       = Helper\ProjectBuilder::create()
+        $this->organisation  = $organisationFacade->save(Helper\OrganisationBuilder::create()->build());
+        $project       = Helper\ProjectBuilder::create($this->organisation)
             ->withAddedCoordinatorAssignment($coordinatorUser);
         $this->project = $projectFacade->save($project->build());
-        $video         = $videoFacade->save(Helper\VideoBuilder::create()->build());
+        $video         = $videoFacade->save(Helper\VideoBuilder::create($this->organisation)->build());
 
         foreach (range(1, 5) as $tasksWithAttentionFlag) {
             $task          = Helper\LabelingTaskBuilder::create($this->project, $video)->withAttentionTaskFlag();

@@ -4,6 +4,7 @@ namespace AppBundle\Model;
 
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 /**
  * @CouchDB\Document
@@ -34,6 +35,11 @@ class User extends BaseUser
     protected $lockHistory = [];
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    protected $organisationId;
+
+    /**
      * @CouchDB\Field(type="mixed")
      */
     protected $settings = [];
@@ -54,6 +60,14 @@ class User extends BaseUser
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     */
+    public function setOrganisation(AnnoStationBundleModel\Organisation $organisation)
+    {
+        $this->organisationId = $organisation->getId();
     }
 
     /**

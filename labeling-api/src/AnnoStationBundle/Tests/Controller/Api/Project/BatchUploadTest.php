@@ -2,16 +2,19 @@
 
 namespace AnnoStationBundle\Tests\Controller\Api\Project;
 
+use AnnoStationBundle\AnnoStationBundle;
 use AnnoStationBundle\Database;
 use AnnoStationBundle\Tests\Helper;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Tests;
+use crosscan\WorkerPool\Facade;
 use Symfony\Component\HttpFoundation;
 
 class BatchUploadTest extends Tests\WebTestCase
 {
-    const UPLOAD_CHUNK_ROUTE = '/api/project/batchUpload/%s';
-    const UPLOAD_COMPLETE_ROUTE = '/api/project/batchUpload/%s/complete';
+    const UPLOAD_CHUNK_ROUTE = '/api/organisation/%s/project/batchUpload/%s';
+    const UPLOAD_COMPLETE_ROUTE = '/api/organisation/%s/project/batchUpload/%s/complete';
 
     /**
      * @var Database\Facade\Project
@@ -33,12 +36,18 @@ class BatchUploadTest extends Tests\WebTestCase
      */
     private $calibrationDataFacade;
 
+    /**
+     * @var Database\Facade\Organisation
+     */
+    private $organisationFacade;
+
     public function testUploadIsForbiddenForLabelers()
     {
         $this->defaultUser->setRoles([Model\User::ROLE_LABELER]);
 
-        $project        = $this->createProject();
-        $requestWrapper = $this->createRequest(self::UPLOAD_CHUNK_ROUTE, [$project->getId()])
+        $organisation   = $this->createOrganisation();
+        $project        = $this->createProject($organisation);
+        $requestWrapper = $this->createRequest(self::UPLOAD_CHUNK_ROUTE, [$organisation->getId(), $project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
@@ -51,11 +60,12 @@ class BatchUploadTest extends Tests\WebTestCase
     {
         $this->defaultUser->setRoles([Model\User::ROLE_CLIENT]);
 
-        $project = $this->createProject();
+        $organisation = $this->createOrganisation();
+        $project      = $this->createProject($organisation);
         $project->setUserId(null);
         $this->projectFacade->save($project);
 
-        $requestWrapper = $this->createRequest(self::UPLOAD_CHUNK_ROUTE, [$project->getId()])
+        $requestWrapper = $this->createRequest(self::UPLOAD_CHUNK_ROUTE, [$organisation->getId(), $project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
@@ -66,11 +76,12 @@ class BatchUploadTest extends Tests\WebTestCase
 
     public function testUploadIsForbiddenIfProjectIsDone()
     {
-        $project = $this->createProject();
+        $organisation = $this->createOrganisation();
+        $project      = $this->createProject($organisation);
         $project->addStatusHistory(new \DateTime('+1 minute'), Model\Project::STATUS_DONE, $this->defaultUser);
         $this->projectFacade->save($project);
 
-        $requestWrapper = $this->createRequest(self::UPLOAD_CHUNK_ROUTE, [$project->getId()])
+        $requestWrapper = $this->createRequest(self::UPLOAD_CHUNK_ROUTE, [$organisation->getId(), $project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
@@ -81,13 +92,14 @@ class BatchUploadTest extends Tests\WebTestCase
 
     public function testCompleteVideoRoute()
     {
-        $project = $this->createProject();
-        $video = Helper\VideoBuilder::create()->build();
+        $organisation = $this->createOrganisation();
+        $project      = $this->createProject($organisation);
+        $video        = Helper\VideoBuilder::create($organisation)->build();
         $this->videoFacade->save($video);
 
         $project->addVideo($video);
 
-        $requestWrapper = $this->createRequest(self::UPLOAD_COMPLETE_ROUTE, [$project->getId()])
+        $requestWrapper = $this->createRequest(self::UPLOAD_COMPLETE_ROUTE, [$organisation->getId(), $project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
@@ -102,10 +114,11 @@ class BatchUploadTest extends Tests\WebTestCase
         $calibrationData = new Model\CalibrationData('foobar.csv');
         $this->calibrationDataFacade->save($calibrationData);
 
-        $video = Helper\VideoBuilder::create()->withName('foobar.avi')->build();
+        $organisation = $this->createOrganisation();
+        $video        = Helper\VideoBuilder::create($organisation)->withName('foobar.avi')->build();
         $this->videoFacade->save($video);
 
-        $project = Helper\ProjectBuilder::create()->withLegacyTaskInstruction(
+        $project = Helper\ProjectBuilder::create($organisation)->withLegacyTaskInstruction(
             [
                 [
                     'instruction' => Model\LabelingTask::INSTRUCTION_VEHICLE,
@@ -115,7 +128,7 @@ class BatchUploadTest extends Tests\WebTestCase
         )->withVideo($video)->withCalibrationData($calibrationData)->build();
         $this->projectFacade->save($project);
 
-        $requestWrapper = $this->createRequest(self::UPLOAD_COMPLETE_ROUTE, [$project->getId()])
+        $requestWrapper = $this->createRequest(self::UPLOAD_COMPLETE_ROUTE, [$organisation->getId(), $project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
@@ -127,17 +140,18 @@ class BatchUploadTest extends Tests\WebTestCase
 
     public function testCompleteVideoRouteWithMissingCalibrationData()
     {
-        $project = $this->createProject();
+        $organisation = $this->createOrganisation();
+        $project      = $this->createProject($organisation);
         $project->addLegacyTaskInstruction(
             Model\LabelingTask::INSTRUCTION_VEHICLE,
             Model\LabelingTask::DRAWING_TOOL_CUBOID
         );
-        $video = Helper\VideoBuilder::create()->build();
+        $video = Helper\VideoBuilder::create($organisation)->build();
         $this->videoFacade->save($video);
 
         $project->addVideo($video);
 
-        $requestWrapper = $this->createRequest(self::UPLOAD_COMPLETE_ROUTE, [$project->getId()])
+        $requestWrapper = $this->createRequest(self::UPLOAD_COMPLETE_ROUTE, [$organisation->getId(), $project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
@@ -152,14 +166,20 @@ class BatchUploadTest extends Tests\WebTestCase
         $this->projectFacade         = $this->getAnnostationService('database.facade.project');
         $this->videoFacade           = $this->getAnnostationService('database.facade.video');
         $this->calibrationDataFacade = $this->getAnnostationService('database.facade.calibration_data');
+        $this->organisationFacade    = $this->getAnnostationService('database.facade.organisation');
 
         $this->createDefaultUser();
         $this->defaultUser->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
     }
 
-    private function createProject()
+    private function createOrganisation()
     {
-        $this->project = Helper\ProjectBuilder::create()
+        return $this->organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
+    }
+
+    private function createProject(AnnoStationBundleModel\Organisation $organisation)
+    {
+        $this->project = Helper\ProjectBuilder::create($organisation)
             ->withLegacyTaskInstruction(
                 [
                     [

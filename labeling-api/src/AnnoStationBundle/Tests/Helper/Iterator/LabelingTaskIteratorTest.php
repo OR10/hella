@@ -48,10 +48,10 @@ class LabelingTaskIteratorTest extends Tests\CouchDbTestCase
     {
         parent::setUpImplementation();
 
-        $this->firstVideo    = $this->createVideo('video-id-1');
-        $this->secondVideo   = $this->createVideo('video-id-2');
-        $this->firstProject  = $this->createProject('project-id-1');
-        $this->secondProject = $this->createProject('project-id-2');
+        $this->firstVideo    = $this->createVideo($this->createOrganisation(), 'video-id-1');
+        $this->secondVideo   = $this->createVideo($this->createOrganisation(), 'video-id-2');
+        $this->firstProject  = $this->createProject('project-id-1', $this->createOrganisation());
+        $this->secondProject = $this->createProject('project-id-2', $this->createOrganisation());
 
         $this->firstProjectTasks  = array();
         $this->secondProjectTasks = array();

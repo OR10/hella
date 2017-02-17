@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Tests\Service;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AppBundle\Tests;
@@ -39,6 +40,11 @@ class InterpolationTest extends Tests\KernelTestCase
      */
     private $interpolationService;
 
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
     public function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
@@ -46,6 +52,7 @@ class InterpolationTest extends Tests\KernelTestCase
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
+        $this->organisationFacade        = $this->getAnnostationService('database.facade.organisation');
         $this->interpolationService      = $this->getAnnostationService('service.interpolation');
     }
 
@@ -94,10 +101,11 @@ class InterpolationTest extends Tests\KernelTestCase
      */
     private function createLabeledThing()
     {
+        $organisation = $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
         $task = $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
-                $this->videoFacade->save(Model\Video::create('Testvideo')),
-                $this->projectFacade->save(Model\Project::create('test project')),
+                $this->videoFacade->save(Model\Video::create($organisation, 'Testvideo')),
+                $this->projectFacade->save(Model\Project::create('test project', $organisation)),
                 range(1, 10),
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )

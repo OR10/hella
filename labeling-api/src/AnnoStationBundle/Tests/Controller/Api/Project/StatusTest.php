@@ -6,6 +6,7 @@ use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
 use AnnoStationBundle\Tests\Helper;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Database\Facade;
 use Symfony\Component\HttpFoundation;
 use FOS\UserBundle\Util;
@@ -42,12 +43,21 @@ class StatusTest extends Tests\WebTestCase
      */
     private $labeler;
 
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
     public function testAcceptProject()
     {
-        $project       = $this->createProject();
+        $organisation  = $this->createOrganisation();
+        $project       = $this->createProject($organisation);
         $labelingGroup = $this->createLabelingGroup($this->labelCoordinator);
 
-        $requestWrapper = $this->createRequest('/api/project/%s/status/accept', [$project->getId()])
+        $requestWrapper = $this->createRequest(
+            '/api/organisation/%s/project/%s/status/accept',
+            [$organisation->getId(), $project->getId()]
+        )
             ->withCredentialsFromUsername($this->labelCoordinator)
             ->setJsonBody(
                 [
@@ -65,9 +75,13 @@ class StatusTest extends Tests\WebTestCase
 
     public function testDoneProject()
     {
-        $project = $this->createProject();
+        $organisation = $this->createOrganisation();
+        $project      = $this->createProject($organisation);
 
-        $requestWrapper = $this->createRequest('/api/project/%s/status/done', [$project->getId()])
+        $requestWrapper = $this->createRequest(
+            '/api/organisation/%s/project/%s/status/done',
+            [$organisation->getId(), $project->getId()]
+        )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->labelCoordinator)
             ->execute();
@@ -78,10 +92,14 @@ class StatusTest extends Tests\WebTestCase
 
     public function testDoneProjectWithIncompleteTasks()
     {
-        $project = $this->createProject();
-        $this->createTask($project);
+        $organisation = $this->createOrganisation();
+        $project = $this->createProject($organisation);
+        $this->createTask($organisation, $project);
 
-        $response = $this->createRequest('/api/project/%s/status/done', [$project->getId()])
+        $response = $this->createRequest(
+            '/api/organisation/%s/project/%s/status/done',
+            [$organisation->getId(), $project->getId()]
+        )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->labelCoordinator)
             ->execute();
@@ -90,14 +108,24 @@ class StatusTest extends Tests\WebTestCase
     }
 
     /**
+     * @return AnnoStationBundleModel\Organisation
+     */
+    private function createOrganisation()
+    {
+        return $this->organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
+    }
+
+    /**
      * Create a project to run the tests against.
+     *
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return Model\Project
      */
-    private function createProject()
+    private function createProject(AnnoStationBundleModel\Organisation $organisation)
     {
         return $this->projectFacade->save(
-            Helper\ProjectBuilder::create()
+            Helper\ProjectBuilder::create($organisation)
                 ->withName('foobar')
                 ->withCreationDate(new \DateTime('yesterday'))
                 ->withProjectOwnedByUserId($this->client->getId())
@@ -121,14 +149,15 @@ class StatusTest extends Tests\WebTestCase
     /**
      * Create and persist a simple task for the given project.
      *
-     * @param Model\Project $project
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
      *
      * @return Model\LabelingTask
      */
-    private function createTask(Model\Project $project)
+    private function createTask(AnnoStationBundleModel\Organisation $organisation, Model\Project $project)
     {
         return $this->labelingTaskFacade->save(
-            Helper\LabelingTaskBuilder::create($project, Helper\VideoBuilder::create()->build())
+            Helper\LabelingTaskBuilder::create($project, Helper\VideoBuilder::create($organisation)->build())
                 ->build()
         );
     }
@@ -138,6 +167,7 @@ class StatusTest extends Tests\WebTestCase
         $this->projectFacade       = $this->getAnnostationService('database.facade.project');
         $this->labelingGroupFacade = $this->getAnnostationService('database.facade.labeling_group');
         $this->labelingTaskFacade  = $this->getAnnostationService('database.facade.labeling_task');
+        $this->organisationFacade  = $this->getAnnostationService('database.facade.organisation');
         $this->client              = $this->createClientUser();
         $this->labelCoordinator    = $this->createLabelCoordinatorUser();
         $this->labeler             = $this->createLabelerUser();
