@@ -118,11 +118,11 @@ class LabeledThingGroupGateway {
    * Assign the given labeled thing to the given group.
    *
    * @param {Array.<LabeledThing>} labeledThings
-   * @param {LabeledThingGroup} group
+   * @param {LabeledThingGroup} labeledThingGroup
    */
-  assignLabeledThingsToLabeledThingGroup(labeledThings, group) {
+  assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
     const modifiedLabeledThings = labeledThings.map(labeledThing => {
-      labeledThing.groupIds.push(group.id);
+      labeledThing.groupIds.push(labeledThingGroup.id);
       return labeledThing;
     });
 
