@@ -92,6 +92,7 @@ System.config({
     "jquery-mousewheel": "github:jquery/jquery-mousewheel@3.1.13",
     "jquery-ui": "github:components/jqueryui@1.11.4",
     "json": "github:systemjs/plugin-json@0.1.0",
+    "lodash": "npm:lodash@4.17.4",
     "lodash.clone": "npm:lodash.clone@4.3.2",
     "lodash.clonedeep": "npm:lodash.clonedeep@4.3.2",
     "lodash.debounce": "npm:lodash.debounce@3.1.1",

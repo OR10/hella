@@ -118,6 +118,7 @@
       "jquery": "github:components/jquery@2.1.4",
       "jquery-mousewheel": "github:jquery/jquery-mousewheel@^3.1.13",
       "jquery-ui": "github:components/jqueryui@^1.11.4",
+      "lodash": "npm:lodash@^4.17.4",
       "lodash.clone": "npm:lodash.clone@^4.3.2",
       "lodash.clonedeep": "npm:lodash.clonedeep@^4.3.2",
       "lodash.debounce": "npm:lodash.debounce@^3.1.1",
