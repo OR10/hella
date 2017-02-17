@@ -128,12 +128,6 @@ class Project
     private $description;
 
     /**
-     * @var string
-     * @CouchDB\Field(type="boolean")
-     */
-    public $deleted;
-
-    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string $name
