@@ -134,19 +134,6 @@ class LabeledThingGroupGateway {
 
     return this._abortablePromisFactory(this._$q.all(promises));
   }
-
-  /**
-   * Creates a group of the given type and assigns the given labeled things to this group.
-   *
-   * @param {Task} task
-   * @param {string} type
-   * @param {Array.<LabeledThing>}labeledThings
-   */
-  createGroupOfTypeWithLabeledThings(task, type, labeledThings) {
-    return this.createLabeledThingGroupOfType(task, type).then(group => {
-      return this.assignLabeledThingsToLabeledThingGroup(labeledThings, group);
-    });
-  }
 }
 
 LabeledThingGroupGateway.$inject = [
