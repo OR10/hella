@@ -8,6 +8,7 @@ import KeyboardShortcutService from 'Application/Common/Services/KeyboardShortcu
 describe('KeyboardShortcutService', () => {
   let keyboardShortcutService;
   let hotkeys;
+  let registeredHotkeys;
 
   beforeEach(() => {
     const featureFlags = {
@@ -18,13 +19,20 @@ describe('KeyboardShortcutService', () => {
     commonModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.Common');
 
+    registeredHotkeys = [];
     module($provide => {
       $provide.value('hotkeys', {
-        add: jasmine.createSpy('add').and.callFake(() => {
+        add: jasmine.createSpy('add').and.callFake(hotkeyConfig => {
+          registeredHotkeys.push(hotkeyConfig);
         }),
-        del: jasmine.createSpy('add').and.callFake(() => {
+        del: jasmine.createSpy('del').and.callFake(combo => {
+          const indexToDelete = registeredHotkeys.findIndex(candidate => candidate.combo === combo);
+          if (indexToDelete !== -1) {
+            registeredHotkeys.splice(indexToDelete, 1);
+          }
         }),
       });
+
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
@@ -43,74 +51,138 @@ describe('KeyboardShortcutService', () => {
     expect(keyboardShortcutService instanceof KeyboardShortcutService).toEqual(true);
   });
 
-  it('should add a hotkey an push the context', () => {
-    const context = 'context';
+  it('should allow registration of non-blocking overlay', () => {
+    const overlayIdentifier = 'some-overlay';
     const hotkeyConfig = {combo: 'a'};
 
-    keyboardShortcutService.addHotkey(context, hotkeyConfig);
-    keyboardShortcutService.pushContext(context);
+    keyboardShortcutService.registerOverlay(overlayIdentifier, false);
+    expect(
+      keyboardShortcutService.isOverlayRegistered(overlayIdentifier)
+    ).toBeTruthy();
+  });
+
+  it('should allow registration of blocking overlay', () => {
+    const overlayIdentifier = 'some-overlay';
+    const hotkeyConfig = {combo: 'a'};
+
+    keyboardShortcutService.registerOverlay(overlayIdentifier, true);
+    expect(
+      keyboardShortcutService.isOverlayRegistered(overlayIdentifier)
+    ).toBeTruthy();
+  });
+
+  it('should allow registration of a shortcut', () => {
+    const overlayIdentifier = 'some-overlay';
+    const hotkeyConfig = {combo: 'a'};
+
+    keyboardShortcutService.registerOverlay(overlayIdentifier);
+    keyboardShortcutService.addHotkey(overlayIdentifier, hotkeyConfig);
 
     expect(hotkeys.add).toHaveBeenCalledWith(hotkeyConfig);
   });
 
-  it('should add hotkeys and push the context', () => {
-    const context = 'context';
-    const hotkeyConfig1 = {combo: 'a'};
-    const hotkeyConfig2 = {combo: 'b'};
+  it('should allow registration of multiple shortcuts in one overlay', () => {
+    const overlayIdentifier = 'some-overlay';
+    const hotkeyConfigA = {combo: 'a'};
+    const hotkeyConfigB = {combo: 'b'};
 
-    keyboardShortcutService.addHotkey(context, hotkeyConfig1);
-    keyboardShortcutService.addHotkey(context, hotkeyConfig2);
-    keyboardShortcutService.pushContext(context);
+    keyboardShortcutService.registerOverlay(overlayIdentifier);
+    keyboardShortcutService.addHotkey(overlayIdentifier, hotkeyConfigA);
+    keyboardShortcutService.addHotkey(overlayIdentifier, hotkeyConfigB);
 
-    expect(hotkeys.add).toHaveBeenCalledWith(hotkeyConfig1);
-    expect(hotkeys.add).toHaveBeenCalledWith(hotkeyConfig2);
+    expect(registeredHotkeys).toEqual([
+      hotkeyConfigA,
+      hotkeyConfigB
+    ]);
   });
 
-  it('should add hotkeys to different context and change the context', () => {
-    const context1 = 'context';
-    const context2 = 'context';
-    const hotkeyConfig1 = {combo: 'a'};
-    const hotkeyConfig2 = {combo: 'b'};
+  it('should merge non blocking overlays', () => {
+    const overlayIdentifierA = 'first-overlay';
+    const overlayIdentifierB = 'second-overlay';
+    const hotkeyConfigA = {combo: 'a'};
+    const hotkeyConfigB = {combo: 'b'};
 
-    keyboardShortcutService.addHotkey(context1, hotkeyConfig1);
-    keyboardShortcutService.pushContext(context1);
+    keyboardShortcutService.registerOverlay(overlayIdentifierA, false);
+    keyboardShortcutService.addHotkey(overlayIdentifierA, hotkeyConfigA);
+    keyboardShortcutService.registerOverlay(overlayIdentifierB, false);
+    keyboardShortcutService.addHotkey(overlayIdentifierB, hotkeyConfigB);
 
-    expect(hotkeys.add).toHaveBeenCalledWith(hotkeyConfig1);
-
-    keyboardShortcutService.addHotkey(context2, hotkeyConfig2);
-    keyboardShortcutService.pushContext(context2);
-
-    expect(hotkeys.del).toHaveBeenCalledWith(hotkeyConfig1.combo);
-    expect(hotkeys.add).toHaveBeenCalledWith(hotkeyConfig2);
-
-    keyboardShortcutService.popContext(context2);
-
-    expect(hotkeys.del).toHaveBeenCalledWith(hotkeyConfig2.combo);
-    expect(hotkeys.add).toHaveBeenCalledWith(hotkeyConfig1);
+    expect(registeredHotkeys).toEqual([
+      hotkeyConfigA,
+      hotkeyConfigB
+    ]);
   });
 
-  it('should clear the context', () => {
-    const context1 = 'context';
-    const context2 = 'context';
-    const hotkeyConfig1 = {combo: 'a'};
-    const hotkeyConfig2 = {combo: 'b'};
+  it('should overwrite using blocking overlays', () => {
+    const overlayIdentifierA = 'first-overlay';
+    const overlayIdentifierB = 'second-overlay';
+    const hotkeyConfigA = {combo: 'a'};
+    const hotkeyConfigB = {combo: 'b'};
 
-    keyboardShortcutService.addHotkey(context1, hotkeyConfig1);
-    keyboardShortcutService.pushContext(context1);
+    keyboardShortcutService.registerOverlay(overlayIdentifierA, false);
+    keyboardShortcutService.addHotkey(overlayIdentifierA, hotkeyConfigA);
+    keyboardShortcutService.registerOverlay(overlayIdentifierB, true);
+    keyboardShortcutService.addHotkey(overlayIdentifierB, hotkeyConfigB);
 
-    expect(hotkeys.add).toHaveBeenCalledWith(hotkeyConfig1);
+    expect(registeredHotkeys).toEqual([
+      hotkeyConfigB
+    ]);
+  });
 
-    keyboardShortcutService.addHotkey(context2, hotkeyConfig2);
-    keyboardShortcutService.pushContext(context2);
+  it('should remove topmost overlay upon request', () => {
+    const overlayIdentifierA = 'first-overlay';
+    const overlayIdentifierB = 'second-overlay';
+    const hotkeyConfigA = {combo: 'a'};
+    const hotkeyConfigB = {combo: 'b'};
 
-    expect(hotkeys.del).toHaveBeenCalledWith(hotkeyConfig1.combo);
-    expect(hotkeys.add).toHaveBeenCalledWith(hotkeyConfig2);
+    keyboardShortcutService.registerOverlay(overlayIdentifierA, false);
+    keyboardShortcutService.addHotkey(overlayIdentifierA, hotkeyConfigA);
+    keyboardShortcutService.registerOverlay(overlayIdentifierB, false);
+    keyboardShortcutService.addHotkey(overlayIdentifierB, hotkeyConfigB);
 
-    keyboardShortcutService.clearContext(context1);
+    keyboardShortcutService.removeOverlayById(overlayIdentifierB);
 
-    expect(hotkeys.del).toHaveBeenCalledWith(hotkeyConfig1.combo);
-    expect(hotkeys.del).toHaveBeenCalledWith(hotkeyConfig2.combo);
+    expect(registeredHotkeys).toEqual([
+      hotkeyConfigA
+    ]);
+  });
 
-    expect(hotkeys.add).toHaveBeenCalledWith(hotkeyConfig2);
+  it('should remove lower level overlay upon request', () => {
+    const overlayIdentifierA = 'first-overlay';
+    const overlayIdentifierB = 'second-overlay';
+    const hotkeyConfigA = {combo: 'a'};
+    const hotkeyConfigB = {combo: 'b'};
+
+    keyboardShortcutService.registerOverlay(overlayIdentifierA, false);
+    keyboardShortcutService.addHotkey(overlayIdentifierA, hotkeyConfigA);
+    keyboardShortcutService.registerOverlay(overlayIdentifierB, false);
+    keyboardShortcutService.addHotkey(overlayIdentifierB, hotkeyConfigB);
+
+    keyboardShortcutService.removeOverlayById(overlayIdentifierA);
+
+    expect(registeredHotkeys).toEqual([
+      hotkeyConfigB
+    ]);
+  });
+
+  it('should only merge down to the first blocking overlay', () => {
+    const overlayIdentifierA = 'first-overlay';
+    const overlayIdentifierB = 'second-overlay';
+    const overlayIdentifierC = 'third-overlay';
+    const hotkeyConfigA = {combo: 'a'};
+    const hotkeyConfigB = {combo: 'b'};
+    const hotkeyConfigC = {combo: 'c'};
+
+    keyboardShortcutService.registerOverlay(overlayIdentifierA, false);
+    keyboardShortcutService.addHotkey(overlayIdentifierA, hotkeyConfigA);
+    keyboardShortcutService.registerOverlay(overlayIdentifierB, true);
+    keyboardShortcutService.addHotkey(overlayIdentifierB, hotkeyConfigB);
+    keyboardShortcutService.registerOverlay(overlayIdentifierC, false);
+    keyboardShortcutService.addHotkey(overlayIdentifierC, hotkeyConfigC);
+
+    expect(registeredHotkeys).toEqual([
+      hotkeyConfigB,
+      hotkeyConfigC
+    ]);
   });
 });
