@@ -10,6 +10,7 @@ import hitResolver from '../Support/HitResolver';
 import CreationToolActionStruct from './ToolActionStructs/CreationToolActionStruct';
 import MovingToolActionStruct from './ToolActionStructs/MovingToolActionStruct';
 import ScalingToolActionStruct from './ToolActionStructs/ScalingToolActionStruct';
+import KeyboardToolActionStruct from './ToolActionStructs/KeyboardToolActionStruct';
 
 /**
  * A multi tool for handling multiple functionalities
@@ -24,18 +25,11 @@ class MultiTool extends PaperTool {
    * @param {$rootScope.Scope} $scope
    * @param {$q} $q
    * @param {LoggerService} loggerService
-   * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {ToolService} toolService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
    */
-  constructor(drawingContext, $scope, $q, loggerService, keyboardShortcutService, toolService, viewerMouseCursorService) {
+  constructor(drawingContext, $scope, $q, loggerService, toolService, viewerMouseCursorService) {
     super(drawingContext, $scope, $q, loggerService);
-
-    /**
-     * @type {KeyboardShortcutService}
-     * @private
-     */
-    this._keyboardShortcutService = keyboardShortcutService;
 
     /**
      * @type {ToolService}
@@ -55,13 +49,26 @@ class MultiTool extends PaperTool {
      * @type {Tool}
      * @private
      */
-    this._activeTool = null;
+    this._activePaperTool = null;
+
+    /**
+     * Currently active keyboard tool
+     * @type {KeyboardTool|null}
+     * @private
+     */
+    this._keyboardTool = null;
 
     /**
      * @type {boolean}
      * @private
      */
-    this._toolDelegationInvoked = false;
+    this._paperToolDelegationInvoked = false;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._keyboardToolDelegationInvoked = false;
   }
 
   /**
@@ -70,21 +77,67 @@ class MultiTool extends PaperTool {
    */
   invoke(toolActionStruct) {
     const promise = this._invoke(toolActionStruct);
+    this._activePaperTool = null;
+    this._keyboardTool = null;
+    this._paperToolDelegationInvoked = false;
+    this._keyboardToolDelegationInvoked = false;
     // if (!this._readOnly) {
     //   // Register Keyboard shortcuts
     //   this._registerShortcuts();
     // }
     // this._initializeOptions(options);
 
+    const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
+    if (selectedPaperShape !== null) {
+
+      const keyboardTool = this._toolService.getTool(this._context, requirementsShape, 'keyboard');
+      if (keyboardTool !== null) {
+        this._invokeKeyboardToolDelegation(keyboardTool, selectedPaperShape);
+      }
+    }
+
     return promise;
   }
 
+  /**
+   * @private
+   */
   abort() {
-    if (this._toolDelegationInvoked) {
-      this._activeTool.abort();
+    if (this._paperToolDelegationInvoked) {
+      this._paperToolDelegationInvoked = false;
+      this._activePaperTool.abort();
+    }
+
+    if (this._keyboardToolDelegationInvoked) {
+      this._keyboardToolDelegationInvoked = false;
+      this._keyboardTool.abort();
     }
 
     super.abort();
+  }
+
+  /**
+   * @private
+   */
+  _reject(reason) {
+    if (this._keyboardToolDelegationInvoked) {
+      this._keyboardToolDelegationInvoked = false;
+      this._keyboardTool.abort();
+    }
+
+    super._reject(reason);
+  }
+
+  /**
+   * @private
+   */
+  _complete(result) {
+    if (this._keyboardToolDelegationInvoked) {
+      this._keyboardToolDelegationInvoked = false;
+      this._keyboardTool.abort();
+    }
+
+    super._complete(result);
   }
 
   // /**
@@ -105,7 +158,7 @@ class MultiTool extends PaperTool {
    */
   _invokeCreationToolDelegation(requirementsShape) {
     const tool = this._getToolForRequirementsShape(requirementsShape);
-    this._invokeToolDelegation(tool, 'creation', null, null);
+    this._invokePaperToolDelegation(tool, 'creation', null, null);
   }
 
   /**
@@ -140,8 +193,8 @@ class MultiTool extends PaperTool {
 
     const point = event.point;
 
-    if (this._toolDelegationInvoked) {
-      this._activeTool.onMouseDown(event);
+    if (this._paperToolDelegationInvoked) {
+      this._activePaperTool.onMouseDown(event);
       return;
     }
 
@@ -157,7 +210,7 @@ class MultiTool extends PaperTool {
       // Hit nothing
       if (!hitResult) {
         this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
-        this._activeTool.onMouseDown(event);
+        this._activePaperTool.onMouseDown(event);
         return;
       }
 
@@ -166,8 +219,29 @@ class MultiTool extends PaperTool {
       const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
 
       // Invoke mutation tool
-      this._invokeToolDelegation(this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier), actionIdentifier, hitShape, hitHandle);
-      this._activeTool.onMouseDown(event);
+      this._invokePaperToolDelegation(this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier), actionIdentifier, hitShape, hitHandle);
+      this._activePaperTool.onMouseDown(event);
+    });
+  }
+
+  /**
+   * @param {KeyboardTool} tool
+   * @param {PaperShape} shape
+   * @private
+   */
+  _invokeKeyboardToolDelegation(tool, shape) {
+    this._keyboardToolDelegationInvoked = true;
+    const {viewport, delegatedOptions} = this._toolActionStruct;
+    const struct = new KeyboardToolActionStruct(delegatedOptions, viewport, shape);
+    const promise = tool.invokeKeyboardShortcuts(struct);
+    this._keyboardTool = tool;
+
+    promise.then(paperShape => {
+      this._keyboardToolDelegationInvoked = false;
+      if (this._paperToolDelegationInvoked) {
+        this._activePaperTool.abort();
+      }
+      this._complete({actionIdentifier: 'keyboard', paperShape});
     });
   }
 
@@ -178,8 +252,8 @@ class MultiTool extends PaperTool {
    * @param {Handle} handle
    * @private
    */
-  _invokeToolDelegation(tool, actionIdentifier, shape, handle) {
-    this._toolDelegationInvoked = true;
+  _invokePaperToolDelegation(tool, actionIdentifier, shape, handle) {
+    this._paperToolDelegationInvoked = true;
     const {viewport, video, task, framePosition, requirementsThingOrGroupId, delegatedOptions} = this._toolActionStruct;
     let promise = null;
     let struct = null;
@@ -221,13 +295,13 @@ class MultiTool extends PaperTool {
         throw new Error(`Unknown actionIdentifier: ${actionIdentifier}`);
     }
 
-    this._activeTool = tool;
+    this._activePaperTool = tool;
 
     promise.then(paperShape => {
-      this._toolDelegationInvoked = false;
+      this._paperToolDelegationInvoked = false;
       this._complete({actionIdentifier, paperShape});
     }).catch(reason => {
-      this._toolDelegationInvoked = false;
+      this._paperToolDelegationInvoked = false;
       this._reject(reason);
     });
   }
@@ -241,8 +315,8 @@ class MultiTool extends PaperTool {
       return;
     }
 
-    if (this._toolDelegationInvoked) {
-      this._activeTool.onMouseMove(event);
+    if (this._paperToolDelegationInvoked) {
+      this._activePaperTool.onMouseMove(event);
       return;
     }
 
@@ -307,8 +381,8 @@ class MultiTool extends PaperTool {
       return;
     }
 
-    if (this._toolDelegationInvoked) {
-      this._activeTool.onMouseUp(event);
+    if (this._paperToolDelegationInvoked) {
+      this._activePaperTool.onMouseUp(event);
       return;
     }
 
@@ -343,8 +417,8 @@ class MultiTool extends PaperTool {
       return;
     }
 
-    if (this._toolDelegationInvoked) {
-      this._activeTool.onMouseDrag(event);
+    if (this._paperToolDelegationInvoked) {
+      this._activePaperTool.onMouseDrag(event);
     }
   }
 
@@ -362,56 +436,11 @@ class MultiTool extends PaperTool {
       requirementsThingOrGroupId
     );
 
-    return this._activeTool.invokeDefaultShapeCreation(struct);
+    return this._activePaperTool.invokeDefaultShapeCreation(struct);
   }
 
 
   // _registerShortcuts() {
-  //   const keyboardMoveDistance = 1;
-  //   const keyboardFastMoveDistance = 10;
-  //   this._keyboardShortcutService.addHotkey('labeling-task', {
-  //     combo: 'up',
-  //     description: 'Move selected shape up',
-  //     callback: () => this._moveSelectedShapeBy(0, keyboardMoveDistance * -1),
-  //   });
-  //   this._keyboardShortcutService.addHotkey('labeling-task', {
-  //     combo: 'shift+up',
-  //     description: 'Move selected shape up (fast)',
-  //     callback: () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance * -1),
-  //   });
-  //
-  //   this._keyboardShortcutService.addHotkey('labeling-task', {
-  //     combo: 'down',
-  //     description: 'Move selected shape down',
-  //     callback: () => this._moveSelectedShapeBy(0, keyboardMoveDistance),
-  //   });
-  //   this._keyboardShortcutService.addHotkey('labeling-task', {
-  //     combo: 'shift+down',
-  //     description: 'Move selected shape down (fast)',
-  //     callback: () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance),
-  //   });
-  //
-  //   this._keyboardShortcutService.addHotkey('labeling-task', {
-  //     combo: 'left',
-  //     description: 'Move selected shape left',
-  //     callback: () => this._moveSelectedShapeBy(keyboardMoveDistance * -1, 0),
-  //   });
-  //   this._keyboardShortcutService.addHotkey('labeling-task', {
-  //     combo: 'shift+left',
-  //     description: 'Move selected shape left (fast)',
-  //     callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance * -1, 0),
-  //   });
-  //
-  //   this._keyboardShortcutService.addHotkey('labeling-task', {
-  //     combo: 'right',
-  //     description: 'Move selected shape right',
-  //     callback: () => this._moveSelectedShapeBy(keyboardMoveDistance, 0),
-  //   });
-  //   this._keyboardShortcutService.addHotkey('labeling-task', {
-  //     combo: 'shift+right',
-  //     description: 'Move selected shape right (fast)',
-  //     callback: () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0),
-  //   });
   //
   //   // @TODO: Only register if we are really working with a cuboid;
   //   this._registerCuboidShortcuts();
@@ -595,33 +624,6 @@ class MultiTool extends PaperTool {
   //   }
   // }
   //
-  // /**
-  //  * @param {Number} deltaX
-  //  * @param {Number} deltaY
-  //  * @private
-  //  */
-  // _moveSelectedShapeBy(deltaX, deltaY) {
-  //   if (!this._enabled) {
-  //     return;
-  //   }
-  //
-  //   const paperShape = this._$scope.vm.selectedPaperShape;
-  //   if (!paperShape) {
-  //     return;
-  //   }
-  //
-  //   this._context.withScope(scope => {
-  //     paperShape.moveTo(
-  //       new paper.Point(
-  //         paperShape.position.x + deltaX,
-  //         paperShape.position.y + deltaY
-  //       ),
-  //       this._options
-  //     );
-  //     scope.view.update();
-  //     this.emit('shape:update', paperShape);
-  //   });
-  // }
 }
 
 /**
@@ -682,7 +684,6 @@ MultiTool.$inject = [
   '$rootScope',
   '$q',
   'loggerService',
-  'keyboardShortcutService',
   'toolService',
   'viewerMouseCursorService',
 ];
