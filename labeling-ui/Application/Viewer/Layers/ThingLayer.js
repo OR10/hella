@@ -11,7 +11,8 @@ import ToolAbortedError from '../Tools/Errors/ToolAbortedError';
 import NotModifiedError from '../Tools/Errors/NotModifiedError';
 
 import PaperShape from '../Shapes/PaperShape';
-import hitResolver from '../Support/HitResolver';
+import PaperThingShape from '../Shapes/PaperThingShape';
+import PaperGroupShape from '../Shapes/PaperGroupShape';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -133,6 +134,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._lastMouseDownEvent = null;
 
+    $scope.$watchCollection('vm.paperGroupShapes', (newLabeledThingGroupsInFrame, oldLabeledThingGroupsInFrame) => {
+      const oldSet = new Set(oldLabeledThingGroupsInFrame);
+
+      const addedLabeledThingGroupsInFrame = newLabeledThingGroupsInFrame.filter(item => !oldSet.has(item));
+      // const removedLabeledThingGroupsInFrame = oldLabeledThingGroupsInFrame.filter(item => !newSet.has(item));
+
+      this.addLabeledThingGroupsInFrame(addedLabeledThingGroupsInFrame, false);
+
+      // this._applyHiddenLabeledThingsInFrameFilter();
+    });
 
     $scope.$watchCollection('vm.paperThingShapes', (newPaperThingShapes, oldPaperThingShapes) => {
       const oldSet = new Set(oldPaperThingShapes);
@@ -290,6 +301,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
             this._$scope.vm.selectedPaperShape = paperShape;
             this.emit('thing:create', paperShape);
             break;
+          case paperShape instanceof PaperGroupShape:
+            throw new Error('Cannot create default shape for groups!');
+            break;
           default:
             throw new Error(`Can not handle shape creation of type: ${paperShape}`);
         }
@@ -351,6 +365,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
               this._$scope.vm.selectedPaperShape = paperShape;
               this.emit('thing:create', paperShape);
               break;
+            case paperShape instanceof PaperGroupShape:
+              this._$scope.vm.paperGroupShapes.push(paperShape);
+              this._$scope.vm.selectedPaperShape = paperShape;
+              this.emit('group:create', paperShape);
+              break;
             default:
               throw new Error(`Can not handle shape creation of type: ${paperShape}`);
           }
@@ -360,6 +379,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
           switch (true) {
             case paperShape instanceof PaperThingShape:
               this.emit('thing:update', paperShape);
+              break;
+            case paperShape instanceof PaperGroupShape:
+              this.emit('group:update', paperShape);
               break;
             default:
               throw new Error(`Can not handle shape update of type: ${paperShape}`);
@@ -510,6 +532,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
       });
     }
   }
+
+  /**
+   * Adds the given thing group to this layer and draws its respective shapes
+   *
+   * @param {Array<LabeledThingGroupInFrame>} labeledThingGroupsInFrame
+   * @param {boolean?} update
+   */
+  addLabeledThingGroupsInFrame(labeledThingGroupsInFrame, update = true) {
+    labeledThingGroupsInFrame.forEach(labeledThingGroupInFrame => {
+      this.addLabeledThingGroupInFrame(labeledThingGroupInFrame, false);
     });
 
     if (update) {
@@ -554,20 +586,39 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._updateSelectedShapeAndView(paperThingShape, selectedByUserOrAcrossFrameChange, false);
   }
 
+  /**
+   * Add a single {@link LabeledThingGroupInFrame} to the layer
+   *
+   * Optionally it may be specified if the view should be updated after adding the new shapes
+   * By default it will be rerendered.
+   *
+   * @param {PaperGroupShape} paperGroupShape
+   * @param {boolean?} update
+   * @param {boolean|undefined} selected
+   * @return {Array.<paper.Shape>}
+   */
+  addLabeledThingGroupInFrame(paperGroupShape, update = true, selected = undefined) {
+    const selectedPaperShape = this._$scope.vm.selectedPaperShape;
+    const selectedLabeledThingGroupInFrame = selectedPaperShape ? selectedPaperShape.labeledThingGroupInFrame : null;
+    const selectedLabeledThingGroup = selectedLabeledThingGroupInFrame ? selectedLabeledThingGroupInFrame.labeledThingGroup : null;
+
+    // Transport selection between frame changes
+    let selectedByUserOrAcrossFrameChange = selected;
+    if (selected === undefined) {
+      selectedByUserOrAcrossFrameChange = (
+        selectedLabeledThingGroupInFrame
+        && selectedLabeledThingGroupInFrame !== paperGroupShape.labeledThingGroupInFrame
+        && selectedLabeledThingGroup.id === paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id
+      );
+    }
+
     if (update) {
       this._context.withScope(scope => {
         scope.view.update();
       });
     }
 
-    return paperShapes;
-  }
-
-  /**
-   * @private
-   */
-
-
+    this._updateSelectedShapeAndView(paperGroupShape, selectedByUserOrAcrossFrameChange, false);
   }
 
   /**
