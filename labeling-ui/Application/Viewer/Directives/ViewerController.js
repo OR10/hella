@@ -731,6 +731,8 @@ class ViewerController {
       this._debouncedOnThingUpdate.debounce(shape, frameIndex);
     });
 
+    this.thingLayer.on('group:create', shape => this._onGroupCreate(shape));
+
     this._layerManager.addLayer('annotations', this.thingLayer);
 
     this._$scope.$watchGroup(
@@ -864,17 +866,28 @@ class ViewerController {
         this.framePosition.lock.release();
       });
 
+    const labeledThingGroupInFramePromise = this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(this.task, frameIndex)
+      .aborted(() => {
+        if (abortRelease) {
+          return;
+        }
+        abortRelease = true;
+        this.framePosition.lock.release();
+      });
+
 
     this._$q.all(
       [
         backendBufferPromise,
         labeledThingInFrameBufferPromise,
+        labeledThingGroupInFramePromise,
         this._fetchGhostedLabeledThingInFrame(frameIndex),
       ]
     ).then(
-      ([newFrameImage, labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
+      ([newFrameImage, labeledThingsInFrame, labeledThingGroupsInFrame, ghostedLabeledThingsInFrame]) => {
         this._frameChangeInProgress = false;
         this.paperThingShapes = [];
+        this.paperGroupShapes = [];
         this.labeledFrame = null;
 
         // Update background
@@ -956,15 +969,14 @@ class ViewerController {
    * @private
    */
   _extractAndStorePaperGroupShapes(labeledThingGroupsInFrame) {
-    // debugger;
     const newPaperGroupShapes = labeledThingGroupsInFrame.map(
       ltgif => {
         const shapesBelongingToGroup = this.paperThingShapes.filter(paperThingShape => {
-          return paperThingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(ltgif.id) !== -1;
+          return paperThingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(ltgif.labeledThingGroup.id) !== -1;
         });
 
         return this._thingLayerContext.withScope(() => {
-          return this._paperShapeFactory.createPaperGroupShape(ltgif.labeledThingGroupInFrame, shapesBelongingToGroup);
+          return this._paperShapeFactory.createPaperGroupShape(ltgif, shapesBelongingToGroup);
         });
       }
     );
@@ -1150,6 +1162,44 @@ class ViewerController {
 
     this.bookmarkedFrameIndex = this.framePosition.position;
   }
+
+  /**
+   * Create a new {@link LabeledThingInFrame} with a corresponding {@link LabeledThing} and store both
+   * {@link LabeledObject}s to the backend
+   *
+   * @returns {AbortablePromise.<LabeledThingInFrame>}
+   * @private
+   */
+  _onGroupCreate(paperShape) {
+    this._$rootScope.$emit('shape:add:before');
+
+    let shapes = this._labeledThingGroupService.getShapesWithinBounds(this._thingLayerContext, paperShape.bounds);
+    // Service finds the group shape itself, so we need to remove the shape id from the array
+    shapes = shapes.filter(shape => shape.id !== paperShape.id);
+    const labeledThings = shapes.map(shape => shape.labeledThingInFrame.labeledThing);
+
+    this._labeledThingGroupGateway.createLabeledThingGroupOfType(this.task, paperShape.labeledThingGroupInFrame.labeledThingGroup.type)
+      .then(labeledThingGroup => {
+        return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup);
+      })
+      .catch(() => {
+        this._modalService.info(
+          {
+            title: 'Error',
+            headline: `There was an error saving the shape`,
+            message: `The shape could not be created. Please contact the label coordinator and reload the page to continue with the labeling process!`,
+            confirmButtonText: 'Reload',
+          },
+          () => window.location.reload(),
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
+      })
+      .then(() => {
+        this._$rootScope.$emit('shape:add:after', paperShape);
       });
 
     this.bookmarkedFrameIndex = this.framePosition.position;
