@@ -71,8 +71,7 @@ class ToolService {
       'polygon-scale': PolygonScaleTool,
       'polygon-move': PolygonMoveTool,
       'group-rectangle-creation': GroupCreationTool,
-      'group-rectangle-scaling': NoOperationTool,
-      'group-rectangle-moving': NoOperationTool,
+      'group-rectangle-none': NoOperationTool,
     };
   }
 
