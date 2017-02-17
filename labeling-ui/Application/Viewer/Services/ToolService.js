@@ -2,6 +2,7 @@ import DeepMap from '../../Common/Helpers/DeepMap';
 import RectangleMoveTool from '../Tools/Rectangle/RectangleMoveTool';
 import RectangleScaleTool from '../Tools/Rectangle/RectangleScaleTool';
 import RectangleDrawingTool from '../Tools/Rectangle/RectangleDrawingTool';
+import RectangleKeyboardTool from '../Tools/Rectangle/RectangleKeyboardTool';
 import PedestrianMoveTool from '../Tools/Pedestrian/PedestrianMoveTool';
 import PedestrianScaleTool from '../Tools/Pedestrian/PedestrianScaleTool';
 import PedestrianDrawingTool from '../Tools/Pedestrian/PedestrianDrawingTool';
@@ -11,7 +12,7 @@ import CuboidMoveTool from '../Tools/Cuboid/CuboidMoveTool';
 import PolygonDrawingTool from '../Tools/Polygon/PolygonDrawingTool';
 import PolygonMoveTool from '../Tools/Polygon/PolygonMoveTool';
 import PolygonScaleTool from '../Tools/Polygon/PolygonScaleTool';
-import NoOperationTool from '../Tools/NoOperationTool';
+import NoOperationPaperTool from '../Tools/NoOperationPaperTool';
 
 class ToolService {
   /**
@@ -60,6 +61,7 @@ class ToolService {
       RectangleMoveTool,
       RectangleScaleTool,
       RectangleDrawingTool,
+      RectangleKeyboardTool,
       PedestrianMoveTool,
       PedestrianScaleTool,
       PedestrianDrawingTool,
@@ -69,7 +71,7 @@ class ToolService {
       PolygonDrawingTool,
       PolygonScaleTool,
       PolygonMoveTool,
-      NoOperationTool,
+      NoOperationPaperTool,
     ];
   }
 

@@ -4,14 +4,14 @@ import NotModifiedError from './Errors/NotModifiedError';
 /**
  * @abstract
  */
-class NoOperationTool extends PaperTool {
+class NoOperationPaperTool extends PaperTool {
   constructor(drawingContext, $scope, $q, loggerService) {
     super(drawingContext, $scope, $q, loggerService);
   }
 
   _invokeAndRejectWithNotModified(toolActionStruct) {
     const promise = this._invoke(toolActionStruct);
-    this._reject(new NotModifiedError('NoOperationTool did not modify anything'));
+    this._reject(new NotModifiedError('NoOperationPaperTool did not modify anything'));
 
     return promise;
   }
@@ -74,8 +74,8 @@ class NoOperationTool extends PaperTool {
  * @abstract
  * @static
  */
-NoOperationTool.getToolName = function () {
-  return 'NoOperationTool';
+NoOperationPaperTool.getToolName = function () {
+  return 'NoOperationPaperTool';
 };
 
 /**
@@ -91,7 +91,7 @@ NoOperationTool.getToolName = function () {
  * @abstract
  * @static
  */
-NoOperationTool.isShapeClassSupported = function (shapeClass) {
+NoOperationPaperTool.isShapeClassSupported = function (shapeClass) {
   return true;
 };
 
@@ -108,15 +108,19 @@ NoOperationTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-NoOperationTool.isActionIdentifierSupported = function (actionIdentifier) {
-  return true;
+NoOperationPaperTool.isActionIdentifierSupported = function (actionIdentifier) {
+  return [
+    'creation',
+    'move',
+    'scale',
+  ].includes(actionIdentifier);
 };
 
-NoOperationTool.$inject = [
+NoOperationPaperTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
   'loggerService',
 ];
 
-export default NoOperationTool;
+export default NoOperationPaperTool;
