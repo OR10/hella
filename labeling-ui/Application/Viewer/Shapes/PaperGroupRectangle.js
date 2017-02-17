@@ -147,7 +147,7 @@ class PaperGroupRectangle extends PaperGroupShape {
    * @returns {string}
    */
   getCursor(handle, mouseDown = false) {
-      return 'none';
+      return 'pointer';
   }
 
   /**
