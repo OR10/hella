@@ -268,10 +268,10 @@ class TaskController {
      */
     this.thingLayer = null;
 
-    keyboardShortcutService.pushContext('labeling-task');
+    keyboardShortcutService.registerOverlay('labeling-task', true);
 
     $scope.$on('$destroy', () => {
-      keyboardShortcutService.clearContext('labeling-task');
+      keyboardShortcutService.removeOverlayById('labeling-task');
     });
 
     this._labelStructurePromise = this._initializeLabelStructure();
