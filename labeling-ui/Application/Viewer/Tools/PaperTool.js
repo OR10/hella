@@ -201,8 +201,10 @@ class PaperTool extends Tool {
    * @protected
    */
   _reject(reason) {
-    this._disableInternalPaperTool();
-    super._reject(reason);
+    if (this._invoked === true) {
+      this._disableInternalPaperTool();
+      super._reject(reason);
+    }
   }
 
   /**
@@ -213,8 +215,10 @@ class PaperTool extends Tool {
    * @protected
    */
   _complete(result) {
-    this._disableInternalPaperTool();
-    return super._complete(result);
+    if (this._invoked === true) {
+      this._disableInternalPaperTool();
+      return super._complete(result);
+    }
   }
 
   _disableInternalPaperTool() {

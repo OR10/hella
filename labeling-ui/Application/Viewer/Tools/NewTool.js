@@ -47,6 +47,12 @@ class Tool {
      * @protected
      */
     this._toolActionStruct = null;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._invoked = false;
   }
 
   /**
@@ -59,12 +65,15 @@ class Tool {
    * @protected
    */
   _invoke(toolActionStruct) {
+    if (this._invoked === true) {
+      throw new Error('Tool already invoked!');
+    }
     const staticSelf = this.constructor;
     this._logger.groupStartOpened('tool:invocation', `Invocation ${staticSelf.getToolName()}`, toolActionStruct);
 
     this._toolActionStruct = toolActionStruct;
     this._deferred = this._$q.defer();
-
+    this._invoked = true;
     return this._deferred.promise;
   }
 
@@ -82,13 +91,13 @@ class Tool {
    * @protected
    */
   _reject(reason) {
-    const staticSelf = this.constructor;
-    this._logger.log('tool:invocation', `Rejected ${staticSelf.getToolName()}`, reason);
-    this._logger.groupEnd('tool:invocation');
+    if (this._deferred !== null && this._invoked === true) {
+      const staticSelf = this.constructor;
+      this._logger.log('tool:invocation', `Rejected ${staticSelf.getToolName()}`, reason);
+      this._logger.groupEnd('tool:invocation');
 
-    if (this._deferred !== null) {
+      this._invoked = false;
       this._deferred.reject(reason);
-      this._deferred = null;
     }
   }
 
@@ -100,15 +109,18 @@ class Tool {
    * @protected
    */
   _complete(result) {
-    const staticSelf = this.constructor;
-    this._logger.log('tool:invocation', `Resolved ${staticSelf.getToolName()}`, result);
-    this._logger.groupEnd('tool:invocation');
+    if (this._invoked === true) {
+      const staticSelf = this.constructor;
+      this._logger.log('tool:invocation', `Resolved ${staticSelf.getToolName()}`, result);
+      this._logger.groupEnd('tool:invocation');
 
-    this._deferred.resolve(result);
-    const promise = this._deferred.promise;
-    this._deferred = null;
+      this._invoked = false;
+      this._deferred.resolve(result);
+      const promise = this._deferred.promise;
+      this._deferred = null;
 
-    return promise;
+      return promise;
+    }
   }
 
   /**
