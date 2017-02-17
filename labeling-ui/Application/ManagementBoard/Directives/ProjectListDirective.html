@@ -114,11 +114,13 @@
                 </button>
 
                 <button tooltip="Delete this Project. Warning: All data related to this project will be deleted and they are no longer available."
-                        ng-if="vm.userPermissions.canDeleteProject && project.status === 'deleted'"
+                        ng-if="vm.userPermissions.canDeleteProject && project.status === 'deleted' && project.deletedState === 'unaccepted'"
                         ng-click="vm.deleteProject(project.id, project.name)"
                 >
                     <i class="fa fa-trash-o icon-fa warning-color"></i>
                 </button>
+                <i ng-if="vm.userPermissions.canDeleteProject && project.status === 'deleted' && (project.deletedState === 'pending' || project.deletedState === 'in_progress')"
+                   class="fa fa-spin fa-spinner"></i>
             </td>
         </tr>
         </tbody>

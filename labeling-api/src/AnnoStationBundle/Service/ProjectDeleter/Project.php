@@ -50,6 +50,9 @@ class Project
 
     public function delete(Model\Project $project)
     {
+        $project->setDeletedState(Model\Project::DELETED_IN_PROGRESS);
+        $this->projectFacade->save($project);
+
         $this->exportsDeleter->delete($project);
         $this->reportsDeleter->delete($project);
         $this->labelingTasksDeleter->delete($project);
