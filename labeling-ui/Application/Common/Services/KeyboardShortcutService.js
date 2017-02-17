@@ -31,6 +31,12 @@ class KeyboardShortcutService {
      * @private
      */
     this._disabled = false;
+
+    /**
+     * @type {Set.<string>}
+     * @private
+     */
+    this._activatedCombos = new Set();
   }
 
   /**
@@ -86,6 +92,9 @@ class KeyboardShortcutService {
     });
   }
 
+  /**
+   * @param {string} overlayIdentifier
+   */
   removeOverlayById(overlayIdentifier) {
     this._logger.log('keyboardShortcut:overlay', `Remove overlay by id '${overlayIdentifier}'`);
     this._overlays = this._overlays.filter(
@@ -96,6 +105,18 @@ class KeyboardShortcutService {
   }
 
   /**
+   * @param {string} overlayIdentifier
+   * @returns {boolean}
+   */
+  isOverlayRegistered(overlayIdentifier) {
+    const overlay = this._overlays.find(
+      candidate => candidate.id === overlayIdentifier
+    );
+
+    return overlay !== undefined;
+  }
+
+  /**
    * @private
    */
   _refreshAllHotkeys() {
@@ -103,25 +124,12 @@ class KeyboardShortcutService {
     this._registerAllHotkeys();
   }
 
-  /**
+/**
    * @private
    */
   _deleteAllHotkeys() {
-    this._overlays.forEach(
-      overlay => this._deleteHotkeysForOverlay(overlay)
-    );
-  }
-
-  /**
-   * @param {{id: string, hotkeyConfigs: Array.<Object>, blocking: boolean}} overlay
-   * @private
-   */
-  _deleteHotkeysForOverlay(overlay) {
-    overlay.hotkeyConfigs.forEach(
-      hotkeyConfig => {
-        this._logger.log('keyboardShortcut:debug', `Deactivating shortcut ${hotkeyConfig.combo}`);
-        this._hotkeys.del(hotkeyConfig.combo);
-      }
+    this._activatedCombos.forEach(
+      combo => this._deactivateHotkey(combo)
     );
   }
 
@@ -132,11 +140,13 @@ class KeyboardShortcutService {
     const firstBlockerIndex = this._overlays.findIndex(
       (overlay, index) => overlay.blocking === true || index === this._overlays.length - 1
     );
-    this._overlays
-      .slice(0, firstBlockerIndex + 1)
-      .forEach(
-        overlay => this._registerHotkeysForOverlay(overlay)
-      );
+
+    let overlays = [...this._overlays];
+    overlays = overlays.slice(0, firstBlockerIndex + 1);
+    overlays.reverse();
+    overlays.forEach(
+      overlay => this._registerHotkeysForOverlay(overlay)
+    );
   }
 
   /**
@@ -145,11 +155,26 @@ class KeyboardShortcutService {
    */
   _registerHotkeysForOverlay(overlay) {
     overlay.hotkeyConfigs.forEach(
-      hotkeyConfig => {
-        this._logger.log('keyboardShortcut:debug', `Activating shortcut ${hotkeyConfig.combo}`);
-        this._hotkeys.add(hotkeyConfig);
-      }
+      hotkeyConfig => this._activateHotkey(hotkeyConfig)
     );
+  }
+
+  /**
+   * @param {Object} hotkeyConfig
+   * @private
+   */
+  _activateHotkey(hotkeyConfig){
+    this._hotkeys.add(hotkeyConfig);
+    this._activatedCombos.add(hotkeyConfig.combo);
+  }
+
+  /**
+   * @param {string} combo
+   * @private
+   */
+  _deactivateHotkey(combo){
+    this._hotkeys.del(combo);
+    this._activatedCombos.delete(combo);
   }
 }
 
