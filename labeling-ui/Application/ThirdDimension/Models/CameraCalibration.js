@@ -1,5 +1,5 @@
 import {Vector4, Matrix4} from 'three-math';
-import clone from 'lodash.clone';
+import {clone} from 'lodash';
 
 /**
  * Camera calibration information associated with a certain {@link Video}

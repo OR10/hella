@@ -1,12 +1,12 @@
 import paper from 'paper';
-import Tool from './NewTool';
+import PaperTool from './PaperTool';
 
 /**
  * A Tool for Zooming in and out
  *
  * @extends Tool
  */
-class ZoomTool extends Tool {
+class ZoomTool extends PaperTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {$scope} $rootScope
@@ -22,23 +22,6 @@ class ZoomTool extends Tool {
      * @private
      */
     this._viewerMouseCursorService = viewerMouseCursorService;
-  }
-
-  /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'zoom';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'in',
-      'out',
-    ];
   }
 
   /**
@@ -76,6 +59,58 @@ class ZoomTool extends Tool {
     this._complete(true);
   }
 }
+
+/**
+ * Return the name of the tool. The name needs to be unique within the application.
+ * Therefore something like a prefix followed by the className is advisable.
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+ZoomTool.getToolName = function () {
+  return 'ZoomTool';
+};
+
+/**
+ * Check if the given ShapeClass ({@link PaperShape#getClass}) is supported by this Tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {bool}
+ * @public
+ * @abstract
+ * @static
+ */
+ZoomTool.isShapeClassSupported = function (shapeClass) {
+  return [
+    'zoom',
+  ].includes(shapeClass);
+};
+
+/**
+ * Check if the given actionIdentifer is supported by this tool.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {bool}
+ * @public
+ * @abstract
+ * @static
+ */
+ZoomTool.isActionIdentifierSupported = function (actionIdentifier) {
+  return [
+    'in',
+    'out',
+  ].includes(actionIdentifier);
+};
 
 ZoomTool.$inject = [
   'drawingContext',

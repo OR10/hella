@@ -1,4 +1,4 @@
-import forEach from 'lodash.foreach';
+import {forEach} from 'lodash';
 
 /**
  * This service handles the heating of database views
@@ -42,7 +42,7 @@ class PouchDbViewHeater {
 
   /**
    * Heats multiple views in the database
-   *
+   *L
    * @param {object} context
    * @param {Array} viewNames
    */

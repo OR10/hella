@@ -3,8 +3,13 @@
  * and other convenience functions
  */
 class KeyboardShortcutService {
+  /**
+   * @param {hotkeys} hotkeys
+   * @param {Logger} logger
+   */
   constructor(hotkeys, logger) {
     /**
+     * @type {hotkeys}
      * @private
      */
     this._hotkeys = hotkeys;
@@ -16,133 +21,160 @@ class KeyboardShortcutService {
     this._logger = logger;
 
     /**
-     * @type {Map}
+     * @type {Array.<{id: string, hotkeyConfigs: Array.<Object>, blocking: boolean}>}
      * @private
      */
-    this._contexts = new Map();
+    this._overlays = [];
 
     /**
-     * @type {Array<string>}
+     * @type {boolean}
      * @private
      */
-    this._contextStack = [];
+    this._disabled = false;
+
+    /**
+     * @type {Set.<string>}
+     * @private
+     */
+    this._activatedCombos = new Set();
   }
 
   /**
    * Disable all current hotkeys
    */
   disable() {
-    this._deactivateAllHotkeys();
+    if (!this._disabled) {
+      this._deleteAllHotkeys();
+      this._disabled = true;
+    }
   }
 
   /**
    * Enable the last active context
    */
   enable() {
-    this._activateHotkeysForContext(this._contextStack[this._contextStack.length - 1]);
+    if (this._disabled) {
+      this._registerAllHotkeys();
+      this._disabled = false;
+    }
   }
 
   /**
-   * Add a new hotkey to the provided context
+   * Add a new hotkey to the provided overlay
    *
-   * @param {string} context
+   * @param {string} overlayIdentifier
    * @param {Object} hotkeyConfig
    */
-  addHotkey(context, hotkeyConfig) {
-    if (this._contexts.has(context)) {
-      this._contexts.set(context, [hotkeyConfig, ...this._contexts.get(context)]);
-    } else {
-      this._contexts.set(context, [hotkeyConfig]);
-    }
-
-    // Allow activation of context before addition of hotkeys
-    if (this._contextStack.length > 0 && this._contextStack[this._contextStack.length - 1] === context) {
-      this._hotkeys.add(hotkeyConfig);
-    }
-  }
-
-  /**
-   * Activate the provided context and all the
-   * @param {string} context
-   */
-  pushContext(context) {
-    this._logger.log('keyboardShortcutService:context', `Activating context '${context}'`);
-
-    this._deactivateAllHotkeys();
-    this._activateHotkeysForContext(context);
-    this._contextStack.push(context);
-  }
-
-  /**
-   * Deactivate the currently active context and activate the previous context
-   */
-  popContext() {
-    this._logger.log('keyboardShortcutService:context', `Deactivating current context (${this._contextStack[this._contextStack.length - 1]})`);
-    if (this._contextStack.length <= 0) {
-      throw new Error('There is no context to deactivate!');
-    }
-    this._deactivateHotkeysForContext(this._contextStack.pop());
-    if (this._contextStack.length > 0) {
-      this._activateHotkeysForContext(this._contextStack[this._contextStack.length - 1]);
-    }
-  }
-
-  clearContext(context) {
-    this._logger.log('keyboardShortcutService:context', `Clear context '${context}'`);
-    this._contextStack = this._contextStack.filter(
-      stackedContext => stackedContext !== context
+  addHotkey(overlayIdentifier, hotkeyConfig) {
+    const overlay = this._overlays.find(
+      candidate => candidate.id === overlayIdentifier
     );
-    this._deactivateAllHotkeys();
-    if (this._contextStack.length > 0) {
-      this._activateHotkeysForContext(this._contextStack[this._contextStack.length - 1]);
+
+    if (overlay === undefined) {
+      throw new Error(`Hotkey overlay with id '${overlayIdentifier}' is not registered`);
     }
 
-    this._contexts.delete(context);
+    this._logger.log('keyboardShortcut:hotkey', `Registered hotkey ${hotkeyConfig.combo} in overlay ${overlayIdentifier}`);
+    overlay.hotkeyConfigs.push(hotkeyConfig);
+    this._refreshAllHotkeys();
   }
 
   /**
-   * Deactivate all hotkeys
-   *
+   * @param {string} id
+   * @param {boolean} blocking
+   */
+  registerOverlay(id, blocking = false) {
+    this._logger.log('keyboardShortcut:overlay', `Registered ${blocking ? "blocking" : "non blocking"} overlay '${id}'`);
+    this._overlays.unshift({
+      hotkeyConfigs: [],
+      id,
+      blocking
+    });
+  }
+
+  /**
+   * @param {string} overlayIdentifier
+   */
+  removeOverlayById(overlayIdentifier) {
+    this._logger.log('keyboardShortcut:overlay', `Remove overlay by id '${overlayIdentifier}'`);
+    this._overlays = this._overlays.filter(
+      overlay => overlay.id !== overlayIdentifier
+    );
+
+    this._refreshAllHotkeys();
+  }
+
+  /**
+   * @param {string} overlayIdentifier
+   * @returns {boolean}
+   */
+  isOverlayRegistered(overlayIdentifier) {
+    const overlay = this._overlays.find(
+      candidate => candidate.id === overlayIdentifier
+    );
+
+    return overlay !== undefined;
+  }
+
+  /**
    * @private
    */
-  _deactivateAllHotkeys() {
-    this._contexts.forEach((hotkeys, context) =>
-      this._deactivateHotkeysForContext(context)
+  _refreshAllHotkeys() {
+    this._deleteAllHotkeys();
+    this._registerAllHotkeys();
+  }
+
+/**
+   * @private
+   */
+  _deleteAllHotkeys() {
+    this._activatedCombos.forEach(
+      combo => this._deactivateHotkey(combo)
     );
   }
 
   /**
-   * Deactivate all hotkeys for a context
-   *
-   * @param {string} context
    * @private
    */
-  _deactivateHotkeysForContext(context) {
-    const hotkeys = this._contexts.get(context);
-    if (hotkeys === undefined) {
-      return;
-    }
+  _registerAllHotkeys() {
+    const firstBlockerIndex = this._overlays.findIndex(
+      (overlay, index) => overlay.blocking === true || index === this._overlays.length - 1
+    );
 
-    hotkeys.forEach(
-      hotkey => this._hotkeys.del(hotkey.combo)
+    let overlays = [...this._overlays];
+    overlays = overlays.slice(0, firstBlockerIndex + 1);
+    overlays.reverse();
+    overlays.forEach(
+      overlay => this._registerHotkeysForOverlay(overlay)
     );
   }
 
   /**
-   * Activate all hotkeys for a context
-   *
-   * @param {string} context
+   * @param {{id: string, hotkeyConfigs: Array.<Object>, blocking: boolean}} overlay
    * @private
    */
-  _activateHotkeysForContext(context) {
-    const hotkeys = this._contexts.get(context);
-    if (hotkeys === undefined) {
-      return;
-    }
-
-    hotkeys.forEach(
-      hotkey => this._hotkeys.add(hotkey)
+  _registerHotkeysForOverlay(overlay) {
+    overlay.hotkeyConfigs.forEach(
+      hotkeyConfig => this._activateHotkey(hotkeyConfig)
     );
+  }
+
+  /**
+   * @param {Object} hotkeyConfig
+   * @private
+   */
+  _activateHotkey(hotkeyConfig){
+    this._hotkeys.add(hotkeyConfig);
+    this._activatedCombos.add(hotkeyConfig.combo);
+  }
+
+  /**
+   * @param {string} combo
+   * @private
+   */
+  _deactivateHotkey(combo){
+    this._hotkeys.del(combo);
+    this._activatedCombos.delete(combo);
   }
 }
 

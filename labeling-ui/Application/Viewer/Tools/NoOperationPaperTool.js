@@ -1,14 +1,17 @@
-import Tool from './NewTool';
+import PaperTool from './PaperTool';
 import NotModifiedError from './Errors/NotModifiedError';
 
-class NoOperationTool extends Tool {
+/**
+ * @abstract
+ */
+class NoOperationPaperTool extends PaperTool {
   constructor(drawingContext, $scope, $q, loggerService) {
     super(drawingContext, $scope, $q, loggerService);
   }
 
   _invokeAndRejectWithNotModified(toolActionStruct) {
     const promise = this._invoke(toolActionStruct);
-    this._reject(new NotModifiedError('NoOperationTool did not modify anything'));
+    this._reject(new NotModifiedError('NoOperationPaperTool did not modify anything'));
 
     return promise;
   }
@@ -62,11 +65,62 @@ class NoOperationTool extends Tool {
   }
 }
 
-NoOperationTool.$inject = [
+/**
+ * Return the name of the tool. The name needs to be unique within the application.
+ * Therefore something like a prefix followed by the className is advisable.
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+NoOperationPaperTool.getToolName = function () {
+  return 'NoOperationPaperTool';
+};
+
+/**
+ * Check if the given ShapeClass ({@link PaperShape#getClass}) is supported by this Tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {bool}
+ * @public
+ * @abstract
+ * @static
+ */
+NoOperationPaperTool.isShapeClassSupported = function (shapeClass) {
+  return true;
+};
+
+/**
+ * Check if the given actionIdentifer is supported by this tool.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {bool}
+ * @public
+ * @abstract
+ * @static
+ */
+NoOperationPaperTool.isActionIdentifierSupported = function (actionIdentifier) {
+  return [
+    'creation',
+    'move',
+    'scale',
+  ].includes(actionIdentifier);
+};
+
+NoOperationPaperTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
   'loggerService',
 ];
 
-export default NoOperationTool;
+export default NoOperationPaperTool;

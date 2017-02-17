@@ -1,6 +1,6 @@
-import Tool from './NewTool';
+import PaperTool from './PaperTool';
 
-class MovingTool extends Tool {
+class MovingTool extends PaperTool {
   constructor(drawingContext, $rootScope, $q, loggerService) {
     super(drawingContext, $rootScope, $q, loggerService);
   }

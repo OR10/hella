@@ -1,4 +1,4 @@
-import lodashDebounce from 'lodash.debounce';
+import {debounce as lodashDebounce} from 'lodash';
 import Debouncer from './DebouncerService/Debouncer';
 
 /**

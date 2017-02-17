@@ -1,5 +1,4 @@
-import clone from 'lodash.clone';
-import cloneDeep from 'lodash.clonedeep';
+import {clone, cloneDeep} from 'lodash';
 
 /**
  * Model for a LabelingGroup

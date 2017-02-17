@@ -26,22 +26,6 @@ class RectangleScaleTool extends ScalingTool {
   }
 
   /**
-   * @returns {string}
-   */
-  getToolName() {
-    return 'rectangle';
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  getActionIdentifiers() {
-    return [
-      'scale',
-    ];
-  }
-
-  /**
    * @param {ScalingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */
@@ -95,6 +79,57 @@ class RectangleScaleTool extends ScalingTool {
     });
   }
 }
+
+/**
+ * Return the name of the tool. The name needs to be unique within the application.
+ * Therefore something like a prefix followed by the className is advisable.
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+RectangleScaleTool.getToolName = function () {
+  return 'RectangleScaleTool';
+};
+
+/**
+ * Check if the given ShapeClass ({@link PaperShape#getClass}) is supported by this Tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {bool}
+ * @public
+ * @abstract
+ * @static
+ */
+RectangleScaleTool.isShapeClassSupported = function (shapeClass) {
+  return [
+    'rectangle',
+  ].includes(shapeClass);
+};
+
+/**
+ * Check if the given actionIdentifer is supported by this tool.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {bool}
+ * @public
+ * @abstract
+ * @static
+ */
+RectangleScaleTool.isActionIdentifierSupported = function (actionIdentifier) {
+  return [
+    'scale',
+  ].includes(actionIdentifier);
+};
 
 RectangleScaleTool.$inject = [
   'drawingContext',

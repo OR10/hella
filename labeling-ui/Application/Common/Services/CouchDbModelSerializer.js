@@ -1,7 +1,7 @@
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
-import cloneDeep from 'lodash.clonedeep';
+import {cloneDeep} from 'lodash';
 
 /**
  * The CouchDbModelSerializer is capable of converting our internal application models into their corresponding couchdb

@@ -1,5 +1,4 @@
-import cloneDeep from 'lodash.clonedeep';
-import reduce from 'lodash.reduce';
+import {cloneDeep, reduce} from 'lodash';
 
 /**
  * Primary Task model

@@ -1,6 +1,6 @@
-import Tool from './NewTool';
+import PaperTool from './PaperTool';
 
-class CreationTool extends Tool {
+class CreationTool extends PaperTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {$rootScope.Scope} $rootScope

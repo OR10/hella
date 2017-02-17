@@ -92,14 +92,7 @@ System.config({
     "jquery-mousewheel": "github:jquery/jquery-mousewheel@3.1.13",
     "jquery-ui": "github:components/jqueryui@1.11.4",
     "json": "github:systemjs/plugin-json@0.1.0",
-    "lodash.clone": "npm:lodash.clone@4.3.2",
-    "lodash.clonedeep": "npm:lodash.clonedeep@4.3.2",
-    "lodash.debounce": "npm:lodash.debounce@3.1.1",
-    "lodash.foreach": "npm:lodash.foreach@4.5.0",
-    "lodash.isequal": "npm:lodash.isequal@4.2.0",
-    "lodash.merge": "npm:lodash.merge@4.4.0",
-    "lodash.pickby": "npm:lodash.pickby@4.6.0",
-    "lodash.reduce": "npm:lodash.reduce@4.6.0",
+    "lodash": "npm:lodash@4.17.4",
     "moment": "npm:moment@2.14.1",
     "ng-flow": "github:flowjs/ng-flow@2.7.4",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
@@ -617,45 +610,6 @@ System.config({
     "npm:levn@0.2.5": {
       "prelude-ls": "npm:prelude-ls@1.1.2",
       "type-check": "npm:type-check@0.3.1"
-    },
-    "npm:lodash._baseclone@4.5.6": {
-      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:lodash._baseclone@4.5.7": {
-      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:lodash.clone@4.3.2": {
-      "lodash._baseclone": "npm:lodash._baseclone@4.5.6"
-    },
-    "npm:lodash.clonedeep@4.3.2": {
-      "lodash._baseclone": "npm:lodash._baseclone@4.5.6"
-    },
-    "npm:lodash.debounce@3.1.1": {
-      "lodash._getnative": "npm:lodash._getnative@3.9.1"
-    },
-    "npm:lodash.isequal@4.2.0": {
-      "lodash._root": "npm:lodash._root@3.0.1",
-      "lodash.keys": "npm:lodash.keys@4.0.7",
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:lodash.merge@4.4.0": {
-      "lodash._baseclone": "npm:lodash._baseclone@4.5.7",
-      "lodash._root": "npm:lodash._root@3.0.1",
-      "lodash.isplainobject": "npm:lodash.isplainobject@4.0.4",
-      "lodash.keysin": "npm:lodash.keysin@4.1.4",
-      "lodash.rest": "npm:lodash.rest@4.0.3",
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:lodash.pickby@4.6.0": {
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:lodash.reduce@4.6.0": {
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:lodash.rest@4.0.3": {
-      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:miller-rabin@4.0.0": {
       "bn.js": "npm:bn.js@4.1.1",
