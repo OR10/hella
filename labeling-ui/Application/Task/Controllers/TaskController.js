@@ -5,6 +5,9 @@ import Filters from '../../Viewer/Models/Filters';
 import BrightnessFilter from '../../Common/Filters/BrightnessFilter';
 import ContrastFilter from '../../Common/Filters/ContrastFilter';
 
+import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
+import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
+
 class TaskController {
   /**
    * @param {angular.Scope} $scope
@@ -288,8 +291,20 @@ class TaskController {
             // @TODO: Should be loaded in the resolver of the viewer. This would make synchronization easier
             this._labelStructurePromise
               .then(labelStructure => {
-                const thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
-                const labelStructureThing = labelStructure.getThingById(thingIdentifier);
+                let thingIdentifier;
+                let labelStructureThing;
+                switch (true) {
+                  case newShape instanceof PaperThingShape:
+                    thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
+                    labelStructureThing = labelStructure.getThingById(thingIdentifier);
+                    break;
+                  case newShape instanceof PaperGroupShape:
+                    thingIdentifier = newShape.labeledThingGroupInFrame.labeledThingGroup.type;
+                    labelStructureThing = labelStructure.getGroupById(thingIdentifier);
+                    break;
+                  default:
+                    throw new Error('Cannot read identifier name of unknown shape!');
+                }
 
                 this.selectedLabelStructureThing = labelStructureThing;
                 this.selectedDrawingTool = labelStructureThing.shape;
