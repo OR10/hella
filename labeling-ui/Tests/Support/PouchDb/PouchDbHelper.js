@@ -1,7 +1,6 @@
 import PouchDB from 'pouchdb';
 import uuid from 'uuid';
-import forEach from 'lodash.foreach';
-import pickBy from 'lodash.pickby';
+import {forEach, pickBy} from 'lodash';
 
 class PouchDbHelper {
   constructor() {

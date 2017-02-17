@@ -1,4 +1,4 @@
-import merge from 'lodash.merge';
+import {merge} from 'lodash';
 
 /**
  * Controller for the initial entrypoint route into the application
