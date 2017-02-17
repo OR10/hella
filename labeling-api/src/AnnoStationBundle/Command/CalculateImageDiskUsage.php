@@ -27,36 +27,52 @@ class CalculateImageDiskUsage extends Command\Base
     private $kernelEnvironment;
 
     /**
-     * @param Facade\Video $videoFacade
-     * @param              $frameCdnBaseUrl
-     * @param              $kernelEnvironment
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
+    /**
+     * @param Facade\Video            $videoFacade
+     * @param                         $frameCdnBaseUrl
+     * @param                         $kernelEnvironment
+     * @param CouchDB\DocumentManager $documentManager
      */
     public function __construct(
         Facade\Video $videoFacade,
         $frameCdnBaseUrl,
-        $kernelEnvironment
+        $kernelEnvironment,
+        CouchDB\DocumentManager $documentManager
     ) {
         parent::__construct();
         $this->videoFacade       = $videoFacade;
         $this->frameCdnBaseUrl   = $frameCdnBaseUrl;
         $this->kernelEnvironment = $kernelEnvironment;
+        $this->documentManager   = $documentManager;
     }
 
     protected function configure()
     {
         $this->setName('annostation:calculateImageDiskUsage');
         $this->addOption('dry-run', null, Console\Input\InputOption::VALUE_NONE, "Don't actually change anything.");
+        $this->addOption(
+            'force',
+            null,
+            Console\Input\InputOption::VALUE_NONE,
+            "Recalculate all videos instead of missing calculations only"
+        );
     }
 
     protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output)
     {
         $dryRun = $input->getOption('dry-run');
+        $force  = $input->getOption('force');
 
         if ($dryRun) {
             $this->writeInfo($output, 'dry run');
         }
 
         $videos = $this->videoFacade->findAll();
+        $this->documentManager->clear();
 
         $curlHandle = $this->initCurl();
 
@@ -66,11 +82,15 @@ class CalculateImageDiskUsage extends Command\Base
             $numberOfImagesToGet += $video->getMetaData()->numberOfFrames * count($video->getImageTypes());
         }
         $progress = new ProgressBar($output, $numberOfImagesToGet);
-        $progress->setFormat("%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% (%size%)");
+        $progress->setFormat("%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% (%size%) [%videoId%]");
 
         /** @var Model\Video $video */
         $calculatedBytesInThisRun = 0;
         foreach ($videos as $video) {
+            /** refresh doctrine map */
+            $video = $this->videoFacade->find($video->getId());
+
+            $progress->setMessage($video->getId(), 'videoId');
             $frameRange = range(1, $video->getMetaData()->numberOfFrames);
 
             if ($video->getImageTypes() === null) {
@@ -78,6 +98,15 @@ class CalculateImageDiskUsage extends Command\Base
             }
 
             foreach ($video->getImageTypes() as $type => $data) {
+
+                if (isset($data['sizeInBytes']) && !empty($data['sizeInBytes']) && !$force) {
+                    foreach ($data['sizeInBytes'] as $bytes) {
+                        $calculatedBytesInThisRun += $bytes;
+                    }
+                    $progress->setMessage($this->formatBytes($calculatedBytesInThisRun), 'size');
+                    $progress->advance(count($frameRange));
+                    continue;
+                }
                 switch ($type) {
                     case 'source':
                         $extension = 'png';
@@ -120,6 +149,7 @@ class CalculateImageDiskUsage extends Command\Base
             if (!$dryRun) {
                 $this->videoFacade->save($video);
             }
+            $this->documentManager->detach($video);
         }
         $this->closeCurl($curlHandle);
         $progress->finish();

@@ -533,14 +533,20 @@ class ProjectTest extends Tests\WebTestCase
     public function testDeleteProject()
     {
         $projectBuilder = Tests\Helper\ProjectBuilder::create()
-        ->withProjectOwnedByUserId($this->client->getId())
-        ->build();
+            ->withCreationDate(new \DateTime('2017-02-10 08:00:00', new \DateTimeZone('UTC')))
+            ->withProjectOwnedByUserId($this->client->getId())
+            ->build();
 
         $project = $this->projectFacade->save($projectBuilder);
 
-        $requestWrapper = $this->createRequest('/api/project/%s/delete', [$project->getId()])
+        $requestWrapper = $this->createRequest('/api/project/%s/status/deleted', [$project->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->client)
+            ->setJsonBody(
+                [
+                    'message' => 'delete this project pls',
+                ]
+            )
             ->execute();
 
         $project = $this->projectFacade->find($project->getId());

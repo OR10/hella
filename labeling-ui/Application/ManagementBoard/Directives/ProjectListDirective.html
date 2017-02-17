@@ -33,7 +33,7 @@
         </thead>
         <tbody ng-if="vm.projects.length > 0">
         <tr>
-        <tr ng-repeat="project in vm.projects track by project.id" ng-click="vm.openProject(project.id)">
+        <tr ng-repeat="project in vm.projects track by project.id" ng-click="project.status != 'deleted' && vm.openProject(project.id)">
             <td ng-repeat="column in vm.columns track by $index">
                 <i class="icon icon-medium icon-legacy-project" ng-if="column.property === 'name' && project.taskInstructionType === 'legacy'"></i>
                 <i class="icon icon-medium icon-requirements-xml-project" ng-if="column.property === 'name' && project.taskInstructionType === 'requirementsXml'"></i>
@@ -54,16 +54,15 @@
                 >
                     <i class="fa fa-cloud-upload"></i>
                 </button>
-
                 <button tooltip="Export Project"
-                        ng-if="vm.userPermissions.canExportProject"
+                        ng-if="vm.userPermissions.canExportProject && project.status != 'deleted'"
                         ng-click="vm.exportProject(project.id)"
                 >
                     <i class="fa fa-external-link"></i>
                 </button>
 
                 <button tooltip="Show flagged Tasks"
-                        ng-if="vm.userPermissions.canViewAttentionTasks"
+                        ng-if="vm.userPermissions.canViewAttentionTasks && project.status != 'deleted'"
                         ng-click="vm.showFlaggedTasks(project.id)"
                 >
                     <i class="fa fa-flag"></i>
@@ -101,7 +100,7 @@
                 -->
 
                 <button tooltip="View Report of Project"
-                        ng-if="vm.userPermissions.canViewProjectReport"
+                        ng-if="vm.userPermissions.canViewProjectReport && project.status != 'deleted'"
                         ng-click="vm.openReport(project.id)"
                 >
                     <i class="fa fa-file-o"></i>
@@ -109,10 +108,19 @@
 
                 <button tooltip="Delete this Project. Warning: All data related to this project will be deleted and they are no longer available."
                         ng-if="vm.userPermissions.canDeleteProject && (project.status === 'todo' || project.status === 'done')"
-                        ng-click="vm.deleteProject(project.id, project.name)"
+                        ng-click="vm.setProjectStatusToDeleted(project.id, project.name)"
                 >
                     <i class="fa fa-trash-o"></i>
                 </button>
+
+                <button tooltip="Delete this Project. Warning: All data related to this project will be deleted and they are no longer available."
+                        ng-if="vm.userPermissions.canDeleteProject && project.status === 'deleted' && project.deletedState === 'unaccepted'"
+                        ng-click="vm.deleteProject(project.id, project.name)"
+                >
+                    <i class="fa fa-trash-o icon-fa warning-color"></i>
+                </button>
+                <i ng-if="vm.userPermissions.canDeleteProject && project.status === 'deleted' && (project.deletedState === 'pending' || project.deletedState === 'in_progress')"
+                   class="fa fa-spin fa-spinner"></i>
             </td>
         </tr>
         </tbody>

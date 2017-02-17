@@ -53,6 +53,21 @@ class Tasks
                 $users
             );
 
+            $video = $videoFacade->find($labelingTask->getVideoId());
+            $imageTypes = array_map(function($type) {
+                unset($type['sizeInBytes']);
+
+                return $type;
+            }, $video->getImageTypes());
+            $video = [
+                'id'             => $video->getId(),
+                'rev'            => $video->getRev(),
+                'name'           => $video->getName(),
+                'metaData'       => $video->getMetaData(),
+                'imageTypes'     => $imageTypes,
+                'calibrationId'  => $video->getCalibrationId(),
+            ];
+
             $this->result['tasks'][] = [
                 'id'                          => $labelingTask->getId(),
                 'rev'                         => $labelingTask->getRev(),
@@ -74,7 +89,7 @@ class Tasks
                 'createdAt'                   => $labelingTask->getCreatedAt(),
                 'userId'                      => $labelingTask->getUserId(),
                 'user'                        => $user instanceof Model\User ? $user->getUsername() : null,
-                'video'                       => $videoFacade->find($labelingTask->getVideoId()),
+                'video'                       => $video,
                 'project'                     => $projectFacade->find($labelingTask->getProjectId()),
                 'assignmentHistory'           => $labelingTask->getAssignmentHistory(),
                 'taskAttentionFlag'           => $labelingTask->isTaskAttentionFlag(),

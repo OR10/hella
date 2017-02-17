@@ -6,6 +6,7 @@ use AnnoStationBundle\Voter\AccessCheck;
 use AppBundle\Voter;
 use AppBundle\Voter\AccessCheckVoter;
 use AppBundle\Model;
+use AnnoStationBundle\Service\Authentication;
 
 class Project extends Voter\AccessCheckVoter
 {
@@ -17,8 +18,10 @@ class Project extends Voter\AccessCheckVoter
      */
     private $checks;
 
-    public function __construct(Facade\LabelingGroup $labelingGroupFacade)
-    {
+    public function __construct(
+        Facade\LabelingGroup $labelingGroupFacade,
+        Authentication\UserPermissions $userPermissions
+    ) {
         /*
          * The checks are based on the nature of the user account:
          *
@@ -30,17 +33,17 @@ class Project extends Voter\AccessCheckVoter
          */
         $this->checks = [
             self::PROJECT_READ  => [
-                new AccessCheck\ClientIsProjectCreator(),
-                new AccessCheck\LabelCoordinatorIsAssignedToProject(),
-                new AccessCheck\LabelerIsAssignedToProject($labelingGroupFacade),
-                new AccessCheck\HasAdminRole(),
-                new AccessCheck\HasObserverRole(),
+                new AccessCheck\ClientIsProjectCreator($userPermissions),
+                new AccessCheck\LabelCoordinatorIsAssignedToProject($userPermissions),
+                new AccessCheck\LabelerIsAssignedToProject($userPermissions, $labelingGroupFacade),
+                new AccessCheck\HasAdminRole($userPermissions),
+                new AccessCheck\HasObserverRole($userPermissions),
             ],
             self::PROJECT_WRITE => [
-                new AccessCheck\ClientIsProjectCreator(),
-                new AccessCheck\LabelCoordinatorIsAssignedToProject(),
-                new AccessCheck\LabelerIsAssignedToProject($labelingGroupFacade),
-                new AccessCheck\HasAdminRole(),
+                new AccessCheck\ClientIsProjectCreator($userPermissions),
+                new AccessCheck\LabelCoordinatorIsAssignedToProject($userPermissions),
+                new AccessCheck\LabelerIsAssignedToProject($userPermissions, $labelingGroupFacade),
+                new AccessCheck\HasAdminRole($userPermissions),
             ],
         ];
     }

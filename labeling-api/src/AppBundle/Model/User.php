@@ -38,6 +38,11 @@ class User extends BaseUser
      */
     protected $settings = [];
 
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
+    protected $rolesByProject = [];
+
     public function __construct()
     {
         parent::__construct();
@@ -109,5 +114,30 @@ class User extends BaseUser
     public function getSettings()
     {
         return $this->settings;
+    }
+
+    /**
+     * @param string $projectId
+     * @param string $role
+     */
+    public function assignRole(string $projectId, string $role)
+    {
+        if ($this->rolesByProject === null) {
+            $this->rolesByProject = [];
+        }
+
+        if (!in_array($role, $this->rolesByProject[$projectId] ?? [])) {
+            $this->rolesByProject[$projectId][] = $role;
+        }
+    }
+
+    /**
+     * @param string $projectId
+     *
+     * @return string[]
+     */
+    public function getRolesForProject(string $projectId)
+    {
+        return $this->rolesByProject[$projectId] ?? [];
     }
 }

@@ -178,6 +178,57 @@ class S3Cmd
         return $content;
     }
 
+    /**
+     * @param $filePath
+     */
+    public function deleteObject($filePath)
+    {
+        $configFile = $this->generateConfigfile(
+            $this->accessKey,
+            $this->secretKey,
+            $this->hostBase,
+            $this->hostBucket
+        );
+
+        $process = $this->getObjectDeleteProcess($configFile, $filePath);
+
+        try {
+            $process->mustRun();
+        } finally {
+            if (!unlink($configFile)) {
+                throw new \RuntimeException("Error removing temporary config file '{$configFile}'");
+            }
+        }
+
+        if ($process->getExitCode() !== 0) {
+            throw new \RuntimeException(
+                'Execution of extern s3cmd upload command unsuccessful: ' . $process->getErrorOutput()
+            );
+        }
+    }
+
+    private function getObjectDeleteProcess($configFile, $filePath)
+    {
+        $builder = new Process\ProcessBuilder();
+        $builder
+            ->add($this->s3CmdExecutable)
+            ->add('--config')
+            ->add($configFile)
+            ->add('del')
+            ->add(
+                sprintf(
+                    's3://%s/%s',
+                    $this->bucket,
+                    $filePath
+                )
+            );
+        $process = $builder->getProcess();
+
+        $process->setTimeout(self::TIMEOUT);
+
+        return $process;
+    }
+
     private function getFileDownloadProcess($configFile, $filePath, $destinationPath)
     {
         $builder = new Process\ProcessBuilder();

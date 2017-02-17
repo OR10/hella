@@ -134,11 +134,11 @@ class LabelingTask
      *
      * @return Model\LabelingTask[]
      */
-    public function findAllByProject(Model\Project $project)
+    public function findAllByProject(Model\Project $project, $onlyDocs = false)
     {
         return $this->documentManager
             ->createQuery('annostation_labeling_task', 'by_project_and_video_as_value')
-            ->onlyDocs(false)
+            ->onlyDocs($onlyDocs)
             ->setKey($project->getId())
             ->execute()
             ->toArray();
@@ -405,6 +405,15 @@ class LabelingTask
     }
 
     /**
+     * @param Model\LabelingTask $labelingTask
+     */
+    public function delete(Model\LabelingTask $labelingTask)
+    {
+        $this->documentManager->remove($labelingTask);
+        $this->documentManager->flush();
+    }
+
+    /**
      * @param Model\LabelingTask $task
      * @param Model\User         $user
      *
@@ -450,11 +459,35 @@ class LabelingTask
     }
 
     /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return mixed
+     */
+    public function getTaskTimerByTask(Model\LabelingTask $labelingTask)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_task_timer', 'by_taskId_userId')
+            ->setStartKey([$labelingTask->getId()])
+            ->setEndKey([$labelingTask->getId(), []]);
+
+        return $query->onlyDocs(true)->execute()->toArray();
+    }
+
+    /**
      * @param Model\TaskTimer $taskTimer
      */
     public function saveTimer(Model\TaskTimer $taskTimer)
     {
         $this->documentManager->persist($taskTimer);
+        $this->documentManager->flush();
+    }
+
+    /**
+     * @param Model\TaskTimer $taskTimer
+     */
+    public function deleteTimer(Model\TaskTimer $taskTimer)
+    {
+        $this->documentManager->remove($taskTimer);
         $this->documentManager->flush();
     }
 

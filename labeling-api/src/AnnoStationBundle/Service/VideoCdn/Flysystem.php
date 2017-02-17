@@ -57,4 +57,16 @@ class Flysystem extends Service\VideoCdn
     ) {
         return $this->fileSystem->read($video->getSourceVideoPath());
     }
+
+    /**
+     * @param Model\Video $video
+     *
+     * @return mixed|void
+     */
+    public function deleteVideoDirectory(Model\Video $video)
+    {
+        $cdnPath  = sprintf('%s', $video->getId());
+
+        $this->fileSystem->deleteDir($cdnPath);
+    }
 }

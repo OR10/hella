@@ -30,6 +30,15 @@ class TaskExport
     }
 
     /**
+     * @param Model\TaskExport $taskExport
+     */
+    public function delete(Model\TaskExport $taskExport)
+    {
+        $this->documentManager->remove($taskExport);
+        $this->documentManager->flush();
+    }
+
+    /**
      * @param Model\LabelingTask $task
      *
      * @return array

@@ -108,6 +108,7 @@ class Video
             return [];
         }
 
+        $videos = [];
         foreach ($this->findById($videoIds) as $video) {
             $videos[$video->getId()] = $video;
         }
@@ -196,5 +197,14 @@ class Video
         }
 
         return $video;
+    }
+
+    /**
+     * @param Model\Video $video
+     */
+    public function delete(Model\Video $video)
+    {
+        $this->documentManager->remove($video);
+        $this->documentManager->flush();
     }
 }

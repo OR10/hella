@@ -45,4 +45,13 @@ class CalibrationData
 
         return $calibrationData;
     }
+
+    /**
+     * @param Model\CalibrationData $calibrationData
+     */
+    public function delete(Model\CalibrationData $calibrationData)
+    {
+        $this->documentManager->remove($calibrationData);
+        $this->documentManager->flush();
+    }
 }

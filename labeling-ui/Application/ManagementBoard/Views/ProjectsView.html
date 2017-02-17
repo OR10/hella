@@ -44,6 +44,17 @@
                               user-permissions="vm.userPermissions"
                               project-status="done"></project-list>
             </tab>
+            <tab ng-if="vm.userPermissions.canViewDeletedProjects"
+                 header="Deleted {{vm.projectCount !== null ? '(' + vm.projectCount.deleted + ')' : ''}}"
+                 create-on-first-view="true">
+                <h2>
+                    Deleted <span ng-hide='vm.projectCount == null'>({{vm.projectCount.deleted}})</span>
+                </h2>
+                <project-list user="vm.user"
+                              show-loading-mask="vm.showLoadingMask"
+                              user-permissions="vm.userPermissions"
+                              project-status="deleted"></project-list>
+            </tab>
         </tab-view>
     </div>
 </div>

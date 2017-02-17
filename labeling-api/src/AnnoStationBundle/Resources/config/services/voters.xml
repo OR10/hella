@@ -6,6 +6,7 @@
         <service id="annostation.labeling_api.voter.access_check.project"
                  class="AnnoStationBundle\Voter\AccessCheckVoter\Project">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group" />
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions" />
             <tag name="security.voter"/>
         </service>
         <service id="annostation.labeling_api.voter.access_check.task"
