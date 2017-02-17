@@ -8,14 +8,19 @@ class GroupCreationTool extends CreationTool {
    * @param {$scope} $scope
    * @param {$q} $q
    * @param {LoggerService} loggerService
-   * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
    * @param {ToolService} toolService
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {HierarchyCreationService} hierarchyCreationService
    */
-  constructor(drawingContext, $scope, $q, loggerService, toolService, labeledThingGroupService, hierarchyCreationService) {
+  constructor(drawingContext, $scope, $q, loggerService, entityColorService, toolService, labeledThingGroupService, hierarchyCreationService) {
     super(drawingContext, $scope, $q, loggerService, hierarchyCreationService);
+
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
+    this._entityColorService = entityColorService;
 
     /**
      * @type {ToolService}
@@ -69,18 +74,31 @@ class GroupCreationTool extends CreationTool {
     const promise = super.invokeShapeCreation(toolActionStruct);
 
     this._rectangleCreationTool.invokeShapeCreation(toolActionStruct).then(paperShape => {
+      paperShape.remove();
       const shapes = this._labeledThingGroupService.getShapesWithinBounds(this._context, paperShape.bounds);
-      const {point: topLeft, width, height} = this._labeledThingGroupService.getBoundsForShapes(shapes);
-      const bottomRight = new paper.Point(topLeft.x + width, topLeft.y + height);
+      const shapesBound = this._labeledThingGroupService.getBoundsForShapes(shapes);
+      const {width, height} = shapesBound;
+      let {point: topLeft} = shapesBound;
+      let bottomRight = new paper.Point(topLeft.x + width, topLeft.y + height);
+      const colorId = this._labeledThingGroupService.getGroupColorFromShapesInGroup(shapes);
+      const color = this._entityColorService.getColorById(colorId);
+
+      // Maybe there is a more elegant solution to this problem but for now
+      // expanding the rect by 1px on each side is the simplest solution
+      topLeft = topLeft.subtract(new paper.Point(1, 1));
+      bottomRight = bottomRight.add(new paper.Point(1, 1));
+
+      const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);
+
 
       let paperGroup;
       this._context.withScope(() => {
         paperGroup = new PaperGroupRectangle(
-          paperShape.labeledThingInFrame,
+          labeledThingGroupInFrame,
           paperShape.id,
           topLeft,
           bottomRight,
-          paperShape.color,
+          color,
           paperShape.isDraft
         );
       });
@@ -101,6 +119,7 @@ GroupCreationTool.$inject = [
   '$rootScope',
   '$q',
   'loggerService',
+  'entityColorService',
   'toolService',
   'labeledThingGroupService',
   'hierarchyCreationService',
