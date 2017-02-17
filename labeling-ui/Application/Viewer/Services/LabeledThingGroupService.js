@@ -85,6 +85,31 @@ class LabeledThingGroupService {
 
     return colorId;
   }
+
+  /**
+   * Extracts the {@link FrameRange} of the {@link LabeledThingGroup} from the given {@link PaperThingShape}s
+   *
+   * @param {Array.<PaperThingShape> }thingShapes
+   * @param {PaperGroupShape} groupShape
+   * @param {number} currentFramePosition
+   * @return {FrameRange}
+   */
+  getFrameRangeFromShapesForGroup(thingShapes, groupShape, currentFramePosition) {
+    const thingShapesInGroup = thingShapes.filter(thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupShape.id) !== -1);
+    let startFrameIndex = currentFramePosition;
+    let endFrameIndex = currentFramePosition;
+
+    thingShapesInGroup.forEach(shape => {
+      if (!startFrameIndex || shape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex < startFrameIndex) {
+        startFrameIndex = shape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex;
+      }
+      if (!endFrameIndex || shape.labeledThingInFrame.labeledThing.frameRange.endFrameIndex > endFrameIndex) {
+        endFrameIndex = shape.labeledThingInFrame.labeledThing.frameRange.endFrameIndex;
+      }
+    });
+
+    return {startFrameIndex, endFrameIndex};
+  }
 }
 
 LabeledThingGroupService.$inject = [];
