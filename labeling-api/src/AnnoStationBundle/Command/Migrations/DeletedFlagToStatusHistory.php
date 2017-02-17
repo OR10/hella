@@ -36,7 +36,7 @@ class DeletedFlagToStatusHistory extends Command\Base
 
         /** @var Model\Project $project */
         foreach ($projects as $project) {
-            if ($project->isDeleted() && $project->getStatus() !== Model\Project::STATUS_DELETED) {
+            if ($project->deleted && $project->getStatus() !== Model\Project::STATUS_DELETED) {
                 $project->addStatusHistory(
                     new \DateTime('now', new \DateTimeZone('UTC')),
                     Model\Project::STATUS_DELETED
