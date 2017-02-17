@@ -1,5 +1,7 @@
 import paper from 'paper';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
+import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
+import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
 
 class LabeledThingGroupService {
   constructor() {
@@ -7,6 +9,8 @@ class LabeledThingGroupService {
   }
 
   /**
+   * Retuns all shapes that are within the bounds of the given bound
+   *
    * @param {Context} context
    * @param {{x,y,width,height,point}} bounds
    */
@@ -17,6 +21,12 @@ class LabeledThingGroupService {
     });
   }
 
+  /**
+   * Return the combined bound for the given shapes
+   *
+   * @param shapes
+   * @return {{x: *, y: *, width: number, height: number, point: Point}}
+   */
   getBoundsForShapes(shapes) {
     const bounds = shapes.map(shape => shape.bounds);
     let minX;
@@ -57,12 +67,21 @@ class LabeledThingGroupService {
    * @return {number}
    */
   getGroupColorFromShapesInGroup(shapes, colorCount = 50) {
-    const colorSum = shapes.reduce((previous, current) => {
-      const previousColorId = parseInt(previous.labeledThingInFrame.labeledThing.lineColor, 10);
-      const currentColorId = parseInt(current.labeledThingInFrame.labeledThing.lineColor, 10);
-      return previousColorId + currentColorId;
+    let sum = 0;
+    shapes.forEach(currentShape => {
+      switch (true) {
+        case currentShape instanceof PaperThingShape:
+          sum += parseInt(currentShape.labeledThingInFrame.labeledThing.lineColor, 10);
+          break;
+        case currentShape instanceof PaperGroupShape:
+          const otherShapes = shapes.filter(shape => shape.id !== currentShape.id);
+          sum += this.getGroupColorFromShapesInGroup(otherShapes);
+          break;
+        default:
+          throw new Error('Cannot get color if of given shape type');
+      }
     });
-    const colorId = (colorSum % colorCount) + 1;
+    const colorId = (sum % colorCount) + 1;
 
     return colorId;
   }
