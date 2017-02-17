@@ -1,6 +1,6 @@
 import paper from 'paper';
 import PaperRectangle from './PaperRectangle';
-import PaperGroupRectangle from './PaperRectangle';
+import PaperGroupRectangle from './PaperGroupRectangle';
 import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from './PaperPolygon';
@@ -53,8 +53,8 @@ class PaperShapeFactory {
    * @private
    */
   _createGroupRectangle(labeledThingGroupInFrame, bounds, color) {
-    const topLeft = new paper.Point(bounds.topLeft.x, bounds.topLeft.y);
-    const bottomRight = new paper.Point(bounds.bottomRight.x, bounds.bottomRight.y);
+    const topLeft = new paper.Point(bounds.x, bounds.y);
+    const bottomRight = new paper.Point(bounds.x + bounds.width, bounds.y + bounds.height);
 
     return new PaperGroupRectangle(labeledThingGroupInFrame, labeledThingGroupInFrame.id, topLeft, bottomRight, color);
   }
@@ -129,6 +129,14 @@ class PaperShapeFactory {
     }
     labeledThingInFrame.paperShapes.push(result);
     return result;
+  }
+
+  createPaperGroupShape(labeledThingGroupInFrame, shapesInBound) {
+    const colorId = this._labeledThingGroupService.getGroupColorFromShapesInGroup(shapesInBound);
+    const color = this._entityColorService.getColorById(colorId);
+    const bounds = this._labeledThingGroupService.getBoundsForShapes(shapesInBound);
+
+    return this._createGroupRectangle(labeledThingGroupInFrame, bounds, color);
   }
 }
 
