@@ -147,7 +147,12 @@ class Task extends Controller\Base
                 break;
             case Model\LabelingTask::STATUS_DONE:
                 if ($user->hasOneRoleOf(
-                    [Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN]
+                    [
+                        Model\User::ROLE_LABELER,
+                        Model\User::ROLE_LABEL_COORDINATOR,
+                        Model\User::ROLE_ADMIN,
+                        Model\User::ROLE_OBSERVER,
+                    ]
                 )
                 ) {
                     $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
@@ -162,7 +167,12 @@ class Task extends Controller\Base
                 break;
             case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
                 if ($user->hasOneRoleOf(
-                    [Model\User::ROLE_LABELER, Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN]
+                    [
+                        Model\User::ROLE_LABELER,
+                        Model\User::ROLE_LABEL_COORDINATOR,
+                        Model\User::ROLE_ADMIN,
+                        Model\User::ROLE_OBSERVER,
+                    ]
                 )
                 ) {
                     $tasks = $this->labelingTaskFacade->getAllDoneLabelingTasksForProject(
