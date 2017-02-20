@@ -3,6 +3,7 @@
 namespace AppBundle\Tests\Helper;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 class UserBuilder
 {
@@ -25,6 +26,11 @@ class UserBuilder
      * @var string
      */
     private $email;
+
+    /**
+     * @var AnnoStationBundleModel\Organisation[]
+     */
+    private $organisations = [];
 
     /**
      * Declare private constructor to enforce usage of fluent interface.
@@ -135,6 +141,18 @@ class UserBuilder
     }
 
     /**
+     * @param array $organisations
+     *
+     * @return $this
+     */
+    public function withOrganisations(array $organisations)
+    {
+        $this->organisations = $organisations;
+
+        return $this;
+    }
+
+    /**
      * @return UserBuilder
      */
     public static function create()
@@ -154,6 +172,10 @@ class UserBuilder
         $user->setRoles($this->roles);
         $user->setEmail($this->email);
         $user->setEnabled(true);
+
+        foreach($this->organisations as $organisation) {
+            $user->assignToOrganisation($organisation);
+        }
 
         return $user;
     }
