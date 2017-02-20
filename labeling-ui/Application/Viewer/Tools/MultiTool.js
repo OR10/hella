@@ -306,6 +306,9 @@ class MultiTool extends PaperTool {
         );
         promise = tool.invokeShapeMoving(struct);
         break;
+      case 'none':
+        promise = this._$q.resolve(shape);
+        break;
       default:
         throw new Error(`Unknown actionIdentifier: ${actionIdentifier}`);
     }
