@@ -127,9 +127,9 @@ api_task_count:
     name_prefix: app_api_task_count_
 
 api_labeling_group:
-    resource: "annostation.labeling_api.controller.api.labeling_group"
+    resource: "annostation.labeling_api.controller.api.organisation.labeling_group"
     type: rest
-    name_prefix: app_api_labeling_group
+    name_prefix: app_api_organisation_labeling_group
 
 api_task_configuration:
     resource: "annostation.labeling_api.controller.api.organisation.task_configuration"

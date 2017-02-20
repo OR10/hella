@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Controller\Api;
+namespace AnnoStationBundle\Controller\Api\Organisation;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
- * @Rest\Prefix("/api/labelingGroup")
+ * @Rest\Prefix("/api/organisation")
  * @Rest\Route(service="annostation.labeling_api.controller.api.labeling_group")
  *
  * @CloseSession
@@ -56,7 +56,7 @@ class LabelingGroup extends Controller\Base
 
     /**
      *
-     * @Rest\Get("/user/coordinators")
+     * @Rest\Get("/{organisation}/labelingGroup/user/coordinators")
      *
      * @param HttpFoundation\Request $request
      *
@@ -88,7 +88,7 @@ class LabelingGroup extends Controller\Base
 
     /**
      *
-     * @Rest\Get("/user/groups")
+     * @Rest\Get("/{organisation}/labelingGroup/user/groups")
      *
      * @param HttpFoundation\Request $request
      *
@@ -124,7 +124,7 @@ class LabelingGroup extends Controller\Base
 
     /**
      *
-     * @Rest\Get("")
+     * @Rest\Get("/{organisation}/labelingGroup")
      *
      * @param HttpFoundation\Request $request
      *
@@ -153,7 +153,7 @@ class LabelingGroup extends Controller\Base
 
     /**
      *
-     * @Rest\Get("{labelingGroup}")
+     * @Rest\Get("/{organisation}/labelingGroup/{labelingGroup}")
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingGroup    $labelingGroup
@@ -181,7 +181,7 @@ class LabelingGroup extends Controller\Base
 
     /**
      *
-     * @Rest\Post("")
+     * @Rest\Post("/{organisation}/labelingGroup")
      *
      * @CheckPermissions({"canEditLabelingGroups"})
      *
@@ -224,7 +224,7 @@ class LabelingGroup extends Controller\Base
 
     /**
      *
-     * @Rest\Put("/{labelingGroup}")
+     * @Rest\Put("/{organisation}/labelingGroup/{labelingGroup}")
      *
      * @CheckPermissions({"canEditLabelingGroups"})
      *
@@ -268,7 +268,7 @@ class LabelingGroup extends Controller\Base
 
     /**
      *
-     * @Rest\Delete("/{labelingGroup}")
+     * @Rest\Delete("/{organisation}/labelingGroup/{labelingGroup}")
      *
      * @CheckPermissions({"canEditLabelingGroups"})
      *
