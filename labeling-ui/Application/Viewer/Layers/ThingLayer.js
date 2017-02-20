@@ -134,13 +134,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._lastMouseDownEvent = null;
 
-    $scope.$watchCollection('vm.paperGroupShapes', (newLabeledThingGroupsInFrame, oldLabeledThingGroupsInFrame) => {
-      const oldSet = new Set(oldLabeledThingGroupsInFrame);
+    $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
+      console.log('groupSHapes change', newPaperGroupShapes, oldPaperGroupShapes);
+      const oldSet = new Set(oldPaperGroupShapes);
+      const newSet = new Set(newPaperGroupShapes);
 
-      const addedLabeledThingGroupsInFrame = newLabeledThingGroupsInFrame.filter(item => !oldSet.has(item));
-      // const removedLabeledThingGroupsInFrame = oldLabeledThingGroupsInFrame.filter(item => !newSet.has(item));
+      const addedPaperGroupShapes = newPaperGroupShapes.filter(item => !oldSet.has(item));
+      const removedPaperGroupShapes = oldPaperGroupShapes.filter(item => !newSet.has(item));
 
-      this.addLabeledThingGroupsInFrame(addedLabeledThingGroupsInFrame, false);
+      this.addPaperGroupShapes(addedPaperGroupShapes, false);
+      this.removePaperShapes(removedPaperGroupShapes, false);
 
       // this._applyHiddenLabeledThingsInFrameFilter();
     });
@@ -153,7 +156,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       const removedPaperThingShapes = oldPaperThingShapes.filter(item => !newSet.has(item));
 
       this.addPaperThingShapes(addedPaperThingShapes, false);
-      this.removePaperThingShapes(removedPaperThingShapes, false);
+      this.removePaperShapes(removedPaperThingShapes, false);
 
       this._applyHiddenLabeledThingsInFrameFilter();
     });
@@ -538,12 +541,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * Adds the given thing group to this layer and draws its respective shapes
    *
-   * @param {Array<LabeledThingGroupInFrame>} labeledThingGroupsInFrame
+   * @param {Array<PaperGroupShape>} paperGroupShapes
    * @param {boolean?} update
    */
-  addLabeledThingGroupsInFrame(labeledThingGroupsInFrame, update = true) {
-    labeledThingGroupsInFrame.forEach(labeledThingGroupInFrame => {
-      this.addLabeledThingGroupInFrame(labeledThingGroupInFrame, false);
+  addPaperGroupShapes(paperGroupShapes, update = true) {
+    paperGroupShapes.forEach(labeledThingGroupInFrame => {
+      this.addPaperGroupShape(labeledThingGroupInFrame, false);
     });
 
     if (update) {
@@ -599,7 +602,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {boolean|undefined} selected
    * @return {Array.<paper.Shape>}
    */
-  addLabeledThingGroupInFrame(paperGroupShape, update = true, selected = undefined) {
+  addPaperGroupShape(paperGroupShape, update = true, selected = undefined) {
     const selectedPaperShape = this._$scope.vm.selectedPaperShape;
     const selectedLabeledThingGroupInFrame = selectedPaperShape ? selectedPaperShape.labeledThingGroupInFrame : null;
     const selectedLabeledThingGroup = selectedLabeledThingGroupInFrame ? selectedLabeledThingGroupInFrame.labeledThingGroup : null;
@@ -656,12 +659,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * Remove all {@link PaperShape}s belonging to any of the given {@link LabeledThingInFrame}s
    *
-   * @param {Array.<PaperThingShape>} paperThingShapes
+   * @param {Array.<PaperShape>} paperShapes
    * @param {boolean?} update
    */
-  removePaperThingShapes(paperThingShapes, update = true) {
+  removePaperShapes(paperShapes, update = true) {
     this._context.withScope(scope => {
-      paperThingShapes.forEach(shape => {
+      paperShapes.forEach(shape => {
         shape.remove();
       });
       if (update) {
