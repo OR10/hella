@@ -135,7 +135,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._lastMouseDownEvent = null;
 
     $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
-      console.log('groupSHapes change', newPaperGroupShapes, oldPaperGroupShapes);
       const oldSet = new Set(oldPaperGroupShapes);
       const newSet = new Set(newPaperGroupShapes);
 
