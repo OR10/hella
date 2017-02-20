@@ -7,6 +7,7 @@ use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Worker\Jobs;
@@ -14,7 +15,6 @@ use crosscan\WorkerPool\AMQP;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
-use AnnoStationBundle\Controller\Api\Project\Exception as ProjectException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
@@ -76,12 +76,14 @@ class Export extends Controller\Base
      *
      * @CheckPermissions({"canExportProject"})
      *
-     * @param Model\Project $project
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function listExportsAction(Model\Project $project)
+    public function listExportsAction(AnnoStationBundleModel\Organisation $organisation, Model\Project $project)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         $exports = $this->exporterFacade->findAllByProject($project);
@@ -99,15 +101,18 @@ class Export extends Controller\Base
      *
      * @CheckPermissions({"canExportProject"})
      *
-     * @param Model\Project $project
-     * @param string        $exportId
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
+     * @param string                              $exportId
      *
      * @return HttpFoundation\Response
-     *
-     * @throws ProjectException\Csv
      */
-    public function getExportAction(Model\Project $project, string $exportId)
-    {
+    public function getExportAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        string $exportId
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         $export = $this->exporterFacade->find($exportId);
@@ -148,13 +153,14 @@ class Export extends Controller\Base
      *
      * @CheckPermissions({"canExportProject"})
      *
-     * @param Model\Project $project
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
      *
      * @return HttpFoundation\Response
-     *
      */
-    public function postCsvExportAction(Model\Project $project)
+    public function postCsvExportAction(AnnoStationBundleModel\Organisation $organisation, Model\Project $project)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
         $user = $this->tokenStorage->getToken()->getUser();
 
