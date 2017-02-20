@@ -180,7 +180,6 @@ class CuboidDrawingTool extends CreationTool {
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
-      cuboid.remove();
     });
 
     return this._complete(cuboid);
@@ -440,10 +439,6 @@ class CuboidDrawingTool extends CreationTool {
    * @private
    */
   _cleanUp() {
-    if (this._cuboid) {
-      this._cuboid.remove();
-    }
-
     if (this._heightLine) {
       this._heightLine.remove();
     }
