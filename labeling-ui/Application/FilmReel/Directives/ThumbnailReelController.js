@@ -458,7 +458,6 @@ class ThumbnailReelController {
     let startFrameIndex;
     switch (true) {
       case this.selectedPaperShape instanceof PaperThingShape:
-        debugger;
         startFrameIndex = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex;
         break;
       case this.selectedPaperShape instanceof PaperGroupShape:
