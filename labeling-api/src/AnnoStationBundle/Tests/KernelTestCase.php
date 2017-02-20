@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Tests;
 
 use AnnoStationBundle\Database;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\Tests as AppBundleTests;
 use AppBundle\Tests\Helper;
@@ -21,43 +22,72 @@ class KernelTestCase extends AppBundleTests\KernelTestCase
      * @var Database\Facade\User
      */
     protected $userFacade;
+
     /**
      * Create a persisted client with its username as password.
      *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return Model\User
      */
-    protected function createClientUser()
+    protected function createClientUser(AnnoStationBundleModel\Organisation $organisation = null)
     {
-        return $this->userFacade->updateUser(Helper\UserBuilder::createDefaultClient()->build());
+        $user = Helper\UserBuilder::createDefaultClient();
+        if ($organisation instanceof AnnoStationBundleModel\Organisation) {
+            $user->withOrganisations([$organisation]);
+        }
+
+        return $this->userFacade->updateUser($user->build());
     }
 
     /**
      * Create a persisted label coordinator with its username as password.
      *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return Model\User
      */
-    protected function createLabelCoordinatorUser()
+    protected function createLabelCoordinatorUser(AnnoStationBundleModel\Organisation $organisation = null)
     {
-        return $this->userFacade->updateUser(Helper\UserBuilder::createDefaultLabelCoordinator()->build());
+        $user = Helper\UserBuilder::createDefaultLabelCoordinator();
+        if ($organisation instanceof AnnoStationBundleModel\Organisation) {
+            $user->withOrganisations([$organisation]);
+        }
+
+        return $this->userFacade->updateUser($user->build());
     }
 
     /**
      * Create a persisted labeler with its username as password.
      *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return Model\User
      */
-    protected function createLabelerUser()
+    protected function createLabelerUser(AnnoStationBundleModel\Organisation $organisation = null)
     {
-        return $this->userFacade->updateUser(Helper\UserBuilder::createDefaultLabeler()->build());
+        $user = Helper\UserBuilder::createDefaultLabeler();
+        if ($organisation instanceof AnnoStationBundleModel\Organisation) {
+            $user->withOrganisations([$organisation]);
+        }
+
+        return $this->userFacade->updateUser($user->build());
     }
 
     /**
      * Create a persisted SuperAdmin with its username as password.
      *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return Model\User
      */
-    protected function createSuperAdminUser()
+    protected function createSuperAdminUser(AnnoStationBundleModel\Organisation $organisation = null)
     {
-        return $this->userFacade->updateUser(Helper\UserBuilder::createDefaultSuperAdmin()->build());
+        $user = Helper\UserBuilder::createDefaultSuperAdmin();
+        if ($organisation instanceof AnnoStationBundleModel\Organisation) {
+            $user->withOrganisations([$organisation]);
+        }
+
+        return $this->userFacade->updateUser($user->build());
     }
 }
