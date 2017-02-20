@@ -99,12 +99,15 @@ class Project extends Controller\Base
      *
      * @Rest\Get("/{organisation}/project")
      *
-     * @param HttpFoundation\Request $request
+     * @param HttpFoundation\Request              $request
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return View\View
      */
-    public function listAction(HttpFoundation\Request $request)
+    public function listAction(HttpFoundation\Request $request, AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $limit  = $request->query->get('limit', null);
         $offset = $request->query->get('offset', null);
         $status = $request->query->get('projectStatus', null);
@@ -291,6 +294,8 @@ class Project extends Controller\Base
      */
     public function addProjectAction(HttpFoundation\Request $request, AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $name             = $request->request->get('name');
         $review           = $request->request->get('review');
         $frameSkip        = $request->request->get('frameSkip');
@@ -439,6 +444,7 @@ class Project extends Controller\Base
      */
     public function getProjectAction(Model\Project $project, AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         return View\View::create()->setData(['result' => $project]);
@@ -460,6 +466,7 @@ class Project extends Controller\Base
         Model\Project $project,
         AnnoStationBundleModel\Organisation $organisation
     ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         /** @var Model\User $user */
@@ -493,16 +500,20 @@ class Project extends Controller\Base
      *
      * @CheckPermissions({"canAssignProject"})
      *
-     * @Rest\Post("/{organizationId}/project/{project}/assign")
+     * @Rest\Post("/{organisation}/project/{project}/assign")
      *
-     * @param HttpFoundation\Request $request
-     * @param Model\Project          $project
+     * @param HttpFoundation\Request              $request
+     * @param Model\Project                       $project
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return View\View
-     * @throws \Exception
      */
-    public function assignProjectToUserAction(HttpFoundation\Request $request, Model\Project $project)
-    {
+    public function assignProjectToUserAction(
+        HttpFoundation\Request $request,
+        Model\Project $project,
+        AnnoStationBundleModel\Organisation $organisation
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         $sumOfPreProcessingTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(
