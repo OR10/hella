@@ -3,22 +3,21 @@
 namespace AnnoStationBundle\Tests\Controller\Api;
 
 use AnnoStationBundle\Tests;
-use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Model;
 use Symfony\Component\HttpFoundation;
 
 class TaskConfigurationTest extends Tests\WebTestCase
 {
     /**
-     * @var Facade\Organisation
+     * @var Model\Organisation
      */
-    private $organisationFacade;
+    private $organisation;
 
     public function testInvalidDuplicateId()
     {
-        $organisation   = $this->organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
         $requestWrapper = $this->createRequest(
             '/api/organisation/%s/taskConfiguration/requirements',
-            [$organisation->getId()]
+            [$this->organisation->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(['name' => 'some_config'])
@@ -37,10 +36,10 @@ class TaskConfigurationTest extends Tests\WebTestCase
 
     protected function setUpImplementation()
     {
-        $userManipulator          = $this->getService('fos_user.util.user_manipulator');
-        $this->organisationFacade = $this->getAnnostationService('database.facade.organisation');
+        $organisationFacade = $this->getAnnostationService('database.facade.organisation');
+        $this->organisation = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
 
-        $user = $userManipulator
-            ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+        $this->createDefaultUser();
+        $this->defaultUser->assignToOrganisation($this->organisation);
     }
 }

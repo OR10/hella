@@ -231,6 +231,7 @@
             <argument type="service" id="annostation.labeling_api.service.simple_xml_validator"/>
             <argument type="service" id="annostation.labeling_api.service.requirements_xml_validator"/>
             <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.labeling_group"

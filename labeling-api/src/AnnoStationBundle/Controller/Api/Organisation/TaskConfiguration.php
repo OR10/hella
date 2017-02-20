@@ -7,6 +7,7 @@ use AnnoStationBundle\Response;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\View;
 use AppBundle\Model\TaskConfiguration as TaskConfigurationModel;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -55,12 +56,18 @@ class TaskConfiguration extends Controller\Base
     private $configurationXmlConverterFactory;
 
     /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
      * @param Authentication\UserPermissions               $currentUserPermissions
      * @param Facade\TaskConfiguration                     $taskConfigurationFacade
      * @param Storage\TokenStorage                         $tokenStorage
      * @param Service\XmlValidator                         $simpleXmlValidator
      * @param Service\XmlValidator                         $requirementsXmlValidator
      * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
+     * @param Service\Authorization                        $authorizationService
      */
     public function __construct(
         Authentication\UserPermissions $currentUserPermissions,
@@ -68,7 +75,8 @@ class TaskConfiguration extends Controller\Base
         Storage\TokenStorage $tokenStorage,
         Service\XmlValidator $simpleXmlValidator,
         Service\XmlValidator $requirementsXmlValidator,
-        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
+        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
+        Service\Authorization $authorizationService
     ) {
         $this->currentUserPermissions           = $currentUserPermissions;
         $this->taskConfigurationFacade          = $taskConfigurationFacade;
@@ -76,17 +84,20 @@ class TaskConfiguration extends Controller\Base
         $this->simpleXmlValidator               = $simpleXmlValidator;
         $this->requirementsXmlValidator         = $requirementsXmlValidator;
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
+        $this->authorizationService             = $authorizationService;
     }
 
     /**
      * @Rest\Get("/{organisation}/taskConfiguration")
      *
-     * @param HttpFoundation\Request $request
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return View\View
      */
-    public function listConfigurationsAction(HttpFoundation\Request $request)
+    public function listConfigurationsAction(AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $user = $this->tokenStorage->getToken()->getUser();
 
         $taskConfigurations = $this->taskConfigurationFacade->getTaskConfigurationsByUser($user);
@@ -105,36 +116,15 @@ class TaskConfiguration extends Controller\Base
     /**
      * @Rest\Get("/{organisation}/taskConfiguration/{taskConfiguration}")
      *
-     * @param TaskConfigurationModel $taskConfiguration
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param TaskConfigurationModel              $taskConfiguration
      *
      * @return View\View
      */
-    public function getTaskConfigurationAction(Model\TaskConfiguration $taskConfiguration)
-    {
-        /**
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        if ($user->getId() !== $taskConfiguration->getUserId()) {
-            throw new BadRequestHttpException();
-        }
-        */
-
-        return new View\View(
-            new Response\SimpleTaskConfiguration($taskConfiguration)
-        );
-    }
-
-
-
-    /**
-     * @Rest\Get("/{organisation}/taskConfiguration/{taskConfiguration}/file")
-     *
-     * @param TaskConfigurationModel $taskConfiguration
-     *
-     * @return HttpFoundation\Response
-     */
-    public function getTaskConfigurationFileAction(Model\TaskConfiguration $taskConfiguration)
-    {
+    public function getTaskConfigurationAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\TaskConfiguration $taskConfiguration
+    ) {
         /*
         $user = $this->tokenStorage->getToken()->getUser();
 
@@ -142,6 +132,33 @@ class TaskConfiguration extends Controller\Base
             throw new BadRequestHttpException();
         }
         */
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
+        return new View\View(
+            new Response\SimpleTaskConfiguration($taskConfiguration)
+        );
+    }
+
+    /**
+     * @Rest\Get("/{organisation}/taskConfiguration/{taskConfiguration}/file")
+     *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param TaskConfigurationModel              $taskConfiguration
+     *
+     * @return HttpFoundation\Response
+     */
+    public function getTaskConfigurationFileAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\TaskConfiguration $taskConfiguration
+    ) {
+        /*
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($user->getId() !== $taskConfiguration->getUserId()) {
+            throw new BadRequestHttpException();
+        }
+        */
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         
         return new HttpFoundation\Response(
             $taskConfiguration->getRawData(),
@@ -157,12 +174,17 @@ class TaskConfiguration extends Controller\Base
      *
      * @CheckPermissions({"canUploadTaskConfiguration"})
      *
-     * @param HttpFoundation\Request $request
+     * @param HttpFoundation\Request              $request
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function uploadRequirementsXmlFileAction(HttpFoundation\Request $request)
-    {
+    public function uploadRequirementsXmlFileAction(
+        HttpFoundation\Request $request,
+        AnnoStationBundleModel\Organisation $organisation
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         if (!$request->files->has('file') || !$request->get('name')) {
             return View\View::create()
                 ->setData(['error' => 'Invalid data'])
