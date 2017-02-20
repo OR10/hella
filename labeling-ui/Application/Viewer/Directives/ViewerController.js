@@ -8,6 +8,8 @@ import Viewport from '../Models/Viewport';
 import paper from 'paper';
 import Environment from '../../Common/Support/Environment';
 
+import PaperThingShape from '../Shapes/PaperThingShape';
+
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
  * @property {PaperShape|null} selectedPaperShape
@@ -520,7 +522,7 @@ class ViewerController {
     );
 
     $scope.$watch('vm.selectedPaperShape', newShape => {
-      if (newShape && !newShape.isDraft) {
+      if (newShape && !newShape.isDraft && newShape instanceof PaperThingShape) {
         this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
       }
     });

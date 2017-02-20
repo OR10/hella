@@ -103,6 +103,9 @@ class GroupCreationTool extends CreationTool {
         );
       });
 
+      // Place this group shape behind all other shapes
+      paperGroup.sendToBack();
+
       this._complete(paperGroup);
     });
 

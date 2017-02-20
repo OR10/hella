@@ -202,7 +202,9 @@ class ThumbnailReelController {
           this._applicationState.thumbnails.enable();
           this._updateThumbnailData();
           if (this.selectedPaperShape !== null) {
-            this._updateLabeledThingInFrames(this.selectedPaperShape);
+            if (this.selectedPaperShape instanceof PaperThingShape) {
+              this._updateLabeledThingInFrames(this.selectedPaperShape);
+            }
           }
         }
       }
@@ -211,7 +213,11 @@ class ThumbnailReelController {
     // @TODO: Only supports single shaped LabeledThingInFrames at the moment.
     //        Some sort of watchGroupCollection would be needed to fix this.
     $scope.$watch('vm.selectedPaperShape',
-      newPaperShape => this._updateLabeledThingInFrames(newPaperShape)
+      newPaperShape => {
+        if (newPaperShape instanceof PaperThingShape) {
+          this._updateLabeledThingInFrames(newPaperShape);
+        }
+      }
     );
 
     this.handleDrop = this.handleDrop.bind(this);
@@ -235,8 +241,11 @@ class ThumbnailReelController {
     this._thumbnailLookahead = Math.floor(this.thumbnailCount / 2);
 
     this.thumbnails = new Array(this.thumbnailCount).fill({location: null, labeledThingInFrame: null});
-    this._updateLabeledThingInFrames(this.selectedPaperShape)
-      .then(() => this._updateThumbnailData());
+
+    if (this.selectedPaperShape instanceof PaperThingShape) {
+      this._updateLabeledThingInFrames(this.selectedPaperShape)
+        .then(() => this._updateThumbnailData());
+    }
 
     this._$scope.$apply(
       () => this.thumbnailDimensions = {width: thumbnailWidth, height: thumbnailHeight}

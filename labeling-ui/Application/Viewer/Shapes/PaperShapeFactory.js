@@ -136,7 +136,12 @@ class PaperShapeFactory {
     const color = this._entityColorService.getColorById(colorId);
     const bounds = this._labeledThingGroupService.getBoundsForShapes(shapesInBound);
 
-    return this._createGroupRectangle(labeledThingGroupInFrame, bounds, color);
+    const paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, bounds, color);
+
+    // Place this group shape behind all other shapes
+    paperGroup.sendToBack();
+
+    return paperGroup;
   }
 }
 
