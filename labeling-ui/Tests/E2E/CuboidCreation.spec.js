@@ -296,7 +296,7 @@ describe('Cuboid creation', () => {
     });
   });
 
-  describe('Size Constraints', () => {
+  xdescribe('Size Constraints', () => {
     it('should create a new 3d cuboid with minimalHeight constraint starting top to bottom', done => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
