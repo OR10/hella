@@ -27,6 +27,8 @@ class OrganisationBuilder
     public function withName($name)
     {
         $this->name = $name;
+
+        return $this;
     }
 
     /**
