@@ -30,6 +30,7 @@ describe('Cuboid creation', () => {
       assets.mocks.CuboidCreation.Shared.FrameLocations.Thumbnail.frameIndex0,
       assets.mocks.CuboidCreation.Shared.FrameLocations.Thumbnail.frameIndex0to1,
       assets.mocks.Shared.Thumbnails.cuboidLabeledThingsInFrame0to1,
+      assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
     viewer = element(by.css('.layer-container'));

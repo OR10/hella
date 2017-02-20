@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "namedParams": true,
+    "path": "/api/task/:taskId/labeledThingGroupInFrame/frame/:frame"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "labeledThingGroupsInFrame": [],
+        "labeledThingGroups": []
+      }
+    }
+  }
+}

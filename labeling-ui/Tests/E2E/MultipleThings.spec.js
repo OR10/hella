@@ -27,6 +27,7 @@ describe('Multiple Things', () => {
       assets.mocks.Shared.FrameLocations.SourceJpg.frameIndex0to4,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
+      assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
     viewer = element(by.css('.layer-container'));

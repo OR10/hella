@@ -33,6 +33,7 @@ describe('Polygon drawing', () => {
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to4,
+      assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
     viewer = element(by.css('.layer-container'));
