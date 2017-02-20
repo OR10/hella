@@ -168,11 +168,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
           oldShape.deselect();
         });
 
-        // Remove a Ghost upon deselection
-        if (oldShape.labeledThingInFrame.ghost === true) {
-          const index = this._$scope.vm.paperThingShapes.indexOf(oldShape);
-          if (index !== -1) {
-            this._$scope.vm.paperThingShapes.splice(index, 1);
+        if (oldShape instanceof PaperThingShape) {
+          // Remove a Ghost upon deselection
+          if (oldShape.labeledThingInFrame.ghost === true) {
+            const index = this._$scope.vm.paperThingShapes.indexOf(oldShape);
+            if (index !== -1) {
+              this._$scope.vm.paperThingShapes.splice(index, 1);
+            }
           }
         }
       }
