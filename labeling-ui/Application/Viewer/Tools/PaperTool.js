@@ -23,13 +23,19 @@ class PaperTool extends Tool {
     /**
      * Information about whether the fired drag event is the first one received
      *
-     * Paperjs fires a drag event without adhering to minDistance as soon as the first mouseDown is registered.
-     * We do not want this, as a drag should only occur once the mouse is really dragged the minDistance.
+     * Paperjs fires a drag event without adhering to minDistance in certain situations. Therefore we track the distance ourselves
+     * and act accordingly
      *
-     * @type {int}
+     * @type {string}
      * @private
      */
-    this._dragEventCount = 0;
+    this._dragEventState = "initial";
+
+    /**
+     * @type {paper.Point}|null}
+     * @private
+     */
+    this._lastDragPoint = null;
 
     this._initializePaperToolAndEvents();
   }
@@ -37,13 +43,20 @@ class PaperTool extends Tool {
   /**
    * @param {string} type
    * @param {paper.Event} event
-   * @private
+   * @protected
    */
   _delegateMouseEvent(type, event) {
     const delegationTarget = `onMouse${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
 
     switch (type) {
+      case 'down':
+        this._dragEventState = 'initial';
+        this._lastDragPoint = event.point;
+        this[delegationTarget](event);
+        break;
       case 'up':
+        this._mouseDownPoint = null;
+        this._dragEventState = 'initial';
         this[delegationTarget](event);
         this.onMouseClick(event);
         break;
@@ -51,16 +64,18 @@ class PaperTool extends Tool {
         this._$rootScope.$evalAsync(() => this[delegationTarget](event));
         break;
       case 'drag':
-        this._dragEventCount = this._dragEventCount + 1;
-        if (this._dragEventCount === 1) {
-          // Do not propagate first drag event, as it is fired directly after the first mouse down not adhering to min distance
-          return;
+        const eventPoint = event.point;
+        if (this._dragEventState === 'initial') {
+          if (this._lastDragPoint.getDistance(eventPoint) < this._toolActionStruct.options.initialDragDistance) {
+            return;
+          }
+          this._dragEventState = 'inProgress';
+        } else if (this._dragEventState === 'inProgress') {
+          if (this._lastDragPoint.getDistance(eventPoint) < this._toolActionStruct.options.minDragDistance) {
+            return;
+          }
         }
-        if (this._dragEventCount === 2) {
-          // The first delegated drag event has been fired, therefore the minDistance needs to be reduced to the real value
-          // instead of the initial one.
-          this._tool.minDistance = this._toolActionStruct.options.minDragDistance;
-        }
+        this._lastDragPoint = eventPoint;
         this[delegationTarget](event);
         break;
       default:
@@ -182,10 +197,11 @@ class PaperTool extends Tool {
   _invoke(toolActionStruct) {
     const promise = super._invoke(toolActionStruct);
 
-    this._dragEventCount = 0;
+    this._dragEventState = 'initial';
+    this._lastDragPoint = null;
 
-    // Set initialDragDistance for first Drag event
-    this._tool.minDistance = toolActionStruct.options.initialDragDistance;
+    // We handle drag distance calculation ourselves
+    this._tool.minDistance = 1;
 
     this._context.withScope(() => {
       this._tool.activate();

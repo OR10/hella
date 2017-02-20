@@ -197,7 +197,7 @@ class MultiTool extends PaperTool {
     const point = event.point;
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool.onMouseDown(event);
+      this._activePaperTool._delegateMouseEvent('down', event);
       return;
     }
 
@@ -219,7 +219,7 @@ class MultiTool extends PaperTool {
         }
         // Invoke shape creation
         this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
-        this._activePaperTool.onMouseDown(event);
+        this._activePaperTool._delegateMouseEvent('down', event);
         return;
       }
 
@@ -235,7 +235,7 @@ class MultiTool extends PaperTool {
       // Invoke mutation tool
       const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
       this._invokePaperToolDelegation(this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier), actionIdentifier, hitShape, hitHandle);
-      this._activePaperTool.onMouseDown(event);
+      this._activePaperTool._delegateMouseEvent('down', event);
     });
   }
 
@@ -331,7 +331,7 @@ class MultiTool extends PaperTool {
     }
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool.onMouseMove(event);
+      this._activePaperTool._delegateMouseEvent('move', event);
       return;
     }
 
@@ -397,7 +397,7 @@ class MultiTool extends PaperTool {
     }
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool.onMouseUp(event);
+      this._activePaperTool._delegateMouseEvent('up', event);
       return;
     }
 
@@ -433,7 +433,7 @@ class MultiTool extends PaperTool {
     }
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool.onMouseDrag(event);
+      this._activePaperTool._delegateMouseEvent('drag', event);
     }
   }
 
