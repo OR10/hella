@@ -106,14 +106,12 @@ class PolygonDrawingTool extends CreationTool {
         this._$rootScope.$emit('drawingtool:exception', `To few points! You need to set at least ${minHandles} points to create this shape.`);
         return;
       }
-      this._polygon.remove();
       this._complete(this._polygon);
       return;
     }
 
     if (this._polygon && this._polygon.points.length > maxHandles) {
       this._$rootScope.$emit('drawingtool:exception', `To many points! You are only allowed to create up to ${maxHandles} points in this shape. The shape create process was finished and the shape is created!`);
-      // this._polygon.remove();
       this._complete(this._polygon);
       return;
     }
