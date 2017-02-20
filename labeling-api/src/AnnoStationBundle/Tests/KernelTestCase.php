@@ -50,4 +50,14 @@ class KernelTestCase extends AppBundleTests\KernelTestCase
     {
         return $this->userFacade->updateUser(Helper\UserBuilder::createDefaultLabeler()->build());
     }
+
+    /**
+     * Create a persisted SuperAdmin with its username as password.
+     *
+     * @return Model\User
+     */
+    protected function createSuperAdminUser()
+    {
+        return $this->userFacade->updateUser(Helper\UserBuilder::createDefaultSuperAdmin()->build());
+    }
 }
