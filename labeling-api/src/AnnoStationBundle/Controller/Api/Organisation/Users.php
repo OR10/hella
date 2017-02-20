@@ -4,7 +4,8 @@ namespace AnnoStationBundle\Controller\Api\Organisation;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
-use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Service;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
@@ -34,16 +35,26 @@ class Users extends Controller\Base
     private $tokenStorage;
 
     /**
-     * Users constructor.
-     * @param AppFacade\User $userFacade
-     * @param Storage\TokenStorage $tokenStorage
+     * @var Service\Authorization
      */
-    public function __construct(AppFacade\User $userFacade, Storage\TokenStorage $tokenStorage)
-    {
-        $this->userFacade   = $userFacade;
-        $this->tokenStorage = $tokenStorage;
-    }
+    private $authorizationService;
 
+    /**
+     * Users constructor.
+     *
+     * @param AppFacade\User        $userFacade
+     * @param Storage\TokenStorage  $tokenStorage
+     * @param Service\Authorization $authorizationService
+     */
+    public function __construct(
+        AppFacade\User $userFacade,
+        Storage\TokenStorage $tokenStorage,
+        Service\Authorization $authorizationService
+    ) {
+        $this->userFacade           = $userFacade;
+        $this->tokenStorage         = $tokenStorage;
+        $this->authorizationService = $authorizationService;
+    }
 
     /**
      * Get all users
@@ -51,10 +62,14 @@ class Users extends Controller\Base
      * @Rest\Get("/{organisation}/users")
      * @Security("has_role('ROLE_ADMIN')")
      *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function getUsersListAction()
+    public function getUsersListAction(AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $users = $this->userFacade->getUserList();
 
         $users = array_map(function (Model\User $user) {
@@ -78,11 +93,15 @@ class Users extends Controller\Base
      * @Rest\Get("/{organisation}/users/{user}")
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @param Model\User $user
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function getUserAction(Model\User $user)
+    public function getUserAction(AnnoStationBundleModel\Organisation $organisation, Model\User $user)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         return View\View::create()->setData(
             ['result' => ['user' => $this->getUserResponse($user)]]
         );
@@ -94,11 +113,15 @@ class Users extends Controller\Base
      * @Rest\Post("/{organisation}/users")
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @param HttpFoundation\Request $request
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param HttpFoundation\Request              $request
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function addUserAction(HttpFoundation\Request $request)
+    public function addUserAction(AnnoStationBundleModel\Organisation $organisation, HttpFoundation\Request $request)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $roles = $request->request->get('roles', array());
         $user = $this->userFacade->createUser(
             $request->request->get('username'),
@@ -122,12 +145,16 @@ class Users extends Controller\Base
      * @Rest\Put("/{organizationId}/users/{user}")
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @param HttpFoundation\Request $request
-     * @param Model\User $user
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param HttpFoundation\Request              $request
+     * @param Model\User                          $user
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function editUserAction(HttpFoundation\Request $request, Model\User $user)
+    public function editUserAction(AnnoStationBundleModel\Organisation $organisation, HttpFoundation\Request $request, Model\User $user)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $loginUser = $this->tokenStorage->getToken()->getUser();
 
         $roles = $request->request->get('roles', array());
@@ -175,11 +202,15 @@ class Users extends Controller\Base
      * @Rest\Delete("/{organisation}/users/{user}")
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @param $user
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function deleteUserAction(Model\User $user)
+    public function deleteUserAction(AnnoStationBundleModel\Organisation $organisation, Model\User $user)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $this->userFacade->deleteUser($user);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
