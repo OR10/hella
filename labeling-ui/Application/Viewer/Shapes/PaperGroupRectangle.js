@@ -50,16 +50,11 @@ class PaperGroupRectangle extends PaperGroupShape {
    * @param {Boolean} drawHandles
    * @private
    */
-  _drawShape(drawHandles = true) {
+  _drawShape() {
     this.removeChildren();
 
     const shape = this._createShape();
     this.addChild(shape);
-
-    if (this._isSelected && drawHandles) {
-      const handles = this._createHandles();
-      this.addChildren(handles);
-    }
   }
 
   /**
@@ -106,9 +101,9 @@ class PaperGroupRectangle extends PaperGroupShape {
    *
    * @param {Boolean} drawHandles
    */
-  select(drawHandles = false) {
+  select() {
     this._isSelected = true;
-    this._drawShape(drawHandles);
+    this._drawShape(false);
   }
 
   /**
