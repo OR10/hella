@@ -106,7 +106,7 @@ describe('Cuboid creation', () => {
         });
     });
 
-    fit('should create a new 3d cuboid starting bottom to top', done => {
+    it('should create a new 3d cuboid starting bottom to top', done => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
