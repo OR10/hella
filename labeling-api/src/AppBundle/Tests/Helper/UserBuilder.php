@@ -74,6 +74,19 @@ class UserBuilder
     }
 
     /**
+     * Create a default super admin.
+     *
+     * @return UserBuilder
+     */
+    public static function createDefaultSuperAdmin()
+    {
+        return self::create()
+            ->withUsername('superadmin')
+            ->withPlainPassword('superadmin')
+            ->withRoles([Model\User::ROLE_SUPER_ADMIN]);
+    }
+
+    /**
      * @param array $roles
      *
      * @return UserBuilder
