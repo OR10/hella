@@ -729,6 +729,10 @@ class ViewerController {
     this.thingLayer.on('thing:create', shape => this._onThingCreate(shape));
     this.thingLayer.on('thing:update', shape => {
       const frameIndex = this.framePosition.position;
+
+      // Update all linked group shapes
+      this._updateGroupDimensions(shape);
+
       this._debouncedOnThingUpdate.debounce(shape, frameIndex);
     });
 
@@ -982,7 +986,7 @@ class ViewerController {
       }
     );
 
-    this.paperGroupShapes.concat(newPaperGroupShapes);
+    this.paperGroupShapes = this.paperGroupShapes.concat(newPaperGroupShapes);
   }
 
   /**
@@ -1119,6 +1123,30 @@ class ViewerController {
   }
 
   /**
+   * Update all group shapes that belong to the changed thing shape
+   *
+   * @param {PaperThingShape} shape
+   * @private
+   */
+  _updateGroupDimensions(shape) {
+    const groupShapes = this.paperGroupShapes.filter(
+      filterGroupShape => shape.labeledThingInFrame.labeledThing.groupIds.indexOf(filterGroupShape.labeledThingGroupInFrame.labeledThingGroup.id) !== -1
+    );
+
+    groupShapes.forEach(groupShape => {
+      const thingShapesInGroup = this.paperThingShapes.filter(
+        thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupShape.labeledThingGroupInFrame.labeledThingGroup.id) !== -1
+      );
+      const {point, width, height} = this._labeledThingGroupService.getBoundsForShapes(thingShapesInGroup);
+
+      this._thingLayerContext.withScope(scope => {
+        groupShape.setSize(point, width, height);
+        scope.view.update();
+      });
+    });
+  }
+
+  /**
    * Create a new {@link LabeledThingInFrame} with a corresponding {@link LabeledThing} and store both
    * {@link LabeledObject}s to the backend
    *
@@ -1165,21 +1193,27 @@ class ViewerController {
   }
 
   /**
-   * Create a new {@link LabeledThingInFrame} with a corresponding {@link LabeledThing} and store both
+   * Create a new {@link LabeledThingGroupInFrame} with a corresponding {@link LabeledThingGroup} and store both
    * {@link LabeledObject}s to the backend
    *
+   * @param {PaperGroupShape} paperGroupShape
    * @returns {AbortablePromise.<LabeledThingInFrame>}
    * @private
    */
-  _onGroupCreate(paperShape) {
+  _onGroupCreate(paperGroupShape) {
     this._$rootScope.$emit('shape:add:before');
 
-    let shapes = this._labeledThingGroupService.getShapesWithinBounds(this._thingLayerContext, paperShape.bounds);
+    let shapes = this._labeledThingGroupService.getShapesWithinBounds(this._thingLayerContext, paperGroupShape.bounds);
     // Service finds the group shape itself, so we need to remove the shape id from the array
-    shapes = shapes.filter(shape => shape.id !== paperShape.id);
-    const labeledThings = shapes.map(shape => shape.labeledThingInFrame.labeledThing);
+    shapes = shapes.filter(shape => shape.id !== paperGroupShape.id);
 
-    this._labeledThingGroupGateway.createLabeledThingGroupOfType(this.task, paperShape.labeledThingGroupInFrame.labeledThingGroup.type)
+    const labeledThings = [];
+    shapes.forEach(shape => {
+      shape.labeledThingInFrame.labeledThing.groupIds.push(paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id);
+      labeledThings.push(shape.labeledThingInFrame.labeledThing);
+    });
+
+    this._labeledThingGroupGateway.createLabeledThingGroupOfType(this.task, paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.type)
       .then(labeledThingGroup => {
         return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup);
       })
@@ -1200,7 +1234,7 @@ class ViewerController {
         );
       })
       .then(() => {
-        this._$rootScope.$emit('shape:add:after', paperShape);
+        this._$rootScope.$emit('shape:add:after', paperGroupShape);
       });
 
     this.bookmarkedFrameIndex = this.framePosition.position;
