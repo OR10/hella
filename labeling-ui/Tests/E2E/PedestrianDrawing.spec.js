@@ -186,16 +186,15 @@ describe('Pedestrian drawing', () => {
     ]));
 
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
+      .then(() => browser.actions()
           .mouseMove(viewer, {x: 100, y: 150}) // initial position
           .click()
           .mouseMove(viewer, {x: 100, y: 200}) // bottom drag handle
           .mouseDown()
           .mouseMove(viewer, {x: 100, y: 300}) // drag
           .mouseUp()
-          .perform();
-      })
+          .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'ResizeOnePedestrian')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -203,8 +202,9 @@ describe('Pedestrian drawing', () => {
       .then(drawingStack => {
         // browser.pause();
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.ResizeOnePedestrian);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
+      // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainRequest(assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1);
@@ -221,16 +221,15 @@ describe('Pedestrian drawing', () => {
     ]));
 
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
+      .then(() => browser.actions()
           .mouseMove(viewer, {x: 100, y: 150}) // initial position
           .click()
           .mouseMove(viewer, {x: 100, y: 200}) // bottom drag handle
           .mouseDown()
           .mouseMove(viewer, {x: 100, y: 50}) // drag
           .mouseUp()
-          .perform();
-      })
+          .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'ScaleOverFixedHandle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -238,7 +237,7 @@ describe('Pedestrian drawing', () => {
       .then(drawingStack => {
         // browser.pause();
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.ScaleOverFixedHandle);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
