@@ -160,3 +160,8 @@ project_importer:
     resource: "annostation.labeling_api.controller.api.project_importer"
     type: rest
     name_prefix: app_project_importer_
+
+api_organisation:
+    resource: "annostation.labeling_api.controller.api.organisation"
+    type: rest
+    name_prefix: app_api_organisation_

@@ -37,4 +37,20 @@ class Organisation
     {
         return $this->id;
     }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRev()
+    {
+        return $this->rev;
+    }
 }

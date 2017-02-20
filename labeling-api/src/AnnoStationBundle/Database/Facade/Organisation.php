@@ -32,6 +32,29 @@ class Organisation
     }
 
     /**
+     * @param null $skip
+     * @param null $limit
+     *
+     * @return Model\Organisation[]
+     */
+    public function findAll($skip = null, $limit = null)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_organisation_by_id', 'view')
+            ->onlyDocs(true);
+
+        if ($skip !== null) {
+            $query->setSkip($skip);
+        }
+
+        if ($limit !== null) {
+            $query->setLimit($limit);
+        }
+
+        return $query->execute()->toArray();
+    }
+
+    /**
      * @param Model\Organisation $organisation
      *
      * @return Model\Organisation
@@ -42,5 +65,14 @@ class Organisation
         $this->documentManager->flush();
 
         return $organisation;
+    }
+
+    /**
+     * @param Model\Organisation $organisation
+     */
+    public function delete(Model\Organisation $organisation)
+    {
+        $this->documentManager->remove($organisation);
+        $this->documentManager->flush();
     }
 }
