@@ -7,6 +7,7 @@ use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
 use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Service;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
@@ -43,16 +44,23 @@ class Attention extends Controller\Base
      */
     private $projectFacade;
 
+    /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Video $videoFacade,
         AppFacade\User $userFacade,
-        Facade\Project $projectFacade
+        Facade\Project $projectFacade,
+        Service\Authorization $authorizationService
     ) {
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->videoFacade        = $videoFacade;
-        $this->userFacade         = $userFacade;
-        $this->projectFacade      = $projectFacade;
+        $this->labelingTaskFacade   = $labelingTaskFacade;
+        $this->videoFacade          = $videoFacade;
+        $this->userFacade           = $userFacade;
+        $this->projectFacade        = $projectFacade;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -68,6 +76,8 @@ class Attention extends Controller\Base
      */
     public function getAttentionLabelingTasksAction(HttpFoundation\Request $request, Model\Project $project)
     {
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
         $offset     = $request->query->has('offset') ? $request->query->getInt('offset') : null;
         $limit      = $request->query->has('limit') ? $request->query->getInt('limit') : null;
 
