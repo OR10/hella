@@ -149,85 +149,77 @@ describe('Multiple Things', () => {
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'SelectMultipleDifferentThings1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
-      .then(() => {
-        browser.actions()
-          .click(toolButton0) // Rect drawing
-          .perform();
-        browser.sleep(200);
-      })
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 10, y: 10})
-          .mouseDown()
-          .mouseMove(viewer, {x: 20, y: 20})
-          .mouseUp()
-          .perform();
-        browser.sleep(200);
-      })
+      .then(() => browser.actions()
+        .click(toolButton0) // Rect drawing
+        .perform()
+      )
+      .then(() => browser.sleep(200))
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 10, y: 10})
+        .mouseDown()
+        .mouseMove(viewer, {x: 20, y: 20})
+        .mouseUp()
+        .perform()
+      )
+      .then(() => browser.sleep(200))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect1);
       })
-      .then(() => {
-        browser.actions()
-          .click(toolButton1) // Pedestrian drawing
-          .perform();
-        browser.sleep(200);
-      })
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 100, y: 10})
-          .mouseDown()
-          .mouseMove(viewer, {x: 100, y: 40})
-          .mouseUp()
-          .perform();
-        browser.sleep(200);
-      })
+      .then(() => browser.actions()
+        .click(toolButton1) // Pedestrian drawing
+        .perform()
+      )
+      .then(() => browser.sleep(200))
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 100, y: 10})
+        .mouseDown()
+        .mouseMove(viewer, {x: 100, y: 40})
+        .mouseUp()
+        .perform()
+      )
+      .then(() => browser.sleep(200))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFramePedestrian);
       })
-      .then(() => {
-        browser.actions()
-          .click(toolButton2) // Cuboid drawing
-          .perform();
-        browser.sleep(200);
-      })
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 100, y: 500})
-          .mouseDown()
-          .mouseMove(viewer, {x: 100, y: 550})
-          .mouseUp()
-          .mouseMove(viewer, {x: 125, y: 525})
-          .click()
-          .mouseMove(viewer, {x: 75, y: 525})
-          .click()
-          .perform();
-        browser.sleep(200);
-      })
+      .then(() => browser.actions()
+        .click(toolButton2) // Cuboid drawing
+        .perform()
+      )
+      .then(() => browser.sleep(200))
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 100, y: 500})
+        .mouseDown()
+        .mouseMove(viewer, {x: 100, y: 550})
+        .mouseUp()
+        .mouseMove(viewer, {x: 125, y: 525})
+        .click()
+        .mouseMove(viewer, {x: 75, y: 525})
+        .click()
+        .perform()
+      )
+      .then(() => browser.sleep(200))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid);
       })
-      .then(() => {
-        browser.actions()
-          .click(toolButton3) // Rect drawing
-          .perform();
-        browser.sleep(200);
-      })
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 800, y: 500})
-          .mouseDown()
-          .mouseMove(viewer, {x: 850, y: 550})
-          .mouseUp()
-          .perform();
-        browser.sleep(200);
-      })
+      .then(() => browser.actions()
+        .click(toolButton3) // Rect drawing
+        .perform()
+      )
+      .then(() => browser.sleep(200))
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 800, y: 500})
+        .mouseDown()
+        .mouseMove(viewer, {x: 850, y: 550})
+        .mouseUp()
+        .perform()
+      )
+      .then(() => browser.sleep(200))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
