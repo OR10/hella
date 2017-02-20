@@ -130,6 +130,7 @@ class BatchUpload extends Controller\Base
         Model\Project $project,
         HttpFoundation\Request $request
     ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
         $this->denyIfProjectIsNotTodo($project);
 
@@ -191,7 +192,13 @@ class BatchUpload extends Controller\Base
 
                 if ($this->isVideoFile($flowRequest->getFileName())) {
                     // for now, we always use compressed images
-                    $this->videoImporter->importVideo($organisation, $project, basename($targetPath), $targetPath, false);
+                    $this->videoImporter->importVideo(
+                        $organisation,
+                        $project,
+                        basename($targetPath),
+                        $targetPath,
+                        false
+                    );
                 } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
                     $this->videoImporter->importCalibrationData($project, $targetPath);
                 } else {
@@ -215,14 +222,15 @@ class BatchUpload extends Controller\Base
      *
      * @CheckPermissions({"canUploadNewVideo"})
      *
-     * @param Model\Project $project
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
      *
      * @return View\View
-     *
      * @throws \Exception
      */
-    public function uploadCompleteAction(Model\Project $project)
+    public function uploadCompleteAction(AnnoStationBundleModel\Organisation $organisation, Model\Project $project)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
         $this->denyIfProjectIsNotTodo($project);
 
