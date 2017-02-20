@@ -87,6 +87,17 @@ class LegacyLabelStructure extends LabelStructure {
 
     return thingMap;
   }
+
+  /**
+   * Retrieve a `Map` of all `Things` defined inside the {@link LabelStructure}
+   *
+   * As the LegacyLabelStructure does not support groups the map will be always empty.
+   *
+   * @return {Map.<string, LabelStructureGroup>}
+   */
+  getGroups() {
+    return new Map();
+  }
 }
 
 export default LegacyLabelStructure;
