@@ -10,6 +10,7 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
@@ -69,17 +70,22 @@ class Attention extends Controller\Base
      *
      * @CheckPermissions({"canViewAttentionTasks"})
      *
-     * @param HttpFoundation\Request $request
-     * @param Model\Project          $project
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param HttpFoundation\Request              $request
+     * @param Model\Project                       $project
      *
      * @return View\View
      */
-    public function getAttentionLabelingTasksAction(HttpFoundation\Request $request, Model\Project $project)
-    {
+    public function getAttentionLabelingTasksAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        HttpFoundation\Request $request,
+        Model\Project $project
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
-        $offset     = $request->query->has('offset') ? $request->query->getInt('offset') : null;
-        $limit      = $request->query->has('limit') ? $request->query->getInt('limit') : null;
+        $offset = $request->query->has('offset') ? $request->query->getInt('offset') : null;
+        $limit  = $request->query->has('limit') ? $request->query->getInt('limit') : null;
 
         if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
             throw new Exception\BadRequestHttpException('Invalid offset or limit');

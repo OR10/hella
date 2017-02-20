@@ -76,20 +76,16 @@ class AttentionTest extends Tests\WebTestCase
         $videoFacade = $this->getAnnostationService('database.facade.video');
         /** @var Facade\Project $projectFacade */
         $projectFacade = $this->getAnnostationService('database.facade.project');
-        /** @var AppFacade\User $userFacade */
-        $userFacade               = $this->getAnnostationService('database.facade.user');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
         $organisationFacade       = $this->getAnnostationService('database.facade.organisation');
 
-        $coordinatorUser = $userFacade->updateUser(
-            AppBundleHelper\UserBuilder::createDefaultLabelCoordinator()->build()
-        );
-
         $this->organisation  = $organisationFacade->save(Helper\OrganisationBuilder::create()->build());
-        $project       = Helper\ProjectBuilder::create($this->organisation)
+
+        $coordinatorUser = $this->createLabelCoordinatorUser($this->organisation);
+        $project         = Helper\ProjectBuilder::create($this->organisation)
             ->withAddedCoordinatorAssignment($coordinatorUser);
-        $this->project = $projectFacade->save($project->build());
-        $video         = $videoFacade->save(Helper\VideoBuilder::create($this->organisation)->build());
+        $this->project   = $projectFacade->save($project->build());
+        $video           = $videoFacade->save(Helper\VideoBuilder::create($this->organisation)->build());
 
         foreach (range(1, 5) as $tasksWithAttentionFlag) {
             $task          = Helper\LabelingTaskBuilder::create($this->project, $video)->withAttentionTaskFlag();
