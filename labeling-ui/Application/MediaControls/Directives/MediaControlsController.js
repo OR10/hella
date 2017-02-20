@@ -26,6 +26,7 @@ class MediaControlsController {
    * @param {Object} applicationState
    * @param {ModalService} modalService
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {ViewerMouseCursorService} viewerMouseCursorService
    * @param featureFlags
    */
   constructor($scope,
@@ -39,6 +40,7 @@ class MediaControlsController {
               applicationState,
               modalService,
               keyboardShortcutService,
+              viewerMouseCursorService,
               featureFlags
   ) {
     /**
@@ -104,6 +106,12 @@ class MediaControlsController {
      * @private
      */
     this._keyboardShortcutService = keyboardShortcutService;
+
+    /**
+     * @type {ViewerMouseCursorService}
+     * @private
+     */
+    this._viewerMouseCursorService = viewerMouseCursorService;
 
     this.featureFlags = featureFlags;
 
@@ -221,9 +229,19 @@ class MediaControlsController {
    * Handle the toggle of showing the crosshairs
    */
   handleShowCrosshairsToggle() {
-    this.showCrosshairs = !this.showCrosshairs;
+    if (this._viewerMouseCursorService.isCrosshairShowing()) {
+      this._viewerMouseCursorService.hideCrosshair();
+    } else {
+      this._viewerMouseCursorService.showCrosshair();
+    }
   }
 
+  /**
+   * @returns {boolean}
+   */
+  isCrosshairShowing() {
+    return this._viewerMouseCursorService.isCrosshairShowing();
+  }
 
   /**
    * Handle the creation of new rectangle
@@ -462,6 +480,7 @@ MediaControlsController.$inject = [
   'applicationState',
   'modalService',
   'keyboardShortcutService',
+  'viewerMouseCursorService',
   'featureFlags',
 ];
 

@@ -123,13 +123,6 @@ class TaskController {
     this.hideLabeledThingsInFrame = false;
 
     /**
-     * Flag indicating whether or not to display the crosshairs inside the viewer
-     *
-     * @type {boolean}
-     */
-    this.showCrosshairs = false;
-
-    /**
      * Currently active frame position to be displayed inside the MediaControls
      *
      * This model will be manipulated by different directives in order to switch between frames.

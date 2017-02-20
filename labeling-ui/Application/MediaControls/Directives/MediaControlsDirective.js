@@ -27,7 +27,6 @@ class MediaControlsDirective {
       video: '=',
       bookmarkedFrameIndex: '=',
       readOnly: '@',
-      showCrosshairs: '=',
     };
   }
 

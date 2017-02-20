@@ -27,7 +27,6 @@ import Environment from '../../Common/Support/Environment';
  * @property {integer} frameSkip
  * @property {ThingLayer} thingLayer
  * @property {boolean} readOnly
- * @property {boolean} showCrosshairs
  */
 class ViewerController {
   /**
