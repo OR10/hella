@@ -36,11 +36,6 @@ class User extends BaseUser
     protected $lockHistory = [];
 
     /**
-     * @CouchDB\Field(type="string")
-     */
-    protected $organisationId;
-
-    /**
      * @CouchDB\Field(type="mixed")
      */
     protected $settings = [];
@@ -49,6 +44,11 @@ class User extends BaseUser
      * @CouchDB\Field(type="mixed")
      */
     protected $rolesByProject = [];
+
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
+    protected $organisations = [];
 
     public function __construct()
     {
@@ -61,14 +61,6 @@ class User extends BaseUser
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-    /**
-     * @param AnnoStationBundleModel\Organisation $organisation
-     */
-    public function setOrganisation(AnnoStationBundleModel\Organisation $organisation)
-    {
-        $this->organisationId = $organisation->getId();
     }
 
     /**
@@ -154,5 +146,39 @@ class User extends BaseUser
     public function getRolesForProject(string $projectId)
     {
         return $this->rolesByProject[$projectId] ?? [];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrganisations()
+    {
+        return $this->organisations;
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     */
+    public function assignToOrganisation(AnnoStationBundleModel\Organisation $organisation)
+    {
+        $this->organisations[] = $organisation->getId();
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     */
+    public function removeFromOrganisation(AnnoStationBundleModel\Organisation $organisation)
+    {
+        $idToRemove          = $organisation->getId();
+        $this->organisations = array_filter(
+            $this->organisations,
+            function ($organisationId) use ($idToRemove) {
+                if ($organisationId === $idToRemove) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
     }
 }
