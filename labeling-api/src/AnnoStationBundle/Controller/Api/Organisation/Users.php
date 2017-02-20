@@ -142,7 +142,7 @@ class Users extends Controller\Base
     /**
      * Edit a User
      *
-     * @Rest\Put("/{organizationId}/users/{user}")
+     * @Rest\Put("/{organisation}/users/{user}")
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param AnnoStationBundleModel\Organisation $organisation
