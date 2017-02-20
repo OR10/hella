@@ -7,6 +7,7 @@ use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Database\Facade as AppFacade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Service;
@@ -87,13 +88,15 @@ class Report extends Controller\Base
      *
      * @CheckPermissions({"canViewProjectReport"})
      *
-     * @param Model\Project $project
-     * @param Model\Report  $report
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
+     * @param Model\Report                        $report
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getReportAction(Model\Project $project, Model\Report $report)
+    public function getReportAction(AnnoStationBundleModel\Organisation $organisation, Model\Project $project, Model\Report $report)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
         if ($report->getReportStatus() !== Model\Report::REPORT_STATUS_DONE) {
             throw new Exception\NotFoundHttpException();
@@ -139,12 +142,17 @@ class Report extends Controller\Base
      *
      * @Rest\Get("/{organisation}/project/{project}/report")
      *
-     * @param Model\Project $project
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
      *
      * @return View\View
      */
-    public function getReportsForProjectAction(Model\Project $project)
+    public function getReportsForProjectAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project
+    )
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         $reports = $this->reportFacade->findAllByProject($project)->toArray();
@@ -161,12 +169,16 @@ class Report extends Controller\Base
      *
      * @Rest\Post("/{organisation}/project/{project}/report")
      *
-     * @param Model\Project $project
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function createNewReportForProjectAction(Model\Project $project)
-    {
+    public function createNewReportForProjectAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         $report = Model\Report::create($project);
