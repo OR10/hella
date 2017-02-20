@@ -6,6 +6,8 @@ use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Service;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
@@ -39,31 +41,42 @@ class LabelingGroup extends Controller\Base
     private $tokenStorage;
 
     /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
      * LabelingGroup constructor.
-     * @param Facade\LabelingGroup $labelingGroupFacade
-     * @param AppFacade\User       $userFacade
-     * @param Storage\TokenStorage $tokenStorage
+     *
+     * @param Facade\LabelingGroup  $labelingGroupFacade
+     * @param AppFacade\User        $userFacade
+     * @param Storage\TokenStorage  $tokenStorage
+     * @param Service\Authorization $authorizationService
      */
     public function __construct(
         Facade\LabelingGroup $labelingGroupFacade,
         AppFacade\User $userFacade,
-        Storage\TokenStorage $tokenStorage
+        Storage\TokenStorage $tokenStorage,
+        Service\Authorization $authorizationService
     ) {
-        $this->labelingGroupFacade = $labelingGroupFacade;
-        $this->userFacade          = $userFacade;
-        $this->tokenStorage        = $tokenStorage;
+        $this->labelingGroupFacade  = $labelingGroupFacade;
+        $this->userFacade           = $userFacade;
+        $this->tokenStorage         = $tokenStorage;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
      *
      * @Rest\Get("/{organisation}/labelingGroup/user/coordinators")
      *
-     * @param HttpFoundation\Request $request
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getAllCoordinatorsAction(HttpFoundation\Request $request)
+    public function getAllCoordinatorsAction(AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
@@ -90,12 +103,14 @@ class LabelingGroup extends Controller\Base
      *
      * @Rest\Get("/{organisation}/labelingGroup/user/groups")
      *
-     * @param HttpFoundation\Request $request
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function myOwnGroupsAction(HttpFoundation\Request $request)
+    public function myOwnGroupsAction(AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
@@ -126,12 +141,14 @@ class LabelingGroup extends Controller\Base
      *
      * @Rest\Get("/{organisation}/labelingGroup")
      *
-     * @param HttpFoundation\Request $request
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function listAction(HttpFoundation\Request $request)
+    public function listAction(AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $labelingGroups = $this->labelingGroupFacade->findAll();
         $users = [];
         foreach ($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
@@ -155,13 +172,15 @@ class LabelingGroup extends Controller\Base
      *
      * @Rest\Get("/{organisation}/labelingGroup/{labelingGroup}")
      *
-     * @param HttpFoundation\Request $request
-     * @param Model\LabelingGroup    $labelingGroup
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\LabelingGroup                 $labelingGroup
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getGroupAction(HttpFoundation\Request $request, Model\LabelingGroup $labelingGroup)
+    public function getGroupAction(AnnoStationBundleModel\Organisation $organisation, Model\LabelingGroup $labelingGroup)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $users = [];
         foreach ($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
             $users[$user->getId()] = $user;
@@ -185,12 +204,15 @@ class LabelingGroup extends Controller\Base
      *
      * @CheckPermissions({"canEditLabelingGroups"})
      *
-     * @param HttpFoundation\Request $request
+     * @param HttpFoundation\Request              $request
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function createAction(HttpFoundation\Request $request)
+    public function createAction(HttpFoundation\Request $request, AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $coordinators = $request->request->get('coordinators', []);
         $labeler      = $request->request->get('labeler', []);
         $name         = $request->request->get('name', null);
@@ -228,14 +250,20 @@ class LabelingGroup extends Controller\Base
      *
      * @CheckPermissions({"canEditLabelingGroups"})
      *
-     * @param HttpFoundation\Request $request
-     * @param Model\LabelingGroup    $labelingGroup
+     * @param HttpFoundation\Request              $request
+     * @param Model\LabelingGroup                 $labelingGroup
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function updateAction(HttpFoundation\Request $request, Model\LabelingGroup $labelingGroup)
-    {
-        $revision     = $request->request->get('rev');
+    public function updateAction(
+        HttpFoundation\Request $request,
+        Model\LabelingGroup $labelingGroup,
+        AnnoStationBundleModel\Organisation $organisation
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
+        $revision = $request->request->get('rev');
         $coordinators = $request->request->get('coordinators', []);
         $labeler      = $request->request->get('labeler', []);
         $name         = $request->request->get('name', null);
@@ -272,13 +300,15 @@ class LabelingGroup extends Controller\Base
      *
      * @CheckPermissions({"canEditLabelingGroups"})
      *
-     * @param HttpFoundation\Request $request
-     * @param Model\LabelingGroup    $labelingGroup
+     * @param Model\LabelingGroup                 $labelingGroup
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function deleteAction(HttpFoundation\Request $request, Model\LabelingGroup $labelingGroup)
+    public function deleteAction(Model\LabelingGroup $labelingGroup, AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $this->labelingGroupFacade->delete($labelingGroup);
 
         return View\View::create()->setData(

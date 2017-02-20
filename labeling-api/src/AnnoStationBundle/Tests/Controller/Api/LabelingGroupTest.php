@@ -20,9 +20,9 @@ class LabelingGroupTest extends Tests\WebTestCase
     private $labelingGroupFacade;
 
     /**
-     * @var Facade\Organisation
+     * @var AnnoStationBundleModel\Organisation
      */
-    private $organisationFacade;
+    private $organisation;
 
     public function provideInvalidLabelingGroups()
     {
@@ -90,7 +90,6 @@ class LabelingGroupTest extends Tests\WebTestCase
 
     public function testGetLabelingGroup()
     {
-        $organisation     = $this->createOrganisation();
         $coordinatorUser1 = $this->createUser('coordinatorUser1');
         $coordinatorUser2 = $this->createUser('coordinatorUser2');
         $labelingUser1    = $this->createUser('labelingUser1');
@@ -101,7 +100,7 @@ class LabelingGroupTest extends Tests\WebTestCase
 
         $labelingGroup = $this->createLabelingGroup($coordinators, $labeler, 'foobar');
 
-        $response = $this->createRequest(self::ROUTE, [$organisation->getId()])
+        $response = $this->createRequest(self::ROUTE, [$this->organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_GET)
             ->execute()
             ->getResponse();
@@ -131,8 +130,7 @@ class LabelingGroupTest extends Tests\WebTestCase
 
     public function testCreateNewLabelingGroup()
     {
-        $organisation = $this->createOrganisation();
-        $response = $this->createRequest(self::ROUTE, [$organisation->getId()])
+        $response = $this->createRequest(self::ROUTE, [$this->organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
                 [
@@ -159,8 +157,7 @@ class LabelingGroupTest extends Tests\WebTestCase
      */
     public function testCreateNewLabelingGroupWithMissingInformationIsRejected($data)
     {
-        $organisation = $this->createOrganisation();
-        $response = $this->createRequest(self::ROUTE, [$organisation->getId()])
+        $response = $this->createRequest(self::ROUTE, [$this->organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody($data)
             ->execute();
@@ -170,7 +167,6 @@ class LabelingGroupTest extends Tests\WebTestCase
 
     public function testUpdateLabelingGroup()
     {
-        $organisation     = $this->createOrganisation();
         $coordinatorUser1 = $this->createUser('coordinatorUser1');
         $coordinatorUser2 = $this->createUser('coordinatorUser2');
         $labelingUser1    = $this->createUser('labelingUser1');
@@ -181,7 +177,7 @@ class LabelingGroupTest extends Tests\WebTestCase
 
         $labelingGroup = $this->createLabelingGroup($coordinators, $labeler);
 
-        $response = $this->createRequest(self::ROUTE . '/%s', [$organisation->getId(), $labelingGroup->getId()])
+        $response = $this->createRequest(self::ROUTE . '/%s', [$this->organisation->getId(), $labelingGroup->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
                 [
@@ -201,7 +197,6 @@ class LabelingGroupTest extends Tests\WebTestCase
 
     public function testDeleteLabelingGroup()
     {
-        $organisation     = $this->createOrganisation();
         $coordinatorUser1 = $this->createUser('coordinatorUser1');
         $coordinatorUser2 = $this->createUser('coordinatorUser2');
         $labelingUser1    = $this->createUser('labelingUser1');
@@ -212,7 +207,7 @@ class LabelingGroupTest extends Tests\WebTestCase
 
         $labelingGroup = $this->createLabelingGroup($coordinators, $labeler);
 
-        $this->createRequest(self::ROUTE . '/%s', [$organisation->getId(), $labelingGroup->getId()])
+        $this->createRequest(self::ROUTE . '/%s', [$this->organisation->getId(), $labelingGroup->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->setJsonBody(
                 [
@@ -230,10 +225,12 @@ class LabelingGroupTest extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->labelingGroupFacade = $this->getAnnostationService('database.facade.labeling_group');
-        $this->organisationFacade  = $this->getAnnostationService('database.facade.organisation');
+        $organisationFacade        = $this->getAnnostationService('database.facade.organisation');
+        $this->organisation        = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
 
         $this->createDefaultUser();
         $this->defaultUser->setRoles([Model\User::ROLE_ADMIN]);
+        $this->defaultUser->assignToOrganisation($this->organisation);
     }
 
     /**
@@ -258,13 +255,5 @@ class LabelingGroupTest extends Tests\WebTestCase
     private function createUser(string $username)
     {
         return $this->userService->create($username, 'foo', sprintf('%s@example.com', $username), true, false);
-    }
-
-    /**
-     * @return AnnoStationBundleModel\Organisation
-     */
-    private function createOrganisation()
-    {
-        return $this->organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
     }
 }

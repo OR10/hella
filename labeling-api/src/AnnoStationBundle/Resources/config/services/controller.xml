@@ -239,6 +239,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
         <service id="annostation.labeling_api.controller.custom_exception" class="AnnoStationBundle\Controller\CustomException">
