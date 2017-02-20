@@ -7,6 +7,7 @@ use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
 use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Service;
@@ -68,12 +69,18 @@ class Status extends Controller\Base
      *
      * @CheckPermissions({"canAcceptProject"})
      *
-     * @param HttpFoundation\Request $request
-     * @param Model\Project          $project
+     * @param HttpFoundation\Request              $request
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
+     *
      * @return \FOS\RestBundle\View\View
      */
-    public function setProjectStatusToInProgressAction(HttpFoundation\Request $request, Model\Project $project)
-    {
+    public function setProjectStatusToInProgressAction(
+        HttpFoundation\Request $request,
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         $user = $this->tokenStorage->getToken()->getUser();
@@ -105,12 +112,16 @@ class Status extends Controller\Base
      * @Rest\POST("/{organisation}/project/{project}/status/done")
      * @CheckPermissions({"canMoveFinishedProjectToDone", "canMoveInProgressProjectToDone"})
      *
-     * @param $project
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function setProjectStatusToDoneAction(Model\Project $project)
-    {
+    public function setProjectStatusToDoneAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         /** @var Model\User $user */
@@ -145,10 +156,18 @@ class Status extends Controller\Base
     /**
      * @Rest\Post("/{organisation}/project/{project}/status/deleted")
      *
+     * @param HttpFoundation\Request              $request
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
+     *
      * @return View\View
      */
-    public function setProjectStatusToDeletedAction(HttpFoundation\Request $request, Model\Project $project)
-    {
+    public function setProjectStatusToDeletedAction(
+        HttpFoundation\Request $request,
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         /** @var Model\User $user */

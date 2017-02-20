@@ -35,9 +35,9 @@ class ProjectTest extends Tests\WebTestCase
     private $taskFacade;
 
     /**
-     * @var Facade\Organisation
+     * @var AnnoStationBundleModel\Organisation
      */
-    private $organisationFacade;
+    private $organisation;
 
     /**
      * @return array
@@ -155,9 +155,8 @@ class ProjectTest extends Tests\WebTestCase
     public function testProjectList(string $status, array $expectedProjects)
     {
         $this->createProjectsForProjectListTest();
-        $organisation = $this->createOrganisation();
 
-        $request = $this->prepareProjectsByStatusRequest($organisation, $status)
+        $request = $this->prepareProjectsByStatusRequest($this->organisation, $status)
             ->withCredentialsFromUsername($this->client)
             ->execute();
 
@@ -178,10 +177,9 @@ class ProjectTest extends Tests\WebTestCase
      */
     private function createProjectsForProjectListTest()
     {
-        $organisation = $this->createOrganisation();
-        $video        = Tests\Helper\VideoBuilder::create($organisation)->build();
+        $video        = Tests\Helper\VideoBuilder::create($this->organisation)->build();
 
-        $projectBuilder = Tests\Helper\ProjectBuilder::create($organisation)
+        $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
             ->withProjectOwnedByUserId($this->client->getId());
 
         $testProject1 = $this->projectFacade->save(
@@ -270,9 +268,8 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testSetProjectInProgress()
     {
-        $organisation = $this->createOrganisation();
         $project      = $this->projectFacade->save(
-            Tests\Helper\ProjectBuilder::create($organisation)
+            Tests\Helper\ProjectBuilder::create($this->organisation)
                 ->withCreationDate(new \DateTime('yesterday'))
                 ->withProjectOwnedByUserId($this->client->getId())
                 ->withAddedCoordinatorAssignment($this->labelCoordinator, new \DateTime('-1 minute'))
@@ -285,7 +282,7 @@ class ProjectTest extends Tests\WebTestCase
 
         $requestWrapper = $this->createRequest(
             '/api/organisation/%s/project/%s/status/accept',
-            [$organisation->getId(), $project->getId()]
+            [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->labelCoordinator)
@@ -299,9 +296,8 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testSetProjectDone()
     {
-        $organisation = $this->createOrganisation();
         $project      = $this->projectFacade->save(
-            Tests\Helper\ProjectBuilder::create($organisation)
+            Tests\Helper\ProjectBuilder::create($this->organisation)
                 ->withCreationDate(new \DateTime('yesterday'))
                 ->withProjectOwnedByUserId($this->client->getId())
                 ->withStatusChange(Model\Project::STATUS_IN_PROGRESS)
@@ -310,7 +306,7 @@ class ProjectTest extends Tests\WebTestCase
 
         $requestWrapper = $this->createRequest(
             '/api/organisation/%s/project/%s/status/done',
-            [$organisation->getId(), $project->getId()]
+            [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->client)
@@ -322,16 +318,15 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testAssignCoordinatorToProject()
     {
-        $organisation = $this->createOrganisation();
         $project      = $this->projectFacade->save(
-            Tests\Helper\ProjectBuilder::create($organisation)
+            Tests\Helper\ProjectBuilder::create($this->organisation)
                 ->withProjectOwnedByUserId($this->client->getId())
                 ->build()
         );
 
         $response = $this->createRequest(
             '/api/organisation/%s/project/%s/assign',
-            [$organisation->getId(), $project->getId()]
+            [$this->organisation->getId(), $project->getId()]
         )
             ->setJsonBody(
                 [
@@ -349,8 +344,7 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testSaveLegacyProject()
     {
-        $organisation = $this->createOrganisation();
-        $response = $this->createRequest(self::ROUTE, [$organisation->getId()])
+        $response = $this->createRequest(self::ROUTE, [$this->organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->client)
             ->setJsonBody(
@@ -417,8 +411,7 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testSaveGenericXmlProject()
     {
-        $organisation = $this->createOrganisation();
-        $response     = $this->createRequest(self::ROUTE, [$organisation->getId()])
+        $response     = $this->createRequest(self::ROUTE, [$this->organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->client)
             ->setJsonBody(
@@ -499,10 +492,9 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testGetProjectsForLabelCoordinator()
     {
-        $organisation   = $this->createOrganisation();
-        $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create($organisation)->build());
+        $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create($this->organisation)->build());
 
-        $requestWrapper = $this->prepareProjectsByStatusRequest($organisation, Model\Project::STATUS_TODO)
+        $requestWrapper = $this->prepareProjectsByStatusRequest($this->organisation, Model\Project::STATUS_TODO)
             ->withCredentialsFromUsername($this->labelCoordinator);
 
         $data = $requestWrapper->execute()->getJsonResponseBody();
@@ -519,10 +511,9 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testGetProjectsForClientReturnsEmptyProjectListIfClientHasNoProjects()
     {
-        $organisation   = $this->createOrganisation();
-        $this->projectFacade->save(Tests\Helper\ProjectBuilder::create($organisation)->build());
+        $this->projectFacade->save(Tests\Helper\ProjectBuilder::create($this->organisation)->build());
 
-        $responseBody = $this->prepareProjectsByStatusRequest($organisation, Model\Project::STATUS_TODO)
+        $responseBody = $this->prepareProjectsByStatusRequest($this->organisation, Model\Project::STATUS_TODO)
             ->withCredentialsFromUsername($this->client)
             ->execute()
             ->getJsonResponseBody();
@@ -532,14 +523,13 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testGetProjectsForClientReturnsOwnProjects()
     {
-        $organisation   = $this->createOrganisation();
-        $projectBuilder = Tests\Helper\ProjectBuilder::create($organisation);
+        $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation);
 
         $project = $this->projectFacade->save(
             $projectBuilder->withProjectOwnedByUserId($this->client->getId())->build()
         );
 
-        $responseBody = $this->prepareProjectsByStatusRequest($organisation, Model\Project::STATUS_TODO)
+        $responseBody = $this->prepareProjectsByStatusRequest($this->organisation, Model\Project::STATUS_TODO)
             ->withCredentialsFromUsername($this->client)
             ->execute()
             ->getJsonResponseBody();
@@ -560,8 +550,7 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testDeleteProject()
     {
-        $organisation   = $this->createOrganisation();
-        $projectBuilder = Tests\Helper\ProjectBuilder::create($organisation)
+        $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
             ->withCreationDate(new \DateTime('2017-02-10 08:00:00', new \DateTimeZone('UTC')))
             ->withProjectOwnedByUserId($this->client->getId())
             ->build();
@@ -570,7 +559,7 @@ class ProjectTest extends Tests\WebTestCase
 
         $requestWrapper = $this->createRequest(
             '/api/organisation/%s/project/%s/status/deleted',
-            [$organisation->getId(), $project->getId()]
+            [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->client)
@@ -586,20 +575,13 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertTrue($project->isDeleted());
     }
 
-    /**
-     * @return AnnoStationBundleModel\Organisation
-     */
-    private function createOrganisation()
-    {
-        return $this->organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
-    }
-
     protected function setUpImplementation()
     {
-        $this->projectFacade      = $this->getAnnostationService('database.facade.project');
-        $this->taskFacade         = $this->getAnnostationService('database.facade.labeling_task');
-        $this->organisationFacade = $this->getAnnostationService('database.facade.organisation');
-        $this->client             = $this->createClientUser();
-        $this->labelCoordinator   = $this->createLabelCoordinatorUser();
+        $this->projectFacade    = $this->getAnnostationService('database.facade.project');
+        $this->taskFacade       = $this->getAnnostationService('database.facade.labeling_task');
+        $organisationFacade     = $this->getAnnostationService('database.facade.organisation');
+        $this->organisation     = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
+        $this->client           = $this->createClientUser($this->organisation);
+        $this->labelCoordinator = $this->createLabelCoordinatorUser($this->organisation);
     }
 }

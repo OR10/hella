@@ -3,13 +3,11 @@
 namespace AnnoStationBundle\Tests\Controller\Api\Project;
 
 use AnnoStationBundle\Tests;
-use AnnoStationBundle\Tests\Controller;
 use AnnoStationBundle\Tests\Helper;
 use AppBundle\Model;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Database\Facade;
 use Symfony\Component\HttpFoundation;
-use FOS\UserBundle\Util;
 
 class StatusTest extends Tests\WebTestCase
 {
@@ -44,19 +42,20 @@ class StatusTest extends Tests\WebTestCase
     private $labeler;
 
     /**
-     * @var Facade\Organisation
+     * @var AnnoStationBundleModel\Organisation
      */
-    private $organisationFacade;
+    private $organisation;
 
     public function testAcceptProject()
     {
-        $organisation  = $this->createOrganisation();
-        $project       = $this->createProject($organisation);
+        $project       = $this->createProject($this->organisation);
         $labelingGroup = $this->createLabelingGroup($this->labelCoordinator);
+
+        $this->labelCoordinator->assignToOrganisation($this->organisation);
 
         $requestWrapper = $this->createRequest(
             '/api/organisation/%s/project/%s/status/accept',
-            [$organisation->getId(), $project->getId()]
+            [$this->organisation->getId(), $project->getId()]
         )
             ->withCredentialsFromUsername($this->labelCoordinator)
             ->setJsonBody(
@@ -75,12 +74,11 @@ class StatusTest extends Tests\WebTestCase
 
     public function testDoneProject()
     {
-        $organisation = $this->createOrganisation();
-        $project      = $this->createProject($organisation);
+        $project      = $this->createProject($this->organisation);
 
         $requestWrapper = $this->createRequest(
             '/api/organisation/%s/project/%s/status/done',
-            [$organisation->getId(), $project->getId()]
+            [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->labelCoordinator)
@@ -92,27 +90,18 @@ class StatusTest extends Tests\WebTestCase
 
     public function testDoneProjectWithIncompleteTasks()
     {
-        $organisation = $this->createOrganisation();
-        $project = $this->createProject($organisation);
-        $this->createTask($organisation, $project);
+        $project = $this->createProject($this->organisation);
+        $this->createTask($this->organisation, $project);
 
         $response = $this->createRequest(
             '/api/organisation/%s/project/%s/status/done',
-            [$organisation->getId(), $project->getId()]
+            [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->labelCoordinator)
             ->execute();
 
         $this->assertSame($response->getResponse()->getStatusCode(), 400);
-    }
-
-    /**
-     * @return AnnoStationBundleModel\Organisation
-     */
-    private function createOrganisation()
-    {
-        return $this->organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
     }
 
     /**
@@ -167,9 +156,10 @@ class StatusTest extends Tests\WebTestCase
         $this->projectFacade       = $this->getAnnostationService('database.facade.project');
         $this->labelingGroupFacade = $this->getAnnostationService('database.facade.labeling_group');
         $this->labelingTaskFacade  = $this->getAnnostationService('database.facade.labeling_task');
-        $this->organisationFacade  = $this->getAnnostationService('database.facade.organisation');
-        $this->client              = $this->createClientUser();
-        $this->labelCoordinator    = $this->createLabelCoordinatorUser();
-        $this->labeler             = $this->createLabelerUser();
+        $organisationFacade        = $this->getAnnostationService('database.facade.organisation');
+        $this->organisation        = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
+        $this->client              = $this->createClientUser($this->organisation);
+        $this->labelCoordinator    = $this->createLabelCoordinatorUser($this->organisation);
+        $this->labeler             = $this->createLabelerUser($this->organisation);
     }
 }
