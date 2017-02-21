@@ -70,7 +70,7 @@ class Users extends Controller\Base
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
-        $users = $this->userFacade->getUserList();
+        $users = $this->userFacade->getUserList($organisation);
 
         $users = array_map(function (Model\User $user) {
             return array(
@@ -102,6 +102,10 @@ class Users extends Controller\Base
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
+        if (!in_array($organisation->getId(), $user->getOrganisations())) {
+            throw new Exception\BadRequestHttpException('User is not assigned to this organisation');
+        }
+
         return View\View::create()->setData(
             ['result' => ['user' => $this->getUserResponse($user)]]
         );
@@ -124,6 +128,7 @@ class Users extends Controller\Base
 
         $roles = $request->request->get('roles', array());
         $user = $this->userFacade->createUser(
+            $organisation,
             $request->request->get('username'),
             $request->request->get('email'),
             $request->request->get('password'),
@@ -154,6 +159,10 @@ class Users extends Controller\Base
     public function editUserAction(AnnoStationBundleModel\Organisation $organisation, HttpFoundation\Request $request, Model\User $user)
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
+        if (!in_array($organisation->getId(), $user->getOrganisations())) {
+            throw new Exception\BadRequestHttpException('User is not assigned to this organisation');
+        }
 
         $loginUser = $this->tokenStorage->getToken()->getUser();
 
@@ -210,6 +219,10 @@ class Users extends Controller\Base
     public function deleteUserAction(AnnoStationBundleModel\Organisation $organisation, Model\User $user)
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
+        if (!in_array($organisation->getId(), $user->getOrganisations())) {
+            throw new Exception\BadRequestHttpException('User is not assigned to this organisation');
+        }
 
         $this->userFacade->deleteUser($user);
 

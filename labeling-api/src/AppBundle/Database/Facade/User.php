@@ -175,12 +175,15 @@ class User
     }
 
     /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return Model\User[]
      */
-    public function getUserList()
+    public function getUserList(AnnoStationBundleModel\Organisation $organisation)
     {
         $users = $userProfileImages = $this->documentManager
-            ->createQuery('annostation_user', 'by_id')
+            ->createQuery('annostation_user_by_organisation', 'view')
+            ->setKey([$organisation->getId()])
             ->onlyDocs(true)
             ->execute()
             ->toArray();
