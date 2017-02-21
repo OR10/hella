@@ -114,7 +114,7 @@ class Project extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        $projects  = $this->projectFacade->findAllByUserAndStatus($user, $status)->toArray();
+        $projects  = $this->projectFacade->findAllByUserAndStatus($organisation, $user, $status)->toArray();
         $totalRows = count($projects);
 
         usort(
@@ -445,6 +445,7 @@ class Project extends Controller\Base
     public function getProjectAction(Model\Project $project, AnnoStationBundleModel\Organisation $organisation)
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         return View\View::create()->setData(['result' => $project]);
@@ -467,6 +468,7 @@ class Project extends Controller\Base
         AnnoStationBundleModel\Organisation $organisation
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         /** @var Model\User $user */
@@ -514,6 +516,7 @@ class Project extends Controller\Base
         AnnoStationBundleModel\Organisation $organisation
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         $sumOfPreProcessingTasks = $this->labelingTaskFacade->getSumOfTasksByProjectAndStatus(

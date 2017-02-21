@@ -10,9 +10,9 @@ function(doc) {
                 return b.timestamp - a.timestamp;
             });
 
-            emit([statusHistory[0].status, doc._id], 1);
+            emit([doc.organisationId, statusHistory[0].status]);
         }else{
-            emit([doc.status, doc._id], 1);
+            emit([doc.organisationId, doc.status]);
         }
     }
 }

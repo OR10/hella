@@ -9,10 +9,9 @@ function(doc) {
             statusHistory.sort(function (a, b) {
                 return b.timestamp - a.timestamp;
             });
-
-            emit([statusHistory[0].status]);
+            emit([doc.organisationId, doc.userId, statusHistory[0].status]);
         }else{
-            emit([doc.status]);
+            emit([doc.organisationId, doc.userId, doc.status]);
         }
     }
 }

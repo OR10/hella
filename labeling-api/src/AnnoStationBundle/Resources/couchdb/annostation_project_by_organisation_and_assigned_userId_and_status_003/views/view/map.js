@@ -23,8 +23,8 @@ function (doc) {
         statusHistory.sort(function (a, b) {
             return b.timestamp - a.timestamp;
         });
-        emit([coordinatorAssignmentHistory[0].userId, statusHistory[0].status]);
+        emit([doc.organisationId, coordinatorAssignmentHistory[0].userId, statusHistory[0].status]);
     }else{
-        emit([coordinatorAssignmentHistory[0].userId, doc.status]);
+        emit([doc.organisationId, coordinatorAssignmentHistory[0].userId, doc.status]);
     }
 }
