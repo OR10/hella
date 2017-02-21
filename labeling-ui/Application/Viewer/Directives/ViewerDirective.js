@@ -10,6 +10,7 @@ export default class ViewerDirective {
   constructor() {
     this.scope = {
       paperThingShapes: '=',
+      paperGroupShapes: '=',
       selectedPaperShape: '=',
       activeTool: '=',
       selectedDrawingTool: '=',

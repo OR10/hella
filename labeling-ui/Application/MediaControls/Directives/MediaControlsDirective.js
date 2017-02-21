@@ -18,6 +18,7 @@ class MediaControlsDirective {
       task: '=',
       selectedPaperShape: '=',
       paperThingShapes: '=',
+      paperGroupShapes: '=',
       playing: '=',
       playbackSpeedFactor: '=',
       playbackDirection: '=',
