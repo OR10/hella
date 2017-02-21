@@ -43,16 +43,14 @@ describe('Rectangle viewer overflow', () => {
     ]));
 
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 190, y: 190}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 1, y: 1}) // drag
-          .mouseUp()
-          .perform();
-
-        browser.sleep(1000);
-      })
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 190, y: 190}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 2, y: 2}) // drag
+        .mouseUp()
+        .perform()
+      )
+      .then(() => browser.sleep(1000))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TopLeftOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -111,26 +109,25 @@ describe('Rectangle viewer overflow', () => {
     ]));
 
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 190, y: 190}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 1, y: 1}) // drag
-          .mouseUp()
-          .perform();
-
-        browser.sleep(1000);
-      })
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 190, y: 190}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 2, y: 2}) // drag
+        .mouseUp()
+        .perform()
+      )
+      .then(() => browser.sleep(1000))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TopLeftNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow);
-          done();
-        });
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow);
+        done();
       });
   });
 
