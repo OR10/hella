@@ -288,7 +288,9 @@ class LabeledThingTest extends Tests\WebTestCase
     {
         $organisation = $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
         $video = $this->videoFacade->save(Model\Video::create($organisation, 'foobar'));
-        $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$this->user->getId()]));
+        $labelingGroup = $this->labelingGroupFacade->save(
+            Model\LabelingGroup::create($organisation, [], [$this->user->getId()])
+        );
 
         $project = Model\Project::create('test project', $organisation, $this->user);
         $project->setLabelingGroupId($labelingGroup->getId());

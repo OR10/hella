@@ -81,8 +81,8 @@ class ProjectTest extends Tests\CouchDbTestCase
 
         $this->project->addCoordinatorAssignmentHistory($assignedLabelCoordinator);
 
-        $assignmentLabelingGroup = $this->createLabelingGroup($assignedLabelCoordinator, [$this->user]);
-        $otherLabelingGroup      = $this->createLabelingGroup($otherLabelCoordinator, [$otherUser]);
+        $assignmentLabelingGroup = $this->createLabelingGroup($this->createOrganisation(), $assignedLabelCoordinator, [$this->user]);
+        $otherLabelingGroup      = $this->createLabelingGroup($this->createOrganisation(), $otherLabelCoordinator, [$otherUser]);
 
         $this->project->setLabelingGroupId($assignmentLabelingGroup->getId());
 
@@ -133,8 +133,8 @@ class ProjectTest extends Tests\CouchDbTestCase
 
         $this->project->addCoordinatorAssignmentHistory($assignedLabelCoordinator);
 
-        $assignmentLabelingGroup = $this->createLabelingGroup($assignedLabelCoordinator, [$this->user]);
-        $otherLabelingGroup      = $this->createLabelingGroup($otherLabelCoordinator, [$otherUser]);
+        $assignmentLabelingGroup = $this->createLabelingGroup($this->createOrganisation(), $assignedLabelCoordinator, [$this->user]);
+        $otherLabelingGroup      = $this->createLabelingGroup($this->createOrganisation(), $otherLabelCoordinator, [$otherUser]);
 
         $this->project->setLabelingGroupId($assignmentLabelingGroup->getId());
 

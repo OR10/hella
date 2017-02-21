@@ -49,7 +49,7 @@ class StatusTest extends Tests\WebTestCase
     public function testAcceptProject()
     {
         $project       = $this->createProject($this->organisation);
-        $labelingGroup = $this->createLabelingGroup($this->labelCoordinator);
+        $labelingGroup = $this->createLabelingGroup($this->organisation, $this->labelCoordinator);
 
         $this->labelCoordinator->assignToOrganisation($this->organisation);
 
@@ -126,13 +126,16 @@ class StatusTest extends Tests\WebTestCase
     /**
      * Create and persist a labeling group for the given coordinator with the default labeler.
      *
-     * @param Model\User $coordinator
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $coordinator
      *
      * @return Model\LabelingGroup
      */
-    private function createLabelingGroup(Model\User $coordinator)
+    private function createLabelingGroup(AnnoStationBundleModel\Organisation $organisation, Model\User $coordinator)
     {
-        return $this->labelingGroupFacade->save(Model\LabelingGroup::create($coordinator, $this->labeler));
+        return $this->labelingGroupFacade->save(
+            Model\LabelingGroup::create($organisation, $coordinator, $this->labeler)
+        );
     }
 
     /**

@@ -304,7 +304,9 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
         $user->addRole(Model\User::ROLE_LABELER);
 
-        $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$user->getId()]));
+        $labelingGroup = $this->labelingGroupFacade->save(
+            Model\LabelingGroup::create($organisation, [], [$user->getId()])
+        );
 
         $this->project = Model\Project::create('test project', $organisation, $user);
         $this->project->setLabelingGroupId($labelingGroup->getId());

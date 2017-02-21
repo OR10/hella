@@ -112,17 +112,18 @@ class LabelingGroupTest extends Tests\WebTestCase
             $content['result']['labelingGroups'],
             [
                 [
-                    'id'           => $labelingGroup->getId(),
-                    'rev'          => $labelingGroup->getRev(),
-                    'coordinators' => [
+                    'id'             => $labelingGroup->getId(),
+                    'rev'            => $labelingGroup->getRev(),
+                    'coordinators'   => [
                         $coordinatorUser1->getId(),
                         $coordinatorUser2->getId(),
                     ],
-                    'labeler'      => [
+                    'labeler'        => [
                         $labelingUser1->getId(),
                         $labelingUser2->getId(),
                     ],
-                    'name'         => 'foobar',
+                    'name'           => 'foobar',
+                    'organisationId' => $this->organisation->getId(),
                 ],
             ]
         );
@@ -242,7 +243,7 @@ class LabelingGroupTest extends Tests\WebTestCase
      */
     private function createLabelingGroup($coordinators, $labeler, string $name = null)
     {
-        $labelingGroup = new Model\LabelingGroup($coordinators, $labeler, $name);
+        $labelingGroup = new Model\LabelingGroup($this->organisation, $coordinators, $labeler, $name);
 
         return $this->labelingGroupFacade->save($labelingGroup);
     }

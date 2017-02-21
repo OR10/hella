@@ -239,7 +239,9 @@ class TimerTest extends Tests\WebTestCase
         $this->otherUser = $userManipulator
             ->create('someOtherUser', 'someOtherPassword', 'some@other.email', true, false);
 
-        $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$this->user->getId()]));
+        $labelingGroup = $this->labelingGroupFacade->save(
+            Model\LabelingGroup::create($organisation, [], [$this->user->getId()])
+        );
 
         $this->project = Model\Project::create('test project', $organisation, $this->user);
         $this->project->setLabelingGroupId($labelingGroup->getId());

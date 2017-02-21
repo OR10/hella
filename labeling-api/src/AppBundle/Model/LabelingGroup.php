@@ -3,6 +3,7 @@
 namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 /**
  * @CouchDB\Document
@@ -35,26 +36,40 @@ class LabelingGroup
     private $name;
 
     /**
-     * @param $coordinators
-     * @param $labeler
+     * @CouchDB\Field(type="string")
+     */
+    private $organisationId;
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param                                     $coordinators
+     * @param                                     $labeler
+     *
      * @return static
      */
-    public static function create($coordinators, $labeler)
+    public static function create(AnnoStationBundleModel\Organisation $organisation, $coordinators, $labeler)
     {
-        return new static($coordinators, $labeler);
+        return new static($organisation, $coordinators, $labeler);
     }
 
     /**
      * LabelingGroup constructor.
-     * @param $coordinators
-     * @param $labeler
-     * @param $name
+     *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param                                     $coordinators
+     * @param                                     $labeler
+     * @param                                     $name
      */
-    public function __construct($coordinators, $labeler, $name = null)
-    {
-        $this->coordinators = $coordinators;
-        $this->labeler      = $labeler;
-        $this->name         = $name;
+    public function __construct(
+        AnnoStationBundleModel\Organisation $organisation,
+        $coordinators,
+        $labeler,
+        $name = null
+    ) {
+        $this->organisationId = $organisation->getId();
+        $this->coordinators   = $coordinators;
+        $this->labeler        = $labeler;
+        $this->name           = $name;
     }
 
     /**

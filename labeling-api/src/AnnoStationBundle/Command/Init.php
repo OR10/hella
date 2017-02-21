@@ -338,6 +338,7 @@ class Init extends Base
         }
 
         $labelGroup = new Model\LabelingGroup(
+            $this->getOrganisation(),
             [$this->users['label_coordinator']->getId()],
             [$this->users['user']->getId()],
             'Example Labeling Group'

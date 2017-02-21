@@ -201,10 +201,14 @@ class CouchDbTestCase extends Tests\WebTestCase
         );
     }
 
-    protected function createLabelingGroup(Model\User $coordinator, array $labelers)
-    {
+    protected function createLabelingGroup(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\User $coordinator,
+        array $labelers
+    ) {
         return $this->labelingGroupFacade->save(
             Model\LabelingGroup::create(
+                $organisation,
                 [$coordinator->getId()],
                 array_map(
                     function ($labeler) {

@@ -142,7 +142,9 @@ class InterpolateTest extends Tests\WebTestCase
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
         $this->user->addRole(Model\User::ROLE_ADMIN);
 
-        $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$this->user->getId()]));
+        $labelingGroup = $this->labelingGroupFacade->save(
+            Model\LabelingGroup::create($organisation, [], [$this->user->getId()])
+        );
 
         $this->project = Model\Project::create('test project', $organisation, $this->user);
         $this->project->setLabelingGroupId($labelingGroup->getId());

@@ -130,14 +130,15 @@ class AttentionTest extends Tests\WebTestCase
             ->build();
         $this->userFacade->updateUser($anotherCoordinatorUser);
 
+        $organisation = Helper\OrganisationBuilder::create()->build();
+
         $labelingGroup = $labelingGroup->save(
-            Helper\LabelingGroupBuilder::create()
+            Helper\LabelingGroupBuilder::create($organisation)
                 ->withCoordinators([$coordinatorUser->getId()])
                 ->withUsers([$labelerUser->getId()])
                 ->build()
         );
 
-        $organisation = Helper\OrganisationBuilder::create()->build();
         $project = Helper\ProjectBuilder::create($organisation)
             ->withAddedCoordinatorAssignment($coordinatorUser)
             ->withLabelGroup($labelingGroup);

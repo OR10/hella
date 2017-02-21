@@ -225,7 +225,7 @@ class LabelingGroup extends Controller\Base
             throw new Exception\BadRequestHttpException();
         }
 
-        $labelingGroup = new Model\LabelingGroup($coordinators, $labeler, $name);
+        $labelingGroup = new Model\LabelingGroup($organisation, $coordinators, $labeler, $name);
         $this->labelingGroupFacade->save($labelingGroup);
 
         $users = [];
