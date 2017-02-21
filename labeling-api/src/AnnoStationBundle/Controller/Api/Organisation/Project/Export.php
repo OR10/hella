@@ -84,6 +84,7 @@ class Export extends Controller\Base
     public function listExportsAction(AnnoStationBundleModel\Organisation $organisation, Model\Project $project)
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         $exports = $this->exporterFacade->findAllByProject($project);
@@ -113,6 +114,7 @@ class Export extends Controller\Base
         string $exportId
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
         $export = $this->exporterFacade->find($exportId);
@@ -161,6 +163,7 @@ class Export extends Controller\Base
     public function postCsvExportAction(AnnoStationBundleModel\Organisation $organisation, Model\Project $project)
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
         $user = $this->tokenStorage->getToken()->getUser();
 

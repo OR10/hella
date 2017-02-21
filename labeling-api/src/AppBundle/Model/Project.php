@@ -767,4 +767,12 @@ class Project
     {
         $this->deletedState = $deletedState;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getOrganisationId()
+    {
+        return $this->organisationId;
+    }
 }

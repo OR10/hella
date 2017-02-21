@@ -78,4 +78,23 @@ class Authorization
             throw new AccessDeniedHttpException('Access to organisation denied.');
         }
     }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
+     */
+    public function denyIfProjectIsNotAssignedToOrganisation(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project
+    ) {
+        if ($organisation->getId() !== $project->getOrganisationId()) {
+            throw new AccessDeniedHttpException(
+                sprintf(
+                    'Project "%s" is not assigned to organisation "%s"',
+                    $project->getId(),
+                    $organisation->getId()
+                )
+            );
+        }
+    }
 }

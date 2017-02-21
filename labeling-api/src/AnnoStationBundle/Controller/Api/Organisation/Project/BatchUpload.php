@@ -131,6 +131,7 @@ class BatchUpload extends Controller\Base
         HttpFoundation\Request $request
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
         $this->denyIfProjectIsNotTodo($project);
 
@@ -231,6 +232,7 @@ class BatchUpload extends Controller\Base
     public function uploadCompleteAction(AnnoStationBundleModel\Organisation $organisation, Model\Project $project)
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
         $this->denyIfProjectIsNotTodo($project);
 

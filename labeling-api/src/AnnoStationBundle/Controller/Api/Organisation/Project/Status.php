@@ -81,6 +81,7 @@ class Status extends Controller\Base
         Model\Project $project
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         $user = $this->tokenStorage->getToken()->getUser();
@@ -122,6 +123,7 @@ class Status extends Controller\Base
         Model\Project $project
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         /** @var Model\User $user */
@@ -168,6 +170,7 @@ class Status extends Controller\Base
         Model\Project $project
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         /** @var Model\User $user */

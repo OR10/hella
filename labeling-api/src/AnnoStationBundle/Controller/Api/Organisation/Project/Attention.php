@@ -82,6 +82,7 @@ class Attention extends Controller\Base
         Model\Project $project
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
 
         $offset = $request->query->has('offset') ? $request->query->getInt('offset') : null;
