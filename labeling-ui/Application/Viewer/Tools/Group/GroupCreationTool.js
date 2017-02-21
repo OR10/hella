@@ -46,7 +46,7 @@ class GroupCreationTool extends CreationTool {
    */
   onMouseDown(event) {
     // Delegating the event down to the used tool
-    this._rectangleCreationTool.onMouseDown(event);
+    this._rectangleCreationTool._delegateMouseEvent('down', event);
   }
 
 
