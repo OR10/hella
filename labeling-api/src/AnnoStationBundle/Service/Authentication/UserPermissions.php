@@ -19,46 +19,56 @@ class UserPermissions
     // @formatter:off
     const PERMISSION_MAP = [
         // Label-Project
-        'canAcceptProject'               => [                                                 Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canMoveProjectToDone'           => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canViewClosedProjects'          => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER],
-        'canViewTodoProjects'            => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER],
-        'canViewDeletedProjects'         => [Model\User::ROLE_ADMIN                                                                                       ],
-        'canCreateProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                              ],
-        'canMoveFinishedProjectToDone'   => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canMoveInProgressProjectToDone' => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                              ],
-        'canViewStatsButton'             => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER],
-        'canViewProjectButton'           => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER],
-        'canDeleteProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                              ],
-        'canCreateNewProject'            => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canReopenProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canExportProject'               => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canViewProjectReport'           => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER],
-        'canAssignProject'               => [                        Model\User::ROLE_CLIENT                                                              ],
-        'canViewAttentionTasks'          => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER],
+        'canAcceptProject'               => [                                                 Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'canMoveProjectToDone'           => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'canViewClosedProjects'          => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
+        'canViewTodoProjects'            => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
+        'canViewDeletedProjects'         => [Model\User::ROLE_ADMIN                                                                                                                                                 ],
+        'canCreateProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                                                                                        ],
+        'canMoveFinishedProjectToDone'   => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'canMoveInProgressProjectToDone' => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                                                                                        ],
+        'canViewStatsButton'             => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
+        'canViewProjectButton'           => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
+        'canDeleteProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                                                                                        ],
+        'canCreateNewProject'            => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'canReopenProject'               => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'canExportProject'               => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'canViewProjectReport'           => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
+        'canAssignProject'               => [                        Model\User::ROLE_CLIENT                                                                                                                        ],
+        'canViewAttentionTasks'          => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
+        'canViewProjectQuota'            => [Model\User::ROLE_ADMIN,                                                                                                                                                ],
 
         // Label-Jobs
-        'canViewTaskList'                => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER, Model\User::ROLE_OBSERVER],
-        'canViewTaskListOfClosedProject' => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER],
-        'canViewReopenButton'            => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'unassignPermission'             => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canReopenTask'                  => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canFlagLabelingTask'            => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER],
-        'canUnflagLabelingTask'          => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canMoveTaskInOtherPhase'        => [                                                 Model\User::ROLE_LABEL_COORDINATOR                          ],
-        'canBeginTask'                   => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER],
+        'canViewTaskList'                => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER, Model\User::ROLE_OBSERVER                               ],
+        'canViewTaskListOfClosedProject' => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
+        'canViewReopenButton'            => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'unassignPermission'             => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'canReopenTask'                  => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'canFlagLabelingTask'            => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER                                                          ],
+        'canUnflagLabelingTask'          => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'canMoveTaskInOtherPhase'        => [                                                 Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'canBeginTask'                   => [Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER                                                          ],
 
         // User management
-        'canEditLabelingGroups'          => [Model\User::ROLE_ADMIN                                                                                       ],
-        'canViewUserListButton'          => [Model\User::ROLE_ADMIN                                                                                       ],
+        'canEditLabelingGroups'          => [Model\User::ROLE_ADMIN                                                                                                                                                 ],
+        'canViewUserListButton'          => [Model\User::ROLE_ADMIN                                                                                                                                                 ],
 
         // Management board
-        'canUploadNewVideo'              => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT,                                                             ],
-        'canUploadTaskConfiguration'     => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT,                                                             ],
+        'canUploadNewVideo'              => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT,                                                                                                                       ],
+        'canUploadTaskConfiguration'     => [Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT,                                                                                                                       ],
 
         // System Information
-        'canViewSystemQueues'            => [Model\User::ROLE_ADMIN                                                                                       ],
-        'canViewSystemStatus'            => [Model\User::ROLE_ADMIN                                                                                       ],
+        'canViewSystemQueues'            => [Model\User::ROLE_ADMIN                                                                                                                                                 ],
+        'canViewSystemStatus'            => [Model\User::ROLE_ADMIN                                                                                                                                                 ],
+
+        //Organisation management
+        'canListOrganisations'            => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                          ],
+        'canCreateOrganisation'           => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                          ],
+        'canDeleteOrganisation'           => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                          ],
+        'canViewOrganisationQuota'        => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                          ],
+        'canAddUserToOrganisation'        => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                          ],
+        'canDeleteUserFromOrganisation'   => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                          ],
+
     ];
     // @formatter:on
     // @codingStandardsIgnoreEnd
