@@ -525,6 +525,10 @@ class ViewerController {
       if (newShape && !newShape.isDraft && newShape instanceof PaperThingShape) {
         this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
       }
+
+      this._$timeout(() => {
+        this._updateAllGroupDimensions();
+      }, 0);
     });
 
     $scope.$watchGroup(
@@ -730,8 +734,7 @@ class ViewerController {
     this.thingLayer.on('thing:update', shape => {
       const frameIndex = this.framePosition.position;
 
-      // Update all linked group shapes
-      this._updateGroupDimensions(shape);
+      this._updateAllGroupDimensions();
 
       this._debouncedOnThingUpdate.debounce(shape, frameIndex);
     });
@@ -1122,15 +1125,10 @@ class ViewerController {
   /**
    * Update all group shapes that belong to the changed thing shape
    *
-   * @param {PaperThingShape} shape
    * @private
    */
-  _updateGroupDimensions(shape) {
-    const groupShapes = this.paperGroupShapes.filter(
-      filterGroupShape => shape.labeledThingInFrame.labeledThing.groupIds.indexOf(filterGroupShape.labeledThingGroupInFrame.labeledThingGroup.id) !== -1
-    );
-
-    groupShapes.forEach(groupShape => {
+  _updateAllGroupDimensions() {
+    this.paperGroupShapes.forEach(groupShape => {
       const thingShapesInGroup = this.paperThingShapes.filter(
         thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupShape.labeledThingGroupInFrame.labeledThingGroup.id) !== -1
       );
