@@ -50,16 +50,11 @@ class PaperGroupRectangle extends PaperGroupShape {
    * @param {Boolean} drawHandles
    * @private
    */
-  _drawShape(drawHandles = true) {
+  _drawShape() {
     this.removeChildren();
 
     const shape = this._createShape();
     this.addChild(shape);
-
-    if (this._isSelected && drawHandles) {
-      const handles = this._createHandles();
-      this.addChildren(handles);
-    }
   }
 
   /**
@@ -106,9 +101,9 @@ class PaperGroupRectangle extends PaperGroupShape {
    *
    * @param {Boolean} drawHandles
    */
-  select(drawHandles = false) {
+  select() {
     this._isSelected = true;
-    this._drawShape(drawHandles);
+    this._drawShape(false);
   }
 
   /**
@@ -151,35 +146,19 @@ class PaperGroupRectangle extends PaperGroupShape {
   }
 
   /**
-   * @param {Handle} handle
-   * @param {Point} point
-   * @param {{width, height}} minSize
+   * @param {paper.Point} point
+   * @param {number} width
+   * @param {number} height
    */
-  resize(handle, point, minSize = {width: 1, height: 1}) {
-    let minDistancePoint = null;
-
-    switch (handle.name) {
-      case 'top-left':
-        this._topLeft = this._enforceMinSize(this._bottomRight, point, minSize);
-        break;
-      case 'top-right':
-        minDistancePoint = this._enforceMinSize(new paper.Point(this._topLeft.x, this._bottomRight.y), point, minSize);
-        this._topLeft.y = minDistancePoint.y;
-        this._bottomRight.x = minDistancePoint.x;
-        break;
-      case 'bottom-right':
-        this._bottomRight = this._enforceMinSize(this._topLeft, point, minSize);
-        break;
-      case 'bottom-left':
-        minDistancePoint = this._enforceMinSize(new paper.Point(this._bottomRight.x, this._topLeft.y), point, minSize);
-        this._topLeft.x = minDistancePoint.x;
-        this._bottomRight.y = minDistancePoint.y;
-        break;
-      default:
-        throw new Error(`Unknown handle type: ${handle}.`);
-    }
+  setSize(point, width, height) {
+    this._topLeft = point;
+    this._bottomRight = new paper.Point(this._topLeft.x + width, this._topLeft.y + height);
 
     this._drawShape();
+  }
+
+  resize() {
+    // Do nothing
   }
 
   /**

@@ -122,7 +122,9 @@ class LabeledThingGroupGateway {
    */
   assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
     const modifiedLabeledThings = labeledThings.map(labeledThing => {
-      labeledThing.groupIds.push(labeledThingGroup.id);
+      if (labeledThing.groupIds.indexOf(labeledThingGroup.id) === -1) {
+        labeledThing.groupIds.push(labeledThingGroup.id);
+      }
       return labeledThing;
     });
 
