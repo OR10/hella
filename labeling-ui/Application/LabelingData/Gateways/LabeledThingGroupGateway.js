@@ -76,17 +76,17 @@ class LabeledThingGroupGateway {
   /**
    * Deletes a labeled thing group with the given id.
    *
-   * @param {Task} task
-   * @param {string} labeledThingGroupId
+   * @param {LabeledThingGroup} labeledThingGroup
    * @return {AbortablePromise}
    */
-  deleteLabeledThingGroupById(task, labeledThingGroupId) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup/${labeledThingGroupId}`);
+  deleteLabeledThingGroupById(labeledThingGroup) {
+    const task = labeledThingGroup.task;
+    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup/${labeledThingGroup.id}`);
 
     return this._bufferedHttp.delete(url, undefined, 'LabeledThingGroup')
       .then(response => {
-        if (response.data && response.data.result) {
-          return response.data.result;
+        if (response.data && response.data.success === true) {
+          return true;
         }
 
         throw new Error('Received malformed response when deleting labeled thing group.');
@@ -124,6 +124,30 @@ class LabeledThingGroupGateway {
     const modifiedLabeledThings = labeledThings.map(labeledThing => {
       if (labeledThing.groupIds.indexOf(labeledThingGroup.id) === -1) {
         labeledThing.groupIds.push(labeledThingGroup.id);
+      }
+      return labeledThing;
+    });
+
+    const promises = [];
+
+    modifiedLabeledThings.forEach(labeledThing => {
+      promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
+    });
+
+    return this._abortablePromisFactory(this._$q.all(promises));
+  }
+
+  /**
+   * Remove group assignment from the labeled thing
+   *
+   * @param {Array.<LabeledThing>} labeledThings
+   * @param {LabeledThingGroup} labeledThingGroup
+   */
+  unassignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
+    const modifiedLabeledThings = labeledThings.map(labeledThing => {
+      const index = labeledThing.groupIds.indexOf(labeledThingGroup.id);
+      if (index !== -1) {
+        labeledThing.groupIds.splice(index, 1);
       }
       return labeledThing;
     });
