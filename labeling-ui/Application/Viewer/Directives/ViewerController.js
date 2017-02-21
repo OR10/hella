@@ -937,10 +937,10 @@ class ViewerController {
    * The resulting {@link PaperThingShape}s are then stored in the global `paperThingShapes` array.
    *
    * @param {Array.<LabeledThingInFrame>} labeledThingsInFrame
-   * @param {Array.<LabeledThingInFrame>} ghostedLabeledThingsInFrame
+   * @param {Array.<LabeledThingInFrame>} ghostedLabeledThingInFrame
    * @private
    */
-  _extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame) {
+  _extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingInFrame) {
     const newPaperThingShapes = labeledThingsInFrame.map(
       ltif => {
         return this._thingLayerContext.withScope(() => {
@@ -953,16 +953,13 @@ class ViewerController {
     this.paperThingShapes = this.paperThingShapes.concat(newPaperThingShapes);
 
 
-    if (ghostedLabeledThingsInFrame) {
-      const ghostedPaperShapes = ghostedLabeledThingsInFrame.map(
-        ghostLtif => {
-          return this._thingLayerContext.withScope(() => {
-            return this._paperShapeFactory.createPaperThingShape(ghostLtif, ghostLtif.shapes[0], this.video);
-          });
-        }
-      );
+    if (ghostedLabeledThingInFrame) {
+      let ghostedPaperShape;
+      this._thingLayerContext.withScope(() => {
+        ghostedPaperShape = this._paperShapeFactory.createPaperThingShape(ghostedLabeledThingInFrame, ghostedLabeledThingInFrame.shapes[0], this.video);
+      });
 
-      this.paperThingShapes.push(ghostedPaperShapes);
+      this.paperThingShapes.push(ghostedPaperShape);
     }
   }
 
