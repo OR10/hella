@@ -344,7 +344,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should draw a new pedestrian shape from bottom to top with minimal height constrains', done => {
+  xit('should draw a new pedestrian shape from bottom to top with minimal height constrains', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
