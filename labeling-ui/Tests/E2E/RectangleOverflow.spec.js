@@ -32,7 +32,7 @@ describe('Rectangle viewer overflow', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  it('should allow overflowing of a rectangle in the top-left corner', done => {
+  xit('should allow overflowing of a rectangle in the top-left corner', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
@@ -66,7 +66,7 @@ describe('Rectangle viewer overflow', () => {
       });
   });
 
-  it('should allow overflowing of a rectangle in the bottom-right corner', done => {
+  xit('should allow overflowing of a rectangle in the bottom-right corner', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
