@@ -100,8 +100,9 @@ class PolygonMoveTool extends MovingTool {
    * @private
    */
   _moveTo(shape, point) {
+    const {options} = this._toolActionStruct;
     this._context.withScope(() => {
-      shape.moveTo(this._restrictToViewport(shape, point));
+      shape.moveTo(this._restrictToViewport(shape, point, options.minimalVisibleShapeOverflow === null ? undefined : options.minimalVisibleShapeOverflow));
     });
   }
 }

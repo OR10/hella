@@ -318,6 +318,35 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   /**
+   * Get Options for a certain tool
+   *
+   * Should be handled using a proper ToolOptionStruct in the future.
+   * This is just a workaround to use the old `Task` based config options until
+   * a refactoring has been done!
+   *
+   * @param {Task} task
+   * @param {string} shapeName
+   * @param {Object} defaultOptions
+   * @return {Object}
+   * @private
+   */
+  _getOptionsForTool(task, shapeName, defaultOptions) {
+    const extractedTaskOptions = {};
+    [
+      'minimalVisibleShapeOverflow'
+    ].forEach(property => {
+      if (task[property] !== undefined) {
+        extractedTaskOptions[property] = task[property];
+      }
+    });
+
+    const drawingToolOptions = task.drawingToolOptions === undefined ? {} : task.drawingToolOptions;
+    const extractedToolOptions = Object.assign({}, drawingToolOptions[shapeName]);
+
+    return Object.assign({}, defaultOptions, extractedTaskOptions, extractedToolOptions);
+  }
+
+  /**
    * @private
    */
   _invokeMultiTool() {
@@ -335,14 +364,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
       hitTestTolerance: 8,
     };
 
+    const {viewport, video, task, selectedPaperShape} = this._$scope.vm;
+
     // @TODO: move with other drawint tool options to labelStructureThing
-    const delegatedOptions = {
+    // @TODO: Should be handled using a proper ToolOptionStruct in the future.
+    //        This is just a workaround to use the old `Task` based config options until
+    //        a refactoring has been done!
+    const defaultOptions = {
       initialDragDistance: 8,
       minDragDistance: 1,
       minimalHeight: 1,
     };
-
-    const {viewport, video, task, selectedPaperShape} = this._$scope.vm;
+    const delegatedOptions = this._getOptionsForTool(task, this._selectedLabelStructureThing.shape, defaultOptions);
 
     const struct = new MultiToolActionStruct(
       multiToolOptions,
