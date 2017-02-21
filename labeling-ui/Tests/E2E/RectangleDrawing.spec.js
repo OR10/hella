@@ -257,17 +257,15 @@ describe('Rectangle drawing', () => {
     ]));
 
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-
-        return browser.actions()
-          .mouseMove(viewer, {x: 110, y: 110}) // initial position
-          .click()
-          .perform();
-      })
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 110, y: 110}) // initial position
+        .click()
+        .perform()
+      )
       .then(() => browser.sleep(500))
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
-        nextFrameButton.click();
+        return nextFrameButton.click();
       })
       .then(() => browser.sleep(1000))
       .then(
@@ -312,7 +310,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  xit('should draw a new rectangle from top-left to bottom-right with minimal height constrains', done => {
+  it('should draw a new rectangle from top-left to bottom-right with minimal height constrains', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -322,11 +320,11 @@ describe('Rectangle drawing', () => {
     ]));
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
-          .mouseMove(viewer, {x: 300, y: 300}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 450, y: 350}) // initial position
-          .mouseUp()
-          .perform()
+        .mouseMove(viewer, {x: 300, y: 300}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 450, y: 350}) // initial position
+        .mouseUp()
+        .perform()
       )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
@@ -344,7 +342,7 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  xit('should draw a new rectangle from bottom-right to top-left with minimal height constrains', done => {
+  it('should draw a new rectangle from bottom-right to top-left with minimal height constrains', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -353,14 +351,13 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 450, y: 400}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 300, y: 350}) // initial position
-          .mouseUp()
-          .perform();
-      })
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 450, y: 400}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 300, y: 350}) // initial position
+        .mouseUp()
+        .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -386,9 +383,9 @@ describe('Rectangle drawing', () => {
     ]));
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
-          .mouseMove(viewer, {x: 300, y: 300}) // initial position
-          .mouseDown()
-          .perform()
+        .mouseMove(viewer, {x: 300, y: 300}) // initial position
+        .mouseDown()
+        .perform()
       )
       .then(() => browser.sleep(500))
       .then(
@@ -399,8 +396,8 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary1);
       })
       .then(() => browser.actions()
-          .mouseMove(viewer, {x: 500, y: 400}) // intermediary position
-          .perform()
+        .mouseMove(viewer, {x: 500, y: 400}) // intermediary position
+        .perform()
       )
       .then(() => browser.sleep(500))
       .then(

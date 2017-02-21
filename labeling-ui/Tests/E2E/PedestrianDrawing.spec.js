@@ -1,6 +1,6 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, dumpAllRequestsMade} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -312,7 +312,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  xit('should draw a new pedestrian shape from top to bottom with minimal height constrains', done => {
+  it('should draw a new pedestrian shape from top to bottom with minimal height constrains', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -344,7 +344,7 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  xit('should draw a new pedestrian shape from bottom to top with minimal height constrains', done => {
+  it('should draw a new pedestrian shape from bottom to top with minimal height constrains', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,

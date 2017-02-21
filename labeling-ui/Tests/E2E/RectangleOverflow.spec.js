@@ -32,7 +32,7 @@ describe('Rectangle viewer overflow', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  xit('should allow overflowing of a rectangle in the top-left corner', done => {
+  it('should allow overflowing of a rectangle in the top-left corner', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
@@ -57,14 +57,15 @@ describe('Rectangle viewer overflow', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow);
-          done();
-        });
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow);
+        done();
       });
   });
 
-  xit('should allow overflowing of a rectangle in the bottom-right corner', done => {
+  it('should allow overflowing of a rectangle in the bottom-right corner', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskOverflow,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
@@ -75,26 +76,25 @@ describe('Rectangle viewer overflow', () => {
     ]));
 
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 110, y: 110}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 1023, y: 619}) // drag
-          .mouseUp()
-          .perform();
-
-        browser.sleep(1000);
-      })
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 110, y: 110}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 1023, y: 619}) // drag
+        .mouseUp()
+        .perform()
+      )
+      .then(() => browser.sleep(1000))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'BottomRightOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow);
-          done();
-        });
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow);
+        done();
       });
   });
 
