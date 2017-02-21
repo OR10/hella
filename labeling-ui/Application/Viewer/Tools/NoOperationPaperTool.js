@@ -113,6 +113,7 @@ NoOperationPaperTool.isActionIdentifierSupported = function (actionIdentifier) {
     'creation',
     'move',
     'scale',
+    'none',
   ].includes(actionIdentifier);
 };
 
