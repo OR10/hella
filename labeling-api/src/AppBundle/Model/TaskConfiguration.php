@@ -35,4 +35,8 @@ interface TaskConfiguration
     public function getType();
 
     public function getContentType();
+
+    public function getOrganisationId();
+
+    public function setOrganisationId($organisationId);
 }

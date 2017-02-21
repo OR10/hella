@@ -230,4 +230,12 @@ class Video
     {
         $this->setCalibrationId($calibrationData->getId());
     }
+
+    /**
+     * @param mixed $organisationId
+     */
+    public function setOrganisationId($organisationId)
+    {
+        $this->organisationId = $organisationId;
+    }
 }

@@ -30,6 +30,11 @@ class CalibrationData
     private $calibration;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    protected $organisationId;
+
+    /**
      * @param string $name
      */
     public function __construct(string $name)
@@ -139,5 +144,13 @@ class CalibrationData
     public function getDistortionCoefficients()
     {
         return $this->calibration['distortionCoefficients'];
+    }
+
+    /**
+     * @param mixed $organisationId
+     */
+    public function setOrganisationId($organisationId)
+    {
+        $this->organisationId = $organisationId;
     }
 }

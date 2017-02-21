@@ -218,4 +218,20 @@ class SimpleXml implements TaskConfiguration
     {
         return self::TYPE;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getOrganisationId()
+    {
+        return $this->organisationId;
+    }
+
+    /**
+     * @param mixed $organisationId
+     */
+    public function setOrganisationId($organisationId)
+    {
+        $this->organisationId = $organisationId;
+    }
 }
