@@ -140,6 +140,7 @@ class PaperShapeFactory {
 
     // Place this group shape behind all other shapes
     paperGroup.sendToBack();
+    paperGroup.setSize(bounds.point, bounds.width, bounds.height);
 
     return paperGroup;
   }

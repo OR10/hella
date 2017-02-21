@@ -83,11 +83,6 @@ class GroupCreationTool extends CreationTool {
       const colorId = this._labeledThingGroupService.getGroupColorFromShapesInGroup(shapes);
       const color = this._entityColorService.getColorById(colorId);
 
-      // Maybe there is a more elegant solution to this problem but for now
-      // expanding the rect by 1px on each side is the simplest solution
-      topLeft = topLeft.subtract(new paper.Point(1, 1));
-      bottomRight = bottomRight.add(new paper.Point(1, 1));
-
       const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);
 
 
@@ -102,6 +97,9 @@ class GroupCreationTool extends CreationTool {
           paperShape.isDraft
         );
       });
+
+      // Resize to add necessary padding
+      paperGroup.setSize(topLeft, width, height);
 
       // Place this group shape behind all other shapes
       paperGroup.sendToBack();

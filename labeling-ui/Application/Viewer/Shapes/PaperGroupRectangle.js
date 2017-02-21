@@ -142,7 +142,7 @@ class PaperGroupRectangle extends PaperGroupShape {
    * @returns {string}
    */
   getCursor(handle, mouseDown = false) {
-      return 'pointer';
+    return 'pointer';
   }
 
   /**
@@ -151,8 +151,10 @@ class PaperGroupRectangle extends PaperGroupShape {
    * @param {number} height
    */
   setSize(point, width, height) {
-    this._topLeft = point;
-    this._bottomRight = new paper.Point(this._topLeft.x + width, this._topLeft.y + height);
+    const padding = 5;
+
+    this._topLeft = new paper.Point(point.x - padding, point.y - padding);
+    this._bottomRight = new paper.Point(this._topLeft.x + width + (2 * padding), this._topLeft.y + height + (2 * padding));
 
     this._drawShape();
   }
