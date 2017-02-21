@@ -63,7 +63,7 @@ class LabeledThingGroupGateway {
         if (response.data && response.data.result) {
           return response.data.result.labeledThingGroupsInFrame.map(ltgifDocument => {
             const labeledThingGroupDocument = response.data.result.labeledThingGroups.find(ltg => ltg.id === ltgifDocument.labeledThingGroupId);
-            ltgifDocument.labeledThingGroup = new LabeledThingGroup(labeledThingGroupDocument);
+            ltgifDocument.labeledThingGroup = new LabeledThingGroup(Object.assign({}, labeledThingGroupDocument, {task}));
 
             return new LabeledThingGroupInFrame(ltgifDocument);
           });
@@ -107,7 +107,7 @@ class LabeledThingGroupGateway {
     return this._bufferedHttp.post(url, body, undefined, 'labeledThingGroup')
       .then(response => {
         if (response.data && response.data.result) {
-          return new LabeledThingGroup(response.data.result);
+          return new LabeledThingGroup(Object.assign({}, response.data.result, {task}));
         }
 
         throw new Error(`Received malformed response when creating labeled thing group of type "${type}"`);

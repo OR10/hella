@@ -12,6 +12,11 @@ class LabeledThingGroup {
     this.id = labeledThingGroupDocument.id;
 
     /**
+     * @type {Task}
+     */
+    this._task = labeledThingGroupDocument.task;
+
+    /**
      * @type {string}
      */
     this.type = labeledThingGroupDocument.groupType;
@@ -20,6 +25,13 @@ class LabeledThingGroup {
      * @type {Array.<string>|null}
      */
     this.groupIds = labeledThingGroupDocument.groupIds;
+  }
+
+  /**
+   * @return {Task}
+   */
+  get task() {
+    return this._task;
   }
 
   /**

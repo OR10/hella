@@ -74,6 +74,7 @@ class HierarchyCreationService {
   createLabeledThingGroupInFrameWithHierarchy(creationToolActionStruct) {
     const newLabeledThingGroup = new LabeledThingGroup({
       id: this._entityIdService.getUniqueId(),
+      task: creationToolActionStruct.task,
       lineColor: this._entityColorService.getColorId(),
       groupType: creationToolActionStruct.requirementsThingOrGroupId,
       groupIds: [],
