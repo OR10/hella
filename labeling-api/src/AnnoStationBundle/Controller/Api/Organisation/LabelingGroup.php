@@ -119,7 +119,7 @@ class LabelingGroup extends Controller\Base
             throw new Exception\AccessDeniedHttpException();
         }
 
-        $labelingGroups = $this->labelingGroupFacade->findAllByCoordinator($user);
+        $labelingGroups = $this->labelingGroupFacade->findAllByCoordinator($organisation, $user);
         $users = [];
         foreach ($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
             $users[$user->getId()] = $user;
