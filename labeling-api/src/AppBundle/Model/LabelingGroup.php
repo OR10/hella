@@ -135,4 +135,12 @@ class LabelingGroup
     {
         $this->name = $name;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getOrganisationId()
+    {
+        return $this->organisationId;
+    }
 }

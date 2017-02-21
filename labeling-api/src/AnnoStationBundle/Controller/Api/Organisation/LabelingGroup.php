@@ -119,7 +119,7 @@ class LabelingGroup extends Controller\Base
             throw new Exception\AccessDeniedHttpException();
         }
 
-        $labelingGroups = $this->labelingGroupFacade->findAllByCoordinator($organisation, $user);
+        $labelingGroups = $this->labelingGroupFacade->findAllByOrganisationAndUser($organisation, $user);
         $users = [];
         foreach ($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
             $users[$user->getId()] = $user;
@@ -150,7 +150,7 @@ class LabelingGroup extends Controller\Base
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
-        $labelingGroups = $this->labelingGroupFacade->findAll();
+        $labelingGroups = $this->labelingGroupFacade->findAllByOrganisation($organisation);
         $users = [];
         foreach ($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
             $users[$user->getId()] = $user;
@@ -178,8 +178,10 @@ class LabelingGroup extends Controller\Base
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getGroupAction(AnnoStationBundleModel\Organisation $organisation, Model\LabelingGroup $labelingGroup)
-    {
+    public function getGroupAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\LabelingGroup $labelingGroup
+    ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
         $users = [];
@@ -264,6 +266,10 @@ class LabelingGroup extends Controller\Base
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
+        if ($labelingGroup->getOrganisationId() !==  $organisation->getId()) {
+            throw new Exception\BadRequestHttpException('This LabelingGroup is not assigned to this Organisation');
+        }
+
         $revision = $request->request->get('rev');
         $coordinators = $request->request->get('coordinators', []);
         $labeler      = $request->request->get('labeler', []);
@@ -309,6 +315,10 @@ class LabelingGroup extends Controller\Base
     public function deleteAction(Model\LabelingGroup $labelingGroup, AnnoStationBundleModel\Organisation $organisation)
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
+        if ($labelingGroup->getOrganisationId() !==  $organisation->getId()) {
+            throw new Exception\BadRequestHttpException('This LabelingGroup is not assigned to this Organisation');
+        }
 
         $this->labelingGroupFacade->delete($labelingGroup);
 
