@@ -100,7 +100,7 @@ class TaskConfiguration extends Controller\Base
 
         $user = $this->tokenStorage->getToken()->getUser();
 
-        $taskConfigurations = $this->taskConfigurationFacade->getTaskConfigurationsByUser($user);
+        $taskConfigurations = $this->taskConfigurationFacade->getTaskConfigurationsByUser($organisation, $user);
         $taskConfigurations = array_filter(
             $taskConfigurations,
             function (Model\TaskConfiguration $taskConfiguration) {
@@ -193,7 +193,7 @@ class TaskConfiguration extends Controller\Base
 
         $user = $this->tokenStorage->getToken()->getUser();
         $name = $request->get('name');
-        if (count($this->taskConfigurationFacade->getTaskConfigurationsByUserAndName($user, $name)) > 0) {
+        if (count($this->taskConfigurationFacade->getTaskConfigurationsByUserAndName($organisation, $user, $name)) > 0) {
             return View\View::create()
                 ->setData(['error' => sprintf(
                     'A Task Configuration with the name %s already exists',
@@ -222,6 +222,7 @@ class TaskConfiguration extends Controller\Base
         $user    = $this->tokenStorage->getToken()->getUser();
 
         $taskConfiguration = new TaskConfigurationModel\RequirementsXml(
+            $organisation,
             $name,
             $file->getClientOriginalName(),
             $file->getMimeType(),

@@ -5,5 +5,5 @@ function(doc) {
         return;
     }
 
-    emit([doc.userId, doc.name]);
+    emit([doc.organisationId, doc.userId]);
 }

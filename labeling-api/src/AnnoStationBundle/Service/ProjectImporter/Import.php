@@ -192,6 +192,7 @@ class Import
         }
 
         $requirements = $this->requirementsXmlFacade->getTaskConfigurationByUserAndMd5Hash(
+            $organisation,
             $user,
             $requirementsElement->item(0)->getAttribute('name'),
             sprintf('%s.xml', $requirementsElement->item(0)->getAttribute('name')),

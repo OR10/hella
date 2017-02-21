@@ -3,6 +3,7 @@ namespace AnnoStationBundle\Service\ProjectImporter\Facade;
 
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 class RequirementsXml
 {
@@ -31,15 +32,27 @@ class RequirementsXml
     }
 
     /**
-     * @param Model\User $user
-     * @param            $name
-     * @param            $filename
-     * @param            $md5Hash
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
+     * @param                                     $name
+     * @param                                     $filename
+     * @param                                     $md5Hash
      *
      * @return mixed
      */
-    public function getTaskConfigurationByUserAndMd5Hash(Model\User $user, $name, $filename, $md5Hash)
-    {
-        return $this->taskConfigurationFacade->getTaskConfigurationByUserAndMd5Hash($user, $name, $filename, $md5Hash);
+    public function getTaskConfigurationByUserAndMd5Hash(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\User $user,
+        $name,
+        $filename,
+        $md5Hash
+    ) {
+        return $this->taskConfigurationFacade->getTaskConfigurationByUserAndMd5Hash(
+            $organisation,
+            $user,
+            $name,
+            $filename,
+            $md5Hash
+        );
     }
 }
