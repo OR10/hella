@@ -1207,14 +1207,16 @@ class ViewerController {
     // Service finds the group shape itself, so we need to remove the shape id from the array
     shapes = shapes.filter(shape => shape.id !== paperGroupShape.id);
 
-    const labeledThings = [];
-    shapes.forEach(shape => {
-      shape.labeledThingInFrame.labeledThing.groupIds.push(paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id);
-      labeledThings.push(shape.labeledThingInFrame.labeledThing);
-    });
-
     this._labeledThingGroupGateway.createLabeledThingGroupOfType(this.task, paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.type)
       .then(labeledThingGroup => {
+        const labeledThings = [];
+        shapes.forEach(shape => {
+          labeledThings.push(shape.labeledThingInFrame.labeledThing);
+          shape.labeledThingInFrame.labeledThing.groupIds.push(labeledThingGroup.id);
+        });
+
+        paperGroupShape.labeledThingGroupInFrame.labeledThingGroup = labeledThingGroup;
+
         return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup);
       })
       .catch(() => {
