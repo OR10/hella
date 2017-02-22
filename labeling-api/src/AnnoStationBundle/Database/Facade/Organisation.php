@@ -83,7 +83,7 @@ class Organisation
     public function getDiskUsageForOrganisationVideos(Model\Organisation $organisation)
     {
         $imageQuery = $this->documentManager
-            ->createQuery('annostation_image_bytes_by organisationId_videoId_and_type', 'view')
+            ->createQuery('annostation_image_bytes_by_organisationId_type_and_videoId', 'view')
             ->onlyDocs(false)
             ->setReduce(true)
             ->setGroupLevel(3)
@@ -102,14 +102,17 @@ class Organisation
         $videoBytesByVideoIds = $videoQuery->execute()->toArray();
 
         $diskUsageByProject = [];
+        $diskUsageByProject['total'] = 0;
         foreach ($imageBytesByVideoIds as $imageBytesByVideoId) {
-            $videoId                                       = $imageBytesByVideoId['key'][1];
-            $type                                          = $imageBytesByVideoId['key'][2];
+            $type                                          = $imageBytesByVideoId['key'][1];
+            $videoId                                       = $imageBytesByVideoId['key'][2];
             $diskUsageByProject[$videoId]['images'][$type] = $imageBytesByVideoId['value'];
+            $diskUsageByProject['total'] += $imageBytesByVideoId['value'];
         }
         foreach ($videoBytesByVideoIds as $videoBytesByVideoId) {
             $videoId                               = $videoBytesByVideoId['key'][1];
             $diskUsageByProject[$videoId]['video']['source'] = $videoBytesByVideoId['value'];
+            $diskUsageByProject['total'] += $videoBytesByVideoId['value'];
         }
 
         return $diskUsageByProject;
