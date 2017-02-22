@@ -1,4 +1,4 @@
-import forEach from 'lodash.foreach';
+import {forEach} from 'lodash';
 
 /**
  * Resolver service capable of determining which interaction with a Cuboid causes which operation

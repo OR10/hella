@@ -33,6 +33,16 @@ class LabelStructure {
   }
 
   /**
+   * Retrieve a `Map` of all `Groups` defined inside the {@link LabelStructure}.
+   *
+   * @abstract
+   * @return {Map.<string, LabelStructureThing>}
+   */
+  getGroups() {
+    throw new Error('Abstract method must be implemented in child class');
+  }
+
+  /**
    * Retrieve a Thing defined inside a {@link LabelStructure} based on its `id`
    *
    * In case an invalid (not defined) `identifier` is specified an exception is thrown.
@@ -50,6 +60,23 @@ class LabelStructure {
   }
 
   /**
+   * Retrieve a Thing defined inside a {@link LabelStructure} based on its `id`
+   *
+   * In case an invalid (not defined) `identifier` is specified an exception is thrown.
+   *
+   * @param {string} identifier
+   * @returns {LabelStructureThing}
+   */
+  getGroupById(identifier) {
+    if (!this.isGroupDefinedById(identifier)) {
+      throw new Error(`Group with identifier '${identifier}' could not be found in LabelStructure`);
+    }
+
+    const groups = this.getGroups();
+    return groups.get(identifier);
+  }
+
+  /**
    * Retrieve information about whether a thing with a specific id is defined inside this {@link LabelStructure}
    *
    * @param {string} identifier
@@ -58,6 +85,17 @@ class LabelStructure {
   isThingDefinedById(identifier) {
     const things = this.getThings();
     return things.has(identifier);
+  }
+
+  /**
+   * Retrieve information about whether a group with a specific id is defined inside this {@link LabelStructure}
+   *
+   * @param {string} identifier
+   * @returns {boolean}
+   */
+  isGroupDefinedById(identifier) {
+    const groups = this.getGroups();
+    return groups.has(identifier);
   }
 }
 

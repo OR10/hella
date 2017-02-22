@@ -1,15 +1,5 @@
 # Group Video
 
-## Get all videos [/api/video]
-
-### Get all videos [GET]
-
-This routes simply returns all videos saved in our database
-
-+ Response 200
-    + Attributes
-        + result (array[Video])
-
 ## Video by id [/api/video/{id}]
 
 + Parameters

@@ -1,27 +1,22 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
+import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
 
 /**
- * @extends PaperShape
+ * @extends PaperThingShape
  */
-class PaperPedestrian extends PaperShape {
+class PaperPedestrian extends PaperThingShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
    * @param {Point} topCenter
    * @param {Point} bottomCenter
-   * @param {String} color
+   * @param {{primary: string, secondary: string}} color
    * @param {boolean} draft
    */
   constructor(labeledThingInFrame, shapeId, topCenter, bottomCenter, color, draft = false) {
-    super(labeledThingInFrame, shapeId, draft);
-
-    /**
-     * @type {String}
-     * @private
-     */
-    this._color = color;
+    super(labeledThingInFrame, shapeId, color, draft);
 
     /**
      * @type {boolean}
@@ -70,7 +65,7 @@ class PaperPedestrian extends PaperShape {
     return new paper.Path.Line({
       from: this._topCenter,
       to: this._bottomCenter,
-      strokeColor: this._color,
+      strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
       strokeScaling: false,
@@ -91,7 +86,7 @@ class PaperPedestrian extends PaperShape {
     const widthHalf = heightHalf * PaperPedestrian.ASPECT_RATIO;
 
     return new paper.Path.Rectangle({
-      strokeColor: this._color,
+      strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
       dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
@@ -169,7 +164,14 @@ class PaperPedestrian extends PaperShape {
   get bounds() {
     const height = Math.abs(this._bottomCenter.y - this._topCenter.y);
     const width = height * PaperPedestrian.ASPECT_RATIO;
-    return {width, height};
+    const x = this._topCenter.x - width / 2;
+    return {
+      width,
+      height,
+      x,
+      y: this._topCenter.y,
+      point: new paper.Point(x, this._topCenter.y),
+    };
   }
 
   /**

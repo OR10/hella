@@ -1,6 +1,6 @@
 import {Vector3, Vector4, Matrix4} from 'three-math';
 import CuboidDimensionPrediction from './DimensionPrediction/Cuboid';
-import isEqual from 'lodash.isequal';
+import {isEqual} from 'lodash';
 
 class Cuboid3d {
   /**

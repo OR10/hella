@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash.clonedeep';
+import {cloneDeep} from 'lodash';
 import LabeledObject from './LabeledObject';
 
 /**
@@ -73,10 +73,11 @@ class LabeledThing extends LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {frameRange, lineColor, task, projectId} = this;
+    const {frameRange, lineColor, task, projectId, groupIds} = this;
     return Object.assign(super.toJSON(), {
       lineColor,
       projectId,
+      groupIds,
       frameRange: cloneDeep(frameRange),
       taskId: task.id,
     });

@@ -267,7 +267,7 @@ class PopupPanelController {
 
   zoomInToggle() {
     if (this.activeTool === 'zoomIn') {
-      this.activeTool = null;
+      this.activeTool = 'multi';
     } else {
       this.activeTool = 'zoomIn';
     }
@@ -275,7 +275,7 @@ class PopupPanelController {
 
   zoomOutToggle() {
     if (this.activeTool === 'zoomOut') {
-      this.activeTool = null;
+      this.activeTool = 'multi';
     } else {
       this.activeTool = 'zoomOut';
     }
@@ -283,7 +283,7 @@ class PopupPanelController {
 
   scaleToFit() {
     // Disable Zoom-Mode if it has been enabled
-    this.activeTool = null;
+    this.activeTool = 'multi';
     this.viewerViewport.scaleToFit();
   }
 }

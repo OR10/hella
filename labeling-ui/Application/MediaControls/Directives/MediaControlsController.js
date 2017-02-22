@@ -1,3 +1,8 @@
+import CreationToolActionStruct from '../../Viewer/Tools/ToolActionStructs/CreationToolActionStruct';
+
+import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
+import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
+
 /**
  * Controller handling the control elements below the viewer frame
  *
@@ -9,7 +14,6 @@
  * @property {string} activeTool
  * @property {string} selectedDrawingTool
  * @property {boolean} hideLabeledThingsInFrame
- * @property {Tool} multiTool
  * @property {boolean} showCrosshairs
  */
 class MediaControlsController {
@@ -18,6 +22,7 @@ class MediaControlsController {
    * @param {angular.$rootScope} $rootScope
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
+   * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {InterpolationService} interpolationService
    * @param {EntityIdService} entityIdService
    * @param {LoggerService} logger
@@ -25,12 +30,14 @@ class MediaControlsController {
    * @param {Object} applicationState
    * @param {ModalService} modalService
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {ViewerMouseCursorService} viewerMouseCursorService
    * @param featureFlags
    */
   constructor($scope,
               $rootScope,
               labeledThingInFrameGateway,
               labeledThingGateway,
+              labeledThingGroupGateway,
               interpolationService,
               entityIdService,
               logger,
@@ -38,8 +45,8 @@ class MediaControlsController {
               applicationState,
               modalService,
               keyboardShortcutService,
-              featureFlags
-  ) {
+              viewerMouseCursorService,
+              featureFlags) {
     /**
      * @type {angular.$rootScope}
      */
@@ -61,6 +68,12 @@ class MediaControlsController {
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {LabeledThingGroupGateway}
+     * @private
+     */
+    this._labeledThingGroupGateway = labeledThingGroupGateway;
 
     /**
      * @type {InterpolationService}
@@ -104,6 +117,12 @@ class MediaControlsController {
      */
     this._keyboardShortcutService = keyboardShortcutService;
 
+    /**
+     * @type {ViewerMouseCursorService}
+     * @private
+     */
+    this._viewerMouseCursorService = viewerMouseCursorService;
+
     this.featureFlags = featureFlags;
 
     /**
@@ -123,7 +142,7 @@ class MediaControlsController {
       ['vm.popupPanelState', 'vm.popupPanelOpen'], ([newState, newOpen], [oldState]) => {
         if ((oldState === 'zoom' && newState !== 'zoom') || newOpen === false) {
           if (typeof this.activeTool === 'string' && this.activeTool.indexOf('zoom') === 0) {
-            this.activeTool = null;
+            this.activeTool = 'multi';
           }
         }
       }
@@ -220,15 +239,25 @@ class MediaControlsController {
    * Handle the toggle of showing the crosshairs
    */
   handleShowCrosshairsToggle() {
-    this.showCrosshairs = !this.showCrosshairs;
+    if (this._viewerMouseCursorService.isCrosshairShowing()) {
+      this._viewerMouseCursorService.hideCrosshair();
+    } else {
+      this._viewerMouseCursorService.showCrosshair();
+    }
   }
 
+  /**
+   * @returns {boolean}
+   */
+  isCrosshairShowing() {
+    return this._viewerMouseCursorService.isCrosshairShowing();
+  }
 
   /**
    * Handle the creation of new rectangle
    */
   handleNewLabeledThingClicked() {
-    this.multiTool.createNewDefaultShape();
+    this._$rootScope.$emit('action:create-new-default-shape');
   }
 
   /**
@@ -286,26 +315,29 @@ class MediaControlsController {
     );
   }
 
+  // TODO: Do we need to delete this here? Maybe delegate to some better place...
   _deleteSelectedShape() {
     this._$rootScope.$emit('shape:delete:before', this.selectedPaperShape);
-    const selectedLabeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
-    const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
 
-    const onDeletionError = () => {
-      this._applicationState.enableAll();
-      this._modalService.info(
-        {
-          title: 'Error',
-          headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
-        },
-        undefined,
-        undefined,
-        {
-          warning: true,
-          abortable: false,
-        }
-      );
-    };
+    switch (true) {
+      case this.selectedPaperShape instanceof PaperThingShape:
+        this._deleteThingShape(this.selectedPaperShape);
+        break;
+      case this.selectedPaperShape instanceof PaperGroupShape:
+        this._deleteGroupShape(this.selectedPaperShape);
+        break;
+      default:
+        throw new Error('Cannot delete shape of unknown type');
+    }
+  }
+
+  /**
+   * @param {PaperThingShape} shape
+   * @private
+   */
+  _deleteThingShape(shape) {
+    const selectedLabeledThingInFrame = shape.labeledThingInFrame;
+    const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
 
     this._applicationState.disableAll();
 
@@ -314,18 +346,72 @@ class MediaControlsController {
       this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
         .then(
           () => {
+            shape.remove();
             this.selectedPaperShape = null;
-            this.labeledThingsInFrame = this.labeledThingsInFrame.filter(
-              labeledThingInFrame => labeledThingInFrame.id !== selectedLabeledThingInFrame.id
+            this.paperThingShapes = this.paperThingShapes.filter(
+              paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
             );
             this._applicationState.enableAll();
             this._$rootScope.$emit('shape:delete:after');
           }
         )
-        .catch(() => onDeletionError());
+        .catch(() => this._onDeletionError());
     } catch (error) {
-      onDeletionError();
+      this._onDeletionError();
     }
+  }
+
+  /**
+   * @param {PaperGroupShape} shape
+   * @private
+   */
+  _deleteGroupShape(shape) {
+    const labeledThingGroup = shape.labeledThingGroupInFrame.labeledThingGroup;
+    const relatedThingShapes = this.paperThingShapes.filter(
+      thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(labeledThingGroup.id) !== -1
+    );
+    const relatedLabeledThings = relatedThingShapes.map(thingShape => thingShape.labeledThingInFrame.labeledThing);
+
+    this._applicationState.disableAll();
+
+    try {
+      this._labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
+        .then(() => {
+          return this._labeledThingGroupGateway.deleteLabeledThingGroupById(labeledThingGroup);
+        })
+        .then(() => {
+          shape.remove();
+          this.selectedPaperShape = null;
+          this.paperGroupShapes = this.paperGroupShapes.filter(
+            paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id !== labeledThingGroup.id
+          );
+
+          this._applicationState.enableAll();
+          this._$rootScope.$emit('shape:delete:after', this.selectedPaperShape);
+        })
+        .catch(() => this._onDeletionError());
+    } catch (error) {
+      this._onDeletionError();
+    }
+  }
+
+  /**
+   * @private
+   */
+  _onDeletionError() {
+    this._applicationState.enableAll();
+    this._modalService.info(
+      {
+        title: 'Error',
+        headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
+      },
+      undefined,
+      undefined,
+      {
+        warning: true,
+        abortable: false,
+      }
+    );
   }
 
   handlePlay() {
@@ -453,6 +539,7 @@ MediaControlsController.$inject = [
   '$rootScope',
   'labeledThingInFrameGateway',
   'labeledThingGateway',
+  'labeledThingGroupGateway',
   'interpolationService',
   'entityIdService',
   'loggerService',
@@ -460,6 +547,7 @@ MediaControlsController.$inject = [
   'applicationState',
   'modalService',
   'keyboardShortcutService',
+  'viewerMouseCursorService',
   'featureFlags',
 ];
 

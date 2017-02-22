@@ -1,26 +1,38 @@
 import paper from 'paper';
-import DrawingTool from '../DrawingTool';
+import CreationTool from '../CreationTool';
 import PaperPedestrian from '../../Shapes/PaperPedestrian';
 import Handle from '../../Shapes/Handles/Handle';
+import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
  * A tool for drawing pedestrian shapes with the mouse cursor
  *
- * @extends DrawingTool
- * @implements ToolEvents
+ * This is a fixed aspect ratio rectangle shape drawn by specifying the height of the rectangle on the middle axis.
  */
-class PedestrianDrawingTool extends DrawingTool {
+class PedestrianDrawingTool extends CreationTool {
   /**
-   * @param {$rootScope.Scope} $scope
    * @param {DrawingContext} drawingContext
+   * @param {$rootScope.Scope} $rootScope
+   * @param {$q} $q
    * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
-   * @param {Video} video
-   * @param {Task} task
+   * @param {HierarchyCreationService} hierarchyCreationService
    */
-  constructor($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task) {
-    super($scope, drawingContext, loggerService, entityIdService, entityColorService, video, task);
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
+    super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
+
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
+    this._entityColorService = entityColorService;
 
     /**
      * @type {PaperPedestrian|null}
@@ -42,40 +54,62 @@ class PedestrianDrawingTool extends DrawingTool {
   }
 
   /**
-   * Start the initial drawing of a pedestrian
-   *
-   * @param {Point} from
-   * @param {Point} to
+   * @param {CreationToolActionStruct} toolActionStruct
+   * @return {Promise}
    */
-  startShape(from, to) {
-    if (from.getDistance(to) < 5) {
-      // Do nothing if no "real" dragging operation took place.
-      return;
-    }
-    const labeledThingInFrame = this._createLabeledThingHierarchy();
-    let topCenter;
-    let bottomCenter;
+  invokeShapeCreation(toolActionStruct) {
+    this._pedestrian = null;
+    this._startPosition = null;
+    this._creationHandle = null;
 
-    if (from.y < to.y) {
-      topCenter = new paper.Point(from.x, from.y);
-      bottomCenter = new paper.Point(from.x, to.y);
-    } else {
-      topCenter = new paper.Point(from.x, to.y);
-      bottomCenter = new paper.Point(from.x, from.y);
-    }
+    return super.invokeShapeCreation(toolActionStruct);
+  }
 
+  /**
+   * @param {CreationToolActionStruct} toolActionStruct
+   * @return {Promise.<PaperShape>}
+   */
+  invokeDefaultShapeCreation(toolActionStruct) {
+    super.invokeDefaultShapeCreation(toolActionStruct);
+    const {video} = toolActionStruct;
+
+    const height = 100;
+
+    const from = new paper.Point(
+      video.metaData.width / 2,
+      (video.metaData.height / 2) - (height / 2)
+    );
+    const to = new paper.Point(
+      video.metaData.width / 2,
+      (video.metaData.height / 2) + (height / 2)
+    );
+    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
+
+    let pedestrian = null;
     this._context.withScope(() => {
-      this._pedestrian = new PaperPedestrian(
+      pedestrian = new PaperPedestrian(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-        topCenter,
-        bottomCenter,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
+        from,
+        to,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
-      this._creationHandle = this._getScaleAnchor(to);
-      this._pedestrian.resize(this._creationHandle, to, this._getMinimalHeight());
+      pedestrian.remove();
     });
+
+    return this._complete(pedestrian);
+  }
+
+  /**
+   * Abort the tool invocation.
+   */
+  abort() {
+    if (this._pedestrian !== null) {
+      this._pedestrian.remove();
+    }
+
+    return super.abort();
   }
 
   /**
@@ -95,16 +129,10 @@ class PedestrianDrawingTool extends DrawingTool {
   onMouseDrag(event) {
     const point = event.point;
 
-    if (this._pedestrian) {
-      this._$scope.$apply(
-        () => {
-          this._pedestrian.resize(this._creationHandle, point, this._getMinimalHeight());
-        }
-      );
+    if (this._pedestrian !== null) {
+      this._pedestrian.resize(this._creationHandle, point, this._getMinimalHeight());
     } else {
-      this._$scope.$apply(
-        () => this.startShape(this._startPosition, point)
-      );
+      this._startShape(this._startPosition, point);
     }
   }
 
@@ -114,27 +142,58 @@ class PedestrianDrawingTool extends DrawingTool {
    * @param event
    */
   onMouseUp(event) { // eslint-disable-line no-unused-vars
-    this.emit('tool:finished');
-    if (this._pedestrian) {
-      // Fix point orientation of top and bottom center
-      this._pedestrian.fixOrientation();
-
-      this._$scope.$apply(
-        () => this.completeShape()
-      );
+    if (this._pedestrian === null) {
+      this._reject(new NotModifiedError('No FixedAspectRatioRectangle was created/dragged.'));
+      return;
     }
+
+    // Fix bottom-right and top-left orientation
+    this._pedestrian.fixOrientation();
+
+    this._complete(this._pedestrian);
   }
 
-  completeShape() {
-    // Ensure the parent/child structure is intact
-    const labeledThingInFrame = this._pedestrian.labeledThingInFrame;
-    labeledThingInFrame.shapes.push(this._pedestrian.toJSON());
+  /**
+   * Start the initial drawing of a pedestrian
+   *
+   * @param {Point} from
+   * @param {Point} to
+   * @private
+   */
+  _startShape(from, to) {
+    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
-    this.emit('shape:create', this._pedestrian);
+    let topCenter;
+    let bottomCenter;
 
-    this._pedestrian = null;
+    if (from.y < to.y) {
+      topCenter = new paper.Point(from.x, from.y);
+      bottomCenter = new paper.Point(from.x, to.y);
+    } else {
+      topCenter = new paper.Point(from.x, to.y);
+      bottomCenter = new paper.Point(from.x, from.y);
+    }
+
+    this._context.withScope(() => {
+      this._pedestrian = new PaperPedestrian(
+        labeledThingInFrame,
+        this._entityIdService.getUniqueId(),
+        topCenter,
+        bottomCenter,
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+        true
+      );
+      this._creationHandle = this._getScaleAnchor(to);
+      this._pedestrian.resize(this._creationHandle, to, this._getMinimalHeight());
+    });
   }
 
+
+  /**
+   * @param {paper.Point} point
+   * @returns {Handle}
+   * @private
+   */
   _getScaleAnchor(point) {
     if (point.y > this._startPosition.y) {
       return new Handle('bottom-center', new paper.Point(this._startPosition.x, point.y));
@@ -142,38 +201,75 @@ class PedestrianDrawingTool extends DrawingTool {
     return new Handle('top-center', new paper.Point(this._startPosition.x, point.y));
   }
 
+  /**
+   * @returns {number}
+   * @private
+   */
   _getMinimalHeight() {
-    const drawingToolOptions = this._options.pedestrian;
-    return (drawingToolOptions && drawingToolOptions.minimalHeight && drawingToolOptions.minimalHeight > 0)
-      ? drawingToolOptions.minimalHeight
-      : 1;
-  }
-
-  createNewDefaultShape() {
-    const height = 100;
-    const from = new paper.Point(
-      this.video.metaData.width / 2,
-      (this.video.metaData.height / 2) - (height / 2)
-    );
-    const to = new paper.Point(
-      this.video.metaData.width / 2,
-      (this.video.metaData.height / 2) + (height / 2)
-    );
-    const labeledThingInFrame = this._createLabeledThingHierarchy();
-
-    this._context.withScope(() => {
-      this._pedestrian = new PaperPedestrian(
-        labeledThingInFrame,
-        this._entityIdService.getUniqueId(),
-        from,
-        to,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor).primary,
-        true
-      );
-    });
-
-    this.completeShape();
+    const {minimalHeight} = this._toolActionStruct.options;
+    return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
   }
 }
+
+/**
+ * Return the name of the tool. The name needs to be unique within the application.
+ * Therefore something like a prefix followed by the className is advisable.
+ *
+ * @return {string}
+ * @public
+ * @abstract
+ * @static
+ */
+PedestrianDrawingTool.getToolName = function () {
+  return 'PedestrianDrawingTool';
+};
+
+/**
+ * Check if the given ShapeClass ({@link PaperShape#getClass}) is supported by this Tool.
+ *
+ * It specifies mostly which shape is affected by the given tool (eg. `rectangle`, `cuboid`, `multi`, ...)
+ *
+ * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
+ * `rectangle` and `scale`, ...)
+ *
+ * @return {bool}
+ * @public
+ * @abstract
+ * @static
+ */
+PedestrianDrawingTool.isShapeClassSupported = function (shapeClass) {
+  return [
+    'pedestrian',
+  ].includes(shapeClass);
+};
+
+/**
+ * Check if the given actionIdentifer is supported by this tool.
+ *
+ * Currently supported actions are:
+ * - `creating`
+ * - `scale`
+ * - `move`
+ *
+ * @return {bool}
+ * @public
+ * @abstract
+ * @static
+ */
+PedestrianDrawingTool.isActionIdentifierSupported = function (actionIdentifier) {
+  return [
+    'creation',
+  ].includes(actionIdentifier);
+};
+
+PedestrianDrawingTool.$inject = [
+  'drawingContext',
+  '$rootScope',
+  '$q',
+  'loggerService',
+  'entityIdService',
+  'entityColorService',
+  'hierarchyCreationService',
+];
 
 export default PedestrianDrawingTool;

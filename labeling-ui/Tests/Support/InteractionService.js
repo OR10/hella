@@ -8,7 +8,7 @@ class InteractionService {
       .mouseMove(elem, {x, y})
       .perform();
 
-    browser.executeScript((cssSelector, x, y, deltaX, deltaY) => { // eslint-disable-line no-shadow
+    return browser.executeScript((cssSelector, x, y, deltaX, deltaY) => { // eslint-disable-line no-shadow
       var elem = document.querySelectorAll(cssSelector)[0]; // eslint-disable-line no-var,no-shadow
 
       function getPosition(element) {
@@ -53,9 +53,12 @@ class InteractionService {
   }
 
   mouseWheelAtRepeat(cssSelector, x, y, deltaX, deltaY, repeat) {
+    let promise = Promise.resolve();
     for (let repeatCount = 0; repeatCount < repeat; repeatCount++) {
-      this.mouseWheelAt(cssSelector, x, y, deltaX, deltaY);
+      promise = promise.then(() => this.mouseWheelAt(cssSelector, x, y, deltaX, deltaY));
     }
+
+    return promise;
   }
 }
 

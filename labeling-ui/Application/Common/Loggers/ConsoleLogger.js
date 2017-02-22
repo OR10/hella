@@ -14,6 +14,10 @@ class ConsoleLogger {
     console.groupCollapsed(...this._incorporateContext(context, ...args)); // eslint-disable-line no-console
   }
 
+  groupStartOpened(context, ...args) {
+    console.group(...this._incorporateContext(context, ...args)); // eslint-disable-line no-console
+  }
+
   groupEnd(context) { // eslint-disable-line no-unused-vars
     console.groupEnd(); // eslint-disable-line no-console
   }

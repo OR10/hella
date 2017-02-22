@@ -1,22 +1,23 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
+import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
 
 
 /**
- * @extends PaperShape
+ * @extends PaperThingShape
  */
-class PaperRectangle extends PaperShape {
+class PaperRectangle extends PaperThingShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {string} shapeId
    * @param {Point} topLeft
    * @param {Point} bottomRight
-   * @param {string} color
+   * @param {{primary: string, secondary: string}} color
    * @param {boolean} draft
    */
   constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, draft = false) {
-    super(labeledThingInFrame, shapeId, draft);
+    super(labeledThingInFrame, shapeId, color, draft);
     /**
      * @type {Point}
      * @private
@@ -29,12 +30,6 @@ class PaperRectangle extends PaperShape {
      */
     this._bottomRight = bottomRight;
 
-    /**
-     * @type {string}
-     * @private
-     */
-    this._color = color;
-
     this._drawShape();
   }
 
@@ -45,6 +40,9 @@ class PaperRectangle extends PaperShape {
     return {
       width: this._bottomRight.x - this._topLeft.x,
       height: this._bottomRight.y - this._topLeft.y,
+      x: this._topLeft.x,
+      y: this._topLeft.y,
+      point: this._topLeft,
     };
   }
 
@@ -70,7 +68,7 @@ class PaperRectangle extends PaperShape {
    */
   _createShape() {
     return new paper.Path.Rectangle({
-      strokeColor: this._color,
+      strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
       dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,

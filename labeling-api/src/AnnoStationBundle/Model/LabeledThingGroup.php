@@ -26,14 +26,20 @@ class LabeledThingGroup
     private $groupType;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $lineColor;
+
+    /**
      * @CouchDB\Field(type="mixed")
      */
     private $groupIds = [];
 
-    public function __construct($groupType = null, $groupIds = [])
+    public function __construct($lineColor, $groupType = null, $groupIds = [])
     {
         $this->groupType = $groupType;
         $this->groupIds  = $groupIds;
+        $this->lineColor = $lineColor;
     }
 
     /**

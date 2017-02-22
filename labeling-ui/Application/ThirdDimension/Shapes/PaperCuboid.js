@@ -1,30 +1,25 @@
 import paper from 'paper';
 import {Vector3} from 'three-math';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
+import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
 
 import Cuboid3d from '../Models/Cuboid3d';
 import CuboidInteractionResolver from '../Support/CuboidInteractionResolver';
 import ManualUpdateCuboidInteractionResolver from '../Support/ManualUpdateCuboidInteractionResolver';
 
-class PaperCuboid extends PaperShape {
+class PaperCuboid extends PaperThingShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
    * @param {Projection2d} projection2d
    * @param {Projection3d} projection3d
    * @param {Array} cuboid3dPoints
-   * @param {{primary, secondary}} color
+   * @param {{primary: string, secondary: string}} color
    * @param {boolean?} draft
    */
   constructor(labeledThingInFrame, shapeId, projection2d, projection3d, cuboid3dPoints, color, draft) {
-    super(labeledThingInFrame, shapeId, draft);
-
-    /**
-     * @type {String}
-     * @private
-     */
-    this._color = color;
+    super(labeledThingInFrame, shapeId, color, draft);
 
     /**
      * @type {boolean}
@@ -410,6 +405,9 @@ class PaperCuboid extends PaperShape {
     return {
       width: maxX - minX,
       height: maxY - minY,
+      x: minX,
+      y: minY,
+      point: new paper.Point(minX, minY),
     };
   }
 

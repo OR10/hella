@@ -143,7 +143,7 @@
             <button ng-click="vm.handleShowCrosshairsToggle()"
                     tooltip="Show/Hide the crosshairs view inside the viewer">
                 <i class="icon fa fa-crosshairs"
-                   ng-class="{'toggled': vm.showCrosshairs}"
+                   ng-class="{'toggled': vm.isCrosshairShowing()}"
                    style="font-size: 28px;"
                 ></i>
             </button>

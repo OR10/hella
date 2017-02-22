@@ -1,5 +1,6 @@
 import paper from 'paper';
 import PaperRectangle from './PaperRectangle';
+import PaperGroupRectangle from './PaperGroupRectangle';
 import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from './PaperPolygon';
@@ -14,9 +15,20 @@ import DepthBufferProjection2d from '../../ThirdDimension/Support/Projection2d/D
 class PaperShapeFactory {
   /**
    * @param {EntityColorService} entityColorService
+   * @param {LabeledThingGroupService} labeledThingGroupService
    */
-  constructor(entityColorService) {
+  constructor(entityColorService, labeledThingGroupService) {
+    /**
+     * @type {EntityColorService}
+     * @private
+     */
     this._entityColorService = entityColorService;
+
+    /**
+     * @type {LabeledThingGroupService}
+     * @private
+     */
+    this._labeledThingGroupService = labeledThingGroupService;
   }
 
   /**
@@ -31,6 +43,20 @@ class PaperShapeFactory {
     const bottomRight = new paper.Point(shape.bottomRight.x, shape.bottomRight.y);
 
     return new PaperRectangle(labeledThingInFrame, shape.id, topLeft, bottomRight, color);
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingGroupInFrame
+   * @param {Object} bounds
+   * @param {String} color
+   * @returns {PaperGroupRectangle}
+   * @private
+   */
+  _createGroupRectangle(labeledThingGroupInFrame, bounds, color) {
+    const topLeft = new paper.Point(bounds.x, bounds.y);
+    const bottomRight = new paper.Point(bounds.x + bounds.width, bounds.y + bounds.height);
+
+    return new PaperGroupRectangle(labeledThingGroupInFrame, labeledThingGroupInFrame.id, topLeft, bottomRight, color);
   }
 
   /**
@@ -78,24 +104,25 @@ class PaperShapeFactory {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
+   * @param {Video} video
    * @returns {PaperShape}
    */
-  createPaperShape(labeledThingInFrame, shape, video = null) {
+  createPaperThingShape(labeledThingInFrame, shape, video = null) {
     const color = this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor);
     let result;
 
     switch (shape.type) {
       case 'rectangle':
-        result = this._createRectangle(labeledThingInFrame, shape, color.primary);
+        result = this._createRectangle(labeledThingInFrame, shape, color);
         break;
       case 'pedestrian':
-        result = this._createPedestrian(labeledThingInFrame, shape, color.primary);
+        result = this._createPedestrian(labeledThingInFrame, shape, color);
         break;
       case 'cuboid3d':
         result = this._createCuboid(labeledThingInFrame, shape, color, video);
         break;
       case 'polygon':
-        result = this._createPolygon(labeledThingInFrame, shape, color.primary, video);
+        result = this._createPolygon(labeledThingInFrame, shape, color);
         break;
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
@@ -103,8 +130,25 @@ class PaperShapeFactory {
     labeledThingInFrame.paperShapes.push(result);
     return result;
   }
+
+  createPaperGroupShape(labeledThingGroupInFrame, shapesInBound) {
+    const colorId = labeledThingGroupInFrame.labeledThingGroup.lineColor;
+    const color = this._entityColorService.getColorById(colorId);
+    const bounds = this._labeledThingGroupService.getBoundsForShapes(shapesInBound);
+
+    const paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, bounds, color);
+
+    // Place this group shape behind all other shapes
+    paperGroup.sendToBack();
+    paperGroup.setSize(bounds.point, bounds.width, bounds.height);
+
+    return paperGroup;
+  }
 }
 
-PaperShapeFactory.$inject = ['entityColorService'];
+PaperShapeFactory.$inject = [
+  'entityColorService',
+  'labeledThingGroupService',
+];
 
 export default PaperShapeFactory;

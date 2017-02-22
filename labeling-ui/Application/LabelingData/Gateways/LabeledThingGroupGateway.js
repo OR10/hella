@@ -61,7 +61,10 @@ class LabeledThingGroupGateway {
     return this._bufferedHttp.get(url, undefined, 'LabeledThingGroup')
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result.map(ltgifDocument => {
+          return response.data.result.labeledThingGroupsInFrame.map(ltgifDocument => {
+            const labeledThingGroupDocument = response.data.result.labeledThingGroups.find(ltg => ltg.id === ltgifDocument.labeledThingGroupId);
+            ltgifDocument.labeledThingGroup = new LabeledThingGroup(Object.assign({}, labeledThingGroupDocument, {task}));
+
             return new LabeledThingGroupInFrame(ltgifDocument);
           });
         }
@@ -73,17 +76,17 @@ class LabeledThingGroupGateway {
   /**
    * Deletes a labeled thing group with the given id.
    *
-   * @param {Task} task
-   * @param {string} labeledThingGroupId
+   * @param {LabeledThingGroup} labeledThingGroup
    * @return {AbortablePromise}
    */
-  deleteLabeledThingGroupById(task, labeledThingGroupId) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup/${labeledThingGroupId}`);
+  deleteLabeledThingGroupById(labeledThingGroup) {
+    const task = labeledThingGroup.task;
+    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup/${labeledThingGroup.id}`);
 
     return this._bufferedHttp.delete(url, undefined, 'LabeledThingGroup')
       .then(response => {
-        if (response.data && response.data.result) {
-          return response.data.result;
+        if (response.data && response.data.success === true) {
+          return true;
         }
 
         throw new Error('Received malformed response when deleting labeled thing group.');
@@ -104,7 +107,7 @@ class LabeledThingGroupGateway {
     return this._bufferedHttp.post(url, body, undefined, 'labeledThingGroup')
       .then(response => {
         if (response.data && response.data.result) {
-          return new LabeledThingGroup(response.data.result);
+          return new LabeledThingGroup(Object.assign({}, response.data.result, {task}));
         }
 
         throw new Error(`Received malformed response when creating labeled thing group of type "${type}"`);
@@ -115,11 +118,14 @@ class LabeledThingGroupGateway {
    * Assign the given labeled thing to the given group.
    *
    * @param {Array.<LabeledThing>} labeledThings
-   * @param {LabeledThingGroup} group
+   * @param {LabeledThingGroup} labeledThingGroup
    */
-  assignLabeledThingsToLabeledThingGroup(labeledThings, group) {
+  assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
     const modifiedLabeledThings = labeledThings.map(labeledThing => {
-      labeledThing.groupIds.push(group.id);
+      if (labeledThing.groupIds.indexOf(labeledThingGroup.id) === -1) {
+        labeledThing.groupIds.push(labeledThingGroup.id);
+      }
+      return labeledThing;
     });
 
     const promises = [];
@@ -132,16 +138,27 @@ class LabeledThingGroupGateway {
   }
 
   /**
-   * Creates a group of the given type and assigns the given labeled things to this group.
+   * Remove group assignment from the labeled thing
    *
-   * @param {Task} task
-   * @param {string} type
-   * @param {Array.<LabeledThing>}labeledThings
+   * @param {Array.<LabeledThing>} labeledThings
+   * @param {LabeledThingGroup} labeledThingGroup
    */
-  createGroupOfTypeWithLabeledThings(task, type, labeledThings) {
-    return this.createLabeledThingGroupOfType(task, type).then(group => {
-      return this.assignLabeledThingsToLabeledThingGroup(labeledThings, group);
+  unassignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
+    const modifiedLabeledThings = labeledThings.map(labeledThing => {
+      const index = labeledThing.groupIds.indexOf(labeledThingGroup.id);
+      if (index !== -1) {
+        labeledThing.groupIds.splice(index, 1);
+      }
+      return labeledThing;
     });
+
+    const promises = [];
+
+    modifiedLabeledThings.forEach(labeledThing => {
+      promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
+    });
+
+    return this._abortablePromisFactory(this._$q.all(promises));
   }
 }
 

@@ -8,8 +8,10 @@ import Viewport from '../Models/Viewport';
 import paper from 'paper';
 import Environment from '../../Common/Support/Environment';
 
+import PaperThingShape from '../Shapes/PaperThingShape';
+
 /**
- * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
+ * @property {Array.<PaperThingShape>} paperThingShapes
  * @property {PaperShape|null} selectedPaperShape
  * @property {string} activeTool
  * @property {string} selectedDrawingTool
@@ -22,13 +24,11 @@ import Environment from '../../Common/Support/Environment';
  * @property {string} playbackDirection
  * @property {Viewport} viewport
  * @property {boolean} hideLabeledThingsInFrame
- * @property {string} multiTool
  * @property {integer} bookmarkedFrameIndex
  * @property {integer} fps
  * @property {integer} frameSkip
  * @property {ThingLayer} thingLayer
  * @property {boolean} readOnly
- * @property {boolean} showCrosshairs
  */
 class ViewerController {
   /**
@@ -36,10 +36,12 @@ class ViewerController {
    * @param {angular.$rootScope} $rootScope
    * @param {angular.element} $element
    * @param {angular.window} $window
+   * @param {$injector} $injector
    * @param {DrawingContextService} drawingContextService
    * @param {FrameLocationGateway} frameLocationGateway
    * @param {FrameGateway} frameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {CacheHeaterService} cacheHeater
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
@@ -60,15 +62,19 @@ class ViewerController {
    * @param {FrameIndexService} frameIndexService
    * @param {ModalService} modalService
    * @param {$state} $state
+   * @param {ViewerMouseCursorService} viewerMouseCursorService
+   * @param {LabeledThingGroupService} labeledThingGroupService
    */
   constructor($scope,
               $rootScope,
               $element,
               $window,
+              $injector,
               drawingContextService,
               frameLocationGateway,
               frameGateway,
               labeledThingInFrameGateway,
+              labeledThingGroupGateway,
               cacheHeater,
               entityIdService,
               paperShapeFactory,
@@ -88,14 +94,9 @@ class ViewerController {
               debouncerService,
               frameIndexService,
               modalService,
-              $state) {
-    /**
-     * Mouse cursor used, while hovering the viewer
-     *
-     * @type {string}
-     */
-    this.activeMouseCursor = null;
-
+              $state,
+              viewerMouseCursorService,
+              labeledThingGroupService) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -126,6 +127,12 @@ class ViewerController {
      * @private
      */
     this._$timeout = $timeout;
+
+    /**
+     * @type {$injector}
+     * @private
+     */
+    this._$injector = $injector;
 
     /**
      * List of supported image types for this component
@@ -170,6 +177,12 @@ class ViewerController {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {LabeledThingGroupGateway}
+     * @private
+     */
+    this._labeledThingGroupGateway = labeledThingGroupGateway;
 
     /**
      * @type {CacheHeaterService}
@@ -274,17 +287,45 @@ class ViewerController {
     this._$state = $state;
 
     /**
+     * @type {LabeledThingGroupService}
+     * @private
+     */
+    this._labeledThingGroupService = labeledThingGroupService;
+
+    /**
      * @type {LayerManager}
      * @private
      */
     this._layerManager = new LayerManager();
 
     /**
+     * @type {ViewerMouseCursorService}
+     * @private
+     */
+    this._viewerMouseCursorService = viewerMouseCursorService;
+
+    /**
+     * @type {DrawingContext|null}
+     * @private
+     */
+    this._thingLayerContext = null;
+
+    /**
+     * @type {DrawingContext|null}
+     * @private
+     */
+    this._backgroupLayerContext = null;
+
+    this._viewerMouseCursorService.on('cursor:updated', cursor => {
+      this.actionMouseCursor = cursor;
+    });
+
+    /**
      * @type {Debouncer}
      * @private
      */
-    this._debouncedOnShapeUpdate = this._debouncerService.multiplexDebounce(
-      (shape, frameIndex) => this._onUpdatedShape(shape, frameIndex),
+    this._debouncedOnThingUpdate = this._debouncerService.multiplexDebounce(
+      (shape, frameIndex) => this._onThingShape(shape, frameIndex),
       (shape, frameIndex) => shape.labeledThingInFrame.ghost
         ? `${frameIndex}.${shape.id}`
         : `${shape.labeledThingInFrame.frameIndex}.${shape.id}`,
@@ -307,11 +348,6 @@ class ViewerController {
     this._frameLocations = this._loadFrameLocations();
 
     /**
-     * @type {Tool|null}
-     */
-    this.activeTool = null;
-
-    /**
      * Due to an action selected DrawingTool, which should be activated when appropriate.
      *
      * @type {string}
@@ -319,18 +355,18 @@ class ViewerController {
     this.selectedDrawingTool = null;
 
     /**
-     * A structure holding all LabeledThingInFrames for the currently active frame
+     * A structure holding all {@link PaperThingShape}s for the currently active frame
      *
-     * @type {Object<string|LabeledThingInFrame>|null}
+     * @type {Array.<PaperThingShape>|null}
      */
-    this.labeledThingsInFrame = [];
+    this.paperThingShapes = [];
 
     /**
-     * A structure holding all LabeledThings for the currently active frame
+     * A structure holding all {@ling PaperGroupShape}s for the currently active frame
      *
-     * @type {Object<string|LabeledThing>|null}
+     * @type {Array.<PaperGroupShape|null>}
      */
-    this.labeledThings = null;
+    this.paperGroupShapes = [];
 
     /**
      * @type {Object}
@@ -467,7 +503,7 @@ class ViewerController {
     // Update the Background once the `framePosition` changes
     // Update selectedPaperShape across frame change
     $scope.$watch('vm.framePosition.position', newPosition => {
-      this._debouncedOnShapeUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
+      this._debouncedOnThingUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
     $scope.$watch(
@@ -486,9 +522,13 @@ class ViewerController {
     );
 
     $scope.$watch('vm.selectedPaperShape', newShape => {
-      if (newShape && !newShape.isDraft) {
+      if (newShape && !newShape.isDraft && newShape instanceof PaperThingShape) {
         this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
       }
+
+      this._$timeout(() => {
+        this._updateAllGroupDimensions();
+      }, 0);
     });
 
     $scope.$watchGroup(
@@ -622,6 +662,8 @@ class ViewerController {
   }
 
   _setupBackgroundLayer() {
+    this._backgroupLayerContext = this._drawingContextService.createContext();
+
     /**
      * @type {BackgroundLayer}
      * @private
@@ -630,7 +672,7 @@ class ViewerController {
       this._contentWidth,
       this._contentHeight,
       this._$scope.$new(),
-      this._drawingContextService
+      this._backgroupLayerContext
     );
 
     this._backgroundLayer.attachToDom(this._$element.find('.background-layer')[0]);
@@ -659,7 +701,7 @@ class ViewerController {
     this._crosshairsLayer = new CrosshairsLayer(
       this._contentHeight,
       this._contentHeight,
-      this._$scope.$new(),
+      this._viewerMouseCursorService,
       '#bedb31', // $icon-hover (green)
       2
     );
@@ -669,35 +711,53 @@ class ViewerController {
   }
 
   _setupThingLayer() {
+    this._thingLayerContext = this._drawingContextService.createContext();
+
     this.thingLayer = new ThingLayer(
       this._contentWidth,
       this._contentHeight,
       this._$scope.$new(),
-      this._drawingContextService,
-      this._entityIdService,
-      this._paperShapeFactory,
-      this._entityColorService,
-      this._keyboardShortcutService,
+      this._$injector,
+      this._thingLayerContext,
       this._toolService,
+      this._paperShapeFactory,
       this._logger,
       this._$timeout,
-      this.framePosition
+      this.framePosition,
+      this._viewerMouseCursorService,
+      this._labeledThingGroupService
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
 
-    this.thingLayer.on('shape:create', shape => this._onShapeCreate(shape));
-
-    this.thingLayer.on('shape:update', shape => {
+    this.thingLayer.on('thing:create', shape => this._onThingCreate(shape));
+    this.thingLayer.on('thing:update', shape => {
       const frameIndex = this.framePosition.position;
-      this._debouncedOnShapeUpdate.debounce(shape, frameIndex);
+
+      this._updateAllGroupDimensions();
+
+      this._debouncedOnThingUpdate.debounce(shape, frameIndex);
     });
+
+    this.thingLayer.on('group:create', shape => this._onGroupCreate(shape));
 
     this._layerManager.addLayer('annotations', this.thingLayer);
 
-    this._$scope.$watch(
-      'vm.activeTool', newActiveTool => {
-        this.thingLayer.activateTool(newActiveTool);
+    this._$scope.$watchGroup(
+      ['vm.activeTool', 'vm.selectedLabelStructureThing'],
+      ([newActiveTool, newSelectedLabelStructureThings]) => {
+        /* @TODO: Refactor (into service?!) to not have zoomPanel switch to 'multi'
+         * while labelStructureThings are not loaded yet
+         */
+        if (newActiveTool === 'multi' && newSelectedLabelStructureThings === null) {
+          return;
+        }
+        // Only called if all tools are initialized
+        if (newActiveTool === null) {
+          return;
+        }
+
+        this.thingLayer.activateTool(newActiveTool, newSelectedLabelStructureThings);
       }
     );
   }
@@ -814,17 +874,28 @@ class ViewerController {
         this.framePosition.lock.release();
       });
 
+    const labeledThingGroupInFramePromise = this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(this.task, frameIndex)
+      .aborted(() => {
+        if (abortRelease) {
+          return;
+        }
+        abortRelease = true;
+        this.framePosition.lock.release();
+      });
+
 
     this._$q.all(
       [
         backendBufferPromise,
         labeledThingInFrameBufferPromise,
+        labeledThingGroupInFramePromise,
         this._fetchGhostedLabeledThingInFrame(frameIndex),
       ]
     ).then(
-      ([newFrameImage, labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
+      ([newFrameImage, labeledThingsInFrame, labeledThingGroupsInFrame, ghostedLabeledThingsInFrame]) => {
         this._frameChangeInProgress = false;
-        this.labeledThingsInFrame = [];
+        this.paperThingShapes = [];
+        this.paperGroupShapes = [];
         this.labeledFrame = null;
 
         // Update background
@@ -836,17 +907,19 @@ class ViewerController {
         );
         this._backgroundLayer.render();
 
-        // Update labeledThingsInFrame
-        this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
+        this._extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
+        this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame);
 
-        if (ghostedLabeledThingInFrame) {
-          this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
-        }
         this.framePosition.lock.release();
       }
     );
   }
 
+  /**
+   * Update all {@link LabeledThingInFrame} for the current frame
+   *
+   * @private
+   */
   _updateLabeledThingsInFrame() {
     return this._$q.all(
       [
@@ -856,17 +929,64 @@ class ViewerController {
         this._fetchGhostedLabeledThingInFrame(this.framePosition.position),
       ]
     ).then(
-      ([labeledThingsInFrame, ghostedLabeledThingInFrame]) => {
-        this.labeledThingsInFrame = [];
-
-        // Update labeledThingsInFrame
-        this.labeledThingsInFrame = this.labeledThingsInFrame.concat(labeledThingsInFrame);
-
-        if (ghostedLabeledThingInFrame) {
-          this.labeledThingsInFrame.push(ghostedLabeledThingInFrame);
-        }
+      ([labeledThingsInFrame, ghostedLabeledThingsInFrame]) => {
+        this._extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
       }
     );
+  }
+
+  /**
+   * Takes the given ltifs and ghostLtifs and converts them into {@link PaperThingShape}s.
+   * The resulting {@link PaperThingShape}s are then stored in the global `paperThingShapes` array.
+   *
+   * @param {Array.<LabeledThingInFrame>} labeledThingsInFrame
+   * @param {Array.<LabeledThingInFrame>} ghostedLabeledThingInFrame
+   * @private
+   */
+  _extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingInFrame) {
+    const newPaperThingShapes = labeledThingsInFrame.map(
+      ltif => {
+        return this._thingLayerContext.withScope(() => {
+          return this._paperShapeFactory.createPaperThingShape(ltif, ltif.shapes[0], this.video);
+        });
+      }
+    );
+
+    // Add new ltifs to the global array
+    this.paperThingShapes = this.paperThingShapes.concat(newPaperThingShapes);
+
+
+    if (ghostedLabeledThingInFrame) {
+      let ghostedPaperShape;
+      this._thingLayerContext.withScope(() => {
+        ghostedPaperShape = this._paperShapeFactory.createPaperThingShape(ghostedLabeledThingInFrame, ghostedLabeledThingInFrame.shapes[0], this.video);
+      });
+
+      this.paperThingShapes.push(ghostedPaperShape);
+    }
+  }
+
+  /**
+   * Takes th given ltgifs and converts them into {@link PaperGroupShape}s.
+   * The resulting {@link PaperGroupShape}s are then stored in the global `paperGroupShapes` array.
+   *
+   * @param {Array.<LabeledThingGroupInFrame>} labeledThingGroupsInFrame
+   * @private
+   */
+  _extractAndStorePaperGroupShapes(labeledThingGroupsInFrame) {
+    const newPaperGroupShapes = labeledThingGroupsInFrame.map(
+      ltgif => {
+        const shapesBelongingToGroup = this.paperThingShapes.filter(paperThingShape => {
+          return paperThingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(ltgif.labeledThingGroup.id) !== -1;
+        });
+
+        return this._thingLayerContext.withScope(() => {
+          return this._paperShapeFactory.createPaperGroupShape(ltgif, shapesBelongingToGroup);
+        });
+      }
+    );
+
+    this.paperGroupShapes = this.paperGroupShapes.concat(newPaperGroupShapes);
   }
 
   /**
@@ -953,7 +1073,7 @@ class ViewerController {
    * @param {Integer} frameIndex
    * @private
    */
-  _onUpdatedShape(shape, frameIndex) {
+  _onThingShape(shape, frameIndex) {
     const labeledThingInFrame = shape.labeledThingInFrame;
     const labeledThing = labeledThingInFrame.labeledThing;
 
@@ -1003,16 +1123,41 @@ class ViewerController {
   }
 
   /**
+   * Update all group shapes that belong to the changed thing shape
+   *
+   * @private
+   */
+  _updateAllGroupDimensions() {
+    this.paperGroupShapes.forEach(groupShape => {
+      const thingShapesInGroup = this.paperThingShapes.filter(
+        thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupShape.labeledThingGroupInFrame.labeledThingGroup.id) !== -1
+      );
+      const {point, width, height} = this._labeledThingGroupService.getBoundsForShapes(thingShapesInGroup);
+
+      this._thingLayerContext.withScope(scope => {
+        groupShape.setSize(point, width, height);
+        scope.view.update();
+      });
+    });
+  }
+
+  /**
    * Create a new {@link LabeledThingInFrame} with a corresponding {@link LabeledThing} and store both
    * {@link LabeledObject}s to the backend
    *
+   * @param {PaperThingShape} paperShape
    * @returns {AbortablePromise.<LabeledThingInFrame>}
    * @private
    */
-  _onShapeCreate(shape) {
+  _onThingCreate(paperShape) {
     this._$rootScope.$emit('shape:add:before');
-    const newLabeledThingInFrame = shape.labeledThingInFrame;
+    const newLabeledThingInFrame = paperShape.labeledThingInFrame;
     const newLabeledThing = newLabeledThingInFrame.labeledThing;
+
+    // Ensure the parent/child structure is intact
+    if (newLabeledThingInFrame.shapes.length === 0) {
+      newLabeledThingInFrame.shapes.push(paperShape.toJSON());
+    }
 
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
@@ -1036,11 +1181,58 @@ class ViewerController {
         );
       })
       .then(() => {
-        shape.publish();
-        this._$rootScope.$emit('shape:add:after', shape);
+        this._$rootScope.$emit('shape:add:after', paperShape);
       });
 
-    this.activeTool = null;
+    this.bookmarkedFrameIndex = this.framePosition.position;
+  }
+
+  /**
+   * Create a new {@link LabeledThingGroupInFrame} with a corresponding {@link LabeledThingGroup} and store both
+   * {@link LabeledObject}s to the backend
+   *
+   * @param {PaperGroupShape} paperGroupShape
+   * @returns {AbortablePromise.<LabeledThingInFrame>}
+   * @private
+   */
+  _onGroupCreate(paperGroupShape) {
+    this._$rootScope.$emit('shape:add:before');
+
+    let shapes = this._labeledThingGroupService.getShapesWithinBounds(this._thingLayerContext, paperGroupShape.bounds);
+    // Service finds the group shape itself, so we need to remove the shape id from the array
+    shapes = shapes.filter(shape => shape.id !== paperGroupShape.id);
+
+    this._labeledThingGroupGateway.createLabeledThingGroupOfType(this.task, paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.type)
+      .then(labeledThingGroup => {
+        const labeledThings = [];
+        shapes.forEach(shape => {
+          labeledThings.push(shape.labeledThingInFrame.labeledThing);
+          shape.labeledThingInFrame.labeledThing.groupIds.push(labeledThingGroup.id);
+        });
+
+        paperGroupShape.labeledThingGroupInFrame.labeledThingGroup = labeledThingGroup;
+
+        return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup);
+      })
+      .catch(() => {
+        this._modalService.info(
+          {
+            title: 'Error',
+            headline: `There was an error saving the shape`,
+            message: `The shape could not be created. Please contact the label coordinator and reload the page to continue with the labeling process!`,
+            confirmButtonText: 'Reload',
+          },
+          () => window.location.reload(),
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
+      })
+      .then(() => {
+        this._$rootScope.$emit('shape:add:after', paperGroupShape);
+      });
 
     this.bookmarkedFrameIndex = this.framePosition.position;
   }
@@ -1260,10 +1452,12 @@ ViewerController.$inject = [
   '$rootScope',
   '$element',
   '$window',
+  '$injector',
   'drawingContextService',
   'frameLocationGateway',
   'frameGateway',
   'labeledThingInFrameGateway',
+  'labeledThingGroupGateway',
   'cacheHeaterService',
   'entityIdService',
   'paperShapeFactory',
@@ -1284,6 +1478,8 @@ ViewerController.$inject = [
   'frameIndexService',
   'modalService',
   '$state',
+  'viewerMouseCursorService',
+  'labeledThingGroupService',
 ];
 
 export default ViewerController;

@@ -61,8 +61,7 @@ class ModalService {
     const cancelCallbackWrapper = data => {
       modal.deactivate();
       this._modalOpen = false;
-      this._keyboardShortcutService.popContext();
-      this._keyboardShortcutService.clearContext('modal');
+      this._keyboardShortcutService.removeOverlayById('modal');
       cancelCallback(data);
       safelyDestroyModal();
     };
@@ -70,8 +69,7 @@ class ModalService {
     const confirmCallbackWrapper = data => {
       modal.deactivate();
       this._modalOpen = false;
-      this._keyboardShortcutService.popContext();
-      this._keyboardShortcutService.clearContext('modal');
+      this._keyboardShortcutService.removeOverlayById('modal');
       confirmCallback(data);
       safelyDestroyModal();
     };
@@ -97,6 +95,8 @@ class ModalService {
   show(dialog) {
     const {modal, cancelCallbackWrapper} = this._createModal(dialog);
 
+    this._keyboardShortcutService.registerOverlay('modal', true);
+
     if (dialog.getOptions.abortable === true) {
       this._keyboardShortcutService.addHotkey('modal', {
         combo: 'esc',
@@ -116,7 +116,6 @@ class ModalService {
     });
 
     this._modalOpen = true;
-    this._keyboardShortcutService.pushContext('modal');
     modal.activate();
 
     // @Hack: Autofocus seems not to work and direct selection of the element is also not possible

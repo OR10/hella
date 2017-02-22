@@ -1,6 +1,7 @@
 import Module from '../Module';
 import CacheHeatingLabeledThingInFrameGateway from './Gateways/CacheHeatingLabeledThingInFrameGateway';
 import CachingLabeledThingInFrameGateway from './Gateways/CachingLabeledThingInFrameGateway';
+import LabeledThingGroupGateway from './Gateways/LabeledThingGroupGateway';
 import LabeledFrameGateway from './Gateways/LabeledFrameGateway';
 import CacheHeatingLabeledThingGateway from './Gateways/CacheHeatingLabeledThingGateway';
 import InterpolationService from './Services/InterpolationService';
@@ -28,6 +29,7 @@ class LabelingData extends Module {
     this.module.service('cachingLabeledThingInFrameGateway', CachingLabeledThingInFrameGateway);
     this.module.service('labeledFrameGateway', LabeledFrameGateway);
     this.module.service('labeledThingGateway', CacheHeatingLabeledThingGateway);
+    this.module.service('labeledThingGroupGateway', LabeledThingGroupGateway);
 
     this.module.service('interpolationService', InterpolationService);
     this.module.service('linearBackendInterpolation', LinearBackendInterpolation);

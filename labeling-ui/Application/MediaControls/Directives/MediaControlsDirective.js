@@ -17,18 +17,17 @@ class MediaControlsDirective {
       selectedDrawingTool: '=',
       task: '=',
       selectedPaperShape: '=',
-      labeledThingsInFrame: '=',
+      paperThingShapes: '=',
+      paperGroupShapes: '=',
       playing: '=',
       playbackSpeedFactor: '=',
       playbackDirection: '=',
       popupPanelState: '=',
       popupPanelOpen: '=',
       hideLabeledThingsInFrame: '=',
-      multiTool: '=',
       video: '=',
       bookmarkedFrameIndex: '=',
       readOnly: '@',
-      showCrosshairs: '=',
     };
   }
 

@@ -6,7 +6,7 @@
                   read-only="{{vm.task.readOnly}}"
                   selected-paper-shape="vm.selectedPaperShape"
                   frame-position="vm.framePosition"
-                  labeled-things-in-frame="vm.labeledThingsInFrame"
+                  paper-thing-shapes="vm.paperThingShapes"
                   thing-layer="vm.thingLayer"
                   hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
                   label-instruction="vm.labelInstruction"
@@ -43,6 +43,7 @@
     <!--</div>-->
     <tool-selector ng-if="vm.task.taskType !== 'meta-labeling' && vm.drawableThings.length > 1"
                    drawable-things="vm.drawableThings"
+                   drawable-groups="vm.drawableGroups"
                    selected-label-structure-thing="vm.selectedLabelStructureThing"
                    selected-drawing-tool="vm.selectedDrawingTool"
                    selected-paper-shape="vm.selectedPaperShape"
@@ -68,7 +69,8 @@
 
 
     <viewer class="grid-block align-center noscroll no-select"
-            labeled-things-in-frame="vm.labeledThingsInFrame"
+            paper-thing-shapes="vm.paperThingShapes"
+            paper-group-shapes="vm.paperGroupShapes"
             selected-paper-shape="vm.selectedPaperShape"
             selected-label-structure-thing="vm.selectedLabelStructureThing"
             active-tool="vm.activeTool"
@@ -83,13 +85,11 @@
             playback-direction="vm.playbackDirection"
             viewport="vm.viewerViewport"
             hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
-            multi-tool="vm.multiTool"
             bookmarked-frame-index="vm.bookmarkedFrameIndex"
             fps="vm.fps"
             frame-skip="vm.frameSkip"
             read-only="{{vm.task.readOnly}}"
             thing-layer="vm.thingLayer"
-            show-crosshairs="vm.showCrosshairs"
     ></viewer>
     <div class="grid-block small-6 sidebar-right"
          ng-if="vm.task.hideAttributeSelector !== true">
@@ -111,7 +111,8 @@
     </div>
 </div>
 <media-controls read-only="{{vm.task.readOnly}}"
-                labeled-things-in-frame="vm.labeledThingsInFrame"
+                paper-thing-shapes="vm.paperThingShapes"
+                paper-group-shapes="vm.paperGroupShapes"
                 frame-position="vm.framePosition"
                 active-tool="vm.activeTool"
                 selected-drawing-tool="vm.selectedDrawingTool"
@@ -123,10 +124,8 @@
                 popup-panel-open="vm.popupPanelOpen"
                 popup-panel-state="vm.popupPanelState"
                 hide-labeled-things-in-frame="vm.hideLabeledThingsInFrame"
-                multi-tool="vm.multiTool"
                 video="vm.video"
                 bookmarked-frame-index="vm.bookmarkedFrameIndex"
-                show-crosshairs="vm.showCrosshairs"
                 class="no-select"
 ></media-controls>
 
@@ -137,6 +136,7 @@
                    video="vm.video"
                    filters="vm.filters"
                    selected-paper-shape="vm.selectedPaperShape"
+                   paper-thing-shapes="vm.paperThingShapes"
                    playing="vm.playing"
                    freeze-thumbnails="vm.freezeThumbnails"
                    read-only="{{vm.task.readOnly}}"

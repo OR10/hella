@@ -8,6 +8,7 @@
         "startFrameIndex": 0,
         "endFrameIndex": 0
       },
+      "groupIds": [],
       "incomplete": true,
       "lineColor": "{{:lineColor}}",
       "id": "{{:labeledThingDataId}}",
