@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Controller\Api;
+namespace AnnoStationBundle\Controller\Api\Organisation;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
@@ -8,6 +8,7 @@ use AnnoStationBundle\Controller;
 use AnnoStationBundle\Controller\Api\Project\Exception as ProjectException;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service;
 use AppBundle\View;
 use crosscan\Logger\Facade\LoggerFacade;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpKernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
- * @Rest\Prefix("/api/projectImport")
+ * @Rest\Prefix("/api/organisation/")
  * @Rest\Route(service="annostation.labeling_api.controller.api.project_importer")
  *
  * @CloseSession
@@ -84,7 +85,7 @@ class ProjectImporter extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{uploadId}")
+     * @Rest\Post("/{organisation}/projectImport/{uploadId}")
      *
      * @CheckPermissions({"canUploadNewVideo"})
      *
@@ -141,15 +142,16 @@ class ProjectImporter extends Controller\Base
     }
 
     /**
-     * @Rest\Post("/{uploadId}/complete")
+     * @Rest\Post("/{organisation}/projectImport/{uploadId}/complete")
      *
      * @CheckPermissions({"canUploadNewVideo"})
      *
-     * @param $uploadId
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param                                     $uploadId
      *
      * @return View\View
      */
-    public function uploadCompleteAction($uploadId)
+    public function uploadCompleteAction(AnnoStationBundleModel\Organisation $organisation, $uploadId)
     {
         clearstatcache();
         $user                 = $this->tokenStorage->getToken()->getUser();
@@ -157,7 +159,7 @@ class ProjectImporter extends Controller\Base
 
         $tasks = [];
         foreach (glob(sprintf('%s%s*.xml', $uploadCacheDirectory, DIRECTORY_SEPARATOR)) as $filePath) {
-            $tasks = array_merge($this->projectImporter->importXml($filePath, $user), $tasks);
+            $tasks = array_merge($this->projectImporter->importXml($filePath, $organisation, $user), $tasks);
         }
 
         return new View\View(
