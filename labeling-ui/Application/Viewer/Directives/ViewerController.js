@@ -9,6 +9,7 @@ import paper from 'paper';
 import Environment from '../../Common/Support/Environment';
 
 import PaperThingShape from '../Shapes/PaperThingShape';
+import PaperGroupShape from '../Shapes/PaperGroupShape';
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -996,6 +997,10 @@ class ViewerController {
    */
   _fetchGhostedLabeledThingInFrame(frameIndex) {
     if (this.selectedPaperShape === null) {
+      return Promise.resolve(null);
+    }
+
+    if (this.selectedPaperShape instanceof PaperGroupShape) {
       return Promise.resolve(null);
     }
 
