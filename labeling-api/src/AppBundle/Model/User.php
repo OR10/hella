@@ -140,4 +140,14 @@ class User extends BaseUser
     {
         return $this->rolesByProject[$projectId] ?? [];
     }
+
+    /**
+     * @param string $projectId
+     *
+     * @return string[]
+     */
+    public function getAllRoles()
+    {
+        return $this->rolesByProject ?? [];
+    }
 }
