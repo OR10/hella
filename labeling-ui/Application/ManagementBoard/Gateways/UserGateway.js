@@ -45,7 +45,7 @@ class UserGateway {
    * @return {AbortablePromise.<Array.<User>>}
    */
   getUsers() {
-    const url = this._apiService.getApiUrl('/users');
+    const url = this._apiService.getApiUrl('/user');
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.users) {
@@ -64,7 +64,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   getUser(id) {
-    const url = this._apiService.getApiUrl(`/users/${id}`);
+    const url = this._apiService.getApiUrl(`/user/${id}`);
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.user) {
@@ -83,7 +83,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   createUser(user) {
-    const url = this._apiService.getApiUrl(`/users`);
+    const url = this._apiService.getApiUrl(`/user`);
     return this._bufferedHttp.post(url, user, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.user) {
@@ -102,7 +102,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   updateUser(user) {
-    const url = this._apiService.getApiUrl(`/users/${user.id}`);
+    const url = this._apiService.getApiUrl(`/user/${user.id}`);
     return this._bufferedHttp.put(url, user, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.user) {
@@ -121,7 +121,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   deleteUser(id) {
-    const url = this._apiService.getApiUrl(`/users/${id}`);
+    const url = this._apiService.getApiUrl(`/user/${id}`);
     return this._bufferedHttp.delete(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.success) {
