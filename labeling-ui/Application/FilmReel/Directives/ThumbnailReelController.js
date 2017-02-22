@@ -566,17 +566,7 @@ class ThumbnailReelController {
       throw new Error('Cannot change the frame range of groups!');
     }
 
-    let frameRange;
-    switch (true) {
-      case this.selectedPaperShape instanceof PaperThingShape:
-        frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-        break;
-      case this.selectedPaperShape instanceof PaperGroupShape:
-        frameRange = this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
-        break;
-      default:
-        throw new Error('Cannot get frame range of unknown shape type');
-    }
+    const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
 
     if (this.thumbnails[index + 1] && this.thumbnails[index + 1].location !== null) {
       const frameIndex = this.thumbnails[index + 1].location.frameIndex;
@@ -611,17 +601,7 @@ class ThumbnailReelController {
       throw new Error('Cannot change the frame range of groups!');
     }
 
-    let frameRange;
-    switch (true) {
-      case this.selectedPaperShape instanceof PaperThingShape:
-        frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-        break;
-      case this.selectedPaperShape instanceof PaperGroupShape:
-        frameRange = this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
-        break;
-      default:
-        throw new Error('Cannot get frame range of unknown shape type');
-    }
+    const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
 
     if (this.thumbnails[index] && this.thumbnails[index].location !== null) {
       const frameIndex = this.thumbnails[index].location.frameIndex;
