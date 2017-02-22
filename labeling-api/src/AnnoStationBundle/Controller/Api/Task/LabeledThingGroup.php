@@ -10,6 +10,7 @@ use AppBundle\Model as AppBundleModel;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -44,7 +45,11 @@ class LabeledThingGroup extends Controller\Base
         $groupType = $request->request->get('groupType');
         $groupIds  = $request->request->get('groupIds');
 
-        $labeledThingGroup = new Model\LabeledThingGroup($groupType, $groupIds);
+        if (($lineColor = $request->request->get('lineColor')) === null) {
+            throw new BadRequestHttpException('Missing lineColor');
+        }
+
+        $labeledThingGroup = new Model\LabeledThingGroup($lineColor, $groupType, $groupIds);
 
         $this->labeledThingGroupFacade->save($labeledThingGroup);
 
