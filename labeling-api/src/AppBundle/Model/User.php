@@ -161,7 +161,7 @@ class User extends BaseUser
      */
     public function assignToOrganisation(AnnoStationBundleModel\Organisation $organisation)
     {
-        if (!in_array($organisation->getId(), $this->organisations)) {
+        if (!is_array($this->organisations) || !in_array($organisation->getId(), $this->organisations)) {
             $this->organisations[] = $organisation->getId();
         }
     }
