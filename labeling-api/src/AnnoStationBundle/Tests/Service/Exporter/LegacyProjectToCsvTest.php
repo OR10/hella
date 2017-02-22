@@ -452,7 +452,7 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
 
         $this->video = Model\Video::create($organisation, 'test_video');
 
-        $calibrationData = new Model\CalibrationData('test_video');
+        $calibrationData = new Model\CalibrationData($this->createOrganisation(), 'test_video');
         $calibrationData->setRawCalibration($this->calibrationFileConverter->getRawData());
         $calibrationData->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
         $calibrationData->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());

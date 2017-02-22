@@ -247,7 +247,9 @@ class Import
         $calibrationFilePath = sprintf('%s/%s.csv', $directory, $fileInfo['filename']);
 
         if (is_file($calibrationFilePath)) {
-            $video->setCalibrationData($this->videoImporter->importCalibrationData($project, $calibrationFilePath));
+            $video->setCalibrationData(
+                $this->videoImporter->importCalibrationData($organisation, $project, $calibrationFilePath)
+            );
             $this->videoFacade->save($video);
         }
 

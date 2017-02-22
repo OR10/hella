@@ -171,7 +171,7 @@ class CouchDbTestCase extends Tests\WebTestCase
 
     protected function createCalibrationData($name, $calibration)
     {
-        $calibrationData = new Model\CalibrationData($name);
+        $calibrationData = new Model\CalibrationData($this->createOrganisation(), $name);
         $calibrationData->setCameraMatrix($calibration['cameraMatrix']);
         $calibrationData->setDistortionCoefficients($calibration['distortionCoefficients']);
         $calibrationData->setRotationMatrix($calibration['rotationMatrix']);

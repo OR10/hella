@@ -107,7 +107,7 @@ class BatchUploadTest extends Tests\WebTestCase
 
     public function testCompleteVideoRouteWithCalibrationData()
     {
-        $calibrationData = new Model\CalibrationData('foobar.csv');
+        $calibrationData = new Model\CalibrationData($this->organisation, 'foobar.csv');
         $this->calibrationDataFacade->save($calibrationData);
 
         $video        = Helper\VideoBuilder::create($this->organisation)->withName('foobar.avi')->build();

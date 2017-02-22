@@ -3,6 +3,7 @@
 namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 /**
  * @CouchDB\Document
@@ -35,11 +36,13 @@ class CalibrationData
     protected $organisationId;
 
     /**
-     * @param string $name
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param string                              $name
      */
-    public function __construct(string $name)
+    public function __construct(AnnoStationBundleModel\Organisation $organisation, string $name)
     {
-        $this->name = $name;
+        $this->organisationId = $organisation->getId();
+        $this->name           = $name;
     }
 
     /**

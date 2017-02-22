@@ -201,7 +201,7 @@ class BatchUpload extends Controller\Base
                         false
                     );
                 } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
-                    $this->videoImporter->importCalibrationData($project, $targetPath);
+                    $this->videoImporter->importCalibrationData($organisation, $project, $targetPath);
                 } else {
                     throw new HttpKernel\Exception\BadRequestHttpException(
                         sprintf('Invalid file: %s', $flowRequest->getFileName())
