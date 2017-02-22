@@ -46,7 +46,7 @@ class GroupCreationTool extends CreationTool {
    */
   onMouseDown(event) {
     // Delegating the event down to the used tool
-    this._rectangleCreationTool._delegateMouseEvent('down', event);
+    this._rectangleCreationTool.delegateMouseEvent('down', event);
   }
 
 
@@ -64,6 +64,11 @@ class GroupCreationTool extends CreationTool {
     return [
       'creation',
     ];
+  }
+
+  abort() {
+    this._rectangleCreationTool.abort();
+    super.abort();
   }
 
   /**
@@ -105,7 +110,8 @@ class GroupCreationTool extends CreationTool {
       });
 
       this._complete(paperGroup);
-    });
+    })
+      .catch(reason => this._reject(reason));
 
     return promise;
   }

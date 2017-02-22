@@ -126,7 +126,7 @@ class PaperGroupRectangle extends PaperGroupShape {
    * @returns {string}
    */
   getToolActionIdentifier(handle) {
-    return 'none';
+    return 'move';
   }
 
   /**

@@ -197,7 +197,7 @@ class MultiTool extends PaperTool {
     const point = event.point;
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool._delegateMouseEvent('down', event);
+      this._activePaperTool.delegateMouseEvent('down', event);
       return;
     }
 
@@ -219,7 +219,7 @@ class MultiTool extends PaperTool {
         }
         // Invoke shape creation
         this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
-        this._activePaperTool._delegateMouseEvent('down', event);
+        this._activePaperTool.delegateMouseEvent('down', event);
         return;
       }
 
@@ -235,7 +235,7 @@ class MultiTool extends PaperTool {
       // Invoke mutation tool
       const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
       this._invokePaperToolDelegation(this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier), actionIdentifier, hitShape, hitHandle);
-      this._activePaperTool._delegateMouseEvent('down', event);
+      this._activePaperTool.delegateMouseEvent('down', event);
     });
   }
 
@@ -306,9 +306,6 @@ class MultiTool extends PaperTool {
         );
         promise = tool.invokeShapeMoving(struct);
         break;
-      case 'none':
-        promise = this._$q.resolve(shape);
-        break;
       default:
         throw new Error(`Unknown actionIdentifier: ${actionIdentifier}`);
     }
@@ -334,7 +331,7 @@ class MultiTool extends PaperTool {
     }
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool._delegateMouseEvent('move', event);
+      this._activePaperTool.delegateMouseEvent('move', event);
       return;
     }
 
@@ -400,7 +397,7 @@ class MultiTool extends PaperTool {
     }
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool._delegateMouseEvent('up', event);
+      this._activePaperTool.delegateMouseEvent('up', event);
       return;
     }
 
@@ -436,7 +433,7 @@ class MultiTool extends PaperTool {
     }
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool._delegateMouseEvent('drag', event);
+      this._activePaperTool.delegateMouseEvent('drag', event);
     }
   }
 

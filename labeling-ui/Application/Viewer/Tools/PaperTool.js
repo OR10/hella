@@ -43,9 +43,8 @@ class PaperTool extends Tool {
   /**
    * @param {string} type
    * @param {paper.Event} event
-   * @protected
    */
-  _delegateMouseEvent(type, event) {
+  delegateMouseEvent(type, event) {
     const delegationTarget = `onMouse${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
     const roundedEventPoint = new paper.Point(
       Math.round(event.point.x),
@@ -111,10 +110,10 @@ class PaperTool extends Tool {
       this._tool = new paper.Tool();
     });
 
-    this._tool.onMouseDown = event => this._delegateMouseEvent('down', event);
-    this._tool.onMouseUp = event => this._delegateMouseEvent('up', event);
-    this._tool.onMouseDrag = event => this._delegateMouseEvent('drag', event);
-    this._tool.onMouseMove = event => this._delegateMouseEvent('move', event);
+    this._tool.onMouseDown = event => this.delegateMouseEvent('down', event);
+    this._tool.onMouseUp = event => this.delegateMouseEvent('up', event);
+    this._tool.onMouseDrag = event => this.delegateMouseEvent('drag', event);
+    this._tool.onMouseMove = event => this.delegateMouseEvent('move', event);
 
     this._tool.onKeyDown = event => this._delegateKeyboardEvent('down', event);
     this._tool.onKeyUp = event => this._delegateKeyboardEvent('up', event);
