@@ -86,10 +86,15 @@ api_video:
     type: rest
     name_prefix: app_api_video_
 
-api_users:
+api_organisation_user:
     resource: "annostation.labeling_api.controller.api.organisation.users"
     type: rest
     name_prefix: app_api_organisation_users_
+
+api_user:
+    resource: "annostation.labeling_api.controller.api.user"
+    type: rest
+    name_prefix: app_api_user_
 
 api_task:
     resource: "annostation.labeling_api.controller.api.task"

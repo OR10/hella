@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use Symfony\Component\Security\Core\Encoder;
 
 /**
- * @Rest\Prefix("/api/user")
+ * @Rest\Prefix("/api/currentUser")
  * @Rest\Route(service="annostation.labeling_api.controller.api.current_user")
  *
  * @CloseSession

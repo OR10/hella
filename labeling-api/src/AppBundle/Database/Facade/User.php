@@ -43,33 +43,33 @@ class User
     }
 
     /**
-     * @param AnnoStationBundleModel\Organisation $organisation
-     * @param string                              $username
-     * @param string                              $email
-     * @param string                              $password
-     * @param bool                                $enabled
-     * @param bool                                $locked
-     * @param array                               $settings
+     * @param string $username
+     * @param string $email
+     * @param string $password
+     * @param bool   $enabled
+     * @param bool   $locked
+     * @param array  $settings
+     * @param array  $organisations
      *
      * @return FosUserModel\UserInterface
      */
     public function createUser(
-        AnnoStationBundleModel\Organisation $organisation,
         $username,
         $email,
         $password,
         $enabled = true,
         $locked = false,
-        $settings = []
+        $settings = [],
+        $organisations = []
     ) {
         $user = $this->userManager->createUser();
-        $user->setOrganisation($organisation);
         $user->setUsername($username);
         $user->setEmail($email);
         $user->setPlainPassword($password);
         $user->setEnabled($enabled);
         $user->setLocked($locked);
         $user->setSettings($settings);
+        $user->setOrganisations($organisations);
 
         $this->userManager->updateUser($user);
 
@@ -179,14 +179,22 @@ class User
      *
      * @return Model\User[]
      */
-    public function getUserList(AnnoStationBundleModel\Organisation $organisation)
+    public function getUserList(AnnoStationBundleModel\Organisation $organisation = null)
     {
-        $users = $userProfileImages = $this->documentManager
-            ->createQuery('annostation_user_by_organisation', 'view')
-            ->setKey([$organisation->getId()])
-            ->onlyDocs(true)
-            ->execute()
-            ->toArray();
+        if ($organisation === null) {
+            $users = $this->documentManager
+                ->createQuery('annostation_user', 'by_id')
+                ->onlyDocs(true)
+                ->execute()
+                ->toArray();
+        }else{
+            $users = $this->documentManager
+                ->createQuery('annostation_user_by_organisation', 'view')
+                ->setKey([$organisation->getId()])
+                ->onlyDocs(true)
+                ->execute()
+                ->toArray();
+        }
 
         return array_values(
             array_filter(

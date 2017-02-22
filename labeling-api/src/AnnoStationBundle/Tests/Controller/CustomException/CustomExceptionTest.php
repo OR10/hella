@@ -27,7 +27,7 @@ class CustomExceptionTest extends Tests\WebTestCase
 
     public function testBadRequestHttpException()
     {
-        $requestWrapper = $this->createRequest('/api/user/password')
+        $requestWrapper = $this->createRequest('/api/currentUser/password')
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->execute();
 
