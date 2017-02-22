@@ -97,12 +97,17 @@ class LabeledThingGroupGateway {
    * Create a labeled thing group of the given type.
    *
    * @param {Task} task
-   * @param {string} type
+   * @param {LabeledThingGroup} labeledThingGroup
    * @return {AbortablePromise}
    */
-  createLabeledThingGroupOfType(task, type) {
+  createLabeledThingGroup(task, labeledThingGroup) {
     const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup`);
-    const body = {groupType: type};
+    const {type, lineColor} = labeledThingGroup;
+
+    const body = {
+      lineColor,
+      groupType: type,
+    };
 
     return this._bufferedHttp.post(url, body, undefined, 'labeledThingGroup')
       .then(response => {
