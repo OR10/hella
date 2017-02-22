@@ -90,12 +90,18 @@ class ProjectImporter extends Controller\Base
      * @CheckPermissions({"canUploadNewVideo"})
      *
      * @param HttpFoundation\Request $request
-     * @param                        $uploadId
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param                                     $uploadId
      *
      * @return View\View
      */
-    public function uploadAction(HttpFoundation\Request $request, $uploadId)
-    {
+    public function uploadAction(
+        HttpFoundation\Request $request,
+        AnnoStationBundleModel\Organisation $organisation,
+        $uploadId
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         $user                 = $this->tokenStorage->getToken()->getUser();
         $uploadCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $uploadId]);
         $chunkDirectory       = $uploadCacheDirectory . DIRECTORY_SEPARATOR . 'chunks';
@@ -153,6 +159,8 @@ class ProjectImporter extends Controller\Base
      */
     public function uploadCompleteAction(AnnoStationBundleModel\Organisation $organisation, $uploadId)
     {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
         clearstatcache();
         $user                 = $this->tokenStorage->getToken()->getUser();
         $uploadCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $uploadId]);
