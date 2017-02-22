@@ -28,7 +28,7 @@ class UserGateway {
    * @return {AbortablePromise<User|Error>}
    */
   getCurrentUser() {
-    const url = this._apiService.getApiUrl('/user/profile');
+    const url = this._apiService.getApiUrl('/currentUser/profile');
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (response.data && response.data.result) {
@@ -139,7 +139,7 @@ class UserGateway {
    * @returns {AbortablePromise}
    */
   setCurrentUserPassword(oldPassword, newPassword) {
-    const url = this._apiService.getApiUrl(`/user/password`);
+    const url = this._apiService.getApiUrl(`/currentUser/password`);
     const data = {
       oldPassword: oldPassword,
       newPassword: newPassword,
@@ -162,11 +162,11 @@ class UserGateway {
    * @returns {AbortablePromise}
    */
   getCurrentUserPermissions() {
-    const url = this._apiService.getApiUrl(`/user/permissions`);
+    const url = this._apiService.getApiUrl(`/currentUser/permissions`);
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result) {
-          throw new Error('Failed loading users list');
+          throw new Error('Invalid permission list response');
         }
 
         return response.data.result;
