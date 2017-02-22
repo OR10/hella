@@ -28,6 +28,7 @@ class Organisation extends Voter\AccessCheckVoter
     {
         $this->checks = [
             self::ORGANISATION_READ  => [
+                new AccessCheck\HasSuperAdminRole(),
                 new AccessCheck\UserAssignedToOrganisation(),
             ],
         ];
