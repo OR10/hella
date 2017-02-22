@@ -22,6 +22,11 @@ class LabeledThingGroup {
     this.type = labeledThingGroupDocument.groupType;
 
     /**
+     * @type {number}
+     */
+    this.lineColor = labeledThingGroupDocument.lineColor;
+
+    /**
      * @type {Array.<string>|null}
      */
     this.groupIds = labeledThingGroupDocument.groupIds;
@@ -41,6 +46,7 @@ class LabeledThingGroup {
     return {
       id: this.id,
       groupType: this.type,
+      lineColor: this.lineColor,
       groupIds: clone(this.groupIds),
     };
   }

@@ -78,9 +78,9 @@ class GroupCreationTool extends CreationTool {
       const shapes = this._labeledThingGroupService.getShapesWithinBounds(this._context, paperShape.bounds);
       const shapesBound = this._labeledThingGroupService.getBoundsForShapes(shapes);
       const {width, height} = shapesBound;
-      let {point: topLeft} = shapesBound;
-      let bottomRight = new paper.Point(topLeft.x + width, topLeft.y + height);
-      const colorId = this._labeledThingGroupService.getGroupColorFromShapesInGroup(shapes);
+      const {point: topLeft} = shapesBound;
+      const bottomRight = new paper.Point(topLeft.x + width, topLeft.y + height);
+      const colorId = this._entityColorService.getColorId();
       const color = this._entityColorService.getColorById(colorId);
 
       const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);

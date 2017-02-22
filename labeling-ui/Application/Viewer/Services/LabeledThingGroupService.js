@@ -58,35 +58,6 @@ class LabeledThingGroupService {
   }
 
   /**
-   * Calculates a color id for a group from the given shape colors that are in the group.
-   *
-   * Color id is between 1 and `colorCount` (including 1 and `colorCount`)
-   *
-   * @param {Array.<PaperShape>} shapes
-   * @param {number} colorCount
-   * @return {number}
-   */
-  getGroupColorFromShapesInGroup(shapes, colorCount = 50) {
-    let sum = 0;
-    shapes.forEach(currentShape => {
-      switch (true) {
-        case currentShape instanceof PaperThingShape:
-          sum += parseInt(currentShape.labeledThingInFrame.labeledThing.lineColor, 10);
-          break;
-        case currentShape instanceof PaperGroupShape:
-          const otherShapes = shapes.filter(shape => shape.id !== currentShape.id);
-          sum += this.getGroupColorFromShapesInGroup(otherShapes);
-          break;
-        default:
-          throw new Error('Cannot get color if of given shape type');
-      }
-    });
-    const colorId = (sum % colorCount) + 1;
-
-    return colorId;
-  }
-
-  /**
    * Extracts the {@link FrameRange} of the {@link LabeledThingGroup} from the given {@link PaperThingShape}s
    *
    * @param {Array.<PaperThingShape> }thingShapes
