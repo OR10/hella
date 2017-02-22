@@ -32,6 +32,21 @@ class Organisation
     }
 
     /**
+     * @param array $ids
+     *
+     * @return Model\Organisation[]
+     */
+    public function findByIds(array $ids)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_organisation_by_id', 'view')
+            ->setKeys($ids)
+            ->onlyDocs(true);
+
+        return $query->execute()->toArray();;
+    }
+
+    /**
      * @param null $skip
      * @param null $limit
      *
