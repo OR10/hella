@@ -48,7 +48,7 @@ class PaperShapeFactory {
   /**
    * @param {LabeledThingInFrame} labeledThingGroupInFrame
    * @param {Object} bounds
-   * @param {String} color
+   * @param {{primary: string, secondary: string}} color
    * @returns {PaperGroupRectangle}
    * @private
    */

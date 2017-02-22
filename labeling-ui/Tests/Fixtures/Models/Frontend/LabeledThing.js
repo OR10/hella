@@ -8,6 +8,7 @@ export default new LabeledThing({
     "startFrameIndex": 0,
     "endFrameIndex": 3
   },
+  "groupIds": [],
   "classes": ['foo', 'bar', 'baz'],
   "incomplete": false,
   "taskId": "9a8d567033f93fcd8cf50c2535027049",
