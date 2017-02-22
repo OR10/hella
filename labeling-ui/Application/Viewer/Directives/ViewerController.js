@@ -527,9 +527,11 @@ class ViewerController {
         this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
       }
 
-      this._$timeout(() => {
-        this._updateAllGroupDimensions();
-      }, 0);
+      // TODO: This needs to be done to update group Dimensions on ghost removal
+      //       but if this is present, the initial drawing of groups is broken
+      // this._$timeout(() => {
+      //   this._updateAllGroupDimensions();
+      // }, 0);
     });
 
     $scope.$watchGroup(
