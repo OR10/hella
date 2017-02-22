@@ -83,7 +83,7 @@ class Organisation
     public function getDiskUsageForOrganisationVideos(Model\Organisation $organisation)
     {
         $imageQuery = $this->documentManager
-            ->createQuery('annostation_image_bytes_by_video_and_type', 'view')
+            ->createQuery('annostation_image_bytes_by organisationId_videoId_and_type', 'view')
             ->onlyDocs(false)
             ->setReduce(true)
             ->setGroupLevel(3)
@@ -91,7 +91,7 @@ class Organisation
             ->setEndKey([$organisation->getId(), []]);
 
         $videoQuery = $this->documentManager
-            ->createQuery('annostation_video_bytes_by_video', 'view')
+            ->createQuery('annostation_video_bytes_by_organisationId_and_videoId', 'view')
             ->onlyDocs(false)
             ->setReduce(true)
             ->setGroupLevel(2)
