@@ -71,10 +71,16 @@ class BatchUpload extends Controller\Base
     private $authorizationService;
 
     /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
+    /**
      * @param Storage\TokenStorage  $tokenStorage
      * @param Facade\Project        $projectFacade
      * @param Facade\Video          $videoFacade
      * @param Facade\LabelingTask   $taskFacade
+     * @param Facade\Organisation   $organisationFacade
      * @param Service\VideoImporter $videoImporter
      * @param Service\TaskCreator   $taskCreator
      * @param string                $cacheDirectory
@@ -86,6 +92,7 @@ class BatchUpload extends Controller\Base
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
         Facade\LabelingTask $taskFacade,
+        Facade\Organisation $organisationFacade,
         Service\VideoImporter $videoImporter,
         Service\TaskCreator $taskCreator,
         string $cacheDirectory,
@@ -101,6 +108,7 @@ class BatchUpload extends Controller\Base
         $this->cacheDirectory       = $cacheDirectory;
         $this->loggerFacade         = new LoggerFacade($logger, self::class);
         $this->authorizationService = $authorizationService;
+        $this->organisationFacade  = $organisationFacade;
 
         clearstatcache();
 
@@ -124,6 +132,7 @@ class BatchUpload extends Controller\Base
      * @param HttpFoundation\Request              $request
      *
      * @return View\View
+     * @throws Exception\StorageLimitExceeded
      */
     public function uploadAction(
         AnnoStationBundleModel\Organisation $organisation,
@@ -134,6 +143,10 @@ class BatchUpload extends Controller\Base
         $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
         $this->denyIfProjectIsNotTodo($project);
+
+        if ($this->organisationFacade->isQuoteExceeded($organisation)) {
+            throw new ProjectException\StorageLimitExceeded($organisation);
+        }
 
         $user                  = $this->tokenStorage->getToken()->getUser();
         $projectCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $project->getId()]);

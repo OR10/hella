@@ -66,9 +66,10 @@ class Organisation extends Controller\Base
     {
         $this->hasUserOrganisationManagePermission();
 
-        $name = $request->request->get('name');
+        $name  = $request->request->get('name');
+        $quota = $request->request->get('quota', 0);
 
-        $organisation = new AnnoStationBundleModel\Organisation($name);
+        $organisation = new AnnoStationBundleModel\Organisation($name, $quota);
         $this->organisationFacade->save($organisation);
 
         return new View\View($organisation);

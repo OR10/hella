@@ -148,4 +148,16 @@ class Organisation
 
         return $diskUsageByProject;
     }
+
+    /**
+     * @param Model\Organisation $organisation
+     *
+     * @return bool
+     */
+    public function isQuoteExceeded(Model\Organisation $organisation)
+    {
+        $usage = $this->getDiskUsageForOrganisation($organisation);
+
+        return ($organisation->getQuota() !== 0 && $usage['total'] >= $organisation->getQuota());
+    }
 }
