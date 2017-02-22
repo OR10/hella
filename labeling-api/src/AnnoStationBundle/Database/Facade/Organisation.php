@@ -75,4 +75,43 @@ class Organisation
         $this->documentManager->remove($organisation);
         $this->documentManager->flush();
     }
+
+    public function getDiskUsageForOrganisation(Model\Organisation $organisation)
+    {
+    }
+
+    public function getDiskUsageForOrganisationVideos(Model\Organisation $organisation)
+    {
+        $imageQuery = $this->documentManager
+            ->createQuery('annostation_image_bytes_by_video_and_type', 'view')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->setGroupLevel(3)
+            ->setStartKey([$organisation->getId(), null])
+            ->setEndKey([$organisation->getId(), []]);
+
+        $videoQuery = $this->documentManager
+            ->createQuery('annostation_video_bytes_by_video', 'view')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->setGroupLevel(2)
+            ->setStartKey([$organisation->getId(), null])
+            ->setEndKey([$organisation->getId(), []]);
+
+        $imageBytesByVideoIds = $imageQuery->execute()->toArray();
+        $videoBytesByVideoIds = $videoQuery->execute()->toArray();
+
+        $diskUsageByProject = [];
+        foreach ($imageBytesByVideoIds as $imageBytesByVideoId) {
+            $videoId                                       = $imageBytesByVideoId['key'][1];
+            $type                                          = $imageBytesByVideoId['key'][2];
+            $diskUsageByProject[$videoId]['images'][$type] = $imageBytesByVideoId['value'];
+        }
+        foreach ($videoBytesByVideoIds as $videoBytesByVideoId) {
+            $videoId                               = $videoBytesByVideoId['key'][1];
+            $diskUsageByProject[$videoId]['video']['source'] = $videoBytesByVideoId['value'];
+        }
+
+        return $diskUsageByProject;
+    }
 }

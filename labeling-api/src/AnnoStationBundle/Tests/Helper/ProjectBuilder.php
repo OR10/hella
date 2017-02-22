@@ -301,6 +301,7 @@ class ProjectBuilder
             'taskFailedCount'            => 0,
             'coordinator'                => $this->getLatestAssignedCoordinatorUserId(),
             'taskInstructionType'        => 'legacy',
+            'diskUsage'                  => [],
         ];
     }
 
