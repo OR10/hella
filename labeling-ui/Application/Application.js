@@ -22,6 +22,7 @@ import LabelStructureModule from './LabelStructure/LabelStructure';
 import FilmReelModule from './FilmReel/FilmReel';
 import MediaControlsModule from './MediaControls/MediaControls';
 import ReportingModule from './Reporting/Reporting';
+import OrganisationModule from './Organisation/Organisation';
 
 import Environment from './Common/Support/Environment';
 import PouchDB from 'pouchdb';
@@ -72,6 +73,7 @@ export default class Application {
     this.modules.push(new FilmReelModule());
     this.modules.push(new MediaControlsModule());
     this.modules.push(new ReportingModule());
+    this.modules.push(new OrganisationModule());
   }
 
   _getApplicationConfig() {
@@ -140,7 +142,7 @@ export default class Application {
       $locationProvider.html5Mode(true);
 
       // For any unmatched url, redirect to /state1
-      $urlRouterProvider.otherwise('/projects/');
+      $urlRouterProvider.otherwise('/organisations/');
 
       function userResolver(userGateway) {
         return userGateway.getCurrentUser()
