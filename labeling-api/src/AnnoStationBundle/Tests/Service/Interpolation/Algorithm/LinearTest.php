@@ -1040,7 +1040,7 @@ class LinearTest extends Tests\KernelTestCase
         $video = Model\Video::create($organisation, 'Testvideo');
         $this->calibrationFileConverter->setCalibrationData(__DIR__ . '/Calibration/Video.csv');
 
-        $calibrationData = new Model\CalibrationData('Testvideo');
+        $calibrationData = new Model\CalibrationData($organisation, 'Testvideo');
         $calibrationData->setRawCalibration($this->calibrationFileConverter->getRawData());
         $calibrationData->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
         $calibrationData->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());

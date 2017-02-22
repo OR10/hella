@@ -68,9 +68,15 @@ class Project extends Controller\Base
     private $amqpFacade;
 
     /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
+    /**
      * @param Facade\Project             $projectFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
+     * @param Facade\Organisation        $organisationFacade
      * @param Storage\TokenStorage       $tokenStorage
      * @param AppFacade\User             $userFacade
      * @param Service\Authorization      $authorizationService
@@ -80,6 +86,7 @@ class Project extends Controller\Base
         Facade\Project $projectFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabelingTask $labelingTaskFacade,
+        Facade\Organisation $organisationFacade,
         Storage\TokenStorage $tokenStorage,
         AppFacade\User $userFacade,
         Service\Authorization $authorizationService,
@@ -92,6 +99,7 @@ class Project extends Controller\Base
         $this->userFacade                = $userFacade;
         $this->authorizationService      = $authorizationService;
         $this->amqpFacade                = $amqpFacade;
+        $this->organisationFacade        = $organisationFacade;
     }
 
     /**
@@ -147,13 +155,21 @@ class Project extends Controller\Base
             $projectTimeMapping[$mapping['key'][0]] = array_sum($mapping['value']);
         }
 
+        $diskUsageByVideoIds = $this->organisationFacade->getDiskUsageForOrganisationVideos($organisation);
+
         $videosByProjects = $this->labelingTaskFacade->findAllByProjects($projects);
-        $numberOfVideos   = array();
+        $numberOfVideos     = array();
+        $diskUsageByProject = [];
         foreach ($videosByProjects as $videosByProject) {
             $projectId                    = $videosByProject['key'];
             $videoId                      = $videosByProject['value'];
             $numberOfVideos[$projectId][] = $videoId;
+
+            if (isset($diskUsageByVideoIds[$videoId])) {
+                $diskUsageByProject[$projectId] = $diskUsageByVideoIds[$videoId];
+            }
         }
+
         $numberOfVideos = array_map(
             function ($videoByProject) {
                 return count(array_unique($videoByProject));
@@ -191,6 +207,7 @@ class Project extends Controller\Base
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
                 'taskInPreProcessingCount' => $sumOfPreProcessingTasks,
+                'diskUsage'                => isset($diskUsageByProject[$project->getId()]) ? $diskUsageByProject[$project->getId()] : [],
             );
 
             if ($user->hasOneRoleOf(

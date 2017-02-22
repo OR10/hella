@@ -25,9 +25,15 @@ class Organisation
      */
     private $name;
 
-    public function __construct($name)
+    /**
+     * @CouchDB\Field(type="integer")
+     */
+    private $quota;
+
+    public function __construct($name, $quota = 0)
     {
-        $this->name = $name;
+        $this->name  = $name;
+        $this->quota = $quota;
     }
 
     /**
@@ -52,5 +58,21 @@ class Organisation
     public function getRev()
     {
         return $this->rev;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuota()
+    {
+        return $this->quota;
+    }
+
+    /**
+     * @param mixed $quota
+     */
+    public function setQuota($quota)
+    {
+        $this->quota = $quota;
     }
 }

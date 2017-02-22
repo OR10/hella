@@ -150,20 +150,24 @@ class VideoImporter
     }
 
     /**
-     * @param Model\Project $project
-     * @param string        $calibrationFilePath
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
+     * @param string                              $calibrationFilePath
      *
      * @return Model\CalibrationData
-     *
      * @throws CouchDB\UpdateConflictException
      */
-    public function importCalibrationData(Model\Project $project, string $calibrationFilePath)
+    public function importCalibrationData(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        string $calibrationFilePath
+    )
     {
         $calibrationName = basename($calibrationFilePath);
 
         $this->calibrationFileConverter->setCalibrationData($calibrationFilePath);
 
-        $calibration = new Model\CalibrationData($calibrationName);
+        $calibration = new Model\CalibrationData($organisation, $calibrationName);
 
         $calibration->setRawCalibration($this->calibrationFileConverter->getRawData());
         $calibration->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
@@ -240,7 +244,7 @@ class VideoImporter
         $video->setMetaData($this->metaDataReader->readMetaData($path));
         if ($calibrationFile !== null) {
             $this->calibrationFileConverter->setCalibrationData($calibrationFile);
-            $calibrationData = new Model\CalibrationData($name);
+            $calibrationData = new Model\CalibrationData($organisation, $name);
             $calibrationData->setRawCalibration($this->calibrationFileConverter->getRawData());
             $calibrationData->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
             $calibrationData->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
