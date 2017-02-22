@@ -59,9 +59,15 @@ describe('LabeledThingGroupGateway', () => {
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingGroupInFrame/frame/${frameIndex}`;
 
     const expectedResult = new LabeledThingGroupInFrame({
-      id: '123',
+      id: 'LTGIF-1',
       frameIndex,
       classes: [],
+      labeledThingGroup: new LabeledThingGroup({
+        id: 'LTG-1',
+        groupType: 'fancy-group-type',
+        lineColor: 423,
+        groupIds: null,
+      })
     });
 
     $httpBackend
@@ -78,9 +84,16 @@ describe('LabeledThingGroupGateway', () => {
   });
 
   it('should delete a labeled thing group', done => {
-    const task = {id: '456'};
-    const labeledThingGroupId = '123';
-    const expectedUrl = `/backend/api/task/${task.id}/labeledThingGroup/${labeledThingGroupId}`;
+    const ltg = new LabeledThingGroup({
+      id: 'LTG-1',
+      groupType: 'fancy-group-type',
+      lineColor: 423,
+      groupIds: null,
+      task: new Task({
+        id: 'TASK-1',
+      })
+    });
+    const expectedUrl = `/backend/api/task/TASK-1/labeledThingGroup/${ltg.id}`;
 
     const expectedResult = {
       result: {
@@ -92,7 +105,7 @@ describe('LabeledThingGroupGateway', () => {
       .expect('DELETE', expectedUrl)
       .respond(200, expectedResult);
 
-    gateway.deleteLabeledThingGroupById(task, labeledThingGroupId)
+    gateway.deleteLabeledThingGroupById(ltg)
       .then(result => {
         expect(result).toBeTruthy();
         done();
@@ -102,30 +115,32 @@ describe('LabeledThingGroupGateway', () => {
   });
 
   it('should create a labeled thing group with given type', done => {
-    const task = {id: '456'};
-    const labeledThingGroupId = '123';
-    const groupType = 'some-type';
-    const expectedUrl = `/backend/api/task/${task.id}/labeledThingGroup`;
+    const expectedUrl = `/backend/api/task/TASK-1/labeledThingGroup`;
 
-    const labeledThingGroup = new LabeledThingGroup({
-      id: labeledThingGroupId,
-      groupType: groupType,
+    const ltg = new LabeledThingGroup({
+      id: 'LTG-1',
+      groupType: 'fancy-group-type',
+      lineColor: 423,
+      groupIds: null,
+      task: new Task({
+        id: 'TASK-1',
+      }),
     });
 
     $httpBackend
-      .expect('POST', expectedUrl, {groupType})
-      .respond(200, {result: labeledThingGroup.toJSON()});
+      .expect('POST', expectedUrl, {groupType: ltg.groupType})
+      .respond(200, {result: ltg.toJSON()});
 
-    gateway.createLabeledThingGroupOfType(task, groupType)
+    gateway.createLabeledThingGroupOfType(task, ltg.groupType)
       .then(result => {
-        expect(result).toEqual(labeledThingGroup);
+        expect(result).toEqual(ltg);
         done();
       });
 
     $httpBackend.flush();
   });
 
-  // TODO: How should I test this gateway function?!
+// TODO: How should I test this gateway function?!
   xit('should assign multiple labeled things to the given group', done => {
     const task = {id: '456'};
     const labeledThingId = '123';
