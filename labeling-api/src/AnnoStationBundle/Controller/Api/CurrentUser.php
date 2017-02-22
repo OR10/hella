@@ -5,6 +5,7 @@ namespace AnnoStationBundle\Controller\Api;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
 use AppBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade as AnnoStationBundleFacade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
@@ -16,7 +17,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use Symfony\Component\Security\Core\Encoder;
 
 /**
- * @Rest\Prefix("/api/user")
+ * @Rest\Prefix("/api/currentUser")
  * @Rest\Route(service="annostation.labeling_api.controller.api.current_user")
  *
  * @CloseSession
@@ -44,23 +45,31 @@ class CurrentUser extends Controller\Base
     private $currentUserPermissions;
 
     /**
+     * @var AnnoStationBundleFacade\Organisation
+     */
+    private $organisation;
+
+    /**
      * CurrentUser constructor.
      *
-     * @param Storage\TokenStorage           $tokenStorage
-     * @param Encoder\EncoderFactory         $encoderFactory
-     * @param Facade\User                    $userFacade
-     * @param Authentication\UserPermissions $currentUserPermissions
+     * @param Storage\TokenStorage                 $tokenStorage
+     * @param Encoder\EncoderFactory               $encoderFactory
+     * @param Facade\User                          $userFacade
+     * @param AnnoStationBundleFacade\Organisation $organisation
+     * @param Authentication\UserPermissions       $currentUserPermissions
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
         Encoder\EncoderFactory $encoderFactory,
         Facade\User $userFacade,
+        AnnoStationBundleFacade\Organisation $organisation,
         Authentication\UserPermissions $currentUserPermissions
     ) {
         $this->tokenStorage           = $tokenStorage;
         $this->userFacade             = $userFacade;
         $this->encoderFactory         = $encoderFactory;
         $this->currentUserPermissions = $currentUserPermissions;
+        $this->organisation           = $organisation;
     }
 
     /**
@@ -149,6 +158,23 @@ class CurrentUser extends Controller\Base
         return View\View::create()->setData(
             [
                 'result' => $this->currentUserPermissions->getPermissions(),
+            ]
+        );
+    }
+
+    /**
+     * @Rest\Get("/organisations")
+     *
+     * @return View\View
+     */
+    public function getUserOrganisationsAction()
+    {
+        /** @var Model\User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        return View\View::create()->setData(
+            [
+                'result' => $this->organisation->findByIds($user->getOrganisations()),
             ]
         );
     }

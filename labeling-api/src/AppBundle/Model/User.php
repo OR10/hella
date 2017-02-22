@@ -183,4 +183,12 @@ class User extends BaseUser
             }
         );
     }
+
+    /**
+     * @param mixed $organisations
+     */
+    public function setOrganisations($organisations)
+    {
+        $this->organisations = $organisations;
+    }
 }

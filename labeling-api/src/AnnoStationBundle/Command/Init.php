@@ -286,7 +286,15 @@ class Init extends Base
 
         if ($this->userPassword !== null) {
             foreach ($users as $username) {
-                $user = $this->userFacade->createUser($this->getOrganisation(), $username, $username . '@example.com', $this->userPassword);
+                $user = $this->userFacade->createUser(
+                    $username,
+                    $username . '@example.com',
+                    $this->userPassword,
+                    true,
+                    false,
+                    [],
+                    [$this->getOrganisation()->getId()]
+                );
 
                 switch ($username) {
                     case 'admin':
