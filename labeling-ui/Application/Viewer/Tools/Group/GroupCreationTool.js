@@ -85,11 +85,12 @@ class GroupCreationTool extends CreationTool {
       const {width, height} = shapesBound;
       const {point: topLeft} = shapesBound;
       const bottomRight = new paper.Point(topLeft.x + width, topLeft.y + height);
-      const colorId = this._entityColorService.getColorId();
+      const colorIdString = this._entityColorService.getColorId();
+      const colorId = parseInt(colorIdString, 10);
       const color = this._entityColorService.getColorById(colorId);
 
       const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);
-
+      labeledThingGroupInFrame.labeledThingGroup.lineColor = colorIdString;
 
       let paperGroup;
       this._context.withScope(() => {

@@ -132,7 +132,7 @@ class PaperShapeFactory {
   }
 
   createPaperGroupShape(labeledThingGroupInFrame, shapesInBound) {
-    const colorId = labeledThingGroupInFrame.labeledThingGroup.lineColor;
+    const colorId = parseInt(labeledThingGroupInFrame.labeledThingGroup.lineColor, 10);
     const color = this._entityColorService.getColorById(colorId);
     const bounds = this._labeledThingGroupService.getBoundsForShapes(shapesInBound);
 
