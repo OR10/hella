@@ -155,7 +155,7 @@ class Project extends Controller\Base
             $projectTimeMapping[$mapping['key'][0]] = array_sum($mapping['value']);
         }
 
-        $diskUsagByVideoIds = $this->organisationFacade->getDiskUsageForOrganisationVideos($organisation);
+        $diskUsageByVideoIds = $this->organisationFacade->getDiskUsageForOrganisationVideos($organisation);
 
         $videosByProjects = $this->labelingTaskFacade->findAllByProjects($projects);
         $numberOfVideos     = array();
@@ -165,8 +165,8 @@ class Project extends Controller\Base
             $videoId                      = $videosByProject['value'];
             $numberOfVideos[$projectId][] = $videoId;
 
-            if (isset($diskUsagByVideoIds[$videoId])) {
-                $diskUsageByProject[$projectId] = $diskUsagByVideoIds[$videoId];
+            if (isset($diskUsageByVideoIds[$videoId])) {
+                $diskUsageByProject[$projectId] = $diskUsageByVideoIds[$videoId];
             }
         }
 
