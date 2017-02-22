@@ -78,6 +78,37 @@ class Organisation
 
     public function getDiskUsageForOrganisation(Model\Organisation $organisation)
     {
+        $imageQuery = $this->documentManager
+            ->createQuery('annostation_image_bytes_by_organisationId_type_and_videoId', 'view')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->setGroupLevel(2)
+            ->setStartKey([$organisation->getId(), null])
+            ->setEndKey([$organisation->getId(), []]);
+        $videoQuery = $this->documentManager
+            ->createQuery('annostation_video_bytes_by_organisationId_and_videoId', 'view')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->setGroupLevel(1)
+            ->setStartKey([$organisation->getId(), null])
+            ->setEndKey([$organisation->getId(), []]);
+
+        $bytesForImagesByOrganisationAndTypes = $imageQuery->execute()->toArray();
+        $bytesForVideosInOrganisation         = $videoQuery->execute()->toArray();
+
+        $diskUsage          = [];
+        $diskUsage['total'] = 0;
+        foreach ($bytesForImagesByOrganisationAndTypes as $bytesForImagesByOrganisationAndType) {
+            $type                       = $bytesForImagesByOrganisationAndType['key'][1];
+            $diskUsage['images'][$type] = $bytesForImagesByOrganisationAndType['value'];
+            $diskUsage['total'] += $bytesForImagesByOrganisationAndType['value'];
+        }
+        foreach ($bytesForVideosInOrganisation as $bytesForVideoInOrganisation) {
+            $diskUsage['videos'] = $bytesForImagesByOrganisationAndType['value'];
+            $diskUsage['total'] += $bytesForImagesByOrganisationAndType['value'];
+        }
+
+        return $diskUsage;
     }
 
     public function getDiskUsageForOrganisationVideos(Model\Organisation $organisation)
