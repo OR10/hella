@@ -96,13 +96,13 @@ class GroupCreationTool extends CreationTool {
           color,
           paperShape.isDraft
         );
+
+        // Resize to add necessary padding
+        paperGroup.setSize(topLeft, width, height);
+
+        // Place this group shape behind all other shapes
+        paperGroup.sendToBack();
       });
-
-      // Resize to add necessary padding
-      paperGroup.setSize(topLeft, width, height);
-
-      // Place this group shape behind all other shapes
-      paperGroup.sendToBack();
 
       this._complete(paperGroup);
     });
