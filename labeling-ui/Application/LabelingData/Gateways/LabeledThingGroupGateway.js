@@ -79,7 +79,7 @@ class LabeledThingGroupGateway {
    * @param {LabeledThingGroup} labeledThingGroup
    * @return {AbortablePromise}
    */
-  deleteLabeledThingGroupById(labeledThingGroup) {
+  deleteLabeledThingGroup(labeledThingGroup) {
     const task = labeledThingGroup.task;
     const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup/${labeledThingGroup.id}`);
 

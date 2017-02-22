@@ -377,7 +377,7 @@ class MediaControlsController {
     try {
       this._labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
         .then(() => {
-          return this._labeledThingGroupGateway.deleteLabeledThingGroupById(labeledThingGroup);
+          return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
         })
         .then(() => {
           shape.remove();
