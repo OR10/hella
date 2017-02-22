@@ -172,6 +172,23 @@ class UserGateway {
         return response.data.result;
       });
   }
+
+  /**
+   * Retrieve the list of organisations the current user is assigned to
+   *
+   * @returns {AbortablePromise}
+   */
+  getCurrentUserOrganisations() {
+    const url = this._apiService.getApiUrl(`/currentUser/organisations`);
+    return this._bufferedHttp.get(url, undefined, 'user')
+      .then(response => {
+        if (!response.data || !response.data.result) {
+          throw new Error('Invalid organisation list response');
+        }
+
+        return response.data.result;
+      });
+  }
 }
 
 UserGateway.$inject = [
