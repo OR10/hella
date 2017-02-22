@@ -36,7 +36,7 @@ class VideoProcessbarController {
       this.videoWidth = this.frameSize * this.frameCount;
       this.videoStart = this.thumbnailStart - this.frameSize * (relativePosition) + this.frameSize * Math.floor(this.thumbnailCount / 2);
 
-      if (this.selectedPaperShape) {
+      if (this.selectedPaperShape && this.selectedPaperShape instanceof PaperThingShape) {
         const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
         this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameIndex - frameIndexLimits.lowerLimit);
       }
