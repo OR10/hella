@@ -86,14 +86,18 @@ class Organisation extends Controller\Base
     {
         $this->hasUserOrganisationManagePermission();
 
-        $rev  = $request->request->get('rev');
-        $name = $request->request->get('name');
+        $rev   = $request->request->get('rev');
+        $name  = $request->request->get('name');
+        $quota = $request->request->get('quota');
 
         if ($organisation->getRev() !== $rev) {
             throw new Exception\ConflictHttpException();
         }
 
         $organisation->setName($name);
+        if ($quota !== null) {
+            $organisation->setQuota($quota);
+        }
         $this->organisationFacade->save($organisation);
 
         return new View\View($organisation);

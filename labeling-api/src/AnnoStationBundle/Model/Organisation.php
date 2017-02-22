@@ -67,4 +67,12 @@ class Organisation
     {
         return $this->quota;
     }
+
+    /**
+     * @param mixed $quota
+     */
+    public function setQuota($quota)
+    {
+        $this->quota = $quota;
+    }
 }
