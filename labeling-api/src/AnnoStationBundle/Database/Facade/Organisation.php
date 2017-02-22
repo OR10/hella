@@ -104,8 +104,8 @@ class Organisation
             $diskUsage['total'] += $bytesForImagesByOrganisationAndType['value'];
         }
         foreach ($bytesForVideosInOrganisation as $bytesForVideoInOrganisation) {
-            $diskUsage['videos'] = $bytesForImagesByOrganisationAndType['value'];
-            $diskUsage['total'] += $bytesForImagesByOrganisationAndType['value'];
+            $diskUsage['videos'] = $bytesForVideoInOrganisation['value'];
+            $diskUsage['total'] += $bytesForVideoInOrganisation['value'];
         }
 
         return $diskUsage;
