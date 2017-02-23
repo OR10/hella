@@ -1,6 +1,7 @@
 import Module from '../Module';
 import Environment from './Support/Environment';
 import ApiService from './Services/ApiService';
+import CurrentUserService from './Services/CurrentUserService';
 import AuthInterceptor from './Services/AuthInterceptor';
 import ReadOnlyInterceptor from './Services/ReadOnlyInterceptor';
 import ErrorInterceptor from './Services/ErrorInterceptor';
@@ -81,6 +82,7 @@ class Common extends Module {
       'cfp.hotkeys',
     ]);
     this.module.service('ApiService', ApiService);
+    this.module.service('currentUserService', CurrentUserService);
     this.module.service('authInterceptor', AuthInterceptor);
     this.module.service('readOnlyInterceptor', ReadOnlyInterceptor);
     this.module.service('errorInterceptor', ErrorInterceptor);

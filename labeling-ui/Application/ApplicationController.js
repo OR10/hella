@@ -7,16 +7,28 @@ class ApplicationController {
    * @param {angular.$location} $location
    * @param {LoggerService} loggerService
    * @param {LogGateway} logGateway
+   * @param {CurrentUserService} currentUserService
    * @param {User} user
+   * @param {Object} userPermissions
+   * @param {Array.<Organisation>} userOrganisations
    */
-  constructor($scope, $location, loggerService, logGateway, user) {
-    /**
-     * @type {angular.Scope}
-     * @private
-     */
-    this._$scope = $scope;
+  constructor($scope, $location, loggerService, logGateway, currentUserService, user, userPermissions, userOrganisations) {
+    // /**
+    //  * @type {angular.Scope}
+    //  * @private
+    //  */
+    // this._$scope = $scope;
+    //
+    // /**
+    //  * @type {angular.$location}
+    //  * @private
+    //  */
+    // this._$location = $location;
 
-    this._$location = $location;
+    // Set active user information for usage throughout the application
+    currentUserService.set(user);
+    currentUserService.setPermissions(userPermissions);
+    currentUserService.setOrganisations(userOrganisations);
 
     if (!Environment.isDevelopment && !Environment.isTesting && !Environment.isFunctionalTesting) {
       loggerService.addLogger(new RemoteLogger(logGateway, user));
@@ -29,7 +41,10 @@ ApplicationController.$inject = [
   '$location',
   'loggerService',
   'logGateway',
+  'currentUserService',
   'user',
+  'userPermissions',
+  'userOrganisations',
 ];
 
 export default ApplicationController;

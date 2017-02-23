@@ -144,13 +144,6 @@ export default class Application {
       // For any unmatched url, redirect to /state1
       $urlRouterProvider.otherwise('/organisations/');
 
-      function userResolver(userGateway) {
-        return userGateway.getCurrentUser()
-          .then(user => user);
-      }
-
-      userResolver.$inject = ['userGateway'];
-
       function permissionsResolver(userGateway) {
         return userGateway.getCurrentUserPermissions()
           .then(permissions => permissions);
@@ -171,8 +164,9 @@ export default class Application {
             },
           },
           resolve: {
-            user: userResolver,
-            userPermissions: permissionsResolver,
+            user: ['userGateway', userGateway => userGateway.getCurrentUser()],
+            userPermissions: ['userGateway', userGateway => userGateway.getCurrentUserPermissions()],
+            userOrganisations: ['userGateway', userGateway => userGateway.getCurrentUserOrganisations()],
           },
         });
     }
