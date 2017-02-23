@@ -22,7 +22,7 @@ class LabeledThingGroup {
     this.type = labeledThingGroupDocument.groupType;
 
     /**
-     * @type {number}
+     * @type {string}
      */
     this.lineColor = labeledThingGroupDocument.lineColor;
 

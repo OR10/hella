@@ -126,7 +126,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {boolean}
      * @private
      */
-    this._mouseIsPressed = false;
+    this._isMousePressed = false;
 
     /**
      * @type {{x: Number, y: Number}|null}
@@ -214,7 +214,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
   dispatchDOMEvent(event) {
     this._context.withScope(() => {
       if (event.type === 'mouseleave') {
-        this._mouseIsPressed = false;
+        this._isMousePressed = false;
         this._lastMouseDownEvent = null;
 
         this._abortActiveTool();
@@ -307,7 +307,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
             break;
           case paperShape instanceof PaperGroupShape:
             throw new Error('Cannot create default shape for groups!');
-            break;
           default:
             throw new Error(`Can not handle shape creation of type: ${paperShape}`);
         }
@@ -333,7 +332,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
   _getOptionsForTool(task, shapeName, defaultOptions) {
     const extractedTaskOptions = {};
     [
-      'minimalVisibleShapeOverflow'
+      'minimalVisibleShapeOverflow',
     ].forEach(property => {
       if (task[property] !== undefined) {
         extractedTaskOptions[property] = task[property];
@@ -428,21 +427,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._$timeout(() => {
           this._invokeActiveTool();
 
-          this._context.withScope(scope => {
-            if (actionIdentifier === 'selection' && this._mouseIsPressed) {
-              const {offsetX, offsetY} = this._lastMouseDownEvent;
-              const projectPoint = scope.view.viewToProject(new paper.Point(offsetX, offsetY));
-              const paperEvent = new paper.MouseEvent(
-                'mousedown',
-                this._lastMouseDownEvent,
-                projectPoint,
-                this,
-                0
-              );
-
-              this._activeTool.onMouseDown(paperEvent);
-            }
-          });
+          if (this._isMousePressed) {
+            this._redeliverMouseDownToActiveTool();
+          }
         });
       })
       .catch(reason => {
@@ -452,11 +439,30 @@ class ThingLayer extends PanAndZoomPaperLayer {
             break;
           case reason instanceof NotModifiedError:
             this._invokeActiveTool();
+            if (this._isMousePressed) {
+              this._redeliverMouseDownToActiveTool();
+            }
             break;
           default:
             this._logger.warn('tool:error', 'Tool aborted with unknown reason', reason);
         }
       });
+  }
+
+  _redeliverMouseDownToActiveTool() {
+    this._context.withScope(scope => {
+      const {offsetX, offsetY} = this._lastMouseDownEvent;
+      const projectPoint = scope.view.viewToProject(new paper.Point(offsetX, offsetY));
+      const paperEvent = new paper.MouseEvent(
+        'mousedown',
+        this._lastMouseDownEvent,
+        projectPoint,
+        this,
+        0
+      );
+
+      this._activeTool.delegateMouseEvent('down', paperEvent);
+    });
   }
 
   /**
@@ -703,12 +709,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   _onMouseDown(event) {
-    this._mouseIsPressed = true;
+    this._isMousePressed = true;
     this._lastMouseDownEvent = event;
   }
 
   _onMouseUp() {
-    this._mouseIsPressed = false;
+    this._isMousePressed = false;
     this._lastMouseDownEvent = null;
   }
 

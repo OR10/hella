@@ -109,7 +109,7 @@ class PolygonKeyboardTool extends KeyboardTool {
  * @abstract
  * @static
  */
-PolygonKeyboardTool.getToolName = function () {
+PolygonKeyboardTool.getToolName = () => {
   return 'PolygonKeyboardTool';
 };
 
@@ -126,7 +126,7 @@ PolygonKeyboardTool.getToolName = function () {
  * @abstract
  * @static
  */
-PolygonKeyboardTool.isShapeClassSupported = function (shapeClass) {
+PolygonKeyboardTool.isShapeClassSupported = shapeClass => {
   return [
     'polygon',
   ].includes(shapeClass);
@@ -145,7 +145,7 @@ PolygonKeyboardTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-PolygonKeyboardTool.isActionIdentifierSupported = function (actionIdentifier) {
+PolygonKeyboardTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'keyboard',
   ].includes(actionIdentifier);

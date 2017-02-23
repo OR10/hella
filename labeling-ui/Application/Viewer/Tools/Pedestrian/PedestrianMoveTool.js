@@ -59,7 +59,7 @@ class PedestrianMoveTool extends MovingTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseUp(event) {
+  onMouseUp() {
     if (this._modified !== true) {
       this._reject(new NotModifiedError('Fixed Aspect Rectangle wasn\'t moved in any way'));
       return;
@@ -102,7 +102,7 @@ class PedestrianMoveTool extends MovingTool {
  * @abstract
  * @static
  */
-PedestrianMoveTool.getToolName = function () {
+PedestrianMoveTool.getToolName = () => {
   return 'PedestrianMoveTool';
 };
 
@@ -119,7 +119,7 @@ PedestrianMoveTool.getToolName = function () {
  * @abstract
  * @static
  */
-PedestrianMoveTool.isShapeClassSupported = function (shapeClass) {
+PedestrianMoveTool.isShapeClassSupported = shapeClass => {
   return [
     'pedestrian',
   ].includes(shapeClass);
@@ -138,7 +138,7 @@ PedestrianMoveTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-PedestrianMoveTool.isActionIdentifierSupported = function (actionIdentifier) {
+PedestrianMoveTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'move',
   ].includes(actionIdentifier);

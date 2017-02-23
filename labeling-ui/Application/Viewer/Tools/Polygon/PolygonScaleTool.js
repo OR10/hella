@@ -1,4 +1,5 @@
 import ScalingTool from '../ScalingTool';
+import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
  * A Tool for scaling annotation shapes
@@ -78,7 +79,7 @@ class PolygonScaleTool extends ScalingTool {
  * @abstract
  * @static
  */
-PolygonScaleTool.getToolName = function () {
+PolygonScaleTool.getToolName = () => {
   return 'PolygonScaleTool';
 };
 
@@ -95,7 +96,7 @@ PolygonScaleTool.getToolName = function () {
  * @abstract
  * @static
  */
-PolygonScaleTool.isShapeClassSupported = function (shapeClass) {
+PolygonScaleTool.isShapeClassSupported = shapeClass => {
   return [
     'polygon',
   ].includes(shapeClass);
@@ -114,7 +115,7 @@ PolygonScaleTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-PolygonScaleTool.isActionIdentifierSupported = function (actionIdentifier) {
+PolygonScaleTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'scale',
   ].includes(actionIdentifier);

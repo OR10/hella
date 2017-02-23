@@ -79,13 +79,13 @@ class LabeledThingGroupGateway {
    * @param {LabeledThingGroup} labeledThingGroup
    * @return {AbortablePromise}
    */
-  deleteLabeledThingGroupById(labeledThingGroup) {
+  deleteLabeledThingGroup(labeledThingGroup) {
     const task = labeledThingGroup.task;
     const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup/${labeledThingGroup.id}`);
 
     return this._bufferedHttp.delete(url, undefined, 'LabeledThingGroup')
       .then(response => {
-        if (response.data && response.data.success === true) {
+        if (response.data && response.data.result && response.data.result.success === true) {
           return true;
         }
 

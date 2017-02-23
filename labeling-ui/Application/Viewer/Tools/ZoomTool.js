@@ -69,7 +69,7 @@ class ZoomTool extends PaperTool {
  * @abstract
  * @static
  */
-ZoomTool.getToolName = function () {
+ZoomTool.getToolName = () => {
   return 'ZoomTool';
 };
 
@@ -86,7 +86,7 @@ ZoomTool.getToolName = function () {
  * @abstract
  * @static
  */
-ZoomTool.isShapeClassSupported = function (shapeClass) {
+ZoomTool.isShapeClassSupported = shapeClass => {
   return [
     'zoom',
   ].includes(shapeClass);
@@ -105,7 +105,7 @@ ZoomTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-ZoomTool.isActionIdentifierSupported = function (actionIdentifier) {
+ZoomTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'in',
     'out',

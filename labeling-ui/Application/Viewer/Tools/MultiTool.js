@@ -1,11 +1,9 @@
 import PaperTool from './PaperTool';
-import paper from 'paper';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
 import PaperGroupRectangle from '../../Viewer/Shapes/PaperGroupRectangle';
 import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
-import CuboidInteractionResolver from '../../ThirdDimension/Support/CuboidInteractionResolver';
 import hitResolver from '../Support/HitResolver';
 
 import CreationToolActionStruct from './ToolActionStructs/CreationToolActionStruct';
@@ -90,7 +88,6 @@ class MultiTool extends PaperTool {
 
     const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
     if (selectedPaperShape !== null) {
-
       const keyboardTool = this._toolService.getTool(this._context, requirementsShape, 'keyboard');
       if (keyboardTool !== null) {
         this._invokeKeyboardToolDelegation(keyboardTool, selectedPaperShape);
@@ -197,7 +194,7 @@ class MultiTool extends PaperTool {
     const point = event.point;
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool._delegateMouseEvent('down', event);
+      this._activePaperTool.delegateMouseEvent('down', event);
       return;
     }
 
@@ -219,7 +216,7 @@ class MultiTool extends PaperTool {
         }
         // Invoke shape creation
         this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
-        this._activePaperTool._delegateMouseEvent('down', event);
+        this._activePaperTool.delegateMouseEvent('down', event);
         return;
       }
 
@@ -235,7 +232,7 @@ class MultiTool extends PaperTool {
       // Invoke mutation tool
       const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
       this._invokePaperToolDelegation(this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier), actionIdentifier, hitShape, hitHandle);
-      this._activePaperTool._delegateMouseEvent('down', event);
+      this._activePaperTool.delegateMouseEvent('down', event);
     });
   }
 
@@ -306,9 +303,6 @@ class MultiTool extends PaperTool {
         );
         promise = tool.invokeShapeMoving(struct);
         break;
-      case 'none':
-        promise = this._$q.resolve(shape);
-        break;
       default:
         throw new Error(`Unknown actionIdentifier: ${actionIdentifier}`);
     }
@@ -334,7 +328,7 @@ class MultiTool extends PaperTool {
     }
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool._delegateMouseEvent('move', event);
+      this._activePaperTool.delegateMouseEvent('move', event);
       return;
     }
 
@@ -400,7 +394,7 @@ class MultiTool extends PaperTool {
     }
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool._delegateMouseEvent('up', event);
+      this._activePaperTool.delegateMouseEvent('up', event);
       return;
     }
 
@@ -436,7 +430,7 @@ class MultiTool extends PaperTool {
     }
 
     if (this._paperToolDelegationInvoked) {
-      this._activePaperTool._delegateMouseEvent('drag', event);
+      this._activePaperTool.delegateMouseEvent('drag', event);
     }
   }
 
@@ -469,7 +463,7 @@ class MultiTool extends PaperTool {
  * @abstract
  * @static
  */
-MultiTool.getToolName = function () {
+MultiTool.getToolName = () => {
   return 'MultiTool';
 };
 
@@ -486,7 +480,7 @@ MultiTool.getToolName = function () {
  * @abstract
  * @static
  */
-MultiTool.isShapeClassSupported = function (shapeClass) {
+MultiTool.isShapeClassSupported = shapeClass => {
   return [
     'multi',
   ].includes(shapeClass);
@@ -505,7 +499,7 @@ MultiTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-MultiTool.isActionIdentifierSupported = function (actionIdentifier) {
+MultiTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
     'move',

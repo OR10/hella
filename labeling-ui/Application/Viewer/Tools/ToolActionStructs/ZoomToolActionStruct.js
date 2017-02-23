@@ -8,7 +8,7 @@ class ZoomToolActionStruct extends ToolActionStruct {
    * @param {Function} zoomFunction
    */
   constructor(options, viewport, mouseCursor, zoomFunction) {
-    super (options, viewport);
+    super(options, viewport);
 
     /**
      * @type {string}

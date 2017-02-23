@@ -84,11 +84,11 @@ class KeyboardShortcutService {
    * @param {boolean} blocking
    */
   registerOverlay(id, blocking = false) {
-    this._logger.log('keyboardShortcut:overlay', `Registered ${blocking ? "blocking" : "non blocking"} overlay '${id}'`);
+    this._logger.log('keyboardShortcut:overlay', `Registered ${blocking ? 'blocking' : 'non blocking'} overlay '${id}'`);
     this._overlays.unshift({
       hotkeyConfigs: [],
       id,
-      blocking
+      blocking,
     });
   }
 
@@ -124,7 +124,7 @@ class KeyboardShortcutService {
     this._registerAllHotkeys();
   }
 
-/**
+  /**
    * @private
    */
   _deleteAllHotkeys() {
@@ -163,7 +163,7 @@ class KeyboardShortcutService {
    * @param {Object} hotkeyConfig
    * @private
    */
-  _activateHotkey(hotkeyConfig){
+  _activateHotkey(hotkeyConfig) {
     this._hotkeys.add(hotkeyConfig);
     this._activatedCombos.add(hotkeyConfig.combo);
   }
@@ -172,7 +172,7 @@ class KeyboardShortcutService {
    * @param {string} combo
    * @private
    */
-  _deactivateHotkey(combo){
+  _deactivateHotkey(combo) {
     this._hotkeys.del(combo);
     this._activatedCombos.delete(combo);
   }

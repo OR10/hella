@@ -1,6 +1,6 @@
 import paper from 'paper';
 import KeyboardTool from '../KeyboardTool';
-import CuboidInteractionResolver from '../../../ThirdDimension/Support/CuboidInteractionResolver.js'
+import CuboidInteractionResolver from '../../../ThirdDimension/Support/CuboidInteractionResolver.js';
 
 /**
  * Keyboard shortcuts for rectangle shapes
@@ -260,7 +260,7 @@ class CuboidKeyboardTool extends KeyboardTool {
  * @abstract
  * @static
  */
-CuboidKeyboardTool.getToolName = function () {
+CuboidKeyboardTool.getToolName = () => {
   return 'CuboidKeyboardTool';
 };
 
@@ -277,7 +277,7 @@ CuboidKeyboardTool.getToolName = function () {
  * @abstract
  * @static
  */
-CuboidKeyboardTool.isShapeClassSupported = function (shapeClass) {
+CuboidKeyboardTool.isShapeClassSupported = shapeClass => {
   return [
     'cuboid',
   ].includes(shapeClass);
@@ -296,7 +296,7 @@ CuboidKeyboardTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-CuboidKeyboardTool.isActionIdentifierSupported = function (actionIdentifier) {
+CuboidKeyboardTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'keyboard',
   ].includes(actionIdentifier);

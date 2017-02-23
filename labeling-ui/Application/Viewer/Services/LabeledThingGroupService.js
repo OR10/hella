@@ -1,7 +1,5 @@
 import paper from 'paper';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
-import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
-import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
 
 class LabeledThingGroupService {
   constructor() {
