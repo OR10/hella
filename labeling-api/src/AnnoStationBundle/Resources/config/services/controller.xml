@@ -282,6 +282,7 @@
             <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation" class="AnnoStationBundle\Controller\Api\Organisation">

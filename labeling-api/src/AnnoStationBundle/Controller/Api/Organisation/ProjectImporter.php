@@ -17,6 +17,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use AnnoStationBundle\Controller\Api\Organisation\Project;
 
 /**
  * @Rest\Prefix("/api/organisation/")
@@ -53,24 +54,32 @@ class ProjectImporter extends Controller\Base
     private $projectImporter;
 
     /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
+    /**
      * @param Storage\TokenStorage           $tokenStorage
      * @param Service\ProjectImporter\Import $projectImporter
      * @param string                         $cacheDirectory
      * @param \cscntLogger                   $logger
      * @param Service\Authorization          $authorizationService
+     * @param Facade\Organisation            $organisationFacade
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
         Service\ProjectImporter\Import $projectImporter,
         string $cacheDirectory,
         \cscntLogger $logger,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        Facade\Organisation $organisationFacade
     ) {
         $this->tokenStorage         = $tokenStorage;
         $this->projectImporter      = $projectImporter;
         $this->cacheDirectory       = $cacheDirectory;
         $this->loggerFacade         = new LoggerFacade($logger, self::class);
         $this->authorizationService = $authorizationService;
+        $this->organisationFacade   = $organisationFacade;
 
         clearstatcache();
 
@@ -89,11 +98,12 @@ class ProjectImporter extends Controller\Base
      *
      * @CheckPermissions({"canUploadNewVideo"})
      *
-     * @param HttpFoundation\Request $request
+     * @param HttpFoundation\Request              $request
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param                                     $uploadId
      *
      * @return View\View
+     * @throws Project\Exception\StorageLimitExceeded
      */
     public function uploadAction(
         HttpFoundation\Request $request,
@@ -101,6 +111,10 @@ class ProjectImporter extends Controller\Base
         $uploadId
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
+        if ($this->organisationFacade->isQuoteExceeded($organisation)) {
+            throw new Project\Exception\StorageLimitExceeded($organisation);
+        }
 
         $user                 = $this->tokenStorage->getToken()->getUser();
         $uploadCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $uploadId]);
