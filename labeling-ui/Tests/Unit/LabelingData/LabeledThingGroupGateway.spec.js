@@ -139,22 +139,23 @@ describe('LabeledThingGroupGateway', () => {
 
   it('should create a labeled thing group with given type', done => {
     const expectedUrl = `/backend/api/task/TASK-1/labeledThingGroup`;
+    const task = {
+      id: 'TASK-1',
+    };
 
     const ltg = new LabeledThingGroup({
+      task,
       id: 'LTG-1',
       groupType: 'fancy-group-type',
       lineColor: 423,
       groupIds: null,
-      task: new Task({
-        id: 'TASK-1',
-      }),
     });
 
     $httpBackend
-      .expect('POST', expectedUrl, {groupType: ltg.groupType})
+      .expect('POST', expectedUrl, {groupType: ltg.type, lineColor: ltg.lineColor})
       .respond(200, {result: ltg.toJSON()});
 
-    gateway.createLabeledThingGroupOfType(task, ltg.groupType)
+    gateway.createLabeledThingGroup(task, ltg)
       .then(result => {
         expect(result).toEqual(ltg);
         done();
