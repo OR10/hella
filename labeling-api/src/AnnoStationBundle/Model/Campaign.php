@@ -30,8 +30,9 @@ class Campaign
      */
     private $organisationId;
 
-    public function __construct($name, $quota = 0)
+    public function __construct(Organisation $organisation, $name)
     {
-        $this->name  = $name;
+        $this->name           = $name;
+        $this->organisationId = $organisation->getId();
     }
 }
