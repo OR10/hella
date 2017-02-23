@@ -113,9 +113,9 @@ describe('LabeledThingGroupGateway', () => {
       groupType: 'fancy-group-type',
       lineColor: 423,
       groupIds: null,
-      task: new Task({
+      task: {
         id: 'TASK-1',
-      })
+      },
     });
     const expectedUrl = `/backend/api/task/TASK-1/labeledThingGroup/${ltg.id}`;
 
@@ -129,7 +129,7 @@ describe('LabeledThingGroupGateway', () => {
       .expect('DELETE', expectedUrl)
       .respond(200, expectedResult);
 
-    gateway.deleteLabeledThingGroupById(ltg)
+    gateway.deleteLabeledThingGroup(ltg)
       .then(result => {
         expect(result).toBeTruthy();
         done();
