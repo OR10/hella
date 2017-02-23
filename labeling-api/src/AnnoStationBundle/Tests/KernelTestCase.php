@@ -75,6 +75,23 @@ class KernelTestCase extends AppBundleTests\KernelTestCase
     }
 
     /**
+     * Create a persisted admin with its username as password.
+     *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
+     * @return Model\User
+     */
+    protected function createAdminUser(AnnoStationBundleModel\Organisation $organisation = null)
+    {
+        $user = Helper\UserBuilder::createDefaultAdmin();
+        if ($organisation instanceof AnnoStationBundleModel\Organisation) {
+            $user->withOrganisations([$organisation]);
+        }
+
+        return $this->userFacade->updateUser($user->build());
+    }
+
+    /**
      * Create a persisted SuperAdmin with its username as password.
      *
      * @param AnnoStationBundleModel\Organisation $organisation

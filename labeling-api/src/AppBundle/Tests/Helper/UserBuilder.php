@@ -80,6 +80,19 @@ class UserBuilder
     }
 
     /**
+     * Create a default admin.
+     *
+     * @return UserBuilder
+     */
+    public static function createDefaultAdmin()
+    {
+        return self::create()
+            ->withUsername('admin')
+            ->withPlainPassword('admin')
+            ->withRoles([Model\User::ROLE_ADMIN]);
+    }
+
+    /**
      * Create a default super admin.
      *
      * @return UserBuilder
