@@ -5,9 +5,15 @@
  */
 class OrganisationService {
   /**
-   * Construct a new Service
+   * @param {$rootScope} $rootScope
    */
-  constructor() {
+  constructor($rootScope) {
+    /**
+     * @type {$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
+
     /**
      * @type {Organisation|null}
      * @private
@@ -35,7 +41,7 @@ class OrganisationService {
     const oldActiveOrganisation = this._activeOrganisation;
     this._activeOrganisation = activeOrganisation;
     this._subscribers.forEach(
-      subscriberFn => subscriberFn(this._activeOrganisation, oldActiveOrganisation)
+      subscriberFn => this._$rootScope.$apply(() => subscriberFn(this._activeOrganisation, oldActiveOrganisation))
     )
   }
 
@@ -55,3 +61,9 @@ class OrganisationService {
     );
   }
 }
+
+OrganisationService.$inject = [
+  '$rootScope',
+];
+
+export default OrganisationService;
