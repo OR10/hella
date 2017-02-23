@@ -45,6 +45,8 @@ class PolygonDrawingTool extends CreationTool {
      * @private
      */
     this._startPosition = null;
+
+    this._inProgress = false;
   }
 
   /**
@@ -54,6 +56,7 @@ class PolygonDrawingTool extends CreationTool {
   invokeShapeCreation(toolActionStruct) {
     this._polygon = null;
     this._startPosition = null;
+    this._inProgress = false;
 
     return super.invokeShapeCreation(toolActionStruct);
   }
@@ -128,6 +131,10 @@ class PolygonDrawingTool extends CreationTool {
    * @param {paper.Event} event
    */
   onMouseDrag(event) {
+    // Abort drag handling if shape drawing is in progress
+    if (this._inProgress) {
+      return;
+    }
     const point = event.point;
 
     if (this._polygon) {
@@ -144,7 +151,9 @@ class PolygonDrawingTool extends CreationTool {
     // Polygon wasn't created. It was only clicked to the canvas.
     if (this._polygon === null) {
       this._reject(new NotModifiedError('No Polygon was created/dragged.'));
+      return;
     }
+    this._inProgress = true;
   }
 
   /**
