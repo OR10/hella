@@ -58,21 +58,45 @@ describe('LabeledThingGroupGateway', () => {
     const frameIndex = '123';
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingGroupInFrame/frame/${frameIndex}`;
 
+    const response = {
+      result: {
+        labeledThingGroupsInFrame: [
+          {
+            id: 'LTGIF-1',
+            frameIndex,
+            classes: [],
+            labeledThingGroupId: 'LTG-1',
+          },
+        ],
+        labeledThingGroups: [
+          {
+            id: 'LTG-1',
+            groupType: 'fancy-group-type',
+            lineColor: 423,
+            groupIds: null,
+          },
+        ],
+      },
+    };
+
+
     const expectedResult = new LabeledThingGroupInFrame({
       id: 'LTGIF-1',
       frameIndex,
       classes: [],
+      labeledThingGroupId: 'LTG-1',
       labeledThingGroup: new LabeledThingGroup({
+        task,
         id: 'LTG-1',
         groupType: 'fancy-group-type',
         lineColor: 423,
         groupIds: null,
-      })
+      }),
     });
 
     $httpBackend
       .expect('GET', expectedUrl)
-      .respond(200, {result: [expectedResult.toJSON()]});
+      .respond(200, response);
 
     gateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex)
       .then(result => {
