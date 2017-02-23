@@ -61,7 +61,38 @@ class Campaign extends Controller\Base
 
         return View\View::create()->setData(
             [
-                'result' => $this->campaignFacade->getCampaignByOrganisation($organisation)
+                'result' => $this->campaignFacade->getCampaignByOrganisation($organisation),
+            ]
+        );
+    }
+
+    /**
+     * @Rest\Post("/{organisation}/campaign")
+     *
+     * @param HttpFoundation\Request              $request
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
+     * @return View\View
+     */
+    public function addCampaignAction(
+        HttpFoundation\Request $request,
+        AnnoStationBundleModel\Organisation $organisation
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
+        $name = $request->request->get('name');
+
+        if (count($this->campaignFacade->getCampaignByOrganisationAndName($organisation, $name)) > 0) {
+            throw new Exception\ConflictHttpException('Campaign with this name already exists');
+        }
+
+        $campaign = new AnnoStationBundleModel\Campaign($organisation, $name);
+
+        $this->campaignFacade->save($campaign);
+
+        return View\View::create()->setData(
+            [
+                'result' => $campaign,
             ]
         );
     }
