@@ -52,7 +52,7 @@ class RectangleScaleTool extends ScalingTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseUp(event) {
+  onMouseUp() {
     const {shape} = this._toolActionStruct;
     if (this._modified !== true) {
       this._reject(new NotModifiedError('Rectangle not scaled.'));
@@ -89,7 +89,7 @@ class RectangleScaleTool extends ScalingTool {
  * @abstract
  * @static
  */
-RectangleScaleTool.getToolName = function () {
+RectangleScaleTool.getToolName = () => {
   return 'RectangleScaleTool';
 };
 
@@ -106,7 +106,7 @@ RectangleScaleTool.getToolName = function () {
  * @abstract
  * @static
  */
-RectangleScaleTool.isShapeClassSupported = function (shapeClass) {
+RectangleScaleTool.isShapeClassSupported = shapeClass => {
   return [
     'rectangle',
   ].includes(shapeClass);
@@ -125,7 +125,7 @@ RectangleScaleTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-RectangleScaleTool.isActionIdentifierSupported = function (actionIdentifier) {
+RectangleScaleTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'scale',
   ].includes(actionIdentifier);

@@ -50,7 +50,7 @@ class PedestrianScaleTool extends ScalingTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseUp(event) {
+  onMouseUp() {
     const {shape} = this._toolActionStruct;
     if (this._modified !== true) {
       this._reject(new NotModifiedError('Fixed Aspect Rectangle not scaled.'));
@@ -86,7 +86,7 @@ class PedestrianScaleTool extends ScalingTool {
  * @abstract
  * @static
  */
-PedestrianScaleTool.getToolName = function () {
+PedestrianScaleTool.getToolName = () => {
   return 'PedestrianScaleTool';
 };
 
@@ -103,7 +103,7 @@ PedestrianScaleTool.getToolName = function () {
  * @abstract
  * @static
  */
-PedestrianScaleTool.isShapeClassSupported = function (shapeClass) {
+PedestrianScaleTool.isShapeClassSupported = shapeClass => {
   return [
     'pedestrian',
   ].includes(shapeClass);
@@ -122,7 +122,7 @@ PedestrianScaleTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-PedestrianScaleTool.isActionIdentifierSupported = function (actionIdentifier) {
+PedestrianScaleTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'scale',
   ].includes(actionIdentifier);

@@ -98,7 +98,7 @@ class ToolService {
         const toolClass = this._findToolClassByShapeClassAndActionIdentifier(shapeClass, actionIdentifier);
         const toolInstance = this._$injector.instantiate(toolClass, {drawingContext: context});
         this._toolCache.set(context, shapeClass, actionIdentifier, toolInstance);
-      } catch(error) {
+      } catch (error) {
         this._loggerService.log('toolService:getTool', `No tool found for "${shapeClass}-${actionIdentifier}"`);
         this._loggerService.groupEnd('toolService:getTool');
         return null;

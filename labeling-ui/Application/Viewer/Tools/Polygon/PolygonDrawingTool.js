@@ -140,7 +140,7 @@ class PolygonDrawingTool extends CreationTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseUp(event) {
+  onMouseUp() {
     // Polygon wasn't created. It was only clicked to the canvas.
     if (this._polygon === null) {
       this._reject(new NotModifiedError('No Polygon was created/dragged.'));
@@ -200,7 +200,7 @@ class PolygonDrawingTool extends CreationTool {
  * @abstract
  * @static
  */
-PolygonDrawingTool.getToolName = function () {
+PolygonDrawingTool.getToolName = () => {
   return 'PedestrianDrawingTool';
 };
 
@@ -217,7 +217,7 @@ PolygonDrawingTool.getToolName = function () {
  * @abstract
  * @static
  */
-PolygonDrawingTool.isShapeClassSupported = function (shapeClass) {
+PolygonDrawingTool.isShapeClassSupported = shapeClass => {
   return [
     'polygon',
   ].includes(shapeClass);
@@ -236,7 +236,7 @@ PolygonDrawingTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-PolygonDrawingTool.isActionIdentifierSupported = function (actionIdentifier) {
+PolygonDrawingTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
   ].includes(actionIdentifier);

@@ -189,7 +189,7 @@ class Tool {
  * @abstract
  * @static
  */
-Tool.getToolName = function () {
+Tool.getToolName = () => {
   throw new Error('Abstract method getToolName: Every tool needs to implement this method.');
 };
 
@@ -206,7 +206,7 @@ Tool.getToolName = function () {
  * @abstract
  * @static
  */
-Tool.isShapeClassSupported = function (shapeClass) {
+Tool.isShapeClassSupported = shapeClass => { // eslint-disable-line no-unused-vars
   throw new Error('Abstract method isShapeClassSupported: Every tool needs to implement this method.');
 };
 
@@ -223,7 +223,7 @@ Tool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-Tool.isActionIdentifierSupported = function (actionIdentifier) {
+Tool.isActionIdentifierSupported = actionIdentifier => { // eslint-disable-line no-unused-vars
   throw new Error('Abstract method isActionIdentifierSupported: Every tool needs to implement this method.');
 };
 

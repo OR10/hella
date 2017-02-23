@@ -46,7 +46,7 @@ class GroupCreationTool extends CreationTool {
    */
   onMouseDown(event) {
     // Delegating the event down to the used tool
-    this._rectangleCreationTool._delegateMouseEvent('down', event);
+    this._rectangleCreationTool.delegateMouseEvent('down', event);
   }
 
 
@@ -66,6 +66,11 @@ class GroupCreationTool extends CreationTool {
     ];
   }
 
+  abort() {
+    this._rectangleCreationTool.abort();
+    super.abort();
+  }
+
   /**
    * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
@@ -80,11 +85,12 @@ class GroupCreationTool extends CreationTool {
       const {width, height} = shapesBound;
       const {point: topLeft} = shapesBound;
       const bottomRight = new paper.Point(topLeft.x + width, topLeft.y + height);
-      const colorId = this._entityColorService.getColorId();
+      const colorIdString = this._entityColorService.getColorId();
+      const colorId = parseInt(colorIdString, 10);
       const color = this._entityColorService.getColorById(colorId);
 
       const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);
-
+      labeledThingGroupInFrame.labeledThingGroup.lineColor = colorIdString;
 
       let paperGroup;
       this._context.withScope(() => {
@@ -105,7 +111,8 @@ class GroupCreationTool extends CreationTool {
       });
 
       this._complete(paperGroup);
-    });
+    })
+      .catch(reason => this._reject(reason));
 
     return promise;
   }
@@ -124,7 +131,7 @@ class GroupCreationTool extends CreationTool {
  * @abstract
  * @static
  */
-GroupCreationTool.getToolName = function () {
+GroupCreationTool.getToolName = () => {
   return 'GroupCreationTool';
 };
 
@@ -141,7 +148,7 @@ GroupCreationTool.getToolName = function () {
  * @abstract
  * @static
  */
-GroupCreationTool.isShapeClassSupported = function (shapeClass) {
+GroupCreationTool.isShapeClassSupported = shapeClass => {
   return [
     'group-rectangle',
   ].includes(shapeClass);
@@ -160,7 +167,7 @@ GroupCreationTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-GroupCreationTool.isActionIdentifierSupported = function (actionIdentifier) {
+GroupCreationTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
   ].includes(actionIdentifier);

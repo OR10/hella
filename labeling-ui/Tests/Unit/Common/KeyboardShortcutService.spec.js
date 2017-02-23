@@ -53,7 +53,6 @@ describe('KeyboardShortcutService', () => {
 
   it('should allow registration of non-blocking overlay', () => {
     const overlayIdentifier = 'some-overlay';
-    const hotkeyConfig = {combo: 'a'};
 
     keyboardShortcutService.registerOverlay(overlayIdentifier, false);
     expect(
@@ -63,7 +62,6 @@ describe('KeyboardShortcutService', () => {
 
   it('should allow registration of blocking overlay', () => {
     const overlayIdentifier = 'some-overlay';
-    const hotkeyConfig = {combo: 'a'};
 
     keyboardShortcutService.registerOverlay(overlayIdentifier, true);
     expect(
@@ -92,7 +90,7 @@ describe('KeyboardShortcutService', () => {
 
     expect(registeredHotkeys).toEqual([
       hotkeyConfigA,
-      hotkeyConfigB
+      hotkeyConfigB,
     ]);
   });
 
@@ -109,7 +107,7 @@ describe('KeyboardShortcutService', () => {
 
     expect(registeredHotkeys).toEqual([
       hotkeyConfigA,
-      hotkeyConfigB
+      hotkeyConfigB,
     ]);
   });
 
@@ -125,7 +123,7 @@ describe('KeyboardShortcutService', () => {
     keyboardShortcutService.addHotkey(overlayIdentifierB, hotkeyConfigB);
 
     expect(registeredHotkeys).toEqual([
-      hotkeyConfigB
+      hotkeyConfigB,
     ]);
   });
 
@@ -143,7 +141,7 @@ describe('KeyboardShortcutService', () => {
     keyboardShortcutService.removeOverlayById(overlayIdentifierB);
 
     expect(registeredHotkeys).toEqual([
-      hotkeyConfigA
+      hotkeyConfigA,
     ]);
   });
 
@@ -161,7 +159,7 @@ describe('KeyboardShortcutService', () => {
     keyboardShortcutService.removeOverlayById(overlayIdentifierA);
 
     expect(registeredHotkeys).toEqual([
-      hotkeyConfigB
+      hotkeyConfigB,
     ]);
   });
 
@@ -182,7 +180,7 @@ describe('KeyboardShortcutService', () => {
 
     expect(registeredHotkeys).toEqual([
       hotkeyConfigB,
-      hotkeyConfigC
+      hotkeyConfigC,
     ]);
   });
 });

@@ -220,7 +220,7 @@ class PedestrianDrawingTool extends CreationTool {
  * @abstract
  * @static
  */
-PedestrianDrawingTool.getToolName = function () {
+PedestrianDrawingTool.getToolName = () => {
   return 'PedestrianDrawingTool';
 };
 
@@ -237,7 +237,7 @@ PedestrianDrawingTool.getToolName = function () {
  * @abstract
  * @static
  */
-PedestrianDrawingTool.isShapeClassSupported = function (shapeClass) {
+PedestrianDrawingTool.isShapeClassSupported = shapeClass => {
   return [
     'pedestrian',
   ].includes(shapeClass);
@@ -256,7 +256,7 @@ PedestrianDrawingTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-PedestrianDrawingTool.isActionIdentifierSupported = function (actionIdentifier) {
+PedestrianDrawingTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
   ].includes(actionIdentifier);

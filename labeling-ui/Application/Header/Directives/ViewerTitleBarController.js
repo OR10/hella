@@ -257,8 +257,8 @@ class ViewerTitleBarController {
 
   _selectLabeledThingInFrame(nextIncomplete) {
     this._$timeout(() => {
-      const paperThingShape = this.paperThingShapes.find(paperThingShape => {
-        return nextIncomplete.id === paperThingShape.labeledThingInFrame.id;
+      const paperThingShape = this.paperThingShapes.find(thingShape => {
+        return nextIncomplete.id === thingShape.labeledThingInFrame.id;
       });
       this.selectedPaperShape = paperThingShape;
       this.hideLabeledThingsInFrame = true;

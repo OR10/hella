@@ -73,7 +73,7 @@ class PolygonMoveTool extends MovingTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseUp(event) {
+  onMouseUp() {
     if (this._modified !== true) {
       this._reject(new NotModifiedError('Polygon wasn\'t moved in any way'));
       return;
@@ -116,7 +116,7 @@ class PolygonMoveTool extends MovingTool {
  * @abstract
  * @static
  */
-PolygonMoveTool.getToolName = function () {
+PolygonMoveTool.getToolName = () => {
   return 'PolygonMoveTool';
 };
 
@@ -133,7 +133,7 @@ PolygonMoveTool.getToolName = function () {
  * @abstract
  * @static
  */
-PolygonMoveTool.isShapeClassSupported = function (shapeClass) {
+PolygonMoveTool.isShapeClassSupported = shapeClass => {
   return [
     'polygon',
   ].includes(shapeClass);
@@ -152,7 +152,7 @@ PolygonMoveTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-PolygonMoveTool.isActionIdentifierSupported = function (actionIdentifier) {
+PolygonMoveTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'move',
   ].includes(actionIdentifier);

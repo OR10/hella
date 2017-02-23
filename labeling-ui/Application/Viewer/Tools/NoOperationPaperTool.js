@@ -9,11 +9,20 @@ class NoOperationPaperTool extends PaperTool {
     super(drawingContext, $scope, $q, loggerService);
   }
 
+  /**
+   * @param {ToolActionStruct} toolActionStruct
+   * @return {Promise}
+   * @private
+   */
   _invokeAndRejectWithNotModified(toolActionStruct) {
     const promise = this._invoke(toolActionStruct);
     this._reject(new NotModifiedError('NoOperationPaperTool did not modify anything'));
 
     return promise;
+  }
+
+  onMouseUp() {
+    this._reject(new NotModifiedError('NoOperationPaperTool did not modify anything'));
   }
 
   /**
@@ -25,7 +34,7 @@ class NoOperationPaperTool extends PaperTool {
    * @returns {Promise}
    */
   invokeShapeScaling(toolActionStruct) {
-    return this._invokeAndRejectWithNotModified(toolActionStruct);
+    return this._invoke(toolActionStruct);
   }
 
   /**
@@ -37,7 +46,7 @@ class NoOperationPaperTool extends PaperTool {
    * @returns {Promise}
    */
   invokeShapeMoving(toolActionStruct) {
-    return this._invokeAndRejectWithNotModified(toolActionStruct);
+    return this._invoke(toolActionStruct);
   }
 
   /**
@@ -49,7 +58,7 @@ class NoOperationPaperTool extends PaperTool {
    * @returns {Promise}
    */
   invokeShapeCreation(toolActionStruct) {
-    return this._invokeAndRejectWithNotModified(toolActionStruct);
+    return this._invoke(toolActionStruct);
   }
 
   /**
@@ -74,7 +83,7 @@ class NoOperationPaperTool extends PaperTool {
  * @abstract
  * @static
  */
-NoOperationPaperTool.getToolName = function () {
+NoOperationPaperTool.getToolName = () => {
   return 'NoOperationPaperTool';
 };
 
@@ -91,7 +100,7 @@ NoOperationPaperTool.getToolName = function () {
  * @abstract
  * @static
  */
-NoOperationPaperTool.isShapeClassSupported = function (shapeClass) {
+NoOperationPaperTool.isShapeClassSupported = () => {
   return true;
 };
 
@@ -108,12 +117,11 @@ NoOperationPaperTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-NoOperationPaperTool.isActionIdentifierSupported = function (actionIdentifier) {
+NoOperationPaperTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
     'move',
     'scale',
-    'none',
   ].includes(actionIdentifier);
 };
 

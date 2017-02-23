@@ -50,7 +50,7 @@ class CuboidScaleTool extends ScalingTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseDown(event) {
+  onMouseDown() {
     const {shape} = this._toolActionStruct;
     shape.updatePrimaryCorner();
   }
@@ -58,7 +58,7 @@ class CuboidScaleTool extends ScalingTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseUp(event) {
+  onMouseUp() {
     if (this._modified !== true) {
       this._reject(new NotModifiedError('Cuboid wasn\'t resized in any way'));
       return;
@@ -103,7 +103,7 @@ class CuboidScaleTool extends ScalingTool {
  * @abstract
  * @static
  */
-CuboidScaleTool.getToolName = function () {
+CuboidScaleTool.getToolName = () => {
   return 'CuboidScaleTool';
 };
 
@@ -120,7 +120,7 @@ CuboidScaleTool.getToolName = function () {
  * @abstract
  * @static
  */
-CuboidScaleTool.isShapeClassSupported = function (shapeClass) {
+CuboidScaleTool.isShapeClassSupported = shapeClass => {
   return [
     'cuboid',
   ].includes(shapeClass);
@@ -139,7 +139,7 @@ CuboidScaleTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-CuboidScaleTool.isActionIdentifierSupported = function (actionIdentifier) {
+CuboidScaleTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'scale',
   ].includes(actionIdentifier);

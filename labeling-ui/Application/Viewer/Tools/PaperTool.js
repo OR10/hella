@@ -29,7 +29,7 @@ class PaperTool extends Tool {
      * @type {string}
      * @private
      */
-    this._dragEventState = "initial";
+    this._dragEventState = 'initial';
 
     /**
      * @type {paper.Point}|null}
@@ -43,9 +43,8 @@ class PaperTool extends Tool {
   /**
    * @param {string} type
    * @param {paper.Event} event
-   * @protected
    */
-  _delegateMouseEvent(type, event) {
+  delegateMouseEvent(type, event) {
     const delegationTarget = `onMouse${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
     const roundedEventPoint = new paper.Point(
       Math.round(event.point.x),
@@ -111,10 +110,10 @@ class PaperTool extends Tool {
       this._tool = new paper.Tool();
     });
 
-    this._tool.onMouseDown = event => this._delegateMouseEvent('down', event);
-    this._tool.onMouseUp = event => this._delegateMouseEvent('up', event);
-    this._tool.onMouseDrag = event => this._delegateMouseEvent('drag', event);
-    this._tool.onMouseMove = event => this._delegateMouseEvent('move', event);
+    this._tool.onMouseDown = event => this.delegateMouseEvent('down', event);
+    this._tool.onMouseUp = event => this.delegateMouseEvent('up', event);
+    this._tool.onMouseDrag = event => this.delegateMouseEvent('drag', event);
+    this._tool.onMouseMove = event => this.delegateMouseEvent('move', event);
 
     this._tool.onKeyDown = event => this._delegateKeyboardEvent('down', event);
     this._tool.onKeyUp = event => this._delegateKeyboardEvent('up', event);
@@ -258,7 +257,7 @@ class PaperTool extends Tool {
  * @abstract
  * @static
  */
-PaperTool.getToolName = function () {
+PaperTool.getToolName = () => {
   throw new Error('Abstract method getToolName: Every tool needs to implement this method.');
 };
 
@@ -275,7 +274,7 @@ PaperTool.getToolName = function () {
  * @abstract
  * @static
  */
-PaperTool.isShapeClassSupported = function (shapeClass) {
+PaperTool.isShapeClassSupported = shapeClass => { // eslint-disable-line no-unused-vars
   throw new Error('Abstract method isShapeClassSupported: Every tool needs to implement this method.');
 };
 
@@ -292,7 +291,7 @@ PaperTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-PaperTool.isActionIdentifierSupported = function (actionIdentifier) {
+PaperTool.isActionIdentifierSupported = actionIdentifier => { // eslint-disable-line no-unused-vars
   throw new Error('Abstract method isActionIdentifierSupported: Every tool needs to implement this method.');
 };
 
