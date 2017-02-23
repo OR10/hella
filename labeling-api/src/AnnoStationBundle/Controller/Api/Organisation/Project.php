@@ -320,6 +320,8 @@ class Project extends Controller\Base
         $splitEach        = $request->request->get('splitEach');
         $description      = $request->request->get('description');
         $projectType      = $request->request->get('projectType');
+        $campaigns        = $request->request->get('campaigns', []);
+
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
@@ -339,7 +341,8 @@ class Project extends Controller\Base
                 $frameSkip,
                 $startFrameNumber,
                 $splitEach,
-                $description
+                $description,
+                $campaigns
             );
 
             $project->setAvailableExports([$projectType]);

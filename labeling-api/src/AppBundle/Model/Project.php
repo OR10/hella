@@ -135,6 +135,11 @@ class Project
     protected $organisationId;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    protected $campaigns;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string                              $name
@@ -148,6 +153,7 @@ class Project
      * @param int                                 $startFrameNumber
      * @param int                                 $splitEach
      * @param null                                $description
+     * @param array                               $campaigns
      *
      * @return static
      */
@@ -161,7 +167,8 @@ class Project
         $frameSkip = 1,
         $startFrameNumber = 0,
         $splitEach = 0,
-        $description = null
+        $description = null,
+        $campaigns = []
     ) {
         return new static(
             $name,
@@ -173,7 +180,8 @@ class Project
             $frameSkip,
             $startFrameNumber,
             $splitEach,
-            $description
+            $description,
+            $campaigns
         );
     }
 
@@ -188,6 +196,7 @@ class Project
      * @param int                                 $startFrameNumber
      * @param int                                 $splitEach
      * @param null                                $description
+     * @param array                               $campaigns
      */
     public function __construct(
         $name,
@@ -199,7 +208,8 @@ class Project
         $frameSkip = 1,
         $startFrameNumber = 0,
         $splitEach = 0,
-        $description = null
+        $description = null,
+        $campaigns = []
     ) {
         if ($creationDate === null) {
             $creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
@@ -218,6 +228,7 @@ class Project
         $this->taskVideoSettings['startFrameNumber'] = (int) $startFrameNumber;
         $this->taskVideoSettings['splitEach']        = (int) $splitEach;
         $this->description                           = $description;
+        $this->campaigns                             = $campaigns;
 
         $this->setUserId($user instanceof User ? $user->getId() : null);
         $this->addStatusHistory($creationDate, self::STATUS_TODO, $user);
