@@ -5,13 +5,17 @@ import OrganisationSelectTemplate from './Views/OrganisationSelectView.html!';
 
 import OrganisationService from './Services/OrganisationService';
 
+import OrganisationPickerDirective from './Directives/OrganisationPickerDirective';
+
 class OrganisationModule extends Module {
   /**
    * @param {angular} angular
    */
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Organisation', []);
-    this.moduls.service('organisationService', OrganisationService);
+    this.module.service('organisationService', OrganisationService);
+
+    this.registerDirective('organisationPicker', OrganisationPickerDirective);
   }
 
   /**

@@ -1,0 +1,6 @@
+<div class="grid-block align-center">
+    <select style="min-width: 120px; margin-bottom: 0;"
+            ng-model="vm.activeOrganisation"
+            ng-options="organisation as organisation.name for organisation in vm.organisationsOfCurrentUser track by organisation.id">
+    </select>
+</div>
