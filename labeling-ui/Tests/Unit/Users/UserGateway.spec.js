@@ -7,7 +7,7 @@ import UserGateway from 'Application/ManagementBoard/Gateways/UserGateway';
 import User from 'Application/ManagementBoard/Models/User';
 import Organisation from 'Application/Organisation/Models/Organisation';
 
-fdescribe('UserGateway', () => {
+describe('UserGateway', () => {
   let $httpBackend;
   let gateway;
 
