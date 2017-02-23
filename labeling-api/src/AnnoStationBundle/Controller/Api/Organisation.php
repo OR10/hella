@@ -6,6 +6,7 @@ use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
+use AnnoStationBundle\Response;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -52,7 +53,10 @@ class Organisation extends Controller\Base
         $limit = $request->request->get('limit');
 
         return new View\View(
-            $this->organisationFacade->findAll($skip, $limit)
+            new Response\SimpleOrganisations(
+                $this->organisationFacade->findAll($skip, $limit),
+                $this->organisationFacade
+            )
         );
     }
 

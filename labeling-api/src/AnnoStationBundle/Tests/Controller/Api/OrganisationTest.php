@@ -43,7 +43,7 @@ class OrganisationTest extends Tests\WebTestCase
 
         $actualOrganisations = array_map(function($organisation) {
             return $organisation['name'];
-        }, $requestWrapper->getJsonResponseBody());
+        }, $requestWrapper->getJsonResponseBody()['result']);
 
         $this->assertEquals(['Test 4', 'Test 3', 'Test 2', 'Test 1'], $actualOrganisations);
     }

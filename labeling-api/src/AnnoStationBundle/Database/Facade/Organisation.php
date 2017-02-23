@@ -91,6 +91,11 @@ class Organisation
         $this->documentManager->flush();
     }
 
+    /**
+     * @param Model\Organisation $organisation
+     *
+     * @return array
+     */
     public function getDiskUsageForOrganisation(Model\Organisation $organisation)
     {
         $imageQuery = $this->documentManager
@@ -126,6 +131,11 @@ class Organisation
         return $diskUsage;
     }
 
+    /**
+     * @param Model\Organisation $organisation
+     *
+     * @return array
+     */
     public function getDiskUsageForOrganisationVideos(Model\Organisation $organisation)
     {
         $imageQuery = $this->documentManager

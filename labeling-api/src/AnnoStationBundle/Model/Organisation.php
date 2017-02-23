@@ -75,4 +75,12 @@ class Organisation
     {
         $this->quota = $quota;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 }
