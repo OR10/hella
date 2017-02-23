@@ -170,3 +170,8 @@ api_organisation:
     resource: "annostation.labeling_api.controller.api.organisation"
     type: rest
     name_prefix: app_api_organisation_
+
+api_organisation_capmaign:
+    resource: "annostation.labeling_api.controller.api.organisation.campaign"
+    type: rest
+    name_prefix: app_api_organisation_campaign_

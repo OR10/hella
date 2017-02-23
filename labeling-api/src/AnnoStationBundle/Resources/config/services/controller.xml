@@ -289,5 +289,10 @@
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="security.token_storage"/>
         </service>
+
+        <service id="annostation.labeling_api.controller.api.organisation.campaign" class="AnnoStationBundle\Controller\Api\Organisation\Campaign">
+            <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
+        </service>
     </services>
 </container>
