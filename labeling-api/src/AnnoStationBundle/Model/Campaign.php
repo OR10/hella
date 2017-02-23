@@ -35,4 +35,20 @@ class Campaign
         $this->name           = $name;
         $this->organisationId = $organisation->getId();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 }

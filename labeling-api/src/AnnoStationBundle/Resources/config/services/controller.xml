@@ -199,6 +199,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>

@@ -73,10 +73,16 @@ class Project extends Controller\Base
     private $organisationFacade;
 
     /**
+     * @var Facade\Campaign
+     */
+    private $campaignFacade;
+
+    /**
      * @param Facade\Project             $projectFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\LabelingTask        $labelingTaskFacade
      * @param Facade\Organisation        $organisationFacade
+     * @param Facade\Campaign            $campaignFacade
      * @param Storage\TokenStorage       $tokenStorage
      * @param AppFacade\User             $userFacade
      * @param Service\Authorization      $authorizationService
@@ -87,6 +93,7 @@ class Project extends Controller\Base
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Organisation $organisationFacade,
+        Facade\Campaign $campaignFacade,
         Storage\TokenStorage $tokenStorage,
         AppFacade\User $userFacade,
         Service\Authorization $authorizationService,
@@ -100,6 +107,7 @@ class Project extends Controller\Base
         $this->authorizationService      = $authorizationService;
         $this->amqpFacade                = $amqpFacade;
         $this->organisationFacade        = $organisationFacade;
+        $this->campaignFacade            = $campaignFacade;
     }
 
     /**
@@ -208,6 +216,7 @@ class Project extends Controller\Base
                 'creationTimestamp'        => $project->getCreationDate(),
                 'taskInPreProcessingCount' => $sumOfPreProcessingTasks,
                 'diskUsage'                => isset($diskUsageByProject[$project->getId()]) ? $diskUsageByProject[$project->getId()] : [],
+                'campaigns'                => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
             );
 
             if ($user->hasOneRoleOf(
@@ -294,6 +303,27 @@ class Project extends Controller\Base
                 ),
                 'users' => $users->getResult(),
             ]
+        );
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param                                     $campaignIds
+     *
+     * @return array
+     */
+    private function mapCampaignIdsToCampaigns(AnnoStationBundleModel\Organisation $organisation, $campaignIds)
+    {
+        return array_map(
+            function ($id) {
+                $campaign = $this->campaignFacade->find($id);
+
+                return [
+                    'id'   => $campaign->getId(),
+                    'name' => $campaign->getName(),
+                ];
+            },
+            $campaignIds
         );
     }
 

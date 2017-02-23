@@ -794,4 +794,12 @@ class Project
     {
         $this->organisationId = $organisationId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCampaigns()
+    {
+        return $this->campaigns;
+    }
 }

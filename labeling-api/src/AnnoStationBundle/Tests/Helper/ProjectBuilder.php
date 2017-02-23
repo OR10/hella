@@ -302,6 +302,7 @@ class ProjectBuilder
             'coordinator'                => $this->getLatestAssignedCoordinatorUserId(),
             'taskInstructionType'        => 'legacy',
             'diskUsage'                  => [],
+            'campaigns'                  => [],
         ];
     }
 

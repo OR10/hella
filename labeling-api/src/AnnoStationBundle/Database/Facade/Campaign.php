@@ -60,4 +60,14 @@ class Campaign
 
         return $campaign;
     }
+
+    /**
+     * @param string $id
+     *
+     * @return Model\Campaign
+     */
+    public function find(string $id)
+    {
+        return $this->documentManager->find(Model\Campaign::class, $id);
+    }
 }
