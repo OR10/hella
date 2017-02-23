@@ -280,7 +280,7 @@ class MultiTool extends PaperTool {
           video,
           task,
           framePosition,
-          requirementsThingOrGroupId,
+          requirementsThingOrGroupId
         );
         promise = tool.invokeShapeCreation(struct);
         break;
