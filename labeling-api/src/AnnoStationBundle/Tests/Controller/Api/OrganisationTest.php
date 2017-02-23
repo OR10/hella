@@ -22,12 +22,12 @@ class OrganisationTest extends Tests\WebTestCase
     /**
      * @var Model\User
      */
-    private $client;
+    private $superAdmin;
 
     protected function setUpImplementation()
     {
         $this->organisationFacade = $this->getAnnostationService('database.facade.organisation');
-        $this->client             = $this->createSuperAdminUser();
+        $this->superAdmin         = $this->createSuperAdminUser();
     }
 
     public function testGetOrganisations()
@@ -38,7 +38,7 @@ class OrganisationTest extends Tests\WebTestCase
         $this->createOrganisation('Test 4');
 
         $requestWrapper = $this->createRequest('/api/organisation')
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->superAdmin)
             ->execute();
 
         $actualOrganisations = array_map(function($organisation) {
@@ -52,7 +52,7 @@ class OrganisationTest extends Tests\WebTestCase
     {
         $requestWrapper = $this->createRequest('/api/organisation')
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->superAdmin)
             ->setJsonBody(
                 [
                     'name' => 'Test create new organisation',
@@ -69,7 +69,7 @@ class OrganisationTest extends Tests\WebTestCase
         $organisation   = $this->createOrganisation();
         $requestWrapper = $this->createRequest('/api/organisation/%s', [$organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->superAdmin)
             ->setJsonBody(
                 [
                     'name' => 'Test Organisation Updated',
@@ -87,7 +87,7 @@ class OrganisationTest extends Tests\WebTestCase
         $organisation   = $this->createOrganisation();
         $requestWrapper = $this->createRequest('/api/organisation/%s', [$organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->superAdmin)
             ->execute();
 
         $this->assertNull($this->organisationFacade->find($organisation->getId()));
