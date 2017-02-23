@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Tests\Controller\Api;
+namespace AnnoStationBundle\Tests\Controller\Api\Organisation;
 
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Model;
@@ -24,7 +24,7 @@ class TaskConfigurationTest extends Tests\WebTestCase
             ->setFiles(
                 [
                     'file' => new HttpFoundation\File\UploadedFile(
-                        __DIR__ . '/../../Resources/TaskConfigurations/requirements_invalid_duplicate_ids.xml',
+                        __DIR__ . '/../../../Resources/TaskConfigurations/requirements_invalid_duplicate_ids.xml',
                         'requirements_invalid_duplicate_ids.xml'
                     ),
                 ]
