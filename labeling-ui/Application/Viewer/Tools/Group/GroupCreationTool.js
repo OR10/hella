@@ -131,7 +131,7 @@ class GroupCreationTool extends CreationTool {
  * @abstract
  * @static
  */
-GroupCreationTool.getToolName = function () {
+GroupCreationTool.getToolName = () => {
   return 'GroupCreationTool';
 };
 
@@ -148,7 +148,7 @@ GroupCreationTool.getToolName = function () {
  * @abstract
  * @static
  */
-GroupCreationTool.isShapeClassSupported = function (shapeClass) {
+GroupCreationTool.isShapeClassSupported = shapeClass => {
   return [
     'group-rectangle',
   ].includes(shapeClass);
@@ -167,7 +167,7 @@ GroupCreationTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-GroupCreationTool.isActionIdentifierSupported = function (actionIdentifier) {
+GroupCreationTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
   ].includes(actionIdentifier);

@@ -75,7 +75,7 @@ class RectangleMoveTool extends MovingTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseUp(event) {
+  onMouseUp() {
     if (this._modified !== true) {
       this._reject(new NotModifiedError('Rectangle wasn\'t moved in any way'));
       return;
@@ -118,7 +118,7 @@ class RectangleMoveTool extends MovingTool {
  * @abstract
  * @static
  */
-RectangleMoveTool.getToolName = function () {
+RectangleMoveTool.getToolName = () => {
   return 'RectangleMoveTool';
 };
 
@@ -135,7 +135,7 @@ RectangleMoveTool.getToolName = function () {
  * @abstract
  * @static
  */
-RectangleMoveTool.isShapeClassSupported = function (shapeClass) {
+RectangleMoveTool.isShapeClassSupported = shapeClass => {
   return [
     'rectangle',
   ].includes(shapeClass);
@@ -154,7 +154,7 @@ RectangleMoveTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-RectangleMoveTool.isActionIdentifierSupported = function (actionIdentifier) {
+RectangleMoveTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'move',
   ].includes(actionIdentifier);

@@ -307,7 +307,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
             break;
           case paperShape instanceof PaperGroupShape:
             throw new Error('Cannot create default shape for groups!');
-            break;
           default:
             throw new Error(`Can not handle shape creation of type: ${paperShape}`);
         }
@@ -333,7 +332,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
   _getOptionsForTool(task, shapeName, defaultOptions) {
     const extractedTaskOptions = {};
     [
-      'minimalVisibleShapeOverflow'
+      'minimalVisibleShapeOverflow',
     ].forEach(property => {
       if (task[property] !== undefined) {
         extractedTaskOptions[property] = task[property];

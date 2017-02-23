@@ -77,7 +77,7 @@ class RectangleDrawingTool extends CreationTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseUp(event) {
+  onMouseUp() {
     if (this._rect === null) {
       this._reject(new NotModifiedError('No Rectangle was created/dragged.'));
       return;
@@ -201,7 +201,7 @@ class RectangleDrawingTool extends CreationTool {
  * @abstract
  * @static
  */
-RectangleDrawingTool.getToolName = function () {
+RectangleDrawingTool.getToolName = () => {
   return 'RectangleDrawingTool';
 };
 
@@ -218,7 +218,7 @@ RectangleDrawingTool.getToolName = function () {
  * @abstract
  * @static
  */
-RectangleDrawingTool.isShapeClassSupported = function (shapeClass) {
+RectangleDrawingTool.isShapeClassSupported = shapeClass => {
   return [
     'rectangle',
   ].includes(shapeClass);
@@ -237,7 +237,7 @@ RectangleDrawingTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-RectangleDrawingTool.isActionIdentifierSupported = function (actionIdentifier) {
+RectangleDrawingTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
   ].includes(actionIdentifier);

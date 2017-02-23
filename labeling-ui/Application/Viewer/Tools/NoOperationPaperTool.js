@@ -83,7 +83,7 @@ class NoOperationPaperTool extends PaperTool {
  * @abstract
  * @static
  */
-NoOperationPaperTool.getToolName = function () {
+NoOperationPaperTool.getToolName = () => {
   return 'NoOperationPaperTool';
 };
 
@@ -100,7 +100,7 @@ NoOperationPaperTool.getToolName = function () {
  * @abstract
  * @static
  */
-NoOperationPaperTool.isShapeClassSupported = function (shapeClass) {
+NoOperationPaperTool.isShapeClassSupported = () => {
   return true;
 };
 
@@ -117,7 +117,7 @@ NoOperationPaperTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-NoOperationPaperTool.isActionIdentifierSupported = function (actionIdentifier) {
+NoOperationPaperTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
     'move',

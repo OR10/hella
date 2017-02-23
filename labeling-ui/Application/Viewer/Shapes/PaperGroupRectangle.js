@@ -125,14 +125,14 @@ class PaperGroupRectangle extends PaperGroupShape {
    * @param {Handle|null} handle
    * @returns {string}
    */
-  getToolActionIdentifier(handle) {
+  getToolActionIdentifier() {
     return 'move';
   }
 
   /**
    * @param {Point} point
    */
-  moveTo(point) {
+  moveTo() {
     this._drawShape();
   }
 
@@ -141,7 +141,7 @@ class PaperGroupRectangle extends PaperGroupShape {
    * @param {boolean} mouseDown
    * @returns {string}
    */
-  getCursor(handle, mouseDown = false) {
+  getCursor() {
     return 'pointer';
   }
 

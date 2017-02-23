@@ -123,7 +123,7 @@ class CuboidMoveTool extends MovingTool {
  * @abstract
  * @static
  */
-CuboidMoveTool.getToolName = function () {
+CuboidMoveTool.getToolName = () => {
   return 'CuboidMoveTool';
 };
 
@@ -140,7 +140,7 @@ CuboidMoveTool.getToolName = function () {
  * @abstract
  * @static
  */
-CuboidMoveTool.isShapeClassSupported = function (shapeClass) {
+CuboidMoveTool.isShapeClassSupported = shapeClass => {
   return [
     'cuboid',
   ].includes(shapeClass);
@@ -159,7 +159,7 @@ CuboidMoveTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-CuboidMoveTool.isActionIdentifierSupported = function (actionIdentifier) {
+CuboidMoveTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'move',
   ].includes(actionIdentifier);

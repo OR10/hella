@@ -109,7 +109,7 @@ class PedestrianKeyboardTool extends KeyboardTool {
  * @abstract
  * @static
  */
-PedestrianKeyboardTool.getToolName = function () {
+PedestrianKeyboardTool.getToolName = () => {
   return 'PedestrianKeyboardTool';
 };
 
@@ -126,7 +126,7 @@ PedestrianKeyboardTool.getToolName = function () {
  * @abstract
  * @static
  */
-PedestrianKeyboardTool.isShapeClassSupported = function (shapeClass) {
+PedestrianKeyboardTool.isShapeClassSupported = shapeClass => {
   return [
     'pedestrian',
   ].includes(shapeClass);
@@ -145,7 +145,7 @@ PedestrianKeyboardTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-PedestrianKeyboardTool.isActionIdentifierSupported = function (actionIdentifier) {
+PedestrianKeyboardTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'keyboard',
   ].includes(actionIdentifier);

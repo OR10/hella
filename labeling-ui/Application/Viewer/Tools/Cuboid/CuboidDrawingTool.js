@@ -240,7 +240,7 @@ class CuboidDrawingTool extends CreationTool {
       ];
     }
 
-    this._context.withScope(scope => {
+    this._context.withScope(() => {
       this._cuboid.setVertices(points);
       // scope.view.update();
     });
@@ -371,7 +371,7 @@ class CuboidDrawingTool extends CreationTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseUp(event) {
+  onMouseUp() {
     if (!this._startCreation) {
       this._cleanUp();
       this._reject(new NotModifiedError('No Cuboid was created/dragged.'));
@@ -470,8 +470,8 @@ class CuboidDrawingTool extends CreationTool {
  * @abstract
  * @static
  */
-CuboidDrawingTool.getToolName = function () {
-  return "CuboidDrawingTool";
+CuboidDrawingTool.getToolName = () => {
+  return 'CuboidDrawingTool';
 };
 
 /**
@@ -487,7 +487,7 @@ CuboidDrawingTool.getToolName = function () {
  * @abstract
  * @static
  */
-CuboidDrawingTool.isShapeClassSupported = function (shapeClass) {
+CuboidDrawingTool.isShapeClassSupported = shapeClass => {
   return [
     'cuboid',
   ].includes(shapeClass);
@@ -506,7 +506,7 @@ CuboidDrawingTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-CuboidDrawingTool.isActionIdentifierSupported = function (actionIdentifier) {
+CuboidDrawingTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
   ].includes(actionIdentifier);

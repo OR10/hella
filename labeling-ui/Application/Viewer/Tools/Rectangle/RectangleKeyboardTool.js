@@ -109,7 +109,7 @@ class RectangleKeyboardTool extends KeyboardTool {
  * @abstract
  * @static
  */
-RectangleKeyboardTool.getToolName = function () {
+RectangleKeyboardTool.getToolName = () => {
   return 'RectangleKeyboardTool';
 };
 
@@ -126,7 +126,7 @@ RectangleKeyboardTool.getToolName = function () {
  * @abstract
  * @static
  */
-RectangleKeyboardTool.isShapeClassSupported = function (shapeClass) {
+RectangleKeyboardTool.isShapeClassSupported = shapeClass => {
   return [
     'rectangle',
   ].includes(shapeClass);
@@ -145,7 +145,7 @@ RectangleKeyboardTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-RectangleKeyboardTool.isActionIdentifierSupported = function (actionIdentifier) {
+RectangleKeyboardTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'keyboard',
   ].includes(actionIdentifier);

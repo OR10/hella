@@ -1,5 +1,3 @@
-import CreationToolActionStruct from '../../Viewer/Tools/ToolActionStructs/CreationToolActionStruct';
-
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
 

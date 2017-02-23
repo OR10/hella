@@ -424,13 +424,14 @@ class ThumbnailReelController {
    * display appropriate shapes.
    *
    * @param framePosition
+   * @return {AbortablePromise}
    * @private
    */
   _loadLabeledThingsInFrame(framePosition) {
     // TODO: load labeledThingGroups for thumbnails
     // Currently Do not load shapes if paperGroup is selected
     if (this.slectedPaperShape instanceof PaperGroupShape) {
-      return;
+      return this._abortablePromiseFactory(this._$q.resolve(new Array(this.thumbnailCount).fill(null)));
     }
 
     if (!this.selectedPaperShape) {
@@ -438,7 +439,7 @@ class ThumbnailReelController {
     }
 
     const {lowerLimit, count} = this._calculateLowerAndUpperLimitByPosition(framePosition);
-    return this._labeledThingInFrameGateway.getLabeledThingInFrame(
+    this._labeledThingInFrameGateway.getLabeledThingInFrame(
       this.task,
       lowerLimit,
       this.selectedPaperShape.labeledThingInFrame.labeledThing,

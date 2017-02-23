@@ -1,11 +1,9 @@
 import PaperTool from './PaperTool';
-import paper from 'paper';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
 import PaperGroupRectangle from '../../Viewer/Shapes/PaperGroupRectangle';
 import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
-import CuboidInteractionResolver from '../../ThirdDimension/Support/CuboidInteractionResolver';
 import hitResolver from '../Support/HitResolver';
 
 import CreationToolActionStruct from './ToolActionStructs/CreationToolActionStruct';
@@ -90,7 +88,6 @@ class MultiTool extends PaperTool {
 
     const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
     if (selectedPaperShape !== null) {
-
       const keyboardTool = this._toolService.getTool(this._context, requirementsShape, 'keyboard');
       if (keyboardTool !== null) {
         this._invokeKeyboardToolDelegation(keyboardTool, selectedPaperShape);
@@ -466,7 +463,7 @@ class MultiTool extends PaperTool {
  * @abstract
  * @static
  */
-MultiTool.getToolName = function () {
+MultiTool.getToolName = () => {
   return 'MultiTool';
 };
 
@@ -483,7 +480,7 @@ MultiTool.getToolName = function () {
  * @abstract
  * @static
  */
-MultiTool.isShapeClassSupported = function (shapeClass) {
+MultiTool.isShapeClassSupported = shapeClass => {
   return [
     'multi',
   ].includes(shapeClass);
@@ -502,7 +499,7 @@ MultiTool.isShapeClassSupported = function (shapeClass) {
  * @abstract
  * @static
  */
-MultiTool.isActionIdentifierSupported = function (actionIdentifier) {
+MultiTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
     'move',
