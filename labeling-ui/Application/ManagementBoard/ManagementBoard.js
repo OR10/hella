@@ -71,7 +71,7 @@ class ManagementBoard extends Module {
    */
   config($stateProvider) {
     $stateProvider.state('labeling.upload', {
-      url: 'upload/:projectId',
+      url: 'organisations/:organisationId/upload/:projectId',
       views: {
         '@labeling': {
           controller: UploadController,
@@ -89,7 +89,7 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.projects', {
-      url: 'projects',
+      url: 'organisations/:organisationId/projects',
       redirectTo: 'labeling.projects.list',
     });
 
@@ -134,7 +134,7 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.tasks', {
-      url: 'projects/:projectId/tasks',
+      url: 'organisations/:organisationId/projects/:projectId/tasks',
       redirectTo: 'labeling.tasks.list',
     });
 
@@ -157,7 +157,7 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.users', {
-      url: 'users',
+      url: 'organisations/:organisationId/users',
       redirectTo: 'labeling.users.list',
     });
 
@@ -184,7 +184,7 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.labeling-groups', {
-      url: 'labelingGroups',
+      url: 'organisations/:organisationId/labelingGroups',
       redirectTo: 'labeling.labeling-groups.list',
     });
 
@@ -211,7 +211,7 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.task-configurations', {
-      url: 'taskConfigurations',
+      url: 'organisations/:organisationId/taskConfigurations',
       redirectTo: 'labeling.task.configurations.list',
     });
 

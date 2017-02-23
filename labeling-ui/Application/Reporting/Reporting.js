@@ -30,7 +30,7 @@ class Reporting extends Module {
    */
   config($stateProvider) {
     $stateProvider.state('labeling.reporting', {
-      url: 'reporting',
+      url: 'organisations/:organisationId/reporting',
       redirectTo: 'labeling.projects.list',
     });
 
