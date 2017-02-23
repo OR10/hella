@@ -44,7 +44,7 @@ class CuboidKeyboardTool extends KeyboardTool {
     this._registerKeyboardShortcut(
       'down',
       'Move selected shape down',
-      () => this._moveSelectedShapeBy(0, keyboardMoveDistance),
+      () => this._moveSelectedShapeBy(0, keyboardMoveDistance)
     );
 
     this._registerKeyboardShortcut(
