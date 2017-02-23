@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
  * @Rest\Prefix("/api/organisation")
- * @Rest\Route(service="annostation.labeling_api.controller.api.labeling_group")
+ * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.labeling_group")
  *
  * @CloseSession
  */
