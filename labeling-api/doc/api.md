@@ -30,3 +30,4 @@ broken a 400 status code should be returned.
 <!-- include(labeledThingGroup.md) -->
 <!-- include(organisation.md) -->
 <!-- include(projectImporter.md) -->
+<!-- include(campaign.md) -->
