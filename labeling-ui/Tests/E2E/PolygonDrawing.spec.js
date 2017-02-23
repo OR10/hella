@@ -517,7 +517,7 @@ describe('Polygon handle/point limiting', () => {
       });
   });
 
-  it('should add too many handles', done => {
+  xit('should add too many handles', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
