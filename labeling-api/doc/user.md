@@ -1,6 +1,6 @@
 # Group Users
 
-## List all users [/api/users]
+## List all users [/api/user]
 
 ### Get a list of all users [GET]
 
@@ -9,7 +9,7 @@
         + result
             + user (array[User])
 
-## Add a new user [/api/users]
+## Add a new user [/api/user]
 
 ### Add a new user [POST]
 
@@ -18,7 +18,7 @@
         + result
             + user (User)
 
-## Get a specific user [/api/users/{id}]
+## Get a specific user [/api/user/{id}]
 
 + Parameters
     + id: `1` (string, required) - The id of the user-entity.
@@ -30,7 +30,7 @@
         + result
             + user (User)
 
-## Edit a specific user [/api/users/{id}]
+## Edit a specific user [/api/user/{id}]
 
 + Parameters
     + id: `1` (string, required) - The id of the user-entity.
@@ -42,7 +42,7 @@
         + result
             + success: `true` (boolean)
 
-## Delete a specific user [/api/users/{id}]
+## Delete a specific user [/api/user/{id}]
 
 + Parameters
     + id: `1` (string, required) - The id of the user-entity.
