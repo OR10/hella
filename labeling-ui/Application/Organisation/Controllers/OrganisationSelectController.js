@@ -1,17 +1,20 @@
 class OrganisationSelectController {
   /**
-   * @param {Array.<Organisation>} organisations
+   * @param {CurrentUserService} currentUserService
    */
-  constructor(organisations) {
+  constructor(currentUserService) {
     /**
      * @type {Array.<Organisation>}
      */
-    this.organisationsOfCurrentUser = organisations;
+    this.organisationsOfCurrentUser = currentUserService.getOrganisations();
+
+    this.user = currentUserService.get();
+    this.userPermissions = currentUserService.getPermissions();
   }
 }
 
 OrganisationSelectController.$inject = [
-  'organisations'
+  'currentUserService'
 ];
 
 export default OrganisationSelectController;

@@ -1,15 +1,26 @@
-<div class="grid-content">
-    <h1 style="margin: 1.2em auto; text-align: center;">Please select an Organisation to enter:</h1>
-    <table class="table hover">
-        <thead>
-        <tr>
-            <th>Organisation</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="organisation in vm.organisationsOfCurrentUser">
-            <td ui-sref="labeling.projects.list({organisationId: organisation.id})">{{organisation.name}}</td>
-        </tr>
-        </tbody>
-    </table>
+<div class="grid-frame vertical">
+    <title-bar class="grid-block noscroll header"
+               user="vm.user"
+               user-permissions="vm.userPermissions"
+               back-link=""
+               back-link-text=""
+               show-username="true"
+               show-logout-button="true"
+    >
+    </title-bar>
+    <div class="grid-block text-center vertical">
+        <h1 style="margin: 1.2em auto; text-align: center;">Please select an Organisation to enter:</h1>
+        <table class="table hover">
+            <thead>
+            <tr>
+                <th>Organisation</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="organisation in vm.organisationsOfCurrentUser">
+                <td ui-sref="labeling.projects.list({organisationId: organisation.id})">{{organisation.name}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
