@@ -6,7 +6,6 @@ import Common from 'Application/Common/Common';
 import LabelingData from 'Application/LabelingData/LabelingData';
 
 import LabeledThingGroupGateway from 'Application/LabelingData/Gateways/LabeledThingGroupGateway';
-import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup';
 import LabeledThingGroupInFrame from 'Application/LabelingData/Models/LabeledThingGroupInFrame';
 
@@ -160,43 +159,6 @@ describe('LabeledThingGroupGateway', () => {
         expect(result).toEqual(ltg);
         done();
       });
-
-    $httpBackend.flush();
-  });
-
-// TODO: How should I test this gateway function?!
-  xit('should assign multiple labeled things to the given group', done => {
-    const task = {id: '456'};
-    const labeledThingId = '123';
-
-    const labeledThingGroup = new LabeledThingGroup({
-      id: 'labeled-thing-group-id',
-      type: 'some-type',
-    });
-
-    const labeledThing = new LabeledThing({
-      task,
-      projectId: 'some-project',
-      id: labeledThingId,
-      rev: '1-abcdef',
-      frameRange: {startFrameIndex: 23, endFrameIndex: 42},
-      classes: ['foo', 'bar'],
-      groupIds: [],
-    });
-
-    const expectedUrl = `/task/${labeledThing.task.id}/labeledThing/${labeledThing.id}`;
-
-    $httpBackend
-      .expect('PUT', expectedUrl, labeledThing)
-      .respond(200, {result: labeledThing.toJSON()});
-
-    const expectedResult = labeledThing.toJSON();
-    expectedResult.groupIds.push(labeledThingGroup.id);
-
-    gateway.assignLabeledThingsToLabeledThingGroup([labeledThing], labeledThingGroup).then(result => {
-      expect(result).toEqual(expectedResult);
-      done();
-    });
 
     $httpBackend.flush();
   });
