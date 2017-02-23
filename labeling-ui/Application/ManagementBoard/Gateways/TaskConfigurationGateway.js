@@ -8,8 +8,9 @@ class TaskConfigurationGateway {
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
    * @param {angular.$q} $q
+   * @param {OrganisationService} organisationService
    */
-  constructor(apiService, bufferedHttp, $q) {
+  constructor(apiService, bufferedHttp, $q, organisationService) {
     /**
      * @type {BufferedHttp}
      * @private
@@ -22,7 +23,17 @@ class TaskConfigurationGateway {
      */
     this._apiService = apiService;
 
+    /**
+     * @type {angular.$q}
+     * @private
+     */
     this._$q = $q;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
   }
 
   /**
@@ -31,7 +42,9 @@ class TaskConfigurationGateway {
    * @return {AbortablePromise<RequirementsConfiguration|Error>}
    */
   uploadRequirementsConfiguration(name, file) {
-    const url = this._apiService.getApiUrl('/taskConfiguration/requirements');
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration/requirements`);
+
     return this._uploadConfiguration(url, name, file);
   }
 
@@ -84,7 +97,8 @@ class TaskConfigurationGateway {
    * @returns {AbortablePromise}
    */
   getRequirementsXmlConfigurations() {
-    const url = this._apiService.getApiUrl('/taskConfiguration?type=requirementsXml');
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration?type=requirementsXml`);
 
     return this._bufferedHttp.get(url, undefined, 'task-configuration').then(response => {
       if (response.data && response.data.result) {
@@ -99,6 +113,7 @@ TaskConfigurationGateway.$inject = [
   'ApiService',
   'bufferedHttp',
   '$q',
+  'organisationService',
 ];
 
 export default TaskConfigurationGateway;

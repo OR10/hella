@@ -5,6 +5,7 @@ import Common from 'Application/Common/Common';
 import LabelingGroupGateway from 'Application/ManagementBoard/Gateways/LabelingGroupGateway';
 import User from 'Application/ManagementBoard/Models/User';
 import LabelingGroup from 'Application/ManagementBoard/Models/LabelingGroup';
+import Organisation from 'Application/Organisation/Models/Organisation';
 
 describe('LabelingGroup', () => {
   let $httpBackend;
@@ -25,6 +26,10 @@ describe('LabelingGroup', () => {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
+      });
+
+      $provide.value('organisationService', {
+        get: () => new Organisation('organisation-id', 'organisation-name', 100),
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();
@@ -59,7 +64,7 @@ describe('LabelingGroup', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/labelingGroup').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/organisation-id/labelingGroup').respond(response);
 
     gateway.getLabelingGroups().then(data => {
       expect(data.labelingGroups).toEqual(response.result.labelingGroups.map(group => new LabelingGroup(group)));
@@ -88,7 +93,7 @@ describe('LabelingGroup', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/labelingGroup').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/organisation-id/labelingGroup').respond(response);
 
     gateway.getLabelingGroups().then(data => {
       const users = {};
@@ -170,7 +175,7 @@ describe('LabelingGroup', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/labelingGroup/user/groups').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/organisation-id/labelingGroup/user/groups').respond(response);
     gateway.getMyLabelingGroups().then(result => {
       expect(result).toEqual(response.result);
       done();

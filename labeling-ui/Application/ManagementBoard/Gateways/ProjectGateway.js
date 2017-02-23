@@ -5,10 +5,26 @@ class ProjectGateway {
   /**
    * @param {ApiService} apiService
    * @param {angular.bufferedHttp} bufferedHttp
+   * @param {OrganisationService} organisationService
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, bufferedHttp, organisationService) {
+    /**
+     * @type {angular.bufferedHttp}
+     * @private
+     */
     this._bufferedHttp = bufferedHttp;
+
+    /**
+     * @type {ApiService}
+     * @private
+     */
     this._apiService = apiService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
   }
 
   /**
@@ -40,7 +56,9 @@ class ProjectGateway {
       params.offset = offset;
     }
 
-    const url = this._apiService.getApiUrl('/project', params);
+    const organisationId = this._organisationService.get().id;
+
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project`, params);
 
     return this._bufferedHttp.get(url, undefined, 'project')
       .then(response => response.data);
@@ -50,7 +68,9 @@ class ProjectGateway {
    * @returns {Promise<Object>}
    */
   getProjectCount() {
-    const url = this._apiService.getApiUrl('/projectCount');
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/projectCount`);
+
     return this._bufferedHttp.get(url, undefined, 'projectcount')
       .then(response => response.data.result);
   }
@@ -185,6 +205,10 @@ class ProjectGateway {
   }
 }
 
-ProjectGateway.$inject = ['ApiService', 'bufferedHttp'];
+ProjectGateway.$inject = [
+  'ApiService',
+  'bufferedHttp',
+  'organisationService',
+];
 
 export default ProjectGateway;

@@ -4,6 +4,7 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
 import ProjectGateway from 'Application/ManagementBoard/Gateways/ProjectGateway';
+import Organisation from 'Application/Organisation/Models/Organisation';
 
 describe('ProjectGateway', () => {
   let $httpBackend;
@@ -24,6 +25,10 @@ describe('ProjectGateway', () => {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
+      });
+
+      $provide.value('organisationService', {
+        get: () => new Organisation('organisation-id', 'organisation-name', 100),
       });
     });
 
@@ -73,7 +78,7 @@ describe('ProjectGateway', () => {
       totalRows: 2,
     };
 
-    $httpBackend.expectGET('/backend/api/project').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/organisation-id/project').respond(response);
 
     gateway.getProjects().then(projects => {
       expect(projects).toEqual(response);
@@ -95,7 +100,7 @@ describe('ProjectGateway', () => {
       ],
     };
 
-    $httpBackend.expectGET('/backend/api/projectCount').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/organisation-id/projectCount').respond(response);
 
     gateway.getProjectCount().then(projects => {
       expect(projects).toEqual(response.result);

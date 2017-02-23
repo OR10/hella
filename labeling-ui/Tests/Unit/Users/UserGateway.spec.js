@@ -5,8 +5,9 @@ import Common from 'Application/Common/Common';
 
 import UserGateway from 'Application/ManagementBoard/Gateways/UserGateway';
 import User from 'Application/ManagementBoard/Models/User';
+import Organisation from 'Application/Organisation/Models/Organisation';
 
-describe('UserGateway', () => {
+fdescribe('UserGateway', () => {
   let $httpBackend;
   let gateway;
 
@@ -25,6 +26,10 @@ describe('UserGateway', () => {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
+      });
+
+      $provide.value('organisationService', {
+        get: () => new Organisation('organisation-id', 'organisation-name', 100),
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();
@@ -65,9 +70,29 @@ describe('UserGateway', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/user').respond(usersResponse);
+    $httpBackend.expectGET('/backend/api/organisation/organisation-id/user').respond(usersResponse);
 
     gateway.getUsers().then(users => {
+      expect(users).toEqual(usersResponse.result.users.map(user => new User(user)));
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should load a list of users of all organisations', done => {
+    const usersResponse = {
+      result: {
+        users: [
+          {id: 'me', email: 'foo@bar.baz'},
+          {id: 'you', email: 'blub@blib.blab'},
+        ],
+      },
+    };
+
+    $httpBackend.expectGET('/backend/api/user').respond(usersResponse);
+
+    gateway.getUserOfAllOrganisations().then(users => {
       expect(users).toEqual(usersResponse.result.users.map(user => new User(user)));
       done();
     });

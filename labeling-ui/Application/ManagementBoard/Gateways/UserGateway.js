@@ -8,8 +8,9 @@ class UserGateway {
   /**
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
+   * @param {OrganisationService} organisationService
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, bufferedHttp, organisationService) {
     /**
      * @type {BufferedHttp}
      * @private
@@ -21,6 +22,12 @@ class UserGateway {
      * @private
      */
     this._apiService = apiService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
   }
 
   /**
@@ -41,12 +48,32 @@ class UserGateway {
   }
 
   /**
-   * List all users from the backend
+   * List all users of the current organisation
    *
    * @return {AbortablePromise.<Array.<User>>}
    */
   getUsers() {
-    const url = this._apiService.getApiUrl('/user');
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/user`);
+
+    return this._bufferedHttp.get(url, undefined, 'user')
+      .then(response => {
+        if (!response.data || !response.data.result || !response.data.result.users) {
+          throw new Error('Failed loading users list');
+        }
+
+        return response.data.result.users.map(user => new User(user));
+      });
+  }
+
+  /**
+   * List all users of all organisations
+   *
+   * @return {AbortablePromise}
+   */
+  getUserOfAllOrganisations() {
+    const url = this._apiService.getApiUrl(`/user`);
+
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.users) {
@@ -208,6 +235,7 @@ class UserGateway {
 UserGateway.$inject = [
   'ApiService',
   'bufferedHttp',
+  'organisationService',
 ];
 
 export default UserGateway;
