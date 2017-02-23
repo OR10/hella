@@ -9,6 +9,7 @@ use AnnoStationBundle\Database\Facade;
 use Symfony\Component\HttpFoundation;
 use FOS\UserBundle\Util;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class OrganisationTest extends Tests\WebTestCase
 {
@@ -22,11 +23,17 @@ class OrganisationTest extends Tests\WebTestCase
     /**
      * @var Model\User
      */
+    private $admin;
+
+    /**
+     * @var Model\User
+     */
     private $superAdmin;
 
     protected function setUpImplementation()
     {
         $this->organisationFacade = $this->getAnnostationService('database.facade.organisation');
+        $this->admin              = $this->createAdminUser();
         $this->superAdmin         = $this->createSuperAdminUser();
     }
 
@@ -48,6 +55,15 @@ class OrganisationTest extends Tests\WebTestCase
         $this->assertEquals(['Test 4', 'Test 3', 'Test 2', 'Test 1'], $actualOrganisations);
     }
 
+    public function testGetOrganisationsAsNonSuperAdmin()
+    {
+        $requestWrapper = $this->createRequest('/api/organisation')
+            ->withCredentialsFromUsername($this->admin)
+            ->execute();
+
+        $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
+    }
+
     public function testCreateOrganisation()
     {
         $requestWrapper = $this->createRequest('/api/organisation')
@@ -62,6 +78,21 @@ class OrganisationTest extends Tests\WebTestCase
 
         $organisation = $requestWrapper->getJsonResponseBody();
         $this->assertEquals('Test create new organisation', $organisation['name']);
+    }
+
+    public function testCreateOrganisationAsNonSuperAdmin()
+    {
+        $requestWrapper = $this->createRequest('/api/organisation')
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentialsFromUsername($this->admin)
+            ->setJsonBody(
+                [
+                    'name' => 'Test create new organisation',
+                ]
+            )
+            ->execute();
+
+        $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
     }
 
     public function testUpdateOrganisation()
@@ -82,6 +113,23 @@ class OrganisationTest extends Tests\WebTestCase
         $this->assertEquals('Test Organisation Updated', $organisation['name']);
     }
 
+    public function testUpdateOrganisationAsNonSuperAdmin()
+    {
+        $organisation   = $this->createOrganisation();
+        $requestWrapper = $this->createRequest('/api/organisation/%s', [$organisation->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->withCredentialsFromUsername($this->admin)
+            ->setJsonBody(
+                [
+                    'name' => 'Test Organisation Updated',
+                    'rev'  => $organisation->getRev(),
+                ]
+            )
+            ->execute();
+
+        $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
+    }
+
     public function testDeleteOrganisation()
     {
         $organisation   = $this->createOrganisation();
@@ -91,6 +139,17 @@ class OrganisationTest extends Tests\WebTestCase
             ->execute();
 
         $this->assertNull($this->organisationFacade->find($organisation->getId()));
+    }
+
+    public function testDeleteOrganisationAsNonSuperAdmin()
+    {
+        $organisation   = $this->createOrganisation();
+        $requestWrapper = $this->createRequest('/api/organisation/%s', [$organisation->getId()])
+            ->setMethod(HttpFoundation\Request::METHOD_DELETE)
+            ->withCredentialsFromUsername($this->admin)
+            ->execute();
+
+        $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
     }
 
     private function createOrganisation($name = 'Test Organisation')
