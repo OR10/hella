@@ -1,5 +1,6 @@
 import User from '../Models/User';
 import Organisation from '../../Organisation/Models/Organisation';
+import {map} from 'lodash';
 
 /**
  * Gateway for managing User information
@@ -207,28 +208,23 @@ class UserGateway {
    * @returns {AbortablePromise.<Array.<Organisation>>}
    */
   getCurrentUserOrganisations() {
-    // const url = this._apiService.getApiUrl(`/currentUser/organisations`);
-    // return this._bufferedHttp.get(url, undefined, 'user')
-    //   .then(response => {
-    //     if (!response.data || !response.data.result || !Array.isArray(response.data.result)) {
-    //       throw new Error('Invalid organisation list response');
-    //     }
-    //
-    //     // const organisationDocuments = response.data.result;
-    //     // return organisationDocuments.map(
-    //     //   new Organisation(
-    //     //     organisationDocuments.id,
-    //     //     organisationDocuments.name,
-    //     //     organisationDocuments.quota
-    //     //   )
-    //     // );
-    //
-    //   });
-    return Promise.resolve([
-      new Organisation('orga-1', 'Foobar', null),
-      new Organisation('orga-2', 'Baz', null),
-      new Organisation('orga-3', 'Another Cool Organisation', null),
-    ]);
+    const url = this._apiService.getApiUrl(`/currentUser/organisations`);
+    return this._bufferedHttp.get(url, undefined, 'user')
+      .then(response => {
+        if (!response.data || !response.data.result || !Array.isArray(response.data.result)) {
+          throw new Error('Invalid organisation list response');
+        }
+
+        const organisationDocumentsById = response.data.result;
+        return map(
+          organisationDocumentsById,
+          organisationDocument => new Organisation(
+            organisationDocument.id,
+            organisationDocument.name,
+            organisationDocument.quota
+          )
+        );
+      });
   }
 }
 
