@@ -69,11 +69,11 @@ class User
     /**
      * @param Model\User $user
      * @param string     $projectId
-     * @param string     $role
+     * @param Model\Role $role
      *
      * @return Model\User
      */
-    public function assignRoleToUser(Model\User $user, string $projectId, string $role)
+    public function assignRoleToUser(Model\User $user, string $projectId, Model\Role $role)
     {
         $user->assignRole($projectId, $role);
         $this->userManager->updateUser($user);

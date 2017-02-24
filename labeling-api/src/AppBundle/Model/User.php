@@ -2,8 +2,8 @@
 
 namespace AppBundle\Model;
 
-use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use FOS\UserBundle\Model\User as BaseUser;
 
 /**
  * @CouchDB\Document
@@ -39,9 +39,11 @@ class User extends BaseUser
     protected $settings = [];
 
     /**
-     * @CouchDB\Field(type="mixed")
+     * @var ProjectRoles[]
+     *
+     * @CouchDB\EmbedMany(targetDocument="ProjectRoles")
      */
-    protected $rolesByProject = [];
+    protected $projectRoles = [];
 
     public function __construct()
     {
@@ -118,34 +120,60 @@ class User extends BaseUser
 
     /**
      * @param string $projectId
-     * @param string $role
+     * @param Role   $role
      */
-    public function assignRole(string $projectId, string $role)
+    public function assignRole(string $projectId, Role $role)
     {
-        if ($this->rolesByProject === null) {
-            $this->rolesByProject = [];
+        if ($this->projectRoles === null) {
+            $this->projectRoles = [];
         }
 
-        if (!in_array($role, $this->rolesByProject[$projectId] ?? [])) {
-            $this->rolesByProject[$projectId][] = $role;
+        $roles = $this->getProjectRolesForProjectId($projectId);
+
+        if ($roles === null) {
+            $roles                = new ProjectRoles($projectId);
+            $this->projectRoles[] = $roles;
         }
+
+        $roles->assignRole($role);
     }
 
     /**
      * @param string $projectId
      *
-     * @return string[]
+     * @return Role[]
      */
     public function getRolesForProject(string $projectId)
     {
-        return $this->rolesByProject[$projectId] ?? [];
+        $roles = $this->getProjectRolesForProjectId($projectId);
+        if ($roles === null) {
+            return [];
+        }
+
+        return $roles->getRoles();
     }
 
     /**
      * @return string[]
      */
-    public function getRolesIndexedByProjectId()
+    public function getProjectRoles()
     {
-        return $this->rolesByProject ?? [];
+        return $this->projectRoles ?? [];
+    }
+
+    /**
+     * @param string $projectId
+     *
+     * @return ProjectRoles|null
+     */
+    private function getProjectRolesForProjectId(string $projectId)
+    {
+        foreach ($this->projectRoles as $projectRoles) {
+            if ($projectRoles->getProjectId() == $projectId) {
+                return $projectRoles;
+            }
+        }
+
+        return null;
     }
 }

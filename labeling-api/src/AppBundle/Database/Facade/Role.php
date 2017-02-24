@@ -36,13 +36,14 @@ class Role
     /**
      * @param string $projectId
      * @param string $roleName
+     * @param string $label
      * @param array  $permissions
      *
      * @return Model\Role
      */
-    public function createRole(string $projectId, string $roleName, array $permissions)
+    public function createRole(string $projectId, string $roleName, string $label, array $permissions)
     {
-        $role = new Model\Role($this->uuidGenerator->generateUuid(), $projectId, $roleName, $permissions);
+        $role = new Model\Role($this->uuidGenerator->generateUuid(), $projectId, $roleName, $label, $permissions);
         $this->documentManager->persist($role);
         $this->documentManager->flush();
 
@@ -50,11 +51,13 @@ class Role
     }
 
     /**
-     * @param string $projectId
-     * @param string $roleName
+     * @param string     $projectId
+     * @param Model\Role $role
      */
-    public function getPermissionsForRole(string $projectId, string $roleName)
+    public function getPermissionsForRole(string $projectId, Model\Role $role)
     {
+        $roleName = $role->getName();
+
         $roles = $this->documentManager->createQuery('annostation_roles', 'roles_by_project_and_name')
             ->onlyDocs(true)
             ->setStartKey([$projectId, $roleName])
