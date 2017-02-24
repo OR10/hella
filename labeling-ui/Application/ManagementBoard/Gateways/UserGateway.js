@@ -55,7 +55,7 @@ class UserGateway {
    */
   getUsers() {
     const organisationId = this._organisationService.get().id;
-    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/user`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/users`);
 
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {

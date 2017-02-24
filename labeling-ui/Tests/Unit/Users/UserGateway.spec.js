@@ -29,7 +29,7 @@ describe('UserGateway', () => {
       });
 
       $provide.value('organisationService', {
-        get: () => new Organisation('organisation-id', 'organisation-name', 100),
+        get: () => new Organisation('ORGANISATION-ID', 'organisation-name', 100),
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();
@@ -70,7 +70,7 @@ describe('UserGateway', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/organisation/organisation-id/user').respond(usersResponse);
+    $httpBackend.expectGET('/backend/api/organisation/ORGANISATION-ID/users').respond(usersResponse);
 
     gateway.getUsers().then(users => {
       expect(users).toEqual(usersResponse.result.users.map(user => new User(user)));
