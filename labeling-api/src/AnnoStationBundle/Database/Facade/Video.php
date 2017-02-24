@@ -222,11 +222,10 @@ class Video
             ->toArray();
 
         $numberOfVideosByOrganisation = [];
-        foreach($query as $value) {
+        foreach ($query as $value) {
             $numberOfVideosByOrganisation[$value['key'][0]] = $value['value'];
         }
 
         return $numberOfVideosByOrganisation;
-
     }
 }
