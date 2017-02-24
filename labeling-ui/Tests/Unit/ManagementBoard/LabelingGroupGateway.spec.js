@@ -29,7 +29,7 @@ describe('LabelingGroup', () => {
       });
 
       $provide.value('organisationService', {
-        get: () => new Organisation('organisation-id', 'organisation-name', 100),
+        get: () => new Organisation('ORGANISATION-ID', 'organisation-name', 100),
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();
@@ -64,7 +64,7 @@ describe('LabelingGroup', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/organisation/organisation-id/labelingGroup').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/ORGANISATION-ID/labelingGroup').respond(response);
 
     gateway.getLabelingGroups().then(data => {
       expect(data.labelingGroups).toEqual(response.result.labelingGroups.map(group => new LabelingGroup(group)));
@@ -93,7 +93,7 @@ describe('LabelingGroup', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/organisation/organisation-id/labelingGroup').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/ORGANISATION-ID/labelingGroup').respond(response);
 
     gateway.getLabelingGroups().then(data => {
       const users = {};
@@ -115,7 +115,7 @@ describe('LabelingGroup', () => {
       },
     };
 
-    $httpBackend.expectPOST('/backend/api/labelingGroup').respond(response);
+    $httpBackend.expectPOST('/backend/api/organisation/ORGANISATION-ID/labelingGroup').respond(response);
 
     const group = new LabelingGroup(response.result);
     gateway.createLabelingGroup(group).then(createdGroup => {
@@ -136,7 +136,7 @@ describe('LabelingGroup', () => {
       },
     };
 
-    $httpBackend.expectPUT('/backend/api/labelingGroup/group-id-1').respond(response);
+    $httpBackend.expectPUT('/backend/api/organisation/ORGANISATION-ID/labelingGroup/group-id-1').respond(response);
     const group = new LabelingGroup(response.result);
     gateway.updateLabelingGroup(group).then(updatedGroup => {
       expect(updatedGroup).toEqual(group);
@@ -147,7 +147,7 @@ describe('LabelingGroup', () => {
   });
 
   it('should delete labeling group', done => {
-    $httpBackend.expectDELETE('/backend/api/labelingGroup/group-id-1').respond({result: true});
+    $httpBackend.expectDELETE('/backend/api/organisation/ORGANISATION-ID/labelingGroup/group-id-1').respond({result: true});
     gateway.deleteLabelingGroup('group-id-1').then(result => {
       expect(result).toBeTruthy();
       done();
@@ -175,7 +175,7 @@ describe('LabelingGroup', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/organisation/organisation-id/labelingGroup/user/groups').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/ORGANISATION-ID/labelingGroup/user/groups').respond(response);
     gateway.getMyLabelingGroups().then(result => {
       expect(result).toEqual(response.result);
       done();
