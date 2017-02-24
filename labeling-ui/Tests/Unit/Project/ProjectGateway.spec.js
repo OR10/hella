@@ -28,7 +28,7 @@ describe('ProjectGateway', () => {
       });
 
       $provide.value('organisationService', {
-        get: () => new Organisation('organisation-id', 'organisation-name', 100),
+        get: () => new Organisation('ORGANISATION-ID', 'organisation-name', 100),
       });
     });
 
@@ -53,7 +53,7 @@ describe('ProjectGateway', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/project/7999cf8d8d5275330fa67fc69501d977').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/ORGANISATION-ID/project/7999cf8d8d5275330fa67fc69501d977').respond(response);
 
     gateway.getProject(projectId).then(project => {
       expect(project).toEqual(response.result);
@@ -78,7 +78,7 @@ describe('ProjectGateway', () => {
       totalRows: 2,
     };
 
-    $httpBackend.expectGET('/backend/api/organisation/organisation-id/project').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/ORGANISATION-ID/project').respond(response);
 
     gateway.getProjects().then(projects => {
       expect(projects).toEqual(response);
@@ -100,7 +100,7 @@ describe('ProjectGateway', () => {
       ],
     };
 
-    $httpBackend.expectGET('/backend/api/organisation/organisation-id/projectCount').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/ORGANISATION-ID/projectCount').respond(response);
 
     gateway.getProjectCount().then(projects => {
       expect(projects).toEqual(response.result);
@@ -127,7 +127,7 @@ describe('ProjectGateway', () => {
       }],
     };
 
-    $httpBackend.expectGET('/backend/api/project/7999cf8d8d5275330fa67fc69501d977/export').respond(response);
+    $httpBackend.expectGET('/backend/api/organisation/ORGANISATION-ID/project/7999cf8d8d5275330fa67fc69501d977/export').respond(response);
 
     gateway.getExports(projectId).then(project => {
       expect(project).toEqual(response.result);
@@ -142,7 +142,7 @@ describe('ProjectGateway', () => {
       result: true,
     };
 
-    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/status/accept').respond(response);
+    $httpBackend.expectPOST('/backend/api/organisation/ORGANISATION-ID/project/PROJECT_ID/status/accept').respond(response);
 
     gateway.acceptProject('PROJECT_ID').then(result => {
       expect(result).toEqual(response.result);
@@ -157,7 +157,7 @@ describe('ProjectGateway', () => {
       result: true,
     };
 
-    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/status/done').respond(response);
+    $httpBackend.expectPOST('/backend/api/organisation/ORGANISATION-ID/project/PROJECT_ID/status/done').respond(response);
 
     gateway.closeProject('PROJECT_ID').then(result => {
       expect(result).toEqual(response.result);
@@ -174,7 +174,7 @@ describe('ProjectGateway', () => {
       },
     };
 
-    $httpBackend.expectPOST('/backend/api/project/PROJECT_ID/delete').respond(response);
+    $httpBackend.expectPOST('/backend/api/organisation/ORGANISATION-ID/project/PROJECT_ID/delete').respond(response);
 
     gateway.deleteProject('PROJECT_ID').then(result => {
       expect(result).toEqual(response.result);

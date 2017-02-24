@@ -31,7 +31,8 @@ class ProjectGateway {
    * @returns {Promise<Project>}
    */
   getProject(projectId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}`);
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}`);
 
     return this._bufferedHttp.get(url, undefined, 'project')
       .then(response => response.data.result);
@@ -79,7 +80,8 @@ class ProjectGateway {
    * @returns {Promise<Export>}
    */
   getExports(projectId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/export`);
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/export`);
 
     return this._bufferedHttp.get(url, undefined, 'export')
       .then(response => response.data.result);
@@ -94,7 +96,8 @@ class ProjectGateway {
    * @returns {AbortablePromise<string|Error>}
    */
   startExport(projectId, exportType = 'csv') {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/export/${exportType}`);
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/export/${exportType}`);
 
     return this._bufferedHttp.post(url, {}, undefined, 'export')
       .then(response => {
@@ -112,7 +115,8 @@ class ProjectGateway {
    * @returns {AbortablePromise}
    */
   acceptProject(projectId, groupId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/status/accept`);
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/status/accept`);
     return this._bufferedHttp.post(url, {assignedGroupId: groupId}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
@@ -129,7 +133,8 @@ class ProjectGateway {
    * @returns {AbortablePromise}
    */
   assignCoordinator(projectId, labelCoordinatorId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/assign`);
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/assign`);
     return this._bufferedHttp.post(url, {assignedLabelCoordinatorId: labelCoordinatorId}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
@@ -145,7 +150,8 @@ class ProjectGateway {
    * @returns {AbortablePromise}
    */
   closeProject(projectId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/status/done`);
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/status/done`);
     return this._bufferedHttp.post(url, undefined, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
@@ -161,7 +167,8 @@ class ProjectGateway {
    * @returns {AbortablePromise}
    */
   setProjectStatusToDeleted(projectId, message) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/status/deleted`);
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/status/deleted`);
     return this._bufferedHttp.post(url, {message}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result && response.data.result.success === true) {
@@ -177,7 +184,8 @@ class ProjectGateway {
    * @returns {AbortablePromise}
    */
   deleteProject(projectId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/delete`);
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/delete`);
     return this._bufferedHttp.post(url, {}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result && response.data.result.success === true) {
@@ -193,7 +201,8 @@ class ProjectGateway {
    * @returns {*}
    */
   createProject(data) {
-    const url = this._apiService.getApiUrl(`/project`);
+    const organisationId = this._organisationService.get().id;
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project`);
     return this._bufferedHttp.post(url, data, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
