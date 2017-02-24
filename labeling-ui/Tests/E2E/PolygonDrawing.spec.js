@@ -46,7 +46,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'LoadAndDrawOnePolygon'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -63,7 +63,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'LoadAndDrawTwoPolygons')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -80,7 +80,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
@@ -103,7 +103,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
@@ -130,7 +130,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
@@ -158,7 +158,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.MoveOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
@@ -194,7 +194,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.Shared.StoreLabeledThing,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
           .click()
@@ -233,7 +233,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
@@ -263,7 +263,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1,
       assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
@@ -308,7 +308,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1,
       assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
@@ -389,7 +389,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame4,
       assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
@@ -496,7 +496,7 @@ describe('Polygon handle/point limiting', () => {
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
@@ -526,7 +526,7 @@ describe('Polygon handle/point limiting', () => {
       assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position

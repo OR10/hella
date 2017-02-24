@@ -40,7 +40,7 @@ describe('Multiple Things', () => {
       assets.mocks.MultipleThings.Display.LabeledThingInFrame.frameIndex0to4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'DisplayMultipleDifferentThings')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -61,7 +61,7 @@ describe('Multiple Things', () => {
       assets.mocks.MultipleThings.Display.LabeledThingInFrame.getLabeledThingInFrame4,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'SelectMultipleDifferentThings1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -145,7 +145,7 @@ describe('Multiple Things', () => {
       assets.mocks.MultipleThings.Shared.SingleLabeledThingInFrame,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'SelectMultipleDifferentThings1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()

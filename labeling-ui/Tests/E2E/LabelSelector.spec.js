@@ -76,7 +76,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have no panes if nothing is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -87,7 +87,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should start with all panes closed', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -108,7 +108,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('pane should open on click', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -130,7 +130,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('open pane should close on click', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -153,7 +153,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should only have one pane open at a time in single-select mode', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -177,7 +177,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should allow multiple open panes in multi-select mode', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -201,7 +201,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should close clicked open open panes in multi-select mode', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -229,7 +229,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -255,7 +255,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -274,7 +274,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -294,7 +294,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -323,7 +323,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -354,7 +354,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct number of panes if rectangle is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -367,7 +367,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct pane titles if rectangle is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -387,7 +387,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct entries in panes if rectangle is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -430,7 +430,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesIgnoreVehicle,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -481,7 +481,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesIgnoreVehicleAndIgnoreGroup,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -538,7 +538,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -588,7 +588,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -621,7 +621,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct number of panes if rectangle one is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -634,7 +634,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct pane titles if rectangle one is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -651,7 +651,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct entries in panes if rectangle one is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -672,7 +672,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct number of panes if rectangle two is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -685,7 +685,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct pane titles if rectangle two is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -703,7 +703,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct entries in panes if rectangle two is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -729,7 +729,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should switch to correct entries if rectangle is changed', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -763,7 +763,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesNight,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -800,7 +800,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesNightAndNeon,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -843,7 +843,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesNightAndXenon,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -883,7 +883,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesDay,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -918,7 +918,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesDay,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -960,7 +960,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueA,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -991,7 +991,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueB,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -1031,7 +1031,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueBF,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -1077,7 +1077,7 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueBCE,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -1127,7 +1127,7 @@ describe('LabelSelector (right sidebar)', () => {
       ]));
       const nextFrameButton = element(by.css('.next-frame-button'));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
