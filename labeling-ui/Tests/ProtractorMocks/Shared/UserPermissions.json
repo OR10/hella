@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/user/permissions",
+    "path": "/api/currentUser/permissions",
     "method": "GET"
   },
   "response": {
