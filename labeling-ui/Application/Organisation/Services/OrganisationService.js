@@ -38,6 +38,10 @@ class OrganisationService {
    * @param {Organisation} activeOrganisation
    */
   set(activeOrganisation) {
+    if (this._activeOrganisation === activeOrganisation) {
+      return;
+    }
+
     const oldActiveOrganisation = this._activeOrganisation;
     this._activeOrganisation = activeOrganisation;
     this._subscribers.forEach(
