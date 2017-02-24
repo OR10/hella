@@ -60,19 +60,12 @@ class User extends Controller\Base
      * Get all users
      *
      * @Rest\Get("")
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_SUPER_ADMIN')")
      *
      * @return \FOS\RestBundle\View\View
      */
     public function getUsersListAction()
     {
-        /** @var Model\User $loginUser */
-        $loginUser = $this->tokenStorage->getToken()->getUser();
-
-        if (!$loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to get this route');
-        }
-
         $users = $this->userFacade->getUserList();
 
         $users = array_map(function (Model\User $user) {
@@ -94,7 +87,7 @@ class User extends Controller\Base
      * Get a single user
      *
      * @Rest\Get("/{user}")
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param Model\User                          $user
      *
@@ -119,7 +112,7 @@ class User extends Controller\Base
      * Add a new User
      *
      * @Rest\Post("")
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param HttpFoundation\Request              $request
      *
@@ -159,7 +152,7 @@ class User extends Controller\Base
      * Edit a User
      *
      * @Rest\Put("/{user}")
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param HttpFoundation\Request              $request
      * @param Model\User                          $user
@@ -179,7 +172,7 @@ class User extends Controller\Base
         $roles = $request->request->get('roles', array());
         $user->setUsername($request->request->get('username'));
         $user->setEmail($request->request->get('email'));
-        $user->setOrganisations($request->request->get('organisation'));
+        $user->setOrganisations($request->request->get('organisationIds'));
 
         if ($request->request->has('password')) {
             $user->setPlainPassword($request->request->get('password'));
@@ -220,7 +213,7 @@ class User extends Controller\Base
      * Delete a User
      *
      * @Rest\Delete("/{user}")
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param Model\User                          $user
      *
