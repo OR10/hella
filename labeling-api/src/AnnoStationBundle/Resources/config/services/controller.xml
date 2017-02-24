@@ -223,10 +223,11 @@
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
-        <service id="annostation.labeling_api.controller.api.project_count"
-                 class="AnnoStationBundle\Controller\Api\ProjectCount">
+        <service id="annostation.labeling_api.controller.api.organisation.project_count"
+                 class="AnnoStationBundle\Controller\Api\Organisation\ProjectCount">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.task_count" class="AnnoStationBundle\Controller\Api\TaskCount">

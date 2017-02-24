@@ -121,10 +121,10 @@ api_current_user:
     type: rest
     name_prefix: app_api_current_user_
 
-api_project_count:
-    resource: "annostation.labeling_api.controller.api.project_count"
+api_organisation_project_count:
+    resource: "annostation.labeling_api.controller.api.organisation.project_count"
     type: rest
-    name_prefix: app_api_project_count_
+    name_prefix: app_api_organisation_project_count_
 
 api_task_count:
     resource: "annostation.labeling_api.controller.api.task_count"
