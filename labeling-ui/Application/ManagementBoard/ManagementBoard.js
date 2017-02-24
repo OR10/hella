@@ -89,14 +89,15 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.projects', {
-      url: 'organisations/:organisationId/projects',
+      url: 'projects',
+      parent: 'organisation',
       redirectTo: 'labeling.projects.list',
     });
 
     $stateProvider.state('labeling.projects.list', {
       url: '/',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: ProjectsController,
           controllerAs: 'vm',
           template: ProjectsView,
