@@ -1,4 +1,5 @@
 import moment from 'moment';
+import BytesFilterFormatter from '../../Common/Filters/BytesFilterFormatter';
 
 /**
  * Controller of the {@link ProjectListDirective}
@@ -423,6 +424,7 @@ class ProjectListController {
       'totalLabelingTimeInSecondsFormatted': 'Time spent',
       'creationTimestampFormatted': 'Started',
       'dueTimestampFormatted': 'Due date',
+      'diskUsageTotal': 'Disk Usage',
     };
 
     Object.keys(propertyToColumnMap).forEach(
@@ -465,6 +467,13 @@ class ProjectListController {
         const time = Math.round(totalMinutes / 6) / 10;
 
         return `${time}h`;
+      },
+      'diskUsageTotal': project => {
+        const filter = new BytesFilterFormatter();
+        if (project.diskUsage.total === undefined) {
+          return filter.format(0);
+        }
+        return filter.format(project.diskUsage.total);
       },
     };
 
