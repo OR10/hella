@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/TASKID-TASKID/labelStructure",
+    "path": "/api/organisation/ORGANISATION-ID-1/task/TASKID-TASKID/labelStructure",
     "method": "GET"
   },
   "response": {

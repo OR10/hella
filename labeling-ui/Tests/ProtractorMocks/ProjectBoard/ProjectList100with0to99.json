@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/project",
+    "path": "/api/organisation/ORGANISATION-ID-1/project",
     "method": "GET"
   },
   "response": {

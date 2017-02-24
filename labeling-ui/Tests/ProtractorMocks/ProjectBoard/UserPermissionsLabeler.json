@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/user/permissions",
+    "path": "/api/organisation/ORGANISATION-ID-1/user/permissions",
     "method": "GET"
   },
   "response": {

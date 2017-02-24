@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/taskConfiguration/TASK-CONFIGURATION-1",
+    "path": "/api/organisation/ORGANISATION-ID-1/taskConfiguration/TASK-CONFIGURATION-1",
     "method": "GET"
   },
   "response": {
