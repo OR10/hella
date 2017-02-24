@@ -6,13 +6,20 @@
 class OrganisationService {
   /**
    * @param {$rootScope} $rootScope
+   * @param {CurrentUserService} currentUserService
    */
-  constructor($rootScope) {
+  constructor($rootScope, currentUserService) {
     /**
      * @type {$rootScope}
      * @private
      */
     this._$rootScope = $rootScope;
+
+    /**
+     * @type {CurrentUserService}
+     * @private
+     */
+    this._currentUserService = currentUserService;
 
     /**
      * @type {Organisation|null}
@@ -88,6 +95,7 @@ class OrganisationService {
 
 OrganisationService.$inject = [
   '$rootScope',
+  'currentUserService',
 ];
 
 export default OrganisationService;
