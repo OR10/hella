@@ -162,12 +162,20 @@ class Organisation
         foreach ($imageBytesByVideoIds as $imageBytesByVideoId) {
             $type                                          = $imageBytesByVideoId['key'][1];
             $videoId                                       = $imageBytesByVideoId['key'][2];
+            if (!isset($diskUsageByProject[$videoId]['total'])) {
+                $diskUsageByProject[$videoId]['total'] = 0;
+            }
             $diskUsageByProject[$videoId]['images'][$type] = $imageBytesByVideoId['value'];
+            $diskUsageByProject[$videoId]['total'] += $imageBytesByVideoId['value'];
             $diskUsageByProject['total'] += $imageBytesByVideoId['value'];
         }
         foreach ($videoBytesByVideoIds as $videoBytesByVideoId) {
-            $videoId                               = $videoBytesByVideoId['key'][1];
+            $videoId                                         = $videoBytesByVideoId['key'][1];
+            if (!isset($diskUsageByProject[$videoId]['total'])) {
+                $diskUsageByProject[$videoId]['total'] = 0;
+            }
             $diskUsageByProject[$videoId]['video']['source'] = $videoBytesByVideoId['value'];
+            $diskUsageByProject[$videoId]['total'] += $videoBytesByVideoId['value'];
             $diskUsageByProject['total'] += $videoBytesByVideoId['value'];
         }
 
