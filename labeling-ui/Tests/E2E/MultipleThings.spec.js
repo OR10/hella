@@ -15,6 +15,7 @@ describe('Multiple Things', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
       assets.mocks.MultipleThings.Shared.Task,
       assets.mocks.MultipleThings.Shared.Video,
       assets.mocks.MultipleThings.Shared.TaskConfiguration,

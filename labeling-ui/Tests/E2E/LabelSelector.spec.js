@@ -44,6 +44,7 @@ describe('LabelSelector (right sidebar)', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
       assets.mocks.Shared.Video,
       assets.mocks.Shared.GetTimer,
       assets.mocks.Shared.PutTimer,

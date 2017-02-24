@@ -15,6 +15,7 @@ describe('Keyboard Shape Movement', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
       assets.mocks.Shared.Task,
       assets.mocks.KeyboardShapeMovement.Shared.Video,
       assets.mocks.Shared.LabelStructure,

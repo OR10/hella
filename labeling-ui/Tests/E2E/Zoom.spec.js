@@ -21,6 +21,7 @@ describe('Zoom', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
       assets.mocks.Zoom.Shared.Task,
       assets.mocks.Zoom.Shared.Video,
       assets.mocks.Shared.LabelStructure,

@@ -15,6 +15,7 @@ describe('Rectangle viewer overflow', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
       assets.mocks.Shared.Video,
       assets.mocks.Shared.LabelStructure,
       assets.mocks.Shared.GetTimer,

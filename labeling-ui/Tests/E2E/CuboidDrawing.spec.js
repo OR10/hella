@@ -19,6 +19,7 @@ describe('Cuboid', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
       assets.mocks.CuboidDrawing.Shared.Task,
       assets.mocks.CuboidDrawing.Shared.Video,
       assets.mocks.Shared.LabelStructure,

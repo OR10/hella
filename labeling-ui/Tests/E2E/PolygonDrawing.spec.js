@@ -20,6 +20,7 @@ describe('Polygon drawing', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
       assets.mocks.Shared.Video,
       assets.mocks.PolygonDrawing.Shared.Task,
       assets.mocks.PolygonDrawing.Shared.TaskConfiguration,
