@@ -60,6 +60,7 @@ export default class Application {
    * Register all the modules to be loaded by the application
    */
   registerModules() {
+    this.modules.push(new OrganisationModule());
     this.modules.push(new CommonModule());
     this.modules.push(new HeaderModule());
     this.modules.push(new ManagementBoardModule());
@@ -73,7 +74,6 @@ export default class Application {
     this.modules.push(new FilmReelModule());
     this.modules.push(new MediaControlsModule());
     this.modules.push(new ReportingModule());
-    this.modules.push(new OrganisationModule());
   }
 
   _getApplicationConfig() {
