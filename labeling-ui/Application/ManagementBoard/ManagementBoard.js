@@ -71,9 +71,10 @@ class ManagementBoard extends Module {
    */
   config($stateProvider) {
     $stateProvider.state('labeling.upload', {
-      url: 'organisations/:organisationId/upload/:projectId',
+      url: 'upload/:projectId',
+      parent: 'organisation',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: UploadController,
           controllerAs: 'vm',
           template: UploadView,
@@ -108,7 +109,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.projects.create', {
       url: '/create',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: ProjectCreateController,
           controllerAs: 'vm',
           template: ProjectCreateView,
@@ -119,7 +120,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.projects.flagged', {
       url: '/:projectId/flagged',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: ProjectFlaggedController,
           controllerAs: 'vm',
           template: ProjectFlaggedView,
@@ -135,14 +136,15 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.tasks', {
-      url: 'organisations/:organisationId/projects/:projectId/tasks',
+      url: 'projects/:projectId/tasks',
+      parent: 'organisation',
       redirectTo: 'labeling.tasks.list',
     });
 
     $stateProvider.state('labeling.tasks.list', {
       url: '/',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: TasksController,
           controllerAs: 'vm',
           template: TasksView,
@@ -158,14 +160,15 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.users', {
-      url: 'organisations/:organisationId/users',
+      url: 'users',
+      parent: 'organisation',
       redirectTo: 'labeling.users.list',
     });
 
     $stateProvider.state('labeling.users.list', {
       url: '/',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: UsersController,
           controllerAs: 'vm',
           template: UsersView,
@@ -176,7 +179,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.users.detail', {
       url: '/{userId:[0-9a-f]{1,32}|new}',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: UsersDetailController,
           controllerAs: 'vm',
           template: UsersDetailView,
@@ -185,14 +188,15 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.labeling-groups', {
-      url: 'organisations/:organisationId/labelingGroups',
+      url: 'labelingGroups',
+      parent: 'organisation',
       redirectTo: 'labeling.labeling-groups.list',
     });
 
     $stateProvider.state('labeling.labeling-groups.list', {
       url: '/',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: LabelingGroupsController,
           controllerAs: 'vm',
           template: LabelingGroupsView,
@@ -203,7 +207,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.labeling-groups.detail', {
       url: '/:groupId',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: LabelingGroupsDetailController,
           controllerAs: 'vm',
           template: LabelingGroupsDetailView,
@@ -212,14 +216,15 @@ class ManagementBoard extends Module {
     });
 
     $stateProvider.state('labeling.task-configurations', {
-      url: 'organisations/:organisationId/taskConfigurations',
+      url: 'taskConfigurations',
+      parent: 'organisation',
       redirectTo: 'labeling.task.configurations.list',
     });
 
     $stateProvider.state('labeling.task-configurations.list', {
       url: '/',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: TaskConfigurationController,
           controllerAs: 'vm',
           template: TaskConfigurationView,
@@ -230,7 +235,7 @@ class ManagementBoard extends Module {
     $stateProvider.state('labeling.task-configurations.upload', {
       url: '/upload',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: TaskConfigurationUploadController,
           controllerAs: 'vm',
           template: TaskConfigurationUploadView,

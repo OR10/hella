@@ -31,13 +31,14 @@ class Reporting extends Module {
   config($stateProvider) {
     $stateProvider.state('labeling.reporting', {
       url: 'organisations/:organisationId/reporting',
+      parent: 'organisation',
       redirectTo: 'labeling.projects.list',
     });
 
     $stateProvider.state('labeling.reporting.list', {
       url: '/:projectId',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: ReportingListController,
           controllerAs: 'vm',
           template: ReportingListTemplate,
@@ -56,7 +57,7 @@ class Reporting extends Module {
     $stateProvider.state('labeling.reporting.show', {
       url: '/:projectId/report/:reportId',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: ReportingController,
           controllerAs: 'vm',
           template: ReportingTemplate,
@@ -75,7 +76,7 @@ class Reporting extends Module {
     $stateProvider.state('labeling.reporting.export', {
       url: '/:projectId/export',
       views: {
-        '@labeling': {
+        '@organisation': {
           controller: ProjectExportController,
           controllerAs: 'vm',
           template: projectExportTemplate,
