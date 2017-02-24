@@ -131,9 +131,9 @@ export default class Application {
    * @param {HTMLElement} element
    */
   bootstrap(element) {
-    this.init().then(() => {
-      angular.bootstrap(element, [this.moduleName], {strictDi: true});
-    });
+    Promise.resolve()
+      .then(() => this.init())
+      .then(() => angular.bootstrap(element, [this.moduleName], {strictDi: true}));
   }
 
   setupRouting() {
@@ -143,13 +143,6 @@ export default class Application {
 
       // For any unmatched url, redirect to /state1
       $urlRouterProvider.otherwise('/organisations/');
-
-      function permissionsResolver(userGateway) {
-        return userGateway.getCurrentUserPermissions()
-          .then(permissions => permissions);
-      }
-
-      permissionsResolver.$inject = ['userGateway'];
 
       // Now set up the states
       $stateProvider
