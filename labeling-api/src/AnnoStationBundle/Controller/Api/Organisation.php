@@ -37,14 +37,21 @@ class Organisation extends Controller\Base
      */
     private $videoFacade;
 
+    /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
     public function __construct(
         Facade\Organisation $organisationFacade,
         Facade\Video $videoFacade,
+        Facade\Project $projectFacade,
         Storage\TokenStorage $tokenStorage
     ) {
         $this->organisationFacade = $organisationFacade;
         $this->tokenStorage       = $tokenStorage;
         $this->videoFacade        = $videoFacade;
+        $this->projectFacade = $projectFacade;
     }
 
     /**
@@ -65,6 +72,7 @@ class Organisation extends Controller\Base
             new Response\SimpleOrganisations(
                 $this->organisationFacade->findAll($skip, $limit),
                 $this->videoFacade->getNumberOfVideosByOrganisations(),
+                $this->projectFacade->getNumberOfProjectsByOrganisations(),
                 $this->organisationFacade
             )
         );

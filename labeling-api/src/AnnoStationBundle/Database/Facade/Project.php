@@ -326,4 +326,25 @@ class Project
             return $query->execute();
         }
     }
+
+    /**
+     * @return array
+     */
+    public function getNumberOfProjectsByOrganisations()
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_number_of_projects_by_organisation', 'view')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->setGroupLevel(1)
+            ->execute()
+            ->toArray();
+
+        $numberOfProjectsByOrganisation = [];
+        foreach ($query as $value) {
+            $numberOfProjectsByOrganisation[$value['key'][0]] = $value['value'];
+        }
+
+        return $numberOfProjectsByOrganisation;
+    }
 }
