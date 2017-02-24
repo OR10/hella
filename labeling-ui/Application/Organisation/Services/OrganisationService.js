@@ -45,7 +45,7 @@ class OrganisationService {
     const oldActiveOrganisation = this._activeOrganisation;
     this._activeOrganisation = activeOrganisation;
     this._subscribers.forEach(
-      subscriberFn => this._$rootScope.$apply(() => subscriberFn(this._activeOrganisation, oldActiveOrganisation))
+      subscriberFn => this._$rootScope.$applyAsync(() => subscriberFn(this._activeOrganisation, oldActiveOrganisation))
     )
   }
 
