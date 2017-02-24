@@ -46,6 +46,26 @@ class OrganisationService {
   }
 
   /**
+   * Update Organisation using an organisationId.
+   *
+   * An exception is thrown, if the used id is no organisation of the currentUser.
+   *
+   * @param {string} organisationId
+   */
+  setById(organisationId) {
+    const organisationsForCurrentUser = this._currentUserService.getOrganisations();
+    const activeOrganisation = organisationsForCurrentUser.find(
+      candidate => candidate.id === organisationId
+    );
+
+    if (activeOrganisation === undefined) {
+      throw new Error(`No Organisation with the Id ${organisationId} is available for User ${this._currentUserService.get().username}`);
+    }
+
+    this.set(activeOrganisation);
+  }
+
+  /**
    * @param {Function} subscriberFn
    */
   subscribe(subscriberFn) {
