@@ -3,6 +3,7 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
+import Organisation from 'Application/Organisation/Models/Organisation';
 import LabelStructureGateway from 'Application/Task/Gateways/LabelStructureGateway';
 
 describe('LabelStructureGateway', () => {
@@ -24,6 +25,10 @@ describe('LabelStructureGateway', () => {
           apiPrefix: '/api',
           backendPrefix: '/backend',
         },
+      });
+
+      $provide.value('organisationService', {
+        get: () => new Organisation('ORGANISATION-ID', 'organisation-name', 100),
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();
@@ -66,7 +71,7 @@ describe('LabelStructureGateway', () => {
       },
     };
 
-    $httpBackend.expectGET(`/backend/api/task/${taskId}/labelStructure`).respond(tasksResponse);
+    $httpBackend.expectGET(`/backend/api/organisation/ORGANISATION-ID/task/${taskId}/labelStructure`).respond(tasksResponse);
 
     gateway.getLabelStructureData(taskId).then(structureData => {
       expect(structureData).toEqual(tasksResponse.result);
