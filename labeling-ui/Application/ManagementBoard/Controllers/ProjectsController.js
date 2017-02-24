@@ -4,11 +4,13 @@
 class ProjectsController {
   /**
    * @param {$rootScope.$scope} $scope
+   * @param {$stateParams} $stateParams
    * @param {User} user
    * @param {Object} userPermissions
+   * @param {OrganisationService} organisationService
    * @param {ProjectGateway} projectGateway
    */
-  constructor($scope, user, userPermissions, projectGateway) {
+  constructor($scope, $stateParams, user, userPermissions, organisationService, projectGateway) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -60,8 +62,10 @@ class ProjectsController {
 
 ProjectsController.$inject = [
   '$scope',
+  '$stateParams',
   'user',
   'userPermissions',
+  'organisationService',
   'projectGateway',
 ];
 
