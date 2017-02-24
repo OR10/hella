@@ -10,15 +10,12 @@ export default class BytesFilterFormatter {
    * @param precision
    * @returns {string}
    */
-  format(bytes, precision) {
+  format(bytes, precision = 1) {
     if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) {
       return '-';
     }
-    if (typeof precision === 'undefined') {
-      precision = 1;
-    }
-    let units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
-      number = Math.floor(Math.log(bytes) / Math.log(1024));
+    const units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'];
+    const number = Math.floor(Math.log(bytes) / Math.log(1024));
     return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
   }
 }
