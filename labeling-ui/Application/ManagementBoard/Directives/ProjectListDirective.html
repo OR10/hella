@@ -41,6 +41,10 @@
 
                 {{project[column.property]}}
 
+                <span class="tagDisplay" ng-if="column.property === 'name'" ng-repeat="campaign in project.campaigns">
+                    {{campaign.name}}
+                </span>
+
                 <i ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0"
                    class="fa fa-spin fa-spinner" tooltip="Import in progress. {{project.taskInPreProcessingCount}} are not finished yet."></i>
                 <span ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0">({{project.taskInPreProcessingCount}})</span>
