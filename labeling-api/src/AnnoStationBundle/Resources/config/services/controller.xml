@@ -288,6 +288,7 @@
 
         <service id="annostation.labeling_api.controller.api.organisation" class="AnnoStationBundle\Controller\Api\Organisation">
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="security.token_storage"/>
         </service>
 
