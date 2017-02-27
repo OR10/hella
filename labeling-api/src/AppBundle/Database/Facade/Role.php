@@ -52,6 +52,33 @@ class Role
 
     /**
      * @param string $projectId
+     *
+     * @return Model\Role
+     */
+    public function getRolesForProject(string $projectId)
+    {
+        $roles = $this->documentManager->createQuery('annostation_roles', 'roles_by_project_and_name')
+            ->onlyDocs(true)
+            ->setStartKey([$projectId])
+            ->setEndKey([$projectId, []])
+            ->execute()
+            ->toArray();
+
+        return $roles;
+    }
+
+    /**
+     * @param string $roleId
+     *
+     * @return Model\Role
+     */
+    public function getRoleById(string $roleId)
+    {
+        return $this->documentManager->find(Model\Role::class, $roleId);
+    }
+
+    /**
+     * @param string $projectId
      * @param string $roleName
      *
      * @return Model\Role

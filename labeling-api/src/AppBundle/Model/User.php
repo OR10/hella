@@ -135,26 +135,7 @@ class User extends BaseUser
     public function setRolesForProject(string $projectId, array $roles)
     {
         $projectRoles = $this->getOrCreateProjectRolesForProjectId($projectId);
-        $oldRoles     = $projectRoles->getRoles();
-
-        $removedRoles = array_filter(
-            $oldRoles->toArray(),
-            function (Role $role) use ($roles) {
-                foreach ($roles as $newRole) {
-                    if ($role->getId() == $newRole->getId()) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        );
-
         $projectRoles->setRoles($roles);
-
-        foreach ($removedRoles as $removedRole) {
-            $projectRoles->addRemovedRole($removedRole);
-        }
     }
 
     /**
