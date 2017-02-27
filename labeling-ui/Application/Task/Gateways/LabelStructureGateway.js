@@ -33,7 +33,7 @@ class LabelStructureGateway {
    * @return {AbortablePromise}
    */
   getTaskStructureData(taskConfigurationId) {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration/${taskConfigurationId}`);
     return this._bufferedHttp.get(url, undefined, 'label-structure')
       .then(response => {
@@ -51,7 +51,7 @@ class LabelStructureGateway {
    * @param {string} taskConfigurationId
    */
   getRequirementsFile(taskConfigurationId) {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration/${taskConfigurationId}/file`);
     return this._bufferedHttp.get(url, undefined, 'label-structure')
       .then(response => {
@@ -71,7 +71,7 @@ class LabelStructureGateway {
    * @return {AbortablePromise.<Task|Error>}
    */
   getLabelStructureData(taskId) {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/task/${taskId}/labelStructure`);
     return this._bufferedHttp.get(url, undefined, 'label-structure')
       .then(response => {

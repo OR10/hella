@@ -42,7 +42,7 @@ class TaskConfigurationGateway {
    * @return {AbortablePromise<RequirementsConfiguration|Error>}
    */
   uploadRequirementsConfiguration(name, file) {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration/requirements`);
 
     return this._uploadConfiguration(url, name, file);
@@ -97,7 +97,7 @@ class TaskConfigurationGateway {
    * @returns {AbortablePromise}
    */
   getRequirementsXmlConfigurations() {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration?type=requirementsXml`);
 
     return this._bufferedHttp.get(url, undefined, 'task-configuration').then(response => {

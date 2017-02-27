@@ -34,7 +34,7 @@ class ApplicationController {
 
     // Initialize Organisation with the first one of the user, by default
     if (organisationService.get() === null) {
-      organisationService.set(userOrganisations[0]);
+      organisationService.set(userOrganisations[0].id);
     }
 
     this._deregisterStateChangeListener = $scope.$root.$on(
@@ -46,12 +46,17 @@ class ApplicationController {
         console.log('to', to);
         console.log('params', params);
 
-        if (organisationId === undefined || organisationId !== organisationService.get().id) {
-          console.log('inject organisation', organisationService.get());
+        if (organisationId === undefined) {
+        // Organisation id is not part of this route
+          return;
+        }
+
+        if (organisationId === '' || organisationId !== organisationService.get()) {
+          // console.log('inject organisation', organisationService.get());
           event.preventDefault();
           $state.go(
             to.name,
-            Object.assign({}, params, {organisationId: organisationService.get().id}),
+            Object.assign({}, params, {organisationId: organisationService.get()}),
             {location: 'replace'}
           );
         }

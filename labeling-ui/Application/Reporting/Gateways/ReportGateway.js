@@ -5,8 +5,9 @@ class ReportGateway {
   /**
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
+   * @param {OrganisationService} organisationService
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, bufferedHttp, organisationService) {
     /**
      * @type {BufferedHttp}
      * @private
@@ -18,6 +19,12 @@ class ReportGateway {
      * @private
      */
     this._apiService = apiService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
   }
 
   /**
@@ -43,7 +50,9 @@ class ReportGateway {
    * @return {AbortablePromise<Object|Error>}
    */
   getReports(projectId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/report`);
+    const organisation = this._organisationService.get();
+
+    const url = this._apiService.getApiUrl(`/organisation/${organisation.id}/project/${projectId}/report`);
     return this._bufferedHttp.get(url, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {
@@ -75,6 +84,7 @@ class ReportGateway {
 ReportGateway.$inject = [
   'ApiService',
   'bufferedHttp',
+  'organisationService',
 ];
 
 export default ReportGateway;

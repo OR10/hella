@@ -10,7 +10,7 @@
     <div class="grid-block button-list">
         <a class="header-button" ng-show="vm.userPermissions.canCreateProject" ui-sref="labeling.projects.create">Create Project</a>
         <a class="header-button" ng-show="vm.userPermissions.canUploadTaskConfiguration" ui-sref="labeling.task-configurations.list">Upload Task Configuration</a>
-        <a class="header-button" ng-show="vm.userPermissions.canViewUserListButton" ui-sref="labeling.users">Manage Users</a>
+        <a class="header-button" ng-show="vm.userPermissions.canViewUserListButton" ui-sref="labeling.users.list">Manage Users</a>
         <a class="header-button" ng-show="vm.userPermissions.canEditLabelingGroups" ui-sref="labeling.labeling-groups.list">Manage Labeling Groups</a>
         <a class="header-button" ng-show="vm.userPermissions.canViewSystemStatus" ui-sref="labeling.system.status">
             <!--<span class="system-health" ng-class="{healthy: vm.isSystemHealthy}"></span>-->
