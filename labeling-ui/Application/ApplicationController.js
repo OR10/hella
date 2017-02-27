@@ -56,8 +56,7 @@ class ApplicationController {
           event.preventDefault();
           $state.go(
             to.name,
-            Object.assign({}, params, {organisationId: organisationService.get()}),
-            {location: 'replace'}
+            Object.assign({}, params, {organisationId: organisationService.get()})
           );
         }
       }
