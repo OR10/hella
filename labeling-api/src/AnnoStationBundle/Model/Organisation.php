@@ -65,6 +65,10 @@ class Organisation
      */
     public function getQuota()
     {
+        if ($this->quota === null) {
+            return 0;
+        }
+
         return $this->quota;
     }
 
