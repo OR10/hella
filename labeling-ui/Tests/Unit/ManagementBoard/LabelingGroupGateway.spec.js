@@ -5,7 +5,6 @@ import Common from 'Application/Common/Common';
 import LabelingGroupGateway from 'Application/ManagementBoard/Gateways/LabelingGroupGateway';
 import User from 'Application/ManagementBoard/Models/User';
 import LabelingGroup from 'Application/ManagementBoard/Models/LabelingGroup';
-import Organisation from 'Application/Organisation/Models/Organisation';
 
 describe('LabelingGroup', () => {
   let $httpBackend;
@@ -29,7 +28,7 @@ describe('LabelingGroup', () => {
       });
 
       $provide.value('organisationService', {
-        get: () => new Organisation('ORGANISATION-ID', 'organisation-name', 100),
+        get: () => 'ORGANISATION-ID',
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();

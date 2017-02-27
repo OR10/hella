@@ -5,7 +5,6 @@ import Common from 'Application/Common/Common';
 
 import UserGateway from 'Application/ManagementBoard/Gateways/UserGateway';
 import User from 'Application/ManagementBoard/Models/User';
-import Organisation from 'Application/Organisation/Models/Organisation';
 
 describe('UserGateway', () => {
   let $httpBackend;
@@ -29,7 +28,7 @@ describe('UserGateway', () => {
       });
 
       $provide.value('organisationService', {
-        get: () => new Organisation('ORGANISATION-ID', 'organisation-name', 100),
+        get: () => 'ORGANISATION-ID',
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();

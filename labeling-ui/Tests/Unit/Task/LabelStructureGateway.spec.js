@@ -3,7 +3,6 @@ import angular from 'angular';
 import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
-import Organisation from 'Application/Organisation/Models/Organisation';
 import LabelStructureGateway from 'Application/Task/Gateways/LabelStructureGateway';
 
 describe('LabelStructureGateway', () => {
@@ -28,7 +27,7 @@ describe('LabelStructureGateway', () => {
       });
 
       $provide.value('organisationService', {
-        get: () => new Organisation('ORGANISATION-ID', 'organisation-name', 100),
+        get: () => 'ORGANISATION-ID',
       });
 
       bufferedHttpProvider.disableAutoExtractionAndInjection();

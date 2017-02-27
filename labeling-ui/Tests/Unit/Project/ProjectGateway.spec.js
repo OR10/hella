@@ -4,7 +4,6 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
 import ProjectGateway from 'Application/ManagementBoard/Gateways/ProjectGateway';
-import Organisation from 'Application/Organisation/Models/Organisation';
 
 describe('ProjectGateway', () => {
   let $httpBackend;
@@ -28,7 +27,7 @@ describe('ProjectGateway', () => {
       });
 
       $provide.value('organisationService', {
-        get: () => new Organisation('ORGANISATION-ID', 'organisation-name', 100),
+        get: () => 'ORGANISATION-ID',
       });
     });
 
