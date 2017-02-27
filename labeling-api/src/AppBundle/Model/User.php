@@ -124,18 +124,18 @@ class User extends BaseUser
      */
     public function assignRole(string $projectId, Role $role)
     {
-        if ($this->projectRoles === null) {
-            $this->projectRoles = [];
-        }
-
-        $roles = $this->getProjectRolesForProjectId($projectId);
-
-        if ($roles === null) {
-            $roles                = new ProjectRoles($projectId);
-            $this->projectRoles[] = $roles;
-        }
-
+        $roles = $this->getOrCreateProjectRolesForProjectId($projectId);
         $roles->assignRole($role);
+    }
+
+    /**
+     * @param string $projectId
+     * @param array  $roles
+     */
+    public function setRolesForProject(string $projectId, array $roles)
+    {
+        $projectRoles = $this->getOrCreateProjectRolesForProjectId($projectId);
+        $projectRoles->setRoles($roles);
     }
 
     /**
@@ -175,5 +175,26 @@ class User extends BaseUser
         }
 
         return null;
+    }
+
+    /**
+     * @param string $projectId
+     *
+     * @return ProjectRoles
+     */
+    private function getOrCreateProjectRolesForProjectId(string $projectId)
+    {
+        if ($this->projectRoles === null) {
+            $this->projectRoles = [];
+        }
+
+        $roles = $this->getProjectRolesForProjectId($projectId);
+
+        if ($roles === null) {
+            $roles                = new ProjectRoles($projectId);
+            $this->projectRoles[] = $roles;
+        }
+
+        return $roles;
     }
 }

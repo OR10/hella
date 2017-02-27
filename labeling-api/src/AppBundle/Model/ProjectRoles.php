@@ -55,6 +55,14 @@ class ProjectRoles
     }
 
     /**
+     * @param Role[] $roles
+     */
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+    }
+
+    /**
      * @return Role[]
      */
     public function getRoles()
