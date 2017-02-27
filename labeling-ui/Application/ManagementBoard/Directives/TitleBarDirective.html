@@ -7,7 +7,11 @@
         </a>
     </div>
 
-    <div class="grid-block button-list">
+    <div ng-if="!vm.showActionButtons" class="grid-block">
+        <!-- Placeholder to align other button elements to the right -->
+    </div>
+
+    <div ng-if="vm.showActionButtons" class="grid-block button-list">
         <a class="header-button" ng-show="vm.userPermissions.canCreateProject" ui-sref="labeling.projects.create">Create Project</a>
         <a class="header-button" ng-show="vm.userPermissions.canUploadTaskConfiguration" ui-sref="labeling.task-configurations.list">Upload Task Configuration</a>
         <a class="header-button" ng-show="vm.userPermissions.canViewUserListButton" ui-sref="labeling.users.list">Manage Users</a>
@@ -20,7 +24,9 @@
     </div>
 
     <user-name ng-hide="!vm.showUsername" class="grid-block shrink align-self-center" user="vm.user"></user-name>
-    <organisation-picker class="grid-block shrink align-self-center"></organisation-picker>
+    <organisation-picker ng-show="vm.showOrganisationPicker"
+                         class="grid-block shrink align-self-center">
+    </organisation-picker>
 
     <logout-button ng-show="vm.showLogoutButton" class="grid-block shrink"></logout-button>
 </div>
