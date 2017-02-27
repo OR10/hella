@@ -154,7 +154,11 @@ class ManagementBoard extends Module {
         project: [
           '$stateParams',
           'projectGateway',
-          ($stateParams, projectGateway) => projectGateway.getProject($stateParams.projectId),
+          'organisationService',
+          ($stateParams, projectGateway, organisationService) => {
+            organisationService.set($stateParams.organisationId);
+            return projectGateway.getProject($stateParams.projectId);
+          },
         ],
       },
     });
