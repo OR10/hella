@@ -28,6 +28,13 @@ class ProjectRoles
     protected $roles = [];
 
     /**
+     * @var Role[]
+     *
+     * @CouchDB\EmbedMany(targetDocument="Role")
+     */
+    protected $removedRoles = [];
+
+    /**
      * ProjectRoles constructor.
      *
      * @param string $projectId
@@ -84,5 +91,29 @@ class ProjectRoles
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return void
+     */
+    public function clearRemovedRoles()
+    {
+        $this->removedRoles = [];
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function addRemovedRole(Role $role)
+    {
+        $this->removedRoles[] = $role;
+    }
+
+    /**
+     * @return Role[]
+     */
+    public function getRemovedRoles()
+    {
+        return $this->removedRoles;
     }
 }

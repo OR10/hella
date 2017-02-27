@@ -135,7 +135,26 @@ class User extends BaseUser
     public function setRolesForProject(string $projectId, array $roles)
     {
         $projectRoles = $this->getOrCreateProjectRolesForProjectId($projectId);
+        $oldRoles     = $projectRoles->getRoles();
+
+        $removedRoles = array_filter(
+            $oldRoles->toArray(),
+            function (Role $role) use ($roles) {
+                foreach ($roles as $newRole) {
+                    if ($role->getId() == $newRole->getId()) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
+
         $projectRoles->setRoles($roles);
+
+        foreach ($removedRoles as $removedRole) {
+            $projectRoles->addRemovedRole($removedRole);
+        }
     }
 
     /**
@@ -163,10 +182,19 @@ class User extends BaseUser
 
     /**
      * @param string $projectId
+     */
+    public function clearRemovedRoles(string $projectId)
+    {
+        $projectRoles = $this->getOrCreateProjectRolesForProjectId($projectId);
+        $projectRoles->clearRemovedRoles();
+    }
+
+    /**
+     * @param string $projectId
      *
      * @return ProjectRoles|null
      */
-    private function getProjectRolesForProjectId(string $projectId)
+    public function getProjectRolesForProjectId(string $projectId)
     {
         foreach ($this->projectRoles as $projectRoles) {
             if ($projectRoles->getProjectId() == $projectId) {
@@ -182,7 +210,7 @@ class User extends BaseUser
      *
      * @return ProjectRoles
      */
-    private function getOrCreateProjectRolesForProjectId(string $projectId)
+    public function getOrCreateProjectRolesForProjectId(string $projectId)
     {
         if ($this->projectRoles === null) {
             $this->projectRoles = [];
