@@ -30,7 +30,7 @@ class Organisation {
     return {
       id,
       name,
-      quota
+      quota,
     };
   }
 }

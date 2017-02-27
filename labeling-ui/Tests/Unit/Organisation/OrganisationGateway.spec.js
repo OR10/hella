@@ -6,7 +6,7 @@ import Common from 'Application/Common/Common';
 import OrganisationGateway from 'Application/Organisation/Gateways/OrganisationGateway';
 import Organisation from 'Application/Organisation/Models/Organisation';
 
-fdescribe('OrganisationGateway', () => {
+describe('OrganisationGateway', () => {
   let $httpBackend;
   let gateway;
 
@@ -94,7 +94,6 @@ fdescribe('OrganisationGateway', () => {
     $httpBackend.expectPUT('/backend/api/organisation/organisation-id').respond(organisationResponse);
 
     gateway.updateOrganisation(updatedOrganisation).then(result => {
-
       expect(result).toEqual(new Organisation(organisationResponse.id, organisationResponse.name, organisationResponse.quota));
       done();
     });

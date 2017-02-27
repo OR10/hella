@@ -6,7 +6,6 @@ class OrganisationRouteController {
    * @param {OrganisationService} organisationService
    */
   constructor($scope, $stateParams, $state, organisationService) {
-    console.log('OrganisationRouteController construct!');
     organisationService.set($stateParams.organisationId);
   }
 }
