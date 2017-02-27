@@ -33,7 +33,8 @@ class ReportGateway {
    * @return {AbortablePromise<Object|Error>}
    */
   startReport(projectId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/report`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/report`);
     return this._bufferedHttp.post(url, undefined, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {
@@ -50,9 +51,8 @@ class ReportGateway {
    * @return {AbortablePromise<Object|Error>}
    */
   getReports(projectId) {
-    const organisation = this._organisationService.get();
-
-    const url = this._apiService.getApiUrl(`/organisation/${organisation.id}/project/${projectId}/report`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/report`);
     return this._bufferedHttp.get(url, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {
@@ -69,7 +69,8 @@ class ReportGateway {
    * @return {AbortablePromise<Object|Error>}
    */
   getReport(projectId, reportId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/report/${reportId}`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/report/${reportId}`);
     return this._bufferedHttp.get(url, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {
