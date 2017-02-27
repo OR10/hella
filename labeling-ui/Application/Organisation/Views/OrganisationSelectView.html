@@ -18,7 +18,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="organisation in vm.organisationsOfCurrentUser">
-                <td ui-sref="labeling.projects.list({organisationId: organisation.id})">{{organisation.name}}</td>
+                <td ng-click="vm.gotoOrganisation(organisation)">{{organisation.name}}</td>
             </tr>
             </tbody>
         </table>
