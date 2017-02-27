@@ -1,0 +1,49 @@
+<title-bar class="grid-block noscroll header"
+           user="vm.user"
+           user-permissions="vm.userPermissions"
+           back-link=""
+           back-link-text=""
+           show-username="true"
+           show-logout-button="true"
+>
+</title-bar>
+
+<div class="grid-block vertical">
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+
+    <div class="grid-block align-center shrink">
+        <h2 style="margin: 1.2em auto; text-align: center;">Organisations</h2>
+    </div>
+    <div class="grid-block align-center vertical">
+
+        <div class="grid-block align-right shrink">
+            <div class="grid-block horizontal shrink">
+                <div class="grid-content noscroll"
+                     style="margin-bottom: .5rem; margin-top: 2rem;">
+                    <button tooltip="Create new Organisation"
+                            ng-click="vm.createNewOrganisation()"
+                    >
+                        <i class="fa fa-plus"></i>&nbsp;Create new Organisation
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="grid-content">
+            <table class="table hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="organisation in vm.organisations">
+                    <td ng-click="vm.updateOrganisation(organisation)">
+                        {{organisation.name}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
