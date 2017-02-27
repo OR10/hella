@@ -308,9 +308,8 @@ class TaskGateway {
       params.offset = offset;
     }
 
-    const organisation = this._organisationService.get();
-
-    const url = this._apiService.getApiUrl(`/organisation/${organisation.id}/project/${projectId}/attentionTasks`, params);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/attentionTasks`, params);
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
