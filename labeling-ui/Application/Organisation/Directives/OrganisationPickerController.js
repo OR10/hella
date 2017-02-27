@@ -14,8 +14,11 @@ class OrganisationPickerController {
     /**
      * @type {string}
      */
-    this.activeOrganisation = organisationService.get();
-    organisationService.subscribe(newOrganisation => this.activeOrganisation = newOrganisation);
+    this.activeOrganisation = this._findOrganisationById(organisationService.get());
+
+    organisationService.subscribe(
+      newOrganisationId => this.activeOrganisation = this._findOrganisationById(newOrganisationId)
+    );
 
     $scope.$watch('vm.activeOrganisation', (activeOrganisation, oldOrganisation) => {
       if (activeOrganisation === null) {
@@ -26,10 +29,20 @@ class OrganisationPickerController {
         return;
       }
 
-      console.warn('reloading due to picker change');
-      organisationService.set(activeOrganisation);
+      organisationService.set(activeOrganisation.id);
       $state.reload();
     });
+  }
+
+  /**
+   * @param organisationId
+   * @return {Organisation}
+   * @private
+   */
+  _findOrganisationById(organisationId) {
+    return this.organisationsOfCurrentUser.find(
+      candidate => candidate.id === organisationId
+    );
   }
 }
 

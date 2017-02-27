@@ -25,7 +25,7 @@ class OrganisationService {
      * @type {Organisation|null}
      * @private
      */
-    this._activeOrganisation = null;
+    this._activeOrganisationId = null;
 
     /**
      * @type {Array.<Function>}
@@ -35,45 +35,44 @@ class OrganisationService {
   }
 
   /**
-   * @returns {Organisation|null}
+   * @returns {string|null}
    */
   get() {
-    return this._activeOrganisation;
+    return this._activeOrganisationId;
   }
 
   /**
-   * @param {Organisation} activeOrganisation
+   * @param {string} activeOrganisationId
    */
-  set(activeOrganisation) {
-    if (this._activeOrganisation === activeOrganisation) {
+  set(activeOrganisationId) {
+    if (this._activeOrganisationId === activeOrganisationId) {
       return;
     }
 
-    const oldActiveOrganisation = this._activeOrganisation;
-    this._activeOrganisation = activeOrganisation;
+    const oldActiveOrganisationId = this._activeOrganisationId;
+    this._activeOrganisationId = activeOrganisationId;
     this._subscribers.forEach(
-      subscriberFn => this._$rootScope.$applyAsync(() => subscriberFn(this._activeOrganisation, oldActiveOrganisation))
-    )
+      subscriberFn => this._$rootScope.$applyAsync(() => subscriberFn(this._activeOrganisationId, oldActiveOrganisationId))
+    );
   }
 
+
   /**
-   * Update Organisation using an organisationId.
+   * Returns the {@link Organisation} model for the current set organisation id
    *
-   * An exception is thrown, if the used id is no organisation of the currentUser.
-   *
-   * @param {string} organisationId
+   * @return {Organisation}
    */
-  setById(organisationId) {
+  getModel() {
     const organisationsForCurrentUser = this._currentUserService.getOrganisations();
     const activeOrganisation = organisationsForCurrentUser.find(
-      candidate => candidate.id === organisationId
+      candidate => candidate.id === this._activeOrganisationId
     );
 
     if (activeOrganisation === undefined) {
-      throw new Error(`No Organisation with the Id ${organisationId} is available for User ${this._currentUserService.get().username}`);
+      throw new Error(`No Organisation with the Id ${this._activeOrganisationId} is available for User ${this._currentUserService.get().username}`);
     }
 
-    this.set(activeOrganisation);
+    return activeOrganisation;
   }
 
   /**
