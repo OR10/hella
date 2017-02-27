@@ -54,7 +54,7 @@ class UserGateway {
    * @return {AbortablePromise.<Array.<User>>}
    */
   getUsers() {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/users`);
 
     return this._bufferedHttp.get(url, undefined, 'user')

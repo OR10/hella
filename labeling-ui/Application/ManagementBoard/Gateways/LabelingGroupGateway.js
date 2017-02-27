@@ -36,7 +36,7 @@ class LabelingGroupGateway {
    * @return {AbortablePromise<{users: Array<User>, labelingGroup: Object}|Error>}
    */
   getLabelingGroups() {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup`);
 
     return this._bufferedHttp.get(url, undefined, 'labelingGroups')
@@ -62,7 +62,7 @@ class LabelingGroupGateway {
    * @returns {AbortablePromise<LabelingGroup>|Error}
    */
   getMyLabelingGroups() {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/user/groups`);
 
     return this._bufferedHttp.get(url, undefined, 'labelingGroups')
@@ -81,7 +81,7 @@ class LabelingGroupGateway {
    * @returns {AbortablePromise|Error}
    */
   getLabelCoordinators() {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/user/coordinators`);
 
     return this._bufferedHttp.get(url, undefined, 'labelingGroups')
@@ -101,7 +101,7 @@ class LabelingGroupGateway {
    * @return {AbortablePromise<LabelingGroup|Error>}
    */
   createLabelingGroup(group) {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup`);
     return this._bufferedHttp.post(url, group, undefined, 'labelingGroups')
       .then(response => {
@@ -120,7 +120,7 @@ class LabelingGroupGateway {
    * @return {AbortablePromise<LabelingGroup|Error>}
    */
   updateLabelingGroup(group) {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/${group.id}`);
     return this._bufferedHttp.put(url, group, undefined, 'labelingGroups')
       .then(response => {
@@ -139,7 +139,7 @@ class LabelingGroupGateway {
    * @return {AbortablePromise<boolean|Error>}
    */
   deleteLabelingGroup(groupId) {
-    const organisationId = this._organisationService.get().id;
+    const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/${groupId}`);
     return this._bufferedHttp.delete(url, undefined, 'labelingGroups')
       .then(response => {
