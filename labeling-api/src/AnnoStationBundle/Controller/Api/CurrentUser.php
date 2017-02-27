@@ -172,9 +172,15 @@ class CurrentUser extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
+        if ($user->getOrganisations() === null) {
+            $organisations = [];
+        } else {
+            $organisations = $user->getOrganisations();
+        }
+
         return View\View::create()->setData(
             [
-                'result' => $this->organisation->findByIds($user->getOrganisations()),
+                'result' => $this->organisation->findByIds($organisations),
             ]
         );
     }
