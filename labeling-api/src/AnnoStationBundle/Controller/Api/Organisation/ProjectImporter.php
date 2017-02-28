@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use AnnoStationBundle\Controller\Api\Organisation\Project;
 
 /**
- * @Rest\Prefix("/api/organisation/")
+ * @Rest\Prefix("/api/organisation")
  * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.project_importer")
  *
  * @CloseSession
