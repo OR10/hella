@@ -154,7 +154,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return string[]
+     * @return ProjectRoles[]
      */
     public function getProjectRoles()
     {
