@@ -47,16 +47,16 @@ describe('OrganisationGateway', () => {
   it('should load all available organisations', done => {
     const organisationResponse = {
       result: [
-        {id: '111', name: 'organisation 1', quota: 0},
-        {id: '222', name: 'organisation 2', quota: 0},
-        {id: '333', name: 'organisation 3', quota: 0},
+        {id: '111', name: 'organisation 1', quota: 0, diskUsage: {total: 123, videos: 456, images: {thumbnail: 789}}},
+        {id: '222', name: 'organisation 2', quota: 0, diskUsage: {total: 123, videos: 456, images: {thumbnail: 789}}},
+        {id: '333', name: 'organisation 3', quota: 0, diskUsage: {total: 123, videos: 456, images: {thumbnail: 789}}},
       ],
     };
 
     $httpBackend.expectGET('/backend/api/organisation').respond(organisationResponse);
 
     gateway.getOrganisations().then(organisations => {
-      expect(organisations).toEqual(organisationResponse.result.map(doc => new Organisation(doc.id, doc.name, doc.quota)));
+      expect(organisations).toEqual(organisationResponse.result.map(doc => new Organisation(doc)));
       done();
     });
 
@@ -72,13 +72,20 @@ describe('OrganisationGateway', () => {
         id: 'organisation-id',
         name,
         quota,
+        diskUsage: {
+          total: 123,
+          videos: 456,
+          images: {
+            thumbnail: 789,
+          },
+        },
       },
     };
 
     $httpBackend.expectPOST('/backend/api/organisation').respond(organisationResponse);
 
     gateway.createOrganisation(name, quota).then(result => {
-      expect(result).toEqual(new Organisation(organisationResponse.result.id, name, quota));
+      expect(result).toEqual(new Organisation(organisationResponse.result));
       done();
     });
 
@@ -86,19 +93,26 @@ describe('OrganisationGateway', () => {
   });
 
   it('should update a organisation', done => {
-    const updatedOrganisation = new Organisation('organisation-id', 'organisation-name', 0);
     const organisationResponse = {
       result: {
         id: 'organisation-id',
         name: 'organisation-name',
         quota: 0,
+        diskUsage: {
+          total: 123,
+          videos: 456,
+          images: {
+            thumbnail: 789,
+          },
+        },
       },
     };
+    const updatedOrganisation = new Organisation(organisationResponse.result);
 
     $httpBackend.expectPUT('/backend/api/organisation/organisation-id').respond(organisationResponse);
 
     gateway.updateOrganisation(updatedOrganisation).then(result => {
-      expect(result).toEqual(new Organisation(organisationResponse.result.id, organisationResponse.result.name, organisationResponse.result.quota));
+      expect(result).toEqual(new Organisation(organisationResponse.result));
       done();
     });
 

@@ -1,3 +1,5 @@
+import OrganisationDiskUsage from './OrganisationDiskUsage';
+
 class Organisation {
   /**
    * @param {Object} organisationDocument
@@ -17,6 +19,21 @@ class Organisation {
      * @type {number|null}
      */
     this.quota = organisationDocument.quota;
+
+    /**
+     * @type {number}
+     */
+    this.numberOfProjects = organisationDocument.numberOfProjects;
+
+    /**
+     * @type {number}
+     */
+    this.numberOfVideos = organisationDocument.numberOfVideos;
+
+    /**
+     * @type {OrganisationDiskUsage}
+     */
+    this.diskUsage = new OrganisationDiskUsage(organisationDocument.diskUsage);
   }
 
   /**
