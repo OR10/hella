@@ -1,0 +1,50 @@
+<div class="modal-header">
+    <div class="modal-title">{{title}}</div>
+</div>
+<div class="modal-body noscrollbars">
+    <h3 class="modal-body-headline">{{headline}}</h3>
+    <p class="modal-body-content">{{message}}</p>
+    <div class="grid-block">
+        <input type="text" ng-model="userInput"
+               ng-class="{error: userInput.length && userInput.length > maxLength}">
+        <div style="margin-bottom: 1rem;" class="grid-block vertical align-center">
+            <span class="grid-content shrink character-count">{{userInput.length || 0}}/{{maxLength}}</span>
+        </div>
+    </div>
+    <div class="grid-block">
+        <div class="small-9">
+            <input type="text" ng-model="quota">
+        </div>
+        <div class="small-3">
+            <span class="postfix">
+                <select ng-model="unit">
+                    <option value="mb">MB</option>
+                    <option value="gb">GB</option>
+                    <option value="tb">TB</option>
+                </select>
+            </span>
+        </div>
+    </div>
+</div>
+<div class="modal-footer grid-block">
+    <!-- Abortable Dialog -->
+    <button ng-if="isAbortable" class="modal-button-cancel grid-content small-12" ng-click="cancelCallback()">
+        {{cancelButtonText}}
+    </button>
+    <button ng-if="isAbortable"
+            class="modal-button-confirm grid-content small-12"
+            ng-click="(userInput && userInput.length < maxLength && userInput.length > 1) && confirmCallback({name: userInput, quota: quota, unit: unit})"
+            autofocus
+    >
+        {{confirmButtonText}}
+    </button>
+
+    <!-- Non abortable Dialog -->
+    <button ng-if="!isAbortable"
+            class="modal-button-confirm grid-content text-center"
+            ng-click="(userInput && userInput.length < maxLength && userInput.length > 1) && confirmCallback({name: userInput, quota: quota, unit: unit})"
+            autofocus
+    >
+        {{confirmButtonText}}
+    </button>
+</div>

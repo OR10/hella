@@ -44,6 +44,7 @@ import TaskReplicationService from './Services/TaskReplicationService';
 import modalDialogProvider from './Services/ModalDialogs/ModalDialog';
 import infoDialogProvider from './Services/ModalDialogs/InfoDialog';
 import inputDialogProvider from './Services/ModalDialogs/InputDialog';
+import organisationDialogProvider from './Services/ModalDialogs/OrganisationDialog';
 import listDialogProvider from './Services/ModalDialogs/ListDialog';
 import selectionDialogProvider from './Services/ModalDialogs/SelectionDialog';
 
@@ -121,6 +122,7 @@ class Common extends Module {
     this.module.factory('ModalDialog', modalDialogProvider);
     this.module.factory('InfoDialog', infoDialogProvider);
     this.module.factory('InputDialog', inputDialogProvider);
+    this.module.factory('OrganisationDialog', organisationDialogProvider);
     this.module.factory('ListDialog', listDialogProvider);
     this.module.factory('SelectionDialog', selectionDialogProvider);
 
