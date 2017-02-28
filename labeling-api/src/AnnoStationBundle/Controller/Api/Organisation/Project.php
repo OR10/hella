@@ -174,7 +174,11 @@ class Project extends Controller\Base
             $numberOfVideos[$projectId][] = $videoId;
 
             if (isset($diskUsageByVideoIds[$videoId])) {
-                $diskUsageByProject[$projectId] = $diskUsageByVideoIds[$videoId];
+                if (isset($diskUsageByProject[$projectId])) {
+                    $diskUsageByProject[$projectId]['total'] += $diskUsageByVideoIds[$videoId]['total'];
+                }else{
+                    $diskUsageByProject[$projectId]['total'] = $diskUsageByVideoIds[$videoId]['total'];
+                }
             }
         }
 
