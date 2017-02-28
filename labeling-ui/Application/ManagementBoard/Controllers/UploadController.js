@@ -38,9 +38,9 @@ class UploadController {
     this.project = project;
 
     /**
-     * @type {Organisation}
+     * @type {string}
      */
-    this.organisation = organisationService.get();
+    this.organisationId = organisationService.get();
 
     /**
      * @type {Object}
