@@ -60,7 +60,7 @@ class Users extends Controller\Base
      * Get all users
      *
      * @Rest\Get("/{organisation}/users")
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      *
