@@ -53,6 +53,7 @@ class User
      */
     public function createUser($username, $email, $password, $enabled = true, $locked = false, $settings = [])
     {
+        /** @var Model\User $user */
         $user = $this->userManager->createUser();
         $user->setUsername($username);
         $user->setEmail($email);
@@ -139,7 +140,7 @@ class User
     /**
      * @param $id
      *
-     * @return FosUserModel\UserInterface
+     * @return Model\User|FosUserModel\UserInterface
      */
     public function getUserById($id)
     {
@@ -149,7 +150,7 @@ class User
     /**
      * @param $token
      *
-     * @return FosUserModel\UserInterface
+     * @return Model\User|FosUserModel\UserInterface
      */
     public function getUserByToken($token)
     {
@@ -157,7 +158,7 @@ class User
     }
 
     /**
-     * @return FosUserModel\UserInterface
+     * @return Model\User
      */
     public function getCurrentUser()
     {
