@@ -53,7 +53,7 @@
                         -
                     </td>
                     <td ng-if="organisation.quota !== 0">
-                        {{organisation.diskUsage.total / organisation.quota | number:2}}
+                        {{organisation.diskUsage.total / organisation.quota * 100 | number:2}}
                     </td>
                 </tr>
                 </tbody>
