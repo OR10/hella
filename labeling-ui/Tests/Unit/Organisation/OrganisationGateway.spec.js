@@ -68,15 +68,17 @@ describe('OrganisationGateway', () => {
     const quota = 0;
 
     const organisationResponse = {
-      id: 'organisation-id',
-      name,
-      quota,
+      result: {
+        id: 'organisation-id',
+        name,
+        quota,
+      },
     };
 
     $httpBackend.expectPOST('/backend/api/organisation').respond(organisationResponse);
 
     gateway.createOrganisation(name, quota).then(result => {
-      expect(result).toEqual(new Organisation(organisationResponse.id, name, quota));
+      expect(result).toEqual(new Organisation(organisationResponse.result.id, name, quota));
       done();
     });
 
@@ -86,15 +88,17 @@ describe('OrganisationGateway', () => {
   it('should update a organisation', done => {
     const updatedOrganisation = new Organisation('organisation-id', 'organisation-name', 0);
     const organisationResponse = {
-      id: 'organisation-id',
-      name: 'organisation-name',
-      quota: 0,
+      result: {
+        id: 'organisation-id',
+        name: 'organisation-name',
+        quota: 0,
+      },
     };
 
     $httpBackend.expectPUT('/backend/api/organisation/organisation-id').respond(organisationResponse);
 
     gateway.updateOrganisation(updatedOrganisation).then(result => {
-      expect(result).toEqual(new Organisation(organisationResponse.id, organisationResponse.name, organisationResponse.quota));
+      expect(result).toEqual(new Organisation(organisationResponse.result.id, organisationResponse.result.name, organisationResponse.result.quota));
       done();
     });
 

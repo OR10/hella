@@ -48,8 +48,8 @@ class OrganisationGateway {
 
     return this._bufferedHttp.put(url, organisation.toJSON(), undefined, 'organisation')
       .then(response => {
-        if (response.data) {
-          const {id, name, quota} = response.data;
+        if (response.data && response.data.result) {
+          const {id, name, quota} = response.data.result;
 
           return new Organisation(id, name, quota);
         }
@@ -74,8 +74,8 @@ class OrganisationGateway {
 
     return this._bufferedHttp.post(url, organisation, undefined, 'organisation')
       .then(response => {
-        if (response.data) {
-          const {id, name, quota} = response.data;
+        if (response.data && response.data.result) {
+          const {id, name, quota} = response.data.result;
 
           return new Organisation(id, name, quota);
         }
