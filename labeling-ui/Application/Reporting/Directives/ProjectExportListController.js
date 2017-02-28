@@ -44,10 +44,10 @@ class ProjectExportListController {
    * @returns {string}
    */
   downloadUrl(taskId, exportId) {
-    const organisation = this._organisationService.get();
+    const organisationId = this._organisationService.get();
 
     return this._apiService.getApiUrl(
-      `/organisation/${organisation.id}/project/${taskId}/export/${exportId}`
+      `/organisation/${organisationId}/project/${taskId}/export/${exportId}`
     );
   }
 }
