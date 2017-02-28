@@ -1,7 +1,10 @@
-function ReadableRoleFilterProvider() {
-  return (bytes, precision = 1) => {
+function FileSizeFilterProvider() {
+  return (bytes, precision = 1, zeroBytesString = '0 bytes') => {
     if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) {
       return '-';
+    }
+    if (bytes === 0) {
+      return zeroBytesString;
     }
     const units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'];
     const number = Math.floor(Math.log(bytes) / Math.log(1000));
@@ -14,4 +17,4 @@ function ReadableRoleFilterProvider() {
   };
 }
 
-export default ReadableRoleFilterProvider;
+export default FileSizeFilterProvider;
