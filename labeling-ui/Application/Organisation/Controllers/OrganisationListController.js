@@ -3,9 +3,9 @@ class OrganisationListController {
    * @param {CurrentUserService} currentUserService
    * @param {OrganisationGateway} organisationsGateway
    * @param {ModalService} modalService
-   * @param {InputDialog} InputDialog
+   * @param {InputDialog} OrganisationDialog
    */
-  constructor(currentUserService, organisationsGateway, modalService, InputDialog) {
+  constructor(currentUserService, organisationsGateway, modalService, OrganisationDialog) {
     /**
      * @type {User}
      */
@@ -32,7 +32,7 @@ class OrganisationListController {
      * @type {InputDialog}
      * @private
      */
-    this._InputDialog = InputDialog;
+    this._OrganisationDialog = OrganisationDialog;
 
     /**
      * @type {boolean}
@@ -57,17 +57,20 @@ class OrganisationListController {
    */
   updateOrganisation(organisation) {
     this._modalService.show(
-      new this._InputDialog(
+      new this._OrganisationDialog(
         {
           title: 'Edit organisation.',
           headline: `Please enter a new name for the organisation with the current name "${organisation.name}"`,
           confirmButtonText: 'Save',
           cancelButtonText: 'Cancel',
           userInput: organisation.name,
+          quota: organisation.quota / (1024 * 2),
+          unit: 'mb',
         },
         input => {
           this.loadingInProgress = true;
-          organisation.name = input;
+          organisation.name = input.name;
+          organisation.quota = this._calculateBytes(input.quota, input.unit);
 
           this._organisationGateway.updateOrganisation(organisation)
             .then(() => this._loadOrganisations());
@@ -78,7 +81,7 @@ class OrganisationListController {
 
   createNewOrganisation() {
     this._modalService.show(
-      new this._InputDialog(
+      new this._OrganisationDialog(
         {
           title: 'Create new organisation.',
           headline: 'Enter a name for the new organisation:',
@@ -87,13 +90,34 @@ class OrganisationListController {
         },
         input => {
           this.loadingInProgress = true;
+          const quota = this._calculateBytes(input.quota, input.unit);
 
-          // @Todo: read an use quota
-          this._organisationGateway.createOrganisation(input, 0)
+          this._organisationGateway.createOrganisation(input.name, quota)
             .then(() => this._loadOrganisations());
         }
       )
     );
+  }
+
+  /**
+   * Returns the quota in bytes given quota and unit.
+   *
+   * @param {number} quota
+   * @param {string} unit
+   * @return {number}
+   * @private
+   */
+  _calculateBytes(quota, unit) {
+    switch (unit) {
+      case 'mb':
+        return quota * Math.pow(1024, 2);
+      case 'gb':
+        return quota * Math.pow(1024, 3);
+      case 'tb':
+        return quota * Math.pow(1024, 4);
+      default:
+        throw new Error(`Unknown unit "${unit}"`);
+    }
   }
 }
 
@@ -101,7 +125,7 @@ OrganisationListController.$inject = [
   'currentUserService',
   'organisationGateway',
   'modalService',
-  'InputDialog',
+  'OrganisationDialog',
 ];
 
 export default OrganisationListController;
