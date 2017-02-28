@@ -200,6 +200,9 @@ class UserProfileController {
       case 'ROLE_ADMIN':
         this.user.roles = ['ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER'];
         break;
+      case 'ROLE_SUPER_ADMIN':
+        this.user.roles = ['ROLE_SUPER_ADMIN'];
+        break;
       case 'ROLE_LABEL_COORDINATOR':
         this.user.roles = ['ROLE_LABEL_COORDINATOR', 'ROLE_LABELER'];
         break;
