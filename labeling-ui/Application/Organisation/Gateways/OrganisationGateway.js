@@ -57,13 +57,14 @@ class OrganisationGateway {
   }
 
   /**
-   * Create a new organisation with the given name and quota
+   * Create a new organisation with the given name and quota.
+   * Quota is given in bytes and defaults to 2 GB
    *
    * @param {string} organisationName
    * @param {number} organisationQuota
    * @return {AbortablePromise<Organisation>}
    */
-  createOrganisation(organisationName, organisationQuota = 0) {
+  createOrganisation(organisationName, organisationQuota = 2147483648) {
     const url = this._apiService.getApiUrl(`/organisation`);
     const organisation = {
       name: organisationName,
