@@ -31,9 +31,9 @@ class Organisation {
     this.numberOfVideos = organisationDocument.numberOfVideos;
 
     /**
-     * @type {OrganisationDiskUsage}
+     * @type {OrganisationDiskUsage | null}
      */
-    this.diskUsage = new OrganisationDiskUsage(organisationDocument.diskUsage);
+    this.diskUsage = organisationDocument.diskUsage ? new OrganisationDiskUsage(organisationDocument.diskUsage) : null;
   }
 
   /**
