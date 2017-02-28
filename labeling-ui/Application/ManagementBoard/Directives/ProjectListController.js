@@ -1,5 +1,5 @@
 import moment from 'moment';
-import BytesFilterFormatter from '../../Common/Filters/BytesFilterFormatter';
+import BytesFormatter from '../../Common/Helpers/BytesFormatter';
 
 /**
  * Controller of the {@link ProjectListDirective}
@@ -469,7 +469,7 @@ class ProjectListController {
         return `${time}h`;
       },
       'diskUsageTotal': project => {
-        const filter = new BytesFilterFormatter();
+        const filter = new BytesFormatter();
         if (project.diskUsage.total === undefined) {
           return filter.format(0);
         }

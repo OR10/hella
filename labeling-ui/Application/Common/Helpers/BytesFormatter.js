@@ -3,7 +3,7 @@
  *
  * @implements {Filter}
  */
-export default class BytesFilterFormatter {
+export default class BytesFormatter {
   /**
    *
    * @param bytes
