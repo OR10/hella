@@ -263,7 +263,7 @@ class Project
         $status,
         $countOnly = false
     ) {
-        if ($user->hasRole(Model\User::ROLE_ADMIN) || $user->hasRole(Model\User::ROLE_OBSERVER)) {
+        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_OBSERVER, Model\User::ROLE_SUPER_ADMIN])) {
             if ($countOnly) {
                 return $this->getSumOfProjectsByStatus($organisation, $status);
             } else {
