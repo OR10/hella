@@ -218,11 +218,7 @@ class UserGateway {
         const organisationDocumentsById = response.data.result;
         return map(
           organisationDocumentsById,
-          organisationDocument => new Organisation(
-            organisationDocument.id,
-            organisationDocument.name,
-            organisationDocument.quota
-          )
+          organisationDocument => new Organisation(organisationDocument)
         );
       });
   }

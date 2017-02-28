@@ -14,7 +14,6 @@ class ApplicationController {
    * @param {Array.<Organisation>} userOrganisations
    */
   constructor($scope, $state, loggerService, logGateway, currentUserService, organisationService, user, userPermissions, userOrganisations) {
-    console.log('Application controller construct!');
     /**
      * @type {CurrentUserService}
      * @private
@@ -40,11 +39,7 @@ class ApplicationController {
     this._deregisterStateChangeListener = $scope.$root.$on(
       '$stateChangeStart',
       (event, to, params) => {
-        console.log('$stateChangeStart!');
         const {organisationId} = params;
-        console.log('event', event);
-        console.log('to', to);
-        console.log('params', params);
 
         if (organisationId === undefined) {
         // Organisation id is not part of this route
@@ -52,7 +47,6 @@ class ApplicationController {
         }
 
         if (organisationId === '' || organisationId !== organisationService.get()) {
-          // console.log('inject organisation', organisationService.get());
           event.preventDefault();
           $state.go(
             to.name,
@@ -63,7 +57,6 @@ class ApplicationController {
     );
 
     $scope.$on('$destroy', () => {
-      console.log('deregistering StateChangeListener');
       this._deregisterStateChangeListener();
     });
 

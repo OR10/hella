@@ -131,8 +131,8 @@ class CalculateImageDiskUsage extends Command\Base
                             $curlHandle,
                             sprintf('%s/%s', $this->frameCdnBaseUrl, $path)
                         );
-                        $imageSizeForType[$path] = $header['Content-Length'];
-                        $calculatedBytesInThisRun += $header['Content-Length'];
+                        $imageSizeForType[$path] = (int) $header['Content-Length'];
+                        $calculatedBytesInThisRun += (int) $header['Content-Length'];
                         $progress->setMessage($this->formatBytes($calculatedBytesInThisRun), 'size');
                     } catch (\Exception $exception) {
                         $this->writeInfo(

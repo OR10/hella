@@ -1,24 +1,39 @@
+import OrganisationDiskUsage from './OrganisationDiskUsage';
+
 class Organisation {
   /**
-   * @param {string} id
-   * @param {string} name
-   * @param {number|null} quota
+   * @param {Object} organisationDocument
    */
-  constructor(id, name, quota) {
+  constructor(organisationDocument) {
     /**
      * @type {string}
      */
-    this.id = id;
+    this.id = organisationDocument.id;
 
     /**
      * @type {string}
      */
-    this.name = name;
+    this.name = organisationDocument.name;
 
     /**
      * @type {number|null}
      */
-    this.quota = quota;
+    this.quota = organisationDocument.quota;
+
+    /**
+     * @type {number}
+     */
+    this.numberOfProjects = organisationDocument.numberOfProjects;
+
+    /**
+     * @type {number}
+     */
+    this.numberOfVideos = organisationDocument.numberOfVideos;
+
+    /**
+     * @type {OrganisationDiskUsage | null}
+     */
+    this.diskUsage = organisationDocument.diskUsage ? new OrganisationDiskUsage(organisationDocument.diskUsage) : null;
   }
 
   /**
@@ -30,7 +45,7 @@ class Organisation {
     return {
       id,
       name,
-      quota
+      quota,
     };
   }
 }

@@ -4,9 +4,11 @@ import OrganisationRouteController from './Controllers/OrganisationRouteControll
 
 import OrganisationSelectController from './Controllers/OrganisationSelectController';
 import OrganisationSelectTemplate from './Views/OrganisationSelectView.html!';
+import OrganisationListController from './Controllers/OrganisationListController';
+import OrganisationListTemplate from './Views/OrganisationListView.html!';
 
-import Organisation from './Models/Organisation';
 import OrganisationService from './Services/OrganisationService';
+import OrganisationGateway from './Gateways/OrganisationGateway';
 
 import OrganisationPickerDirective from './Directives/OrganisationPickerDirective';
 
@@ -17,9 +19,9 @@ class OrganisationModule extends Module {
   registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Organisation', []);
     this.module.service('organisationService', OrganisationService);
+    this.module.service('organisationGateway', OrganisationGateway);
 
     this.registerDirective('organisationPicker', OrganisationPickerDirective);
-
   }
 
   /**
@@ -38,13 +40,29 @@ class OrganisationModule extends Module {
       },
     });
 
-    $stateProvider.state('labeling.organisation-list', {
+    $stateProvider.state('labeling.organisation-management', {
       url: 'organisations/',
+      redirectTo: 'labeling.organisation-management.selection',
+    });
+
+    $stateProvider.state('labeling.organisation-management.selection', {
+      url: 'selection',
       views: {
         '@labeling': {
           controller: OrganisationSelectController,
           controllerAs: 'vm',
           template: OrganisationSelectTemplate,
+        },
+      },
+    });
+
+    $stateProvider.state('labeling.organisation-management.list', {
+      url: 'management',
+      views: {
+        '@labeling': {
+          controller: OrganisationListController,
+          controllerAs: 'vm',
+          template: OrganisationListTemplate,
         },
       },
     });

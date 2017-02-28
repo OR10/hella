@@ -1,0 +1,64 @@
+<title-bar class="grid-block noscroll header"
+           user="vm.user"
+           user-permissions="vm.userPermissions"
+           back-link="labeling.organisation-management.selection"
+           back-link-text="Back to Organisation Selection"
+           show-username="true"
+           show-logout-button="true"
+>
+</title-bar>
+
+<div class="grid-block vertical">
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+
+    <div class="grid-block align-center shrink">
+        <h2 style="margin: 1.2em auto; text-align: center;">Organisations</h2>
+    </div>
+    <div class="grid-block align-center vertical">
+
+        <div class="grid-block align-right shrink">
+            <div class="grid-block horizontal shrink">
+                <div class="grid-content noscroll"
+                     style="margin-bottom: .5rem; margin-top: 2rem;">
+                    <button tooltip="Create new Organisation"
+                            ng-click="vm.createNewOrganisation()"
+                    >
+                        <i class="fa fa-plus"></i>&nbsp;Create new Organisation
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="grid-content">
+            <table class="table hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quota</th>
+                    <th>Total</th>
+                    <th>%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="organisation in vm.organisations" ng-click="vm.updateOrganisation(organisation)">
+                    <td>
+                        {{organisation.name}}
+                    </td>
+                    <td>
+                        {{organisation.quota | fileSize:1:'unlimited'}}
+                    </td>
+                    <td>
+                        {{organisation.diskUsage.total | fileSize}}
+                    </td>
+                    <td ng-if="organisation.quota === 0">
+                        -
+                    </td>
+                    <td ng-if="organisation.quota !== 0">
+                        {{organisation.diskUsage.total / organisation.quota | fileSize}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

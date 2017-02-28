@@ -14,7 +14,7 @@ class TitleBarDirective {
       showUsername: '@',
       showLogoutButton: '@',
       showActionButtons: '@?',
-      showOrganisationPicker: '@?'
+      showOrganisationPicker: '@?',
     };
 
     this.transclude = true;

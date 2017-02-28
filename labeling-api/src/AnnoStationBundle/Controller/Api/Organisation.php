@@ -94,7 +94,7 @@ class Organisation extends Controller\Base
         $organisation = new AnnoStationBundleModel\Organisation($name, $quota);
         $this->organisationFacade->save($organisation);
 
-        return new View\View($organisation);
+        return new View\View(['result' => $organisation]);
     }
 
     /**
@@ -122,7 +122,7 @@ class Organisation extends Controller\Base
         }
         $this->organisationFacade->save($organisation);
 
-        return new View\View($organisation);
+        return new View\View(['result' => $organisation]);
     }
 
     /**

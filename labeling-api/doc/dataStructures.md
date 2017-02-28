@@ -203,6 +203,7 @@
 + id: `36047d429d50548893be41c6880632ee` (string) - Organisation ID
 + rev: `1-36047d429d50548893be41c6880632gg` (string) - The Revision of the Organisation
 + name: `Some Organisation` (string) - Organisation Name
++ quota: `Quota` (number) - Quota in bytes. 0 bytes no limit
 
 # Campaign
 + id: `36047d429d50548893be41c6880632ee` (string) - Campaign ID
