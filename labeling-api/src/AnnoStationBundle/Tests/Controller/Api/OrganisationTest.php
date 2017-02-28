@@ -76,7 +76,7 @@ class OrganisationTest extends Tests\WebTestCase
             )
             ->execute();
 
-        $organisation = $requestWrapper->getJsonResponseBody();
+        $organisation = $requestWrapper->getJsonResponseBody()['result'];
         $this->assertEquals('Test create new organisation', $organisation['name']);
     }
 
@@ -109,7 +109,7 @@ class OrganisationTest extends Tests\WebTestCase
             )
             ->execute();
 
-        $organisation = $requestWrapper->getJsonResponseBody();
+        $organisation = $requestWrapper->getJsonResponseBody()['result'];
         $this->assertEquals('Test Organisation Updated', $organisation['name']);
     }
 
