@@ -10,8 +10,9 @@ class ProjectReportListController {
    * @param {ModalService} modalService
    * @param {ReportGateway} reportGateway
    * @param {ApiService} apiService
+   * @param {OrganisationService} organisationService
    */
-  constructor($rootScope, $interval, $state, $window, modalService, reportGateway, apiService) {
+  constructor($rootScope, $interval, $state, $window, modalService, reportGateway, apiService, organisationService) {
     /**
      * @type {$state}
      * @private
@@ -35,6 +36,12 @@ class ProjectReportListController {
      * @private
      */
     this._apiService = apiService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
 
     const intervalInSeconds = 2;
 
@@ -98,7 +105,10 @@ class ProjectReportListController {
   }
 
   showJSON(projectId, reportId) {
-    const url = this._apiService.getApiUrl(`project/${projectId}/report/${reportId}.json`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(
+      `organisation/${organisationId}/project/${projectId}/report/${reportId}.json`
+    );
     this._$window.open(url);
   }
 }
@@ -111,6 +121,7 @@ ProjectReportListController.$inject = [
   'modalService',
   'reportGateway',
   'ApiService',
+  'organisationService',
 ];
 
 export default ProjectReportListController;
