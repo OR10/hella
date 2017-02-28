@@ -30,7 +30,7 @@ class OrganisationGateway {
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result.map(
-            doc => new Organisation(doc.id, doc.name, doc.quota)
+            doc => new Organisation(doc)
           );
         }
 
@@ -49,9 +49,7 @@ class OrganisationGateway {
     return this._bufferedHttp.put(url, organisation.toJSON(), undefined, 'organisation')
       .then(response => {
         if (response.data && response.data.result) {
-          const {id, name, quota} = response.data.result;
-
-          return new Organisation(id, name, quota);
+          return new Organisation(response.data.result);
         }
 
         throw new Error(`Error updating the information for organisation with id "${organisation.id}"`);
@@ -75,9 +73,7 @@ class OrganisationGateway {
     return this._bufferedHttp.post(url, organisation, undefined, 'organisation')
       .then(response => {
         if (response.data && response.data.result) {
-          const {id, name, quota} = response.data.result;
-
-          return new Organisation(id, name, quota);
+          return new Organisation(response.data.result);
         }
 
         throw new Error(`Error creating the organisation with name "${organisationName}"`);

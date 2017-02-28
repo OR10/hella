@@ -1,24 +1,22 @@
 class Organisation {
   /**
-   * @param {string} id
-   * @param {string} name
-   * @param {number|null} quota
+   * @param {Object} organisationDocument
    */
-  constructor(id, name, quota) {
+  constructor(organisationDocument) {
     /**
      * @type {string}
      */
-    this.id = id;
+    this.id = organisationDocument.id;
 
     /**
      * @type {string}
      */
-    this.name = name;
+    this.name = organisationDocument.name;
 
     /**
      * @type {number|null}
      */
-    this.quota = quota;
+    this.quota = organisationDocument.quota;
   }
 
   /**
