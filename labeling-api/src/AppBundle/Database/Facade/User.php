@@ -3,7 +3,6 @@ namespace AppBundle\Database\Facade;
 
 use AppBundle\Model;
 use Doctrine\ODM\CouchDB;
-use Doctrine\ORM;
 use FOS\UserBundle\Model as FosUserModel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
