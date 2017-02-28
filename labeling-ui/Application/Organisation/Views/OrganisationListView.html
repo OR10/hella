@@ -33,12 +33,27 @@
                 <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Quota</th>
+                    <th>Total</th>
+                    <th>%</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="organisation in vm.organisations">
-                    <td ng-click="vm.updateOrganisation(organisation)">
+                <tr ng-repeat="organisation in vm.organisations" ng-click="vm.updateOrganisation(organisation)">
+                    <td>
                         {{organisation.name}}
+                    </td>
+                    <td>
+                        {{organisation.quota | fileSize:1:'unlimited'}}
+                    </td>
+                    <td>
+                        {{organisation.diskUsage.total | fileSize}}
+                    </td>
+                    <td ng-if="organisation.quota === 0">
+                        -
+                    </td>
+                    <td ng-if="organisation.quota !== 0">
+                        {{organisation.diskUsage.total / organisation.quota | fileSize}}
                     </td>
                 </tr>
                 </tbody>
