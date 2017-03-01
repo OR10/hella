@@ -389,25 +389,20 @@ class PaperCuboid extends PaperThingShape {
   }
 
   get bounds() {
-    const minX = this._projectedCuboid.vertices.reduce((prev, current) => {
-      return prev.x < current.x ? prev.x : current.x;
-    });
-    const minY = this._projectedCuboid.vertices.reduce((prev, current) => {
-      return prev.y < current.y ? prev.y : current.y;
-    });
-    const maxX = this._projectedCuboid.vertices.reduce((prev, current) => {
-      return prev.x > current.x ? prev.x : current.x;
-    });
-    const maxY = this._projectedCuboid.vertices.reduce((prev, current) => {
-      return prev.y > current.y ? prev.y : current.y;
-    });
+    const leftVector = this._projectedCuboid.vertices.reduce((initial, current) => initial.x < current.x ? initial : current);
+    const rightVector = this._projectedCuboid.vertices.reduce((initial, current) => initial.x > current.x ? initial : current);
+    const topVector = this._projectedCuboid.vertices.reduce((initial, current) => initial.y < current.y ? initial : current);
+    const bottomVector = this._projectedCuboid.vertices.reduce((initial, current) => initial.y > current.y ? initial : current);
+
+    const topLeft = new paper.Point(leftVector.x, topVector.y);
+    const bottomRight = new paper.Point(rightVector.x, bottomVector.y);
 
     return {
-      width: maxX - minX,
-      height: maxY - minY,
-      x: minX,
-      y: minY,
-      point: new paper.Point(minX, minY),
+      width: bottomRight.x - topLeft.x,
+      height: bottomRight.y - topLeft.y,
+      x: topLeft.x,
+      y: topLeft.y,
+      point: topLeft,
     };
   }
 
