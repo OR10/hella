@@ -130,7 +130,7 @@ class User extends BaseUser
 
     /**
      * @param string $projectId
-     * @param array  $roles
+     * @param Role[] $roles
      */
     public function setRolesForProject(string $projectId, array $roles)
     {

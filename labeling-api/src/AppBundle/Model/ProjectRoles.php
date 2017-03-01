@@ -2,6 +2,7 @@
 
 namespace AppBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
 /**
@@ -25,14 +26,14 @@ class ProjectRoles
      *
      * @CouchDB\EmbedMany(targetDocument="Role")
      */
-    protected $roles = [];
+    protected $roles;
 
     /**
      * @var Role[]
      *
      * @CouchDB\EmbedMany(targetDocument="Role")
      */
-    protected $removedRoles = [];
+    protected $removedRoles;
 
     /**
      * ProjectRoles constructor.
@@ -41,7 +42,9 @@ class ProjectRoles
      */
     public function __construct(string $projectId)
     {
-        $this->projectId = $projectId;
+        $this->projectId    = $projectId;
+        $this->roles        = new ArrayCollection();
+        $this->removedRoles = new ArrayCollection();
     }
 
     /**
@@ -49,15 +52,8 @@ class ProjectRoles
      */
     public function assignRole(Role $role)
     {
-        $existingRole = array_filter(
-            $this->roles,
-            function (Role $currentRole) use ($role) {
-                return $role->getId() == $currentRole->getId();
-            }
-        );
-
-        if (count($existingRole) === 0) {
-            $this->roles[] = $role;
+        if ($this->roles[$role->getId()] === null) {
+            $this->roles[$role->getId()] = $role;
         }
     }
 
@@ -66,7 +62,9 @@ class ProjectRoles
      */
     public function setRoles(array $roles)
     {
-        $this->roles = $roles;
+        foreach ($roles as $role) {
+            $this->roles[$role->getId()] = $role;
+        }
     }
 
     /**
@@ -74,11 +72,11 @@ class ProjectRoles
      */
     public function getRoles()
     {
-        return $this->roles;
+        return $this->roles->toArray();
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getProjectId()
     {
@@ -86,19 +84,16 @@ class ProjectRoles
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @return void
-     */
     public function clearRemovedRoles()
     {
-        $this->removedRoles = [];
+        $this->removedRoles = new ArrayCollection();
     }
 
     /**
@@ -114,6 +109,6 @@ class ProjectRoles
      */
     public function getRemovedRoles()
     {
-        return $this->removedRoles;
+        return $this->removedRoles->toArray();
     }
 }
