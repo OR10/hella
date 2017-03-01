@@ -36,13 +36,14 @@ class Role
     /**
      * @param string $projectId
      * @param string $roleName
+     * @param string $label
      * @param array  $permissions
      *
      * @return Model\Role
      */
-    public function createRole(string $projectId, string $roleName, array $permissions)
+    public function createRole(string $projectId, string $roleName, string $label, array $permissions)
     {
-        $role = new Model\Role($this->uuidGenerator->generateUuid(), $projectId, $roleName, $permissions);
+        $role = new Model\Role($this->uuidGenerator->generateUuid(), $projectId, $roleName, $label, $permissions);
         $this->documentManager->persist($role);
         $this->documentManager->flush();
 
@@ -51,9 +52,38 @@ class Role
 
     /**
      * @param string $projectId
-     * @param string $roleName
+     *
+     * @return Model\Role
      */
-    public function getPermissionsForRole(string $projectId, string $roleName)
+    public function getRolesForProject(string $projectId)
+    {
+        $roles = $this->documentManager->createQuery('annostation_roles', 'roles_by_project_and_name')
+            ->onlyDocs(true)
+            ->setStartKey([$projectId])
+            ->setEndKey([$projectId, []])
+            ->execute()
+            ->toArray();
+
+        return $roles;
+    }
+
+    /**
+     * @param string $roleId
+     *
+     * @return Model\Role
+     */
+    public function getRoleById(string $roleId)
+    {
+        return $this->documentManager->find(Model\Role::class, $roleId);
+    }
+
+    /**
+     * @param string $projectId
+     * @param string $roleName
+     *
+     * @return Model\Role
+     */
+    public function getRole(string $projectId, string $roleName)
     {
         $roles = $this->documentManager->createQuery('annostation_roles', 'roles_by_project_and_name')
             ->onlyDocs(true)
@@ -66,7 +96,18 @@ class Role
             throw new \InvalidArgumentException(sprintf("unknown role %s in project %s", $roleName, $projectId));
         }
 
-        return $roles[0]->getPermissions();
+        return $roles[0];
+    }
+
+    /**
+     * @param string $projectId
+     * @param string $roleName
+     *
+     * @return \string[]
+     */
+    public function getPermissionsForRole(string $projectId, string $roleName)
+    {
+        return $this->getRole($projectId, $roleName)->getPermissions();
     }
 
 }
