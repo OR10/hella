@@ -66,10 +66,11 @@ class UserPermissions
         'canListOrganisations'            => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                                                                                                                                                ],
         'canListAllOrganisations'         => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
         'canCreateOrganisation'           => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
+        'canEditOrganisation'             => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
         'canDeleteOrganisation'           => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
         'canViewOrganisationQuota'        => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
         'canAddUserToOrganisation'        => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
-        'canDeleteUserFromOrganisation'   => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
+        'canDeleteUserFromOrganisation'   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                                                                                                                                                ],
         'canListAllUsers'                 => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
 
     ];

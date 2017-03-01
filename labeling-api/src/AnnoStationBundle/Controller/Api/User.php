@@ -135,9 +135,7 @@ class User extends Controller\Base
             $request->request->get('email'),
             $request->request->get('password'),
             $request->request->getBoolean('enabled'),
-            $request->request->getBoolean('locked'),
-            [],
-            $request->request->get('organisationIds')
+            $request->request->getBoolean('locked')
         );
 
         foreach ($roles as $role) {
@@ -172,7 +170,6 @@ class User extends Controller\Base
         $roles = $request->request->get('roles', array());
         $user->setUsername($request->request->get('username'));
         $user->setEmail($request->request->get('email'));
-        $user->setOrganisations($request->request->get('organisationIds'));
 
         if ($request->request->has('password')) {
             $user->setPlainPassword($request->request->get('password'));
