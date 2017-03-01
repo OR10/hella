@@ -12,8 +12,20 @@ class ApplicationController {
    * @param {User} user
    * @param {Object} userPermissions
    * @param {Array.<Organisation>} userOrganisations
+   * @param {OrganisationRoutingService} organisationRoutingService
    */
-  constructor($scope, $state, loggerService, logGateway, currentUserService, organisationService, user, userPermissions, userOrganisations) {
+  constructor(
+    $scope,
+    $state,
+    loggerService,
+    logGateway,
+    currentUserService,
+    organisationService,
+    user,
+    userPermissions,
+    userOrganisations,
+    organisationRoutingService
+  ) {
     /**
      * @type {CurrentUserService}
      * @private
@@ -38,22 +50,7 @@ class ApplicationController {
 
     this._deregisterStateChangeListener = $scope.$root.$on(
       '$stateChangeStart',
-      (event, to, params) => {
-        const {organisationId} = params;
-
-        if (organisationId === undefined) {
-        // Organisation id is not part of this route
-          return;
-        }
-
-        if (organisationId === '' || organisationId !== organisationService.get()) {
-          event.preventDefault();
-          $state.go(
-            to.name,
-            Object.assign({}, params, {organisationId: organisationService.get()})
-          );
-        }
-      }
+      (event, to, params) => organisationRoutingService.onStateChangeStart(event, to, params)
     );
 
     $scope.$on('$destroy', () => {
@@ -77,6 +74,7 @@ ApplicationController.$inject = [
   'user',
   'userPermissions',
   'userOrganisations',
+  'organisationRoutingService',
 ];
 
 export default ApplicationController;

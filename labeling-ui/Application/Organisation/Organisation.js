@@ -9,6 +9,7 @@ import OrganisationListTemplate from './Views/OrganisationListView.html!';
 
 import OrganisationService from './Services/OrganisationService';
 import OrganisationGateway from './Gateways/OrganisationGateway';
+import OrganisationRoutingService from './Services/OrganisationRoutingService';
 
 import OrganisationPickerDirective from './Directives/OrganisationPickerDirective';
 
@@ -20,6 +21,7 @@ class OrganisationModule extends Module {
     this.module = angular.module('AnnoStation.Organisation', []);
     this.module.service('organisationService', OrganisationService);
     this.module.service('organisationGateway', OrganisationGateway);
+    this.module.service('organisationRoutingService', OrganisationRoutingService);
 
     this.registerDirective('organisationPicker', OrganisationPickerDirective);
   }
