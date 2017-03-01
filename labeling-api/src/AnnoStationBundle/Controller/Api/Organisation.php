@@ -134,7 +134,7 @@ class Organisation extends Controller\Base
      */
     public function updateAction(AnnoStationBundleModel\Organisation $organisation, HttpFoundation\Request $request)
     {
-        if (!$this->userPermissions->hasPermission('canCreateOrganisation')) {
+        if (!$this->userPermissions->hasPermission('canEditOrganisation')) {
             throw new Exception\AccessDeniedHttpException();
         }
 
