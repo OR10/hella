@@ -165,19 +165,24 @@ class Project extends Controller\Base
 
         $diskUsageByVideoIds = $this->organisationFacade->getDiskUsageForOrganisationVideos($organisation);
 
-        $videosByProjects = $this->labelingTaskFacade->findAllByProjects($projects);
+        $tasksByProjects = $this->labelingTaskFacade->findAllByProjects($projects);
         $numberOfVideos     = array();
         $diskUsageByProject = [];
-        foreach ($videosByProjects as $videosByProject) {
-            $projectId                    = $videosByProject['key'];
-            $videoId                      = $videosByProject['value'];
+        foreach ($tasksByProjects as $taskByProjects) {
+            $projectId                    = $taskByProjects['key'];
+            $videoId                      = $taskByProjects['value'];
             $numberOfVideos[$projectId][] = $videoId;
+        }
 
-            if (isset($diskUsageByVideoIds[$videoId])) {
-                if (isset($diskUsageByProject[$projectId])) {
-                    $diskUsageByProject[$projectId]['total'] += $diskUsageByVideoIds[$videoId]['total'];
-                }else{
-                    $diskUsageByProject[$projectId]['total'] = $diskUsageByVideoIds[$videoId]['total'];
+        foreach($numberOfVideos as $projectId => $videoIds) {
+            $videoIds = array_unique($videoIds);
+            foreach($videoIds as $videoId) {
+                if (isset($diskUsageByVideoIds[$videoId])) {
+                    if (isset($diskUsageByProject[$projectId])) {
+                        $diskUsageByProject[$projectId]['total'] += $diskUsageByVideoIds[$videoId]['total'];
+                    } else {
+                        $diskUsageByProject[$projectId]['total'] = $diskUsageByVideoIds[$videoId]['total'];
+                    }
                 }
             }
         }
