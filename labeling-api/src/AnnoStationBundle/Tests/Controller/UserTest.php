@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Tests\Controller\Api\Organisation;
+namespace AnnoStationBundle\Tests\Controller\Api;
 
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Database\Facade;
