@@ -72,7 +72,7 @@ class ProjectRoles
      */
     public function getRoles()
     {
-        return $this->roles->toArray();
+        return array_values($this->roles->toArray());
     }
 
     /**

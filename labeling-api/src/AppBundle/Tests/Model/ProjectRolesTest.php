@@ -16,7 +16,7 @@ class ProjectRolesTest extends \PHPUnit_Framework_TestCase
         $projectRoles->assignRole($role1);
         $projectRoles->assignRole($role2);
 
-        $this->assertEquals([$role1->getId() => $role1], $projectRoles->getRoles());
+        $this->assertEquals([$role1], $projectRoles->getRoles());
     }
 
     public function testSetRolesIsUnique()
@@ -26,7 +26,7 @@ class ProjectRolesTest extends \PHPUnit_Framework_TestCase
         $role2        = new Role(1, 1, 1, 1);
         $projectRoles->setRoles([$role1, $role2]);
 
-        $this->assertEquals([$role1->getId() => $role1], $projectRoles->getRoles());
+        $this->assertEquals([$role1], $projectRoles->getRoles());
     }
 
     public function testAddRemovedRolesIsNotUnique()

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use FOS\UserBundle\Model\User as BaseUser;
 
@@ -43,10 +44,14 @@ class User extends BaseUser
      *
      * @CouchDB\EmbedMany(targetDocument="ProjectRoles")
      */
-    protected $projectRoles = [];
+    protected $projectRoles;
 
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
+        $this->projectRoles = new ArrayCollection();
         parent::__construct();
     }
 
@@ -145,7 +150,7 @@ class User extends BaseUser
      */
     public function getRolesForProject(string $projectId)
     {
-        $roles = $this->getProjectRolesForProjectId($projectId);
+        $roles = $this->projectRoles[$projectId];
         if ($roles === null) {
             return [];
         }
@@ -158,7 +163,7 @@ class User extends BaseUser
      */
     public function getProjectRoles()
     {
-        return $this->projectRoles ?? [];
+        return array_values($this->projectRoles->toArray());
     }
 
     /**
@@ -177,13 +182,7 @@ class User extends BaseUser
      */
     public function getProjectRolesForProjectId(string $projectId)
     {
-        foreach ($this->projectRoles as $projectRoles) {
-            if ($projectRoles->getProjectId() == $projectId) {
-                return $projectRoles;
-            }
-        }
-
-        return null;
+        return $this->projectRoles[$projectId];
     }
 
     /**
@@ -193,15 +192,11 @@ class User extends BaseUser
      */
     public function getOrCreateProjectRolesForProjectId(string $projectId)
     {
-        if ($this->projectRoles === null) {
-            $this->projectRoles = [];
-        }
-
-        $roles = $this->getProjectRolesForProjectId($projectId);
+        $roles = $this->projectRoles[$projectId];
 
         if ($roles === null) {
-            $roles                = new ProjectRoles($projectId);
-            $this->projectRoles[] = $roles;
+            $roles                          = new ProjectRoles($projectId);
+            $this->projectRoles[$projectId] = $roles;
         }
 
         return $roles;
