@@ -62,7 +62,8 @@ class UserPermissions
         'canViewSystemStatus'             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN                                                                                                                                                 ],
 
         //Organisation management
-        'canListOrganisations'            => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
+        'canListOrganisations'            => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                                                                                                                                                ],
+        'canListAllOrganisations'         => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
         'canCreateOrganisation'           => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
         'canDeleteOrganisation'           => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
         'canViewOrganisationQuota'        => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],

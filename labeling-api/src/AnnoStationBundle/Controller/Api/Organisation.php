@@ -7,6 +7,8 @@ use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Response;
+use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\Authentication;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -42,16 +44,30 @@ class Organisation extends Controller\Base
      */
     private $projectFacade;
 
+    /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
+
     public function __construct(
         Facade\Organisation $organisationFacade,
         Facade\Video $videoFacade,
         Facade\Project $projectFacade,
-        Storage\TokenStorage $tokenStorage
+        Storage\TokenStorage $tokenStorage,
+        Service\Authorization $authorizationService,
+        Authentication\UserPermissions $userPermissions
     ) {
-        $this->organisationFacade = $organisationFacade;
-        $this->tokenStorage       = $tokenStorage;
-        $this->videoFacade        = $videoFacade;
-        $this->projectFacade = $projectFacade;
+        $this->organisationFacade   = $organisationFacade;
+        $this->tokenStorage         = $tokenStorage;
+        $this->videoFacade          = $videoFacade;
+        $this->projectFacade        = $projectFacade;
+        $this->authorizationService = $authorizationService;
+        $this->userPermissions      = $userPermissions;
     }
 
     /**
@@ -63,14 +79,24 @@ class Organisation extends Controller\Base
      */
     public function listAction(HttpFoundation\Request $request)
     {
-        $this->hasUserOrganisationManagePermission();
+        if (!$this->userPermissions->hasPermission('canListOrganisations')) {
+            throw new Exception\AccessDeniedHttpException();
+        }
 
         $skip  = $request->request->get('skip');
         $limit = $request->request->get('limit');
 
+        if ($this->userPermissions->hasPermission('canListAllOrganisations')) {
+            $organisations = $this->organisationFacade->findAll($skip, $limit);
+        } else {
+            /** @var Model\User $user */
+            $user          = $this->tokenStorage->getToken()->getUser();
+            $organisations = $this->organisationFacade->findByIds($user->getOrganisations());
+        }
+
         return new View\View(
             new Response\SimpleOrganisations(
-                $this->organisationFacade->findAll($skip, $limit),
+                $organisations,
                 $this->videoFacade->getNumberOfVideosByOrganisations(),
                 $this->projectFacade->getNumberOfProjectsByOrganisations(),
                 $this->organisationFacade
@@ -86,7 +112,9 @@ class Organisation extends Controller\Base
      */
     public function createAction(HttpFoundation\Request $request)
     {
-        $this->hasUserOrganisationManagePermission();
+        if (!$this->userPermissions->hasPermission('canCreateOrganisation')) {
+            throw new Exception\AccessDeniedHttpException();
+        }
 
         $name  = $request->request->get('name');
         $quota = $request->request->get('quota', 0);
@@ -106,7 +134,9 @@ class Organisation extends Controller\Base
      */
     public function updateAction(AnnoStationBundleModel\Organisation $organisation, HttpFoundation\Request $request)
     {
-        $this->hasUserOrganisationManagePermission();
+        if (!$this->userPermissions->hasPermission('canCreateOrganisation')) {
+            throw new Exception\AccessDeniedHttpException();
+        }
 
         $rev   = $request->request->get('rev');
         $name  = $request->request->get('name');
@@ -134,19 +164,12 @@ class Organisation extends Controller\Base
      */
     public function deleteAction(AnnoStationBundleModel\Organisation $organisation, HttpFoundation\Request $request)
     {
-        $this->hasUserOrganisationManagePermission();
+        if (!$this->userPermissions->hasPermission('canDeleteOrganisation')) {
+            throw new Exception\AccessDeniedHttpException();
+        }
 
         $this->organisationFacade->delete($organisation);
 
         return new View\View(['success' => true]);
-    }
-
-    private function hasUserOrganisationManagePermission()
-    {
-        /** @var Model\User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
-        if (!$user->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
-            throw new Exception\AccessDeniedHttpException();
-        }
     }
 }

@@ -292,6 +292,8 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.campaign" class="AnnoStationBundle\Controller\Api\Organisation\Campaign">

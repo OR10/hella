@@ -23,21 +23,27 @@ class OrganisationTest extends Tests\WebTestCase
     /**
      * @var Model\User
      */
+    private $superAdmin;
+
+    /**
+     * @var Model\User
+     */
     private $admin;
 
     /**
      * @var Model\User
      */
-    private $superAdmin;
+    private $labeler;
 
     protected function setUpImplementation()
     {
         $this->organisationFacade = $this->getAnnostationService('database.facade.organisation');
-        $this->admin              = $this->createAdminUser();
         $this->superAdmin         = $this->createSuperAdminUser();
+        $this->admin              = $this->createAdminUser();
+        $this->labeler            = $this->createLabelerUser();
     }
 
-    public function testGetOrganisations()
+    public function testGetOrganisationsAsSuperAdmin()
     {
         $this->createOrganisation('Test 1');
         $this->createOrganisation('Test 2');
@@ -55,10 +61,31 @@ class OrganisationTest extends Tests\WebTestCase
         $this->assertEquals(['Test 4', 'Test 3', 'Test 2', 'Test 1'], $actualOrganisations);
     }
 
-    public function testGetOrganisationsAsNonSuperAdmin()
+    public function testGetOrganisationsAsAdmin()
     {
+        $organisation = $this->createOrganisation();
+        $this->admin->assignToOrganisation($organisation);
+        $this->createOrganisation('Test 1');
+        $this->createOrganisation('Test 2');
+
         $requestWrapper = $this->createRequest('/api/organisation')
             ->withCredentialsFromUsername($this->admin)
+            ->execute();
+
+        $actualOrganisations = array_map(
+            function ($organisation) {
+                return $organisation['name'];
+            },
+            $requestWrapper->getJsonResponseBody()['result']
+        );
+
+        $this->assertEquals(['Test Organisation'], $actualOrganisations);
+    }
+
+    public function testGetOrganisationsAsLabeler()
+    {
+        $requestWrapper = $this->createRequest('/api/organisation')
+            ->withCredentialsFromUsername($this->labeler)
             ->execute();
 
         $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
