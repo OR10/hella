@@ -100,15 +100,13 @@ class Role
     }
 
     /**
-     * @param string     $projectId
-     * @param Model\Role $role
+     * @param string $projectId
+     * @param string $roleName
      *
      * @return \string[]
      */
-    public function getPermissionsForRole(string $projectId, Model\Role $role)
+    public function getPermissionsForRole(string $projectId, $roleName)
     {
-        $roleName = $role->getName();
-
         return $this->getRole($projectId, $roleName)->getPermissions();
     }
 
