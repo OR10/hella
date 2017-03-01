@@ -35,19 +35,31 @@ class OrganisationRoutingService {
    */
   onStateChangeStart(event, to, params) {
     const {organisationId} = params;
+    this._logger.groupStartOpened('organisation:routing', `Injecting/Extracting organisation in/from route`);
 
     if (organisationId === undefined) {
       // Organisation id is not part of this route
+      this._logger.log('organisation:routing', `No 'organisationId' parameter found. Injection not needed.`);
+      this._logger.groupEnd('organisation:routing');
       return;
     }
 
-    if (organisationId === '' || organisationId !== this._organisationService.get()) {
-      event.preventDefault();
-      this._$state.go(
-        to.name,
-        Object.assign({}, params, {organisationId: this._organisationService.get()})
-      );
+    if (organisationId !== '') {
+      // Organisation is part of route
+      this._organisationService.set(organisationId);
+      this._logger.log('organisation:routing', `Organisation extracted: ${organisationId}.`);
+      this._logger.groupEnd('organisation:routing');
+      return;
     }
+
+    // Organisation is needed for route, but not a part of it. Inject it!
+    this._logger.log('organisation:routing', `Organisation injected: ${this._organisationService.get()}. Redirecting to 'new' route.`);
+    this._logger.groupEnd('organisation:routing');
+    event.preventDefault();
+    this._$state.go(
+      to.name,
+      Object.assign({}, params, {organisationId: this._organisationService.get()})
+    );
   }
 
   /**
@@ -67,14 +79,12 @@ class OrganisationRoutingService {
    * @param {string} newOrganisationId
    */
   transistionToNewOrganisation(newOrganisationId) {
-    this._organisationService.set(newOrganisationId);
-
     if (this._doesCurrentRouteHaveNonWhiteListedParameters()) {
       this._logger.log('organisation:routing', `Current route (${this._$state.$current.name}) does have non safe parameters for organisation change`);
-      this._gotoSafePseudoParentRoute();
+      this._gotoSafePseudoParentRouteForOrganisationId(newOrganisationId);
     } else {
       this._logger.log('organisation:routing', `Current route (${this._$state.$current.name}) is safe for organisation change`);
-      this._reloadCurrentStateWithNewOrganisation();
+      this._reloadCurrentStateWithNewOrganisation(newOrganisationId);
     }
   }
 
@@ -101,9 +111,10 @@ class OrganisationRoutingService {
    *
    * A fallback is always the project overview, which should be safe in any organisation.
    *
+   * @param {string} organisationId
    * @private
    */
-  _gotoSafePseudoParentRoute() {
+  _gotoSafePseudoParentRouteForOrganisationId(organisationId) {
     const $currentState = this._$state.$current;
     const safeRouteName = this._getSafeRouteForRouteName($currentState.name);
 
@@ -111,7 +122,7 @@ class OrganisationRoutingService {
 
     this._$state.go(
       safeRouteName,
-      {organisationId: this._organisationService.get()}
+      {organisationId: organisationId}
     );
   }
 
@@ -141,10 +152,16 @@ class OrganisationRoutingService {
    *
    * This transisiton might be dangerous if the current route does not exist in the new organisation for the user.
    *
+   * @param {string} organisationId
+   *
    * @private
    */
-  _reloadCurrentStateWithNewOrganisation() {
-    this._$state.reload();
+  _reloadCurrentStateWithNewOrganisation(organisationId) {
+    const currentState = this._$state.$current;
+    this._$state.go(
+      currentState.name,
+      Object.assign({}, currentState.params, {organisationId})
+    );
   }
 }
 

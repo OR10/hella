@@ -2,9 +2,9 @@ class OrganisationSelectController {
   /**
    * @param {$state} $state
    * @param {CurrentUserService} currentUserService
-   * @param {OrganisationService} organisationService
+   * @param {OrganisationRoutingService} organisationRoutingService
    */
-  constructor($state, currentUserService, organisationService) {
+  constructor($state, currentUserService, organisationRoutingService) {
     /**
      * @type {$state}
      * @private
@@ -12,10 +12,10 @@ class OrganisationSelectController {
     this._$state = $state;
 
     /**
-     * @type {OrganisationService}
+     * @type {OrganisationRoutingService}
      * @private
      */
-    this._organisationService = organisationService;
+    this._organisationRoutingService = organisationRoutingService;
 
     /**
      * @type {Array.<Organisation>}
@@ -32,20 +32,12 @@ class OrganisationSelectController {
      */
     this.userPermissions = currentUserService.getPermissions();
   }
-
-  /**
-   * @param {Organisation} organisation
-   */
-  gotoOrganisation(organisation) {
-    this._organisationService.set(organisation.id);
-    this._$state.go('labeling.projects.list');
-  }
 }
 
 OrganisationSelectController.$inject = [
   '$state',
   'currentUserService',
-  'organisationService',
+  'organisationRoutingService',
 ];
 
 export default OrganisationSelectController;

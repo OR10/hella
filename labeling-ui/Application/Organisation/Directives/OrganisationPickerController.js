@@ -8,6 +8,12 @@ class OrganisationPickerController {
    */
   constructor($scope, $state, currentUserService, organisationService, organisationRoutingService) {
     /**
+     * @type {OrganisationRoutingService}
+     * @private
+     */
+    this._organisationRoutingService = organisationRoutingService;
+
+    /**
      * @type {Array.<Organisation>}
      */
     this.organisationsOfCurrentUser = currentUserService.getOrganisations();
@@ -18,24 +24,22 @@ class OrganisationPickerController {
     this.activeOrganisation = this._findOrganisationById(organisationService.get());
 
     organisationService.subscribe(
-      (newOrganisationId, oldOrganisationId) => {
+      newOrganisationId => {
         this.activeOrganisation = this._findOrganisationById(newOrganisationId);
       }
     );
+  }
 
-    $scope.$watch('vm.activeOrganisation', (activeOrganisation, oldOrganisation) => {
-      if (activeOrganisation === null) {
-        return;
-      }
+  /**
+   * Event handler for user based changes to the organisation selection.
+   */
+  onOrganisationSelected() {
+    const selectedOrganisation = this.activeOrganisation;
+    if (selectedOrganisation === null) {
+      return;
+    }
 
-      // Those seem to be different objects (maybe due to select model binding)
-      // The id however is unique and can therefore be used for comparison.
-      if (activeOrganisation.id === oldOrganisation.id) {
-        return;
-      }
-
-      organisationRoutingService.transistionToNewOrganisation(activeOrganisation.id);
-    });
+    this._organisationRoutingService.transistionToNewOrganisation(selectedOrganisation.id);
   }
 
   /**
