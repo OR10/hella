@@ -56,6 +56,10 @@ class OrganisationListController {
    * @param {Organisation} organisation
    */
   updateOrganisation(organisation) {
+    if (this.userPermissions.canEditOrganisation !== true) {
+      return;
+    }
+
     this._modalService.show(
       new this._OrganisationDialog(
         {

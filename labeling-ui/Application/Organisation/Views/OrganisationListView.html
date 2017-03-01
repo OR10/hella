@@ -16,7 +16,7 @@
     </div>
     <div class="grid-block align-center vertical">
 
-        <div class="grid-block align-right shrink">
+        <div class="grid-block align-right shrink" ng-if="vm.userPermissions.canCreateOrganisation === true">
             <div class="grid-block horizontal shrink">
                 <div class="grid-content noscroll"
                      style="margin-bottom: .5rem; margin-top: 2rem;">
@@ -29,19 +29,27 @@
             </div>
         </div>
         <div class="grid-content">
-            <table class="table hover">
+            <table class="table" ng-class="{'hover': vm.userPermissions.canEditOrganisation === true}">
                 <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Projects</th>
+                    <th>Videos</th>
                     <th>Quota</th>
-                    <th>Total</th>
-                    <th>%</th>
+                    <th>Usage</th>
+                    <th>Usage %</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="organisation in vm.organisations" ng-click="vm.updateOrganisation(organisation)">
                     <td>
                         {{organisation.name}}
+                    </td>
+                    <td>
+                        {{organisation.numberOfProjects}}
+                    </td>
+                    <td>
+                        {{organisation.numberOfVideos}}
                     </td>
                     <td>
                         {{organisation.quota | fileSize:1:'unlimited'}}
