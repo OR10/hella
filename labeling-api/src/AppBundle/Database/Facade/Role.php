@@ -105,7 +105,7 @@ class Role
      *
      * @return \string[]
      */
-    public function getPermissionsForRole(string $projectId, $roleName)
+    public function getPermissionsForRole(string $projectId, string $roleName)
     {
         return $this->getRole($projectId, $roleName)->getPermissions();
     }
