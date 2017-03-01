@@ -119,9 +119,7 @@ describe('LabeledThingGroupGateway', () => {
     const expectedUrl = `/backend/api/task/TASK-1/labeledThingGroup/${ltg.id}`;
 
     const expectedResult = {
-      result: {
-        success: true,
-      },
+      success: true,
     };
 
     $httpBackend
