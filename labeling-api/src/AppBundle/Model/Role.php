@@ -40,19 +40,28 @@ class Role
     private $permissions;
 
     /**
+     * @var string
+     *
+     * @CouchDB\Field(type="string")
+     */
+    private $label;
+
+    /**
      * Role constructor.
      *
      * @param string   $id
      * @param string   $projectId
      * @param string   $name
+     * @param string   $label
      * @param string[] $permissions
      */
-    public function __construct(string $id, string $projectId, string $name, array $permissions = [])
+    public function __construct(string $id, string $projectId, string $name, string $label, array $permissions = [])
     {
         $this->id          = $id;
         $this->projectId   = $projectId;
         $this->name        = $name;
         $this->permissions = $permissions;
+        $this->label       = $label;
     }
 
     /**
@@ -77,5 +86,21 @@ class Role
     public function getPermissions()
     {
         return $this->permissions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }
