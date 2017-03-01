@@ -62,6 +62,7 @@ class UserPermissions
         'canViewSystemStatus'             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN                                                                                                                                                 ],
 
         //Organisation management
+        'canViewOrganisationManagement'   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                                                                                                                                                ],
         'canListOrganisations'            => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                                                                                                                                                ],
         'canListAllOrganisations'         => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
         'canCreateOrganisation'           => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
