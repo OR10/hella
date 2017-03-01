@@ -166,6 +166,13 @@
         </service>
 
         <service
+                id="annostation.labeling_api.controller.api.organisation.user"
+                class="AnnoStationBundle\Controller\Api\Organisation\User">
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+        </service>
+        <service
                 id="annostation.labeling_api.controller.api.organisation.users"
                 class="AnnoStationBundle\Controller\Api\Organisation\Users">
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>

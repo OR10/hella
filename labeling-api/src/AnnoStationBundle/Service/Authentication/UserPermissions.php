@@ -69,7 +69,7 @@ class UserPermissions
         'canDeleteOrganisation'           => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
         'canViewOrganisationQuota'        => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
         'canAddUserToOrganisation'        => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
-        'canDeleteUserFromOrganisation'   => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
+        'canDeleteUserFromOrganisation'   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                                                                                                                                                ],
         'canListAllUsers'                 => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
 
     ];
