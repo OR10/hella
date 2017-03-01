@@ -31,49 +31,49 @@ class PolygonKeyboardTool extends KeyboardTool {
     this._registerKeyboardShortcut(
       'up',
       'Move selected shape up',
-      () => this._moveSelectedShapeBy(0, keyboardMoveDistance * -1),
+      () => this._moveSelectedShapeBy(0, keyboardMoveDistance * -1)
     );
 
     this._registerKeyboardShortcut(
       'shift+up',
       'Move selected shape up (fast)',
-      () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance * -1),
+      () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance * -1)
     );
 
     this._registerKeyboardShortcut(
       'down',
       'Move selected shape down',
-      () => this._moveSelectedShapeBy(0, keyboardMoveDistance),
+      () => this._moveSelectedShapeBy(0, keyboardMoveDistance)
     );
 
     this._registerKeyboardShortcut(
       'shift+down',
       'Move selected shape down (fast)',
-      () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance),
+      () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance)
     );
 
     this._registerKeyboardShortcut(
       'left',
       'Move selected shape left',
-      () => this._moveSelectedShapeBy(keyboardMoveDistance * -1, 0),
+      () => this._moveSelectedShapeBy(keyboardMoveDistance * -1, 0)
     );
 
     this._registerKeyboardShortcut(
       'shift+left',
       'Move selected shape left (fast)',
-      () => this._moveSelectedShapeBy(keyboardFastMoveDistance * -1, 0),
+      () => this._moveSelectedShapeBy(keyboardFastMoveDistance * -1, 0)
     );
 
     this._registerKeyboardShortcut(
       'right',
       'Move selected shape right',
-      () => this._moveSelectedShapeBy(keyboardMoveDistance, 0),
+      () => this._moveSelectedShapeBy(keyboardMoveDistance, 0)
     );
 
     this._registerKeyboardShortcut(
       'shift+right',
       'Move selected shape right (fast)',
-      () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0),
+      () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0)
     );
 
     return promise;

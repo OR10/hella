@@ -149,6 +149,14 @@ class User extends BaseUser
     }
 
     /**
+     * @return string[]
+     */
+    public function getRolesIndexedByProjectId()
+    {
+        return $this->rolesByProject ?? [];
+    }
+
+    /**
      * @return mixed
      */
     public function getOrganisations()

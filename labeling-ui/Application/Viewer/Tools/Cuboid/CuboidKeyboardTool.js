@@ -32,49 +32,49 @@ class CuboidKeyboardTool extends KeyboardTool {
     this._registerKeyboardShortcut(
       'up',
       'Move selected shape up',
-      () => this._moveSelectedShapeBy(0, keyboardMoveDistance * -1),
+      () => this._moveSelectedShapeBy(0, keyboardMoveDistance * -1)
     );
 
     this._registerKeyboardShortcut(
       'shift+up',
       'Move selected shape up (fast)',
-      () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance * -1),
+      () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance * -1)
     );
 
     this._registerKeyboardShortcut(
       'down',
       'Move selected shape down',
-      () => this._moveSelectedShapeBy(0, keyboardMoveDistance),
+      () => this._moveSelectedShapeBy(0, keyboardMoveDistance)
     );
 
     this._registerKeyboardShortcut(
       'shift+down',
       'Move selected shape down (fast)',
-      () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance),
+      () => this._moveSelectedShapeBy(0, keyboardFastMoveDistance)
     );
 
     this._registerKeyboardShortcut(
       'left',
       'Move selected shape left',
-      () => this._moveSelectedShapeBy(keyboardMoveDistance * -1, 0),
+      () => this._moveSelectedShapeBy(keyboardMoveDistance * -1, 0)
     );
 
     this._registerKeyboardShortcut(
       'shift+left',
       'Move selected shape left (fast)',
-      () => this._moveSelectedShapeBy(keyboardFastMoveDistance * -1, 0),
+      () => this._moveSelectedShapeBy(keyboardFastMoveDistance * -1, 0)
     );
 
     this._registerKeyboardShortcut(
       'right',
       'Move selected shape right',
-      () => this._moveSelectedShapeBy(keyboardMoveDistance, 0),
+      () => this._moveSelectedShapeBy(keyboardMoveDistance, 0)
     );
 
     this._registerKeyboardShortcut(
       'shift+right',
       'Move selected shape right (fast)',
-      () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0),
+      () => this._moveSelectedShapeBy(keyboardFastMoveDistance, 0)
     );
 
     const rotationDegrees = 2;
@@ -85,92 +85,92 @@ class CuboidKeyboardTool extends KeyboardTool {
     this._registerKeyboardShortcut(
       'o',
       `Rotate cuboid counter clockwise by ${rotationDegrees}°`,
-      () => this._rotateCuboid(this._deg2rad(rotationDegrees)),
+      () => this._rotateCuboid(this._deg2rad(rotationDegrees))
     );
     this._registerKeyboardShortcut(
       'p',
       `Rotate cuboid clockwise by ${rotationDegrees}°`,
-      () => this._rotateCuboid(this._deg2rad(rotationDegrees * -1)),
+      () => this._rotateCuboid(this._deg2rad(rotationDegrees * -1))
     );
     this._registerKeyboardShortcut(
       'shift+o',
       `Rotate cuboid counter clockwise by ${fastRotationDegrees}°`,
-      () => this._rotateCuboid(this._deg2rad(fastRotationDegrees)),
+      () => this._rotateCuboid(this._deg2rad(fastRotationDegrees))
     );
     this._registerKeyboardShortcut(
       'shift+p',
       `Rotate cuboid clockwise by ${fastRotationDegrees}°`,
-      () => this._rotateCuboid(this._deg2rad(fastRotationDegrees * -1)),
+      () => this._rotateCuboid(this._deg2rad(fastRotationDegrees * -1))
     );
     this._registerKeyboardShortcut(
       'i',
       'Change cuboid faces counter clockwise',
-      () => this._rotateCuboidFaces(false),
+      () => this._rotateCuboidFaces(false)
     );
     this._registerKeyboardShortcut(
       'u',
       'Change cuboid faces clockwise',
-      () => this._rotateCuboidFaces(true),
+      () => this._rotateCuboidFaces(true)
     );
     this._registerKeyboardShortcut(
       '8',
       `Add approx. ${scaleDistance}px to cuboid height`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, scaleDistance),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, scaleDistance)
     );
     this._registerKeyboardShortcut(
       '2',
       `Substract approx. ${scaleDistance}px from cuboid height`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, scaleDistance * -1),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, scaleDistance * -1)
     );
     this._registerKeyboardShortcut(
       'shift+8',
       `Add approx. ${fastScaleDistance}px to cuboid height`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, fastScaleDistance),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, fastScaleDistance)
     );
     this._registerKeyboardShortcut(
       'shift+2',
       `Substract approx. ${fastScaleDistance}px from cuboid height`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, fastScaleDistance * -1),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.HEIGHT, fastScaleDistance * -1)
     );
     this._registerKeyboardShortcut(
       '4',
       `Add approx. ${scaleDistance}px to cuboid width`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, scaleDistance),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, scaleDistance)
     );
     this._registerKeyboardShortcut(
       '6',
       `Substract approx. ${scaleDistance}px from cuboid width`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, scaleDistance * -1),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, scaleDistance * -1)
     );
     this._registerKeyboardShortcut(
       'shift+4',
       `Add approx. ${fastScaleDistance}px to cuboid width`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, fastScaleDistance),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, fastScaleDistance)
     );
     this._registerKeyboardShortcut(
       'shift+6',
       `Substract approx. ${fastScaleDistance}px from cuboid width`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, fastScaleDistance * -1),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.WIDTH, fastScaleDistance * -1)
     );
     this._registerKeyboardShortcut(
       '9',
       `Add approx. ${scaleDistance}px to cuboid depth`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, scaleDistance),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, scaleDistance)
     );
     this._registerKeyboardShortcut(
       '3',
       `Substract approx. ${scaleDistance}px from cuboid depth`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, scaleDistance * -1),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, scaleDistance * -1)
     );
     this._registerKeyboardShortcut(
       'shift+9',
       `Add approx. ${fastScaleDistance}px to cuboid depth`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, fastScaleDistance),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, fastScaleDistance)
     );
     this._registerKeyboardShortcut(
       'shift+3',
       `Substract approx. ${fastScaleDistance}px from cuboid depth`,
-      () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, fastScaleDistance * -1),
+      () => this._resizeCuboidByDistance(CuboidInteractionResolver.DEPTH, fastScaleDistance * -1)
     );
 
     return promise;

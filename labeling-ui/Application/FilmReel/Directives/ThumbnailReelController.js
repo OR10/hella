@@ -439,7 +439,7 @@ class ThumbnailReelController {
     }
 
     const {lowerLimit, count} = this._calculateLowerAndUpperLimitByPosition(framePosition);
-    this._labeledThingInFrameGateway.getLabeledThingInFrame(
+    return this._labeledThingInFrameGateway.getLabeledThingInFrame(
       this.task,
       lowerLimit,
       this.selectedPaperShape.labeledThingInFrame.labeledThing,
