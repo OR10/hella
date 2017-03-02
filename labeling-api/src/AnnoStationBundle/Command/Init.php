@@ -178,7 +178,7 @@ class Init extends Base
             return 1;
         }
 
-        if (!$this->createUser($output)) {
+        if (!$this->createUsers($output)) {
             return 1;
         }
 
@@ -278,11 +278,11 @@ class Init extends Base
         return $this->organisation;
     }
 
-    private function createUser(OutputInterface $output)
+    private function createUsers(OutputInterface $output)
     {
         $this->writeSection($output, 'Creating users');
 
-        $users = ['admin', 'label_coordinator', 'user', 'client'];
+        $users = ['admin', 'label_coordinator', 'user', 'client', 'superadmin'];
 
         if ($this->userPassword !== null) {
             foreach ($users as $username) {
@@ -297,6 +297,11 @@ class Init extends Base
                 );
 
                 switch ($username) {
+                    case 'superadmin':
+                        $roleNames = [
+                            Model\User::ROLE_SUPER_ADMIN,
+                        ];
+                        break;
                     case 'admin':
                         $roleNames = [
                             Model\User::ROLE_ADMIN,
