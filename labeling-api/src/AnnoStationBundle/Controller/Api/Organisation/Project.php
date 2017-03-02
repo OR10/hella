@@ -230,6 +230,7 @@ class Project extends Controller\Base
 
             if ($user->hasOneRoleOf(
                 [
+                    Model\User::ROLE_SUPER_ADMIN,
                     Model\User::ROLE_ADMIN,
                     Model\User::ROLE_LABEL_COORDINATOR,
                     Model\User::ROLE_CLIENT,
@@ -281,6 +282,7 @@ class Project extends Controller\Base
         }
 
         $roleNeededForCreationTime = [
+            Model\User::ROLE_SUPER_ADMIN,
             Model\User::ROLE_ADMIN,
             Model\User::ROLE_LABEL_COORDINATOR,
             Model\User::ROLE_CLIENT

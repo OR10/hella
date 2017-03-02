@@ -736,7 +736,7 @@ class Project
             return true;
         }
 
-        if ($user->hasOneRoleOf([User::ROLE_ADMIN, User::ROLE_LABELER, User::ROLE_OBSERVER])) {
+        if ($user->hasOneRoleOf([User::ROLE_SUPER_ADMIN, User::ROLE_ADMIN, User::ROLE_LABELER, User::ROLE_OBSERVER])) {
             return true;
         }
 

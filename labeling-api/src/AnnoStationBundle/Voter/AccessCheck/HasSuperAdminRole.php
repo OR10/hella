@@ -16,10 +16,6 @@ class HasSuperAdminRole extends Voter\AccessCheck
      */
     public function userHasAccessToObject(Model\User $user, $object): bool
     {
-        if (!($object instanceof AnnoStationBundleModel\Organisation)) {
-            throw new \RuntimeException('Organisation AccessCheck got non Organisation as object.');
-        }
-
         return $user->hasRole(Model\User::ROLE_SUPER_ADMIN);
     }
 }
