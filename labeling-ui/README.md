@@ -14,6 +14,8 @@ The following software is required to build/run the project:
 
 ## Installing dependencies
 
+**Note:** All installation commands are for a macOS System. Linux and Windows may vary.
+
 **Installing yarn:**
 `brew install yarn`
 
