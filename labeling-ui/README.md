@@ -8,17 +8,34 @@ Everything concerning the Client-Side rendering of the UI, as well as it's serve
 
 The following software is required to build/run the project:
 
-- [nodejs](https://nodejs.org) version 4.2.x
+- [nodejs](https://nodejs.org) version 4.x
 - [gulp](http://gulpjs.com/)
+- [yarn] (https://yarnpkg.com/lang/en/)
+
+## Installing dependencies
+
+**Installing yarn:**
+`brew install yarn`
+
+**Installing [node-canvas](https://github.com/Automattic/node-canvas) dependencies**
+`brew install pkg-config cairo pango libpng jpeg giflib`
 
 ## Setup
 
-To initially setup the development environment, the following steps are required:
+To initially setup the development environment, simply call `yarn`:
 
 ```shell
-npm install
-./node_modules/.bin/jspm install
+$ yarn
 ```
+
+If you got a problem with compiling the `node-canvas` dependency at this point, make sure you
+have got the XCode Commandline Tools installed. You can do so easily by issuing the following
+command:
+
+```
+$ xcode-select --install
+```
+
 
 ## Development
 
