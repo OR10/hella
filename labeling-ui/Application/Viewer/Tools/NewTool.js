@@ -144,12 +144,19 @@ class Tool {
    *
    * @param {PaperShape} shape
    * @param {paper.Point} point
-   * @param {number} minimalVisibleShapeOverflowX
-   * @param {number} minimalVisibleShapeOverflowY
+   * @param {number} minimalVisibleShapeOverflow
    * @returns {paper.Point}
    * @protected
    */
-  _restrictToViewport(shape, point, minimalVisibleShapeOverflowX = shape.bounds.width, minimalVisibleShapeOverflowY = shape.bounds.height) {
+  _restrictToViewport(shape, point, minimalVisibleShapeOverflow = null) {
+    let minimalVisibleShapeOverflowX = shape.bounds.width;
+    let minimalVisibleShapeOverflowY = shape.bounds.height;
+
+    if (minimalVisibleShapeOverflow !== null) {
+      minimalVisibleShapeOverflowX = minimalVisibleShapeOverflow;
+      minimalVisibleShapeOverflowY = minimalVisibleShapeOverflow;
+    }
+
     const {viewport} = this._toolActionStruct;
     const viewWidth = viewport.bounds.width * viewport.zoom / viewport.getScaleToFitZoom();
     const viewHeight = viewport.bounds.height * viewport.zoom / viewport.getScaleToFitZoom();

@@ -109,7 +109,7 @@ class CuboidMoveTool extends MovingTool {
    */
   _moveTo(shape, point) {
     this._context.withScope(() => {
-      shape.moveTo(this._restrictToViewport(shape, point), this._getMinimalHeight());
+      shape.moveTo(point, this._getMinimalHeight());
     });
   }
 }
