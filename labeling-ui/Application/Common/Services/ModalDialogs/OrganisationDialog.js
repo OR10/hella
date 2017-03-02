@@ -51,6 +51,7 @@ function inputDialogProvider(ModalDialog) {
         title: 'Input required',
         heading: '',
         message: '',
+        unit: 'mb',
       });
     }
 
