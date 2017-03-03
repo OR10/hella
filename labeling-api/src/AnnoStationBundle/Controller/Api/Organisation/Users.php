@@ -74,13 +74,16 @@ class Users extends Controller\Base
 
         $users = array_map(function (Model\User $user) {
             return array(
-                'id' => $user->getId(),
-                'username' => $user->getUsername(),
-                'email' => $user->getEmail(),
-                'enabled' => $user->isEnabled(),
+                'id'        => $user->getId(),
+                'username'  => $user->getUsername(),
+                'email'     => $user->getEmail(),
+                'enabled'   => $user->isEnabled(),
                 'lastLogin' => $user->getLastLogin(),
-                'locked' => $user->isLocked(),
-                'roles' => $user->getRoles(),
+                'locked'    => $user->isLocked(),
+                'roles'     => $user->getRoles(),
+                'roles'     => $user->getRoles(),
+                'expired'   => $user->isExpired(),
+                'expiresAt' => $user->getExpiresAt() ? $user->getExpiresAt()->format('c') : null,
             );
         }, $users);
 

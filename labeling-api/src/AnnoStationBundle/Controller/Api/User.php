@@ -179,6 +179,13 @@ class User extends Controller\Base
             $user->addRole($role);
         }
 
+        if ($request->request->get('expiresAt') !== null) {
+            $expiresAt = new \DateTime($request->request->get('expiresAt'), new \DateTimeZone('UTC'));
+            $user->setExpiresAt($expiresAt);
+        } else {
+            $user->setExpiresAt(null);
+        }
+
         $this->userFacade->updateUser($user);
         if ($user->getUsername() === $loginUser->getUsername()) {
             $this->tokenStorage->setToken(null);
@@ -196,13 +203,15 @@ class User extends Controller\Base
     private function getUserResponse(Model\User $user)
     {
         return array(
-            'id' => $user->getId(),
-            'username' => $user->getUsername(),
-            'email' => $user->getEmail(),
-            'enabled' => $user->isEnabled(),
+            'id'        => $user->getId(),
+            'username'  => $user->getUsername(),
+            'email'     => $user->getEmail(),
+            'enabled'   => $user->isEnabled(),
             'lastLogin' => $user->getLastLogin(),
-            'locked' => $user->isLocked(),
-            'roles' => $user->getRoles(),
+            'locked'    => $user->isLocked(),
+            'roles'     => $user->getRoles(),
+            'expired'   => $user->isExpired(),
+            'expiresAt' => $user->getExpiresAt() ? $user->getExpiresAt()->format('c') : null,
         );
     }
 

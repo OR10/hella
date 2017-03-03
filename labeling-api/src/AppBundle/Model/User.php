@@ -256,4 +256,12 @@ class User extends BaseUser
     {
         $this->organisations = $organisations;
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getExpiresAt()
+    {
+        return $this->expiresAt;
+    }
 }

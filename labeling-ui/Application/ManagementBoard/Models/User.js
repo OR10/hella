@@ -54,6 +54,16 @@ class User {
      * @type {string}
      */
     this.password = null;
+
+    /**
+     * @type {bool}
+     */
+    this.expired = user.expired;
+
+    /**
+     * @type {string}
+     */
+    this.expiresAt = user.expiresAt ? new Date(user.expiresAt) : null;
   }
 
   /**
@@ -62,10 +72,10 @@ class User {
    * @return {Object}
    */
   toJSON() {
-    const {id, username, email, enabled, lastLogin, locked, roles, password} = this;
+    const {id, username, email, enabled, lastLogin, locked, roles, password, expired, expiresAt} = this;
     return {
       roles: cloneDeep(roles),
-      id, username, email, enabled, lastLogin, locked, password,
+      id, username, email, enabled, lastLogin, locked, password, expired, expiresAt,
     };
   }
 }
