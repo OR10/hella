@@ -33,6 +33,30 @@ fdescribe('PaperTool test suite', function() {
       expect(event.point.y).toEqual(mockedCoordinate);
     });
 
+    describe('down', () => {
+      it('calls the delegation target', () => {
+        const paperTool = createPaperToolInstance();
+        const event = {point: {x: 0, y: 0}};
+        spyOn(paperTool, 'onMouseDown');
+
+        paperTool.delegateMouseEvent('down', event);
+
+        expect(paperTool.onMouseDown).toHaveBeenCalledWith(event);
+      });
+
+      it('throws if the event type does not exit', () => {
+        const paperTool = createPaperToolInstance();
+        const event = {point: {x: 0, y: 0}};
+        spyOn(paperTool, 'onMouseDown');
+
+        function throwWrapper() {
+          paperTool.delegateMouseEvent('bernddasbrot', event);
+        }
+
+        expect(throwWrapper).toThrow();
+      });
+    });
+
     describe('drag', () => {
       it('does not break if there is no last drag point', () => {
         const paperTool = createPaperToolInstance();
