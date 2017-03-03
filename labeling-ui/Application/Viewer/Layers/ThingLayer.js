@@ -436,6 +436,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
         switch (true) {
           case reason instanceof ToolAbortedError:
             // No further processing needed.
+            this._context.withScope(scope => {
+              scope.view.update();
+            });
             break;
           case reason instanceof NotModifiedError:
             this._invokeActiveTool();
