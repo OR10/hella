@@ -72,6 +72,11 @@ class PaperTool extends Tool {
         break;
       case 'drag':
         const eventPoint = event.point;
+
+        if(this._lastDragPoint === null) {
+          return;
+        }
+
         if (this._dragEventState === 'initial') {
           if (this._lastDragPoint.getDistance(eventPoint) < this._toolActionStruct.options.initialDragDistance) {
             return;
