@@ -1,5 +1,6 @@
 import PaperTool from 'Application/Viewer/Tools/PaperTool';
 import Tool from 'Application/Viewer/Tools/NewTool';
+import Paper from 'paper';
 
 fdescribe('PaperTool test suite', function() {
   let drawContext;
@@ -19,6 +20,16 @@ fdescribe('PaperTool test suite', function() {
   });
 
   describe('#delegateMouseEvent()', () => {
+    it('rounds the x and y point coordinates and creates a paper.Point', () => {
+      spyOn(Math, 'round').and.returnValue(42);
+      const event = {
+        point: { x: 0, y: 0}
+      };
+      const paperTool = createPaperToolInstance();
+      paperTool.delegateMouseEvent('drag', event);
+      expect(event.point).toEqual(jasmine.any(Paper.Point));
+    });
+
     describe('drag', () => {
       it('does not break if there is no last drag point', () => {
         const paperTool = createPaperToolInstance();
