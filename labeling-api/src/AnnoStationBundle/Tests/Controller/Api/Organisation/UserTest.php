@@ -49,6 +49,28 @@ class UserTest extends Tests\WebTestCase
         $this->assertTrue(in_array($newOrganisation->getId(), $user->getOrganisations()));
     }
 
+    public function testAddUserToOrganisationWithQuotaReached()
+    {
+        $user       = $this->createLabelerUser($this->organisation);
+        $superAdmin = $this->createSuperAdminUser($this->organisation);
+
+        $newOrganisation = $this->organisationFacade->save(
+            Tests\Helper\OrganisationBuilder::create()->withUserQuota(2)->build()
+        );
+        $user1 = $this->createLabelerUser($newOrganisation);
+        $user2 = $this->createLabelerUser($newOrganisation);
+
+        $requestWrapper = $this->createRequest(
+            '/api/organisation/%s/user/%s/assign',
+            [$newOrganisation->getId(), $user->getId()]
+        )
+            ->withCredentialsFromUsername($superAdmin)
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->execute();
+
+        $this->assertEquals(400, $requestWrapper->getResponse()->getStatusCode());
+    }
+
     public function testAddUserToOrganisationAsAdmin()
     {
         $user  = $this->createLabelerUser($this->organisation);

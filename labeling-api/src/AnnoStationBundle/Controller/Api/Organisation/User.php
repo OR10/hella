@@ -77,7 +77,7 @@ class User extends Controller\Base
 
         $userLimit = $organisation->getUserQuota();
 
-        if ($userLimit !== 0 && $userLimit >= $this->userFacade->getUserList($organisation)) {
+        if ($userLimit !== 0 && $userLimit <= count($this->userFacade->getUserList($organisation))) {
             throw new BadRequestHttpException('You reached your user limit of ' . $userLimit);
         }
 

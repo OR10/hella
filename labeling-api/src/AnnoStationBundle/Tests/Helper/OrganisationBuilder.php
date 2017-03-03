@@ -15,6 +15,11 @@ class OrganisationBuilder
     private $name = 'Test Organisation';
 
     /**
+     * @var string
+     */
+    private $userQuota = 0;
+
+    /**
      * @return OrganisationBuilder
      */
     public static function create()
@@ -31,12 +36,20 @@ class OrganisationBuilder
         return $this;
     }
 
+    public function withUserQuota($quota)
+    {
+        $this->userQuota = $quota;
+
+        return $this;
+    }
+
     /**
      * @return Model\Organisation
      */
     public function build()
     {
         $organisation = new Model\Organisation($this->name);
+        $organisation->setUserQuota($this->userQuota);
 
         return $organisation;
     }
