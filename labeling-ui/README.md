@@ -55,6 +55,9 @@ It will run on port `54321` by default. To choose another port set the `PORT` en
 PORT="12345" gulp serve
 ```
 
+### Tests
+Running the E2E tests requires Chromium. Use version `53.0.2785.0`.
+
 ### Static Assets
 
 Static assets will be served from the `Public` directory. Everything in this directory is automatically accessible from within the dev server.
