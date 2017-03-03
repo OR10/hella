@@ -31,11 +31,13 @@ class SimpleOrganisations
                 $numberOfProjectsByOrganisations
             ) {
                 return [
-                    'id'             => $organisation->getId(),
-                    'name'           => $organisation->getName(),
-                    'quota'          => $organisation->getQuota(),
-                    'diskUsage'      => $organisationFacade->getDiskUsageForOrganisation($organisation),
-                    'numberOfVideos' => isset(
+                    'id'               => $organisation->getId(),
+                    'rev'              => $organisation->getRev(),
+                    'name'             => $organisation->getName(),
+                    'quota'            => $organisation->getQuota(),
+                    'userQuota'        => $organisation->getUserQuota(),
+                    'diskUsage'        => $organisationFacade->getDiskUsageForOrganisation($organisation),
+                    'numberOfVideos'   => isset(
                         $numberOfVideosByOrganisations[$organisation->getId()]
                     ) ? $numberOfVideosByOrganisations[$organisation->getId()] : 0,
                     'numberOfProjects' => isset(

@@ -11,6 +11,7 @@
             <span class="grid-content shrink character-count">{{userInput.length || 0}}/{{maxLength}}</span>
         </div>
     </div>
+    Video/Image Quota
     <div class="grid-block">
         <div class="small-9">
             <input type="text" ng-model="quota">
@@ -25,6 +26,12 @@
             </span>
         </div>
     </div>
+    User Quota
+    <div class="grid-block">
+        <div class="small-9">
+            <input type="text" ng-model="userQuota">
+        </div>
+    </div>
 </div>
 <div class="modal-footer grid-block">
     <!-- Abortable Dialog -->
@@ -33,7 +40,7 @@
     </button>
     <button ng-if="isAbortable"
             class="modal-button-confirm grid-content small-12"
-            ng-click="(userInput && userInput.length < maxLength && userInput.length > 1) && confirmCallback({name: userInput, quota: quota, unit: unit})"
+            ng-click="(userInput && userInput.length < maxLength && userInput.length > 1) && confirmCallback({name: userInput, quota: quota, unit: unit, userQuota: userQuota})"
             autofocus
     >
         {{confirmButtonText}}
@@ -42,7 +49,7 @@
     <!-- Non abortable Dialog -->
     <button ng-if="!isAbortable"
             class="modal-button-confirm grid-content text-center"
-            ng-click="(userInput && userInput.length < maxLength && userInput.length > 1) && confirmCallback({name: userInput, quota: quota, unit: unit})"
+            ng-click="(userInput && userInput.length < maxLength && userInput.length > 1) && confirmCallback({name: userInput, quota: quota, unit: unit, userQuota: userQuota})"
             autofocus
     >
         {{confirmButtonText}}

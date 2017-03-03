@@ -14,6 +14,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Rest\Prefix("/api/organisation")
@@ -72,6 +73,12 @@ class User extends Controller\Base
 
         if (!$this->userPermissions->hasPermission('canAddUserToOrganisation')) {
             throw new AccessDeniedHttpException();
+        }
+
+        $userLimit = $organisation->getUserQuota();
+
+        if ($userLimit !== 0 && $userLimit >= $this->userFacade->getUserList($organisation)) {
+            throw new BadRequestHttpException('You reached your user limit of ' . $userLimit);
         }
 
         $user->assignToOrganisation($organisation);

@@ -69,12 +69,15 @@ class OrganisationListController {
           cancelButtonText: 'Cancel',
           userInput: organisation.name,
           quota: organisation.quota / (1024 * 2),
+          userQuota: organisation.userQuota,
           unit: 'mb',
+          rev: organisation.rev,
         },
         input => {
           this.loadingInProgress = true;
           organisation.name = input.name;
           organisation.quota = this._calculateBytes(input.quota, input.unit);
+          organisation.userQuota = input.userQuota;
 
           this._organisationGateway.updateOrganisation(organisation)
             .then(() => this._loadOrganisations());
@@ -96,7 +99,7 @@ class OrganisationListController {
           this.loadingInProgress = true;
           const quota = this._calculateBytes(input.quota, input.unit);
 
-          this._organisationGateway.createOrganisation(input.name, quota)
+          this._organisationGateway.createOrganisation(input.name, quota, input.userQuota)
             .then(() => this._loadOrganisations());
         }
       )

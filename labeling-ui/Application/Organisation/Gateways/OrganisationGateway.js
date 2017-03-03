@@ -64,11 +64,12 @@ class OrganisationGateway {
    * @param {number} organisationQuota
    * @return {AbortablePromise<Organisation>}
    */
-  createOrganisation(organisationName, organisationQuota = 2147483648) {
+  createOrganisation(organisationName, organisationQuota = 2147483648, organisationUserQuota = 0) {
     const url = this._apiService.getApiUrl(`/organisation`);
     const organisation = {
       name: organisationName,
       quota: organisationQuota,
+      userQuota: organisationUserQuota,
     };
 
     return this._bufferedHttp.post(url, organisation, undefined, 'organisation')

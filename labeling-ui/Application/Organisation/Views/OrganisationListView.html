@@ -36,6 +36,7 @@
                     <th>Projects</th>
                     <th>Videos</th>
                     <th>Quota</th>
+                    <th>User Quota</th>
                     <th>Usage</th>
                     <th>Usage %</th>
                 </tr>
@@ -53,6 +54,12 @@
                     </td>
                     <td>
                         {{organisation.quota | fileSize:1:'unlimited'}}
+                    </td>
+                    <td ng-if="organisation.userQuota === 0">
+                        unlimited
+                    </td>
+                    <td ng-if="organisation.userQuota !== 0">
+                        {{organisation.userQuota}}
                     </td>
                     <td>
                         {{organisation.diskUsage.total | fileSize}}

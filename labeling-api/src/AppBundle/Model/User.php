@@ -214,6 +214,10 @@ class User extends BaseUser
      */
     public function getOrganisations()
     {
+        if ($this->organisations === null) {
+            return [];
+        }
+
         return $this->organisations;
     }
 

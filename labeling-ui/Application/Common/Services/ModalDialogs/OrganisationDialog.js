@@ -52,6 +52,7 @@ function inputDialogProvider(ModalDialog) {
         heading: '',
         message: '',
         unit: 'mb',
+        userQuota: 0,
       });
     }
 

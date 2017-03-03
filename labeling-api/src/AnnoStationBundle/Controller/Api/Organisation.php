@@ -116,10 +116,11 @@ class Organisation extends Controller\Base
             throw new Exception\AccessDeniedHttpException();
         }
 
-        $name  = $request->request->get('name');
-        $quota = $request->request->get('quota', 0);
+        $name      = $request->request->get('name');
+        $quota     = $request->request->get('quota', 0);
+        $userQuota = $request->request->get('userQuota', 0);
 
-        $organisation = new AnnoStationBundleModel\Organisation($name, $quota);
+        $organisation = new AnnoStationBundleModel\Organisation($name, $quota, $userQuota);
         $this->organisationFacade->save($organisation);
 
         return new View\View(['result' => $organisation]);
@@ -138,9 +139,10 @@ class Organisation extends Controller\Base
             throw new Exception\AccessDeniedHttpException();
         }
 
-        $rev   = $request->request->get('rev');
-        $name  = $request->request->get('name');
-        $quota = $request->request->get('quota');
+        $rev       = $request->request->get('rev');
+        $name      = $request->request->get('name');
+        $quota     = $request->request->get('quota');
+        $userQuota = $request->request->get('userQuota');
 
         if ($organisation->getRev() !== $rev) {
             throw new Exception\ConflictHttpException();
@@ -150,6 +152,7 @@ class Organisation extends Controller\Base
         if ($quota !== null) {
             $organisation->setQuota($quota);
         }
+        $organisation->setUserQuota($userQuota);
         $this->organisationFacade->save($organisation);
 
         return new View\View(['result' => $organisation]);

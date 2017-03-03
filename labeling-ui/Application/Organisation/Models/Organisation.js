@@ -13,12 +13,22 @@ class Organisation {
     /**
      * @type {string}
      */
+    this.rev = organisationDocument.rev ? organisationDocument.rev : null;
+
+    /**
+     * @type {string}
+     */
     this.name = organisationDocument.name;
 
     /**
      * @type {number|null}
      */
     this.quota = organisationDocument.quota;
+
+    /**
+     * @type {number|null}
+     */
+    this.userQuota = organisationDocument.userQuota;
 
     /**
      * @type {number}
@@ -40,12 +50,14 @@ class Organisation {
    * @returns {{id: string, name: string, quota: number|null}}
    */
   toJSON() {
-    const {id, name, quota} = this;
+    const {id, rev, name, quota, userQuota} = this;
 
     return {
       id,
+      rev,
       name,
       quota,
+      userQuota,
     };
   }
 }
