@@ -30,10 +30,16 @@ class Organisation
      */
     private $quota;
 
-    public function __construct($name, $quota = 0)
+    /**
+     * @CouchDB\Field(type="integer")
+     */
+    private $userQuota;
+
+    public function __construct($name, $quota = 0, $userQuota = 0)
     {
-        $this->name  = $name;
-        $this->quota = $quota;
+        $this->name      = $name;
+        $this->quota     = $quota;
+        $this->userQuota = $userQuota;
     }
 
     /**
@@ -86,5 +92,25 @@ class Organisation
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserQuota()
+    {
+        if ($this->userQuota === null) {
+            return 0;
+        }
+
+        return $this->userQuota;
+    }
+
+    /**
+     * @param mixed $userQuota
+     */
+    public function setUserQuota($userQuota)
+    {
+        $this->userQuota = $userQuota;
     }
 }
