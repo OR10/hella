@@ -435,7 +435,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       .catch(reason => {
         switch (true) {
           case reason instanceof ToolAbortedError:
-            // No further processing needed.
+            // Update the view, instantly removing the shape
             this._context.withScope(scope => {
               scope.view.update();
             });
