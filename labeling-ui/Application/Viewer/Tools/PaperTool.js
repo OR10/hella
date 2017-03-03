@@ -45,7 +45,10 @@ class PaperTool extends Tool {
    * @param {paper.Event} event
    */
   delegateMouseEvent(type, event) {
-    const delegationTarget = `onMouse${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
+    const eventTypeFirstLetter = type.substr(0, 1).toUpperCase();
+    const eventTypeRemainingLetters = type.substr(1).toLowerCase();
+    const delegationTarget = `onMouse${eventTypeFirstLetter}${eventTypeRemainingLetters}`;
+
     const roundedEventPoint = new paper.Point(
       Math.round(event.point.x),
       Math.round(event.point.y)

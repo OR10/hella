@@ -1,4 +1,3 @@
-/* eslint-disable */
 System.config({
   defaultJSExtensions: true,
   transpiler: "babel",
