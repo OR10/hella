@@ -21,13 +21,16 @@ fdescribe('PaperTool test suite', function() {
 
   describe('#delegateMouseEvent()', () => {
     it('rounds the x and y point coordinates and creates a paper.Point', () => {
-      spyOn(Math, 'round').and.returnValue(42);
+      const mockedCoordinate = 42;
+      spyOn(Math, 'round').and.returnValue(mockedCoordinate);
       const event = {
         point: { x: 0, y: 0}
       };
       const paperTool = createPaperToolInstance();
       paperTool.delegateMouseEvent('drag', event);
       expect(event.point).toEqual(jasmine.any(Paper.Point));
+      expect(event.point.x).toEqual(mockedCoordinate);
+      expect(event.point.y).toEqual(mockedCoordinate);
     });
 
     describe('drag', () => {
