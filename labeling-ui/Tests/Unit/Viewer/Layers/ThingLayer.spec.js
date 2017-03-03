@@ -3,7 +3,7 @@ import ThingLayer from 'Application/Viewer/Layers/ThingLayer';
 import PanAndZoomPaperLayer from 'Application/Viewer/Layers/PanAndZoomPaperLayer';
 import ToolAbortedError from 'Application/Viewer/Tools/Errors/ToolAbortedError';
 
-fdescribe('ThingLayer test suite', function() {
+describe('ThingLayer test suite', function() {
   let injector;
   let scope;
   let drawingContext;
