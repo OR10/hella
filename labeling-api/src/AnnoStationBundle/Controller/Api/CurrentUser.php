@@ -172,15 +172,15 @@ class CurrentUser extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        if ($user->getOrganisations() === null) {
-            $organisations = [];
-        } else {
-            $organisations = $user->getOrganisations();
+        if ($this->currentUserPermissions->hasPermission('canListAllOrganisations')) {
+            $organisations = $this->organisation->findAll();
+        }else{
+            $organisations = $this->organisation->findByIds($user->getOrganisations());
         }
 
         return View\View::create()->setData(
             [
-                'result' => $this->organisation->findByIds($organisations),
+                'result' => $organisations,
             ]
         );
     }
