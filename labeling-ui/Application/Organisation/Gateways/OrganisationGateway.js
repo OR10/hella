@@ -81,6 +81,24 @@ class OrganisationGateway {
         throw new Error(`Error creating the organisation with name "${organisationName}"`);
       });
   }
+
+  /**
+   * @param {User} user
+   * @param {Organisation} organisation
+   * @return {AbortablePromise}
+   */
+  removeUserFromOrganisation(user, organisation) {
+    const url = this._apiService.getApiUrl(`/organisation/${organisation.id}/user/${user.id}/unassign`);
+
+    return this._bufferedHttp.delete(url, undefined, 'user')
+      .then(response => {
+        if (!response.data || !response.data.result || !response.data.result.success) {
+          throw new Error(`Failed removing user with id ${user.id} from organisation with id ${organisation.id}`);
+        }
+
+        return response.data.result.success;
+      });
+  }
 }
 
 OrganisationGateway.$inject = [

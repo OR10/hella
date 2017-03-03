@@ -118,4 +118,25 @@ describe('OrganisationGateway', () => {
 
     $httpBackend.flush();
   });
+
+  it('should remove a user from an organisation', done => {
+    const organisation = new Organisation({id: 'organisation-id'});
+    const user = {id: 'user-id'};
+
+    const organisationResponse = {
+      result: {
+        success: true,
+      },
+    };
+
+
+    $httpBackend.expectDELETE(`/backend/api/organisation/${organisation.id}/user/${user.id}/unassign`).respond(organisationResponse);
+
+    gateway.removeUserFromOrganisation(user, organisation).then(result => {
+      expect(result).toEqual(organisationResponse.result.success);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
 });
