@@ -3,36 +3,29 @@
  */
 class UsersListController {
   /**
-   * @param {$rootScope.$scope} $scope
    * @param {UserGateway} userGateway injected
-   * @param {SingleRoleFilter} singleRoleFilter
-   * @param {ReadableRoleFilter} readableRoleFilter
+   * @param {OrganisationGateway} organisationGateway
+   * @param {OrganisationService} organisationService
    * @param {ModalService} modalService
    */
-  constructor($scope, userGateway, singleRoleFilter, readableRoleFilter, modalService) {
-    /**
-     * List of tasks rendered by the directive
-     * @type {null|Array.<Task>}
-     */
-    this.tasks = null;
-
-    /**
-     * @type {boolean}
-     */
-    this.loadingInProgress = false;
-
+  constructor(userGateway, organisationGateway, organisationService, modalService) {
     /**
      * @type {UserGateway}
      * @private
      */
     this._userGateway = userGateway;
 
-
     /**
-     * @type {SingleRoleFilter}
+     * @type {OrganisationGateway}
      * @private
      */
-    this._singleRoleFilter = singleRoleFilter;
+    this._organisationGateway = organisationGateway;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
 
     /**
      * @type {ModalService}
@@ -41,27 +34,16 @@ class UsersListController {
     this._modalService = modalService;
 
     /**
+     * @type {boolean}
+     */
+    this.loadingInProgress = false;
+
+    /**
      * @type {Array.<User>}
      */
     this.users = [];
 
-    /**
-     * This copy is needed and managed by smart-table for sorting filtering and displaying table data.
-     *
-     * @type {Array.<User>}
-     */
-    this.displayedUsers = [];
-
     this._loadUsersList();
-  }
-
-
-  /**
-   * @param {User} user
-   * @returns {string}
-   */
-  getReadableRoleForUser(user) {
-    return this._readableRoleFilter(this._singleRoleFilter(user.roles));
   }
 
   /**
@@ -102,13 +84,33 @@ class UsersListController {
       }
     );
   }
+
+  removeUserFromOrganisation(user) {
+    this._modalService.info(
+      {
+        title: 'Remove user from Organisation',
+        headline: `You are about to remove ${user.username} from organisation ${organisation.name}. Proceed?`,
+        confirmButtonText: 'Remove',
+      },
+      () => {
+        this.loadingInProgress = true;
+        const organisation = this._organisationService.get();
+
+        this._organisationGateway.removeUserFromOrganisation(user, organisation)
+          .then(() => this._loadUsersList());
+      },
+      undefined,
+      {
+        warning: true,
+      }
+    );
+  }
 }
 
 UsersListController.$inject = [
-  '$scope',
   'userGateway',
-  'singleRoleFilter',
-  'readableRoleFilter',
+  'organisationGateway',
+  'organisationService',
   'modalService',
 ];
 

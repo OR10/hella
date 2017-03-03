@@ -22,9 +22,15 @@
                 <td ui-sref="labeling.users.detail({userId: user.id})">{{user.lastLogin === null ? 'Never' : (user.lastLogin | date:'d. MMM yyyy, HH:mm')}}</td>
                 <td ui-sref="labeling.users.detail({userId: user.id})">{{user.expiresAt === null ? 'Never' : (user.expiresAt | date:'d. MMM yyyy')}}</td>
                 <td class="action-cell">
-                    <button tooltip="Delete: {{user.username}}"
-                            ng-click="vm.deleteUser(user)">
+                    <button ng-if="vm.userPermissions.canDeleteUserFromOrganisation"
+                            tooltip="Remove from Organisation: {{user.username}}"
+                            ng-click="vm.removeUserFromOrganisation(user)">
                         <i class="icon icon-selection-delete"></i>
+                    </button>
+                    <button ng-if="vm.userPermissions.canDeleteUser"
+                            tooltip="Delete: {{user.username}}"
+                            ng-click="vm.deleteUser(user)">
+                        <i class="icon icon-selection-trash"></i>
                     </button>
                 </td>
             </tr>
