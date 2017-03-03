@@ -3,7 +3,7 @@ import ThingLayer from 'Application/Viewer/Layers/ThingLayer';
 import PanAndZoomPaperLayer from 'Application/Viewer/Layers/PanAndZoomPaperLayer';
 import ToolAbortedError from 'Application/Viewer/Tools/Errors/ToolAbortedError';
 
-describe('ThingLayer test suite', function() {
+describe('ThingLayer test suite', () => {
   let injector;
   let scope;
   let drawingContext;
@@ -39,12 +39,12 @@ describe('ThingLayer test suite', function() {
     return new ThingLayer(0, 0, scope, injector, drawingContext, toolService, null, loggerService, null, framePosition, viewerMouseCursorService);
   }
 
-  it('is a PanAndZoomPaperLayer', function() {
+  it('is a PanAndZoomPaperLayer', () => {
     const thing = createThingLayerInstance();
     expect(thing).toEqual(jasmine.any(PanAndZoomPaperLayer));
   });
 
-  it('updates the view when leaving the canvas', function() {
+  it('updates the view when leaving the canvas', () => {
     const task = {
       minimalVisibleShapeOverflow: null
     };
