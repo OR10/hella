@@ -182,8 +182,10 @@ class User extends Controller\Base
         if ($request->request->get('expiresAt') !== null) {
             $expiresAt = new \DateTime($request->request->get('expiresAt'), new \DateTimeZone('UTC'));
             $user->setExpiresAt($expiresAt);
+            $user->setCredentialsExpireAt($expiresAt);
         } else {
             $user->setExpiresAt(null);
+            $user->setCredentialsExpireAt(null);
         }
 
         $this->userFacade->updateUser($user);
