@@ -86,6 +86,8 @@ class UsersListController {
   }
 
   removeUserFromOrganisation(user) {
+    const organisation = this._organisationService.get();
+
     this._modalService.info(
       {
         title: 'Remove user from Organisation',
@@ -94,8 +96,6 @@ class UsersListController {
       },
       () => {
         this.loadingInProgress = true;
-        const organisation = this._organisationService.get();
-
         this._organisationGateway.removeUserFromOrganisation(user, organisation)
           .then(() => this._loadUsersList());
       },
