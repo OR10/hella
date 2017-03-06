@@ -4,14 +4,16 @@ import Paper from 'paper';
 
 fdescribe('PaperTool test suite', function() {
   let drawContext;
+  let rootScope;
 
   beforeEach(() => {
       drawContext = jasmine.createSpyObj('drawContext', ['withScope']);
+      rootScope = jasmine.createSpyObj('$rootScope', ['$evalAsync']);
       drawContext.withScope.and.callFake((callback) => callback());
   });
 
   function createPaperToolInstance() {
-    return new PaperTool(drawContext);
+    return new PaperTool(drawContext, rootScope);
   }
 
   it('is of type Tool', function() {
@@ -76,6 +78,22 @@ fdescribe('PaperTool test suite', function() {
         paperTool.delegateMouseEvent('up', event);
 
         expect(paperTool.onMouseClick).toHaveBeenCalledWith(event);
+      });
+    });
+
+    describe('move', () => {
+      it('calls the delegation target from the rootScope', () => {
+        const paperTool = createPaperToolInstance();
+        const event = {point: {x: 0, y: 0}};
+        spyOn(paperTool, 'onMouseMove');
+        rootScope.$evalAsync.and.callFake((callback) => {
+          callback();
+        });
+
+        paperTool.delegateMouseEvent('move', event);
+
+        expect(paperTool.onMouseMove).toHaveBeenCalledWith(event);
+        expect(rootScope.$evalAsync).toHaveBeenCalled();
       });
     });
 
