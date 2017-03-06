@@ -8,7 +8,7 @@
       "result": {
         "canViewProjectButton": true,
         "canViewReopenButton": true,
-        "canViewStatsButton": true,
+        "canViewStats": true,
         "canViewUserList": true,
         "canViewVideoUploadButton": true,
         "unassignPermission": true

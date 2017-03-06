@@ -210,7 +210,7 @@ describe('UserGateway', () => {
   it('should return the users permissions', done => {
     const userResponse = {
       result: {
-        'canViewStatsButton': true,
+        'canViewStats': true,
         'canViewUserList': true,
         'canViewVideoUploadButton': true,
       },
