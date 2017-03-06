@@ -84,7 +84,7 @@ class User extends Controller\Base
         $user->assignToOrganisation($organisation);
         $this->userFacade->updateUser($user);
 
-        return View\View::create()->setData(['success' => true]);
+        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 
     /**
@@ -111,6 +111,6 @@ class User extends Controller\Base
         $user->removeFromOrganisation($organisation);
         $this->userFacade->updateUser($user);
 
-        return View\View::create()->setData(['success' => true]);
+        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 }

@@ -41,11 +41,11 @@ class UserTest extends Tests\WebTestCase
 
         $response = $requestWrapper->getJsonResponseBody();
 
-        $this->assertEquals(['success' => true], $response);
+        $this->assertEquals(['result' => ['success' => true]], $response);
 
         $user = $this->userFacade->getUserById($user->getId());
 
-        $this->assertEquals(['success' => true], $response);
+        $this->assertEquals(['result' => ['success' => true]], $response);
         $this->assertTrue(in_array($newOrganisation->getId(), $user->getOrganisations()));
     }
 
@@ -108,7 +108,7 @@ class UserTest extends Tests\WebTestCase
 
         $user = $this->userFacade->getUserById($user->getId());
 
-        $this->assertEquals(['success' => true], $response);
+        $this->assertEquals(['result' => ['success' => true]], $response);
         $this->assertFalse(in_array($this->organisation->getId(), $user->getOrganisations()));
     }
 
@@ -129,7 +129,7 @@ class UserTest extends Tests\WebTestCase
 
         $user = $this->userFacade->getUserById($user->getId());
 
-        $this->assertEquals(['success' => true], $response);
+        $this->assertEquals(['result' => ['success' => true]], $response);
         $this->assertFalse(in_array($this->organisation->getId(), $user->getOrganisations()));
     }
 
