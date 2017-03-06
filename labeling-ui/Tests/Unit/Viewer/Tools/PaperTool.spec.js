@@ -48,7 +48,7 @@ fdescribe('PaperTool test suite', function() {
     });
 
     describe('down', () => {
-      it('calls the delegation target', () => {
+      it('calls onMouseDown', () => {
         const paperTool = createPaperToolInstance();
         const event = {point: {x: 0, y: 0}};
         spyOn(paperTool, 'onMouseDown');
@@ -60,7 +60,7 @@ fdescribe('PaperTool test suite', function() {
     });
 
     describe('up', () => {
-      it('calls the delegation target', () => {
+      it('calls onMouseUp', () => {
         const paperTool = createPaperToolInstance();
         const event = {point: {x: 0, y: 0}};
         spyOn(paperTool, 'onMouseUp');
@@ -82,7 +82,7 @@ fdescribe('PaperTool test suite', function() {
     });
 
     describe('move', () => {
-      it('calls the delegation target from the rootScope', () => {
+      it('calls onMouseMove from the rootScope', () => {
         const paperTool = createPaperToolInstance();
         const event = {point: {x: 0, y: 0}};
         spyOn(paperTool, 'onMouseMove');
@@ -136,7 +136,7 @@ fdescribe('PaperTool test suite', function() {
           spyOn(paperTool, 'onMouseDrag');
         });
 
-        it('calls the delegation target if last drag point is larger than initialDragDistance', () => {
+        it('calls onMouseDrag if last drag point is larger than initialDragDistance', () => {
           lastDragPoint.getDistance.and.returnValue(dragDistanceOne);
           toolActionStruct.options.initialDragDistance = dragDistanceZero;
 
@@ -145,7 +145,7 @@ fdescribe('PaperTool test suite', function() {
           expect(paperTool.onMouseDrag).toHaveBeenCalledWith(event);
         });
 
-        it('calls the delegation target if last drag point and initialDragDistance are equal', () => {
+        it('calls onMouseDrag if last drag point and initialDragDistance are equal', () => {
           lastDragPoint.getDistance.and.returnValue(dragDistanceOne);
           toolActionStruct.options.initialDragDistance = dragDistanceOne;
 
@@ -154,9 +154,80 @@ fdescribe('PaperTool test suite', function() {
           expect(paperTool.onMouseDrag).toHaveBeenCalledWith(event);
         });
 
-        it('does not call the delegation target if last drag point is smaller than initialDragDistance', () => {
+        it('does not call onMouseDrag if last drag point is smaller than initialDragDistance', () => {
           lastDragPoint.getDistance.and.returnValue(dragDistanceZero);
           toolActionStruct.options.initialDragDistance = dragDistanceOne;
+
+          paperTool.delegateMouseEvent('drag', event);
+
+          expect(paperTool.onMouseDrag).not.toHaveBeenCalled();
+        });
+
+      });
+
+      describe('Drag event state "inProgress"', () => {
+        const event = {point: {x: 0, y: 0}};
+        const dragDistanceOne = 1;
+        const dragDistanceZero = 0;
+
+        let paperTool;
+        let lastDragPoint;
+        let toolActionStruct;
+
+        beforeEach(() => {
+          paperTool = createPaperToolInstance();
+          lastDragPoint = jasmine.createSpyObj('_lastDragPoint', ['getDistance']);
+
+          paperTool._lastDragPoint = lastDragPoint;
+          lastDragPoint.getDistance.and.returnValue(dragDistanceOne);
+
+          toolActionStruct = {
+            options: {
+              initialDragDistance: dragDistanceZero,
+              minDragDistance: null
+            }
+          };
+          paperTool._toolActionStruct = toolActionStruct;
+
+          // Call the drag event once, so the dragEventState is properly set to inProgress
+          paperTool.delegateMouseEvent('drag', event);
+          expect(paperTool._dragEventState).toBe('inProgress');
+          lastDragPoint.getDistance.and.stub();
+
+          spyOn(paperTool, 'onMouseDrag');
+        });
+
+        it('calls onMouseDrag if last drag point is larger than minDragDistance', () => {
+          // cannot use lastDragPoint mock object here, since _lastDragPoint is set
+          // as event.point from the previous drag call in the beforeEach block
+          spyOn(paperTool._lastDragPoint, 'getDistance').and.returnValue(dragDistanceOne);
+          toolActionStruct.options.minDragDistance = dragDistanceZero;
+
+          paperTool.delegateMouseEvent('drag', event);
+
+          expect(paperTool.onMouseDrag).toHaveBeenCalledWith(event);
+          // Make sure the call in the beforeEach block does not already count
+          expect(paperTool.onMouseDrag).toHaveBeenCalledTimes(1);
+        });
+
+        it('calls onMouseDrag if last drag point and minDragDistance are equal', () => {
+          // cannot use lastDragPoint mock object here, since _lastDragPoint is set
+          // as event.point from the previous drag call in the beforeEach block
+          spyOn(paperTool._lastDragPoint, 'getDistance').and.returnValue(dragDistanceOne);
+          toolActionStruct.options.minDragDistance = dragDistanceOne;
+
+          paperTool.delegateMouseEvent('drag', event);
+
+          expect(paperTool.onMouseDrag).toHaveBeenCalledWith(event);
+          // Make sure the call in the beforeEach block does not already count
+          expect(paperTool.onMouseDrag).toHaveBeenCalledTimes(1);
+        });
+
+        it('does not call onMouseDrag if last drag point is smaller than minDragDistance', () => {
+          // cannot use lastDragPoint mock object here, since _lastDragPoint is set
+          // as event.point from the previous drag call in the beforeEach block
+          spyOn(paperTool._lastDragPoint, 'getDistance').and.returnValue(dragDistanceZero);
+          toolActionStruct.options.minDragDistance = dragDistanceOne;
 
           paperTool.delegateMouseEvent('drag', event);
 
