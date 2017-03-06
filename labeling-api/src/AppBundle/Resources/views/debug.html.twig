@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="https://yandex.st/highlightjs/7.3/highlight.min.js"></script>
+    <script src="{{ asset('bundles/app/js/highlight.min.js') }}"></script>
     <script type="text/javascript">
         (function() {
 
@@ -33,5 +33,5 @@
             display: none;
         }
     </style>
-    <link rel="stylesheet" href="https://yandex.st/highlightjs/7.3/styles/solarized_light.min.css">
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/solarized_light.min.css') }}">
 {% endblock %}

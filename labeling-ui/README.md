@@ -55,6 +55,20 @@ It will run on port `54321` by default. To choose another port set the `PORT` en
 PORT="12345" gulp serve
 ```
 
+### E2E-Tests
+Running the E2E tests requires Chromium. Use version `53.0.2785.0`.
+
+### Unit Tests: MacOS
+In order to run the unit tests under MacOS you need to increase the amount of max. open files:
+```bash
+echo kern.maxfiles=65536 | sudo tee -a /etc/sysctl.conf
+echo kern.maxfilesperproc=65536 | sudo tee -a /etc/sysctl.conf
+sudo sysctl -w kern.maxfiles=65536
+sudo sysctl -w kern.maxfilesperproc=65536
+ulimit -n 65536 65536
+```
+
+
 ### Static Assets
 
 Static assets will be served from the `Public` directory. Everything in this directory is automatically accessible from within the dev server.
