@@ -39,19 +39,46 @@ describe('ThingLayer test suite', () => {
     return new ThingLayer(0, 0, scope, injector, drawingContext, toolService, null, loggerService, null, framePosition, viewerMouseCursorService);
   }
 
-  it('is a PanAndZoomPaperLayer', () => {
-    const thing = createThingLayerInstance();
-    expect(thing).toEqual(jasmine.any(PanAndZoomPaperLayer));
+  describe('Creation', () => {
+    it('is a PanAndZoomPaperLayer', () => {
+      const thing = createThingLayerInstance();
+      expect(thing).toEqual(jasmine.any(PanAndZoomPaperLayer));
+    });
+
+    describe('Collection watchers', () => {
+      beforeEach(() => {
+        spyOn(scope, '$watchCollection');
+      });
+
+      it('watches the vm.paperGroupShapes collection', () => {
+        createThingLayerInstance();
+        expect(scope.$watchCollection).toHaveBeenCalledWith('vm.paperGroupShapes', jasmine.any(Function));
+      });
+
+      it('watches the vm.paperGroupShapes collection', () => {
+        createThingLayerInstance();
+        expect(scope.$watchCollection).toHaveBeenCalledWith('vm.paperThingShapes', jasmine.any(Function));
+      });
+    });
+    
+    describe('Normal watchers', () => {
+      beforeEach(() => {
+        spyOn(scope, '$watch');
+      });
+
+      it('watches vm.hideLabeledThingsInFrame', () => {
+        createThingLayerInstance();
+        expect(scope.$watch).toHaveBeenCalledWith('vm.hideLabeledThingsInFrame', jasmine.any(Function));
+      });
+
+      it('watches vm.selectedPaperShape', () => {
+        createThingLayerInstance();
+        expect(scope.$watch).toHaveBeenCalledWith('vm.selectedPaperShape', jasmine.any(Function));
+      });
+    });
   });
 
   it('updates the view when leaving the canvas', () => {
-    const task = {
-      minimalVisibleShapeOverflow: null
-    };
-
-    scope.view = jasmine.createSpyObj('scope.view', ['update']);
-    scope.vm = { task: task };
-
     const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort']);
     toolService.getTool.and.returnValue(keyboardTool);
     const keyboardPromise = jasmine.createSpyObj('keyboardPromise', ['then']);
