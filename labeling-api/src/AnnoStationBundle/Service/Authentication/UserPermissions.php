@@ -52,6 +52,7 @@ class UserPermissions
         // User management
         'canEditLabelingGroups'           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN                                                                                                                                                 ],
         'canViewUserListButton'           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN                                                                                                                                                 ],
+        'canDeleteUser'                   => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                                                                        ],
 
         // Management board
         'canUploadNewVideo'               => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT,                                                                                                                       ],
