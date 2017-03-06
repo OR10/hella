@@ -114,6 +114,18 @@ fdescribe('ThingLayer test suite', () => {
     expect(scope.view.update).toHaveBeenCalled();
   });
 
+  xdescribe('vm.paperGroupShapes watcher', () => {
+  });
+
+  xdescribe('vm.paperThingShapes watcher', () => {
+  });
+
+  xdescribe('vm.hideLabeledThingsInFrame watcher', () => {
+  });
+
+  xdescribe('vm.selectedPaperShape watcher', () => {
+  });
+
   xdescribe('#dispatchDOMEvent', () => {
   });
 
