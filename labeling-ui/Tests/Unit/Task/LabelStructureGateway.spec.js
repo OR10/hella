@@ -70,7 +70,7 @@ describe('LabelStructureGateway', () => {
       },
     };
 
-    $httpBackend.expectGET(`/backend/api/organisation/ORGANISATION-ID/task/${taskId}/labelStructure`).respond(tasksResponse);
+    $httpBackend.expectGET(`/backend/api/task/${taskId}/labelStructure`).respond(tasksResponse);
 
     gateway.getLabelStructureData(taskId).then(structureData => {
       expect(structureData).toEqual(tasksResponse.result);

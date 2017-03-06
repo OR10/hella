@@ -71,8 +71,7 @@ class LabelStructureGateway {
    * @return {AbortablePromise.<Task|Error>}
    */
   getLabelStructureData(taskId) {
-    const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/task/${taskId}/labelStructure`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/labelStructure`);
     return this._bufferedHttp.get(url, undefined, 'label-structure')
       .then(response => {
         if (response.data && response.data.result) {
