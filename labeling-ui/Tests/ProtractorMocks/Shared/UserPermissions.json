@@ -9,7 +9,7 @@
         "canViewProjectButton": true,
         "canViewReopenButton": true,
         "canViewStatsButton": true,
-        "canViewUserListButton": true,
+        "canViewUserList": true,
         "canViewVideoUploadButton": true,
         "unassignPermission": true
       }

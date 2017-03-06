@@ -211,7 +211,7 @@ describe('UserGateway', () => {
     const userResponse = {
       result: {
         'canViewStatsButton': true,
-        'canViewUserListButton': true,
+        'canViewUserList': true,
         'canViewVideoUploadButton': true,
       },
     };
