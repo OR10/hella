@@ -3,10 +3,11 @@ import ThingLayer from 'Application/Viewer/Layers/ThingLayer';
 import PanAndZoomPaperLayer from 'Application/Viewer/Layers/PanAndZoomPaperLayer';
 import ToolAbortedError from 'Application/Viewer/Tools/Errors/ToolAbortedError';
 
-describe('ThingLayer test suite', () => {
+fdescribe('ThingLayer test suite', () => {
   let injector;
   let scope;
   let drawingContext;
+  let task;
 
   // Service mocks
   let loggerService;
@@ -30,7 +31,14 @@ describe('ThingLayer test suite', () => {
 
   beforeEach(inject(($injector, $rootScope) => {
     injector = $injector;
+
+    task = {
+      minimalVisibleShapeOverflow: null
+    };
+
     scope = $rootScope.$new();
+    scope.view = jasmine.createSpyObj('scope.view', ['update']);
+    scope.vm = { task: task };
   }));
 
   function createThingLayerInstance() {
@@ -104,5 +112,37 @@ describe('ThingLayer test suite', () => {
     thing.dispatchDOMEvent(event);
 
     expect(scope.view.update).toHaveBeenCalled();
+  });
+
+  xdescribe('#dispatchDOMEvent', () => {
+  });
+
+  xdescribe('#activateTool()', () => {
+  });
+
+  xdescribe('#addPaperThingShapes()', () => {
+  });
+
+  xdescribe('#addPaperGroupShapes()', () => {
+  });
+
+  xdescribe('#addPaperThingShape', () => {
+  });
+
+  xdescribe('#addPaperGroupShape()', () => {
+  });
+
+  describe('#update', () => {
+    it('updates the view', () => {
+      const thingLayer = createThingLayerInstance();
+      thingLayer.update();
+      expect(scope.view.update).toHaveBeenCalled();
+    });
+  });
+
+  xdescribe('#removePaperShapes()', () => {
+  });
+
+  xdescribe('#attachToDom()', () => {
   });
 });
