@@ -99,6 +99,24 @@ class OrganisationGateway {
         return response.data.result.success;
       });
   }
+
+  /**
+   * @param {User} user
+   * @param {Organisation} organisation
+   * @return {AbortablePromise}
+   */
+  addUserToOrganisation(user, organisation) {
+    const url = this._apiService.getApiUrl(`/organisation/${organisation.id}/user/${user.id}/assign`);
+
+    return this._bufferedHttp.put(url, undefined, undefined, 'user')
+      .then(response => {
+        if (!response.data || !response.data.result || !response.data.result.success) {
+          throw new Error(`Failed adding user with id ${user.id} to organisation with id ${organisation.id}`);
+        }
+
+        return response.data.result.success;
+      });
+  }
 }
 
 OrganisationGateway.$inject = [
