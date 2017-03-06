@@ -6,7 +6,7 @@
   "response": {
     "data": {
       "result": {
-        "canViewProjectButton": true,
+        "canViewProject": true,
         "canViewReopenButton": false,
         "canViewStats": false,
         "canViewUserList": false,
