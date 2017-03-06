@@ -85,6 +85,11 @@ class UserProfileController {
     this.userOrganisations = [];
 
     /**
+     * @type {null}
+     */
+    this.organisationToAdd = null;
+
+    /**
      * @type {boolean}
      */
     this.createMode = (this.id === 'new');
@@ -154,6 +159,7 @@ class UserProfileController {
       .then(([user, organisations]) => {
         this.user = user;
         this.organisations = organisations;
+        this.organisationToAdd = this.organisations[0];
         this.userOrganisations = user.organisations;
 
         this.loadingInProgress = false;
