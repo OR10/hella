@@ -112,25 +112,57 @@ fdescribe('PaperTool test suite', function() {
       });
 
       describe('Drag event state "initial"', () => {
-        it('calls the delegation target if last drag point is larger than initialDragDistance', () => {
-          const lastDragPointDistance = 1;
-          const initialDragDistance = 0;
-          const paperTool = createPaperToolInstance();
-          paperTool._lastDragPoint = jasmine.createSpyObj('_lastDragPoint', ['getDistance']);
-          paperTool._lastDragPoint.getDistance.and.returnValue(lastDragPointDistance);
-          
-          paperTool._toolActionStruct = {
+        const event = {point: {x: 0, y: 0}};
+        const dragDistanceOne = 1;
+        const dragDistanceZero = 0;
+
+        let paperTool;
+        let lastDragPoint;
+        let toolActionStruct;
+
+        beforeEach(() => {
+          paperTool = createPaperToolInstance();
+          lastDragPoint = jasmine.createSpyObj('_lastDragPoint', ['getDistance']);
+
+          paperTool._lastDragPoint = lastDragPoint;
+
+          toolActionStruct = {
             options: {
-              initialDragDistance: initialDragDistance
+              initialDragDistance: null
             }
           };
-          const event = {point: {x: 0, y: 0}};
+          paperTool._toolActionStruct = toolActionStruct;
+
           spyOn(paperTool, 'onMouseDrag');
+        });
+
+        it('calls the delegation target if last drag point is larger than initialDragDistance', () => {
+          lastDragPoint.getDistance.and.returnValue(dragDistanceOne);
+          toolActionStruct.options.initialDragDistance = dragDistanceZero;
 
           paperTool.delegateMouseEvent('drag', event);
 
           expect(paperTool.onMouseDrag).toHaveBeenCalledWith(event);
         });
+
+        it('calls the delegation target if last drag point and initialDragDistance are equal', () => {
+          lastDragPoint.getDistance.and.returnValue(dragDistanceOne);
+          toolActionStruct.options.initialDragDistance = dragDistanceOne;
+
+          paperTool.delegateMouseEvent('drag', event);
+
+          expect(paperTool.onMouseDrag).toHaveBeenCalledWith(event);
+        });
+
+        it('does not call the delegation target if last drag point is smaller than initialDragDistance', () => {
+          lastDragPoint.getDistance.and.returnValue(dragDistanceZero);
+          toolActionStruct.options.initialDragDistance = dragDistanceOne;
+
+          paperTool.delegateMouseEvent('drag', event);
+
+          expect(paperTool.onMouseDrag).not.toHaveBeenCalled();
+        });
+
       });
     });
   });
