@@ -2,7 +2,7 @@ import PaperTool from 'Application/Viewer/Tools/PaperTool';
 import Tool from 'Application/Viewer/Tools/NewTool';
 import Paper from 'paper';
 
-describe('PaperTool test suite', function() {
+fdescribe('PaperTool test suite', function() {
   let drawContext;
 
   beforeEach(() => {
@@ -33,6 +33,18 @@ describe('PaperTool test suite', function() {
       expect(event.point.y).toEqual(mockedCoordinate);
     });
 
+    it('throws if the event type does not exit', () => {
+      const paperTool = createPaperToolInstance();
+      const event = {point: {x: 0, y: 0}};
+      spyOn(paperTool, 'onMouseDown');
+
+      function throwWrapper() {
+        paperTool.delegateMouseEvent('bernddasbrot', event);
+      }
+
+      expect(throwWrapper).toThrow();
+    });
+
     describe('down', () => {
       it('calls the delegation target', () => {
         const paperTool = createPaperToolInstance();
@@ -43,17 +55,27 @@ describe('PaperTool test suite', function() {
 
         expect(paperTool.onMouseDown).toHaveBeenCalledWith(event);
       });
+    });
 
-      it('throws if the event type does not exit', () => {
+    describe('up', () => {
+      it('calls the delegation target', () => {
         const paperTool = createPaperToolInstance();
         const event = {point: {x: 0, y: 0}};
-        spyOn(paperTool, 'onMouseDown');
+        spyOn(paperTool, 'onMouseUp');
 
-        function throwWrapper() {
-          paperTool.delegateMouseEvent('bernddasbrot', event);
-        }
+        paperTool.delegateMouseEvent('up', event);
 
-        expect(throwWrapper).toThrow();
+        expect(paperTool.onMouseUp).toHaveBeenCalledWith(event);
+      });
+
+      it('calls onMouseClick', () => {
+        const paperTool = createPaperToolInstance();
+        const event = {point: {x: 0, y: 0}};
+        spyOn(paperTool, 'onMouseClick');
+
+        paperTool.delegateMouseEvent('up', event);
+
+        expect(paperTool.onMouseClick).toHaveBeenCalledWith(event);
       });
     });
 
