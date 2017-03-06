@@ -33,6 +33,7 @@ describe('Polygon drawing', () => {
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to4,
+      assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
     viewer = element(by.css('.layer-container'));
@@ -193,8 +194,7 @@ describe('Polygon drawing', () => {
     ]));
 
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
+      .then(() => browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
           .click()
           .mouseMove(viewer, {x: 200, y: 300}) // bottom drag handle
@@ -205,15 +205,15 @@ describe('Polygon drawing', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 50, y: 200}) // drag
           .mouseUp()
-          .perform();
-      })
+          .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'ResizeOnePolygon')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.ResizeOnePolygon);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
@@ -263,8 +263,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
+      .then(() => browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 600, y: 100}) // initial position
@@ -283,8 +282,8 @@ describe('Polygon drawing', () => {
           .click()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
           .click(protractor.Button.RIGHT)
-          .perform();
-      })
+          .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygon')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -309,15 +308,14 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
+      .then(() => browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 600, y: 100}) // initial position
           .mouseUp()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform();
-      })
+          .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -325,15 +323,14 @@ describe('Polygon drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary1);
       })
-      .then(() => {
-        browser.actions()
+      .then(() => browser.actions()
           .mouseMove(viewer, {x: 600, y: 600}) // initial position
           .click()
           .mouseMove(viewer, {x: 200, y: 600}) // initial position
           .click()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform();
-      })
+          .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -341,8 +338,7 @@ describe('Polygon drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary2);
       })
-      .then(() => {
-        browser.actions()
+      .then(() => browser.actions()
           .mouseMove(viewer, {x: 200, y: 400}) // initial position
           .click()
           .mouseMove(viewer, {x: 500, y: 400}) // initial position
@@ -350,8 +346,8 @@ describe('Polygon drawing', () => {
           .mouseMove(viewer, {x: 500, y: 200}) // initial position
           .click()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform();
-      })
+          .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -359,14 +355,13 @@ describe('Polygon drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary3);
       })
-      .then(() => {
-        browser.actions()
+      .then(() => browser.actions()
           .mouseMove(viewer, {x: 100, y: 200}) // initial position
           .click()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
           .click(protractor.Button.RIGHT)
-          .perform();
-      })
+          .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -488,6 +483,7 @@ describe('Polygon handle/point limiting', () => {
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to4,
+      assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
     viewer = element(by.css('.layer-container'));
@@ -521,7 +517,7 @@ describe('Polygon handle/point limiting', () => {
       });
   });
 
-  it('should add too many handles', done => {
+  xit('should add too many handles', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,

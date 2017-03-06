@@ -43,7 +43,7 @@ class Project
     public function findAll($limit = null, $offset = 0)
     {
         $query = $this->documentManager
-            ->createQuery('annostation_project_by_name_001', 'view')
+            ->createQuery('annostation_project_by_name_002', 'view')
             ->onlyDocs(true);
 
         if ($limit !== null) {
@@ -148,7 +148,7 @@ class Project
     public function findByName($name)
     {
         $result = $this->documentManager
-            ->createQuery('annostation_project_by_name_001', 'view')
+            ->createQuery('annostation_project_by_name_002', 'view')
             ->onlyDocs(true)
             ->setKey([$name])
             ->execute()
@@ -210,7 +210,7 @@ class Project
     public function findAllByStatus($status, $limit = null, $offset = 0)
     {
         $query = $this->documentManager
-            ->createQuery('annostation_project_by_status_001', 'view')
+            ->createQuery('annostation_project_by_status_002', 'view')
             ->setKey([$status])
             ->onlyDocs(true);
 
@@ -229,7 +229,7 @@ class Project
     public function getSumOfProjectsByStatus($status = null)
     {
         $query = $this->documentManager
-            ->createQuery('annostation_project_sum_by_status_and_projectId_001', 'view');
+            ->createQuery('annostation_project_sum_by_status_and_projectId_002', 'view');
 
         if ($status !== null) {
             $query->setStartKey([$status, null]);
@@ -264,7 +264,7 @@ class Project
 
         if ($user->hasRole(Model\User::ROLE_CLIENT)) {
             $query = $this->documentManager
-                ->createQuery('annostation_project_by_userId_and_status_002', 'view');
+                ->createQuery('annostation_project_by_userId_and_status_003', 'view');
             $query->setKey([$user->getId(), $status]);
             if ($countOnly) {
                 $query->setReduce(true);
@@ -279,7 +279,7 @@ class Project
 
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $query = $this->documentManager
-                ->createQuery('annostation_project_by_assigned_userId_and_status_002', 'view');
+                ->createQuery('annostation_project_by_assigned_userId_and_status_003', 'view');
             $query->setKey([$user->getId(), $status]);
             if ($countOnly) {
                 $query->setReduce(true);
@@ -304,7 +304,7 @@ class Project
             }, $labelingGroups);
 
             $query = $this->documentManager
-                ->createQuery('annostation_project_by_labeling_group_and_status_002', 'view');
+                ->createQuery('annostation_project_by_labeling_group_and_status_003', 'view');
             $query->setKeys($keys);
             if ($countOnly) {
                 $query->setReduce(true);

@@ -12,6 +12,7 @@ class FilmReelDirective {
       video: '=',
       filters: '=',
       selectedPaperShape: '=',
+      paperThingShapes: '=',
       playing: '=',
       freezeThumbnails: '=',
       readOnly: '@',

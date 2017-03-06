@@ -9,7 +9,8 @@ import viewerTemplate from './ViewerDirective.html!';
 export default class ViewerDirective {
   constructor() {
     this.scope = {
-      labeledThingsInFrame: '=',
+      paperThingShapes: '=',
+      paperGroupShapes: '=',
       selectedPaperShape: '=',
       activeTool: '=',
       selectedDrawingTool: '=',
@@ -24,13 +25,11 @@ export default class ViewerDirective {
       playbackDirection: '=',
       viewport: '=',
       hideLabeledThingsInFrame: '=',
-      multiTool: '=',
       bookmarkedFrameIndex: '=',
       fps: '=',
       frameSkip: '=',
       thingLayer: '=',
       readOnly: '@',
-      showCrosshairs: '=',
     };
 
     this.controller = ViewerController;

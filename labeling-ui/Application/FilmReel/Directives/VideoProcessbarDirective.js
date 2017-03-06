@@ -9,6 +9,7 @@ class VideoProcessbarDirective {
     this.scope = {
       framePosition: '=',
       selectedPaperShape: '=',
+      paperThingShapes: '=',
       thumbnailCount: '=',
     };
 

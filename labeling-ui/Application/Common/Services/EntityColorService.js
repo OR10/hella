@@ -37,7 +37,7 @@ class EntityColorService {
    * Retrieves the matching color for the given id from the given color palette.
    *
    * @param {string} colorId
-   * @returns {string}
+   * @returns {{primary: string, secondary: string}}
    */
   getColorById(colorId) {
     const palettes = this._colorPalettes;

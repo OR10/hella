@@ -41,16 +41,6 @@ class Video extends Controller\Base
     }
 
     /**
-     * @Rest\Get("")
-     */
-    public function listAction()
-    {
-        return new View\View(
-            new Response\Videos($this->videoFacade->findAll(), $this->calibrationDataFacade)
-        );
-    }
-
-    /**
      * @Rest\Get("/{video}")
      *
      * @param $video

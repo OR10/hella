@@ -27,6 +27,7 @@ describe('Rectangle drawing', () => {
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
+      assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
     viewer = element(by.css('.layer-container'));
@@ -164,10 +165,11 @@ describe('Rectangle drawing', () => {
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'MoveOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => browser.pause()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.MoveOneRectangle);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -202,7 +204,7 @@ describe('Rectangle drawing', () => {
       .then(drawingStack => {
         // browser.pause();
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.ResizeOneRectangle);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -236,7 +238,7 @@ describe('Rectangle drawing', () => {
       .then(drawingStack => {
         // browser.pause();
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.ResizeFlip);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -255,20 +257,17 @@ describe('Rectangle drawing', () => {
     ]));
 
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 110, y: 110}) // initial position
+        .click()
+        .perform()
+      )
+      .then(() => browser.sleep(500))
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
-
-        browser.actions()
-          .mouseMove(viewer, {x: 110, y: 110}) // initial position
-          .click()
-          .perform();
-
-        browser.sleep(500);
-
-        nextFrameButton.click();
-
-        browser.sleep(1000);
+        return nextFrameButton.click();
       })
+      .then(() => browser.sleep(1000))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'KeepSelectionOverFrameChange')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -301,7 +300,7 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangle);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -320,21 +319,20 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 300, y: 300}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 450, y: 350}) // initial position
-          .mouseUp()
-          .perform();
-      })
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 300, y: 300}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 450, y: 350}) // initial position
+        .mouseUp()
+        .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleMinimalHeight);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -353,21 +351,20 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 450, y: 400}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 300, y: 350}) // initial position
-          .mouseUp()
-          .perform();
-      })
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 450, y: 400}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 300, y: 350}) // initial position
+        .mouseUp()
+        .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleMinimalHeight);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -385,13 +382,12 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing,
     ]));
     initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 300, y: 300}) // initial position
-          .mouseDown()
-          .perform();
-        browser.sleep(500);
-      })
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 300, y: 300}) // initial position
+        .mouseDown()
+        .perform()
+      )
+      .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleIntermediary1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -399,12 +395,11 @@ describe('Rectangle drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary1);
       })
-      .then(() => {
-        browser.actions()
-          .mouseMove(viewer, {x: 500, y: 400}) // intermediary position
-          .perform();
-        browser.sleep(500);
-      })
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 500, y: 400}) // intermediary position
+        .perform()
+      )
+      .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleIntermediary2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -424,7 +419,7 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary3);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -466,7 +461,7 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewMultipleRectangles);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -500,7 +495,7 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -532,7 +527,7 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {

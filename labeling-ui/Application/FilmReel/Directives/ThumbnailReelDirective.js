@@ -13,6 +13,7 @@ class ThumbnailReelDirective {
       video: '=',
       filters: '=',
       selectedPaperShape: '=',
+      paperThingShapes: '=',
       playing: '=',
       freezeThumbnails: '=',
       thumbnailCount: '=',

@@ -46,8 +46,8 @@ class TaskCount extends Controller\Base
      *
      * @param HttpFoundation\Request $request
      * @param Model\Project          $project
-     *
-     * @return \FOS\RestBundle\View\View
+     * 
+     * @return View\View
      */
     public function getTaskCountAction(HttpFoundation\Request $request, Model\Project $project)
     {

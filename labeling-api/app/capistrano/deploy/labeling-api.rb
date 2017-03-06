@@ -40,7 +40,15 @@ set :deploy_to, '/var/www/labeling-api'
 #set :scm, :gitcopy
 set :scm, :copy
 
-set :exclude_dir, ["puppet", "app/AnnoStation/cache/prod", "app/AnnoStation/cache/dev", "app/AnnoStation/logs"]
+set :exclude_dir, [
+    "puppet",
+    "app/AnnoStation/cache/prod",
+    "app/AnnoStation/cache/dev",
+    "app/AnnoStation/logs",
+
+    "package-*.sh",
+    "package-*.tar.gz",
+]
 
 
 # Default value for :format is :pretty

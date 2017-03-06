@@ -5,6 +5,9 @@ import Filters from '../../Viewer/Models/Filters';
 import BrightnessFilter from '../../Common/Filters/BrightnessFilter';
 import ContrastFilter from '../../Common/Filters/ContrastFilter';
 
+import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
+import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
+
 class TaskController {
   /**
    * @param {angular.Scope} $scope
@@ -120,13 +123,6 @@ class TaskController {
     this.hideLabeledThingsInFrame = false;
 
     /**
-     * Flag indicating whether or not to display the crosshairs inside the viewer
-     *
-     * @type {boolean}
-     */
-    this.showCrosshairs = false;
-
-    /**
      * Currently active frame position to be displayed inside the MediaControls
      *
      * This model will be manipulated by different directives in order to switch between frames.
@@ -141,13 +137,6 @@ class TaskController {
      * @type {Number|null}
      */
     this.bookmarkedFrameIndex = null;
-
-    /**
-     * Drawing Tool used for initializing new empty shapes
-     *
-     * @type {Tool}
-     */
-    this.multiTool = null;
 
     /**
      * @type {boolean}
@@ -221,6 +210,11 @@ class TaskController {
     this.drawableThings = [];
 
     /**
+     * @type {Object[]}
+     */
+    this.drawableGroups = [];
+
+    /**
      * @type {LabelStructure|null}
      */
     this.labelStructure = null;
@@ -275,10 +269,10 @@ class TaskController {
      */
     this.thingLayer = null;
 
-    keyboardShortcutService.pushContext('labeling-task');
+    keyboardShortcutService.registerOverlay('labeling-task', true);
 
     $scope.$on('$destroy', () => {
-      keyboardShortcutService.clearContext('labeling-task');
+      keyboardShortcutService.removeOverlayById('labeling-task');
     });
 
     this._labelStructurePromise = this._initializeLabelStructure();
@@ -287,10 +281,23 @@ class TaskController {
       $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
         if (newShape !== oldShape) {
           if (newShape !== null) {
+            // @TODO: Should be loaded in the resolver of the viewer. This would make synchronization easier
             this._labelStructurePromise
               .then(labelStructure => {
-                const thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
-                const labelStructureThing = labelStructure.getThingById(thingIdentifier);
+                let thingIdentifier;
+                let labelStructureThing;
+                switch (true) {
+                  case newShape instanceof PaperThingShape:
+                    thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
+                    labelStructureThing = labelStructure.getThingById(thingIdentifier);
+                    break;
+                  case newShape instanceof PaperGroupShape:
+                    thingIdentifier = newShape.labeledThingGroupInFrame.labeledThingGroup.type;
+                    labelStructureThing = labelStructure.getGroupById(thingIdentifier);
+                    break;
+                  default:
+                    throw new Error('Cannot read identifier name of unknown shape!');
+                }
 
                 this.selectedLabelStructureThing = labelStructureThing;
                 this.selectedDrawingTool = labelStructureThing.shape;
@@ -434,6 +441,7 @@ class TaskController {
     const labelStructurePromise = this._labelStructureService.getLabelStructure(this.task)
       .then(labelStructure => {
         const labelStructureThingArray = Array.from(labelStructure.getThings().values());
+        const labelStructureGroupArray = Array.from(labelStructure.getGroups().values());
         const labelStructureThing = labelStructureThingArray[0];
 
         this.labelStructure = labelStructure;
@@ -441,6 +449,8 @@ class TaskController {
         this.selectedDrawingTool = labelStructureThing.shape;
         this.selectedLabeledObject = this._getSelectedLabeledObject();
         this.drawableThings = labelStructureThingArray;
+        this.drawableGroups = labelStructureGroupArray;
+        this.activeTool = 'multi';
 
         // Pipe labelStructure to next chain function
         return labelStructure;
@@ -486,11 +496,10 @@ class TaskController {
       return;
     }
     this._$timeout(() => {
-      const labeledThingInFrame = this.labeledThingsInFrame.find(element => {
-        return match === element.id;
+      const shape = this.paperThingShapes.find(element => {
+        return match === element.labeledThingInFrame.id;
       });
-      if (labeledThingInFrame) {
-        const shape = labeledThingInFrame.paperShapes[0];
+      if (shape) {
         this.selectedPaperShape = shape;
         this.thingLayer.update();
       }

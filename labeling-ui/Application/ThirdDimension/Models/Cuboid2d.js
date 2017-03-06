@@ -1,5 +1,5 @@
 import {Vector3} from 'three-math';
-import clone from 'lodash.clone';
+import {clone} from 'lodash';
 
 class Cuboid2d {
   /**

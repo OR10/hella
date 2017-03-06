@@ -33,6 +33,7 @@ describe('Zoom', () => {
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
+      assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
     viewer = element(by.css('.layer-container'));
@@ -46,15 +47,14 @@ describe('Zoom', () => {
       ]));
 
       initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => {
-          browser.actions()
-            .sendKeys('+')
-            .sendKeys('+')
-            .sendKeys('+')
-            .sendKeys('+')
-            .sendKeys('+')
-            .perform();
-        })
+        .then(() => browser.actions()
+          .sendKeys('+')
+          .sendKeys('+')
+          .sendKeys('+')
+          .sendKeys('+')
+          .sendKeys('+')
+          .perform()
+        )
         .then(
           // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'EmptyCenterKeyboard')
           () => canvasInstructionLogManager.getBackgroundCanvasImage()
@@ -75,24 +75,23 @@ describe('Zoom', () => {
       ]));
 
       initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => {
-          browser.actions()
-            .sendKeys('+')
-            .sendKeys('+')
-            .sendKeys('+')
-            .sendKeys('+')
-            .sendKeys('+')
-            .perform();
-
-          browser.actions()
-            .mouseMove(viewer, {x: 500, y: 500})
-            .sendKeys(protractor.Key.SHIFT)
-            .mouseDown()
-            .mouseMove(viewer, {x: 100, y: 100})
-            .mouseUp()
-            .sendKeys(protractor.Key.SHIFT)
-            .perform();
-        })
+        .then(() => browser.actions()
+          .sendKeys('+')
+          .sendKeys('+')
+          .sendKeys('+')
+          .sendKeys('+')
+          .sendKeys('+')
+          .perform()
+        )
+        .then(() => browser.actions()
+          .mouseMove(viewer, {x: 500, y: 500})
+          .sendKeys(protractor.Key.SHIFT)
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseUp()
+          .sendKeys(protractor.Key.SHIFT)
+          .perform()
+        )
         .then(
           // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'PannedEmptyKeyboard')
           () => canvasInstructionLogManager.getBackgroundCanvasImage()
@@ -120,11 +119,7 @@ describe('Zoom', () => {
         ]));
 
         initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(
-            () => {
-              interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 10);
-            }
-          )
+          .then(() => interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 10))
           .then(
             // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', fixtureName)
             () => canvasInstructionLogManager.getBackgroundCanvasImage()
@@ -155,11 +150,7 @@ describe('Zoom', () => {
         ]));
 
         initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(
-            () => {
-              interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20);
-            }
-          )
+          .then(() => interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('Zoom', fixtureName)
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -186,14 +177,12 @@ describe('Zoom', () => {
 
         initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(
-            () => {
-              browser.actions()
-                .mouseMove(viewer, {x: selectX + 50, y: selectY + 50})
-                .click()
-                .perform();
-              interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20);
-            }
+            () => browser.actions()
+              .mouseMove(viewer, {x: selectX + 50, y: selectY + 50})
+              .click()
+              .perform()
           )
+          .then(() => interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('Zoom', fixtureName)
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()

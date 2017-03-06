@@ -738,8 +738,12 @@ class Project
     /**
      * @return string
      */
-    public function getDeletedState(): string
+    public function getDeletedState()
     {
+        if ($this->deletedState === null) {
+            return self::DELETED_UNACCEPTED;
+        }
+
         return $this->deletedState;
     }
 

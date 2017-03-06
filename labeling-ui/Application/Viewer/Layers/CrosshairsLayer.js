@@ -7,11 +7,11 @@ class CrosshairsLayer {
   /**
    * @param {Number} width
    * @param {Number} height
-   * @param {$rootScope.$scope} $scope
+   * @param {ViewerMouseCursorService} viewerMouseCursorService
    * @param {string} color
    * @param {Number} strokeWidth
    */
-  constructor(width, height, $scope, color, strokeWidth) {
+  constructor(width, height, viewerMouseCursorService, color, strokeWidth) {
     /**
      * @type {Number}
      * @private
@@ -25,10 +25,10 @@ class CrosshairsLayer {
     this._height = height;
 
     /**
-     * @type {$rootScope.$scope}
+     * @type {ViewerMouseCursorService}
      * @private
      */
-    this._$scope = $scope;
+    this._viewerMouseCursorService = viewerMouseCursorService;
 
     /**
      * @type {string}
@@ -60,7 +60,7 @@ class CrosshairsLayer {
      */
     this._lastKnownMouseCoords = null;
 
-    this._$scope.$watch('vm.showCrosshairs', visible => {
+    this._viewerMouseCursorService.on('crosshair:updated', visible => {
       if (visible) {
         this.render();
       } else {
@@ -74,7 +74,7 @@ class CrosshairsLayer {
    * representation of the layer to its current state.
    */
   render() {
-    if (this._ctx === null || this._$scope.vm.showCrosshairs === false) {
+    if (this._ctx === null || this._viewerMouseCursorService.isCrosshairShowing() === false) {
       return;
     }
 

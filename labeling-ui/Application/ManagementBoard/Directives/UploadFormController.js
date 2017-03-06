@@ -1,7 +1,7 @@
-import debounce from 'lodash.debounce';
+import {debounce} from 'lodash';
 
 /**
- * Controller of the {@link UploadDirective}
+ * Controller of the {@link UploadFormDirective}
  */
 class UploadFormController {
   /**

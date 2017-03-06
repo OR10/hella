@@ -1,3 +1,7 @@
+import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
+import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
+
+
 /**
  * Controller of the {@link VideoProcessbarDirective}
  *
@@ -8,8 +12,9 @@ class VideoProcessbarController {
   /**
    * @param {$rootScope.$scope} $scope
    * @param {FrameIndexService} frameIndexService
+   * @param {LabeledThingGroupService} labeledThingGroupService
    */
-  constructor($scope, frameIndexService) {
+  constructor($scope, frameIndexService, labeledThingGroupService) {
     const frameIndexLimits = frameIndexService.getFrameIndexLimits();
 
     this.frameCount = frameIndexLimits.upperLimit - frameIndexLimits.lowerLimit + 1;
@@ -31,7 +36,7 @@ class VideoProcessbarController {
       this.videoWidth = this.frameSize * this.frameCount;
       this.videoStart = this.thumbnailStart - this.frameSize * (relativePosition) + this.frameSize * Math.floor(this.thumbnailCount / 2);
 
-      if (this.selectedPaperShape) {
+      if (this.selectedPaperShape && this.selectedPaperShape instanceof PaperThingShape) {
         const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
         this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameIndex - frameIndexLimits.lowerLimit);
       }
@@ -39,16 +44,26 @@ class VideoProcessbarController {
 
     $scope.$watchGroup([
       'vm.selectedPaperShape',
-      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange',
-      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex',
-      'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameIndex',
+      // 'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange',
+      // 'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex',
+      // 'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameIndex',
     ], ([paperShape]) => {
       if (paperShape === null) {
         this.rangeWidth = 0;
         return;
       }
 
-      const frameRange = paperShape.labeledThingInFrame.labeledThing.frameRange;
+      let frameRange;
+      switch (true) {
+        case this.selectedPaperShape instanceof PaperThingShape:
+          frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
+          break;
+        case this.selectedPaperShape instanceof PaperGroupShape:
+          frameRange = labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
+          break;
+        default:
+          throw new Error('Cannot get frame range of unknown shape type');
+      }
 
       this.rangeWidth = this.frameSize * (frameRange.endFrameIndex - frameRange.startFrameIndex + 1);
       this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameIndex - frameIndexLimits.lowerLimit);
@@ -59,6 +74,7 @@ class VideoProcessbarController {
 VideoProcessbarController.$inject = [
   '$scope',
   'frameIndexService',
+  'labeledThingGroupService',
 ];
 
 export default VideoProcessbarController;

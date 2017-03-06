@@ -14,10 +14,10 @@ export default class BackgroundLayer extends PanAndZoomPaperLayer {
    * @param {int} width
    * @param {int} height
    * @param {$rootScope.Scope} $scope
-   * @param {DrawingContextService} drawingContextService
+   * @param {DrawingContext} drawingContext
    */
-  constructor(width, height, $scope, drawingContextService) {
-    super(width, height, $scope, drawingContextService);
+  constructor(width, height, $scope, drawingContext) {
+    super(width, height, $scope, drawingContext);
 
     /**
      * @type {HTMLCanvasElement}

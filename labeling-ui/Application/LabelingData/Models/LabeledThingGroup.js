@@ -1,3 +1,5 @@
+import {clone} from 'lodash';
+
 class LabeledThingGroup {
   /**
    *
@@ -10,9 +12,31 @@ class LabeledThingGroup {
     this.id = labeledThingGroupDocument.id;
 
     /**
+     * @type {Task}
+     */
+    this._task = labeledThingGroupDocument.task;
+
+    /**
      * @type {string}
      */
     this.type = labeledThingGroupDocument.groupType;
+
+    /**
+     * @type {string}
+     */
+    this.lineColor = labeledThingGroupDocument.lineColor;
+
+    /**
+     * @type {Array.<string>|null}
+     */
+    this.groupIds = labeledThingGroupDocument.groupIds;
+  }
+
+  /**
+   * @return {Task}
+   */
+  get task() {
+    return this._task;
   }
 
   /**
@@ -22,6 +46,8 @@ class LabeledThingGroup {
     return {
       id: this.id,
       groupType: this.type,
+      lineColor: this.lineColor,
+      groupIds: clone(this.groupIds),
     };
   }
 }

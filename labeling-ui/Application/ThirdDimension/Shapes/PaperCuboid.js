@@ -1,30 +1,25 @@
 import paper from 'paper';
 import {Vector3} from 'three-math';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
+import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import RectangleHandle from '../../Viewer/Shapes/Handles/Rectangle';
 
 import Cuboid3d from '../Models/Cuboid3d';
 import CuboidInteractionResolver from '../Support/CuboidInteractionResolver';
 import ManualUpdateCuboidInteractionResolver from '../Support/ManualUpdateCuboidInteractionResolver';
 
-class PaperCuboid extends PaperShape {
+class PaperCuboid extends PaperThingShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
    * @param {Projection2d} projection2d
    * @param {Projection3d} projection3d
    * @param {Array} cuboid3dPoints
-   * @param {{primary, secondary}} color
+   * @param {{primary: string, secondary: string}} color
    * @param {boolean?} draft
    */
   constructor(labeledThingInFrame, shapeId, projection2d, projection3d, cuboid3dPoints, color, draft) {
-    super(labeledThingInFrame, shapeId, draft);
-
-    /**
-     * @type {String}
-     * @private
-     */
-    this._color = color;
+    super(labeledThingInFrame, shapeId, color, draft);
 
     /**
      * @type {boolean}
@@ -394,22 +389,20 @@ class PaperCuboid extends PaperShape {
   }
 
   get bounds() {
-    const minX = this._projectedCuboid.vertices.reduce((prev, current) => {
-      return prev.x < current.x ? prev.x : current.x;
-    });
-    const minY = this._projectedCuboid.vertices.reduce((prev, current) => {
-      return prev.y < current.y ? prev.y : current.y;
-    });
-    const maxX = this._projectedCuboid.vertices.reduce((prev, current) => {
-      return prev.x > current.x ? prev.x : current.x;
-    });
-    const maxY = this._projectedCuboid.vertices.reduce((prev, current) => {
-      return prev.y > current.y ? prev.y : current.y;
-    });
+    const leftVector = this._projectedCuboid.vertices.reduce((initial, current) => initial.x < current.x ? initial : current);
+    const rightVector = this._projectedCuboid.vertices.reduce((initial, current) => initial.x > current.x ? initial : current);
+    const topVector = this._projectedCuboid.vertices.reduce((initial, current) => initial.y < current.y ? initial : current);
+    const bottomVector = this._projectedCuboid.vertices.reduce((initial, current) => initial.y > current.y ? initial : current);
+
+    const topLeft = new paper.Point(leftVector.x, topVector.y);
+    const bottomRight = new paper.Point(rightVector.x, bottomVector.y);
 
     return {
-      width: maxX - minX,
-      height: maxY - minY,
+      width: bottomRight.x - topLeft.x,
+      height: bottomRight.y - topLeft.y,
+      x: topLeft.x,
+      y: topLeft.y,
+      point: topLeft,
     };
   }
 

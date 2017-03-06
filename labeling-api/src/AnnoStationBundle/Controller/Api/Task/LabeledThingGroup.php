@@ -10,6 +10,7 @@ use AppBundle\Model as AppBundleModel;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -44,7 +45,11 @@ class LabeledThingGroup extends Controller\Base
         $groupType = $request->request->get('groupType');
         $groupIds  = $request->request->get('groupIds');
 
-        $labeledThingGroup = new Model\LabeledThingGroup($groupType, $groupIds);
+        if (($lineColor = $request->request->get('lineColor')) === null) {
+            throw new BadRequestHttpException('Missing lineColor');
+        }
+
+        $labeledThingGroup = new Model\LabeledThingGroup($lineColor, $groupType, $groupIds);
 
         $this->labeledThingGroupFacade->save($labeledThingGroup);
 
@@ -66,22 +71,26 @@ class LabeledThingGroup extends Controller\Base
             $frameIndex
         );
 
-        $labeledThingInFrames= [];
-        $labeledThingGroups = [];
+        $labeledThingInFrames = [];
+        $labeledThingGroups   = [];
         foreach ($groupsInFrame as $groupInFrame) {
             $labeledThingGroupInFrame = new Model\LabeledThingGroupInFrame($groupInFrame, $frameIndex);
             $labeledThingGroupInFrame->setId($this->guidv4(random_bytes(16)));
 
-            $labeledThingGroups[$groupInFrame] = $this->labeledThingGroupFacade->find($groupInFrame);
-            $labeledThingInFrames[] = $labeledThingGroupInFrame;
+            $labeledThingInFrames[$groupInFrame . '-' . $frameIndex] = $labeledThingGroupInFrame;
+            $labeledThingGroups[$groupInFrame]                       = $this->labeledThingGroupFacade->find(
+                $groupInFrame
+            );
         }
 
-        return View\View::create()->setData([
-            'result' => [
-                'labeledThingGroupsInFrame' => $labeledThingInFrames,
-                'labeledThingGroups' => array_values($labeledThingGroups),
-                ]
-        ]);
+        return View\View::create()->setData(
+            [
+                'result' => [
+                    'labeledThingGroupsInFrame' => array_values($labeledThingInFrames),
+                    'labeledThingGroups'        => array_values($labeledThingGroups),
+                ],
+            ]
+        );
     }
 
     /**

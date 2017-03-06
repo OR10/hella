@@ -1,4 +1,4 @@
-import clone from 'lodash.clone';
+import {clone} from 'lodash';
 
 /**
  * Base model for any object, which has labels

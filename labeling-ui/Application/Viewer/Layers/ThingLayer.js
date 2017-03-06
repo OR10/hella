@@ -1,11 +1,18 @@
 import angular from 'angular';
 import paper from 'paper';
 import PanAndZoomPaperLayer from './PanAndZoomPaperLayer';
+import ZoomToolActionStruct from '../Tools/ToolActionStructs/ZoomToolActionStruct';
 import ZoomTool from '../Tools/ZoomTool';
+import MultiToolActionStruct from '../Tools/ToolActionStructs/MultiToolActionStruct';
+import CreationToolActionStruct from '../Tools/ToolActionStructs/CreationToolActionStruct';
 import MultiTool from '../Tools/MultiTool';
 
+import ToolAbortedError from '../Tools/Errors/ToolAbortedError';
+import NotModifiedError from '../Tools/Errors/NotModifiedError';
+
 import PaperShape from '../Shapes/PaperShape';
-import hitResolver from '../Support/HitResolver';
+import PaperThingShape from '../Shapes/PaperThingShape';
+import PaperGroupShape from '../Shapes/PaperGroupShape';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -17,29 +24,35 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {int} width
    * @param {int} height
    * @param {$rootScope.Scope} $scope
-   * @param {DrawingContextService} drawingContextService
-   * @param {EntityIdService} entityIdService
-   * @param {PaperShapeFactory} paperShapeFactory
-   * @param {EntityColorService} entityColorService
-   * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {$injector} $injector
+   * @param {DrawingContext} drawingContext
    * @param {ToolService} toolService
+   * @param {PaperShapeFactory} paperShapeFactory
    * @param {LoggerService} logger
    * @param {$timeout} $timeout
    * @param {FramePosition} framePosition
+   * @param {ViewerMouseCursorService} viewerMouseCursorService
+   * @param {LabeledThingGroupService} labeledThingGroupService
    */
   constructor(width,
               height,
               $scope,
-              drawingContextService,
-              entityIdService,
-              paperShapeFactory,
-              entityColorService,
-              keyboardShortcutService,
+              $injector,
+              drawingContext,
               toolService,
+              paperShapeFactory,
               logger,
               $timeout,
-              framePosition) {
-    super(width, height, $scope, drawingContextService);
+              framePosition,
+              viewerMouseCursorService,
+              labeledThingGroupService) {
+    super(width, height, $scope, drawingContext);
+
+    /**
+     * @type {ToolService}
+     * @private
+     */
+    this._toolService = toolService;
 
     /**
      * @type {PaperShapeFactory}
@@ -60,16 +73,28 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._$timeout = $timeout;
 
     /**
-     * @type {EntityIdService}
+     * @type {FramePosition}
      * @private
      */
-    this._entityIdService = entityIdService;
+    this._framePosition = framePosition;
 
     /**
-     * @type {EntityColorService}
+     * @type {ViewerMouseCursorService}
      * @private
      */
-    this._entityColorService = entityColorService;
+    this._viewerMouseCursorService = viewerMouseCursorService;
+
+    /**
+     * @type {LabeledThingGroupService}
+     * @private
+     */
+    this._labeledThingGroupService = labeledThingGroupService;
+
+    /**
+     * @type {Tool|null}
+     * @private
+     */
+    this._activeTool = null;
 
     /**
      * Tool for moving shapes
@@ -77,30 +102,60 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {MultiTool}
      * @private
      */
-    this._multiTool = new MultiTool($scope.$new(), keyboardShortcutService, toolService, this._context, this._$scope.vm.readOnly === 'true');
-    this._$scope.vm.multiTool = this._multiTool;
+    this._multiTool = $injector.instantiate(MultiTool, {drawingContext: this._context});
 
     /**
-     * @type {null}
+     * @type {ZoomTool}
      * @private
      */
-    this._zoomInTool = new ZoomTool(ZoomTool.ZOOM_IN, $scope.$new(), this._context);
+    this._zoomInTool = $injector.instantiate(ZoomTool, {drawingContext: this._context});
 
     /**
-     * @type {null}
+     * @type {ZoomTool}
      * @private
      */
-    this._zoomOutTool = new ZoomTool(ZoomTool.ZOOM_OUT, $scope.$new(), this._context);
+    this._zoomOutTool = $injector.instantiate(ZoomTool, {drawingContext: this._context});
 
-    $scope.$watchCollection('vm.labeledThingsInFrame', (newLabeledThingsInFrame, oldLabeledThingsInFrame) => {
-      const oldSet = new Set(oldLabeledThingsInFrame);
-      const newSet = new Set(newLabeledThingsInFrame);
+    /**
+     * @type {LabelStructureThing|null}
+     * @private
+     */
+    this._selectedLabelStructureThing = null;
 
-      const addedLabeledThingsInFrame = newLabeledThingsInFrame.filter(item => !oldSet.has(item));
-      const removedLabeledThingsInFrame = oldLabeledThingsInFrame.filter(item => !newSet.has(item));
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._isMousePressed = false;
 
-      this.addLabeledThingsInFrame(addedLabeledThingsInFrame, false);
-      this.removeLabeledThingsInFrame(removedLabeledThingsInFrame, false);
+    /**
+     * @type {{x: Number, y: Number}|null}
+     * @private
+     */
+    this._lastMouseDownEvent = null;
+
+    $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
+      const oldSet = new Set(oldPaperGroupShapes);
+      const newSet = new Set(newPaperGroupShapes);
+
+      const addedPaperGroupShapes = newPaperGroupShapes.filter(item => !oldSet.has(item));
+      const removedPaperGroupShapes = oldPaperGroupShapes.filter(item => !newSet.has(item));
+
+      this.addPaperGroupShapes(addedPaperGroupShapes, false);
+      this.removePaperShapes(removedPaperGroupShapes, false);
+
+      // this._applyHiddenLabeledThingsInFrameFilter();
+    });
+
+    $scope.$watchCollection('vm.paperThingShapes', (newPaperThingShapes, oldPaperThingShapes) => {
+      const oldSet = new Set(oldPaperThingShapes);
+      const newSet = new Set(newPaperThingShapes);
+
+      const addedPaperThingShapes = newPaperThingShapes.filter(item => !oldSet.has(item));
+      const removedPaperThingShapes = oldPaperThingShapes.filter(item => !newSet.has(item));
+
+      this.addPaperThingShapes(addedPaperThingShapes, false);
+      this.removePaperShapes(removedPaperThingShapes, false);
 
       this._applyHiddenLabeledThingsInFrameFilter();
     });
@@ -115,12 +170,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
           oldShape.deselect();
         });
 
-        // Remove a Ghost upon deselection
-        const oldLabeledThingInFrame = oldShape.labeledThingInFrame;
-        if (oldLabeledThingInFrame.ghost === true) {
-          const index = this._$scope.vm.labeledThingsInFrame.indexOf(oldLabeledThingInFrame);
-          if (index !== -1) {
-            this._$scope.vm.labeledThingsInFrame.splice(index, 1);
+        if (oldShape instanceof PaperThingShape) {
+          // Remove a Ghost upon deselection
+          if (oldShape.labeledThingInFrame.ghost === true) {
+            const index = this._$scope.vm.paperThingShapes.indexOf(oldShape);
+            if (index !== -1) {
+              this._$scope.vm.paperThingShapes.splice(index, 1);
+            }
           }
         }
       }
@@ -139,26 +195,273 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._applyHiddenLabeledThingsInFrameFilter();
     });
 
-    this._multiTool.on('shape:create', this._onCreateShape.bind(this));
-    this._multiTool.on('shape:update', shape => {
-      this.emit('shape:update', shape);
+    this._framePosition.beforeFrameChangeAlways('disableTools', () => {
+      this._abortActiveTool();
+    });
+    this._framePosition.afterFrameChangeAlways('disableTools', () => {
+      this._invokeActiveTool();
     });
 
-    framePosition.beforeFrameChangeAlways('disableTools', () => {
-      this._multiTool.disable();
-    });
-    framePosition.afterFrameChangeAlways('disableTools', () => {
-      this._multiTool.enable();
+    $scope.$root.$on('action:create-new-default-shape', () => {
+      if (this._selectedLabelStructureThing === null) {
+        return;
+      }
+
+      this._invokeDefaultShapeCreation();
     });
   }
 
   dispatchDOMEvent(event) {
     this._context.withScope(() => {
       if (event.type === 'mouseleave') {
-        this._multiTool.onMouseLeave(event);
+        this._isMousePressed = false;
+        this._lastMouseDownEvent = null;
+
+        this._abortActiveTool();
+      } else if (event.type === 'mouseenter') {
+        this._invokeActiveTool();
       } else {
         this._element.dispatchEvent(event);
       }
+    });
+  }
+
+  _invokeActiveTool() {
+    if (this._activeTool === null) {
+      return;
+    }
+
+    // Insure no parallel double invocation is possible.
+    this._activeTool.abort();
+
+    switch (true) {
+      case this._activeTool instanceof MultiTool:
+        this._invokeMultiTool();
+        break;
+      case this._activeTool instanceof ZoomTool:
+        this._invokeZoomTool();
+        break;
+      default:
+        throw new Error(`Unknown active tool. Can not invoke: ${this._activeTool}`);
+    }
+  }
+
+  _invokeZoomTool() {
+    const {viewport} = this._$scope.vm;
+    let zoomToolActionStruct;
+    if (this._activeTool === this._zoomOutTool) {
+      zoomToolActionStruct = new ZoomToolActionStruct(
+        {},
+        viewport,
+        'zoom-out',
+        (focalPoint, zoomFactor) => this._$scope.vm.zoomOut(focalPoint, zoomFactor)
+      );
+    } else {
+      zoomToolActionStruct = new ZoomToolActionStruct(
+        {},
+        viewport,
+        'zoom-in',
+        (focalPoint, zoomFactor) => this._$scope.vm.zoomIn(focalPoint, zoomFactor)
+      );
+    }
+
+    this._activeTool
+      .invoke(zoomToolActionStruct)
+      .then(() => this._invokeActiveTool());
+  }
+
+  /**
+   * @private
+   */
+  _invokeDefaultShapeCreation() {
+    // @TODO: move with other drawint tool options to labelStructureThing
+    const toolOptions = {
+      initialDragDistance: 8,
+      minDragDistance: 1,
+      minimalHeight: 1,
+    };
+
+    const {viewport, video, task, framePosition} = this._$scope.vm;
+
+    /** @type {CreationTool} */
+    const tool = this._toolService.getTool(this._context, this._selectedLabelStructureThing.shape, 'creation');
+    const creationToolStruct = new CreationToolActionStruct(
+      toolOptions,
+      viewport,
+      video,
+      task,
+      framePosition,
+      this._selectedLabelStructureThing.id
+    );
+    tool.invokeDefaultShapeCreation(creationToolStruct)
+      .then(paperShape => {
+        switch (true) {
+          case paperShape instanceof PaperThingShape:
+            // Ensure the parent/child structure is intact
+            // const labeledThingInFrame = paperShape.labeledThingInFrame;
+            // labeledThingInFrame.shapes.push(paperShape.toJSON());
+
+            this._$scope.vm.paperThingShapes.push(paperShape);
+            this._$scope.vm.selectedPaperShape = paperShape;
+            this.emit('thing:create', paperShape);
+            break;
+          case paperShape instanceof PaperGroupShape:
+            throw new Error('Cannot create default shape for groups!');
+          default:
+            throw new Error(`Can not handle shape creation of type: ${paperShape}`);
+        }
+      })
+      .catch(reason => {
+        this._logger.warn('tool:error', 'Default creation Tool aborted', reason);
+      });
+  }
+
+  /**
+   * Get Options for a certain tool
+   *
+   * Should be handled using a proper ToolOptionStruct in the future.
+   * This is just a workaround to use the old `Task` based config options until
+   * a refactoring has been done!
+   *
+   * @param {Task} task
+   * @param {string} shapeName
+   * @param {Object} defaultOptions
+   * @return {Object}
+   * @private
+   */
+  _getOptionsForTool(task, shapeName, defaultOptions) {
+    const extractedTaskOptions = {};
+    [
+      'minimalVisibleShapeOverflow',
+    ].forEach(property => {
+      if (task[property] !== undefined) {
+        extractedTaskOptions[property] = task[property];
+      }
+    });
+
+    const drawingToolOptions = task.drawingToolOptions === undefined ? {} : task.drawingToolOptions;
+    const extractedToolOptions = Object.assign({}, drawingToolOptions[shapeName]);
+
+    return Object.assign({}, defaultOptions, extractedTaskOptions, extractedToolOptions);
+  }
+
+  /**
+   * @private
+   */
+  _invokeMultiTool() {
+    // Ensure the multitool is not currently "invoked" before reinvocation
+    this._multiTool.abort();
+
+    // selectedLabelStructure not yet initialized
+    if (this._selectedLabelStructureThing === null) {
+      return;
+    }
+
+    const multiToolOptions = {
+      initialDragDistance: 1,
+      minDragDistance: 1,
+      hitTestTolerance: 8,
+    };
+
+    const {viewport, video, task, selectedPaperShape} = this._$scope.vm;
+
+    // @TODO: move with other drawint tool options to labelStructureThing
+    // @TODO: Should be handled using a proper ToolOptionStruct in the future.
+    //        This is just a workaround to use the old `Task` based config options until
+    //        a refactoring has been done!
+    const defaultOptions = {
+      initialDragDistance: 8,
+      minDragDistance: 1,
+      minimalHeight: 1,
+    };
+    const delegatedOptions = this._getOptionsForTool(task, this._selectedLabelStructureThing.shape, defaultOptions);
+
+    const struct = new MultiToolActionStruct(
+      multiToolOptions,
+      viewport,
+      delegatedOptions,
+      video,
+      task,
+      this._framePosition,
+      this._selectedLabelStructureThing.id,
+      this._selectedLabelStructureThing.shape,
+      selectedPaperShape
+    );
+    this._activeTool.invoke(struct)
+      .then(({paperShape, actionIdentifier}) => {
+        if (actionIdentifier === 'creation') {
+          switch (true) {
+            case paperShape instanceof PaperThingShape:
+              // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
+              // Ensure the parent/child structure is intact
+              this._$scope.vm.paperThingShapes.push(paperShape);
+              this._$scope.vm.selectedPaperShape = paperShape;
+              this.emit('thing:create', paperShape);
+              break;
+            case paperShape instanceof PaperGroupShape:
+              this._$scope.vm.paperGroupShapes.push(paperShape);
+              this._$scope.vm.selectedPaperShape = paperShape;
+              this.emit('group:create', paperShape);
+              break;
+            default:
+              throw new Error(`Can not handle shape creation of type: ${paperShape}`);
+          }
+        } else if (actionIdentifier === 'selection') {
+          this._$scope.vm.selectedPaperShape = paperShape;
+        } else {
+          switch (true) {
+            case paperShape instanceof PaperThingShape:
+              this.emit('thing:update', paperShape);
+              break;
+            case paperShape instanceof PaperGroupShape:
+              this.emit('group:update', paperShape);
+              break;
+            default:
+              throw new Error(`Can not handle shape update of type: ${paperShape}`);
+          }
+        }
+
+
+        // Wait until the angular $digest is complete, before dispatching the event.
+        // This is needed for the selectedLabeledStructureThing to settle.
+        this._$timeout(() => {
+          this._invokeActiveTool();
+
+          if (this._isMousePressed) {
+            this._redeliverMouseDownToActiveTool();
+          }
+        });
+      })
+      .catch(reason => {
+        switch (true) {
+          case reason instanceof ToolAbortedError:
+            // No further processing needed.
+            break;
+          case reason instanceof NotModifiedError:
+            this._invokeActiveTool();
+            if (this._isMousePressed) {
+              this._redeliverMouseDownToActiveTool();
+            }
+            break;
+          default:
+            this._logger.warn('tool:error', 'Tool aborted with unknown reason', reason);
+        }
+      });
+  }
+
+  _redeliverMouseDownToActiveTool() {
+    this._context.withScope(scope => {
+      const {offsetX, offsetY} = this._lastMouseDownEvent;
+      const projectPoint = scope.view.viewToProject(new paper.Point(offsetX, offsetY));
+      const paperEvent = new paper.MouseEvent(
+        'mousedown',
+        this._lastMouseDownEvent,
+        projectPoint,
+        this,
+        0
+      );
+
+      this._activeTool.delegateMouseEvent('down', paperEvent);
     });
   }
 
@@ -205,77 +508,80 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
   }
 
-  _onLayerClick(event) {
-    if (this._$scope.vm.activeTool !== null) {
-      return;
+  /**
+   * @private
+   */
+  _abortActiveTool() {
+    if (this._activeTool !== null) {
+      this._activeTool.abort();
     }
-
-    this._context.withScope(scope => {
-      const projectPoint = scope.view.viewToProject(new paper.Point(event.offsetX, event.offsetY));
-
-      const hitResult = scope.project.hitTest(projectPoint, {
-        fill: true,
-        bounds: false,
-        tolerance: 8,
-      });
-
-      if (hitResult) {
-        const [hitShape] = hitResolver.resolve(hitResult.item);
-        if (hitShape.shouldBeSelected(hitResult)) {
-          this._logger.log('thinglayer:selection', 'HitTest positive. Selecting: %o', hitShape);
-          this._$scope.vm.selectedPaperShape = hitShape;
-        } else {
-          this._logger.log('thinglayer:selection', 'Shape decided not to be selected. Deselecting');
-          this._$scope.vm.selectedPaperShape = null;
-        }
-      } else {
-        this._logger.log('thinglayer:selection', 'Nothing hit. Deselecting');
-        this._$scope.vm.selectedPaperShape = null;
-      }
-    });
   }
 
   /**
    * Activates the tool identified by the given name
    *
    * @param {String} toolName
+   * @param {LabelStructureThing|null} selectedLabelStructureThing
    */
-  activateTool(toolName) {
+  activateTool(toolName, selectedLabelStructureThing) {
+    this._abortActiveTool();
+    // @TODO can be removed when zoomtools are refactored
+    this._context.withScope(scope => {
+      scope.tool = null;
+    });
+    this._selectedLabelStructureThing = selectedLabelStructureThing;
+
     // Reset possible mouse cursor left-overs from the last tool
-    this._$scope._actionMouseCursor = null;
+    this._viewerMouseCursorService.setMouseCursor(null);
 
     this._logger.groupStart('thinglayer:tool', `Switched to tool ${toolName}`);
     switch (toolName) {
       case 'zoomIn':
-        this._zoomInTool.activate();
+        this._activeTool = this._zoomInTool;
         this._logger.log('thinglayer:tool', this._zoomInTool);
         break;
       case 'zoomOut':
-        this._zoomOutTool.activate();
+        this._activeTool = this._zoomOutTool;
         this._logger.log('thinglayer:tool', this._zoomOutTool);
         break;
+      case 'multi':
+        this._activeTool = this._multiTool;
+        this._logger.log('thinglayer:tool', this._multiTool);
+        break;
       default:
-        if (!this._$scope.vm.readOnly) {
-          this._multiTool.activate();
-          this._logger.log('thinglayer:tool', this._multiTool);
-        } else {
-          this._context.withScope(scope => scope.tool = null);
-          this._$scope.vm.actionMouseCursor = null;
-          this._logger.log('thinglayer:tool', 'Disabled all tools due to readonly task');
-        }
+        throw new Error(`Unknown tool with name: ${toolName}`);
     }
     this._logger.groupEnd('thinglayer:tool');
+    this._invokeActiveTool();
   }
 
   /**
    * Adds the given thing to this layer and draws its respective shapes
    *
-   * @param {Array<LabeledThingInFrame>} labeledThingsInFrame
+   * @param {Array<LabeledThingInFrame>} paperThingShapes
    * @param {boolean?} update
    */
-  addLabeledThingsInFrame(labeledThingsInFrame, update = true) {
-    labeledThingsInFrame.forEach(labeledThingInFrame => {
-      this.addLabeledThingInFrame(labeledThingInFrame, false);
+  addPaperThingShapes(paperThingShapes, update = true) {
+    paperThingShapes.forEach(paperThingShape => {
+      this.addPaperThingShape(paperThingShape, false);
+    });
+
+    if (update) {
+      this._context.withScope(scope => {
+        scope.view.update();
+      });
+    }
+  }
+
+  /**
+   * Adds the given thing group to this layer and draws its respective shapes
+   *
+   * @param {Array<PaperGroupShape>} paperGroupShapes
+   * @param {boolean?} update
+   */
+  addPaperGroupShapes(paperGroupShapes, update = true) {
+    paperGroupShapes.forEach(labeledThingGroupInFrame => {
+      this.addPaperGroupShape(labeledThingGroupInFrame, false);
     });
 
     if (update) {
@@ -291,29 +597,25 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * Optionally it may be specified if the view should be updated after adding the new shapes
    * By default it will be rerendered.
    *
-   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {PaperThingShape} paperThingShape
    * @param {boolean?} update
    * @param {boolean|undefined} selected
    * @return {Array.<paper.Shape>}
    */
-  addLabeledThingInFrame(labeledThingInFrame, update = true, selected = undefined) {
+  addPaperThingShape(paperThingShape, update = true, selected = undefined) {
     const selectedPaperShape = this._$scope.vm.selectedPaperShape;
     const selectedLabeledThingInFrame = selectedPaperShape ? selectedPaperShape.labeledThingInFrame : null;
     const selectedLabeledThing = selectedLabeledThingInFrame ? selectedLabeledThingInFrame.labeledThing : null;
 
-    const paperShapes = labeledThingInFrame.shapes.map(shape => {
-      // Transport selection between frame changes
-      let selectedByUserOrAcrossFrameChange = selected;
-      if (selected === undefined) {
-        selectedByUserOrAcrossFrameChange = (
-          selectedLabeledThingInFrame
-          && selectedLabeledThingInFrame !== labeledThingInFrame
-          && selectedLabeledThing.id === labeledThingInFrame.labeledThing.id
-        );
-      }
-
-      return this._addShape(labeledThingInFrame, shape, selectedByUserOrAcrossFrameChange, false);
-    });
+    // Transport selection between frame changes
+    let selectedByUserOrAcrossFrameChange = selected;
+    if (selected === undefined) {
+      selectedByUserOrAcrossFrameChange = (
+        selectedLabeledThingInFrame
+        && selectedLabeledThingInFrame !== paperThingShape.labeledThingInFrame
+        && selectedLabeledThing.id === paperThingShape.labeledThingInFrame.labeledThing.id
+      );
+    }
 
     if (update) {
       this._context.withScope(scope => {
@@ -321,70 +623,68 @@ class ThingLayer extends PanAndZoomPaperLayer {
       });
     }
 
-    return paperShapes;
+    this._updateSelectedShapeAndView(paperThingShape, selectedByUserOrAcrossFrameChange, false);
   }
 
   /**
-   * @param {PaperShape} shape
-   * @private
+   * Add a single {@link LabeledThingGroupInFrame} to the layer
+   *
+   * Optionally it may be specified if the view should be updated after adding the new shapes
+   * By default it will be rerendered.
+   *
+   * @param {PaperGroupShape} paperGroupShape
+   * @param {boolean?} update
+   * @param {boolean|undefined} selected
+   * @return {Array.<paper.Shape>}
    */
-  _onCreateShape(shape) {
-    // The newly created shape was only temporary as it is rerendered by insertion into
-    // the labeledThingsInFrame
-    shape.remove();
+  addPaperGroupShape(paperGroupShape, update = true, selected = undefined) {
+    const selectedPaperShape = this._$scope.vm.selectedPaperShape;
+    const selectedLabeledThingGroupInFrame = selectedPaperShape ? selectedPaperShape.labeledThingGroupInFrame : null;
+    const selectedLabeledThingGroup = selectedLabeledThingGroupInFrame ? selectedLabeledThingGroupInFrame.labeledThingGroup : null;
 
-    this._$scope.vm.labeledThingsInFrame.push(shape.labeledThingInFrame);
-
-    // Process the next steps after the rerendering took place in the next digest cycle
-    this._$timeout(() => {
-      // The new shape has been rerendered now lets find it
-      const newShape = this._context.withScope(scope =>
-        scope.project.getItem({
-          id: shape.id,
-        })
+    // Transport selection between frame changes
+    let selectedByUserOrAcrossFrameChange = selected;
+    if (selected === undefined) {
+      selectedByUserOrAcrossFrameChange = (
+        selectedLabeledThingGroupInFrame
+        && selectedLabeledThingGroupInFrame !== paperGroupShape.labeledThingGroupInFrame
+        && selectedLabeledThingGroup.id === paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id
       );
-      // @HACK: Unfortunately we can only do this after the initial render. A solution would be to
-      //        mark LabeledThingInFrames and LabeledThings as draft as well. Currently this should
-      //        suffice, as backend requests should only be made upon selection
-      newShape.draft();
+    }
 
-      // Reselect the new Shape
-      this._$scope.vm.selectedPaperShape = newShape;
+    if (update) {
+      this._context.withScope(scope => {
+        scope.view.update();
+      });
+    }
 
-      this.emit('shape:create', newShape);
-    }, 0);
+    this._updateSelectedShapeAndView(paperGroupShape, selectedByUserOrAcrossFrameChange, false);
   }
 
   /**
-   * Draw a given {@link Shape} to the Layer
-   *
-   * The drawn Paper Shape will be returned
-   *
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Shape} shape
+   * @param {PaperShape} paperShape
    * @param {boolean} selected
    * @param {boolean?} update
    * @returns {paper.Shape}
    * @private
    */
-  _addShape(labeledThingInFrame, shape, selected = false, update = true) {
-    return this._context.withScope(() => {
-      const paperShape = this._paperShapeFactory.createPaperShape(labeledThingInFrame, shape, this._$scope.vm.video);
+  _updateSelectedShapeAndView(paperShape, selected = false, update = true) {
+    if (selected) {
+      this._$scope.vm.selectedPaperShape = paperShape;
+    }
 
-      if (selected) {
-        this._$scope.vm.selectedPaperShape = paperShape;
-      }
+    if (update) {
+      this._context.withScope(scope => {
+        scope.view.update();
+      });
+    }
 
-      if (update) {
-        this._context.withScope(scope => {
-          scope.view.update();
-        });
-      }
-
-      return paperShape;
-    });
+    return paperShape;
   }
 
+  /**
+   * Update the scopes view
+   */
   update() {
     this._context.withScope(scope => {
       scope.view.update();
@@ -394,24 +694,43 @@ class ThingLayer extends PanAndZoomPaperLayer {
   /**
    * Remove all {@link PaperShape}s belonging to any of the given {@link LabeledThingInFrame}s
    *
-   * @param {Array.<LabeledThingInFrame>} labeledThingsInFrame
+   * @param {Array.<PaperShape>} paperShapes
    * @param {boolean?} update
    */
-  removeLabeledThingsInFrame(labeledThingsInFrame, update = true) {
-    this._context.withScope(
-      scope => {
-        scope.project.getItems({
-          labeledThingInFrame: value => labeledThingsInFrame.indexOf(value) !== -1,
-        }).forEach(item => item.remove());
-
-        if (update) {
-          scope.view.update();
-        }
+  removePaperShapes(paperShapes, update = true) {
+    this._context.withScope(scope => {
+      paperShapes.forEach(shape => {
+        shape.remove();
+      });
+      if (update) {
+        scope.view.update();
       }
-    );
+    });
+  }
+
+  _onMouseDown(event) {
+    this._isMousePressed = true;
+    this._lastMouseDownEvent = event;
+  }
+
+  _onMouseUp() {
+    this._isMousePressed = false;
+    this._lastMouseDownEvent = null;
   }
 
   attachToDom(element) {
+    // The event registration needs to be done before paper is initialized in the base class. This is needed for the
+    // Layer to handle events, before tools are informed about them.
+    angular.element(element).on(
+      'mousedown',
+      event => this._onMouseDown(event)
+    );
+
+    angular.element(element).on(
+      'mouseup',
+      event => this._onMouseUp(event)
+    );
+
     super.attachToDom(element);
 
     // Make selection color transparent
@@ -419,14 +738,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
       scope.project.activeLayer.selectedColor = new scope.Color(0, 0, 0, 0);
       scope.settings.handleSize = 8;
     });
-
-    // Use `angular.element` here, to normalize the event properties.
-    angular.element(element).on(
-      'mousedown',
-      event => this._$scope.$evalAsync(
-        this._onLayerClick.bind(this, event)
-      )
-    );
   }
 }
 

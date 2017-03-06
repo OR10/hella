@@ -2,8 +2,9 @@
 
 namespace AppBundle\Model;
 
-use FOS\UserBundle\Model\User as BaseUser;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use FOS\UserBundle\Model\User as BaseUser;
 
 /**
  * @CouchDB\Document
@@ -39,12 +40,18 @@ class User extends BaseUser
     protected $settings = [];
 
     /**
-     * @CouchDB\Field(type="mixed")
+     * @var ProjectRoles[]
+     *
+     * @CouchDB\EmbedMany(targetDocument="ProjectRoles")
      */
-    protected $rolesByProject = [];
+    protected $projectRoles;
 
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
+        $this->projectRoles = new ArrayCollection();
         parent::__construct();
     }
 
@@ -118,26 +125,80 @@ class User extends BaseUser
 
     /**
      * @param string $projectId
-     * @param string $role
+     * @param Role   $role
      */
-    public function assignRole(string $projectId, string $role)
+    public function assignRole(string $projectId, Role $role)
     {
-        if ($this->rolesByProject === null) {
-            $this->rolesByProject = [];
-        }
+        $roles = $this->getOrCreateProjectRolesForProjectId($projectId);
+        $roles->assignRole($role);
+    }
 
-        if (!in_array($role, $this->rolesByProject[$projectId] ?? [])) {
-            $this->rolesByProject[$projectId][] = $role;
-        }
+    /**
+     * @param string $projectId
+     * @param Role[] $roles
+     */
+    public function setRolesForProject(string $projectId, array $roles)
+    {
+        $projectRoles = $this->getOrCreateProjectRolesForProjectId($projectId);
+        $projectRoles->setRoles($roles);
     }
 
     /**
      * @param string $projectId
      *
-     * @return string[]
+     * @return Role[]
      */
     public function getRolesForProject(string $projectId)
     {
-        return $this->rolesByProject[$projectId] ?? [];
+        $roles = $this->projectRoles[$projectId];
+        if ($roles === null) {
+            return [];
+        }
+
+        return $roles->getRoles();
+    }
+
+    /**
+     * @return ProjectRoles[]
+     */
+    public function getProjectRoles()
+    {
+        return array_values($this->projectRoles->toArray());
+    }
+
+    /**
+     * @param string $projectId
+     */
+    public function clearRemovedRoles(string $projectId)
+    {
+        $projectRoles = $this->getOrCreateProjectRolesForProjectId($projectId);
+        $projectRoles->clearRemovedRoles();
+    }
+
+    /**
+     * @param string $projectId
+     *
+     * @return ProjectRoles|null
+     */
+    public function getProjectRolesForProjectId(string $projectId)
+    {
+        return $this->projectRoles[$projectId];
+    }
+
+    /**
+     * @param string $projectId
+     *
+     * @return ProjectRoles
+     */
+    public function getOrCreateProjectRolesForProjectId(string $projectId)
+    {
+        $roles = $this->projectRoles[$projectId];
+
+        if ($roles === null) {
+            $roles                          = new ProjectRoles($projectId);
+            $this->projectRoles[$projectId] = $roles;
+        }
+
+        return $roles;
     }
 }

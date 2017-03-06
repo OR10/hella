@@ -1,3 +1,5 @@
+import {clone} from 'lodash';
+
 class LabeledThingGroupInFrame {
   /**
    * @param {Object} labeledThingGroupInFrameDocument
@@ -16,7 +18,12 @@ class LabeledThingGroupInFrame {
     /**
      * @type {Array.<string>}
      */
-    this.classes = labeledThingGroupInFrameDocument.classes;
+    this.classes = clone(labeledThingGroupInFrameDocument.classes);
+
+    /**
+     * @type {LabeledThingGroup}
+     */
+    this.labeledThingGroup = labeledThingGroupInFrameDocument.labeledThingGroup;
   }
 
   /**
@@ -26,7 +33,8 @@ class LabeledThingGroupInFrame {
     return {
       id: this.id,
       frameIndex: this.frameIndex,
-      classes: this.classes,
+      classes: clone(this.classes),
+      labeledThingGroupId: this.labeledThingGroup.id,
     };
   }
 }

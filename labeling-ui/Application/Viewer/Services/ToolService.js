@@ -1,24 +1,38 @@
+import DeepMap from '../../Common/Helpers/DeepMap';
 import RectangleMoveTool from '../Tools/Rectangle/RectangleMoveTool';
 import RectangleScaleTool from '../Tools/Rectangle/RectangleScaleTool';
 import RectangleDrawingTool from '../Tools/Rectangle/RectangleDrawingTool';
+import RectangleKeyboardTool from '../Tools/Rectangle/RectangleKeyboardTool';
 import PedestrianMoveTool from '../Tools/Pedestrian/PedestrianMoveTool';
 import PedestrianScaleTool from '../Tools/Pedestrian/PedestrianScaleTool';
 import PedestrianDrawingTool from '../Tools/Pedestrian/PedestrianDrawingTool';
-import CuboidMoveTool from '../../ThirdDimension/Tools/CuboidMoveTool';
-import CuboidScaleTool from '../../ThirdDimension/Tools/CuboidScaleTool';
-import CuboidDrawingTool from '../../ThirdDimension/Tools/CuboidDrawingTool';
+import PedestrianKeyboardTool from '../Tools/Pedestrian/PedestrianKeyboardTool';
+import CuboidDrawingTool from '../Tools/Cuboid/CuboidDrawingTool';
+import CuboidScaleTool from '../Tools/Cuboid/CuboidScaleTool';
+import CuboidMoveTool from '../Tools/Cuboid/CuboidMoveTool';
+import CuboidKeyboardTool from '../Tools/Cuboid/CuboidKeyboardTool';
 import PolygonDrawingTool from '../Tools/Polygon/PolygonDrawingTool';
 import PolygonMoveTool from '../Tools/Polygon/PolygonMoveTool';
 import PolygonScaleTool from '../Tools/Polygon/PolygonScaleTool';
+import GroupCreationTool from '../Tools/Group/GroupCreationTool';
+import PolygonKeyboardTool from '../Tools/Polygon/PolygonKeyboardTool';
+import NoOperationPaperTool from '../Tools/NoOperationPaperTool';
 
 class ToolService {
   /**
    *
+   * @param {$injector} $injector
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} colorService
    * @param {LoggerService} loggerService
    */
-  constructor(entityIdService, colorService, loggerService) {
+  constructor($injector, entityIdService, colorService, loggerService) {
+    /**
+     * @type {$injector}
+     * @private
+     */
+    this._$injector = $injector;
+
     /**
      * @type {EntityIdService}
      * @private
@@ -38,90 +52,85 @@ class ToolService {
     this._loggerService = loggerService;
 
     /**
-     * @type {Map}
+     * @type {DeepMap}
      * @private
      */
-    this._tools = new Map();
+    this._toolCache = new DeepMap();
 
     /**
      * @type {Object}
      * @private
      */
-    this._classes = {
-      'rectangle-move': RectangleMoveTool,
-      'rectangle-scale': RectangleScaleTool,
-      'rectangle-drawing': RectangleDrawingTool,
-      'pedestrian-move': PedestrianMoveTool,
-      'pedestrian-scale': PedestrianScaleTool,
-      'pedestrian-drawing': PedestrianDrawingTool,
-      'cuboid-move': CuboidMoveTool,
-      'cuboid-scale': CuboidScaleTool,
-      'cuboid-drawing': CuboidDrawingTool,
-      'polygon-drawing': PolygonDrawingTool,
-      'polygon-scale': PolygonScaleTool,
-      'polygon-move': PolygonMoveTool,
-    };
+    this._classes = [
+      RectangleMoveTool,
+      RectangleScaleTool,
+      RectangleDrawingTool,
+      RectangleKeyboardTool,
+      PedestrianMoveTool,
+      PedestrianScaleTool,
+      PedestrianDrawingTool,
+      PedestrianKeyboardTool,
+      CuboidMoveTool,
+      CuboidScaleTool,
+      CuboidDrawingTool,
+      CuboidKeyboardTool,
+      PolygonDrawingTool,
+      PolygonScaleTool,
+      PolygonMoveTool,
+      PolygonKeyboardTool,
+      GroupCreationTool,
+      NoOperationPaperTool,
+    ];
   }
 
   /**
-   * @param {angular.$scope} $scope
    * @param {DrawingContext} context
-   * @param {String} shapeClass
-   * @param {String} actionIdentifier
+   * @param {string} shapeClass
+   * @param {string} actionIdentifier
    * @returns {Tool|null}
    */
-  getTool($scope, context, shapeClass, actionIdentifier = 'drawing') {
-    if (!shapeClass || !actionIdentifier) {
-      // Only try to create tool if all parameters are set
-      // @TODO: Document in doc-block under which circumstances the returned tool is null
-      return null;
-    }
+  getTool(context, shapeClass, actionIdentifier = 'creation') {
     this._loggerService.groupStart('toolService:getTool', 'Trying to get the tool for the given tool identifier');
-    const toolIdentifier = `${shapeClass}-${actionIdentifier}`;
-    const toolMap = this._getToolMap(this._getContextMap($scope), context);
 
-    if (!toolMap.has(toolIdentifier)) {
-      this._loggerService.log('toolService:getTool', `Tool "${toolIdentifier}" was not created prior. Creating now.`);
-      switch (actionIdentifier) {
-        case 'drawing':
-          toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context, this._loggerService, this._entityIdService, this._colorService, $scope.vm.video, $scope.vm.task));
-          break;
-        default:
-          toolMap.set(toolIdentifier, new this._classes[toolIdentifier]($scope, context, this._loggerService, $scope.vm.task.drawingToolOptions));
+    if (this._toolCache.has(context, shapeClass, actionIdentifier) === false) {
+      this._loggerService.log('toolService:getTool', `Tool "${shapeClass}-${actionIdentifier}" was not created prior. Creating now.`);
+      try {
+        const toolClass = this._findToolClassByShapeClassAndActionIdentifier(shapeClass, actionIdentifier);
+        const toolInstance = this._$injector.instantiate(toolClass, {drawingContext: context});
+        this._toolCache.set(context, shapeClass, actionIdentifier, toolInstance);
+      } catch (error) {
+        this._loggerService.log('toolService:getTool', `No tool found for "${shapeClass}-${actionIdentifier}"`);
+        this._loggerService.groupEnd('toolService:getTool');
+        return null;
       }
     }
-    this._loggerService.log('toolService:getTool', `Returning tool "${toolIdentifier}"`);
+
+    this._loggerService.log('toolService:getTool', `Returning tool "${shapeClass}-${actionIdentifier}"`);
     this._loggerService.groupEnd('toolService:getTool');
-    return toolMap.get(toolIdentifier);
+
+    return this._toolCache.get(context, shapeClass, actionIdentifier);
   }
 
   /**
-   * @param {angular.$scope} $scope
-   * @returns {Map}
+   * @param {string} shapeClass
+   * @param {string} actionIdentifier
    * @private
    */
-  _getContextMap($scope) {
-    if (!this._tools.has($scope)) {
-      this._tools.set($scope, new Map());
-    }
-    return this._tools.get($scope);
-  }
+  _findToolClassByShapeClassAndActionIdentifier(shapeClass, actionIdentifier) {
+    const toolClass = this._classes.find(
+      candidate => candidate.isShapeClassSupported(shapeClass) && candidate.isActionIdentifierSupported(actionIdentifier)
+    );
 
-  /**
-   * @param {Map} contextMap
-   * @param {DrawingContext} context
-   * @returns {Map}
-   * @private
-   */
-  _getToolMap(contextMap, context) {
-    if (!contextMap.has(context)) {
-      contextMap.set(context, new Map());
+    if (toolClass === undefined) {
+      throw new Error(`Cannot map tool identifier '${shapeClass}-${actionIdentifier}' to class`);
     }
-    return contextMap.get(context);
+
+    return toolClass;
   }
 }
 
 ToolService.$inject = [
+  '$injector',
   'entityIdService',
   'entityColorService',
   'loggerService',

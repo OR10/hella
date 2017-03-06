@@ -227,6 +227,10 @@ class Project extends Controller\Base
                 }
             }
 
+            if ($user->hasRole(Model\User::ROLE_ADMIN)) {
+                $responseProject['deletedState'] = $project->getDeletedState();
+            }
+
             if ($user->hasRole(Model\User::ROLE_CLIENT)) {
                 $responseProject['coordinator'] = $project->getLatestAssignedCoordinatorUserId();
                 if ($project->getLatestAssignedCoordinatorUserId() !== null) {

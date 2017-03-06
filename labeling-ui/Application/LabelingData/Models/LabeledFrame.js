@@ -1,5 +1,5 @@
 import LabeledObject from './LabeledObject';
-import clone from 'lodash.clone';
+import {clone} from 'lodash';
 
 /**
  * Model for a LabeledFrame

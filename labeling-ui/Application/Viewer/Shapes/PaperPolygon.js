@@ -1,31 +1,26 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
+import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
 
 /**
- * @extends PaperShape
+ * @extends PaperThingShape
  */
-class PaperPolygon extends PaperShape {
+class PaperPolygon extends PaperThingShape {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {string} shapeId
    * @param {Array.<Point>} points
-   * @param {string} color
+   * @param {{primary: string, secondary: string}} color
    * @param {boolean} draft
    */
   constructor(labeledThingInFrame, shapeId, points = [], color, draft = false) {
-    super(labeledThingInFrame, shapeId, draft);
+    super(labeledThingInFrame, shapeId, color, draft);
     /**
      * @type {Array.<Point>}
      * @private
      */
     this._points = points;
-
-    /**
-     * @type {string}
-     * @private
-     */
-    this._color = color;
 
     this._drawShape();
   }
@@ -42,6 +37,9 @@ class PaperPolygon extends PaperShape {
     return {
       width: rightPoint.x - leftPoint.x,
       height: bottomPoint.y - topPoint.y,
+      x: leftPoint,
+      y: topPoint,
+      point: new paper.Point(leftPoint, topPoint),
     };
   }
 
@@ -74,7 +72,7 @@ class PaperPolygon extends PaperShape {
    */
   _createShape() {
     return new paper.Path({
-      strokeColor: this._color,
+      strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
       closed: true,
