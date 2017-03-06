@@ -5,6 +5,7 @@ import Common from 'Application/Common/Common';
 
 import UserGateway from 'Application/ManagementBoard/Gateways/UserGateway';
 import User from 'Application/ManagementBoard/Models/User';
+import Organisation from 'Application/Organisation/Models/Organisation';
 
 describe('UserGateway', () => {
   let $httpBackend;
@@ -102,14 +103,33 @@ describe('UserGateway', () => {
   it('should load information for a single user', done => {
     const userResponse = {
       result: {
-        user: {id: 'USER_ID', email: 'foo@bar.baz'},
+        user: {
+          id: 'USER_ID',
+          email: 'foo@bar.baz',
+          organisations: ['organisation-id'],
+        },
+        organisations: [
+          new Organisation({
+            id: 'organisation-id',
+            name: 'organisation 1',
+          }),
+        ],
       },
     };
+
+    const expectedUser = new User({
+      id: 'USER_ID',
+      email: 'foo@bar.baz',
+      organisations: [new Organisation({
+        id: 'organisation-id',
+        name: 'organisation 1',
+      })],
+    });
 
     $httpBackend.expectGET('/backend/api/user/USER_ID').respond(userResponse);
 
     gateway.getUser('USER_ID').then(user => {
-      expect(user).toEqual(new User(userResponse.result.user));
+      expect(user).toEqual(expectedUser);
       done();
     });
 

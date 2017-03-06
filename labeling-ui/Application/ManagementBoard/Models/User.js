@@ -64,6 +64,11 @@ class User {
      * @type {string}
      */
     this.expiresAt = user.expiresAt ? new Date(user.expiresAt) : null;
+
+    /**
+     * @type {Array.<Organisation>}
+     */
+    this.organisations = user.organisations;
   }
 
   /**

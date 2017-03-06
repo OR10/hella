@@ -99,8 +99,14 @@ class UserGateway {
         if (!response.data || !response.data.result || !response.data.result.user) {
           throw new Error(`Failed loading user with id ${id}.`);
         }
+        const userResult = response.data.result.user;
+        userResult.organisations = response.data.result.user.organisations.map(
+          userOrganisationId => new Organisation(
+            response.data.result.organisations.find(organisation => userOrganisationId === organisation.id)
+          )
+        );
 
-        return new User(response.data.result.user);
+        return new User(userResult);
       });
   }
 
