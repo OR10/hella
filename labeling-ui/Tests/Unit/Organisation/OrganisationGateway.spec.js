@@ -139,4 +139,25 @@ describe('OrganisationGateway', () => {
 
     $httpBackend.flush();
   });
+
+  it('should add a user to an organisation', done => {
+    const organisation = new Organisation({id: 'organisation-id'});
+    const user = {id: 'user-id'};
+
+    const organisationResponse = {
+      result: {
+        success: true,
+      },
+    };
+
+
+    $httpBackend.expectPUT(`/backend/api/organisation/${organisation.id}/user/${user.id}/assign`).respond(organisationResponse);
+
+    gateway.addUserToOrganisation(user, organisation).then(result => {
+      expect(result).toEqual(organisationResponse.result.success);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
 });
