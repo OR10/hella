@@ -236,5 +236,17 @@ fdescribe('PaperTool test suite', function() {
 
       });
     });
+
+    describe('click', () => {
+      it('calls onMouseClick', () => {
+        const paperTool = createPaperToolInstance();
+        const event = {point: {x: 0, y: 0}};
+        spyOn(paperTool, 'onMouseClick');
+
+        paperTool.delegateMouseEvent('click', event);
+
+        expect(paperTool.onMouseClick).toHaveBeenCalledWith(event);
+      });
+    });
   });
 });
