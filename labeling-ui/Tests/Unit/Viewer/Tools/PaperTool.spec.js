@@ -300,4 +300,24 @@ fdescribe('PaperTool test suite', function() {
       });
     });
   });
+
+  describe('#getToolName()', () => {
+    it('throws an Error', () => {
+      function throwWrapper() {
+        PaperTool.getToolName();
+      }
+
+      expect(throwWrapper).toThrowError();
+    });
+  });
+
+  describe('#isActionIdentifierSupported()', () => {
+    it('throws an Error', () => {
+      function throwWrapper() {
+        PaperTool.isActionIdentifierSupported();
+      }
+
+      expect(throwWrapper).toThrowError();
+    });
+  });
 });
