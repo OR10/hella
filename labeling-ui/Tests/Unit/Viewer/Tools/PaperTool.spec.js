@@ -249,4 +249,55 @@ fdescribe('PaperTool test suite', function() {
       });
     });
   });
+
+  describe('Event callback', () => {
+    function getEventCallback(type) {
+      const paperTool = createPaperToolInstance();
+      return () => {
+        paperTool[type]();
+      }
+    }
+
+    describe('onMouseUp', () => {
+      it('is callable', () => {
+        expect(getEventCallback('onMouseUp')).not.toThrow();
+      });
+    });
+
+    describe('onMouseDown', () => {
+      it('is callable', () => {
+        expect(getEventCallback('onMouseDown')).not.toThrow();
+      });
+    });
+
+    describe('onMouseMove', () => {
+      it('is callable', () => {
+        expect(getEventCallback('onMouseMove')).not.toThrow();
+      });
+    });
+
+    describe('onMouseDrag', () => {
+      it('is callable', () => {
+        expect(getEventCallback('onMouseDrag')).not.toThrow();
+      });
+    });
+
+    describe('onMouseClick', () => {
+      it('is callable', () => {
+        expect(getEventCallback('onMouseClick')).not.toThrow();
+      });
+    });
+
+    describe('onKeyUp', () => {
+      it('is callable', () => {
+        expect(getEventCallback('onKeyUp')).not.toThrow();
+      });
+    });
+
+    describe('onKeyDown', () => {
+      it('is callable', () => {
+        expect(getEventCallback('onKeyDown')).not.toThrow();
+      });
+    });
+  });
 });
