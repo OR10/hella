@@ -6,15 +6,23 @@ import User from '../Models/User';
 class UserProfileController {
   /**
    * @param {$rootScope.$scope} $scope
+   * @param {$q} $q
    * @param {UserGateway} userGateway injected
+   * @param {OrganisationGateway} organisationGateway
    * @param {SingleRoleFilter} singleRoleFilter
    * @param {ModalService} modalService
    * @param {$state} $state
    */
-  constructor($scope, userGateway, singleRoleFilter, modalService, $state) {
+  constructor($scope, $q, userGateway, organisationGateway, singleRoleFilter, modalService, $state) {
     if (this.readonly === undefined) {
       this.readonly = true;
     }
+
+    /**
+     * @type {$q}
+     * @private
+     */
+    this._$q = $q;
 
     /**
      * @type {boolean}
@@ -27,6 +35,11 @@ class UserProfileController {
      */
     this._userGateway = userGateway;
 
+    /**
+     * @type {OrganisationGateway}
+     * @private
+     */
+    this._organisationGateway = organisationGateway;
 
     /**
      * @type {SingleRoleFilter}
@@ -62,6 +75,16 @@ class UserProfileController {
     this.newPassword = null;
 
     /**
+     * @type {Array}
+     */
+    this.organisations = [];
+
+    /**
+     * @type {Array}
+     */
+    this.userOrganisations = [];
+
+    /**
      * @type {boolean}
      */
     this.createMode = (this.id === 'new');
@@ -74,6 +97,7 @@ class UserProfileController {
       email: true,
       password: true,
       role: true,
+      organisation: true,
     };
 
     /**
@@ -84,7 +108,7 @@ class UserProfileController {
     if (this.createMode) {
       this._createUser();
     } else {
-      this._loadUser();
+      this._loadData();
     }
 
     $scope.$watch('vm.user', user => {
@@ -121,11 +145,17 @@ class UserProfileController {
    *
    * @private
    */
-  _loadUser() {
+  _loadData() {
     this.loadingInProgress = true;
-    this._userGateway.getUser(this.id)
-      .then(user => {
+    const userPromise = this._userGateway.getUser(this.id);
+    const organisationPromise = this._organisationGateway.getOrganisations();
+
+    this._$q.all([userPromise, organisationPromise])
+      .then(([user, organisations]) => {
         this.user = user;
+        this.organisations = organisations;
+        this.userOrganisations = user.organisations;
+
         this.loadingInProgress = false;
       });
   }
@@ -193,6 +223,22 @@ class UserProfileController {
         warning: true,
       }
     );
+  }
+
+  addUserToOrganisation(organisation) {
+    this.loadingInProgress = true;
+    this._organisationGateway.addUserToOrganisation(this.user, organisation)
+      .then(() => {
+        this._loadData();
+      });
+  }
+
+  removeUserFromOrganisation(organisation) {
+    this.loadingInProgress = true;
+    this._organisationGateway.removeUserFromOrganisation(this.user, organisation)
+      .then(() => {
+        this._loadData();
+      });
   }
 
   _updateRoles() {
@@ -285,7 +331,9 @@ class UserProfileController {
 
 UserProfileController.$inject = [
   '$scope',
+  '$q',
   'userGateway',
+  'organisationGateway',
   'singleRoleFilter',
   'modalService',
   '$state',
