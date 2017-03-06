@@ -2,7 +2,7 @@ import PaperTool from 'Application/Viewer/Tools/PaperTool';
 import Tool from 'Application/Viewer/Tools/NewTool';
 import Paper from 'paper';
 
-fdescribe('PaperTool test suite', function() {
+describe('PaperTool test suite', function() {
   let drawContext;
   let rootScope;
 
