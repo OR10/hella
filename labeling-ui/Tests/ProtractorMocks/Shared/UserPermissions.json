@@ -7,7 +7,7 @@
     "data": {
       "result": {
         "canViewProject": true,
-        "canViewReopenButton": true,
+        "canReopenTask": true,
         "canViewStats": true,
         "canViewUserList": true,
         "canViewVideoUploadButton": true,
