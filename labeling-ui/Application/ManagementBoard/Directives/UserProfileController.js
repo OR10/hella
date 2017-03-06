@@ -267,7 +267,7 @@ class UserProfileController {
       this.validation.email = valid = false;
     }
 
-    if (['ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER', 'ROLE_CLIENT', 'ROLE_CLIENT_COORDINATOR', 'ROLE_OBSERVER'].indexOf(this.singleRole) === -1) {
+    if (['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER', 'ROLE_CLIENT', 'ROLE_CLIENT_COORDINATOR', 'ROLE_OBSERVER'].indexOf(this.singleRole) === -1) {
       this.validation.role = valid = false;
     }
 
