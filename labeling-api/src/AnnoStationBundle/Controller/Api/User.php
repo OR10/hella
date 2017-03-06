@@ -5,6 +5,7 @@ namespace AnnoStationBundle\Controller\Api;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
@@ -40,20 +41,28 @@ class User extends Controller\Base
     private $authorizationService;
 
     /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
+    /**
      * Users constructor.
      *
      * @param AppFacade\User        $userFacade
+     * @param Facade\Organisation   $organisationFacade
      * @param Storage\TokenStorage  $tokenStorage
      * @param Service\Authorization $authorizationService
      */
     public function __construct(
         AppFacade\User $userFacade,
+        Facade\Organisation $organisationFacade,
         Storage\TokenStorage $tokenStorage,
         Service\Authorization $authorizationService
     ) {
         $this->userFacade           = $userFacade;
         $this->tokenStorage         = $tokenStorage;
         $this->authorizationService = $authorizationService;
+        $this->organisationFacade   = $organisationFacade;
     }
 
     /**
@@ -91,7 +100,7 @@ class User extends Controller\Base
      *
      * @param Model\User                          $user
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function getUserAction(Model\User $user)
     {
@@ -103,8 +112,19 @@ class User extends Controller\Base
             throw new Exception\AccessDeniedHttpException('You are not allowed to get this user');
         }
 
+        $organisations = [];
+        if ($loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
+            $organisations = $this->organisationFacade->findByIds($user->getOrganisations());
+        }
+
         return View\View::create()->setData(
-            ['result' => ['user' => $this->getUserResponse($user)]]
+            [
+                'result' =>
+                    [
+                        'user' => $this->getUserResponse($user),
+                        'organisations' => $organisations,
+                    ],
+            ]
         );
     }
 
@@ -116,7 +136,7 @@ class User extends Controller\Base
      *
      * @param HttpFoundation\Request              $request
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function addUserAction(HttpFoundation\Request $request)
     {
@@ -143,7 +163,20 @@ class User extends Controller\Base
         }
         $this->userFacade->updateUser($user);
 
-        return View\View::create()->setData(['result' => ['user' => $this->getUserResponse($user)]]);
+        $organisations = [];
+        if ($loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
+            $organisations = $this->organisationFacade->findByIds($user->getOrganisations());
+        }
+
+        return View\View::create()->setData(
+            [
+                'result' =>
+                    [
+                        'user' => $this->getUserResponse($user),
+                        'organisations' => $organisations,
+                    ],
+            ]
+        );
     }
 
     /**
@@ -155,7 +188,7 @@ class User extends Controller\Base
      * @param HttpFoundation\Request              $request
      * @param Model\User                          $user
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View|\FOS\RestBundle\View\View
      */
     public function editUserAction(HttpFoundation\Request $request, Model\User $user)
     {
@@ -195,7 +228,20 @@ class User extends Controller\Base
             return RedirectView::create('fos_user_security_logout');
         }
 
-        return View\View::create()->setData(['result' => ['user' => $this->getUserResponse($user)]]);
+        $organisations = [];
+        if ($loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
+            $organisations = $this->organisationFacade->findByIds($user->getOrganisations());
+        }
+
+        return View\View::create()->setData(
+            [
+                'result' =>
+                    [
+                        'user' => $this->getUserResponse($user),
+                        'organisations' => $organisations,
+                    ],
+            ]
+        );
     }
 
     /**
@@ -204,17 +250,27 @@ class User extends Controller\Base
      */
     private function getUserResponse(Model\User $user)
     {
-        return array(
-            'id'        => $user->getId(),
-            'username'  => $user->getUsername(),
-            'email'     => $user->getEmail(),
-            'enabled'   => $user->isEnabled(),
-            'lastLogin' => $user->getLastLogin(),
-            'locked'    => $user->isLocked(),
-            'roles'     => $user->getRoles(),
-            'expired'   => $user->isExpired(),
-            'expiresAt' => $user->getExpiresAt() ? $user->getExpiresAt()->format('c') : null,
+        $response = array(
+            'id'            => $user->getId(),
+            'username'      => $user->getUsername(),
+            'email'         => $user->getEmail(),
+            'enabled'       => $user->isEnabled(),
+            'lastLogin'     => $user->getLastLogin(),
+            'locked'        => $user->isLocked(),
+            'roles'         => $user->getRoles(),
+            'expired'       => $user->isExpired(),
+            'expiresAt'     => $user->getExpiresAt() ? $user->getExpiresAt()->format('c') : null,
+            'organisations' => [],
         );
+
+        /** @var Model\User $loginUser */
+        $loginUser = $this->tokenStorage->getToken()->getUser();
+
+        if ($loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
+            $response['organisations'] = $user->getOrganisations();
+        }
+
+        return $response;
     }
 
     /**

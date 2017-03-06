@@ -183,6 +183,7 @@
                 id="annostation.labeling_api.controller.api.user"
                 class="AnnoStationBundle\Controller\Api\User">
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
