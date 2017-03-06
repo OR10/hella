@@ -10,6 +10,7 @@ class UserProfileDirective {
   constructor() {
     this.scope = {
       id: '=',
+      userPermissions: '=',
       readonly: '=?',
     };
 
