@@ -27,8 +27,8 @@ class UserPermissions
         'canCreateProject'                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                                                                                        ],
         'canMoveFinishedProjectToDone'    => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
         'canMoveInProgressProjectToDone'  => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                                                                                        ],
-        'canViewStatsButton'              => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
-        'canViewProjectButton'            => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
+        'canViewStats'                    => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
+        'canViewProject'                  => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
         'canDeleteProject'                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT                                                                                                                        ],
         'canCreateNewProject'             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
         'canReopenProject'                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT, Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
@@ -41,9 +41,8 @@ class UserPermissions
         // Label-Jobs
         'canViewTaskList'                 => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER, Model\User::ROLE_OBSERVER                               ],
         'canViewTaskListOfClosedProject'  => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                          , Model\User::ROLE_OBSERVER                               ],
-        'canViewReopenButton'             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
-        'unassignPermission'              => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
         'canReopenTask'                   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
+        'unassignPermission'              => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
         'canFlagLabelingTask'             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_LABELER                                                          ],
         'canUnflagLabelingTask'           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                          Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
         'canMoveTaskInOtherPhase'         => [Model\User::ROLE_SUPER_ADMIN,                                                  Model\User::ROLE_LABEL_COORDINATOR                                                                                    ],
@@ -51,7 +50,7 @@ class UserPermissions
 
         // User management
         'canEditLabelingGroups'           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN                                                                                                                                                 ],
-        'canViewUserListButton'           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN                                                                                                                                                 ],
+        'canViewUserList'                 => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN                                                                                                                                                 ],
         'canDeleteUser'                   => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                                                                        ],
 
         // Management board
