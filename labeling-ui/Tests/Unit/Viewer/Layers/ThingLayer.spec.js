@@ -196,5 +196,16 @@ fdescribe('ThingLayer test suite', () => {
 
       expect(angularElement.on).toHaveBeenCalledWith('mouseup', jasmine.any(Function));
     });
+
+    it('makes the selection color transparent', () => {
+      const selectedColor = {some: 'color'};
+      scope.Color.and.returnValue(selectedColor);
+
+      const thingLayer = createThingLayerInstance();
+      thingLayer.attachToDom(element);
+
+      expect(scope.project.activeLayer.selectedColor).toBe(selectedColor);
+      expect(scope.settings.handleSize).toEqual(8);
+    });
   });
 });
