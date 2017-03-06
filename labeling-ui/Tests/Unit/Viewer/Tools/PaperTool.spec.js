@@ -110,6 +110,28 @@ fdescribe('PaperTool test suite', function() {
 
         expect(throwWrapper).not.toThrow();
       });
+
+      describe('Drag event state "initial"', () => {
+        it('calls the delegation target if last drag point is larger than initialDragDistance', () => {
+          const lastDragPointDistance = 1;
+          const initialDragDistance = 0;
+          const paperTool = createPaperToolInstance();
+          paperTool._lastDragPoint = jasmine.createSpyObj('_lastDragPoint', ['getDistance']);
+          paperTool._lastDragPoint.getDistance.and.returnValue(lastDragPointDistance);
+          
+          paperTool._toolActionStruct = {
+            options: {
+              initialDragDistance: initialDragDistance
+            }
+          };
+          const event = {point: {x: 0, y: 0}};
+          spyOn(paperTool, 'onMouseDrag');
+
+          paperTool.delegateMouseEvent('drag', event);
+
+          expect(paperTool.onMouseDrag).toHaveBeenCalledWith(event);
+        });
+      });
     });
   });
 });
