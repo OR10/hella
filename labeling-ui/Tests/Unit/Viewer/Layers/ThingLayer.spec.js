@@ -1,4 +1,5 @@
 import {inject} from 'angular-mocks';
+import angular from 'angular';
 import ThingLayer from 'Application/Viewer/Layers/ThingLayer';
 import PanAndZoomPaperLayer from 'Application/Viewer/Layers/PanAndZoomPaperLayer';
 import ToolAbortedError from 'Application/Viewer/Tools/Errors/ToolAbortedError';
@@ -25,7 +26,7 @@ fdescribe('ThingLayer test suite', () => {
     viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['setMouseCursor']);
     $provide.service('viewerMouseCursorService', () => viewerMouseCursorService);
 
-    drawingContext = jasmine.createSpyObj('drawingContext', ['withScope']);
+    drawingContext = jasmine.createSpyObj('drawingContext', ['withScope', 'setup']);
     drawingContext.withScope.and.callFake((callback) => callback(scope));
   }));
 
@@ -155,6 +156,45 @@ fdescribe('ThingLayer test suite', () => {
   xdescribe('#removePaperShapes()', () => {
   });
 
-  xdescribe('#attachToDom()', () => {
+  describe('#attachToDom()', () => {
+    let element;
+    let angularElement;
+
+    beforeEach(() => {
+      element = '<p></p>';
+
+      scope.project = {
+        activeLayer: {}
+      };
+
+      scope.settings = {};
+
+      scope.Color = jasmine.createSpy('scope.Color');
+
+      spyOn(angular, 'element').and.callFake(() => {
+        angularElement = jasmine.createSpyObj('angular.element', ['on']);
+        return angularElement;
+      })
+    });
+
+    afterEach(() => {
+      // For some reason, the spy needs to explicitly call through after the test cases
+      // see http://stackoverflow.com/a/31257947/2410151
+      angular.element.and.callThrough();
+    });
+
+    it('adds a mousedown event handler', () => {
+      const thingLayer = createThingLayerInstance();
+      thingLayer.attachToDom(element);
+
+      expect(angularElement.on).toHaveBeenCalledWith('mousedown', jasmine.any(Function));
+    });
+
+    it('adds a mouseup event handler', () => {
+      const thingLayer = createThingLayerInstance();
+      thingLayer.attachToDom(element);
+
+      expect(angularElement.on).toHaveBeenCalledWith('mouseup', jasmine.any(Function));
+    });
   });
 });
