@@ -13,7 +13,7 @@ describe('ThingLayer test suite', () => {
   let toolService;
   let viewerMouseCursorService;
 
-  beforeEach(module(($provide) => {
+  beforeEach(module($provide => {
     // Service mocks
     loggerService = jasmine.createSpyObj('$logger', ['groupStart', 'log', 'groupEnd', 'groupStartOpened']);
     $provide.service('loggerService', () => loggerService);
@@ -25,7 +25,7 @@ describe('ThingLayer test suite', () => {
     $provide.service('viewerMouseCursorService', () => viewerMouseCursorService);
 
     drawingContext = jasmine.createSpyObj('drawingContext', ['withScope']);
-    drawingContext.withScope.and.callFake((callback) => callback(scope));
+    drawingContext.withScope.and.callFake(callback => callback(scope));
   }));
 
   beforeEach(inject(($injector, $rootScope) => {
@@ -46,18 +46,18 @@ describe('ThingLayer test suite', () => {
 
   it('updates the view when leaving the canvas', () => {
     const task = {
-      minimalVisibleShapeOverflow: null
+      minimalVisibleShapeOverflow: null,
     };
 
     scope.view = jasmine.createSpyObj('scope.view', ['update']);
-    scope.vm = { task: task };
+    scope.vm = {task: task};
 
     const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort']);
     toolService.getTool.and.returnValue(keyboardTool);
     const keyboardPromise = jasmine.createSpyObj('keyboardPromise', ['then']);
     keyboardTool.invokeKeyboardShortcuts.and.returnValue(keyboardPromise);
 
-    const q = jasmine.createSpyObj('$q', ['defer']);
+    // const $q = jasmine.createSpyObj('$q', ['defer']);
 
     // const multiTool = new MultiTool(drawingContext, scope, q, loggerService, toolService, viewerMouseCursorService);
     // spyOn(injector, 'instantiate').and.returnValue(multiTool);
@@ -68,7 +68,7 @@ describe('ThingLayer test suite', () => {
 
     const promiseMock = jasmine.createSpyObj('activeTool.invoke promise mock', ['then', 'catch']);
     promiseMock.then.and.returnValue(promiseMock);
-    promiseMock.catch.and.callFake((callback) => {
+    promiseMock.catch.and.callFake(callback => {
       const reason = new ToolAbortedError();
       callback(reason);
     });
