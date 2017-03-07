@@ -382,7 +382,174 @@ fdescribe('ThingLayer test suite', () => {
     });
   });
 
-  xdescribe('#addPaperGroupShape()', () => {
+  describe('#addPaperGroupShape()', () => {
+    let thing;
+
+    beforeEach(() => {
+      thing = createThingLayerInstance();
+    });
+
+    it('updates the view', () => {
+      const groupShape = {};
+
+      thing.addPaperGroupShape(groupShape);
+
+      expect(scope.view.update).toHaveBeenCalled();
+    });
+
+    it('does not update the view', () => {
+      const groupShape = {};
+      const updateView = false;
+
+      thing.addPaperGroupShape(groupShape, updateView);
+
+      expect(scope.view.update).not.toHaveBeenCalled();
+    });
+
+    describe('do not set the shape as selected shape', () => {
+      let groupShape;
+
+      beforeEach(() => {
+        groupShape = {};
+      });
+
+      it('does not update the view', () => {
+        const updateView = false;
+
+        thing.addPaperGroupShape(groupShape, updateView);
+
+        expect(scope.vm.selectedPaperShape).toBeUndefined();
+        expect(scope.view.update).not.toHaveBeenCalled();
+      });
+
+      it('updates the view', () => {
+        const updateView = true;
+
+        thing.addPaperGroupShape(groupShape, updateView);
+
+        expect(scope.vm.selectedPaperShape).toBeUndefined();
+        expect(scope.view.update).toHaveBeenCalled();
+      });
+    });
+
+    describe('set the shape as selected shape', () => {
+      const isSelected = true;
+      let groupShape;
+
+      beforeEach(() => {
+        groupShape = {};
+      });
+
+      it('does not update the view', () => {
+        const updateView = false;
+
+        thing.addPaperGroupShape(groupShape, updateView, isSelected);
+
+        expect(scope.vm.selectedPaperShape).toBe(groupShape);
+        expect(scope.view.update).not.toHaveBeenCalled();
+      });
+
+      it('updates the view', () => {
+        const updateView = true;
+
+        thing.addPaperGroupShape(groupShape, updateView, isSelected);
+
+        expect(scope.vm.selectedPaperShape).toBe(groupShape);
+        expect(scope.view.update).toHaveBeenCalled();
+      });
+    });
+
+    describe('Transport selection between frame changes', () => {
+      let previousPaperShape;
+      let currentPaperShape;
+
+      beforeEach(() => {
+        previousPaperShape = {
+          labeledThingGroupInFrame: {
+            labeledThingGroup: {
+              id: 'foo',
+            },
+          },
+        };
+        currentPaperShape = {
+          labeledThingGroupInFrame: {
+            labeledThingGroup: {
+              id: 'foo',
+            },
+          },
+        };
+
+        scope.vm.selectedPaperShape = previousPaperShape;
+      });
+
+      describe('set the shape as selected shape, if this shape was selected in a previous frame', () => {
+        it('updates the view', () => {
+          const updateView = true;
+
+          thing.addPaperGroupShape(currentPaperShape, updateView);
+
+          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(scope.view.update).toHaveBeenCalled();
+        });
+
+        it('does not update the view', () => {
+          const updateView = false;
+
+          thing.addPaperGroupShape(currentPaperShape, updateView);
+
+          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(scope.view.update).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('keeps the shape as selected shape, if it is the same shape', () => {
+        beforeEach(() => {
+          scope.vm.selectedPaperShape = currentPaperShape;
+        });
+
+        it('updates the view', () => {
+          const updateView = true;
+
+          thing.addPaperGroupShape(currentPaperShape, updateView);
+
+          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(scope.view.update).toHaveBeenCalled();
+        });
+
+        it('does not update the view', () => {
+          const updateView = false;
+
+          thing.addPaperGroupShape(currentPaperShape, updateView);
+
+          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(scope.view.update).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('keeps the previus as selected shape, if the id\'s don\'t match', () => {
+        beforeEach(() => {
+          currentPaperShape.labeledThingGroupInFrame.labeledThingGroup.id = 'bernddasbrot';
+        });
+
+        it('updates the view', () => {
+          const updateView = true;
+
+          thing.addPaperGroupShape(currentPaperShape, updateView);
+
+          expect(scope.vm.selectedPaperShape).toBe(previousPaperShape);
+          expect(scope.view.update).toHaveBeenCalled();
+        });
+
+        it('does not update the view', () => {
+          const updateView = false;
+
+          thing.addPaperGroupShape(currentPaperShape, updateView);
+
+          expect(scope.vm.selectedPaperShape).toBe(previousPaperShape);
+          expect(scope.view.update).not.toHaveBeenCalled();
+        });
+      });
+    });
   });
 
   describe('#update', () => {
