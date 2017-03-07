@@ -7,13 +7,14 @@ class UserProfileController {
   /**
    * @param {$rootScope.$scope} $scope
    * @param {$q} $q
+   * @param {$state} $state
    * @param {UserGateway} userGateway injected
    * @param {OrganisationGateway} organisationGateway
+   * @param {OrganisationService} organisationService
    * @param {SingleRoleFilter} singleRoleFilter
    * @param {ModalService} modalService
-   * @param {$state} $state
    */
-  constructor($scope, $q, userGateway, organisationGateway, singleRoleFilter, modalService, $state) {
+  constructor($scope, $q, $state, userGateway, organisationGateway, organisationService, singleRoleFilter, modalService) {
     if (this.readonly === undefined) {
       this.readonly = true;
     }
@@ -94,6 +95,11 @@ class UserProfileController {
      */
     this.createMode = (this.id === 'new');
 
+    // If creator can not add organisations by hand, add new user to creators organisation
+    if (!this.userPermissions.canAddUserToOrganisation) {
+      this.userOrganisations.push(organisationService.getModel());
+    }
+
     /**
      * @type {{username: boolean, email: boolean, password: boolean, role: boolean}}
      */
@@ -135,6 +141,14 @@ class UserProfileController {
   }
 
   _createUser() {
+    this.loadingInProgress = true;
+
+    this._organisationGateway.getOrganisations().then(organisations => {
+      this.organisations = organisations;
+      this.organisationToAdd = this.organisations[0];
+      this.loadingInProgress = false;
+    });
+
     this.user = new User({
       username: '',
       email: '',
@@ -192,11 +206,16 @@ class UserProfileController {
 
     this.loadingInProgress = true;
     if (this.createMode) {
-      this._userGateway.createUser(this.user).then(user => {
-        this.user = user;
-        this.loadingInProgress = false;
-        this._$state.go('labeling.users.list');
-      });
+      this._userGateway.createUser(this.user)
+        .then(user => {
+          this.user = user;
+
+          return this._assignUserToOrganisations(user);
+        })
+        .then(() => {
+          this.loadingInProgress = false;
+          this._$state.go('labeling.users.list');
+        });
     } else {
       this._userGateway.updateUser(this.user).then(
         () => {
@@ -232,6 +251,11 @@ class UserProfileController {
   }
 
   addUserToOrganisation(organisation) {
+    if (this.createMode) {
+      this.userOrganisations.push(organisation);
+      return;
+    }
+
     this.loadingInProgress = true;
     this._organisationGateway.addUserToOrganisation(this.user, organisation)
       .then(() => {
@@ -240,11 +264,29 @@ class UserProfileController {
   }
 
   removeUserFromOrganisation(organisation) {
+    if (this.createMode) {
+      console.log(this.userOrganisations);
+      this.userOrganisations.splice(this.userOrganisations.indexOf(organisation), 1);
+      console.log(this.userOrganisations);
+      return;
+    }
+
     this.loadingInProgress = true;
     this._organisationGateway.removeUserFromOrganisation(this.user, organisation)
       .then(() => {
         this._loadData();
       });
+  }
+
+  _assignUserToOrganisations(user) {
+    const promises = [];
+
+    this.userOrganisations.forEach(organisation => {
+      const promise = this._organisationGateway.addUserToOrganisation(user, organisation);
+      promises.push(promise);
+    });
+
+    return this._$q.all(promises);
   }
 
   _updateRoles() {
@@ -338,11 +380,12 @@ class UserProfileController {
 UserProfileController.$inject = [
   '$scope',
   '$q',
+  '$state',
   'userGateway',
   'organisationGateway',
+  'organisationService',
   'singleRoleFilter',
   'modalService',
-  '$state',
 ];
 
 export default UserProfileController;
