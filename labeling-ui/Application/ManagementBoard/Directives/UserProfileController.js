@@ -265,9 +265,7 @@ class UserProfileController {
 
   removeUserFromOrganisation(organisation) {
     if (this.createMode) {
-      console.log(this.userOrganisations);
       this.userOrganisations.splice(this.userOrganisations.indexOf(organisation), 1);
-      console.log(this.userOrganisations);
       return;
     }
 
