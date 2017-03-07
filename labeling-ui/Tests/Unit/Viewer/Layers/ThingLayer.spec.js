@@ -15,7 +15,7 @@ fdescribe('ThingLayer test suite', () => {
   let toolService;
   let viewerMouseCursorService;
 
-  beforeEach(module(($provide) => {
+  beforeEach(module($provide => {
     // Service mocks
     loggerService = jasmine.createSpyObj('$logger', ['groupStart', 'log', 'groupEnd', 'groupStartOpened']);
     $provide.service('loggerService', () => loggerService);
@@ -27,14 +27,14 @@ fdescribe('ThingLayer test suite', () => {
     $provide.service('viewerMouseCursorService', () => viewerMouseCursorService);
 
     drawingContext = jasmine.createSpyObj('drawingContext', ['withScope', 'setup']);
-    drawingContext.withScope.and.callFake((callback) => callback(scope));
+    drawingContext.withScope.and.callFake(callback => callback(scope));
   }));
 
   beforeEach(inject(($injector, $rootScope) => {
     injector = $injector;
 
     task = {
-      minimalVisibleShapeOverflow: null
+      minimalVisibleShapeOverflow: null,
     };
 
     scope = $rootScope.$new();
@@ -69,7 +69,7 @@ fdescribe('ThingLayer test suite', () => {
         expect(scope.$watchCollection).toHaveBeenCalledWith('vm.paperThingShapes', jasmine.any(Function));
       });
     });
-    
+
     describe('Normal watchers', () => {
       beforeEach(() => {
         spyOn(scope, '$watch');
@@ -93,18 +93,13 @@ fdescribe('ThingLayer test suite', () => {
     const keyboardPromise = jasmine.createSpyObj('keyboardPromise', ['then']);
     keyboardTool.invokeKeyboardShortcuts.and.returnValue(keyboardPromise);
 
-    const q = jasmine.createSpyObj('$q', ['defer']);
-
-    // const multiTool = new MultiTool(drawingContext, scope, q, loggerService, toolService, viewerMouseCursorService);
-    // spyOn(injector, 'instantiate').and.returnValue(multiTool);
-
     const thing = createThingLayerInstance();
     const event = {type: 'mouseenter'};
     thing.activateTool('multi', {});
 
     const promiseMock = jasmine.createSpyObj('activeTool.invoke promise mock', ['then', 'catch']);
     promiseMock.then.and.returnValue(promiseMock);
-    promiseMock.catch.and.callFake((callback) => {
+    promiseMock.catch.and.callFake(callback => {
       const reason = new ToolAbortedError();
       callback(reason);
     });
@@ -164,7 +159,7 @@ fdescribe('ThingLayer test suite', () => {
       element = '<p></p>';
 
       scope.project = {
-        activeLayer: {}
+        activeLayer: {},
       };
 
       scope.settings = {};
@@ -174,7 +169,7 @@ fdescribe('ThingLayer test suite', () => {
       spyOn(angular, 'element').and.callFake(() => {
         angularElement = jasmine.createSpyObj('angular.element', ['on']);
         return angularElement;
-      })
+      });
     });
 
     afterEach(() => {
