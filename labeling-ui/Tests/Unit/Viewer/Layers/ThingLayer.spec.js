@@ -170,7 +170,46 @@ fdescribe('ThingLayer test suite', () => {
     });
   });
 
-  xdescribe('#addPaperGroupShapes()', () => {
+  describe('#addPaperGroupShapes()', () => {
+    let thing;
+    let groupShapes;
+    let firstGroupShape;
+    let secondGroupShape;
+    let thirdGroupShape;
+
+    beforeEach(() => {
+      firstGroupShape = {id: 1};
+      secondGroupShape = {id: 2};
+      thirdGroupShape = {id: 3};
+      groupShapes = [firstGroupShape, secondGroupShape, thirdGroupShape];
+
+      thing = createThingLayerInstance();
+      spyOn(thing, 'addPaperGroupShape');
+    });
+
+    it('calls addPaperGroupShape for every shape, updating the view', () => {
+      const updateView = true;
+
+      thing.addPaperGroupShapes(groupShapes, updateView);
+
+      expect(thing.addPaperGroupShape).toHaveBeenCalledTimes(3);
+      expect(thing.addPaperGroupShape).toHaveBeenCalledWith(firstGroupShape, false);
+      expect(thing.addPaperGroupShape).toHaveBeenCalledWith(secondGroupShape, false);
+      expect(thing.addPaperGroupShape).toHaveBeenCalledWith(thirdGroupShape, false);
+      expect(scope.view.update).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls addPaperGroupShape for every shape, not updating the view', () => {
+      const updateView = false;
+
+      thing.addPaperGroupShapes(groupShapes, updateView);
+
+      expect(thing.addPaperGroupShape).toHaveBeenCalledTimes(3);
+      expect(thing.addPaperGroupShape).toHaveBeenCalledWith(firstGroupShape, false);
+      expect(thing.addPaperGroupShape).toHaveBeenCalledWith(secondGroupShape, false);
+      expect(thing.addPaperGroupShape).toHaveBeenCalledWith(thirdGroupShape, false);
+      expect(scope.view.update).not.toHaveBeenCalled();
+    });
   });
 
   describe('#addPaperThingShape', () => {
