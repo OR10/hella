@@ -148,6 +148,12 @@ fdescribe('ThingLayer test suite', () => {
 
       expect(activeTool.abort).toHaveBeenCalled();
     });
+
+    it('sets scope.tool to null', () => {
+      expect(scope.tool).toBeUndefined();
+      thing.activateTool('zoomIn');
+      expect(scope.tool).toBeNull();
+    });
   });
 
   describe('#addPaperThingShapes()', () => {
