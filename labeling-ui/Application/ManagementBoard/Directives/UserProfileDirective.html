@@ -91,6 +91,7 @@
                     Cancel
                 </button>
                 <button ng-hide="vm.createMode"
+                        ng-if="vm.userPermissions.canDeleteUser"
                         class="pull-left"
                         ng-click="vm.deleteUser(vm.user)"
                 >
