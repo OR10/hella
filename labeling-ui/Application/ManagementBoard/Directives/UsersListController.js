@@ -86,7 +86,7 @@ class UsersListController {
   }
 
   removeUserFromOrganisation(user) {
-    const organisation = this._organisationService.get();
+    const organisation = this._organisationService.getModel();
 
     this._modalService.info(
       {
