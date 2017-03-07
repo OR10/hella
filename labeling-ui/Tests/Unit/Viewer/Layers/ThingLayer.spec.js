@@ -147,10 +147,35 @@ fdescribe('ThingLayer test suite', () => {
     it('does not update the view', () => {
       const paperShape = {};
       const thing = createThingLayerInstance();
+      const updateView = false;
 
-      thing.addPaperThingShape(paperShape, false);
+      thing.addPaperThingShape(paperShape, updateView);
 
       expect(scope.view.update).not.toHaveBeenCalled();
+    });
+
+    it('sets the shape as selected shape, not updating the view', () => {
+      const paperShape = {};
+      const thing = createThingLayerInstance();
+      const updateView = false;
+      const isSelected = true;
+
+      thing.addPaperThingShape(paperShape, updateView, isSelected);
+
+      expect(scope.vm.selectedPaperShape).toBe(paperShape);
+      expect(scope.view.update).not.toHaveBeenCalled();
+    });
+
+    it('sets the shape as selected shape, also updating the view', () => {
+      const paperShape = {};
+      const thing = createThingLayerInstance();
+      const updateView = true;
+      const isSelected = true;
+
+      thing.addPaperThingShape(paperShape, updateView, isSelected);
+
+      expect(scope.vm.selectedPaperShape).toBe(paperShape);
+      expect(scope.view.update).toHaveBeenCalled();
     });
   });
 
