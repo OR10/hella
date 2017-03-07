@@ -75,7 +75,7 @@ class CurrentUser extends Controller\Base
     /**
      * @Rest\Get("/profile")
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function profileAction()
     {
@@ -85,10 +85,11 @@ class CurrentUser extends Controller\Base
         return View\View::create()->setData(
             [
                 'result' => [
-                    'id'       => $user->getId(),
-                    'username' => $user->getUsername(),
-                    'email'    => $user->getEmail(),
-                    'roles'    => $user->getRoles(),
+                    'id'        => $user->getId(),
+                    'username'  => $user->getUsername(),
+                    'email'     => $user->getEmail(),
+                    'roles'     => $user->getRoles(),
+                    'expiresAt' => $user->getExpiresAt(),
                 ],
             ]
         );
