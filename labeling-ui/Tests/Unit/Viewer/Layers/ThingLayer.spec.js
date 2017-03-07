@@ -133,11 +133,11 @@ fdescribe('ThingLayer test suite', () => {
     });
 
     it('throws an error if the tool is unknown', () => {
-        function throwWrapper() {
-          thing.activateTool('bernddasbrot');
-        }
+      function throwWrapper() {
+        thing.activateTool('bernddasbrot');
+      }
 
-        expect(throwWrapper).toThrowError('Unknown tool with name: bernddasbrot');
+      expect(throwWrapper).toThrowError('Unknown tool with name: bernddasbrot');
     });
 
     it('aborts the active tool', () => {
@@ -153,6 +153,21 @@ fdescribe('ThingLayer test suite', () => {
       expect(scope.tool).toBeUndefined();
       thing.activateTool('zoomIn');
       expect(scope.tool).toBeNull();
+    });
+
+    it('resets possible mouse cursor left-overs', () => {
+      thing.activateTool('zoomIn');
+      expect(viewerMouseCursorService.setMouseCursor).toHaveBeenCalledWith(null);
+    });
+
+    describe('ZoomInTool', () => {
+      it('calls abort on the zoomInTool', () => {
+        spyOn(thing._zoomInTool, 'abort');
+
+        thing.activateTool('zoomIn');
+
+        expect(thing._zoomInTool.abort).toHaveBeenCalled();
+      });
     });
   });
 
