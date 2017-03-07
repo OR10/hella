@@ -158,27 +158,33 @@ fdescribe('ThingLayer test suite', () => {
       expect(scope.view.update).not.toHaveBeenCalled();
     });
 
-    it('does not set the shape as selected shape, not updating the view', () => {
-      const paperShape = {};
-      const updateView = false;
+    describe('do not set the shape as selected shape', () => {
+      let paperShape;
 
-      thing.addPaperThingShape(paperShape, updateView);
+      beforeEach(() => {
+        paperShape = {};
+      });
 
-      expect(scope.vm.selectedPaperShape).toBeUndefined();
-      expect(scope.view.update).not.toHaveBeenCalled();
+      it('does not update the view', () => {
+        const updateView = false;
+
+        thing.addPaperThingShape(paperShape, updateView);
+
+        expect(scope.vm.selectedPaperShape).toBeUndefined();
+        expect(scope.view.update).not.toHaveBeenCalled();
+      });
+
+      it('updates the view', () => {
+        const updateView = true;
+
+        thing.addPaperThingShape(paperShape, updateView);
+
+        expect(scope.vm.selectedPaperShape).toBeUndefined();
+        expect(scope.view.update).toHaveBeenCalled();
+      });
     });
 
-    it('does not set the shape as selected shape, updating the view', () => {
-      const paperShape = {};
-      const updateView = true;
-
-      thing.addPaperThingShape(paperShape, updateView);
-
-      expect(scope.vm.selectedPaperShape).toBeUndefined();
-      expect(scope.view.update).toHaveBeenCalled();
-    });
-
-    describe('sets the shape as selected shape', () => {
+    describe('set the shape as selected shape', () => {
       const isSelected = true;
       let paperShape;
 
