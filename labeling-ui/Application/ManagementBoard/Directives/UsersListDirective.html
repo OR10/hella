@@ -25,12 +25,12 @@
                     <button ng-if="vm.userPermissions.canDeleteUserFromOrganisation"
                             tooltip="Remove from Organisation: {{user.username}}"
                             ng-click="vm.removeUserFromOrganisation(user)">
-                        <i class="icon icon-selection-delete"></i>
+                        <i class="fa fa-close"></i>
                     </button>
                     <button ng-if="vm.userPermissions.canDeleteUser"
                             tooltip="Delete: {{user.username}}"
                             ng-click="vm.deleteUser(user)">
-                        <i class="icon icon-selection-trash"></i>
+                        <i class="fa fa-trash-o"></i>
                     </button>
                 </td>
             </tr>
