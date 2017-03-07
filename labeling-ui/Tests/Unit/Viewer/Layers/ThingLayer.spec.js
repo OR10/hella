@@ -134,7 +134,24 @@ fdescribe('ThingLayer test suite', () => {
   xdescribe('#addPaperGroupShapes()', () => {
   });
 
-  xdescribe('#addPaperThingShape', () => {
+  describe('#addPaperThingShape', () => {
+    it('updates the view', () => {
+      const paperShape = {};
+      const thing = createThingLayerInstance();
+
+      thing.addPaperThingShape(paperShape);
+
+      expect(scope.view.update).toHaveBeenCalled();
+    });
+
+    it('does not update the view', () => {
+      const paperShape = {};
+      const thing = createThingLayerInstance();
+
+      thing.addPaperThingShape(paperShape, false);
+
+      expect(scope.view.update).not.toHaveBeenCalled();
+    });
   });
 
   xdescribe('#addPaperGroupShape()', () => {
