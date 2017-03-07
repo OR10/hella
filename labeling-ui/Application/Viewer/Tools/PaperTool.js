@@ -73,7 +73,7 @@ class PaperTool extends Tool {
       case 'drag':
         const eventPoint = event.point;
 
-        if(this._lastDragPoint === null) {
+        if (this._lastDragPoint === null) {
           return;
         }
 
