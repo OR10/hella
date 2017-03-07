@@ -211,7 +211,7 @@ fdescribe('ThingLayer test suite', () => {
       });
     });
 
-    describe('sets the shape as selected shape, if this shape was selected in a previous frame', () => {
+    describe('Transport selection between frame changes', () => {
       let previousPaperShape;
       let paperShape;
 
@@ -234,22 +234,24 @@ fdescribe('ThingLayer test suite', () => {
         scope.vm.selectedPaperShape = previousPaperShape;
       });
 
-      it('updates the view', () => {
-        const updateView = true;
+      describe('set the shape as selected shape, if this shape was selected in a previous frame', () => {
+        it('updates the view', () => {
+          const updateView = true;
 
-        thing.addPaperThingShape(paperShape, updateView);
+          thing.addPaperThingShape(paperShape, updateView);
 
-        expect(scope.vm.selectedPaperShape).toBe(paperShape);
-        expect(scope.view.update).toHaveBeenCalled();
-      });
+          expect(scope.vm.selectedPaperShape).toBe(paperShape);
+          expect(scope.view.update).toHaveBeenCalled();
+        });
 
-      it('does not update the view', () => {
-        const updateView = false;
+        it('does not update the view', () => {
+          const updateView = false;
 
-        thing.addPaperThingShape(paperShape, updateView);
+          thing.addPaperThingShape(paperShape, updateView);
 
-        expect(scope.vm.selectedPaperShape).toBe(paperShape);
-        expect(scope.view.update).not.toHaveBeenCalled();
+          expect(scope.vm.selectedPaperShape).toBe(paperShape);
+          expect(scope.view.update).not.toHaveBeenCalled();
+        });
       });
     });
   });
