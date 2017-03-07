@@ -125,7 +125,29 @@ fdescribe('ThingLayer test suite', () => {
   xdescribe('#dispatchDOMEvent', () => {
   });
 
-  xdescribe('#activateTool()', () => {
+  describe('#activateTool()', () => {
+    let thing;
+
+    beforeEach(() => {
+      thing = createThingLayerInstance();
+    });
+
+    it('throws an error if the tool is unknown', () => {
+        function throwWrapper() {
+          thing.activateTool('bernddasbrot');
+        }
+
+        expect(throwWrapper).toThrowError('Unknown tool with name: bernddasbrot');
+    });
+
+    it('aborts the active tool', () => {
+      const activeTool = jasmine.createSpyObj('activateTool', ['abort']);
+      thing._activeTool = activeTool;
+
+      thing.activateTool('zoomIn');
+
+      expect(activeTool.abort).toHaveBeenCalled();
+    });
   });
 
   describe('#addPaperThingShapes()', () => {
