@@ -154,6 +154,28 @@ fdescribe('ThingLayer test suite', () => {
       expect(scope.view.update).not.toHaveBeenCalled();
     });
 
+    it('does not set the shape as selected shape, not updating the view', () => {
+      const paperShape = {};
+      const thing = createThingLayerInstance();
+      const updateView = false;
+
+      thing.addPaperThingShape(paperShape, updateView);
+
+      expect(scope.vm.selectedPaperShape).toBeUndefined();
+      expect(scope.view.update).not.toHaveBeenCalled();
+    });
+
+    it('does not set the shape as selected shape, updating the view', () => {
+      const paperShape = {};
+      const thing = createThingLayerInstance();
+      const updateView = true;
+
+      thing.addPaperThingShape(paperShape, updateView);
+
+      expect(scope.vm.selectedPaperShape).toBeUndefined();
+      expect(scope.view.update).toHaveBeenCalled();
+    });
+
     it('sets the shape as selected shape, not updating the view', () => {
       const paperShape = {};
       const thing = createThingLayerInstance();
@@ -176,6 +198,50 @@ fdescribe('ThingLayer test suite', () => {
 
       expect(scope.vm.selectedPaperShape).toBe(paperShape);
       expect(scope.view.update).toHaveBeenCalled();
+    });
+
+    describe('sets the shape as selected shape, if this shape was selected in a previous frame', () => {
+      let previousPaperShape;
+      let paperShape;
+      let thing;
+
+      beforeEach(() => {
+        previousPaperShape = {
+          labeledThingInFrame: {
+            labeledThing: {
+              id: 'foo',
+            },
+          },
+        };
+        paperShape = {
+          labeledThingInFrame: {
+            labeledThing: {
+              id: 'foo',
+            },
+          },
+        };
+
+        thing = createThingLayerInstance();
+        scope.vm.selectedPaperShape = previousPaperShape;
+      });
+
+      it('updates the view', () => {
+        const updateView = true;
+
+        thing.addPaperThingShape(paperShape, updateView);
+
+        expect(scope.vm.selectedPaperShape).toBe(paperShape);
+        expect(scope.view.update).toHaveBeenCalled();
+      });
+
+      it('does not update the view', () => {
+        const updateView = false;
+
+        thing.addPaperThingShape(paperShape, updateView);
+
+        expect(scope.vm.selectedPaperShape).toBe(paperShape);
+        expect(scope.view.update).not.toHaveBeenCalled();
+      });
     });
   });
 
