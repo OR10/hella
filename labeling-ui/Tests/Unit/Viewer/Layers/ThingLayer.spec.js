@@ -128,7 +128,46 @@ fdescribe('ThingLayer test suite', () => {
   xdescribe('#activateTool()', () => {
   });
 
-  xdescribe('#addPaperThingShapes()', () => {
+  describe('#addPaperThingShapes()', () => {
+    let thing;
+    let paperShapes;
+    let firstPaperShape;
+    let secondPaperShape;
+    let thirdPaperShape;
+
+    beforeEach(() => {
+      firstPaperShape = {id: 1};
+      secondPaperShape = {id: 2};
+      thirdPaperShape = {id: 3};
+      paperShapes = [firstPaperShape, secondPaperShape, thirdPaperShape];
+
+      thing = createThingLayerInstance();
+      spyOn(thing, 'addPaperThingShape');
+    });
+
+    it('calls addPaperThingShape for every shape, updating the view', () => {
+      const updateView = true;
+
+      thing.addPaperThingShapes(paperShapes, updateView);
+
+      expect(thing.addPaperThingShape).toHaveBeenCalledTimes(3);
+      expect(thing.addPaperThingShape).toHaveBeenCalledWith(firstPaperShape, false);
+      expect(thing.addPaperThingShape).toHaveBeenCalledWith(secondPaperShape, false);
+      expect(thing.addPaperThingShape).toHaveBeenCalledWith(thirdPaperShape, false);
+      expect(scope.view.update).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls addPaperThingShape for every shape, not updating the view', () => {
+      const updateView = false;
+
+      thing.addPaperThingShapes(paperShapes, updateView);
+
+      expect(thing.addPaperThingShape).toHaveBeenCalledTimes(3);
+      expect(thing.addPaperThingShape).toHaveBeenCalledWith(firstPaperShape, false);
+      expect(thing.addPaperThingShape).toHaveBeenCalledWith(secondPaperShape, false);
+      expect(thing.addPaperThingShape).toHaveBeenCalledWith(thirdPaperShape, false);
+      expect(scope.view.update).not.toHaveBeenCalled();
+    });
   });
 
   xdescribe('#addPaperGroupShapes()', () => {
