@@ -277,6 +277,30 @@ fdescribe('ThingLayer test suite', () => {
           expect(scope.view.update).not.toHaveBeenCalled();
         });
       });
+
+      describe('keeps the previus as selected shape, if the id\'s don\'t match', () => {
+        beforeEach(() => {
+          currentPaperShape.labeledThingInFrame.labeledThing.id = 'bernddasbrot';
+        });
+
+        it('updates the view', () => {
+          const updateView = true;
+
+          thing.addPaperThingShape(currentPaperShape, updateView);
+
+          expect(scope.vm.selectedPaperShape).toBe(previousPaperShape);
+          expect(scope.view.update).toHaveBeenCalled();
+        });
+
+        it('does not update the view', () => {
+          const updateView = false;
+
+          thing.addPaperThingShape(currentPaperShape, updateView);
+
+          expect(scope.vm.selectedPaperShape).toBe(previousPaperShape);
+          expect(scope.view.update).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 
