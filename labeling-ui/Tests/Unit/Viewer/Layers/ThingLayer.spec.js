@@ -135,9 +135,14 @@ fdescribe('ThingLayer test suite', () => {
   });
 
   describe('#addPaperThingShape', () => {
+    let thing;
+
+    beforeEach(() => {
+      thing = createThingLayerInstance();
+    });
+
     it('updates the view', () => {
       const paperShape = {};
-      const thing = createThingLayerInstance();
 
       thing.addPaperThingShape(paperShape);
 
@@ -146,7 +151,6 @@ fdescribe('ThingLayer test suite', () => {
 
     it('does not update the view', () => {
       const paperShape = {};
-      const thing = createThingLayerInstance();
       const updateView = false;
 
       thing.addPaperThingShape(paperShape, updateView);
@@ -156,7 +160,6 @@ fdescribe('ThingLayer test suite', () => {
 
     it('does not set the shape as selected shape, not updating the view', () => {
       const paperShape = {};
-      const thing = createThingLayerInstance();
       const updateView = false;
 
       thing.addPaperThingShape(paperShape, updateView);
@@ -167,7 +170,6 @@ fdescribe('ThingLayer test suite', () => {
 
     it('does not set the shape as selected shape, updating the view', () => {
       const paperShape = {};
-      const thing = createThingLayerInstance();
       const updateView = true;
 
       thing.addPaperThingShape(paperShape, updateView);
@@ -176,34 +178,36 @@ fdescribe('ThingLayer test suite', () => {
       expect(scope.view.update).toHaveBeenCalled();
     });
 
-    it('sets the shape as selected shape, not updating the view', () => {
-      const paperShape = {};
-      const thing = createThingLayerInstance();
-      const updateView = false;
+    describe('sets the shape as selected shape', () => {
       const isSelected = true;
+      let paperShape;
 
-      thing.addPaperThingShape(paperShape, updateView, isSelected);
+      beforeEach(() => {
+        paperShape = {};
+      });
 
-      expect(scope.vm.selectedPaperShape).toBe(paperShape);
-      expect(scope.view.update).not.toHaveBeenCalled();
-    });
+      it('does not update the view', () => {
+        const updateView = false;
 
-    it('sets the shape as selected shape, also updating the view', () => {
-      const paperShape = {};
-      const thing = createThingLayerInstance();
-      const updateView = true;
-      const isSelected = true;
+        thing.addPaperThingShape(paperShape, updateView, isSelected);
 
-      thing.addPaperThingShape(paperShape, updateView, isSelected);
+        expect(scope.vm.selectedPaperShape).toBe(paperShape);
+        expect(scope.view.update).not.toHaveBeenCalled();
+      });
 
-      expect(scope.vm.selectedPaperShape).toBe(paperShape);
-      expect(scope.view.update).toHaveBeenCalled();
+      it('updates the view', () => {
+        const updateView = true;
+
+        thing.addPaperThingShape(paperShape, updateView, isSelected);
+
+        expect(scope.vm.selectedPaperShape).toBe(paperShape);
+        expect(scope.view.update).toHaveBeenCalled();
+      });
     });
 
     describe('sets the shape as selected shape, if this shape was selected in a previous frame', () => {
       let previousPaperShape;
       let paperShape;
-      let thing;
 
       beforeEach(() => {
         previousPaperShape = {
@@ -221,7 +225,6 @@ fdescribe('ThingLayer test suite', () => {
           },
         };
 
-        thing = createThingLayerInstance();
         scope.vm.selectedPaperShape = previousPaperShape;
       });
 
