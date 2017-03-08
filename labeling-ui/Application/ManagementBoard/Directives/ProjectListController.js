@@ -117,7 +117,7 @@ class ProjectListController {
 
         response.result = response.result.map(project => {
           const coordinatorId = project.coordinator;
-          if (coordinatorId !== null) {
+          if (coordinatorId !== undefined) {
             project.coordinator = response.users[coordinatorId];
           }
           return project;
