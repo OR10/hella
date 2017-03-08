@@ -177,6 +177,25 @@ fdescribe('ThingLayer test suite', () => {
         expect(thing._zoomInTool.invoke).toHaveBeenCalled();
       });
     });
+
+    describe('ZoomOutTool', () => {
+      it('calls abort on the ZoomOutTool', () => {
+        spyOn(thing._zoomOutTool, 'abort');
+
+        thing.activateTool('zoomOut');
+
+        expect(thing._zoomOutTool.abort).toHaveBeenCalled();
+      });
+
+      it('calls invoke on the ZoomOutTool', () => {
+        spyOn(thing._zoomOutTool, 'invoke').and.callThrough();
+
+        thing.activateTool('zoomOut');
+
+        expect(thing._zoomOutTool.invoke).toHaveBeenCalled();
+      });
+    });
+
   });
 
   describe('#addPaperThingShapes()', () => {
