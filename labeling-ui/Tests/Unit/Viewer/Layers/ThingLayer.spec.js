@@ -168,6 +168,14 @@ fdescribe('ThingLayer test suite', () => {
 
         expect(thing._zoomInTool.abort).toHaveBeenCalled();
       });
+
+      it('calls invoke on the zoomInTool', () => {
+        spyOn(thing._zoomInTool, 'invoke').and.callThrough();
+
+        thing.activateTool('zoomIn');
+
+        expect(thing._zoomInTool.invoke).toHaveBeenCalled();
+      });
     });
   });
 
