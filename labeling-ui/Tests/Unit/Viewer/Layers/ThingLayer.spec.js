@@ -3,6 +3,9 @@ import angular from 'angular';
 import ThingLayer from 'Application/Viewer/Layers/ThingLayer';
 import PanAndZoomPaperLayer from 'Application/Viewer/Layers/PanAndZoomPaperLayer';
 import ToolAbortedError from 'Application/Viewer/Tools/Errors/ToolAbortedError';
+import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
+import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
+import paper from 'paper';
 
 fdescribe('ThingLayer test suite', () => {
   let injector;
@@ -49,6 +52,11 @@ fdescribe('ThingLayer test suite', () => {
     const framePosition = jasmine.createSpyObj('framePosition', ['beforeFrameChangeAlways', 'afterFrameChangeAlways']);
 
     return new ThingLayer(0, 0, scope, injector, drawingContext, toolService, null, loggerService, timeoutService, framePosition, viewerMouseCursorService);
+  }
+
+  function setupPaperJs() {
+    const canvas = document.createElement('canvas');
+    paper.setup(canvas);
   }
 
   describe('Creation', () => {
@@ -238,26 +246,57 @@ fdescribe('ThingLayer test suite', () => {
       });
 
       describe('actionIdentifier "creation"', () => {
-        it('it throws an error if it cannot handle the shape creation', () => {
-          const paperShape = 'Bernd das Brot';
+        const actionIdentifier = 'creation';
+        const bogusPaperShape = 'Bernd das Brot';
+        let paperThingShape;
+        let invokePromiseMock;
+        let invokeThenParams;
 
-          const invokePromiseMock = jasmine.createSpyObj('invoke promise return', ['then']);
-          invokePromiseMock.then.and.callFake(callback => {
-            const callbackParams = {
-              actionIdentifier: 'creation',
-              paperShape: paperShape,
-            };
-            callback(callbackParams);
+        beforeEach(() => {
+          setupPaperJs();
+          paperThingShape = new PaperThingShape();
+
+          invokeThenParams = {
+            actionIdentifier: actionIdentifier,
+            paperShape: paperThingShape,
+          };
+          invokePromiseMock = jasmine.createSpyObj('invoke promise return', ['then']);
+          invokePromiseMock.then.and.callFake(then => {
+            then(invokeThenParams);
             return { catch: () => {} };
           });
-
           spyOn(thing._multiTool, 'invoke').and.returnValue(invokePromiseMock);
 
+          scope.vm.paperThingShapes = [];
+        });
+
+        it('emits thing:create when the Shape is a PaperThingShape', () => {
+          spyOn(thing, 'emit');
+
+          thing.activateTool('multi', selectedLabelStructureThing);
+
+          expect(thing.emit).toHaveBeenCalledWith('thing:create', paperThingShape);
+        });
+
+        it('adds the shape to the paperThingShapes array', () => {
+          thing.activateTool('multi', selectedLabelStructureThing);
+
+          expect(scope.vm.paperThingShapes).toEqual([paperThingShape]);
+        });
+
+        it('sets the shape as selected shape', () => {
+          thing.activateTool('multi', selectedLabelStructureThing);
+
+          expect(scope.vm.selectedPaperShape).toBe(paperThingShape);
+        });
+
+        it('it throws an error if it cannot handle the shape creation', () => {
+          invokeThenParams.paperShape = bogusPaperShape;
           function throwWrapper() {
             thing.activateTool('multi', selectedLabelStructureThing);
           }
 
-          expect(throwWrapper).toThrowError(`Can not handle shape creation of type: ${paperShape}`);
+          expect(throwWrapper).toThrowError(`Can not handle shape creation of type: ${bogusPaperShape}`);
         });
       });
 
