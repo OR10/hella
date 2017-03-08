@@ -271,7 +271,7 @@ class Project extends Controller\Base
                 $responseProject['deletedState'] = $project->getDeletedState();
             }
 
-            if ($user->hasRole(Model\User::ROLE_CLIENT)) {
+            if ($user->hasOneRoleOf([Model\User::ROLE_CLIENT, Model\User::ROLE_SUPER_ADMIN])) {
                 $responseProject['coordinator'] = $project->getLatestAssignedCoordinatorUserId();
                 if ($project->getLatestAssignedCoordinatorUserId() !== null) {
                     $users[] = $this->userFacade->getUserById($project->getLatestAssignedCoordinatorUserId());
