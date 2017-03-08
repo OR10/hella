@@ -82,5 +82,10 @@
         <service id="annostation.services.uuid_generator" class="AppBundle\Service\UuidGenerator">
         </service>
 
+
+        <service id="annostation.services.database_document_manager_factory" class="AppBundle\Service\DatabaseDocumentManagerFactory">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+        </service>
+
     </services>
 </container>
