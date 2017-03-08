@@ -161,7 +161,7 @@ fdescribe('ThingLayer test suite', () => {
     });
 
     describe('ZoomInTool', () => {
-      it('calls abort on the zoomInTool', () => {
+      it('calls abort on the ZoomInTool', () => {
         spyOn(thing._zoomInTool, 'abort');
 
         thing.activateTool('zoomIn');
@@ -169,7 +169,7 @@ fdescribe('ThingLayer test suite', () => {
         expect(thing._zoomInTool.abort).toHaveBeenCalled();
       });
 
-      it('calls invoke on the zoomInTool', () => {
+      it('calls invoke on the ZoomInTool', () => {
         spyOn(thing._zoomInTool, 'invoke').and.callThrough();
 
         thing.activateTool('zoomIn');
