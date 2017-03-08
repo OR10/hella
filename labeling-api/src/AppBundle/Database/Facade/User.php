@@ -50,7 +50,7 @@ class User
      * @param array  $settings
      * @param array  $organisations
      *
-     * @return FosUserModel\UserInterface
+     * @return Model\User|FosUserModel\UserInterface
      */
     public function createUser(
         $username,
