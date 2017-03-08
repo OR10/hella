@@ -32,28 +32,17 @@ class LabeledThingGroupService {
     let maxX;
     let maxY;
     bounds.forEach(bound => {
-      let xPoint;
-      let yPoint;
-
-      if (typeof bound.x === 'object' && typeof bound.y === 'object') {
-        xPoint = bound.x;
-        yPoint = bound.y;
-      } else {
-        xPoint = bound;
-        yPoint = bound;
+      if (minX === undefined || bound.x < minX) {
+        minX = bound.x;
       }
-
-      if (minX === undefined || xPoint.x < minX) {
-        minX = xPoint.x;
+      if (minY === undefined || bound.y < minY) {
+        minY = bound.y;
       }
-      if (minY === undefined || yPoint.y < minY) {
-        minY = yPoint.y;
+      if (maxX === undefined || bound.x + bound.width > maxX) {
+        maxX = bound.x + bound.width;
       }
-      if (maxX === undefined || xPoint.x + bound.width > maxX) {
-        maxX = xPoint.x + bound.width;
-      }
-      if (maxY === undefined || yPoint.y + bound.height > maxY) {
-        maxY = yPoint.y + bound.height;
+      if (maxY === undefined || bound.y + bound.height > maxY) {
+        maxY = bound.y + bound.height;
       }
     });
 
