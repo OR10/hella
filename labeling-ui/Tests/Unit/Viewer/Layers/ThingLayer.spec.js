@@ -14,6 +14,7 @@ fdescribe('ThingLayer test suite', () => {
   let loggerService;
   let toolService;
   let viewerMouseCursorService;
+  let timeoutService;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -28,6 +29,8 @@ fdescribe('ThingLayer test suite', () => {
 
     drawingContext = jasmine.createSpyObj('drawingContext', ['withScope', 'setup']);
     drawingContext.withScope.and.callFake(callback => callback(scope));
+
+    timeoutService = jasmine.createSpy('$timeout');
   }));
 
   beforeEach(inject(($injector, $rootScope) => {
@@ -45,7 +48,7 @@ fdescribe('ThingLayer test suite', () => {
   function createThingLayerInstance() {
     const framePosition = jasmine.createSpyObj('framePosition', ['beforeFrameChangeAlways', 'afterFrameChangeAlways']);
 
-    return new ThingLayer(0, 0, scope, injector, drawingContext, toolService, null, loggerService, null, framePosition, viewerMouseCursorService);
+    return new ThingLayer(0, 0, scope, injector, drawingContext, toolService, null, loggerService, timeoutService, framePosition, viewerMouseCursorService);
   }
 
   describe('Creation', () => {
@@ -255,6 +258,39 @@ fdescribe('ThingLayer test suite', () => {
           }
 
           expect(throwWrapper).toThrowError(`Can not handle shape creation of type: ${paperShape}`);
+        });
+      });
+
+      describe('actionIdentifier "selection"', () => {
+        let paperShape;
+        let invokePromiseMock;
+
+        beforeEach(() => {
+          paperShape = {Bernd: 'das Brot'};
+
+          invokePromiseMock = jasmine.createSpyObj('invoke promise return', ['then']);
+          invokePromiseMock.then.and.callFake(callback => {
+            const callbackParams = {
+              actionIdentifier: 'selection',
+              paperShape: paperShape,
+            };
+            callback(callbackParams);
+            return { catch: () => {} };
+          });
+
+          spyOn(thing._multiTool, 'invoke').and.returnValue(invokePromiseMock);
+        });
+
+        it('it sets the paperShape as selectedPaperShape', () => {
+          thing.activateTool('multi', selectedLabelStructureThing);
+
+          expect(scope.vm.selectedPaperShape).toBe(paperShape);
+        });
+
+        it('runs a timeout for angular $digest reasons', () => {
+          thing.activateTool('multi', selectedLabelStructureThing);
+
+          expect(timeoutService).toHaveBeenCalled();
         });
       });
 
