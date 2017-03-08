@@ -48,7 +48,7 @@ class User
      * @param bool   $locked
      * @param array  $settings
      *
-     * @return FosUserModel\UserInterface
+     * @return Model\User|FosUserModel\UserInterface
      */
     public function createUser($username, $email, $password, $enabled = true, $locked = false, $settings = [])
     {
