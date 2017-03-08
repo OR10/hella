@@ -258,7 +258,7 @@ fdescribe('ThingLayer test suite', () => {
 
           invokeThenParams = {
             actionIdentifier: actionIdentifier,
-            paperShape: paperThingShape,
+            paperShape: bogusPaperShape,
           };
           invokePromiseMock = jasmine.createSpyObj('invoke promise return', ['then']);
           invokePromiseMock.then.and.callFake(then => {
@@ -270,28 +270,33 @@ fdescribe('ThingLayer test suite', () => {
           scope.vm.paperThingShapes = [];
         });
 
-        it('emits thing:create when the Shape is a PaperThingShape', () => {
-          spyOn(thing, 'emit');
+        describe('Created PaperThingShape', () => {
+          beforeEach(() => {
+            invokeThenParams.paperShape = paperThingShape;
+          });
 
-          thing.activateTool('multi', selectedLabelStructureThing);
+          it('emits thing:create when the Shape is a PaperThingShape', () => {
+            spyOn(thing, 'emit');
 
-          expect(thing.emit).toHaveBeenCalledWith('thing:create', paperThingShape);
-        });
+            thing.activateTool('multi', selectedLabelStructureThing);
 
-        it('adds the shape to the paperThingShapes array', () => {
-          thing.activateTool('multi', selectedLabelStructureThing);
+            expect(thing.emit).toHaveBeenCalledWith('thing:create', paperThingShape);
+          });
 
-          expect(scope.vm.paperThingShapes).toEqual([paperThingShape]);
-        });
+          it('adds the shape to the paperThingShapes array', () => {
+            thing.activateTool('multi', selectedLabelStructureThing);
 
-        it('sets the shape as selected shape', () => {
-          thing.activateTool('multi', selectedLabelStructureThing);
+            expect(scope.vm.paperThingShapes).toEqual([paperThingShape]);
+          });
 
-          expect(scope.vm.selectedPaperShape).toBe(paperThingShape);
+          it('sets the shape as selected shape', () => {
+            thing.activateTool('multi', selectedLabelStructureThing);
+
+            expect(scope.vm.selectedPaperShape).toBe(paperThingShape);
+          });
         });
 
         it('it throws an error if it cannot handle the shape creation', () => {
-          invokeThenParams.paperShape = bogusPaperShape;
           function throwWrapper() {
             thing.activateTool('multi', selectedLabelStructureThing);
           }
