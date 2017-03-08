@@ -13,8 +13,18 @@ class TaskGateway {
    * @param {PouchDbViewHeater} pouchDbViewHeater
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp
+   * @param {OrganisationService} organisationService
    */
-  constructor($q, loggerService, pouchDbContextService, pouchDbSyncManager, pouchDbViewHeater, apiService, bufferedHttp) {
+  constructor(
+    $q,
+    loggerService,
+    pouchDbContextService,
+    pouchDbSyncManager,
+    pouchDbViewHeater,
+    apiService,
+    bufferedHttp,
+    organisationService
+  ) {
     /**
      * @type {angular.$q}
      * @private
@@ -59,6 +69,12 @@ class TaskGateway {
      * @private
      */
     this._apiService = apiService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
   }
 
   /**
@@ -292,7 +308,8 @@ class TaskGateway {
       params.offset = offset;
     }
 
-    const url = this._apiService.getApiUrl(`/project/${projectId}/attentionTasks`, params);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/attentionTasks`, params);
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
@@ -401,6 +418,7 @@ TaskGateway.$inject = [
   'pouchDbViewHeater',
   'ApiService',
   'bufferedHttp',
+  'organisationService',
 ];
 
 export default TaskGateway;

@@ -1,15 +1,15 @@
 {
   "request": {
-    "path": "/api/user/permissions",
+    "path": "/api/organisation/ORGANISATION-ID-1/user/permissions",
     "method": "GET"
   },
   "response": {
     "data": {
       "result": {
-        "canViewProjectButton": true,
-        "canViewReopenButton": false,
-        "canViewStatsButton": false,
-        "canViewUserListButton": false,
+        "canViewProject": true,
+        "canReopenTask": false,
+        "canViewStats": false,
+        "canViewUserList": false,
         "canViewVideoUploadButton": false,
         "unassignPermission": false
       }

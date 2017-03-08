@@ -1,4 +1,6 @@
 import User from '../Models/User';
+import Organisation from '../../Organisation/Models/Organisation';
+import {map} from 'lodash';
 
 /**
  * Gateway for managing User information
@@ -7,8 +9,9 @@ class UserGateway {
   /**
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
+   * @param {OrganisationService} organisationService
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, bufferedHttp, organisationService) {
     /**
      * @type {BufferedHttp}
      * @private
@@ -20,6 +23,12 @@ class UserGateway {
      * @private
      */
     this._apiService = apiService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
   }
 
   /**
@@ -28,7 +37,7 @@ class UserGateway {
    * @return {AbortablePromise<User|Error>}
    */
   getCurrentUser() {
-    const url = this._apiService.getApiUrl('/user/profile');
+    const url = this._apiService.getApiUrl('/currentUser/profile');
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (response.data && response.data.result) {
@@ -40,12 +49,32 @@ class UserGateway {
   }
 
   /**
-   * List all users from the backend
+   * List all users of the current organisation
    *
    * @return {AbortablePromise.<Array.<User>>}
    */
   getUsers() {
-    const url = this._apiService.getApiUrl('/users');
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/users`);
+
+    return this._bufferedHttp.get(url, undefined, 'user')
+      .then(response => {
+        if (!response.data || !response.data.result || !response.data.result.users) {
+          throw new Error('Failed loading users list');
+        }
+
+        return response.data.result.users.map(user => new User(user));
+      });
+  }
+
+  /**
+   * List all users of all organisations
+   *
+   * @return {AbortablePromise}
+   */
+  getUserOfAllOrganisations() {
+    const url = this._apiService.getApiUrl(`/user`);
+
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.users) {
@@ -64,14 +93,20 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   getUser(id) {
-    const url = this._apiService.getApiUrl(`/users/${id}`);
+    const url = this._apiService.getApiUrl(`/user/${id}`);
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.user) {
           throw new Error(`Failed loading user with id ${id}.`);
         }
+        const userResult = response.data.result.user;
+        userResult.organisations = response.data.result.user.organisations.map(
+          userOrganisationId => new Organisation(
+            response.data.result.organisations.find(organisation => userOrganisationId === organisation.id)
+          )
+        );
 
-        return new User(response.data.result.user);
+        return new User(userResult);
       });
   }
 
@@ -83,7 +118,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   createUser(user) {
-    const url = this._apiService.getApiUrl(`/users`);
+    const url = this._apiService.getApiUrl(`/user`);
     return this._bufferedHttp.post(url, user, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.user) {
@@ -102,7 +137,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   updateUser(user) {
-    const url = this._apiService.getApiUrl(`/users/${user.id}`);
+    const url = this._apiService.getApiUrl(`/user/${user.id}`);
     return this._bufferedHttp.put(url, user, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.user) {
@@ -121,7 +156,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   deleteUser(id) {
-    const url = this._apiService.getApiUrl(`/users/${id}`);
+    const url = this._apiService.getApiUrl(`/user/${id}`);
     return this._bufferedHttp.delete(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.success) {
@@ -139,7 +174,7 @@ class UserGateway {
    * @returns {AbortablePromise}
    */
   setCurrentUserPassword(oldPassword, newPassword) {
-    const url = this._apiService.getApiUrl(`/user/password`);
+    const url = this._apiService.getApiUrl(`/currentUser/password`);
     const data = {
       oldPassword: oldPassword,
       newPassword: newPassword,
@@ -162,14 +197,35 @@ class UserGateway {
    * @returns {AbortablePromise}
    */
   getCurrentUserPermissions() {
-    const url = this._apiService.getApiUrl(`/user/permissions`);
+    const url = this._apiService.getApiUrl(`/currentUser/permissions`);
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result) {
-          throw new Error('Failed loading users list');
+          throw new Error('Invalid permission list response');
         }
 
         return response.data.result;
+      });
+  }
+
+  /**
+   * Retrieve the list of organisations the current user is assigned to
+   *
+   * @returns {AbortablePromise.<Array.<Organisation>>}
+   */
+  getCurrentUserOrganisations() {
+    const url = this._apiService.getApiUrl(`/currentUser/organisations`);
+    return this._bufferedHttp.get(url, undefined, 'user')
+      .then(response => {
+        if (!response.data || !response.data.result || !Array.isArray(response.data.result)) {
+          throw new Error('Invalid organisation list response');
+        }
+
+        const organisationDocumentsById = response.data.result;
+        return map(
+          organisationDocumentsById,
+          organisationDocument => new Organisation(organisationDocument)
+        );
       });
   }
 }
@@ -177,6 +233,7 @@ class UserGateway {
 UserGateway.$inject = [
   'ApiService',
   'bufferedHttp',
+  'organisationService',
 ];
 
 export default UserGateway;

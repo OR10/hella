@@ -10,6 +10,9 @@ class UserNameController {
 
     this.user.roles.forEach(role => {
       switch (role) {
+        case 'ROLE_SUPER_ADMIN':
+          this.readableRoles.push('SuperAdmin');
+          break;
         case 'ROLE_ADMIN':
           this.readableRoles.push('Admin');
           break;

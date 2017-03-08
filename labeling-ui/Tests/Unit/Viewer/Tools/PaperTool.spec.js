@@ -2,21 +2,21 @@ import PaperTool from 'Application/Viewer/Tools/PaperTool';
 import Tool from 'Application/Viewer/Tools/NewTool';
 import Paper from 'paper';
 
-describe('PaperTool test suite', function() {
+describe('PaperTool test suite', () => {
   let drawContext;
   let rootScope;
 
   beforeEach(() => {
-      drawContext = jasmine.createSpyObj('drawContext', ['withScope']);
-      rootScope = jasmine.createSpyObj('$rootScope', ['$evalAsync']);
-      drawContext.withScope.and.callFake((callback) => callback());
+    drawContext = jasmine.createSpyObj('drawContext', ['withScope']);
+    rootScope = jasmine.createSpyObj('$rootScope', ['$evalAsync']);
+    drawContext.withScope.and.callFake(callback => callback());
   });
 
   function createPaperToolInstance() {
     return new PaperTool(drawContext, rootScope);
   }
 
-  it('is of type Tool', function() {
+  it('is of type Tool', () => {
     const paperTool = createPaperToolInstance();
     expect(paperTool).toEqual(jasmine.any(Tool));
   });
@@ -26,7 +26,7 @@ describe('PaperTool test suite', function() {
       const mockedCoordinate = 42;
       spyOn(Math, 'round').and.returnValue(mockedCoordinate);
       const event = {
-        point: { x: 0, y: 0}
+        point: {x: 0, y: 0},
       };
       const paperTool = createPaperToolInstance();
       paperTool.delegateMouseEvent('drag', event);
@@ -86,7 +86,7 @@ describe('PaperTool test suite', function() {
         const paperTool = createPaperToolInstance();
         const event = {point: {x: 0, y: 0}};
         spyOn(paperTool, 'onMouseMove');
-        rootScope.$evalAsync.and.callFake((callback) => {
+        rootScope.$evalAsync.and.callFake(callback => {
           callback();
         });
 
@@ -101,7 +101,7 @@ describe('PaperTool test suite', function() {
       it('does not break if there is no last drag point', () => {
         const paperTool = createPaperToolInstance();
         const event = {
-          point: { x: 0, y: 0}
+          point: {x: 0, y: 0},
         };
 
         function throwWrapper() {
@@ -128,8 +128,8 @@ describe('PaperTool test suite', function() {
 
           toolActionStruct = {
             options: {
-              initialDragDistance: null
-            }
+              initialDragDistance: null,
+            },
           };
           paperTool._toolActionStruct = toolActionStruct;
 
@@ -162,7 +162,6 @@ describe('PaperTool test suite', function() {
 
           expect(paperTool.onMouseDrag).not.toHaveBeenCalled();
         });
-
       });
 
       describe('Drag event state "inProgress"', () => {
@@ -184,8 +183,8 @@ describe('PaperTool test suite', function() {
           toolActionStruct = {
             options: {
               initialDragDistance: dragDistanceZero,
-              minDragDistance: null
-            }
+              minDragDistance: null,
+            },
           };
           paperTool._toolActionStruct = toolActionStruct;
 
@@ -233,7 +232,6 @@ describe('PaperTool test suite', function() {
 
           expect(paperTool.onMouseDrag).not.toHaveBeenCalled();
         });
-
       });
     });
 
@@ -255,7 +253,7 @@ describe('PaperTool test suite', function() {
       const paperTool = createPaperToolInstance();
       return () => {
         paperTool[type]();
-      }
+      };
     }
 
     describe('onMouseUp', () => {

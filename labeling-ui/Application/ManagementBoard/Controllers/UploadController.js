@@ -6,8 +6,9 @@ class UploadController {
    * @param {User} user
    * @param {Object} userPermissions
    * @param {Object} project
+   * @param {OrganisationService} organisationService
    */
-  constructor($rootScope, $scope, $state, user, userPermissions, project) {
+  constructor($rootScope, $scope, $state, user, userPermissions, project, organisationService) {
     /**
      * @type {$rootScope}
      * @private
@@ -37,7 +38,12 @@ class UploadController {
     this.project = project;
 
     /**
-     * @type {UserPermissions}
+     * @type {string}
+     */
+    this.organisationId = organisationService.get();
+
+    /**
+     * @type {Object}
      */
     this.userPermissions = userPermissions;
   }
@@ -50,6 +56,7 @@ UploadController.$inject = [
   'user',
   'userPermissions',
   'project',
+  'organisationService',
 ];
 
 export default UploadController;

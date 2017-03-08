@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests\Controller\Api\Task;
 
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
 use Symfony\Component\HttpFoundation;
@@ -48,6 +49,11 @@ class LabeledThingTest extends Tests\WebTestCase
      * @var Model\User
      */
     private $user;
+
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
 
     public function testGetLabeledThingDocument()
     {
@@ -271,6 +277,7 @@ class LabeledThingTest extends Tests\WebTestCase
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
         $this->labelingGroupFacade       = $this->getAnnostationService('database.facade.labeling_group');
+        $this->organisationFacade        = $this->getAnnostationService('database.facade.organisation');
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
@@ -279,10 +286,13 @@ class LabeledThingTest extends Tests\WebTestCase
 
     private function createLabelingTask($startRange = 10, $endRange = 20)
     {
-        $video = $this->videoFacade->save(Model\Video::create('foobar'));
-        $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$this->user->getId()]));
+        $organisation = $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
+        $video = $this->videoFacade->save(Model\Video::create($organisation, 'foobar'));
+        $labelingGroup = $this->labelingGroupFacade->save(
+            Model\LabelingGroup::create($organisation, [], [$this->user->getId()])
+        );
 
-        $project = Model\Project::create('test project', $this->user);
+        $project = Model\Project::create('test project', $organisation, $this->user);
         $project->setLabelingGroupId($labelingGroup->getId());
         $this->projectFacade->save($project);
 

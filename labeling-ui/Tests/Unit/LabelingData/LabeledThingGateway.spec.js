@@ -118,7 +118,11 @@ describe('LabeledThingGateway', () => {
       classes: ['foo', 'bar'],
     });
 
-    const expectedResult = {success: true};
+    const expectedResult = {
+      result: {
+        success: true,
+      },
+    };
 
     $httpBackend
       .expect('DELETE', expectedUrl)

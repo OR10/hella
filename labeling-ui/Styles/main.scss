@@ -398,3 +398,19 @@ title-bar {
     background-color: green;
   }
 }
+
+.tagDisplay {
+  display: inline-block;
+  line-height: 1;
+  padding: 4px 5px;
+  margin-left: 7px;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: bold;
+  color: #353b42;
+  background-color: #bedb31;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -khtml-border-radius: 5px;
+  border-radius: 5px;
+}

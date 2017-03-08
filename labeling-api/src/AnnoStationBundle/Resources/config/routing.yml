@@ -3,28 +3,28 @@ default:
     type: annotation
 
 api_project_batch_upload:
-    resource: "AnnoStationBundle\Controller\Api\\Project\BatchUpload"
+    resource: "AnnoStationBundle\Controller\Api\Organisation\\Project\BatchUpload"
     type: annotation
 
 api_project_status:
-    resource: "annostation.labeling_api.controller.api.project.status"
+    resource: "annostation.labeling_api.controller.api.organisation.project.status"
     type: rest
-    name_prefix: app_api_project_status
+    name_prefix: app_api_organisation_project_status
 
 api_project_report:
-    resource: "annostation.labeling_api.controller.api.project.report"
+    resource: "annostation.labeling_api.controller.api.organisation.project.report"
     type: rest
-    name_prefix: app_api_report
+    name_prefix: app_api_organisation_report
 
 api_project_attention:
-    resource: "annostation.labeling_api.controller.api.project.attention"
+    resource: "annostation.labeling_api.controller.api.organisation.project.attention"
     type: rest
-    name_prefix: app_api_project_attention
+    name_prefix: app_api_organisation_project_attention
 
 api_project_export:
-    resource: "annostation.labeling_api.controller.api.project.export"
+    resource: "annostation.labeling_api.controller.api.organisation.project.export"
     type: rest
-    name_prefix: app_api_project_export_
+    name_prefix: app_api_organisation_project_export_
 
 api_task_labeled_thing_in_frame:
     resource: "annostation.labeling_api.controller.api.task.labeled_thing_in_frame"
@@ -86,10 +86,20 @@ api_video:
     type: rest
     name_prefix: app_api_video_
 
-api_users:
-    resource: "annostation.labeling_api.controller.api.users"
+api_organisation_user:
+    resource: "annostation.labeling_api.controller.api.organisation.user"
     type: rest
-    name_prefix: app_api_users_
+    name_prefix: app_api_organisation_user_
+
+api_organisation_users:
+    resource: "annostation.labeling_api.controller.api.organisation.users"
+    type: rest
+    name_prefix: app_api_organisation_users_
+
+api_user:
+    resource: "annostation.labeling_api.controller.api.user"
+    type: rest
+    name_prefix: app_api_user_
 
 api_task:
     resource: "annostation.labeling_api.controller.api.task"
@@ -97,9 +107,9 @@ api_task:
     name_prefix: app_api_task_
 
 api_project:
-    resource: "annostation.labeling_api.controller.api.project"
+    resource: "annostation.labeling_api.controller.api.organisation.project"
     type: rest
-    name_prefix: app_api_project_
+    name_prefix: app_api_organisation_project_
 
 api_test:
     resource: "annostation.labeling_api.controller.api.test"
@@ -116,10 +126,10 @@ api_current_user:
     type: rest
     name_prefix: app_api_current_user_
 
-api_project_count:
-    resource: "annostation.labeling_api.controller.api.project_count"
+api_organisation_project_count:
+    resource: "annostation.labeling_api.controller.api.organisation.project_count"
     type: rest
-    name_prefix: app_api_project_count_
+    name_prefix: app_api_organisation_project_count_
 
 api_task_count:
     resource: "annostation.labeling_api.controller.api.task_count"
@@ -127,14 +137,14 @@ api_task_count:
     name_prefix: app_api_task_count_
 
 api_labeling_group:
-    resource: "annostation.labeling_api.controller.api.labeling_group"
+    resource: "annostation.labeling_api.controller.api.organisation.labeling_group"
     type: rest
-    name_prefix: app_api_labeling_group
+    name_prefix: app_api_organisation_labeling_group
 
 api_task_configuration:
-    resource: "annostation.labeling_api.controller.api.task_configuration"
+    resource: "annostation.labeling_api.controller.api.organisation.task_configuration"
     type: rest
-    name_prefix: app_api_task_configuration
+    name_prefix: app_api_organisation_task_configuration
 
 api_ui_log:
     resource: "annostation.labeling_api.controller.api.ui_log"
@@ -157,6 +167,16 @@ labeled_thing_group:
     name_prefix: app_labeled_thing_group_
 
 project_importer:
-    resource: "annostation.labeling_api.controller.api.project_importer"
+    resource: "annostation.labeling_api.controller.api.organisation.project_importer"
     type: rest
     name_prefix: app_project_importer_
+
+api_organisation:
+    resource: "annostation.labeling_api.controller.api.organisation"
+    type: rest
+    name_prefix: app_api_organisation_
+
+api_organisation_capmaign:
+    resource: "annostation.labeling_api.controller.api.organisation.campaign"
+    type: rest
+    name_prefix: app_api_organisation_campaign_

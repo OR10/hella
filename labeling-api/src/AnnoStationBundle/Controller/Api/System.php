@@ -48,7 +48,7 @@ class System extends Controller\Base
      *
      * @Rest\Get("/queues")
      *
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @return \FOS\RestBundle\View\View
      */

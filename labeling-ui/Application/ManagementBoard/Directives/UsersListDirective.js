@@ -8,7 +8,9 @@ import UsersListController from './UsersListController';
  */
 class UsersListDirective {
   constructor() {
-    this.scope = true;
+    this.scope = {
+      userPermissions: '=',
+    };
 
     this.template = usersListTemplate;
 

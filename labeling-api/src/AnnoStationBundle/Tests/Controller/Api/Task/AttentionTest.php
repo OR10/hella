@@ -130,19 +130,21 @@ class AttentionTest extends Tests\WebTestCase
             ->build();
         $this->userFacade->updateUser($anotherCoordinatorUser);
 
+        $organisation = Helper\OrganisationBuilder::create()->build();
+
         $labelingGroup = $labelingGroup->save(
-            Helper\LabelingGroupBuilder::create()
+            Helper\LabelingGroupBuilder::create($organisation)
                 ->withCoordinators([$coordinatorUser->getId()])
                 ->withUsers([$labelerUser->getId()])
                 ->build()
         );
 
-        $project = Helper\ProjectBuilder::create()
+        $project = Helper\ProjectBuilder::create($organisation)
             ->withAddedCoordinatorAssignment($coordinatorUser)
             ->withLabelGroup($labelingGroup);
         $project = $projectFacade->save($project->build());
 
-        $video = $videoFacade->save(Helper\VideoBuilder::create()->build());
+        $video = $videoFacade->save(Helper\VideoBuilder::create($organisation)->build());
 
         $task = Helper\LabelingTaskBuilder::create($project, $video)
             ->withAddedUserAssignment(

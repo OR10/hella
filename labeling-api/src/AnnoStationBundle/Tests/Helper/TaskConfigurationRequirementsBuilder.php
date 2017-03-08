@@ -3,9 +3,15 @@
 namespace AnnoStationBundle\Tests\Helper;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 class TaskConfigurationRequirementsBuilder
 {
+    /**
+     * @var AnnoStationBundleModel\Organisation
+     */
+    private $organisation;
+
     /**
      * @var string
      */
@@ -37,16 +43,18 @@ class TaskConfigurationRequirementsBuilder
     private $json;
 
     /**
-     * @param        $binaryData
-     * @param        $userId
-     * @param string $name
-     * @param string $filename
-     * @param string $contentType
-     * @param array  $json
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param                                     $binaryData
+     * @param                                     $userId
+     * @param string                              $name
+     * @param string                              $filename
+     * @param string                              $contentType
+     * @param array                               $json
      *
      * @return TaskConfigurationRequirementsBuilder
      */
     public static function create(
+        AnnoStationBundleModel\Organisation $organisation,
         $binaryData,
         $userId,
         $name = 'foobar',
@@ -56,12 +64,25 @@ class TaskConfigurationRequirementsBuilder
     ) {
         $taskConfiguration = new self();
 
-        return $taskConfiguration->withName($name)
+        return $taskConfiguration->withOrganisation($organisation)
+            ->withName($name)
             ->withFilename($filename)
             ->withContentType($contentType)
             ->withBinaryData($binaryData)
             ->withUserId($userId)
             ->withJson(\json_encode($json));
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
+     * @return $this
+     */
+    public function withOrganisation(AnnoStationBundleModel\Organisation $organisation)
+    {
+        $this->organisation = $organisation;
+
+        return $this;
     }
 
     /**
@@ -142,6 +163,7 @@ class TaskConfigurationRequirementsBuilder
     public function build()
     {
         $taskConfiguration = new Model\TaskConfiguration\RequirementsXml(
+            $this->organisation,
             $this->name,
             $this->filename,
             $this->contentType,

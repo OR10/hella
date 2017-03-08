@@ -105,7 +105,7 @@ class LabeledThingGroup extends Controller\Base
     ) {
         $this->labeledThingGroupFacade->delete($labeledThingGroup);
 
-        return View\View::create()->setData(['success' => true]);
+        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 
     private function guidv4($data)

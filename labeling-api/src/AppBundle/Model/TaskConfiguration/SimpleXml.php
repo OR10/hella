@@ -4,6 +4,7 @@ namespace AppBundle\Model\TaskConfiguration;
 use AppBundle\Model\TaskConfiguration;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use JMS\Serializer\Annotation as Serializer;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 /**
  * @CouchDB\Document
@@ -21,6 +22,11 @@ class SimpleXml implements TaskConfiguration
      * @CouchDB\Version
      */
     private $rev;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    protected $organisationId;
 
     /**
      * @CouchDB\Field(type="string")
@@ -56,18 +62,27 @@ class SimpleXml implements TaskConfiguration
     /**
      * TaskConfiguraion constructor.
      *
-     * @param      $name
-     * @param      $filename
-     * @param      $contentType
-     * @param      $binaryData
-     * @param      $userId
-     * @param      $json
-     * @param null $date
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param                                     $name
+     * @param                                     $filename
+     * @param                                     $contentType
+     * @param                                     $binaryData
+     * @param                                     $userId
+     * @param                                     $json
+     * @param null                                $date
      *
      * @throws Exception\EmptyData
      */
-    public function __construct($name, $filename, $contentType, $binaryData, $userId, $json, $date = null)
-    {
+    public function __construct(
+        AnnoStationBundleModel\Organisation $organisation,
+        $name,
+        $filename,
+        $contentType,
+        $binaryData,
+        $userId,
+        $json,
+        $date = null
+    ) {
         if (!is_string($filename) || empty($filename)) {
             throw new \InvalidArgumentException('Invalid filename');
         }
@@ -88,11 +103,12 @@ class SimpleXml implements TaskConfiguration
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
         }
 
-        $this->name      = $name;
-        $this->filename  = $filename;
-        $this->timestamp = $date->getTimestamp();
-        $this->userId    = $userId;
-        $this->json      = $json;
+        $this->organisationId = $organisation->getId();
+        $this->name           = $name;
+        $this->filename       = $filename;
+        $this->timestamp      = $date->getTimestamp();
+        $this->userId         = $userId;
+        $this->json           = $json;
 
         $this->file[$this->filename] = \Doctrine\CouchDB\Attachment::createFromBinaryData(
             $binaryData,
@@ -201,5 +217,21 @@ class SimpleXml implements TaskConfiguration
     public function getType()
     {
         return self::TYPE;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrganisationId()
+    {
+        return $this->organisationId;
+    }
+
+    /**
+     * @param mixed $organisationId
+     */
+    public function setOrganisationId($organisationId)
+    {
+        $this->organisationId = $organisationId;
     }
 }

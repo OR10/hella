@@ -19,6 +19,7 @@ describe('Cuboid creation', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
       assets.mocks.CuboidCreation.Shared.Task,
       assets.mocks.CuboidCreation.Shared.Video,
       assets.mocks.Shared.LabelStructure,
@@ -45,7 +46,7 @@ describe('Cuboid creation', () => {
         assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -114,7 +115,7 @@ describe('Cuboid creation', () => {
         assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -167,7 +168,7 @@ describe('Cuboid creation', () => {
         assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -235,7 +236,7 @@ describe('Cuboid creation', () => {
         assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -305,7 +306,7 @@ describe('Cuboid creation', () => {
         assets.mocks.CuboidCreation.MinimalTopToBottom.StoreLabeledThingInFrame,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
@@ -356,7 +357,7 @@ describe('Cuboid creation', () => {
         assets.mocks.CuboidCreation.MinimalBottomToTop.StoreLabeledThingInFrame,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
       })

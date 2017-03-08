@@ -21,6 +21,10 @@
                         <td>{{vm.user.email}}</td>
                     </tr>
                     <tr>
+                        <td>Account expires at:</td>
+                        <td>{{vm.user.expiresAt === null ? 'Never' : (vm.user.expiresAt | date:'d. MMM yyyy')}}</td>
+                    </tr>
+                    <tr>
                         <td>Password:</td>
                         <td><a href="" ui-sref="labeling.user.password">Change password</a></td>
                     </tr>

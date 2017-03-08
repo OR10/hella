@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Tests\Controller\Api\Task;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
@@ -97,16 +98,19 @@ class StatusTest extends Tests\WebTestCase
     protected function setUpImplementation()
     {
         $this->videoFacade        = $this->getAnnostationService('database.facade.video');
-        $this->projectFacade        = $this->getAnnostationService('database.facade.project');
+        $this->projectFacade      = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
+        $organisationFacade       = $this->getAnnostationService('database.facade.organisation');
+
+        $organisation = $organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
         $this->user->addRole(Model\User::ROLE_ADMIN);
 
-        $this->video = $this->videoFacade->save(Model\Video::create('Testvideo'));
-        $this->project = $this->projectFacade->save(Model\Project::create('test project'));
-        $task = Model\LabelingTask::create(
+        $this->video   = $this->videoFacade->save(Model\Video::create($organisation, 'Testvideo'));
+        $this->project = $this->projectFacade->save(Model\Project::create('test project', $organisation));
+        $task          = Model\LabelingTask::create(
             $this->video,
             $this->project,
             range(1, 10),

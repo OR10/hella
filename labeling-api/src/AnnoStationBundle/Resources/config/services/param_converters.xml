@@ -69,5 +69,11 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
             <tag name="request.param_converter" converter="annostation.labeled_thing_group" priority="10"/>
         </service>
+
+        <service id="annostation.labeling_api.request.param_converter.organisation"
+                 class="AnnoStationBundle\Request\ParamConverter\Organisation">
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <tag name="request.param_converter" converter="annostation.organisation" priority="10"/>
+        </service>
     </services>
 </container>

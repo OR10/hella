@@ -28,6 +28,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
             <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <tag name="console.command"/>
         </service>
 
@@ -176,6 +177,19 @@
                       id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_in_frames"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.task_timers"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.video"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="annostation.labeling_api.command.migrations.add_default_organisation"
+                 class="AnnoStationBundle\Command\Migrations\AddDefaultOrganisation">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <tag name="console.command"/>
         </service>
     </services>

@@ -5,8 +5,9 @@ class LabelStructureGateway {
   /**
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp
+   * @param {OrganisationService} organisationService
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, bufferedHttp, organisationService) {
     /**
      * @type {BufferedHttp}
      */
@@ -16,6 +17,12 @@ class LabelStructureGateway {
      * @type {ApiService}
      */
     this._apiService = apiService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
   }
 
   /**
@@ -26,7 +33,8 @@ class LabelStructureGateway {
    * @return {AbortablePromise}
    */
   getTaskStructureData(taskConfigurationId) {
-    const url = this._apiService.getApiUrl(`/taskConfiguration/${taskConfigurationId}`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration/${taskConfigurationId}`);
     return this._bufferedHttp.get(url, undefined, 'label-structure')
       .then(response => {
         if (response.data && response.data.result) {
@@ -43,7 +51,8 @@ class LabelStructureGateway {
    * @param {string} taskConfigurationId
    */
   getRequirementsFile(taskConfigurationId) {
-    const url = this._apiService.getApiUrl(`/taskConfiguration/${taskConfigurationId}/file`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration/${taskConfigurationId}/file`);
     return this._bufferedHttp.get(url, undefined, 'label-structure')
       .then(response => {
         if (response) {
@@ -77,6 +86,7 @@ class LabelStructureGateway {
 LabelStructureGateway.$inject = [
   'ApiService',
   'bufferedHttp',
+  'organisationService',
 ];
 
 export default LabelStructureGateway;

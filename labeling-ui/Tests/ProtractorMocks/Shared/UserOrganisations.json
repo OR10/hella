@@ -1,0 +1,24 @@
+{
+  "request": {
+    "path": "/api/currentUser/organisations",
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": [
+        {
+          "id": "ORGANISATION-ID-1",
+          "rev": "1-1c31c542fe853098e4b6a2a2c23efd3a",
+          "name": "Default Organisation",
+          "quota": 0
+        },
+        {
+          "id": "ORGANISATION-ID-2",
+          "rev": "1-c227dab05c85c19a1568d9014912035b",
+          "name": "Orga 2",
+          "quota": 0
+        }
+      ]
+    }
+  }
+}

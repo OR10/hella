@@ -3,33 +3,78 @@ import RemoteLogger from './Common/Loggers/RemoteLogger';
 
 class ApplicationController {
   /**
-   * @param {angular.Scope} $scope
-   * @param {angular.$location} $location
+   * @param {$scope} $scope
+   * @param {$state} $state
    * @param {LoggerService} loggerService
    * @param {LogGateway} logGateway
+   * @param {CurrentUserService} currentUserService
+   * @param {OrganisationService} organisationService
    * @param {User} user
+   * @param {Object} userPermissions
+   * @param {Array.<Organisation>} userOrganisations
+   * @param {OrganisationRoutingService} organisationRoutingService
    */
-  constructor($scope, $location, loggerService, logGateway, user) {
+  constructor(
+    $scope,
+    $state,
+    loggerService,
+    logGateway,
+    currentUserService,
+    organisationService,
+    user,
+    userPermissions,
+    userOrganisations,
+    organisationRoutingService
+  ) {
     /**
-     * @type {angular.Scope}
+     * @type {CurrentUserService}
      * @private
      */
-    this._$scope = $scope;
+    this._currentUserService = currentUserService;
 
-    this._$location = $location;
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
+
+    // Set active user information for usage throughout the application
+    currentUserService.set(user);
+    currentUserService.setPermissions(userPermissions);
+    currentUserService.setOrganisations(userOrganisations);
+
+    // Initialize Organisation with the first one of the user, by default
+    if (organisationService.get() === null) {
+      organisationService.set(userOrganisations[0].id);
+    }
+
+    this._deregisterStateChangeListener = $scope.$root.$on(
+      '$stateChangeStart',
+      (event, to, params) => organisationRoutingService.onStateChangeStart(event, to, params)
+    );
+
+    $scope.$on('$destroy', () => {
+      this._deregisterStateChangeListener();
+    });
 
     if (!Environment.isDevelopment && !Environment.isTesting && !Environment.isFunctionalTesting) {
       loggerService.addLogger(new RemoteLogger(logGateway, user));
     }
   }
+
 }
 
 ApplicationController.$inject = [
   '$scope',
-  '$location',
+  '$state',
   'loggerService',
   'logGateway',
+  'currentUserService',
+  'organisationService',
   'user',
+  'userPermissions',
+  'userOrganisations',
+  'organisationRoutingService',
 ];
 
 export default ApplicationController;

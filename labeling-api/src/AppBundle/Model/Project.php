@@ -2,7 +2,9 @@
 
 namespace AppBundle\Model;
 
+use AnnoStationBundle\AnnoStationBundle;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 /**
  * @CouchDB\Document
@@ -128,23 +130,36 @@ class Project
     private $description;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    protected $organisationId;
+
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
+    protected $campaigns;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
-     * @param string $name
+     * @param string                              $name
      *
-     * @param User   $user
-     * @param null   $creationDate
-     * @param null   $dueDate
-     * @param array  $labelingValidationProcesses
-     * @param int    $frameSkip
-     * @param int    $startFrameNumber
-     * @param int    $splitEach
-     * @param null   $description
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param User                                $user
+     * @param null                                $creationDate
+     * @param null                                $dueDate
+     * @param array                               $labelingValidationProcesses
+     * @param int                                 $frameSkip
+     * @param int                                 $startFrameNumber
+     * @param int                                 $splitEach
+     * @param null                                $description
+     * @param array                               $campaigns
      *
      * @return static
      */
     public static function create(
         $name,
+        AnnoStationBundleModel\Organisation $organisation,
         User $user = null,
         $creationDate = null,
         $dueDate = null,
@@ -152,10 +167,12 @@ class Project
         $frameSkip = 1,
         $startFrameNumber = 0,
         $splitEach = 0,
-        $description = null
+        $description = null,
+        $campaigns = []
     ) {
         return new static(
             $name,
+            $organisation,
             $user,
             $creationDate,
             $dueDate,
@@ -163,23 +180,27 @@ class Project
             $frameSkip,
             $startFrameNumber,
             $splitEach,
-            $description
+            $description,
+            $campaigns
         );
     }
 
     /**
-     * @param string $name
-     * @param User   $user
-     * @param null   $creationDate
-     * @param null   $dueDate
-     * @param array  $labelingValidationProcesses
-     * @param int    $frameSkip
-     * @param int    $startFrameNumber
-     * @param int    $splitEach
-     * @param null   $description
+     * @param string                              $name
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param User                                $user
+     * @param null                                $creationDate
+     * @param null                                $dueDate
+     * @param array                               $labelingValidationProcesses
+     * @param int                                 $frameSkip
+     * @param int                                 $startFrameNumber
+     * @param int                                 $splitEach
+     * @param null                                $description
+     * @param array                               $campaigns
      */
     public function __construct(
         $name,
+        AnnoStationBundleModel\Organisation $organisation,
         User $user = null,
         $creationDate = null,
         $dueDate = null,
@@ -187,7 +208,8 @@ class Project
         $frameSkip = 1,
         $startFrameNumber = 0,
         $splitEach = 0,
-        $description = null
+        $description = null,
+        $campaigns = []
     ) {
         if ($creationDate === null) {
             $creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
@@ -198,6 +220,7 @@ class Project
         }
 
         $this->name                                  = (string) $name;
+        $this->organisationId                        = $organisation->getId();
         $this->creationDate                          = $creationDate;
         $this->dueDate                               = $dueDate;
         $this->labelingValidationProcesses           = $labelingValidationProcesses;
@@ -205,6 +228,7 @@ class Project
         $this->taskVideoSettings['startFrameNumber'] = (int) $startFrameNumber;
         $this->taskVideoSettings['splitEach']        = (int) $splitEach;
         $this->description                           = $description;
+        $this->campaigns                             = $campaigns;
 
         $this->setUserId($user instanceof User ? $user->getId() : null);
         $this->addStatusHistory($creationDate, self::STATUS_TODO, $user);
@@ -712,7 +736,7 @@ class Project
             return true;
         }
 
-        if ($user->hasOneRoleOf([User::ROLE_ADMIN, User::ROLE_LABELER, User::ROLE_OBSERVER])) {
+        if ($user->hasOneRoleOf([User::ROLE_SUPER_ADMIN, User::ROLE_ADMIN, User::ROLE_LABELER, User::ROLE_OBSERVER])) {
             return true;
         }
 
@@ -753,5 +777,29 @@ class Project
     public function setDeletedState(string $deletedState)
     {
         $this->deletedState = $deletedState;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrganisationId()
+    {
+        return $this->organisationId;
+    }
+
+    /**
+     * @param mixed $organisationId
+     */
+    public function setOrganisationId($organisationId)
+    {
+        $this->organisationId = $organisationId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCampaigns()
+    {
+        return $this->campaigns;
     }
 }

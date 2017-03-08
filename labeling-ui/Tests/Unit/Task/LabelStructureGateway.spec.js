@@ -26,6 +26,10 @@ describe('LabelStructureGateway', () => {
         },
       });
 
+      $provide.value('organisationService', {
+        get: () => 'ORGANISATION-ID',
+      });
+
       bufferedHttpProvider.disableAutoExtractionAndInjection();
     });
 

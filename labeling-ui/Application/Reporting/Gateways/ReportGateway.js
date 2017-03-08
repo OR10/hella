@@ -5,8 +5,9 @@ class ReportGateway {
   /**
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
+   * @param {OrganisationService} organisationService
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, bufferedHttp, organisationService) {
     /**
      * @type {BufferedHttp}
      * @private
@@ -18,6 +19,12 @@ class ReportGateway {
      * @private
      */
     this._apiService = apiService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
   }
 
   /**
@@ -26,7 +33,8 @@ class ReportGateway {
    * @return {AbortablePromise<Object|Error>}
    */
   startReport(projectId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/report`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/report`);
     return this._bufferedHttp.post(url, undefined, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {
@@ -43,7 +51,8 @@ class ReportGateway {
    * @return {AbortablePromise<Object|Error>}
    */
   getReports(projectId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/report`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/report`);
     return this._bufferedHttp.get(url, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {
@@ -60,7 +69,8 @@ class ReportGateway {
    * @return {AbortablePromise<Object|Error>}
    */
   getReport(projectId, reportId) {
-    const url = this._apiService.getApiUrl(`/project/${projectId}/report/${reportId}`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/report/${reportId}`);
     return this._bufferedHttp.get(url, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {
@@ -75,6 +85,7 @@ class ReportGateway {
 ReportGateway.$inject = [
   'ApiService',
   'bufferedHttp',
+  'organisationService',
 ];
 
 export default ReportGateway;

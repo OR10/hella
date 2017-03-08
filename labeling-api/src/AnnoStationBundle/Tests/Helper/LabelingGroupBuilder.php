@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Tests\Helper;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 /**
  * Helper class to create LabelingGroup.
@@ -20,11 +21,19 @@ class LabelingGroupBuilder
     private $coordinators = [];
 
     /**
+     * @var AnnoStationBundleModel\Organisation
+     */
+    private $organisation;
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return LabelingGroupBuilder
      */
-    public static function create()
+    public static function create(AnnoStationBundleModel\Organisation $organisation)
     {
         $labelingGroupBuilder = new self();
+        $labelingGroupBuilder->organisation = $organisation;
 
         return $labelingGroupBuilder;
     }
@@ -48,7 +57,7 @@ class LabelingGroupBuilder
      */
     public function build()
     {
-        $labelingGroup = Model\LabelingGroup::create($this->coordinators, $this->users);
+        $labelingGroup = Model\LabelingGroup::create($this->organisation, $this->coordinators, $this->users);
 
         return $labelingGroup;
     }

@@ -12,8 +12,9 @@ class ProjectCreateController {
    * @param {ProjectGateway} projectGateway
    * @param {TaskConfigurationGateway} taskConfigurationGateway
    * @param {ModalService} modalService
+   * @param {OrganisationService} organisationService
    */
-  constructor($scope, $state, user, userPermissions, projectGateway, taskConfigurationGateway, modalService) {
+  constructor($scope, $state, user, userPermissions, projectGateway, taskConfigurationGateway, modalService, organisationService) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -52,6 +53,11 @@ class ProjectCreateController {
      * @private
      */
     this._modalService = modalService;
+
+    /**
+     * @type {string}
+     */
+    this.currentOrganisationId = organisationService.get();
 
     /**
      * @type {integer}
@@ -415,6 +421,7 @@ ProjectCreateController.$inject = [
   'projectGateway',
   'taskConfigurationGateway',
   'modalService',
+  'organisationService',
 ];
 
 export default ProjectCreateController;

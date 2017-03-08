@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests\Database\Facade;
 
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Tests\Helper;
@@ -30,6 +31,11 @@ class LabelingTaskTest extends Tests\WebTestCase
      * @var Facade\LabeledFrame
      */
     private $labeledFrameFacade;
+
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
 
     public function taskProvider()
     {
@@ -254,11 +260,12 @@ class LabelingTaskTest extends Tests\WebTestCase
      */
     public function testGetTasks($sampleTaskData, $expectedTasksByPhase)
     {
-        $project = Helper\ProjectBuilder::create()->build();
+        $organisation = Helper\OrganisationBuilder::create()->build();
+        $project = Helper\ProjectBuilder::create($organisation)->build();
         $this->projectFacade->save($project);
 
         foreach ($sampleTaskData as $sampleTask) {
-            $video = Helper\VideoBuilder::create()->withName($sampleTask['videoName'])->build();
+            $video = Helper\VideoBuilder::create($organisation)->withName($sampleTask['videoName'])->build();
             $this->videoFacade->save($video);
             $task = Helper\LabelingTaskBuilder::create($project, $video);
             foreach ($sampleTask['status'] as $phase => $status) {
@@ -320,8 +327,9 @@ class LabelingTaskTest extends Tests\WebTestCase
 
     public function testGetLabeledFrame()
     {
-        $video   = Model\Video::create('foobar');
-        $project = Model\Project::create('test project');
+        $organisation = $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
+        $video   = Model\Video::create($organisation, 'foobar');
+        $project = Model\Project::create('test project', $organisation);
         $task    = Model\LabelingTask::create(
             $video,
             $project,
@@ -347,5 +355,6 @@ class LabelingTaskTest extends Tests\WebTestCase
         $this->projectFacade      = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledFrameFacade = $this->getAnnostationService('database.facade.labeled_frame');
+        $this->organisationFacade = $this->getAnnostationService('database.facade.organisation');
     }
 }
