@@ -196,6 +196,92 @@ fdescribe('ThingLayer test suite', () => {
       });
     });
 
+    describe('MultiTool', () => {
+      let selectedLabelStructureThing;
+
+      beforeEach(() => {
+        selectedLabelStructureThing = {
+          id: 'foobar',
+          shape: 'heinz',
+        };
+
+        const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort']);
+        keyboardTool.invokeKeyboardShortcuts.and.returnValue({then: () => {}});
+        toolService.getTool.and.returnValue(keyboardTool);
+      });
+
+      it('calls abort on the MultiTool', () => {
+        spyOn(thing._multiTool, 'abort');
+
+        thing.activateTool('multi', selectedLabelStructureThing);
+
+        expect(thing._multiTool.abort).toHaveBeenCalled();
+      });
+
+      it('calls invoke on the MultiTool', () => {
+        spyOn(thing._multiTool, 'invoke').and.callThrough();
+
+        thing.activateTool('multi', selectedLabelStructureThing);
+
+        expect(thing._multiTool.invoke).toHaveBeenCalled();
+      });
+
+      it('does not call invoke on the MultiTool if selectedLabelStructureThing is null', () => {
+        spyOn(thing._multiTool, 'invoke').and.callThrough();
+
+        thing.activateTool('multi', null);
+
+        expect(thing._multiTool.invoke).not.toHaveBeenCalled();
+      });
+
+      describe('actionIdentifier "creation"', () => {
+        it('it throws an error if it cannot handle the shape creation', () => {
+          const paperShape = 'Bernd das Brot';
+
+          const invokePromiseMock = jasmine.createSpyObj('invoke promise return', ['then']);
+          invokePromiseMock.then.and.callFake(callback => {
+            const callbackParams = {
+              actionIdentifier: 'creation',
+              paperShape: paperShape,
+            };
+            callback(callbackParams);
+            return { catch: () => {} };
+          });
+
+          spyOn(thing._multiTool, 'invoke').and.returnValue(invokePromiseMock);
+
+          function throwWrapper() {
+            thing.activateTool('multi', selectedLabelStructureThing);
+          }
+
+          expect(throwWrapper).toThrowError(`Can not handle shape creation of type: ${paperShape}`);
+        });
+      });
+
+      describe('actionIdentifier "$something"', () => {
+        it('it throws an error if it cannot handle the shape update', () => {
+          const paperShape = 'Bernd das Brot';
+
+          const invokePromiseMock = jasmine.createSpyObj('invoke promise return', ['then']);
+          invokePromiseMock.then.and.callFake(callback => {
+            const callbackParams = {
+              actionIdentifier: 'something-unknown',
+              paperShape: paperShape,
+            };
+            callback(callbackParams);
+            return { catch: () => {} };
+          });
+
+          spyOn(thing._multiTool, 'invoke').and.returnValue(invokePromiseMock);
+
+          function throwWrapper() {
+            thing.activateTool('multi', selectedLabelStructureThing);
+          }
+
+          expect(throwWrapper).toThrowError(`Can not handle shape update of type: ${paperShape}`);
+        });
+      });
+    });
   });
 
   describe('#addPaperThingShapes()', () => {
