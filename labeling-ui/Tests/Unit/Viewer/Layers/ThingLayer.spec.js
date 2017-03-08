@@ -248,13 +248,11 @@ fdescribe('ThingLayer test suite', () => {
       describe('actionIdentifier "creation"', () => {
         const actionIdentifier = 'creation';
         const bogusPaperShape = 'Bernd das Brot';
-        let paperThingShape;
         let invokePromiseMock;
         let invokeThenParams;
 
         beforeEach(() => {
           setupPaperJs();
-          paperThingShape = new PaperThingShape();
 
           invokeThenParams = {
             actionIdentifier: actionIdentifier,
@@ -266,13 +264,16 @@ fdescribe('ThingLayer test suite', () => {
             return { catch: () => {} };
           });
           spyOn(thing._multiTool, 'invoke').and.returnValue(invokePromiseMock);
-
-          scope.vm.paperThingShapes = [];
         });
 
         describe('Created PaperThingShape', () => {
+          let paperThingShape;
+
           beforeEach(() => {
+            paperThingShape = new PaperThingShape();
             invokeThenParams.paperShape = paperThingShape;
+
+            scope.vm.paperThingShapes = [];
           });
 
           it('emits thing:create when the Shape is a PaperThingShape', () => {
@@ -293,6 +294,37 @@ fdescribe('ThingLayer test suite', () => {
             thing.activateTool('multi', selectedLabelStructureThing);
 
             expect(scope.vm.selectedPaperShape).toBe(paperThingShape);
+          });
+        });
+
+        describe('Created PaperGroupShape', () => {
+          let paperGroupShape;
+
+          beforeEach(() => {
+            paperGroupShape = new PaperGroupShape();
+            invokeThenParams.paperShape = paperGroupShape;
+
+            scope.vm.paperGroupShapes = [];
+          });
+
+          it('emits group:create when the Shape is a PaperThingShape', () => {
+            spyOn(thing, 'emit');
+
+            thing.activateTool('multi', selectedLabelStructureThing);
+
+            expect(thing.emit).toHaveBeenCalledWith('group:create', paperGroupShape);
+          });
+
+          it('adds the shape to the paperGroupShapes array', () => {
+            thing.activateTool('multi', selectedLabelStructureThing);
+
+            expect(scope.vm.paperGroupShapes).toEqual([paperGroupShape]);
+          });
+
+          it('sets the shape as selected shape', () => {
+            thing.activateTool('multi', selectedLabelStructureThing);
+
+            expect(scope.vm.selectedPaperShape).toBe(paperGroupShape);
           });
         });
 
