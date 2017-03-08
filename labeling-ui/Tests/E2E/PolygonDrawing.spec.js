@@ -461,7 +461,7 @@ describe('Polygon drawing', () => {
   });
 });
 
-fdescribe('Polygon handle/point limiting', () => {
+describe('Polygon handle/point limiting', () => {
   let assets;
   let sharedMocks;
   let viewer;
