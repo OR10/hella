@@ -250,8 +250,13 @@ class Init extends Base
         $this->writeSection($output, 'Initializing couch database');
 
         try {
-            $this->writeVerboseInfo($output, 'dropping couch database');
+            $this->writeVerboseInfo($output, 'dropping couch databases');
             $this->couchClient->deleteDatabase($this->couchDatabase);
+            foreach ($this->couchClient->getAllDatabases() as $database) {
+                if (strpos($database, 'taskdb-project-') === 0) {
+                    $this->couchClient->deleteDatabase($database);
+                }
+            }
             $this->writeVerboseInfo($output, 'creating couch database');
             $this->couchClient->createDatabase($this->couchDatabase);
         } catch (\Exception $e) {
