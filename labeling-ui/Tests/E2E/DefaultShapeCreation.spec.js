@@ -5,7 +5,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Default Shape Creation (TTANNO-1370)', () => {
+describe('Default Shape Creation (TTANNO-1370)', () => {
   let assets;
   let sharedMocks;
   let defaultShapeCreationButton;
