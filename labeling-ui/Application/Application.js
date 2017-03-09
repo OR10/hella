@@ -118,7 +118,6 @@ export default class Application {
 
         // Allow each module to configure its angular module
         this.modules.forEach(module => module.module.config(module.config));
-        return this._getApplicationConfig();
       })
       .then(() => this._getApplicationConfig())
       .then(applicationConfig => {
