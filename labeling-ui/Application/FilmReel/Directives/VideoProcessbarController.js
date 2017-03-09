@@ -12,9 +12,8 @@ class VideoProcessbarController {
   /**
    * @param {$rootScope.$scope} $scope
    * @param {FrameIndexService} frameIndexService
-   * @param {LabeledThingGroupService} labeledThingGroupService
    */
-  constructor($scope, frameIndexService, labeledThingGroupService) {
+  constructor($scope, frameIndexService) {
     const frameIndexLimits = frameIndexService.getFrameIndexLimits();
 
     this.frameCount = frameIndexLimits.upperLimit - frameIndexLimits.lowerLimit + 1;
@@ -59,8 +58,8 @@ class VideoProcessbarController {
           frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
           break;
         case this.selectedPaperShape instanceof PaperGroupShape:
-          frameRange = labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
-          break;
+          this.rangeWidth = 0;
+          return;
         default:
           throw new Error('Cannot get frame range of unknown shape type');
       }
@@ -74,7 +73,6 @@ class VideoProcessbarController {
 VideoProcessbarController.$inject = [
   '$scope',
   'frameIndexService',
-  'labeledThingGroupService',
 ];
 
 export default VideoProcessbarController;

@@ -8,8 +8,9 @@ class LabelingGroupGateway {
   /**
    * @param {ApiService} apiService
    * @param {BufferedHttp} bufferedHttp
+   * @param {OrganisationService} organisationService
    */
-  constructor(apiService, bufferedHttp) {
+  constructor(apiService, bufferedHttp, organisationService) {
     /**
      * @type {BufferedHttp}
      * @private
@@ -21,15 +22,23 @@ class LabelingGroupGateway {
      * @private
      */
     this._apiService = apiService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
   }
 
   /**
-   * Retrieve all labeling groups
+   * Retrieve all labeling groups for the current organisation
    *
    * @return {AbortablePromise<{users: Array<User>, labelingGroup: Object}|Error>}
    */
   getLabelingGroups() {
-    const url = this._apiService.getApiUrl('/labelingGroup');
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup`);
+
     return this._bufferedHttp.get(url, undefined, 'labelingGroups')
       .then(response => {
         if (response.data && response.data.result &&
@@ -48,12 +57,14 @@ class LabelingGroupGateway {
   }
 
   /**
-   * Get all labeling groups in which i am the coordinator
+   * Get all labeling groups in which i am the coordinator for the current organisation
    *
    * @returns {AbortablePromise<LabelingGroup>|Error}
    */
   getMyLabelingGroups() {
-    const url = this._apiService.getApiUrl('/labelingGroup/user/groups');
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/user/groups`);
+
     return this._bufferedHttp.get(url, undefined, 'labelingGroups')
       .then(response => {
         if (response.data && response.data.result) {
@@ -65,12 +76,14 @@ class LabelingGroupGateway {
   }
 
   /**
-   * Get all label coordinators
+   * Get all label coordinators for the current organisation
    *
    * @returns {AbortablePromise|Error}
    */
   getLabelCoordinators() {
-    const url = this._apiService.getApiUrl('/labelingGroup/user/coordinators');
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/user/coordinators`);
+
     return this._bufferedHttp.get(url, undefined, 'labelingGroups')
       .then(response => {
         if (response.data && response.data.result) {
@@ -88,7 +101,8 @@ class LabelingGroupGateway {
    * @return {AbortablePromise<LabelingGroup|Error>}
    */
   createLabelingGroup(group) {
-    const url = this._apiService.getApiUrl('/labelingGroup');
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup`);
     return this._bufferedHttp.post(url, group, undefined, 'labelingGroups')
       .then(response => {
         if (response.data && response.data.result) {
@@ -106,7 +120,8 @@ class LabelingGroupGateway {
    * @return {AbortablePromise<LabelingGroup|Error>}
    */
   updateLabelingGroup(group) {
-    const url = this._apiService.getApiUrl(`/labelingGroup/${group.id}`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/${group.id}`);
     return this._bufferedHttp.put(url, group, undefined, 'labelingGroups')
       .then(response => {
         if (response.data && response.data.result) {
@@ -124,7 +139,8 @@ class LabelingGroupGateway {
    * @return {AbortablePromise<boolean|Error>}
    */
   deleteLabelingGroup(groupId) {
-    const url = this._apiService.getApiUrl(`/labelingGroup/${groupId}`);
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/${groupId}`);
     return this._bufferedHttp.delete(url, undefined, 'labelingGroups')
       .then(response => {
         if (response.data && response.data.result) {
@@ -139,6 +155,7 @@ class LabelingGroupGateway {
 LabelingGroupGateway.$inject = [
   'ApiService',
   'bufferedHttp',
+  'organisationService',
 ];
 
 export default LabelingGroupGateway;

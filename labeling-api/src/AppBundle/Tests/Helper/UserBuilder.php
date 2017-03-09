@@ -3,6 +3,7 @@
 namespace AppBundle\Tests\Helper;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 class UserBuilder
 {
@@ -25,6 +26,11 @@ class UserBuilder
      * @var string
      */
     private $email;
+
+    /**
+     * @var AnnoStationBundleModel\Organisation[]
+     */
+    private $organisations = [];
 
     /**
      * Declare private constructor to enforce usage of fluent interface.
@@ -71,6 +77,32 @@ class UserBuilder
             ->withUsername('labeler')
             ->withPlainPassword('labeler')
             ->withRoles([Model\User::ROLE_LABELER]);
+    }
+
+    /**
+     * Create a default admin.
+     *
+     * @return UserBuilder
+     */
+    public static function createDefaultAdmin()
+    {
+        return self::create()
+            ->withUsername('admin')
+            ->withPlainPassword('admin')
+            ->withRoles([Model\User::ROLE_ADMIN]);
+    }
+
+    /**
+     * Create a default super admin.
+     *
+     * @return UserBuilder
+     */
+    public static function createDefaultSuperAdmin()
+    {
+        return self::create()
+            ->withUsername('superadmin')
+            ->withPlainPassword('superadmin')
+            ->withRoles([Model\User::ROLE_SUPER_ADMIN]);
     }
 
     /**
@@ -122,6 +154,18 @@ class UserBuilder
     }
 
     /**
+     * @param array $organisations
+     *
+     * @return $this
+     */
+    public function withOrganisations(array $organisations)
+    {
+        $this->organisations = $organisations;
+
+        return $this;
+    }
+
+    /**
      * @return UserBuilder
      */
     public static function create()
@@ -141,6 +185,10 @@ class UserBuilder
         $user->setRoles($this->roles);
         $user->setEmail($this->email);
         $user->setEnabled(true);
+
+        foreach($this->organisations as $organisation) {
+            $user->assignToOrganisation($organisation);
+        }
 
         return $user;
     }

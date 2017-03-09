@@ -4,6 +4,7 @@ namespace AppBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use FOS\UserBundle\Model\User as BaseUser;
 
 /**
@@ -11,6 +12,7 @@ use FOS\UserBundle\Model\User as BaseUser;
  */
 class User extends BaseUser
 {
+    const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
     const ROLE_ADMIN = 'ROLE_ADMIN';
     const ROLE_LABEL_COORDINATOR = 'ROLE_LABEL_COORDINATOR';
     const ROLE_LABELER = 'ROLE_LABELER';
@@ -45,6 +47,11 @@ class User extends BaseUser
      * @CouchDB\EmbedMany(targetDocument="ProjectRoles")
      */
     protected $projectRoles;
+
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
+    protected $organisations = [];
 
     /**
      * User constructor.
@@ -200,5 +207,61 @@ class User extends BaseUser
         }
 
         return $roles;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrganisations()
+    {
+        if ($this->organisations === null) {
+            return [];
+        }
+
+        return $this->organisations;
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     */
+    public function assignToOrganisation(AnnoStationBundleModel\Organisation $organisation)
+    {
+        if (!is_array($this->organisations) || !in_array($organisation->getId(), $this->organisations)) {
+            $this->organisations[] = $organisation->getId();
+        }
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     */
+    public function removeFromOrganisation(AnnoStationBundleModel\Organisation $organisation)
+    {
+        $idToRemove          = $organisation->getId();
+        $this->organisations = array_filter(
+            $this->organisations,
+            function ($organisationId) use ($idToRemove) {
+                if ($organisationId === $idToRemove) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
+    }
+
+    /**
+     * @param mixed $organisations
+     */
+    public function setOrganisations($organisations)
+    {
+        $this->organisations = $organisations;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getExpiresAt()
+    {
+        return $this->expiresAt;
     }
 }

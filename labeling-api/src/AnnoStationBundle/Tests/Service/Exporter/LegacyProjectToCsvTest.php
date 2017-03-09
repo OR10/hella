@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests\Service\Exporter;
 
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Tests\Helper;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
 use AnnoStationBundle\Service;
@@ -67,6 +68,11 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
      */
     private $exporterFacade;
 
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
     protected function setUpImplementation()
     {
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
@@ -75,11 +81,12 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
+        $this->exporterFacade            = $this->getAnnostationService('database.facade.exporter');
+        $this->organisationFacade        = $this->getAnnostationService('database.facade.organisation');
         $this->exporter                  = $this->getAnnostationService('service.exporter.legacy_project_to_csv');
         $this->calibrationFileConverter  = $this->getAnnostationService('service.calibration_file_converter');
-        $this->exporterFacade            = $this->getAnnostationService('database.facade.exporter');
-        $this->project                   = $this->createProject();
-        $this->video                     = $this->createVideo();
+        $this->project                   = $this->createProject($this->createOrganisation());
+        $this->video                     = $this->createVideo($this->createOrganisation());
     }
 
     public function pedestrianProvider()
@@ -413,27 +420,39 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
     }
 
     /**
+     * @return AnnoStationBundleModel\Organisation
+     */
+    private function createOrganisation()
+    {
+        return $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
+    }
+
+    /**
      * Create a project for created tasks.
+     *
+     * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return Model\Project
      */
-    private function createProject()
+    private function createProject(AnnoStationBundleModel\Organisation $organisation)
     {
-        return $this->projectFacade->save(Model\Project::create('test_project'));
+        return $this->projectFacade->save(Model\Project::create('test_project', $organisation));
     }
 
     /**
      * Create a test video for created tasks.
      *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return Model\Video
      */
-    private function createVideo()
+    private function createVideo(AnnoStationBundleModel\Organisation $organisation)
     {
         $this->calibrationFileConverter->setCalibrationData(__DIR__ . '/Calibration/Video.csv');
 
-        $this->video = Model\Video::create('test_video');
+        $this->video = Model\Video::create($organisation, 'test_video');
 
-        $calibrationData = new Model\CalibrationData('test_video');
+        $calibrationData = new Model\CalibrationData($this->createOrganisation(), 'test_video');
         $calibrationData->setRawCalibration($this->calibrationFileConverter->getRawData());
         $calibrationData->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
         $calibrationData->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());

@@ -198,3 +198,15 @@
 + rev: `1-36047d429d50548893be41c6880632fd` (string) - The Revision of the LabeledThingGroup
 + frameIndex: `frame index` (string) - Frame Index
 + classes: `[]` (array) - Labeled classes
+
+# Organisation
++ id: `36047d429d50548893be41c6880632ee` (string) - Organisation ID
++ rev: `1-36047d429d50548893be41c6880632gg` (string) - The Revision of the Organisation
++ name: `Some Organisation` (string) - Organisation Name
++ quota: `Quota` (number) - Quota in bytes. 0 bytes no limit
+
+# Campaign
++ id: `36047d429d50548893be41c6880632ee` (string) - Campaign ID
++ rev: `1-36047d429d50548893be41c6880632gg` (string) - The Revision of the Campaign
++ name: `Some Campaign` (string) - Campaign Name
++ organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string) - ID of the Organisation

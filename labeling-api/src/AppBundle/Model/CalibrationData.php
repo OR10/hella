@@ -3,6 +3,7 @@
 namespace AppBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 /**
  * @CouchDB\Document
@@ -30,11 +31,18 @@ class CalibrationData
     private $calibration;
 
     /**
-     * @param string $name
+     * @CouchDB\Field(type="string")
      */
-    public function __construct(string $name)
+    protected $organisationId;
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param string                              $name
+     */
+    public function __construct(AnnoStationBundleModel\Organisation $organisation, string $name)
     {
-        $this->name = $name;
+        $this->organisationId = $organisation->getId();
+        $this->name           = $name;
     }
 
     /**
@@ -139,5 +147,13 @@ class CalibrationData
     public function getDistortionCoefficients()
     {
         return $this->calibration['distortionCoefficients'];
+    }
+
+    /**
+     * @param mixed $organisationId
+     */
+    public function setOrganisationId($organisationId)
+    {
+        $this->organisationId = $organisationId;
     }
 }

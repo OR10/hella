@@ -22,6 +22,7 @@ import LabelStructureModule from './LabelStructure/LabelStructure';
 import FilmReelModule from './FilmReel/FilmReel';
 import MediaControlsModule from './MediaControls/MediaControls';
 import ReportingModule from './Reporting/Reporting';
+import OrganisationModule from './Organisation/Organisation';
 
 import Environment from './Common/Support/Environment';
 import PouchDB from 'pouchdb';
@@ -59,6 +60,7 @@ export default class Application {
    * Register all the modules to be loaded by the application
    */
   registerModules() {
+    this.modules.push(new OrganisationModule());
     this.modules.push(new CommonModule());
     this.modules.push(new HeaderModule());
     this.modules.push(new ManagementBoardModule());
@@ -129,9 +131,9 @@ export default class Application {
    * @param {HTMLElement} element
    */
   bootstrap(element) {
-    this.init().then(() => {
-      angular.bootstrap(element, [this.moduleName], {strictDi: true});
-    });
+    Promise.resolve()
+      .then(() => this.init())
+      .then(() => angular.bootstrap(element, [this.moduleName], {strictDi: true}));
   }
 
   setupRouting() {
@@ -140,21 +142,7 @@ export default class Application {
       $locationProvider.html5Mode(true);
 
       // For any unmatched url, redirect to /state1
-      $urlRouterProvider.otherwise('/projects/');
-
-      function userResolver(userGateway) {
-        return userGateway.getCurrentUser()
-          .then(user => user);
-      }
-
-      userResolver.$inject = ['userGateway'];
-
-      function permissionsResolver(userGateway) {
-        return userGateway.getCurrentUserPermissions()
-          .then(permissions => permissions);
-      }
-
-      permissionsResolver.$inject = ['userGateway'];
+      $urlRouterProvider.otherwise('/organisations/selection');
 
       // Now set up the states
       $stateProvider
@@ -169,8 +157,9 @@ export default class Application {
             },
           },
           resolve: {
-            user: userResolver,
-            userPermissions: permissionsResolver,
+            user: ['userGateway', userGateway => userGateway.getCurrentUser()],
+            userPermissions: ['userGateway', userGateway => userGateway.getCurrentUserPermissions()],
+            userOrganisations: ['userGateway', userGateway => userGateway.getCurrentUserOrganisations()],
           },
         });
     }

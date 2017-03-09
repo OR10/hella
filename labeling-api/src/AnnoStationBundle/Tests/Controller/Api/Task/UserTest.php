@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests\Controller\Api\Task;
 
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
 use Symfony\Component\HttpFoundation;
@@ -26,6 +27,11 @@ class UserTest extends Tests\WebTestCase
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
+
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
 
     public function testAssignTaskToUser()
     {
@@ -63,6 +69,7 @@ class UserTest extends Tests\WebTestCase
         $this->videoFacade        = $this->getAnnostationService('database.facade.video');
         $this->projectFacade      = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
+        $this->organisationFacade = $this->getAnnostationService('database.facade.organisation');
     }
 
     private function createUser(
@@ -80,9 +87,10 @@ class UserTest extends Tests\WebTestCase
 
     private function createLabelingTask($startRange = 10, $endRange = 20)
     {
-        $video = $this->videoFacade->save(Model\Video::create('foobar'));
-        $project = $this->projectFacade->save(Model\Project::create('test project'));
-        $task  = Model\LabelingTask::create(
+        $organisation = $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
+        $video        = $this->videoFacade->save(Model\Video::create($organisation, 'foobar'));
+        $project      = $this->projectFacade->save(Model\Project::create('test project', $organisation));
+        $task         = Model\LabelingTask::create(
             $video,
             $project,
             range($startRange, $endRange),

@@ -1,6 +1,8 @@
 function ReadableRoleFilterProvider() {
   return function readableRoleFilter(role) {
     switch (role) {
+      case 'ROLE_SUPER_ADMIN':
+        return 'SuperAdmin';
       case 'ROLE_ADMIN':
         return 'Administrator';
       case 'ROLE_CLIENT_COORDINATOR':

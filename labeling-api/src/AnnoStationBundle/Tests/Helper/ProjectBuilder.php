@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Tests\Helper;
 
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 
 /**
@@ -80,18 +81,28 @@ class ProjectBuilder
     private $labelingGroupId;
 
     /**
-     * Declare a private constructor to enforce usage of fluent interface.
+     * @var AnnoStationBundleModel\Organisation
      */
-    private function __construct()
+    private $organisation;
+
+    /**
+     * Declare a private constructor to enforce usage of fluent interface.
+     *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     */
+    private function __construct(AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->organisation = $organisation;
     }
 
     /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return ProjectBuilder
      */
-    public static function create()
+    public static function create(AnnoStationBundleModel\Organisation $organisation)
     {
-        return new self();
+        return new self($organisation);
     }
 
     /**
@@ -290,6 +301,8 @@ class ProjectBuilder
             'taskFailedCount'            => 0,
             'coordinator'                => $this->getLatestAssignedCoordinatorUserId(),
             'taskInstructionType'        => 'legacy',
+            'diskUsage'                  => [],
+            'campaigns'                  => [],
         ];
     }
 
@@ -300,7 +313,17 @@ class ProjectBuilder
     {
         $creationDate = $this->creationDate === null ? null : clone $this->creationDate;
 
-        $project = Model\Project::create($this->name, null, $creationDate, $this->dueDate, $this->phases, 1, 1, 0);
+        $project = Model\Project::create(
+            $this->name,
+            $this->organisation,
+            null,
+            $creationDate,
+            $this->dueDate,
+            $this->phases,
+            1,
+            1,
+            0
+        );
 
         if ($this->owningUserId !== null) {
             $project->setUserId($this->owningUserId);

@@ -317,16 +317,23 @@ class GenericXmlProjectToCsvTest extends Tests\CouchDbTestCase
             ],
         );
 
+        $organisation = $this->createOrganisation();
+
         $xmlTaskConfiguration = file_get_contents(__DIR__ . '/TaskConfiguration/' . $data['taskConfiguration']);
-        $project              = $this->createProject('project-id-1');
+        $project              = $this->createProject('project-id-1', $this->createOrganisation());
         $video                = $this->createVideo(
+            $organisation,
             'video-id-1',
             $this->createCalibrationData('CalibrationSample', $calibration)
         );
-        $task                 = $this->createTask(
+        $task = $this->createTask(
             $project,
             $video,
-            $this->createTaskConfiguration($xmlTaskConfiguration, $this->createClientUser()),
+            $this->createTaskConfiguration(
+                $xmlTaskConfiguration,
+                $organisation,
+                $this->createClientUser()
+            ),
             $data['drawingTool']
         );
         $labeledThing         = $this->createLabeledThing($task, '0735702d52300b44aea6a35ad00564c4');
@@ -354,12 +361,16 @@ class GenericXmlProjectToCsvTest extends Tests\CouchDbTestCase
     public function testMetadataExport()
     {
         $xmlTaskConfiguration = file_get_contents(__DIR__ . '/TaskConfiguration/MetaLabeling.xml');
-        $project              = $this->createProject('project-id-1');
-        $video                = $this->createVideo('video-id-1');
-        $task                 = $this->createTask(
+        $project              = $this->createProject('project-id-1', $this->createOrganisation());
+        $video                = $this->createVideo($this->createOrganisation(), 'video-id-1');
+        $task = $this->createTask(
             $project,
             $video,
-            $this->createTaskConfiguration($xmlTaskConfiguration, $this->createClientUser()),
+            $this->createTaskConfiguration(
+                $xmlTaskConfiguration,
+                $this->createOrganisation(),
+                $this->createClientUser()
+            ),
             null,
             Model\LabelingTask::TYPE_META_LABELING
         );

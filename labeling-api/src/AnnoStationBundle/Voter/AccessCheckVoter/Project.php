@@ -36,6 +36,7 @@ class Project extends Voter\AccessCheckVoter
                 new AccessCheck\ClientIsProjectCreator($userPermissions),
                 new AccessCheck\LabelCoordinatorIsAssignedToProject($userPermissions),
                 new AccessCheck\LabelerIsAssignedToProject($userPermissions, $labelingGroupFacade),
+                new AccessCheck\HasSuperAdminRole($userPermissions),
                 new AccessCheck\HasAdminRole($userPermissions),
                 new AccessCheck\HasObserverRole($userPermissions),
             ],
@@ -43,6 +44,7 @@ class Project extends Voter\AccessCheckVoter
                 new AccessCheck\ClientIsProjectCreator($userPermissions),
                 new AccessCheck\LabelCoordinatorIsAssignedToProject($userPermissions),
                 new AccessCheck\LabelerIsAssignedToProject($userPermissions, $labelingGroupFacade),
+                new AccessCheck\HasSuperAdminRole($userPermissions),
                 new AccessCheck\HasAdminRole($userPermissions),
             ],
         ];

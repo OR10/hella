@@ -42,8 +42,8 @@ class LabeledThingInFrameIteratorTest extends Tests\CouchDbTestCase
     {
         parent::setUpImplementation();
 
-        $video   = $this->createVideo('video-id-1');
-        $project = $this->createProject('project-id-1');
+        $video   = $this->createVideo($this->createOrganisation(), 'video-id-1');
+        $project = $this->createProject('project-id-1', $this->createOrganisation());
 
         $this->firstTaskLtifs  = array();
         $this->secondTaskLtifs = array();

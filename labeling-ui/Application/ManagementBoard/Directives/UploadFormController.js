@@ -11,8 +11,9 @@ class UploadFormController {
    * @param {UploadGateway} uploadGateway
    * @param {ModalService} modalService
    * @param {ListDialog.constructor} ListDialog
+   * @param {OrganisationService} organisationService
    */
-  constructor($rootScope, $scope, $state, uploadGateway, modalService, ListDialog) {
+  constructor($rootScope, $scope, $state, uploadGateway, modalService, ListDialog, organisationService) {
     /**
      * @type {$rootScope}
      * @private
@@ -70,6 +71,15 @@ class UploadFormController {
      * @private
      */
     this._unregisterUiRouterInterception = null;
+
+    /**
+     * @type {string}
+     */
+    this.currentOrganisationId = organisationService.get();
+
+    organisationService.subscribe(newOrganisation => {
+      this.currentOrganisationId = newOrganisation.id;
+    });
 
     $scope.$on('$destroy', () => this._uninstallNavigationInterceptions());
 
@@ -239,6 +249,7 @@ UploadFormController.$inject = [
   'uploadGateway',
   'modalService',
   'ListDialog',
+  'organisationService',
 ];
 
 export default UploadFormController;

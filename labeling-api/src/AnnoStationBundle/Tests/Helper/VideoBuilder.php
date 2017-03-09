@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Tests\Helper;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 class VideoBuilder
 {
@@ -27,18 +28,28 @@ class VideoBuilder
     private $calibrationData = null;
 
     /**
-     * Declare private constructor to enforce usage of fluent interface.
+     * @var AnnoStationBundleModel\Organisation
      */
-    private function __construct()
+    private $organisation;
+
+    /**
+     * Declare private constructor to enforce usage of fluent interface.
+     *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     */
+    private function __construct(AnnoStationBundleModel\Organisation $organisation)
     {
+        $this->organisation = $organisation;
     }
 
     /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return VideoBuilder
      */
-    public static function create()
+    public static function create(AnnoStationBundleModel\Organisation $organisation)
     {
-        return new self();
+        return new self($organisation);
     }
 
     /**
@@ -90,7 +101,7 @@ class VideoBuilder
      */
     public function build()
     {
-        $video = Model\Video::create($this->name);
+        $video = Model\Video::create($this->organisation, $this->name);
         $video->setImageType($this->imageType, 'converted', false);
         if ($this->calibrationData !== null) {
             $video->setCalibrationData($this->calibrationData);

@@ -6,7 +6,7 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     background-color: $element-background;
     padding: 0;
-    margin-top: -20%;
+    margin-top: -30vh;
     z-index: 10001;
 
     .modal-header {
@@ -25,7 +25,7 @@
     .modal-body {
       padding: 15px 20px;
       overflow-y: scroll;
-      max-height: 20vh;
+      max-height: 60vh;
 
       .modal-body-headline {
         color: $sub-headlines;

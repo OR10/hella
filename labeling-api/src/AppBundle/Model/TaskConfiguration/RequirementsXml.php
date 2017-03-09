@@ -4,6 +4,7 @@ namespace AppBundle\Model\TaskConfiguration;
 use AppBundle\Model\TaskConfiguration;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use JMS\Serializer\Annotation as Serializer;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 /**
  * @CouchDB\Document
@@ -21,6 +22,11 @@ class RequirementsXml implements TaskConfiguration
      * @CouchDB\Version
      */
     private $rev;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    protected $organisationId;
 
     /**
      * @CouchDB\Field(type="string")
@@ -58,8 +64,16 @@ class RequirementsXml implements TaskConfiguration
      */
     private $hashes;
 
-    public function __construct($name, $filename, $contentType, $binaryData, $userId, $json, $date = null)
-    {
+    public function __construct(
+        AnnoStationBundleModel\Organisation $organisation,
+        $name,
+        $filename,
+        $contentType,
+        $binaryData,
+        $userId,
+        $json,
+        $date = null
+    ) {
         if (!is_string($filename) || empty($filename)) {
             throw new \InvalidArgumentException('Invalid filename');
         }
@@ -80,6 +94,7 @@ class RequirementsXml implements TaskConfiguration
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
         }
 
+        $this->organisationId          = $organisation->getId();
         $this->name                    = $name;
         $this->filename                = $filename;
         $this->timestamp               = $date->getTimestamp();
@@ -191,5 +206,21 @@ class RequirementsXml implements TaskConfiguration
         }
 
         return $this->hashes[$filename];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrganisationId()
+    {
+        return $this->organisationId;
+    }
+
+    /**
+     * @param mixed $organisationId
+     */
+    public function setOrganisationId($organisationId)
+    {
+        $this->organisationId = $organisationId;
     }
 }

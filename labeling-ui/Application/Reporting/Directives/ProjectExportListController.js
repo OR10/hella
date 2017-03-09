@@ -7,13 +7,20 @@ class ProjectExportListController {
    * @param {$interval} $interval
    * @param {ApiService} ApiService injected
    * @param {ProjectGateway} projectGateway
+   * @param {OrganisationService} organisationService
    */
-  constructor($rootScope, $interval, ApiService, projectGateway) {
+  constructor($rootScope, $interval, ApiService, projectGateway, organisationService) {
     /**
      * The api service for building urls
      * @type {ApiService}
      */
-    this.apiService = ApiService;
+    this._apiService = ApiService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
 
     const intervalInSeconds = 2;
 
@@ -37,8 +44,10 @@ class ProjectExportListController {
    * @returns {string}
    */
   downloadUrl(taskId, exportId) {
-    return this.apiService.getApiUrl(
-      `/project/${taskId}/export/${exportId}`
+    const organisationId = this._organisationService.get();
+
+    return this._apiService.getApiUrl(
+      `/organisation/${organisationId}/project/${taskId}/export/${exportId}`
     );
   }
 }
@@ -48,6 +57,7 @@ ProjectExportListController.$inject = [
   '$interval',
   'ApiService',
   'projectGateway',
+  'organisationService',
 ];
 
 export default ProjectExportListController;

@@ -21,6 +21,7 @@ describe('Zoom', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
       assets.mocks.Zoom.Shared.Task,
       assets.mocks.Zoom.Shared.Video,
       assets.mocks.Shared.LabelStructure,
@@ -46,7 +47,7 @@ describe('Zoom', () => {
         assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => browser.actions()
           .sendKeys('+')
           .sendKeys('+')
@@ -74,7 +75,7 @@ describe('Zoom', () => {
         assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       ]));
 
-      initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => browser.actions()
           .sendKeys('+')
           .sendKeys('+')
@@ -118,7 +119,7 @@ describe('Zoom', () => {
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
         ]));
 
-        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 10))
           .then(
             // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', fixtureName)
@@ -149,7 +150,7 @@ describe('Zoom', () => {
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0to4,
         ]));
 
-        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('Zoom', fixtureName)
@@ -175,7 +176,7 @@ describe('Zoom', () => {
           assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0to4,
         ]));
 
-        initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(
             () => browser.actions()
               .mouseMove(viewer, {x: selectX + 50, y: selectY + 50})

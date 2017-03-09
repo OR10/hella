@@ -15,6 +15,7 @@ describe('Rectangle viewer overflow', () => {
     sharedMocks = [
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
       assets.mocks.Shared.Video,
       assets.mocks.Shared.LabelStructure,
       assets.mocks.Shared.GetTimer,
@@ -42,7 +43,7 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
         .mouseMove(viewer, {x: 190, y: 190}) // initial position
         .mouseDown()
@@ -75,7 +76,7 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
         .mouseMove(viewer, {x: 110, y: 110}) // initial position
         .mouseDown()
@@ -108,7 +109,7 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
         .mouseMove(viewer, {x: 190, y: 190}) // initial position
         .mouseDown()
@@ -141,7 +142,7 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
@@ -175,7 +176,7 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.NoOverflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 50, y: 15}) // initial position
@@ -209,7 +210,7 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.NoOverflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 50, y: 605})
@@ -243,7 +244,7 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.NoOverflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 15, y: 50})
@@ -277,7 +278,7 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.NoOverflow,
     ]));
 
-    initApplication('/labeling/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 1015, y: 50})

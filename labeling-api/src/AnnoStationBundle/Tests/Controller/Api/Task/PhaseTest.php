@@ -94,11 +94,13 @@ class PhaseTest extends Tests\WebTestCase
 
     private function createLabelingTask()
     {
+        $organisation = Helper\OrganisationBuilder::create()->build();
+
         $project = $this->projectFacade->save(
-            Helper\ProjectBuilder::create()->build()
+            Helper\ProjectBuilder::create($organisation)->build()
         );
         $video   = $this->videoFacade->save(
-            Helper\VideoBuilder::create()->build()
+            Helper\VideoBuilder::create($organisation)->build()
         );
         $task    = $this->labelingTaskFacade->save(
             Helper\LabelingTaskBuilder::create($project, $video)->build()

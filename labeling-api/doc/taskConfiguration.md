@@ -1,7 +1,10 @@
 # Group Task Configuration
 
-## List all task configurations for the current user [/api/taskConfiguration]
+## List all task configurations for the current user [/api/organisation/{organisationId}/taskConfiguration]
 
++ Parameters
+    + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
+    
 ### Own Task Configurations [GET]
 
 + Parameters
@@ -14,9 +17,10 @@
                 + id: `02b531ffe2c35ee965e4b339a61c7ad2` - Id of this task configuration
                 + name: `Foobar` - name of this task configuration
 
-## Create new Task Configuration [/api/taskConfiguration]
+## Create new Task Configuration [/api/organisation/{organisationId}/taskConfiguration]
 
 + Parameters
+    + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
     
 ### Create a new task configuration [POST]
 
@@ -28,9 +32,10 @@
 + Response 200 (application/json)
     + Attributes (TaskConfiguration)
     
-## Get a task configuration [/api/taskConfiguration/{id}]
+## Get a task configuration [/api/organisation/{organisationId}/taskConfiguration/{id}]
 
 + Parameters
+    + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
     + id: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the configuration-entity.
 
 ### Get a task configuration [GET]
@@ -45,9 +50,10 @@
                 + userId: `file.xml` - owner user id
                 + type: `requirements` - Configuration type requirements/simple
                     
-## Get a task configuration [/api/taskConfiguration/{id}/file]
+## Get a task configuration [/api/organisation/{organisationId}/taskConfiguration/{id}/file]
 
 + Parameters
+    + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
     + id: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the configuration-entity.
 
 ### Get a task configuration [GET]

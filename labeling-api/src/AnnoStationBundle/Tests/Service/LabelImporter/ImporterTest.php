@@ -270,13 +270,14 @@ class LabelImporterTest extends Tests\KernelTestCase
     {
         $xml = file_get_contents($configuration['taskConfigurationFile']);
 
+        $organisation = Helper\OrganisationBuilder::create()->build();
         $taskConfiguration = $this->taskConfigurationFacade->save(
-            Helper\TaskConfigurationRequirementsBuilder::create($xml, $this->defaultUser)->build()
+            Helper\TaskConfigurationRequirementsBuilder::create($organisation, $xml, $this->defaultUser)->build()
         );
 
-        $project = $this->projectFacade->save(Helper\ProjectBuilder::create()->build());
-        $video   = $this->videoFacade->save(Helper\VideoBuilder::create()->build());
-        $task    = $this->labelingTaskFacade->save(
+        $project      = $this->projectFacade->save(Helper\ProjectBuilder::create($organisation)->build());
+        $video        = $this->videoFacade->save(Helper\VideoBuilder::create($organisation)->build());
+        $task         = $this->labelingTaskFacade->save(
             Helper\LabelingTaskBuilder::create($project, $video)
                 ->withTaskConfiguration($taskConfiguration)
                 ->withDrawingTool($configuration['drawingTool'])
