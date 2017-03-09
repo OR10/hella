@@ -23,7 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class Replication extends Controller\Base
 {
     /**
-     * @Rest\Get("/{task}/Replication")
+     * @Rest\Get("/{task}/replication")
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
