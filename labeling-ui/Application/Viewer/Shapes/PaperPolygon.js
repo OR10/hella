@@ -33,7 +33,6 @@ class PaperPolygon extends PaperThingShape {
     const rightPoint = this._points.reduce((initial, current) => initial.x > current.x ? initial : current);
     const topPoint = this._points.reduce((initial, current) => initial.y < current.y ? initial : current);
     const bottomPoint = this._points.reduce((initial, current) => initial.y > current.y ? initial : current);
-    console.log(leftPoint)
     return {
       width: rightPoint.x - leftPoint.x,
       height: bottomPoint.y - topPoint.y,
