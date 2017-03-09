@@ -308,5 +308,8 @@
             <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
+
+        <service id="annostation.labeling_api.controller.api.task.replication" class="AnnoStationBundle\Controller\Api\Task\Replication">
+        </service>
     </services>
 </container>

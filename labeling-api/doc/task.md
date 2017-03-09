@@ -359,3 +359,18 @@ Change the phase for the task
     + Attributes
         + result
             + success: `true` (boolean)
+            
+## Get the Task Replication DB [/api/task/{taskId}/replication]
+
+Change the phase for the task
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Get the Task Replication DB [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + taskId: `05c1a74d8eda4a16a355519c0f003504` (string)
+            + databaseName: `taskdb-project-303e4737cb1ea602d0dfea44ce00b37f-task-303e4737cb1ea602d0dfea44ce02c5e3` (string)

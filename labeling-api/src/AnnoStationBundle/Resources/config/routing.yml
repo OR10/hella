@@ -180,3 +180,8 @@ api_organisation_capmaign:
     resource: "annostation.labeling_api.controller.api.organisation.campaign"
     type: rest
     name_prefix: app_api_organisation_campaign_
+
+api_task_replication:
+    resource: "annostation.labeling_api.controller.api.task.replication"
+    type: rest
+    name_prefix: app_api_task_replication_
