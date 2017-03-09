@@ -123,7 +123,8 @@
         <loading-mask ng-if="vm.mediaControlsDisabled" backdrop="false" block-interaction="true"
                       spinner="false"></loading-mask>
         <div class="grid-content noscroll" ng-if="vm.task.taskType === 'object-labeling'">
-            <button ng-hide="vm.readOnly"
+            <button id="default-shape-creation-button"
+                    ng-hide="vm.readOnly"
                     ng-click="vm.handleNewLabeledThingClicked()"
                     tooltip="Create new shape"
             >
