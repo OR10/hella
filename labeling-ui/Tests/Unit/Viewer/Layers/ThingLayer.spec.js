@@ -624,7 +624,7 @@ describe('ThingLayer test suite', () => {
         });
       });
 
-      describe('keeps the previus as selected shape, if the id\'s don\'t match', () => {
+      describe('keeps the previous as selected shape, if the id\'s don\'t match', () => {
         beforeEach(() => {
           currentPaperShape.labeledThingInFrame.labeledThing.id = 'bernddasbrot';
         });
@@ -674,7 +674,7 @@ describe('ThingLayer test suite', () => {
       expect(scope.view.update).not.toHaveBeenCalled();
     });
 
-    describe('do not set the shape as selected shape', () => {
+    describe('do not set group shape as selected shape', () => {
       let groupShape;
 
       beforeEach(() => {
@@ -700,7 +700,7 @@ describe('ThingLayer test suite', () => {
       });
     });
 
-    describe('set the shape as selected shape', () => {
+    describe('set group shape as selected shape', () => {
       const isSelected = true;
       let groupShape;
 
@@ -727,7 +727,7 @@ describe('ThingLayer test suite', () => {
       });
     });
 
-    describe('Transport selection between frame changes', () => {
+    describe('Transport group shape selection between frame changes', () => {
       let previousPaperShape;
       let currentPaperShape;
 
@@ -750,7 +750,7 @@ describe('ThingLayer test suite', () => {
         scope.vm.selectedPaperShape = previousPaperShape;
       });
 
-      describe('set the shape as selected shape, if this shape was selected in a previous frame', () => {
+      describe('set the group shape as selected shape, if this shape was selected in a previous frame', () => {
         it('updates the view', () => {
           const updateView = true;
 
@@ -770,7 +770,7 @@ describe('ThingLayer test suite', () => {
         });
       });
 
-      describe('keeps the shape as selected shape, if it is the same shape', () => {
+      describe('keeps the group shape as selected shape, if it is the same shape', () => {
         beforeEach(() => {
           scope.vm.selectedPaperShape = currentPaperShape;
         });
@@ -794,7 +794,7 @@ describe('ThingLayer test suite', () => {
         });
       });
 
-      describe('keeps the previus as selected shape, if the id\'s don\'t match', () => {
+      describe('keeps the previous group shape as selected shape, if the id\'s don\'t match', () => {
         beforeEach(() => {
           currentPaperShape.labeledThingGroupInFrame.labeledThingGroup.id = 'bernddasbrot';
         });
