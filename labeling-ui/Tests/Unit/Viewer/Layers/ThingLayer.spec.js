@@ -7,7 +7,7 @@ import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
 import paper from 'paper';
 
-fdescribe('ThingLayer test suite', () => {
+describe('ThingLayer test suite', () => {
   let injector;
   let scope;
   let drawingContext;
@@ -121,20 +121,20 @@ fdescribe('ThingLayer test suite', () => {
     expect(scope.view.update).toHaveBeenCalled();
   });
 
-  xdescribe('vm.paperGroupShapes watcher', () => {
-  });
-
-  xdescribe('vm.paperThingShapes watcher', () => {
-  });
-
-  xdescribe('vm.hideLabeledThingsInFrame watcher', () => {
-  });
-
-  xdescribe('vm.selectedPaperShape watcher', () => {
-  });
-
-  xdescribe('#dispatchDOMEvent', () => {
-  });
+  // xdescribe('vm.paperGroupShapes watcher', () => {
+  // });
+  //
+  // xdescribe('vm.paperThingShapes watcher', () => {
+  // });
+  //
+  // xdescribe('vm.hideLabeledThingsInFrame watcher', () => {
+  // });
+  //
+  // xdescribe('vm.selectedPaperShape watcher', () => {
+  // });
+  //
+  // xdescribe('#dispatchDOMEvent', () => {
+  // });
 
   describe('#activateTool()', () => {
     let thing;
@@ -828,8 +828,8 @@ fdescribe('ThingLayer test suite', () => {
     });
   });
 
-  xdescribe('#removePaperShapes()', () => {
-  });
+  // xdescribe('#removePaperShapes()', () => {
+  // });
 
   describe('#attachToDom()', () => {
     let element;
