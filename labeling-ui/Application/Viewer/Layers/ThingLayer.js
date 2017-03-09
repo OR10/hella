@@ -724,12 +724,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
   attachToDom(element) {
     // The event registration needs to be done before paper is initialized in the base class. This is needed for the
     // Layer to handle events, before tools are informed about them.
-    angular.element(element).on(
+    const angularElement = angular.element(element);
+
+    angularElement.on(
       'mousedown',
       event => this._onMouseDown(event)
     );
 
-    angular.element(element).on(
+    angularElement.on(
       'mouseup',
       event => this._onMouseUp(event)
     );
