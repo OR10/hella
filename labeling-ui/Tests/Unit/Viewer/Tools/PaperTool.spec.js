@@ -26,7 +26,7 @@ describe('PaperTool test suite', () => {
       const mockedCoordinate = 42;
       spyOn(Math, 'round').and.returnValue(mockedCoordinate);
       const event = {
-        point: { x: 0, y: 0},
+        point: {x: 0, y: 0},
       };
       const paperTool = createPaperToolInstance();
       paperTool.delegateMouseEvent('drag', event);
@@ -101,7 +101,7 @@ describe('PaperTool test suite', () => {
       it('does not break if there is no last drag point', () => {
         const paperTool = createPaperToolInstance();
         const event = {
-          point: { x: 0, y: 0},
+          point: {x: 0, y: 0},
         };
 
         function throwWrapper() {
