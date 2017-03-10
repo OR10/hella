@@ -51,20 +51,26 @@ fdescribe('PouchDbSyncManager', () => {
       expect(actual.then).toEqual(jasmine.any(Function));
     });
 
-    it('should start replication', done => {
+    it('should start replication with the correct options', done => {
       const contextReplicate = jasmine.createSpyObj('context.replicate', ['from']);
       contextReplicate.from.and.returnValue(angularQ.resolve());
       const context = {replicate: contextReplicate};
 
       const replication = syncManager.pullUpdatesForContext(context);
+      const replicationOptions = {
+        live: false,
+        retry: true,
+      };
 
       replication.then(() => {
-        expect(contextReplicate.from).toHaveBeenCalledWith(jasmine.any(PouchDb), jasmine.any(Object));
+        expect(contextReplicate.from).toHaveBeenCalledWith(jasmine.any(PouchDb), replicationOptions);
         done();
       });
 
       rootScope.$apply();
     });
+
+
 
     it('should start replication with correct remote url', done => {
       const taskReplicationUrl = `${taskReplicationInformation.databaseServer}/${taskReplicationInformation.databaseName}`;
