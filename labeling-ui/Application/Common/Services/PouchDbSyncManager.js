@@ -8,15 +8,13 @@ import PouchDb from 'pouchdb';
  * Switching between those replication types for "sync-point" purposes is supported as well.
  */
 class PouchDbSyncManager {
-
   /**
-   * @param {Object} configuration injected
    * @param {LoggerService} loggerService
    * @param {angular.$q} $q
    * @param {PouchDbContextService} pouchDbContextService
    * @param {TaskGateway} taskGateway
    */
-  constructor(configuration = {}, loggerService, $q, pouchDbContextService, taskGateway) {
+  constructor(loggerService, $q, pouchDbContextService, taskGateway) {
     /**
      * @type {Logger}
      * @private
@@ -133,7 +131,6 @@ class PouchDbSyncManager {
 }
 
 PouchDbSyncManager.$inject = [
-  'applicationConfig',
   'loggerService',
   '$q',
   'pouchDbContextService',

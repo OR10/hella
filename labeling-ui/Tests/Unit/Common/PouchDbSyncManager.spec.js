@@ -31,7 +31,7 @@ fdescribe('PouchDbSyncManager', () => {
       ]);
       pouchDbContextServiceMock.queryTaskIdForContext.and.returnValue(taskId);
 
-      syncManager = new PouchDbSyncManager(null, loggerMock, angularQ, pouchDbContextServiceMock, taskGateway);
+      syncManager = new PouchDbSyncManager(loggerMock, angularQ, pouchDbContextServiceMock, taskGateway);
 
       taskGateway = jasmine.createSpyObj('TaskGateway', ['getTaskReplicationInformationForTaskId']);
       taskReplicationInformation = {
