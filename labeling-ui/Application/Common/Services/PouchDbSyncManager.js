@@ -69,20 +69,20 @@ class PouchDbSyncManager {
    * @return {Promise.<Event>}
    */
   pullUpdatesForContext(context) {
-    if (this._replicationPromiseCache.has(context, 'pull', 'one-shot')) {
-      return this._replicationPromiseCache.get(context, 'pull', 'one-shot');
+    if (this._replicationPromiseCache.has(context, 'one-shot', 'pull')) {
+      return this._replicationPromiseCache.get(context, 'one-shot', 'pull');
     }
 
     const promise = this._$q.resolve()
       .then(() => this._getReplicationTargetForContext(context))
       .then(replicationTarget => this._getRemoteDbPullReplication(context, replicationTarget));
 
-    this._removeFromPromiseCacheWhenCompleted(promise, context, 'pull', 'one-shot');
+    this._removeFromPromiseCacheWhenCompleted(promise, context, 'one-shot', 'pull');
 
     // We need to store the promise here, before we even start any lookup. Otherwise we might have race
     // condition, between the lookup of the replication target and a second attempt to request "start" the
     // replication.
-    this._replicationPromiseCache.set(context, 'pull', 'one-shot', promise);
+    this._replicationPromiseCache.set(context, 'one-shot', 'pull', promise);
 
     return promise;
   }
