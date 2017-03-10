@@ -188,7 +188,11 @@ class PouchDbSyncManager {
       retry: true,
     };
     const remoteDb = this._getRemoteDbForReplicationTarget(replicationTarget);
-    return context.replicate.to(remoteDb, replicationOptions);
+    const replication = context.replicate.to(remoteDb, replicationOptions);
+
+    this._trackReplicationForContext(replication, context);
+
+    return replication;
   }
 
   /**
