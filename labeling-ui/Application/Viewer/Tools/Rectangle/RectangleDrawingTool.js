@@ -148,7 +148,6 @@ class RectangleDrawingTool extends CreationTool {
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
-      rect.remove();
     });
 
     return this._complete(rect);
