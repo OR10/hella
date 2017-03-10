@@ -1,5 +1,6 @@
 import Task from '../Model/Task';
 import User from 'Application/ManagementBoard/Models/User';
+import TaskReplicationInformation from '../Model/TaskReplicationInformation';
 
 /**
  * Gateway for retrieving information about Tasks
@@ -15,16 +16,14 @@ class TaskGateway {
    * @param {BufferedHttp} bufferedHttp
    * @param {OrganisationService} organisationService
    */
-  constructor(
-    $q,
-    loggerService,
-    pouchDbContextService,
-    pouchDbSyncManager,
-    pouchDbViewHeater,
-    apiService,
-    bufferedHttp,
-    organisationService
-  ) {
+  constructor($q,
+              loggerService,
+              pouchDbContextService,
+              pouchDbSyncManager,
+              pouchDbViewHeater,
+              apiService,
+              bufferedHttp,
+              organisationService) {
     /**
      * @type {angular.$q}
      * @private
@@ -374,6 +373,27 @@ class TaskGateway {
         }
 
         throw new Error(`Failed to move task (${taskId}) to phase: ${phase}.`);
+      });
+  }
+
+  /**
+   * Request information about the CouchDb-Endpoint to replicate information for a specific task
+   *
+   * @param {string} taskId
+   * @return {Promise.<TaskReplicationInformation>}
+   */
+  getTaskReplicationInformationForTaskId(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/replication`);
+
+    return this._bufferedHttp.get(url, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return new TaskReplicationInformation(
+            response.data.result
+          );
+        }
+
+        throw new Error(`Failed to load TaskReplicationInformation for task ${taskId}.`);
       });
   }
 

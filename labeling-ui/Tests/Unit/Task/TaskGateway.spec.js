@@ -4,6 +4,7 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
 import Task from 'Application/Task/Model/Task';
+import TaskReplicationInformation from 'Application/Task/Model/TaskReplicationInformation';
 import User from 'Application/ManagementBoard/Models/User';
 import TaskGateway from 'Application/Task/Gateways/TaskGateway';
 
@@ -419,6 +420,33 @@ describe('TaskGateway', () => {
       expect(result).toEqual(response.result);
       done();
     });
+
+    $httpBackend.flush();
+  });
+
+  fit('should provide information about replication target for specific taskId', done => {
+    const taskId = 'TASK-ID-abcdefg';
+    const databaseName = 'a-cool-db-name';
+    const databaseServer = 'http://some.awesome.couchdb.server:5984';
+    const taskReplicationInformationObject = {
+      taskId,
+      databaseName,
+      databaseServer,
+    };
+
+    const response = {
+      result: taskReplicationInformationObject
+    };
+
+    const expectedTaskReplicationInformation = new TaskReplicationInformation(taskReplicationInformationObject);
+
+    $httpBackend.expectGET(`/backend/api/task/${taskId}/replication`).respond(response);
+
+    gateway.getTaskReplicationInformationForTaskId(taskId)
+      .then(actualTaskReplicationInformation => {
+        expect(actualTaskReplicationInformation).toEqual(expectedTaskReplicationInformation);
+        done();
+      });
 
     $httpBackend.flush();
   });
