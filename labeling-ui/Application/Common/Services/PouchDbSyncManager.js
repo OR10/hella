@@ -88,6 +88,36 @@ class PouchDbSyncManager {
   }
 
   /**
+   * Start a bi-directional continuous replication for the given context
+   *
+   * The returned promise is resolved once both directions (push, pull) of the live replication have ended.
+   * Alternatively it is rejected if any of the replications fail at any point in time.
+   *
+   * @param {PouchDB} context
+   * @return {Promise.<Event>}
+   */
+  startDuplexLiveReplication(context) {
+    if (this._replicationPromiseCache.has(context, 'continuous')) {
+      return this._replicationPromiseCache.get(context, 'continuous');
+    }
+
+    const promise = this._$q.resolve()
+      .then(() => this._getReplicationTargetForContext(context))
+      .then(replicationTarget => {
+        const pullReplication = this._getRemoteDbPullReplication(context, replicationTarget, true);
+        const pushReplication = this._getRemoteDbPushReplication(context, replicationTarget, true);
+        return this._$q.all([pullReplication, pushReplication]);
+      });
+
+    // We need to store the promise here, before we even start any lookup. Otherwise we might have race
+    // condition, between the lookup of the replication target and a second attempt to request "start" the
+    // replication.
+    this._replicationPromiseCache.set(context, 'continuous', promise);
+
+    return promise;
+  }
+
+  /**
    * Create a sync handler for a unidirectional pull replication
    * Pull meaning: Server => Client
    *
@@ -104,6 +134,25 @@ class PouchDbSyncManager {
     };
     const remoteDb = this._getRemoteDbForReplicationTarget(replicationTarget);
     return context.replicate.from(remoteDb, replicationOptions);
+  }
+
+  /**
+   * Create a sync handler for a unidirectional push replication
+   * Push meaning: Client => Server
+   *
+   * @param {PouchDB} context
+   * @param {string} replicationTarget
+   * @param {boolean} continuous
+   * @returns {Replication}
+   * @private
+   */
+  _getRemoteDbPushReplication(context, replicationTarget, continuous = false) {
+    const replicationOptions = {
+      live: continuous,
+      retry: true,
+    };
+    const remoteDb = this._getRemoteDbForReplicationTarget(replicationTarget);
+    return context.replicate.to(remoteDb, replicationOptions);
   }
 
   /**

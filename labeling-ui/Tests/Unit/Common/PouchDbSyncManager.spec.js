@@ -224,5 +224,21 @@ fdescribe('PouchDbSyncManager', () => {
 
       rootScope.$apply();
     });
+
+    it('should return same replication promise for multiple calls while it is still running', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      contextReplicate.from.and.returnValue(contextReplicateFromDeferred.promise);
+      const contextReplicateToDeferred = angularQ.defer();
+      contextReplicate.to.and.returnValue(contextReplicateToDeferred.promise);
+
+      const context = {replicate: contextReplicate};
+
+      const firstReplication = syncManager.startDuplexLiveReplication(context);
+      rootScope.$apply();
+      const secondReplication = syncManager.startDuplexLiveReplication(context);
+
+      expect(firstReplication).toBe(secondReplication);
+    });
   });
 });
