@@ -23,7 +23,7 @@ fdescribe('PouchDbSyncManager', () => {
             remote: {
               baseUrl: '',
               taskDatabaseNameTemplate: '',
-            }
+            },
           },
         },
       };
