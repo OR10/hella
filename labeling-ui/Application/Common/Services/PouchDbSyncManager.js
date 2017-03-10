@@ -77,6 +77,8 @@ class PouchDbSyncManager {
       .then(() => this._getReplicationTargetForContext(context))
       .then(replicationTarget => this._getRemoteDbPullReplication(context, replicationTarget));
 
+    this._removeFromPromiseCacheWhenCompleted(promise, context, 'pull', 'one-shot');
+
     // We need to store the promise here, before we even start any lookup. Otherwise we might have race
     // condition, between the lookup of the replication target and a second attempt to request "start" the
     // replication.
@@ -148,6 +150,22 @@ class PouchDbSyncManager {
       .then(() => this._remoteDatabaseInformationCache.get(taskId));
 
     return promise;
+  }
+
+  /**
+   * Remove replication promise from cache once it stopped
+   *
+   * This is not part of the cached or returned promise chain and therefore does not stop any chaining
+   * or error handling on it.
+   *
+   * @param {Promise} promise
+   * @param {Array.<*>} keys storage keys for this promise inside the cache.
+   * @private
+   */
+  _removeFromPromiseCacheWhenCompleted(promise, ...keys) {
+    promise
+      .then(() => this._replicationPromiseCache.delete(...keys))
+      .catch(() => this._replicationPromiseCache.delete(...keys));
   }
 }
 

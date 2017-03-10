@@ -98,9 +98,42 @@ fdescribe('PouchDbSyncManager', () => {
       const context = {replicate: contextReplicate};
 
       const firstReplication = syncManager.pullUpdatesForContext(context);
+      rootScope.$apply();
       const secondReplication = syncManager.pullUpdatesForContext(context);
 
       expect(firstReplication).toBe(secondReplication);
+    });
+
+    it('should start second replication once first succeeded ', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      contextReplicate.from.and.returnValue(contextReplicateFromDeferred.promise);
+
+      const context = {replicate: contextReplicate};
+
+      const firstReplication = syncManager.pullUpdatesForContext(context);
+      contextReplicateFromDeferred.resolve();
+      rootScope.$apply();
+      const secondReplication = syncManager.pullUpdatesForContext(context);
+
+      expect(firstReplication).not.toBe(secondReplication);
+    });
+
+    it('should start second replication once first failed', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      contextReplicate.from.and.returnValue(contextReplicateFromDeferred.promise);
+
+      const context = {replicate: contextReplicate};
+
+      const firstReplication = syncManager.pullUpdatesForContext(context);
+
+      contextReplicateFromDeferred.reject();
+      rootScope.$apply();
+
+      const secondReplication = syncManager.pullUpdatesForContext(context);
+
+      expect(firstReplication).not.toBe(secondReplication);
     });
   });
 });
