@@ -1,4 +1,4 @@
-import DeepMap from '../Helpers/DeepMap';
+import DeepMap from '../Support/DeepMap';
 
 /**
  * Service to configure and manage syncrhonization related subjects.

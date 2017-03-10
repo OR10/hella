@@ -7,11 +7,32 @@ fdescribe('PouchDbSyncManager', () => {
   let angularQ;
   let rootScope;
   let taskGateway;
+  let syncManager;
+  let pouchDbContextServiceMock;
+  let taskReplicationInformation;
 
   beforeEach(inject(($q, $rootScope) => {
     angularQ = $q;
     rootScope = $rootScope;
   }));
+
+  beforeEach(() => {
+    const loggerMock = undefined;
+
+    pouchDbContextServiceMock = jasmine.createSpyObj('PouchDbContextService', [
+      'queryTaskIdForContext',
+    ]);
+    pouchDbContextServiceMock.queryTaskIdForContext.and.returnValue(taskId);
+
+    syncManager = new PouchDbSyncManager(loggerMock, angularQ, pouchDbContextServiceMock, taskGateway);
+
+    taskGateway = jasmine.createSpyObj('TaskGateway', ['getTaskReplicationInformationForTaskId']);
+    taskReplicationInformation = {
+      databaseServer: 'foobar',
+      databaseName: 'heinz',
+    };
+    taskGateway.getTaskReplicationInformationForTaskId.and.returnValue(taskReplicationInformation);
+  });
 
   it('should instantiate', () => {
     const instance = new PouchDbSyncManager();
@@ -19,28 +40,6 @@ fdescribe('PouchDbSyncManager', () => {
   });
 
   describe('pullUpdatesForContext', () => {
-    let syncManager;
-    let pouchDbContextServiceMock;
-    let taskReplicationInformation;
-
-    beforeEach(() => {
-      const loggerMock = undefined;
-
-      pouchDbContextServiceMock = jasmine.createSpyObj('PouchDbContextService', [
-        'queryTaskIdForContext',
-      ]);
-      pouchDbContextServiceMock.queryTaskIdForContext.and.returnValue(taskId);
-
-      syncManager = new PouchDbSyncManager(loggerMock, angularQ, pouchDbContextServiceMock, taskGateway);
-
-      taskGateway = jasmine.createSpyObj('TaskGateway', ['getTaskReplicationInformationForTaskId']);
-      taskReplicationInformation = {
-        databaseServer: 'foobar',
-        databaseName: 'heinz',
-      };
-      taskGateway.getTaskReplicationInformationForTaskId.and.returnValue(taskReplicationInformation);
-    });
-
     it('should return a promise', () => {
       const context = {};
 
@@ -134,6 +133,96 @@ fdescribe('PouchDbSyncManager', () => {
       const secondReplication = syncManager.pullUpdatesForContext(context);
 
       expect(firstReplication).not.toBe(secondReplication);
+    });
+  });
+
+  describe('startDuplexLiveReplication', () => {
+    it('should return a promise', () => {
+      const context = {};
+
+      const actual = syncManager.startDuplexLiveReplication(context);
+
+      // $q does not use native promises but their own. There is now feasible way
+      // to get the reference, so let's just test, that there is a then function
+      expect(actual.then).toEqual(jasmine.any(Function));
+    });
+
+    it('should start pull replication with the correct options', done => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      contextReplicate.from.and.returnValue(angularQ.resolve());
+      const context = {replicate: contextReplicate};
+
+      const replication = syncManager.startDuplexLiveReplication(context);
+      const replicationOptions = {
+        live: true,
+        retry: true,
+      };
+
+      replication.then(() => {
+        expect(contextReplicate.from).toHaveBeenCalledWith(jasmine.any(PouchDb), replicationOptions);
+        done();
+      });
+
+      rootScope.$apply();
+    });
+
+    it('should start push replication with the correct options', done => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      contextReplicate.to.and.returnValue(angularQ.resolve());
+      const context = {replicate: contextReplicate};
+
+      const replication = syncManager.startDuplexLiveReplication(context);
+      const replicationOptions = {
+        live: true,
+        retry: true,
+      };
+
+      replication.then(() => {
+        expect(contextReplicate.to).toHaveBeenCalledWith(jasmine.any(PouchDb), replicationOptions);
+        done();
+      });
+
+      rootScope.$apply();
+    });
+
+    it('should start pull replication with correct remote url', done => {
+      const taskReplicationUrl = `${taskReplicationInformation.databaseServer}/${taskReplicationInformation.databaseName}`;
+      let pouchDb;
+
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      contextReplicate.from.and.returnValue(angularQ.resolve());
+
+      const context = {replicate: contextReplicate};
+
+      const replication = syncManager.startDuplexLiveReplication(context);
+
+      replication.then(() => {
+        pouchDb = contextReplicate.from.calls.argsFor(0)[0];
+        expect(pouchDb.name).toEqual(taskReplicationUrl);
+        done();
+      });
+
+      rootScope.$apply();
+    });
+
+    it('should start push replication with correct remote url', done => {
+      const taskReplicationUrl = `${taskReplicationInformation.databaseServer}/${taskReplicationInformation.databaseName}`;
+      let pouchDb;
+
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      contextReplicate.to.and.returnValue(angularQ.resolve());
+
+      const context = {replicate: contextReplicate};
+
+      const replication = syncManager.startDuplexLiveReplication(context);
+
+      replication.then(() => {
+        pouchDb = contextReplicate.to.calls.argsFor(0)[0];
+        expect(pouchDb.name).toEqual(taskReplicationUrl);
+        done();
+      });
+
+      rootScope.$apply();
     });
   });
 });
