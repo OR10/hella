@@ -9,6 +9,7 @@ class LoadingMaskDirective
       spinner: '=?',
       backdrop: '=?',
       blockInteraction: '=?',
+      message: '=?',
     };
     this.bindToController = true;
     this.controllerAs = 'vm';
