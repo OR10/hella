@@ -345,4 +345,30 @@ fdescribe('PouchDbSyncManager', () => {
       expect(firstReplication).not.toBe(secondReplication);
     });
   });
+
+  describe('stopReplicationsForContext', () => {
+    it('should return a promise', () => {
+      const context = {};
+
+      const actual = syncManager.stopReplicationsForContext(context);
+
+      // $q does not use native promises but their own. There is now feasible way
+      // to get the reference, so let's just test, that there is a then function
+      expect(actual.then).toEqual(jasmine.any(Function));
+    });
+
+    it('should resolve if no replication is running for given context', () => {
+      const context = {};
+
+      const promise = syncManager.stopReplicationsForContext(context);
+
+      const stopReplicationsForContextResolved = jasmine.createSpy();
+      promise.then(stopReplicationsForContextResolved);
+
+      rootScope.$apply();
+      expect(stopReplicationsForContextResolved).toHaveBeenCalled();
+    });
+
+    
+  });
 });

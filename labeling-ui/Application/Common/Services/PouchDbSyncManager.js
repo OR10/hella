@@ -58,6 +58,14 @@ class PouchDbSyncManager {
      * @private
      */
     this._replicationPromiseCache = new DeepMap();
+
+    /**
+     * Storage for all currently running {@link Replication}s for a specific context
+     *
+     * @type {Map.<PouchDB, Array.<Replication>>}
+     * @private
+     */
+    this._runningReplicationsByContext = new Map();
   }
 
   /**
@@ -117,6 +125,28 @@ class PouchDbSyncManager {
     this._replicationPromiseCache.set(context, 'continuous', promise);
 
     return promise;
+  }
+
+  /**
+   * Stop all currently running replications for the given context
+   *
+   * A Promise is returned, which is fulfilled. once every replication for the context has ended successfully.
+   * The Promise is rejected, should anything go wrong during the abort procedure.
+   *
+   * @param {PouchDB} context
+   * @return {Promise}
+   */
+  stopReplicationsForContext(context) {
+    if (this._runningReplicationsByContext.has(context) === false) {
+      // No replication is running for the context, we are already finished.
+      return this._$q.resolve();
+    }
+
+    const runningReplicationsForContext = this._runningReplicationsByContext.get(context);
+    runningReplicationsForContext.forEach(replication => replication.cancel());
+
+    // All PouchDB Replications are promises
+    return this._$q.all(runningReplicationsForContext);
   }
 
   /**
