@@ -9,6 +9,8 @@ import 'v-accordion';
 import 'v-accordion/dist/v-accordion.css!';
 
 import ApplicationController from './ApplicationController';
+import BodyController from './BodyController';
+
 import CommonModule from './Common/Common';
 import HeaderModule from './Header/Header';
 import TaskModule from './Task/TaskModule';
@@ -108,6 +110,8 @@ export default class Application {
           ...this.modules.map(mod => mod.module.name),
         ]);
         this.app.constant('featureFlags', featureFlags);
+        // Currently only used for handling the global loading mask
+        this.app.controller('bodyController', BodyController);
 
         if (!Environment.isFunctionalTesting) {
           /* *****************************************************************
