@@ -1,3 +1,5 @@
+import PouchDb from 'pouchdb';
+
 /**
  * Service to manage synchronizations of PouchDB databases with the correlating backend database
  *
@@ -14,13 +16,7 @@ class PouchDbSyncManager {
    * @param {PouchDbContextService} pouchDbContextService
    * @param {TaskGateway} taskGateway
    */
-  constructor(configuration, loggerService, $q, pouchDbContextService, taskGateway) {
-    /**
-     * @type {Object}
-     * @private
-     */
-    this._storageConfiguration = configuration.Common.storage;
-
+  constructor(configuration = {}, loggerService, $q, pouchDbContextService, taskGateway) {
     /**
      * @type {Logger}
      * @private
@@ -68,8 +64,37 @@ class PouchDbSyncManager {
     return this._$q.resolve()
       .then(() => this._getReplicationTargetForContext(context))
       .then(replicationTarget => {
-        
+        return this._getRemoteDbPullReplication(replicationTarget);
       });
+  }
+
+  /**
+   * Create a sync handler for a unidirectional pull replication
+   * Pull meaning: Server => Client
+   *
+   * @param {string} replicationTarget
+   * @param {boolean} continuous
+   * @returns {Replication}
+   * @private
+   */
+  _getRemoteDbPullReplication(replicationTarget, continuous = false) {
+    const replicationOptions = {
+      live: continuous,
+      retry: true,
+    };
+    const remoteDb = this._getRemoteDbForReplicationTarget(replicationTarget);
+    return context.replicate.from(remoteDb, replicationOptions);
+  }
+
+  /**
+   * Create a PouchDB instance
+   *
+   * @param {string} replicationTarget
+   * @return {PouchDb}
+   * @private
+   */
+  _getRemoteDbForReplicationTarget(replicationTarget) {
+    return new PouchDb(replicationTarget);
   }
 
   /**

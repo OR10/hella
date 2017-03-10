@@ -1,11 +1,17 @@
 import PouchDbSyncManager from 'Application/Common/Services/PouchDbSyncManager';
+import {inject} from 'angular-mocks';
 
 fdescribe('PouchDbSyncManager', () => {
   const taskId = 'TASK-ID-abcdefg';
+  let $qMock;
 
   beforeEach(() => {
 
   });
+
+  beforeEach(inject($q => {
+    $qMock = $q;
+  }));
 
   it('should instantiate', () => {
     const instance = new PouchDbSyncManager();
@@ -14,41 +20,26 @@ fdescribe('PouchDbSyncManager', () => {
 
   describe('pullUpdatesForContext', () => {
     let syncManager;
-    let $qMock;
     let pouchDbContextServiceMock;
     beforeEach(() => {
-      const configurationMock = {
-        Common: {
-          storage: {
-            remote: {
-              baseUrl: '',
-              taskDatabaseNameTemplate: '',
-            },
-          },
-        },
-      };
       const loggerMock = undefined;
-
-      $qMock = jasmine.createSpyObj('$q', [
-        'all',
-        'resolve',
-      ]);
 
       pouchDbContextServiceMock = jasmine.createSpyObj('PouchDbContextService', [
         'queryTaskIdForContext',
       ]);
       pouchDbContextServiceMock.queryTaskIdForContext.and.returnValue(taskId);
 
-      syncManager = new PouchDbSyncManager(configurationMock, loggerMock, $qMock, pouchDbContextServiceMock);
+      syncManager = new PouchDbSyncManager(null, loggerMock, $qMock, pouchDbContextServiceMock);
     });
 
     it('should return a promise', () => {
-      const allReturn = {};
-      $qMock.all.and.returnValue(allReturn);
       const context = {};
 
       const actual = syncManager.pullUpdatesForContext(context);
-      expect(actual).toBe(allReturn);
-    })
+
+      // $q does not use native promises but their own. There is now feasible way
+      // to get the reference, so let's just test, that there is a then function
+      expect(actual.then).toEqual(jasmine.any(Function));
+    });
   });
 });
