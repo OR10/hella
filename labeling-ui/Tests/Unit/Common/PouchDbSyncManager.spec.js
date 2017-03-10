@@ -150,6 +150,7 @@ fdescribe('PouchDbSyncManager', () => {
     it('should start pull replication with the correct options', done => {
       const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
       contextReplicate.from.and.returnValue(angularQ.resolve());
+      contextReplicate.to.and.returnValue(angularQ.resolve());
       const context = {replicate: contextReplicate};
 
       const replication = syncManager.startDuplexLiveReplication(context);
@@ -168,6 +169,7 @@ fdescribe('PouchDbSyncManager', () => {
 
     it('should start push replication with the correct options', done => {
       const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      contextReplicate.from.and.returnValue(angularQ.resolve());
       contextReplicate.to.and.returnValue(angularQ.resolve());
       const context = {replicate: contextReplicate};
 
@@ -191,6 +193,7 @@ fdescribe('PouchDbSyncManager', () => {
 
       const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
       contextReplicate.from.and.returnValue(angularQ.resolve());
+      contextReplicate.to.and.returnValue(angularQ.resolve());
 
       const context = {replicate: contextReplicate};
 
@@ -210,6 +213,7 @@ fdescribe('PouchDbSyncManager', () => {
       let pouchDb;
 
       const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      contextReplicate.from.and.returnValue(angularQ.resolve());
       contextReplicate.to.and.returnValue(angularQ.resolve());
 
       const context = {replicate: contextReplicate};
@@ -362,13 +366,56 @@ fdescribe('PouchDbSyncManager', () => {
 
       const promise = syncManager.stopReplicationsForContext(context);
 
-      const stopReplicationsForContextResolved = jasmine.createSpy();
+      const stopReplicationsForContextResolved = jasmine.createSpy('stopReplicationsForContextResolved');
       promise.then(stopReplicationsForContextResolved);
 
       rootScope.$apply();
       expect(stopReplicationsForContextResolved).toHaveBeenCalled();
     });
 
-    
+    it('should cancel uni-directional pull replication', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      const contextReplicateFromPromise = contextReplicateFromDeferred.promise;
+      contextReplicateFromPromise.cancel = jasmine.createSpy('context.replicate.from.cancel');
+      contextReplicate.from.and.returnValue(contextReplicateFromPromise);
+
+      const context = {replicate: contextReplicate};
+
+      syncManager.pullUpdatesForContext(context);
+      rootScope.$apply();
+      syncManager.stopReplicationsForContext(context);
+
+      rootScope.$apply();
+
+      expect(contextReplicateFromPromise.cancel).toHaveBeenCalled();
+    });
+
+    it('should only cancel uni-directional pull replication from given context', () => {
+      const firstContextReplicate = jasmine.createSpyObj('context.replicate', ['from']);
+      const firstContextReplicateFromDeferred = angularQ.defer();
+      const firstContextReplicateFromPromise = firstContextReplicateFromDeferred.promise;
+      firstContextReplicateFromPromise.cancel = jasmine.createSpy('context.replicate.from.cancel');
+      firstContextReplicate.from.and.returnValue(firstContextReplicateFromPromise);
+
+      const secondContextReplicate = jasmine.createSpyObj('context.replicate', ['from']);
+      const secondContextReplicateFromDeferred = angularQ.defer();
+      const secondContextReplicateFromPromise = secondContextReplicateFromDeferred.promise;
+      secondContextReplicateFromPromise.cancel = jasmine.createSpy('context.replicate.from.cancel');
+      secondContextReplicate.from.and.returnValue(secondContextReplicateFromPromise);
+
+      const firstContext = {replicate: firstContextReplicate};
+      const secondContext = {replicate: secondContextReplicate};
+
+      syncManager.pullUpdatesForContext(firstContext);
+      syncManager.pullUpdatesForContext(secondContext);
+      rootScope.$apply();
+      syncManager.stopReplicationsForContext(firstContext);
+
+      rootScope.$apply();
+
+      expect(firstContextReplicateFromPromise.cancel).toHaveBeenCalled();
+      expect(secondContextReplicateFromPromise.cancel).not.toHaveBeenCalled();
+    });
   });
 });

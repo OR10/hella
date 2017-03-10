@@ -165,7 +165,11 @@ class PouchDbSyncManager {
       retry: true,
     };
     const remoteDb = this._getRemoteDbForReplicationTarget(replicationTarget);
-    return context.replicate.from(remoteDb, replicationOptions);
+    const replication = context.replicate.from(remoteDb, replicationOptions);
+
+    this._trackReplicationForContext(replication, context);
+
+    return replication;
   }
 
   /**
@@ -247,6 +251,58 @@ class PouchDbSyncManager {
     promise
       .then(() => this._replicationPromiseCache.delete(...keys))
       .catch(() => this._replicationPromiseCache.delete(...keys));
+  }
+
+  /**
+   * Install handlers to track a running PouchDB replication
+   *
+   * It will be automatically stored in the {@link _runningReplicationsByContext} Map and is removed
+   * from it again once it finishes.
+   *
+   * @param {Replication} replication
+   * @param {PouchDB} context
+   * @private
+   */
+  _trackReplicationForContext(replication, context) {
+    this._addReplicationToRunningReplications(replication, context);
+
+    replication
+      .then(() => this._removeReplicationFromRunningReplications(replication, context))
+      .catch(() => this._removeReplicationFromRunningReplications(replication, context));
+  }
+
+  /**
+   * Add the replication provided by the given promise to the {@link _runningReplicationsByContext} Map once
+   * it gets available
+   *
+   * @param {Replication} replication
+   * @param {PouchDB} context
+   * @private
+   */
+  _addReplicationToRunningReplications(replication, context) {
+    if (this._runningReplicationsByContext.has(context) === false) {
+      this._runningReplicationsByContext.set(context, []);
+    }
+
+    const runningReplicationsByContext = this._runningReplicationsByContext.get(context);
+    this._runningReplicationsByContext.set(context, [...runningReplicationsByContext, replication]);
+  }
+
+  /**
+   * Remove the replication from the {@link _runningReplicationsByContext} Map
+   *
+   * @param {Replication} replication
+   * @param {PouchDB} context
+   * @private
+   */
+  _removeReplicationFromRunningReplications(replication, context) {
+    if (this._runningReplicationsByContext.has(context) === false) {
+      return;
+    }
+
+    const runningReplicationsByContext = this._runningReplicationsByContext.get(context);
+    const filteredReplications = runningReplicationsByContext.filter(candidate => candidate !== replication);
+    this._runningReplicationsByContext.set(context, filteredReplications);
   }
 }
 
