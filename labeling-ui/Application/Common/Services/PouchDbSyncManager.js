@@ -109,6 +109,8 @@ class PouchDbSyncManager {
         return this._$q.all([pullReplication, pushReplication]);
       });
 
+    this._removeFromPromiseCacheWhenCompleted(promise, context, 'continuous');
+
     // We need to store the promise here, before we even start any lookup. Otherwise we might have race
     // condition, between the lookup of the replication target and a second attempt to request "start" the
     // replication.

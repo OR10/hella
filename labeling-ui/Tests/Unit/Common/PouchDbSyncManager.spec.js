@@ -240,5 +240,109 @@ fdescribe('PouchDbSyncManager', () => {
 
       expect(firstReplication).toBe(secondReplication);
     });
+
+    it('should return the same replication promise as long as the pull part is still active', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      contextReplicate.from.and.returnValue(contextReplicateFromDeferred.promise);
+      const contextReplicateToDeferred = angularQ.defer();
+      contextReplicate.to.and.returnValue(contextReplicateToDeferred.promise);
+
+      const context = {replicate: contextReplicate};
+
+      const firstReplication = syncManager.startDuplexLiveReplication(context);
+      contextReplicateToDeferred.resolve();
+      rootScope.$apply();
+      const secondReplication = syncManager.startDuplexLiveReplication(context);
+
+      expect(firstReplication).toBe(secondReplication);
+    });
+
+    it('should return the same replication promise as long as the push part is still active', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      contextReplicate.from.and.returnValue(contextReplicateFromDeferred.promise);
+      const contextReplicateToDeferred = angularQ.defer();
+      contextReplicate.to.and.returnValue(contextReplicateToDeferred.promise);
+
+      const context = {replicate: contextReplicate};
+
+      const firstReplication = syncManager.startDuplexLiveReplication(context);
+      contextReplicateFromDeferred.resolve();
+      rootScope.$apply();
+      const secondReplication = syncManager.startDuplexLiveReplication(context);
+
+      expect(firstReplication).toBe(secondReplication);
+    });
+
+    it('should start second replication once first was ended successfully', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      contextReplicate.from.and.returnValue(contextReplicateFromDeferred.promise);
+      const contextReplicateToDeferred = angularQ.defer();
+      contextReplicate.to.and.returnValue(contextReplicateToDeferred.promise);
+
+      const context = {replicate: contextReplicate};
+
+      const firstReplication = syncManager.startDuplexLiveReplication(context);
+      contextReplicateFromDeferred.resolve();
+      contextReplicateToDeferred.resolve();
+      rootScope.$apply();
+      const secondReplication = syncManager.startDuplexLiveReplication(context);
+
+      expect(firstReplication).not.toBe(secondReplication);
+    });
+
+    it('should start second replication once the pull part of the first one failed', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      contextReplicate.from.and.returnValue(contextReplicateFromDeferred.promise);
+      const contextReplicateToDeferred = angularQ.defer();
+      contextReplicate.to.and.returnValue(contextReplicateToDeferred.promise);
+
+      const context = {replicate: contextReplicate};
+
+      const firstReplication = syncManager.startDuplexLiveReplication(context);
+      contextReplicateFromDeferred.reject();
+      rootScope.$apply();
+      const secondReplication = syncManager.startDuplexLiveReplication(context);
+
+      expect(firstReplication).not.toBe(secondReplication);
+    });
+
+    it('should start second replication once the push part of the first one failed', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      contextReplicate.from.and.returnValue(contextReplicateFromDeferred.promise);
+      const contextReplicateToDeferred = angularQ.defer();
+      contextReplicate.to.and.returnValue(contextReplicateToDeferred.promise);
+
+      const context = {replicate: contextReplicate};
+
+      const firstReplication = syncManager.startDuplexLiveReplication(context);
+      contextReplicateToDeferred.reject();
+      rootScope.$apply();
+      const secondReplication = syncManager.startDuplexLiveReplication(context);
+
+      expect(firstReplication).not.toBe(secondReplication);
+    });
+
+    it('should start second replication once both (push/pull) parts of the first one failed', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from', 'to']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      contextReplicate.from.and.returnValue(contextReplicateFromDeferred.promise);
+      const contextReplicateToDeferred = angularQ.defer();
+      contextReplicate.to.and.returnValue(contextReplicateToDeferred.promise);
+
+      const context = {replicate: contextReplicate};
+
+      const firstReplication = syncManager.startDuplexLiveReplication(context);
+      contextReplicateFromDeferred.reject();
+      contextReplicateToDeferred.reject();
+      rootScope.$apply();
+      const secondReplication = syncManager.startDuplexLiveReplication(context);
+
+      expect(firstReplication).not.toBe(secondReplication);
+    });
   });
 });
