@@ -105,7 +105,7 @@ class PouchDbSyncManager {
    */
   _getReplicationTargetForContext(context) {
     const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
-    this._$q.resolve()
+    return this._$q.resolve()
       .then(() => this._getReplicationInformationForTaskId(taskId))
       .then(replicationInformation => `${replicationInformation.databaseServer}/${replicationInformation.databaseName}`);
   }
@@ -125,7 +125,7 @@ class PouchDbSyncManager {
         .then(replicationInformation => this._remoteDatabaseInformationCache.set(taskId, replicationInformation));
     }
 
-    promise
+    promise = promise
       .then(() => this._remoteDatabaseInformationCache.get(taskId));
 
     return promise;
