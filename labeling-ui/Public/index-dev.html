@@ -6,9 +6,12 @@
     <base href="/labeling/" />
     <link rel="stylesheet" type="text/css" href="Styles/main.css">
 </head>
-<body>
-<idle-indicator></idle-indicator>
-<ui-view></ui-view>
+<body ng-controller="bodyController as vm">
+<div class="idle-indicator-overlay" ng-if="vm.globalLoadingSpinner">
+    <loading-mask spinner="true" message="vm.globalLoadingMessage"></loading-mask>
+</div>
+<ui-view ng-if="!vm.globalLoadingSpinner"></ui-view>
+
 <script type="application/javascript">
     window.__ANNOSTATION_ENVIRONMENT__ = 'dev';
 </script>
