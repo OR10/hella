@@ -70,8 +70,6 @@ fdescribe('PouchDbSyncManager', () => {
       rootScope.$apply();
     });
 
-
-
     it('should start replication with correct remote url', done => {
       const taskReplicationUrl = `${taskReplicationInformation.databaseServer}/${taskReplicationInformation.databaseName}`;
       let pouchDb;
@@ -92,5 +90,17 @@ fdescribe('PouchDbSyncManager', () => {
       rootScope.$apply();
     });
 
+    it('should return same replication for multiple calls while it is still running', () => {
+      const contextReplicate = jasmine.createSpyObj('context.replicate', ['from']);
+      const contextReplicateFromDeferred = angularQ.defer();
+      contextReplicate.from.and.returnValue(contextReplicateFromDeferred.promise);
+
+      const context = {replicate: contextReplicate};
+
+      const firstReplication = syncManager.pullUpdatesForContext(context);
+      const secondReplication = syncManager.pullUpdatesForContext(context);
+
+      expect(firstReplication).toBe(secondReplication);
+    });
   });
 });

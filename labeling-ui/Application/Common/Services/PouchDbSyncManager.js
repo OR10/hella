@@ -1,5 +1,7 @@
 import PouchDb from 'pouchdb';
 
+import DeepMap from '../Support/DeepMap'
+
 /**
  * Service to manage synchronizations of PouchDB databases with the correlating backend database
  *
@@ -48,6 +50,14 @@ class PouchDbSyncManager {
      * @private
      */
     this._remoteDatabaseInformationCache = new Map();
+
+    /**
+     * Cache of the promises associated with currently running replications.
+     *
+     * @type {DeepMap}
+     * @private
+     */
+    this._replicationPromiseCache = new DeepMap();
   }
 
   /**
@@ -59,9 +69,20 @@ class PouchDbSyncManager {
    * @return {Promise.<Event>}
    */
   pullUpdatesForContext(context) {
-    return this._$q.resolve()
+    if (this._replicationPromiseCache.has(context, 'pull', 'one-shot')) {
+      return this._replicationPromiseCache.get(context, 'pull', 'one-shot');
+    }
+
+    const promise = this._$q.resolve()
       .then(() => this._getReplicationTargetForContext(context))
       .then(replicationTarget => this._getRemoteDbPullReplication(context, replicationTarget));
+
+    // We need to store the promise here, before we even start any lookup. Otherwise we might have race
+    // condition, between the lookup of the replication target and a second attempt to request "start" the
+    // replication.
+    this._replicationPromiseCache.set(context, 'pull', 'one-shot', promise);
+
+    return promise;
   }
 
   /**
