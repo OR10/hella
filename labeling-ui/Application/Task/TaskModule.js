@@ -43,6 +43,8 @@ class TaskModule extends Module {
   config($stateProvider) {
     $stateProvider.state('labeling.tasks.detail', {
       url: '/:taskId/:phase',
+      applicationLoadingMask: true,
+      loadingMessage: 'Loading task data...',
       views: {
         '@labeling': {
           controller: TaskController,
