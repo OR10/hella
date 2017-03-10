@@ -63,21 +63,20 @@ class PouchDbSyncManager {
   pullUpdatesForContext(context) {
     return this._$q.resolve()
       .then(() => this._getReplicationTargetForContext(context))
-      .then(replicationTarget => {
-        return this._getRemoteDbPullReplication(replicationTarget);
-      });
+      .then(replicationTarget => this._getRemoteDbPullReplication(context, replicationTarget));
   }
 
   /**
    * Create a sync handler for a unidirectional pull replication
    * Pull meaning: Server => Client
    *
+   * @param {PouchDB} context
    * @param {string} replicationTarget
    * @param {boolean} continuous
    * @returns {Replication}
    * @private
    */
-  _getRemoteDbPullReplication(replicationTarget, continuous = false) {
+  _getRemoteDbPullReplication(context, replicationTarget, continuous = false) {
     const replicationOptions = {
       live: continuous,
       retry: true,
