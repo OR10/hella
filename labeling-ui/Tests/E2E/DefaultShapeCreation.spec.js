@@ -1,11 +1,11 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, getMockRequestsMade, dumpAllRequestsMade, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Default Shape Creation (TTANNO-1370)', () => {
+fdescribe('Default Shape Creation (TTANNO-1370)', () => {
   let assets;
   let sharedMocks;
   let defaultShapeCreationButton;
@@ -36,7 +36,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
     defaultShapeCreationButton = element(by.css('#default-shape-creation-button'));
   });
 
-  it('should create and draw a *Rectangle*', done => {
+  it('should create and draw a *Rectangle* (TTANNO-1370)', done => {
     mock(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Rectangle.Task,
       assets.mocks.DefaultShapeCreation.Rectangle.StoreLabeledThingInFrame,
@@ -60,7 +60,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
       });
   });
 
-  it('should create and draw a *Pedestrian*', done => {
+  it('should create and draw a *Pedestrian* (TTANNO-1370)', done => {
     mock(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Pedestrian.Task,
       assets.mocks.DefaultShapeCreation.Pedestrian.StoreLabeledThingInFrame,
@@ -80,6 +80,30 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.DefaultShapeCreation.Pedestrian.StoreLabeledThingInFrame);
+        done();
+      });
+  });
+
+  it('should create and draw a *Polygon* (TTANNO-1370)', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.DefaultShapeCreation.Polygon.Task,
+      assets.mocks.DefaultShapeCreation.Polygon.StoreLabeledThingInFrame,
+    ]));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => defaultShapeCreationButton.click())
+      .then(() => browser.sleep(300))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Polygon')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Polygon);
+      })
+      .then(() => browser.sleep(300))
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.DefaultShapeCreation.Polygon.StoreLabeledThingInFrame);
         done();
       });
   });
