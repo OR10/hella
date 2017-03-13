@@ -12,6 +12,8 @@ use Doctrine\ODM\CouchDB;
  */
 class TaskDatabaseCreator
 {
+    const TASK_DATABASE_NAME_TEMPLATE = 'taskdb-project-%s-task-%s';
+
     /**
      * @var CouchDB\DocumentManager
      */
@@ -35,7 +37,7 @@ class TaskDatabaseCreator
      */
     public function createDatabase($projectId, $taskId)
     {
-        $databaseName = "taskdb-project-$projectId-task-$taskId";
+        $databaseName = sprintf(TaskDatabaseCreator::TASK_DATABASE_NAME_TEMPLATE, $projectId, $taskId);
         return $this->documentManager->getCouchDBClient()->createDatabase($databaseName);
     }
 }
