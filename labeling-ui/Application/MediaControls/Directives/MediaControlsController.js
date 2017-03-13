@@ -359,8 +359,7 @@ class MediaControlsController {
                 paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
 
             if (relatedThingShapes.length === 0) {
-              this._deleteGroupShape(shapeGroup);
-              return;
+              return this._deleteGroupShape(shapeGroup);
             }
           });
         })
