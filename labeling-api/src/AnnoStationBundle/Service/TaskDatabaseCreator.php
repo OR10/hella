@@ -20,4 +20,10 @@ class TaskDatabaseCreator
     {
         $this->documentManager = $documentManager;
     }
+
+    public function createDatabase($projectId, $taskId)
+    {
+        $databaseName = "taskdb-project-$projectId-task-$taskId";
+        return $this->documentManager->getCouchDBClient()->createDatabase($databaseName);
+    }
 }
