@@ -6,6 +6,15 @@ variable "couchdb-count" {
   default = 2
 }
 
+variable "flavors" {
+  type = "map"
+  default = {
+    "app-0.labeltool" = "m1.small"
+    "couchdb-0.labeltool" = "m1.small"
+    "couchdb-1.labeltool" = "m1.tiny"
+  }
+}
+
 resource "openstack_compute_floatingip_v2" "labeltool" {
     count = "${var.app-count}"
 
@@ -17,7 +26,7 @@ resource "openstack_compute_instance_v2" "labeltool" {
 
     name = "app-${count.index}.labeltool"
     image_id = "93b03b4b-79cf-49d7-9025-1420f751523a"
-    flavor_name = "m1.small"
+    flavor_name = "${var.flavors["app-${count.index}.labeltool"]}"
     key_pair = "${openstack_compute_keypair_v2.crosscan-chh.name}"
     stop_before_destroy = false
 
@@ -58,7 +67,7 @@ resource "openstack_compute_instance_v2" "labeltool-couchdb" {
 
     name = "couchdb-${count.index}.labeltool"
     image_id = "93b03b4b-79cf-49d7-9025-1420f751523a"
-    flavor_name = "m1.small"
+    flavor_name = "${var.flavors["couchdb-${count.index}.labeltool"]}"
     key_pair = "${openstack_compute_keypair_v2.crosscan-chh.name}"
     stop_before_destroy = false
 
