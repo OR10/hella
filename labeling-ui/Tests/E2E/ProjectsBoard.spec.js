@@ -26,7 +26,7 @@ xdescribe('Project Board', () => {
         assets.mocks.ProjectBoard.ProjectList5with0to4,
       ]));
 
-      initApplication('/labeling/projects/')
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/')
         .then(() => {
           const grid = new GridObjectTest('projectGrid');
           grid.expectRowCount(5);
@@ -39,7 +39,7 @@ xdescribe('Project Board', () => {
         assets.mocks.ProjectBoard.ProjectList5with0to4,
       ]));
 
-      initApplication('/labeling/projects/')
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/')
         .then(() => {
           const grid = new GridObjectTest('projectGrid');
           grid.expectHeaderColumnCount(3);
@@ -57,7 +57,7 @@ xdescribe('Project Board', () => {
         assets.mocks.ProjectBoard.ProjectList5with0to4,
       ]));
 
-      initApplication('/labeling/projects/')
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/')
         .then(() => {
           const grid = new GridObjectTest('projectGrid');
           grid.expectRowValuesMatch(0, ['in_progress', 'Test project entry No. 1', '82%']);

@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests\Service\TaskExporter;
 
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model\Shapes;
 use AppBundle\Model\TaskExporter\Kitti;
 use AnnoStationBundle\Service\TaskExporter;
@@ -37,6 +38,11 @@ class KittiTest extends Tests\KernelTestCase
     private $labeledThingInFrameFacade;
 
     /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
+    /**
      * @var TaskExporter\Kitti
      */
     private $exporter;
@@ -48,6 +54,7 @@ class KittiTest extends Tests\KernelTestCase
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
+        $this->organisationFacade        = $this->getAnnostationService('database.facade.organisation');
         $this->exporter                  = $this->getAnnostationService('service.task_exporter.kitti');
     }
 
@@ -276,10 +283,11 @@ class KittiTest extends Tests\KernelTestCase
      */
     private function createLabelingTask(array $frameNumberMapping)
     {
+        $oganisation = new AnnoStationBundleModel\Organisation('Test Oganisation');
         return $this->labelingTaskFacade->save(
             Model\LabelingTask::create(
-                $this->videoFacade->save(Model\Video::create('test video')),
-                $this->projectFacade->save(Model\Project::create('test project')),
+                $this->videoFacade->save(Model\Video::create($oganisation, 'test video')),
+                $this->projectFacade->save(Model\Project::create('test project', $oganisation)),
                 $frameNumberMapping,
                 Model\LabelingTask::TYPE_OBJECT_LABELING
             )

@@ -1,9 +1,20 @@
 <?php
 namespace AppBundle\Model;
 
+use AnnoStationBundle\Model as AnnoStationBundleModel;
+
 interface TaskConfiguration
 {
-    public function __construct($name, $filename, $contentType, $binaryData, $userId, $json, $date = null);
+    public function __construct(
+        AnnoStationBundleModel\Organisation $organisation,
+        $name,
+        $filename,
+        $contentType,
+        $binaryData,
+        $userId,
+        $json,
+        $date = null
+    );
 
     public function getId();
 
@@ -24,4 +35,8 @@ interface TaskConfiguration
     public function getType();
 
     public function getContentType();
+
+    public function getOrganisationId();
+
+    public function setOrganisationId($organisationId);
 }

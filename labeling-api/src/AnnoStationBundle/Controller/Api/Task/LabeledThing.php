@@ -273,7 +273,7 @@ class LabeledThing extends Controller\Base
 
         $this->labeledThingFacade->delete($labeledThing);
 
-        return View\View::create()->setData(['success' => true]);
+        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 
     /**

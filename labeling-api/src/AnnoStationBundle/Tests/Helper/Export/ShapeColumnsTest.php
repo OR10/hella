@@ -327,9 +327,9 @@ class ShapeColumnsTest extends Tests\CouchDbTestCase
             ],
         );
 
-        $this->project         = $this->createProject('project-id-1');
+        $this->project         = $this->createProject('project-id-1', $this->createOrganisation());
         $this->calibrationData = $this->createCalibrationData('video-id-1', $calibration);
-        $this->video           = $this->createVideo('video-id-1', $this->calibrationData);
+        $this->video           = $this->createVideo($this->createOrganisation(), 'video-id-1', $this->calibrationData);
         $this->task            = $this->createTask($this->project, $this->video);
         $this->labeledThing    = $this->createLabeledThing($this->task);
 

@@ -33,6 +33,10 @@ describe('TaskGateway', () => {
       $provide.value('pouchDbContextService', {});
       $provide.value('pouchDbSyncManager', {});
 
+      $provide.value('organisationService', {
+        get: () => 'ORGANISATION-ID',
+      });
+
       bufferedHttpProvider.disableAutoExtractionAndInjection();
     });
 
@@ -101,6 +105,54 @@ describe('TaskGateway', () => {
 
     gateway.getTasksForProjectWithPhaseAndStatus(projectId, phase, status, limit, offset).then(result => {
       expect(result.totalRows).toEqual(100);
+      expect(result.tasks).toEqual(response.result.tasks.map(task => new Task(task, response.result.users)));
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should load a list of flagged tasks', done => {
+    const projectId = 'project-id-1';
+    const response = {
+      result: {
+        tasks: [
+          {id: 'task-3'},
+          {id: 'task-4'},
+        ],
+        users: {},
+      },
+      totalRows: 2,
+    };
+
+    $httpBackend.expectGET(`/backend/api/organisation/ORGANISATION-ID/project/${projectId}/attentionTasks`).respond(response);
+
+    gateway.getFlaggedTasks(projectId).then(result => {
+      expect(result.totalRows).toEqual(2);
+      expect(result.tasks).toEqual(response.result.tasks.map(task => new Task(task, response.result.users)));
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
+  it('should load a list of flagged tasks with offset and limit', done => {
+    const projectId = 'project-id-1';
+    const response = {
+      result: {
+        tasks: [
+          {id: 'task-3'},
+          {id: 'task-4'},
+        ],
+        users: {},
+      },
+      totalRows: 2,
+    };
+
+    $httpBackend.expectGET(`/backend/api/organisation/ORGANISATION-ID/project/${projectId}/attentionTasks?limit=2&offset=23`).respond(response);
+
+    gateway.getFlaggedTasks(projectId, 2, 23).then(result => {
+      expect(result.totalRows).toEqual(2);
       expect(result.tasks).toEqual(response.result.tasks.map(task => new Task(task, response.result.users)));
       done();
     });

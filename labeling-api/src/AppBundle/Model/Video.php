@@ -5,6 +5,7 @@ namespace AppBundle\Model;
 use AppBundle\Model\Video\MetaData;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use JMS\Serializer\Annotation as Serializer;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 /**
  * @CouchDB\Document
@@ -21,6 +22,11 @@ class Video
      * @CouchDB\Version
      */
     private $rev;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    protected $organisationId;
 
     /**
      * @CouchDB\Field(type="string")
@@ -49,21 +55,24 @@ class Video
     /**
      * Static factory method for easy use of the fluent interface.
      *
-     * @param string $name
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param string                              $name
      *
      * @return Video
      */
-    public static function create($name)
+    public static function create(AnnoStationBundleModel\Organisation $organisation, $name)
     {
-        return new static($name);
+        return new static($organisation, $name);
     }
 
     /**
-     * @param string $name The name of the video.
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param string                              $name The name of the video.
      */
-    public function __construct($name)
+    public function __construct(AnnoStationBundleModel\Organisation $organisation, $name)
     {
-        $this->name = (string) $name;
+        $this->organisationId = $organisation->getId();
+        $this->name           = (string) $name;
     }
 
     /**
@@ -220,5 +229,13 @@ class Video
     public function setCalibrationData(CalibrationData $calibrationData)
     {
         $this->setCalibrationId($calibrationData->getId());
+    }
+
+    /**
+     * @param mixed $organisationId
+     */
+    public function setOrganisationId($organisationId)
+    {
+        $this->organisationId = $organisationId;
     }
 }

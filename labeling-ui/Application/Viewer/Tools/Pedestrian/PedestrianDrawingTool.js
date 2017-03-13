@@ -95,7 +95,6 @@ class PedestrianDrawingTool extends CreationTool {
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
-      pedestrian.remove();
     });
 
     return this._complete(pedestrian);

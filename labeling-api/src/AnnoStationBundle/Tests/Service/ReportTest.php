@@ -90,7 +90,9 @@ class ReportTest extends Tests\KernelTestCase
         $projectMovedToInProgressDateTime = new \DateTime('2016-09-09 10:00', new \DateTimeZone('UTC'));
         $projectMovedToDoneDateTime       = new \DateTime('2016-09-09 15:00', new \DateTimeZone('UTC'));
 
-        $this->project = Helper\ProjectBuilder::create()
+        $organisation = Helper\OrganisationBuilder::create()->build();
+
+        $this->project = Helper\ProjectBuilder::create($organisation)
             ->withCreationDate($creationDate)
             ->withProjectOwnedByUserId($this->user)
             ->withDueDate($dueDate)
@@ -105,7 +107,7 @@ class ReportTest extends Tests\KernelTestCase
 
         $this->project = $this->projectFacade->save($this->project);
 
-        $this->video                   = Model\Video::create('foobar');
+        $this->video                   = Model\Video::create($organisation, 'foobar');
         $videoMetaData                 = new Model\Video\MetaData();
         $videoMetaData->numberOfFrames = 661;
         $this->video->setMetaData($videoMetaData);

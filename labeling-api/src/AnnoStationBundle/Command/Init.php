@@ -5,6 +5,7 @@ namespace AnnoStationBundle\Command;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Database\Facade as AppFacade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\Model\TaskConfiguration;
 use Doctrine\CouchDB;
@@ -53,18 +54,31 @@ class Init extends Base
      * @var Model\User[]
      */
     private $users = [];
+
     /**
      * @var Facade\LabelingGroup
      */
     private $labelingGroupFacade;
+
     /**
      * @var Service\TaskConfigurationXmlConverterFactory
      */
     private $configurationXmlConverterFactory;
+
     /**
      * @var Facade\TaskConfiguration
      */
     private $taskConfigurationFacade;
+
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
+    /**
+     * @var AnnoStationBundleModel\Organisation
+     */
+    private $organisation;
 
     /**
      * Init constructor.
@@ -81,6 +95,7 @@ class Init extends Base
      * @param Facade\LabelingGroup                         $labelingGroupFacade
      * @param Facade\TaskConfiguration                     $taskConfigurationFacade
      * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
+     * @param Facade\Organisation                          $organisationFacade
      */
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
@@ -94,7 +109,8 @@ class Init extends Base
         Facade\Project $projectFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         Facade\TaskConfiguration $taskConfigurationFacade,
-        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
+        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
+        Facade\Organisation $organisationFacade
     ) {
         parent::__construct();
 
@@ -110,6 +126,7 @@ class Init extends Base
         $this->labelingGroupFacade              = $labelingGroupFacade;
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
         $this->taskConfigurationFacade          = $taskConfigurationFacade;
+        $this->organisationFacade               = $organisationFacade;
     }
 
     protected function configure()
@@ -161,7 +178,7 @@ class Init extends Base
             return 1;
         }
 
-        if (!$this->createUser($output)) {
+        if (!$this->createUsers($output)) {
             return 1;
         }
 
@@ -233,8 +250,13 @@ class Init extends Base
         $this->writeSection($output, 'Initializing couch database');
 
         try {
-            $this->writeVerboseInfo($output, 'dropping couch database');
+            $this->writeVerboseInfo($output, 'dropping couch databases');
             $this->couchClient->deleteDatabase($this->couchDatabase);
+            foreach ($this->couchClient->getAllDatabases() as $database) {
+                if (strpos($database, 'taskdb-project-') === 0) {
+                    $this->couchClient->deleteDatabase($database);
+                }
+            }
             $this->writeVerboseInfo($output, 'creating couch database');
             $this->couchClient->createDatabase($this->couchDatabase);
         } catch (\Exception $e) {
@@ -251,17 +273,40 @@ class Init extends Base
         return true;
     }
 
-    private function createUser(OutputInterface $output)
+    private function getOrganisation()
+    {
+        if ($this->organisation === null) {
+            $organisation       = new AnnoStationBundleModel\Organisation('Default Organisation');
+            $this->organisation = $this->organisationFacade->save($organisation);
+        }
+
+        return $this->organisation;
+    }
+
+    private function createUsers(OutputInterface $output)
     {
         $this->writeSection($output, 'Creating users');
 
-        $users = ['admin', 'label_coordinator', 'user', 'client'];
+        $users = ['admin', 'label_coordinator', 'user', 'client', 'superadmin'];
 
         if ($this->userPassword !== null) {
             foreach ($users as $username) {
-                $user = $this->userFacade->createUser($username, $username . '@example.com', $this->userPassword);
+                $user = $this->userFacade->createUser(
+                    $username,
+                    $username . '@example.com',
+                    $this->userPassword,
+                    true,
+                    false,
+                    [],
+                    [$this->getOrganisation()->getId()]
+                );
 
                 switch ($username) {
+                    case 'superadmin':
+                        $roleNames = [
+                            Model\User::ROLE_SUPER_ADMIN,
+                        ];
+                        break;
                     case 'admin':
                         $roleNames = [
                             Model\User::ROLE_ADMIN,
@@ -311,6 +356,7 @@ class Init extends Base
         }
 
         $labelGroup = new Model\LabelingGroup(
+            $this->getOrganisation(),
             [$this->users['label_coordinator']->getId()],
             [$this->users['user']->getId()],
             'Example Labeling Group'
@@ -385,6 +431,7 @@ class Init extends Base
             Model\TaskConfiguration\SimpleXml::TYPE
         );
         $config = new TaskConfiguration\SimpleXml(
+            $this->getOrganisation(),
             'Sample Configuration',
             'example.xml',
             'application/xml',

@@ -78,8 +78,18 @@
             <argument type="service" id="fos_user.user_manager" />
         </service>
 
-
         <service id="annostation.services.uuid_generator" class="AppBundle\Service\UuidGenerator">
+        </service>
+
+        <service id="annostation.services.database_document_manager_factory" class="AppBundle\Service\DatabaseDocumentManagerFactory">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+        </service>
+
+        <service id="annostation.services.couch_db_replicator_service" class="AppBundle\Service\CouchDbReplicatorService">
+            <argument>%couchdb_host%</argument>
+            <argument>%couchdb_port%</argument>
+            <argument>%couchdb_user%</argument>
+            <argument>%couchdb_password%</argument>
         </service>
 
     </services>

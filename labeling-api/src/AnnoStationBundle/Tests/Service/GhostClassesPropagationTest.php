@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests\Service;
 
 use AnnoStationBundle\Tests\KernelTestCase;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 
@@ -171,8 +172,9 @@ class GhostClassesPropagationTest extends KernelTestCase
      */
     private function setUpLabeledThingsInFrame()
     {
-        $this->video           = Model\Video::create('some video');
-        $this->project           = Model\Project::create('test project');
+        $organisation          = new AnnoStationBundleModel\Organisation('Test Organisation');
+        $this->video           = Model\Video::create($organisation, 'some video');
+        $this->project         = Model\Project::create('test project', $organisation);
         $this->task            = Model\LabelingTask::create(
             $this->video,
             $this->project,

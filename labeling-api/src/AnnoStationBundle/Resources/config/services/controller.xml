@@ -4,16 +4,16 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="annostation.labeling_api.controller.api.project.status"
-                 class="AnnoStationBundle\Controller\Api\Project\Status">
+        <service id="annostation.labeling_api.controller.api.organisation.project.status"
+                 class="AnnoStationBundle\Controller\Api\Organisation\Project\Status">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
-        <service id="annostation.labeling_api.controller.api.project.report"
-                 class="AnnoStationBundle\Controller\Api\Project\Report">
+        <service id="annostation.labeling_api.controller.api.organisation.project.report"
+                 class="AnnoStationBundle\Controller\Api\Organisation\Project\Report">
             <argument type="service" id="annostation.labeling_api.database.facade.report"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
@@ -22,12 +22,13 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
         </service>
 
-        <service id="annostation.labeling_api.controller.api.project.batch_upload"
-                 class="AnnoStationBundle\Controller\Api\Project\BatchUpload">
+        <service id="annostation.labeling_api.controller.api.organisation.project.batch_upload"
+                 class="AnnoStationBundle\Controller\Api\Organisation\Project\BatchUpload">
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
             <argument type="service" id="annostation.labeling_api.service.task_creator"/>
             <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
@@ -35,17 +36,18 @@
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
-        <service id="annostation.labeling_api.controller.api.project.attention"
-                 class="AnnoStationBundle\Controller\Api\Project\Attention">
+        <service id="annostation.labeling_api.controller.api.organisation.project.attention"
+                 class="AnnoStationBundle\Controller\Api\Organisation\Project\Attention">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
         <service
-                id="annostation.labeling_api.controller.api.project.export"
-                class="AnnoStationBundle\Controller\Api\Project\Export">
+                id="annostation.labeling_api.controller.api.organisation.project.export"
+                class="AnnoStationBundle\Controller\Api\Organisation\Project\Export">
             <argument type="service" id="annostation.labeling_api.database.facade.project_export"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>
@@ -164,10 +166,26 @@
         </service>
 
         <service
-                id="annostation.labeling_api.controller.api.users"
-                class="AnnoStationBundle\Controller\Api\Users">
+                id="annostation.labeling_api.controller.api.organisation.user"
+                class="AnnoStationBundle\Controller\Api\Organisation\User">
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+        </service>
+        <service
+                id="annostation.labeling_api.controller.api.organisation.users"
+                class="AnnoStationBundle\Controller\Api\Organisation\Users">
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
+        </service>
+        <service
+                id="annostation.labeling_api.controller.api.user"
+                class="AnnoStationBundle\Controller\Api\User">
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
         <service
@@ -183,11 +201,13 @@
         </service>
 
         <service
-                id="annostation.labeling_api.controller.api.project"
-                class="AnnoStationBundle\Controller\Api\Project">
+                id="annostation.labeling_api.controller.api.organisation.project"
+                class="AnnoStationBundle\Controller\Api\Organisation\Project">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
@@ -207,13 +227,15 @@
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="security.encoder_factory"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
-        <service id="annostation.labeling_api.controller.api.project_count"
-                 class="AnnoStationBundle\Controller\Api\ProjectCount">
+        <service id="annostation.labeling_api.controller.api.organisation.project_count"
+                 class="AnnoStationBundle\Controller\Api\Organisation\ProjectCount">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.task_count" class="AnnoStationBundle\Controller\Api\TaskCount">
@@ -221,21 +243,23 @@
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
-        <service id="annostation.labeling_api.controller.api.task_configuration"
-                 class="AnnoStationBundle\Controller\Api\TaskConfiguration">
+        <service id="annostation.labeling_api.controller.api.organisation.task_configuration"
+                 class="AnnoStationBundle\Controller\Api\Organisation\TaskConfiguration">
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.simple_xml_validator"/>
             <argument type="service" id="annostation.labeling_api.service.requirements_xml_validator"/>
             <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
-        <service id="annostation.labeling_api.controller.api.labeling_group"
-                 class="AnnoStationBundle\Controller\Api\LabelingGroup">
+        <service id="annostation.labeling_api.controller.api.organisation.labeling_group"
+                 class="AnnoStationBundle\Controller\Api\Organisation\LabelingGroup">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
         <service id="annostation.labeling_api.controller.custom_exception" class="AnnoStationBundle\Controller\CustomException">
@@ -262,12 +286,30 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
         </service>
 
-        <service id="annostation.labeling_api.controller.api.project_importer" class="AnnoStationBundle\Controller\Api\ProjectImporter">
+        <service id="annostation.labeling_api.controller.api.organisation.project_importer" class="AnnoStationBundle\Controller\Api\Organisation\ProjectImporter">
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.project_importer.import"/>
             <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+        </service>
+
+        <service id="annostation.labeling_api.controller.api.organisation" class="AnnoStationBundle\Controller\Api\Organisation">
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+        </service>
+
+        <service id="annostation.labeling_api.controller.api.organisation.campaign" class="AnnoStationBundle\Controller\Api\Organisation\Campaign">
+            <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
+        </service>
+
+        <service id="annostation.labeling_api.controller.api.task.replication" class="AnnoStationBundle\Controller\Api\Task\Replication">
         </service>
     </services>
 </container>

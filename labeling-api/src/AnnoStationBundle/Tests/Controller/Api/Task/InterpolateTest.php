@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests\Controller\Api\Task;
 
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
@@ -133,18 +134,23 @@ class InterpolateTest extends Tests\WebTestCase
         $this->labeledThingFacade   = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labelingGroupFacade  = $this->getAnnostationService('database.facade.labeling_group');
         $this->interpolationService = $this->getAnnostationService('service.interpolation');
+        $organisationFacade         = $this->getAnnostationService('database.facade.organisation');
+
+        $organisation = $organisationFacade->save(new AnnoStationBundleModel\Organisation('Test Organisation'));
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
         $this->user->addRole(Model\User::ROLE_ADMIN);
 
-        $labelingGroup = $this->labelingGroupFacade->save(Model\LabelingGroup::create([], [$this->user->getId()]));
+        $labelingGroup = $this->labelingGroupFacade->save(
+            Model\LabelingGroup::create($organisation, [], [$this->user->getId()])
+        );
 
-        $this->project = Model\Project::create('test project', $this->user);
+        $this->project = Model\Project::create('test project', $organisation, $this->user);
         $this->project->setLabelingGroupId($labelingGroup->getId());
         $this->projectFacade->save($this->project);
 
-        $this->video   = $this->videoFacade->save(Model\Video::create('Testvideo'));
+        $this->video   = $this->videoFacade->save(Model\Video::create($organisation, 'Testvideo'));
         $task          = Model\LabelingTask::create(
             $this->video,
             $this->project,

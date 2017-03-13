@@ -48,6 +48,16 @@ loading-mask {
       }
     }
 
+    .loading-mask-message{
+      position: absolute;
+      top: 50%;
+      padding-top: $spinner-size / 1.5;
+      width: 100vw;
+      text-align: center;
+      font-size: 2em;
+      color: $text;
+    }
+
     .circular {
       animation: rotate 2s linear infinite;
       height: 100%;

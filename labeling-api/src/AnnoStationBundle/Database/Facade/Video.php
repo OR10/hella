@@ -207,4 +207,25 @@ class Video
         $this->documentManager->remove($video);
         $this->documentManager->flush();
     }
+
+    /**
+     * @return array
+     */
+    public function getNumberOfVideosByOrganisations()
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_number_of_videos_by_organisationId', 'view')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->setGroupLevel(1)
+            ->execute()
+            ->toArray();
+
+        $numberOfVideosByOrganisation = [];
+        foreach ($query as $value) {
+            $numberOfVideosByOrganisation[$value['key'][0]] = $value['value'];
+        }
+
+        return $numberOfVideosByOrganisation;
+    }
 }

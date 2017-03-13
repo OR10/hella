@@ -2,6 +2,7 @@
 namespace AnnoStationBundle\Database\Facade;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use Doctrine\ODM\CouchDB;
 
 class LabelingGroup
@@ -58,30 +59,33 @@ class LabelingGroup
     }
 
     /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return \Doctrine\CouchDB\View\Result
      */
-    public function findAll()
+    public function findAllByOrganisation(AnnoStationBundleModel\Organisation $organisation)
     {
         return $this->documentManager
-            ->createQuery('annostation_labeling_group', 'by_id')
+            ->createQuery('annostation_labeling_group_by_organisation', 'view')
             ->onlyDocs(true)
+            ->setKey([$organisation->getId()])
             ->execute();
     }
 
     /**
-     * @param Model\User $user
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
      *
      * @return \Doctrine\CouchDB\View\Result
      */
-    public function findAllByCoordinator(Model\User $user = null)
-    {
+    public function findAllByOrganisationAndUser(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\User $user
+    ) {
         $query = $this->documentManager
-            ->createQuery('annostation_labeling_group_by_coordinator', 'filter')
-            ->onlyDocs(true);
-
-        if ($user instanceof Model\User) {
-            $query->setKey($user->getId());
-        }
+            ->createQuery('annostation_labeling_group_by_organisation_and_user_001', 'view')
+            ->onlyDocs(true)
+            ->setKey([$organisation->getId(), $user->getId()]);
 
         return $query->execute();
     }

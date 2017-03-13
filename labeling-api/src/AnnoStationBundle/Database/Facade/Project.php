@@ -2,6 +2,7 @@
 namespace AnnoStationBundle\Database\Facade;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use Doctrine\CouchDB\View;
 use Doctrine\ODM\CouchDB;
 
@@ -202,16 +203,22 @@ class Project
     }
 
     /**
-     * @param          $status
-     * @param null     $limit
-     * @param int|null $offset
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param                                     $status
+     * @param null                                $limit
+     * @param int|null                            $offset
+     *
      * @return View\Result
      */
-    public function findAllByStatus($status, $limit = null, $offset = 0)
-    {
+    public function findAllByStatus(
+        AnnoStationBundleModel\Organisation $organisation,
+        $status,
+        $limit = null,
+        $offset = 0
+    ) {
         $query = $this->documentManager
-            ->createQuery('annostation_project_by_status_002', 'view')
-            ->setKey([$status])
+            ->createQuery('annostation_project_by_organisation_and_status_002', 'view')
+            ->setKey([$organisation->getId(), $status])
             ->onlyDocs(true);
 
         if ($limit !== null) {
@@ -223,19 +230,18 @@ class Project
     }
 
     /**
-     * @param null $status
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param null                                $status
+     *
      * @return View\Result
      */
-    public function getSumOfProjectsByStatus($status = null)
+    public function getSumOfProjectsByStatus(AnnoStationBundleModel\Organisation $organisation, $status)
     {
         $query = $this->documentManager
-            ->createQuery('annostation_project_sum_by_status_and_projectId_002', 'view');
-
-        if ($status !== null) {
-            $query->setStartKey([$status, null]);
-            $query->setEndKey([$status, []]);
-        }
-        $query->setReduce(true)
+            ->createQuery('annostation_project_sum_by_organisation_status_and_projectId_002', 'view')
+            ->setStartKey([$organisation->getId(), $status, null])
+            ->setEndKey([$organisation->getId(), $status, []])
+            ->setReduce(true)
             ->setGroup(true)
             ->setGroupLevel(1)
             ->onlyDocs(false);
@@ -244,28 +250,31 @@ class Project
     }
 
     /**
-     * @param Model\User $user
-     * @param            $status
-     * @param bool       $countOnly
-     * @return Model\Project[]
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
+     * @param                                     $status
+     * @param bool                                $countOnly
+     *
+     * @return View\Result
      */
     public function findAllByUserAndStatus(
+        AnnoStationBundleModel\Organisation $organisation,
         Model\User $user,
         $status,
         $countOnly = false
     ) {
-        if ($user->hasRole(Model\User::ROLE_ADMIN) || $user->hasRole(Model\User::ROLE_OBSERVER)) {
+        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_OBSERVER, Model\User::ROLE_SUPER_ADMIN])) {
             if ($countOnly) {
-                return $this->getSumOfProjectsByStatus($status);
+                return $this->getSumOfProjectsByStatus($organisation, $status);
             } else {
-                return $this->findAllByStatus($status);
+                return $this->findAllByStatus($organisation, $status);
             }
         }
 
         if ($user->hasRole(Model\User::ROLE_CLIENT)) {
             $query = $this->documentManager
-                ->createQuery('annostation_project_by_userId_and_status_003', 'view');
-            $query->setKey([$user->getId(), $status]);
+                ->createQuery('annostation_project_by_organisation_and_userId_and_status_003', 'view');
+            $query->setKey([$organisation->getId(), $user->getId(), $status]);
             if ($countOnly) {
                 $query->setReduce(true);
                 $query->setGroup(true);
@@ -279,8 +288,8 @@ class Project
 
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
             $query = $this->documentManager
-                ->createQuery('annostation_project_by_assigned_userId_and_status_003', 'view');
-            $query->setKey([$user->getId(), $status]);
+                ->createQuery('annostation_project_by_organisation_and_assigned_userId_and_status_003', 'view');
+            $query->setKey([$organisation->getId(), $user->getId(), $status]);
             if ($countOnly) {
                 $query->setReduce(true);
                 $query->setGroup(true);
@@ -295,7 +304,7 @@ class Project
         if ($user->hasRole(Model\User::ROLE_LABELER)) {
             $query = $this->documentManager
                 ->createQuery('annostation_labeling_group_by_labeler', 'view');
-            $query->setKey($user->getId());
+            $query->setKey([$organisation->getId(), $user->getId()]);
 
             $labelingGroups = $query->execute()->toArray();
 
@@ -316,5 +325,26 @@ class Project
 
             return $query->execute();
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getNumberOfProjectsByOrganisations()
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_number_of_projects_by_organisation', 'view')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->setGroupLevel(1)
+            ->execute()
+            ->toArray();
+
+        $numberOfProjectsByOrganisation = [];
+        foreach ($query as $value) {
+            $numberOfProjectsByOrganisation[$value['key'][0]] = $value['value'];
+        }
+
+        return $numberOfProjectsByOrganisation;
     }
 }

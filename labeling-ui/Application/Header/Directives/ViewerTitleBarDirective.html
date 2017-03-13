@@ -38,7 +38,7 @@
                 >
                     <i class="icon icon-ok" ng-class="{'disabled': vm.incompleteCount}"></i>
                 </button>
-                <button ng-show="vm.userPermissions.canViewReopenButton && vm.task.getStatusForPhase(vm.taskPhase) === 'labeled'"
+                <button ng-show="vm.userPermissions.canReopenTask && vm.task.getStatusForPhase(vm.taskPhase) === 'labeled'"
                         ng-click="vm.reOpenLabelingTask()"
                         tooltip="Reopen this task for Labelers"
                         style="margin-left: -.7rem;"

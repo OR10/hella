@@ -2,6 +2,7 @@
 namespace AnnoStationBundle\Database\Facade;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use Doctrine\ODM\CouchDB;
 
 class TaskConfiguration
@@ -50,14 +51,16 @@ class TaskConfiguration
     /**
      * Return all task configurations for this user
      *
-     * @param Model\User $user
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
+     *
      * @return array
      */
-    public function getTaskConfigurationsByUser(Model\User $user)
+    public function getTaskConfigurationsByUser(AnnoStationBundleModel\Organisation $organisation, Model\User $user)
     {
         return $this->documentManager
-            ->createQuery('annostation_task_configuration_by_userId_002', 'view')
-            ->setKey([$user->getId()])
+            ->createQuery('annostation_task_configuration_by_organisation_and_userId_002', 'view')
+            ->setKey([$organisation->getId(), $user->getId()])
             ->onlyDocs(true)
             ->execute()
             ->toArray();
@@ -65,33 +68,45 @@ class TaskConfiguration
 
     /**
      * Get the Task Configuration by name and userId
-     * @param Model\User $user
-     * @param            $name
+     *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
+     * @param                                     $name
+     *
      * @return array
      */
-    public function getTaskConfigurationsByUserAndName(Model\User $user, $name)
-    {
+    public function getTaskConfigurationsByUserAndName(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\User $user,
+        $name
+    ) {
         return $this->documentManager
-            ->createQuery('annostation_task_configuration_by_userId_and_name_002', 'view')
-            ->setKey([$user->getId(), $name])
+            ->createQuery('annostation_task_configuration_by_organisation_userId_and_name_002', 'view')
+            ->setKey([$organisation->getId(), $user->getId(), $name])
             ->onlyDocs(true)
             ->execute()
             ->toArray();
     }
 
     /**
-     * @param Model\User $user
-     * @param            $name
-     * @param            $filename
-     * @param            $md5Hash
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
+     * @param                                     $name
+     * @param                                     $filename
+     * @param                                     $md5Hash
      *
      * @return mixed
      */
-    public function getTaskConfigurationByUserAndMd5Hash(Model\User $user, $name, $filename, $md5Hash)
-    {
+    public function getTaskConfigurationByUserAndMd5Hash(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\User $user,
+        $name,
+        $filename,
+        $md5Hash
+    ) {
         return $this->documentManager
-            ->createQuery('annostation_task_configuration_by_user_filename_and_md5_001', 'view')
-            ->setKey([$user->getId(), $name, $filename, $md5Hash])
+            ->createQuery('annostation_task_configuration_by_organisation_user_filename_and_md5_001', 'view')
+            ->setKey([$organisation->getId(), $user->getId(), $name, $filename, $md5Hash])
             ->onlyDocs(true)
             ->execute()
             ->toArray();

@@ -2,6 +2,7 @@
 namespace AppBundle\Database\Facade;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use Doctrine\ODM\CouchDB;
 use FOS\UserBundle\Model as FosUserModel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
@@ -47,11 +48,19 @@ class User
      * @param bool   $enabled
      * @param bool   $locked
      * @param array  $settings
+     * @param array  $organisations
      *
-     * @return FosUserModel\UserInterface
+     * @return Model\User|FosUserModel\UserInterface
      */
-    public function createUser($username, $email, $password, $enabled = true, $locked = false, $settings = [])
-    {
+    public function createUser(
+        $username,
+        $email,
+        $password,
+        $enabled = true,
+        $locked = false,
+        $settings = [],
+        $organisations = []
+    ) {
         /** @var Model\User $user */
         $user = $this->userManager->createUser();
         $user->setUsername($username);
@@ -60,6 +69,7 @@ class User
         $user->setEnabled($enabled);
         $user->setLocked($locked);
         $user->setSettings($settings);
+        $user->setOrganisations($organisations);
 
         $this->userManager->updateUser($user);
 
@@ -165,15 +175,26 @@ class User
     }
 
     /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
      * @return Model\User[]
      */
-    public function getUserList()
+    public function getUserList(AnnoStationBundleModel\Organisation $organisation = null)
     {
-        $users = $userProfileImages = $this->documentManager
-            ->createQuery('annostation_user', 'by_id')
-            ->onlyDocs(true)
-            ->execute()
-            ->toArray();
+        if ($organisation === null) {
+            $users = $this->documentManager
+                ->createQuery('annostation_user', 'by_id')
+                ->onlyDocs(true)
+                ->execute()
+                ->toArray();
+        }else{
+            $users = $this->documentManager
+                ->createQuery('annostation_user_by_organisation', 'view')
+                ->setKey([$organisation->getId()])
+                ->onlyDocs(true)
+                ->execute()
+                ->toArray();
+        }
 
         return array_values(
             array_filter(
@@ -228,16 +249,17 @@ class User
     }
 
     /**
-     * @param $role
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param                                     $role
      *
      * @return Model\User[]
      */
-    public function getUserByRole($role)
+    public function getUserByRole(AnnoStationBundleModel\Organisation $organisation, $role)
     {
         return $this->documentManager
-            ->createQuery('annostation_user_by_role_001', 'view')
+            ->createQuery('annostation_user_by_organisation_and_role_001', 'view')
             ->onlyDocs(true)
-            ->setKey($role)
+            ->setKey([$organisation->getId(), $role])
             ->execute();
     }
 

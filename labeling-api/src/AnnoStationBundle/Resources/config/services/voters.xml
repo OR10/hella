@@ -15,5 +15,9 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <tag name="security.voter"/>
         </service>
+        <service id="annostation.labeling_api.voter.access_check.organisation"
+                 class="AnnoStationBundle\Voter\AccessCheckVoter\Organisation">
+            <tag name="security.voter"/>
+        </service>
     </services>
 </container>

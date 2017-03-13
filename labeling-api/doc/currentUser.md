@@ -1,6 +1,6 @@
 # Group Current User
 
-## Get the current user profile [/api/user/profile]
+## Get the current user profile [/api/currentUser/profile]
 
 ### Get the current user profile [GET]
 
@@ -10,7 +10,7 @@ This routes returns the current user profile data
     + Attributes
         + result (CurrentUser)
 
-## Current user Profile Picture [/api/user/profile/picture]
+## Current user Profile Picture [/api/currentUser/profile/picture]
 
 ### Current user Profile Picture [GET]
 
@@ -22,7 +22,7 @@ Current user Profile Picture
 
     + Attributes
 
-## Change own password [/api/user/password]
+## Change own password [/api/currentUser/password]
 
 ### Change own password [PUT]
 
@@ -33,7 +33,7 @@ Change own Password
         + result
             + success: `true` (boolean)
 
-## Get User Permissions [/api/user/permissions]
+## Get User Permissions [/api/currentUser/permissions]
 
 ### Get user permissions [GET]
 
