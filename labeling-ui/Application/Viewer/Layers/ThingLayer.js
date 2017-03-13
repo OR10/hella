@@ -243,7 +243,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._invokeDefaultShapeCreation();
     });
 
-    $scope.$root.$on('shape:delete:before', (event, shape) => {
+    $scope.$root.$on('action:delete-shape', (event, shape) => {
       switch (true) {
         case shape instanceof PaperThingShape:
           this._deleteThingShape(shape);

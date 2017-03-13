@@ -306,7 +306,7 @@ class MediaControlsController {
         headline: 'The selected shape is going to be removed. Proceed?',
         confirmButtonText: 'Delete',
       },
-      () => this._$rootScope.$emit('shape:delete:before', this.selectedPaperShape)
+      () => this._$rootScope.$emit('action:delete-shape', this.selectedPaperShape)
     );
   }
 
