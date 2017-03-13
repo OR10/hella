@@ -400,4 +400,54 @@ fdescribe('PouchDbSyncManager', () => {
       expect(secondContextReplicateToPromise.cancel).not.toHaveBeenCalled();
     });
   });
+
+  describe('Events', () => {
+    using([
+      ['offline'],
+      ['alive'],
+      ['transfer'],
+    ], eventName => {
+      it('should allow registration of events via "on" function', () => {
+        const eventSpy = jasmine.createSpy('onEvent');
+        syncManager.on(eventName, eventSpy);
+      });
+    });
+
+    describe('pullUpdatesForContext', () => {
+      it('should fire "alive" event on start of replication', () => {
+        const aliveEventSpy = jasmine.createSpy('event:alive');
+
+        syncManager.on('alive', aliveEventSpy);
+        syncManager.pullUpdatesForContext(context);
+
+        rootScope.$apply();
+
+        expect(aliveEventSpy).toHaveBeenCalled();
+      });
+    });
+
+    describe('startDuplexLiveReplication', () => {
+      it('should fire "alive" event on start of startDuplexLiveReplication', () => {
+        const aliveEventSpy = jasmine.createSpy('event:alive');
+
+        syncManager.on('alive', aliveEventSpy);
+        syncManager.startDuplexLiveReplication(context);
+
+        rootScope.$apply();
+
+        expect(aliveEventSpy).toHaveBeenCalled();
+      });
+
+      it('should fire "alive" event twice on start of replication (once for each started replication)', () => {
+        const aliveEventSpy = jasmine.createSpy('event:alive');
+
+        syncManager.on('alive', aliveEventSpy);
+        syncManager.startDuplexLiveReplication(context);
+
+        rootScope.$apply();
+
+        expect(aliveEventSpy.calls.count()).toEqual(2);
+      });
+    });
+  });
 });

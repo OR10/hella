@@ -66,6 +66,19 @@ class PouchDbSyncManager {
      * @private
      */
     this._runningReplicationsByContext = new Map();
+
+    /**
+     * Registered EventListeners
+     *
+     * @type {Map}
+     * @private
+     */
+    this._eventHandlersByEvent = new Map([
+      ['offline', []],
+      ['alive', []],
+      ['transfer', []],
+    ]);
+
   }
 
   /**
@@ -150,6 +163,43 @@ class PouchDbSyncManager {
   }
 
   /**
+   * Register an Event to be informed about
+   *
+   * Possible Events are:
+   *
+   * - offline
+   * - alive
+   * - transfer
+   *
+   * @param {string} eventName
+   * @param {Function} callback
+   */
+  on(eventName, callback) {
+    if (this._eventHandlersByEvent.has(eventName) === false) {
+      throw new Error(`Unknown event ${eventName} can not be registered.`);
+    }
+
+    const eventHandlers = this._eventHandlersByEvent.get(eventName);
+    this._eventHandlersByEvent.set(eventName, [...eventHandlers, callback]);
+  }
+
+  /**
+   * Emit an event with a specific dataset
+   *
+   * @param {string} eventName
+   * @param {Array.<*>?} data
+   * @private
+   */
+  _emit(eventName, data = []) {
+    if (this._eventHandlersByEvent.has(eventName) === false) {
+      throw new Error(`Unknown event ${eventName} can not be emitted.`);
+    }
+
+    const eventHandlers = this._eventHandlersByEvent.get(eventName);
+    eventHandlers.forEach(callback => callback(...data))
+  }
+
+  /**
    * Create a sync handler for a unidirectional pull replication
    * Pull meaning: Server => Client
    *
@@ -168,6 +218,7 @@ class PouchDbSyncManager {
     const replication = context.replicate.from(remoteDb, replicationOptions);
 
     this._trackReplicationForContext(replication, context);
+    this._registerReplicationEventListeners(replication);
 
     return replication;
   }
@@ -191,6 +242,7 @@ class PouchDbSyncManager {
     const replication = context.replicate.to(remoteDb, replicationOptions);
 
     this._trackReplicationForContext(replication, context);
+    this._registerReplicationEventListeners(replication);
 
     return replication;
   }
@@ -307,6 +359,20 @@ class PouchDbSyncManager {
     const runningReplicationsByContext = this._runningReplicationsByContext.get(context);
     const filteredReplications = runningReplicationsByContext.filter(candidate => candidate !== replication);
     this._runningReplicationsByContext.set(context, filteredReplications);
+  }
+
+  /**
+   * Register event listeners on a specific replication handling state changes of this replication
+   *
+   * Watched state changes will be emitted on the PouchDbSyncManager itself as they appear.
+   *
+   * @param {Replication} replication
+   * @private
+   */
+  _registerReplicationEventListeners(replication) {
+    // The moment a replication is started we first emit an 'alive' event
+    // This is not guaranteed by PouchDB (eg. a uni-directional non-continuous replication might "jump" into transfer)
+    this._emit('alive');
   }
 }
 
