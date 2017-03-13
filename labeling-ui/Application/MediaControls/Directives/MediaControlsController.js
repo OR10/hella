@@ -348,25 +348,23 @@ class MediaControlsController {
           this.paperThingShapes = this.paperThingShapes.filter(
             paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
           );
-          this._applicationState.enableAll();
-          this._$rootScope.$emit('shape:delete:after');
 
           return selectedLabeledThing;
         })
         .then(() => {
-          for (let groupIdIndex = 0, groupIdLength = selectedLabeledThing.groupIds.length;
-               groupIdIndex < groupIdLength; groupIdIndex++) {
-            const gid = selectedLabeledThing.groupIds[groupIdIndex];
+          selectedLabeledThing.groupIds.forEach(groupId => {
             const relatedThingShapes = this.paperThingShapes.filter(thingShape =>
-                thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(gid) !== -1);
-            const relatedLabeledThings = relatedThingShapes.map(thingShape =>
-                thingShape.labeledThingInFrame.labeledThing);
+                thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
             const shapeGroup = this.paperGroupShapes.find(
-                paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === gid);
-            if (relatedLabeledThings.length === 0) {
+                paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
+
+            if (relatedThingShapes.length === 0) {
               this._deleteGroupShape(shapeGroup);
             }
-          }
+
+            this._applicationState.enableAll();
+            this._$rootScope.$emit('shape:delete:after');
+          });
         })
         .catch(() => this._onDeletionError());
     } catch (error) {
