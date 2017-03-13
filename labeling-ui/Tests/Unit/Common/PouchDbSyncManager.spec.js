@@ -424,6 +424,18 @@ fdescribe('PouchDbSyncManager', () => {
 
         expect(aliveEventSpy).toHaveBeenCalled();
       });
+
+      it('should fire "transfer" event once replication started', () => {
+        const transferEventSpy = jasmine.createSpy('event:transfer');
+
+        syncManager.on('transfer', transferEventSpy);
+        syncManager.pullUpdatesForContext(context);
+
+        rootScope.$apply();
+        contextReplicateFromEvents.get('active').forEach(callback => callback());
+
+        expect(transferEventSpy).toHaveBeenCalled();
+      });
     });
 
     describe('startDuplexLiveReplication', () => {
@@ -499,6 +511,30 @@ fdescribe('PouchDbSyncManager', () => {
         rootScope.$apply();
 
         expect(offlineEventSpy.calls.count()).toEqual(1);
+      });
+
+      it('should fire "transfer" event once "from" replication wents into "active"', () => {
+        const transferEventSpy = jasmine.createSpy('event:transfer');
+
+        syncManager.on('transfer', transferEventSpy);
+        syncManager.startDuplexLiveReplication(context);
+        rootScope.$apply();
+        contextReplicateFromEvents.get('active').forEach(callback => callback());
+        rootScope.$apply();
+
+        expect(transferEventSpy.calls.count()).toEqual(1);
+      });
+
+      it('should fire "transfer" event once "to" replication wents into "active"', () => {
+        const transferEventSpy = jasmine.createSpy('event:transfer');
+
+        syncManager.on('transfer', transferEventSpy);
+        syncManager.startDuplexLiveReplication(context);
+        rootScope.$apply();
+        contextReplicateToEvents.get('active').forEach(callback => callback());
+        rootScope.$apply();
+
+        expect(transferEventSpy.calls.count()).toEqual(1);
       });
     });
   });

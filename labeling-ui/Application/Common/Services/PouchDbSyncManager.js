@@ -383,6 +383,10 @@ class PouchDbSyncManager {
 
       this._emit('alive');
     });
+
+    replication.on('active', () => {
+      this._emit('transfer');
+    });
   }
 }
 
