@@ -59,6 +59,10 @@
                  class="AnnoStationBundle\Service\TaskConfigurationXmlConverterFactory">
         </service>
 
+        <service id="annostation.labeling_api.service.task_database_creator" class="AnnoStationBundle\Service\TaskDatabaseCreator">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+        </service>
+
         <service id="annostation.labeling_api.service.task_creator" class="AnnoStationBundle\Service\TaskCreator">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
@@ -67,6 +71,7 @@
             <argument type="service" id="annostation.labeling_api.service.label_structure"/>
             <argument type="service" id="annostation.labeling_api.service.couch_db_update_conflict_retry"/>
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
         </service>
 
         <service id="annostation.labeling_api.service.task_incomplete" class="AnnoStationBundle\Service\TaskIncomplete">
