@@ -20,10 +20,11 @@
             dest: /tmp/puppet/
             archive: yes
             compress: yes
+            use_ssh_args: yes
 
       - name: run puppet
         shell: >
-            FACTER_annostation_project={{ annostation_project }}
+            FACTER_annostation_project={{ annostation_project | default('') }}
             /opt/puppetlabs/bin/puppet apply
             --modulepath puppet/modules:puppet/vendor:/etc/puppet/modules
             --hiera_config=puppet/hiera/hiera.yaml

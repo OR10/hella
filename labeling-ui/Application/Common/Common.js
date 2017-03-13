@@ -25,6 +25,8 @@ import FileModelDirective from './Directives/FileModelDirective';
 import ApplicationStateProvider from './Support/ApplicationStateProvider';
 import LockService from './Services/LockService';
 import KeyboardShortcutService from './Services/KeyboardShortcutService';
+import ApplicationLoadingMaskService from './Services/ApplicationLoadingMaskService';
+import ApplicationLoadingMaskStateService from './Services/ApplicationLoadingMaskStateService';
 
 import PouchDbContextService from './Services/PouchDbContextService';
 import PouchDbSyncManager from './Services/PouchDbSyncManager';
@@ -97,6 +99,8 @@ class Common extends Module {
     this.module.service('releaseConfigService', ReleaseConfigService);
     this.module.service('lockService', LockService);
     this.module.service('keyboardShortcutService', KeyboardShortcutService);
+    this.module.service('applicationLoadingMaskService', ApplicationLoadingMaskService);
+    this.module.service('applicationLoadingMaskStateService', ApplicationLoadingMaskStateService);
 
     // Without feature flag, as those services do not override others.
     this.module.service('pouchDbContextService', PouchDbContextService);

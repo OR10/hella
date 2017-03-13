@@ -11,6 +11,10 @@ class LoadingMaskController {
     if (this.blockInteraction === undefined) {
       this.blockInteraction = true;
     }
+
+    if (this.message === undefined) {
+      this.message = '';
+    }
   }
 }
 
