@@ -474,6 +474,32 @@ fdescribe('PouchDbSyncManager', () => {
 
         expect(aliveEventSpy.calls.count()).toEqual(3);
       });
+
+      it('should fire "offline" event once "from" replication wents into "paused" state with an error', () => {
+        const offlineEventSpy = jasmine.createSpy('event:offline');
+        const error = {};
+
+        syncManager.on('offline', offlineEventSpy);
+        syncManager.startDuplexLiveReplication(context);
+        rootScope.$apply();
+        contextReplicateFromEvents.get('paused').forEach(callback => callback(error));
+        rootScope.$apply();
+
+        expect(offlineEventSpy.calls.count()).toEqual(1);
+      });
+
+      it('should fire "offline" event once "to" replication wents into "paused" state with an error', () => {
+        const offlineEventSpy = jasmine.createSpy('event:offline');
+        const error = {};
+
+        syncManager.on('offline', offlineEventSpy);
+        syncManager.startDuplexLiveReplication(context);
+        rootScope.$apply();
+        contextReplicateToEvents.get('paused').forEach(callback => callback(error));
+        rootScope.$apply();
+
+        expect(offlineEventSpy.calls.count()).toEqual(1);
+      });
     });
   });
 });

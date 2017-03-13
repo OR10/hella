@@ -375,8 +375,14 @@ class PouchDbSyncManager {
     this._emit('alive');
 
     replication.on('paused', error => {
+      if (error) {
+        // An error occured in a continous replication (We are currently offline)
+        this._emit('offline', [error]);
+        return;
+      }
+
       this._emit('alive');
-    })
+    });
   }
 }
 
