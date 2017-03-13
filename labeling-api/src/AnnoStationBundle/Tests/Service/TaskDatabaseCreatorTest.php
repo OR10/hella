@@ -2,8 +2,9 @@
 
 namespace AnnoStationBundle\Tests\Service;
 
-use AnnoStationBundle\Service\TaskDatabaseCreator;
 use AppBundle\Tests;
+use AnnoStationBundle\Service\TaskDatabaseCreator;
+use AppBundle\Service;
 use Doctrine\ODM\CouchDB;
 use MyProject\Proxies\__CG__\OtherProject\Proxies\__CG__\stdClass;
 
@@ -13,6 +14,14 @@ class TaskDatabaseCreatorTest extends Tests\KernelTestCase
     {
         return $this->getMockBuilder(stdClass::class)
             ->setMethods(['createDatabase'])
+            ->getMock();
+    }
+
+    private function getCouchDbReplicatorMock()
+    {
+        return $this->getMockBuilder(Service\CouchDbReplicatorService::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['addReplication'])
             ->getMock();
     }
 
@@ -26,12 +35,13 @@ class TaskDatabaseCreatorTest extends Tests\KernelTestCase
 
     public function testSmoke()
     {
-        $couchMock = $this->getCouchDocumentManagerMock();
-        $creator = new TaskDatabaseCreator($couchMock);
+        $couchDocumentManagerMock = $this->getCouchDocumentManagerMock();
+        $couchReplicatorMock = $this->getCouchDbReplicatorMock();
+        $creator = new TaskDatabaseCreator($couchDocumentManagerMock, $couchReplicatorMock);
         $this->assertInstanceOf(TaskDatabaseCreator::class, $creator);
     }
 
-    public function testCreateDatabase()
+    public function testCreateDatabaseCreatesCouchDatabase()
     {
         $projectId = "Arrested-Development";
         $taskId = "Gilmore-Girls";
@@ -45,14 +55,43 @@ class TaskDatabaseCreatorTest extends Tests\KernelTestCase
             ->with($expectedDatabaseName)
             ->willReturn($expectedDocumentManager);
 
+        $couchReplicatorMock = $this->getCouchDbReplicatorMock();
+
         $documentManagerMock = $this->getCouchDocumentManagerMock();
         $documentManagerMock->expects($this->any())
             ->method('getCouchDBClient')
             ->will($this->returnValue($couchClientMock));
 
-        $creator = new TaskDatabaseCreator($documentManagerMock);
+        $creator = new TaskDatabaseCreator($documentManagerMock, $couchReplicatorMock);
         $actualDocumentManager = $creator->createDatabase($projectId, $taskId);
 
         $this->assertEquals($actualDocumentManager, $expectedDocumentManager);
+    }
+
+    public function testCreateDatabaseAddsReplication()
+    {
+        $projectId = "Arrested-Development";
+        $taskId = "Gilmore-Girls";
+        $expectedDatabaseName = "taskdb-project-$projectId-task-$taskId";
+
+        $couchReplicatorMock = $this->getCouchDbReplicatorMock();
+        $couchReplicatorMock->expects($this->once())
+            ->method('addReplication')
+            ->with(
+                'labeling_api',
+                $expectedDatabaseName,
+                true,
+                'annostation_labeling_task_replication_filter/filter',
+                ['taskId' => $taskId]
+            );
+
+        $couchClientMock = $this->getCouchDbClientMock();
+        $documentManagerMock = $this->getCouchDocumentManagerMock();
+        $documentManagerMock->expects($this->any())
+            ->method('getCouchDBClient')
+            ->willReturn($couchClientMock);
+
+        $creator = new TaskDatabaseCreator($documentManagerMock, $couchReplicatorMock);
+        $creator->createDatabase($projectId, $taskId);
     }
 }
