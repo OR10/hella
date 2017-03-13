@@ -19,6 +19,7 @@ resource "openstack_compute_instance_v2" "labeltool" {
     image_id = "93b03b4b-79cf-49d7-9025-1420f751523a"
     flavor_name = "m1.small"
     key_pair = "${openstack_compute_keypair_v2.crosscan-chh.name}"
+    stop_before_destroy = false
 
     security_groups = [
         "default",
@@ -59,6 +60,7 @@ resource "openstack_compute_instance_v2" "labeltool-couchdb" {
     image_id = "93b03b4b-79cf-49d7-9025-1420f751523a"
     flavor_name = "m1.small"
     key_pair = "${openstack_compute_keypair_v2.crosscan-chh.name}"
+    stop_before_destroy = false
 
     security_groups = [
         "default",
