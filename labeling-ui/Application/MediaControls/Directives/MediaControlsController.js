@@ -360,11 +360,13 @@ class MediaControlsController {
 
             if (relatedThingShapes.length === 0) {
               this._deleteGroupShape(shapeGroup);
+              return;
             }
-
-            this._applicationState.enableAll();
-            this._$rootScope.$emit('shape:delete:after');
           });
+        })
+        .then(() => {
+          this._applicationState.enableAll();
+          this._$rootScope.$emit('shape:delete:after');
         })
         .catch(() => this._onDeletionError());
     } catch (error) {
