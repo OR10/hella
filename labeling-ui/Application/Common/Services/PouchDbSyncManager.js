@@ -373,6 +373,10 @@ class PouchDbSyncManager {
     // The moment a replication is started we first emit an 'alive' event
     // This is not guaranteed by PouchDB (eg. a uni-directional non-continuous replication might "jump" into transfer)
     this._emit('alive');
+
+    replication.on('paused', error => {
+      this._emit('alive');
+    })
   }
 }
 
