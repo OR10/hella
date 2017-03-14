@@ -211,6 +211,70 @@ describe('PouchDbSyncManager', () => {
     });
   });
 
+  describe('pushUpdatesForContext', () => {
+    it('should return a promise', () => {
+      const emptyContext = {};
+
+      const actual = syncManager.pushUpdatesForContext(emptyContext);
+
+      // $q does not use native promises but their own. There is now feasible way
+      // to get the reference, so let's just test, that there is a then function
+      expect(actual.then).toEqual(jasmine.any(Function));
+    });
+
+    it('should start replication with the correct options', () => {
+      syncManager.pushUpdatesForContext(context);
+      const replicationOptions = {
+        live: false,
+        retry: true,
+      };
+
+      rootScope.$apply();
+
+      expect(contextReplicate.to).toHaveBeenCalledWith(jasmine.any(PouchDb), replicationOptions);
+    });
+
+    it('should start replication with correct remote url', () => {
+      const taskReplicationUrl = `${taskReplicationInformation.databaseServer}/${taskReplicationInformation.databaseName}`;
+      let pouchDb;
+
+      syncManager.pushUpdatesForContext(context);
+
+      rootScope.$apply();
+
+      pouchDb = contextReplicate.to.calls.argsFor(0)[0];
+      expect(pouchDb.name).toEqual(taskReplicationUrl);
+    });
+
+    it('should return same replication for multiple calls while it is still running', () => {
+      const firstReplication = syncManager.pushUpdatesForContext(context);
+      rootScope.$apply();
+      const secondReplication = syncManager.pushUpdatesForContext(context);
+
+      expect(firstReplication).toBe(secondReplication);
+    });
+
+    it('should start second replication once first succeeded ', () => {
+      const firstReplication = syncManager.pushUpdatesForContext(context);
+      contextReplicateToDeferred.resolve();
+      rootScope.$apply();
+      const secondReplication = syncManager.pushUpdatesForContext(context);
+
+      expect(firstReplication).not.toBe(secondReplication);
+    });
+
+    it('should start second replication once first failed', () => {
+      const firstReplication = syncManager.pushUpdatesForContext(context);
+
+      contextReplicateToDeferred.reject();
+      rootScope.$apply();
+
+      const secondReplication = syncManager.pushUpdatesForContext(context);
+
+      expect(firstReplication).not.toBe(secondReplication);
+    });
+  });
+
   describe('startDuplexLiveReplication', () => {
     it('should return a promise', () => {
       const emptyContext = {};
@@ -375,6 +439,28 @@ describe('PouchDbSyncManager', () => {
       expect(secondContextReplicateFromPromise.cancel).not.toHaveBeenCalled();
     });
 
+    it('should cancel uni-directional push replication', () => {
+      syncManager.pushUpdatesForContext(context);
+      rootScope.$apply();
+      syncManager.stopReplicationsForContext(context);
+
+      rootScope.$apply();
+
+      expect(contextReplicateToPromise.cancel).toHaveBeenCalled();
+    });
+
+    it('should only cancel uni-directional push replication from given context', () => {
+      syncManager.pushUpdatesForContext(context);
+      syncManager.pushUpdatesForContext(secondContext);
+      rootScope.$apply();
+      syncManager.stopReplicationsForContext(context);
+
+      rootScope.$apply();
+
+      expect(contextReplicateToPromise.cancel).toHaveBeenCalled();
+      expect(secondContextReplicateToPromise.cancel).not.toHaveBeenCalled();
+    });
+
     it('should cancel bi-directional replication', () => {
       syncManager.startDuplexLiveReplication(context);
       rootScope.$apply();
@@ -433,6 +519,31 @@ describe('PouchDbSyncManager', () => {
 
         rootScope.$apply();
         contextReplicateFromEvents.get('active').forEach(callback => callback());
+
+        expect(transferEventSpy).toHaveBeenCalled();
+      });
+    });
+
+    describe('pushUpdatesForContext', () => {
+      it('should fire "alive" event on start of replication', () => {
+        const aliveEventSpy = jasmine.createSpy('event:alive');
+
+        syncManager.on('alive', aliveEventSpy);
+        syncManager.pushUpdatesForContext(context);
+
+        rootScope.$apply();
+
+        expect(aliveEventSpy).toHaveBeenCalled();
+      });
+
+      it('should fire "transfer" event once replication started', () => {
+        const transferEventSpy = jasmine.createSpy('event:transfer');
+
+        syncManager.on('transfer', transferEventSpy);
+        syncManager.pushUpdatesForContext(context);
+
+        rootScope.$apply();
+        contextReplicateToEvents.get('active').forEach(callback => callback());
 
         expect(transferEventSpy).toHaveBeenCalled();
       });
