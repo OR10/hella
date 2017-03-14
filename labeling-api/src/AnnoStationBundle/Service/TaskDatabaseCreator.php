@@ -13,6 +13,8 @@ use AppBundle\Service;
  */
 class TaskDatabaseCreator
 {
+    const FEATURE_ACTIVE = false;
+
     const TASK_DATABASE_NAME_TEMPLATE = 'taskdb-project-%s-task-%s';
 
     /**
@@ -60,10 +62,13 @@ class TaskDatabaseCreator
      */
     public function createDatabase($projectId, $taskId)
     {
-        $databaseName = $this->getDatabaseName($projectId, $taskId);
-        $documentManager = $this->documentManager->getCouchDBClient()->createDatabase($databaseName);
-        $this->startReplication($projectId, $taskId);
-        return $documentManager;
+        if (self::FEATURE_ACTIVE) {
+            $databaseName    = $this->getDatabaseName($projectId, $taskId);
+            $documentManager = $this->documentManager->getCouchDBClient()->createDatabase($databaseName);
+            $this->startReplication($projectId, $taskId);
+
+            return $documentManager;
+        }
     }
 
     /**
@@ -74,13 +79,15 @@ class TaskDatabaseCreator
      */
     private function startReplication($projectId, $taskId)
     {
-        $databaseName = $this->getDatabaseName($projectId, $taskId);
-        $this->couchDbReplicatorService->addReplication(
-            'labeling_api',
-            $databaseName,
-            true,
-            'annostation_labeling_task_replication_filter/filter',
-            ['taskId' => $taskId]
-        );
+        if (self::FEATURE_ACTIVE) {
+            $databaseName = $this->getDatabaseName($projectId, $taskId);
+            $this->couchDbReplicatorService->addReplication(
+                'labeling_api',
+                $databaseName,
+                true,
+                'annostation_labeling_task_replication_filter/filter',
+                ['taskId' => $taskId]
+            );
+        }
     }
 }
