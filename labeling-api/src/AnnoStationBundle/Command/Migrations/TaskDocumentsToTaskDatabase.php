@@ -6,6 +6,7 @@ use AnnoStationBundle\Command;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Service;
+use AnnoStationBundle\Service as AnnoStationService;
 use Symfony\Component\Console;
 use Doctrine\ODM\CouchDB;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -23,6 +24,11 @@ class TaskDocumentsToTaskDatabase extends Command\Base
     private $databaseDocumentManagerFactory;
 
     /**
+     * @var AnnoStationService\TaskDatabaseCreator
+     */
+    private $taskDatabaseCreator;
+
+    /**
      * @var Facade\LabeledThing
      */
     private $labeledThingFacade;
@@ -37,15 +43,17 @@ class TaskDocumentsToTaskDatabase extends Command\Base
     private $couchDbReplicatorService;
 
     /**
-     * @param Service\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
-     * @param Service\CouchDbReplicatorService       $couchDbReplicatorService
-     * @param Facade\LabelingTask                    $labelingTaskFacade
-     * @param Facade\LabeledThing                    $labeledThingFacade
-     * @param Facade\LabeledThingInFrame             $labeledThingInFrameFacade
+     * @param Service\DatabaseDocumentManagerFactory    $databaseDocumentManagerFactory
+     * @param Service\CouchDbReplicatorService          $couchDbReplicatorService
+     * @param AnnoStationService\TaskDatabaseCreator    $taskDatabaseCreator
+     * @param Facade\LabelingTask                       $labelingTaskFacade
+     * @param Facade\LabeledThing                       $labeledThingFacade
+     * @param Facade\LabeledThingInFrame                $labeledThingInFrameFacade
      */
     public function __construct(
         Service\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\CouchDbReplicatorService $couchDbReplicatorService,
+        AnnoStationService\TaskDatabaseCreator $taskDatabaseCreator,
         Facade\LabelingTask $labelingTaskFacade,
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade
@@ -53,6 +61,7 @@ class TaskDocumentsToTaskDatabase extends Command\Base
         parent::__construct();
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
         $this->couchDbReplicatorService       = $couchDbReplicatorService;
+        $this->taskDatabaseCreator            = $taskDatabaseCreator;
         $this->labelingTaskFacade             = $labelingTaskFacade;
         $this->labeledThingFacade             = $labeledThingFacade;
         $this->labeledThingInFrameFacade      = $labeledThingInFrameFacade;
@@ -68,20 +77,14 @@ class TaskDocumentsToTaskDatabase extends Command\Base
         $tasks = $this->labelingTaskFacade->findAll();
 
         foreach ($tasks as $task) {
-            $databaseName = sprintf('taskdb-project-%s-task-%s', $task->getProjectId(), $task->getId());
+            $projectId = $task->getProjectId();
+            $taskId = $task->getId();
             try {
-                $this->databaseDocumentManagerFactory->createDatabase($databaseName);
-            }catch (\Exception $exception) {
+                $this->taskDatabaseCreator->createDatabase($projectId, $taskId);
+            } catch (\Exception $exception) {
+                $databaseName = $this->taskDatabaseCreator->getDatabaseName($projectId, $taskId);
                 $this->writeInfo($output, 'Failed to create Database: ' . $databaseName);
             }
-
-            $this->couchDbReplicatorService->addReplication(
-                'labeling_api',
-                $databaseName,
-                true,
-                'annostation_labeling_task_replication_filter/filter',
-                ['taskId' => $task->getId()]
-            );
         }
     }
 }
