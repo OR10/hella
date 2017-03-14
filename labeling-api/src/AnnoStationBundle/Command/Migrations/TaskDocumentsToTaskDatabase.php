@@ -43,12 +43,12 @@ class TaskDocumentsToTaskDatabase extends Command\Base
     private $couchDbReplicatorService;
 
     /**
-     * @param Service\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
-     * @param Service\CouchDbReplicatorService       $couchDbReplicatorService
-     * @param AnnoStationService\TaskDatabaseCreator            $taskDatabaseCreator
-     * @param Facade\LabelingTask                    $labelingTaskFacade
-     * @param Facade\LabeledThing                    $labeledThingFacade
-     * @param Facade\LabeledThingInFrame             $labeledThingInFrameFacade
+     * @param Service\DatabaseDocumentManagerFactory    $databaseDocumentManagerFactory
+     * @param Service\CouchDbReplicatorService          $couchDbReplicatorService
+     * @param AnnoStationService\TaskDatabaseCreator    $taskDatabaseCreator
+     * @param Facade\LabelingTask                       $labelingTaskFacade
+     * @param Facade\LabeledThing                       $labeledThingFacade
+     * @param Facade\LabeledThingInFrame                $labeledThingInFrameFacade
      */
     public function __construct(
         Service\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
