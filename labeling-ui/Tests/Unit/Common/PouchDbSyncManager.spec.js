@@ -2,7 +2,7 @@ import PouchDbSyncManager from 'Application/Common/Services/PouchDbSyncManager';
 import {inject} from 'angular-mocks';
 import PouchDb from 'pouchdb';
 
-fdescribe('PouchDbSyncManager', () => {
+describe('PouchDbSyncManager', () => {
   const taskId = 'TASK-ID-abcdefg';
   let angularQ;
   let rootScope;
@@ -62,7 +62,7 @@ fdescribe('PouchDbSyncManager', () => {
       ['paused', []],
       ['active', []],
       ['denied', []],
-      ['error', []]
+      ['error', []],
     ]);
     contextReplicateFromPromise.on.and.callFake((eventName, callback) => {
       if (contextReplicateFromEvents.has(eventName) === false) {
@@ -83,7 +83,7 @@ fdescribe('PouchDbSyncManager', () => {
       ['paused', []],
       ['active', []],
       ['denied', []],
-      ['error', []]
+      ['error', []],
     ]);
     contextReplicateToPromise.on.and.callFake((eventName, callback) => {
       if (contextReplicateToEvents.has(eventName) === false) {
@@ -107,7 +107,7 @@ fdescribe('PouchDbSyncManager', () => {
       ['paused', []],
       ['active', []],
       ['denied', []],
-      ['error', []]
+      ['error', []],
     ]);
     secondContextReplicateFromPromise.on.and.callFake((eventName, callback) => {
       if (secondContextReplicateFromEvents.has(eventName) === false) {
@@ -128,7 +128,7 @@ fdescribe('PouchDbSyncManager', () => {
       ['paused', []],
       ['active', []],
       ['denied', []],
-      ['error', []]
+      ['error', []],
     ]);
     secondContextReplicateToPromise.on.and.callFake((eventName, callback) => {
       if (secondContextReplicateToEvents.has(eventName) === false) {
@@ -149,9 +149,9 @@ fdescribe('PouchDbSyncManager', () => {
 
   describe('pullUpdatesForContext', () => {
     it('should return a promise', () => {
-      const context = {};
+      const emptyContext = {};
 
-      const actual = syncManager.pullUpdatesForContext(context);
+      const actual = syncManager.pullUpdatesForContext(emptyContext);
 
       // $q does not use native promises but their own. There is now feasible way
       // to get the reference, so let's just test, that there is a then function
@@ -159,7 +159,7 @@ fdescribe('PouchDbSyncManager', () => {
     });
 
     it('should start replication with the correct options', () => {
-      const replication = syncManager.pullUpdatesForContext(context);
+      syncManager.pullUpdatesForContext(context);
       const replicationOptions = {
         live: false,
         retry: true,
@@ -174,7 +174,7 @@ fdescribe('PouchDbSyncManager', () => {
       const taskReplicationUrl = `${taskReplicationInformation.databaseServer}/${taskReplicationInformation.databaseName}`;
       let pouchDb;
 
-      const replication = syncManager.pullUpdatesForContext(context);
+      syncManager.pullUpdatesForContext(context);
 
       rootScope.$apply();
 
@@ -213,9 +213,9 @@ fdescribe('PouchDbSyncManager', () => {
 
   describe('startDuplexLiveReplication', () => {
     it('should return a promise', () => {
-      const context = {};
+      const emptyContext = {};
 
-      const actual = syncManager.startDuplexLiveReplication(context);
+      const actual = syncManager.startDuplexLiveReplication(emptyContext);
 
       // $q does not use native promises but their own. There is now feasible way
       // to get the reference, so let's just test, that there is a then function
@@ -223,7 +223,7 @@ fdescribe('PouchDbSyncManager', () => {
     });
 
     it('should start pull replication with the correct options', () => {
-      const replication = syncManager.startDuplexLiveReplication(context);
+      syncManager.startDuplexLiveReplication(context);
       const replicationOptions = {
         live: true,
         retry: true,
@@ -234,7 +234,7 @@ fdescribe('PouchDbSyncManager', () => {
     });
 
     it('should start push replication with the correct options', () => {
-      const replication = syncManager.startDuplexLiveReplication(context);
+      syncManager.startDuplexLiveReplication(context);
       const replicationOptions = {
         live: true,
         retry: true,
@@ -249,7 +249,7 @@ fdescribe('PouchDbSyncManager', () => {
       const taskReplicationUrl = `${taskReplicationInformation.databaseServer}/${taskReplicationInformation.databaseName}`;
       let pouchDb;
 
-      const replication = syncManager.startDuplexLiveReplication(context);
+      syncManager.startDuplexLiveReplication(context);
 
       rootScope.$apply();
 
@@ -261,7 +261,7 @@ fdescribe('PouchDbSyncManager', () => {
       const taskReplicationUrl = `${taskReplicationInformation.databaseServer}/${taskReplicationInformation.databaseName}`;
       let pouchDb;
 
-      const replication = syncManager.startDuplexLiveReplication(context);
+      syncManager.startDuplexLiveReplication(context);
 
       rootScope.$apply();
 

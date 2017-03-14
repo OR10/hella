@@ -424,7 +424,7 @@ describe('TaskGateway', () => {
     $httpBackend.flush();
   });
 
-  fit('should provide information about replication target for specific taskId', done => {
+  it('should provide information about replication target for specific taskId', done => {
     const taskId = 'TASK-ID-abcdefg';
     const databaseName = 'a-cool-db-name';
     const databaseServer = 'http://some.awesome.couchdb.server:5984';
@@ -435,7 +435,7 @@ describe('TaskGateway', () => {
     };
 
     const response = {
-      result: taskReplicationInformationObject
+      result: taskReplicationInformationObject,
     };
 
     const expectedTaskReplicationInformation = new TaskReplicationInformation(taskReplicationInformationObject);

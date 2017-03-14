@@ -1,6 +1,6 @@
 import PouchDb from 'pouchdb';
 
-import DeepMap from '../Support/DeepMap'
+import DeepMap from '../Support/DeepMap';
 
 /**
  * Service to manage synchronizations of PouchDB databases with the correlating backend database
@@ -78,7 +78,6 @@ class PouchDbSyncManager {
       ['alive', []],
       ['transfer', []],
     ]);
-
   }
 
   /**
@@ -196,7 +195,7 @@ class PouchDbSyncManager {
     }
 
     const eventHandlers = this._eventHandlersByEvent.get(eventName);
-    eventHandlers.forEach(callback => callback(...data))
+    eventHandlers.forEach(callback => callback(...data));
   }
 
   /**
