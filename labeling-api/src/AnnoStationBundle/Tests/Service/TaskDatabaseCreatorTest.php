@@ -94,4 +94,18 @@ class TaskDatabaseCreatorTest extends Tests\KernelTestCase
         $creator = new TaskDatabaseCreator($documentManagerMock, $couchReplicatorMock);
         $creator->createDatabase($projectId, $taskId);
     }
+
+    public function testGetDatabaseName()
+    {
+        $projectId = "Tim-Taylor";
+        $taskId = "Al-Bundy";
+        $expectedDatabaseName = "taskdb-project-$projectId-task-$taskId";
+
+        $documentManagerMock = $this->getCouchDocumentManagerMock();
+        $couchReplicatorMock = $this->getCouchDbReplicatorMock();
+        $creator = new TaskDatabaseCreator($documentManagerMock, $couchReplicatorMock);
+        $actual =  $creator->getDatabaseName($projectId, $taskId);
+
+        $this->assertEquals($expectedDatabaseName, $actual);
+    }
 }

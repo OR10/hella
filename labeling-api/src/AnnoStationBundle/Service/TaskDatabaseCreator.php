@@ -45,7 +45,7 @@ class TaskDatabaseCreator
      *
      * @return string
      */
-    private function getDatabaseName($projectId, $taskId)
+    public function getDatabaseName($projectId, $taskId)
     {
         return sprintf(TaskDatabaseCreator::TASK_DATABASE_NAME_TEMPLATE, $projectId, $taskId);
     }
