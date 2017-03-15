@@ -32,7 +32,7 @@ class PaperTool extends Tool {
     this._dragEventState = 'initial';
 
     /**
-     * @type {paper.Point}|null}
+     * @type {paper.Point|null}
      * @private
      */
     this._lastDragPoint = null;
