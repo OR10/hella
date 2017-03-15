@@ -1,8 +1,8 @@
-import ViewerTitlteBarController from './ViewerTitleBarController';
+import ViewerTitleBarController from './ViewerTitleBarController';
 /**
  * Controller of the {@link PouchDbViewerTitleBarDirective}
  */
-class PouchDbViewerTitleBarController extends ViewerTitlteBarController {
+class PouchDbViewerTitleBarController extends ViewerTitleBarController {
   /**
    * @param {angular.$timeout} $timeout
    * @param {$rootScope.$scope} $scope
@@ -18,6 +18,7 @@ class PouchDbViewerTitleBarController extends ViewerTitlteBarController {
    * @param {Object} featureFlags
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
+   * @param {ApplicationLoadingMaskService} applicationLoadingMaskService
    */
   constructor($timeout,
               $scope,
@@ -32,7 +33,8 @@ class PouchDbViewerTitleBarController extends ViewerTitlteBarController {
               frameIndexService,
               featureFlags,
               pouchDbSyncManager,
-              pouchDbContextService) {
+              pouchDbContextService,
+              applicationLoadingMaskService) {
     super(
       $timeout,
       $scope,
@@ -59,6 +61,12 @@ class PouchDbViewerTitleBarController extends ViewerTitlteBarController {
      * @private
      */
     this._pouchDbContextService = pouchDbContextService;
+
+    /**
+     * @type {ApplicationLoadingMaskService}
+     * @private
+     */
+    this._applicationLoadingMaskService = applicationLoadingMaskService;
   }
 
   /**
@@ -141,11 +149,26 @@ class PouchDbViewerTitleBarController extends ViewerTitlteBarController {
       .then(() => this._pullChangesFromBackend())
       .then(() => this._reinitializeContinuousReplication());
   }
+
+  /**
+   * Return to the task list
+   */
+  goBackToTasksList() {
+    //@TODO: What if someone uses the browser back button?
+    this._applicationLoadingMaskService.startLoading('Saving task data...');
+    this._$q.resolve()
+      .then(() => this._pushChangesToBackend())
+      .then(() => {
+        this._$state.go('labeling.tasks.list', {project: this.task.projectId});
+        this._applicationLoadingMaskService.finishLoading();
+      });
+  }
 }
 
 PouchDbViewerTitleBarController.$inject = ViewerTitleBarController.$inject.concat([
   'pouchDbSyncManager',
   'pouchDbContextService',
+  'applicationLoadingMaskService',
 ]);
 
 export default PouchDbViewerTitleBarController;
