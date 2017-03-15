@@ -87,7 +87,7 @@ class TaskReplicationService {
 
 
 TaskReplicationService.$inject = [
-  'logger',
+  'loggerService',
   'userGateway',
   'replicationStateService',
   'timerGateway',
