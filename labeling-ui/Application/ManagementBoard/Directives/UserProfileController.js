@@ -354,6 +354,19 @@ class UserProfileController {
   }
 
   /**
+   * Get the IDs from all the available roles
+   *
+   * @returns {Array}
+   * @private
+   */
+  _getAllRoleIds() {
+    return this.availableRoles.reduce((roles, currentRole) => {
+      roles.push(currentRole.id);
+      return roles;
+    }, []);
+  }
+
+  /**
    * Validates the user
    *
    * @TODO: Change to user ngModel validation in the future
@@ -376,7 +389,7 @@ class UserProfileController {
       this.validation.email = valid = false;
     }
 
-    if (['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER', 'ROLE_CLIENT', 'ROLE_CLIENT_COORDINATOR', 'ROLE_OBSERVER'].indexOf(this.singleRole.id) === -1) {
+    if (this._getAllRoleIds().indexOf(this.singleRole.id) === -1) {
       this.validation.role = valid = false;
     }
 
