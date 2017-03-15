@@ -9,18 +9,12 @@ class TaskGateway {
   /**
    * @param {angular.$q} $q
    * @param {LoggerService} loggerService
-   * @param {PouchDbContextService} pouchDbContextService
-   * @param {PouchDbSyncManager} pouchDbSyncManager
-   * @param {PouchDbViewHeater} pouchDbViewHeater
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp
    * @param {OrganisationService} organisationService
    */
   constructor($q,
               loggerService,
-              pouchDbContextService,
-              pouchDbSyncManager,
-              pouchDbViewHeater,
               apiService,
               bufferedHttp,
               organisationService) {
@@ -35,27 +29,6 @@ class TaskGateway {
      * @private
      */
     this._logger = loggerService;
-
-    /**
-     *
-     * @type {PouchDbContextService}
-     * @private
-     */
-    this._pouchDbContextService = pouchDbContextService;
-
-    /**
-     *
-     * @type {PouchDbSyncManager}
-     * @private
-     */
-    this._pouchDbSyncManager = pouchDbSyncManager;
-
-    /**
-     *
-     * @type {PouchDbViewHeater}
-     * @private
-     */
-    this._pouchDbViewHeater = pouchDbViewHeater;
 
     /**
      * @type {BufferedHttp}
@@ -397,45 +370,11 @@ class TaskGateway {
       });
   }
 
-  /**
-   * @param taskId
-   * @private
-   * @return {Promise}
-   */
-  checkoutTaskFromRemote(taskId) {
-    // @TODO: Should be moved to own `PouchDBTaskGateway`
-    // @TODO: There currently is no unit-test for this method!
-    const loggerContext = 'pouchDb:taskSynchronization';
-    this._logger.groupStart(loggerContext, 'Started intial Task synchronization (before)');
-    const context = this._pouchDbContextService.provideContextForTaskId(taskId);
-    this._logger.log(loggerContext, 'Pulling task updates from server');
-
-    return this._pouchDbSyncManager.pullUpdatesForContext(context)
-      .then(() => {
-        return this._pouchDbViewHeater.heatAllViews(context, 'annostation_');
-      })
-      .then(() => {
-        return this._pouchDbSyncManager.startDuplexLiveReplication(context);
-      })
-      .then(() => {
-        return this._logger.log(loggerContext, 'Synchronizaton complete');
-      })
-      .then(() => {
-        return this._logger.groupEnd('pouchDb:taskSynchronization');
-      })
-      .catch(error => {
-        return this._logger.warn('Error while checkoutTaskFromRemote', error);
-      });
-  }
-
 }
 
 TaskGateway.$inject = [
   '$q',
   'loggerService',
-  'pouchDbContextService',
-  'pouchDbSyncManager',
-  'pouchDbViewHeater',
   'ApiService',
   'bufferedHttp',
   'organisationService',
