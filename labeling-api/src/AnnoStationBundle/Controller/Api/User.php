@@ -144,7 +144,7 @@ class User extends Controller\Base
         $loginUser = $this->tokenStorage->getToken()->getUser();
 
         if (!$loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN) &&
-            count(array_diff($request->request->get('organisationIds'), $loginUser->getOrganisations())) > 0) {
+            count(array_diff($request->request->get('organisationIds', []), $loginUser->getOrganisations())) > 0) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to add this user to this organisations');
         }
 
