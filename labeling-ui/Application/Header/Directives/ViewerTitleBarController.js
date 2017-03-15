@@ -90,6 +90,11 @@ class ViewerTitleBarController {
     this._frameIndexService = frameIndexService;
 
     /**
+     * @type {Object}
+     */
+    this.featureFlags = featureFlags;
+
+    /**
      * @type {string}
      */
     this.shapeBounds = null;
