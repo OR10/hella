@@ -197,7 +197,8 @@ class ViewerTitleBarController {
               }
             })
             .then(() => resolve());
-        }
+        },
+        () => resolve()
       );
     });
   }
