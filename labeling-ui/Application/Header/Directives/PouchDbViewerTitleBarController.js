@@ -154,7 +154,7 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
    * Return to the task list
    */
   goBackToTasksList() {
-    //@TODO: What if someone uses the browser back button?
+    // @TODO: What if someone uses the browser back button?
     this._applicationLoadingMaskService.startLoading('Saving task data...');
     this._$q.resolve()
       .then(() => this._pushChangesToBackend())

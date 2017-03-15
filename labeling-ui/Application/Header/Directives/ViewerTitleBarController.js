@@ -198,7 +198,7 @@ class ViewerTitleBarController {
                 // If the task could not be finished, because there were still incomplete ltifs we inform the user and
                 // have him fix the problem
                 return this._informAboutIncompleteLabeledObjects()
-                  .then(() => this._jumpToNextIncomplete())
+                  .then(() => this._jumpToNextIncomplete());
               }
             })
             .then(() => resolve());
@@ -252,7 +252,7 @@ class ViewerTitleBarController {
       .then(() => this._labeledThingInFrameGateway.getNextIncomplete(this.task))
       .then(labeledThingsInFrames => {
         if (labeledThingsInFrames.length === 0) {
-          return;
+          return this._$q.resolve();
         }
 
         const nextIncomplete = labeledThingsInFrames[0];
