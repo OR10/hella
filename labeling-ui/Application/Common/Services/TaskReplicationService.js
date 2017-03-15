@@ -3,22 +3,19 @@
  */
 class TaskReplicationService {
   /**
+   * @param {Logger} logger
    * @param {UserGateway} userGateway
-   * @param {TaskGateway} taskGateway
    * @param {ReplicationStateService} replicationStateService
    * @param {TimerGateway} timerGateway
+   * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {PouchDbContextService} pouchDbContextService
    */
-  constructor(userGateway, taskGateway, replicationStateService, timerGateway) {
+  constructor(logger, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService) {
     /**
      * @type {UserGateway}
      * @private
      */
     this._userGateway = userGateway;
-    /**
-     * @type {TaskGateway}
-     * @private
-     */
-    this._taskGateway = taskGateway;
     /**
      * @type {ReplicationStateService}
      * @private
@@ -29,16 +26,56 @@ class TaskReplicationService {
      * @private
      */
     this._timerGateway = timerGateway;
+
+    /**
+     * @type {pouchDbSyncManager}
+     * @private
+     */
+    this._pouchDbSyncManager = pouchDbSyncManager;
+
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._pouchDbContextService = pouchDbContextService;
   }
 
   replicateTaskDataToLocalMachine(projectId, taskId) {
     this._replicationStateService.setIsReplicating(true);
     const createTimerFn = this._createUserTaskTimerIfMissing.bind(this, projectId, taskId);
 
-    return this._taskGateway.checkoutTaskFromRemote(taskId)
+    return this._checkoutTaskFromRemote(taskId)
             .then(createTimerFn)
             .then(() => this._replicationStateService.setIsReplicating(false));
   }
+
+  /**
+   * @param taskId
+   * @private
+   * @return {Promise}
+   */
+  _checkoutTaskFromRemote(taskId) {
+    const loggerContext = 'pouchDb:taskSynchronization';
+    this._logger.groupStart(loggerContext, 'Started intial Task synchronization (before)');
+    const context = this._pouchDbContextService.provideContextForTaskId(taskId);
+    this._logger.log(loggerContext, 'Pulling task updates from server');
+
+    return this._pouchDbSyncManager.pullUpdatesForContext(context)
+      .then(() => {
+        return this._pouchDbViewHeater.heatAllViews(context, 'annostation_');
+      })
+      .then(() => {
+        return this._pouchDbSyncManager.startDuplexLiveReplication(context);
+      })
+      .then(() => {
+        this._logger.log(loggerContext, 'Synchronizaton complete');
+        this._logger.groupEnd('pouchDb:taskSynchronization');
+      })
+      .catch(error => {
+        return this._logger.warn('Error while checkoutTaskFromRemote', error);
+      });
+  }
+
 
   _createUserTaskTimerIfMissing(projectId, taskId) {
     return this._userGateway.getCurrentUser().then(user => {
@@ -50,10 +87,12 @@ class TaskReplicationService {
 
 
 TaskReplicationService.$inject = [
+  'loggerService',
   'userGateway',
-  'taskGateway',
   'replicationStateService',
   'timerGateway',
+  'pouchDbSyncManager',
+  'pouchDbContextService',
 ];
 
 export default TaskReplicationService;

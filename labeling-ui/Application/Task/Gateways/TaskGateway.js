@@ -1,5 +1,6 @@
 import Task from '../Model/Task';
 import User from 'Application/ManagementBoard/Models/User';
+import TaskReplicationInformation from '../Model/TaskReplicationInformation';
 
 /**
  * Gateway for retrieving information about Tasks
@@ -8,23 +9,15 @@ class TaskGateway {
   /**
    * @param {angular.$q} $q
    * @param {LoggerService} loggerService
-   * @param {PouchDbContextService} pouchDbContextService
-   * @param {PouchDbSyncManager} pouchDbSyncManager
-   * @param {PouchDbViewHeater} pouchDbViewHeater
    * @param {ApiService} apiService injected
    * @param {BufferedHttp} bufferedHttp
    * @param {OrganisationService} organisationService
    */
-  constructor(
-    $q,
-    loggerService,
-    pouchDbContextService,
-    pouchDbSyncManager,
-    pouchDbViewHeater,
-    apiService,
-    bufferedHttp,
-    organisationService
-  ) {
+  constructor($q,
+              loggerService,
+              apiService,
+              bufferedHttp,
+              organisationService) {
     /**
      * @type {angular.$q}
      * @private
@@ -36,27 +29,6 @@ class TaskGateway {
      * @private
      */
     this._logger = loggerService;
-
-    /**
-     *
-     * @type {PouchDbContextService}
-     * @private
-     */
-    this._pouchDbContextService = pouchDbContextService;
-
-    /**
-     *
-     * @type {PouchDbSyncManager}
-     * @private
-     */
-    this._pouchDbSyncManager = pouchDbSyncManager;
-
-    /**
-     *
-     * @type {PouchDbViewHeater}
-     * @private
-     */
-    this._pouchDbViewHeater = pouchDbViewHeater;
 
     /**
      * @type {BufferedHttp}
@@ -378,33 +350,23 @@ class TaskGateway {
   }
 
   /**
-   * @param taskId
-   * @private
-   * @return {Promise}
+   * Request information about the CouchDb-Endpoint to replicate information for a specific task
+   *
+   * @param {string} taskId
+   * @return {Promise.<TaskReplicationInformation>}
    */
-  checkoutTaskFromRemote(taskId) {
-    // @TODO: Should be moved to own `PouchDBTaskGateway`
-    // @TODO: There currently is no unit-test for this method!
-    const loggerContext = 'pouchDb:taskSynchronization';
-    this._logger.groupStart(loggerContext, 'Started intial Task synchronization (before)');
-    const context = this._pouchDbContextService.provideContextForTaskId(taskId);
-    this._logger.log(loggerContext, 'Pulling task updates from server');
+  getTaskReplicationInformationForTaskId(taskId) {
+    const url = this._apiService.getApiUrl(`/task/${taskId}/replication`);
 
-    return this._pouchDbSyncManager.pullUpdatesForContext(context)
-      .then(() => {
-        return this._pouchDbViewHeater.heatAllViews(context, 'annostation_');
-      })
-      .then(() => {
-        return this._pouchDbSyncManager.startDuplexLiveReplication(context);
-      })
-      .then(() => {
-        return this._logger.log(loggerContext, 'Synchronizaton complete');
-      })
-      .then(() => {
-        return this._logger.groupEnd('pouchDb:taskSynchronization');
-      })
-      .catch(error => {
-        return this._logger.warn('Error while checkoutTaskFromRemote', error);
+    return this._bufferedHttp.get(url, undefined, 'task')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return new TaskReplicationInformation(
+            response.data.result
+          );
+        }
+
+        throw new Error(`Failed to load TaskReplicationInformation for task ${taskId}.`);
       });
   }
 
@@ -413,9 +375,6 @@ class TaskGateway {
 TaskGateway.$inject = [
   '$q',
   'loggerService',
-  'pouchDbContextService',
-  'pouchDbSyncManager',
-  'pouchDbViewHeater',
   'ApiService',
   'bufferedHttp',
   'organisationService',

@@ -68,7 +68,7 @@ class User {
     /**
      * @type {Array.<Organisation>}
      */
-    this.organisations = user.organisations;
+    this.organisations = user.organisations || [];
   }
 
   /**
@@ -78,9 +78,12 @@ class User {
    */
   toJSON() {
     const {id, username, email, enabled, lastLogin, locked, roles, password, expired, expiresAt} = this;
+    debugger;
+    const organisationIds = this.organisations.map(organisation => organisation.id);
+
     return {
       roles: cloneDeep(roles),
-      id, username, email, enabled, lastLogin, locked, password, expired, expiresAt,
+      id, username, email, enabled, lastLogin, locked, password, expired, expiresAt, organisationIds,
     };
   }
 }

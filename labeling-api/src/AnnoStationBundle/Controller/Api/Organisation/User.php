@@ -71,7 +71,7 @@ class User extends Controller\Base
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
-        if (!$this->userPermissions->hasPermission('canAddUserToOrganisation')) {
+        if (!$this->userPermissions->hasPermission('canAddUserToOwnOrganisation')) {
             throw new AccessDeniedHttpException();
         }
 

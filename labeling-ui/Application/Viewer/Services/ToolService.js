@@ -1,4 +1,4 @@
-import DeepMap from '../../Common/Helpers/DeepMap';
+import DeepMap from '../../Common/Support/DeepMap';
 import RectangleMoveTool from '../Tools/Rectangle/RectangleMoveTool';
 import RectangleScaleTool from '../Tools/Rectangle/RectangleScaleTool';
 import RectangleDrawingTool from '../Tools/Rectangle/RectangleDrawingTool';

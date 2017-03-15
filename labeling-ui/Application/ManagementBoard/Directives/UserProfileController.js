@@ -96,7 +96,7 @@ class UserProfileController {
     this.createMode = (this.id === 'new');
 
     // If creator can not add organisations by hand, add new user to creators organisation
-    if (!this.userPermissions.canAddUserToOrganisation) {
+    if (!this.userPermissions.canAddUserToAnyOrganisation) {
       this.userOrganisations.push(organisationService.getModel());
     }
 

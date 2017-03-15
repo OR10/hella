@@ -1,24 +1,22 @@
-import DeepMap from '../Helpers/DeepMap';
+import PouchDb from 'pouchdb';
+
+import DeepMap from '../Support/DeepMap';
 
 /**
- * Service to configure and manage syncrhonization related subjects.
+ * Service to manage synchronizations of PouchDB databases with the correlating backend database
+ *
+ * Live as, well as one-shot replications are supported, which are one- or bi-directional.
+ *
+ * Switching between those replication types for "sync-point" purposes is supported as well.
  */
 class PouchDbSyncManager {
-
   /**
-   * @param {Object} configuration injected
    * @param {LoggerService} loggerService
    * @param {angular.$q} $q
    * @param {PouchDbContextService} pouchDbContextService
-   * @param {PouchDB} pouchDb
+   * @param {TaskGateway} taskGateway
    */
-  constructor(configuration, loggerService, $q, pouchDbContextService, pouchDb) {
-    /**
-     * @type {Object}
-     * @private
-     */
-    this._configuration = configuration;
-
+  constructor(loggerService, $q, pouchDbContextService, taskGateway) {
     /**
      * @type {Logger}
      * @private
@@ -38,323 +36,364 @@ class PouchDbSyncManager {
     this._pouchDbContextService = pouchDbContextService;
 
     /**
-     * The cache is structured with nested Maps in the following way:
-     * Context -> Filter(name) -> Direction (FROM/TO) -> {live: bool, syncHandler: Replication object}*
+     * @type {TaskGateway}
+     * @private
+     */
+    this._taskGateway = taskGateway;
+
+    /**
+     * Cache of remote database information for a specific taskId
+     *
+     * This cache contains information about where to find the remote id for any given taskId
+     *
+     * @type {Map}
+     * @private
+     */
+    this._remoteDatabaseInformationCache = new Map();
+
+    /**
+     * Cache of the promises associated with currently running replications.
      *
      * @type {DeepMap}
      * @private
      */
-    this._syncHandlerCache = new DeepMap();
+    this._replicationPromiseCache = new DeepMap();
 
     /**
-     * @type {PouchDB}
+     * Storage for all currently running {@link Replication}s for a specific context
+     *
+     * @type {Map.<PouchDB, Array.<Replication>>}
      * @private
      */
-    this._pouchDb = pouchDb;
+    this._runningReplicationsByContext = new Map();
 
     /**
-     * @type {object}
+     * Registered EventListeners
+     *
+     * @type {Map}
      * @private
      */
-    this._eventListeners = {};
+    this._eventHandlersByEvent = new Map([
+      ['offline', []],
+      ['alive', []],
+      ['transfer', []],
+    ]);
   }
 
   /**
-   * Get the remote configuration object. The object contains the following information:
+   * Initiate uni-directional one-shot replication for database.
    *
-   * - baseUrl: Base url to access the remote database
-   * - databaseName: database name storing the needed information
-   * - filters: array of filter functions to be replicated
+   * The data flow is directed from the backend to the frontend (pull).
    *
-   * @private
-   * @return {Object}
+   * @param {PouchDB} context
+   * @return {Promise.<Event>}
    */
-  getRemoteConfiguration() {
-    if (this._configuration.Common.storage === undefined || this._configuration.Common.storage.remote === undefined) {
-      throw new Error('No pouchdb remote configuration found in Common/config.json.');
+  pullUpdatesForContext(context) {
+    if (this._replicationPromiseCache.has(context, 'one-shot', 'pull')) {
+      return this._replicationPromiseCache.get(context, 'one-shot', 'pull');
     }
 
-    return this._configuration.Common.storage.remote;
+    const promise = this._$q.resolve()
+      .then(() => this._getReplicationTargetForContext(context))
+      .then(replicationTarget => this._getRemoteDbPullReplication(context, replicationTarget));
+
+    this._removeFromPromiseCacheWhenCompleted(promise, context, 'one-shot', 'pull');
+
+    // We need to store the promise here, before we even start any lookup. Otherwise we might have race
+    // condition, between the lookup of the replication target and a second attempt to request "start" the
+    // replication.
+    this._replicationPromiseCache.set(context, 'one-shot', 'pull', promise);
+
+    return promise;
   }
 
   /**
-   * @param {PouchDB} context instance of a local PouchDB
+   * Start a bi-directional continuous replication for the given context
+   *
+   * The returned promise is resolved once both directions (push, pull) of the live replication have ended.
+   * Alternatively it is rejected if any of the replications fail at any point in time.
+   *
+   * @param {PouchDB} context
+   * @return {Promise.<Event>}
    */
-  startLiveReplicationForContext(context) {
-    const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
+  startDuplexLiveReplication(context) {
+    if (this._replicationPromiseCache.has(context, 'continuous')) {
+      return this._replicationPromiseCache.get(context, 'continuous');
+    }
 
-    const replicationPromises = [];
-    this.getRemoteConfiguration().filters.forEach(filter => {
-      [
-        PouchDbSyncManager.SYNC_DIRECTION_FROM,
-        PouchDbSyncManager.SYNC_DIRECTION_TO,
-      ].forEach(direction => {
-        const hasSyncHandler = this._syncHandlerCache.has(context, filter, direction, true);
-        if (!hasSyncHandler) {
-          replicationPromises.push(
-            this._replicateForContextWithDirectionAndFilterAndTaskId(
-              context,
-              direction,
-              filter,
-              taskId,
-              true
-            )
-          );
-        }
+    const promise = this._$q.resolve()
+      .then(() => this._getReplicationTargetForContext(context))
+      .then(replicationTarget => {
+        const pullReplication = this._getRemoteDbPullReplication(context, replicationTarget, true);
+        const pushReplication = this._getRemoteDbPushReplication(context, replicationTarget, true);
+        return this._$q.all([pullReplication, pushReplication]);
       });
-    });
 
-    return this._$q.all(replicationPromises);
+    this._removeFromPromiseCacheWhenCompleted(promise, context, 'continuous');
+
+    // We need to store the promise here, before we even start any lookup. Otherwise we might have race
+    // condition, between the lookup of the replication target and a second attempt to request "start" the
+    // replication.
+    this._replicationPromiseCache.set(context, 'continuous', promise);
+
+    return promise;
   }
 
   /**
-   * @param {PouchDB} context instance of a local PouchDB
+   * Stop all currently running replications for the given context
+   *
+   * A Promise is returned, which is fulfilled. once every replication for the context has ended successfully.
+   * The Promise is rejected, should anything go wrong during the abort procedure.
+   *
+   * @param {PouchDB} context
+   * @return {Promise}
    */
   stopReplicationsForContext(context) {
-    if (!this._syncHandlerCache.has(context)) {
-      return false;
+    if (this._runningReplicationsByContext.has(context) === false) {
+      // No replication is running for the context, we are already finished.
+      return this._$q.resolve();
     }
 
-    for (const [, syncHandler] of DeepMap.iterateMapRecursive(this._syncHandlerCache.get(context))) {
-      syncHandler.cancel();
-    }
+    const runningReplicationsForContext = this._runningReplicationsByContext.get(context);
+    runningReplicationsForContext.forEach(replication => replication.cancel());
 
-    return context;
+    // All PouchDB Replications are promises
+    return this._$q.all(runningReplicationsForContext);
   }
 
   /**
-   * @params {PouchDB} context to check sync state on
-   * @returns {boolean}
+   * Register an Event to be informed about
+   *
+   * Possible Events are:
+   *
+   * - offline
+   * - alive
+   * - transfer
+   *
+   * @param {string} eventName
+   * @param {Function} callback
    */
-  isAnyReplicationOnContextEnabled(context) {
-    return this._syncHandlerCache.has(context);
+  on(eventName, callback) {
+    if (this._eventHandlersByEvent.has(eventName) === false) {
+      throw new Error(`Unknown event ${eventName} can not be registered.`);
+    }
+
+    const eventHandlers = this._eventHandlersByEvent.get(eventName);
+    this._eventHandlersByEvent.set(eventName, [...eventHandlers, callback]);
   }
 
   /**
+   * Emit an event with a specific dataset
+   *
+   * @param {string} eventName
+   * @param {Array.<*>?} data
+   * @private
+   */
+  _emit(eventName, data = []) {
+    if (this._eventHandlersByEvent.has(eventName) === false) {
+      throw new Error(`Unknown event ${eventName} can not be emitted.`);
+    }
+
+    const eventHandlers = this._eventHandlersByEvent.get(eventName);
+    eventHandlers.forEach(callback => callback(...data));
+  }
+
+  /**
+   * Create a sync handler for a unidirectional pull replication
+   * Pull meaning: Server => Client
+   *
    * @param {PouchDB} context
-   * @returns {boolean}
+   * @param {string} replicationTarget
+   * @param {boolean} continuous
+   * @returns {Replication}
    * @private
    */
-  _removeContextFromCache(context) {
-    this._syncHandlerCache.delete(context);
-    return this.isAnyReplicationOnContextEnabled(context);
-  }
-
-  pullUpdatesForContext(context) {
-    const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
-
-    const replicationPromises = [];
-    this.getRemoteConfiguration().filters.forEach(filter => {
-      const hasSyncHandler = this._syncHandlerCache.has(context, filter, PouchDbSyncManager.SYNC_DIRECTION_FROM, false);
-      if (!hasSyncHandler) {
-        replicationPromises.push(
-          this._replicateForContextWithDirectionAndFilterAndTaskId(
-            context,
-            PouchDbSyncManager.SYNC_DIRECTION_FROM,
-            filter,
-            taskId
-          )
-        );
-      }
-    });
-
-    return this._$q.all(replicationPromises);
-  }
-
-  startDuplexLiveReplication(context) {
-    const loggerContext = 'DuplexLiveReplication';
-    this._logger.log(loggerContext, 'enter startDuplexLiveReplication');
-
-    const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
-    const duplexConfig = [
-      PouchDbSyncManager.SYNC_DIRECTION_TO,
-      PouchDbSyncManager.SYNC_DIRECTION_FROM,
-    ];
-
-    const promises = duplexConfig.map(direction => {
-      const isCached = false;
-      let promise;
-
-      // @TODO: search cache for existing live replication handlers
-      if (isCached) {
-        this._logger.log(loggerContext, `live replication for ${taskId} already running`);
-        promise = this._$q.resolve();
-      } else {
-        this._logger.log(loggerContext, `requesting live replication for ${taskId}`);
-        promise = this._replicateForContextWithDirectionAndFilterAndTaskId(context, direction, undefined, taskId, true);
-      }
-      return promise;
-    });
-    this._logger.log(loggerContext, 'exit startDuplexLiveReplication');
-
-    return this._$q.all(promises);
-  }
-
-  /**
-   * @param {object} context
-   * @param {"to"|"from"} direction
-   * @param {string} filter
-   * @param {string} taskId
-   * @param {boolean?} live
-   * @returns {Promise}
-   * @private
-   */
-  _replicateForContextWithDirectionAndFilterAndTaskId(context, direction, filter, taskId, live = false) {
-    const syncSettings = {
-      filter,
-      live,
-      query_params: {
-        taskId: taskId,
-      },
+  _getRemoteDbPullReplication(context, replicationTarget, continuous = false) {
+    const replicationOptions = {
+      live: continuous,
       retry: true,
     };
+    const remoteDb = this._getRemoteDbForReplicationTarget(replicationTarget);
+    const replication = context.replicate.from(remoteDb, replicationOptions);
 
-    const replicationEndpointUrl = `${this.getRemoteConfiguration().baseUrl}/${this.getRemoteConfiguration().databaseName}`;
-    const deferred = this._$q.defer();
-    const replicationFunction = context.replicate[direction];
-    const syncHandler = replicationFunction(replicationEndpointUrl, syncSettings);
+    this._trackReplicationForContext(replication, context);
+    this._registerReplicationEventListeners(replication);
 
-    if (live) {
-      this._startLiveReplicationWithDirectionAndFilter(direction, syncHandler, context, filter, deferred);
-    } else {
-      syncHandler
-        .on('complete', event => {
-          this._syncHandlerCache.delete(context, filter, direction, live);
-          deferred.resolve(event);
-        })
-        .on('error', error => {
-          this._syncHandlerCache.delete(context, filter, direction, live);
-          deferred.reject(error);
-        });
-    }
-
-    this._syncHandlerCache.set(context, filter, direction, live, syncHandler);
-
-    return deferred.promise;
+    return replication;
   }
 
   /**
-   * @param direction
-   * @param syncHandler
-   * @param context
-   * @param filter
-   * @param deferred
+   * Create a sync handler for a unidirectional push replication
+   * Push meaning: Client => Server
+   *
+   * @param {PouchDB} context
+   * @param {string} replicationTarget
+   * @param {boolean} continuous
+   * @returns {Replication}
    * @private
    */
-  _startLiveReplicationWithDirectionAndFilter(direction, syncHandler, context, filter, deferred) {
-    const translation = ({
-      from: 'from_server',
-      to: 'to_server',
-    })[direction];
+  _getRemoteDbPushReplication(context, replicationTarget, continuous = false) {
+    const replicationOptions = {
+      live: continuous,
+      retry: true,
+    };
+    const remoteDb = this._getRemoteDbForReplicationTarget(replicationTarget);
+    const replication = context.replicate.to(remoteDb, replicationOptions);
 
-    const loggerContext = `LiveReplication:${translation}`;
-    syncHandler.on('complete', event => {
-      this._logger.log(loggerContext, `[:complete]`, event);
-      this._syncHandlerCache.delete(context, filter, direction, true);
-    }).on('error', error => {
-      this._logger.log(loggerContext, `[:error]`, error);
-      this._syncHandlerCache.delete(context, filter, direction, true);
-      deferred.reject(error);
-      this._emit('offline');
-    }).on('change', info => {
-      this._logger.log(loggerContext, `[:change]`, info);
-      this._emit('transfer');
-    }).on('paused', event => {
-      this._logger.log(loggerContext, `[:paused]`, event);
-      if (event && event.status === 0) {
-        this._emit('offline');
-      } else {
-        this._emit('alive');
-      }
-      // @TODO: Check if this is correct here!
-      deferred.resolve(event);
-    }).on('active', event => {
-      this._logger.log(loggerContext, `[:active]`, event);
-      this._emit('transfer');
-      // @TODO: Check if this is correct here!
-      deferred.resolve();
-    }).on('denied', error => {
-      this._logger.log(loggerContext, `[:denied]`, error);
-      this._emit('offline');
-    });
+    this._trackReplicationForContext(replication, context);
+    this._registerReplicationEventListeners(replication);
+
+    return replication;
   }
 
-  pushUpdatesForContext(context) {
+  /**
+   * Create a PouchDB instance
+   *
+   * @param {string} replicationTarget
+   * @return {PouchDb}
+   * @private
+   */
+  _getRemoteDbForReplicationTarget(replicationTarget) {
+    return new PouchDb(replicationTarget);
+  }
+
+  /**
+   * Resolve a replication target (url) for a specific database
+   *
+   * @param {PouchDb} context
+   * @return {Promise.<string>}
+   * @private
+   */
+  _getReplicationTargetForContext(context) {
     const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
-
-    const replicationPromises = [];
-    this.getRemoteConfiguration().filters.forEach(filter => {
-      const hasSyncHandler = this._syncHandlerCache.has(context, filter, PouchDbSyncManager.SYNC_DIRECTION_TO, false);
-      if (!hasSyncHandler) {
-        replicationPromises.push(
-          this._replicateForContextWithDirectionAndFilterAndTaskId(
-            context,
-            PouchDbSyncManager.SYNC_DIRECTION_TO,
-            filter,
-            taskId
-          )
-        );
-      }
-    });
-
-    return this._$q.all(replicationPromises);
+    return this._$q.resolve()
+      .then(() => this._getReplicationInformationForTaskId(taskId))
+      .then(replicationInformation => `${replicationInformation.databaseServer}/${replicationInformation.databaseName}`);
   }
 
-  waitForRemoteToConfirm(context, document, millisTillCancelation) {
-    let result = null;
-    const isValidDocument = document !== null && typeof document === 'object' && typeof document._id === 'string';
-    const useTimeoutOption = typeof millisTillCancelation === 'number' && millisTillCancelation > -1;
 
-    if (isValidDocument) {
-      const confirmationPromise = new this._$q((resolve, reject) => {
-        if (useTimeoutOption) {
-          setTimeout(() => {
-            const error = new Error('Replication timeout has been reached. Could not confirm replication to remote.');
-            reject(error);
-          }, millisTillCancelation);
-        }
+  /**
+   * @param {string} taskId
+   * @return {Promise.<TaskReplicationInformation>}
+   * @private
+   */
+  _getReplicationInformationForTaskId(taskId) {
+    let promise = this._$q.resolve();
 
-        this.pushUpdatesForContext(context).then(events => {
-          events.forEach(event => {
-            const hasReceivedDocument = event.docs.filter(doc => doc._id === document._id).length > 0;
-            if (hasReceivedDocument) {
-              resolve(document);
-            }
-          });
-        });
-      });
-
-      result = confirmationPromise;
+    if (this._remoteDatabaseInformationCache.has(taskId) === false) {
+      promise = promise
+        .then(() => this._taskGateway.getTaskReplicationInformationForTaskId(taskId))
+        .then(replicationInformation => this._remoteDatabaseInformationCache.set(taskId, replicationInformation));
     }
 
-    return result;
+    promise = promise
+      .then(() => this._remoteDatabaseInformationCache.get(taskId));
+
+    return promise;
   }
 
-  on(eventName, eventCallback) {
-    if (this._eventListeners[eventName] === undefined) {
-      this._eventListeners[eventName] = [];
+  /**
+   * Remove replication promise from cache once it stopped
+   *
+   * This is not part of the cached or returned promise chain and therefore does not stop any chaining
+   * or error handling on it.
+   *
+   * @param {Promise} promise
+   * @param {Array.<*>} keys storage keys for this promise inside the cache.
+   * @private
+   */
+  _removeFromPromiseCacheWhenCompleted(promise, ...keys) {
+    promise
+      .then(() => this._replicationPromiseCache.delete(...keys))
+      .catch(() => this._replicationPromiseCache.delete(...keys));
+  }
+
+  /**
+   * Install handlers to track a running PouchDB replication
+   *
+   * It will be automatically stored in the {@link _runningReplicationsByContext} Map and is removed
+   * from it again once it finishes.
+   *
+   * @param {Replication} replication
+   * @param {PouchDB} context
+   * @private
+   */
+  _trackReplicationForContext(replication, context) {
+    this._addReplicationToRunningReplications(replication, context);
+
+    replication
+      .then(() => this._removeReplicationFromRunningReplications(replication, context))
+      .catch(() => this._removeReplicationFromRunningReplications(replication, context));
+  }
+
+  /**
+   * Add the replication provided by the given promise to the {@link _runningReplicationsByContext} Map once
+   * it gets available
+   *
+   * @param {Replication} replication
+   * @param {PouchDB} context
+   * @private
+   */
+  _addReplicationToRunningReplications(replication, context) {
+    if (this._runningReplicationsByContext.has(context) === false) {
+      this._runningReplicationsByContext.set(context, []);
     }
-    this._eventListeners[eventName].push(eventCallback);
+
+    const runningReplicationsByContext = this._runningReplicationsByContext.get(context);
+    this._runningReplicationsByContext.set(context, [...runningReplicationsByContext, replication]);
   }
 
-  _emit(eventName, data = []) {
-    if (this._eventListeners[eventName] === undefined) {
+  /**
+   * Remove the replication from the {@link _runningReplicationsByContext} Map
+   *
+   * @param {Replication} replication
+   * @param {PouchDB} context
+   * @private
+   */
+  _removeReplicationFromRunningReplications(replication, context) {
+    if (this._runningReplicationsByContext.has(context) === false) {
       return;
     }
 
-    this._eventListeners[eventName].forEach(fn => fn(...data));
+    const runningReplicationsByContext = this._runningReplicationsByContext.get(context);
+    const filteredReplications = runningReplicationsByContext.filter(candidate => candidate !== replication);
+    this._runningReplicationsByContext.set(context, filteredReplications);
+  }
+
+  /**
+   * Register event listeners on a specific replication handling state changes of this replication
+   *
+   * Watched state changes will be emitted on the PouchDbSyncManager itself as they appear.
+   *
+   * @param {Replication} replication
+   * @private
+   */
+  _registerReplicationEventListeners(replication) {
+    // The moment a replication is started we first emit an 'alive' event
+    // This is not guaranteed by PouchDB (eg. a uni-directional non-continuous replication might "jump" into transfer)
+    this._emit('alive');
+
+    replication.on('paused', error => {
+      if (error) {
+        // An error occured in a continous replication (We are currently offline)
+        this._emit('offline', [error]);
+        return;
+      }
+
+      this._emit('alive');
+    });
+
+    replication.on('active', () => {
+      this._emit('transfer');
+    });
   }
 }
 
-PouchDbSyncManager.SYNC_DIRECTION_FROM = 'from';
-PouchDbSyncManager.SYNC_DIRECTION_TO = 'to';
-
 PouchDbSyncManager.$inject = [
-  'applicationConfig',
   'loggerService',
   '$q',
   'pouchDbContextService',
-  'PouchDB',
+  'taskGateway',
 ];
 
 export default PouchDbSyncManager;

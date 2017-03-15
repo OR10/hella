@@ -147,7 +147,7 @@ module.exports = function (config) {
         base: 'WebDriver',
         config: webdriverConfig,
         browserName: 'chrome',
-        platform: 'LINUX',
+        platform: 'WINDOWS',
         name: 'Karma'
       },
       'IE11': {

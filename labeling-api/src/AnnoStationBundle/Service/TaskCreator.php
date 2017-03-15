@@ -49,6 +49,11 @@ class TaskCreator
     private $couchDbUpdateConflictRetryService;
 
     /**
+     * @var TaskDatabaseCreator
+     */
+    private $taskDatabaseCreator;
+
+    /**
      * TaskCreator constructor.
      *
      * @param Facade\LabelingTask        $taskFacade
@@ -57,6 +62,7 @@ class TaskCreator
      * @param Facade\Video               $videoFacade
      * @param LabelStructure             $labelStructureService
      * @param CouchDbUpdateConflictRetry $couchDbUpdateConflictRetryService
+     * @param TaskDatabaseCreator        $taskDatabaseCreator
      * @param \cscntLogger               $logger
      */
     public function __construct(
@@ -66,7 +72,8 @@ class TaskCreator
         Facade\Video $videoFacade,
         Service\LabelStructure $labelStructureService,
         Service\CouchDbUpdateConflictRetry $couchDbUpdateConflictRetryService,
-        \cscntLogger $logger
+        \cscntLogger $logger,
+        Service\TaskDatabaseCreator $taskDatabaseCreator
     ) {
         $this->taskFacade                        = $taskFacade;
         $this->calibrationDataFacade             = $calibrationDataFacade;
@@ -75,6 +82,7 @@ class TaskCreator
         $this->loggerFacade                      = new LoggerFacade($logger, self::class);
         $this->videoFacade                       = $videoFacade;
         $this->couchDbUpdateConflictRetryService = $couchDbUpdateConflictRetryService;
+        $this->taskDatabaseCreator               = $taskDatabaseCreator;
     }
 
     /**
@@ -429,7 +437,18 @@ class TaskCreator
             \cscntLogPayload::SEVERITY_DEBUG
         );
 
+        $this->createTaskDatabase($project->getId(), $task->getId());
+        $this->loggerFacade->logString(
+            sprintf('Created task database with project id %s and task id %s', $project->getId(), $task->getId()),
+            \cscntLogPayload::SEVERITY_DEBUG
+        );
+
         return $task;
+    }
+
+    private function createTaskDatabase($projectId, $taskId)
+    {
+        return $this->taskDatabaseCreator->createDatabase($projectId, $taskId);
     }
 
     /**

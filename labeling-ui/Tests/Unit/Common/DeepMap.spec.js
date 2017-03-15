@@ -1,7 +1,7 @@
 import 'jquery';
 import 'angular';
 
-import DeepMap from 'Application/Common/Helpers/DeepMap';
+import DeepMap from 'Application/Common/Support/DeepMap';
 
 describe('DeepMap', () => {
   let deepMap;

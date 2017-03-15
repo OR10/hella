@@ -197,6 +197,7 @@
                  class="AnnoStationBundle\Command\Migrations\TaskDocumentsToTaskDatabase">
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
             <argument type="service" id="annostation.services.couch_db_replicator_service"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>

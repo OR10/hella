@@ -8,6 +8,7 @@ resource "openstack_networking_subnet_v2" "labeltool" {
     network_id = "${openstack_networking_network_v2.labeltool.id}"
     cidr = "192.168.34.0/24"
     ip_version = 4
+    enable_dhcp = false
 }
 
 resource "openstack_networking_router_v2" "labeltool" {
