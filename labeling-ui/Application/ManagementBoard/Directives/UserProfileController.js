@@ -95,6 +95,20 @@ class UserProfileController {
      */
     this.createMode = (this.id === 'new');
 
+    /**
+     *
+     * @type {Array}
+     */
+    this.availableRoles = [
+      {id: 'ROLE_LABELER', label: 'Labeler'},
+      {id: 'ROLE_LABEL_COORDINATOR', label: 'Label Coordinator'},
+      {id: 'ROLE_CLIENT_COORDINATOR', label: 'Client + Label Coordinator'},
+      {id: 'ROLE_CLIENT', label: 'Client'},
+      {id: 'ROLE_ADMIN', label: 'Administrator'},
+      {id: 'ROLE_OBSERVER', label: 'Observer'},
+      {id: 'ROLE_SUPER_ADMIN', label: 'SuperAdmin'},
+    ];
+
     // If creator can not add organisations by hand, add new user to creators organisation
     if (!this.userPermissions.canAddUserToAnyOrganisation) {
       this.userOrganisations.push(organisationService.getModel());
@@ -128,7 +142,10 @@ class UserProfileController {
         return;
       }
 
-      this.singleRole = this._singleRoleFilter(user.roles);
+      const singleRole = this._singleRoleFilter(user.roles);
+      this.singleRole = this.availableRoles.filter(
+        role => role.id === singleRole
+      )[0];
     });
   }
 
@@ -288,7 +305,7 @@ class UserProfileController {
   }
 
   _updateRoles() {
-    switch (this.singleRole) {
+    switch (this.singleRole.id) {
       case 'ROLE_ADMIN':
         this.user.roles = ['ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER'];
         break;
@@ -311,7 +328,7 @@ class UserProfileController {
         this.user.roles = ['ROLE_OBSERVER'];
         break;
       default:
-        throw new Error(`Unknown role: ${this.singleRole}`);
+        throw new Error(`Unknown role: ${this.singleRole.id}`);
     }
   }
 
@@ -359,7 +376,7 @@ class UserProfileController {
       this.validation.email = valid = false;
     }
 
-    if (['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER', 'ROLE_CLIENT', 'ROLE_CLIENT_COORDINATOR', 'ROLE_OBSERVER'].indexOf(this.singleRole) === -1) {
+    if (['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER', 'ROLE_CLIENT', 'ROLE_CLIENT_COORDINATOR', 'ROLE_OBSERVER'].indexOf(this.singleRole.id) === -1) {
       this.validation.role = valid = false;
     }
 
