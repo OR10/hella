@@ -106,12 +106,13 @@ class UserProfileController {
       {id: 'ROLE_CLIENT', label: 'Client'},
       {id: 'ROLE_ADMIN', label: 'Administrator'},
       {id: 'ROLE_OBSERVER', label: 'Observer'},
-      {id: 'ROLE_SUPER_ADMIN', label: 'SuperAdmin'},
     ];
 
     // If creator can not add organisations by hand, add new user to creators organisation
     if (!this.userPermissions.canAddUserToAnyOrganisation) {
       this.userOrganisations.push(organisationService.getModel());
+    } else {
+      this.availableRoles.push({id: 'ROLE_SUPER_ADMIN', label: 'SuperAdmin'});
     }
 
     /**
