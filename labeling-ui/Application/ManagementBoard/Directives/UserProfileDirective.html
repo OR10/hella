@@ -41,7 +41,7 @@
                            ng-model="vm.newPasswordValidation" ng-class="{error: !vm.validation.password}">
                 </label>
             </fieldset>
-            <fieldset ng-if="vm.userPermissions.canAddUserToOrganisation">
+            <fieldset ng-if="vm.userPermissions.canAddUserToAnyOrganisation">
                 <legend>Organisations</legend>
                 <table class="table"
                        style="margin-bottom: 2em;">
