@@ -858,11 +858,48 @@ fdescribe('ThingLayer test suite', () => {
   // });
   
   describe('deleteShapeEvent', () => {
+    let thingLayer;
+    let paperGroupShape;
+    let paperShape;
     beforeEach(setupPaperJs);
+    beforeEach(() => {
+      thingLayer = createThingLayerInstance();
+      angularScope.vm.paperThingShapes = [];
+      angularScope.vm.paperGroupShapes = [];
+  
+      const ltgif = {
+        id: 'ltgif_id',
+        labeledThingGroup: {
+          id: 'ltg_id',
+          groupIds: []
+        }
+      };
+      const ltif = {
+        id: 'ltif_id',
+        labeledThing: {
+          id: 'lt_id',
+          groupIds: ['ltg_id']
+        }
+      };
+      paperGroupShape = new PaperGroupShape(ltgif, 'pgs_id', '', true);
+      paperShape = new PaperThingShape(ltif, 'ps_id', '', true);
+  
+      paperShape.deselect = jasmine.createSpy('paperShapeDeselect');
+      paperShape.select = jasmine.createSpy('paperShapeSelect');
+      spyOn(paperShape, 'remove');
+      spyOn(paperGroupShape, 'remove');
+      paperScope.project = jasmine.createSpyObj('paperScope.project', ['getItems']);
+      paperScope.project.getItems.and.returnValue([paperGroupShape, paperShape]);
+  
+      angularScope.vm.selectedPaperShape = paperShape;
+      thingLayer.addPaperGroupShape(paperGroupShape,true);
+      thingLayer.addPaperThingShape(paperShape,true);
+  
+      angularScope.vm.paperThingShapes.push(paperShape);
+      angularScope.vm.paperGroupShapes.push(paperGroupShape);
+    });
     describe('PaperThingShape', () => {
       it('It shows modal window on error', () => {
-        createThingLayerInstance();
-    
         const pss = new PaperThingShape({labeledThingInFrame:{id: 4711}});
         rootScope.$emit('action:delete-shape', pss);
     
@@ -871,41 +908,6 @@ fdescribe('ThingLayer test suite', () => {
         expect(modalService.info).toHaveBeenCalled();
       });
       it('Delete shape from group and delete group when it has only one shape in it', () => {
-  
-        const thing = createThingLayerInstance();
-        angularScope.vm.paperThingShapes = [];
-        angularScope.vm.paperGroupShapes = [];
-  
-        const ltgif = {
-          id: 'ltgif_id',
-          labeledThingGroup: {
-            id: 'ltg_id',
-            groupIds: []
-          }
-        };
-        const ltif = {
-          id: 'ltif_id',
-          labeledThing: {
-            id: 'lt_id',
-            groupIds: ['ltg_id']
-          }
-        };
-        let paperGroupShape = new PaperGroupShape(ltgif, 'pgs_id', '', true);
-        let paperShape = new PaperThingShape(ltif, 'ps_id', '', true);
-  
-        paperShape.deselect = jasmine.createSpy('paperShapeDeselect');
-        paperShape.select = jasmine.createSpy('paperShapeSelect');
-        
-        paperScope.project = jasmine.createSpyObj('paperScope.project', ['getItems']);
-        paperScope.project.getItems.and.returnValue([paperGroupShape, paperShape]);
-        
-        angularScope.vm.selectedPaperShape = paperShape;
-        thing.addPaperGroupShape(paperGroupShape,true);
-        thing.addPaperThingShape(paperShape,true);
-  
-        angularScope.vm.paperThingShapes.push(paperShape);
-        angularScope.vm.paperGroupShapes.push(paperGroupShape);
-  
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
         labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup.and.returnValue(angularQ.resolve());
        
@@ -918,16 +920,49 @@ fdescribe('ThingLayer test suite', () => {
         expect(modalService.info).not.toHaveBeenCalled();
         expect(applicationState.disableAll).toHaveBeenCalled();
         expect(applicationState.enableAll).toHaveBeenCalled();
-        //expect(paperShape.remove).toHaveBeenCalled();
+        expect(paperShape.remove).toHaveBeenCalled();
         expect(angularScope.vm.selectedPaperShape).toBeNull();
         expect(paperScope.view.update).toHaveBeenCalled();
   
       });
+      it('Delete one shape of two from group and keep the group', () => {
+        const ltif = {
+          id: 'ltif_id2',
+          labeledThing: {
+            id: 'lt_id2',
+            groupIds: ['ltg_id']
+          }
+        };
+        const paperShapeKeep = new PaperThingShape(ltif, 'ps_id2', '', true);
+  
+        thingLayer.addPaperThingShape(paperShapeKeep,true);
+  
+        angularScope.vm.paperThingShapes.push(paperShapeKeep);
+       
+        paperShapeKeep.deselect = jasmine.createSpy('paperShapeDeselect');
+        paperShapeKeep.select = jasmine.createSpy('paperShapeSelect');
+        
+        labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
+        labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup.and.returnValue(angularQ.resolve());
+    
+        rootScope.$apply();
+    
+        rootScope.$emit('action:delete-shape', paperShape);
+    
+        rootScope.$apply();
+    
+        expect(modalService.info).not.toHaveBeenCalled();
+        expect(applicationState.disableAll).toHaveBeenCalled();
+        expect(applicationState.enableAll).toHaveBeenCalled();
+        expect(paperShape.remove).toHaveBeenCalled();
+        expect(paperGroupShape.remove).not.toHaveBeenCalled();
+        expect(angularScope.vm.selectedPaperShape).toBeNull();
+        expect(paperScope.view.update).toHaveBeenCalled();
+    
+      });
     });
     describe('PaperGroupShape', () => {
       it('It shows modal window on error', () => {
-        createThingLayerInstance();
-    
         angularScope.vm.paperThingShapes = [];
         const pgs = new PaperGroupShape({labeledThingGroup:{id: 1}});
         rootScope.$emit('action:delete-shape', pgs);
@@ -937,41 +972,6 @@ fdescribe('ThingLayer test suite', () => {
         expect(modalService.info).toHaveBeenCalled();
       });
       it('Delete group', () => {
-        const thing = createThingLayerInstance();
-        angularScope.vm.paperThingShapes = [];
-        angularScope.vm.paperGroupShapes = [];
-  
-        const ltgif = {
-          id: 'ltgif_id',
-          labeledThingGroup: {
-            id: 'ltg_id',
-            groupIds: []
-          }
-        };
-        const ltif = {
-          id: 'ltif_id',
-          spapes: [''],
-          labeledThing: {
-            id: 'lt_id',
-            groupIds: ['ltg_id']
-          }
-        };
-        let paperGroupShape = new PaperGroupShape(ltgif, 'pgs_id', '', true);
-        let paperShape = new PaperThingShape(ltif, 'ps_id', '', true);
-  
-        paperShape.deselect = jasmine.createSpy('paperShapeDeselect');
-        paperShape.select = jasmine.createSpy('paperShapeSelect');
-  
-        paperScope.project = jasmine.createSpyObj('paperScope.project', ['getItems']);
-        paperScope.project.getItems.and.returnValue([paperGroupShape, paperShape]);
-  
-        angularScope.vm.selectedPaperShape = paperShape;
-        thing.addPaperGroupShape(paperGroupShape,true);
-        thing.addPaperThingShape(paperShape,true);
-  
-        angularScope.vm.paperThingShapes.push(paperShape);
-        angularScope.vm.paperGroupShapes.push(paperGroupShape);
-  
         labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup.and.returnValue(angularQ.resolve());
   
         rootScope.$apply();
@@ -983,7 +983,7 @@ fdescribe('ThingLayer test suite', () => {
         expect(modalService.info).not.toHaveBeenCalled();
         expect(applicationState.disableAll).toHaveBeenCalled();
         expect(applicationState.enableAll).toHaveBeenCalled();
-        //expect(paperShape.remove).toHaveBeenCalled();
+        expect(paperGroupShape.remove).toHaveBeenCalled();
         expect(angularScope.vm.selectedPaperShape).toBeNull();
         expect(paperScope.view.update).toHaveBeenCalled();
       });
