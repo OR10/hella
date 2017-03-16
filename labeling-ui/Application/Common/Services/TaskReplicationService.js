@@ -3,14 +3,20 @@
  */
 class TaskReplicationService {
   /**
-   * @param {Logger} logger
+   * @param {LoggerService} loggerService
    * @param {UserGateway} userGateway
    * @param {ReplicationStateService} replicationStateService
    * @param {TimerGateway} timerGateway
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
    */
-  constructor(logger, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService) {
+  constructor(loggerService, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService) {
+    /**
+     * @type {LoggerService}
+     * @private
+     */
+    this._logger = loggerService;
+
     /**
      * @type {UserGateway}
      * @private
