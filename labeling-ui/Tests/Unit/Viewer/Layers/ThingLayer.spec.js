@@ -6,10 +6,18 @@ import ToolAbortedError from 'Application/Viewer/Tools/Errors/ToolAbortedError';
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
 import paper from 'paper';
+import uuid from 'uuid';
+import LabeledThingGroupInFrame from "../../../../Application/LabelingData/Models/LabeledThingGroupInFrame";
+import LabeledThingGroup from "../../../../Application/LabelingData/Models/LabeledThingGroup";
+import LabeledThingInFrame from "../../../../Application/LabelingData/Models/LabeledThingInFrame";
 
 describe('ThingLayer test suite', () => {
   let injector;
-  let scope;
+  let angularScope;
+  let paperScope;
+  let rootScope;
+  let angularQ;
+  let deferred;
   let drawingContext;
   let task;
 
@@ -18,6 +26,10 @@ describe('ThingLayer test suite', () => {
   let toolService;
   let viewerMouseCursorService;
   let timeoutService;
+  let applicationState;
+  let modalService;
+  let labeledThingGateway;
+  let labeledThingGroupGateway;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -29,29 +41,44 @@ describe('ThingLayer test suite', () => {
 
     viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['setMouseCursor']);
     $provide.service('viewerMouseCursorService', () => viewerMouseCursorService);
-
+  
+    paperScope = jasmine.createSpy('paperScope');
+    paperScope.view = jasmine.createSpyObj('scope.view', ['update']);
+    
     drawingContext = jasmine.createSpyObj('drawingContext', ['withScope', 'setup']);
-    drawingContext.withScope.and.callFake(callback => callback(scope));
+    drawingContext.withScope.and.callFake(callback => callback(paperScope));
 
     timeoutService = jasmine.createSpy('$timeout');
+    
+    applicationState = jasmine.createSpyObj('applicationState', ['disableAll', 'enableAll']);
+    
+    modalService = jasmine.createSpyObj('modalService', ['info']);
+  
+    labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['deleteLabeledThing']);
+  
+    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['unassignLabeledThingsToLabeledThingGroup', 'deleteLabeledThingGroup']);
   }));
 
-  beforeEach(inject(($injector, $rootScope) => {
+  beforeEach(inject(($injector, $rootScope, $q) => {
     injector = $injector;
 
     task = {
       minimalVisibleShapeOverflow: null,
     };
-
-    scope = $rootScope.$new();
-    scope.view = jasmine.createSpyObj('scope.view', ['update']);
-    scope.vm = { task: task };
+    angularQ = $q;
+    rootScope = $rootScope;
+    deferred = $q.defer();
+    
+    angularScope = $rootScope.$new();
+    angularScope.vm = { task: task };
+    
   }));
 
   function createThingLayerInstance() {
     const framePosition = jasmine.createSpyObj('framePosition', ['beforeFrameChangeAlways', 'afterFrameChangeAlways']);
 
-    return new ThingLayer(0, 0, scope, injector, drawingContext, toolService, null, loggerService, timeoutService, framePosition, viewerMouseCursorService);
+    return new ThingLayer(0, 0, angularScope, injector, drawingContext, toolService, null, loggerService, timeoutService,
+        framePosition, viewerMouseCursorService, null, applicationState, modalService, labeledThingGateway, labeledThingGroupGateway);
   }
 
   function setupPaperJs() {
@@ -67,33 +94,33 @@ describe('ThingLayer test suite', () => {
 
     describe('Collection watchers', () => {
       beforeEach(() => {
-        spyOn(scope, '$watchCollection');
+        spyOn(angularScope, '$watchCollection');
       });
 
       it('watches the vm.paperGroupShapes collection', () => {
         createThingLayerInstance();
-        expect(scope.$watchCollection).toHaveBeenCalledWith('vm.paperGroupShapes', jasmine.any(Function));
+        expect(angularScope.$watchCollection).toHaveBeenCalledWith('vm.paperGroupShapes', jasmine.any(Function));
       });
 
       it('watches the vm.paperGroupShapes collection', () => {
         createThingLayerInstance();
-        expect(scope.$watchCollection).toHaveBeenCalledWith('vm.paperThingShapes', jasmine.any(Function));
+        expect(angularScope.$watchCollection).toHaveBeenCalledWith('vm.paperThingShapes', jasmine.any(Function));
       });
     });
 
     describe('Normal watchers', () => {
       beforeEach(() => {
-        spyOn(scope, '$watch');
+        spyOn(angularScope, '$watch');
       });
 
       it('watches vm.hideLabeledThingsInFrame', () => {
         createThingLayerInstance();
-        expect(scope.$watch).toHaveBeenCalledWith('vm.hideLabeledThingsInFrame', jasmine.any(Function));
+        expect(angularScope.$watch).toHaveBeenCalledWith('vm.hideLabeledThingsInFrame', jasmine.any(Function));
       });
 
       it('watches vm.selectedPaperShape', () => {
         createThingLayerInstance();
-        expect(scope.$watch).toHaveBeenCalledWith('vm.selectedPaperShape', jasmine.any(Function));
+        expect(angularScope.$watch).toHaveBeenCalledWith('vm.selectedPaperShape', jasmine.any(Function));
       });
     });
   });
@@ -118,7 +145,7 @@ describe('ThingLayer test suite', () => {
 
     thing.dispatchDOMEvent(event);
 
-    expect(scope.view.update).toHaveBeenCalled();
+    expect(paperScope.view.update).toHaveBeenCalled();
   });
 
   // xdescribe('vm.paperGroupShapes watcher', () => {
@@ -161,9 +188,9 @@ describe('ThingLayer test suite', () => {
     });
 
     it('sets scope.tool to null', () => {
-      expect(scope.tool).toBeUndefined();
+      expect(paperScope.tool).toBeUndefined();
       thing.activateTool('zoomIn');
-      expect(scope.tool).toBeNull();
+      expect(paperScope.tool).toBeNull();
     });
 
     it('resets possible mouse cursor left-overs', () => {
@@ -273,7 +300,7 @@ describe('ThingLayer test suite', () => {
             paperThingShape = new PaperThingShape();
             invokeThenParams.paperShape = paperThingShape;
 
-            scope.vm.paperThingShapes = [];
+            angularScope.vm.paperThingShapes = [];
           });
 
           it('emits thing:create when the Shape is a PaperThingShape', () => {
@@ -287,13 +314,13 @@ describe('ThingLayer test suite', () => {
           it('adds the shape to the paperThingShapes array', () => {
             thing.activateTool('multi', selectedLabelStructureThing);
 
-            expect(scope.vm.paperThingShapes).toEqual([paperThingShape]);
+            expect(angularScope.vm.paperThingShapes).toEqual([paperThingShape]);
           });
 
           it('sets the shape as selected shape', () => {
             thing.activateTool('multi', selectedLabelStructureThing);
 
-            expect(scope.vm.selectedPaperShape).toBe(paperThingShape);
+            expect(angularScope.vm.selectedPaperShape).toBe(paperThingShape);
           });
         });
 
@@ -304,7 +331,7 @@ describe('ThingLayer test suite', () => {
             paperGroupShape = new PaperGroupShape();
             invokeThenParams.paperShape = paperGroupShape;
 
-            scope.vm.paperGroupShapes = [];
+            angularScope.vm.paperGroupShapes = [];
           });
 
           it('emits group:create when the Shape is a PaperThingShape', () => {
@@ -318,13 +345,13 @@ describe('ThingLayer test suite', () => {
           it('adds the shape to the paperGroupShapes array', () => {
             thing.activateTool('multi', selectedLabelStructureThing);
 
-            expect(scope.vm.paperGroupShapes).toEqual([paperGroupShape]);
+            expect(angularScope.vm.paperGroupShapes).toEqual([paperGroupShape]);
           });
 
           it('sets the shape as selected shape', () => {
             thing.activateTool('multi', selectedLabelStructureThing);
 
-            expect(scope.vm.selectedPaperShape).toBe(paperGroupShape);
+            expect(angularScope.vm.selectedPaperShape).toBe(paperGroupShape);
           });
         });
 
@@ -360,7 +387,7 @@ describe('ThingLayer test suite', () => {
         it('it sets the paperShape as selectedPaperShape', () => {
           thing.activateTool('multi', selectedLabelStructureThing);
 
-          expect(scope.vm.selectedPaperShape).toBe(paperShape);
+          expect(angularScope.vm.selectedPaperShape).toBe(paperShape);
         });
 
         it('runs a timeout for angular $digest reasons', () => {
@@ -422,7 +449,7 @@ describe('ThingLayer test suite', () => {
       expect(thing.addPaperThingShape).toHaveBeenCalledWith(firstPaperShape, false);
       expect(thing.addPaperThingShape).toHaveBeenCalledWith(secondPaperShape, false);
       expect(thing.addPaperThingShape).toHaveBeenCalledWith(thirdPaperShape, false);
-      expect(scope.view.update).toHaveBeenCalledTimes(1);
+      expect(paperScope.view.update).toHaveBeenCalledTimes(1);
     });
 
     it('calls addPaperThingShape for every shape, not updating the view', () => {
@@ -434,7 +461,7 @@ describe('ThingLayer test suite', () => {
       expect(thing.addPaperThingShape).toHaveBeenCalledWith(firstPaperShape, false);
       expect(thing.addPaperThingShape).toHaveBeenCalledWith(secondPaperShape, false);
       expect(thing.addPaperThingShape).toHaveBeenCalledWith(thirdPaperShape, false);
-      expect(scope.view.update).not.toHaveBeenCalled();
+      expect(paperScope.view.update).not.toHaveBeenCalled();
     });
   });
 
@@ -464,7 +491,7 @@ describe('ThingLayer test suite', () => {
       expect(thing.addPaperGroupShape).toHaveBeenCalledWith(firstGroupShape, false);
       expect(thing.addPaperGroupShape).toHaveBeenCalledWith(secondGroupShape, false);
       expect(thing.addPaperGroupShape).toHaveBeenCalledWith(thirdGroupShape, false);
-      expect(scope.view.update).toHaveBeenCalledTimes(1);
+      expect(paperScope.view.update).toHaveBeenCalledTimes(1);
     });
 
     it('calls addPaperGroupShape for every shape, not updating the view', () => {
@@ -476,7 +503,7 @@ describe('ThingLayer test suite', () => {
       expect(thing.addPaperGroupShape).toHaveBeenCalledWith(firstGroupShape, false);
       expect(thing.addPaperGroupShape).toHaveBeenCalledWith(secondGroupShape, false);
       expect(thing.addPaperGroupShape).toHaveBeenCalledWith(thirdGroupShape, false);
-      expect(scope.view.update).not.toHaveBeenCalled();
+      expect(paperScope.view.update).not.toHaveBeenCalled();
     });
   });
 
@@ -492,7 +519,7 @@ describe('ThingLayer test suite', () => {
 
       thing.addPaperThingShape(paperShape);
 
-      expect(scope.view.update).toHaveBeenCalled();
+      expect(paperScope.view.update).toHaveBeenCalled();
     });
 
     it('does not update the view', () => {
@@ -501,7 +528,7 @@ describe('ThingLayer test suite', () => {
 
       thing.addPaperThingShape(paperShape, updateView);
 
-      expect(scope.view.update).not.toHaveBeenCalled();
+      expect(paperScope.view.update).not.toHaveBeenCalled();
     });
 
     describe('do not set the shape as selected shape', () => {
@@ -516,8 +543,8 @@ describe('ThingLayer test suite', () => {
 
         thing.addPaperThingShape(paperShape, updateView);
 
-        expect(scope.vm.selectedPaperShape).toBeUndefined();
-        expect(scope.view.update).not.toHaveBeenCalled();
+        expect(angularScope.vm.selectedPaperShape).toBeUndefined();
+        expect(paperScope.view.update).not.toHaveBeenCalled();
       });
 
       it('updates the view', () => {
@@ -525,8 +552,8 @@ describe('ThingLayer test suite', () => {
 
         thing.addPaperThingShape(paperShape, updateView);
 
-        expect(scope.vm.selectedPaperShape).toBeUndefined();
-        expect(scope.view.update).toHaveBeenCalled();
+        expect(angularScope.vm.selectedPaperShape).toBeUndefined();
+        expect(paperScope.view.update).toHaveBeenCalled();
       });
     });
 
@@ -543,8 +570,8 @@ describe('ThingLayer test suite', () => {
 
         thing.addPaperThingShape(paperShape, updateView, isSelected);
 
-        expect(scope.vm.selectedPaperShape).toBe(paperShape);
-        expect(scope.view.update).not.toHaveBeenCalled();
+        expect(angularScope.vm.selectedPaperShape).toBe(paperShape);
+        expect(paperScope.view.update).not.toHaveBeenCalled();
       });
 
       it('updates the view', () => {
@@ -552,8 +579,8 @@ describe('ThingLayer test suite', () => {
 
         thing.addPaperThingShape(paperShape, updateView, isSelected);
 
-        expect(scope.vm.selectedPaperShape).toBe(paperShape);
-        expect(scope.view.update).toHaveBeenCalled();
+        expect(angularScope.vm.selectedPaperShape).toBe(paperShape);
+        expect(paperScope.view.update).toHaveBeenCalled();
       });
     });
 
@@ -577,7 +604,7 @@ describe('ThingLayer test suite', () => {
           },
         };
 
-        scope.vm.selectedPaperShape = previousPaperShape;
+        angularScope.vm.selectedPaperShape = previousPaperShape;
       });
 
       describe('set the shape as selected shape, if this shape was selected in a previous frame', () => {
@@ -586,8 +613,8 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperThingShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
-          expect(scope.view.update).toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(paperScope.view.update).toHaveBeenCalled();
         });
 
         it('does not update the view', () => {
@@ -595,14 +622,14 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperThingShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
-          expect(scope.view.update).not.toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(paperScope.view.update).not.toHaveBeenCalled();
         });
       });
 
       describe('keeps the shape as selected shape, if it is the same shape', () => {
         beforeEach(() => {
-          scope.vm.selectedPaperShape = currentPaperShape;
+          angularScope.vm.selectedPaperShape = currentPaperShape;
         });
 
         it('updates the view', () => {
@@ -610,8 +637,8 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperThingShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
-          expect(scope.view.update).toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(paperScope.view.update).toHaveBeenCalled();
         });
 
         it('does not update the view', () => {
@@ -619,8 +646,8 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperThingShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
-          expect(scope.view.update).not.toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(paperScope.view.update).not.toHaveBeenCalled();
         });
       });
 
@@ -634,8 +661,8 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperThingShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(previousPaperShape);
-          expect(scope.view.update).toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(previousPaperShape);
+          expect(paperScope.view.update).toHaveBeenCalled();
         });
 
         it('does not update the view', () => {
@@ -643,8 +670,8 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperThingShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(previousPaperShape);
-          expect(scope.view.update).not.toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(previousPaperShape);
+          expect(paperScope.view.update).not.toHaveBeenCalled();
         });
       });
     });
@@ -662,7 +689,7 @@ describe('ThingLayer test suite', () => {
 
       thing.addPaperGroupShape(groupShape);
 
-      expect(scope.view.update).toHaveBeenCalled();
+      expect(paperScope.view.update).toHaveBeenCalled();
     });
 
     it('does not update the view', () => {
@@ -671,7 +698,7 @@ describe('ThingLayer test suite', () => {
 
       thing.addPaperGroupShape(groupShape, updateView);
 
-      expect(scope.view.update).not.toHaveBeenCalled();
+      expect(paperScope.view.update).not.toHaveBeenCalled();
     });
 
     describe('do not set group shape as selected shape', () => {
@@ -686,8 +713,8 @@ describe('ThingLayer test suite', () => {
 
         thing.addPaperGroupShape(groupShape, updateView);
 
-        expect(scope.vm.selectedPaperShape).toBeUndefined();
-        expect(scope.view.update).not.toHaveBeenCalled();
+        expect(angularScope.vm.selectedPaperShape).toBeUndefined();
+        expect(paperScope.view.update).not.toHaveBeenCalled();
       });
 
       it('updates the view', () => {
@@ -695,8 +722,8 @@ describe('ThingLayer test suite', () => {
 
         thing.addPaperGroupShape(groupShape, updateView);
 
-        expect(scope.vm.selectedPaperShape).toBeUndefined();
-        expect(scope.view.update).toHaveBeenCalled();
+        expect(angularScope.vm.selectedPaperShape).toBeUndefined();
+        expect(paperScope.view.update).toHaveBeenCalled();
       });
     });
 
@@ -713,8 +740,8 @@ describe('ThingLayer test suite', () => {
 
         thing.addPaperGroupShape(groupShape, updateView, isSelected);
 
-        expect(scope.vm.selectedPaperShape).toBe(groupShape);
-        expect(scope.view.update).not.toHaveBeenCalled();
+        expect(angularScope.vm.selectedPaperShape).toBe(groupShape);
+        expect(paperScope.view.update).not.toHaveBeenCalled();
       });
 
       it('updates the view', () => {
@@ -722,8 +749,8 @@ describe('ThingLayer test suite', () => {
 
         thing.addPaperGroupShape(groupShape, updateView, isSelected);
 
-        expect(scope.vm.selectedPaperShape).toBe(groupShape);
-        expect(scope.view.update).toHaveBeenCalled();
+        expect(angularScope.vm.selectedPaperShape).toBe(groupShape);
+        expect(paperScope.view.update).toHaveBeenCalled();
       });
     });
 
@@ -747,7 +774,7 @@ describe('ThingLayer test suite', () => {
           },
         };
 
-        scope.vm.selectedPaperShape = previousPaperShape;
+        angularScope.vm.selectedPaperShape = previousPaperShape;
       });
 
       describe('set the group shape as selected shape, if this shape was selected in a previous frame', () => {
@@ -756,8 +783,8 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperGroupShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
-          expect(scope.view.update).toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(paperScope.view.update).toHaveBeenCalled();
         });
 
         it('does not update the view', () => {
@@ -765,14 +792,14 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperGroupShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
-          expect(scope.view.update).not.toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(paperScope.view.update).not.toHaveBeenCalled();
         });
       });
 
       describe('keeps the group shape as selected shape, if it is the same shape', () => {
         beforeEach(() => {
-          scope.vm.selectedPaperShape = currentPaperShape;
+          angularScope.vm.selectedPaperShape = currentPaperShape;
         });
 
         it('updates the view', () => {
@@ -780,8 +807,8 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperGroupShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
-          expect(scope.view.update).toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(paperScope.view.update).toHaveBeenCalled();
         });
 
         it('does not update the view', () => {
@@ -789,8 +816,8 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperGroupShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(currentPaperShape);
-          expect(scope.view.update).not.toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(currentPaperShape);
+          expect(paperScope.view.update).not.toHaveBeenCalled();
         });
       });
 
@@ -804,8 +831,8 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperGroupShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(previousPaperShape);
-          expect(scope.view.update).toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(previousPaperShape);
+          expect(paperScope.view.update).toHaveBeenCalled();
         });
 
         it('does not update the view', () => {
@@ -813,23 +840,25 @@ describe('ThingLayer test suite', () => {
 
           thing.addPaperGroupShape(currentPaperShape, updateView);
 
-          expect(scope.vm.selectedPaperShape).toBe(previousPaperShape);
-          expect(scope.view.update).not.toHaveBeenCalled();
+          expect(angularScope.vm.selectedPaperShape).toBe(previousPaperShape);
+          expect(paperScope.view.update).not.toHaveBeenCalled();
         });
       });
     });
   });
+  
 
   describe('#update', () => {
     it('updates the view', () => {
       const thingLayer = createThingLayerInstance();
       thingLayer.update();
-      expect(scope.view.update).toHaveBeenCalled();
+      expect(paperScope.view.update).toHaveBeenCalled();
     });
   });
 
   // xdescribe('#removePaperShapes()', () => {
   // });
+  
 
   describe('#attachToDom()', () => {
     let element;
@@ -837,14 +866,14 @@ describe('ThingLayer test suite', () => {
 
     beforeEach(() => {
       element = '<p></p>';
-
-      scope.project = {
+  
+      paperScope.project = {
         activeLayer: {},
       };
-
-      scope.settings = {};
-
-      scope.Color = jasmine.createSpy('scope.Color');
+  
+      paperScope.settings = {};
+  
+      paperScope.Color = jasmine.createSpy('scope.Color');
 
       spyOn(angular, 'element').and.callFake(() => {
         angularElement = jasmine.createSpyObj('angular.element', ['on']);
@@ -874,13 +903,13 @@ describe('ThingLayer test suite', () => {
 
     it('makes the selection color transparent', () => {
       const selectedColor = {some: 'color'};
-      scope.Color.and.returnValue(selectedColor);
+      paperScope.Color.and.returnValue(selectedColor);
 
       const thingLayer = createThingLayerInstance();
       thingLayer.attachToDom(element);
 
-      expect(scope.project.activeLayer.selectedColor).toBe(selectedColor);
-      expect(scope.settings.handleSize).toEqual(8);
+      expect(paperScope.project.activeLayer.selectedColor).toBe(selectedColor);
+      expect(paperScope.settings.handleSize).toEqual(8);
     });
   });
 });
