@@ -75,6 +75,15 @@ class CurrentUserService {
 
     return this._organisations;
   }
+
+  /**
+   * Get the info whether the current user is a super admin or not
+   *
+   * @returns {boolean}
+   */
+  isSuperAdmin() {
+    return (this.get().roles.indexOf('ROLE_SUPER_ADMIN') !== -1);
+  }
 }
 
 export default CurrentUserService;

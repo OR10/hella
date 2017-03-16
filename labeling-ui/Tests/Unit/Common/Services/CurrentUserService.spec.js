@@ -14,7 +14,7 @@ describe('CurrentUserService specs', () => {
         currentUserService.get();
       }
 
-      expect(throwWrapper).toThrow();
+      expect(throwWrapper).toThrowError();
     });
 
     it('returns what is set', () => {
@@ -34,7 +34,7 @@ describe('CurrentUserService specs', () => {
         currentUserService.getPermissions();
       }
 
-      expect(throwWrapper).toThrow();
+      expect(throwWrapper).toThrowError();
     });
 
     it('returns the permissions that are set', () => {
@@ -54,7 +54,7 @@ describe('CurrentUserService specs', () => {
         currentUserService.getOrganisations();
       }
 
-      expect(throwWrapper).toThrow();
+      expect(throwWrapper).toThrowError();
     });
 
     it('returns the organisations that are set', () => {
@@ -63,6 +63,41 @@ describe('CurrentUserService specs', () => {
       currentUserService.setOrganisations(organisations);
       const returnedOrganisations = currentUserService.getOrganisations();
       expect(returnedOrganisations).toBe(organisations);
+    });
+  });
+
+  describe('isSuperAdmin', () => {
+    it('throws false by default (because there is no user set)', () => {
+      const currentUserService = new CurrentUserService();
+      const throwWrapper = function() {
+        currentUserService.isSuperAdmin();
+      }
+
+      expect(throwWrapper).toThrowError();
+    });
+
+    it('returns false if the set user does not have the super admin role', () => {
+      const user = {
+        roles: ['LABELER', 'ADMIN'],
+      };
+      const currentUserService = new CurrentUserService();
+      currentUserService.set(user);
+
+      const isSuperAdmin = currentUserService.isSuperAdmin();
+
+      expect(isSuperAdmin).toBe(false);
+    });
+
+    it('returns true if the set user has the super admin role', () => {
+      const user = {
+        roles: ['LABELER', 'ADMIN', 'ROLE_SUPER_ADMIN'],
+      };
+      const currentUserService = new CurrentUserService();
+      currentUserService.set(user);
+
+      const isSuperAdmin = currentUserService.isSuperAdmin();
+
+      expect(isSuperAdmin).toBe(true);
     });
   });
 });

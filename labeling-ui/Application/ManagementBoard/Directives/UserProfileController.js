@@ -13,7 +13,7 @@ class UserProfileController {
    * @param {OrganisationService} organisationService
    * @param {SingleRoleFilter} singleRoleFilter
    * @param {ModalService} modalService
-   * @param {UserService} currentUserService
+   * @param {CurrentUserService} currentUserService
    */
   constructor($scope, $q, $state, userGateway, organisationGateway, organisationService, singleRoleFilter, modalService, currentUserService) {
     if (this.readonly === undefined) {
@@ -97,9 +97,9 @@ class UserProfileController {
     this.createMode = (this.id === 'new');
 
     /**
-     * @type {UserService}
+     * @type {CurrentUserService}
      */
-    this.userService = currentUserService;
+    this.currentUserService = currentUserService;
 
     /**
      *
@@ -117,7 +117,10 @@ class UserProfileController {
     // If creator can not add organisations by hand, add new user to creators organisation
     if (!this.userPermissions.canAddUserToAnyOrganisation) {
       this.userOrganisations.push(organisationService.getModel());
-    } else {
+    }
+
+    // If the currently looged in user is a super admin, he is allowed to see the super admin role
+    if (this.currentUserService.isSuperAdmin()) {
       this.availableRoles.push({id: 'ROLE_SUPER_ADMIN', label: 'SuperAdmin'});
     }
 
