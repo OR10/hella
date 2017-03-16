@@ -13,8 +13,9 @@ class UserProfileController {
    * @param {OrganisationService} organisationService
    * @param {SingleRoleFilter} singleRoleFilter
    * @param {ModalService} modalService
+   * @param {UserService} currentUserService
    */
-  constructor($scope, $q, $state, userGateway, organisationGateway, organisationService, singleRoleFilter, modalService) {
+  constructor($scope, $q, $state, userGateway, organisationGateway, organisationService, singleRoleFilter, modalService, currentUserService) {
     if (this.readonly === undefined) {
       this.readonly = true;
     }
@@ -94,6 +95,11 @@ class UserProfileController {
      * @type {boolean}
      */
     this.createMode = (this.id === 'new');
+
+    /**
+     * @type {UserService}
+     */
+    this.userService = currentUserService;
 
     /**
      *
@@ -415,6 +421,7 @@ UserProfileController.$inject = [
   'organisationService',
   'singleRoleFilter',
   'modalService',
+  'currentUserService',
 ];
 
 export default UserProfileController;
