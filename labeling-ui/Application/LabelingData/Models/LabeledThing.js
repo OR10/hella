@@ -8,7 +8,7 @@ import LabeledObject from './LabeledObject';
  */
 class LabeledThing extends LabeledObject {
   /**
-   * @param {{id: string, classes: Array.<string>, incomplete: boolean, task: Task, frameRange: FrameRange, lineColor: string, projectId: string}} labeledThing
+   * @param {{id: string, classes: Array.<string>, incomplete: boolean, task: Task, frameRange: FrameRange, lineColor: string, projectId: string, groupIds: Array.<string>}} labeledThing
    */
   constructor(labeledThing) {
     super(labeledThing);
