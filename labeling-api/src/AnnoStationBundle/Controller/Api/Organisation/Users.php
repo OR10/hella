@@ -81,7 +81,6 @@ class Users extends Controller\Base
                 'lastLogin' => $user->getLastLogin(),
                 'locked'    => $user->isLocked(),
                 'roles'     => $user->getRoles(),
-                'roles'     => $user->getRoles(),
                 'expired'   => $user->isExpired(),
                 'expiresAt' => $user->getExpiresAt() ? $user->getExpiresAt()->format('c') : null,
             );
