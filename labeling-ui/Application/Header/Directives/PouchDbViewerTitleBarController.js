@@ -90,7 +90,7 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
   _pullChangesFromBackend() {
     const context = this._pouchDbContextService.provideContextForTaskId(this.task.id);
     this._pouchDbSyncManager.stopReplicationsForContext(context);
-    return this._pouchDbSyncManager.pushUpdatesForContext(context);
+    return this._pouchDbSyncManager.pullUpdatesForContext(context);
   }
 
   /**
