@@ -1,5 +1,6 @@
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
+import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup';
 
 import {cloneDeep} from 'lodash';
 
@@ -21,6 +22,7 @@ class CouchDbModelSerializer {
     this._modelClassToDocumentTypeMapping = new Map([
       [LabeledThing, CouchDbModelSerializer.TYPE_LABELED_THING],
       [LabeledThingInFrame, CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME],
+      [LabeledThingGroup, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP],
     ]);
   }
 
