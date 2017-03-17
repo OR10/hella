@@ -71,7 +71,7 @@ describe('CurrentUserService specs', () => {
       const currentUserService = new CurrentUserService();
       const throwWrapper = function() {
         currentUserService.isSuperAdmin();
-      }
+      };
 
       expect(throwWrapper).toThrowError();
     });
