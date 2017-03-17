@@ -728,7 +728,11 @@ class ViewerController {
       this._$timeout,
       this.framePosition,
       this._viewerMouseCursorService,
-      this._labeledThingGroupService
+      this._labeledThingGroupService,
+      this._applicationState,
+      this._modalService,
+      this._labeledThingGateway,
+      this._labeledThingGroupGateway
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);

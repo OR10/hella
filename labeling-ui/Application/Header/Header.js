@@ -1,5 +1,6 @@
 import Module from '../Module';
 import ViewerTitleBarDirective from './Directives/ViewerTitleBarDirective';
+import PouchDbViewerTitleBarDirective from './Directives/PouchDbViewerTitleBarDirective';
 import TaskTitleDirective from './Directives/TaskTitleDirective';
 import TimerDirective from './Directives/TimerDirective';
 import BadgeDirective from './Directives/BadgeDirective';
@@ -33,6 +34,7 @@ class Header extends Module {
 
     if (featureFlags.pouchdb === true) {
       this.module.service('timerGateway', PouchDbTimerGateway);
+      this.registerDirective('viewerTitleBar', PouchDbViewerTitleBarDirective);
     }
   }
 }
