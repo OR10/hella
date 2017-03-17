@@ -107,6 +107,34 @@ class PouchDbSyncManager {
     return promise;
   }
 
+
+  /**
+   * Initiate uni-directional one-shot replication for database.
+   *
+   * The data flow is directed from the frontend to the backend (push).
+   *
+   * @param {PouchDB} context
+   * @return {Promise.<Event>}
+   */
+  pushUpdatesForContext(context) {
+    if (this._replicationPromiseCache.has(context, 'one-shot', 'push')) {
+      return this._replicationPromiseCache.get(context, 'one-shot', 'push');
+    }
+
+    const promise = this._$q.resolve()
+      .then(() => this._getReplicationTargetForContext(context))
+      .then(replicationTarget => this._getRemoteDbPushReplication(context, replicationTarget));
+
+    this._removeFromPromiseCacheWhenCompleted(promise, context, 'one-shot', 'push');
+
+    // We need to store the promise here, before we even start any lookup. Otherwise we might have race
+    // condition, between the lookup of the replication target and a second attempt to request "start" the
+    // replication.
+    this._replicationPromiseCache.set(context, 'one-shot', 'push', promise);
+
+    return promise;
+  }
+
   /**
    * Start a bi-directional continuous replication for the given context
    *
