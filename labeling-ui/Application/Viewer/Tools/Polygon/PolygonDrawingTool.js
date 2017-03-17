@@ -1,15 +1,13 @@
-import paper from 'paper';
-import CreationTool from '../CreationTool';
-import PaperPolygon from '../../Shapes/PaperPolygon';
-import NotModifiedError from '../Errors/NotModifiedError';
+import PaperPolygon from "../../Shapes/PaperPolyline";
+import PathDrawingTool from "../PathDrawingTool";
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
  *
- * @extends DrawingTool
+ * @extends PathDrawingTool
  * @implements ToolEvents
  */
-class PolygonDrawingTool extends CreationTool {
+class PolygonDrawingTool extends PathDrawingTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {$rootScope.Scope} $rootScope
@@ -20,183 +18,7 @@ class PolygonDrawingTool extends CreationTool {
    * @param {HierarchyCreationService} hierarchyCreationService
    */
   constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
-    super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
-
-    /**
-     * @type {EntityIdService}
-     * @private
-     */
-    this._entityIdService = entityIdService;
-
-    /**
-     * @type {EntityColorService}
-     * @private
-     */
-    this._entityColorService = entityColorService;
-
-    /**
-     * @type {PaperPolygon}
-     * @private
-     */
-    this._polyline = null;
-
-    /**
-     * @type {paper.Point|null}
-     * @private
-     */
-    this._startPosition = null;
-
-    this._inProgress = false;
-  }
-
-  /**
-   * @param {CreationToolActionStruct} toolActionStruct
-   * @return {Promise}
-   */
-  invokeShapeCreation(toolActionStruct) {
-    this._polyline = null;
-    this._startPosition = null;
-    this._inProgress = false;
-
-    return super.invokeShapeCreation(toolActionStruct);
-  }
-
-  /**
-   * @param {CreationToolActionStruct} toolActionStruct
-   * @return {Promise.<PaperShape>}
-   */
-  invokeDefaultShapeCreation(toolActionStruct) {
-    super.invokeDefaultShapeCreation(toolActionStruct);
-    const {video} = toolActionStruct;
-
-    const center = new paper.Point(
-      video.metaData.width / 2,
-      video.metaData.height / 2
-    );
-
-    const points = [
-      new paper.Point(center.x + 50, center.y),
-      new paper.Point(center.x, center.y + 50),
-      new paper.Point(center.x - 50, center.y),
-      new paper.Point(center.x, center.y - 50),
-    ];
-    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
-
-    let polygon = null;
-    this._context.withScope(() => {
-      polygon = new PaperPolygon(
-        labeledThingInFrame,
-        this._entityIdService.getUniqueId(),
-        points,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-        true
-      );
-    });
-
-    return this._complete(polygon);
-  }
-
-  /**
-   * @param {paper.Event} event
-   */
-  onMouseDown(event) {
-    const point = event.point;
-    const {minHandles, maxHandles} = this._getHandleCountRestrictions();
-
-    if (this._startPosition && event.event.button === 2) {
-      if (this._polyline && this._polyline.points.length < minHandles) {
-        this._polyline.remove();
-        this._$rootScope.$emit('drawingtool:exception', `To few points! You need to set at least ${minHandles} points to create this shape.`);
-        return;
-      }
-      this._complete(this._polyline);
-      return;
-    }
-
-    if (this._polyline && this._polyline.points.length > maxHandles) {
-      this._$rootScope.$emit('drawingtool:exception', `To many points! You are only allowed to create up to ${maxHandles} points in this shape. The shape create process was finished and the shape is created!`);
-      this._complete(this._polyline);
-      return;
-    }
-
-    if (this._polyline) {
-      this._polyline.addPoint(point);
-      return;
-    }
-
-    this._startPosition = point;
-  }
-
-  /**
-   * @param {paper.Event} event
-   */
-  onMouseDrag(event) {
-    // Abort drag handling if shape drawing is in progress
-    if (this._inProgress) {
-      return;
-    }
-    const point = event.point;
-
-    if (this._polyline) {
-      this._polyline.setSecondPoint(point);
-    } else {
-      this._startShape(this._startPosition, point);
-    }
-  }
-
-  /**
-   * @param {paper.Event} event
-   */
-  onMouseUp() {
-    // Polygon wasn't created. It was only clicked to the canvas.
-    if (this._polyline === null) {
-      this._reject(new NotModifiedError('No Polygon was created/dragged.'));
-      return;
-    }
-    this._inProgress = true;
-  }
-
-  /**
-   * Abort the tool invocation.
-   */
-  abort() {
-    if (this._polyline !== null) {
-      this._polyline.remove();
-    }
-
-    return super.abort();
-  }
-
-
-  /**
-   * @param {paper.Point} from
-   * @param {paper.Point} to
-   * @private
-   */
-  _startShape(from, to) {
-    const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
-
-    this._context.withScope(() => {
-      this._polyline = new PaperPolygon(
-        labeledThingInFrame,
-        this._entityIdService.getUniqueId(),
-        [from, to],
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-        true
-      );
-    });
-  }
-
-  /**
-   * @returns {{minHandles: number, maxHandles: number}}
-   * @private
-   */
-  _getHandleCountRestrictions() {
-    let {minHandles, maxHandles} = this._toolActionStruct.options;
-    minHandles = minHandles !== undefined ? minHandles : 3;
-    maxHandles = maxHandles !== undefined ? maxHandles : 15;
-
-    return {minHandles, maxHandles};
+    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, PaperPolygon.getClass());
   }
 }
 
