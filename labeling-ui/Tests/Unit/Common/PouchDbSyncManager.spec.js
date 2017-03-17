@@ -497,6 +497,68 @@ describe('PouchDbSyncManager', () => {
       expect(secondContextReplicateFromPromise.cancel).not.toHaveBeenCalled();
       expect(secondContextReplicateToPromise.cancel).not.toHaveBeenCalled();
     });
+
+    it('returns a promise that does not resolve if only no replication is cancelled', done => {
+      contextReplicateFromPromise.cancel.and.stub();
+      contextReplicateToPromise.cancel.and.stub();
+
+      syncManager.pullUpdatesForContext(context);
+      syncManager.pushUpdatesForContext(context);
+      syncManager.startDuplexLiveReplication(context);
+      rootScope.$apply();
+
+      const stopPromise = syncManager.stopReplicationsForContext(context);
+      stopPromise.then(() => {
+        done.fail('Promise should not have been resolved');
+      });
+      rootScope.$apply();
+      done();
+    });
+
+    it('returns a promise that does not resolve if only push replications are cancelled', done => {
+      contextReplicateToPromise.cancel.and.stub();
+
+      syncManager.pullUpdatesForContext(context);
+      syncManager.pushUpdatesForContext(context);
+      syncManager.startDuplexLiveReplication(context);
+      rootScope.$apply();
+
+      const stopPromise = syncManager.stopReplicationsForContext(context);
+      stopPromise.then(() => {
+        done.fail('Promise should not have been resolved');
+      });
+      rootScope.$apply();
+      done();
+    });
+
+    it('returns a promise that does not resolve if only pull replications are cancelled', done => {
+      contextReplicateFromPromise.cancel.and.stub();
+
+      syncManager.pullUpdatesForContext(context);
+      syncManager.pushUpdatesForContext(context);
+      syncManager.startDuplexLiveReplication(context);
+      rootScope.$apply();
+
+      const stopPromise = syncManager.stopReplicationsForContext(context);
+      stopPromise.then(() => {
+        done.fail('Promise should not have been resolved');
+      });
+      rootScope.$apply();
+      done();
+    });
+
+    it('returns a promise that resolves if only all replications are cancelled', done => {
+      syncManager.pullUpdatesForContext(context);
+      syncManager.pushUpdatesForContext(context);
+      syncManager.startDuplexLiveReplication(context);
+      rootScope.$apply();
+
+      const stopPromise = syncManager.stopReplicationsForContext(context);
+      stopPromise.then(() => {
+        done();
+      });
+      rootScope.$apply();
+    });
   });
 
   describe('Events', () => {
