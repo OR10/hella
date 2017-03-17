@@ -40,14 +40,14 @@ describe('PouchDbSyncManager', () => {
     ]);
     pouchDbContextServiceMock.queryTaskIdForContext.and.returnValue(taskId);
 
-    syncManager = new PouchDbSyncManager(loggerMock, angularQ, pouchDbContextServiceMock, taskGateway);
-
     taskGateway = jasmine.createSpyObj('TaskGateway', ['getTaskReplicationInformationForTaskId']);
     taskReplicationInformation = {
       databaseServer: 'foobar',
       databaseName: 'heinz',
     };
     taskGateway.getTaskReplicationInformationForTaskId.and.returnValue(taskReplicationInformation);
+
+    syncManager = new PouchDbSyncManager(loggerMock, angularQ, pouchDbContextServiceMock, taskGateway);
   });
 
   beforeEach(() => {
@@ -55,6 +55,9 @@ describe('PouchDbSyncManager', () => {
     contextReplicateFromDeferred = angularQ.defer();
     contextReplicateFromPromise = contextReplicateFromDeferred.promise;
     contextReplicateFromPromise.cancel = jasmine.createSpy('context.replicate.from.cancel');
+    contextReplicateFromPromise.cancel.and.callFake(() => {
+      contextReplicateFromDeferred.resolve();
+    });
     contextReplicateFromPromise.on = jasmine.createSpy('context.replicate.from.on');
     contextReplicateFromEvents = new Map([
       ['change', []],
@@ -76,6 +79,9 @@ describe('PouchDbSyncManager', () => {
     contextReplicateToDeferred = angularQ.defer();
     contextReplicateToPromise = contextReplicateToDeferred.promise;
     contextReplicateToPromise.cancel = jasmine.createSpy('context.replicate.to.cancel');
+    contextReplicateToPromise.cancel.and.callFake(() => {
+      contextReplicateToDeferred.resolve();
+    });
     contextReplicateToPromise.on = jasmine.createSpy('context.replicate.to.on');
     contextReplicateToEvents = new Map([
       ['change', []],
@@ -100,6 +106,9 @@ describe('PouchDbSyncManager', () => {
     secondContextReplicateFromDeferred = angularQ.defer();
     secondContextReplicateFromPromise = secondContextReplicateFromDeferred.promise;
     secondContextReplicateFromPromise.cancel = jasmine.createSpy('context.replicate.from.cancel');
+    secondContextReplicateFromPromise.cancel.and.callFake(() => {
+      secondContextReplicateFromDeferred.resolve();
+    });
     secondContextReplicateFromPromise.on = jasmine.createSpy('context.replicate.from.on');
     secondContextReplicateFromEvents = new Map([
       ['change', []],
@@ -121,6 +130,9 @@ describe('PouchDbSyncManager', () => {
     secondContextReplicateToDeferred = angularQ.defer();
     secondContextReplicateToPromise = secondContextReplicateToDeferred.promise;
     secondContextReplicateToPromise.cancel = jasmine.createSpy('context.replicate.to.cancel');
+    secondContextReplicateToPromise.cancel.and.callFake(() => {
+      secondContextReplicateToDeferred.resolve();
+    });
     secondContextReplicateToPromise.on = jasmine.createSpy('context.replicate.to.on');
     secondContextReplicateToEvents = new Map([
       ['change', []],
@@ -646,6 +658,270 @@ describe('PouchDbSyncManager', () => {
         rootScope.$apply();
 
         expect(transferEventSpy.calls.count()).toEqual(1);
+      });
+    });
+  });
+
+  describe('#doesReplicationExistForContext()', () => {
+    it('is false by default', () => {
+      const hasReplication = syncManager.doesReplicationExistForContext(context);
+      expect(hasReplication).toBe(false);
+    });
+
+    describe('pull replication', () => {
+      beforeEach(() => {
+        syncManager.pullUpdatesForContext(context);
+      });
+
+      it('is true if a pull replication for the context has been started', () => {
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('is false if a pull replication is finished', () => {
+        contextReplicateFromDeferred.resolve();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('is false if a pull replication fails', () => {
+        contextReplicateFromDeferred.reject();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('is false if pull replication is stopped', () => {
+        rootScope.$apply();
+        syncManager.stopReplicationsForContext(context);
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+    });
+
+    describe('push replication', () => {
+      beforeEach(() => {
+        syncManager.pushUpdatesForContext(context);
+      });
+
+      it('is true if a push replication for the context has been started', () => {
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('is false if a push replication is finished', () => {
+        contextReplicateToDeferred.resolve();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('is false if a push replication fails', () => {
+        contextReplicateToDeferred.reject();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('is false if push replication is stopped', () => {
+        rootScope.$apply();
+        syncManager.stopReplicationsForContext(context);
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+    });
+
+    describe('Push and pull combined', () => {
+      beforeEach(() => {
+        syncManager.pushUpdatesForContext(context);
+        syncManager.pullUpdatesForContext(context);
+      });
+
+      it('returns true if there is one active push and one active pull replication', () => {
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('returns false if both replications are finished', () => {
+        contextReplicateToDeferred.resolve();
+        contextReplicateFromDeferred.resolve();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('returns false if both replications fail', () => {
+        contextReplicateToDeferred.reject();
+        contextReplicateFromDeferred.reject();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('returns true if the push replications fails', () => {
+        contextReplicateToDeferred.reject();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('returns true if the pull replications fails', () => {
+        contextReplicateFromDeferred.reject();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('returns true if the push replications finishes', () => {
+        contextReplicateToDeferred.resolve();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('returns true if the pull replications finishes', () => {
+        contextReplicateFromDeferred.resolve();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('returns false if push finishes but pull fails', () => {
+        contextReplicateToDeferred.resolve();
+        contextReplicateFromDeferred.reject();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('returns false if push fails but pull finishes', () => {
+        contextReplicateToDeferred.reject();
+        contextReplicateFromDeferred.resolve();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('is true if replication is stopped', () => {
+        rootScope.$apply();
+        syncManager.stopReplicationsForContext(context);
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+    });
+
+    describe('Duplex replication', () => {
+      beforeEach(() => {
+        syncManager.startDuplexLiveReplication(context);
+      });
+
+      it('returns true if there is one active push and one active pull replication (duplex)', () => {
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('returns false if both replications are finished (duplex)', () => {
+        contextReplicateToDeferred.resolve();
+        contextReplicateFromDeferred.resolve();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('returns false if both replications fail (duplex)', () => {
+        contextReplicateToDeferred.reject();
+        contextReplicateFromDeferred.reject();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('returns true if the push replications fails (duplex)', () => {
+        contextReplicateToDeferred.reject();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('returns true if the pull replications fails (duplex)', () => {
+        contextReplicateFromDeferred.reject();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('returns true if the push replications finishes (duplex)', () => {
+        contextReplicateToDeferred.resolve();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('returns true if the pull replications finishes (duplex)', () => {
+        contextReplicateFromDeferred.resolve();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(true);
+      });
+
+      it('returns false if push finishes but pull fails (duplex)', () => {
+        contextReplicateToDeferred.resolve();
+        contextReplicateFromDeferred.reject();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('returns false if push fails but pull finishes (duplex)', () => {
+        contextReplicateToDeferred.reject();
+        contextReplicateFromDeferred.resolve();
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
+      });
+
+      it('is true if replication is stopped (duplex)', () => {
+        rootScope.$apply();
+        syncManager.stopReplicationsForContext(context);
+        rootScope.$apply();
+
+        const hasReplication = syncManager.doesReplicationExistForContext(context);
+        expect(hasReplication).toBe(false);
       });
     });
   });
