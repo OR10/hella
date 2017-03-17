@@ -8,6 +8,7 @@ import PaperPolygon from './PaperPolygon';
 import PlainProjection2d from '../../ThirdDimension/Support/Projection2d/Plain';
 import FlatWorld from '../../ThirdDimension/Support/Projection3d/FlatWorld';
 import DepthBufferProjection2d from '../../ThirdDimension/Support/Projection2d/DepthBuffer';
+import PaperPolyline from "./PaperPolyline";
 
 /**
  * Factory to produce PaperShape objects from JSON representations stored in our backend
@@ -104,6 +105,17 @@ class PaperShapeFactory {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
+   * @param {String} color
+   * @returns {PaperPolyline}
+   * @private
+   */
+  _createPolyline(labeledThingInFrame, shape, color) {
+    return new PaperPolyline(labeledThingInFrame, shape.id, shape.points, color);
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
    * @param {Video} video
    * @returns {PaperShape}
    */
@@ -124,6 +136,8 @@ class PaperShapeFactory {
       case 'polygon':
         result = this._createPolygon(labeledThingInFrame, shape, color);
         break;
+      case 'polyline':
+        result = this._createPolyline(labeledThingInFrame, shape, color);
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
     }
