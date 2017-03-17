@@ -78,7 +78,6 @@ class User {
    */
   toJSON() {
     const {id, username, email, enabled, lastLogin, locked, roles, password, expired, expiresAt} = this;
-    debugger;
     const organisationIds = this.organisations.map(organisation => organisation.id);
 
     return {

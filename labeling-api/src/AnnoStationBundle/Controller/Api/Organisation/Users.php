@@ -40,20 +40,28 @@ class Users extends Controller\Base
     private $authorizationService;
 
     /**
+     * @var Service\Authentication\UserPermissions
+     */
+    private $currentUserPermissions;
+
+    /**
      * Users constructor.
      *
      * @param AppFacade\User        $userFacade
      * @param Storage\TokenStorage  $tokenStorage
      * @param Service\Authorization $authorizationService
+     * @param Service\Authentication\UserPermissions $userPermissions
      */
     public function __construct(
         AppFacade\User $userFacade,
         Storage\TokenStorage $tokenStorage,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        Service\Authentication\UserPermissions $userPermissions
     ) {
-        $this->userFacade           = $userFacade;
-        $this->tokenStorage         = $tokenStorage;
-        $this->authorizationService = $authorizationService;
+        $this->userFacade               = $userFacade;
+        $this->tokenStorage             = $tokenStorage;
+        $this->authorizationService     = $authorizationService;
+        $this->currentUserPermissions   = $userPermissions;
     }
 
     /**
@@ -71,6 +79,8 @@ class Users extends Controller\Base
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
         $users = $this->userFacade->getUserList($organisation);
+        // Remove Superadmin from Userlist if user does not have permission to list all users
+        $users = $this->filterUserListByPermission($users);
 
         $users = array_map(function (Model\User $user) {
             return array(
@@ -81,12 +91,33 @@ class Users extends Controller\Base
                 'lastLogin' => $user->getLastLogin(),
                 'locked'    => $user->isLocked(),
                 'roles'     => $user->getRoles(),
-                'roles'     => $user->getRoles(),
                 'expired'   => $user->isExpired(),
                 'expiresAt' => $user->getExpiresAt() ? $user->getExpiresAt()->format('c') : null,
             );
         }, $users);
 
         return View\View::create()->setData(['result' => ['users' => $users]]);
+    }
+
+    /**
+     * Remove Superadmin from User list if the current user does not have the permission
+     * to list all users
+     *
+     * @param $users
+     * @return array
+     */
+    private function filterUserListByPermission($users)
+    {
+        $users = array_values(array_filter($users, function (Model\User $user) {
+            $authUserCanListAllUsers = $this->currentUserPermissions->hasPermission('canListAllUsers');
+
+            if ($user->isSuperAdmin() && !$authUserCanListAllUsers) {
+                return false;
+            }
+
+            return true;
+        }));
+
+        return $users;
     }
 }
