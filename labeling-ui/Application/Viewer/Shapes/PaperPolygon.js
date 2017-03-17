@@ -36,7 +36,7 @@ class PaperPolygon extends PaperPath {
       strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
-      closed: true,
+      closed: false,
       dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
       strokeScaling: false,
       fillColor: new paper.Color(0, 0, 0, 0),
