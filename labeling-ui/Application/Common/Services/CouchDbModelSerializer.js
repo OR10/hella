@@ -45,6 +45,25 @@ class CouchDbModelSerializer {
   }
 
   /**
+   * Serialize a LabeledThingGroup Model
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   *
+   * @return {object}
+   *
+   * @private
+   */
+  _serializeAppBundleModelLabeledThingGroup(labeledThingGroup) {
+    const document = labeledThingGroup.toJSON();
+    this._prefixIdAndRevision(document);
+
+    // Type annotation
+    document.type = CouchDbModelSerializer.TYPE_LABELED_THING_GROUP;
+
+    return document;
+  }
+
+  /**
    * Serialize a LabeledThing Model
    *
    * @param {LabeledThing} labeledThing
@@ -164,6 +183,7 @@ class CouchDbModelSerializer {
   }
 }
 
+CouchDbModelSerializer.TYPE_LABELED_THING_GROUP = 'AppBundle.Model.LabeledThingGroup';
 CouchDbModelSerializer.TYPE_LABELED_THING = 'AppBundle.Model.LabeledThing';
 CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME = 'AppBundle.Model.LabeledThingInFrame';
 CouchDbModelSerializer.TYPE_FRAME_RANGE = 'AppBundle.Model.FrameIndexRange';
