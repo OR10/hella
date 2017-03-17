@@ -109,8 +109,8 @@ class PolylineKeyboardTool extends KeyboardTool {
  * @abstract
  * @static
  */
-PolygonKeyboardTool.getToolName = () => {
-  return 'PolygonKeyboardTool';
+PolylineKeyboardTool.getToolName = () => {
+  return 'PolylineKeyboardTool';
 };
 
 /**
@@ -126,9 +126,9 @@ PolygonKeyboardTool.getToolName = () => {
  * @abstract
  * @static
  */
-PolygonKeyboardTool.isShapeClassSupported = shapeClass => {
+PolylineKeyboardTool.isShapeClassSupported = shapeClass => {
   return [
-    'polygon',
+    'polyline',
   ].includes(shapeClass);
 };
 
@@ -145,13 +145,13 @@ PolygonKeyboardTool.isShapeClassSupported = shapeClass => {
  * @abstract
  * @static
  */
-PolygonKeyboardTool.isActionIdentifierSupported = actionIdentifier => {
+PolylineKeyboardTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'keyboard',
   ].includes(actionIdentifier);
 };
 
-PolygonKeyboardTool.$inject = [
+PolylineKeyboardTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
@@ -160,4 +160,4 @@ PolygonKeyboardTool.$inject = [
   'entityIdService',
 ];
 
-export default PolygonKeyboardTool;
+export default PolylineKeyboardTool;

@@ -1,5 +1,4 @@
 import paper from 'paper';
-import PaperShape from './PaperShape';
 import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
 
@@ -14,7 +13,7 @@ class PaperPath extends PaperThingShape {
    * @param {{primary: string, secondary: string}} color
    * @param {boolean} draft
    */
-  constructor(labeledThingInFrame, shapeId, points = [], color, draft = false, isClosed = false) {
+  constructor(labeledThingInFrame, shapeId, points = [], color, draft = false) {
     super(labeledThingInFrame, shapeId, color, draft);
     /**
      * @type {Array.<Point>}
@@ -25,8 +24,7 @@ class PaperPath extends PaperThingShape {
      * @type {bool}
      * @private
      */
-    this._isClosed = isClosed;
-    this._drawShape();
+    //this._drawShape();
   }
 
   /**
@@ -57,10 +55,9 @@ class PaperPath extends PaperThingShape {
    * @param {Boolean} drawHandles
    * @public
    */
-  _drawShape(drawHandles = true) {
+  drawShape(shape, drawHandles = true) {
     this.removeChildren();
 
-    const shape = this._createShape();
     this.addChild(shape);
 
     if (this._isSelected && drawHandles) {
@@ -68,23 +65,7 @@ class PaperPath extends PaperThingShape {
       this.addChildren(handles);
     }
   }
-
-  /**
-   * @returns {Rectangle}
-   * @private
-   */
-  _createShape() {
-    return new paper.Path({
-      strokeColor: this._color.primary,
-      selected: false,
-      strokeWidth: 2,
-      closed: this._isClosed,
-      dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
-      strokeScaling: false,
-      fillColor: new paper.Color(0, 0, 0, 0),
-      segments: this._points,
-    });
-  }
+  
 
   /**
    * @returns {Array.<RectangleHandle>}
