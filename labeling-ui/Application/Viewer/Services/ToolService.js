@@ -17,6 +17,8 @@ import PolygonScaleTool from '../Tools/Polygon/PolygonScaleTool';
 import GroupCreationTool from '../Tools/Group/GroupCreationTool';
 import PolygonKeyboardTool from '../Tools/Polygon/PolygonKeyboardTool';
 import NoOperationPaperTool from '../Tools/NoOperationPaperTool';
+import PolylineDrawingTool from "../Tools/Polyline/PolylineDrawingTool";
+import PolylineKeyboardTool from "../Tools/Polyline/PolylineKeyboardTool";
 
 class ToolService {
   /**
@@ -78,6 +80,8 @@ class ToolService {
       PolygonScaleTool,
       PolygonMoveTool,
       PolygonKeyboardTool,
+      PolylineDrawingTool,
+      PolylineKeyboardTool,
       GroupCreationTool,
       NoOperationPaperTool,
     ];
