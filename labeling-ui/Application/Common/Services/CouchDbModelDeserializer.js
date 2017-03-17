@@ -2,6 +2,7 @@ import angular from 'angular';
 import Task from 'Application/Task/Model/Task';
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
+import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup';
 
 /**
  * The CouchDbModelDeserializer is capable of converting CouchDb document into our internal models.
@@ -81,6 +82,28 @@ class CouchDbModelDeserializer {
       Object.assign({}, document, {task})
     );
   }
+
+  /**
+   * Deserialize a labeledThingGroup to our frontend model
+   *
+   * In order to create a {@link LabeledThingGroup} the corresponding {@link Task}
+   * is needed as a dependency. The dependency needs to be provided as {@link Task} instance.
+   * In order to create this model from a CouchDb document {@link CouchDbModelDeserializer#deserializeTask}
+   * may be used.
+   *
+   * @param {object} labeledThingGroupDocument
+   * @param {Task} task
+   * @return {LabeledThingGroup}
+   */
+  deserializeLabeledThingGroup(labeledThingGroupDocument, task) {
+    const document = this._cloneDocument(labeledThingGroupDocument);
+    this._removePrefixFromIdAndRevision(document);
+
+    return new LabeledThingGroup(
+      Object.assign({}, document, {task})
+    );
+  }
+
 
   /**
    * Deserialize a labeledThingInFrame to our frontend model
