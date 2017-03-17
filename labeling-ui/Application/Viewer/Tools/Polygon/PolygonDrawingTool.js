@@ -210,7 +210,7 @@ class PolygonDrawingTool extends CreationTool {
  * @static
  */
 PolygonDrawingTool.getToolName = () => {
-  return 'PedestrianDrawingTool';
+  return 'PolygonDrawingTool';
 };
 
 /**
