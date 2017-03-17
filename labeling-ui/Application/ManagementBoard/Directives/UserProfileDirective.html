@@ -16,15 +16,7 @@
                            ng-class="{error: !vm.validation.email}">
                 </label>
                 <label>Role</label>
-                <select id="role" ng-model="vm.singleRole" ng-class="{error: !vm.validation.role}">
-                    <option value="ROLE_LABELER">Labeler</option>
-                    <option value="ROLE_LABEL_COORDINATOR">Label Coordinator</option>
-                    <option value="ROLE_CLIENT_COORDINATOR">Client + Label Coordinator</option>
-                    <option value="ROLE_CLIENT">Client</option>
-                    <option value="ROLE_ADMIN">Administrator</option>
-                    <option value="ROLE_OBSERVER">Observer</option>
-                    <option value="ROLE_SUPER_ADMIN">SuperAdmin</option>
-                </select>
+                <select id="role" ng-model="vm.singleRole" ng-options="role as role.label for role in vm.availableRoles track by role.id" ng-class="{error: !vm.validation.role}"></select>
                 <label>Expires</label>
                 <input type="date" ng-model="vm.user.expiresAt">
             </fieldset>
