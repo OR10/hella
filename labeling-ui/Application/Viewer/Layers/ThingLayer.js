@@ -33,6 +33,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {FramePosition} framePosition
    * @param {ViewerMouseCursorService} viewerMouseCursorService
    * @param {LabeledThingGroupService} labeledThingGroupService
+   * @param {Object} applicationState
+   * @param {ModalService} modalService
+   * @param {LabeledThingGateway} labeledThingGateway
+   * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    */
   constructor(width,
               height,
@@ -45,7 +49,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
               $timeout,
               framePosition,
               viewerMouseCursorService,
-              labeledThingGroupService) {
+              labeledThingGroupService,
+              applicationState,
+              modalService,
+              labeledThingGateway,
+              labeledThingGroupGateway
+              ) {
     super(width, height, $scope, drawingContext);
 
     /**
@@ -134,6 +143,30 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._lastMouseDownEvent = null;
 
+    /**
+     * @type {Object}
+     * @private
+     */
+    this._applicationState = applicationState;
+
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
+
+    /**
+     * @type {LabeledThingGateway}
+     * @private
+     */
+    this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {LabeledThingGroupGateway}
+     * @private
+     */
+    this._labeledThingGroupGateway = labeledThingGroupGateway;
+
     $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
       const oldSet = new Set(oldPaperGroupShapes);
       const newSet = new Set(newPaperGroupShapes);
@@ -209,6 +242,122 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
       this._invokeDefaultShapeCreation();
     });
+
+    $scope.$root.$on('action:delete-shape', (event, shape) => {
+      switch (true) {
+        case shape instanceof PaperThingShape:
+          this._deleteThingShape(shape);
+          break;
+        case shape instanceof PaperGroupShape:
+          this._deleteGroupShape(shape);
+          break;
+        default:
+          throw new Error('Cannot delete shape of unknown type');
+      }
+    });
+  }
+
+  /**
+   * @param {PaperThingShape} shape
+   * @private
+   */
+  _deleteThingShape(shape) {
+    const viewModel = this._$scope.vm;
+    const selectedLabeledThingInFrame = shape.labeledThingInFrame;
+    const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
+    this._applicationState.disableAll();
+
+    // TODO: fix the revision error in the backend
+    try {
+      this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
+          .then(() => {
+            shape.remove();
+            viewModel.selectedPaperShape = null;
+            viewModel.paperThingShapes = viewModel.paperThingShapes.filter(
+                paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
+            );
+
+            return selectedLabeledThing;
+          })
+          .then(() => {
+            selectedLabeledThing.groupIds.forEach(groupId => {
+              const relatedThingShapes = viewModel.paperThingShapes.filter(thingShape =>
+              thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
+              const shapeGroup = viewModel.paperGroupShapes.find(
+                  paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
+
+              if (relatedThingShapes.length === 0) {
+                return this._deleteGroupShape(shapeGroup);
+              }
+            });
+          })
+          .then(() => {
+            this._deleteAfterAction();
+          })
+          .catch(() => this._onDeletionError());
+    } catch (error) {
+      this._onDeletionError();
+    }
+  }
+
+  /**
+   * @param {PaperGroupShape} shape
+   * @private
+   */
+  _deleteGroupShape(shape) {
+    const viewModel = this._$scope.vm;
+    const labeledThingGroup = shape.labeledThingGroupInFrame.labeledThingGroup;
+    const relatedThingShapes = viewModel.paperThingShapes.filter(
+        thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(labeledThingGroup.id) !== -1
+    );
+    const relatedLabeledThings = relatedThingShapes.map(thingShape => thingShape.labeledThingInFrame.labeledThing);
+
+    this._applicationState.disableAll();
+
+    try {
+      this._labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
+          .then(() => {
+            return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
+          })
+          .then(() => {
+            shape.remove();
+            viewModel.selectedPaperShape = null;
+            viewModel.paperGroupShapes = viewModel.paperGroupShapes.filter(
+                paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id !== labeledThingGroup.id
+            );
+            this._deleteAfterAction();
+          })
+          .catch(() => this._onDeletionError());
+    } catch (error) {
+      this._onDeletionError();
+    }
+  }
+
+  /**
+   * @private
+   */
+  _deleteAfterAction() {
+    this._applicationState.enableAll();
+    this._context.withScope(scope => scope.view.update());
+  }
+
+  /**
+   * @private
+   */
+  _onDeletionError() {
+    this._applicationState.enableAll();
+    this._modalService.info(
+      {
+        title: 'Error',
+        headline: 'There was an error deleting the selected shape. Please reload the page and try again!',
+      },
+      undefined,
+      undefined,
+      {
+        warning: true,
+        abortable: false,
+      }
+    );
   }
 
   dispatchDOMEvent(event) {
