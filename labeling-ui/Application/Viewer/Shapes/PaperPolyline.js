@@ -3,7 +3,7 @@ import PaperPath from "./PaperPath";
 /**
  * @extends PaperPath
  */
-class PaperPolygon extends PaperPath {
+class PaperPolyline extends PaperPath {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {string} shapeId
@@ -12,7 +12,7 @@ class PaperPolygon extends PaperPath {
    * @param {boolean} draft
    * @param {boolean} isClosed
    */
-  constructor(labeledThingInFrame, shapeId, points = [], color, draft = false, isClosed = true) {
+  constructor(labeledThingInFrame, shapeId, points = [], color, draft = false, isClosed = false) {
     super(labeledThingInFrame, shapeId, points, color, draft, isClosed)
   }
 
@@ -122,7 +122,7 @@ class PaperPolygon extends PaperPath {
     });
 
     return {
-      type: 'polygon',
+      type: 'polyline',
       id: this._shapeId,
       points,
       labeledThingInFrameId: this.labeledThingInFrame.id,
@@ -133,8 +133,8 @@ class PaperPolygon extends PaperPath {
 /**
  * @returns {string}
  */
-PaperPolygon.getClass = () => {
-  return 'polygon';
+PaperPolyline.getClass = () => {
+  return 'polyline';
 };
 
-export default PaperPolygon;
+export default PaperPolyline;

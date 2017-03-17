@@ -1,7 +1,7 @@
 import paper from 'paper';
 import CreationTool from '../CreationTool';
-import PaperPolygon from '../../Shapes/PaperPolygon';
 import NotModifiedError from '../Errors/NotModifiedError';
+import PaperPolyline from "../../Shapes/PaperPolyline";
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
@@ -9,7 +9,7 @@ import NotModifiedError from '../Errors/NotModifiedError';
  * @extends DrawingTool
  * @implements ToolEvents
  */
-class PolygonDrawingTool extends CreationTool {
+class PolylineDrawingTool extends CreationTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {$rootScope.Scope} $rootScope
@@ -84,7 +84,7 @@ class PolygonDrawingTool extends CreationTool {
 
     let polygon = null;
     this._context.withScope(() => {
-      polygon = new PaperPolygon(
+      polygon = new PaperPolyline(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         points,
@@ -150,7 +150,7 @@ class PolygonDrawingTool extends CreationTool {
   onMouseUp() {
     // Polygon wasn't created. It was only clicked to the canvas.
     if (this._polyline === null) {
-      this._reject(new NotModifiedError('No Polygon was created/dragged.'));
+      this._reject(new NotModifiedError('No Polyline was created/dragged.'));
       return;
     }
     this._inProgress = true;
@@ -209,8 +209,8 @@ class PolygonDrawingTool extends CreationTool {
  * @abstract
  * @static
  */
-PolygonDrawingTool.getToolName = () => {
-  return 'PolygonDrawingTool';
+PolylineDrawingTool.getToolName = () => {
+  return 'PolylineDrawingTool';
 };
 
 /**
@@ -226,9 +226,9 @@ PolygonDrawingTool.getToolName = () => {
  * @abstract
  * @static
  */
-PolygonDrawingTool.isShapeClassSupported = shapeClass => {
+PolylineDrawingTool.isShapeClassSupported = shapeClass => {
   return [
-    'polygon',
+    'polyline',
   ].includes(shapeClass);
 };
 
@@ -245,13 +245,13 @@ PolygonDrawingTool.isShapeClassSupported = shapeClass => {
  * @abstract
  * @static
  */
-PolygonDrawingTool.isActionIdentifierSupported = actionIdentifier => {
+PolylineDrawingTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
   ].includes(actionIdentifier);
 };
 
-PolygonDrawingTool.$inject = [
+PolylineDrawingTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
@@ -261,4 +261,4 @@ PolygonDrawingTool.$inject = [
   'hierarchyCreationService',
 ];
 
-export default PolygonDrawingTool;
+export default PolylineDrawingTool;
