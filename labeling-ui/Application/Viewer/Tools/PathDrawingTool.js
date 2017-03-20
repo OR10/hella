@@ -198,13 +198,23 @@ class PathDrawingTool extends CreationTool {
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     this._context.withScope(() => {
-      this._path = new PaperPolygon(
-        labeledThingInFrame,
-        this._entityIdService.getUniqueId(),
-        [from, to],
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-        true
-      );
+      if (this._pathIdentifier === PaperPolygon.getClass()) {
+        this._path = new PaperPolygon(
+            labeledThingInFrame,
+            this._entityIdService.getUniqueId(),
+            [from, to],
+            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+            true
+        );
+      } else {
+        this._path = new PaperPolyline(
+            labeledThingInFrame,
+            this._entityIdService.getUniqueId(),
+            [from, to],
+            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+            true
+        );
+      }
     });
   }
 
