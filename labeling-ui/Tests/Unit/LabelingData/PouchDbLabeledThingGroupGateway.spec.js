@@ -9,7 +9,7 @@ import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup
 
 import PouchDbLabeledThingGroupGateway from 'Application/LabelingData/Gateways/PouchDbLabeledThingGroupGateway';
 
-fdescribe('PouchDbLabeledThingGroupGateway', () => {
+describe('PouchDbLabeledThingGroupGateway', () => {
   /**
    * @param {PouchDbLabeledThingGroupGateway}
    */
@@ -30,29 +30,29 @@ fdescribe('PouchDbLabeledThingGroupGateway', () => {
     };
 
     queryResponse = {
-      "total_rows": 6,
-      "offset": 0,
-      "rows": [
+      'total_rows': 6,
+      'offset': 0,
+      'rows': [
         {
-          "id": "60950e57-5e93-4f7f-9196-6821eaaa74d3",
-          "key": ["e2c029002f1375ec4c10f55d4b2618c3", 0],
-          "value": "e2c029002f1375ec4c10f55d4b2d43a7"
+          'id': '60950e57-5e93-4f7f-9196-6821eaaa74d3',
+          'key': ['e2c029002f1375ec4c10f55d4b2618c3', 0],
+          'value': 'e2c029002f1375ec4c10f55d4b2d43a7',
         },
         {
-          "id": "32dd14b4-12c4-4888-b60b-53afcc49de5f",
-          "key": ["e2c029002f1375ec4c10f55d4b2618c3", 4],
-          "value": "e2c029002f1375ec4c10f55d4b2e71c9"
+          'id': '32dd14b4-12c4-4888-b60b-53afcc49de5f',
+          'key': ['e2c029002f1375ec4c10f55d4b2618c3', 4],
+          'value': 'e2c029002f1375ec4c10f55d4b2e71c9',
         },
       ],
     };
 
     labeledThingGroupResponse = {
-      "_id": "e2c029002f1375ec4c10f55d4b2e71c9",
-      "_rev": "1-579bff7e19f986e0dfab7a58fe7362dd",
-      "type": "AnnoStationBundle.Model.LabeledThingGroup",
-      "groupType": "extension-sign-group",
-      "lineColor": "15",
-      "groupIds": null,
+      '_id': 'e2c029002f1375ec4c10f55d4b2e71c9',
+      '_rev': '1-579bff7e19f986e0dfab7a58fe7362dd',
+      'type': 'AnnoStationBundle.Model.LabeledThingGroup',
+      'groupType': 'extension-sign-group',
+      'lineColor': '15',
+      'groupIds': null,
     };
 
     const commonModule = new Common();
