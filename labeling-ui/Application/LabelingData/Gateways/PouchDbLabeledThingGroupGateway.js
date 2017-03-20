@@ -1,5 +1,3 @@
-import LabeledThingGroupInFrame from '../Models/LabeledThingGroupInFrame';
-
 /**
  * Gateway for CRUD operation on {@link LabeledThingGroup}s in a PouchDb
  */
@@ -11,10 +9,11 @@ class PouchDbLabeledThingGroupGateway {
    * @param {CouchDbModelSerializer} couchDbModelSerializer
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
+   * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {PouchDbLabeledThingGateway} pouchDbLabeledThingGateway
    * @param {EntityIdService} entityIdService
    */
-  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, pouchDbLabeledThingGateway, entityIdService) {
+  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, abortablePromiseFactory, pouchDbLabeledThingGateway, entityIdService) {
     /**
      * @type {angular.$q}
      * @private
@@ -58,6 +57,12 @@ class PouchDbLabeledThingGroupGateway {
     this._revisionManager = revisionManager;
 
     /**
+     * @type {AbortablePromiseFactory}
+     * @private
+     */
+    this._abortablePromiseFactory = abortablePromiseFactory;
+
+    /**
      * @type {PouchDbLabeledThingGateway}
      * @private
      */
@@ -88,28 +93,33 @@ class PouchDbLabeledThingGroupGateway {
         key: [taskId, frameIndex],
       })
         .then(response => response.rows.map(row => row.value))
-        .then(
-          labeledThingGroupIds => labeledThingGroupIds.map(
-            labeledThingGroupId => new LabeledThingGroupInFrame({
+        .then(labeledThingGroupIds => {
+          // Filter duplicate labeledThingGroupIds
+          const filteredLabeledThingGroupIds = labeledThingGroupIds.filter((value, index, array) => array.indexOf(value) === index);
+          const promises = [];
+
+          filteredLabeledThingGroupIds.forEach(labeledThingGroupId => {
+            promises.push(dbContext.get(labeledThingGroupId));
+          });
+
+          // TODO: Not sure if it is ok to pass filtered ids!? Needs to be checked!
+          return this._$q.all([this._$q.resolve(labeledThingGroupIds), this._$q.all(promises)]);
+        })
+        .then(([labeledThingGroupIds, labeledThingGroupDocuments]) => {
+          const labeledThingGroups = labeledThingGroupDocuments.map(labeledThingGroupDocument => {
+            this._revisionManager.extractRevision(labeledThingGroupDocument);
+            return this._couchDbModelDeserializer.deserializeLabeledThingGroup(labeledThingGroupDocument, task);
+          });
+
+          const labeledThingGroupsInFrame = labeledThingGroupIds.map(labeledThingGroupId => {
+            const dbDocument = {
               id: this._entityIdService.getUniqueId(),
               classes: [],
               frameIndex,
               labeledThingGroupId,
-            })
-          )
-        )
-        .then(labeledThingGroupsInFrame => {
-          const promises = [];
-          labeledThingGroupsInFrame.forEach(ltgif => {
-            promises.push(dbContext.get(ltgif.labeledThingGroupId));
-          });
-
-          return this._$q.all([this._$q.resolve(labeledThingGroupsInFrame), this._$q.all(promises)]);
-        })
-        .then(([labeledThingGroupsInFrame, results]) => {
-          const labeledThingGroups = results.map(labeledThingGroupDocument => {
-            this._revisionManager.extractRevision(labeledThingGroupDocument);
-            return this._couchDbModelDeserializer.deserializeLabeledThingGroup(labeledThingGroupDocument, task);
+            };
+            // TODO: If the labeledThingGroupInFrame documents are no longer generated, we need to extract revision here
+            return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(dbDocument);
           });
 
           return {
@@ -196,7 +206,7 @@ class PouchDbLabeledThingGroupGateway {
           promises.push(this._pouchDbLabeledThingGateway.saveLabeledThing(labeledThing));
         });
 
-        return this._abortablePromisFactory(this._$q.all(promises));
+        return this._abortablePromiseFactory(this._$q.all(promises));
       });
   }
 
@@ -224,8 +234,22 @@ class PouchDbLabeledThingGroupGateway {
           promises.push(this._pouchDbLabeledThingGateway.saveLabeledThing(labeledThing));
         });
 
-        return this._abortablePromisFactory(this._$q.all(promises));
+        return this._abortablePromiseFactory(this._$q.all(promises));
       });
+  }
+
+  /**
+   * Inject a revision into the document or fail silently and ignore the error.
+   *
+   * @param {object} document
+   * @private
+   */
+  _injectRevisionOrFailSilently(document) {
+    try {
+      this._revisionManager.injectRevision(document);
+    } catch (error) {
+      // Simply ignore
+    }
   }
 }
 
@@ -236,6 +260,9 @@ PouchDbLabeledThingGroupGateway.$inject = [
   'couchDbModelSerializer',
   'couchDbModelDeserializer',
   'revisionManager',
+  'abortablePromiseFactory',
+  'pouchDbLabeledThingGateway',
+  'entityIdService',
 ];
 
 export default PouchDbLabeledThingGroupGateway;
