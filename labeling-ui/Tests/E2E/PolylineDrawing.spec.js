@@ -366,7 +366,7 @@ fdescribe('Polyline drawing', () => {
         .perform()
       )
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary4')
+          //() => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
@@ -381,7 +381,7 @@ fdescribe('Polyline drawing', () => {
       });
   });
   
-  fit('should draw multiple new Polyline shapes', done => {
+  it('should draw multiple new Polyline shapes', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -447,7 +447,7 @@ fdescribe('Polyline drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewMultiplePolyline3);
       })
       .then(() => getMockRequestsMade(mock))
-      .then(() => dumpAllRequestsMade(mock))
+      //.then(() => dumpAllRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing);
         expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame2);
