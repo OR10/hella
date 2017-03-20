@@ -1,5 +1,5 @@
-import PaperPolyline from "../../Shapes/PaperPolyline";
-import PathDrawingTool from "../PathDrawingTool";
+import PaperPolyline from '../../Shapes/PaperPolyline';
+import PathDrawingTool from '../PathDrawingTool';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
