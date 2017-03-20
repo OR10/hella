@@ -20,11 +20,6 @@ class PaperPath extends PaperThingShape {
      * @private
      */
     this._points = points;
-    /**
-     * @type {bool}
-     * @private
-     */
-    //this._drawShape();
   }
 
   /**
@@ -65,7 +60,6 @@ class PaperPath extends PaperThingShape {
       this.addChildren(handles);
     }
   }
-  
 
   /**
    * @returns {Array.<RectangleHandle>}

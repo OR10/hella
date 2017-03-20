@@ -1,5 +1,5 @@
 import NotModifiedError from './Errors/NotModifiedError';
-import ScalingTool from "./ScalingTool";
+import ScalingTool from './ScalingTool';
 
 /**
  * A Tool for scaling annotation shapes

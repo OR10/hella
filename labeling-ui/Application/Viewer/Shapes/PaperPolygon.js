@@ -1,6 +1,6 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
-import PaperPath from "./PaperPath";
+import PaperPath from './PaperPath';
 
 /**
  * @extends PaperPath
