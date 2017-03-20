@@ -1,12 +1,12 @@
 import paper from 'paper';
-import KeyboardTool from '../KeyboardTool';
+import KeyboardTool from './KeyboardTool';
 
 /**
  * Keyboard shortcuts for rectangle shapes
  *
  * @extends KeyboardTool
  */
-class PolylineKeyboardTool extends KeyboardTool {
+class PathKeyboardTool extends KeyboardTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {$rootScope} $rootScope
@@ -109,8 +109,8 @@ class PolylineKeyboardTool extends KeyboardTool {
  * @abstract
  * @static
  */
-PolylineKeyboardTool.getToolName = () => {
-  return 'PolylineKeyboardTool';
+PathKeyboardTool.getToolName = () => {
+  return 'PathKeyboardTool';
 };
 
 /**
@@ -126,8 +126,9 @@ PolylineKeyboardTool.getToolName = () => {
  * @abstract
  * @static
  */
-PolylineKeyboardTool.isShapeClassSupported = shapeClass => {
+PathKeyboardTool.isShapeClassSupported = shapeClass => {
   return [
+    'polygon',
     'polyline',
   ].includes(shapeClass);
 };
@@ -145,13 +146,13 @@ PolylineKeyboardTool.isShapeClassSupported = shapeClass => {
  * @abstract
  * @static
  */
-PolylineKeyboardTool.isActionIdentifierSupported = actionIdentifier => {
+PathKeyboardTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'keyboard',
   ].includes(actionIdentifier);
 };
 
-PolylineKeyboardTool.$inject = [
+PathKeyboardTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
@@ -160,4 +161,4 @@ PolylineKeyboardTool.$inject = [
   'entityIdService',
 ];
 
-export default PolylineKeyboardTool;
+export default PathKeyboardTool;
