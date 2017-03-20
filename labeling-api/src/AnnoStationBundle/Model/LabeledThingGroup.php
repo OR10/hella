@@ -56,4 +56,12 @@ class LabeledThingGroup
     {
         return $this->id;
     }
+
+    /**
+     * @param mixed $taskId
+     */
+    public function setTaskId($taskId)
+    {
+        $this->taskId = $taskId;
+    }
 }
