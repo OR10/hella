@@ -97,6 +97,7 @@ class PathDrawingTool extends CreationTool {
     let path = null;
     this._context.withScope(() => {
       if (this._pathIdentifier == PaperPolygon.getClass()) {
+        debugger;
         path = new PaperPolygon(
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
@@ -173,9 +174,8 @@ class PathDrawingTool extends CreationTool {
    * @param {paper.Event} event
    */
   onMouseUp() {
-    // Polygon wasn't created. It was only clicked to the canvas.
     if (this._path === null) {
-      this._reject(new NotModifiedError('No Polygon was created/dragged.'));
+      this._reject(new NotModifiedError('No Path was created/dragged.'));
       return;
     }
     this._inProgress = true;
@@ -253,7 +253,7 @@ PathDrawingTool.getToolName = () => {
  */
 PathDrawingTool.isShapeClassSupported = shapeClass => {
   return [
-    'path',
+    'polygon','polyline'
   ].includes(shapeClass);
 };
 
