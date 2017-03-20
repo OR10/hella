@@ -1,7 +1,8 @@
-import CreationTool from "./CreationTool";
-import PaperPolygon from "../Shapes/PaperPolygon";
-import PaperPolyline from "../Shapes/PaperPolyline";
-import NotModifiedError from "./Errors/NotModifiedError";
+import paper from 'paper';
+import CreationTool from './CreationTool';
+import PaperPolygon from '../Shapes/PaperPolygon';
+import PaperPolyline from '../Shapes/PaperPolyline';
+import NotModifiedError from './Errors/NotModifiedError';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
@@ -47,13 +48,13 @@ class PathDrawingTool extends CreationTool {
      * @private
      */
     this._startPosition = null;
-  
+
     /**
      * @type {bool}
      * @private
      */
     this._inProgress = false;
-  
+
     /**
      * @type {string}
      * @private
@@ -96,8 +97,7 @@ class PathDrawingTool extends CreationTool {
 
     let path = null;
     this._context.withScope(() => {
-      if (this._pathIdentifier == PaperPolygon.getClass()) {
-        debugger;
+      if (this._pathIdentifier === PaperPolygon.getClass()) {
         path = new PaperPolygon(
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
@@ -105,8 +105,7 @@ class PathDrawingTool extends CreationTool {
             this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
             true
         );
-      }
-      else {
+      } else {
         path = new PaperPolyline(
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
@@ -114,11 +113,8 @@ class PathDrawingTool extends CreationTool {
             this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
             true
         );
-        
       }
-      
     });
-
     return this._complete(path);
   }
 
@@ -253,7 +249,8 @@ PathDrawingTool.getToolName = () => {
  */
 PathDrawingTool.isShapeClassSupported = shapeClass => {
   return [
-    'polygon','polyline'
+    'polygon',
+    'polyline',
   ].includes(shapeClass);
 };
 

@@ -1,6 +1,6 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
-import PaperPath from "./PaperPath";
+import PaperPath from './PaperPath';
 /**
  * @extends PaperPath
  */
@@ -14,7 +14,7 @@ class PaperPolyline extends PaperPath {
    */
   constructor(labeledThingInFrame, shapeId, points = [], color, draft = false) {
     super(labeledThingInFrame, shapeId, points, color, draft);
-    this._drawShape()
+    this._drawShape();
   }
 
   /**

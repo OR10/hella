@@ -4,11 +4,12 @@ import PaperGroupRectangle from './PaperGroupRectangle';
 import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from './PaperPolygon';
+import PaperPolyline from './PaperPolyline';
 
 import PlainProjection2d from '../../ThirdDimension/Support/Projection2d/Plain';
 import FlatWorld from '../../ThirdDimension/Support/Projection3d/FlatWorld';
 import DepthBufferProjection2d from '../../ThirdDimension/Support/Projection2d/DepthBuffer';
-import PaperPolyline from "./PaperPolyline";
+
 
 /**
  * Factory to produce PaperShape objects from JSON representations stored in our backend
@@ -138,6 +139,7 @@ class PaperShapeFactory {
         break;
       case 'polyline':
         result = this._createPolyline(labeledThingInFrame, shape, color);
+        break;
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
     }
