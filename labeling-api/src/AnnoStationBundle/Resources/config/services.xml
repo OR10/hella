@@ -18,6 +18,20 @@
     </imports>
 
     <services>
+        <!--
+          - Default frame_cdn implementation is the flysystem one
+          - It may be overridden through the parameters.yml for different systems
+          -->
+        <service id="annostation.labeling_api.service.frame_cdn.selected-alias"
+                 alias="annostation.labeling_api.service.frame_cdn.flysystem"/>
+
+        <!--
+          - Default video_cdn implementation is the flysystem one
+          - It may be overridden through the parameters.yml for different systems
+          -->
+        <service id="annostation.labeling_api.service.video_cdn.selected-alias"
+                 alias="annostation.labeling_api.service.video_cdn.flysystem"/>
+
         <service id="annostation.labeling_api.service.frame_cdn.flysystem"
                  class="AnnoStationBundle\Service\FrameCdn\Flysystem">
             <argument>%frame_cdn_base_url%</argument>
@@ -200,30 +214,9 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
         </service>
 
-        <service id="annostation.labeling_api.service.logger_factory" class="AnnoStationBundle\Service\LoggerFactory">
-        </service>
-
         <service id="annostation.labeling_api.service.interpolation" class="AnnoStationBundle\Service\Interpolation">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.labeling_api.database.facade.status" />
-        </service>
-
-        <service id="annostation.labeling_api.service.amqp_pool_config" class="crosscan\WorkerPool\AMQP\AMQPPoolConfig">
-            <property name="host">%rabbitmq_host%</property>
-            <property name="port">%rabbitmq_port%</property>
-            <property name="vhost">%rabbitmq_vhost%</property>
-            <property name="user">%rabbitmq_user%</property>
-            <property name="password">%rabbitmq_password%</property>
-            <property name="useDeadLetterExchange">%rabbitmq_use_dead_letter_exchange%</property>
-            <property name="useAlternateExchange">%rabbitmq_use_alternate_exchange%</property>
-            <property name="workerAlternateExchange">%worker_pool.queue_prefix%worker.garbage-collection</property>
-            <property name="workerDeadLetterExchange">%worker_pool.queue_prefix%worker.garbage-collection</property>
-            <property name="rescheduleQueue">%worker_pool.queue_prefix%worker.reschedule</property>
-            <property name="workerMainExchange">%worker_pool.queue_prefix%worker.main.exchange</property>
-            <property name="workerHighPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.high_prio</property>
-            <property name="workerNormalPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.normal_prio</property>
-            <property name="workerLowPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.low_prio</property>
-            <property name="heartBeatSeconds">0</property>
         </service>
 
         <service id="annostation.labeling_api.service.authentication.user_permissions"
