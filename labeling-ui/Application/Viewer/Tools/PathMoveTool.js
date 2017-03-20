@@ -1,20 +1,27 @@
-import ScalingTool from '../ScalingTool';
-import NotModifiedError from '../Errors/NotModifiedError';
+import paper from 'paper';
+import MovingTool from './MovingTool';
+import NotModifiedError from './Errors/NotModifiedError';
 
 /**
- * A Tool for scaling annotation shapes
- *
- * @implements ToolEvents
+ * A Tool for moving polygon shapes
  */
-class PolygonScaleTool extends ScalingTool {
+class PathMoveTool extends MovingTool {
   /**
-   * @param {$rootScope} $rootScope
    * @param {DrawingContext} drawingContext
-   * @param {angular.$q} $q
+   * @param $rootScope
+   * @param $q
    * @param {LoggerService} loggerService
    */
   constructor(drawingContext, $rootScope, $q, loggerService) {
     super(drawingContext, $rootScope, $q, loggerService);
+
+    /**
+     * Mouse to center offset for moving a shape
+     *
+     * @type {Point}
+     * @private
+     */
+    this._offset = null;
 
     /**
      * Variable that holds the modified state of the current rectangle
@@ -26,13 +33,14 @@ class PolygonScaleTool extends ScalingTool {
   }
 
   /**
-   * @param {ScalingToolActionStruct} toolActionStruct
+   * @param {MovingToolActionStruct} toolActionStruct
    * @returns {Promise}
    */
-  invokeShapeScaling(toolActionStruct) {
+  invokeShapeMoving(toolActionStruct) {
+    this._offset = null;
     this._modified = false;
 
-    return super.invokeShapeScaling(toolActionStruct);
+    return super.invokeShapeMoving(toolActionStruct);
   }
 
   /**
@@ -49,23 +57,52 @@ class PolygonScaleTool extends ScalingTool {
     this._complete(shape);
   }
 
-  onMouseUp() {
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseDown(event) {
+    const point = event.point;
     const {shape} = this._toolActionStruct;
+
+    this._offset = new paper.Point(
+      shape.position.x - point.x,
+      shape.position.y - point.y
+    );
+  }
+
+  /**
+   * @param {paper.Event} event
+   */
+  onMouseUp() {
     if (this._modified !== true) {
-      this._reject(new NotModifiedError('Polygon not scaled.'));
+      this._reject(new NotModifiedError('Polygon wasn\'t moved in any way'));
       return;
     }
 
+    const {shape} = this._toolActionStruct;
     this._complete(shape);
   }
 
+  /**
+   * @param {paper.Event} event
+   */
   onMouseDrag(event) {
     const point = event.point;
-    const {shape, handle} = this._toolActionStruct;
-    this._modified = true;
+    const {shape} = this._toolActionStruct;
 
+    this._modified = true;
+    this._moveTo(shape, point.add(this._offset));
+  }
+
+  /**
+   * @param {PaperShape} shape
+   * @param {paper.Point} point
+   * @private
+   */
+  _moveTo(shape, point) {
+    const {options} = this._toolActionStruct;
     this._context.withScope(() => {
-      shape.resize(handle, point);
+      shape.moveTo(this._restrictToViewport(shape, point, options.minimalVisibleShapeOverflow === null ? undefined : options.minimalVisibleShapeOverflow));
     });
   }
 }
@@ -79,8 +116,8 @@ class PolygonScaleTool extends ScalingTool {
  * @abstract
  * @static
  */
-PolygonScaleTool.getToolName = () => {
-  return 'PolygonScaleTool';
+PathMoveTool.getToolName = () => {
+  return 'PathMoveTool';
 };
 
 /**
@@ -96,9 +133,10 @@ PolygonScaleTool.getToolName = () => {
  * @abstract
  * @static
  */
-PolygonScaleTool.isShapeClassSupported = shapeClass => {
+PathMoveTool.isShapeClassSupported = shapeClass => {
   return [
     'polygon',
+    'polyline',
   ].includes(shapeClass);
 };
 
@@ -115,17 +153,17 @@ PolygonScaleTool.isShapeClassSupported = shapeClass => {
  * @abstract
  * @static
  */
-PolygonScaleTool.isActionIdentifierSupported = actionIdentifier => {
+PathMoveTool.isActionIdentifierSupported = actionIdentifier => {
   return [
-    'scale',
+    'move',
   ].includes(actionIdentifier);
 };
 
-PolygonScaleTool.$inject = [
+PathMoveTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
   'loggerService',
 ];
 
-export default PolygonScaleTool;
+export default PathMoveTool;
