@@ -69,7 +69,7 @@ class InProgressService {
     this._$window.addEventListener('beforeunload', this._windowBeforeUnload);
     this._installNavigationInterceptor();
 
-    this._$rootScope.$on('$destroy', () => this.end());
+    this._$rootScope.$on('$destroy', () => this._uninstallNavigationInterceptor());
   }
 
   end() {

@@ -39,10 +39,11 @@ describe('InProgressService test suite', () => {
     expect(rootScopeMock.$on).toHaveBeenCalledWith('$destroy', jasmine.any(Function));
   });
 
-  it('adds a callback to beforeunload', () => {
-    spyOn(windowMock, 'addEventListener');
-    inProgress.start(rootScopeMock);
+  it('should remove eventlistners on .end() call', () => {
+    spyOn(windowMock, 'removeEventListener');
 
-    expect(windowMock.addEventListener).toHaveBeenCalledWith('beforeunload', jasmine.any(Function));
+    inProgress.end();
+
+    expect(windowMock.removeEventListener).toHaveBeenCalledWith('beforeunload', jasmine.any(Function));
   });
 });
