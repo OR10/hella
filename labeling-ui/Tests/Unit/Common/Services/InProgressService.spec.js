@@ -4,7 +4,7 @@ import Common from 'Application/Common/Common';
 
 import InProgressService from 'Application/Common/Services/InProgressService';
 
-fdescribe('InProgressService test suite', () => {
+describe('InProgressService test suite', () => {
   let inProgress;
   let windowMock;
   let rootScopeMock;
@@ -35,6 +35,7 @@ fdescribe('InProgressService test suite', () => {
     spyOn(rootScopeMock, '$on');
     inProgress.start();
 
+    expect(rootScopeMock.$on).toHaveBeenCalledWith('$stateChangeStart', jasmine.any(Function));
     expect(rootScopeMock.$on).toHaveBeenCalledWith('$destroy', jasmine.any(Function));
   });
 

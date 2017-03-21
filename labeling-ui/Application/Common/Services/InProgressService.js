@@ -33,8 +33,6 @@ class InProgressService {
      * @private
      */
     this._message = undefined;
-
-    this._$rootScope.$on('$destroy', () => this.end());
   }
 
   _installNavigationInterceptor() {
@@ -70,6 +68,8 @@ class InProgressService {
     this._message = message;
     this._$window.addEventListener('beforeunload', this._windowBeforeUnload);
     this._installNavigationInterceptor();
+
+    this._$rootScope.$on('$destroy', () => this.end());
   }
 
   end() {
