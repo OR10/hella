@@ -47,6 +47,7 @@ class PaperPath extends PaperThingShape {
   }
 
   /**
+   * @param {paper.Path} shape
    * @param {Boolean} drawHandles
    * @public
    */
