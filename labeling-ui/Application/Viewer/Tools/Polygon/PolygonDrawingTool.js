@@ -1,4 +1,4 @@
-import PaperPolygon from '../../Shapes/PaperPolyline';
+import PaperPolygon from '../../Shapes/PaperPolygon';
 import PathDrawingTool from '../PathDrawingTool';
 
 /**
