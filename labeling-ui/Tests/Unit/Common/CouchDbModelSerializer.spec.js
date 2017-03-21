@@ -9,6 +9,8 @@ import CouchDbModelSerializer from 'Application/Common/Services/CouchDbModelSeri
 // Test fixture assets
 import LabeledThingCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThing';
 import LabeledThingFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThing';
+// import LabeledThingGroupCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroup';
+// import LabeledThingGroupFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThingGroup';
 
 import FrameRangeCouchDbModel from 'Tests/Fixtures/Models/CouchDb/FrameRange';
 import FrameRangeFrontendModel from 'Tests/Fixtures/Models/Frontend/FrameRange';
@@ -34,6 +36,8 @@ describe('CouchDbModelSerializer', () => {
 
   using([
     [LabeledThingFrontendModel, LabeledThingCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING],
+    // TODO: After live migration is present reactivate this testcase
+    // [LabeledThingGroupFrontendModel, LabeledThingGroupCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP],
   ], (frontendModel, couchDbModel) => {
     it('serialize model by guessing its type', () => {
       const couchDbModelWithoutRevision = angular.copy(couchDbModel);
@@ -46,6 +50,8 @@ describe('CouchDbModelSerializer', () => {
 
   using([
     [LabeledThingFrontendModel, LabeledThingCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING],
+    // TODO: After live migration is present reactivate this testcase
+    // [LabeledThingGroupFrontendModel, LabeledThingGroupCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP],
     [FrameRangeFrontendModel, FrameRangeCouchDbModel, CouchDbModelSerializer.TYPE_FRAME_RANGE],
   ], (frontendModel, couchDbModel, type) => {
     it('serialize model by specifying its type', () => {

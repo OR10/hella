@@ -1,5 +1,6 @@
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
+import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup';
 
 import {cloneDeep} from 'lodash';
 
@@ -21,6 +22,7 @@ class CouchDbModelSerializer {
     this._modelClassToDocumentTypeMapping = new Map([
       [LabeledThing, CouchDbModelSerializer.TYPE_LABELED_THING],
       [LabeledThingInFrame, CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME],
+      [LabeledThingGroup, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP],
     ]);
   }
 
@@ -42,6 +44,25 @@ class CouchDbModelSerializer {
 
     const serializerDelegate = this._getSerializerDelegateForType(type);
     return this[serializerDelegate](model);
+  }
+
+  /**
+   * Serialize a LabeledThingGroup Model
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   *
+   * @return {object}
+   *
+   * @private
+   */
+  _serializeAppBundleModelLabeledThingGroup(labeledThingGroup) {
+    const document = labeledThingGroup.toJSON();
+    this._prefixIdAndRevision(document);
+
+    // Type annotation
+    document.type = CouchDbModelSerializer.TYPE_LABELED_THING_GROUP;
+
+    return document;
   }
 
   /**
@@ -164,6 +185,7 @@ class CouchDbModelSerializer {
   }
 }
 
+CouchDbModelSerializer.TYPE_LABELED_THING_GROUP = 'AppBundle.Model.LabeledThingGroup';
 CouchDbModelSerializer.TYPE_LABELED_THING = 'AppBundle.Model.LabeledThing';
 CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME = 'AppBundle.Model.LabeledThingInFrame';
 CouchDbModelSerializer.TYPE_FRAME_RANGE = 'AppBundle.Model.FrameIndexRange';

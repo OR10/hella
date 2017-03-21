@@ -47,7 +47,7 @@ class LabeledThingGroupTest extends Tests\CouchDbTestCase
     public function testDeleteLabeledThingGroup()
     {
         $this->createLabeledThing($this->task);
-        $labeledThingGroup = new Model\LabeledThingGroup('LabeledThingGroupId', 22, 1);
+        $labeledThingGroup = new Model\LabeledThingGroup($this->task, 'LabeledThingGroupId', 22, 1);
         $this->labeledThingGroupFacade->save($labeledThingGroup);
 
         $response = $this->createRequest(
@@ -68,12 +68,14 @@ class LabeledThingGroupTest extends Tests\CouchDbTestCase
         $labeledThing = $this->createLabeledThing($this->task);
 
         $labeledThingGroup1 = new Model\LabeledThingGroup(
+            $this->task,
             1,
             'LabeledThingGroupId-1',
             ['7920ae3e-2547-46de-9ed0-682724144394']
         );
         $this->labeledThingGroupFacade->save($labeledThingGroup1);
         $labeledThingGroup2 = new Model\LabeledThingGroup(
+            $this->task,
             1,
             'LabeledThingGroupId-2',
             ['bdbec977-58a2-499f-a8b1-b724d8b9834e']
@@ -132,12 +134,14 @@ class LabeledThingGroupTest extends Tests\CouchDbTestCase
                         'lineColor' => 1,
                         'groupType' => 'LabeledThingGroupId-2',
                         'groupIds'  => ['bdbec977-58a2-499f-a8b1-b724d8b9834e'],
+                        'taskId'    => $this->task->getId(),
                     ],
                     [
                         'id'        => $labeledThingGroup1->getId(),
                         'lineColor' => 1,
                         'groupType' => 'LabeledThingGroupId-1',
                         'groupIds'  => ['7920ae3e-2547-46de-9ed0-682724144394'],
+                        'taskId'    => $this->task->getId(),
                     ],
                 ],
             ],
