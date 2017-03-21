@@ -5,27 +5,14 @@ import {debounce} from 'lodash';
  */
 class UploadFormController {
   /**
-   * @param {$rootScope} $rootScope
-   * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {UploadGateway} uploadGateway
    * @param {ModalService} modalService
    * @param {ListDialog.constructor} ListDialog
    * @param {OrganisationService} organisationService
+   * @param {InProgressService} inProgressService
    */
-  constructor($rootScope, $scope, $state, uploadGateway, modalService, ListDialog, organisationService) {
-    /**
-     * @type {$rootScope}
-     * @private
-     */
-    this._$rootScope = $rootScope;
-
-    /**
-     * @type {$rootScope.$scope}
-     * @private
-     */
-    this._$scope = $scope;
-
+  constructor($state, uploadGateway, modalService, ListDialog, organisationService, inProgressService) {
     /**
      * @type {$state}
      * @private
@@ -57,6 +44,12 @@ class UploadFormController {
     this._ListDialog = ListDialog;
 
     /**
+     * @type {InProgressService}
+     * @private
+     */
+    this._inProgressService = inProgressService;
+
+    /**
      * @type {boolean}
      */
     this.uploadInProgress = false;
@@ -80,48 +73,6 @@ class UploadFormController {
     organisationService.subscribe(newOrganisation => {
       this.currentOrganisationId = newOrganisation.id;
     });
-
-    $scope.$on('$destroy', () => this._uninstallNavigationInterceptions());
-
-    this._windowBeforeUnload = event => {
-      // The message is not shown in newer chrome versions, but a generic window will be shown.
-      const message = `DO NOT LEAVE THIS PAGE!\n\nAn upload is currently running. If you leave this page or close the browser window it will be stopped.\n\nPlease click 'Stay' now to continue the upload.`;
-      event.returnValue = message;
-      return message;
-    };
-  }
-
-  _installNavigationInterceptions() {
-    this._unregisterUiRouterInterception = this._$rootScope.$on(
-      '$stateChangeStart', event => {
-        event.preventDefault();
-        this._modalService.info(
-          {
-            title: 'Upload in progress',
-            headline: 'The page can not be left, while upload is in progress.',
-            message: 'While an upload is running you can not leave the upload page. You may however open a second browser window, while the upload is running.',
-            confirmButtonText: 'Understood',
-          },
-          undefined,
-          undefined,
-          {
-            abortable: false,
-            warning: true,
-          }
-        );
-      }
-    );
-
-    window.addEventListener('beforeunload', this._windowBeforeUnload);
-  }
-
-  _uninstallNavigationInterceptions() {
-    if (this._unregisterUiRouterInterception !== null) {
-      this._unregisterUiRouterInterception();
-      this._unregisterUiRouterInterception = null;
-    }
-
-    window.removeEventListener('beforeunload', this._windowBeforeUnload);
   }
 
   _uploadComplete() {
@@ -129,7 +80,7 @@ class UploadFormController {
       .then(
         result => {
           this.uploadInProgress = false;
-          this._uninstallNavigationInterceptions();
+          this._inPorgressService.end();
           if (this._hasFilesWithError()) {
             this._showCompletedWithErrorsModal(result.missing3dVideoCalibrationData);
           } else {
@@ -140,7 +91,7 @@ class UploadFormController {
       .catch(
         () => {
           this.uploadInProgress = false;
-          this._uninstallNavigationInterceptions();
+          this._inPorgressService.end();
           this._showCompletedWithErrorsModal();
         }
       );
@@ -225,7 +176,7 @@ class UploadFormController {
 
   uploadStarted() {
     this.uploadInProgress = true;
-    this._installNavigationInterceptions();
+    this._inProgressService.start('Upload is in progress!');
   }
 
   fileAdded(file) {
@@ -243,13 +194,12 @@ class UploadFormController {
 }
 
 UploadFormController.$inject = [
-  '$rootScope',
-  '$scope',
   '$state',
   'uploadGateway',
   'modalService',
   'ListDialog',
   'organisationService',
+  'inProgressService',
 ];
 
 export default UploadFormController;
