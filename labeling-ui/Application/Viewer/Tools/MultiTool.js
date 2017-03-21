@@ -4,7 +4,7 @@ import PaperGroupRectangle from '../../Viewer/Shapes/PaperGroupRectangle';
 import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
-import PaperPolyline from '../../Viewer/Shapes/PaperPolygon';
+import PaperPolyline from '../../Viewer/Shapes/PaperPolyline';
 import hitResolver from '../Support/HitResolver';
 
 import CreationToolActionStruct from './ToolActionStructs/CreationToolActionStruct';
