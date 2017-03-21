@@ -1,36 +1,47 @@
+import angular from 'angular';
+import {module, inject} from 'angular-mocks';
+import Common from 'Application/Common/Common';
+
 import InProgressService from 'Application/Common/Services/InProgressService';
-import {inject} from 'angular-mocks';
 
 fdescribe('InProgressService test suite', () => {
   let inProgress;
   let windowMock;
+  let rootScopeMock;
 
-  beforeEach(inject($window => {
-    windowMock = $window;
-    inProgress = new InProgressService(windowMock);
-  }));
+  beforeEach(() => {
+    const featureFlags = {
+      pouchdb: false,
+    };
+
+    const commonModule = new Common();
+    commonModule.registerWithAngular(angular, featureFlags);
+    module('AnnoStation.Common');
+
+    inject(($rootScope, $window, modalService) => {
+      rootScopeMock = $rootScope;
+      windowMock = $window;
+
+      inProgress = new InProgressService(rootScopeMock, windowMock, modalService);
+    });
+  });
 
   it('can be created', () => {
     expect(inProgress).toEqual(jasmine.any(InProgressService));
   });
 
-  describe('#start()', () => {
-    let scopeMock;
 
-    beforeEach(() => {
-      scopeMock = jasmine.createSpyObj('$scope', ['$on']);
-    });
+  it('adds an event listener to the $rootScope destroy event', () => {
+    spyOn(rootScopeMock, '$on');
+    inProgress.start();
 
-    it('adds an event listener to the $scope destroy event', () => {
-      inProgress.start(scopeMock);
+    expect(rootScopeMock.$on).toHaveBeenCalledWith('$destroy', jasmine.any(Function));
+  });
 
-      expect(scopeMock.$on).toHaveBeenCalledWith('$destroy', jasmine.any(Function));
-    });
+  it('adds a callback to beforeunload', () => {
+    spyOn(windowMock, 'addEventListener');
+    inProgress.start(rootScopeMock);
 
-    it('adds a callback to beforeunload', () => {
-      spyOn(windowMock, 'addEventListener');
-      inProgress.start(scopeMock);
-      expect(windowMock.addEventListener).toHaveBeenCalledWith('beforeunload', jasmine.any(Function));
-    });
+    expect(windowMock.addEventListener).toHaveBeenCalledWith('beforeunload', jasmine.any(Function));
   });
 });
