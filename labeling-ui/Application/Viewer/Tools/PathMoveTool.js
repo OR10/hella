@@ -1,11 +1,11 @@
 import paper from 'paper';
-import MovingTool from '../MovingTool';
-import NotModifiedError from '../Errors/NotModifiedError';
+import MovingTool from './MovingTool';
+import NotModifiedError from './Errors/NotModifiedError';
 
 /**
  * A Tool for moving polygon shapes
  */
-class PolygonMoveTool extends MovingTool {
+class PathMoveTool extends MovingTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param $rootScope
@@ -116,8 +116,8 @@ class PolygonMoveTool extends MovingTool {
  * @abstract
  * @static
  */
-PolygonMoveTool.getToolName = () => {
-  return 'PolygonMoveTool';
+PathMoveTool.getToolName = () => {
+  return 'PathMoveTool';
 };
 
 /**
@@ -133,9 +133,10 @@ PolygonMoveTool.getToolName = () => {
  * @abstract
  * @static
  */
-PolygonMoveTool.isShapeClassSupported = shapeClass => {
+PathMoveTool.isShapeClassSupported = shapeClass => {
   return [
     'polygon',
+    'polyline',
   ].includes(shapeClass);
 };
 
@@ -152,17 +153,17 @@ PolygonMoveTool.isShapeClassSupported = shapeClass => {
  * @abstract
  * @static
  */
-PolygonMoveTool.isActionIdentifierSupported = actionIdentifier => {
+PathMoveTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'move',
   ].includes(actionIdentifier);
 };
 
-PolygonMoveTool.$inject = [
+PathMoveTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
   'loggerService',
 ];
 
-export default PolygonMoveTool;
+export default PathMoveTool;

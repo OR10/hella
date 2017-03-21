@@ -128,13 +128,14 @@ class RectangleDrawingTool extends CreationTool {
 
     const width = 100;
     const height = 100;
+    const rectangleDivider = 2;
     const from = new paper.Point(
-      (video.metaData.width / 2) - (width / 2),
-      (video.metaData.height / 2) - (height / 2)
+      (video.metaData.width / rectangleDivider) - (width / rectangleDivider),
+      (video.metaData.height / rectangleDivider) - (height / rectangleDivider)
     );
     const to = new paper.Point(
-      (video.metaData.width / 2) + (width / 2),
-      (video.metaData.height / 2) + (height / 2)
+      (video.metaData.width / rectangleDivider) + (width / rectangleDivider),
+      (video.metaData.height / rectangleDivider) + (height / rectangleDivider)
     );
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 

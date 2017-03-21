@@ -12,11 +12,12 @@ import CuboidScaleTool from '../Tools/Cuboid/CuboidScaleTool';
 import CuboidMoveTool from '../Tools/Cuboid/CuboidMoveTool';
 import CuboidKeyboardTool from '../Tools/Cuboid/CuboidKeyboardTool';
 import PolygonDrawingTool from '../Tools/Polygon/PolygonDrawingTool';
-import PolygonMoveTool from '../Tools/Polygon/PolygonMoveTool';
-import PolygonScaleTool from '../Tools/Polygon/PolygonScaleTool';
 import GroupCreationTool from '../Tools/Group/GroupCreationTool';
-import PolygonKeyboardTool from '../Tools/Polygon/PolygonKeyboardTool';
 import NoOperationPaperTool from '../Tools/NoOperationPaperTool';
+import PolylineDrawingTool from '../Tools/Polyline/PolylineDrawingTool';
+import PathScaleTool from '../Tools/PathScaleTool';
+import PathMoveTool from '../Tools/PathMoveTool';
+import PathKeyboardTool from '../Tools/PathKeyboardTool';
 
 class ToolService {
   /**
@@ -74,10 +75,11 @@ class ToolService {
       CuboidScaleTool,
       CuboidDrawingTool,
       CuboidKeyboardTool,
+      PathScaleTool,
+      PathMoveTool,
+      PathKeyboardTool,
       PolygonDrawingTool,
-      PolygonScaleTool,
-      PolygonMoveTool,
-      PolygonKeyboardTool,
+      PolylineDrawingTool,
       GroupCreationTool,
       NoOperationPaperTool,
     ];

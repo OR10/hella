@@ -1,11 +1,10 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
 import PaperPath from './PaperPath';
-
 /**
  * @extends PaperPath
  */
-class PaperPolygon extends PaperPath {
+class PaperPolyline extends PaperPath {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {string} shapeId
@@ -35,7 +34,7 @@ class PaperPolygon extends PaperPath {
       strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
-      closed: true,
+      closed: false,
       dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
       strokeScaling: false,
       fillColor: new paper.Color(0, 0, 0, 0),
@@ -47,7 +46,7 @@ class PaperPolygon extends PaperPath {
    * @returns {string}
    */
   getClass() {
-    return PaperPolygon.getClass();
+    return PaperPolyline.getClass();
   }
 
   toJSON() {
@@ -59,7 +58,7 @@ class PaperPolygon extends PaperPath {
     });
 
     return {
-      type: 'polygon',
+      type: 'polyline',
       id: this._shapeId,
       points,
       labeledThingInFrameId: this.labeledThingInFrame.id,
@@ -70,8 +69,8 @@ class PaperPolygon extends PaperPath {
 /**
  * @returns {string}
  */
-PaperPolygon.getClass = () => {
-  return 'polygon';
+PaperPolyline.getClass = () => {
+  return 'polyline';
 };
 
-export default PaperPolygon;
+export default PaperPolyline;

@@ -4,6 +4,7 @@ import PaperGroupRectangle from '../../Viewer/Shapes/PaperGroupRectangle';
 import PaperPedestrian from '../../Viewer/Shapes/PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
+import PaperPolyline from '../../Viewer/Shapes/PaperPolyline';
 import hitResolver from '../Support/HitResolver';
 
 import CreationToolActionStruct from './ToolActionStructs/CreationToolActionStruct';
@@ -174,6 +175,8 @@ class MultiTool extends PaperTool {
         return this._toolService.getTool(this._context, PaperCuboid.getClass());
       case 'polygon':
         return this._toolService.getTool(this._context, PaperPolygon.getClass());
+      case 'polyline':
+        return this._toolService.getTool(this._context, PaperPolyline.getClass());
       case 'group-rectangle':
         return this._toolService.getTool(this._context, PaperGroupRectangle.getClass());
       default:

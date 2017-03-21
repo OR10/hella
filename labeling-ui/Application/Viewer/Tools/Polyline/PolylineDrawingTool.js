@@ -1,4 +1,4 @@
-import PaperPolygon from '../../Shapes/PaperPolygon';
+import PaperPolyline from '../../Shapes/PaperPolyline';
 import PathDrawingTool from '../PathDrawingTool';
 
 /**
@@ -7,7 +7,7 @@ import PathDrawingTool from '../PathDrawingTool';
  * @extends PathDrawingTool
  * @implements ToolEvents
  */
-class PolygonDrawingTool extends PathDrawingTool {
+class PolylineDrawingTool extends PathDrawingTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {$rootScope.Scope} $rootScope
@@ -18,7 +18,7 @@ class PolygonDrawingTool extends PathDrawingTool {
    * @param {HierarchyCreationService} hierarchyCreationService
    */
   constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
-    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, PaperPolygon.getClass());
+    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, PaperPolyline.getClass());
   }
 }
 
@@ -31,8 +31,8 @@ class PolygonDrawingTool extends PathDrawingTool {
  * @abstract
  * @static
  */
-PolygonDrawingTool.getToolName = () => {
-  return 'PolygonDrawingTool';
+PolylineDrawingTool.getToolName = () => {
+  return 'PolylineDrawingTool';
 };
 
 /**
@@ -48,9 +48,9 @@ PolygonDrawingTool.getToolName = () => {
  * @abstract
  * @static
  */
-PolygonDrawingTool.isShapeClassSupported = shapeClass => {
+PolylineDrawingTool.isShapeClassSupported = shapeClass => {
   return [
-    'polygon',
+    'polyline',
   ].includes(shapeClass);
 };
 
@@ -67,13 +67,13 @@ PolygonDrawingTool.isShapeClassSupported = shapeClass => {
  * @abstract
  * @static
  */
-PolygonDrawingTool.isActionIdentifierSupported = actionIdentifier => {
+PolylineDrawingTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
   ].includes(actionIdentifier);
 };
 
-PolygonDrawingTool.$inject = [
+PolylineDrawingTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
@@ -83,4 +83,4 @@ PolygonDrawingTool.$inject = [
   'hierarchyCreationService',
 ];
 
-export default PolygonDrawingTool;
+export default PolylineDrawingTool;
