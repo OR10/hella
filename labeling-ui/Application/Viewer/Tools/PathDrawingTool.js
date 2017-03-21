@@ -86,12 +86,12 @@ class PathDrawingTool extends CreationTool {
       video.metaData.width / 2,
       video.metaData.height / 2
     );
-
+    const arbitrarySpace = 50;
     const points = [
-      new paper.Point(center.x + 50, center.y),
-      new paper.Point(center.x, center.y + 50),
-      new paper.Point(center.x - 50, center.y),
-      new paper.Point(center.x, center.y - 50),
+      new paper.Point(center.x + arbitrarySpace, center.y),
+      new paper.Point(center.x, center.y + arbitrarySpace),
+      new paper.Point(center.x - arbitrarySpace, center.y),
+      new paper.Point(center.x, center.y - arbitrarySpace),
     ];
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
@@ -124,8 +124,8 @@ class PathDrawingTool extends CreationTool {
   onMouseDown(event) {
     const point = event.point;
     const {minHandles, maxHandles} = this._getHandleCountRestrictions();
-
-    if (this._startPosition && event.event.button === 2) {
+    const rightMouseDown = 2;
+    if (this._startPosition && event.event.button === rightMouseDown) {
       if (this._path && this._path.points.length < minHandles) {
         this._path.remove();
         this._$rootScope.$emit('drawingtool:exception', `To few points! You need to set at least ${minHandles} points to create this shape.`);

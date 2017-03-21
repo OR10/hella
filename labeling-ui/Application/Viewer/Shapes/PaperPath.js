@@ -26,6 +26,7 @@ class PaperPath extends PaperThingShape {
    * @returns {{width: number, height: number}}
    */
   get bounds() {
+    // Filter through all points to get the two farthest points of shape
     const leftPoint = this._points.reduce((initial, current) => initial.x < current.x ? initial : current);
     const rightPoint = this._points.reduce((initial, current) => initial.x > current.x ? initial : current);
     const topPoint = this._points.reduce((initial, current) => initial.y < current.y ? initial : current);
@@ -171,6 +172,7 @@ class PaperPath extends PaperThingShape {
    * @returns {Point}
    */
   get position() {
+    // Filter through all points to get the two farthest points of shape
     const leftPoint = this._points.reduce((initial, current) => initial.x < current.x ? initial : current);
     const rightPoint = this._points.reduce((initial, current) => initial.x > current.x ? initial : current);
     const topPoint = this._points.reduce((initial, current) => initial.y < current.y ? initial : current);
