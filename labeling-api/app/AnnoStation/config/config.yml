@@ -2,6 +2,7 @@ imports:
   - resource: parameters.yml
   - resource: services.yml
   - resource: security.yml
+  - resource: liip_monitor.yml
 
 parameters:
   redirectAfterLogin: /labeling
@@ -17,6 +18,32 @@ doctrine_couch_db: &doctrine_couch_db
                         mapping: true
                         prefix: "AnnoStationBundle\\Model"
                         dir: "Model"
+
+oneup_flysystem:
+    adapters:
+            cache_adapter:
+                local:
+                    directory: %cache_dir%
+
+    filesystems:
+        cache:
+            adapter: cache_adapter
+            cache: ~
+            alias: ~
+            mount: ~
+        frame_cdn:
+            adapter: frame_cdn_dir_adapter
+            cache: ~
+            alias: ~
+            mount: ~
+            visibility: public
+        video_cdn:
+            adapter: video_cdn_dir_adapter
+            cache: ~
+            alias: ~
+            mount: ~
+            visibility: private
+
 hagl_worker_pool:
    logger: annostation.labeling_api.vendor.logger
    config: annostation.labeling_api.service.amqp_pool_config

@@ -36,11 +36,12 @@ class LabeledThingGroup extends Controller\Base
     /**
      * @Rest\POST("/{task}/labeledThingGroup")
      *
-     * @param HttpFoundation\Request $request
+     * @param HttpFoundation\Request      $request
+     * @param AppBundleModel\LabelingTask $task
      *
      * @return View\View
      */
-    public function postLabeledThingGroupAction(HttpFoundation\Request $request)
+    public function postLabeledThingGroupAction(HttpFoundation\Request $request, AppBundleModel\LabelingTask $task)
     {
         $groupType = $request->request->get('groupType');
         $groupIds  = $request->request->get('groupIds');
@@ -49,7 +50,7 @@ class LabeledThingGroup extends Controller\Base
             throw new BadRequestHttpException('Missing lineColor');
         }
 
-        $labeledThingGroup = new Model\LabeledThingGroup($lineColor, $groupType, $groupIds);
+        $labeledThingGroup = new Model\LabeledThingGroup($task, $lineColor, $groupType, $groupIds);
 
         $this->labeledThingGroupFacade->save($labeledThingGroup);
 

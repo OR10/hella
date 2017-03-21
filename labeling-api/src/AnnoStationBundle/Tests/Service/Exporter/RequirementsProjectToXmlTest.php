@@ -169,7 +169,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         );
         $this->createLabeledThingInFrame($labeledThing, 5, [$cuboid5->toArray()], ['u-turn', 'spain']);
 
-        $labeledThingGroup = new Model\LabeledThingGroup(1);
+        $labeledThingGroup = new Model\LabeledThingGroup($task, 1);
         $this->labeledThingGroupFacade->save($labeledThingGroup);
 
         $labeledThingWithGroup1 = $this->createLabeledThing($task);

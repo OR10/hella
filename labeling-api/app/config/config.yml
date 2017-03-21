@@ -1,7 +1,8 @@
 imports:
-    - { resource: security.yml }
-    - { resource: services.yml }
-    - { resource: build_number.yml }
+    - resource: security.yml
+    - resource: services.yml
+    - resource: build_number.yml
+    - resource: liip_monitor.yml
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -119,31 +120,6 @@ fos_rest:
         default_format: json
         include_format: true
 
-oneup_flysystem:
-    adapters:
-            cache_adapter:
-                local:
-                    directory: %cache_dir%
-
-    filesystems:
-        cache:
-            adapter: cache_adapter
-            cache: ~
-            alias: ~
-            mount: ~
-        frame_cdn:
-            adapter: frame_cdn_dir_adapter
-            cache: ~
-            alias: ~
-            mount: ~
-            visibility: public
-        video_cdn:
-            adapter: video_cdn_dir_adapter
-            cache: ~
-            alias: ~
-            mount: ~
-            visibility: private
-
 snc_redis:
     clients:
         default:
@@ -153,46 +129,3 @@ snc_redis:
     session:
         client: default
         locking: false
-liip_monitor:
-    enable_controller: true
-    checks:
-        groups:
-            default:
-                rabbit_mq:
-                    default:
-                        host: "%rabbitmq_host%"
-                        port: "%rabbitmq_port%"
-                        user: "%rabbitmq_user%"
-                        password: "%rabbitmq_password%"
-                        vhost: "%rabbitmq_vhost%"
-                disk_usage:
-                    warning:              70
-                    critical:             90
-                    path:                 '%cache_dir%'
-                guzzle_http_service:
-                  webserver:
-                      url:                  https://localhost
-                      headers:              []
-                      options:
-                          verify: false
-                      status_code:          200
-                      content:              null
-                      method:               GET
-                      body:                 null
-                  frame_cdn:
-                      url:                  %frame_cdn_base_url%
-                      headers:              []
-                      options:
-                          verify: false
-                      status_code:          403
-                      content:              null
-                      method:               GET
-                      body:                 null
-                  couch_db:
-                      url:                  http://%couchdb_host%:%couchdb_port%
-                      headers:              []
-                      options:              []
-                      status_code:          200
-                      content:              null
-                      method:               GET
-                      body:                 null
