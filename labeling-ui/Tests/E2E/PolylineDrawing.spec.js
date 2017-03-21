@@ -1,16 +1,15 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
-  expectAllModalsToBeClosed,
   expectModalToBePresent,
   getMockRequestsMade,
-  initApplication, dumpAllRequestsMade
+  initApplication,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Polyline drawing', () => {
+describe('Polyline drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -56,13 +55,13 @@ fdescribe('Polyline drawing', () => {
         done();
       });
   });
- 
+
   it('should load and draw two polyline shapes', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
     ]));
-    
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'LoadAndDrawTwoPolylines')
@@ -79,7 +78,7 @@ fdescribe('Polyline drawing', () => {
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
     ]));
-    
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
@@ -96,13 +95,13 @@ fdescribe('Polyline drawing', () => {
         done();
       });
   });
-  
+
   it('should select and deselect a polyline shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
     ]));
-    
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
@@ -123,13 +122,13 @@ fdescribe('Polyline drawing', () => {
         done();
       });
   });
-  
+
   it('should select one and then select an other polyline shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
     ]));
-    
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
@@ -150,14 +149,14 @@ fdescribe('Polyline drawing', () => {
         done();
       });
   });
-  
+
   it('should correctly move a polyline shape and save the changed coordinates', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.PolylineDrawing.MoveOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
-    
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
@@ -184,7 +183,7 @@ fdescribe('Polyline drawing', () => {
         done();
       });
   });
-  
+
   it('should correctly resize a polyline shape and save the changed coordinates', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
@@ -193,7 +192,7 @@ fdescribe('Polyline drawing', () => {
       assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.getLabeledThingsInFrame0to4,
       assets.mocks.PolylineDrawing.Shared.StoreLabeledThing,
     ]));
-    
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
         .mouseMove(viewer, {x: 200, y: 200}) // initial position
@@ -223,7 +222,7 @@ fdescribe('Polyline drawing', () => {
         done();
       });
   });
-  
+
   it('should keep the polyline shape selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex0,
@@ -239,7 +238,6 @@ fdescribe('Polyline drawing', () => {
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
           .click()
           .perform();
-        
       })
       .then(() => browser.sleep(500))
       .then(() => {
@@ -256,7 +254,7 @@ fdescribe('Polyline drawing', () => {
         done();
       });
   });
-  
+
   it('should draw a new polyline shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
@@ -286,15 +284,13 @@ fdescribe('Polyline drawing', () => {
         .click(protractor.Button.RIGHT)
         .perform()
       )
-      //.then(() => browser.pause())
       .then(
-          //() => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolyline')
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolyline')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolyline);
       })
-      //.then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing);
@@ -302,7 +298,7 @@ fdescribe('Polyline drawing', () => {
         done();
       });
   });
-  
+
   it('should draw a new Polyline shape with intermediary mouse movements', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
@@ -366,13 +362,12 @@ fdescribe('Polyline drawing', () => {
         .perform()
       )
       .then(
-          //() => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary4')
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary4);
       })
-      // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing);
@@ -380,7 +375,7 @@ fdescribe('Polyline drawing', () => {
         done();
       });
   });
-  
+
   it('should draw multiple new Polyline shapes', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
@@ -402,7 +397,6 @@ fdescribe('Polyline drawing', () => {
           .click(protractor.Button.RIGHT)
           .perform();
       })
-      // .then(() => dumpAllRequestsMade(mock))
       .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewMultiplePolyline1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -447,7 +441,6 @@ fdescribe('Polyline drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewMultiplePolyline3);
       })
       .then(() => getMockRequestsMade(mock))
-      //.then(() => dumpAllRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing);
         expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame2);
@@ -465,7 +458,7 @@ describe('Polyline handle/point limiting', () => {
   let assets;
   let sharedMocks;
   let viewer;
-  
+
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
     sharedMocks = [
@@ -487,16 +480,16 @@ describe('Polyline handle/point limiting', () => {
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
-    
+
     viewer = element(by.css('.layer-container'));
   });
-  
+
   xit('should add too few handles', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
     ]));
-    
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           browser.actions()
@@ -526,7 +519,7 @@ describe('Polyline handle/point limiting', () => {
       assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame5,
       assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
-    
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
@@ -585,4 +578,3 @@ describe('Polyline handle/point limiting', () => {
     mock.teardown();
   });
 });
-
