@@ -12,7 +12,6 @@ class PaperPolygon extends PaperPath {
    * @param {Array.<Point>} points
    * @param {{primary: string, secondary: string}} color
    * @param {boolean} draft
-   * @param {boolean} isClosed
    */
   constructor(labeledThingInFrame, shapeId, points = [], color, draft = false) {
     super(labeledThingInFrame, shapeId, points, color, draft);
