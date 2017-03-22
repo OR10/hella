@@ -80,7 +80,7 @@ class UploadFormController {
       .then(
         result => {
           this.uploadInProgress = false;
-          this._inPorgressService.end();
+          this._inProgressService.end();
           if (this._hasFilesWithError()) {
             this._showCompletedWithErrorsModal(result.missing3dVideoCalibrationData);
           } else {
@@ -91,7 +91,7 @@ class UploadFormController {
       .catch(
         () => {
           this.uploadInProgress = false;
-          this._inPorgressService.end();
+          this._inProgressService.end();
           this._showCompletedWithErrorsModal();
         }
       );
