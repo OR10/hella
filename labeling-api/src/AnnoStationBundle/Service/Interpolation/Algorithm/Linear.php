@@ -314,7 +314,7 @@ class Linear implements Interpolation\Algorithm
         $endPoints     = $end->getPoints();
 
         if (count($currentPoints) !== count($endPoints)) {
-            throw new \RuntimeException('Failed to interpolate oolyline with different points.');
+            throw new \RuntimeException('Failed to interpolate polyline with different points.');
         }
 
         $points = [];
