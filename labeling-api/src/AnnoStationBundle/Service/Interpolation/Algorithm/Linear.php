@@ -210,6 +210,8 @@ class Linear implements Interpolation\Algorithm
                 return $this->interpolateCuboid3d($current, $end, $steps);
             case Shapes\Polygon::class:
                 return $this->interpolatePolygon($current, $end, $steps);
+            case Shapes\Polyline::class:
+                return $this->interpolatePolyline($current, $end, $steps);
         }
 
         throw new \RuntimeException("Unsupported shape '{$current->getType()}'");
@@ -294,6 +296,36 @@ class Linear implements Interpolation\Algorithm
         }
 
         return new Shapes\Polygon(
+            $current->getId(),
+            $points
+        );
+    }
+
+    /**
+     * @param Shapes\Polyline $current
+     * @param Shapes\Polyline $end
+     * @param                $steps
+     *
+     * @return Shapes\Polygon
+     */
+    private function interpolatePolyline(Shapes\Polyline $current, Shapes\Polyline $end, $steps)
+    {
+        $currentPoints = $current->getPoints();
+        $endPoints     = $end->getPoints();
+
+        if (count($currentPoints) !== count($endPoints)) {
+            throw new \RuntimeException('Failed to interpolate oolyline with different points.');
+        }
+
+        $points = [];
+        foreach ($currentPoints as $index => $currentPoint) {
+            $points[] = [
+                'x' => $currentPoint['x'] + ($endPoints[$index]['x'] - $currentPoint['x']) / $steps,
+                'y' => $currentPoint['y'] + ($endPoints[$index]['y'] - $currentPoint['y']) / $steps,
+            ];
+        }
+
+        return new Shapes\Polyline(
             $current->getId(),
             $points
         );
