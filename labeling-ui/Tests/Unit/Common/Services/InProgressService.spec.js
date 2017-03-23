@@ -5,9 +5,11 @@ import Common from 'Application/Common/Common';
 import InProgressService from 'Application/Common/Services/InProgressService';
 
 describe('InProgressService test suite', () => {
+
   let inProgress;
   let windowMock;
   let rootScopeMock;
+  let modalServiceMock;
 
   beforeEach(() => {
     const featureFlags = {
@@ -21,6 +23,7 @@ describe('InProgressService test suite', () => {
     inject(($rootScope, $window, modalService) => {
       rootScopeMock = $rootScope;
       windowMock = $window;
+      modalServiceMock = modalService;
 
       inProgress = new InProgressService(rootScopeMock, windowMock, modalService);
     });
@@ -134,23 +137,39 @@ describe('InProgressService test suite', () => {
     });
 
     describe('$stateChangeStart', () => {
+      const to = { redirectTo: ''};
       let stateMock;
 
-      beforeEach(inject(($state) => {
+      // In order for the following tests to work, we need the inProgressService that
+      // is injected, otherwise we cannot prevent $state.go in Common.js
+      beforeEach(inject(($state, inProgressService) => {
+        inProgress = inProgressService;
         stateMock = $state;
+
         spyOn(stateMock, 'go');
       }));
 
       beforeEach(() => {
         spyOn(windowMock, 'addEventListener');
-        inProgress.start();
       });
 
-      // it('prevents the default and does not call state.go', () => {
-      //   inProgress.start();
-      //   rootScopeMock.$emit('$stateChangeStart');
-      //   expect(stateMock.go).not.toHaveBeenCalled();
-      // });
+      it('prevents the default and does not call state.go', () => {
+        inProgress.start();
+        rootScopeMock.$emit('$stateChangeStart', to);
+        expect(stateMock.go).not.toHaveBeenCalled();
+      });
+
+      it('shows a modal window with the given message', () => {
+        const message = 'Kevin allein zu Haus';
+        spyOn(modalServiceMock, 'info');
+        inProgress.start(message);
+
+        rootScopeMock.$emit('$stateChangeStart', to);
+        const actualMessage = modalServiceMock.info.calls.argsFor(0)[0].message;
+
+        expect(modalServiceMock.info).toHaveBeenCalled();
+        expect(actualMessage).toEqual(message);
+      });
     });
   });
 });
