@@ -8,7 +8,6 @@ labeling_api::tideways: true
 labeling_api::params::create_parameter_files: true
 labeling_api::params::database_host: 'mysql'
 labeling_api::params::couchdb_host: 'couch'
-labeling_api::params::couchdb_host_external: 'anno.crosscan.com'
 labeling_api::params::rabbitmq_host: 'workerqueue'
 
 tideways::php7: true
