@@ -9,7 +9,9 @@ parameters:
     database_password: <%= @database_password %>
 
     couchdb_host: <%= @couchdb_host %>
+    couchdb_host_external: <%= @couchdb_host_external %>
     couchdb_port: <%= @couchdb_port %>
+    couchdb_port_external: <%= @couchdb_port_external %>
     couchdb_user: <% if @couchdb_user != nil %><%= @couchdb_user %><% else %>~<% end %>
     couchdb_password: <% if @couchdb_password != nil %><%= @couchdb_password %><% else %>~<% end %>
 
