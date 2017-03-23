@@ -82,6 +82,30 @@ describe('InProgressService test suite', () => {
     });
   });
 
+  describe('noActiveNavigationInterceptor', () => {
+    beforeEach(() => {
+      spyOn(window, 'addEventListener');
+    });
+
+    it('is true by default', () => {
+      const actual = inProgress.noActiveNavigationInterceptor();
+      expect(actual).toBe(true);
+    });
+
+    it('is false if there is one interceptor', () => {
+      inProgress.start();
+      const actual = inProgress.noActiveNavigationInterceptor();
+      expect(actual).toBe(false);
+    });
+
+    it('is true if there was one interceptor, but it has been stopped', () => {
+      inProgress.start();
+      inProgress.end();
+      const actual = inProgress.noActiveNavigationInterceptor();
+      expect(actual).toEqual(true);
+    });
+  });
+
   describe('events', () => {
     describe('onunload', () => {
       let beforeUnloadCallback;

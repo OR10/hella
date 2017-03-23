@@ -94,6 +94,15 @@ class InProgressService {
 
     this._$window.removeEventListener('beforeunload', this._windowBeforeUnload);
   }
+
+  /**
+   * See if there is an active interceptor
+   *
+   * @returns {boolean}
+   */
+  noActiveNavigationInterceptor() {
+    return (this._uninstallNavigationInterceptor === null);
+  }
 }
 
 InProgressService.$inject = [

@@ -165,7 +165,7 @@ class Common extends Module {
         },
       ]);
 
-    this.module.run(['$rootScope', '$state', '$location', 'modalService', ($rootScope, $state, $location, modalService) => {
+    this.module.run(['$rootScope', '$state', '$location', 'modalService', 'inProgressService', ($rootScope, $state, $location, modalService, inProgressService) => {
       $rootScope.$on('readOnlyError', () => {
         modalService.info(
           {
@@ -257,7 +257,7 @@ class Common extends Module {
       });
 
       $rootScope.$on('$stateChangeStart', (event, to, params) => {
-        if (to.redirectTo) {
+        if (to.redirectTo && inProgressService.noActiveNavigationInterceptor()) {
           event.preventDefault();
           $state.go(to.redirectTo, params, {location: 'replace'});
         }
