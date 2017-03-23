@@ -311,6 +311,8 @@
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.replication" class="AnnoStationBundle\Controller\Api\Task\Replication">
+            <argument>%couchdb_host_external%</argument>
+            <argument>%couchdb_port_external%</argument>
         </service>
     </services>
 </container>
