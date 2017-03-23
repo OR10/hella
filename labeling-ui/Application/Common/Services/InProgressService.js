@@ -57,6 +57,11 @@ class InProgressService {
     );
   }
 
+  /**
+   * @param {window.event} event
+   * @return {string}
+   * @private
+   */
   _windowBeforeUnload(event) {
     // The message is not shown in newer chrome versions, but a generic window will be shown.
     const message = `DO NOT LEAVE THIS PAGE!\n\nA background process is running. If you leave this page or close the browser window it will be stopped.\n\nPlease click 'Stay' now to continue the process.`;
@@ -65,6 +70,9 @@ class InProgressService {
     return message;
   }
 
+  /**
+   * @param {string|undefined} message
+   */
   start(message = undefined) {
     this._message = message;
     this._$window.addEventListener('beforeunload', this._windowBeforeUnload);
