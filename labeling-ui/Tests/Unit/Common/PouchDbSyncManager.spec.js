@@ -159,7 +159,7 @@ describe('PouchDbSyncManager', () => {
     expect(instance).toEqual(jasmine.any(PouchDbSyncManager));
   });
 
-  describe('pullUpdatesForContext', () => {
+  describe('pullUpdatesForContext()', () => {
     it('should return a promise', () => {
       const emptyContext = {};
 
@@ -223,7 +223,7 @@ describe('PouchDbSyncManager', () => {
     });
   });
 
-  describe('pushUpdatesForContext', () => {
+  describe('pushUpdatesForContext()', () => {
     it('should return a promise', () => {
       const emptyContext = {};
 
@@ -509,7 +509,7 @@ describe('PouchDbSyncManager', () => {
 
       const stopPromise = syncManager.stopReplicationsForContext(context);
       stopPromise.then(() => {
-        done.fail('Promise should not have been resolved');
+        expect('Promise should not have been resolved').toEqual('');
       });
       rootScope.$apply();
       done();
@@ -525,7 +525,7 @@ describe('PouchDbSyncManager', () => {
 
       const stopPromise = syncManager.stopReplicationsForContext(context);
       stopPromise.then(() => {
-        done.fail('Promise should not have been resolved');
+        expect('Promise should not have been resolved').toEqual('');
       });
       rootScope.$apply();
       done();
@@ -541,7 +541,7 @@ describe('PouchDbSyncManager', () => {
 
       const stopPromise = syncManager.stopReplicationsForContext(context);
       stopPromise.then(() => {
-        done.fail('Promise should not have been resolved');
+        expect('Promise should not have been resolved').toEqual('');
       });
       rootScope.$apply();
       done();
@@ -555,6 +555,8 @@ describe('PouchDbSyncManager', () => {
 
       const stopPromise = syncManager.stopReplicationsForContext(context);
       stopPromise.then(() => {
+        // I don't really like this tbh
+        expect(true).toBe(true);
         done();
       });
       rootScope.$apply();
@@ -569,7 +571,10 @@ describe('PouchDbSyncManager', () => {
     ], eventName => {
       it('should allow registration of events via "on" function', () => {
         const eventSpy = jasmine.createSpy('onEvent');
-        syncManager.on(eventName, eventSpy);
+        const throwWrapper = () => {
+          syncManager.on(eventName, eventSpy);
+        };
+        expect(throwWrapper).not.toThrow();
       });
     });
 

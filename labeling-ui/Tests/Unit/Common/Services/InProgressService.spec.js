@@ -5,7 +5,6 @@ import Common from 'Application/Common/Common';
 import InProgressService from 'Application/Common/Services/InProgressService';
 
 describe('InProgressService test suite', () => {
-
   let inProgress;
   let windowMock;
   let rootScopeMock;
@@ -30,7 +29,7 @@ describe('InProgressService test suite', () => {
   });
 
   it('can be created', () => {
-      expect(inProgress).toEqual(jasmine.any(InProgressService));
+    expect(inProgress).toEqual(jasmine.any(InProgressService));
   });
 
   describe('start()', () => {
@@ -115,7 +114,7 @@ describe('InProgressService test suite', () => {
 
       beforeEach(() => {
         spyOn(windowMock, 'addEventListener').and.callFake((event, callback) => {
-          if (event == 'beforeunload') {
+          if (event === 'beforeunload') {
             beforeUnloadCallback = callback;
           }
         });

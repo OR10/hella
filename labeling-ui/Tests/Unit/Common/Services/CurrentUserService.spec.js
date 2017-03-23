@@ -69,7 +69,7 @@ describe('CurrentUserService specs', () => {
   describe('isSuperAdmin', () => {
     it('throws false by default (because there is no user set)', () => {
       const currentUserService = new CurrentUserService();
-      const throwWrapper = function() {
+      const throwWrapper = () => {
         currentUserService.isSuperAdmin();
       };
 
