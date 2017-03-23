@@ -58,7 +58,11 @@ class InProgressService {
   }
 
   _windowBeforeUnload(event) {
-    // The message is not shown in newer chrome versions, but a generic window will be shown.
+    // The message is not shown in newer chrome versions and generally most browsers,
+    // but a generic window will be shown.
+    // see https://developer.mozilla.org/de/docs/Web/Events/beforeunload
+    // The values and the return are still necessary in order to at least display a confirm box
+    // once the user tries to leave the page
     const message = `DO NOT LEAVE THIS PAGE!\n\nA background process is running. If you leave this page or close the browser window it will be stopped.\n\nPlease click 'Stay' now to continue the process.`;
     event.returnValue = message;
 
