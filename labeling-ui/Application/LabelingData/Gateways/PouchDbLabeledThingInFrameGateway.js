@@ -204,9 +204,11 @@ class PouchDbLabeledThingInFrameGateway {
       () => {
         this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
         return dbContext.put(serializedLabeledThingInFrame);
-      }).then(response => {
+      })
+      .then(response => {
         return dbContext.get(response.id);
-      }).then(readDocument => {
+      })
+      .then(readDocument => {
         this._revisionManager.extractRevision(readDocument);
         return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
       });
