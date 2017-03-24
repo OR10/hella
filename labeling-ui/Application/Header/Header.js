@@ -22,20 +22,21 @@ class Header extends Module {
   registerWithAngular(angular, featureFlags) {
     this.module = angular.module('AnnoStation.Header', []);
 
-    this.registerDirective('viewerTitleBar', ViewerTitleBarDirective);
+
+    if (featureFlags.pouchdb === true) {
+      this.module.service('timerGateway', PouchDbTimerGateway);
+      this.registerDirective('viewerTitleBar', PouchDbViewerTitleBarDirective);
+    } else {
+      this.registerDirective('viewerTitleBar', ViewerTitleBarDirective);
+      this.module.service('timerGateway', TimerGateway);
+    }
+
     this.registerDirective('timer', TimerDirective);
     this.registerDirective('badge', BadgeDirective);
     this.registerDirective('taskTitle', TaskTitleDirective);
     this.registerDirective('userName', UserNameDirective);
     this.registerDirective('logoutButton', LogoutButtonDirective);
     this.registerDirective('liveSyncIndicator', LiveSyncIndicatorDirective);
-
-    this.module.service('timerGateway', TimerGateway);
-
-    if (featureFlags.pouchdb === true) {
-      this.module.service('timerGateway', PouchDbTimerGateway);
-      this.registerDirective('viewerTitleBar', PouchDbViewerTitleBarDirective);
-    }
   }
 }
 
