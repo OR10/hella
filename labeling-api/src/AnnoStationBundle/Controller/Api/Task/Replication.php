@@ -23,6 +23,22 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class Replication extends Controller\Base
 {
     /**
+     * @var string
+     */
+    private $couchDbExternalHost;
+
+    /**
+     * @var string
+     */
+    private $couchDbExternalPort;
+
+    public function __construct($couchDbExternalHost, $couchDbExternalPort)
+    {
+        $this->couchDbExternalHost = $couchDbExternalHost;
+        $this->couchDbExternalPort = $couchDbExternalPort;
+    }
+
+    /**
      * @Rest\Get("/{task}/replication")
      *
      * @param HttpFoundation\Request $request
@@ -32,13 +48,18 @@ class Replication extends Controller\Base
      */
     public function getReplicationDatabaseAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
-        $database = sprintf('taskdb-project-%s-task-%s', $task->getProjectId(), $task->getId());
+        $databaseName = sprintf('taskdb-project-%s-task-%s', $task->getProjectId(), $task->getId());
 
         return View\View::create()->setData(
             [
                 'result' => [
-                    'taskId'       => $task->getId(),
-                    'databaseName' => $database,
+                    'taskId'         => $task->getId(),
+                    'databaseName'   => $databaseName,
+                    'databaseServer' => sprintf(
+                        'http://%s:%s',
+                        $this->couchDbExternalHost,
+                        $this->couchDbExternalPort
+                    ),
                 ],
             ]
         );
