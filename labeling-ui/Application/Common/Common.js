@@ -27,6 +27,7 @@ import LockService from './Services/LockService';
 import KeyboardShortcutService from './Services/KeyboardShortcutService';
 import ApplicationLoadingMaskService from './Services/ApplicationLoadingMaskService';
 import ApplicationLoadingMaskStateService from './Services/ApplicationLoadingMaskStateService';
+import InProgressService from './Services/InProgressService';
 
 import PouchDbContextService from './Services/PouchDbContextService';
 import PouchDbSyncManager from './Services/PouchDbSyncManager';
@@ -101,6 +102,7 @@ class Common extends Module {
     this.module.service('keyboardShortcutService', KeyboardShortcutService);
     this.module.service('applicationLoadingMaskService', ApplicationLoadingMaskService);
     this.module.service('applicationLoadingMaskStateService', ApplicationLoadingMaskStateService);
+    this.module.service('inProgressService', InProgressService);
 
     // Without feature flag, as those services do not override others.
     this.module.service('pouchDbContextService', PouchDbContextService);
@@ -163,7 +165,7 @@ class Common extends Module {
         },
       ]);
 
-    this.module.run(['$rootScope', '$state', '$location', 'modalService', ($rootScope, $state, $location, modalService) => {
+    this.module.run(['$rootScope', '$state', '$location', 'modalService', 'inProgressService', ($rootScope, $state, $location, modalService, inProgressService) => {
       $rootScope.$on('readOnlyError', () => {
         modalService.info(
           {
@@ -255,7 +257,7 @@ class Common extends Module {
       });
 
       $rootScope.$on('$stateChangeStart', (event, to, params) => {
-        if (to.redirectTo) {
+        if (to.redirectTo && inProgressService.noActiveNavigationInterceptor()) {
           event.preventDefault();
           $state.go(to.redirectTo, params, {location: 'replace'});
         }
