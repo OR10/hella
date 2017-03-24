@@ -39,6 +39,7 @@ labeling_api::params::cache_dir: '/var/cache/labeling_api'
 labeling_api::params::database_name: 'labeling_api'
 labeling_api::params::database_password: '94M6ta7r0ep3qZWqSo3r'
 labeling_api::params::database_user: 'labeling_api'
+labeling_api::params::couchdb_host_external: 'weblabel-demo.hella-aglaia.com'
 labeling_api::params::create_parameter_files: true
 labeling_api::params::frame_cdn_type: 'filesystem'
 labeling_api::params::frame_cdn_dir: '/var/www/frame_cdn'
