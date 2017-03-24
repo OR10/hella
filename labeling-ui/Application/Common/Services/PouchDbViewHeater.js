@@ -89,6 +89,7 @@ class PouchDbViewHeater {
           return;
         }
         const document = row.doc;
+        this._logger.groupStart('pouchdb:viewHeater', `Heating ${documentName}`);
         promises.push(this.heatAllViewsForDesignDocument(context, document));
       });
 
