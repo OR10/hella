@@ -40,6 +40,7 @@ labeling_api::params::cache_dir: '/var/cache/labeling_api'
 labeling_api::params::database_name: 'labeling_api'
 labeling_api::params::database_password: 'pEid4oShu'
 labeling_api::params::database_user: 'labeling_api'
+labeling_api::params::couchdb_host_external: 'anno.crosscan.com'
 labeling_api::params::frame_cdn_dir: '/var/www/frame_cdn'
 labeling_api::params::video_cdn_dir: '/var/www/video_cdn'
 labeling_api::params::frame_cdn_port: 81

@@ -446,6 +446,22 @@ class PouchDbSyncManager {
       this._emit('transfer');
     });
   }
+
+  /**
+   * Returns whether there is at least one active replication for the
+   * given context
+   *
+   * @param {PouchDB} context
+   * @returns {boolean}
+   */
+  doesReplicationExistForContext(context) {
+    if (this._runningReplicationsByContext.has(context) === false) {
+      return false;
+    }
+
+    const replications = this._runningReplicationsByContext.get(context);
+    return (replications.length > 0);
+  }
 }
 
 PouchDbSyncManager.$inject = [
