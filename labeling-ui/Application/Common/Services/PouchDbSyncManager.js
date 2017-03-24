@@ -154,7 +154,6 @@ class PouchDbSyncManager {
       .then(replicationTarget => {
         const pullReplication = this._getRemoteDbPullReplication(context, replicationTarget, true);
         const pushReplication = this._getRemoteDbPushReplication(context, replicationTarget, true);
-        return this._$q.all([pullReplication, pushReplication]);
       });
 
     this._removeFromPromiseCacheWhenCompleted(promise, context, 'continuous');
@@ -221,6 +220,7 @@ class PouchDbSyncManager {
     if (this._eventHandlersByEvent.has(eventName) === false) {
       throw new Error(`Unknown event ${eventName} can not be emitted.`);
     }
+    this._logger.log('pouchDb:syncManager', `Replication event occurred: "${eventName}"`, data);
 
     const eventHandlers = this._eventHandlersByEvent.get(eventName);
     eventHandlers.forEach(callback => callback(...data));
@@ -241,6 +241,8 @@ class PouchDbSyncManager {
       live: continuous,
       retry: true,
     };
+    this._logger.log('pouchDb:syncManager', 'Starting remote pull replication', replicationOptions);
+
     const remoteDb = this._getRemoteDbForReplicationTarget(replicationTarget);
     const replication = context.replicate.from(remoteDb, replicationOptions);
 
@@ -265,6 +267,8 @@ class PouchDbSyncManager {
       live: continuous,
       retry: true,
     };
+    this._logger.log('pouchDb:syncManager', 'Starting remote push replication', replicationOptions);
+
     const remoteDb = this._getRemoteDbForReplicationTarget(replicationTarget);
     const replication = context.replicate.to(remoteDb, replicationOptions);
 
@@ -296,7 +300,12 @@ class PouchDbSyncManager {
     const taskId = this._pouchDbContextService.queryTaskIdForContext(context);
     return this._$q.resolve()
       .then(() => this._getReplicationInformationForTaskId(taskId))
-      .then(replicationInformation => `${replicationInformation.databaseServer}/${replicationInformation.databaseName}`);
+      .then(replicationInformation => {
+        const replicationTarget = `${replicationInformation.databaseServer}/${replicationInformation.databaseName}`;
+        this._logger.log('pouchDb:syncManager', `Got replication target "${replicationTarget}"`);
+
+        return replicationTarget;
+      });
   }
 
 
@@ -347,11 +356,18 @@ class PouchDbSyncManager {
    * @private
    */
   _trackReplicationForContext(replication, context) {
+    this._logger.log('pouchDb:syncManager', `Track new running replication for context`, context);
     this._addReplicationToRunningReplications(replication, context);
 
     replication
-      .then(() => this._removeReplicationFromRunningReplications(replication, context))
-      .catch(() => this._removeReplicationFromRunningReplications(replication, context));
+      .then(() => {
+        this._logger.log('pouchDb:syncManager', `Replication finished, removing from list!`, context);
+        this._removeReplicationFromRunningReplications(replication, context);
+      })
+      .catch(() => {
+        this._logger.warn('pouchDb:syncManager', `Replication aborted, removing from list!`, context);
+        this._removeReplicationFromRunningReplications(replication, context);
+      });
   }
 
   /**
@@ -363,12 +379,17 @@ class PouchDbSyncManager {
    * @private
    */
   _addReplicationToRunningReplications(replication, context) {
+    this._logger.groupStart('pouchDb:syncManager', `Add replication to to running replications list`);
     if (this._runningReplicationsByContext.has(context) === false) {
       this._runningReplicationsByContext.set(context, []);
+      this._logger.log('pouchDb:syncManager', `Context was not present in list, setting now`, context);
     }
 
+    this._logger.log('pouchDb:syncManager', `Loading replications for context`, context);
     const runningReplicationsByContext = this._runningReplicationsByContext.get(context);
+    this._logger.log('pouchDb:syncManager', `Setting replication for context`, replication);
     this._runningReplicationsByContext.set(context, [...runningReplicationsByContext, replication]);
+    this._logger.groupEnd('pouchDb:syncManager');
   }
 
   /**
@@ -379,13 +400,19 @@ class PouchDbSyncManager {
    * @private
    */
   _removeReplicationFromRunningReplications(replication, context) {
+    this._logger.groupStart('pouchDb:syncManager', `Remove replication from running replications list`);
     if (this._runningReplicationsByContext.has(context) === false) {
+      this._logger.log('pouchDb:syncManager', `Context was not present in list, do nothing!`, context);
+      this._logger.groupEnd('pouchDb:syncManager');
       return;
     }
 
+    this._logger.log('pouchDb:syncManager', `Loading replications for context`, context);
     const runningReplicationsByContext = this._runningReplicationsByContext.get(context);
+    this._logger.log('pouchDb:syncManager', `Filter out given replication`, replication);
     const filteredReplications = runningReplicationsByContext.filter(candidate => candidate !== replication);
     this._runningReplicationsByContext.set(context, filteredReplications);
+    this._logger.groupEnd('pouchDb:syncManager');
   }
 
   /**
@@ -397,6 +424,10 @@ class PouchDbSyncManager {
    * @private
    */
   _registerReplicationEventListeners(replication) {
+    this._logger.groupStart('pouchDb:syncManager', `Registering event listeners for replication events `);
+    this._logger.log('pouchDb:syncManager', `Given replication`, replication);
+    this._logger.groupEnd('pouchDb:syncManager');
+
     // The moment a replication is started we first emit an 'alive' event
     // This is not guaranteed by PouchDB (eg. a uni-directional non-continuous replication might "jump" into transfer)
     this._emit('alive');
