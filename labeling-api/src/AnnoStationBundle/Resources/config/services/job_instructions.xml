@@ -14,12 +14,6 @@
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
 
-        <service id="annostation.labeling_api.worker.job_instruction.kitti_exporter" class="AnnoStationBundle\Worker\JobInstruction\KittiExporter">
-            <argument type="service" id="annostation.labeling_api.service.task_exporter.kitti" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <tag name="hagl.workerpool.job_instruction"/>
-        </service>
-
         <service id="annostation.labeling_api.worker.job_instruction.interpolation" class="AnnoStationBundle\Worker\JobInstruction\Interpolation">
             <argument type="service" id="annostation.labeling_api.service.interpolation" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
