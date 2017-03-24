@@ -123,6 +123,18 @@ class LabeledThing
     }
 
     /**
+     * @return Model\LabeledThing[]
+     */
+    public function findAll()
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeled_thing', 'by_id')
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
+    /**
      * @param Model\LabeledThing $labeledThing
      */
     public function delete(Model\LabeledThing $labeledThing)

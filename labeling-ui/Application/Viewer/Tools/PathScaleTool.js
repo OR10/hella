@@ -1,12 +1,12 @@
-import ScalingTool from '../ScalingTool';
-import NotModifiedError from '../Errors/NotModifiedError';
+import NotModifiedError from './Errors/NotModifiedError';
+import ScalingTool from './ScalingTool';
 
 /**
  * A Tool for scaling annotation shapes
  *
  * @implements ToolEvents
  */
-class PolygonScaleTool extends ScalingTool {
+class PathScaleTool extends ScalingTool {
   /**
    * @param {$rootScope} $rootScope
    * @param {DrawingContext} drawingContext
@@ -79,8 +79,8 @@ class PolygonScaleTool extends ScalingTool {
  * @abstract
  * @static
  */
-PolygonScaleTool.getToolName = () => {
-  return 'PolygonScaleTool';
+PathScaleTool.getToolName = () => {
+  return 'PathScaleTool';
 };
 
 /**
@@ -96,9 +96,10 @@ PolygonScaleTool.getToolName = () => {
  * @abstract
  * @static
  */
-PolygonScaleTool.isShapeClassSupported = shapeClass => {
+PathScaleTool.isShapeClassSupported = shapeClass => {
   return [
     'polygon',
+    'polyline',
   ].includes(shapeClass);
 };
 
@@ -115,17 +116,17 @@ PolygonScaleTool.isShapeClassSupported = shapeClass => {
  * @abstract
  * @static
  */
-PolygonScaleTool.isActionIdentifierSupported = actionIdentifier => {
+PathScaleTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'scale',
   ].includes(actionIdentifier);
 };
 
-PolygonScaleTool.$inject = [
+PathScaleTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
   'loggerService',
 ];
 
-export default PolygonScaleTool;
+export default PathScaleTool;

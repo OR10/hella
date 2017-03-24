@@ -43,10 +43,12 @@ class Reporting extends Module {
           controllerAs: 'vm',
           template: ReportingListTemplate,
           resolve: {
-            project: ['$stateParams', 'projectGateway', ($stateParams, projectGateway) => {
+            project: ['$stateParams', 'projectGateway', 'organisationService', ($stateParams, projectGateway, organisationService) => {
+              organisationService.set($stateParams.organisationId);
               return projectGateway.getProject($stateParams.projectId);
             }],
-            reports: ['$stateParams', 'reportGateway', ($stateParams, reportGateway) => {
+            reports: ['$stateParams', 'reportGateway', 'organisationService', ($stateParams, reportGateway, organisationService) => {
+              organisationService.set($stateParams.organisationId);
               return reportGateway.getReports($stateParams.projectId);
             }],
           },
@@ -81,7 +83,8 @@ class Reporting extends Module {
           controllerAs: 'vm',
           template: projectExportTemplate,
           resolve: {
-            project: ['$stateParams', 'projectGateway', ($stateParams, projectGateway) => {
+            project: ['$stateParams', 'projectGateway', 'organisationService', ($stateParams, projectGateway, organisationService) => {
+              organisationService.set($stateParams.organisationId);
               return projectGateway.getProject($stateParams.projectId);
             }],
           },

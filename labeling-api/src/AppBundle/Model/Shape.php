@@ -15,6 +15,7 @@ abstract class Shape
         'rectangle' => Shapes\Rectangle::class,
         'ellipse' => Shapes\Ellipse::class,
         'polygon' => Shapes\Polygon::class,
+        'polyline' => Shapes\Polyline::class,
         'pedestrian' => Shapes\Pedestrian::class,
         'cuboid3d' => Shapes\Cuboid3d::class,
     ];

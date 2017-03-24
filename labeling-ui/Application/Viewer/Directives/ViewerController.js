@@ -65,6 +65,8 @@ class ViewerController {
    * @param {$state} $state
    * @param {ViewerMouseCursorService} viewerMouseCursorService
    * @param {LabeledThingGroupService} labeledThingGroupService
+   * @param {InProgressService} inProgressService
+   * @param {PouchDbSyncManager} pouchDbSyncManager
    */
   constructor($scope,
               $rootScope,
@@ -97,7 +99,9 @@ class ViewerController {
               modalService,
               $state,
               viewerMouseCursorService,
-              labeledThingGroupService) {
+              labeledThingGroupService,
+              inProgressService,
+              pouchDbSyncManager) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -292,6 +296,18 @@ class ViewerController {
      * @private
      */
     this._labeledThingGroupService = labeledThingGroupService;
+
+    /**
+     * @type {InProgressService}
+     * @private
+     */
+    this._inProgressService = inProgressService;
+
+    /**
+     * @type {PouchDbSyncManager}
+     * @private
+     */
+    this._pouchDbSyncManager = pouchDbSyncManager;
 
     /**
      * @type {LayerManager}
@@ -499,6 +515,14 @@ class ViewerController {
       description: 'Move viewport right',
       callback: () =>
         $scope.$applyAsync(() => this._panBy(keyboardMovementSpeed, 0)),
+    });
+
+    this._pouchDbSyncManager.on('transfer', () => {
+      this._inProgressService.start('Syncing data to the backend!');
+    });
+
+    this._pouchDbSyncManager.on('alive', () => {
+      this._inProgressService.end();
     });
 
     // Update the Background once the `framePosition` changes
@@ -1495,6 +1519,8 @@ ViewerController.$inject = [
   '$state',
   'viewerMouseCursorService',
   'labeledThingGroupService',
+  'inProgressService',
+  'pouchDbSyncManager',
 ];
 
 export default ViewerController;

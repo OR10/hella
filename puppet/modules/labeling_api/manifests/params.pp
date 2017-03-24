@@ -13,7 +13,9 @@ class labeling_api::params(
   $database_allowed_host = '127.0.0.1',
 
   $couchdb_host = '127.0.0.1',
+  $couchdb_host_external = '127.0.0.1',
   $couchdb_port = 5984,
+  $couchdb_port_external = 5984,
   $couchdb_user = undef,
   $couchdb_password = undef,
 
