@@ -69,7 +69,7 @@ class TaskReplicationService {
    */
   _checkoutTaskFromRemote(task) {
     const loggerContext = 'pouchDb:taskSynchronization';
-    this._logger.groupStart(loggerContext, 'Started intial Task synchronization (before)');
+    this._logger.groupStartOpened(loggerContext, 'Started intial Task synchronization (before)');
     const context = this._pouchDbContextService.provideContextForTaskId(task.id);
     this._logger.log(loggerContext, 'Pulling task updates from server');
 
