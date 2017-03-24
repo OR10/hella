@@ -9,8 +9,9 @@ class TaskReplicationService {
    * @param {TimerGateway} timerGateway
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
+   * @param {PouchDbViewHeater} pouchDbViewHeater
    */
-  constructor(loggerService, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService) {
+  constructor(loggerService, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService, pouchDbViewHeater) {
     /**
      * @type {LoggerService}
      * @private
@@ -44,6 +45,12 @@ class TaskReplicationService {
      * @private
      */
     this._pouchDbContextService = pouchDbContextService;
+
+    /**
+     * @type {PouchDbViewHeater}
+     * @private
+     */
+    this._pouchDbViewHeater = pouchDbViewHeater;
   }
 
   replicateTaskDataToLocalMachine(projectId, taskId) {
@@ -99,6 +106,7 @@ TaskReplicationService.$inject = [
   'timerGateway',
   'pouchDbSyncManager',
   'pouchDbContextService',
+  'pouchDbViewHeater',
 ];
 
 export default TaskReplicationService;
