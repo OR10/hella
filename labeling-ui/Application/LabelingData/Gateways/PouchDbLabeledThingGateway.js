@@ -9,8 +9,9 @@ class PouchDbLabeledThingGateway {
    * @param {CouchDbModelSerializer} couchDbModelSerializer
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager) {
+  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, pouchDbViewService) {
     /**
      * @type {angular.$q}
      * @private
@@ -52,6 +53,12 @@ class PouchDbLabeledThingGateway {
      * @private
      */
     this._revisionManager = revisionManager;
+
+    /**
+     * @type {PouchDbViewService}
+     * @private
+     */
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
@@ -225,6 +232,7 @@ PouchDbLabeledThingGateway.$inject = [
   'couchDbModelSerializer',
   'couchDbModelDeserializer',
   'revisionManager',
+  'pouchDbViewService',
 ];
 
 export default PouchDbLabeledThingGateway;

@@ -11,8 +11,17 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {GhostingService} ghostingService
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, labeledThingGateway, ghostingService) {
+  constructor($q,
+              pouchDbContextService,
+              revisionManager,
+              packagingExecutor,
+              couchDbModelSerializer,
+              couchDbModelDeserializer,
+              labeledThingGateway,
+              ghostingService,
+              pouchDbViewService) {
     /**
      * @type {$q}
      * @private
@@ -60,6 +69,12 @@ class PouchDbLabeledThingInFrameGateway {
      * @private
      */
     this._ghostingService = ghostingService;
+
+    /**
+     * @type {PouchDbViewService}
+     * @private
+     */
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
@@ -222,6 +237,7 @@ PouchDbLabeledThingInFrameGateway.$inject = [
   'couchDbModelDeserializer',
   'labeledThingGateway',
   'ghostingService',
+  'pouchDbViewService',
 ];
 
 export default PouchDbLabeledThingInFrameGateway;

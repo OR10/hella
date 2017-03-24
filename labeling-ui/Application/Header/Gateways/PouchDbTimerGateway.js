@@ -7,8 +7,9 @@ class PouchDbTimerGateway {
    * @param {PackagingExecutor} packagingExecutor
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor(pouchDbContextService, packagingExecutor, couchDbModelDeserializer, revisionManager) {
+  constructor(pouchDbContextService, packagingExecutor, couchDbModelDeserializer, revisionManager, pouchDbViewService) {
     /**
      * @type {PouchDbContextService}
      * @private
@@ -31,6 +32,12 @@ class PouchDbTimerGateway {
      * @private
      */
     this._revisionManager = revisionManager;
+
+    /**
+     * @type {PouchDbViewService}
+     * @private
+     */
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
@@ -144,6 +151,7 @@ PouchDbTimerGateway.$inject = [
   'packagingExecutor',
   'couchDbModelDeserializer',
   'revisionManager',
+  'pouchDbViewService',
 ];
 
 export default PouchDbTimerGateway;
