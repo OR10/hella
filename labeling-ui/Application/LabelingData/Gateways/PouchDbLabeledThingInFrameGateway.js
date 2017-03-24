@@ -11,8 +11,17 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {GhostingService} ghostingService
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, pouchDbContextService, revisionManager, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, labeledThingGateway, ghostingService) {
+  constructor($q,
+              pouchDbContextService,
+              revisionManager,
+              packagingExecutor,
+              couchDbModelSerializer,
+              couchDbModelDeserializer,
+              labeledThingGateway,
+              ghostingService,
+              pouchDbViewService) {
     /**
      * @type {$q}
      * @private
@@ -60,6 +69,12 @@ class PouchDbLabeledThingInFrameGateway {
      * @private
      */
     this._ghostingService = ghostingService;
+
+    /**
+     * @type {PouchDbViewService}
+     * @private
+     */
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
@@ -77,7 +92,7 @@ class PouchDbLabeledThingInFrameGateway {
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
-      return db.query('annostation_labeled_thing_in_frame/by_taskId_frameIndex', {
+      return db.query(this._pouchDbViewService.get('labeledThingInFrameByTaskIdAndFrameIndex'), {
         key,
         include_docs: true,
       });
@@ -120,7 +135,7 @@ class PouchDbLabeledThingInFrameGateway {
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     return this._packagingExecutor.execute('labeledThingInFrame', () => {
-      return db.query('annostation_labeled_thing_in_frame/by_labeledThingId_frameIndex', {
+      return db.query(this._pouchDbViewService.get('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
         startkey,
         endkey,
         include_docs: true,
@@ -189,9 +204,11 @@ class PouchDbLabeledThingInFrameGateway {
       () => {
         this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
         return dbContext.put(serializedLabeledThingInFrame);
-      }).then(response => {
+      })
+      .then(response => {
         return dbContext.get(response.id);
-      }).then(readDocument => {
+      })
+      .then(readDocument => {
         this._revisionManager.extractRevision(readDocument);
         return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
       });
@@ -222,6 +239,7 @@ PouchDbLabeledThingInFrameGateway.$inject = [
   'couchDbModelDeserializer',
   'labeledThingGateway',
   'ghostingService',
+  'pouchDbViewService',
 ];
 
 export default PouchDbLabeledThingInFrameGateway;
