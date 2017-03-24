@@ -33,14 +33,20 @@ class PouchDbTimerGateway {
     this._revisionManager = revisionManager;
   }
 
-  createTimerDocument(projectId, taskId, userId) {
+  /**
+   * @param {Project} project
+   * @param {Task} task
+   * @param {User} user
+   * @return {Promise}
+   */
+  createTimerDocument(project, task, user) {
     const queueIdentifier = 'timer';
-    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const timerDocument = {
       type: 'AppBundle.Model.TaskTimer',
-      taskId: taskId,
-      projectId: projectId,
-      userId: userId,
+      taskId: task.id,
+      projectId: project.id,
+      userId: user.id,
       timeInSeconds: {
         labeling: 0,
       },
@@ -52,16 +58,16 @@ class PouchDbTimerGateway {
   }
 
   /**
-   * @param projectId
-   * @param taskId
-   * @param userId
-   * @returns {Promise<timerDocument>}
+   * @param {Project} project
+   * @param {Task} task
+   * @param {User} user
+   * @returns {AbortablePromise<Object>}
    */
-  readOrCreateTimerIfMissingWithIdentification(projectId, taskId, userId) {
-    return this.getTime(taskId, userId)
+  readOrCreateTimerIfMissingWithIdentification(project, task, user) {
+    return this.getTime(task, user)
       .then(
         timerDocument => timerDocument,
-        () => this.createTimerDocument(projectId, taskId, userId)
+        () => this.createTimerDocument(project, task, user)
       );
   }
 
