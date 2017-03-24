@@ -198,7 +198,7 @@ class PouchDbLabeledThingGateway {
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThing',
-      () => db.query('annostation_labeled_thing/incomplete', {
+      () => db.query(this._pouchDbViewService.get('labeledThingIncomplete'), {
         include_docs: false,
         key: [taskId, true],
       })

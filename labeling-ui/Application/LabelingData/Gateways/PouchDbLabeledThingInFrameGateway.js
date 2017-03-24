@@ -92,7 +92,7 @@ class PouchDbLabeledThingInFrameGateway {
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
-      return db.query('annostation_labeled_thing_in_frame/by_taskId_frameIndex', {
+      return db.query(this._pouchDbViewService.get('labeledThingInFrameByTaskIdAndFrameIndex'), {
         key,
         include_docs: true,
       });
@@ -135,7 +135,7 @@ class PouchDbLabeledThingInFrameGateway {
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     return this._packagingExecutor.execute('labeledThingInFrame', () => {
-      return db.query('annostation_labeled_thing_in_frame/by_labeledThingId_frameIndex', {
+      return db.query(this._pouchDbViewService.get('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
         startkey,
         endkey,
         include_docs: true,

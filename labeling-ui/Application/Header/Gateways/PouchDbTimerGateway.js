@@ -87,12 +87,11 @@ class PouchDbTimerGateway {
    */
   getTime(task, user) {
     const queueIdentifier = 'timer';
-    const viewIdentifier = 'annostation_task_timer/by_taskId_userId';
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     return this._packagingExecutor.execute(
       queueIdentifier,
-      () => db.query(viewIdentifier, {
+      () => db.query(this._pouchDbViewService.get('taskTimerByTaskIdAndUserId'), {
         include_docs: true,
         key: [task.id, user.id],
       }))
