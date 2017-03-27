@@ -28,6 +28,7 @@ import KeyboardShortcutService from './Services/KeyboardShortcutService';
 import ApplicationLoadingMaskService from './Services/ApplicationLoadingMaskService';
 import ApplicationLoadingMaskStateService from './Services/ApplicationLoadingMaskStateService';
 import InProgressService from './Services/InProgressService';
+import PouchDbViewService from './Services/PouchDbViewService';
 
 import PouchDbContextService from './Services/PouchDbContextService';
 import PouchDbSyncManager from './Services/PouchDbSyncManager';
@@ -103,6 +104,7 @@ class Common extends Module {
     this.module.service('applicationLoadingMaskService', ApplicationLoadingMaskService);
     this.module.service('applicationLoadingMaskStateService', ApplicationLoadingMaskStateService);
     this.module.service('inProgressService', InProgressService);
+    this.module.service('pouchDbViewService', PouchDbViewService);
 
     // Without feature flag, as those services do not override others.
     this.module.service('pouchDbContextService', PouchDbContextService);

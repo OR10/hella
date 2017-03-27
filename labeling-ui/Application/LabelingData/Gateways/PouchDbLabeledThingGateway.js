@@ -9,8 +9,9 @@ class PouchDbLabeledThingGateway {
    * @param {CouchDbModelSerializer} couchDbModelSerializer
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager) {
+  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, pouchDbViewService) {
     /**
      * @type {angular.$q}
      * @private
@@ -52,6 +53,12 @@ class PouchDbLabeledThingGateway {
      * @private
      */
     this._revisionManager = revisionManager;
+
+    /**
+     * @type {PouchDbViewService}
+     * @private
+     */
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
@@ -98,7 +105,7 @@ class PouchDbLabeledThingGateway {
         });
 
         // Bulk update as deleted marked documents
-        dbContext.bulkDocs(docs);
+        return dbContext.bulkDocs(docs);
       })
       .then(() => {
         return readLabeledThing;
@@ -191,7 +198,7 @@ class PouchDbLabeledThingGateway {
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThing',
-      () => db.query('annostation_labeled_thing/incomplete', {
+      () => db.query(this._pouchDbViewService.get('labeledThingIncomplete'), {
         include_docs: false,
         key: [taskId, true],
       })
@@ -210,7 +217,7 @@ class PouchDbLabeledThingGateway {
   _getAssociatedLabeledThingsInFrames(task, labeledThing) {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return dbContext.query('annostation_labeled_thing_in_frame/by_labeledThingId_frameIndex', {
+    return dbContext.query(this._pouchDbViewService.get('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
       include_docs: true,
       startkey: [labeledThing.id, 0],
       endkey: [labeledThing.id, {}],
@@ -225,6 +232,7 @@ PouchDbLabeledThingGateway.$inject = [
   'couchDbModelSerializer',
   'couchDbModelDeserializer',
   'revisionManager',
+  'pouchDbViewService',
 ];
 
 export default PouchDbLabeledThingGateway;

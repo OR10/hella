@@ -127,6 +127,10 @@ export default class Application {
       .then(applicationConfig => {
         this.app.constant('applicationConfig', applicationConfig);
         this.app.constant('PouchDB', PouchDB);
+
+        if (Environment.isDevelopment && FeatureFlags.pou) {
+          window.PouchDB = PouchDB;
+        }
       });
   }
 

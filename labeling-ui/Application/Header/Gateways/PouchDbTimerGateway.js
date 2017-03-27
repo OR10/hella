@@ -7,8 +7,9 @@ class PouchDbTimerGateway {
    * @param {PackagingExecutor} packagingExecutor
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor(pouchDbContextService, packagingExecutor, couchDbModelDeserializer, revisionManager) {
+  constructor(pouchDbContextService, packagingExecutor, couchDbModelDeserializer, revisionManager, pouchDbViewService) {
     /**
      * @type {PouchDbContextService}
      * @private
@@ -31,16 +32,28 @@ class PouchDbTimerGateway {
      * @private
      */
     this._revisionManager = revisionManager;
+
+    /**
+     * @type {PouchDbViewService}
+     * @private
+     */
+    this._pouchDbViewService = pouchDbViewService;
   }
 
-  createTimerDocument(projectId, taskId, userId) {
+  /**
+   * @param {Project} project
+   * @param {Task} task
+   * @param {User} user
+   * @return {Promise}
+   */
+  createTimerDocument(project, task, user) {
     const queueIdentifier = 'timer';
-    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const timerDocument = {
       type: 'AppBundle.Model.TaskTimer',
-      taskId: taskId,
-      projectId: projectId,
-      userId: userId,
+      taskId: task.id,
+      projectId: project.id,
+      userId: user.id,
       timeInSeconds: {
         labeling: 0,
       },
@@ -52,16 +65,16 @@ class PouchDbTimerGateway {
   }
 
   /**
-   * @param projectId
-   * @param taskId
-   * @param userId
-   * @returns {Promise<timerDocument>}
+   * @param {Project} project
+   * @param {Task} task
+   * @param {User} user
+   * @returns {AbortablePromise<Object>}
    */
-  readOrCreateTimerIfMissingWithIdentification(projectId, taskId, userId) {
-    return this.getTime(taskId, userId)
+  readOrCreateTimerIfMissingWithIdentification(project, task, user) {
+    return this.getTime(task, user)
       .then(
         timerDocument => timerDocument,
-        () => this.createTimerDocument(projectId, taskId, userId)
+        () => this.createTimerDocument(project, task, user)
       );
   }
 
@@ -74,12 +87,11 @@ class PouchDbTimerGateway {
    */
   getTime(task, user) {
     const queueIdentifier = 'timer';
-    const viewIdentifier = 'annostation_task_timer/by_taskId_userId';
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     return this._packagingExecutor.execute(
       queueIdentifier,
-      () => db.query(viewIdentifier, {
+      () => db.query(this._pouchDbViewService.get('taskTimerByTaskIdAndUserId'), {
         include_docs: true,
         key: [task.id, user.id],
       }))
@@ -91,7 +103,7 @@ class PouchDbTimerGateway {
       }
 
       const timerDocument = response.rows[0].doc;
-      this._couchDbModelDeserializer.deserializeTimer(timerDocument, task.getPhase());
+      return this._couchDbModelDeserializer.deserializeTimer(timerDocument, task.getPhase());
     });
   }
 
@@ -99,18 +111,18 @@ class PouchDbTimerGateway {
   /**
    * Starts export for the given {@link Task} and export type
    *
-   * @param {string} taskId
-   * @param {string} userId
+   * @param {Task} task
+   * @param {User} user
    * @param {int} time
    * @returns {AbortablePromise<string|Error>}
    */
-  updateTime(taskId, userId, time) {
+  updateTime(task, user, time) {
     const queueIdentifier = 'timer';
-    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return this.getTime(taskId, userId)
+    return this.getTime(task, user)
     .then(dbDocument => {
-      dbDocument.timeInSeconds.labeling = time;
+      dbDocument.time = time;
       return this._packagingExecutor.execute(queueIdentifier, () => {
         this._injectRevisionOrFailSilently(dbDocument);
         return dbContext.put(dbDocument);
@@ -138,6 +150,7 @@ PouchDbTimerGateway.$inject = [
   'packagingExecutor',
   'couchDbModelDeserializer',
   'revisionManager',
+  'pouchDbViewService',
 ];
 
 export default PouchDbTimerGateway;
