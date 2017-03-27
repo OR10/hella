@@ -81,6 +81,39 @@ class LabelStructureService {
   }
 
   /**
+   * Get the classes for a given Task and LabeledThingInFrame
+   *
+   * @param {Task} task
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @returns {AbortablePromise}
+   */
+  getClassesForTaskAndLabeledThingInFrame(task, labeledThingInFrame) {
+    return this.getLabelStructure(task).then(labelStructure => {
+      return this.getClassesFromLabelStructureByLabeledThingInFrame(labelStructure, labeledThingInFrame);
+    });
+  };
+
+  /**
+   * Get the classes from a given LabelStructure for a LabeledThingInFrame
+   *
+   * @param {LabelStructure} labelStructure
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @returns {{name, metadata, children}|*|Array.<Object>}
+   */
+  getClassesFromLabelStructureByLabeledThingInFrame(labelStructure, labeledThingInFrame) {
+    const labelStructureThingArray = Array.from(labelStructure.getThings().values());
+    const filteredThings = labelStructureThingArray.filter(thing => {
+      return thing.id == labeledThingInFrame.identifierName;
+    });
+    const currentThing = filteredThings[0];
+
+    return labelStructure.getEnabledThingClassesForThingAndClassList(
+      currentThing,
+      labeledThingInFrame.classes
+    );
+  }
+
+  /**
    * Retrieve and return a {@link LegacyLabelStructure}
    *
    * The method assumes the given task is one with a legacy type label structure
