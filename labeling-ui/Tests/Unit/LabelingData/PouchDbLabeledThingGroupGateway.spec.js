@@ -111,9 +111,6 @@ describe('PouchDbLabeledThingGroupGateway', () => {
   it('should load labeled thing groups and group in frames for frame index', () => {
     const task = {id: 'TASK-ID'};
     const frameIndex = 0;
-    const pouchQuery = {
-      map: jasmine.any(Function),
-    }
 
     groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
 
