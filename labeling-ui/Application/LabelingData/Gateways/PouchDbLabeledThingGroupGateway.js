@@ -12,8 +12,18 @@ class PouchDbLabeledThingGroupGateway {
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {PouchDbLabeledThingGateway} pouchDbLabeledThingGateway
    * @param {EntityIdService} entityIdService
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, abortablePromiseFactory, pouchDbLabeledThingGateway, entityIdService) {
+  constructor($q,
+              pouchDbContextService,
+              packagingExecutor,
+              couchDbModelSerializer,
+              couchDbModelDeserializer,
+              revisionManager,
+              abortablePromiseFactory,
+              pouchDbLabeledThingGateway,
+              entityIdService,
+              pouchDbViewService) {
     /**
      * @type {angular.$q}
      * @private
@@ -73,6 +83,8 @@ class PouchDbLabeledThingGroupGateway {
      * @private
      */
     this._entityIdService = entityIdService;
+
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
@@ -263,6 +275,7 @@ PouchDbLabeledThingGroupGateway.$inject = [
   'abortablePromiseFactory',
   'pouchDbLabeledThingGateway',
   'entityIdService',
+  'pouchDbViewService',
 ];
 
 export default PouchDbLabeledThingGroupGateway;
