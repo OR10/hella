@@ -6,6 +6,14 @@ class PouchDbViewService {
   get(viewIdentifier) {
     // TODO: This needs to be fixed to a nicer implementation! This is just a prototype!
     switch (viewIdentifier) {
+      case 'labeledThingInFrameByTaskId':
+        return {
+          map: function(doc) {
+            if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
+              emit(doc.taskId);
+            }
+          },
+        };
       case 'labeledThingInFrameByTaskIdAndFrameIndex':
         return {
           map: function(doc) { // eslint-disable-line func-names
