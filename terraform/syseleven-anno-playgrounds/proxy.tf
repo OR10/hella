@@ -13,8 +13,6 @@ resource "openstack_compute_instance_v2" "playground-proxy" {
         "${openstack_compute_secgroup_v2.anno-demo-app.name}",
     ]
 
-    floating_ip = "${openstack_compute_floatingip_v2.anno-demo.address}"
-
     network {
         name = "anno-demo"
     }

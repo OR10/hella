@@ -1,4 +1,4 @@
-# Playground 1,5
+# Playground 1
 
 resource "openstack_networking_network_v2" "anno-demo" {
     name = "anno-demo"
