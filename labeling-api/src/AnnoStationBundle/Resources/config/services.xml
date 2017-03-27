@@ -224,13 +224,6 @@
             <argument type="service" id="security.token_storage"/>
         </service>
 
-        <service id="annostation.labeling_api.service.task_exporter.kitti" class="AnnoStationBundle\Service\TaskExporter\Kitti">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.task_export" />
-        </service>
-
         <service id="annostation.labeling_api.service.video.video_frame_splitter"
                  class="AnnoStationBundle\Service\Video\VideoFrameSplitter">
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.selected-alias"/>
