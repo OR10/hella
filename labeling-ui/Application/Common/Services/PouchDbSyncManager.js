@@ -152,8 +152,8 @@ class PouchDbSyncManager {
     const promise = this._$q.resolve()
       .then(() => this._getReplicationTargetForContext(context))
       .then(replicationTarget => {
-        const pullReplication = this._getRemoteDbPullReplication(context, replicationTarget, true);
-        const pushReplication = this._getRemoteDbPushReplication(context, replicationTarget, true);
+        this._getRemoteDbPullReplication(context, replicationTarget, true);
+        this._getRemoteDbPushReplication(context, replicationTarget, true);
       });
 
     this._removeFromPromiseCacheWhenCompleted(promise, context, 'continuous');

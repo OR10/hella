@@ -56,15 +56,6 @@
         </service>
 
         <service
-                id="annostation.labeling_api.controller.api.task.export"
-                class="AnnoStationBundle\Controller\Api\Task\Export">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.task_export"/>
-            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
-            <argument type="service" id="annostation.labeling_api.service.authorization"/>
-        </service>
-
-        <service
                 id="annostation.labeling_api.controller.api.task.labeled_thing_in_frame"
                 class="AnnoStationBundle\Controller\Api\Task\LabeledThingInFrame">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>

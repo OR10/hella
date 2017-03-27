@@ -33,7 +33,7 @@ describe('PouchDbSyncManager', () => {
   }));
 
   beforeEach(() => {
-    const loggerMock = undefined;
+    const loggerMock = jasmine.createSpyObj('loggerService', ['log', 'groupStart', 'groupEnd', 'warn']);
 
     pouchDbContextServiceMock = jasmine.createSpyObj('PouchDbContextService', [
       'queryTaskIdForContext',
@@ -347,7 +347,6 @@ describe('PouchDbSyncManager', () => {
 
     it('should return same replication promise for multiple calls while it is still running', () => {
       const firstReplication = syncManager.startDuplexLiveReplication(context);
-      rootScope.$apply();
       const secondReplication = syncManager.startDuplexLiveReplication(context);
 
       expect(firstReplication).toBe(secondReplication);
@@ -356,7 +355,6 @@ describe('PouchDbSyncManager', () => {
     it('should return the same replication promise as long as the pull part is still active', () => {
       const firstReplication = syncManager.startDuplexLiveReplication(context);
       contextReplicateToDeferred.resolve();
-      rootScope.$apply();
       const secondReplication = syncManager.startDuplexLiveReplication(context);
 
       expect(firstReplication).toBe(secondReplication);
@@ -365,7 +363,6 @@ describe('PouchDbSyncManager', () => {
     it('should return the same replication promise as long as the push part is still active', () => {
       const firstReplication = syncManager.startDuplexLiveReplication(context);
       contextReplicateFromDeferred.resolve();
-      rootScope.$apply();
       const secondReplication = syncManager.startDuplexLiveReplication(context);
 
       expect(firstReplication).toBe(secondReplication);

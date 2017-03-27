@@ -36,11 +36,6 @@ api_task_labeled_frame:
     type: rest
     name_prefix: app_api_task_labeled_frame_
 
-api_task_export:
-    resource: "annostation.labeling_api.controller.api.task.export"
-    type: rest
-    name_prefix: app_api_task_export_
-
 api_task_labeled_thing:
     resource: "annostation.labeling_api.controller.api.task.labeled_thing"
     type: rest
