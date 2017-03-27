@@ -33,7 +33,7 @@ describe('PouchDbSyncManager', () => {
   }));
 
   beforeEach(() => {
-    const loggerMock = undefined;
+    const loggerMock = jasmine.createSpyObj('loggerService', ['log', 'groupStart', 'groupEnd', 'warn']);
 
     pouchDbContextServiceMock = jasmine.createSpyObj('PouchDbContextService', [
       'queryTaskIdForContext',
