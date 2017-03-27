@@ -6,6 +6,7 @@ imports:
 
 parameters:
   redirectAfterLogin: /labeling
+  pouchdb_feature_enabled: false
 
 doctrine_couch_db: &doctrine_couch_db
     odm:

@@ -2,14 +2,24 @@
 
 namespace AnnoStationBundle\Tests\Service;
 
-use AppBundle\Tests;
+use AnnoStationBundle\Tests;
 use AnnoStationBundle\Service\TaskDatabaseCreator;
 use AppBundle\Service;
 use Doctrine\ODM\CouchDB;
 use MyProject\Proxies\__CG__\OtherProject\Proxies\__CG__\stdClass;
 
-class TaskDatabaseCreatorTest extends Tests\KernelTestCase
+class TaskDatabaseCreatorTest extends Tests\WebTestCase
 {
+    /**
+     * @var bool
+     */
+    private $pouchDbFeatureEnabled;
+
+    protected function setUpImplementation()
+    {
+        $this->pouchDbFeatureEnabled =  static::createClient()->getKernel()->getContainer()->getParameter('pouchdb_feature_enabled');
+    }
+
     private function getCouchDbClientMock()
     {
         return $this->getMockBuilder(stdClass::class)
@@ -37,13 +47,13 @@ class TaskDatabaseCreatorTest extends Tests\KernelTestCase
     {
         $couchDocumentManagerMock = $this->getCouchDocumentManagerMock();
         $couchReplicatorMock = $this->getCouchDbReplicatorMock();
-        $creator = new TaskDatabaseCreator($couchDocumentManagerMock, $couchReplicatorMock);
+        $creator = new TaskDatabaseCreator($couchDocumentManagerMock, $couchReplicatorMock, $this->pouchDbFeatureEnabled);
         $this->assertInstanceOf(TaskDatabaseCreator::class, $creator);
     }
 
     public function testCreateDatabaseCreatesCouchDatabase()
     {
-        if (TaskDatabaseCreator::FEATURE_ACTIVE) {
+        if ($this->pouchDbFeatureEnabled) {
             $projectId            = "Arrested-Development";
             $taskId               = "Gilmore-Girls";
             $expectedDatabaseName = "taskdb-project-$projectId-task-$taskId";
