@@ -105,7 +105,7 @@ class PouchDbLabeledThingGateway {
         });
 
         // Bulk update as deleted marked documents
-        dbContext.bulkDocs(docs);
+        return dbContext.bulkDocs(docs);
       })
       .then(() => {
         return readLabeledThing;
@@ -217,7 +217,7 @@ class PouchDbLabeledThingGateway {
   _getAssociatedLabeledThingsInFrames(task, labeledThing) {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return dbContext.query('annostation_labeled_thing_in_frame/by_labeledThingId_frameIndex', {
+    return dbContext.query(this._pouchDbViewService.get('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
       include_docs: true,
       startkey: [labeledThing.id, 0],
       endkey: [labeledThing.id, {}],

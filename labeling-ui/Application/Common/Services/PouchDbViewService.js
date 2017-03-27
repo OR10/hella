@@ -38,6 +38,20 @@ class PouchDbViewService {
             }
           },
         };
+      case 'labeledThingGroupInFrameByTaskIdAndFrameIndex':
+        return {
+          map: function(doc) { // eslint-disable-line func-names
+            if (doc.type === 'AppBundle.Model.LabeledThing') {
+              doc.groupIds.forEach(
+                function(groupId) { // eslint-disable-line func-names
+                  for (var i = doc.frameRange.startFrameIndex; i <= doc.frameRange.endFrameIndex; i++) { // eslint-disable-line vars-on-top, no-var
+                    emit([doc.taskId, i], groupId); // eslint-disable-line no-undef
+                  }
+                }
+              );
+            }
+          },
+        };
       default:
         throw new Error(`Unknown view identifier ${viewIdentifier}`);
     }
