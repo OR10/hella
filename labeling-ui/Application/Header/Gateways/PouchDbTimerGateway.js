@@ -111,18 +111,18 @@ class PouchDbTimerGateway {
   /**
    * Starts export for the given {@link Task} and export type
    *
-   * @param {string} taskId
-   * @param {string} userId
+   * @param {Task} task
+   * @param {User} user
    * @param {int} time
    * @returns {AbortablePromise<string|Error>}
    */
-  updateTime(taskId, userId, time) {
+  updateTime(task, user, time) {
     const queueIdentifier = 'timer';
-    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return this.getTime(taskId, userId)
+    return this.getTime(task, user)
     .then(dbDocument => {
-      dbDocument.timeInSeconds.labeling = time;
+      dbDocument.time = time;
       return this._packagingExecutor.execute(queueIdentifier, () => {
         this._injectRevisionOrFailSilently(dbDocument);
         return dbContext.put(dbDocument);
