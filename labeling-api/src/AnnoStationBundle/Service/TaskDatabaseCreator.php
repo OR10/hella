@@ -28,15 +28,25 @@ class TaskDatabaseCreator
     private $couchDbReplicatorService;
 
     /**
+     * @var bool
+     */
+    private $pouchDbFeatureEnabled;
+
+    /**
      * LabelingTask constructor.
      *
-     * @param CouchDB\DocumentManager $documentManager
+     * @param CouchDB\DocumentManager          $documentManager
      * @param Service\CouchDbReplicatorService $couchDbReplicatorService
+     * @param                                  $pouchDbFeatureEnabled
      */
-    public function __construct(CouchDB\DocumentManager $documentManager, Service\CouchDbReplicatorService $couchDbReplicatorService)
-    {
-        $this->documentManager = $documentManager;
+    public function __construct(
+        CouchDB\DocumentManager $documentManager,
+        Service\CouchDbReplicatorService $couchDbReplicatorService,
+        $pouchDbFeatureEnabled
+    ) {
+        $this->documentManager          = $documentManager;
         $this->couchDbReplicatorService = $couchDbReplicatorService;
+        $this->pouchDbFeatureEnabled    = $pouchDbFeatureEnabled;
     }
 
     /**
@@ -62,7 +72,7 @@ class TaskDatabaseCreator
      */
     public function createDatabase($projectId, $taskId)
     {
-        if (self::FEATURE_ACTIVE) {
+        if ($this->pouchDbFeatureEnabled) {
             $databaseName    = $this->getDatabaseName($projectId, $taskId);
             $documentManager = $this->documentManager->getCouchDBClient()->createDatabase($databaseName);
 
