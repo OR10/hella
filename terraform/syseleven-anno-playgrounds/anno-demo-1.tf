@@ -1,3 +1,7 @@
+resource "openstack_compute_floatingip_v2" "anno-demo" {
+    pool = "ext-net"
+}
+
 resource "openstack_compute_instance_v2" "anno-demo" {
     name = "anno-demo"
     image_id = "39d64de3-c562-4a80-b968-ab46a6838cf4"

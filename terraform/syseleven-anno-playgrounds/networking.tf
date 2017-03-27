@@ -1,5 +1,3 @@
-# Playground 1
-
 resource "openstack_networking_network_v2" "anno-demo" {
     name = "anno-demo"
     admin_state_up = "true"
