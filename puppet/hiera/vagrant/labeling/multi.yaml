@@ -3,3 +3,4 @@ labeling_api::params::couchdb_host: '192.168.222.31'
 labeling_api::params::couchdb_host_external: '192.168.222.30'
 labeling_api::params::rabbitmq_host: '192.168.222.32'
 labeling_api::params::frame_cdn_base_url: 'https://192.168.222.33:444'
+labeling_api::params::pouchdb_feature_enabled: false

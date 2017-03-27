@@ -52,6 +52,7 @@ labeling_api::params::prepare_test_environment: true
 labeling_api::params::secret: 'klaslhfalhskdlha'
 labeling_api::params::user_password: 'sQYxxWZzi64WoKOCnBij'
 labeling_api::params::create_parameter_files: true
+labeling_api::params::pouchdb_feature_enabled: false
 
 labeling_api::app::httpv2: false
 labeling_api::app::www_root: '/var/www/labeling-api/current/web/AnnoStation'
