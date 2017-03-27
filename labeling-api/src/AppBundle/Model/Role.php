@@ -26,13 +26,6 @@ class Role
     private $projectId;
 
     /**
-     * @var string
-     *
-     * @CouchDB\Field(type="string")
-     */
-    private $name;
-
-    /**
      * @var string[]
      *
      * @CouchDB\Field(type="mixed")
@@ -51,15 +44,13 @@ class Role
      *
      * @param string   $id
      * @param string   $projectId
-     * @param string   $name
      * @param string   $label
      * @param string[] $permissions
      */
-    public function __construct(string $id, string $projectId, string $name, string $label, array $permissions = [])
+    public function __construct(string $id, string $projectId, string $label, array $permissions = [])
     {
         $this->id          = $id;
         $this->projectId   = $projectId;
-        $this->name        = $name;
         $this->permissions = $permissions;
         $this->label       = $label;
     }
@@ -70,14 +61,6 @@ class Role
     public function getProjectId()
     {
         return $this->projectId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
