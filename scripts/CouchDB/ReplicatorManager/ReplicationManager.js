@@ -22,6 +22,8 @@ feed.on('change', function(change) {
     nano.db.replicate(updated_db, targetDb, {continuous: false}, function(err, body) {
       if (!err) {
         console.log('Added non-continuous replication from "' + change.db_name + '" to "' + targetDb + '"');
+      }else{
+        console.error('FAILED to add non-continuous replication from "' + change.db_name + '" to "' + targetDb + '"')
       }
     });
   }
@@ -43,6 +45,8 @@ function AddOneTimeReplicationForAllDatabases() {
         nano.db.replicate(db, targetDb, {continuous: false}, function(err, body) {
           if (!err) {
             console.log('Added startup non-continuous replication from ' + db + '" to "' + targetDb + '"');
+          }else{
+            console.error('FAILED to added startup non-continuous replication from ' + db + '" to "' + targetDb + '"')
           }
         });
       }
