@@ -7,12 +7,13 @@ import LabelingData from 'Application/LabelingData/LabelingData';
 
 import PouchDbHelper from 'Tests/Support/PouchDb/PouchDbHelper';
 import LabeledThing from '../../../Application/LabelingData/Models/LabeledThing';
+import InterpolationService from "../../../Application/LabelingData/Services/InterpolationService";
 
 // import PouchDbTimerGateway from 'Application/Header/Gateways/TimerGateway';
 
 // import taskTimerCouchDbModel from 'Tests/Fixtures/Models/CouchDb/TaskTimer';
 
-describe('PouchDbInterpolation', () => {
+fdescribe('PouchDbInterpolation', () => {
   /**
    * @type {$rootScope}
    */
@@ -42,7 +43,10 @@ describe('PouchDbInterpolation', () => {
    * @type {CouchDbModelSerializer}
    */
   let couchDbModelSerializer; // eslint-disable-line no-unused-vars
-
+  
+  let interpolationService;
+  
+  
   function createLabeledThing(startFrameIndex = 0, endFrameIndex = 99, task = {id: 'some-task-id'}, id = 'some-labeled-thing-id') {
     return new LabeledThing({
       id,
@@ -94,6 +98,7 @@ describe('PouchDbInterpolation', () => {
           revisionManager = $injector.get('revisionManager');
           couchDbModelSerializer = $injector.get('couchDbModelSerializer');
           couchDbModelDeserializer = $injector.get('couchDbModelDeserializer');
+          // interpolationService = $injector.instantiate(MockedCouchDBInterpolation);
         });
       })
       .then(() => done());
@@ -106,6 +111,7 @@ describe('PouchDbInterpolation', () => {
     const labeledThing = createLabeledThing(0, 200, task, labeledThingId);
     expect(db).not.toBeNull();
     expect(labeledThing).not.toBeNull();
+    // expect(interpolationService).not.toBeNull();
     done();
   });
 
