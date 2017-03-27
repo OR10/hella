@@ -89,18 +89,19 @@ class LabelStructureService {
    */
   getClassesForTaskAndLabeledThingInFrame(task, labeledThingInFrame) {
     return this.getLabelStructure(task).then(labelStructure => {
-      return this.getClassesFromLabelStructureByLabeledThingInFrame(labelStructure, labeledThingInFrame);
+      return this._getClassesFromLabelStructureByLabeledThingInFrame(labelStructure, labeledThingInFrame);
     });
   };
 
   /**
    * Get the classes from a given LabelStructure for a LabeledThingInFrame
    *
+   * @private
    * @param {LabelStructure} labelStructure
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @returns {{name, metadata, children}|*|Array.<Object>}
    */
-  getClassesFromLabelStructureByLabeledThingInFrame(labelStructure, labeledThingInFrame) {
+  _getClassesFromLabelStructureByLabeledThingInFrame(labelStructure, labeledThingInFrame) {
     const labelStructureThingArray = Array.from(labelStructure.getThings().values());
     const filteredThings = labelStructureThingArray.filter(thing => {
       return thing.id == labeledThingInFrame.identifierName;
