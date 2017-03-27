@@ -101,7 +101,7 @@ class PouchDbLabeledThingGroupGateway {
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute('labeledThingGroup', () => {
-      return dbContext.query('annostation_labeled_thing_group_in_frame_by_taskId_frameIndex', {
+      return dbContext.query(this._pouchDbViewService.get('labeledThingGroupInFrameByTaskIdAndFrameIndex'), {
         key: [taskId, frameIndex],
       })
         .then(response => response.rows.map(row => row.value))
