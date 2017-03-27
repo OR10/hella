@@ -11,7 +11,14 @@ class PouchDbLabeledThingGateway {
    * @param {RevisionManager} revisionManager
    * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, pouchDbViewService) {
+  constructor(
+    $q,
+    pouchDbContextService,
+    packagingExecutor,
+    couchDbModelSerializer,
+    couchDbModelDeserializer,
+    revisionManager,
+    pouchDbViewService) {
     /**
      * @type {angular.$q}
      * @private
