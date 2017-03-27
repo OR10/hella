@@ -111,13 +111,16 @@ describe('PouchDbLabeledThingGroupGateway', () => {
   it('should load labeled thing groups and group in frames for frame index', () => {
     const task = {id: 'TASK-ID'};
     const frameIndex = 0;
+    const pouchQuery = {
+      map: jasmine.any(Function),
+    }
 
     groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
 
     $rootScope.$apply();
 
     expect(pouchDbContext.query)
-      .toHaveBeenCalledWith('annostation_labeled_thing_group_in_frame_by_taskId_frameIndex', {
+      .toHaveBeenCalledWith({ map: jasmine.any(Function) }, {
         key: [task.id, frameIndex],
       });
     expect(pouchDbContext.get).toHaveBeenCalledWith(labeledThingGroupResponse._id);
