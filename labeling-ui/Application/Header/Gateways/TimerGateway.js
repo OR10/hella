@@ -40,13 +40,13 @@ class TimerGateway {
   /**
    * Starts export for the given {@link Task} and export type
    *
-   * @param {string} taskId
-   * @param {string} userId
+   * @param {Task} task
+   * @param {User} user
    * @param {int} time
    * @returns {AbortablePromise<string|Error>}
    */
-  updateTime(taskId, userId, time) {
-    const url = this._apiService.getApiUrl(`/task/${taskId}/timer/${userId}`);
+  updateTime(task, user, time) {
+    const url = this._apiService.getApiUrl(`/task/${task.id}/timer/${user.id}`);
     return this._bufferedHttp.put(url, {time}, undefined, 'timer')
       .then(response => {
         if (response.data && response.data.result) {
