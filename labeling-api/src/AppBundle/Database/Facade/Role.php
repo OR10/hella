@@ -126,4 +126,13 @@ class Role
         $this->documentManager->flush();
     }
 
+    /**
+     * @param Model\Role $removedRole
+     */
+    public function deleteRole(Model\Role $removedRole)
+    {
+        $this->documentManager->remove($removedRole);
+        $this->documentManager->flush();
+    }
+
 }
