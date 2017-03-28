@@ -176,6 +176,36 @@ class LabeledThingInFrame extends LabeledObject {
       labeledThingId: labeledThing.id,
     });
   }
+
+  extractClassList() {
+    if (this.ghostClasses !== null) {
+      return this.ghostClasses;
+    }
+
+    return this.classes;
+  }
+
+  /**
+   * Updates the incomplete status of the LabeledThingInFrame by using the invoked labelStructureService
+   *
+   * @param {LabelStructureService} labelStructureService
+   * @returns {AbortablePromise}
+   */
+  updateIncompleteStatus(labelStructureService) {
+    return labelStructureService.getClassesForLabeledThingInFrame(this).then(list => {
+      let incomplete = false;
+      const totalIncomplete = list.reduce((total, current) => {
+        if (current.metadata.value === null) {
+          total++;
+        }
+        return total;
+      }, 0);
+
+      incomplete = (totalIncomplete > 0);
+      this.incomplete = incomplete;
+      return incomplete;
+    });
+  }
 }
 
 export default LabeledThingInFrame;

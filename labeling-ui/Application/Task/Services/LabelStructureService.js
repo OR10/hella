@@ -87,8 +87,8 @@ class LabelStructureService {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @returns {AbortablePromise}
    */
-  getClassesForTaskAndLabeledThingInFrame(task, labeledThingInFrame) {
-    return this.getLabelStructure(task).then(labelStructure => {
+  getClassesForLabeledThingInFrame(labeledThingInFrame) {
+    return this.getLabelStructure(labeledThingInFrame.labeledThing.task).then(labelStructure => {
       return this._getClassesFromLabelStructureByLabeledThingInFrame(labelStructure, labeledThingInFrame);
     });
   };
@@ -110,7 +110,7 @@ class LabelStructureService {
 
     return labelStructure.getEnabledThingClassesForThingAndClassList(
       currentThing,
-      labeledThingInFrame.classes
+      labeledThingInFrame.extractClassList()
     );
   }
 
