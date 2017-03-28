@@ -233,7 +233,6 @@ class PouchDbLabeledThingInFrameGateway {
         })
         .then(response => {
           const isLabeledThingIncomplete = (response.rows[0].value > 0);
-          console.log(isLabeledThingIncomplete);
           return this._labeledThingGateway.saveLabeledThing(storedLabeledThing, isLabeledThingIncomplete);
         })
         .then(() => {
