@@ -13,8 +13,6 @@ use AppBundle\Service;
  */
 class TaskDatabaseCreator
 {
-    const FEATURE_ACTIVE = false;
-
     const TASK_DATABASE_NAME_TEMPLATE = 'taskdb-project-%s-task-%s';
 
     /**
