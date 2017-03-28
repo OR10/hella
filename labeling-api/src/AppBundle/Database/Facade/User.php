@@ -294,7 +294,6 @@ class User
      */
     public function saveUser(Model\User $user)
     {
-        $this->documentManager->persist($user);
-        $this->documentManager->flush();
+        $this->userManager->updateUser($user);
     }
 }
