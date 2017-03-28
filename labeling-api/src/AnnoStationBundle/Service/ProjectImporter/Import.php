@@ -98,6 +98,7 @@ class Import
             $xmlImport->relaxNGValidate(__DIR__ . '/../../Resources/XmlSchema/RequirementsXmlExport.rng');
         } catch (\Exception $exception) {
             // Invalid file, skip
+            return [];
         }
         $xpath = new \DOMXPath($xmlImport);
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
