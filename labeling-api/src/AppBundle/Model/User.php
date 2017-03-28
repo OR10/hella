@@ -153,16 +153,16 @@ class User extends BaseUser
     /**
      * @param string $projectId
      *
-     * @return Role[]
+     * @return string[]
      */
-    public function getRolesForProject(string $projectId)
+    public function getRoleIdsForProject(string $projectId)
     {
         $roles = $this->projectRoles[$projectId];
         if ($roles === null) {
             return [];
         }
 
-        return $roles->getRoles();
+        return $roles->getRoleIds();
     }
 
     /**

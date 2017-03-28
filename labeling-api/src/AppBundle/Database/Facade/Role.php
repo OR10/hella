@@ -50,6 +50,36 @@ class Role
     }
 
     /**
+     * @param string[] $roleIds
+     *
+     * @return Model\Role[]
+     */
+    public function getRolesByIds(array $roleIds)
+    {
+        $result = [];
+        foreach ($roleIds as $roleId) {
+            $result[] = $this->getRoleById($roleId);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $roleId
+     *
+     * @return Model\User[]
+     */
+    public function getAllUserForRole(string $roleId)
+    {
+        return $this->documentManager->createQuery('annostation_roles', 'users_by_role')
+            ->onlyDocs(true)
+            ->setStartKey($roleId)
+            ->setEndKey($roleId)
+            ->execute()
+            ->toArray();
+    }
+
+    /**
      * @param string $projectId
      *
      * @return Model\Role
@@ -84,6 +114,15 @@ class Role
     public function getPermissionsForRole(string $roleId)
     {
         return $this->getRoleById($roleId)->getPermissions();
+    }
+
+    /**
+     * @param Model\Role $role
+     */
+    public function saveRole(Model\Role $role)
+    {
+        $this->documentManager->persist($role);
+        $this->documentManager->flush();
     }
 
 }
