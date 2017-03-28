@@ -36,4 +36,20 @@ class labeling_api::worker(
     },
     notify => Exec['restart supervisord'],
   }
+
+  if $labeling_api::params::pouchdb_feature_enabled {
+    supervisord::program { 'annostation-couchdb-replication-labeling-api-to-task-databases':
+      command => "node ${app_dir}/scripts/CouchDB/ReplicatorManager/ReplicationManager.js ${labeling_api::params::couchdb_host} ${labeling_api::params::couchdb_port} '(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)' 'labeling_api'",
+      autostart => true,
+      autorestart => true,
+      user => $user,
+      directory => $app_dir,
+      startsecs => 0,
+      numprocs => 1,
+      environment => {
+          'SYMFONY_ENV' => $symfony_environment,
+      },
+      notify => Exec['restart supervisord'],
+    }
+  }
 }
