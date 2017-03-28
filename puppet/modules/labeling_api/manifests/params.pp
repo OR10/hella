@@ -19,6 +19,8 @@ class labeling_api::params(
   $couchdb_user = undef,
   $couchdb_password = undef,
 
+  $pouchdb_feature_enabled = false,
+
   $mailer_transport = 'smtp',
   $mailer_host = '127.0.0.1',
   $mailer_user = 'null',

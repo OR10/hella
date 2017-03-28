@@ -9,8 +9,9 @@ class TaskReplicationService {
    * @param {TimerGateway} timerGateway
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
+   * @param {PouchDbViewHeater} pouchDbViewHeater
    */
-  constructor(loggerService, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService) {
+  constructor(loggerService, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService, pouchDbViewHeater) {
     /**
      * @type {LoggerService}
      * @private
@@ -44,26 +45,32 @@ class TaskReplicationService {
      * @private
      */
     this._pouchDbContextService = pouchDbContextService;
+
+    /**
+     * @type {PouchDbViewHeater}
+     * @private
+     */
+    this._pouchDbViewHeater = pouchDbViewHeater;
   }
 
-  replicateTaskDataToLocalMachine(projectId, taskId) {
+  replicateTaskDataToLocalMachine(project, task) {
     this._replicationStateService.setIsReplicating(true);
-    const createTimerFn = this._createUserTaskTimerIfMissing.bind(this, projectId, taskId);
+    const createTimerFn = this._createUserTaskTimerIfMissing.bind(this, project, task);
 
-    return this._checkoutTaskFromRemote(taskId)
-            .then(createTimerFn)
-            .then(() => this._replicationStateService.setIsReplicating(false));
+    return this._checkoutTaskFromRemote(task)
+      .then(createTimerFn)
+      .then(() => this._replicationStateService.setIsReplicating(false));
   }
 
   /**
-   * @param taskId
+   * @param {Task} task
    * @private
    * @return {Promise}
    */
-  _checkoutTaskFromRemote(taskId) {
+  _checkoutTaskFromRemote(task) {
     const loggerContext = 'pouchDb:taskSynchronization';
-    this._logger.groupStart(loggerContext, 'Started intial Task synchronization (before)');
-    const context = this._pouchDbContextService.provideContextForTaskId(taskId);
+    this._logger.groupStartOpened(loggerContext, 'Started intial Task synchronization (before)');
+    const context = this._pouchDbContextService.provideContextForTaskId(task.id);
     this._logger.log(loggerContext, 'Pulling task updates from server');
 
     return this._pouchDbSyncManager.pullUpdatesForContext(context)
@@ -83,9 +90,15 @@ class TaskReplicationService {
   }
 
 
-  _createUserTaskTimerIfMissing(projectId, taskId) {
+  /**
+   * @param {Project} project
+   * @param {Task} task
+   * @return {AbortablePromise}
+   * @private
+   */
+  _createUserTaskTimerIfMissing(project, task) {
     return this._userGateway.getCurrentUser().then(user => {
-      return this._timerGateway.readOrCreateTimerIfMissingWithIdentification(projectId, taskId, user.id);
+      return this._timerGateway.readOrCreateTimerIfMissingWithIdentification(project, task, user.id);
     });
   }
 
@@ -99,6 +112,7 @@ TaskReplicationService.$inject = [
   'timerGateway',
   'pouchDbSyncManager',
   'pouchDbContextService',
+  'pouchDbViewHeater',
 ];
 
 export default TaskReplicationService;

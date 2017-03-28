@@ -215,25 +215,6 @@ export default class LabelSelectorController {
   }
 
   /**
-   * Extract a classList of a given {@link LabeledObject}
-   *
-   * @param {LabeledObject} labeledObject
-   * @returns {Array.<string>}
-   * @private
-   */
-  _extractClassList(labeledObject) {
-    if (!labeledObject) {
-      return [];
-    }
-
-    if (labeledObject.ghostClasses !== null) {
-      return labeledObject.ghostClasses;
-    }
-
-    return labeledObject.classes;
-  }
-
-  /**
    * Generate a valid set of pages to be rendered to the Wizzard View
    *
    * Pages depend on the `labelObject`, the `structure` as well as the `annotation`
@@ -241,7 +222,7 @@ export default class LabelSelectorController {
    * @private
    */
   _updatePagesAndChoices() {
-    const classList = this._extractClassList(this.selectedLabeledObject);
+    const classList = this.selectedLabeledObject.extractClassList();
     const list = this.labelStructure.getEnabledThingClassesForThingAndClassList(
       this.selectedLabelStructureThing,
       classList

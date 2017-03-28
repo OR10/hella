@@ -103,7 +103,7 @@ class TimerController {
     if (!this.isIdle) {
       this.elapsedTime += this.saveFrequency;
       this.calculateTime();
-      this.timerGateway.updateTime(this.task.id, this.user.id, this.elapsedTime).then(() => {
+      this.timerGateway.updateTime(this.task, this.user, this.elapsedTime).then(() => {
         this.listenToEvents = true;
       }).catch(() => {
         this.setIdle();

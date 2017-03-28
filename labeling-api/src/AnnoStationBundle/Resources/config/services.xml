@@ -76,6 +76,7 @@
         <service id="annostation.labeling_api.service.task_database_creator" class="AnnoStationBundle\Service\TaskDatabaseCreator">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <argument type="service" id="annostation.services.couch_db_replicator_service"/>
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
 
         <service id="annostation.labeling_api.service.task_creator" class="AnnoStationBundle\Service\TaskCreator">
@@ -222,13 +223,6 @@
         <service id="annostation.labeling_api.service.authentication.user_permissions"
                  class="AnnoStationBundle\Service\Authentication\UserPermissions">
             <argument type="service" id="security.token_storage"/>
-        </service>
-
-        <service id="annostation.labeling_api.service.task_exporter.kitti" class="AnnoStationBundle\Service\TaskExporter\Kitti">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.task_export" />
         </service>
 
         <service id="annostation.labeling_api.service.video.video_frame_splitter"

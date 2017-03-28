@@ -32,6 +32,15 @@ supervisord::service_manage: true
 supervisord::service_enable: true
 supervisord::service_ensure: running
 
+letsencrypt::email: chh@crosscan.com
+annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
+annostation_letsencrypt::domains:
+    - weblabel-demo.hella-aglaia.com
+labeling_api::app::sslCertFile: '/etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/fullchain.pem'
+labeling_api::app::sslKeyFile: '/etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/privkey.pem'
+labeling_api::cdn::sslCertFile: '/etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/fullchain.pem'
+labeling_api::cdn::sslKeyFile: '/etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/privkey.pem'
+
 labeling_api::common::sslCert: 'anno.crosscan.com'
 
 labeling_api::params::config_dir: '/etc/AnnoStation/labeling-api'
@@ -53,7 +62,7 @@ labeling_api::params::secret: 'klaslhfalhskdlha'
 labeling_api::params::user_password: 'sQYxxWZzi64WoKOCnBij'
 labeling_api::params::create_parameter_files: true
 
-labeling_api::app::httpv2: false
+labeling_api::app::httpv2: true
 labeling_api::app::www_root: '/var/www/labeling-api/current/web/AnnoStation'
 
 labeling_api::mysql::database_name: 'labeling_api'
@@ -66,7 +75,7 @@ labeling_api::couch::prepare_test_environment: true
 labeling_api::worker::app_dir: '/var/www/labeling-api/current'
 labeling_api::worker::user: www-data
 
-labeling_api::cdn::httpv2: false
+labeling_api::cdn::httpv2: true
 
 labeling_api::params: true
 labeling_api::mysql: false
@@ -75,3 +84,4 @@ labeling_api::worker_queue: true
 labeling_api::redis: true
 labeling_api::app: true
 labeling_api::tideways: true
+labeling_api::letsencrypt: true

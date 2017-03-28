@@ -72,12 +72,6 @@
 
 + message: `Export started` (string)
 
-## Kitti Export
-
-+ id: `36047d429d50548893be41c6880632fd` (string) - The id of the export entity.
-+ taskId: `36047d429d50548893be41c6883f3416` (string) - The id of the referenced task.
-+ filename: `kitti.zip` (string) - The filename of the exported data.
-
 ## Interpolation Type
 
 + type: `linear` (string) - The type of the interpolation.

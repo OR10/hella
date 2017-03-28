@@ -1,0 +1,9 @@
+{
+  "name": "replicationmanager",
+  "version": "1.0.0",
+  "description": "Package to listen to the CouchDB Database feed and create replications",
+  "main": "ReplicationManager.js",
+  "dependencies": {
+    "nano": "^6.2.0"
+  }
+}

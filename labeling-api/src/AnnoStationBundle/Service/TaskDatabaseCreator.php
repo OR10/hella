@@ -65,29 +65,8 @@ class TaskDatabaseCreator
         if (self::FEATURE_ACTIVE) {
             $databaseName    = $this->getDatabaseName($projectId, $taskId);
             $documentManager = $this->documentManager->getCouchDBClient()->createDatabase($databaseName);
-            $this->startReplication($projectId, $taskId);
 
             return $documentManager;
-        }
-    }
-
-    /**
-     * Start a replication for the given Project and Task ID
-     *
-     * @param string $projectId
-     * @param string $taskId
-     */
-    private function startReplication($projectId, $taskId)
-    {
-        if (self::FEATURE_ACTIVE) {
-            $databaseName = $this->getDatabaseName($projectId, $taskId);
-            $this->couchDbReplicatorService->addReplication(
-                'labeling_api',
-                $databaseName,
-                true,
-                'annostation_labeling_task_replication_filter/filter',
-                ['taskId' => $taskId]
-            );
         }
     }
 }

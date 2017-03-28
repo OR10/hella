@@ -12,8 +12,18 @@ class PouchDbLabeledThingGroupGateway {
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {PouchDbLabeledThingGateway} pouchDbLabeledThingGateway
    * @param {EntityIdService} entityIdService
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, abortablePromiseFactory, pouchDbLabeledThingGateway, entityIdService) {
+  constructor($q,
+              pouchDbContextService,
+              packagingExecutor,
+              couchDbModelSerializer,
+              couchDbModelDeserializer,
+              revisionManager,
+              abortablePromiseFactory,
+              pouchDbLabeledThingGateway,
+              entityIdService,
+              pouchDbViewService) {
     /**
      * @type {angular.$q}
      * @private
@@ -73,6 +83,8 @@ class PouchDbLabeledThingGroupGateway {
      * @private
      */
     this._entityIdService = entityIdService;
+
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
@@ -89,7 +101,7 @@ class PouchDbLabeledThingGroupGateway {
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute('labeledThingGroup', () => {
-      return dbContext.query('annostation_labeled_thing_group_in_frame_by_taskId_frameIndex', {
+      return dbContext.query(this._pouchDbViewService.get('labeledThingGroupInFrameByTaskIdAndFrameIndex'), {
         key: [taskId, frameIndex],
       })
         .then(response => response.rows.map(row => row.value))
@@ -263,6 +275,7 @@ PouchDbLabeledThingGroupGateway.$inject = [
   'abortablePromiseFactory',
   'pouchDbLabeledThingGateway',
   'entityIdService',
+  'pouchDbViewService',
 ];
 
 export default PouchDbLabeledThingGroupGateway;

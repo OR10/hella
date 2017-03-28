@@ -41,6 +41,17 @@ describe('PouchDbLabeledThingGateway', () => {
    */
   let couchDbModelSerializer;
 
+  /**
+   * @type {Object}
+   */
+  let pouchLabeledThingFrontendModel;
+
+  beforeEach(() => {
+    // PouchDB updates the incomplete status after saving
+    pouchLabeledThingFrontendModel = angular.copy(labeledThingFrontendModel);
+    pouchLabeledThingFrontendModel.incomplete = false;
+  });
+
   beforeEach(done => {
     const featureFlags = {
       pouchdb: true,
@@ -132,7 +143,7 @@ describe('PouchDbLabeledThingGateway', () => {
         );
       })
       .then(storedLabeledThing => {
-        expect(storedLabeledThing).toEqual(labeledThingFrontendModel);
+        expect(storedLabeledThing).toEqual(pouchLabeledThingFrontendModel);
       })
       .then(() => {
         // Check if document is really stored correctly in the db.
@@ -173,6 +184,8 @@ describe('PouchDbLabeledThingGateway', () => {
         );
       })
       .then(storedLabeledThing => {
+        // PouchDB updates the incomplete status after saving
+        changedLabeledThingFrontendModel.incomplete = false;
         expect(storedLabeledThing).toEqual(changedLabeledThingFrontendModel);
       })
       // Check if document is really stored correctly in the db.
