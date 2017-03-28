@@ -177,14 +177,6 @@ class LabeledThingInFrame extends LabeledObject {
     });
   }
 
-  extractClassList() {
-    if (this.ghostClasses !== null) {
-      return this.ghostClasses;
-    }
-
-    return this.classes;
-  }
-
   /**
    * Updates the incomplete status of the LabeledThingInFrame by using the invoked labelStructureService
    *
