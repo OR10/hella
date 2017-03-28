@@ -1,6 +1,6 @@
 import PouchDbViewService from 'Application/Common/Services/PouchDbViewService';
 
-fdescribe('PouchDbViewService specs', () => {
+describe('PouchDbViewService specs', () => {
   let service;
 
   beforeEach(() => {
