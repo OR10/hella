@@ -1,6 +1,6 @@
-resource "openstack_compute_secgroup_v2" "anno-demo-app" {
-    name = "anno-demo-app"
-    description = "Allow incoming connections for the anno-demo app server"
+resource "openstack_compute_secgroup_v2" "live-app" {
+    name = "live-app"
+    description = "Allow incoming connections for the live app server"
 
     rule {
         from_port = 22
