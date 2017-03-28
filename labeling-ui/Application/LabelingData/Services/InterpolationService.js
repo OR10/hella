@@ -68,6 +68,7 @@ class InterpolationService {
      * @type {Map.<string, Interpolation>}
      * @private
      */
+    debugger;
     this._interpolations = new Map();
     interpolations.forEach(interpolation => this._interpolations.set(interpolation.id, interpolation));
     if (interpolations.length > 0) {
@@ -97,6 +98,7 @@ class InterpolationService {
    * @return {Promise.<*>}
    */
   interpolate(id, task, labeledThing, frameRange = null) {
+    debugger;
     if (!this._interpolations.has(id)) {
       throw new Error(`Interpolation with id '${id}' is not currently registered on the InterpolationService.`);
     }
@@ -112,27 +114,25 @@ class InterpolationService {
       const pouchDBContext = this._pouchDbContextService.provideContextForTaskId(task.id);
       return this._pouchDbSyncManager.stopReplicationsForContext(pouchDBContext)
         .then(() => {
-          return this._pouchDbSyncManager.stopReplicationsForContext(pouchDBContext)
+          return this._pouchDbSyncManager.pushUpdatesForContext(pouchDBContext);
         })
         .then(() => {
-          return interpolation.execute(task, labeledThing, interpolationFrameRange)
+          return interpolation.execute(task, labeledThing, interpolationFrameRange);
         })
         .then(result => {
-          console.log(result);
-          return this._pouchDbSyncManager.pullUpdatesForContext(pouchDBContext)
+          return this._pouchDbSyncManager.pullUpdatesForContext(pouchDBContext);
         })
         .then(() => {
           this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolation.endFrameIndex);
-          return this._pouchDbSyncManager.startDuplexLiveReplication(pouchDBContext)
-        });
-    } else {
-      return interpolation
-        .execute(task, labeledThing, interpolationFrameRange)
-        .then(result => {
-          this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolation.endFrameIndex);
-          return result;
+          return this._pouchDbSyncManager.startDuplexLiveReplication(pouchDBContext);
         });
     }
+    return interpolation
+      .execute(task, labeledThing, interpolationFrameRange)
+      .then(result => {
+        this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolation.endFrameIndex);
+        return result;
+      });
   }
 
   /**
