@@ -37,12 +37,13 @@ class Role
      * @param string $projectId
      * @param string $label
      * @param array  $permissions
+     * @param bool   $systemRole
      *
      * @return Model\Role
      */
-    public function createRole(string $projectId, string $label, array $permissions)
+    public function createRole(string $projectId, string $label, array $permissions, bool $systemRole = false)
     {
-        $role = new Model\Role($this->uuidGenerator->generateUuid(), $projectId, $label, $permissions);
+        $role = new Model\Role($this->uuidGenerator->generateUuid(), $projectId, $label, $permissions, $systemRole);
         $this->documentManager->persist($role);
         $this->documentManager->flush();
 
