@@ -185,6 +185,7 @@ describe('PouchDbLabeledThingGateway', () => {
         );
       })
       .then(storedLabeledThing => {
+        // PouchDB updates the incomplete status after saving
         changedLabeledThingFrontendModel.incomplete = false;
         expect(storedLabeledThing).toEqual(changedLabeledThingFrontendModel);
       })
