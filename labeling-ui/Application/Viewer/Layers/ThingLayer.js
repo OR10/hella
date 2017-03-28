@@ -451,7 +451,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
             // labeledThingInFrame.shapes.push(paperShape.toJSON());
 
             this._$scope.vm.paperThingShapes.push(paperShape);
-            this._$scope.vm.selectedPaperShape = paperShape;
             this.emit('thing:create', paperShape);
             break;
           case paperShape instanceof PaperGroupShape:
@@ -544,12 +543,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
               // @TODO: Is the shape really needed in the higher level or is a ltif sufficient?
               // Ensure the parent/child structure is intact
               this._$scope.vm.paperThingShapes.push(paperShape);
-              this._$scope.vm.selectedPaperShape = paperShape;
               this.emit('thing:create', paperShape);
               break;
             case paperShape instanceof PaperGroupShape:
               this._$scope.vm.paperGroupShapes.push(paperShape);
-              this._$scope.vm.selectedPaperShape = paperShape;
               this.emit('group:create', paperShape);
               break;
             default:
