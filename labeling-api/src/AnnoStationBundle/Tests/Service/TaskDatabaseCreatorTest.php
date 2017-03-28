@@ -79,8 +79,10 @@ class TaskDatabaseCreatorTest extends Tests\WebTestCase
                 ->method('getCouchDBClient')
                 ->will($this->returnValue($couchClientMock));
 
-            $creator               = new TaskDatabaseCreator(
-                $documentManagerMock, $couchReplicatorMock, $this->pouchDbFeatureEnabled
+            $creator = new TaskDatabaseCreator(
+                $documentManagerMock,
+                $couchReplicatorMock,
+                $this->pouchDbFeatureEnabled
             );
             $actualDocumentManager = $creator->createDatabase($projectId, $taskId);
 
