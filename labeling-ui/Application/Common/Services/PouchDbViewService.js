@@ -13,7 +13,7 @@ class PouchDbViewService {
               emit(doc.labeledThingId, 0 + doc.incomplete); // eslint-disable-line no-undef
             }
           },
-          reduce: '_sum'
+          reduce: '_sum',
         };
       case 'labeledThingInFrameByTaskIdAndFrameIndex':
         return {

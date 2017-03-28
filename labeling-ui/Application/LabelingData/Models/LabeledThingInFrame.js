@@ -187,10 +187,11 @@ class LabeledThingInFrame extends LabeledObject {
     return labelStructureService.getClassesForLabeledThingInFrame(this).then(list => {
       let incomplete = false;
       const totalIncomplete = list.reduce((total, current) => {
+        let newTotal = total;
         if (current.metadata.value === null) {
-          total++;
+          newTotal++;
         }
-        return total;
+        return newTotal;
       }, 0);
 
       incomplete = (totalIncomplete > 0);

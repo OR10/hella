@@ -134,7 +134,6 @@ describe('PouchDbLabeledThingGateway', () => {
   });
 
   it('should save a new labeled thing', done => {
-
     const db = pouchDbHelper.database;
     Promise.resolve()
       .then(() => {
