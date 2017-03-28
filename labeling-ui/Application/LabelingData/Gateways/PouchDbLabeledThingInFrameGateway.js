@@ -12,6 +12,7 @@ class PouchDbLabeledThingInFrameGateway {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {GhostingService} ghostingService
    * @param {PouchDbViewService} pouchDbViewService
+   * @param {LabelStructureService} labelStructureService
    */
   constructor($q,
               pouchDbContextService,
@@ -21,7 +22,8 @@ class PouchDbLabeledThingInFrameGateway {
               couchDbModelDeserializer,
               labeledThingGateway,
               ghostingService,
-              pouchDbViewService) {
+              pouchDbViewService,
+              labelStructureService) {
     /**
      * @type {$q}
      * @private
@@ -75,6 +77,12 @@ class PouchDbLabeledThingInFrameGateway {
      * @private
      */
     this._pouchDbViewService = pouchDbViewService;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
   }
 
   /**
@@ -185,33 +193,52 @@ class PouchDbLabeledThingInFrameGateway {
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame, taskId = null) {
+    let storedLabeledThingInFrame;
+    let storedLabeledThing;
+
     taskId = taskId ? taskId : labeledThingInFrame.labeledThing.task.id; // eslint-disable-line no-param-reassign
 
     if (labeledThingInFrame.ghost === true) {
       throw new Error('Tried to store a ghosted LabeledThingInFrame. This is not possible!');
     }
 
-    // TODO: Remove when incomplete calculation is moved to the frontend
-    labeledThingInFrame.incomplete = false;
+    return labeledThingInFrame.updateIncompleteStatus(this._labelStructureService).then(() => {
+      const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+      const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(labeledThingInFrame);
 
-    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
-    const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(labeledThingInFrame);
-
-    // @TODO: What about error handling here? No global handling is possible this easily?
-    //       Monkey-patch pouchdb? Fix error handling at usage point?
-    return this._packagingExecutor.execute(
-      'labeledThing',
-      () => {
-        this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
-        return dbContext.put(serializedLabeledThingInFrame);
-      })
-      .then(response => {
-        return dbContext.get(response.id);
-      })
-      .then(readDocument => {
-        this._revisionManager.extractRevision(readDocument);
-        return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
-      });
+      // @TODO: What about error handling here? No global handling is possible this easily?
+      //       Monkey-patch pouchdb? Fix error handling at usage point?
+      return this._packagingExecutor.execute(
+        'labeledThing',
+        () => {
+          this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
+          return dbContext.put(serializedLabeledThingInFrame);
+        })
+        .then(response => {
+          return dbContext.get(response.id);
+        })
+        .then(readDocument => {
+          this._revisionManager.extractRevision(readDocument);
+          return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
+        })
+        .then(deserializedLabeledThingInFrame => {
+          storedLabeledThingInFrame = deserializedLabeledThingInFrame;
+          storedLabeledThing = deserializedLabeledThingInFrame.labeledThing;
+          return this._packagingExecutor.execute(
+            'labeledThing',
+            () => dbContext.query(this._pouchDbViewService.get('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
+              reduce: true,
+              keys: [storedLabeledThing.id],
+            }));
+        })
+        .then(response => {
+          const isLabeledThingIncomplete = (response.rows[0].value > 0);
+          return this._labeledThingGateway.saveLabeledThing(storedLabeledThing, isLabeledThingIncomplete);
+        })
+        .then(() => {
+          return storedLabeledThingInFrame;
+        });
+    });
   }
 
   /**
@@ -240,6 +267,7 @@ PouchDbLabeledThingInFrameGateway.$inject = [
   'labeledThingGateway',
   'ghostingService',
   'pouchDbViewService',
+  'labelStructureService',
 ];
 
 export default PouchDbLabeledThingInFrameGateway;

@@ -11,7 +11,14 @@ class PouchDbLabeledThingGateway {
    * @param {RevisionManager} revisionManager
    * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, pouchDbViewService) {
+  constructor(
+    $q,
+    pouchDbContextService,
+    packagingExecutor,
+    couchDbModelSerializer,
+    couchDbModelDeserializer,
+    revisionManager,
+    pouchDbViewService) {
     /**
      * @type {angular.$q}
      * @private
@@ -65,14 +72,13 @@ class PouchDbLabeledThingGateway {
    * @param {LabeledThing} labeledThing
    * @return {AbortablePromise.<LabeledThing|Error>}
    */
-  saveLabeledThing(labeledThing) {
-    // TODO: Remove when incomplete calculation is moved to the frontend
-    labeledThing.incomplete = false;
-
+  saveLabeledThing(labeledThing, incomplete = true) {
     const task = labeledThing.task;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);
     let readLabeledThing = null;
+
+    labeledThing.incomplete = incomplete;
 
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
