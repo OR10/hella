@@ -101,7 +101,8 @@ class TaskDatabaseCreatorTest extends Tests\WebTestCase
         $creator             = new TaskDatabaseCreator(
             $documentManagerMock,
             $couchReplicatorMock,
-            $this->pouchDbFeatureEnabled;
+            $this->pouchDbFeatureEnabled
+        );
         $actual              = $creator->getDatabaseName($projectId, $taskId);
 
         $this->assertEquals($expectedDatabaseName, $actual);
