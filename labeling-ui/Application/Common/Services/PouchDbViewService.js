@@ -6,6 +6,15 @@ class PouchDbViewService {
   get(viewIdentifier) {
     // TODO: This needs to be fixed to a nicer implementation! This is just a prototype!
     switch (viewIdentifier) {
+      case 'labeledThingInFrameByLabeledThingIdAndIncomplete':
+        return {
+          map: function(doc) { // eslint-disable-line func-names
+            if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
+              emit(doc.labeledThingId, 0 + doc.incomplete); // eslint-disable-line no-undef
+            }
+          },
+          reduce: '_sum',
+        };
       case 'labeledThingInFrameByTaskIdAndFrameIndex':
         return {
           map: function(doc) { // eslint-disable-line func-names
