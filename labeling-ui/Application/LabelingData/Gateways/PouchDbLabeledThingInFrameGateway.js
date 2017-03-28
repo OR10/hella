@@ -193,6 +193,9 @@ class PouchDbLabeledThingInFrameGateway {
    * @returns {AbortablePromise<LabeledThingInFrame|Error>}
    */
   saveLabeledThingInFrame(labeledThingInFrame, taskId = null) {
+    let storedLabeledThingInFrame;
+    let storedLabeledThing;
+
     taskId = taskId ? taskId : labeledThingInFrame.labeledThing.task.id; // eslint-disable-line no-param-reassign
 
     if (labeledThingInFrame.ghost === true) {
@@ -217,6 +220,24 @@ class PouchDbLabeledThingInFrameGateway {
         .then(readDocument => {
           this._revisionManager.extractRevision(readDocument);
           return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
+        })
+        .then(labeledThingInFrame => {
+          storedLabeledThingInFrame = labeledThingInFrame;
+          storedLabeledThing = labeledThingInFrame.labeledThing;
+          return this._packagingExecutor.execute(
+            'labeledThing',
+            () => dbContext.query(this._pouchDbViewService.get('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
+              reduce: true,
+              keys: [storedLabeledThing.id],
+            }))
+        })
+        .then(response => {
+          const isLabeledThingIncomplete = (response.rows[0].value > 0);
+          console.log(isLabeledThingIncomplete);
+          return this._labeledThingGateway.saveLabeledThing(storedLabeledThing, isLabeledThingIncomplete);
+        })
+        .then(() => {
+          return storedLabeledThingInFrame;
         });
     });
   }
