@@ -117,4 +117,81 @@ describe('Task model', () => {
     const model = new Task(taskWithVideoId, users);
     expect(model.videoId).toEqual('video-id-1');
   });
+
+  describe('getPhase()', () => {
+    it('throws an Error if an invalid task phase is given', () => {
+      const task = new Task({status: {labeling: 'foobar'}});
+
+      function throwWrapper() {
+        task.getPhase();
+      }
+
+      expect(throwWrapper).toThrowError('Failed to determine the tasks phase');
+
+    });
+
+    it('returns all_phases_done by default', () => {
+      const task = new Task({});
+      const phase = task.getPhase();
+      expect(phase).toEqual('all_phases_done');
+    });
+
+    it('returns the phase which has todo or in_progress last (in_progress)', () => {
+      const status = {
+        labeling: 'todo',
+        revision: 'in_progress',
+      };
+      const task = new Task({status: status});
+      const phase = task.getPhase();
+
+      expect(phase).toEqual('revision');
+    });
+
+    it('returns the phase which has todo or in_progress last (todo)', () => {
+      const status = {
+        revision: 'in_progress',
+        labeling: 'todo',
+      };
+      const task = new Task({status: status});
+      const phase = task.getPhase();
+
+      expect(phase).toEqual('labeling');
+    });
+
+    it('returns the phase which is not yet done', () => {
+      const status = {
+        revision: 'done',
+        labeling: 'todo',
+        something: 'done',
+      };
+      const task = new Task({status: status});
+      const phase = task.getPhase();
+
+      expect(phase).toEqual('labeling');
+    });
+
+    it('returns all_phases_done if all phases are marked as done', () => {
+      const status = {
+        revision: 'done',
+        labeling: 'done',
+        something: 'done',
+      };
+      const task = new Task({status: status});
+      const phase = task.getPhase();
+
+      expect(phase).toEqual('all_phases_done');
+    });
+
+    it('accepts all phase names', () => {
+      const status = {
+        revision: 'done',
+        foobar: 'todo',
+        something: 'done',
+      };
+      const task = new Task({status: status});
+      const phase = task.getPhase();
+
+      expect(phase).toEqual('foobar');
+    });
+  });
 });
