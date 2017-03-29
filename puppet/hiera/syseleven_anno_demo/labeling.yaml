@@ -9,6 +9,7 @@ php::fpm::settings:
   PHP/upload_max_filesize: 512M
   PHP/post_max_size: 512M
   PHP/default_socket_timeout: 900
+  PHP/max_execution_time: 900
   tideways/tideways.api_key: 5E8BP2ucZXkMhXVs
   tideways/tideways.framework: symfony2
 
