@@ -24,7 +24,7 @@ sudo \
     --modulepath /home/ubuntu/puppet/modules:/home/ubuntu/puppet/vendor:/etc/puppet/modules \
     --hiera_config=/home/ubuntu/puppet/hiera/hiera.yaml \
     --environmentpath /home/ubuntu/puppet/environments/ \
-    --environment syseleven-live \
+    --environment syseleven_live \
     --debug \
     --verbose \
-    /home/ubuntu/puppet/environments/syseleven-live/manifests/site.pp
+    /home/ubuntu/puppet/environments/syseleven_live/manifests/site.pp
