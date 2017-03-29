@@ -247,7 +247,7 @@ class Task {
       return phase;
     }
 
-    throw new Error(`Failed to determine the tasks phase`);
+    throw new Error('Failed to determine the tasks phase');
   }
 
   /**
