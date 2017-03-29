@@ -309,12 +309,6 @@ describe('ThingLayer test suite', () => {
 
             expect(angularScope.vm.paperThingShapes).toEqual([paperThingShape]);
           });
-
-          it('sets the shape as selected shape', () => {
-            thing.activateTool('multi', selectedLabelStructureThing);
-
-            expect(angularScope.vm.selectedPaperShape).toBe(paperThingShape);
-          });
         });
 
         describe('Created PaperGroupShape', () => {
@@ -339,12 +333,6 @@ describe('ThingLayer test suite', () => {
             thing.activateTool('multi', selectedLabelStructureThing);
 
             expect(angularScope.vm.paperGroupShapes).toEqual([paperGroupShape]);
-          });
-
-          it('sets the shape as selected shape', () => {
-            thing.activateTool('multi', selectedLabelStructureThing);
-
-            expect(angularScope.vm.selectedPaperShape).toBe(paperGroupShape);
           });
         });
 
