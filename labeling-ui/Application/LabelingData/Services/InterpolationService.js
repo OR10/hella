@@ -68,7 +68,6 @@ class InterpolationService {
      * @type {Map.<string, Interpolation>}
      * @private
      */
-    // debugger;
     this._interpolations = new Map();
     interpolations.forEach(interpolation => this._interpolations.set(interpolation.id, interpolation));
     if (interpolations.length > 0) {
@@ -119,7 +118,7 @@ class InterpolationService {
         .then(() => {
           return interpolation.execute(task, labeledThing, interpolationFrameRange);
         })
-        .then(result => {
+        .then(() => {
           return this._pouchDbSyncManager.pullUpdatesForContext(pouchDBContext);
         })
         .then(() => {
