@@ -39,6 +39,14 @@ class PouchDbViewService {
             }
           },
         };
+      case 'labeledThingInFrameIncomplete':
+        return {
+          map: function(doc) { // eslint-disable-line func-names
+            if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
+              emit([doc.taskId, doc.incomplete]); // eslint-disable-line no-undef
+            }
+          },
+        };
       case 'labeledThingInFrameByLabeledThingIdAndFrameIndex':
         return {
           map: function(doc) { // eslint-disable-line func-names

@@ -445,6 +445,10 @@ class PouchDbSyncManager {
     replication.on('active', () => {
       this._emit('transfer');
     });
+
+    replication.on('paused', () => {
+      this._emit('alive');
+    });
   }
 
   /**
