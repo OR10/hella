@@ -18,6 +18,7 @@ class labeling_api::params(
   $couchdb_port_external = 5984,
   $couchdb_user = undef,
   $couchdb_password = undef,
+  $couchdb_external_url = 'http://127.0.0.1:5984',
 
   $pouchdb_feature_enabled = false,
 
