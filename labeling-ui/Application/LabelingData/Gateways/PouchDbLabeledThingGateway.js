@@ -73,12 +73,12 @@ class PouchDbLabeledThingGateway {
    * @return {AbortablePromise.<LabeledThing|Error>}
    */
   saveLabeledThing(labeledThing, incomplete = true) {
+    labeledThing.incomplete = incomplete;
+
     const task = labeledThing.task;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);
     let readLabeledThing = null;
-
-    labeledThing.incomplete = incomplete;
 
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?

@@ -26,13 +26,6 @@ class Role
     private $projectId;
 
     /**
-     * @var string
-     *
-     * @CouchDB\Field(type="string")
-     */
-    private $name;
-
-    /**
      * @var string[]
      *
      * @CouchDB\Field(type="mixed")
@@ -47,21 +40,33 @@ class Role
     private $label;
 
     /**
+     * @var boolean
+     *
+     * @CouchDB\Field(type="boolean")
+     */
+    private $systemRole;
+
+    /**
      * Role constructor.
      *
      * @param string   $id
      * @param string   $projectId
-     * @param string   $name
      * @param string   $label
      * @param string[] $permissions
+     * @param bool     $systemRole
      */
-    public function __construct(string $id, string $projectId, string $name, string $label, array $permissions = [])
-    {
+    public function __construct(
+        string $id,
+        string $projectId,
+        string $label,
+        array $permissions = [],
+        bool $systemRole = false
+    ) {
         $this->id          = $id;
         $this->projectId   = $projectId;
-        $this->name        = $name;
         $this->permissions = $permissions;
         $this->label       = $label;
+        $this->systemRole  = $systemRole;
     }
 
     /**
@@ -70,14 +75,6 @@ class Role
     public function getProjectId()
     {
         return $this->projectId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -102,5 +99,29 @@ class Role
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+    }
+
+    /**
+     * @param string[] $permissions
+     */
+    public function setPermissions($permissions)
+    {
+        $this->permissions = $permissions;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSystemRole()
+    {
+        return $this->systemRole;
     }
 }

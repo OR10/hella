@@ -22,11 +22,10 @@ class ProjectRoles
     protected $projectId = "";
 
     /**
-     * @var Role[]
-     *
-     * @CouchDB\EmbedMany(targetDocument="Role")
+     * @var string[]
+     * @CouchDB\Field(type="mixed")
      */
-    protected $roles;
+    protected $roleIds = [];
 
     /**
      * @var Role[]
@@ -43,7 +42,6 @@ class ProjectRoles
     public function __construct(string $projectId)
     {
         $this->projectId    = $projectId;
-        $this->roles        = new ArrayCollection();
         $this->removedRoles = new ArrayCollection();
     }
 
@@ -52,8 +50,8 @@ class ProjectRoles
      */
     public function assignRole(Role $role)
     {
-        if ($this->roles[$role->getId()] === null) {
-            $this->roles[$role->getId()] = $role;
+        if (!in_array($role->getId(), $this->roleIds)) {
+            $this->roleIds[] = $role->getId();
         }
     }
 
@@ -62,17 +60,20 @@ class ProjectRoles
      */
     public function setRoles(array $roles)
     {
+        $this->roleIds = [];
         foreach ($roles as $role) {
-            $this->roles[$role->getId()] = $role;
+            if (!in_array($role->getId(), $this->roleIds)) {
+                $this->roleIds[] = $role->getId();
+            }
         }
     }
 
     /**
-     * @return Role[]
+     * @return string[]
      */
-    public function getRoles()
+    public function getRoleIds()
     {
-        return array_values($this->roles->toArray());
+        return $this->roleIds;
     }
 
     /**
@@ -101,6 +102,10 @@ class ProjectRoles
      */
     public function addRemovedRole(Role $role)
     {
+        if (($removedRoleIndex = array_search($role->getId(), $this->roleIds)) !== false) {
+            unset($this->roleIds[$removedRoleIndex]);
+        }
+
         $this->removedRoles[] = $role;
     }
 
