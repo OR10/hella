@@ -25,17 +25,11 @@ class Replication extends Controller\Base
     /**
      * @var string
      */
-    private $couchDbExternalHost;
+    private $couchDbExternalUrl;
 
-    /**
-     * @var string
-     */
-    private $couchDbExternalPort;
-
-    public function __construct($couchDbExternalHost, $couchDbExternalPort)
+    public function __construct($couchDbExternalUrl)
     {
-        $this->couchDbExternalHost = $couchDbExternalHost;
-        $this->couchDbExternalPort = $couchDbExternalPort;
+        $this->couchDbExternalUrl = $couchDbExternalUrl;
     }
 
     /**
@@ -55,11 +49,7 @@ class Replication extends Controller\Base
                 'result' => [
                     'taskId'         => $task->getId(),
                     'databaseName'   => $databaseName,
-                    'databaseServer' => sprintf(
-                        'http://%s:%s',
-                        $this->couchDbExternalHost,
-                        $this->couchDbExternalPort
-                    ),
+                    'databaseServer' => $this->couchDbExternalUrl,
                 ],
             ]
         );
