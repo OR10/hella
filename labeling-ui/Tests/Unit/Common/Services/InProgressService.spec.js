@@ -67,6 +67,7 @@ describe('InProgressService test suite', () => {
     it('removes the beforeunload event listener', () => {
       spyOn(windowMock, 'removeEventListener');
 
+      inProgress.start();
       inProgress.end();
 
       expect(windowMock.removeEventListener).toHaveBeenCalledWith('beforeunload', jasmine.any(Function));
