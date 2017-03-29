@@ -41,11 +41,7 @@ class ReplicationTest extends Tests\WebTestCase
         $client = static::createClient();
 
         $databaseName   = sprintf('taskdb-project-%s-task-%s', $this->project->getId(), $this->task->getId());
-        $databaseServer = sprintf(
-            'http://%s:%s',
-            $client->getKernel()->getContainer()->getParameter('couchdb_host_external'),
-            $client->getKernel()->getContainer()->getParameter('couchdb_port_external')
-        );
+        $databaseServer = $client->getKernel()->getContainer()->getParameter('couchdb_external_url');
 
         $expectedResponse = [
             'result' => [

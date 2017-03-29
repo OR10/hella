@@ -33,6 +33,12 @@ class InProgressService {
      * @private
      */
     this._message = undefined;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._windowEventListernerSet = false;
   }
 
   _installNavigationInterceptor() {
@@ -80,8 +86,13 @@ class InProgressService {
    */
   start(message = undefined) {
     this._message = message;
-    this._$window.addEventListener('beforeunload', this._windowBeforeUnload);
-    this._installNavigationInterceptor();
+    if (!this._windowEventListernerSet) {
+      this._$window.addEventListener('beforeunload', this._windowBeforeUnload);
+      this._windowEventListernerSet = true;
+    }
+    if (this._uninstallNavigationInterceptor === null) {
+      this._installNavigationInterceptor();
+    }
 
     this._$rootScope.$on('$destroy', () => this._uninstallNavigationInterceptor());
   }
@@ -92,7 +103,10 @@ class InProgressService {
       this._uninstallNavigationInterceptor = null;
     }
 
-    this._$window.removeEventListener('beforeunload', this._windowBeforeUnload);
+    if (this._windowEventListernerSet) {
+      this._$window.removeEventListener('beforeunload', this._windowBeforeUnload);
+      this._windowEventListernerSet = false;
+    }
   }
 
   /**
