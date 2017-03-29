@@ -67,6 +67,20 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
      * @private
      */
     this._applicationLoadingMaskService = applicationLoadingMaskService;
+
+    this.refreshIncompleteCount();
+  }
+
+  _registerOnEvents() {
+    this._$rootScope.$on('shape:class-update:after', () => {
+      this.refreshIncompleteCount();
+    });
+    this._$rootScope.$on('shape:delete:after', () => {
+      this.refreshIncompleteCount();
+    });
+    this._$rootScope.$on('shape:add:after', () => {
+      this.refreshIncompleteCount();
+    });
   }
 
   /**
@@ -162,6 +176,14 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
         this._$state.go('labeling.tasks.list', {project: this.task.projectId});
         this._applicationLoadingMaskService.finishLoading();
       });
+  }
+
+  refreshIncompleteCount() {
+    this._$scope.$applyAsync(() => {
+      this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id).then(result => {
+        this.incompleteCount = result.count;
+      });
+    });
   }
 }
 
