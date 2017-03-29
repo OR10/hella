@@ -15,4 +15,5 @@ labeling_api::params::frame_cdn_allowed_origin: 'https://labeltool.crosscan.com'
 labeling_api::params::couchdb_user: 'pouch'
 labeling_api::params::couchdb_password: '3,udvezdxp}2Rh.UNmuZ'
 labeling_api::params::pouchdb_feature_enabled: true
+labeling_api::params::couchdb_host_external: 'https://labeltool.crosscan.com'
 labeling_api::letsencrypt: true
