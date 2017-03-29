@@ -187,7 +187,7 @@ class User
                 ->onlyDocs(true)
                 ->execute()
                 ->toArray();
-        }else{
+        } else {
             $users = $this->documentManager
                 ->createQuery('annostation_user_by_organisation', 'view')
                 ->setKey([$organisation->getId()])
@@ -287,5 +287,13 @@ class User
         $image = reset($userProfileImage);
 
         return $image->getRawData();
+    }
+
+    /**
+     * @param Model\User $user
+     */
+    public function saveUser(Model\User $user)
+    {
+        $this->userManager->updateUser($user);
     }
 }
