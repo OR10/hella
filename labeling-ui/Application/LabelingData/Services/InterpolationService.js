@@ -68,7 +68,7 @@ class InterpolationService {
      * @type {Map.<string, Interpolation>}
      * @private
      */
-    debugger;
+    // debugger;
     this._interpolations = new Map();
     interpolations.forEach(interpolation => this._interpolations.set(interpolation.id, interpolation));
     if (interpolations.length > 0) {
@@ -98,7 +98,7 @@ class InterpolationService {
    * @return {Promise.<*>}
    */
   interpolate(id, task, labeledThing, frameRange = null) {
-    debugger;
+    // debugger;
     if (!this._interpolations.has(id)) {
       throw new Error(`Interpolation with id '${id}' is not currently registered on the InterpolationService.`);
     }

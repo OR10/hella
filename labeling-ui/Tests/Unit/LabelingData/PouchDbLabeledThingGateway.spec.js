@@ -41,6 +41,17 @@ describe('PouchDbLabeledThingGateway', () => {
    */
   let couchDbModelSerializer;
 
+  /**
+   * @type {Object}
+   */
+  let labeledThingPouchDbModel;
+
+  beforeEach(() => {
+    // PouchDB updates the incomplete status after saving
+    labeledThingPouchDbModel = angular.copy(labeledThingCouchDbModel);
+    labeledThingPouchDbModel.incomplete = true;
+  });
+
   beforeEach(done => {
     const featureFlags = {
       pouchdb: true,
@@ -140,7 +151,7 @@ describe('PouchDbLabeledThingGateway', () => {
       })
       .then(loadedLabeledThingDocument => {
         delete loadedLabeledThingDocument._rev;
-        expect(loadedLabeledThingDocument).toEqual(labeledThingCouchDbModel);
+        expect(loadedLabeledThingDocument).toEqual(labeledThingPouchDbModel);
       })
       .then(() => done());
   });

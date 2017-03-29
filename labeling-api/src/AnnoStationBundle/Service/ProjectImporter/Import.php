@@ -57,6 +57,11 @@ class Import
     private $amqpFacade;
 
     /**
+     * @var Service\XmlValidator
+     */
+    private $xmlValidator;
+
+    /**
      * Import constructor.
      *
      * @param Facade\Project         $projectFacade
@@ -64,6 +69,7 @@ class Import
      * @param Facade\LabelingTask    $labelingTaskFacade
      * @param Facade\Video           $videoFacade
      * @param Service\VideoImporter  $videoImporter
+     * @param Service\XmlValidator   $xmlValidator
      * @param AMQP\FacadeAMQP        $amqpFacade
      */
     public function __construct(
@@ -72,6 +78,7 @@ class Import
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Video $videoFacade,
         Service\VideoImporter $videoImporter,
+        Service\XmlValidator $xmlValidator,
         AMQP\FacadeAMQP $amqpFacade
     ) {
         $this->projectFacade         = $projectFacade;
@@ -80,6 +87,7 @@ class Import
         $this->labelingTaskFacade    = $labelingTaskFacade;
         $this->videoFacade           = $videoFacade;
         $this->amqpFacade            = $amqpFacade;
+        $this->xmlValidator          = $xmlValidator;
     }
 
     /**
@@ -94,12 +102,11 @@ class Import
         $xmlImport = new \DOMDocument();
         $xmlImport->load($xmlImportFilePath);
 
-        try {
-            $xmlImport->relaxNGValidate(__DIR__ . '/../../Resources/XmlSchema/RequirementsXmlExport.rng');
-        } catch (\Exception $exception) {
-            // Invalid file, skip
+        $errorMessage = $this->xmlValidator->validateRelaxNg($xmlImport);
+        if ($errorMessage !== null) {
             return [];
         }
+
         $xpath = new \DOMXPath($xmlImport);
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
 

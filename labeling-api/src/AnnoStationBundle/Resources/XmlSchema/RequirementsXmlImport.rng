@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:e="http://weblabel.hella-aglaia.com/schema/export" xmlns="http://relaxng.org/ns/structure/1.0">
+    <define name="Checksums">
+        <element name="e:sha256">
+            <text/>
+        </element>
+    </define>
+    <define name="NameAndIdAttributes">
+        <attribute name="id"/>
+        <attribute name="name"/>
+    </define>
+    <define name="FrameRangeAttributes">
+        <attribute name="start"/>
+        <attribute name="end"/>
+    </define>
+    <!-- <metadata> -->
+    <define name="Metadata">
+        <element name="e:metadata">
+            <interleave>
+                <ref name="AnnoStation"/>
+                <ref name="Requirements"/>
+                <optional>
+                    <ref name="Workflow"/>
+                </optional>
+                <ref name="Project"/>
+                <ref name="Export"/>
+                <optional>
+                    <ref name="LabelingGroup"/>
+                </optional>
+                <optional>
+                    <ref name="Tags"/>
+                </optional>
+            </interleave>
+        </element>
+    </define>
+    <define name="AnnoStation">
+        <element name="e:annostation">
+            <element name="e:hostname">
+                <text/>
+            </element>
+            <element name="e:build">
+                <text/>
+            </element>
+        </element>
+    </define>
+    <define name="Requirements">
+        <element name="e:requirements">
+            <ref name="NameAndIdAttributes"/>
+            <attribute name="filename"/>
+            <ref name="Checksums"/>
+        </element>
+    </define>
+    <define name="Workflow">
+        <element name="e:workflow">
+            <ref name="NameAndIdAttributes"/>
+            <attribute name="filename"/>
+            <ref name="Checksums"/>
+        </element>
+    </define>
+    <define name="UserInterface">
+        <attribute name="username"/>
+        <attribute name="email"/>
+    </define>
+    <define name="CreationInformation">
+        <element name="e:creation-date">
+            <text/>
+        </element>
+        <element name="e:created-by-user">
+            <ref name="UserInterface"/>
+        </element>
+    </define>
+    <define name="Project">
+        <element name="e:project">
+            <ref name="NameAndIdAttributes"/>
+            <element name="e:phase">
+                <text/>
+            </element>
+            <element name="e:description">
+                <text/>
+            </element>
+            <ref name="CreationInformation"/>
+            <element name="e:due-date">
+                <text/>
+            </element>
+            <element name="e:frame-skip">
+                <text/>
+            </element>
+            <element name="e:start-frame">
+                <text/>
+            </element>
+            <element name="e:split-each">
+                <text/>
+            </element>
+        </element>
+    </define>
+    <define name="Export">
+        <element name="e:export">
+            <attribute name="id"/>
+            <ref name="CreationInformation"/>
+        </element>
+    </define>
+    <define name="LabelingGroup">
+        <element name="e:labeling-group">
+            <ref name="NameAndIdAttributes"/>
+            <oneOrMore>
+                <element name="e:coordinator">
+                    <ref name="UserInterface"/>
+                </element>
+            </oneOrMore>
+            <oneOrMore>
+                <element name="e:labeler">
+                    <ref name="UserInterface"/>
+                </element>
+            </oneOrMore>
+        </element>
+    </define>
+    <define name="Tags">
+        <element name="e:tags">
+            <zeroOrMore>
+                <element name="e:tag">
+                    <attribute name="key"/>
+                    <text/>
+                </element>
+            </zeroOrMore>
+        </element>
+    </define>
+    <!-- </metadata> -->
+    <!-- <video> -->
+    <define name="Video">
+        <element name="e:video">
+            <attribute name="id"/>
+            <attribute name="filename"/>
+            <zeroOrMore>
+                <ref name="FrameLabeling"/>
+            </zeroOrMore>
+            <zeroOrMore>
+                <choice>
+                    <ref name="Group"/>
+                    <ref name="Thing"/>
+                </choice>
+            </zeroOrMore>
+        </element>
+    </define>
+    <!-- </video> -->
+    <!-- <thing> -->
+    <define name="Thing">
+        <element name="e:thing">
+            <attribute name="id"/>
+            <optional>
+                <attribute name="line-color"/>
+            </optional>
+            <optional>
+                <attribute name="incomplete"/>
+            </optional>
+            <attribute name="type"/>
+            <ref name="FrameRangeAttributes"/>
+            <optional>
+                <ref name="References"/>
+            </optional>
+            <oneOrMore>
+                <ref name="Shape"/>
+            </oneOrMore>
+            <zeroOrMore>
+                <ref name="Value"/>
+            </zeroOrMore>
+        </element>
+    </define>
+    <define name="Task">
+        <element name="e:task">
+            <attribute name="id"/>
+            <optional>
+                <!--
+                    optional workflow mapping.
+                    will be mandatory as soon as workflow.xml has been implemented
+                -->
+                <element name="e:workflow-phase">
+                    <text/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:workflow-id">
+                    <text/>
+                </element>
+            </optional>
+        </element>
+    </define>
+    <define name="Shape">
+        <element name="e:shape">
+            <attribute name="id"/>
+            <ref name="FrameRangeAttributes"/>
+            <ref name="ShapeType"/>
+        </element>
+    </define>
+    <define name="XYCoordinateAttributes">
+        <attribute name="x"/>
+        <attribute name="y"/>
+    </define>
+    <define name="ZCoordinateAttributes">
+        <attribute name="z"/>
+    </define>
+    <define name="XYZCoordinateAttributes">
+        <ref name="XYCoordinateAttributes"/>
+        <ref name="ZCoordinateAttributes"/>
+    </define>
+    <define name="ShapeType">
+        <choice>
+            <ref name="RectangleShape"/>
+            <ref name="CuboidShape"/>
+            <ref name="PolygonShape"/>
+            <ref name="PedestrianShape"/>
+        </choice>
+        <!-- ... -->
+    </define>
+    <define name="RectangleShape">
+        <element name="e:rectangle">
+            <element name="e:top-left">
+                <ref name="XYCoordinateAttributes"/>
+            </element>
+            <element name="e:bottom-right">
+                <ref name="XYCoordinateAttributes"/>
+            </element>
+        </element>
+    </define>
+    <define name="CuboidShape">
+        <element name="e:cuboid">
+            <element name="e:top-left-front">
+                <ref name="XYZCoordinateAttributes"/>
+            </element>
+            <element name="e:top-right-front">
+                <ref name="XYZCoordinateAttributes"/>
+            </element>
+            <element name="e:bottom-right-front">
+                <ref name="XYZCoordinateAttributes"/>
+            </element>
+            <element name="e:bottom-left-front">
+                <ref name="XYZCoordinateAttributes"/>
+            </element>
+            <element name="e:top-left-back">
+                <ref name="XYZCoordinateAttributes"/>
+            </element>
+            <element name="e:top-right-back">
+                <ref name="XYZCoordinateAttributes"/>
+            </element>
+            <element name="e:bottom-right-back">
+                <ref name="XYZCoordinateAttributes"/>
+            </element>
+            <element name="e:bottom-left-back">
+                <ref name="XYZCoordinateAttributes"/>
+            </element>
+        </element>
+    </define>
+    <define name="PolygonShape">
+        <element name="e:polygon">
+            <oneOrMore>
+                <element name="e:point">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </oneOrMore>
+        </element>
+    </define>
+    <define name="PedestrianShape">
+        <element name="e:pedestrian">
+            <element name="e:top-center">
+                <ref name="XYCoordinateAttributes"/>
+            </element>
+            <element name="e:bottom-center">
+                <ref name="XYCoordinateAttributes"/>
+            </element>
+            <element name="e:aspect-ratio">
+                <text/>
+            </element>
+        </element>
+    </define>
+    <define name="Value">
+        <element name="e:value">
+            <attribute name="id"/>
+            <ref name="FrameRangeAttributes"/>
+        </element>
+    </define>
+    <!-- </thing> -->
+    <!-- <frame-labeling> -->
+    <define name="FrameLabeling">
+        <element name="e:frame-labeling">
+            <optional>
+                <attribute name="incomplete"/>
+            </optional>
+            <ref name="References"/>
+            <oneOrMore>
+                <ref name="Value"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <!-- </frame-labeling> -->
+    <!-- <group> -->
+    <define name="Group">
+        <element name="e:group">
+            <attribute name="id"/>
+            <ref name="FrameRangeAttributes"/>
+            <optional>
+                <attribute name="incomplete"/>
+            </optional>
+            <oneOrMore>
+                <ref name="Value"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <!-- </group> -->
+    <!-- <references> -->
+    <define name="References">
+        <element name="e:references">
+            <ref name="Task"/>
+            <zeroOrMore>
+                <element name="e:group">
+                    <attribute name="ref"/>
+                </element>
+            </zeroOrMore>
+        </element>
+    </define>
+    <!-- </references> -->
+    <define name="Root">
+        <element name="e:export">
+            <ref name="Metadata"/>
+            <oneOrMore>
+                <ref name="Video"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <start>
+        <ref name="Root"/>
+    </start>
+</grammar>

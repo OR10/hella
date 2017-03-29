@@ -6,9 +6,9 @@ import Common from 'Application/Common/Common';
 import LabelingData from 'Application/LabelingData/LabelingData';
 
 import PouchDbHelper from 'Tests/Support/PouchDb/PouchDbHelper';
-import LabeledThing from '../../../Application/LabelingData/Models/LabeledThing';
-import LinearBackendInterpolation from '../../../Application/LabelingData/Interpolations/LinearBackendInterpolation'
-import InterpolationService from "../../../Application/LabelingData/Services/InterpolationService";
+import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
+import LinearBackendInterpolation from 'Application/LabelingData/Interpolations/LinearBackendInterpolation'
+import InterpolationService from "Application/LabelingData/Services/InterpolationService";
 
 // import PouchDbTimerGateway from 'Application/Header/Gateways/TimerGateway';
 
@@ -28,55 +28,45 @@ fdescribe('PouchDbInterpolation', () => {
   let pouchDbContextService;
   let interpolations;
   let interpolationService;
+  let containerMock;
   
   beforeEach(done => {
+    Promise.resolve()
+        .then(() => {
+          pouchDbHelper = new PouchDbHelper();
+          return pouchDbHelper.initialize();
+        })
+        .then(() => done());
+    
+  });
+  beforeEach(() => {
     featureFlags = {
       pouchdb: true,
     };
-
-    Promise.resolve()
-      .then(() => {
-        pouchDbHelper = new PouchDbHelper();
-        return pouchDbHelper.initialize();
-      })
-      .then(() => {
-        const commonModule = new Common();
-        commonModule.registerWithAngular(angular, featureFlags);
-        module('AnnoStation.Common');
-      
-        const pouchDbContextServiceMock = jasmine.createSpyObj('pouchDbContextService', ['provideContextForTaskId']);
-        pouchDbContextServiceMock.provideContextForTaskId
-          .and.returnValue(pouchDbHelper.database);
-
-        module($provide => {
-          $provide.value('pouchDbContextService', pouchDbContextServiceMock);
-          labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['']);
-          
-          cache = jasmine.createSpy('cacheService');
-          cache.container = jasmine.createSpyObj('container', ['invalidate']);
-          
-          cacheHeater = jasmine.createSpy('cacheHeaterService');
+    
+    const labelingDataModule = new LabelingData();
+    labelingDataModule.registerWithAngular(angular, featureFlags);
+    module('AnnoStation.LabelingData');
   
-          pouchDbSyncManager = jasmine.createSpy('pouchDbSyncManager');
+    const pouchDbContextServiceMock = jasmine.createSpyObj('pouchDbContextService', ['provideContextForTaskId']);
+    pouchDbContextServiceMock.provideContextForTaskId.and.returnValue(pouchDbHelper.database);
   
-          pouchDbContextService = jasmine.createSpy('pouchDbContextService');
-          interpolations = jasmine.createSpy('linearBackendInterpolation')
-          
-        });
-      })
-      .then(() => {
-        inject(($injector, $rootScope, $q) => {
-          injector = $injector;
-          rootScope = $rootScope;
-          angularQ = $q;
-        });
-      })
-      .then(() => done());
+    module($provide => {
+       $provide.value('pouchDbContextService', pouchDbContextServiceMock);
+       //labeledThingGateway = jasmine.createSpy('labeledThingGateway');
+    });
+    inject(($injector, $rootScope, $q) => {
+      injector = $injector;
+      rootScope = $rootScope;
+      angularQ = $q;
+    
+      interpolationService = injector.instantiate(InterpolationService);
+    
+    });
   });
   
-  function createInterpolationServiceInstance() {
-    return new InterpolationService(angularQ, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, interpolations);
-  }
+  
+  
   function createLabeledThing(startFrameIndex = 0, endFrameIndex = 99, task = {id: 'some-task-id'}, id = 'some-labeled-thing-id') {
     return new LabeledThing({
       id,
@@ -87,19 +77,22 @@ fdescribe('PouchDbInterpolation', () => {
     });
   }
   
-  it('should interpolate something', done => {
+  fit('should be able to instantiate without non injected arguments', () => {
+    expect(interpolationService instanceof InterpolationService).toEqual(true);
+  });
+  
+  
+  it('should interpolate something',() => {
     const db = pouchDbHelper.database;
     const task = {id: 'some-task-id'};
     const labeledThingId = 'some-labeled-thing-id';
     const labeledThing = createLabeledThing(0, 200, task, labeledThingId);
     expect(db).not.toBeNull();
     expect(labeledThing).not.toBeNull();
-    const ips = createInterpolationServiceInstance();
-    expect(ips).not.toBeNull();
-    ips.interpolate('default', task, labeledThing);
     
-    // expect(interpolationService).not.toBeNull();
-    done();
+    expect(interpolationService).not.toBeNull();
+    interpolationService.interpolate('default', task, labeledThing);
+    rootScope.$apply();
   });
 
   afterEach(done => {

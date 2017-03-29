@@ -11,7 +11,14 @@ class PouchDbLabeledThingGateway {
    * @param {RevisionManager} revisionManager
    * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, pouchDbContextService, packagingExecutor, couchDbModelSerializer, couchDbModelDeserializer, revisionManager, pouchDbViewService) {
+  constructor(
+    $q,
+    pouchDbContextService,
+    packagingExecutor,
+    couchDbModelSerializer,
+    couchDbModelDeserializer,
+    revisionManager,
+    pouchDbViewService) {
     /**
      * @type {angular.$q}
      * @private
@@ -65,9 +72,8 @@ class PouchDbLabeledThingGateway {
    * @param {LabeledThing} labeledThing
    * @return {AbortablePromise.<LabeledThing|Error>}
    */
-  saveLabeledThing(labeledThing) {
-    // TODO: Remove when incomplete calculation is moved to the frontend
-    labeledThing.incomplete = false;
+  saveLabeledThing(labeledThing, incomplete = true) {
+    labeledThing.incomplete = incomplete;
 
     const task = labeledThing.task;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);

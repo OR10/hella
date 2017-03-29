@@ -70,6 +70,20 @@ class LabeledObject {
       classes: clone(classes),
     };
   }
+
+  /**
+   * Extract the classList
+   *
+   * @returns {Array.<object>}
+   * @private
+   */
+  extractClassList() {
+    if (this.ghostClasses !== null) {
+      return this.ghostClasses;
+    }
+
+    return this.classes;
+  }
 }
 
 export default LabeledObject;
