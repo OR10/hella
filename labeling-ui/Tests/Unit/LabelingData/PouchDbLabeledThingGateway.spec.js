@@ -44,12 +44,12 @@ describe('PouchDbLabeledThingGateway', () => {
   /**
    * @type {Object}
    */
-  let pouchLabeledThingFrontendModel;
+  let labeledThingPouchDbModel;
 
   beforeEach(() => {
     // PouchDB updates the incomplete status after saving
-    pouchLabeledThingFrontendModel = angular.copy(labeledThingFrontendModel);
-    pouchLabeledThingFrontendModel.incomplete = false;
+    labeledThingPouchDbModel = angular.copy(labeledThingCouchDbModel);
+    labeledThingPouchDbModel.incomplete = true;
   });
 
   beforeEach(done => {
@@ -143,7 +143,7 @@ describe('PouchDbLabeledThingGateway', () => {
         );
       })
       .then(storedLabeledThing => {
-        expect(storedLabeledThing).toEqual(pouchLabeledThingFrontendModel);
+        expect(storedLabeledThing).toEqual(labeledThingFrontendModel);
       })
       .then(() => {
         // Check if document is really stored correctly in the db.
@@ -151,7 +151,7 @@ describe('PouchDbLabeledThingGateway', () => {
       })
       .then(loadedLabeledThingDocument => {
         delete loadedLabeledThingDocument._rev;
-        expect(loadedLabeledThingDocument).toEqual(labeledThingCouchDbModel);
+        expect(loadedLabeledThingDocument).toEqual(labeledThingPouchDbModel);
       })
       .then(() => done());
   });
@@ -184,8 +184,6 @@ describe('PouchDbLabeledThingGateway', () => {
         );
       })
       .then(storedLabeledThing => {
-        // PouchDB updates the incomplete status after saving
-        changedLabeledThingFrontendModel.incomplete = false;
         expect(storedLabeledThing).toEqual(changedLabeledThingFrontendModel);
       })
       // Check if document is really stored correctly in the db.
