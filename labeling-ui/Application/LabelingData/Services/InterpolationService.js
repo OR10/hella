@@ -97,7 +97,6 @@ class InterpolationService {
    * @return {Promise.<*>}
    */
   interpolate(id, task, labeledThing, frameRange = null) {
-    // debugger;
     if (!this._interpolations.has(id)) {
       throw new Error(`Interpolation with id '${id}' is not currently registered on the InterpolationService.`);
     }

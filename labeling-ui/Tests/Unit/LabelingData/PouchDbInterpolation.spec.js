@@ -45,14 +45,12 @@ describe('Interpolation with PouchDB Spec', () => {
     beforeEach(inject(($rootScope, $q) => {
       rootScope = $rootScope;
       angularQ = $q;
-    }));
 
-    beforeEach(() => {
       cacheContainerMock = jasmine.createSpyObj('container', ['invalidate', 'get']);
       cacheMock.container.and.returnValue(cacheContainerMock);
-    });
+    }));
 
-    it('Throws if interpolation id is unknown', () => {
+    it('throws if interpolation id is unknown', () => {
       const id = 'Unknown';
 
       createInterpolationService();
