@@ -658,7 +658,7 @@ describe('PouchDbSyncManager', () => {
         contextReplicateFromEvents.get('paused').forEach(callback => callback());
         rootScope.$apply();
 
-        expect(aliveEventSpy.calls.count()).toEqual(3);
+        expect(aliveEventSpy.calls.count()).toEqual(4);
       });
 
       it('should fire "alive" event once "to" replication wents into "paused" state', () => {
@@ -671,7 +671,7 @@ describe('PouchDbSyncManager', () => {
         contextReplicateToEvents.get('paused').forEach(callback => callback());
         rootScope.$apply();
 
-        expect(aliveEventSpy.calls.count()).toEqual(3);
+        expect(aliveEventSpy.calls.count()).toEqual(4);
       });
 
       it('should fire "offline" event once "from" replication wents into "paused" state with an error', () => {
