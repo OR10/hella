@@ -1,113 +1,73 @@
-import 'jquery';
-import angular from 'angular';
-import {module, inject} from 'angular-mocks';
-
-import Common from 'Application/Common/Common';
-import LabelingData from 'Application/LabelingData/LabelingData';
-
-import PouchDbHelper from 'Tests/Support/PouchDb/PouchDbHelper';
-import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
-import LinearBackendInterpolation from 'Application/LabelingData/Interpolations/LinearBackendInterpolation'
-import InterpolationService from "Application/LabelingData/Services/InterpolationService";
-import TaskModule from "Application/Task/TaskModule";
-import OrganisationModule from "Application/Organisation/Organisation";
-// import PouchDbTimerGateway from 'Application/Header/Gateways/TimerGateway';
-
-// import taskTimerCouchDbModel from 'Tests/Fixtures/Models/CouchDb/TaskTimer';
-
-fdescribe('PouchDbInterpolation', () => {
-  let pouchDbHelper;
-  let injector;
-  let rootScope;
-  let angularQ;
-  let httpBackend;
-  
-  const featureFlags = { pouchdb: true };
-  const appConfig = {Common: {backendPrefix: '', apiPrefix: ''}};
-  let pouchDbContextService;
+import InterpolationService from 'Application/LabelingData/Services/InterpolationService';
+fdescribe('Interpolation with PouchDB Spec', () => {
+  const interpolationTypeId = 'linear';
+  const featureFlag = {pouchdb: false};
   let interpolationService;
+  let interpolations;
   
-  beforeEach(() => {
-    const commonModule = new Common();
-    commonModule.registerWithAngular(angular, featureFlags);
-    module('AnnoStation.Common');
-    
-    const labelingDataModule = new LabelingData();
-    labelingDataModule.registerWithAngular(angular, featureFlags);
-    module('AnnoStation.LabelingData');
-    
-    const applicationTaskModule = new TaskModule();
-    applicationTaskModule.registerWithAngular(angular, featureFlags);
-    module('AnnoStation.Task');
   
-    const orgaModule = new OrganisationModule();
-    orgaModule.registerWithAngular(angular, featureFlags);
-    module('AnnoStation.Organisation');
-  });
-  beforeEach(() => {
-    const app = angular.module('AnnoStation.Common');
-    app.constant('featureFlags', featureFlags);
-    app.constant('applicationConfig', appConfig);
-  });
+  let cacheMock;
   
-  beforeEach(done => {
-    Promise.resolve()
-      .then(() => {
-        pouchDbHelper = new PouchDbHelper();
-        return pouchDbHelper.initialize();
-      })
-      .then(() => done());
-  });
-  beforeEach(() => {
-    const pouchDbContextServiceMock = jasmine.createSpyObj('pouchDbContextService', ['provideContextForTaskId', 'queryTaskIdForContext']);
-    pouchDbContextServiceMock.provideContextForTaskId.and.returnValue(pouchDbHelper.database);
-    pouchDbContextServiceMock.queryTaskIdForContext.and.returnValue('some-task-id');
-    
-    module($provide => {
-       $provide.value('pouchDbContextService', pouchDbContextServiceMock);
-    });
-    inject(($injector, $rootScope, $q, $httpBackend) => {
-      injector = $injector;
-      rootScope = $rootScope;
-      angularQ = $q;
-      httpBackend = $httpBackend;
-    
-      interpolationService = injector.instantiate(InterpolationService);
-    
-    });
-  });
-  
-  function createLabeledThing(startFrameIndex = 0, endFrameIndex = 99, task = {id: 'some-task-id'}, id = 'some-labeled-thing-id') {
-    return new LabeledThing({
-      id,
-      task,
-      classes: [],
-      incomplete: false,
-      frameRange: {startFrameIndex, endFrameIndex},
-    });
+  function createInterpolationService() {
+    interpolationService = new InterpolationService(null, null, cacheMock, null, featureFlag, null, null, interpolations);
   }
   
-  it('should be able to instantiate without non injected arguments', () => {
-    expect(interpolationService instanceof InterpolationService).toEqual(true);
+  beforeEach(() => {
+    cacheMock = jasmine.createSpyObj('cache', ['container']);
+    const firstInterpolation = jasmine.createSpyObj('firstInterpolation', ['execute']);
+    firstInterpolation.execute.and.returnValue({then: () => {}});
+    firstInterpolation.id = interpolationTypeId;
+    interpolations = firstInterpolation;
+    
   });
-  
-  it('It doesnt throw when interpolating', () => {
-    const db = pouchDbHelper.database;
-    const task = {id: 'some-task-id'};
-    const labeledThingId = 'some-labeled-thing-id';
-    const labeledThing = createLabeledThing(0, 200, task, labeledThingId);
-    httpBackend.expectGET('/task/some-task-id/replication').respond(500);
-    function throwWrapper() {
-      interpolationService.interpolate('default', task, labeledThing);
-      rootScope.$apply();
-    }
-    throwWrapper();
-    expect(throwWrapper).not.toThrow();
-    httpBackend.flush();
+  it('It can be instantiate', () => {
+    createInterpolationService();
+    expect(interpolationService).toEqual(jasmine.any(InterpolationService));
   });
-  afterEach(done => {
-    Promise.resolve()
-      .then(() => pouchDbHelper.destroy())
-      .then(() => done());
+  describe('interpolate()', () => {
+    let cacheContainerMock;
+    const labeledThing = {id: 'thing-id', task: {id: 'some-task-id'}};
+    const frameRange = {startFrameIndex: 17, endFrameIndex: 18};
+    
+    beforeEach(() => {
+      cacheContainerMock = jasmine.createSpyObj('container', ['invalidate', 'get']);
+      cacheMock.container.and.returnValue(cacheContainerMock);
+    });
+    it('Throws if interpolation id is unknown', () => {
+      createInterpolationService();
+      const id = 'Unknown';
+      function throwWrapper() {
+        interpolationService.interpolate(id);
+      }
+      expect(throwWrapper).toThrowError(`Interpolation with id '${id}' is not currently registered on the InterpolationService.`);
+    });
+    it('invalidates the caches', () => {
+      createInterpolationService();
+      
+      interpolationService.interpolate(interpolationTypeId, null, labeledThing, frameRange);
+      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.${labeledThing.id}`);
+      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.complete`);
+      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.endFrameIndex}.${labeledThing.id}`);
+      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.endFrameIndex}.complete`);
+    });
+    it('does not invalidates the caches for non-ghosts', () => {
+      const cacheData = [{id: '1'}, {id: '2'}];
+      cacheContainerMock.get.and.returnValue(cacheData);
+      createInterpolationService();
+    
+      interpolationService.interpolate(interpolationTypeId, null, labeledThing, frameRange);
+      expect(cacheContainerMock.invalidate).not.toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.1`);
+      expect(cacheContainerMock.invalidate).not.toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.2`);
+    });
+    it('invalidates the caches for non-ghosts', () => {
+      const cacheData = [{id: '1',labeledThingId:labeledThing.id}, {id: '2', labeledThingId:labeledThing.id}];
+      cacheContainerMock.get.and.returnValue(cacheData);
+      createInterpolationService();
+    
+      interpolationService.interpolate(interpolationTypeId, null, labeledThing, frameRange);
+      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.1`);
+      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.2`);
+    })
   });
 });
+
