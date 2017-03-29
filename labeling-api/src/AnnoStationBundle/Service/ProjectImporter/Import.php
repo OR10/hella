@@ -95,7 +95,7 @@ class Import
         $xmlImport->load($xmlImportFilePath);
 
         try {
-            $xmlImport->relaxNGValidate(__DIR__ . '/../../Resources/XmlSchema/RequirementsXmlExport.rng');
+            $xmlImport->relaxNGValidate(__DIR__ . '/../../Resources/XmlSchema/RequirementsXmlImport.rng');
         } catch (\Exception $exception) {
             // Invalid file, skip
             return [];
