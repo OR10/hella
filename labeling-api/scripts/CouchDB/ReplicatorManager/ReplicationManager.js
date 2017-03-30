@@ -2,7 +2,7 @@ if (process.argv[2] === '-h' || process.argv[2] === '--help' || process.argv.len
   console.log('Usage: ReplicationManager.js [hostname] [port] [sourceDbRegex] [targetDb]');
   console.log('Example:');
   console.log(
-    'node ReplicationManager.js "http://foo:bar@192.168.222.20:5984" "(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)" "labeling_api"');
+    'node ReplicationManager.js "http://foo:bar@192.168.222.20:5984" "(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)" "labeling_api_read_only"');
   process.exit(1);
 }
 
