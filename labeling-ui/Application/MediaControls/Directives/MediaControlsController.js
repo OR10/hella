@@ -7,7 +7,6 @@
  * @property {Array.<LabeledThingInFrame>} labeledThingsInFrame
  * @property {PaperShape} selectedPaperShape
  * @property {string} activeTool
- * @property {string} selectedDrawingTool
  * @property {boolean} hideLabeledThingsInFrame
  * @property {boolean} showCrosshairs
  */

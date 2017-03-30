@@ -10,7 +10,6 @@ class ToolSelectorDirective {
       drawableThings: '=',
       drawableGroups: '=',
       selectedLabelStructureThing: '=',
-      selectedDrawingTool: '=',
       selectedPaperShape: '=',
     };
 

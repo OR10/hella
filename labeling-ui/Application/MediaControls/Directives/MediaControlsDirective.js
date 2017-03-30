@@ -14,7 +14,6 @@ class MediaControlsDirective {
     this.scope = {
       framePosition: '=',
       activeTool: '=',
-      selectedDrawingTool: '=',
       task: '=',
       selectedPaperShape: '=',
       paperThingShapes: '=',
