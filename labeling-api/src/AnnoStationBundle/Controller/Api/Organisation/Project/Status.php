@@ -15,6 +15,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use AnnoStationBundle\Service\Authentication;
 
 /**
  * @Rest\Prefix("/api/organisation")
@@ -45,21 +46,29 @@ class Status extends Controller\Base
     private $authorizationService;
 
     /**
-     * @param Facade\Project        $projectFacade
-     * @param Facade\LabelingTask   $labelingTaskFacade
-     * @param Storage\TokenStorage  $tokenStorage
-     * @param Service\Authorization $authorizationService
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
+
+    /**
+     * @param Facade\Project                 $projectFacade
+     * @param Facade\LabelingTask            $labelingTaskFacade
+     * @param Storage\TokenStorage           $tokenStorage
+     * @param Service\Authorization          $authorizationService
+     * @param Authentication\UserPermissions $userPermissions
      */
     public function __construct(
         Facade\Project $projectFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Storage\TokenStorage $tokenStorage,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        Authentication\UserPermissions $userPermissions
     ) {
         $this->tokenStorage         = $tokenStorage;
         $this->projectFacade        = $projectFacade;
         $this->labelingTaskFacade   = $labelingTaskFacade;
         $this->authorizationService = $authorizationService;
+        $this->userPermissions      = $userPermissions;
     }
 
     /**
@@ -176,7 +185,7 @@ class Status extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT])) {
+        if (!$this->userPermissions->hasPermission('canDeleteProject')) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to deleted this project.');
         }
 
