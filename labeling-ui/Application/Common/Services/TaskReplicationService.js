@@ -98,7 +98,7 @@ class TaskReplicationService {
    */
   _createUserTaskTimerIfMissing(project, task) {
     return this._userGateway.getCurrentUser().then(user => {
-      return this._timerGateway.readOrCreateTimerIfMissingWithIdentification(project, task, user.id);
+      return this._timerGateway.readOrCreateTimerIfMissingWithIdentification(project, task, user);
     });
   }
 
