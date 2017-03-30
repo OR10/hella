@@ -8,6 +8,7 @@ class labeling_api::params(
   $database_host = '127.0.0.1',
   $database_port = 'null',
   $database_name = 'symfony',
+  $database_name_read_only = 'labeling_api_read_only',
   $database_user = 'root',
   $database_password = 'null',
   $database_allowed_host = '127.0.0.1',
