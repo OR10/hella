@@ -49,6 +49,7 @@ class PouchDbTimerGateway {
   createTimerDocument(project, task, user) {
     const queueIdentifier = 'timer';
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
     const timerDocument = {
       type: 'AppBundle.Model.TaskTimer',
       taskId: task.id,
@@ -71,21 +72,33 @@ class PouchDbTimerGateway {
    * @returns {AbortablePromise<Object>}
    */
   readOrCreateTimerIfMissingWithIdentification(project, task, user) {
-    return this.getTime(task, user)
+    return this.getTimerDocument(task, user)
       .then(
         timerDocument => timerDocument,
         () => this.createTimerDocument(project, task, user)
-      );
+      )
+      .then(timerDocument => {
+        // Make sure the Revision Manager knows the document
+        this._revisionManager.extractRevision(timerDocument);
+        return timerDocument;
+      });
   }
 
   /**
-   * Gets the time for the given {@link Task}
+   * Gets the time for the phase of the given {@link Task}
    *
    * @param {Task} task
    * @param {User} user
    * @return {AbortablePromise<Object|Error>}
    */
   getTime(task, user) {
+    return this.getTimerDocument(task, user)
+    .then(timerDocument => {
+      return this._couchDbModelDeserializer.deserializeTimer(timerDocument, task.getPhase());
+    });
+  }
+
+  getTimerDocument(task, user) {
     const queueIdentifier = 'timer';
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
@@ -95,16 +108,12 @@ class PouchDbTimerGateway {
         include_docs: true,
         key: [task.id, user.id],
       }))
-    .then(response => {
-      if (response.rows[0] === undefined) {
-        // Currently no time logged for this task.
-        // Return empty default value.
-        return {time: 0};
-      }
-
-      const timerDocument = response.rows[0].doc;
-      return this._couchDbModelDeserializer.deserializeTimer(timerDocument, task.getPhase());
-    });
+      .then(response => {
+        console.log('getTimerDocument');
+        console.log(response);
+        console.log(response.rows[0].doc);
+        return response.rows[0].doc;
+      });
   }
 
 
@@ -117,17 +126,29 @@ class PouchDbTimerGateway {
    * @returns {AbortablePromise<string|Error>}
    */
   updateTime(task, user, time) {
+    console.log('updateTime');
     const queueIdentifier = 'timer';
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return this.getTime(task, user)
-    .then(dbDocument => {
-      dbDocument.time = time;
-      return this._packagingExecutor.execute(queueIdentifier, () => {
-        this._injectRevisionOrFailSilently(dbDocument);
-        return dbContext.put(dbDocument);
+    return this.getTimerDocument(task, user)
+      .then(timerDocument => {
+        const phase = task.getPhase();
+        timerDocument.timeInSeconds[phase] = time;
+
+        console.log('before');
+        console.log(timerDocument);
+        return this._packagingExecutor.execute(queueIdentifier, () => {
+          this._injectRevisionOrFailSilently(timerDocument);
+          return dbContext.put(timerDocument);
+        })
+      })
+      .then(() => {
+        return this.getTimerDocument(task, user);
+      })
+      .then(timerDocument => {
+        console.log('after');
+        console.log(timerDocument);
       });
-    });
   }
 
   /**
