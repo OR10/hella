@@ -1,18 +1,17 @@
-if (process.argv[2] === '-h' || process.argv[2] === '--help' || process.argv.length <= 5) {
+if (process.argv[2] === '-h' || process.argv[2] === '--help' || process.argv.length <= 4) {
   console.log('Usage: ReplicationManager.js [hostname] [port] [sourceDbRegex] [targetDb]');
   console.log('Example:');
   console.log(
-    'node ReplicationManager.js 192.168.222.20 5984 "(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)" "labeling_api"');
+    'node ReplicationManager.js "http://foo:bar@192.168.222.20:5984" "(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)" "labeling_api"');
   process.exit(1);
 }
 
-var hostname = process.argv[2];
-var port = process.argv[3];
-var sourceDbRegex = process.argv[4];
-var targetDb = process.argv[5];
+var url = process.argv[2];
+var sourceDbRegex = process.argv[3];
+var targetDb = process.argv[4];
 
-var nano = require('nano')('http://' + hostname + ':' + port);
-var db = nano.use('_db_updates')
+var nano = require('nano')(url);
+var db = nano.use('_db_updates');
 var feed = db.follow({since: "now"});
 
 feed.on('change', function(change) {
