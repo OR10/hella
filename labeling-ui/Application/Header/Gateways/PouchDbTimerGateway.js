@@ -163,20 +163,6 @@ class PouchDbTimerGateway {
         this._revisionManager.extractRevision(response);
       })
   }
-
-  /**
-   * Inject a revision into the document or fail silently and ignore the error.
-   *
-   * @param {object} document
-   * @private
-   */
-  _injectRevisionOrFailSilently(document) {
-    try {
-      this._revisionManager.injectRevision(document);
-    } catch (error) {
-      // Simply ignore
-    }
-  }
 }
 
 PouchDbTimerGateway.$inject = [
