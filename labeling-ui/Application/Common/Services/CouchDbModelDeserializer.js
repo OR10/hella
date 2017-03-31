@@ -143,32 +143,6 @@ class CouchDbModelDeserializer {
   }
 
   /**
-   * Deserialize a timerDocument to our frontend model structure
-   *
-   * A timer structure is a simple object of the following form:
-   * `{time: seconds timed in the given phase}`
-   *
-   * The active phase of a task can easily be retrieved using the {@link Task#getPhase} method.
-   *
-   * @param {Object} timerDocument
-   * @param {string} phase
-   * @return {Timer}
-   */
-  deserializeTimer(timerDocument, phase) {
-    const timerModel = {time: 0};
-
-    if (timerDocument.timeInSeconds === undefined) {
-      throw new Error('Invalid timer document.');
-    }
-
-    if (timerDocument.timeInSeconds[phase] !== undefined) {
-      timerModel.time = timerDocument.timeInSeconds[phase];
-    }
-
-    return timerModel;
-  }
-
-  /**
    * Remove the prefix the `_id` and `_rev` properties in the given document
    *
    * The default prefix is the *underscore*, which CouchDb sets by default.
