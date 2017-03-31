@@ -12,6 +12,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use AnnoStationBundle\Service\Authentication;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -30,15 +31,24 @@ class User extends Controller\Base
      * @var Storage\TokenStorageInterface
      */
     private $tokenStorage;
+    /**
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
 
     /**
-     * @param Facade\LabelingTask $labelingTaskFacade
-     * @param Storage\TokenStorageInterface $tokenStorage
+     * @param Facade\LabelingTask            $labelingTaskFacade
+     * @param Storage\TokenStorageInterface  $tokenStorage
+     * @param Authentication\UserPermissions $userPermissions
      */
-    public function __construct(Facade\LabelingTask $labelingTaskFacade, Storage\TokenStorageInterface $tokenStorage)
-    {
+    public function __construct(
+        Facade\LabelingTask $labelingTaskFacade,
+        Storage\TokenStorageInterface $tokenStorage,
+        Authentication\UserPermissions $userPermissions
+    ) {
         $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->tokenStorage = $tokenStorage;
+        $this->tokenStorage       = $tokenStorage;
+        $this->userPermissions    = $userPermissions;
     }
 
     /**
@@ -86,10 +96,8 @@ class User extends Controller\Base
     private function isUserAllowedToAssignTo(Model\User $user)
     {
         $currentUser = $this->tokenStorage->getToken()->getUser();
-        $assignToOtherUserAllowed = $currentUser->hasOneRoleOf(
-            array(Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR)
-        );
-        if (!$assignToOtherUserAllowed && $currentUser !== $user) {
+
+        if (!$this->userPermissions->hasPermission('unassignPermission') && $currentUser !== $user) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to assign this task');
         }
     }

@@ -7,9 +7,12 @@ class InterpolationService {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {CacheService} cache
    * @param {CacheHeaterService} cacheHeater
+   * @param {Object} featureFlags
+   * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {PouchDbContextService} pouchDbContextService
    * @param {Array.<Interpolation>} interpolations
    */
-  constructor($q, labeledThingGateway, cache, cacheHeater, ...interpolations) {
+  constructor($q, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, ...interpolations) {
     /**
      * @type {$q}
      * @private
@@ -45,6 +48,19 @@ class InterpolationService {
      * @private
      */
     this._cacheHeater = cacheHeater;
+
+    this.featureFlags = featureFlags;
+    /**
+     * @type {PouchDbSyncManager}
+     * @private
+     */
+    this._pouchDbSyncManager = pouchDbSyncManager;
+
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._pouchDbContextService = pouchDbContextService;
 
     /**
      * All registered Interpolations
@@ -84,9 +100,7 @@ class InterpolationService {
     if (!this._interpolations.has(id)) {
       throw new Error(`Interpolation with id '${id}' is not currently registered on the InterpolationService.`);
     }
-
     const interpolation = this._interpolations.get(id);
-
     let interpolationFrameRange = frameRange;
     if (!frameRange) {
       interpolationFrameRange = labeledThing.frameRange;
@@ -94,6 +108,23 @@ class InterpolationService {
 
     this._invalidateCaches(labeledThing, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex);
 
+    if (this.featureFlags.pouchdb === true) {
+      const pouchDBContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+      return this._pouchDbSyncManager.stopReplicationsForContext(pouchDBContext)
+        .then(() => {
+          return this._pouchDbSyncManager.pushUpdatesForContext(pouchDBContext);
+        })
+        .then(() => {
+          return interpolation.execute(task, labeledThing, interpolationFrameRange);
+        })
+        .then(() => {
+          return this._pouchDbSyncManager.pullUpdatesForContext(pouchDBContext);
+        })
+        .then(() => {
+          this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolation.endFrameIndex);
+          return this._pouchDbSyncManager.startDuplexLiveReplication(pouchDBContext);
+        });
+    }
     return interpolation
       .execute(task, labeledThing, interpolationFrameRange)
       .then(result => {
@@ -157,6 +188,9 @@ InterpolationService.$inject = [
   'labeledThingGateway',
   'cacheService',
   'cacheHeaterService',
+  'featureFlags',
+  'pouchDbSyncManager',
+  'pouchDbContextService',
   // All Interpolations listed here will be auto registered.
   'linearBackendInterpolation',
 ];

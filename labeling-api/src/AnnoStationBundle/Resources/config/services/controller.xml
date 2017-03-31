@@ -10,6 +10,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.project.report"
@@ -114,6 +115,7 @@
                  class="AnnoStationBundle\Controller\Api\Task\User">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.attention"
@@ -204,6 +206,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
         <service
@@ -302,8 +305,7 @@
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.replication" class="AnnoStationBundle\Controller\Api\Task\Replication">
-            <argument>%couchdb_host_external%</argument>
-            <argument>%couchdb_port_external%</argument>
+            <argument>%couchdb_external_url%</argument>
         </service>
     </services>
 </container>

@@ -73,6 +73,7 @@
 .icon-tool-cuboid:before,
 .icon-tool-group-rectangle:before,
 .icon-tool-pedestrian:before,
+.icon-tool-point:before,
 .icon-tool-polygon:before,
 .icon-tool-polyline:before,
 .icon-tool-rectangle:before,
@@ -147,6 +148,7 @@
 .icon-tool-cuboid:before { content: "\f12a"; }
 .icon-tool-group-rectangle:before { content: "\f13e"; }
 .icon-tool-pedestrian:before { content: "\f12b"; }
+.icon-tool-point:before { content: "\f140"; }
 .icon-tool-polygon:before { content: "\f137"; }
 .icon-tool-polyline:before { content: "\f13f"; }
 .icon-tool-rectangle:before { content: "\f12c"; }
@@ -209,6 +211,7 @@ $font-icon-font-simple-xml-project: "\f13d";
 $font-icon-font-tool-cuboid: "\f12a"; 
 $font-icon-font-tool-group-rectangle: "\f13e"; 
 $font-icon-font-tool-pedestrian: "\f12b"; 
+$font-icon-font-tool-point: "\f140"; 
 $font-icon-font-tool-polygon: "\f137"; 
 $font-icon-font-tool-polyline: "\f13f"; 
 $font-icon-font-tool-rectangle: "\f12c"; 
