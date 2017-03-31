@@ -155,7 +155,7 @@ class PouchDbTimerGateway {
         timerDocument.timeInSeconds[phase] = time;
 
         return this._packagingExecutor.execute(queueIdentifier, () => {
-          this._injectRevisionOrFailSilently(timerDocument);
+          this._revisionManager.injectRevision(timerDocument);
           return dbContext.put(timerDocument);
         })
       })
