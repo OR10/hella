@@ -73,6 +73,9 @@ class PouchDbTimerGateway {
   }
 
   /**
+   * Gets the stored Timer Document for the given project, task and user
+   * If no Timer Document exists, a new one is created
+   *
    * @param {Project} project
    * @param {Task} task
    * @param {User} user
@@ -105,6 +108,13 @@ class PouchDbTimerGateway {
     });
   }
 
+  /**
+   * Get the stored Timer Document for the given task and user
+   *
+   * @param {Task} task
+   * @param {User} user
+   * @returns {AbortablePromise<Object|Error>}
+   */
   getTimerDocument(task, user) {
     const queueIdentifier = 'timer';
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
@@ -128,7 +138,7 @@ class PouchDbTimerGateway {
 
 
   /**
-   * Starts export for the given {@link Task} and export type
+   * Update Time for the current Task and User with the given time
    *
    * @param {Task} task
    * @param {User} user
