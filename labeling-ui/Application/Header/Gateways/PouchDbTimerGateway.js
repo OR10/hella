@@ -8,8 +8,9 @@ class PouchDbTimerGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    * @param {PouchDbViewService} pouchDbViewService
+   * @param {angular.$q} $q
    */
-  constructor(pouchDbContextService, packagingExecutor, couchDbModelDeserializer, revisionManager, pouchDbViewService) {
+  constructor(pouchDbContextService, packagingExecutor, couchDbModelDeserializer, revisionManager, pouchDbViewService, $q) {
     /**
      * @type {PouchDbContextService}
      * @private
@@ -38,6 +39,12 @@ class PouchDbTimerGateway {
      * @private
      */
     this._pouchDbViewService = pouchDbViewService;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
   }
 
   /**
@@ -109,10 +116,13 @@ class PouchDbTimerGateway {
         key: [task.id, user.id],
       }))
       .then(response => {
-        console.log('getTimerDocument');
-        console.log(response);
-        console.log(response.rows[0].doc);
-        return response.rows[0].doc;
+        return this._$q((resolve, reject) => {
+          if (response.rows.length > 0) {
+            resolve(response.rows[0].doc);
+          } else {
+            reject(`No Timer Document found for Task ID ${task.id}`)
+          }
+        });
       });
   }
 
@@ -126,7 +136,6 @@ class PouchDbTimerGateway {
    * @returns {AbortablePromise<string|Error>}
    */
   updateTime(task, user, time) {
-    console.log('updateTime');
     const queueIdentifier = 'timer';
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
@@ -135,21 +144,14 @@ class PouchDbTimerGateway {
         const phase = task.getPhase();
         timerDocument.timeInSeconds[phase] = time;
 
-        console.log('before');
-        console.log(timerDocument);
         return this._packagingExecutor.execute(queueIdentifier, () => {
           this._injectRevisionOrFailSilently(timerDocument);
           return dbContext.put(timerDocument);
         })
       })
-      .then(() => {
-        return this.getTimerDocument(task, user);
+      .then(response => {
+        this._revisionManager.extractRevision(response);
       })
-      .then(timerDocument => {
-        this._revisionManager.extractRevision(timerDocument);
-        console.log('after');
-        console.log(timerDocument);
-      });
   }
 
   /**
@@ -173,6 +175,7 @@ PouchDbTimerGateway.$inject = [
   'couchDbModelDeserializer',
   'revisionManager',
   'pouchDbViewService',
+  '$q'
 ];
 
 export default PouchDbTimerGateway;
