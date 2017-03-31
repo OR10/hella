@@ -6,6 +6,8 @@ use AppBundle\Model;
 
 class Point extends Model\Shape
 {
+    const TYPE = 'point';
+    
     /**
      * @var string
      */
@@ -16,6 +18,11 @@ class Point extends Model\Shape
      */
     private $point = [];
 
+    /**
+     * @param array $shape
+     *
+     * @return Point
+     */
     public static function createFromArray(array $shape)
     {
         if (!isset($shape['id']) || !isset($shape['point']) || !isset($shape['point']['x']) ||
@@ -44,21 +51,33 @@ class Point extends Model\Shape
         ];
     }
 
+    /**
+     * @return string
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getType()
     {
-        return 'point';
+        return self::TYPE;
     }
 
+    /**
+     * @return BoundingBox
+     */
     public function getBoundingBox()
     {
         return new BoundingBox($this->point['x'], $this->point['y'], $this->point['x'], $this->point['y']);
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         return [
