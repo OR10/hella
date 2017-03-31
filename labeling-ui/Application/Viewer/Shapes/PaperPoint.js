@@ -1,3 +1,4 @@
+import angular from 'angular';
 import paper from 'paper';
 import PaperShape from './PaperShape';
 import PaperThingShape from './PaperThingShape';
@@ -167,7 +168,7 @@ class PaperPoint extends PaperThingShape {
       point: new paper.Point(x, this._centerPoint.y),
     };
   }
-  
+
   /**
    * @param {Handle|null} handle
    * @param {Boolean} mouseDown
@@ -177,13 +178,13 @@ class PaperPoint extends PaperThingShape {
     if (handle === null) {
       return mouseDown ? 'grabbing' : 'grab';
     }
-    
+
     switch (handle.name) {
       default:
         return mouseDown ? 'grabbing' : 'grab';
     }
   }
-  
+
   /**
    * @param {Handle|null} handle
    * @returns {string}
@@ -194,7 +195,7 @@ class PaperPoint extends PaperThingShape {
     }
     return 'move';
   }
-  
+
   /**
    * Fix the points of the shape to represent the right coordinates
    */
@@ -208,7 +209,7 @@ class PaperPoint extends PaperThingShape {
   getClass() {
     return PaperPoint.getClass();
   }
-  
+
   /**
    * Convert to JSON for storage
    *
@@ -218,7 +219,7 @@ class PaperPoint extends PaperThingShape {
     return {
       type: 'point',
       id: this._shapeId,
-      point:this._centerPoint,
+      point: this._centerPoint,
       labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }

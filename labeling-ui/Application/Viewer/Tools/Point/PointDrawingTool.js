@@ -23,7 +23,7 @@ class PointDrawingTool extends CreationTool {
    */
   constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
     super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
-    
+
     /**
      * @type {EntityIdService}
      * @private
@@ -170,10 +170,6 @@ class PointDrawingTool extends CreationTool {
   _startShape(from, to) {
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
-    const middleX = from.x + to.x / 2;
-    const middleY = from.y + to.y / 2;
-    const center = new paper.Point(middleX,middleY);
-    console.log(center);
     this._context.withScope(() => {
       // draw shape
       this._pointShape = new PointShape(
@@ -183,16 +179,6 @@ class PointDrawingTool extends CreationTool {
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
-      /*
-      this._pedestrian = new PaperPedestrian(
-          labeledThingInFrame,
-          this._entityIdService.getUniqueId(),
-          topCenter,
-          bottomCenter,
-          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-          true
-      );
-      */
       // this._creationHandle = this._getScaleAnchor(to);
       // this._pedestrian.resize(this._creationHandle, to, this._getMinimalHeight());
     });

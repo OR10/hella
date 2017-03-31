@@ -100,11 +100,10 @@ class ToolService {
     this._loggerService.groupStart('toolService:getTool', 'Trying to get the tool for the given tool identifier');
     if (this._toolCache.has(context, shapeClass, actionIdentifier) === false) {
       this._loggerService.log('toolService:getTool', `Tool "${shapeClass}-${actionIdentifier}" was not created prior. Creating now.`);
-      
       try {
         const toolClass = this._findToolClassByShapeClassAndActionIdentifier(shapeClass, actionIdentifier);
         const toolInstance = this._$injector.instantiate(toolClass, {drawingContext: context});
-       
+
         this._toolCache.set(context, shapeClass, actionIdentifier, toolInstance);
       } catch (error) {
         this._loggerService.log('toolService:getTool', `No tool found for "${shapeClass}-${actionIdentifier}"`);
