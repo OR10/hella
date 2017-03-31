@@ -67,8 +67,8 @@ class Report
         Facade\Report $reportFacade,
         Service\GhostClassesPropagation $ghostClassesPropagation,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        $pouchdbFeatureEnabled,
-        $databaseNameReadOnly
+        string $pouchdbFeatureEnabled,
+        string $databaseNameReadOnly
     ) {
         $this->projectFacade           = $projectFacade;
         $this->videoFacade             = $videoFacade;
