@@ -14,11 +14,6 @@ fdescribe('PouchDbTimerGateway Test suite', () => {
   let packagingExecutorMock;
 
   /**
-   * @type {RevisionManager}
-   */
-  let revisionManagerMock;
-
-  /**
    * @type {CouchDbModelDeserializer}
    */
   let couchDbModelDeserializer;
@@ -88,7 +83,6 @@ fdescribe('PouchDbTimerGateway Test suite', () => {
     packagingExecutorMock.execute.and.callFake((queueIdentifier, callback) => {
       return callback();
     });
-    revisionManagerMock = jasmine.createSpyObj('RevisionManager', ['extractRevision', 'injectRevision']);
     couchDbModelDeserializer = jasmine.createSpyObj('CouchDbModelDeserializer', ['deserializeTimer']);
     const pouchDbViewServiceMock = jasmine.createSpyObj('PouchDbViewService', ['get']);
 
@@ -96,7 +90,6 @@ fdescribe('PouchDbTimerGateway Test suite', () => {
       pouchDbContextServiceMock,
       packagingExecutorMock,
       couchDbModelDeserializer,
-      revisionManagerMock,
       pouchDbViewServiceMock,
       qMock
     );
@@ -167,13 +160,12 @@ fdescribe('PouchDbTimerGateway Test suite', () => {
       };
     });
 
-    it('Creates a new Timer Document and passes it to the revision manager if no timer document is available yet', done => {
+    it('Creates a new Timer Document if no timer document is available yet', done => {
       setupEmptyPouchFetchQuery();
 
       const document = gateway.readOrCreateTimerIfMissingWithIdentification(project, task, user);
       document.then(timerDocument => {
         expect(timerDocument).toEqual(timerDocument);
-        expect(revisionManagerMock.extractRevision).toHaveBeenCalledWith(timerDocument);
         done();
 
       });
@@ -181,14 +173,13 @@ fdescribe('PouchDbTimerGateway Test suite', () => {
       rootScope.$apply();
     });
 
-    it('returns the Pouch Document and passes it to the revision manager', done => {
+    it('returns the Pouch Document', done => {
       setupSuccessfulPouchFetchQuery();
       spyOn(gateway, 'createTimerDocument');
 
       const document = gateway.readOrCreateTimerIfMissingWithIdentification(project, task, user);
       document.then(timerDocument => {
         expect(timerDocument).toEqual(timerDocument);
-        expect(revisionManagerMock.extractRevision).toHaveBeenCalledWith(timerDocument);
         expect(gateway.createTimerDocument).not.toHaveBeenCalled();
         done();
 
@@ -235,16 +226,6 @@ fdescribe('PouchDbTimerGateway Test suite', () => {
       rootScope.$apply();
 
       expect(pouchDbMock.put).toHaveBeenCalledWith(expectedTimerDocument);
-    });
-
-    it('extracts the revision based on the response of the put request', () => {
-      const putResponse = 'blasfdsf';
-      pouchDbMock.put.and.returnValue(putResponse);
-
-      gateway.updateTime(task, {}, time);
-      rootScope.$apply();
-
-      expect(revisionManagerMock.extractRevision).toHaveBeenCalledWith(putResponse);
     });
   });
 });

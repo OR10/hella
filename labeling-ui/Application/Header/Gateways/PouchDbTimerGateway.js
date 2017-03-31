@@ -6,11 +6,10 @@ class PouchDbTimerGateway {
    * @param {PouchDbContextService} pouchDbContextService
    * @param {PackagingExecutor} packagingExecutor
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
-   * @param {RevisionManager} revisionManager
    * @param {PouchDbViewService} pouchDbViewService
    * @param {angular.$q} $q
    */
-  constructor(pouchDbContextService, packagingExecutor, couchDbModelDeserializer, revisionManager, pouchDbViewService, $q) {
+  constructor(pouchDbContextService, packagingExecutor, couchDbModelDeserializer, pouchDbViewService, $q) {
     /**
      * @type {PouchDbContextService}
      * @private
@@ -27,12 +26,6 @@ class PouchDbTimerGateway {
      * @private
      */
     this._couchDbModelDeserializer = couchDbModelDeserializer;
-
-    /**
-     * @type {RevisionManager}
-     * @private
-     */
-    this._revisionManager = revisionManager;
 
     /**
      * @type {PouchDbViewService}
@@ -88,8 +81,6 @@ class PouchDbTimerGateway {
         () => this.createTimerDocument(project, task, user)
       )
       .then(timerDocument => {
-        // Make sure the Revision Manager knows the document
-        this._revisionManager.extractRevision(timerDocument);
         return timerDocument;
       });
   }
@@ -159,9 +150,6 @@ class PouchDbTimerGateway {
           return dbContext.put(timerDocument);
         })
       })
-      .then(response => {
-        this._revisionManager.extractRevision(response);
-      })
   }
 }
 
@@ -169,7 +157,6 @@ PouchDbTimerGateway.$inject = [
   'pouchDbContextService',
   'packagingExecutor',
   'couchDbModelDeserializer',
-  'revisionManager',
   'pouchDbViewService',
   '$q'
 ];
