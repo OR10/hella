@@ -146,6 +146,7 @@ class PouchDbTimerGateway {
         return this.getTimerDocument(task, user);
       })
       .then(timerDocument => {
+        this._revisionManager.extractRevision(timerDocument);
         console.log('after');
         console.log(timerDocument);
       });
