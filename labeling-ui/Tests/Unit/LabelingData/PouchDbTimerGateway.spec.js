@@ -237,13 +237,6 @@ fdescribe('PouchDbTimerGateway Test suite', () => {
       expect(pouchDbMock.put).toHaveBeenCalledWith(expectedTimerDocument);
     });
 
-    it('injects the revision using the revision manager', () => {
-      gateway.updateTime(task, {}, time);
-      rootScope.$apply();
-
-      expect(revisionManagerMock.injectRevision).toHaveBeenCalledWith(expectedTimerDocument);
-    });
-
     it('extracts the revision based on the response of the put request', () => {
       const putResponse = 'blasfdsf';
       pouchDbMock.put.and.returnValue(putResponse);
