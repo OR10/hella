@@ -130,7 +130,7 @@ class PouchDbTimerGateway {
           if (response.rows.length > 0) {
             resolve(response.rows[0].doc);
           } else {
-            reject(`No Timer Document found for Task ID ${task.id}`)
+            reject(new Error(`No Timer Document found for Task ID ${task.id}`))
           }
         });
       });
