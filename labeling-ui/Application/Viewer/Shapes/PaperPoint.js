@@ -169,6 +169,33 @@ class PaperPoint extends PaperThingShape {
   }
   
   /**
+   * @param {Handle|null} handle
+   * @param {Boolean} mouseDown
+   * @returns {string}
+   */
+  getCursor(handle, mouseDown = false) {
+    if (handle === null) {
+      return mouseDown ? 'grabbing' : 'grab';
+    }
+    
+    switch (handle.name) {
+      default:
+        return mouseDown ? 'grabbing' : 'grab';
+    }
+  }
+  
+  /**
+   * @param {Handle|null} handle
+   * @returns {string}
+   */
+  getToolActionIdentifier(handle) {
+    if (handle === null) {
+      return 'move';
+    }
+    return 'move';
+  }
+  
+  /**
    * Fix the points of the shape to represent the right coordinates
    */
   fixOrientation() {

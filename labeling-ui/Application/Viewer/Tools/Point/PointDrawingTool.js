@@ -154,7 +154,6 @@ class PointDrawingTool extends CreationTool {
       this._reject(new NotModifiedError('No FixedAspectRatioRectangle was created/dragged.'));
       return;
     }
-
     // Fix bottom-right and top-left orientation
     this._pointShape.fixOrientation();
 
@@ -171,25 +170,16 @@ class PointDrawingTool extends CreationTool {
   _startShape(from, to) {
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
-    let topCenter;
-    let bottomCenter;
-
-    // TODO: get center
-
-    if (from.y < to.y) {
-      topCenter = new paper.Point(from.x, from.y);
-      bottomCenter = new paper.Point(from.x, to.y);
-    } else {
-      topCenter = new paper.Point(from.x, to.y);
-      bottomCenter = new paper.Point(from.x, from.y);
-    }
-
+    const middleX = from.x + to.x / 2;
+    const middleY = from.y + to.y / 2;
+    const center = new paper.Point(middleX,middleY);
+    console.log(center);
     this._context.withScope(() => {
       // draw shape
       this._pointShape = new PointShape(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
-        topCenter,
+        to,
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         true
       );
