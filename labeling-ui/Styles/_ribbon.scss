@@ -1,0 +1,55 @@
+ribbon{
+  width: 200px;
+  background: $element-background;
+  position: absolute;
+  top: 25px;
+  left: -50px;
+  text-align: center;
+  line-height: 40px;
+  letter-spacing: 1px;
+  border-top: 1px solid $headlines;
+  border-bottom: 1px solid $headlines;
+  color: $headlines;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+ribbon.sticky{
+  position: fixed;
+}
+
+ribbon.shadow{
+  box-shadow: 0 0 3px rgba(0,0,0,.3);
+}
+
+ribbon.top-left{
+  top: 25px;
+  left: -50px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+ribbon.top-right{
+  top: 25px;
+  right: -50px;
+  left: auto;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+ribbon.bottom-left{
+  top: auto;
+  bottom: 25px;
+  left: -50px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+ribbon.bottom-right{
+  top: auto;
+  right: -50px;
+  bottom: 25px;
+  left: auto;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}

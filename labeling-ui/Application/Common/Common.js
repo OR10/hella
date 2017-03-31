@@ -17,6 +17,7 @@ import EntityColorService from './Services/EntityColorService';
 import ModalService from './Services/ModalService';
 import ReleaseConfigService from './Services/ReleaseConfigService';
 import LoadingMaskDirective from './Directives/LoadingMaskDirective';
+import RibbonDirective from './Directives/RibbonDirective';
 import IdleIndicatorDirective from './Directives/IdleIndicatorDirective';
 import SplitViewDirective from './Directives/SplitViewDirective';
 import RightClickDirective from './Directives/RightClickDirective';
@@ -135,6 +136,7 @@ class Common extends Module {
     this.module.factory('SelectionDialog', selectionDialogProvider);
 
     this.registerDirective('loadingMask', LoadingMaskDirective);
+    this.registerDirective('ribbon', RibbonDirective);
     this.registerDirective('idleIndicator', IdleIndicatorDirective);
     this.registerDirective('splitView', SplitViewDirective);
     this.registerDirective('asRightClick', RightClickDirective);
