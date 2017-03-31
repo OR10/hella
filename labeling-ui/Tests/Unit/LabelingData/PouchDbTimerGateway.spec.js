@@ -160,7 +160,7 @@ describe('PouchDbTimerGateway Test suite', () => {
       };
     });
 
-    it('Creates a new Timer Document if no timer document is available yet', done => {
+    it('creates a new Timer Document if no timer document is available yet', done => {
       setupEmptyPouchFetchQuery();
 
       const document = gateway.readOrCreateTimerIfMissingWithIdentification(project, task, user);
