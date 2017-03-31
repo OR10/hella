@@ -52,7 +52,7 @@ class PaperPoint extends PaperThingShape {
   _createOuterCircleShape() {
     return new paper.Path.Circle({
       center: this._centerPoint,
-      radius: PaperPoint.SPACE,
+      radius: PaperPoint.CONTROL_SIZE,
       selected: false,
       strokeColor: this._color.primary,
       strokeWidth: 2,
@@ -94,19 +94,19 @@ class PaperPoint extends PaperThingShape {
   _getCrosshairCooridantesOfCenter() {
     const centerX = this._centerPoint.x;
     const centerY = this._centerPoint.y;
-    const padding = PaperPoint.SPACE - 15;
+    const shapeWidth = PaperPoint.CONTROL_SIZE - PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE;
 
-    const fromLeftCenter = new paper.Point(centerX - PaperPoint.SPACE, centerY);
-    const toLeftCenter = new paper.Point(fromLeftCenter.x + padding, centerY);
+    const fromLeftCenter = new paper.Point(centerX - PaperPoint.CONTROL_SIZE, centerY);
+    const toLeftCenter = new paper.Point(fromLeftCenter.x + shapeWidth, centerY);
 
-    const fromTopCenter = new paper.Point(centerX, centerY - PaperPoint.SPACE);
-    const toTopCenter = new paper.Point(centerX, fromTopCenter.y + padding);
+    const fromTopCenter = new paper.Point(centerX, centerY - PaperPoint.CONTROL_SIZE);
+    const toTopCenter = new paper.Point(centerX, fromTopCenter.y + shapeWidth);
 
-    const fromRightCenter = new paper.Point(centerX + PaperPoint.SPACE, centerY);
-    const toRightCenter = new paper.Point(fromRightCenter.x - padding, centerY);
+    const fromRightCenter = new paper.Point(centerX + PaperPoint.CONTROL_SIZE, centerY);
+    const toRightCenter = new paper.Point(fromRightCenter.x - shapeWidth, centerY);
 
-    const fromBottomCenter = new paper.Point(centerX, centerY + PaperPoint.SPACE);
-    const toBottomCenter = new paper.Point(centerX, fromBottomCenter.y - padding);
+    const fromBottomCenter = new paper.Point(centerX, centerY + PaperPoint.CONTROL_SIZE);
+    const toBottomCenter = new paper.Point(centerX, fromBottomCenter.y - shapeWidth);
 
     return {
       left: [fromLeftCenter, toLeftCenter],
@@ -157,8 +157,8 @@ class PaperPoint extends PaperThingShape {
    * @returns {{width: number, height: number}}
    */
   get bounds() {
-    const x = this._centerPoint.x - PaperPoint.SPACE / 2;
-    const width = PaperPoint.SPACE;
+    const x = this._centerPoint.x - PaperPoint.CONTROL_SIZE / 2;
+    const width = PaperPoint.CONTROL_SIZE;
     return {
       width,
       height: width,
@@ -204,5 +204,6 @@ PaperPoint.getClass = () => {
   return 'point';
 };
 
-PaperPoint.SPACE = 30;
+PaperPoint.CONTROL_SIZE = 30;
+PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE = 2;
 export default PaperPoint;
