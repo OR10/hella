@@ -27,12 +27,6 @@ class PaperPoint extends PaperThingShape {
      * @private
      */
     this._centerPoint = centerPoint;
-
-    /**
-     * @type {number}
-     * @private
-     */
-    this._space = 100;
   }
 
   /**
@@ -58,7 +52,7 @@ class PaperPoint extends PaperThingShape {
   _createOuterCircleShape() {
     return new paper.Path.Circle({
       center: this._centerPoint,
-      radius: this._space,
+      radius: PaperPoint.SPACE,
       selected: false,
       strokeColor: this._color.primary,
       strokeWidth: 2,
@@ -70,7 +64,7 @@ class PaperPoint extends PaperThingShape {
   _createCrosshairs() {
     const crosshairPoints = this._getCrosshairCooridantesOfCenter();
     const shapes = [];
-    crosshairPoints.forEach(points => {
+    angular.forEach(crosshairPoints, points => {
       shapes.push(
         new paper.Path.Line({
           from: points[0],
@@ -100,18 +94,18 @@ class PaperPoint extends PaperThingShape {
   _getCrosshairCooridantesOfCenter() {
     const centerX = this._centerPoint.x;
     const centerY = this._centerPoint.y;
-    const padding = this._space - 80;
+    const padding = PaperPoint.SPACE - 15;
 
-    const fromLeftCenter = new paper.Point(centerX - this._space, centerY);
+    const fromLeftCenter = new paper.Point(centerX - PaperPoint.SPACE, centerY);
     const toLeftCenter = new paper.Point(fromLeftCenter.x + padding, centerY);
 
-    const fromTopCenter = new paper.Point(centerX, centerY - this._space);
+    const fromTopCenter = new paper.Point(centerX, centerY - PaperPoint.SPACE);
     const toTopCenter = new paper.Point(centerX, fromTopCenter.y + padding);
 
-    const fromRightCenter = new paper.Point(centerX + this._space, centerY);
+    const fromRightCenter = new paper.Point(centerX + PaperPoint.SPACE, centerY);
     const toRightCenter = new paper.Point(fromRightCenter.x - padding, centerY);
 
-    const fromBottomCenter = new paper.Point(centerX, centerY + this._space);
+    const fromBottomCenter = new paper.Point(centerX, centerY + PaperPoint.SPACE);
     const toBottomCenter = new paper.Point(centerX, fromBottomCenter.y - padding);
 
     return {
@@ -163,15 +157,22 @@ class PaperPoint extends PaperThingShape {
    * @returns {{width: number, height: number}}
    */
   get bounds() {
-    const x = this._centerPoint.x - this._space / 2;
-    const width = this._space;
+    const x = this._centerPoint.x - PaperPoint.SPACE / 2;
+    const width = PaperPoint.SPACE;
     return {
       width,
       height: width,
       x,
-      y: this._topCenter.y,
+      y: this._centerPoint.y,
       point: new paper.Point(x, this._centerPoint.y),
     };
+  }
+  
+  /**
+   * Fix the points of the shape to represent the right coordinates
+   */
+  fixOrientation() {
+    this._drawShape();
   }
 
   /**
@@ -179,6 +180,20 @@ class PaperPoint extends PaperThingShape {
    */
   getClass() {
     return PaperPoint.getClass();
+  }
+  
+  /**
+   * Convert to JSON for storage
+   *
+   * @returns {{type: string, id: String, point: {x: number, y: number}, labeledThingInFrameId: *}}
+   */
+  toJSON() {
+    return {
+      type: 'point',
+      id: this._shapeId,
+      point:this._centerPoint,
+      labeledThingInFrameId: this.labeledThingInFrame.id,
+    };
   }
 }
 
@@ -189,4 +204,5 @@ PaperPoint.getClass = () => {
   return 'point';
 };
 
+PaperPoint.SPACE = 30;
 export default PaperPoint;

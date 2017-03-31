@@ -53,8 +53,6 @@ class PointDrawingTool extends CreationTool {
      * @private
      */
     this._creationHandle = null;
-    
-    debugger;
   }
 
   /**
@@ -171,7 +169,6 @@ class PointDrawingTool extends CreationTool {
    * @private
    */
   _startShape(from, to) {
-    debugger;
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     let topCenter;
