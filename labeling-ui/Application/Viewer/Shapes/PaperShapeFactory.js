@@ -5,6 +5,7 @@ import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from './PaperPolygon';
 import PaperPolyline from './PaperPolyline';
+import PaperPoint from './PaperPoint';
 
 import PlainProjection2d from '../../ThirdDimension/Support/Projection2d/Plain';
 import FlatWorld from '../../ThirdDimension/Support/Projection3d/FlatWorld';
@@ -113,6 +114,17 @@ class PaperShapeFactory {
   _createPolyline(labeledThingInFrame, shape, color) {
     return new PaperPolyline(labeledThingInFrame, shape.id, shape.points, color);
   }
+  
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
+   * @param {String} color
+   * @returns {PaperPoint}
+   * @private
+   */
+  _createPoint(labeledThingInFrame, shape, color) {
+    return new PaperPoint(labeledThingInFrame, shape.id, shape.points, color);
+  }
 
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
@@ -123,13 +135,16 @@ class PaperShapeFactory {
   createPaperThingShape(labeledThingInFrame, shape, video = null) {
     const color = this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor);
     let result;
-
+    console.log(shape.type);
     switch (shape.type) {
       case 'rectangle':
         result = this._createRectangle(labeledThingInFrame, shape, color);
         break;
       case 'pedestrian':
         result = this._createPedestrian(labeledThingInFrame, shape, color);
+        break;
+      case 'point':
+        result = this._createPoint(labeledThingInFrame, shape, color);
         break;
       case 'cuboid3d':
         result = this._createCuboid(labeledThingInFrame, shape, color, video);

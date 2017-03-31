@@ -18,6 +18,8 @@ import PolylineDrawingTool from '../Tools/Polyline/PolylineDrawingTool';
 import PathScaleTool from '../Tools/PathScaleTool';
 import PathMoveTool from '../Tools/PathMoveTool';
 import PathKeyboardTool from '../Tools/PathKeyboardTool';
+import PointDrawingTool from '../Tools/Point/PointDrawingTool';
+import PointMoveTool from '../Tools/Point/PointMoveTool';
 
 class ToolService {
   /**
@@ -82,6 +84,8 @@ class ToolService {
       PolylineDrawingTool,
       GroupCreationTool,
       NoOperationPaperTool,
+      PointDrawingTool,
+      PointMoveTool,
     ];
   }
 
