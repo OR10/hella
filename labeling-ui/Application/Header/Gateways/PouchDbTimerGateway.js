@@ -82,7 +82,7 @@ class PouchDbTimerGateway {
    * @returns {AbortablePromise<Object>}
    */
   readOrCreateTimerIfMissingWithIdentification(project, task, user) {
-    return this.getTimerDocument(task, user)
+    return this._getTimerDocument(task, user)
       .then(
         timerDocument => timerDocument,
         () => this.createTimerDocument(project, task, user)
@@ -102,7 +102,7 @@ class PouchDbTimerGateway {
    * @return {AbortablePromise<Object|Error>}
    */
   getTime(task, user) {
-    return this.getTimerDocument(task, user)
+    return this._getTimerDocument(task, user)
     .then(timerDocument => {
       return this._couchDbModelDeserializer.deserializeTimer(timerDocument, task.getPhase());
     });
@@ -111,11 +111,12 @@ class PouchDbTimerGateway {
   /**
    * Get the stored Timer Document for the given task and user
    *
+   * @private
    * @param {Task} task
    * @param {User} user
    * @returns {AbortablePromise<Object|Error>}
    */
-  getTimerDocument(task, user) {
+  _getTimerDocument(task, user) {
     const queueIdentifier = 'timer';
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
@@ -149,7 +150,7 @@ class PouchDbTimerGateway {
     const queueIdentifier = 'timer';
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return this.getTimerDocument(task, user)
+    return this._getTimerDocument(task, user)
       .then(timerDocument => {
         const phase = task.getPhase();
         timerDocument.timeInSeconds[phase] = time;
