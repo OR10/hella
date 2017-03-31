@@ -5,11 +5,10 @@ class PouchDbTimerGateway {
   /**
    * @param {PouchDbContextService} pouchDbContextService
    * @param {PackagingExecutor} packagingExecutor
-   * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {PouchDbViewService} pouchDbViewService
    * @param {angular.$q} $q
    */
-  constructor(pouchDbContextService, packagingExecutor, couchDbModelDeserializer, pouchDbViewService, $q) {
+  constructor(pouchDbContextService, packagingExecutor, pouchDbViewService, $q) {
     /**
      * @type {PouchDbContextService}
      * @private
@@ -20,12 +19,6 @@ class PouchDbTimerGateway {
      * @type {PackagingExecutor}
      */
     this._packagingExecutor = packagingExecutor;
-
-    /**
-     * @type {CouchDbModelDeserializer}
-     * @private
-     */
-    this._couchDbModelDeserializer = couchDbModelDeserializer;
 
     /**
      * @type {PouchDbViewService}
@@ -95,7 +88,18 @@ class PouchDbTimerGateway {
   getTime(task, user) {
     return this._getTimerDocument(task, user)
     .then(timerDocument => {
-      return this._couchDbModelDeserializer.deserializeTimer(timerDocument, task.getPhase());
+      const timerModel = {time: 0};
+      const phase = task.getPhase();
+
+      if (timerDocument.timeInSeconds === undefined) {
+        throw new Error('Invalid timer document.');
+      }
+
+      if (timerDocument.timeInSeconds[phase] !== undefined) {
+        timerModel.time = timerDocument.timeInSeconds[phase];
+      }
+
+      return timerModel;
     });
   }
 
@@ -156,7 +160,6 @@ class PouchDbTimerGateway {
 PouchDbTimerGateway.$inject = [
   'pouchDbContextService',
   'packagingExecutor',
-  'couchDbModelDeserializer',
   'pouchDbViewService',
   '$q'
 ];
