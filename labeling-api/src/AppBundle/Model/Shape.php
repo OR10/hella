@@ -18,6 +18,7 @@ abstract class Shape
         'polyline' => Shapes\Polyline::class,
         'pedestrian' => Shapes\Pedestrian::class,
         'cuboid3d' => Shapes\Cuboid3d::class,
+        'point' => Shapes\Point::class,
     ];
 
     public static function createFromArray(array $shapeAsArray)
