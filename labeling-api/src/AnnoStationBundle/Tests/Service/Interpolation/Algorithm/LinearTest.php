@@ -262,6 +262,7 @@ class LinearTest extends Tests\KernelTestCase
                     new Shapes\Ellipse('test-3', 100, 100, 200, 200),
                     new Shapes\Polygon('test-4', [['x' => 100, 'y' => 75], ['x' => 120, 'y' => 160]]),
                     new Shapes\Polyline('test-5', [['x' => 150, 'y' => 175], ['x' => 170, 'y' => 120]]),
+                    new Shapes\Point('test-6', ['x' => 100, 'y' => 200]),
                 ]
             ),
             $this->createLabeledThingInFrame(
@@ -273,6 +274,7 @@ class LinearTest extends Tests\KernelTestCase
                     new Shapes\Ellipse('test-3', 200, 200, 100, 100),
                     new Shapes\Polygon('test-4', [['x' => 170, 'y' => 200], ['x' => 320, 'y' => 380]]),
                     new Shapes\Polyline('test-5', [['x' => 10, 'y' => 20], ['x' => 120, 'y' => 280]]),
+                    new Shapes\Point('test-6', ['x' => 400, 'y' => 700]),
                 ]
             ),
         ];
@@ -299,6 +301,7 @@ class LinearTest extends Tests\KernelTestCase
                         new Shapes\Ellipse('test-3', 100, 100, 200, 200),
                         new Shapes\Polygon('test-4', [['x' => 100, 'y' => 75], ['x' => 120, 'y' => 160]]),
                         new Shapes\Polyline('test-5', [['x' => 150, 'y' => 175], ['x' => 170, 'y' => 120]]),
+                        new Shapes\Point('test-6', ['x' => 100, 'y' => 200]),
                     ]
                 )
             ),
@@ -313,6 +316,7 @@ class LinearTest extends Tests\KernelTestCase
                         new Shapes\Ellipse('test-3', 125, 125, 175, 175),
                         new Shapes\Polygon('test-4', [['x' => 117.5, 'y' => 106.25], ['x' => 170, 'y' => 215]]),
                         new Shapes\Polyline('test-5', [['x' => 115, 'y' => 136.25], ['x' => 157.5, 'y' => 160]]),
+                        new Shapes\Point('test-6', ['x' => 175, 'y' => 325]),
                     ]
                 )
             ),
@@ -327,6 +331,7 @@ class LinearTest extends Tests\KernelTestCase
                         new Shapes\Ellipse('test-3', 150, 150, 150, 150),
                         new Shapes\Polygon('test-4', [['x' => 135, 'y' => 137.5], ['x' => 220, 'y' => 270]]),
                         new Shapes\Polyline('test-5', [['x' => 80, 'y' => 97.5], ['x' => 145.0, 'y' => 200]]),
+                        new Shapes\Point('test-6', ['x' => 250, 'y' => 450]),
                     ]
                 )
             ),
@@ -341,6 +346,7 @@ class LinearTest extends Tests\KernelTestCase
                         new Shapes\Ellipse('test-3', 175, 175, 125, 125),
                         new Shapes\Polygon('test-4', [['x' => 152.5, 'y' => 168.75], ['x' => 270, 'y' => 325]]),
                         new Shapes\Polyline('test-5', [['x' => 45, 'y' => 58.75], ['x' => 132.5, 'y' => 240]]),
+                        new Shapes\Point('test-6', ['x' => 325, 'y' => 575]),
                     ]
                 )
             ),
@@ -355,6 +361,7 @@ class LinearTest extends Tests\KernelTestCase
                         new Shapes\Ellipse('test-3', 200, 200, 100, 100),
                         new Shapes\Polygon('test-4', [['x' => 170, 'y' => 200], ['x' => 320, 'y' => 380]]),
                         new Shapes\Polyline('test-5', [['x' => 10, 'y' => 20], ['x' => 120, 'y' => 280]]),
+                        new Shapes\Point('test-6', ['x' => 400, 'y' => 700]),
                     ]
                 )
             ),
