@@ -73,18 +73,24 @@ class RequirementsProjectToXml
     private $databaseDocumentManagerFactory;
 
     /**
-     * @param Facade\Exporter                        $exporterFacade
-     * @param Facade\Project                         $projectFacade
-     * @param Facade\Video                           $videoFacade
-     * @param Facade\LabelingTask                    $labelingTaskFacade
-     * @param Facade\TaskConfiguration               $taskConfiguration
-     * @param Service\GhostClassesPropagation        $ghostClassesPropagation
-     * @param AppBundleFacade\User                   $userFacade
-     * @param Facade\LabelingGroup                   $labelingGroupFacade
-     * @param Facade\LabeledThing                    $labeledThingFacade
-     * @param Facade\LabeledThingGroup               $labeledThingGroupFacade
+     * @var string
+     */
+    private $pouchdbFeatureEnabled;
+
+    /**
+     * @param Facade\Exporter                                 $exporterFacade
+     * @param Facade\Project                                  $projectFacade
+     * @param Facade\Video                                    $videoFacade
+     * @param Facade\LabelingTask                             $labelingTaskFacade
+     * @param Facade\TaskConfiguration                        $taskConfiguration
+     * @param Service\GhostClassesPropagation                 $ghostClassesPropagation
+     * @param AppBundleFacade\User                            $userFacade
+     * @param Facade\LabelingGroup                            $labelingGroupFacade
+     * @param Facade\LabeledThing                             $labeledThingFacade
+     * @param Facade\LabeledThingGroup                        $labeledThingGroupFacade
      * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
-     * @param Service\TaskDatabaseCreator            $taskDatabaseCreatorService
+     * @param Service\TaskDatabaseCreator                     $taskDatabaseCreatorService
+     * @param                                                 $pouchdbFeatureEnabled
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -98,7 +104,8 @@ class RequirementsProjectToXml
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingGroup $labeledThingGroupFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        Service\TaskDatabaseCreator $taskDatabaseCreatorService
+        Service\TaskDatabaseCreator $taskDatabaseCreatorService,
+        $pouchdbFeatureEnabled
     ) {
         $this->exporterFacade                 = $exporterFacade;
         $this->projectFacade                  = $projectFacade;
@@ -112,6 +119,7 @@ class RequirementsProjectToXml
         $this->labeledThingGroupFacade        = $labeledThingGroupFacade;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
+        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
     }
 
     /**
@@ -152,24 +160,31 @@ class RequirementsProjectToXml
                 $xmlVideo = new ExportXml\Element\Video($video, self::XML_NAMESPACE);
 
                 foreach ($labelingTaskIterator as $task) {
-                    $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                        $this->taskDatabaseCreatorService->getDatabaseName(
-                            $project->getId(),
-                            $task->getId()
-                        )
-                    );
+                    $labelingTaskFacade       = $this->labelingTaskFacade;
+                    $labelingThingGroupFacade = $this->labeledThingGroupFacade;
+                    $labeledThingFacade       = $this->labeledThingFacade;
+
+                    if ($this->pouchdbFeatureEnabled) {
+                        $databaseDocumentManager  = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+                            $this->taskDatabaseCreatorService->getDatabaseName(
+                                $project->getId(),
+                                $task->getId()
+                            )
+                        );
+                        $labelingTaskFacade       = new Facade\LabelingTask($databaseDocumentManager);
+                        $labelingThingGroupFacade = new Facade\LabeledThingGroup($databaseDocumentManager);
+                        $labeledThingFacade       = new Facade\LabeledThing($databaseDocumentManager);
+                    }
+
                     $frameMapping = $task->getFrameNumberMapping();
 
                     $labeledThingIterator = new Iterator\LabeledThing(
                         $task,
-                        new Facade\LabelingTask($databaseDocumentManager)
+                        $labelingTaskFacade
                     );
 
                     /** @var Model\LabeledThing $labeledThing */
                     foreach ($labeledThingIterator as $labeledThing) {
-                        $labelingThingGroupFacade = new Facade\LabeledThingGroup($databaseDocumentManager);
-                        $labeledThingFacade = new Facade\LabeledThing($databaseDocumentManager);
-
                         $references = new ExportXml\Element\Video\References(
                             new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
                             self::XML_NAMESPACE
