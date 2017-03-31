@@ -2,7 +2,7 @@ import PouchDbTimerGateway from 'Application/Header/Gateways/PouchDbTimerGateway
 import angular from 'angular';
 import {inject} from 'angular-mocks';
 
-fdescribe('PouchDbTimerGateway Test suite', () => {
+describe('PouchDbTimerGateway Test suite', () => {
   /**
    * @type {PouchDbContextService}
    */
