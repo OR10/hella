@@ -2,9 +2,10 @@
 namespace AnnoStationBundle\Service\Exporter;
 
 use AppBundle\Model;
+use AppBundle\Database\Facade as AppBundleFacade;
+use AppBundle\Service as AppBundleService;
 use AnnoStationBundle\Helper\Iterator;
 use AnnoStationBundle\Database\Facade;
-use AppBundle\Database\Facade as AppBundleFacade;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper\ExportXml;
 
@@ -62,16 +63,28 @@ class RequirementsProjectToXml
     private $labeledThingGroupFacade;
 
     /**
-     * @param Facade\Exporter                 $exporterFacade
-     * @param Facade\Project                  $projectFacade
-     * @param Facade\Video                    $videoFacade
-     * @param Facade\LabelingTask             $labelingTaskFacade
-     * @param Facade\TaskConfiguration        $taskConfiguration
-     * @param Service\GhostClassesPropagation $ghostClassesPropagation
-     * @param AppBundleFacade\User            $userFacade
-     * @param Facade\LabelingGroup            $labelingGroupFacade
-     * @param Facade\LabeledThing             $labeledThingFacade
-     * @param Facade\LabeledThingGroup        $labeledThingGroupFacade
+     * @var Service\TaskDatabaseCreator
+     */
+    private $taskDatabaseCreatorService;
+
+    /**
+     * @var AppBundleService\DatabaseDocumentManagerFactory
+     */
+    private $databaseDocumentManagerFactory;
+
+    /**
+     * @param Facade\Exporter                        $exporterFacade
+     * @param Facade\Project                         $projectFacade
+     * @param Facade\Video                           $videoFacade
+     * @param Facade\LabelingTask                    $labelingTaskFacade
+     * @param Facade\TaskConfiguration               $taskConfiguration
+     * @param Service\GhostClassesPropagation        $ghostClassesPropagation
+     * @param AppBundleFacade\User                   $userFacade
+     * @param Facade\LabelingGroup                   $labelingGroupFacade
+     * @param Facade\LabeledThing                    $labeledThingFacade
+     * @param Facade\LabeledThingGroup               $labeledThingGroupFacade
+     * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
+     * @param Service\TaskDatabaseCreator            $taskDatabaseCreatorService
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -83,18 +96,22 @@ class RequirementsProjectToXml
         AppBundleFacade\User $userFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         Facade\LabeledThing $labeledThingFacade,
-        Facade\LabeledThingGroup $labeledThingGroupFacade
+        Facade\LabeledThingGroup $labeledThingGroupFacade,
+        AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
+        Service\TaskDatabaseCreator $taskDatabaseCreatorService
     ) {
-        $this->exporterFacade          = $exporterFacade;
-        $this->projectFacade           = $projectFacade;
-        $this->videoFacade             = $videoFacade;
-        $this->labelingTaskFacade      = $labelingTaskFacade;
-        $this->taskConfiguration       = $taskConfiguration;
-        $this->ghostClassesPropagation = $ghostClassesPropagation;
-        $this->userFacade              = $userFacade;
-        $this->labelingGroupFacade     = $labelingGroupFacade;
-        $this->labeledThingFacade      = $labeledThingFacade;
-        $this->labeledThingGroupFacade = $labeledThingGroupFacade;
+        $this->exporterFacade                 = $exporterFacade;
+        $this->projectFacade                  = $projectFacade;
+        $this->videoFacade                    = $videoFacade;
+        $this->labelingTaskFacade             = $labelingTaskFacade;
+        $this->taskConfiguration              = $taskConfiguration;
+        $this->ghostClassesPropagation        = $ghostClassesPropagation;
+        $this->userFacade                     = $userFacade;
+        $this->labelingGroupFacade            = $labelingGroupFacade;
+        $this->labeledThingFacade             = $labeledThingFacade;
+        $this->labeledThingGroupFacade        = $labeledThingGroupFacade;
+        $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
+        $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
     }
 
     /**
@@ -135,20 +152,32 @@ class RequirementsProjectToXml
                 $xmlVideo = new ExportXml\Element\Video($video, self::XML_NAMESPACE);
 
                 foreach ($labelingTaskIterator as $task) {
+                    $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+                        $this->taskDatabaseCreatorService->getDatabaseName(
+                            $project->getId(),
+                            $task->getId()
+                        )
+                    );
                     $frameMapping = $task->getFrameNumberMapping();
 
-                    $labeledThingIterator = new Iterator\LabeledThing($task, $this->labelingTaskFacade);
+                    $labeledThingIterator = new Iterator\LabeledThing(
+                        $task,
+                        new Facade\LabelingTask($databaseDocumentManager)
+                    );
 
                     /** @var Model\LabeledThing $labeledThing */
                     foreach ($labeledThingIterator as $labeledThing) {
+                        $labelingThingGroupFacade = new Facade\LabeledThingGroup($databaseDocumentManager);
+                        $labeledThingFacade = new Facade\LabeledThing($databaseDocumentManager);
+
                         $references = new ExportXml\Element\Video\References(
                             new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
                             self::XML_NAMESPACE
                         );
                         foreach ($labeledThing->getGroupIds() as $groupId) {
-                            $group = $this->labeledThingGroupFacade->find($groupId);
+                            $group = $labelingThingGroupFacade->find($groupId);
                             if ($group !== null) {
-                                $groupFrameRange = $this->labeledThingGroupFacade->getLabeledThingGroupFrameRange(
+                                $groupFrameRange = $labelingThingGroupFacade->getLabeledThingGroupFrameRange(
                                     $group
                                 );
                                 $xmlVideo->addGroup(
@@ -156,7 +185,7 @@ class RequirementsProjectToXml
                                         $group,
                                         $frameMapping[$groupFrameRange['min']],
                                         $frameMapping[$groupFrameRange['max']],
-                                        $this->labeledThingGroupFacade->isLabeledThingGroupIncomplete($group),
+                                        $labelingThingGroupFacade->isLabeledThingGroupIncomplete($group),
                                         self::XML_NAMESPACE
                                     )
                                 );
@@ -171,7 +200,7 @@ class RequirementsProjectToXml
                             self::XML_NAMESPACE
                         );
                         $labeledThingInFrameForLabeledThing = new Iterator\LabeledThingInFrameForLabeledThing(
-                            $this->labeledThingFacade,
+                            $labeledThingFacade,
                             $labeledThing,
                             $this->ghostClassesPropagation
                         );
