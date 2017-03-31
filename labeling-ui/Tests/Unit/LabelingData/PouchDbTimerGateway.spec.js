@@ -1,145 +1,257 @@
-import 'jquery';
+import PouchDbTimerGateway from 'Application/Header/Gateways/PouchDbTimerGateway';
 import angular from 'angular';
-import {module, inject} from 'angular-mocks';
+import {inject} from 'angular-mocks';
 
-import Common from 'Application/Common/Common';
-import LabelingData from 'Application/LabelingData/LabelingData';
-
-import PouchDbHelper from 'Tests/Support/PouchDb/PouchDbHelper';
-
-import PouchDbTimerGateway from 'Application/Header/Gateways/TimerGateway';
-
-import taskTimerCouchDbModel from 'Tests/Fixtures/Models/CouchDb/TaskTimer';
-
-// @TODO: needs to be implemented
-xdescribe('PouchDbTimerGateway', () => {
+fdescribe('PouchDbTimerGateway Test suite', () => {
   /**
-   * @type {$rootScope}
+   * @type {PouchDbContextService}
    */
-  let $rootScope; // eslint-disable-line no-unused-vars
+  let pouchDbContextServiceMock;
 
   /**
-   * @type {PouchDbLabeledThingGateway}
+   * @type {PackagingExecutor}
    */
-  let gateway; // eslint-disable-line no-unused-vars
+  let packagingExecutorMock;
 
   /**
    * @type {RevisionManager}
    */
-  let revisionManager; // eslint-disable-line no-unused-vars
-
-  /**
-   * @type {PouchDbHelper}
-   */
-  let pouchDbHelper;
+  let revisionManagerMock;
 
   /**
    * @type {CouchDbModelDeserializer}
    */
-  let couchDbModelDeserializer; // eslint-disable-line no-unused-vars
+  let couchDbModelDeserializer;
 
   /**
-   * @type {CouchDbModelSerializer}
+   * @type {angular.$q}
    */
-  let couchDbModelSerializer; // eslint-disable-line no-unused-vars
+  let qMock;
 
-  beforeEach(done => {
-    const featureFlags = {
-      pouchdb: true,
+  /**
+   * @type {angular.$rootScope}
+   */
+  let rootScope;
+
+  /**
+   * @type {PouchDbTimerGateway}
+   */
+  let gateway;
+
+  /**
+   * @type {Object}
+   */
+  let pouchTimerDocument;
+
+  /**
+   * @type {PouchDb}
+   */
+  let pouchDbMock;
+
+  function setupSuccessfulPouchFetchQuery() {
+    pouchTimerDocument = {
+      type: 'AppBundle.Model.TaskTimer',
+      taskId: '',
+      projectId: '',
+      userId: '',
+      timeInSeconds: {
+        labeling: 0,
+      },
     };
 
-    Promise.resolve()
-      .then(() => {
-        const commonModule = new Common();
-        commonModule.registerWithAngular(angular, featureFlags);
-        module('AnnoStation.Common');
+    const pouchResponse = {
+      rows: [{doc: pouchTimerDocument}, {doc: {}}],
+    };
+    pouchDbMock.query.and.returnValue(qMock.resolve(pouchResponse));
+  }
 
-        const labelingDataModule = new LabelingData();
-        labelingDataModule.registerWithAngular(angular, featureFlags);
-        module('AnnoStation.LabelingData');
-      })
-      .then(() => {
-        pouchDbHelper = new PouchDbHelper();
-        return pouchDbHelper.initialize();
-      })
-      .then(() => {
-        /**
-         * @type {PouchDBContextService}
-         */
-        const pouchDbContextServiceMock = jasmine.createSpyObj('pouchDbContextService', ['provideContextForTaskId']);
-        pouchDbContextServiceMock.provideContextForTaskId
-          .and.returnValue(pouchDbHelper.database);
+  function setupEmptyPouchFetchQuery() {
+    const pouchResponse = {
+      rows: [],
+    };
+    pouchDbMock.query.and.returnValue(qMock.resolve(pouchResponse));
+  }
 
-        module($provide => {
-          $provide.value('pouchDbContextService', pouchDbContextServiceMock);
-        });
+  beforeEach(inject(($q, $rootScope) => {
+    qMock = $q;
+    rootScope = $rootScope;
+  }));
 
-        // Clean model fixtures
-        delete taskTimerCouchDbModel._rev;
-      })
-      .then(() => {
-        inject($injector => {
-          $rootScope = $injector.get('$rootScope');
-          gateway = $injector.instantiate(PouchDbTimerGateway);
-          revisionManager = $injector.get('revisionManager');
-          couchDbModelSerializer = $injector.get('couchDbModelSerializer');
-          couchDbModelDeserializer = $injector.get('couchDbModelDeserializer');
-        });
-      })
-      .then(() => done());
+  beforeEach(() => {
+    pouchDbMock = jasmine.createSpyObj('PouchDb', ['post', 'put', 'query']);
   });
 
-  it('should load stored timing from database', done => {
-    done();
-    // @TODO: Adapt for testcase
-    // const db = pouchDbHelper.database;
-    // const labeledThingId = labeledThingCouchDbModel._id;
-    // Promise.resolve()
-    // // Prepare document in database
-    //   .then(() => db.put(labeledThingCouchDbModel))
-    //   .then(() => {
-    //     return pouchDbHelper.waitForPouchDb(
-    //       $rootScope,
-    //       gateway.getLabeledThing(taskFrontendModel, labeledThingId)
-    //     );
-    //   })
-    //   .then(retrievedLabeledThingDocument => {
-    //     expect(retrievedLabeledThingDocument).toEqual(labeledThingFrontendModel);
-    //   })
-    //   .then(() => done());
+  beforeEach(() => {
+    pouchDbContextServiceMock = jasmine.createSpyObj('PouchDbContextService', ['provideContextForTaskId']);
+    pouchDbContextServiceMock.provideContextForTaskId.and.returnValue(pouchDbMock);
+    packagingExecutorMock = jasmine.createSpyObj('PackagingExecutor', ['execute']);
+    packagingExecutorMock.execute.and.callFake((queueIdentifier, callback) => {
+      return callback();
+    });
+    revisionManagerMock = jasmine.createSpyObj('RevisionManager', ['extractRevision', 'injectRevision']);
+    couchDbModelDeserializer = jasmine.createSpyObj('CouchDbModelDeserializer', ['deserializeTimer']);
+    const pouchDbViewServiceMock = jasmine.createSpyObj('PouchDbViewService', ['get']);
+
+    gateway = new PouchDbTimerGateway(
+      pouchDbContextServiceMock,
+      packagingExecutorMock,
+      couchDbModelDeserializer,
+      revisionManagerMock,
+      pouchDbViewServiceMock,
+      qMock
+    );
   });
 
-  it('should provide zero timing if database document is not available', done => {
-    done();
-    // @TODO: Adapt for testcase
-    // const db = pouchDbHelper.database;
-    // const labeledThingId = labeledThingCouchDbModel._id;
-    // Promise.resolve()
-    // // Prepare document in database
-    //   .then(() => db.put(labeledThingCouchDbModel))
-    //   .then(() => {
-    //     return pouchDbHelper.waitForPouchDb(
-    //       $rootScope,
-    //       gateway.getLabeledThing(taskFrontendModel, labeledThingId)
-    //     );
-    //   })
-    //   .then(retrievedLabeledThingDocument => {
-    //     expect(retrievedLabeledThingDocument).toEqual(labeledThingFrontendModel);
-    //   })
-    //   .then(() => done());
+  it('can be instantiated', () => {
+    expect(gateway).toEqual(jasmine.any(PouchDbTimerGateway));
   });
 
-  it('should update a timer in the database', done => {
-    done();
+  describe('createTimerDocument()', () => {
+    it('gets the pouch instance from the context service', () => {
+      const task = {id: 'Bluth'};
+
+      gateway.createTimerDocument({}, task, {});
+
+      expect(pouchDbContextServiceMock.provideContextForTaskId).toHaveBeenCalledWith(task.id);
+    });
+
+    it('creates the timer document with the given ids', (done) => {
+      const project = {id: 'George'};
+      const task = {id: 'Michael'};
+      const user = {id: 'Bluth'};
+      const expectedDocument = {
+        type: 'AppBundle.Model.TaskTimer',
+        taskId: task.id,
+        projectId: project.id,
+        userId: user.id,
+        timeInSeconds: {
+          labeling: 0,
+        },
+      };
+
+      packagingExecutorMock.execute.and.callFake((queueIdentifier, callback) => {
+        callback();
+        expect(queueIdentifier).toEqual('timer');
+        expect(pouchDbMock.post).toHaveBeenCalledWith(expectedDocument);
+        done();
+      });
+
+      gateway.createTimerDocument(project, task, user);
+    });
+
+    it('returns whatever the packacking executor returns', () => {
+      const packagingExecutorReturn = {};
+      packagingExecutorMock.execute.and.returnValue(packagingExecutorReturn);
+
+      const actual = gateway.createTimerDocument({}, {}, {});
+
+      expect(actual).toBe(packagingExecutorReturn);
+    });
   });
 
-  it('should create new timer if update of a non existent entry is requested', done => {
-    done();
+  describe('readOrCreateTimerIfMissingWithIdentification()', () => {
+    const project = {id: 'Game'};
+    const task = {id: 'of'};
+    const user = {id: 'Thrones'};
+    let timerDocument;
+
+    beforeEach(() => {
+      timerDocument = {
+        type: 'AppBundle.Model.TaskTimer',
+        taskId: task.id,
+        projectId: project.id,
+        userId: user.id,
+        timeInSeconds: {
+          labeling: 0,
+        },
+      };
+    });
+
+    it('Creates a new Timer Document and passes it to the revision manager if no timer document is available yet', done => {
+      setupEmptyPouchFetchQuery();
+
+      const document = gateway.readOrCreateTimerIfMissingWithIdentification(project, task, user);
+      document.then(timerDocument => {
+        expect(timerDocument).toEqual(timerDocument);
+        expect(revisionManagerMock.extractRevision).toHaveBeenCalledWith(timerDocument);
+        done();
+
+      });
+
+      rootScope.$apply();
+    });
+
+    it('returns the Pouch Document and passes it to the revision manager', done => {
+      setupSuccessfulPouchFetchQuery();
+      spyOn(gateway, 'createTimerDocument');
+
+      const document = gateway.readOrCreateTimerIfMissingWithIdentification(project, task, user);
+      document.then(timerDocument => {
+        expect(timerDocument).toEqual(timerDocument);
+        expect(revisionManagerMock.extractRevision).toHaveBeenCalledWith(timerDocument);
+        expect(gateway.createTimerDocument).not.toHaveBeenCalled();
+        done();
+
+      });
+
+      rootScope.$apply();
+    });
   });
 
-  afterEach(done => {
-    Promise.resolve()
-      .then(() => pouchDbHelper.destroy())
-      .then(() => done());
+  describe('getTime()', () => {
+    it('runs the Timer Document through the timer deserializer', () => {
+      const phase = {foo: 'bar'};
+      const task = jasmine.createSpyObj('task', ['getPhase']);
+      task.getPhase.and.returnValue(phase);
+      setupSuccessfulPouchFetchQuery();
+
+      gateway.getTime(task, {});
+      rootScope.$apply();
+
+      expect(couchDbModelDeserializer.deserializeTimer).toHaveBeenCalledWith(pouchTimerDocument, phase);
+    });
+  });
+
+  describe('updateTime()', () => {
+    const phase = 'some-phase';
+    const time = 9038434;
+
+    let task;
+    let expectedTimerDocument;
+
+    beforeEach(() => {
+      task = jasmine.createSpyObj('task', ['getPhase']);
+      task.getPhase.and.returnValue(phase);
+
+      expectedTimerDocument = angular.copy(pouchTimerDocument);
+      expectedTimerDocument.timeInSeconds[phase] = time;
+
+      setupSuccessfulPouchFetchQuery();
+    });
+
+
+    it('updates the Timer Document with the given time', () => {
+      gateway.updateTime(task, {}, time);
+      rootScope.$apply();
+
+      expect(pouchDbMock.put).toHaveBeenCalledWith(expectedTimerDocument);
+    });
+
+    it('injects the revision using the revision manager', () => {
+      gateway.updateTime(task, {}, time);
+      rootScope.$apply();
+
+      expect(revisionManagerMock.injectRevision).toHaveBeenCalledWith(expectedTimerDocument);
+    });
+
+    it('extracts the revision based on the response of the put request', () => {
+      const putResponse = 'blasfdsf';
+      pouchDbMock.put.and.returnValue(putResponse);
+
+      gateway.updateTime(task, {}, time);
+      rootScope.$apply();
+
+      expect(revisionManagerMock.extractRevision).toHaveBeenCalledWith(putResponse);
+    });
   });
 });
