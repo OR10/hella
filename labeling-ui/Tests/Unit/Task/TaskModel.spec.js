@@ -120,19 +120,18 @@ describe('Task model', () => {
 
   describe('getPhase()', () => {
     it('throws an Error if an invalid task phase is given', () => {
-      const task = new Task({status: {labeling: 'foobar'}});
+      const taskModel = new Task({status: {labeling: 'foobar'}});
 
       function throwWrapper() {
-        task.getPhase();
+        taskModel.getPhase();
       }
 
       expect(throwWrapper).toThrowError('Failed to determine the tasks phase');
-
     });
 
     it('returns all_phases_done by default', () => {
-      const task = new Task({});
-      const phase = task.getPhase();
+      const taskModel = new Task({});
+      const phase = taskModel.getPhase();
       expect(phase).toEqual('all_phases_done');
     });
 
@@ -141,8 +140,8 @@ describe('Task model', () => {
         labeling: 'todo',
         revision: 'in_progress',
       };
-      const task = new Task({status: status});
-      const phase = task.getPhase();
+      const taskModel = new Task({status: status});
+      const phase = taskModel.getPhase();
 
       expect(phase).toEqual('revision');
     });
@@ -152,8 +151,8 @@ describe('Task model', () => {
         revision: 'in_progress',
         labeling: 'todo',
       };
-      const task = new Task({status: status});
-      const phase = task.getPhase();
+      const taskModel = new Task({status: status});
+      const phase = taskModel.getPhase();
 
       expect(phase).toEqual('labeling');
     });
@@ -164,8 +163,8 @@ describe('Task model', () => {
         labeling: 'todo',
         something: 'done',
       };
-      const task = new Task({status: status});
-      const phase = task.getPhase();
+      const taskModel = new Task({status: status});
+      const phase = taskModel.getPhase();
 
       expect(phase).toEqual('labeling');
     });
@@ -176,8 +175,8 @@ describe('Task model', () => {
         labeling: 'done',
         something: 'done',
       };
-      const task = new Task({status: status});
-      const phase = task.getPhase();
+      const taskModel = new Task({status: status});
+      const phase = taskModel.getPhase();
 
       expect(phase).toEqual('all_phases_done');
     });
@@ -188,8 +187,8 @@ describe('Task model', () => {
         foobar: 'todo',
         something: 'done',
       };
-      const task = new Task({status: status});
-      const phase = task.getPhase();
+      const taskModel = new Task({status: status});
+      const phase = taskModel.getPhase();
 
       expect(phase).toEqual('foobar');
     });

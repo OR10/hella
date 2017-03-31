@@ -126,7 +126,7 @@ class PouchDbTimerGateway {
           if (response.rows.length > 0) {
             resolve(response.rows[0].doc);
           } else {
-            reject(new Error(`No Timer Document found for Task ID ${task.id}`))
+            reject(new Error(`No Timer Document found for Task ID ${task.id}`));
           }
         });
       });
@@ -152,8 +152,8 @@ class PouchDbTimerGateway {
 
         return this._packagingExecutor.execute(queueIdentifier, () => {
           return dbContext.put(timerDocument);
-        })
-      })
+        });
+      });
   }
 }
 
@@ -161,7 +161,7 @@ PouchDbTimerGateway.$inject = [
   'pouchDbContextService',
   'packagingExecutor',
   'pouchDbViewService',
-  '$q'
+  '$q',
 ];
 
 export default PouchDbTimerGateway;
