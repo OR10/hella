@@ -114,7 +114,7 @@ class PaperShapeFactory {
   _createPolyline(labeledThingInFrame, shape, color) {
     return new PaperPolyline(labeledThingInFrame, shape.id, shape.points, color);
   }
-  
+
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
@@ -135,7 +135,6 @@ class PaperShapeFactory {
   createPaperThingShape(labeledThingInFrame, shape, video = null) {
     const color = this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor);
     let result;
-    console.log(shape.type);
     switch (shape.type) {
       case 'rectangle':
         result = this._createRectangle(labeledThingInFrame, shape, color);
