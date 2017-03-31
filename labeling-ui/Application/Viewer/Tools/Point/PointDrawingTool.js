@@ -1,6 +1,7 @@
 import paper from 'paper';
 import CreationTool from '../CreationTool';
 import PointShape from '../../Shapes/PaperPoint';
+import Handle from '../../Shapes/Handles/Handle';
 import NotModifiedError from '../Errors/NotModifiedError';
 
 
@@ -81,22 +82,10 @@ class PointDrawingTool extends CreationTool {
         video.metaData.width / pedestrianDivider,
         (video.metaData.height / pedestrianDivider) - (height / pedestrianDivider)
     );
-
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     let pointShape = null;
     this._context.withScope(() => {
-      // draw shape
-      /*
-       pedestrian = new PaperPedestrian(
-       labeledThingInFrame,
-       this._entityIdService.getUniqueId(),
-       from,
-       to,
-       this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-       true
-       );
-      * */
       pointShape = new PointShape(
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
@@ -138,9 +127,9 @@ class PointDrawingTool extends CreationTool {
     const point = event.point;
 
     if (this._pointShape !== null) {
-      // this._pointShape.resize(this._creationHandle, point, this._getMinimalHeight());
+      this._pointShape.resize(this._creationHandle, point);
     } else {
-      this._startShape(this._startPosition, point);
+      this._startShape(point);
     }
   }
 
@@ -163,25 +152,33 @@ class PointDrawingTool extends CreationTool {
   /**
    * Start the initial drawing of a pedestrian
    *
-   * @param {Point} from
    * @param {Point} to
    * @private
    */
-  _startShape(from, to) {
+  _startShape(to) {
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     this._context.withScope(() => {
       // draw shape
       this._pointShape = new PointShape(
-        labeledThingInFrame,
-        this._entityIdService.getUniqueId(),
-        to,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-        true
+          labeledThingInFrame,
+          this._entityIdService.getUniqueId(),
+          to,
+          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+          true
       );
-      // this._creationHandle = this._getScaleAnchor(to);
-      // this._pedestrian.resize(this._creationHandle, to, this._getMinimalHeight());
+      this._creationHandle = this._getScaleAnchor(to);
+      this._pointShape.resize(this._creationHandle, to);
     });
+  }
+
+  /**
+   * @param {paper.Point} point
+   * @returns {Handle}
+   * @private
+   */
+  _getScaleAnchor(point) {
+    return new Handle('center', new paper.Point(this._startPosition.x, point.y));
   }
 }
 

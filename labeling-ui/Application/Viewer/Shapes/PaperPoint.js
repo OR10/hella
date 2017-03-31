@@ -158,14 +158,12 @@ class PaperPoint extends PaperThingShape {
    * @returns {{width: number, height: number}}
    */
   get bounds() {
-    const x = this._centerPoint.x - PaperPoint.CONTROL_SIZE / 2;
-    const width = PaperPoint.CONTROL_SIZE;
     return {
-      width,
-      height: width,
-      x,
+      width: PaperPoint.CONTROL_SIZE,
+      height: PaperPoint.CONTROL_SIZE,
+      x: this._centerPoint.x,
       y: this._centerPoint.y,
-      point: new paper.Point(x, this._centerPoint.y),
+      point: this._centerPoint,
     };
   }
 
@@ -194,6 +192,23 @@ class PaperPoint extends PaperThingShape {
       return 'move';
     }
     return 'move';
+  }
+
+  /**
+   * @param {Handle} handle
+   * @param {Point} point
+   * @param {number} minHeight
+   */
+  resize(handle, point) {
+    switch (handle.name) {
+      case 'center':
+        this._centerPoint = point;
+        break;
+      default:
+        this._centerPoint = point;
+    }
+
+    this._drawShape();
   }
 
   /**
