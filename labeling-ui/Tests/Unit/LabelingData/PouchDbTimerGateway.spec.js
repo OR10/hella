@@ -14,11 +14,6 @@ describe('PouchDbTimerGateway Test suite', () => {
   let packagingExecutorMock;
 
   /**
-   * @type {CouchDbModelDeserializer}
-   */
-  let couchDbModelDeserializer;
-
-  /**
    * @type {angular.$q}
    */
   let qMock;
@@ -44,16 +39,6 @@ describe('PouchDbTimerGateway Test suite', () => {
   let pouchDbMock;
 
   function setupSuccessfulPouchFetchQuery() {
-    pouchTimerDocument = {
-      type: 'AppBundle.Model.TaskTimer',
-      taskId: '',
-      projectId: '',
-      userId: '',
-      timeInSeconds: {
-        labeling: 0,
-      },
-    };
-
     const pouchResponse = {
       rows: [{doc: pouchTimerDocument}, {doc: {}}],
     };
@@ -66,6 +51,18 @@ describe('PouchDbTimerGateway Test suite', () => {
     };
     pouchDbMock.query.and.returnValue(qMock.resolve(pouchResponse));
   }
+
+  beforeEach(() => {
+    pouchTimerDocument = {
+      type: 'AppBundle.Model.TaskTimer',
+      taskId: '',
+      projectId: '',
+      userId: '',
+      timeInSeconds: {
+        labeling: 0,
+      },
+    };
+  });
 
   beforeEach(inject(($q, $rootScope) => {
     qMock = $q;
@@ -83,13 +80,11 @@ describe('PouchDbTimerGateway Test suite', () => {
     packagingExecutorMock.execute.and.callFake((queueIdentifier, callback) => {
       return callback();
     });
-    couchDbModelDeserializer = jasmine.createSpyObj('CouchDbModelDeserializer', ['deserializeTimer']);
     const pouchDbViewServiceMock = jasmine.createSpyObj('PouchDbViewService', ['get']);
 
     gateway = new PouchDbTimerGateway(
       pouchDbContextServiceMock,
       packagingExecutorMock,
-      couchDbModelDeserializer,
       pouchDbViewServiceMock,
       qMock
     );
@@ -108,7 +103,7 @@ describe('PouchDbTimerGateway Test suite', () => {
       expect(pouchDbContextServiceMock.provideContextForTaskId).toHaveBeenCalledWith(task.id);
     });
 
-    it('creates the timer document with the given ids', (done) => {
+    it('creates the timer document with the given ids', done => {
       const project = {id: 'George'};
       const task = {id: 'Michael'};
       const user = {id: 'Bluth'};
@@ -146,10 +141,9 @@ describe('PouchDbTimerGateway Test suite', () => {
     const project = {id: 'Game'};
     const task = {id: 'of'};
     const user = {id: 'Thrones'};
-    let timerDocument;
 
-    beforeEach(() => {
-      timerDocument = {
+    it('creates a new Timer Document if no timer document is available yet', done => {
+      const expectedTimerDocument = {
         type: 'AppBundle.Model.TaskTimer',
         taskId: task.id,
         projectId: project.id,
@@ -158,16 +152,14 @@ describe('PouchDbTimerGateway Test suite', () => {
           labeling: 0,
         },
       };
-    });
 
-    it('creates a new Timer Document if no timer document is available yet', done => {
       setupEmptyPouchFetchQuery();
+      pouchDbMock.post.and.returnValue(expectedTimerDocument);
 
       const document = gateway.readOrCreateTimerIfMissingWithIdentification(project, task, user);
       document.then(timerDocument => {
-        expect(timerDocument).toEqual(timerDocument);
+        expect(timerDocument).toEqual(expectedTimerDocument);
         done();
-
       });
 
       rootScope.$apply();
@@ -178,11 +170,10 @@ describe('PouchDbTimerGateway Test suite', () => {
       spyOn(gateway, 'createTimerDocument');
 
       const document = gateway.readOrCreateTimerIfMissingWithIdentification(project, task, user);
-      document.then(timerDocument => {
-        expect(timerDocument).toEqual(timerDocument);
+      document.then(returnedDocument => {
+        expect(returnedDocument).toEqual(pouchTimerDocument);
         expect(gateway.createTimerDocument).not.toHaveBeenCalled();
         done();
-
       });
 
       rootScope.$apply();
@@ -190,16 +181,22 @@ describe('PouchDbTimerGateway Test suite', () => {
   });
 
   describe('getTime()', () => {
-    it('runs the Timer Document through the timer deserializer', () => {
-      const phase = {foo: 'bar'};
+    it('returns a time object of the given phase', done => {
+      const phase = 'bernddasbrot';
+      const phaseTime = 55;
       const task = jasmine.createSpyObj('task', ['getPhase']);
+      const expectedTimerModel = {time: phaseTime};
+
       task.getPhase.and.returnValue(phase);
       setupSuccessfulPouchFetchQuery();
+      pouchTimerDocument.timeInSeconds.bernddasbrot = phaseTime;
 
-      gateway.getTime(task, {});
+      const timer = gateway.getTime(task, {});
+      timer.then(timeModel => {
+        expect(timeModel).toEqual(expectedTimerModel);
+        done();
+      });
       rootScope.$apply();
-
-      expect(couchDbModelDeserializer.deserializeTimer).toHaveBeenCalledWith(pouchTimerDocument, phase);
     });
   });
 
