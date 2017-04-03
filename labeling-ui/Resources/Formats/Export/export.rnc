@@ -139,7 +139,8 @@ grammar {
     CuboidShape |
     PolygonShape |
     PedestrianShape |
-    PolylineShape
+    PolylineShape |
+    PointShape
     # ...
   )
 
@@ -166,6 +167,8 @@ grammar {
   PolylineShape = element e:polyline {
     element e:point {XYCoordinateAttributes}+
   }
+
+  PointShape = element e:point {XYCoordinateAttributes}
 
   PedestrianShape = element e:pedestrian {
     element e:top-center {XYCoordinateAttributes},
