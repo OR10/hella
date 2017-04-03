@@ -123,7 +123,8 @@ class PaperShapeFactory {
    * @private
    */
   _createPoint(labeledThingInFrame, shape, color) {
-    return new PaperPoint(labeledThingInFrame, shape.id, shape.points, color);
+    const centerPoint = new paper.Point(shape.point.x, shape.point.y);
+    return new PaperPoint(labeledThingInFrame, shape.id, centerPoint, color);
   }
 
   /**
