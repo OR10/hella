@@ -53,6 +53,11 @@ class Video
     private $calibrationId;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $originalId;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -237,5 +242,21 @@ class Video
     public function setOrganisationId($organisationId)
     {
         $this->organisationId = $organisationId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOriginalId()
+    {
+        return $this->originalId;
+    }
+
+    /**
+     * @param mixed $originalId
+     */
+    public function setOriginalId($originalId)
+    {
+        $this->originalId = $originalId;
     }
 }

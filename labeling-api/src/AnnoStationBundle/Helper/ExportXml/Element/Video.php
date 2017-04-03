@@ -42,7 +42,11 @@ class Video extends ExportXml\Element
     {
         $video = $document->createElementNS($this->namespace, 'video');
 
-        $video->setAttribute('id', $this->video->getId());
+        if ($this->video->getOriginalId() === null) {
+            $video->setAttribute('id', $this->video->getId());
+        }else{
+            $video->setAttribute('id', $this->video->getOriginalId());
+        }
         $video->setAttribute('filename', $this->video->getName());
 
         foreach ($this->groups as $group) {

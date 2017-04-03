@@ -23,13 +23,13 @@
       <sha256>c2f50888d3e2db6d8ba1c97328979e1abe3e442e29a95123dd384a6a44ab49c4</sha256>
     </requirements>
   </metadata>
-  <video id="" filename="video-id-1">
+  <video id="e363906c1c4a5a5bd01e8902467d4b0e" filename="video-id-1">
     <group id="" start="1" end="2" incomplete="true"/>
-    <thing id="" start="1" end="100" line-color="1" type="fooobar" incomplete="true">
+    <thing id="e363906c1c4a5a5bd01e8902467d1426" start="1" end="100" line-color="1" type="fooobar" incomplete="true">
       <references>
         <task id=""/>
       </references>
-      <shape id="" start="2" end="5">
+      <shape id="3659ecca-7c2b-440b-8dfa-38426c7969b6" start="2" end="5">
         <cuboid>
           <top-left-front x="10" y="1" z="1"/>
           <top-right-front x="10" y="-1" z="1"/>
@@ -41,7 +41,7 @@
           <bottom-left-back x="11" y="1" z="0"/>
         </cuboid>
       </shape>
-      <shape id="" start="6" end="6">
+      <shape id="3659ecca-7c2b-440b-8dfa-38426c7969b6" start="6" end="6">
         <cuboid>
           <top-left-front x="11.0342" y="1.071" z="1"/>
           <top-right-front x="11.0342" y="-0.929" z="1"/>
@@ -57,12 +57,12 @@
       <value id="germany" start="2" end="3"/>
       <value id="spain" start="4" end="6"/>
     </thing>
-    <thing id="" start="1" end="1" line-color="1" type="fooobar" incomplete="true">
+    <thing id="e363906c1c4a5a5bd01e890246819813" start="1" end="1" line-color="1" type="fooobar" incomplete="true">
       <references>
         <task id=""/>
         <group ref=""/>
       </references>
-      <shape id="" start="1" end="1">
+      <shape id="3659ecca-7c2b-440b-8dfa-38426c7969b7" start="1" end="1">
         <rectangle>
           <top-left x="1" y="2"/>
           <bottom-right x="3" y="4"/>
@@ -71,12 +71,12 @@
       <value id="u-turn" start="1" end="1"/>
       <value id="spain" start="1" end="1"/>
     </thing>
-    <thing id="" start="1" end="2" line-color="1" type="fooobar" incomplete="true">
+    <thing id="e363906c1c4a5a5bd01e89024681a191" start="1" end="2" line-color="1" type="fooobar" incomplete="true">
       <references>
         <task id=""/>
         <group ref=""/>
       </references>
-      <shape id="" start="2" end="2">
+      <shape id="3659ecca-7c2b-440b-8dfa-38426c7969b7" start="2" end="2">
         <rectangle>
           <top-left x="1" y="2"/>
           <bottom-right x="3" y="4"/>

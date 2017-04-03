@@ -95,13 +95,15 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
      */
     private function getLabeledThing(\DOMElement $xpath)
     {
-        $start = $xpath->getAttribute('start');
-        $end   = $xpath->getAttribute('end');
+        $originalId = $xpath->getAttribute('id');
+        $start      = $xpath->getAttribute('start');
+        $end        = $xpath->getAttribute('end');
 
         if ($this->tasks[$start]->getId() === $this->tasks[$end]->getId()) {
             $task         = $this->tasks[$start];
             $frameMapping = array_flip($task->getFrameNumberMapping());
             $labeledThing = new Model\LabeledThing($task, $xpath->getAttribute('line-color'));
+            $labeledThing->setOriginalId($originalId);
             $labeledThing->setFrameRange(
                 new Model\FrameIndexRange(
                     $frameMapping[$start],
