@@ -38,6 +38,17 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     private $tasks;
 
     /**
+     * @var array
+     */
+    private $allowedShapes = [
+        './x:pedestrian',
+        './x:rectangle',
+        './x:polygon',
+        './x:polyline',
+        './x:cuboid',
+    ];
+
+    /**
      * ThingImporter constructor.
      *
      * @param Service\TaskIncomplete     $taskIncompleteService
@@ -152,7 +163,10 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                 foreach ($frameRange as $frame) {
                     $shapes              = $this->getShapes(
                         $xpath,
-                        $xpath->query('./x:pedestrian|./x:rectangle|./x:polygon|./x:cuboid', $shapeElement),
+                        $xpath->query(
+                            implode('|', $this->allowedShapes),
+                            $shapeElement
+                        ),
                         $shapeElement->getAttribute('id')
                     );
                     $labeledThingInFrame = new Model\LabeledThingInFrame(
@@ -221,6 +235,20 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                         ];
                     }
                     $shapes[] = new Model\Shapes\Polygon(
+                        $id,
+                        $points
+                    );
+                    break;
+                case 'polyline':
+                    $points = [];
+                    /** @var \DOMElement $point */
+                    foreach ($xpath->query('x:point', $shapeElement) as $point) {
+                        $points[] = [
+                            'x' => (float) $point->getAttribute('x'),
+                            'y' => (float) $point->getAttribute('y'),
+                        ];
+                    }
+                    $shapes[] = new Model\Shapes\Polyline(
                         $id,
                         $points
                     );
