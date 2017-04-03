@@ -42,7 +42,7 @@
           {
             "classes": [],
             "frameIndex": 0,
-            "identifierName": "sign",
+            "identifierName": "lsr-01",
             "ghost": false,
             "ghostClasses": null,
             "id": "LABELED-THING-IN-FRAME-ID-1",
@@ -52,21 +52,16 @@
             "shapes": [
               {
                 "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 200, "y": 100},
-                  {"x": 300, "y": 200},
-                  {"x": 200, "y": 300},
-                  {"x": 100, "y": 200}
-                ],
+                "point": {"x": 200, "y": 100},
                 "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
+                "type": "point"
               }
             ]
           },
           {
             "classes": [],
             "frameIndex": 0,
-            "identifierName": "sign",
+            "identifierName": "lsr-01",
             "ghost": false,
             "ghostClasses": null,
             "id": "LABELED-THING-IN-FRAME-ID-2",
@@ -76,15 +71,9 @@
             "shapes": [
               {
                 "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 600, "y": 100},
-                  {"x": 700, "y": 200},
-                  {"x": 800, "y": 500},
-                  {"x": 300, "y": 500},
-                  {"x": 350, "y": 350}
-                ],
+                "point": {"x": 600, "y": 100},
                 "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
+                "type": "point"
               }
             ]
           }

@@ -5,7 +5,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Point drawing', () => {
+fdescribe('Point drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -42,14 +42,14 @@ describe('Point drawing', () => {
     ]));
     
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(
-            () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'LoadAndDrawOnePoint'),
-            // () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.LoadAndDrawOnePoint);
-          done();
-        });
+      .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'LoadAndDrawOnePoint'),
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.LoadAndDrawOnePoint);
+        done();
+      });
   });
   
   it('should load and draw two point shapes', done => {
@@ -59,14 +59,125 @@ describe('Point drawing', () => {
     ]));
     
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(
-            () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'LoadAndDrawTwoPolylines')
-            // () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.LoadAndDrawTwoPolylines);
-          done();
-        });
+      .then(
+          //() => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'LoadAndDrawTwoPoints')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.LoadAndDrawTwoPoints);
+        done();
+      });
   });
+  
+  it('should select a point shape', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
+    ]));
+    
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 200, y: 150}) // initial position
+          .click()
+          .perform();
+      })
+      .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectOnePoint')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.SelectOnePoint);
+        done();
+      });
+  });
+  
+  it('should select and deselect a point shape', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
+    ]));
+    
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 200, y: 150}) // initial position
+          .click()
+          .perform();
+        browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1})
+          .click()
+          .perform();
+      })
+      .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectAndDeselectPoint')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.SelectAndDeselectPoint);
+        done();
+      });
+  });
+  it('should select one and then select an other point shape', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
+    ]));
+    
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 200, y: 150}) // initial position
+          .click()
+          .perform();
+        browser.actions()
+          .mouseMove(viewer, {x: 600, y: 150}) // initial position
+          .click()
+          .perform();
+      })
+      .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectAnotherPoint')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.SelectAnotherPoint);
+        done();
+      });
+  });
+  
+  fit('should correctly move a point shape and save the changed coordinates', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1,
+    ]));
+    
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 200, y: 150}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 250, y: 200}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 1, y: 1}) // click somewhere outside to deselect element
+          .click()
+          .perform();
+      })
+      .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'MoveOnePoint')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.MoveOnePoint);
+      })
+      .then(() => browser.sleep(500))
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainRequest(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1);
+        done();
+      });
+  });
+  
 });
 
