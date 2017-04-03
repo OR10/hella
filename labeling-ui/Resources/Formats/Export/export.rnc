@@ -187,7 +187,7 @@ grammar {
     attribute id {text},
     FrameRangeAttributes,
     attribute incomplete {text}?,
-    Value+
+    Value?
   }
 # </group>
 

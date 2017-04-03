@@ -299,9 +299,9 @@
             <optional>
                 <attribute name="incomplete"/>
             </optional>
-            <oneOrMore>
+            <optional>
                 <ref name="Value"/>
-            </oneOrMore>
+            </optional>
         </element>
     </define>
     <!-- </group> -->
