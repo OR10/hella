@@ -38,6 +38,17 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     private $tasks;
 
     /**
+     * @var array
+     */
+    private $allowedShapes = [
+        './x:pedestrian',
+        './x:rectangle',
+        './x:polygon',
+        './x:polyline',
+        './x:cuboid',
+    ];
+
+    /**
      * ThingImporter constructor.
      *
      * @param Service\TaskIncomplete     $taskIncompleteService
@@ -151,8 +162,8 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                     $shapes              = $this->getShapes(
                         $xpath,
                         $xpath->query(
-                            './x:pedestrian|./x:rectangle|./x:polygon|./x:polyline|./x:cuboid',
-                                $shapeElement
+                            implode('|', $this->allowedShapes),
+                            $shapeElement
                         ),
                         $shapeElement->getAttribute('id')
                     );
