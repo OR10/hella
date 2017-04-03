@@ -1,0 +1,57 @@
+{
+  "request": {
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0",
+    "method": "GET",
+    "queryString": {
+      "limit": "1",
+      "offset": "0"
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "labeledThings": {
+          "LABELED-THING-ID-1": {
+            "id": "LABELED-THING-ID-1",
+            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
+            "frameRange": {
+              "startFrameNumber": 1,
+              "endFrameNumber": 2
+            },
+            "classes": [
+              "pedestrian"
+            ],
+            "taskId": "TASKID-TASKID",
+            "incomplete": true,
+            "lineColor": "6"
+          }
+        },
+        "labeledThingsInFrame": [
+          {
+            "id": "LABELED-THING-IN-FRAME-ID-1",
+            "rev": "2-b65227715b51dadd97f8521646e88a22",
+            "FrameIndex": 0,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-1",
+                "points": [
+                  {"x": 200, "y": 100},
+                  {"x": 300, "y": 200},
+                  {"x": 200, "y": 300},
+                  {"x": 100, "y": 200}
+                ],
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "type": "polyline"
+              }
+            ],
+            "labeledThingId": "LABELED-THING-ID-1",
+            "incomplete": true,
+            "ghost": false
+          }
+        ]
+      }
+    }
+  }
+}

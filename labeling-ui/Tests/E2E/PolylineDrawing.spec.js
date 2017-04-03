@@ -9,7 +9,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Polyline drawing', () => {
+fdescribe('Polyline drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
