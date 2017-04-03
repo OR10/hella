@@ -138,7 +138,8 @@ grammar {
     RectangleShape |
     CuboidShape |
     PolygonShape |
-    PedestrianShape
+    PedestrianShape |
+    PolylineShape
     # ...
   )
 
@@ -159,6 +160,10 @@ grammar {
   }
 
   PolygonShape = element e:polygon {
+    element e:point {XYCoordinateAttributes}+
+  }
+
+  PolylineShape = element e:polyline {
     element e:point {XYCoordinateAttributes}+
   }
 
@@ -187,7 +192,7 @@ grammar {
     attribute id {text},
     FrameRangeAttributes,
     attribute incomplete {text}?,
-    Value+
+    Value?
   }
 # </group>
 

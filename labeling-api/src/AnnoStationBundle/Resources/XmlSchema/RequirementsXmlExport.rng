@@ -206,6 +206,7 @@
             <ref name="CuboidShape"/>
             <ref name="PolygonShape"/>
             <ref name="PedestrianShape"/>
+            <ref name="PolylineShape"/>
         </choice>
         <!-- ... -->
     </define>
@@ -256,6 +257,15 @@
             </oneOrMore>
         </element>
     </define>
+    <define name="PolylineShape">
+        <element name="e:polyline">
+            <oneOrMore>
+                <element name="e:point">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </oneOrMore>
+        </element>
+    </define>
     <define name="PedestrianShape">
         <element name="e:pedestrian">
             <element name="e:top-center">
@@ -297,9 +307,9 @@
             <optional>
                 <attribute name="incomplete"/>
             </optional>
-            <oneOrMore>
+            <optional>
                 <ref name="Value"/>
-            </oneOrMore>
+            </optional>
         </element>
     </define>
     <!-- </group> -->

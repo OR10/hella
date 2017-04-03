@@ -49,6 +49,9 @@ class Shape extends ExportXml\Element
             case $this->shape instanceof Model\Shapes\Cuboid3d:
                 $shapeElement = new Shape\Cuboid3d($this->shape, $this->namespace);
                 break;
+            case $this->shape instanceof Model\Shapes\Polyline:
+                $shapeElement = new Shape\Polyline($this->shape, $this->namespace);
+                break;
             case $this->shape instanceof Model\Shapes\Polygon:
                 $shapeElement = new Shape\Polygon($this->shape, $this->namespace);
                 break;

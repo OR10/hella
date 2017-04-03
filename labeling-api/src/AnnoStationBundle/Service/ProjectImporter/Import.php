@@ -250,6 +250,7 @@ class Import
             $videoSourcePath,
             false
         );
+        $video->setOriginalId($xpath->getAttribute('id'));
 
         $fileInfo            = pathinfo($videoSourcePath);
         $calibrationFilePath = sprintf('%s/%s.csv', $directory, $fileInfo['filename']);
