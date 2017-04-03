@@ -94,7 +94,7 @@ class GroupCreationTool extends CreationTool {
       const shapes = this._labeledThingGroupService.getShapesWithinBounds(this._context, paperShape.bounds);
 
       // If the selection contains no shape, remove the shape again and complete the flow with a null shape
-      if (shapes.length == 0) {
+      if (shapes.length === 0) {
         // Do not abort, since the creation itself succeeded, but there simply were no shapes. We need that flow
         // so that the tool can be reactivated. Otherwise the tool would never be aborted, if you would put the
         // reactivation into a catch block
