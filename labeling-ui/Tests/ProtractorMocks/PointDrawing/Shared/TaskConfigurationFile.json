@@ -1,0 +1,9 @@
+{
+  "request": {
+    "path": "/api/organisation/ORGANISATION-ID-1/taskConfiguration/TASKCONFIGURATIONID-TASKCONFIGURATIONID/file",
+    "method": "GET"
+  },
+  "response": {
+    "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><requirements xmlns=\"http://weblabel.hella-aglaia.com/schema/requirements\"><thing id=\"lsr-01\" shape=\"point\" name=\"light source\"><class id=\"lsr-point\" name=\"Point\"><value id=\"point-yes1\" name=\"yes\" /></class></thing></requirements>"
+  }
+}
