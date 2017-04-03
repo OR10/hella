@@ -57,7 +57,11 @@ class Thing extends ExportXml\Element
     {
         $thing = $document->createElementNS($this->namespace, 'thing');
 
-        $thing->setAttribute('id', $this->labeledThing->getId());
+        if ($this->labeledThing->getOriginalId() === null) {
+            $thing->setAttribute('id', $this->labeledThing->getId());
+        }else{
+            $thing->setAttribute('id', $this->labeledThing->getOriginalId());
+        }
 
         $thing->setAttribute(
             'start',
