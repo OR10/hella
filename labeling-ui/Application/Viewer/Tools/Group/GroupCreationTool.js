@@ -72,6 +72,17 @@ class GroupCreationTool extends CreationTool {
   }
 
   /**
+   * Complete the creation workflow with an empty group shape
+   * @private
+   */
+  _completeEmpty() {
+    this._rectangleCreationTool.remove();
+    this._context.withScope(() => {
+      this._complete(null);
+    });
+  }
+
+  /**
    * @param {CreationToolActionStruct} toolActionStruct
    * @return {Promise}
    */
@@ -81,6 +92,16 @@ class GroupCreationTool extends CreationTool {
     this._rectangleCreationTool.invokeShapeCreation(toolActionStruct).then(paperShape => {
       paperShape.remove();
       const shapes = this._labeledThingGroupService.getShapesWithinBounds(this._context, paperShape.bounds);
+
+      // If the selection contains no shape, remove the shape again and complete the flow with a null shape
+      if (shapes.length == 0) {
+        // Do not abort, since the creation itself succeeded, but there simply were no shapes. We need that flow
+        // so that the tool can be reactivated. Otherwise the tool would never be aborted, if you would put the
+        // reactivation into a catch block
+        this._completeEmpty();
+        return;
+      }
+
       const shapesBound = this._labeledThingGroupService.getBoundsForShapes(shapes);
       const {width, height} = shapesBound;
       const {point: topLeft} = shapesBound;

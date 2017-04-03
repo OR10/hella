@@ -155,12 +155,22 @@ class RectangleDrawingTool extends CreationTool {
   }
 
   /**
+   * Remove the shape and update the view
+   */
+  remove() {
+    if (this._rect !== null) {
+      this._rect.remove();
+      this._context.withScope(scope => {
+        scope.view.update();
+      });
+    }
+  }
+
+  /**
    * Abort the tool invocation.
    */
   abort() {
-    if (this._rect !== null) {
-      this._rect.remove();
-    }
+    this.remove();
 
     return super.abort();
   }
