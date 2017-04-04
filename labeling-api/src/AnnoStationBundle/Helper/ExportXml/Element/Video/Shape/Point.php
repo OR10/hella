@@ -24,8 +24,11 @@ class Point extends ExportXml\Element
     public function getElement(\DOMDocument $document)
     {
         $point = $document->createElementNS($this->namespace, 'point');
-        $point->setAttribute('x', $this->point->getPoint()['x']);
-        $point->setAttribute('y', $this->point->getPoint()['y']);
+
+        $center = $document->createElementNS($this->namespace, 'center');
+        $center->setAttribute('x', $this->point->getPoint()['x']);
+        $center->setAttribute('y', $this->point->getPoint()['y']);
+        $point->appendChild($center);
 
         return $point;
     }

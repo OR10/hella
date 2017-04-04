@@ -114,7 +114,9 @@
         <task id=""/>
       </references>
       <shape id="3659ecca-7c2b-440b-8dfa-38426c79abcf" start="2" end="2">
-        <point x="624" y="321"/>
+        <point>
+          <center x="624" y="321"/>
+        </point>
       </shape>
       <value id="lightsource-yes" start="2" end="2"/>
     </thing>
