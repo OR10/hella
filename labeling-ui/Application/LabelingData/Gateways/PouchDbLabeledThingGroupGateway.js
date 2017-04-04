@@ -124,10 +124,7 @@ class PouchDbLabeledThingGroupGateway {
           });
 
           const labeledThingGroupsInFrame = labeledThingGroupIds.map(labeledThingGroupId => {
-            console.log(labeledThingGroups);
             const assignedLabeledThingGroup = labeledThingGroups.find(labeledThingGroup => labeledThingGroup.id === labeledThingGroupId);
-            console.log(labeledThingGroupId);
-            console.log(assignedLabeledThingGroup);
 
             const dbDocument = {
               id: this._entityIdService.getUniqueId(),
