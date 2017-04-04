@@ -28,6 +28,8 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $xmlTaskConfiguration = file_get_contents(__DIR__ . '/TaskConfiguration/Requirements.xml');
         $project              = $this->createProject('project-id-1', $this->createOrganisation(), $clientUser, $date);
         $video                = $this->createVideo($this->createOrganisation(), 'video-id-1');
+        $video->setOriginalId('e363906c1c4a5a5bd01e8902467d4b0e');
+        $this->videoFacade->save($video);
         $task                 = $this->createTask(
             $project,
             $video,
@@ -76,17 +78,9 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $exportId->item(0)->setAttribute('id', '');
         $requirementsId = $xpath->query('/x:export/x:metadata/x:requirements[@id]');
         $requirementsId->item(0)->setAttribute('id', '');
-        $videoIds = $xpath->query('/x:export/x:video[@id]');
-        foreach ($videoIds as $videoId) {
-            $videoId->setAttribute('id', '');
-        }
         $groupIds = $xpath->query('/x:export/x:video/x:group[@id]');
         foreach ($groupIds as $groupId) {
             $groupId->setAttribute('id', '');
-        }
-        $thingIds = $xpath->query('/x:export/x:video/x:thing[@id]');
-        foreach ($thingIds as $thingId) {
-            $thingId->setAttribute('id', '');
         }
         $taskIds = $xpath->query('/x:export/x:video/x:thing/x:references/x:task[@id]');
         foreach ($taskIds as $taskId) {
@@ -96,10 +90,6 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         foreach ($groupIds as $groupId) {
             $groupId->setAttribute('ref', '');
         }
-        $shapeIds = $xpath->query('/x:export/x:video/x:thing/x:shape[@id]');
-        foreach ($shapeIds as $shapeId) {
-            $shapeId->setAttribute('id', '');
-        }
 
         return $document->saveXML();
 
@@ -108,6 +98,9 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
     private function createCuboids(AppBundleModel\LabelingTask $task)
     {
         $labeledThing = $this->createLabeledThing($task);
+        $labeledThing->setOriginalId('e363906c1c4a5a5bd01e8902467d1426');
+        $this->labeledThingFacade->save($labeledThing);
+
         $cuboid1      = new Shapes\Cuboid3d(
             '3659ecca-7c2b-440b-8dfa-38426c7969b6',
             [10, 1, 1],
@@ -173,16 +166,56 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $this->labeledThingGroupFacade->save($labeledThingGroup);
 
         $labeledThingWithGroup1 = $this->createLabeledThing($task);
+        $labeledThingWithGroup1->setOriginalId('e363906c1c4a5a5bd01e890246819813');
         $labeledThingWithGroup1->setFrameRange(new AppBundleModel\FrameIndexRange(0, 0));
         $labeledThingWithGroup1->setGroupIds([$labeledThingGroup->getId()]);
+        $this->labeledThingFacade->save($labeledThingWithGroup1);
         $rectangle1 = new Shapes\Rectangle('3659ecca-7c2b-440b-8dfa-38426c7969b7', 1, 2, 3, 4);
         $this->createLabeledThingInFrame($labeledThingWithGroup1, 0, [$rectangle1->toArray()], ['u-turn', 'spain']);
 
         $labeledThingWithGroup2 = $this->createLabeledThing($task);
+        $labeledThingWithGroup2->setOriginalId('e363906c1c4a5a5bd01e89024681a191');
         $labeledThingWithGroup2->setFrameRange(new AppBundleModel\FrameIndexRange(0, 1));
         $labeledThingWithGroup2->setGroupIds([$labeledThingGroup->getId()]);
+        $this->labeledThingFacade->save($labeledThingWithGroup2);
         $rectangle2 = new Shapes\Rectangle('3659ecca-7c2b-440b-8dfa-38426c7969b7', 1, 2, 3, 4);
         $this->createLabeledThingInFrame($labeledThingWithGroup2, 1, [$rectangle2->toArray()], ['u-turn', 'spain']);
+
+        $polygonLabeledThing = $this->createLabeledThing($task);
+        $polygonLabeledThing->setOriginalId('e363906c1c4a5a5bd01e89024681abcd');
+        $polygonLabeledThing->setFrameRange(new AppBundleModel\FrameIndexRange(1, 1));
+        $this->labeledThingFacade->save($polygonLabeledThing);
+        $polygon = new Shapes\Polygon(
+            '3659ecca-7c2b-440b-8dfa-38426c79abcd',
+            [
+                ['x' => 100, 'y' => 100],
+                ['x' => 200, 'y' => 200]
+            ]
+        );
+        $this->createLabeledThingInFrame($polygonLabeledThing, 1, [$polygon->toArray()], ['lane-yes']);
+
+        $polylineLabeledThing = $this->createLabeledThing($task);
+        $polylineLabeledThing->setOriginalId('e363906c1c4a5a5bd01e89024681abce');
+        $polylineLabeledThing->setFrameRange(new AppBundleModel\FrameIndexRange(1, 1));
+        $this->labeledThingFacade->save($polylineLabeledThing);
+        $polyline = new Shapes\Polyline(
+            '3659ecca-7c2b-440b-8dfa-38426c79abce',
+            [
+                ['x' => 135, 'y' => 235],
+                ['x' => 631, 'y' => 835]
+            ]
+        );
+        $this->createLabeledThingInFrame($polylineLabeledThing, 1, [$polyline->toArray()], ['lane-open-no']);
+
+        $pointLabeledThing = $this->createLabeledThing($task);
+        $pointLabeledThing->setOriginalId('e363906c1c4a5a5bd01e89024681abcf');
+        $pointLabeledThing->setFrameRange(new AppBundleModel\FrameIndexRange(1, 1));
+        $this->labeledThingFacade->save($pointLabeledThing);
+        $point = new Shapes\Point(
+            '3659ecca-7c2b-440b-8dfa-38426c79abcf',
+            ['x' => 624, 'y' => 321]
+        );
+        $this->createLabeledThingInFrame($pointLabeledThing, 1, [$point->toArray()], ['lightsource-yes']);
     }
 
     private function getContentFromZip($data, $filename)
