@@ -20,6 +20,7 @@ import PathMoveTool from '../Tools/PathMoveTool';
 import PathKeyboardTool from '../Tools/PathKeyboardTool';
 import PointDrawingTool from '../Tools/Point/PointDrawingTool';
 import PointMoveTool from '../Tools/Point/PointMoveTool';
+import PointKeyboardTool from '../Tools/Point/PointKeyboardTool';
 
 class ToolService {
   /**
@@ -86,6 +87,7 @@ class ToolService {
       GroupCreationTool,
       PointDrawingTool,
       PointMoveTool,
+      PointKeyboardTool,
       NoOperationPaperTool,
     ];
   }
