@@ -23,6 +23,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
   let $q;
   let labeledThingGroupResponse;
   let queryResponse;
+  let couchDbModelDeserializer;
 
   beforeEach(() => {
     const featureFlags = {
@@ -94,8 +95,8 @@ describe('PouchDbLabeledThingGroupGateway', () => {
 
     module($provide => {
       const pouchDbContextServiceMock = jasmine.createSpyObj('storageContextService', ['provideContextForTaskId']);
-      pouchDbContextServiceMock.provideContextForTaskId
-        .and.returnValue(pouchDbContext);
+      pouchDbContextServiceMock.provideContextForTaskId.and.returnValue(pouchDbContext);
+
       $provide.value('pouchDbContextService', pouchDbContextServiceMock);
       $provide.value('labeledThingGateway', thingGateway);
       // $provide.value('applicationConfig', mockConfig);
@@ -104,6 +105,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
     inject($injector => {
       $q = $injector.get('$q');
       $rootScope = $injector.get('$rootScope');
+      couchDbModelDeserializer = $injector.get('couchDbModelDeserializer');
       groupGateway = $injector.instantiate(PouchDbLabeledThingGroupGateway);
     });
   });
@@ -151,6 +153,8 @@ describe('PouchDbLabeledThingGroupGateway', () => {
   });
 
   it('should create a labeled thing group', () => {
+    spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroup').and.callThrough();
+
     const task = {id: 'TASK-ID'};
 
     const labeledThingGroup = new LabeledThingGroup({
@@ -173,10 +177,9 @@ describe('PouchDbLabeledThingGroupGateway', () => {
 
     $rootScope.$apply();
 
-    expect(pouchDbContext.put)
-      .toHaveBeenCalledWith(serializedGroup);
-    expect(pouchDbContext.get)
-      .toHaveBeenCalledWith('PUT-LABELED-THING-GROUP-ID');
+    expect(pouchDbContext.put).toHaveBeenCalledWith(serializedGroup);
+    expect(pouchDbContext.get).toHaveBeenCalledWith('PUT-LABELED-THING-GROUP-ID');
+    expect(couchDbModelDeserializer.deserializeLabeledThingGroup).toHaveBeenCalledWith(labeledThingGroupResponse, task);
   });
 
   it('should assign labeled things to a labeled thing group', () => {
