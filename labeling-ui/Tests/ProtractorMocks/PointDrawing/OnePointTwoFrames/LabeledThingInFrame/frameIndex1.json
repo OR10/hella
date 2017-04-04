@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0",
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/1",
     "method": "GET",
     "queryString": {
       "limit": "1",
@@ -30,20 +30,15 @@
           {
             "id": "LABELED-THING-IN-FRAME-ID-1",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "FrameIndex": 0,
+            "frameIndex": 1,
             "classes": [],
             "ghostClasses": null,
             "shapes": [
               {
                 "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 200, "y": 100},
-                  {"x": 300, "y": 200},
-                  {"x": 200, "y": 300},
-                  {"x": 100, "y": 200}
-                ],
+                "point": {"x": 250, "y": 100},
                 "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
+                "type": "point"
               }
             ],
             "labeledThingId": "LABELED-THING-ID-1",
