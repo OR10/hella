@@ -168,7 +168,9 @@ grammar {
     element e:point {XYCoordinateAttributes}+
   }
 
-  PointShape = element e:point {XYCoordinateAttributes}
+  PointShape = element e:point {
+    element e:center {XYCoordinateAttributes}
+  }
 
   PedestrianShape = element e:pedestrian {
     element e:top-center {XYCoordinateAttributes},

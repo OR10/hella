@@ -258,8 +258,8 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                     $shapes[] = new Model\Shapes\Point(
                         $id,
                         [
-                            'x' => (float) $shapeElement->getAttribute('x'),
-                            'y' => (float) $shapeElement->getAttribute('y'),
+                            'x' => (float) $xpath->query('x:center', $shapeElement)->item(0)->getAttribute('x'),
+                            'y' => (float) $xpath->query('x:center', $shapeElement)->item(0)->getAttribute('y'),
                         ]
                     );
                     break;
