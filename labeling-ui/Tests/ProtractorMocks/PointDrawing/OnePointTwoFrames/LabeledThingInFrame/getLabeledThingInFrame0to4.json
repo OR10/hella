@@ -44,14 +44,9 @@
           "shapes": [
             {
                 "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 250, "y": 100},
-                  {"x": 350, "y": 200},
-                  {"x": 250, "y": 300},
-                  {"x": 150, "y": 200}
-                ],
+                "point": {"x": 250, "y": 100},
                 "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
+                "type": "point"
               }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
@@ -67,14 +62,9 @@
           "shapes": [
             {
                 "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 250, "y": 100},
-                  {"x": 350, "y": 200},
-                  {"x": 250, "y": 300},
-                  {"x": 150, "y": 200}
-                ],
+                "point": {"x": 250, "y": 100},
                 "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
+                "type": "point"
               }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
@@ -90,14 +80,9 @@
           "shapes": [
             {
                 "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 250, "y": 100},
-                  {"x": 350, "y": 200},
-                  {"x": 250, "y": 300},
-                  {"x": 150, "y": 200}
-                ],
+                "point": {"x": 250, "y": 100},
                 "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
+                "type": "point"
               }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
@@ -113,14 +98,9 @@
           "shapes": [
             {
                 "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 250, "y": 100},
-                  {"x": 350, "y": 200},
-                  {"x": 250, "y": 300},
-                  {"x": 150, "y": 200}
-                ],
+                "point": {"x": 250, "y": 100},
                 "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
+                "type": "point"
               }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
