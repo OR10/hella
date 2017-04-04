@@ -1,24 +1,26 @@
 if (process.argv[2] === '-h' || process.argv[2] === '--help' || process.argv.length <= 4) {
-  console.log('Usage: ReplicationManager.js [hostname] [port] [sourceDbRegex] [targetDb]');
+  console.log('Usage: ReplicationManager.js [adminUrl] [replicationUrl] [sourceDbRegex] [targetDb]');
   console.log('Example:');
   console.log(
-    'node ReplicationManager.js "http://foo:bar@192.168.222.20:5984" "(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)" "labeling_api_read_only"');
+    'node ReplicationManager.js "http://admin:bar@192.168.222.20:5984" "http://foo:bar@192.168.222.20:5984" "(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)" "labeling_api_read_only"');
   process.exit(1);
 }
 
-var url = process.argv[2];
-var sourceDbRegex = process.argv[3];
-var targetDb = process.argv[4];
+var adminUrl = process.argv[2];
+var ReplicationUrl = process.argv[3];
+var sourceDbRegex = process.argv[4];
+var targetDb = process.argv[5];
 
-var nano = require('nano')(url);
-var db = nano.use('_db_updates');
+var nanoAdmin = require('nano')(adminUrl);
+var nanoReplication = require('nano')(ReplicationUrl);
+var db = nanoAdmin.use('_db_updates');
 var feed = db.follow({since: "now"});
 
 feed.on('change', function(change) {
   var updated_db = change.db_name;
 
   if (updated_db.match(sourceDbRegex) !== null) {
-    nano.db.replicate(updated_db, targetDb, {continuous: false}, function(err, body) {
+    nanoReplication.db.replicate(updated_db, targetDb, {continuous: false}, function(err, body) {
       if (!err) {
         console.log('Added non-continuous replication from "' + change.db_name + '" to "' + targetDb + '"');
       }else{
@@ -38,10 +40,10 @@ AddOneTimeReplicationForAllDatabases();
  */
 function AddOneTimeReplicationForAllDatabases() {
   console.log('Creating a one-time replication for all matching databases now.');
-  nano.db.list(function(err, body) {
+  nanoAdmin.db.list(function(err, body) {
     body.forEach(function(db) {
       if (db.match(sourceDbRegex) !== null) {
-        nano.db.replicate(db, targetDb, {continuous: false}, function(err, body) {
+        nanoReplication.db.replicate(db, targetDb, {continuous: false}, function(err, body) {
           if (!err) {
             console.log('Added startup non-continuous replication from ' + db + '" to "' + targetDb + '"');
           }else{
