@@ -314,7 +314,14 @@ class MultiTool extends PaperTool {
 
     promise.then(paperShape => {
       this._paperToolDelegationInvoked = false;
-      this._complete({actionIdentifier, paperShape});
+      // If the Paper Shape is null, then no Shape was created, but there was no error
+      // Example: Group Shape without shapes inside
+      // For more info see {@link GroupCreationTool.invokeShapeCreation()}
+      if (paperShape === null) {
+        this._invokePaperToolDelegation(tool, actionIdentifier, shape, handle);
+      } else {
+        this._complete({actionIdentifier, paperShape});
+      }
     }).catch(reason => {
       this._paperToolDelegationInvoked = false;
       this._reject(reason);

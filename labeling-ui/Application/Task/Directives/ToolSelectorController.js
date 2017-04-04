@@ -12,9 +12,39 @@ class ToolSelectorController {
     this.selectedLabelStructureThing = thing;
     this.selectedDrawingTool = thing.shape;
 
-    if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame.identifierName !== this.selectedLabelStructureThing.id) {
+    if (this.selectedPaperShape && this._hasSelectedPaperShapeIdentifierName(this.selectedLabelStructureThing.id)) {
       this.selectedPaperShape = null;
     }
+  }
+
+  /**
+   * Get the selected Paper Shape Thing, which could either be a LabeledThingInFrame or
+   * a LabeledThingInFrameGroup
+   *
+   * @returns {LabeledThingInFrame|LabeledThingInFrameGroup}
+   * @private
+   */
+  _getSelectedPaperShapeThing() {
+    let thingInFrame;
+
+    if (this.selectedPaperShape.labeledThingGroupInFrame !== undefined) {
+      thingInFrame = this.selectedPaperShape.labeledThingGroupInFrame;
+    } else {
+      thingInFrame = this.selectedPaperShape.labeledThingInFrame;
+    }
+    return thingInFrame;
+  }
+
+  /**
+   * Check if the selected Paper shape has the same ID as the newly selected one
+   *
+   * @param {String} identifierName
+   * @returns {boolean}
+   * @private
+   */
+  _hasSelectedPaperShapeIdentifierName(identifierName) {
+    const thingInFrame = this._getSelectedPaperShapeThing();
+    return thingInFrame.identifierName === identifierName;
   }
 }
 
