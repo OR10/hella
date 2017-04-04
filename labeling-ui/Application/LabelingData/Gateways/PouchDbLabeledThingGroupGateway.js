@@ -194,7 +194,7 @@ class PouchDbLabeledThingGroupGateway {
       })
       .then(readDocument => {
         this._revisionManager.extractRevision(readDocument);
-        return this._couchDbModelDeserializer.deserializeLabeledThingGroup(readDocument, labeledThingGroup);
+        return this._couchDbModelDeserializer.deserializeLabeledThingGroup(readDocument, task);
       });
   }
 
