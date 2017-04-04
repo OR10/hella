@@ -180,6 +180,42 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $this->labeledThingFacade->save($labeledThingWithGroup2);
         $rectangle2 = new Shapes\Rectangle('3659ecca-7c2b-440b-8dfa-38426c7969b7', 1, 2, 3, 4);
         $this->createLabeledThingInFrame($labeledThingWithGroup2, 1, [$rectangle2->toArray()], ['u-turn', 'spain']);
+
+        $polygonLabeledThing = $this->createLabeledThing($task);
+        $polygonLabeledThing->setOriginalId('e363906c1c4a5a5bd01e89024681abcd');
+        $polygonLabeledThing->setFrameRange(new AppBundleModel\FrameIndexRange(1, 1));
+        $this->labeledThingFacade->save($polygonLabeledThing);
+        $polygon = new Shapes\Polygon(
+            '3659ecca-7c2b-440b-8dfa-38426c79abcd',
+            [
+                ['x' => 100, 'y' => 100],
+                ['x' => 200, 'y' => 200]
+            ]
+        );
+        $this->createLabeledThingInFrame($polygonLabeledThing, 1, [$polygon->toArray()], ['lane-yes']);
+
+        $polylineLabeledThing = $this->createLabeledThing($task);
+        $polylineLabeledThing->setOriginalId('e363906c1c4a5a5bd01e89024681abce');
+        $polylineLabeledThing->setFrameRange(new AppBundleModel\FrameIndexRange(1, 1));
+        $this->labeledThingFacade->save($polylineLabeledThing);
+        $polyline = new Shapes\Polyline(
+            '3659ecca-7c2b-440b-8dfa-38426c79abce',
+            [
+                ['x' => 135, 'y' => 235],
+                ['x' => 631, 'y' => 835]
+            ]
+        );
+        $this->createLabeledThingInFrame($polylineLabeledThing, 1, [$polyline->toArray()], ['lane-open-no']);
+
+        $pointLabeledThing = $this->createLabeledThing($task);
+        $pointLabeledThing->setOriginalId('e363906c1c4a5a5bd01e89024681abcf');
+        $pointLabeledThing->setFrameRange(new AppBundleModel\FrameIndexRange(1, 1));
+        $this->labeledThingFacade->save($pointLabeledThing);
+        $point = new Shapes\Point(
+            '3659ecca-7c2b-440b-8dfa-38426c79abcf',
+            ['x' => 624, 'y' => 321]
+        );
+        $this->createLabeledThingInFrame($pointLabeledThing, 1, [$point->toArray()], ['lightsource-yes']);
     }
 
     private function getContentFromZip($data, $filename)

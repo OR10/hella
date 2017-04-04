@@ -21,6 +21,18 @@
             <value id="lane-no" name="no" />
         </class>
     </thing>
+    <thing id="lane-open" shape="polyline" name="Open Lane">
+        <class id="is-lane-open" name="Lane">
+            <value id="lane-open-yes" name="yes"/>
+            <value id="lane-open-no" name="no" />
+        </class>
+    </thing>
+    <thing id="light" shape="point" name="Point">
+        <class id="is-lightsource" name="Is Lightsource">
+            <value id="lightsource-yes" name="yes"/>
+            <value id="lightsource-no" name="no" />
+        </class>
+    </thing>
     <thing id="time-range-sign" shape="rectangle" name="Time Range Sign">
         <class id="irgendwas1" name="irgendwas1">
             <value id="abc" name="abc">

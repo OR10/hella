@@ -12,6 +12,7 @@ import GhostingService from './Services/GhostingService';
 
 import PouchDbLabeledThingGateway from './Gateways/PouchDbLabeledThingGateway';
 import PouchDbLabeledThingInFrameGateway from './Gateways/PouchDbLabeledThingInFrameGateway';
+import PouchDbLabeledThingGroupGateway from './Gateways/PouchDbLabeledThingGroupGateway';
 
 /**
  * Module containing all functionality related to Labels and its Data
@@ -42,6 +43,7 @@ class LabelingData extends Module {
     if (featureFlags.pouchdb === true) {
       this.module.service('labeledThingInFrameGateway', PouchDbLabeledThingInFrameGateway);
       this.module.service('labeledThingGateway', PouchDbLabeledThingGateway);
+      this.module.service('labeledThingGroupGateway', PouchDbLabeledThingGroupGateway);
     }
   }
 }

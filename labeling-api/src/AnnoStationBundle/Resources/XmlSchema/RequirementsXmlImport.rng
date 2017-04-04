@@ -209,6 +209,7 @@
             <ref name="PolygonShape"/>
             <ref name="PedestrianShape"/>
             <ref name="PolylineShape"/>
+            <ref name="PointShape"/>
         </choice>
         <!-- ... -->
     </define>
@@ -266,6 +267,13 @@
                     <ref name="XYCoordinateAttributes"/>
                 </element>
             </oneOrMore>
+        </element>
+    </define>
+    <define name="PointShape">
+        <element name="e:point">
+            <element name="e:center">
+                <ref name="XYCoordinateAttributes"/>
+            </element>
         </element>
     </define>
     <define name="PedestrianShape">

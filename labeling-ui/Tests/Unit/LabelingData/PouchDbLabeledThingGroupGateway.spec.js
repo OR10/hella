@@ -36,7 +36,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
         {
           'id': '60950e57-5e93-4f7f-9196-6821eaaa74d3',
           'key': ['e2c029002f1375ec4c10f55d4b2618c3', 0],
-          'value': 'e2c029002f1375ec4c10f55d4b2d43a7',
+          'value': 'e2c029002f1375ec4c10f55d4b2e71c9',
         },
         {
           'id': '32dd14b4-12c4-4888-b60b-53afcc49de5f',
@@ -97,7 +97,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       pouchDbContextServiceMock.provideContextForTaskId
         .and.returnValue(pouchDbContext);
       $provide.value('pouchDbContextService', pouchDbContextServiceMock);
-      $provide.value('pouchDbLabeledThingGateway', thingGateway);
+      $provide.value('labeledThingGateway', thingGateway);
       // $provide.value('applicationConfig', mockConfig);
     });
 
