@@ -10,7 +10,7 @@ class PouchDbLabeledThingGroupGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    * @param {AbortablePromiseFactory} abortablePromiseFactory
-   * @param {PouchDbLabeledThingGateway} pouchDbLabeledThingGateway
+   * @param {PouchDbLabeledThingGateway} labeledThingGateway
    * @param {EntityIdService} entityIdService
    * @param {PouchDbViewService} pouchDbViewService
    */
@@ -21,7 +21,7 @@ class PouchDbLabeledThingGroupGateway {
               couchDbModelDeserializer,
               revisionManager,
               abortablePromiseFactory,
-              pouchDbLabeledThingGateway,
+              labeledThingGateway,
               entityIdService,
               pouchDbViewService) {
     /**
@@ -76,7 +76,7 @@ class PouchDbLabeledThingGroupGateway {
      * @type {PouchDbLabeledThingGateway}
      * @private
      */
-    this._pouchDbLabeledThingGateway = pouchDbLabeledThingGateway;
+    this._labeledThingGateway = labeledThingGateway;
 
     /**
      * @type {EntityIdService}
@@ -124,9 +124,12 @@ class PouchDbLabeledThingGroupGateway {
           });
 
           const labeledThingGroupsInFrame = labeledThingGroupIds.map(labeledThingGroupId => {
+            const assignedLabeledThingGroup = labeledThingGroups.find(labeledThingGroup => labeledThingGroup.id === labeledThingGroupId);
+
             const dbDocument = {
               id: this._entityIdService.getUniqueId(),
               classes: [],
+              labeledThingGroup: assignedLabeledThingGroup,
               frameIndex,
               labeledThingGroupId,
             };
@@ -215,7 +218,7 @@ class PouchDbLabeledThingGroupGateway {
         const promises = [];
 
         modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._pouchDbLabeledThingGateway.saveLabeledThing(labeledThing));
+          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
         });
 
         return this._abortablePromiseFactory(this._$q.all(promises));
@@ -243,7 +246,7 @@ class PouchDbLabeledThingGroupGateway {
         const promises = [];
 
         modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._pouchDbLabeledThingGateway.saveLabeledThing(labeledThing));
+          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
         });
 
         return this._abortablePromiseFactory(this._$q.all(promises));
@@ -273,7 +276,7 @@ PouchDbLabeledThingGroupGateway.$inject = [
   'couchDbModelDeserializer',
   'revisionManager',
   'abortablePromiseFactory',
-  'pouchDbLabeledThingGateway',
+  'labeledThingGateway',
   'entityIdService',
   'pouchDbViewService',
 ];

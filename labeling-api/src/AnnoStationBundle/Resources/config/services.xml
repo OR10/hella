@@ -183,6 +183,9 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
 
         <service id="annostation.labeling_api.service.class_columns_factory"
@@ -260,6 +263,9 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
             <argument type="service" id="annostation.labeling_api.database.facade.report"/>
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation"/>
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument>%pouchdb_feature_enabled%</argument>
+            <argument>%database_name_read_only%</argument>
         </service>
 
         <service id="annostation.labeling_api.service.label_importer.simple_xml_2d"

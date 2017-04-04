@@ -18,6 +18,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use AnnoStationBundle\Response;
 use crosscan\WorkerPool\AMQP;
 use AnnoStationBundle\Worker\Jobs;
+use AnnoStationBundle\Service\Authentication;
 
 /**
  * @Rest\Prefix("/api/organisation")
@@ -78,15 +79,21 @@ class Project extends Controller\Base
     private $campaignFacade;
 
     /**
-     * @param Facade\Project             $projectFacade
-     * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Facade\LabelingTask        $labelingTaskFacade
-     * @param Facade\Organisation        $organisationFacade
-     * @param Facade\Campaign            $campaignFacade
-     * @param Storage\TokenStorage       $tokenStorage
-     * @param AppFacade\User             $userFacade
-     * @param Service\Authorization      $authorizationService
-     * @param AMQP\FacadeAMQP            $amqpFacade
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
+
+    /**
+     * @param Facade\Project                 $projectFacade
+     * @param Facade\LabeledThingInFrame     $labeledThingInFrameFacade
+     * @param Facade\LabelingTask            $labelingTaskFacade
+     * @param Facade\Organisation            $organisationFacade
+     * @param Facade\Campaign                $campaignFacade
+     * @param Storage\TokenStorage           $tokenStorage
+     * @param AppFacade\User                 $userFacade
+     * @param Service\Authorization          $authorizationService
+     * @param AMQP\FacadeAMQP                $amqpFacade
+     * @param Authentication\UserPermissions $userPermissions
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -97,7 +104,8 @@ class Project extends Controller\Base
         Storage\TokenStorage $tokenStorage,
         AppFacade\User $userFacade,
         Service\Authorization $authorizationService,
-        AMQP\FacadeAMQP $amqpFacade
+        AMQP\FacadeAMQP $amqpFacade,
+        Authentication\UserPermissions $userPermissions
     ) {
         $this->projectFacade             = $projectFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
@@ -108,6 +116,7 @@ class Project extends Controller\Base
         $this->amqpFacade                = $amqpFacade;
         $this->organisationFacade        = $organisationFacade;
         $this->campaignFacade            = $campaignFacade;
+        $this->userPermissions           = $userPermissions;
     }
 
     /**
@@ -267,7 +276,7 @@ class Project extends Controller\Base
                 }
             }
 
-            if ($user->hasRole(Model\User::ROLE_ADMIN)) {
+            if ($this->userPermissions->hasPermission('canViewDeletedProjects')) {
                 $responseProject['deletedState'] = $project->getDeletedState();
             }
 
@@ -535,7 +544,7 @@ class Project extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT])) {
+        if (!$this->userPermissions->hasPermission('canDeleteProject')) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to deleted this project.');
         }
 
