@@ -161,6 +161,10 @@ class PouchDbLabeledThingInFrameGateway {
           }
         });
 
+        if (allLabeledThingsInFrameOfLabeledThing.length <= 0) {
+          return [];
+        }
+
         let res = this._ghostingService.calculateShapeGhostsForLabeledThingInFrames(frameIndex, offset, limit, labeledThing.frameRange, allLabeledThingsInFrameOfLabeledThing);
         res = this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(res);
 
