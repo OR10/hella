@@ -937,7 +937,7 @@ class ViewerController {
         this._backgroundLayer.render();
 
         this._extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
-        this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame.labeledThingGroupsInFrame);
+        this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame);
 
         this.framePosition.lock.release();
       }

@@ -71,10 +71,7 @@ class LabeledThingGroupGateway {
             return new LabeledThingGroupInFrame(ltgifDocument);
           });
 
-          return {
-            labeledThingGroups,
-            labeledThingGroupsInFrame,
-          };
+          return labeledThingGroupsInFrame;
         }
 
         throw new Error('Received malformed response when requesting labeled thing groups in frame.');
