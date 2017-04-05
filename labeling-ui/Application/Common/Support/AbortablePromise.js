@@ -19,10 +19,6 @@ class AbortablePromise {
     this.abort = () => {
       hasBeenAborted = true;
 
-      if (parentAbortablePromise !== null) {
-        parentAbortablePromise.abort();
-      }
-
       if (hasBeenHandled) {
         return;
       }
