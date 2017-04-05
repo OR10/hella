@@ -10,10 +10,9 @@ class PaperPolyline extends PaperPath {
    * @param {string} shapeId
    * @param {Array.<Point>} points
    * @param {{primary: string, secondary: string}} color
-   * @param {boolean} draft
    */
-  constructor(labeledThingInFrame, shapeId, points = [], color, draft = false) {
-    super(labeledThingInFrame, shapeId, points, color, draft);
+  constructor(labeledThingInFrame, shapeId, points = [], color) {
+    super(labeledThingInFrame, shapeId, points, color);
     this._drawShape();
   }
 

@@ -7,10 +7,9 @@ class PaperThingShape extends PaperShape {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {String} shapeId
    * @param {{primary: string, secondary: string}} color
-   * @param {boolean?} draft
    */
-  constructor(labeledThingInFrame, shapeId, color, draft = false) {
-    super(shapeId, color, draft);
+  constructor(labeledThingInFrame, shapeId, color) {
+    super(shapeId, color);
 
     /**
      * {@link LabeledThingInFrame} associated with this `PaperThingShape`
