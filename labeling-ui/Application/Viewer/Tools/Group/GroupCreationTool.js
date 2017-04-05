@@ -99,8 +99,7 @@ class GroupCreationTool extends CreationTool {
           paperShape.id,
           topLeft,
           bottomRight,
-          color,
-          paperShape.isDraft
+          color
         );
 
         // Resize to add necessary padding
