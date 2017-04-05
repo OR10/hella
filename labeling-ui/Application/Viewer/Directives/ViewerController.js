@@ -894,6 +894,7 @@ class ViewerController {
         }
         abortRelease = true;
         this.framePosition.lock.release();
+        this._frameChangeInProgress = false;
       });
 
     const labeledThingInFrameBufferPromise = this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameIndex))
@@ -903,6 +904,7 @@ class ViewerController {
         }
         abortRelease = true;
         this.framePosition.lock.release();
+        this._frameChangeInProgress = false;
       });
 
     const labeledThingGroupInFramePromise = this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(this.task, frameIndex)
@@ -912,6 +914,7 @@ class ViewerController {
         }
         abortRelease = true;
         this.framePosition.lock.release();
+        this._frameChangeInProgress = false;
       });
 
 
