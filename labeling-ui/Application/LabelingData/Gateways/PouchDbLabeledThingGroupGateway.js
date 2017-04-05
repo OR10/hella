@@ -137,10 +137,7 @@ class PouchDbLabeledThingGroupGateway {
             return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(dbDocument);
           });
 
-          return {
-            labeledThingGroupsInFrame,
-            labeledThingGroups,
-          };
+          return labeledThingGroupsInFrame;
         });
     });
   }

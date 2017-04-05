@@ -14,10 +14,9 @@ class PaperRectangle extends PaperThingShape {
    * @param {Point} topLeft
    * @param {Point} bottomRight
    * @param {{primary: string, secondary: string}} color
-   * @param {boolean} draft
    */
-  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, draft = false) {
-    super(labeledThingInFrame, shapeId, color, draft);
+  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color) {
+    super(labeledThingInFrame, shapeId, color);
     /**
      * @type {Point}
      * @private

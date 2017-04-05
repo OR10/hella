@@ -177,8 +177,7 @@ class CuboidDrawingTool extends CreationTool {
         this._projection2d,
         this._projection3d,
         points,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-        true
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
       );
     });
 
@@ -317,8 +316,7 @@ class CuboidDrawingTool extends CreationTool {
           this._projection2d,
           this._projection3d,
           points,
-          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-          true
+          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
         );
       });
 

@@ -15,7 +15,6 @@ import PaperGroupShape from '../Shapes/PaperGroupShape';
  * @property {Array.<PaperThingShape>} paperThingShapes
  * @property {PaperShape|null} selectedPaperShape
  * @property {string} activeTool
- * @property {string} selectedDrawingTool
  * @property {Task} task
  * @property {Video} video
  * @property {FramePosition} framePosition
@@ -365,13 +364,6 @@ class ViewerController {
     this._frameLocations = this._loadFrameLocations();
 
     /**
-     * Due to an action selected DrawingTool, which should be activated when appropriate.
-     *
-     * @type {string}
-     */
-    this.selectedDrawingTool = null;
-
-    /**
      * A structure holding all {@link PaperThingShape}s for the currently active frame
      *
      * @type {Array.<PaperThingShape>|null}
@@ -545,6 +537,12 @@ class ViewerController {
         this._stopPlaying();
       }
     );
+
+    $rootScope.$on('shape:add:after', (event, newShape) => {
+      if (newShape && newShape instanceof PaperThingShape) {
+        this._updateLabeledThingsInFrame();
+      }
+    });
 
     $scope.$watch('vm.selectedPaperShape', newShape => {
       if (newShape && !newShape.isDraft && newShape instanceof PaperThingShape) {
@@ -942,7 +940,7 @@ class ViewerController {
         this._backgroundLayer.render();
 
         this._extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
-        this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame.labeledThingGroupsInFrame);
+        this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame);
 
         this.framePosition.lock.release();
       }
@@ -1223,7 +1221,6 @@ class ViewerController {
         );
       })
       .then(() => {
-        this._$scope.vm.selectedPaperShape = paperShape;
         this._$rootScope.$emit('shape:add:after', paperShape);
       });
 
@@ -1274,7 +1271,6 @@ class ViewerController {
         );
       })
       .then(() => {
-        this._$scope.vm.selectedPaperShape = paperGroupShape;
         this._$rootScope.$emit('shape:add:after', paperGroupShape);
       });
 
