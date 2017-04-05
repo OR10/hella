@@ -1220,7 +1220,6 @@ class ViewerController {
         );
       })
       .then(() => {
-        this._$scope.vm.selectedPaperShape = paperShape;
         this._$rootScope.$emit('shape:add:after', paperShape);
       });
 
@@ -1271,7 +1270,6 @@ class ViewerController {
         );
       })
       .then(() => {
-        this._$scope.vm.selectedPaperShape = paperGroupShape;
         this._$rootScope.$emit('shape:add:after', paperGroupShape);
       });
 
