@@ -13,10 +13,9 @@ class PaperPedestrian extends PaperThingShape {
    * @param {Point} topCenter
    * @param {Point} bottomCenter
    * @param {{primary: string, secondary: string}} color
-   * @param {boolean} draft
    */
-  constructor(labeledThingInFrame, shapeId, topCenter, bottomCenter, color, draft = false) {
-    super(labeledThingInFrame, shapeId, color, draft);
+  constructor(labeledThingInFrame, shapeId, topCenter, bottomCenter, color) {
+    super(labeledThingInFrame, shapeId, color);
 
     /**
      * @type {boolean}

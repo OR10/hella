@@ -11,10 +11,9 @@ class PaperPath extends PaperThingShape {
    * @param {string} shapeId
    * @param {Array.<Point>} points
    * @param {{primary: string, secondary: string}} color
-   * @param {boolean} draft
    */
-  constructor(labeledThingInFrame, shapeId, points = [], color, draft = false) {
-    super(labeledThingInFrame, shapeId, color, draft);
+  constructor(labeledThingInFrame, shapeId, points = [], color) {
+    super(labeledThingInFrame, shapeId, color);
     /**
      * @type {Array.<Point>}
      * @private

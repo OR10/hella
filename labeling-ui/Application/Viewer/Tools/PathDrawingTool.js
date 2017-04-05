@@ -95,27 +95,30 @@ class PathDrawingTool extends CreationTool {
     ];
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
-    let path = null;
     this._context.withScope(() => {
-      if (this._pathIdentifier === PaperPolygon.getClass()) {
-        path = new PaperPolygon(
-            labeledThingInFrame,
-            this._entityIdService.getUniqueId(),
-            points,
-            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-            true
-        );
-      } else {
-        path = new PaperPolyline(
-            labeledThingInFrame,
-            this._entityIdService.getUniqueId(),
-            points,
-            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-            true
-        );
+      switch (this._pathIdentifier) {
+        case PaperPolygon.getClass():
+          return this._complete(
+            new PaperPolygon(
+              labeledThingInFrame,
+              this._entityIdService.getUniqueId(),
+              points,
+              this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+            )
+          );
+        case PaperPolyline.getClass():
+          return this._complete(
+            new PaperPolyline(
+              labeledThingInFrame,
+              this._entityIdService.getUniqueId(),
+              points,
+              this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+            )
+          );
+        default:
+          throw new Error(`Unknown path identifier "${this._pathIdentifier}"`);
       }
     });
-    return this._complete(path);
   }
 
   /**
@@ -198,22 +201,25 @@ class PathDrawingTool extends CreationTool {
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     this._context.withScope(() => {
-      if (this._pathIdentifier === PaperPolygon.getClass()) {
-        this._path = new PaperPolygon(
+      switch (this._pathIdentifier) {
+        case PaperPolygon.getClass():
+          this._path = new PaperPolygon(
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
             [from, to],
-            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-            true
-        );
-      } else {
-        this._path = new PaperPolyline(
+            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+          );
+          break;
+        case PaperPolyline.getClass():
+          this._path = new PaperPolyline(
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
             [from, to],
-            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-            true
-        );
+            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+          );
+          break;
+        default:
+          throw new Error(`Unknown path identifier "${this._pathIdentifier}"`);
       }
     });
   }
@@ -252,7 +258,7 @@ PathDrawingTool.getToolName = () => {
  * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
  * `rectangle` and `scale`, ...)
  *
- * @return {bool}
+ * @return {boolean}
  * @public
  * @abstract
  * @static
@@ -272,7 +278,7 @@ PathDrawingTool.isShapeClassSupported = shapeClass => {
  * - `scale`
  * - `move`
  *
- * @return {bool}
+ * @return {boolean}
  * @public
  * @abstract
  * @static

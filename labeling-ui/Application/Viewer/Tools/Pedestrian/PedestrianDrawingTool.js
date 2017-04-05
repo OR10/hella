@@ -92,8 +92,7 @@ class PedestrianDrawingTool extends CreationTool {
         this._entityIdService.getUniqueId(),
         from,
         to,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-        true
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
       );
     });
 
@@ -179,8 +178,7 @@ class PedestrianDrawingTool extends CreationTool {
         this._entityIdService.getUniqueId(),
         topCenter,
         bottomCenter,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-        true
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
       );
       this._creationHandle = this._getScaleAnchor(to);
       this._pedestrian.resize(this._creationHandle, to, this._getMinimalHeight());

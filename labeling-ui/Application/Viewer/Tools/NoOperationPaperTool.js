@@ -95,7 +95,7 @@ NoOperationPaperTool.getToolName = () => {
  * There maybe multiple Tools with the same name, but different action identifiers. (`rectangle` and ´move`,
  * `rectangle` and `scale`, ...)
  *
- * @return {bool}
+ * @return {boolean}
  * @public
  * @abstract
  * @static
@@ -112,7 +112,7 @@ NoOperationPaperTool.isShapeClassSupported = () => {
  * - `scale`
  * - `move`
  *
- * @return {bool}
+ * @return {boolean}
  * @public
  * @abstract
  * @static
