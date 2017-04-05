@@ -28,6 +28,8 @@ class PaperPoint extends PaperThingShape {
      * @private
      */
     this._centerPoint = centerPoint;
+
+    this._drawShape();
   }
 
   /**
@@ -187,10 +189,7 @@ class PaperPoint extends PaperThingShape {
    * @param {Handle|null} handle
    * @returns {string}
    */
-  getToolActionIdentifier(handle) {
-    if (handle === null) {
-      return 'move';
-    }
+  getToolActionIdentifier() {
     return 'move';
   }
 
@@ -199,15 +198,15 @@ class PaperPoint extends PaperThingShape {
    * @param {Point} point
    * @param {number} minHeight
    */
-  resize(handle, point) {
-    switch (handle.name) {
-      case 'center':
-        this._centerPoint = point;
-        break;
-      default:
-        this._centerPoint = point;
-    }
+  resize() {
+    this._drawShape();
+  }
 
+  /**
+   * @param {Point} point
+   */
+  moveTo(point) {
+    this._centerPoint = point;
     this._drawShape();
   }
 
@@ -247,6 +246,6 @@ PaperPoint.getClass = () => {
   return 'point';
 };
 
-PaperPoint.CONTROL_SIZE = 30;
+PaperPoint.CONTROL_SIZE = 10;
 PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE = 2;
 export default PaperPoint;

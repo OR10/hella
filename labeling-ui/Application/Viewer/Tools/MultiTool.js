@@ -215,7 +215,7 @@ class MultiTool extends PaperTool {
 
       // Hit nothing
       if (!hitResult) {
-        // Deselction if there was a selection
+        // Deselection if there was a selection
         if (this._toolActionStruct.selectedPaperShape !== null) {
           this._complete({actionIdentifier: 'selection', paperShape: null});
           return;
