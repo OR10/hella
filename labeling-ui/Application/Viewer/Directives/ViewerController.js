@@ -15,7 +15,6 @@ import PaperGroupShape from '../Shapes/PaperGroupShape';
  * @property {Array.<PaperThingShape>} paperThingShapes
  * @property {PaperShape|null} selectedPaperShape
  * @property {string} activeTool
- * @property {string} selectedDrawingTool
  * @property {Task} task
  * @property {Video} video
  * @property {FramePosition} framePosition
@@ -363,13 +362,6 @@ class ViewerController {
      * @private
      */
     this._frameLocations = this._loadFrameLocations();
-
-    /**
-     * Due to an action selected DrawingTool, which should be activated when appropriate.
-     *
-     * @type {string}
-     */
-    this.selectedDrawingTool = null;
 
     /**
      * A structure holding all {@link PaperThingShape}s for the currently active frame

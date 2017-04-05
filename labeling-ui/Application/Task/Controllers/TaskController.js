@@ -228,13 +228,6 @@ class TaskController {
     this._labelStructurePromise = null;
 
     /**
-     * Due to an action selected DrawingTool, which should be activated when appropriate.
-     *
-     * @type {string}
-     */
-    this.selectedDrawingTool = null;
-
-    /**
      * @type {{id, shape, name}|null}
      */
     this.selectedLabelStructureThing = null;
@@ -300,7 +293,6 @@ class TaskController {
                 }
 
                 this.selectedLabelStructureThing = labelStructureThing;
-                this.selectedDrawingTool = labelStructureThing.shape;
                 // The selectedObject needs to be set in the same cycle as the new LabelStructureThing. Otherwise there might be race conditions in
                 // updating its structure against the wrong LabelStructureThing.
                 this.selectedLabeledObject = this._getSelectedLabeledObject();
@@ -419,7 +411,6 @@ class TaskController {
    * Dependant values are:
    *
    * - `selectedLabelStructureThing`
-   * - `selectedDrawingTool`
    * - `selectedLabeledObject`
    * - `drawableThings`
    *
@@ -435,7 +426,6 @@ class TaskController {
     this.labelStructure = null;
     this.selectedLabeledStructureThing = null;
     this.selectedLabeledObject = null;
-    this.selectedDrawingTool = null;
     this.drawableThings = [];
 
     const labelStructurePromise = this._labelStructureService.getLabelStructure(this.task)
@@ -446,7 +436,6 @@ class TaskController {
 
         this.labelStructure = labelStructure;
         this.selectedLabelStructureThing = labelStructureThing;
-        this.selectedDrawingTool = labelStructureThing.shape;
         this.selectedLabeledObject = this._getSelectedLabeledObject();
         this.drawableThings = labelStructureThingArray;
         this.drawableGroups = labelStructureGroupArray;
