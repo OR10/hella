@@ -61,12 +61,20 @@ class LabeledThingGroupGateway {
     return this._bufferedHttp.get(url, undefined, 'LabeledThingGroup')
       .then(response => {
         if (response.data && response.data.result) {
-          return response.data.result.labeledThingGroupsInFrame.map(ltgifDocument => {
-            const labeledThingGroupDocument = response.data.result.labeledThingGroups.find(ltg => ltg.id === ltgifDocument.labeledThingGroupId);
+          const {labeledThingGroups} = response.data.result;
+          let {labeledThingGroupsInFrame} = response.data.result;
+
+          labeledThingGroupsInFrame = labeledThingGroupsInFrame.map(ltgifDocument => {
+            const labeledThingGroupDocument = labeledThingGroups.find(ltg => ltg.id === ltgifDocument.labeledThingGroupId);
             ltgifDocument.labeledThingGroup = new LabeledThingGroup(Object.assign({}, labeledThingGroupDocument, {task}));
 
             return new LabeledThingGroupInFrame(ltgifDocument);
           });
+
+          return {
+            labeledThingGroups,
+            labeledThingGroupsInFrame,
+          };
         }
 
         throw new Error('Received malformed response when requesting labeled thing groups in frame.');
