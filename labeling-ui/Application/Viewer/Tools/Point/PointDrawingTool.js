@@ -127,7 +127,7 @@ class PointDrawingTool extends CreationTool {
     const point = event.point;
 
     if (this._pointShape !== null) {
-      this._pointShape.resize(this._creationHandle, point);
+      this._pointShape.moveTo(point);
     } else {
       this._startShape(point);
     }
@@ -143,8 +143,9 @@ class PointDrawingTool extends CreationTool {
       this._reject(new NotModifiedError('No FixedAspectRatioRectangle was created/dragged.'));
       return;
     }
+    // this._pointShape.resize(this._creationHandle, this._startPosition);
     // Fix bottom-right and top-left orientation
-    this._pointShape.fixOrientation();
+    // this._pointShape.fixOrientation();
 
     this._complete(this._pointShape);
   }
@@ -168,7 +169,7 @@ class PointDrawingTool extends CreationTool {
           true
       );
       this._creationHandle = this._getScaleAnchor(to);
-      this._pointShape.resize(this._creationHandle, to);
+      this._pointShape.moveTo(to);
     });
   }
 
@@ -178,7 +179,7 @@ class PointDrawingTool extends CreationTool {
    * @private
    */
   _getScaleAnchor(point) {
-    return new Handle('center', new paper.Point(this._startPosition.x, point.y));
+    return new Handle('center', point);
   }
 }
 

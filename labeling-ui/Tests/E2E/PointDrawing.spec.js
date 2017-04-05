@@ -35,14 +35,14 @@ fdescribe('Point drawing', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  fit('should load and draw one point shape', done => {
+  it('should load and draw one point shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.DrawOnePoint.LabeledThingInFrame.frameIndex0,
       assets.mocks.PointDrawing.DrawOnePoint.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.pause())
+      // .then(() => browser.pause())
       .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'LoadAndDrawOnePoint'),
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -52,7 +52,7 @@ fdescribe('Point drawing', () => {
         done();
       });
   });
-
+  
   it('should load and draw two point shapes', done => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
@@ -69,8 +69,8 @@ fdescribe('Point drawing', () => {
         done();
       });
   });
-
-  it('should select a point shape', done => {
+  
+  fit('should select a point shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
@@ -79,13 +79,13 @@ fdescribe('Point drawing', () => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
-          .mouseMove(viewer, {x: 200, y: 150}) // initial position
+          .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectOnePoint')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectOnePoint')
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.SelectOnePoint);
@@ -247,6 +247,6 @@ fdescribe('Point drawing', () => {
   });
 
   it('should draw multiple new point shapes', done => {
-
-  })
+    done();
+  });
 });
