@@ -38,7 +38,7 @@ class PointDrawingTool extends CreationTool {
     this._entityColorService = entityColorService;
 
     /**
-     * @type {PaperPolygon}
+     * @type {PaperPoint}
      * @private
      */
     this._pointShape = null;
@@ -77,11 +77,7 @@ class PointDrawingTool extends CreationTool {
     const {video} = toolActionStruct;
 
     const height = 100;
-    const pedestrianDivider = 2;
-    const center = new paper.Point(
-        video.metaData.width / pedestrianDivider,
-        (video.metaData.height / pedestrianDivider) - (height / pedestrianDivider)
-    );
+    const center = new paper.Point(video.metaData.width, (video.metaData.height) - (height));
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     let pointShape = null;
@@ -142,9 +138,6 @@ class PointDrawingTool extends CreationTool {
       this._reject(new NotModifiedError('No FixedAspectRatioRectangle was created/dragged.'));
       return;
     }
-    // this._pointShape.resize(this._creationHandle, this._startPosition);
-    // Fix bottom-right and top-left orientation
-    // this._pointShape.fixOrientation();
 
     this._complete(this._pointShape);
   }
