@@ -61,6 +61,7 @@
           {
             "classes": [],
             "frameIndex": 0,
+            "identifierName": "lsr-01",
             "ghost": false,
             "ghostClasses": null,
             "id": "LABELED-THING-IN-FRAME-ID-2",

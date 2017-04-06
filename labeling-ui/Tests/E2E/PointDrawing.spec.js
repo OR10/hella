@@ -1,11 +1,11 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, dumpAllRequestsMade} from '../Support/Protractor/Helpers';
+import {getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Point drawing', () => {
+describe('Point drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -27,8 +27,8 @@ fdescribe('Point drawing', () => {
       assets.mocks.Shared.FrameLocations.SourceJpg.frameIndex0to4,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
-      // assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to3,
-      // assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to4,
+      assets.mocks.Shared.Thumbnails.pointLabeledThingsInFrame0to3,
+      assets.mocks.Shared.Thumbnails.pointLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
@@ -42,7 +42,6 @@ fdescribe('Point drawing', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      // .then(() => browser.pause())
       .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'LoadAndDrawOnePoint'),
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -52,7 +51,7 @@ fdescribe('Point drawing', () => {
         done();
       });
   });
-  
+
   it('should load and draw two point shapes', done => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
@@ -69,8 +68,8 @@ fdescribe('Point drawing', () => {
         done();
       });
   });
-  
-  fit('should select a point shape', done => {
+
+  it('should select a point shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
@@ -84,9 +83,10 @@ fdescribe('Point drawing', () => {
           .perform();
       })
       .then(
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectOnePoint')
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectOnePoint')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
+
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.SelectOnePoint);
         done();
@@ -102,7 +102,7 @@ fdescribe('Point drawing', () => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
-          .mouseMove(viewer, {x: 200, y: 150}) // initial position
+          .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
           .perform();
         browser.actions()
@@ -129,11 +129,11 @@ fdescribe('Point drawing', () => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
-          .mouseMove(viewer, {x: 200, y: 150}) // initial position
+          .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
           .perform();
         browser.actions()
-          .mouseMove(viewer, {x: 600, y: 150}) // initial position
+          .mouseMove(viewer, {x: 600, y: 100}) // initial position
           .click()
           .perform();
       })
@@ -157,7 +157,7 @@ fdescribe('Point drawing', () => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
-          .mouseMove(viewer, {x: 200, y: 150}) // initial position
+          .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 250, y: 200}) // initial position
           .mouseUp()
@@ -173,7 +173,6 @@ fdescribe('Point drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.MoveOnePoint);
       })
       .then(() => browser.sleep(500))
-      // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainRequest(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1);
@@ -193,7 +192,7 @@ fdescribe('Point drawing', () => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         browser.actions()
-          .mouseMove(viewer, {x: 200, y: 150}) // initial position
+          .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
           .perform();
       })
@@ -224,10 +223,9 @@ fdescribe('Point drawing', () => {
       .then(() => browser.actions()
         .mouseMove(viewer, {x: 100, y: 100}) // initial position
         .mouseDown()
-        .mouseMove(viewer, {x: 600, y: 100}) // initial position
+        .mouseMove(viewer, {x: 400, y: 400}) // initial position
         .mouseUp()
         .mouseMove(viewer, {x: 1, y: 1}) // initial position
-        // .click(protractor.Button.RIGHT)
         .perform()
       )
       .then(
@@ -238,7 +236,6 @@ fdescribe('Point drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewPoint);
       })
       .then(() => getMockRequestsMade(mock))
-      // .then(() => dumpAllRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing);
         expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame1);
@@ -247,6 +244,45 @@ fdescribe('Point drawing', () => {
   });
 
   it('should draw multiple new point shapes', done => {
-    done();
+    mock(sharedMocks.concat([
+      assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
+      assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame2,
+      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame3,
+      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4,
+      assets.mocks.PointDrawing.NewPoint.StoreLabeledThing,
+    ]));
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 100, y: 100}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 400, y: 400}) // initial position
+        .mouseUp()
+        .mouseMove(viewer, {x: 900, y: 400}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 900, y: 450}) // initial position
+        .mouseUp()
+        .mouseMove(viewer, {x: 900, y: 200}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 900, y: 50}) // initial position
+        .mouseUp()
+        .mouseMove(viewer, {x: 1, y: 1}) // initial position
+        .perform()
+      )
+      .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewMultiplePoints')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewMultiplePoints);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame2);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame3);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4);
+        done();
+      });
   });
 });

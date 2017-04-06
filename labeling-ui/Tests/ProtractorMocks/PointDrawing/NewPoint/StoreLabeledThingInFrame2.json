@@ -6,26 +6,13 @@
     "data": {
       "frameIndex": 0,
       "incomplete": true,
-      "identifierName": "sign",
+      "identifierName": "lsr-01",
       "labeledThingId": "{{:labeledThingId}}",
       "shapes": [
         {
           "id": "{{:shapeId}}",
-          "type": "polyline",
-          "points": [
-            {
-              "x": 100,
-              "y": 100
-            },
-            {
-              "x": 100,
-              "y": 200
-            },
-            {
-              "x": 150,
-              "y": 150
-            }
-          ],
+          "point": { "x": 400, "y": 400 },
+          "type": "point",
           "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
         }
       ],
@@ -45,6 +32,7 @@
             "endFrameNumber": 1
           },
           "classes": [
+            "pedestrian"
           ],
           "taskId": "TASKID-TASKID",
           "incomplete": true,
@@ -53,28 +41,15 @@
         "labeledThingInFrame": {
           "id": "{{labeledThingInFrameId}}",
           "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "identifierName": "sign",
           "frameIndex": 0,
           "classes": [],
           "ghostClasses": null,
+          "identifierName": "lsr-01",
           "shapes": [
             {
               "id": "{{shapeId}}",
-              "type": "polyline",
-              "points": [
-                {
-                  "x": 100,
-                  "y": 100
-                },
-                {
-                  "x": 100,
-                  "y": 200
-                },
-                {
-                  "x": 150,
-                  "y": 150
-                }
-              ],
+              "type": "point",
+              "point": { "x": 400, "y": 400 },
               "labeledThingInFrameId": "{{labeledThingInFrameId}}"
             }
           ],
