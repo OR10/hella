@@ -123,8 +123,7 @@ class PaperShapeFactory {
    * @private
    */
   _createPoint(labeledThingInFrame, shape, color) {
-    const centerPoint = new paper.Point(shape.point.x, shape.point.y);
-    return new PaperPoint(labeledThingInFrame, shape.id, centerPoint, color);
+    return new PaperPoint(labeledThingInFrame, shape.id, shape.point, color);
   }
 
   /**
@@ -136,6 +135,7 @@ class PaperShapeFactory {
   createPaperThingShape(labeledThingInFrame, shape, video = null) {
     const color = this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor);
     let result;
+
     switch (shape.type) {
       case 'rectangle':
         result = this._createRectangle(labeledThingInFrame, shape, color);
