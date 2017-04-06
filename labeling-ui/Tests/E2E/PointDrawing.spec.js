@@ -5,7 +5,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Point drawing', () => {
+describe('Point drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -147,7 +147,7 @@ fdescribe('Point drawing', () => {
       });
   });
 
-  fit('should correctly move a point shape and save the changed coordinates', done => {
+  it('should correctly move a point shape and save the changed coordinates', done => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
