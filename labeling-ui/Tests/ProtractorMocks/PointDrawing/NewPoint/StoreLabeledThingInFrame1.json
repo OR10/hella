@@ -11,7 +11,7 @@
       "shapes": [
         {
           "id": "{{:shapeId}}",
-          "point": { "x": 600, "y": 100 },
+          "point": { "x": 400, "y": 400 },
           "type": "point",
           "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
         }
@@ -49,7 +49,7 @@
             {
               "id": "{{shapeId}}",
               "type": "point",
-              "point": { "x": 600, "y": 100 },
+              "point": { "x": 400, "y": 400 },
               "labeledThingInFrameId": "{{labeledThingInFrameId}}"
             }
           ],
