@@ -64,7 +64,6 @@ class ToolService {
     /**
      * @type {Object}
      * @private
-     * Attention: Add your new tool before 'NoOperationPaperTool' in this array
      */
     this._classes = [
       RectangleMoveTool,
@@ -88,8 +87,9 @@ class ToolService {
       PointDrawingTool,
       PointMoveTool,
       PointKeyboardTool,
-      NoOperationPaperTool,
     ];
+    // Attention: NoOperationPaperTool has to be the last Tool in this._classes
+    this._classes.push(NoOperationPaperTool);
   }
 
   /**
@@ -100,6 +100,7 @@ class ToolService {
    */
   getTool(context, shapeClass, actionIdentifier = 'creation') {
     this._loggerService.groupStart('toolService:getTool', 'Trying to get the tool for the given tool identifier');
+
     if (this._toolCache.has(context, shapeClass, actionIdentifier) === false) {
       this._loggerService.log('toolService:getTool', `Tool "${shapeClass}-${actionIdentifier}" was not created prior. Creating now.`);
       try {
