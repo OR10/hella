@@ -39,8 +39,8 @@ class PaperPoint extends PaperThingShape {
   _drawShape(drawHandles = true) {
     this.removeChildren();
 
-    const rectangle = this._createOuterCircleShape();
-    this.addChild(rectangle);
+    const outerCircleShape = this._createOuterCircleShape();
+    this.addChild(outerCircleShape);
 
     const lines = this._createCrosshairs();
     lines.forEach(line => this.addChild(line));
@@ -88,13 +88,6 @@ class PaperPoint extends PaperThingShape {
       );
     });
     return shapes;
-  }
-
-  /**
-   * @return {Array.<Point>}
-   */
-  get points() {
-    return this._points;
   }
 
   /**
@@ -232,6 +225,7 @@ class PaperPoint extends PaperThingShape {
    */
   toJSON() {
     const {x, y} = this._centerPoint;
+
     return {
       type: 'point',
       id: this._shapeId,
@@ -250,4 +244,5 @@ PaperPoint.getClass = () => {
 
 PaperPoint.CONTROL_SIZE = 10;
 PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE = 2;
+
 export default PaperPoint;
