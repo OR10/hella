@@ -15,7 +15,7 @@ import NotModifiedError from '../Errors/NotModifiedError';
 class PointDrawingTool extends CreationTool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {$rootScope.Scope} $rootScope
+   * @param {angular.$rootScope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
    * @param {EntityIdService} entityIdService
@@ -90,8 +90,7 @@ class PointDrawingTool extends CreationTool {
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         center,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-        true
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
       );
     });
 
@@ -165,8 +164,7 @@ class PointDrawingTool extends CreationTool {
           labeledThingInFrame,
           this._entityIdService.getUniqueId(),
           to,
-          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-          true
+          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
       );
       this._creationHandle = this._getScaleAnchor(to);
       this._pointShape.moveTo(to);
