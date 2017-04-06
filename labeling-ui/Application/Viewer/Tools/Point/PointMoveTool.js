@@ -8,8 +8,8 @@ import NotModifiedError from '../Errors/NotModifiedError';
 class PointMoveTool extends MovingTool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param $rootScope
-   * @param $q
+   * @param {angular.$rootScope} $rootScope
+   * @param {$q} $q
    * @param {LoggerService} loggerService
    */
   constructor(drawingContext, $rootScope, $q, loggerService) {
