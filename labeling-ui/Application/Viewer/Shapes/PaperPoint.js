@@ -13,10 +13,9 @@ class PaperPoint extends PaperThingShape {
    * @param {string} shapeId
    * @param {Point} centerPoint
    * @param {{primary: string, secondary: string}} color
-   * @param {boolean} draft
    */
-  constructor(labeledThingInFrame, shapeId, centerPoint, color, draft = false) {
-    super(labeledThingInFrame, shapeId, color, draft);
+  constructor(labeledThingInFrame, shapeId, centerPoint, color) {
+    super(labeledThingInFrame, shapeId, color);
 
     /**
      * @type {boolean}
@@ -52,6 +51,10 @@ class PaperPoint extends PaperThingShape {
     }
   }
 
+  /**
+   * @return {paper.Path.Circle}
+   * @private
+   */
   _createOuterCircleShape() {
     return new paper.Path.Circle({
       center: this._centerPoint,
@@ -64,6 +67,10 @@ class PaperPoint extends PaperThingShape {
     });
   }
 
+  /**
+   * @return {Array.<paper.Path.Line>}
+   * @private
+   */
   _createCrosshairs() {
     const crosshairPoints = this._getCrosshairCooridantesOfCenter();
     const shapes = [];
@@ -90,10 +97,10 @@ class PaperPoint extends PaperThingShape {
     return this._points;
   }
 
-  get center() {
-    return this._centerPoint;
-  }
-
+  /**
+   * @return {Array.<paper.Point>}
+   * @private
+   */
   _getCrosshairCooridantesOfCenter() {
     const centerX = this._centerPoint.x;
     const centerY = this._centerPoint.y;
@@ -128,13 +135,13 @@ class PaperPoint extends PaperThingShape {
       {name: 'center', point: this._centerPoint},
     ];
 
-    return handleInfo.map(
-        info => new RectangleHandle(
-            info.name,
-            '#ffffff',
-            this._handleSize,
-            info.point
-        )
+    return handleInfo.map(info =>
+      new RectangleHandle(
+        info.name,
+        '#ffffff',
+        this._handleSize,
+        info.point
+      )
     );
   }
 
@@ -174,15 +181,9 @@ class PaperPoint extends PaperThingShape {
    * @param {Boolean} mouseDown
    * @returns {string}
    */
-  getCursor(handle, mouseDown = false) {
-    if (handle === null) {
-      return mouseDown ? 'grabbing' : 'grab';
-    }
 
-    switch (handle.name) {
-      default:
-        return mouseDown ? 'grabbing' : 'grab';
-    }
+  getCursor(handle, mouseDown = false) {  // eslint-disable-line no-unused-vars
+    return mouseDown ? 'grabbing' : 'grab';
   }
 
   /**
