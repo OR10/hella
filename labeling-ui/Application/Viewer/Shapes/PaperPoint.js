@@ -62,6 +62,7 @@ class PaperPoint extends PaperThingShape {
       selected: false,
       strokeColor: this._color.primary,
       strokeWidth: 2,
+      strokeScaling: false,
       dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
       fillColor: new paper.Color(0, 0, 0, 0),
     });
