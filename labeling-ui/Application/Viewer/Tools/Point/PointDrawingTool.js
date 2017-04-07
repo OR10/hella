@@ -18,11 +18,11 @@ class PointDrawingTool extends CreationTool {
    * @param {angular.$rootScope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
+   * @param {HierarchyCreationService} hierarchyCreationService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
-   * @param {HierarchyCreationService} hierarchyCreationService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService) {
     super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -229,10 +229,10 @@ PointDrawingTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
+  'hierarchyCreationService',
   'loggerService',
   'entityIdService',
   'entityColorService',
-  'hierarchyCreationService',
 ];
 
 export default PointDrawingTool;
