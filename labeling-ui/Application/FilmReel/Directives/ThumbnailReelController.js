@@ -246,7 +246,7 @@ class ThumbnailReelController {
       default:
         this._clearThumbnailShapes();
     }
-  };
+  }
 
   _recalculateViewSize() {
     const dimensionFactor = this.video.metaData.width / this.video.metaData.height;
