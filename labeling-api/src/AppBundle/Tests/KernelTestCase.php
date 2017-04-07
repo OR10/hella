@@ -57,6 +57,11 @@ class KernelTestCase extends Test\KernelTestCase
      */
     protected $defaultUser;
 
+    /**
+     * @var Database\Facade\CouchDb
+     */
+    private $couchDbFacade;
+
     protected static function getKernelClass()
     {
         require __DIR__ . '/../../../app/AnnoStation/AnnoStationKernel.php';
@@ -81,11 +86,13 @@ class KernelTestCase extends Test\KernelTestCase
         $this->entityManager = $this->getService(self::ENTITY_MANAGER);
         $this->userService   = $this->getService('fos_user.util.user_manipulator');
         $this->userFacade    = $this->getAnnostationService('database.facade.user');
+        $this->couchDbFacade = $this->getAnnostationService('database.facade.couchdb');
 
         $this->couchDbName = $this->getContainer()->getParameter('database_name');
 
         $this->couchdbClient->deleteDatabase($this->couchDbName);
         $this->couchdbClient->createDatabase($this->couchDbName);
+        $this->couchDbFacade->purgeCouchDbsUserDatabase();
 
         $this->setUpImplementation();
     }
@@ -103,6 +110,7 @@ class KernelTestCase extends Test\KernelTestCase
         $this->tearDownImplementation();
 
         $this->couchdbClient->deleteDatabase($this->couchDbName);
+        $this->couchDbFacade->purgeCouchDbsUserDatabase();
 
         static::$kernel->shutdown();
 

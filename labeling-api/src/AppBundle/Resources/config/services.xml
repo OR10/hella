@@ -16,6 +16,8 @@
     </parameters>
 
     <services>
+        <service id="guzzle.client" class="GuzzleHttp\Client"/>
+
         <service id="annostation.labeling_api.event_listener.response_serializer" class="AppBundle\EventListener\ResponseSerializer">
             <argument type="service" id="fos_rest.view_handler" />
             <argument type="service" id="jms_serializer" />
