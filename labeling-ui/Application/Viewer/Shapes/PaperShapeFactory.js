@@ -5,6 +5,7 @@ import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from './PaperPolygon';
 import PaperPolyline from './PaperPolyline';
+import PaperPoint from './PaperPoint';
 
 import PlainProjection2d from '../../ThirdDimension/Support/Projection2d/Plain';
 import FlatWorld from '../../ThirdDimension/Support/Projection3d/FlatWorld';
@@ -117,6 +118,17 @@ class PaperShapeFactory {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
+   * @param {String} color
+   * @returns {PaperPoint}
+   * @private
+   */
+  _createPoint(labeledThingInFrame, shape, color) {
+    return new PaperPoint(labeledThingInFrame, shape.id, shape.point, color);
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Object} shape
    * @param {Video} video
    * @returns {PaperShape}
    */
@@ -130,6 +142,9 @@ class PaperShapeFactory {
         break;
       case 'pedestrian':
         result = this._createPedestrian(labeledThingInFrame, shape, color);
+        break;
+      case 'point':
+        result = this._createPoint(labeledThingInFrame, shape, color);
         break;
       case 'cuboid3d':
         result = this._createCuboid(labeledThingInFrame, shape, color, video);

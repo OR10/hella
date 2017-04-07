@@ -1,0 +1,63 @@
+{
+  "request": {
+    "path": "/api/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-1",
+    "method": "PUT",
+    "data": {
+      "id": "LABELED-THING-IN-FRAME-ID-1",
+      "rev": "2-b65227715b51dadd97f8521646e88a22",
+      "identifierName": "lsr-01",
+      "frameIndex": 0,
+      "classes": [],
+      "ghostClasses": null,
+      "shapes": [
+        {
+          "id": "SHAPE-ID-1",
+          "point": {"x": 250, "y": 200},
+          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+          "type": "point"
+        }
+      ],
+      "labeledThingId": "LABELED-THING-ID-1",
+      "incomplete": true,
+      "ghost": false
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "labeledThing": {
+          "id": "LABELED-THING-ID-1",
+          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
+          "frameRange": {
+            "startFrameNumber": 1,
+            "endFrameNumber": 1
+          },
+          "classes": [
+            "pedestrian"
+          ],
+          "taskId": "TASKID-TASKID",
+          "incomplete": true,
+          "lineColor": "6"
+        },
+        "labeledThingInFrame": {
+          "id": "LABELED-THING-IN-FRAME-ID-1",
+          "rev": "2-b65227715b51dadd97f8521646e88a22",
+          "frameIndex": 0,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "SHAPE-ID-1",
+              "point": {"x": 250, "y": 200},
+              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+              "type": "point"
+            }
+          ],
+          "labeledThingId": "LABELED-THING-ID-1",
+          "incomplete": true,
+          "ghost": false
+        }
+      }
+    }
+  }
+}

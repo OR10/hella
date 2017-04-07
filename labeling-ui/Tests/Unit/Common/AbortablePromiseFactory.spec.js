@@ -95,39 +95,39 @@ describe('AbortablePromiseFactory', () => {
   });
 
   it('should bubble up aborts to success the promise chain', () => {
-    const spy1 = jasmine.createSpy();
-    const spy2 = jasmine.createSpy();
-    const spy3 = jasmine.createSpy();
+    const successSpy1 = jasmine.createSpy();
+    const successSpy2 = jasmine.createSpy();
+    const successSpy3 = jasmine.createSpy();
     const deferred = $q.defer();
     const promise = deferred.promise;
 
-    const wrapped = abortable(promise).then(spy1).then(spy2).then(spy3);
+    const wrapped = abortable(promise).then(successSpy1).then(successSpy2).then(successSpy3);
 
     wrapped.abort();
     deferred.resolve();
 
     $rootScope.$digest();
 
-    expect(spy1).not.toHaveBeenCalled();
-    expect(spy2).not.toHaveBeenCalled();
-    expect(spy3).not.toHaveBeenCalled();
+    expect(successSpy1).not.toHaveBeenCalled();
+    expect(successSpy2).not.toHaveBeenCalled();
+    expect(successSpy3).not.toHaveBeenCalled();
   });
 
-  it('should bubble up aborts to error the promise chain', () => {
-    const spy1 = jasmine.createSpy();
-    const spy2 = jasmine.createSpy();
+  it('does not trigger success but error callbacks when aborted', () => {
+    const errorSpy = jasmine.createSpy();
+    const successSpy = jasmine.createSpy();
     const deferred = $q.defer();
     const promise = deferred.promise;
 
-    const wrapped = abortable(promise).catch(spy1).then(spy2);
+    const wrapped = abortable(promise).catch(errorSpy).then(successSpy);
 
     wrapped.abort();
     deferred.reject();
 
     $rootScope.$digest();
 
-    expect(spy1).not.toHaveBeenCalled();
-    expect(spy2).not.toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalled();
+    expect(successSpy).not.toHaveBeenCalled();
   });
 
   it('should correctly pass through promise chaining', () => {
@@ -149,7 +149,7 @@ describe('AbortablePromiseFactory', () => {
     expect(spy3).toHaveBeenCalled();
   });
 
-  it('should abort promise error', () => {
+  it('should not abort promise error', () => {
     const spy = jasmine.createSpy();
     const deferred = $q.defer();
     const wrapped = abortable(deferred.promise);
@@ -159,7 +159,7 @@ describe('AbortablePromiseFactory', () => {
 
     $rootScope.$digest();
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should work with multiple abortable promises in play', () => {

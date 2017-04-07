@@ -540,12 +540,12 @@ class ViewerController {
 
     $rootScope.$on('shape:add:after', (event, newShape) => {
       if (newShape && newShape instanceof PaperThingShape) {
-        this._updateLabeledThingsInFrame();
+        this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
       }
     });
 
     $scope.$watch('vm.selectedPaperShape', newShape => {
-      if (newShape && !newShape.isDraft && newShape instanceof PaperThingShape) {
+      if (newShape && newShape instanceof PaperThingShape) {
         this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
       }
 
@@ -892,6 +892,7 @@ class ViewerController {
         }
         abortRelease = true;
         this.framePosition.lock.release();
+        this._frameChangeInProgress = false;
       });
 
     const labeledThingInFrameBufferPromise = this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameIndex))
@@ -901,6 +902,7 @@ class ViewerController {
         }
         abortRelease = true;
         this.framePosition.lock.release();
+        this._frameChangeInProgress = false;
       });
 
     const labeledThingGroupInFramePromise = this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(this.task, frameIndex)
@@ -910,6 +912,7 @@ class ViewerController {
         }
         abortRelease = true;
         this.framePosition.lock.release();
+        this._frameChangeInProgress = false;
       });
 
 
@@ -936,7 +939,7 @@ class ViewerController {
         );
         this._backgroundLayer.render();
 
-        this._extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
+        this._extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame, ghostedLabeledThingsInFrame);
         this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame);
 
         this.framePosition.lock.release();
@@ -959,7 +962,7 @@ class ViewerController {
       ]
     ).then(
       ([labeledThingsInFrame, ghostedLabeledThingsInFrame]) => {
-        this._extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingsInFrame);
+        this._extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame, ghostedLabeledThingsInFrame);
       }
     );
   }
@@ -972,7 +975,19 @@ class ViewerController {
    * @param {Array.<LabeledThingInFrame>} ghostedLabeledThingInFrame
    * @private
    */
-  _extractAndStorePaperThingShapes(labeledThingsInFrame, ghostedLabeledThingInFrame) {
+  _extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame, ghostedLabeledThingInFrame) {
+    this._extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame);
+    this._extractAndStorePaperThingGhosts(ghostedLabeledThingInFrame);
+  }
+
+  /**
+   * Takes the given ltifs converts them into {@link PaperThingShape}s.
+   * The resulting {@link PaperThingShape}s are then stored in the global `paperThingShapes` array.
+   *
+   * @param {Array.<LabeledThingInFrame>} labeledThingsInFrame
+   * @private
+   */
+  _extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame) {
     const newPaperThingShapes = labeledThingsInFrame.map(
       ltif => {
         return this._thingLayerContext.withScope(() => {
@@ -983,8 +998,16 @@ class ViewerController {
 
     // Add new ltifs to the global array
     this.paperThingShapes = this.paperThingShapes.concat(newPaperThingShapes);
+  }
 
-
+  /**
+   * Takes the given ghostLtifs and converts them into {@link PaperThingShape}s.
+   * The resulting {@link PaperThingShape}s are then stored in the global `paperThingShapes` array.
+   *
+   * @param {Array.<LabeledThingInFrame>} ghostedLabeledThingInFrame
+   * @private
+   */
+  _extractAndStorePaperThingGhosts(ghostedLabeledThingInFrame) {
     if (ghostedLabeledThingInFrame) {
       let ghostedPaperShape;
       this._thingLayerContext.withScope(() => {

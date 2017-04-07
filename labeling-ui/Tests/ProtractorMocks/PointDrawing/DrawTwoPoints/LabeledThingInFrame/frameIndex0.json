@@ -1,0 +1,85 @@
+{
+  "request": {
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0",
+    "method": "GET",
+    "queryString": {
+      "limit": "1",
+      "offset": "0"
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "labeledThings": {
+          "LABELED-THING-ID-1": {
+            "classes": [
+            ],
+            "frameRange": {
+              "startFrameNumber": 1,
+              "endFrameNumber": 1
+            },
+            "id": "LABELED-THING-ID-1",
+            "incomplete": true,
+            "lineColor": "6",
+            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
+            "taskId": "TASKID-TASKID"
+          },
+          "LABELED-THING-ID-2": {
+            "classes": [
+            ],
+            "frameRange": {
+              "startFrameNumber": 1,
+              "endFrameNumber": 1
+            },
+            "id": "LABELED-THING-ID-2",
+            "incomplete": true,
+            "lineColor": "5",
+            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7d",
+            "taskId": "TASKID-TASKID"
+          }
+        },
+        "labeledThingsInFrame": [
+          {
+            "classes": [],
+            "frameIndex": 0,
+            "identifierName": "lsr-01",
+            "ghost": false,
+            "ghostClasses": null,
+            "id": "LABELED-THING-IN-FRAME-ID-1",
+            "incomplete": true,
+            "labeledThingId": "LABELED-THING-ID-1",
+            "rev": "2-b65227715b51dadd97f8521646e88a22",
+            "shapes": [
+              {
+                "id": "SHAPE-ID-1",
+                "point": {"x": 200, "y": 100},
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "type": "point"
+              }
+            ]
+          },
+          {
+            "classes": [],
+            "frameIndex": 0,
+            "identifierName": "lsr-01",
+            "ghost": false,
+            "ghostClasses": null,
+            "id": "LABELED-THING-IN-FRAME-ID-2",
+            "incomplete": true,
+            "labeledThingId": "LABELED-THING-ID-2",
+            "rev": "2-b65227715b51dadd97f8521646e88a23",
+            "shapes": [
+              {
+                "id": "SHAPE-ID-1",
+                "point": {"x": 600, "y": 100},
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "type": "point"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+
