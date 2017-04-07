@@ -25,5 +25,5 @@ class annostation_base::docker() {
     service { 'docker':
         ensure => 'running',
         enable => true,
-      }
+    }
 }
