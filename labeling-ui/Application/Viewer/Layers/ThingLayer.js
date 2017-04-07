@@ -243,7 +243,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._invokeDefaultShapeCreation();
     });
 
-    $scope.$root.$on('action:delete-shape', (event, shape) => {
+    ThingLayer.deregisterDeleteEventListener();
+    ThingLayer.deregisterDeleteEventListener = $scope.$root.$on('action:delete-shape', (event, shape) => {
       switch (true) {
         case shape instanceof PaperThingShape:
           this._deleteThingShape(shape);
@@ -338,6 +339,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    */
   _deleteAfterAction() {
     this._applicationState.enableAll();
+    this._$scope.$root.$emit('shape:delete:after');
     this._context.withScope(scope => scope.view.update());
   }
 
@@ -894,5 +896,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
   }
 }
+
+ThingLayer.deregisterDeleteEventListener = () => {};
 
 export default ThingLayer;
