@@ -70,7 +70,6 @@ class Report
         bool $pouchdbFeatureEnabled,
         string $databaseNameReadOnly
     ) {
-        $this->projectFacade           = $projectFacade;
         $this->videoFacade             = $videoFacade;
         $this->reportFacade            = $reportFacade;
         $this->ghostClassesPropagation = $ghostClassesPropagation;
@@ -79,10 +78,12 @@ class Report
             $databaseDocumentManager         = $databaseDocumentManagerFactory->getDocumentManagerForDatabase(
                 $databaseNameReadOnly
             );
+            $this->projectFacade             = new Facade\Project($databaseDocumentManager);
             $this->labelingTaskFacade        = new Facade\LabelingTask($databaseDocumentManager);
             $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
             $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
         } else {
+            $this->projectFacade             = $projectFacade;
             $this->labelingTaskFacade        = $labelingTaskFacade;
             $this->labeledThingFacade        = $labeledThingFacade;
             $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
