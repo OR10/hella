@@ -1,4 +1,5 @@
 annostation_base::nodejs: true
+annostation_base::docker: true
 
 labeling_api::params::frame_cdn_base_url: 'https://192.168.222.20:444'
 
