@@ -29,6 +29,7 @@ class AbortablePromise {
 
       abortedCallbacks.forEach(fn => fn());
       abortDeferred.resolve();
+      innerDeferred.reject();
     };
 
 

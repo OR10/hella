@@ -30,12 +30,30 @@ class AbortablePromiseRingBuffer {
    * @returns {AbortablePromise}
    */
   add(abortablePromise) {
+    const removeOnFinish = this._remove.bind(this, abortablePromise);
+    abortablePromise.aborted(removeOnFinish);
+    abortablePromise.then(removeOnFinish);
+    abortablePromise.catch(removeOnFinish);
+
     this._buffer.push(abortablePromise);
+
     if (this._buffer.length > this._size) {
       this._buffer.shift().abort();
     }
 
     return abortablePromise;
+  }
+
+  /**
+   * Remove a promise at the given array index
+   *
+   * @param index
+   */
+  _remove(abortablePromise) {
+    const index = this._buffer.find(promise => promise === abortablePromise);
+    if (index !== undefined) {
+      this._buffer.splice(index, 1);
+    }
   }
 }
 
