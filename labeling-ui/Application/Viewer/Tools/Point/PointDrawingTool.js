@@ -76,8 +76,7 @@ class PointDrawingTool extends CreationTool {
     super.invokeDefaultShapeCreation(toolActionStruct);
     const {video} = toolActionStruct;
 
-    const height = 100;
-    const center = new paper.Point(video.metaData.width, (video.metaData.height) - (height));
+    const center = new paper.Point(video.metaData.width / 2, video.metaData.height / 2);
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
     let pointShape = null;
