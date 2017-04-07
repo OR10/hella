@@ -3,6 +3,7 @@ class annostation_base(
   $authorized_keys = false,
   $github_tokens = false,
   $jenkins_slave = false,
+  $docker = false,
 ) {
     if $nodejs {
       include ::annostation_base::nodejs
@@ -18,6 +19,10 @@ class annostation_base(
 
     if $jenkins_slave {
       include ::annostation_base::jenkins_slave
+    }
+
+    if $docker {
+      include ::annostation_base::docker
     }
 
     exec { 'locale-gen de_DE.UTF-8':
