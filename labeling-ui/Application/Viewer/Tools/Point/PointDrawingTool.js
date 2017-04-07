@@ -229,8 +229,8 @@ PointDrawingTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
-  'hierarchyCreationService',
   'loggerService',
+  'hierarchyCreationService',
   'entityIdService',
   'entityColorService',
 ];
