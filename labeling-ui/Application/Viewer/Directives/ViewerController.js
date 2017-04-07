@@ -540,12 +540,12 @@ class ViewerController {
 
     $rootScope.$on('shape:add:after', (event, newShape) => {
       if (newShape && newShape instanceof PaperThingShape) {
-        this._updateLabeledThingsInFrame();
+        this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
       }
     });
 
     $scope.$watch('vm.selectedPaperShape', newShape => {
-      if (newShape && !newShape.isDraft && newShape instanceof PaperThingShape) {
+      if (newShape && newShape instanceof PaperThingShape) {
         this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
       }
 
