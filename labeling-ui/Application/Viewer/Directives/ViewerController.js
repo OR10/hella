@@ -976,7 +976,7 @@ class ViewerController {
    * @private
    */
   _extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame, ghostedLabeledThingInFrame) {
-    this._extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame);
+    this._extractAndStorePaperThingShapes(labeledThingsInFrame);
     this._extractAndStorePaperThingGhosts(ghostedLabeledThingInFrame);
   }
 
@@ -987,7 +987,7 @@ class ViewerController {
    * @param {Array.<LabeledThingInFrame>} labeledThingsInFrame
    * @private
    */
-  _extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame) {
+  _extractAndStorePaperThingShapes(labeledThingsInFrame) {
     const newPaperThingShapes = labeledThingsInFrame.map(
       ltif => {
         return this._thingLayerContext.withScope(() => {
