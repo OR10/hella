@@ -27,6 +27,7 @@ class ThumbnailReelController {
    * @param {LabeledThingGroupService} labeledThingGroupService
    */
   constructor($scope,
+              $rootScope,
               $window,
               $element,
               $q,
@@ -219,25 +220,33 @@ class ThumbnailReelController {
 
     // @TODO: Only supports single shaped LabeledThingInFrames at the moment.
     //        Some sort of watchGroupCollection would be needed to fix this.
-    $scope.$watch('vm.selectedPaperShape',
-      newPaperShape => {
-        switch (true) {
-          case newPaperShape instanceof PaperThingShape:
-            this._updateLabeledThingInFrames(newPaperShape);
-            break;
-          case newPaperShape instanceof PaperGroupShape:
-            this._updateLabeledThingGroupsInFrame(newPaperShape);
-            break;
-          default:
-            this._clearThumbnailShapes();
-        }
-      }
-    );
+    $scope.$watch('vm.selectedPaperShape', newPaperShape => this._paperShapeUpdated(newPaperShape));
+    $rootScope.$on('shape:add:after', (event, newPaperShape) => this._paperShapeUpdated(newPaperShape));
 
     this.handleDrop = this.handleDrop.bind(this);
     this.onBracketDragStart = this.onBracketDragStart.bind(this);
     this.onBracketDragStop = this.onBracketDragStop.bind(this);
   }
+
+  /**
+   * Callback when the shape has changed. Possible reasons: Selected Paper Shape has changed or new shape
+   * has been created
+   *
+   * @param newPaperShape
+   * @private
+   */
+  _paperShapeUpdated(newPaperShape) {
+    switch (true) {
+      case newPaperShape instanceof PaperThingShape:
+        this._updateLabeledThingInFrames(newPaperShape);
+        break;
+      case newPaperShape instanceof PaperGroupShape:
+        this._updateLabeledThingGroupsInFrame(newPaperShape);
+        break;
+      default:
+        this._clearThumbnailShapes();
+    }
+  };
 
   _recalculateViewSize() {
     const dimensionFactor = this.video.metaData.width / this.video.metaData.height;
@@ -659,6 +668,7 @@ class ThumbnailReelController {
 
 ThumbnailReelController.$inject = [
   '$scope',
+  '$rootScope',
   '$window',
   '$element',
   '$q',
