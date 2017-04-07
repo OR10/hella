@@ -20,5 +20,10 @@ class annostation_base::docker() {
 
     package {'docker-ce':
        ensure  => installed
-    }
+    } ->
+
+    service { 'docker':
+        ensure => 'running',
+        enable => true,
+      }
 }
