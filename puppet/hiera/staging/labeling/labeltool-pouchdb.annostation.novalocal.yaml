@@ -17,4 +17,5 @@ labeling_api::params::couchdb_password: '3,udvezdxp}2Rh.UNmuZ'
 labeling_api::params::couchdb_external_url: 'https://pouch:3,udvezdxp}2Rh.UNmuZ@labeltool.crosscan.com/couchdb/'
 labeling_api::params::pouchdb_feature_enabled: true
 labeling_api::params::couchdb_host_external: 'labeltool.crosscan.com'
+labeling_api::params::fos_user_bundle_to_couchdb_sync_enabled: true
 labeling_api::letsencrypt: true

@@ -310,7 +310,6 @@ class User extends Controller\Base
         foreach ($roles as $role) {
             $user->removeRole($role);
         }
-        $this->userFacade->updateUser($user);
 
         return $user;
     }

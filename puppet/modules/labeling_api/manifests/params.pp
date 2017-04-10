@@ -22,6 +22,8 @@ class labeling_api::params(
   $couchdb_password = undef,
   $couchdb_external_url = 'http://127.0.0.1:5984',
 
+  $fos_user_bundle_to_couchdb_sync_enabled = false,
+
   $pouchdb_feature_enabled = false,
 
   $mailer_transport = 'smtp',

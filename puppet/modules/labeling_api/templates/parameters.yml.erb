@@ -17,6 +17,8 @@ parameters:
     couchdb_password: <% if @couchdb_password != nil %><%= @couchdb_password %><% else %>~<% end %>
     couchdb_external_url: <%= @couchdb_external_url %>
 
+    fos_user_bundle_to_couchdb_sync_enabled: <%= @fos_user_bundle_to_couchdb_sync_enabled %>
+
     pouchdb_feature_enabled: <%= @pouchdb_feature_enabled %>
 
     mailer_transport: <%= @mailer_transport %>
@@ -186,4 +188,26 @@ services:
                 credentials:
                     key: "%video_cdn_s3_key%"
                     secret: "%video_cdn_s3_secret%"
+<% end %>
+<% if @fos_user_bundle_to_couchdb_sync_enabled == true %>
+    annostation.labeling_api.database.facade.user:
+        class: AnnoStationBundle\Database\Facade\UserWithCouchDbSync
+        arguments:
+            - '@fos_user.user_manager'
+            - '@doctrine_couchdb.odm.default_document_manager'
+            - '@security.token_storage'
+            - '@guzzle.client'
+            - '%couchdb_user%'
+            - '%couchdb_password%'
+            - '%couchdb_host%'
+            - '%couchdb_port%'
+            - '@annostation.labeling_api.database.facade.couchdb_users'
+<% else %>
+    annostation.labeling_api.database.facade.user:
+        class: AppBundle\Database\Facade\User
+        arguments:
+            - '@fos_user.user_manager'
+            - '@doctrine_couchdb.odm.default_document_manager'
+            - '@security.token_storage'
+            - '@guzzle.client'
 <% end %>

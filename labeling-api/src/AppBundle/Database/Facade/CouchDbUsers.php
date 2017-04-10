@@ -83,6 +83,51 @@ class CouchDbUsers
     }
 
     /**
+     * @param $username
+     * @param $password
+     */
+    public function updateUser($username, $password)
+    {
+        if ($password !== null) {
+            $resource = $this->guzzleClient->request(
+                'GET',
+                $this->generateCouchDbUrl($username),
+                ['http_errors' => false]
+            );
+            if ($resource->getStatusCode() === 200) {
+                $couchDbUser = json_decode($resource->getBody()->getContents(), true);
+                $this->createOrUpdateCouchDbUserDocument($username, $password, $couchDbUser['_rev']);
+            } else {
+                $this->createOrUpdateCouchDbUserDocument($username, $password);
+            }
+        }
+    }
+
+    /**
+     * @param      $username
+     * @param      $password
+     * @param null $revision
+     */
+    private function createOrUpdateCouchDbUserDocument($username, $password, $revision = null)
+    {
+        $this->guzzleClient->request(
+            'PUT',
+            $this->generateCouchDbUrl($username),
+            [
+                'headers' => [
+                    'If-Match' => $revision,
+                ],
+                'json'    => [
+                    'name'     => $username,
+                    'password' => $password,
+                    'type'     => 'user',
+                    'roles'    => [],
+                ],
+            ]
+        );
+    }
+
+    /**
      * @return array
      */
     private function getAllUserDocuments()
