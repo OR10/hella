@@ -95,30 +95,33 @@ class PathDrawingTool extends CreationTool {
     ];
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
+    let polygon;
     this._context.withScope(() => {
       switch (this._pathIdentifier) {
         case PaperPolygon.getClass():
-          return this._complete(
-            new PaperPolygon(
-              labeledThingInFrame,
-              this._entityIdService.getUniqueId(),
-              points,
-              this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
-            )
+          polygon = new PaperPolygon(
+            labeledThingInFrame,
+            this._entityIdService.getUniqueId(),
+            points,
+            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
           );
+          break;
+
         case PaperPolyline.getClass():
-          return this._complete(
-            new PaperPolyline(
-              labeledThingInFrame,
-              this._entityIdService.getUniqueId(),
-              points,
-              this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
-            )
+          polygon = new PaperPolyline(
+            labeledThingInFrame,
+            this._entityIdService.getUniqueId(),
+            points,
+            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
           );
+          break;
+
         default:
           throw new Error(`Unknown path identifier "${this._pathIdentifier}"`);
       }
     });
+
+    return this._complete(polygon);
   }
 
   /**

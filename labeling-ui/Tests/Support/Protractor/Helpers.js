@@ -54,7 +54,12 @@ const defaultTestConfig = {
 
 export function initApplication(url, testConfig = defaultTestConfig) {
   const builder = new UrlBuilder(testConfig);
-  browser.get(builder.url(url));
+  (function() {
+    browser.get(builder.url(url));
+  })();
+  browser.wait(() => {
+    return browser.executeScript('return !!window.angular');
+  }, 30000);
   return waitForApplicationReady();
 }
 
