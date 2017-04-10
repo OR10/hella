@@ -27,9 +27,9 @@ exports.config = {
       })
       .then(capabilities => {
         const jasmineReporters = require('jasmine-reporters');
-        const browserName = capabilities.caps_.browserName.toUpperCase();
-        const browserVersion = capabilities.caps_.version;
-        const platform = capabilities.caps_.platform;
+        const browserName = capabilities.get('browserName').toUpperCase();
+        const browserVersion = capabilities.get('version');
+        const platform = capabilities.get('platform');
 
         const browserIdentifier = `${platform}-${browserName}-${browserVersion}`;
 
