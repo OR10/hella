@@ -59,7 +59,7 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   })();
   browser.wait(() => {
     return browser.executeScript('return !!window.angular');
-  }, 30000);
+  }, 10000);
   return waitForApplicationReady();
 }
 
