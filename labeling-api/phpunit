@@ -1,1 +1,15 @@
-vendor/phpunit/phpunit/phpunit
+#!/bin/bash
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+if [ -f $(which docker) ]; then
+    echo -e "${YELLOW}Starting CouchDB Docker Container${NC}"
+    DOCKER=$(sudo docker run -p 5989:5984 -d couchdb)
+fi
+
+./bin/phpunit $@
+
+if [ -f $(which docker) ]; then
+    echo -e "${YELLOW}Removing CouchDB Docker Container${NC}"
+    sudo docker rm -f $DOCKER
+fi
