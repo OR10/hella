@@ -13,7 +13,7 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <argument type="service" id="annostation.services.uuid_generator"/>
         </service>
-        <service id="annostation.labeling_api.database.facade.couchdb" class="AppBundle\Database\Facade\CouchDb">
+        <service id="annostation.labeling_api.database.facade.couchdb_users" class="AppBundle\Database\Facade\CouchDbUsers">
             <argument type="service" id="guzzle.client"/>
             <argument>%couchdb_user%</argument>
             <argument>%couchdb_password%</argument>

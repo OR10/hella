@@ -7,7 +7,7 @@ use AnnoStationBundle\Model as AnnoStationBundleModel;
 use Doctrine\ODM\CouchDB as CouchDbODM;
 use GuzzleHttp;
 
-class CouchDb
+class CouchDbUsers
 {
     const USERNAME_PREFIX = 'org.couchdb.user:';
 
