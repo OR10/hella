@@ -12,6 +12,7 @@ exports.config = {
   seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
 
   onPrepare: () => {
+    require('./Tests/Support/Jasmine/ProtractorSetup');
     require('./Tests/Support/Jasmine/CustomMatchers');
     require('jasmine-collection-matchers');
 
