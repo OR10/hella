@@ -1,4 +1,5 @@
 require('babel-core/register');
+const seleniumServerJar = require("selenium-standalone-jar");
 
 // We don't have SystemJS available here so we can't use 'import'
 const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter');
@@ -9,7 +10,7 @@ const path = require('path');
 
 exports.config = {
   framework: 'jasmine2',
-  seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
+  seleniumServerJar: seleniumServerJar.path,
 
   onPrepare: () => {
     require('./Tests/Support/Jasmine/ProtractorSetup');

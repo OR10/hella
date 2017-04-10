@@ -85,6 +85,7 @@
     "request-promise": "^2.0.1",
     "run-sequence": "^1.1.4",
     "sass-jspm-importer": "0.0.6",
+    "selenium-standalone-jar": "^3.0.1",
     "selenium-webdriver": "^2.47.0",
     "send": "^0.13.0",
     "serve-static": "^1.10.0",
