@@ -6,12 +6,14 @@ const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/Resemble
 const JasmineSpecReporter = require('jasmine-spec-reporter');
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
 const path = require('path');
+const seleniumServerJar = require("selenium-standalone-jar");
 
 exports.config = {
   framework: 'jasmine2',
-  seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
+  seleniumServerJar: seleniumServerJar.path,
 
   onPrepare: () => {
+    require('./Tests/Support/Jasmine/ProtractorSetup');
     require('./Tests/Support/Jasmine/CustomMatchers');
     require('jasmine-collection-matchers');
 
@@ -27,9 +29,9 @@ exports.config = {
       })
       .then(capabilities => {
         const jasmineReporters = require('jasmine-reporters');
-        const browserName = capabilities.caps_.browserName.toUpperCase();
-        const browserVersion = capabilities.caps_.version;
-        const platform = capabilities.caps_.platform;
+        const browserName = capabilities.get('browserName').toUpperCase();
+        const browserVersion = capabilities.get('version');
+        const platform = capabilities.get('platform');
 
         const browserIdentifier = `${platform}-${browserName}-${browserVersion}`;
 
