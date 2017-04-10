@@ -157,7 +157,8 @@
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-hide="vm.readOnly || vm.selectedPaperShape === null"
+            <button id="delete-shape-button"
+                    ng-hide="vm.readOnly || vm.selectedPaperShape === null"
                     ng-click="vm.handleDeleteSelectionClicked()"
                     tooltip="Delete the active shape">
                 <i class="icon icon-selection-delete"></i>
