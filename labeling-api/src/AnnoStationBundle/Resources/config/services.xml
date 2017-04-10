@@ -179,7 +179,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
@@ -222,7 +222,7 @@
         </service>
 
         <service id="annostation.labeling_api.service.task_read_only_decider" class="AnnoStationBundle\Service\TaskReadOnlyDecider">
-            <argument type="service" id="annostation.labeling_api.database.facade.user" />
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
         </service>
 

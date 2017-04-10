@@ -4,10 +4,20 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
+        <service id="annostation.labeling_api.database.facade.user" class="AppBundle\Database\Facade\User">
+            <argument type="service" id="fos_user.user_manager"/>
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+            <argument type="service" id="security.token_storage"/>
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.user.selected-alias"
+                 alias="annostation.labeling_api.database.facade.user"/>
+
         <service id="annostation.labeling_api.database.facade.role" class="AppBundle\Database\Facade\Role">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <argument type="service" id="annostation.services.uuid_generator"/>
         </service>
+
         <service id="annostation.labeling_api.database.facade.couchdb_users" class="AppBundle\Database\Facade\CouchDbUsers">
             <argument type="service" id="guzzle.client"/>
             <argument>%couchdb_user%</argument>
