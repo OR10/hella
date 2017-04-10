@@ -18,6 +18,9 @@ import PolylineDrawingTool from '../Tools/Polyline/PolylineDrawingTool';
 import PathScaleTool from '../Tools/PathScaleTool';
 import PathMoveTool from '../Tools/PathMoveTool';
 import PathKeyboardTool from '../Tools/PathKeyboardTool';
+import PointDrawingTool from '../Tools/Point/PointDrawingTool';
+import PointMoveTool from '../Tools/Point/PointMoveTool';
+import PointKeyboardTool from '../Tools/Point/PointKeyboardTool';
 
 class ToolService {
   /**
@@ -81,8 +84,12 @@ class ToolService {
       PolygonDrawingTool,
       PolylineDrawingTool,
       GroupCreationTool,
-      NoOperationPaperTool,
+      PointDrawingTool,
+      PointMoveTool,
+      PointKeyboardTool,
     ];
+    // Attention: NoOperationPaperTool has to be the last Tool in this._classes
+    this._classes.push(NoOperationPaperTool);
   }
 
   /**
@@ -99,6 +106,7 @@ class ToolService {
       try {
         const toolClass = this._findToolClassByShapeClassAndActionIdentifier(shapeClass, actionIdentifier);
         const toolInstance = this._$injector.instantiate(toolClass, {drawingContext: context});
+
         this._toolCache.set(context, shapeClass, actionIdentifier, toolInstance);
       } catch (error) {
         this._loggerService.log('toolService:getTool', `No tool found for "${shapeClass}-${actionIdentifier}"`);

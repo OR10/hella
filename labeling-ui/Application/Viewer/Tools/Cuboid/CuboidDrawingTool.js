@@ -19,11 +19,11 @@ class CuboidDrawingTool extends CreationTool {
    * @param {$rootScope.Scope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
+   * @param {HierarchyCreationService} hierarchyCreationService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
-   * @param {HierarchyCreationService} hierarchyCreationService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService) {
     super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -515,9 +515,9 @@ CuboidDrawingTool.$inject = [
   '$rootScope',
   '$q',
   'loggerService',
+  'hierarchyCreationService',
   'entityIdService',
   'entityColorService',
-  'hierarchyCreationService',
 ];
 
 export default CuboidDrawingTool;
