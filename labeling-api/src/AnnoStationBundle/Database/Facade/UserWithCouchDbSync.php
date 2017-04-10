@@ -63,15 +63,16 @@ class UserWithCouchDbSync extends AppBundleFacade\User
     }
 
     /**
-     * @param string $username
-     * @param string $email
-     * @param string $password
-     * @param bool   $enabled
-     * @param bool   $locked
-     * @param array  $settings
-     * @param array  $organisations
+     * @param string      $username
+     * @param string      $email
+     * @param string      $password
+     * @param bool        $enabled
+     * @param bool        $locked
+     * @param array       $settings
+     * @param array       $organisations
+     * @param null|string $couchDbPassword
      *
-     * @return \AppBundle\Model\User|FosUserModel\UserInterface
+     * @return AppBundleModel\User|FosUserModel\UserInterface
      */
     public function createUser(
         $username,
@@ -80,28 +81,24 @@ class UserWithCouchDbSync extends AppBundleFacade\User
         $enabled = true,
         $locked = false,
         $settings = [],
-        $organisations = []
+        $organisations = [],
+        $couchDbPassword = null
     ) {
-        $user = parent::createUser($username, $email, $password, $enabled, $locked, $settings, $organisations);
-
-        $this->couchDbFacade->updateUser($username, $password);
-
-        return $user;
-    }
-
-    /**
-     * @param AppBundleModel\User $user
-     *
-     * @return AppBundleModel\User
-     */
-    public function updateUser(AppBundleModel\User $user)
-    {
-        $password = $user->getPlainPassword();
-        $user     = parent::updateUser($user);
-
-        if ($password !== null) {
-            $this->couchDbFacade->updateUser($user->getUsername(), $password);
+        if ($couchDbPassword === null) {
+            $couchDbPassword = bin2hex(random_bytes(5));
         }
+        $user = parent::createUser(
+            $username,
+            $email,
+            $password,
+            $enabled,
+            $locked,
+            $settings,
+            $organisations,
+            $couchDbPassword
+        );
+
+        $this->couchDbFacade->updateUser($username, $couchDbPassword);
 
         return $user;
     }

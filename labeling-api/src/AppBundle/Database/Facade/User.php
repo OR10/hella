@@ -42,13 +42,14 @@ class User
     }
 
     /**
-     * @param string $username
-     * @param string $email
-     * @param string $password
-     * @param bool   $enabled
-     * @param bool   $locked
-     * @param array  $settings
-     * @param array  $organisations
+     * @param string      $username
+     * @param string      $email
+     * @param string      $password
+     * @param bool        $enabled
+     * @param bool        $locked
+     * @param array       $settings
+     * @param array       $organisations
+     * @param null|string $couchDbPassword
      *
      * @return Model\User|FosUserModel\UserInterface
      */
@@ -59,7 +60,8 @@ class User
         $enabled = true,
         $locked = false,
         $settings = [],
-        $organisations = []
+        $organisations = [],
+        $couchDbPassword = null
     ) {
         /** @var Model\User $user */
         $user = $this->userManager->createUser();
@@ -70,6 +72,7 @@ class User
         $user->setLocked($locked);
         $user->setSettings($settings);
         $user->setOrganisations($organisations);
+        $user->setCouchDbPassword($couchDbPassword);
 
         $this->userManager->updateUser($user);
 
