@@ -52,15 +52,14 @@ class CouchDb
 
     public function purgeCouchDbsUserDatabase()
     {
-        $userIds = $this->getAllUserDocuments();
-        foreach($userIds as $userId) {
-            $this->deleteUser($userId);
+        $usernames = $this->getAllUserDocuments();
+        foreach ($usernames as $username) {
+            $this->deleteUser($username);
         }
     }
 
     /**
      * @param $username
-     *
      */
     public function deleteUser($username)
     {
@@ -107,9 +106,13 @@ class CouchDb
             }
         );
 
-        $couchDbUsers = array_map(function($user) {
-            return $user['id'];
-        }, $couchDbUsers);
+        $couchDbUsers = array_map(
+            function ($user) {
+                preg_match('/^(org.couchdb.user:)(\w+)$/', $user['id'], $matches);
+                return $matches[2];
+            },
+            $couchDbUsers
+        );
 
         return $couchDbUsers;
     }
@@ -122,11 +125,12 @@ class CouchDb
     private function generateCouchDbUrl($username)
     {
         return sprintf(
-            'http://%s:%s@%s:%s/_users/%s',
+            'http://%s:%s@%s:%s/_users/%s%s',
             $this->couchAuthUser,
             $this->couchAuthPassword,
             $this->couchHost,
             $this->couchPort,
+            self::USERNAME_PREFIX,
             $username
         );
     }
