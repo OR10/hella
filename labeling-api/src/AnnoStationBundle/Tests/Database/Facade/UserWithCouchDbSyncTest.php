@@ -9,113 +9,162 @@ use AppBundle\Model;
 use GuzzleHttp;
 use Symfony\Component\Security\Core\Authentication\Token;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
-use Psr\Http\Message;
 
 class UserWithCouchDbSyncTest extends Tests\WebTestCase
 {
-    private function getGuzzleClientMock()
-    {
-        return $this->getMockBuilder(GuzzleHttp\Client::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['request'])
-            ->getMock();
-    }
+    /**
+     * @var Facade\UserWithCouchDbSync
+     */
+    protected $userFacade;
 
-    private function getGuzzleResponseMock()
-    {
-        return $this->getMockBuilder(GuzzleHttp\Psr7\Response::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getGuzzleBodyMock()
-    {
-        return $this->getMockBuilder(Message\StreamInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getTokenStorageMock()
-    {
-        return $this->getMockBuilder(Storage\TokenStorage::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getTokenInterfaceMock()
-    {
-        return $this->getMockBuilder(Token\TokenInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getCouchDbUsersFacadeMock()
-    {
-        return $this->getMockBuilder(AppBundleFacade\CouchDbUsers::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
+    /**
+     * @var GuzzleHttp\Client
+     */
+    protected $guzzleClient;
 
     public function testCreateUser()
     {
-        $mock = $this->getGuzzleClientMock();
-
-        $this->getUserWithCouchDbSyncFacade($mock, $this->getTokenStorageMock())->createUser(
-            'foobar',
+        $username = 'fooobar';
+        $user     = $this->userFacade->createUser(
+            $username,
             'mail@domain.de',
-            'pass'
+            '12345'
         );
+
+        $resource = $this->guzzleClient->request(
+            'GET',
+            $this->generateUserCouchDbUrl($username)
+        );
+
+        $this->assertEquals(200, $resource->getStatusCode());
+
+        $resource = $this->guzzleClient->request(
+            'GET',
+            $this->getCurrentCouchDbSessionUrl($username, $user->getCouchDbPassword())
+        );
+
+        $response = json_decode($resource->getBody()->getContents(), true);
+
+        $this->assertEquals($username, $response['userCtx']['name']);
     }
 
     public function testUpdateUser()
     {
-        $responseMock = $this->getGuzzleResponseMock();
-        $responseMock->method('getStatusCode')->willReturn(404);
+        $username = 'fooobar';
+        $user     = $this->userFacade->createUser(
+            $username,
+            'mail@domain.de',
+            '12345'
+        );
 
-        $guzzleMock = $this->getGuzzleClientMock();
-        $guzzleMock->method('request')->willReturn($responseMock);
+        $resource = $this->guzzleClient->request(
+            'GET',
+            $this->getCurrentCouchDbSessionUrl($username, $user->getCouchDbPassword())
+        );
 
-        $user = $this->createSuperAdminUser();
-        $user->setPlainPassword('foobar');
-        $this->getUserWithCouchDbSyncFacade($guzzleMock, $this->getTokenStorageMock())->updateUser($user);
+        $response = json_decode($resource->getBody()->getContents(), true);
+
+        $this->assertEquals($username, $response['userCtx']['name']);
+
+        $user->setPlainPassword('54321');
+
+        $user = $this->userFacade->updateUser($user);
+
+        $resource = $this->guzzleClient->request(
+            'GET',
+            $this->getCurrentCouchDbSessionUrl($username, $user->getCouchDbPassword())
+        );
+
+        $response = json_decode($resource->getBody()->getContents(), true);
+
+        $this->assertEquals($username, $response['userCtx']['name']);
     }
 
     public function testDeleteUser()
     {
-        $bodyMock = $this->getGuzzleBodyMock();
-        $bodyMock->method('getContent')->willReturn(json_encode([]));
+        $this->createDefaultUser();
 
-        $responseMock = $this->getGuzzleResponseMock();
-        $responseMock->method('getBody')->willReturn($bodyMock);
+        $username = 'fooobar';
+        $user     = $this->userFacade->createUser(
+            $username,
+            'mail@domain.de',
+            '12345'
+        );
+        $this->userFacade->saveUser($user);
 
-        $guzzleMock = $this->getGuzzleClientMock();
-        $guzzleMock->method('request')->willReturn($responseMock);
+        $resource = $this->guzzleClient->request(
+            'GET',
+            $this->generateUserCouchDbUrl($username)
+        );
 
-        $tokenInterfaceMock = $this->getTokenInterfaceMock();
-        $tokenInterfaceMock->method('getUser')->willReturn(new Model\User());
+        $this->assertEquals(200, $resource->getStatusCode());
 
-        $tokenStorageMock = $this->getTokenStorageMock();
-        $tokenStorageMock->method('getToken')->willReturn($tokenInterfaceMock);
+        $this->getUserWithCouchDbSyncFacade()->deleteUser($user);
 
-        $user = $this->createSuperAdminUser();
-        $this->getUserWithCouchDbSyncFacade($guzzleMock, $tokenStorageMock)->deleteUser($user);
+        $resource = $this->guzzleClient->request(
+            'GET',
+            $this->generateUserCouchDbUrl($username),
+            ['http_errors' => false]
+        );
+
+        $this->assertEquals(404, $resource->getStatusCode());
     }
 
-    private function getUserWithCouchDbSyncFacade($guzzleMock, $tokenStorageMock)
+    private function generateUserCouchDbUrl($username, $authUsername = null, $authPassword = null)
     {
-        $user = static::createClient()->getKernel()->getContainer()->getParameter(
+        if ($authUsername === null) {
+            $authUsername = $this->getContainer()->getParameter('couchdb_user');
+        }
+
+        if ($authPassword === null) {
+            $authPassword = $this->getContainer()->getParameter('couchdb_password');
+        }
+
+        return sprintf(
+            'http://%s:%s@%s:%s/_users/%s%s',
+            $authUsername,
+            $authPassword,
+            $this->getContainer()->getParameter('couchdb_host'),
+            $this->getContainer()->getParameter('couchdb_port'),
+            AppBundleFacade\CouchDbUsers::USERNAME_PREFIX,
+            $username
+        );
+    }
+
+    private function getCurrentCouchDbSessionUrl($authUsername, $authPassword)
+    {
+        return sprintf(
+            'http://%s:%s@%s:%s/_session',
+            $authUsername,
+            $authPassword,
+            $this->getContainer()->getParameter('couchdb_host'),
+            $this->getContainer()->getParameter('couchdb_port')
+        );
+    }
+
+    private function getUserWithCouchDbSyncFacade()
+    {
+        $tokenInterfaceMock = $this->getMockBuilder(Token\TokenInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $tokenInterfaceMock->method('getUser')->willReturn(new Model\User());
+
+        $tokenStorageMock = $this->getMockBuilder(Storage\TokenStorage::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $tokenStorageMock->method('getToken')->willReturn($tokenInterfaceMock);
+
+        $user     = $this->getContainer()->getParameter(
             'couchdb_user'
         );
-
-        $password = static::createClient()->getKernel()->getContainer()->getParameter(
+        $password = $this->getContainer()->getParameter(
             'couchdb_password'
         );
-
-        $host = static::createClient()->getKernel()->getContainer()->getParameter(
+        $host     = $this->getContainer()->getParameter(
             'couchdb_host'
         );
-
-        $port = static::createClient()->getKernel()->getContainer()->getParameter(
+        $port     = $this->getContainer()->getParameter(
             'couchdb_port'
         );
 
@@ -123,12 +172,20 @@ class UserWithCouchDbSyncTest extends Tests\WebTestCase
             $this->getService('fos_user.user_manager'),
             $this->getService('doctrine_couchdb.odm.default_document_manager'),
             $tokenStorageMock,
-            $guzzleMock,
+            $this->guzzleClient,
             $user,
             $password,
             $host,
             $port,
-            $this->getCouchDbUsersFacadeMock()
+            $this->getService('annostation.labeling_api.database.facade.couchdb_users')
         );
+    }
+
+    protected function setUpImplementation()
+    {
+        $this->userFacade   = $this->getAnnostationService(
+            'database.facade.user_with_couch_db_sync'
+        );
+        $this->guzzleClient = $this->getService('guzzle.client');;
     }
 }
