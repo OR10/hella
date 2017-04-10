@@ -106,6 +106,25 @@ class UserWithCouchDbSync extends AppBundleFacade\User
     /**
      * @param AppBundleModel\User $user
      *
+     * @return AppBundleModel\User
+     */
+    public function updateUser(AppBundleModel\User $user)
+    {
+        $password = $user->getPlainPassword();
+
+        if ($password !== null) {
+            $couchDbPassword = bin2hex(random_bytes(5));
+            $this->couchDbFacade->updateUser($user->getUsername(), $couchDbPassword);
+            $user->setCouchDbPassword($couchDbPassword);
+        }
+
+        return parent::updateUser($user);
+    }
+
+
+    /**
+     * @param AppBundleModel\User $user
+     *
      * @return bool
      */
     public function deleteUser(AppBundleModel\User $user)
