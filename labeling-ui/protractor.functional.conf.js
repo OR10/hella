@@ -6,10 +6,11 @@ const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/Resemble
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
 const JasmineSpecReporter = require('jasmine-spec-reporter');
 const path = require('path');
+const seleniumServerJar = require("selenium-standalone-jar");
 
 exports.config = {
   framework: 'jasmine2',
-  seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
+  seleniumServerJar: seleniumServerJar.path,
 
   onPrepare: () => {
     require('./Tests/Support/Jasmine/CustomMatchers');

@@ -1,5 +1,4 @@
 require('babel-core/register');
-const seleniumServerJar = require("selenium-standalone-jar");
 
 // We don't have SystemJS available here so we can't use 'import'
 const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter');
@@ -7,6 +6,7 @@ const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/Resemble
 const JasmineSpecReporter = require('jasmine-spec-reporter');
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
 const path = require('path');
+const seleniumServerJar = require("selenium-standalone-jar");
 
 exports.config = {
   framework: 'jasmine2',
