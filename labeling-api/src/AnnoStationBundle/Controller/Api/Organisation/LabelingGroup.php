@@ -85,8 +85,8 @@ class LabelingGroup extends Controller\Base
         }
 
         $users = [];
-        foreach ($this->userFacade->getUserByRole($organisation, Model\User::ROLE_LABEL_COORDINATOR)->toArray(
-        ) as $user) {
+        foreach ($this->userFacade->getUsersByOrganisationAndRole($organisation, Model\User::ROLE_LABEL_COORDINATOR)
+                     ->toArray() as $user) {
             $users[] = [
                 'id'   => $user->getId(),
                 'name' => $user->getUsername(),
