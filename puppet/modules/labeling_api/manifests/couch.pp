@@ -7,8 +7,11 @@ class labeling_api::couch(
   $couchdb_password_read_only = $labeling_api::params::couchdb_password_read_only,
   $prepare_test_environment = $labeling_api::params::prepare_test_environment,
   $max_open_files = undef,
-  $max_dbs_open = 1000,
-  $max_http_connections = 4048,
+  $max_dbs_open = 100,
+  $max_http_connections = 2048,
+  $max_erlang_ports = undef,
+  $database_admins = [],
+  $database_members = [],
 ) {
   include ::couchdb
 
@@ -25,10 +28,13 @@ class labeling_api::couch(
   }
 
   ::couchdb::database { $database_name:
-    admins => ['admin'],
+    admins  => $database_admins,
+    members => $database_members,
   }
 
   ::couchdb::database { $database_name_read_only:
+    admins  => $database_admins,
+    members => $database_members,
   }
 
   ::couchdb::replication { "${database_name} -> ${database_name_read_only}":
@@ -40,38 +46,37 @@ class labeling_api::couch(
 
   if $prepare_test_environment {
     ::couchdb::database { "${database_name}_test":
+      admins  => $database_admins,
+      members => $database_members,
     }
   }
 
   if $max_open_files {
     ::limits::fragment { 'couchdb/-/nofile':
-      value => $max_open_files,
+      value  => $max_open_files,
+      notify => Service[$::couchdb::service_name],
     }
   }
 
-  #file { '/etc/couchdb/local.ini':
-  #  ensure  => present,
-  #  content => '',
-  #  notify  => Service['couchdb'],
-  #}
-
   file { '/etc/couchdb/local.d/labeling-api.ini':
     ensure  => file,
-    notify  => Service['couchdb'],
+    notify  => Service[$::couchdb::service_name],
     content => template('labeling_api/couchdb/labeling-api.ini.erb'),
-    require => Package['couchdb'],
+    require => Package[$::couchdb::package_name],
   }
 
-  file { '/etc/default/couchdb':
-    ensure => present,
-  }
+  if $max_erlang_ports {
+    file { '/etc/default/couchdb':
+      ensure => present,
+    }
 
-  ->
+    ->
 
-  file_line { '/etc/default/couchdb':
-    path    => '/etc/default/couchdb',
-    line    => 'ERL_MAX_PORTS=4096',
-    match   => '^.*ERL_MAX_PORTS\s*=.*',
-    notify  => Service['couchdb'],
+    file_line { '/etc/default/couchdb[ERL_MAX_PORTS]':
+      path    => '/etc/default/couchdb',
+      line    => 'ERL_MAX_PORTS=${max_erlang_ports}',
+      match   => '^.*ERL_MAX_PORTS\s*=.*',
+      notify  => Service[$::couchdb::service_name],
+    }
   }
 }
