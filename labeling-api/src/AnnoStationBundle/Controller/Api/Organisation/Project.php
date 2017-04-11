@@ -84,22 +84,22 @@ class Project extends Controller\Base
     private $userPermissions;
 
     /**
-     * @var Service\ValidateTaskAccessRights
+     * @var Service\TaskDatabaseValidator
      */
-    private $validateTaskAccessRights;
+    private $taskDatabaseValidator;
 
     /**
-     * @param Facade\Project                   $projectFacade
-     * @param Facade\LabeledThingInFrame       $labeledThingInFrameFacade
-     * @param Facade\LabelingTask              $labelingTaskFacade
-     * @param Facade\Organisation              $organisationFacade
-     * @param Facade\Campaign                  $campaignFacade
-     * @param Storage\TokenStorage             $tokenStorage
-     * @param AppFacade\User                   $userFacade
-     * @param Service\Authorization            $authorizationService
-     * @param Service\ValidateTaskAccessRights $validateTaskAccessRights
-     * @param AMQP\FacadeAMQP                  $amqpFacade
-     * @param Authentication\UserPermissions   $userPermissions
+     * @param Facade\Project                 $projectFacade
+     * @param Facade\LabeledThingInFrame     $labeledThingInFrameFacade
+     * @param Facade\LabelingTask            $labelingTaskFacade
+     * @param Facade\Organisation            $organisationFacade
+     * @param Facade\Campaign                $campaignFacade
+     * @param Storage\TokenStorage           $tokenStorage
+     * @param AppFacade\User                 $userFacade
+     * @param Service\Authorization          $authorizationService
+     * @param Service\TaskDatabaseValidator  $taskDatabaseValidator
+     * @param AMQP\FacadeAMQP                $amqpFacade
+     * @param Authentication\UserPermissions $userPermissions
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -110,7 +110,7 @@ class Project extends Controller\Base
         Storage\TokenStorage $tokenStorage,
         AppFacade\User $userFacade,
         Service\Authorization $authorizationService,
-        Service\ValidateTaskAccessRights $validateTaskAccessRights,
+        Service\TaskDatabaseValidator $taskDatabaseValidator,
         AMQP\FacadeAMQP $amqpFacade,
         Authentication\UserPermissions $userPermissions
     ) {
@@ -124,7 +124,7 @@ class Project extends Controller\Base
         $this->organisationFacade        = $organisationFacade;
         $this->campaignFacade            = $campaignFacade;
         $this->userPermissions           = $userPermissions;
-        $this->validateTaskAccessRights  = $validateTaskAccessRights;
+        $this->taskDatabaseValidator     = $taskDatabaseValidator;
     }
 
     /**
@@ -620,7 +620,7 @@ class Project extends Controller\Base
         $project = $this->projectFacade->save($project);
 
         foreach($this->projectFacade->getTasksByProject($project) as $labelingTask) {
-            $this->validateTaskAccessRights->validate($labelingTask);
+            $this->taskDatabaseValidator->updateSecurityPermissions($labelingTask);
         }
 
         return View\View::create()->setData(['result' => $project]);

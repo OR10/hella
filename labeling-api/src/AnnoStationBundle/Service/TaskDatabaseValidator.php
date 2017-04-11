@@ -8,7 +8,7 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service;
 
-class ValidateTaskAccessRights
+class TaskDatabaseValidator
 {
     /**
      * @var AppBundleFacade\CouchDbSecurity
@@ -52,7 +52,7 @@ class ValidateTaskAccessRights
     /**
      * @param Model\LabelingTask $labelingTask
      */
-    public function validate(Model\LabelingTask $labelingTask)
+    public function updateSecurityPermissions(Model\LabelingTask $labelingTask)
     {
         $project      = $this->projectFacade->find($labelingTask->getProjectId());
         $organisation = $this->organisationFacade->find($project->getOrganisationId());
