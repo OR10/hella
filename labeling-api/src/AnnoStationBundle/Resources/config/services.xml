@@ -330,5 +330,13 @@
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.reports"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.labeling_tasks"/>
         </service>
+
+        <service id="annostation.labeling_api.service.validate_task_access_rights" class="AnnoStationBundle\Service\ValidateTaskAccessRights">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.couch_db_security"/>
+        </service>
     </services>
 </container>
