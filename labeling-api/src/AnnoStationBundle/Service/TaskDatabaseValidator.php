@@ -72,7 +72,11 @@ class TaskDatabaseValidator
             $this->getAllowedSuperAdminUsernames()
         );
 
-        $memberNames[] = $this->userFacade->getUserById($project->getLatestAssignedCoordinatorUserId())->getUsername();
+        $latestAssignedCoordinatorUserId = $project->getLatestAssignedCoordinatorUserId();
+        if ($latestAssignedCoordinatorUserId !== null) {
+            $memberNames[] = $this->userFacade->getUserById($latestAssignedCoordinatorUserId)
+                ->getUsername();
+        }
 
         $labelingGroupId = $project->getLabelingGroupId();
         if ($labelingGroupId !==  null) {
@@ -84,7 +88,7 @@ class TaskDatabaseValidator
 
         $this->couchDbSecurity->updateSecurity(
             sprintf(Service\TaskDatabaseCreator::TASK_DATABASE_NAME_TEMPLATE, $project->getId(), $labelingTask->getId()),
-            $memberNames
+            array_unique($memberNames)
         );
     }
 
