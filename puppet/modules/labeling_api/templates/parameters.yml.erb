@@ -15,6 +15,8 @@ parameters:
     couchdb_port_external: <%= @couchdb_port_external %>
     couchdb_user: <% if @couchdb_user != nil %><%= @couchdb_user %><% else %>~<% end %>
     couchdb_password: <% if @couchdb_password != nil %><%= @couchdb_password %><% else %>~<% end %>
+    couchdb_user_read_only: <%= @couchdb_user_read_only %>
+    couchdb_password_read_only: <%= @couchdb_password_read_only %>
     couchdb_external_url: <%= @couchdb_external_url %>
 
     fos_user_bundle_to_couchdb_sync_enabled: <%= @fos_user_bundle_to_couchdb_sync_enabled %>

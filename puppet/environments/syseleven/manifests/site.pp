@@ -8,6 +8,9 @@ file { ['/etc/AnnoStation', '/etc/AnnoStation/labeling-api']:
   ensure  => directory,
 }
 
+create_resources('couchdb::user', hiera('couchdb::users', {}))
+create_resources('limits::fragment', hiera('limits::fragment', {}))
+
 node /^app\-\d+\.labeltool(\.*|$)/ {
     include ::php
 }

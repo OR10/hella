@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "DELETE",
+    "path": "/api/task/TASKID-TASKID/labeledThing/LABELED-THING-ID-1",
+    "queryString": {
+      "rev": "LABELED-THING-REVISION"
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "success": true
+      }
+    }
+  }
+}

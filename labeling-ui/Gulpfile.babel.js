@@ -356,7 +356,7 @@ gulp.task('test-e2e-run', ['webdriver-update', 'copy-canteen'], next => {
       assetPath: 'Distribution',
       port: 52343,
     },
-    paths.files.tests.e2e,
+    [],
     next
   );
 });
