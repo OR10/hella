@@ -337,6 +337,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <argument type="service" id="annostation.labeling_api.database.facade.couch_db_security"/>
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
     </services>
 </container>

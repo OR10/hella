@@ -35,18 +35,25 @@ class TaskDatabaseValidator
      */
     private $labelingGroupFacade;
 
+    /**
+     * @var bool
+     */
+    private $pouchDbFeatureEnabled;
+
     public function __construct(
         Facade\Project $projectFacade,
         Facade\Organisation $organisationFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         AppBundleFacade\User $userFacade,
-        AppBundleFacade\CouchDbSecurity $couchDbSecurity
+        AppBundleFacade\CouchDbSecurity $couchDbSecurity,
+        $pouchDbFeatureEnabled
     ) {
-        $this->couchDbSecurity     = $couchDbSecurity;
-        $this->projectFacade       = $projectFacade;
-        $this->organisationFacade  = $organisationFacade;
-        $this->userFacade          = $userFacade;
-        $this->labelingGroupFacade = $labelingGroupFacade;
+        $this->couchDbSecurity       = $couchDbSecurity;
+        $this->projectFacade         = $projectFacade;
+        $this->organisationFacade    = $organisationFacade;
+        $this->userFacade            = $userFacade;
+        $this->labelingGroupFacade   = $labelingGroupFacade;
+        $this->pouchDbFeatureEnabled = $pouchDbFeatureEnabled;
     }
 
     /**
@@ -54,6 +61,10 @@ class TaskDatabaseValidator
      */
     public function updateSecurityPermissions(Model\LabelingTask $labelingTask)
     {
+        if (!$this->pouchDbFeatureEnabled) {
+            return;
+        }
+
         $project      = $this->projectFacade->find($labelingTask->getProjectId());
         $organisation = $this->organisationFacade->find($project->getOrganisationId());
 
@@ -79,7 +90,7 @@ class TaskDatabaseValidator
         }
 
         $labelingGroupId = $project->getLabelingGroupId();
-        if ($labelingGroupId !==  null) {
+        if ($labelingGroupId !== null) {
             $labelingGroup = $this->labelingGroupFacade->find($labelingGroupId);
             foreach ($labelingGroup->getLabeler() as $userId) {
                 $memberNames[] = $this->userFacade->getUserById($userId)->getUsername();
@@ -87,7 +98,11 @@ class TaskDatabaseValidator
         }
 
         $this->couchDbSecurity->updateSecurity(
-            sprintf(Service\TaskDatabaseCreator::TASK_DATABASE_NAME_TEMPLATE, $project->getId(), $labelingTask->getId()),
+            sprintf(
+                Service\TaskDatabaseCreator::TASK_DATABASE_NAME_TEMPLATE,
+                $project->getId(),
+                $labelingTask->getId()
+            ),
             array_unique($memberNames)
         );
     }
