@@ -216,6 +216,7 @@
                  class="AnnoStationBundle\Command\ResetCouchDbUserPasswords">
             <argument type="service" id="annostation.labeling_api.database.facade.couchdb_users"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="fos_user.util.token_generator"/>
             <tag name="console.command"/>
         </service>
     </services>

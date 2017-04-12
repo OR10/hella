@@ -3,10 +3,11 @@
 namespace AnnoStationBundle\Command;
 
 use AnnoStationBundle\Command;
+use AnnoStationBundle\Database\Facade as AnnoStationFacade;
 use AppBundle\Database\Facade;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-
+use FOS\UserBundle\Util;
 
 class ResetCouchDbUserPasswords extends Command\Base
 {
@@ -20,13 +21,20 @@ class ResetCouchDbUserPasswords extends Command\Base
      */
     private $userFacade;
 
+    /**
+     * @var Util\TokenGenerator
+     */
+    private $tokenGenerator;
+
     public function __construct(
         Facade\CouchDbUsers $couchDbUsersFacade,
-        Facade\User $userFacade
+        Facade\User $userFacade,
+        Util\TokenGenerator $tokenGenerator
     ) {
         parent::__construct();
         $this->couchDbUsersFacade = $couchDbUsersFacade;
         $this->userFacade         = $userFacade;
+        $this->tokenGenerator     = $tokenGenerator;
     }
 
     protected function configure()
@@ -39,7 +47,7 @@ class ResetCouchDbUserPasswords extends Command\Base
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion(
             'This command will reset ALL CouchDB passwords for every FOS User! Are you sure?',
-                false
+            false
         );
 
         if (!$helper->ask($input, $output, $question)) {
@@ -51,7 +59,10 @@ class ResetCouchDbUserPasswords extends Command\Base
         foreach ($users as $user) {
             $couchDbPassword = substr($this->tokenGenerator->generateToken(), 0, 20);
 
-            $this->couchDbUsersFacade->updateUser($user->getUsername(), $couchDbPassword);
+            $this->couchDbUsersFacade->updateUser(
+                sprintf('%s%s', AnnoStationFacade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX, $user->getUsername()),
+                $couchDbPassword
+            );
 
             $user->setCouchDbPassword($couchDbPassword);
             $this->userFacade->saveUser($user);
