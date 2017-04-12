@@ -38,6 +38,11 @@ class Init extends Base
     /**
      * @var string
      */
+    private $couchDatabaseReadOnly;
+
+    /**
+     * @var string
+     */
     private $userPassword;
 
     /**
@@ -81,12 +86,18 @@ class Init extends Base
     private $organisation;
 
     /**
+     * @var AppFacade\CouchDbUsers
+     */
+    private $couchDbUsersFacade;
+
+    /**
      * Init constructor.
      *
      * @param CouchDB\CouchDBClient                        $couchClient
      * @param Service\VideoImporter                        $videoImporterService
      * @param Service\TaskCreator                          $taskCreator
      * @param                                              $couchDatabase
+     * @param                                              $couchDatabaseReadOnly
      * @param                                              $userPassword
      * @param                                              $cacheDir
      * @param                                              $frameCdnDir
@@ -96,12 +107,14 @@ class Init extends Base
      * @param Facade\TaskConfiguration                     $taskConfigurationFacade
      * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
      * @param Facade\Organisation                          $organisationFacade
+     * @param AppFacade\CouchDbUsers                       $couchDbUsersFacade
      */
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
         Service\VideoImporter $videoImporterService,
         Service\TaskCreator $taskCreator,
         $couchDatabase,
+        $couchDatabaseReadOnly,
         $userPassword,
         $cacheDir,
         $frameCdnDir,
@@ -110,7 +123,8 @@ class Init extends Base
         Facade\LabelingGroup $labelingGroupFacade,
         Facade\TaskConfiguration $taskConfigurationFacade,
         Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
-        Facade\Organisation $organisationFacade
+        Facade\Organisation $organisationFacade,
+        AppFacade\CouchDbUsers $couchDbUsersFacade
     ) {
         parent::__construct();
 
@@ -118,6 +132,7 @@ class Init extends Base
         $this->videoImporterService             = $videoImporterService;
         $this->taskCreator                      = $taskCreator;
         $this->couchDatabase                    = (string)$couchDatabase;
+        $this->couchDatabaseReadOnly            = (string)$couchDatabaseReadOnly;
         $this->userPassword                     = (string)$userPassword;
         $this->cacheDir                         = (string)$cacheDir;
         $this->frameCdnDir                      = (string)$frameCdnDir;
@@ -127,6 +142,7 @@ class Init extends Base
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
         $this->taskConfigurationFacade          = $taskConfigurationFacade;
         $this->organisationFacade               = $organisationFacade;
+        $this->couchDbUsersFacade               = $couchDbUsersFacade;
     }
 
     protected function configure()
@@ -252,13 +268,18 @@ class Init extends Base
         try {
             $this->writeVerboseInfo($output, 'dropping couch databases');
             $this->couchClient->deleteDatabase($this->couchDatabase);
+            $this->couchClient->deleteDatabase($this->couchDatabaseReadOnly);
             foreach ($this->couchClient->getAllDatabases() as $database) {
                 if (strpos($database, 'taskdb-project-') === 0) {
                     $this->couchClient->deleteDatabase($database);
                 }
             }
-            $this->writeVerboseInfo($output, 'creating couch database');
+            $this->writeVerboseInfo($output, 'dropping couchdb annostation_ users');
+            $this->couchDbUsersFacade->purgeCouchDbsUserDatabase(Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX);
+
+            $this->writeVerboseInfo($output, 'creating couch databases');
             $this->couchClient->createDatabase($this->couchDatabase);
+            $this->couchClient->createDatabase($this->couchDatabaseReadOnly);
         } catch (\Exception $e) {
             $this->writeError($output, "Error deleting couch database: {$e->getMessage()}");
 
