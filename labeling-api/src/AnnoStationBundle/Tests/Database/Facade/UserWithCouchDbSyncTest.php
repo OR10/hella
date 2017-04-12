@@ -177,7 +177,8 @@ class UserWithCouchDbSyncTest extends Tests\WebTestCase
             $password,
             $host,
             $port,
-            $this->getService('annostation.labeling_api.database.facade.couchdb_users')
+            $this->getService('annostation.labeling_api.database.facade.couchdb_users'),
+            $this->getService('fos_user.util.token_generator')
         );
     }
 
