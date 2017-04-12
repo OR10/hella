@@ -9,10 +9,15 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <argument type="service" id="security.token_storage"/>
         </service>
+
+        <service id="annostation.labeling_api.database.facade.user.selected-alias"
+                 alias="annostation.labeling_api.database.facade.user"/>
+
         <service id="annostation.labeling_api.database.facade.role" class="AppBundle\Database\Facade\Role">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <argument type="service" id="annostation.services.uuid_generator"/>
         </service>
+
         <service id="annostation.labeling_api.database.facade.couchdb_users" class="AppBundle\Database\Facade\CouchDbUsers">
             <argument type="service" id="guzzle.client"/>
             <argument>%couchdb_user%</argument>

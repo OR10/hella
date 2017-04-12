@@ -54,6 +54,11 @@ class User extends BaseUser
     protected $organisations = [];
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    protected $couchDbPassword;
+
+    /**
      * User constructor.
      */
     public function __construct()
@@ -263,5 +268,21 @@ class User extends BaseUser
     public function getExpiresAt()
     {
         return $this->expiresAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCouchDbPassword()
+    {
+        return $this->couchDbPassword;
+    }
+
+    /**
+     * @param mixed $couchDbPassword
+     */
+    public function setCouchDbPassword($couchDbPassword)
+    {
+        $this->couchDbPassword = $couchDbPassword;
     }
 }
