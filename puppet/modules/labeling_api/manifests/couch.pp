@@ -74,7 +74,7 @@ class labeling_api::couch(
 
     file_line { '/etc/default/couchdb[ERL_MAX_PORTS]':
       path    => '/etc/default/couchdb',
-      line    => 'ERL_MAX_PORTS=${max_erlang_ports}',
+      line    => "ERL_MAX_PORTS=${max_erlang_ports}",
       match   => '^.*ERL_MAX_PORTS\s*=.*',
       notify  => Service[$::couchdb::service_name],
     }
