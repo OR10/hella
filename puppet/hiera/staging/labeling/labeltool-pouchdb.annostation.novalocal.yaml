@@ -1,4 +1,5 @@
 couchdb::bind_address: 127.0.0.1
+annostation_base::nodejs: true
 
 letsencrypt::email: chh@crosscan.com
 annostation_letsencrypt::domains:
@@ -18,3 +19,19 @@ labeling_api::params::couchdb_external_url: 'https://pouch:3,udvezdxp}2Rh.UNmuZ@
 labeling_api::params::pouchdb_feature_enabled: true
 labeling_api::params::couchdb_host_external: 'labeltool.crosscan.com'
 labeling_api::letsencrypt: true
+
+labeling_api::couch::max_open_files: 65535
+labeling_api::couch::max_dbs_open: 65535
+labeling_api::couch::max_erlang_ports: 40000
+
+couchdb::cors_origins: '*'
+couchdb::cors_methods: '*'
+couchdb::admin_username: "%{labeling_api::params::couchdb_user}"
+couchdb::admin_password: "%{labeling_api::params::couchdb_password}"
+couchdb::admin_salt: 'klsdagksdalsaasasafksdasahklfahklf'
+couchdb::require_valid_user: true
+couchdb::users:
+  "%{::labeling_api::params::couchdb_user}":
+    password: "%{::labeling_api::params::couchdb_password}"
+  "%{::labeling_api::params::couchdb_user_read_only}":
+    password: "%{::labeling_api::params::couchdb_password_read_only}"
