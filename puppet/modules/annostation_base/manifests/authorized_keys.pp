@@ -52,4 +52,10 @@ class annostation_base::authorized_keys() {
     type => 'ssh-rsa',
     key  => 'AAAAB3NzaC1yc2EAAAABIwAAAQEA8KARHlqTD80K4EZj7CRHp2pknzZ2O5BVpyZGiVrqoyrevx2ou50a2igtCQcTK1u/Sc7qak2NvIl0U953HuYIL7hC39Y62IZ2kMa5cjZW1EuG8nO3iLiHDIZTmrQ+TFK8zgiZdv9QKKTwpcAIqj3cWKr+49OfsW/BYYzQuuz2OcbR10jBpULdRAb8Nn7a9wU1mBOV5Lyb4ZmF4W6IQm6NDe1lHhT7C04gM78IPO5pkMqFf7f3xEhipwK7nrqpPwDP8I/ydT/a6VjarZM8q4aCZV2Fp4E/MpY/BKN0lxe7jk7E7x4u6ebV2RO92aPjek3Rw4u7F7hf60xg76Ag54tJew==',
   }
+
+  ssh_authorized_key { 'doe@crosscan.com for root':
+    user => 'root',
+    type => 'ssh-rsa',
+    key  => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQC1TBAVmSRcgfhApwwfD6hwWPNp/Oz7VSnrP4bdV94l46ntJFfep5olHoRWatygH+kGpMEYz+fpNEVaVOtT/RjaRV1AbYsWb9dciB+y4dA0DJCOoMCF6QpASqp8t+bnv0adUKHuI6LocDkC/d4+OxY+TgvsFQO20Mk3HX2SSJaIy31l6U31KqEeH85P9XzcSycquyGjdv5ZDlMVKUj5R9JoB2Zt5I/lRk1KGpGUmGDBk4Cv+egUQIucTR0oDhsioOcooVjE2ovFitTzRS9c2mAL3kda+9BfKUUbn+/7+ZfaCdyBu3u0UUt+G753yvMZEXPejHJxIQWhf8JVmlqoa2Zn',
+  }
 }

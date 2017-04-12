@@ -23,7 +23,7 @@
             <argument>%user_password%</argument>
             <argument>%cache_dir%</argument>
             <argument>%frame_cdn_dir%</argument>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
@@ -42,7 +42,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
             <argument type="service" id="annostation.labeling_api.service.task_creator"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <tag name="console.command"/>
         </service>
 
@@ -84,7 +84,7 @@
         <service id="annostation.labeling_api.command.add_default_project_user_id"
                  class="AnnoStationBundle\Command\AddDefaultProjectUserId">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <tag name="console.command"/>
         </service>
         <service id="annostation.labeling_api.command.assign_default_labeling_group"
@@ -141,7 +141,7 @@
         <service id="annostation.labeling_api.command.migrations.add_prefix_to_username_and_email"
                  class="AnnoStationBundle\Command\Migrations\AddPrefixToUsernameAndEmail"
         >
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <tag name="console.command"/>
         </service>
         <service id="annostation.labeling_api.command.migrations.set_missing_project_ids_to_labeled_thing_in_frames"
@@ -189,7 +189,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <tag name="console.command"/>
         </service>
 

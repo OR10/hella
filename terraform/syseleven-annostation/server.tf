@@ -25,7 +25,7 @@ resource "openstack_compute_instance_v2" "labeltool" {
     count = "${var.app-count}"
 
     name = "app-${count.index}.labeltool"
-    image_id = "93b03b4b-79cf-49d7-9025-1420f751523a"
+    image_id = "d82d843b-bcb5-41d2-b545-a0937c3796ad"
     flavor_name = "${var.flavors["app-${count.index}.labeltool"]}"
     key_pair = "${openstack_compute_keypair_v2.crosscan-chh.name}"
     stop_before_destroy = false
@@ -66,7 +66,7 @@ resource "openstack_compute_instance_v2" "labeltool-couchdb" {
     count = "${var.couchdb-count}"
 
     name = "couchdb-${count.index}.labeltool"
-    image_id = "93b03b4b-79cf-49d7-9025-1420f751523a"
+    image_id = "d82d843b-bcb5-41d2-b545-a0937c3796ad"
     flavor_name = "${var.flavors["couchdb-${count.index}.labeltool"]}"
     key_pair = "${openstack_compute_keypair_v2.crosscan-chh.name}"
     stop_before_destroy = false

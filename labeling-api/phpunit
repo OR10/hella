@@ -4,12 +4,13 @@ NC='\033[0m' # No Color
 
 if [ -f $(which docker) ]; then
     echo -e "${YELLOW}Starting CouchDB Docker Container${NC}"
-    DOCKER=$(sudo docker run -p 5989:5984 -d couchdb)
+    ./scripts/CouchDB/Docker/shutdown.sh
+    ./scripts/CouchDB/Docker/start.sh
 fi
 
 ./bin/phpunit $@
 
 if [ -f $(which docker) ]; then
     echo -e "${YELLOW}Removing CouchDB Docker Container${NC}"
-    sudo docker rm -f $DOCKER
+    ./scripts/CouchDB/Docker/shutdown.sh
 fi

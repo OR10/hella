@@ -1,0 +1,231 @@
+{
+  "request": {
+    "path": "/api/task/TASKID-TASKID",
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "task": {
+          "assignmentHistory": [
+            {"userId": "user-id-1", "assignedAt": "1470132376", "phase": "labeling", "status": "in_progress"}
+          ],
+          "descriptionText": "How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?",
+          "descriptionTitle": "Identify the person",
+          "drawingTool": "polyline",
+          "frameNumberMapping": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "id": "TASKID-TASKID",
+          "labelInstruction": "vehicle",
+          "labelStructure": {
+            "name": "root",
+            "children": [
+              {
+                "name": "vehicle-type",
+                "children": [
+                  {
+                    "name": "car"
+                  },
+                  {
+                    "name": "truck"
+                  },
+                  {
+                    "name": "2-wheeler-vehicle"
+                  },
+                  {
+                    "name": "bus"
+                  },
+                  {
+                    "name": "misc-vehicle"
+                  },
+                  {
+                    "name": "ignore-vehicle"
+                  }
+                ]
+              },
+              {
+                "name": "direction",
+                "children": [
+                  {
+                    "name": "direction-right"
+                  },
+                  {
+                    "name": "direction-left"
+                  },
+                  {
+                    "name": "direction-front"
+                  },
+                  {
+                    "name": "direction-back"
+                  }
+                ]
+              },
+              {
+                "name": "occlusion",
+                "children": [
+                  {
+                    "name": "occlusion-20"
+                  },
+                  {
+                    "name": "occlusion-20-80"
+                  },
+                  {
+                    "name": "occlusion-80"
+                  }
+                ]
+              },
+              {
+                "name": "truncation",
+                "children": [
+                  {
+                    "name": "truncation-20"
+                  },
+                  {
+                    "name": "truncation-20-80"
+                  },
+                  {
+                    "name": "truncation-80"
+                  }
+                ]
+              }
+            ]
+          },
+          "labelStructureUi": {
+            "vehicle-type": {
+              "challenge": "Vehicle Type"
+            },
+            "car": {
+              "response": "Car"
+            },
+            "truck": {
+              "response": "Truck"
+            },
+            "2-wheeler-vehicle": {
+              "response": "2 wheeler vehicle"
+            },
+            "bus": {
+              "response": "Bus"
+            },
+            "misc-vehicle": {
+              "response": "Misc vehicle"
+            },
+            "ignore-vehicle": {
+              "response": "Ignore vehicle"
+            },
+            "direction": {
+              "challenge": "Direction"
+            },
+            "direction-right": {
+              "response": "Right"
+            },
+            "direction-left": {
+              "response": "Left"
+            },
+            "direction-front": {
+              "response": "Front"
+            },
+            "direction-back": {
+              "response": "Back"
+            },
+            "occlusion": {
+              "challenge": "Occlusion"
+            },
+            "occlusion-20": {
+              "response": "< 20%"
+            },
+            "occlusion-20-80": {
+              "response": "20% - 80%"
+            },
+            "occlusion-80": {
+              "response": "> 80%"
+            },
+            "truncation": {
+              "challenge": "Truncation"
+            },
+            "truncation-20": {
+              "response": "< 20%"
+            },
+            "truncation-20-80": {
+              "response": "20% - 80%"
+            },
+            "truncation-80": {
+              "response": "> 80%"
+            }
+          },
+          "metadata": {
+            "frameRange": {
+              "startFrameNumber": 1,
+              "endFrameNumber": 5
+            },
+            "frameSkip": 1,
+            "startFrameNumber": 1
+          },
+          "minimalVisibleShapeOverflow": null,
+          "predefinedClasses": [
+          ],
+          "projectId": "PROJECTID-PROJECTID",
+          "readOnly": false,
+          "reopen": false,
+          "requiredImageTypes": [
+            "sourceJpg",
+            "thumbnail"
+          ],
+          "rev": "3-f5f607d02b030a04c2c01dbe80957ece",
+          "status": {
+            "labeling": "in_progress"
+          },
+          "taskConfigurationId": null,
+          "taskType": "object-labeling",
+          "userId": null,
+          "videoId": "VIDEOID-VIDEOID"
+        },
+        "users": {
+          "user-id-1": {
+            "id": "user-id-1",
+            "username": "user",
+            "email": "user@example.com",
+            "enabled": true,
+            "lastLogin": "2016-08-02T11:25:43+0200",
+            "locked": false,
+            "roles": [
+              "ROLE_LABELER",
+              "ROLE_USER"
+            ]
+          },
+          "user-id-2": {
+            "id": "user-id-2",
+            "username": "admin",
+            "email": "admin@example.com",
+            "enabled": true,
+            "lastLogin": "2016-08-02T11:25:43+0200",
+            "locked": false,
+            "roles": [
+              "ROLE_ADMINISTRATOR",
+              "ROLE_LABEL_COORDINATOR",
+              "ROLE_LABELER",
+              "ROLE_USER"
+            ]
+          },
+          "user-id-3": {
+            "id": "user-id-3",
+            "username": "coordinator",
+            "email": "coordinator@example.com",
+            "enabled": true,
+            "lastLogin": "2016-08-02T11:25:43+0200",
+            "locked": false,
+            "roles": [
+              "ROLE_LABEL_COORDINATOR",
+              "ROLE_LABELER",
+              "ROLE_USER"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

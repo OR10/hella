@@ -8,9 +8,11 @@ use Doctrine\ODM\CouchDB;
 use FOS\UserBundle\Model as FosUserModel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use GuzzleHttp;
+use FOS\UserBundle\Util;
 
 class UserWithCouchDbSync extends AppBundleFacade\User
 {
+    const COUCHDB_USERNAME_PREFIX = 'annostation_';
     /**
      * @var string
      */
@@ -41,6 +43,11 @@ class UserWithCouchDbSync extends AppBundleFacade\User
      */
     private $couchDbFacade;
 
+    /**
+     * @var Util\TokenGenerator
+     */
+    private $tokenGenerator;
+
     public function __construct(
         FosUserModel\UserManagerInterface $userManager,
         CouchDB\DocumentManager $documentManager,
@@ -50,7 +57,8 @@ class UserWithCouchDbSync extends AppBundleFacade\User
         $couchAuthPassword,
         $couchHost,
         $couchPort,
-        AppBundleFacade\CouchDbUsers $couchDbFacade
+        AppBundleFacade\CouchDbUsers $couchDbFacade,
+        Util\TokenGenerator $tokenGenerator
     ) {
         parent::__construct($userManager, $documentManager, $tokenStorage);
 
@@ -60,6 +68,7 @@ class UserWithCouchDbSync extends AppBundleFacade\User
         $this->couchPort         = $couchPort;
         $this->guzzleClient      = $guzzleClient;
         $this->couchDbFacade     = $couchDbFacade;
+        $this->tokenGenerator    = $tokenGenerator;
     }
 
     /**
@@ -85,7 +94,7 @@ class UserWithCouchDbSync extends AppBundleFacade\User
         $couchDbPassword = null
     ) {
         if ($couchDbPassword === null) {
-            $couchDbPassword = bin2hex(random_bytes(5));
+            $couchDbPassword = substr($this->tokenGenerator->generateToken(), 0, 20);
         }
         $user = parent::createUser(
             $username,
@@ -98,7 +107,10 @@ class UserWithCouchDbSync extends AppBundleFacade\User
             $couchDbPassword
         );
 
-        $this->couchDbFacade->updateUser($username, $couchDbPassword);
+        $this->couchDbFacade->updateUser(
+            sprintf('%s%s', self::COUCHDB_USERNAME_PREFIX, $username),
+            $couchDbPassword
+        );
 
         return $user;
     }
@@ -113,8 +125,11 @@ class UserWithCouchDbSync extends AppBundleFacade\User
         $password = $user->getPlainPassword();
 
         if ($password !== null) {
-            $couchDbPassword = bin2hex(random_bytes(5));
-            $this->couchDbFacade->updateUser($user->getUsername(), $couchDbPassword);
+            $couchDbPassword = substr($this->tokenGenerator->generateToken(), 0, 20);
+            $this->couchDbFacade->updateUser(
+                sprintf('%s%s', self::COUCHDB_USERNAME_PREFIX, $user->getUsername()),
+                $couchDbPassword
+            );
             $user->setCouchDbPassword($couchDbPassword);
         }
 
@@ -131,7 +146,7 @@ class UserWithCouchDbSync extends AppBundleFacade\User
     {
         parent::deleteUser($user);
 
-        $this->couchDbFacade->deleteUser($user->getUsername());
+        $this->couchDbFacade->deleteUser(sprintf('%s%s', self::COUCHDB_USERNAME_PREFIX, $user->getUsername()));
 
         return true;
     }

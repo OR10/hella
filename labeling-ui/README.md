@@ -9,7 +9,7 @@ Everything concerning the Client-Side rendering of the UI, as well as it's serve
 The following software is required to build/run the project:
 
 - [nodejs](https://nodejs.org) version 4.x
-- [gulp](http://gulpjs.com/)
+- [gulp](http://gulpjs.com/) (`npm install -g gulp`)
 - [yarn] (https://yarnpkg.com/lang/en/)
 
 ## Installing dependencies

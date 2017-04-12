@@ -36,6 +36,20 @@ class labeling_api::app(
       try_files => '$uri /labeling/index.html',
     }
 
+    if $::labeling_api::params::couchdb_password {
+      nginx::resource::location { '~ /couchdb/(.*)':
+        ssl                   => $httpv2,
+        ssl_only              => $httpv2,
+        ensure                => present,
+        vhost                 => 'labeling_api',
+        proxy                 => "http://${::labeling_api::params::couchdb_host}:${::labeling_api::params::couchdb_port}/\$1\$is_args\$args",
+        proxy_read_timeout    => '1800',
+        proxy_connect_timeout => '90',
+        proxy_redirect        => 'off',
+        proxy_set_header      => ['Host $host'],
+      }
+    }
+
     nginx::resource::location { '/labeling':
       ssl                 => $httpv2,
       ssl_only            => $httpv2,
