@@ -12,6 +12,7 @@ use FOS\UserBundle\Util;
 
 class UserWithCouchDbSync extends AppBundleFacade\User
 {
+    const COUCHDB_USERNAME_PREFIX = 'annostation_';
     /**
      * @var string
      */
@@ -106,7 +107,10 @@ class UserWithCouchDbSync extends AppBundleFacade\User
             $couchDbPassword
         );
 
-        $this->couchDbFacade->updateUser($username, $couchDbPassword);
+        $this->couchDbFacade->updateUser(
+            sprintf('%s%s', self::COUCHDB_USERNAME_PREFIX, $username),
+            $couchDbPassword
+        );
 
         return $user;
     }
@@ -122,7 +126,10 @@ class UserWithCouchDbSync extends AppBundleFacade\User
 
         if ($password !== null) {
             $couchDbPassword = substr($this->tokenGenerator->generateToken(), 0, 20);
-            $this->couchDbFacade->updateUser($user->getUsername(), $couchDbPassword);
+            $this->couchDbFacade->updateUser(
+                sprintf('%s%s', self::COUCHDB_USERNAME_PREFIX, $user->getUsername()),
+                $couchDbPassword
+            );
             $user->setCouchDbPassword($couchDbPassword);
         }
 
@@ -139,7 +146,7 @@ class UserWithCouchDbSync extends AppBundleFacade\User
     {
         parent::deleteUser($user);
 
-        $this->couchDbFacade->deleteUser($user->getUsername());
+        $this->couchDbFacade->deleteUser(sprintf('%s%s', self::COUCHDB_USERNAME_PREFIX, $user->getUsername()));
 
         return true;
     }

@@ -45,7 +45,10 @@ class UserWithCouchDbSyncTest extends Tests\WebTestCase
 
         $response = json_decode($resource->getBody()->getContents(), true);
 
-        $this->assertEquals($username, $response['userCtx']['name']);
+        $this->assertEquals(
+            sprintf('%s%s', Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX, $username),
+            $response['userCtx']['name']
+        );
     }
 
     public function testUpdateUser()
@@ -64,7 +67,10 @@ class UserWithCouchDbSyncTest extends Tests\WebTestCase
 
         $response = json_decode($resource->getBody()->getContents(), true);
 
-        $this->assertEquals($username, $response['userCtx']['name']);
+        $this->assertEquals(
+            sprintf('%s%s', Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX, $username),
+            $response['userCtx']['name']
+        );
 
         $user->setPlainPassword('54321');
 
@@ -77,7 +83,10 @@ class UserWithCouchDbSyncTest extends Tests\WebTestCase
 
         $response = json_decode($resource->getBody()->getContents(), true);
 
-        $this->assertEquals($username, $response['userCtx']['name']);
+        $this->assertEquals(
+            sprintf('%s%s', Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX, $username),
+            $response['userCtx']['name']
+        );
     }
 
     public function testDeleteUser()
@@ -121,12 +130,13 @@ class UserWithCouchDbSyncTest extends Tests\WebTestCase
         }
 
         return sprintf(
-            'http://%s:%s@%s:%s/_users/%s%s',
+            'http://%s:%s@%s:%s/_users/%s%s%s',
             $authUsername,
             $authPassword,
             $this->getContainer()->getParameter('couchdb_host'),
             $this->getContainer()->getParameter('couchdb_port'),
             AppBundleFacade\CouchDbUsers::USERNAME_PREFIX,
+            Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
             $username
         );
     }
@@ -135,7 +145,7 @@ class UserWithCouchDbSyncTest extends Tests\WebTestCase
     {
         return sprintf(
             'http://%s:%s@%s:%s/_session',
-            $authUsername,
+            sprintf('%s%s', Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX, $authUsername),
             $authPassword,
             $this->getContainer()->getParameter('couchdb_host'),
             $this->getContainer()->getParameter('couchdb_port')
