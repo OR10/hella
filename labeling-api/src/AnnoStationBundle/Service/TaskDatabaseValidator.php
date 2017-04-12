@@ -83,19 +83,15 @@ class TaskDatabaseValidator
             $this->getAllowedSuperAdminUsernames()
         );
 
-        $latestAssignedCoordinatorUserId = $project->getLatestAssignedCoordinatorUserId();
-        if ($latestAssignedCoordinatorUserId !== null) {
-            $memberNames[] = $this->userFacade->getUserById($latestAssignedCoordinatorUserId)
-                ->getUsername();
-        }
+        $memberNames = array_merge(
+            $memberNames,
+            $this->getCoordinatorUsernames($project)
+        );
 
-        $labelingGroupId = $project->getLabelingGroupId();
-        if ($labelingGroupId !== null) {
-            $labelingGroup = $this->labelingGroupFacade->find($labelingGroupId);
-            foreach ($labelingGroup->getLabeler() as $userId) {
-                $memberNames[] = $this->userFacade->getUserById($userId)->getUsername();
-            }
-        }
+        $memberNames = array_merge(
+            $memberNames,
+            $this->getLabelerUsernames($project)
+        );
 
         $this->couchDbSecurity->updateSecurity(
             sprintf(
@@ -105,6 +101,42 @@ class TaskDatabaseValidator
             ),
             array_unique($memberNames)
         );
+    }
+
+    /**
+     * @param Model\Project $project
+     *
+     * @return array
+     */
+    private function getLabelerUsernames(Model\Project $project)
+    {
+        $memberNames     = [];
+        $labelingGroupId = $project->getLabelingGroupId();
+        if ($labelingGroupId !== null) {
+            $labelingGroup = $this->labelingGroupFacade->find($labelingGroupId);
+            foreach ($labelingGroup->getLabeler() as $userId) {
+                $memberNames[] = $this->userFacade->getUserById($userId)->getUsername();
+            }
+        }
+
+        return $memberNames;
+    }
+
+    /**
+     * @param Model\Project $project
+     *
+     * @return array
+     */
+    private function getCoordinatorUsernames(Model\Project $project)
+    {
+        $memberNames                     = [];
+        $latestAssignedCoordinatorUserId = $project->getLatestAssignedCoordinatorUserId();
+        if ($latestAssignedCoordinatorUserId !== null) {
+            $memberNames[] = $this->userFacade->getUserById($latestAssignedCoordinatorUserId)
+                ->getUsername();
+        }
+
+        return $memberNames;
     }
 
     /**
