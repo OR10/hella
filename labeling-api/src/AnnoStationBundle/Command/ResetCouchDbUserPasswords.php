@@ -49,7 +49,7 @@ class ResetCouchDbUserPasswords extends Command\Base
         $users = $this->userFacade->getUserList();
 
         foreach ($users as $user) {
-            $couchDbPassword = bin2hex(random_bytes(5));
+            $couchDbPassword = substr($this->tokenGenerator->generateToken(), 0, 20);
 
             $this->couchDbUsersFacade->updateUser($user->getUsername(), $couchDbPassword);
 
