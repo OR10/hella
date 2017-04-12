@@ -15,14 +15,8 @@ class labeling_api::couch(
 ) {
   include ::couchdb
 
-  if $::labeling_api::params::couchdb_user {
-    $_auth = "${::labeling_api::params::couchdb_user}:${::labeling_api::params::couchdb_password}@"
-  } else {
-    $_auth = ""
-  }
-
   if $::labeling_api::params::couchdb_password_read_only {
-    $_read_only_auth = "${::labeling_api::params::couchdb_user_read_only}:${::labeling_api::params::couchdb_password_read_only}@"
+    $_read_only_auth = join([uriescape($::labeling_api::params::couchdb_user_read_only), ':', uriescape($::labeling_api::params::couchdb_password_read_only), '@'], '')
   } else {
     $_read_only_auth = ""
   }
@@ -39,7 +33,7 @@ class labeling_api::couch(
 
   ::couchdb::replication { "${database_name} -> ${database_name_read_only}":
        ensure  => present,
-       host    => "${_auth}${database_host}:${database_port}",
+       host    => "${::couchdb::couchdb_authentication}${database_host}:${database_port}",
        source  => "http://${_read_only_auth}${database_host}:${database_port}/${database_name}",
        target  => "http://${_read_only_auth}${database_host}:${database_port}/${database_name_read_only}",
   }
