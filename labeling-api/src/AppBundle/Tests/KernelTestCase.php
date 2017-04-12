@@ -38,6 +38,11 @@ class KernelTestCase extends Test\KernelTestCase
     protected $couchDbName;
 
     /**
+     * @var string
+     */
+    private $couchDbNameReadOnly;
+
+    /**
      * @var ORM\EntityManager
      */
     protected $entityManager;
@@ -88,10 +93,13 @@ class KernelTestCase extends Test\KernelTestCase
         $this->userFacade         = $this->getAnnostationService('database.facade.user');
         $this->couchDbUsersFacade = $this->getAnnostationService('database.facade.couchdb_users');
 
-        $this->couchDbName = $this->getContainer()->getParameter('database_name');
+        $this->couchDbName         = $this->getContainer()->getParameter('database_name');
+        $this->couchDbNameReadOnly = $this->getContainer()->getParameter('database_name_read_only');
 
         $this->couchdbClient->deleteDatabase($this->couchDbName);
+        $this->couchdbClient->deleteDatabase($this->couchDbNameReadOnly);
         $this->couchdbClient->createDatabase($this->couchDbName);
+        $this->couchdbClient->createDatabase($this->couchDbNameReadOnly);
         $this->couchDbUsersFacade->purgeCouchDbsUserDatabase();
 
         $this->setUpImplementation();
@@ -110,6 +118,7 @@ class KernelTestCase extends Test\KernelTestCase
         $this->tearDownImplementation();
 
         $this->couchdbClient->deleteDatabase($this->couchDbName);
+        $this->couchdbClient->deleteDatabase($this->couchDbNameReadOnly);
         $this->couchDbUsersFacade->purgeCouchDbsUserDatabase();
 
         static::$kernel->shutdown();
