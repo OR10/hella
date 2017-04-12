@@ -1,4 +1,5 @@
 couchdb::bind_address: 127.0.0.1
+annostation_base::nodejs: true
 
 letsencrypt::email: chh@crosscan.com
 annostation_letsencrypt::domains:
