@@ -112,7 +112,7 @@ class CouchDbTestCase extends Tests\WebTestCase
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
         $this->labelingTaskFacade->save($task);
 
-        $this->taskDatabaseCreatorService->createDatabase($project->getId(), $task->getId());
+        $this->taskDatabaseCreatorService->createDatabase($project, $task);
 
         return $task;
     }
