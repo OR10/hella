@@ -2,10 +2,11 @@
 
 namespace AnnoStationBundle\Tests\Service\Exporter;
 
-use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Model;
 use AppBundle\Model as AppBundleModel;
 use AppBundle\Model\Shapes;
+use AppBundle\Service;
+use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Model;
 use AnnoStationBundle\Service\Exporter;
 use AnnoStationBundle\Tests;
 
@@ -20,6 +21,16 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
      * @var Facade\Exporter
      */
     private $exporterFacade;
+
+    /**
+     * @var bool
+     */
+    private $pouchdbFeatureEnabled;
+
+    /**
+     * @var Service\DatabaseDocumentManagerFactory
+     */
+    private $databaseDocumentManagerFactory;
 
     public function testXmlExport()
     {
@@ -97,6 +108,18 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
     private function createCuboids(AppBundleModel\LabelingTask $task)
     {
+        if ($this->pouchdbFeatureEnabled) {
+            $databaseDocumentManager  = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+                $this->taskDatabaseCreatorService->getDatabaseName(
+                    $task->getProjectId(),
+                    $task->getId()
+                )
+            );
+            $this->labeledThingGroupFacade = new Facade\LabeledThingGroup($databaseDocumentManager);
+            $this->labeledThingFacade       = new Facade\LabeledThing($databaseDocumentManager);
+            $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
+        }
+
         $labeledThing = $this->createLabeledThing($task);
         $labeledThing->setOriginalId('e363906c1c4a5a5bd01e8902467d1426');
         $this->labeledThingFacade->save($labeledThing);
@@ -235,8 +258,14 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
     protected function setUpImplementation()
     {
-        $this->exporter                = $this->getAnnostationService('service.exporter.requirements_project_to_xml');
-        $this->exporterFacade          = $this->getAnnostationService('database.facade.exporter');
+        $this->exporter                       = $this->getAnnostationService(
+            'service.exporter.requirements_project_to_xml'
+        );
+        $this->exporterFacade                 = $this->getAnnostationService('database.facade.exporter');
+        $this->pouchdbFeatureEnabled          = $this->getContainer()->getParameter('pouchdb_feature_enabled');
+        $this->databaseDocumentManagerFactory = $this->getService(
+            'annostation.services.database_document_manager_factory'
+        );
 
         parent::setUpImplementation();
     }
