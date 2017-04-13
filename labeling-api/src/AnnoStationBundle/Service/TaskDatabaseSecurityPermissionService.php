@@ -61,7 +61,7 @@ class TaskDatabaseSecurityPermissionService
     /**
      * @param Model\LabelingTask $labelingTask
      */
-    public function updateSecurityPermissions(Model\LabelingTask $labelingTask)
+    public function updateTask(Model\LabelingTask $labelingTask)
     {
         if (!$this->pouchDbFeatureEnabled) {
             return;
@@ -71,7 +71,6 @@ class TaskDatabaseSecurityPermissionService
         $organisation = $this->organisationFacade->find($project->getOrganisationId());
 
         $memberNames = [];
-        $memberRoles = [];
 
         $memberNames = array_merge(
             $memberNames,

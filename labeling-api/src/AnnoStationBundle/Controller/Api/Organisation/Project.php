@@ -620,7 +620,7 @@ class Project extends Controller\Base
         $project = $this->projectFacade->save($project);
 
         foreach($this->projectFacade->getTasksByProject($project) as $labelingTask) {
-            $this->taskDatabaseSecurityPermissionService->updateSecurityPermissions($labelingTask);
+            $this->taskDatabaseSecurityPermissionService->updateTask($labelingTask);
         }
 
         return View\View::create()->setData(['result' => $project]);
