@@ -10,6 +10,8 @@ use AnnoStationBundle\Service;
 
 class TaskDatabaseValidator
 {
+    const LABELGROUP_PREFIX = 'label-group-member-';
+
     /**
      * @var AppBundleFacade\CouchDbSecurity
      */
@@ -69,6 +71,7 @@ class TaskDatabaseValidator
         $organisation = $this->organisationFacade->find($project->getOrganisationId());
 
         $memberNames = [];
+        $memberRoles = [];
 
         $memberNames = array_merge(
             $memberNames,
@@ -88,10 +91,7 @@ class TaskDatabaseValidator
             $this->getCoordinatorUsernames($project)
         );
 
-        $memberNames = array_merge(
-            $memberNames,
-            $this->getLabelerUsernames($project)
-        );
+        $memberRoles = $this->getLabelingGroupRole($project);
 
         $this->couchDbSecurity->updateSecurity(
             sprintf(
@@ -99,27 +99,26 @@ class TaskDatabaseValidator
                 $project->getId(),
                 $labelingTask->getId()
             ),
-            array_unique($memberNames)
+            array_values(array_unique($memberNames)),
+            $memberRoles
         );
     }
 
-    /**
-     * @param Model\Project $project
-     *
-     * @return array
-     */
-    private function getLabelerUsernames(Model\Project $project)
+    private function getLabelingGroupRole(Model\Project $project)
     {
-        $memberNames     = [];
         $labelingGroupId = $project->getLabelingGroupId();
-        if ($labelingGroupId !== null) {
-            $labelingGroup = $this->labelingGroupFacade->find($labelingGroupId);
-            foreach ($labelingGroup->getLabeler() as $userId) {
-                $memberNames[] = $this->userFacade->getUserById($userId)->getUsername();
-            }
+
+        if ($labelingGroupId === null) {
+            return [];
         }
 
-        return $memberNames;
+        return [
+            sprintf(
+                '%s%s',
+                self::LABELGROUP_PREFIX,
+                $labelingGroupId
+            ),
+        ];
     }
 
     /**

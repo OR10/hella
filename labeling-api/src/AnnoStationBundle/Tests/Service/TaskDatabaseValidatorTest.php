@@ -175,10 +175,16 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
 
         $this->taskDatabaseValidatorService->updateSecurityPermissions($this->labelingTask);
 
-        $this->assertEquals($this->getExpectedResponse(['labeler']), $this->getDatabaseSecurityDocumentResponse());
+        $this->assertEquals(
+            $this->getExpectedResponse(
+                [],
+                [sprintf('%s%s', Service\TaskDatabaseValidator::LABELGROUP_PREFIX, $labelingGroup->getId())]
+            ),
+            $this->getDatabaseSecurityDocumentResponse()
+        );
     }
 
-    private function getExpectedResponse($memberNames = [])
+    private function getExpectedResponse($memberNames = [], $memberRoles = [])
     {
         return [
             'admins'  => [
@@ -187,7 +193,7 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
             ],
             'members' => [
                 'names' => $memberNames,
-                'roles' => [],
+                'roles' => $memberRoles,
             ],
         ];
     }
