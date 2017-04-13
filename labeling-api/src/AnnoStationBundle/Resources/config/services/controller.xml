@@ -18,7 +18,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.report"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
         </service>
@@ -41,7 +41,7 @@
                  class="AnnoStationBundle\Controller\Api\Organisation\Project\Attention">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
@@ -98,7 +98,7 @@
         <service id="annostation.labeling_api.controller.api.task.timer"
                  class="AnnoStationBundle\Controller\Api\Task\Timer">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
@@ -161,14 +161,14 @@
         <service
                 id="annostation.labeling_api.controller.api.organisation.user"
                 class="AnnoStationBundle\Controller\Api\Organisation\User">
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
         <service
                 id="annostation.labeling_api.controller.api.organisation.users"
                 class="AnnoStationBundle\Controller\Api\Organisation\Users">
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
@@ -176,7 +176,7 @@
         <service
                 id="annostation.labeling_api.controller.api.user"
                 class="AnnoStationBundle\Controller\Api\User">
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
@@ -188,7 +188,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.flysystem"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
@@ -203,7 +203,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
             <argument type="service" id="security.token_storage"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_validator"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
@@ -222,7 +222,7 @@
         <service id="annostation.labeling_api.controller.api.current_user" class="AnnoStationBundle\Controller\Api\CurrentUser">
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="security.encoder_factory"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
@@ -253,7 +253,7 @@
         <service id="annostation.labeling_api.controller.api.organisation.labeling_group"
                  class="AnnoStationBundle\Controller\Api\Organisation\LabelingGroup">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>

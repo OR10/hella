@@ -59,7 +59,7 @@
         </service>
 
         <service id="annostation.labeling_api.security.api_key_user_provider" class="AppBundle\Security\ApiKeyUserProvider">
-            <argument type="service" id="annostation.labeling_api.database.facade.user" />
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias" />
         </service>
 
         <service id="annostation.labeling_api.security.apikey_authenticator" class="AppBundle\Security\ApiKeyAuthenticator" public="true">
