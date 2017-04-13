@@ -205,7 +205,7 @@
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
-            <argument type="service" id="annostation.labeling_api.service.task_database_validator"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>

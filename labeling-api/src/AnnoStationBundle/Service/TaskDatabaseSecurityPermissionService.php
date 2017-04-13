@@ -8,7 +8,7 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service;
 
-class TaskDatabaseValidator
+class TaskDatabaseSecurityPermissionService
 {
     const LABELGROUP_PREFIX = 'label-group-member-';
 
