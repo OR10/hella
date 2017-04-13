@@ -84,16 +84,22 @@ class Project extends Controller\Base
     private $userPermissions;
 
     /**
-     * @param Facade\Project                 $projectFacade
-     * @param Facade\LabeledThingInFrame     $labeledThingInFrameFacade
-     * @param Facade\LabelingTask            $labelingTaskFacade
-     * @param Facade\Organisation            $organisationFacade
-     * @param Facade\Campaign                $campaignFacade
-     * @param Storage\TokenStorage           $tokenStorage
-     * @param AppFacade\User                 $userFacade
-     * @param Service\Authorization          $authorizationService
-     * @param AMQP\FacadeAMQP                $amqpFacade
-     * @param Authentication\UserPermissions $userPermissions
+     * @var Service\TaskDatabaseSecurityPermissionService
+     */
+    private $taskDatabaseSecurityPermissionService;
+
+    /**
+     * @param Facade\Project                                $projectFacade
+     * @param Facade\LabeledThingInFrame                    $labeledThingInFrameFacade
+     * @param Facade\LabelingTask                           $labelingTaskFacade
+     * @param Facade\Organisation                           $organisationFacade
+     * @param Facade\Campaign                               $campaignFacade
+     * @param Storage\TokenStorage                          $tokenStorage
+     * @param AppFacade\User                                $userFacade
+     * @param Service\Authorization                         $authorizationService
+     * @param Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService
+     * @param AMQP\FacadeAMQP                               $amqpFacade
+     * @param Authentication\UserPermissions                $userPermissions
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -104,19 +110,21 @@ class Project extends Controller\Base
         Storage\TokenStorage $tokenStorage,
         AppFacade\User $userFacade,
         Service\Authorization $authorizationService,
+        Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService,
         AMQP\FacadeAMQP $amqpFacade,
         Authentication\UserPermissions $userPermissions
     ) {
-        $this->projectFacade             = $projectFacade;
-        $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
-        $this->labelingTaskFacade        = $labelingTaskFacade;
-        $this->tokenStorage              = $tokenStorage;
-        $this->userFacade                = $userFacade;
-        $this->authorizationService      = $authorizationService;
-        $this->amqpFacade                = $amqpFacade;
-        $this->organisationFacade        = $organisationFacade;
-        $this->campaignFacade            = $campaignFacade;
-        $this->userPermissions           = $userPermissions;
+        $this->projectFacade                         = $projectFacade;
+        $this->labeledThingInFrameFacade             = $labeledThingInFrameFacade;
+        $this->labelingTaskFacade                    = $labelingTaskFacade;
+        $this->tokenStorage                          = $tokenStorage;
+        $this->userFacade                            = $userFacade;
+        $this->authorizationService                  = $authorizationService;
+        $this->amqpFacade                            = $amqpFacade;
+        $this->organisationFacade                    = $organisationFacade;
+        $this->campaignFacade                        = $campaignFacade;
+        $this->userPermissions                       = $userPermissions;
+        $this->taskDatabaseSecurityPermissionService = $taskDatabaseSecurityPermissionService;
     }
 
     /**
@@ -610,6 +618,10 @@ class Project extends Controller\Base
 
         $project->addCoordinatorAssignmentHistory($coordinator);
         $project = $this->projectFacade->save($project);
+
+        foreach($this->projectFacade->getTasksByProject($project) as $labelingTask) {
+            $this->taskDatabaseSecurityPermissionService->updateTask($labelingTask);
+        }
 
         return View\View::create()->setData(['result' => $project]);
     }

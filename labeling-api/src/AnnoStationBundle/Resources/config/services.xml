@@ -330,5 +330,14 @@
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.reports"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.labeling_tasks"/>
         </service>
+
+        <service id="annostation.labeling_api.service.task_database_security_permission_service" class="AnnoStationBundle\Service\TaskDatabaseSecurityPermissionService">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.couch_db_security"/>
+            <argument>%pouchdb_feature_enabled%</argument>
+        </service>
     </services>
 </container>

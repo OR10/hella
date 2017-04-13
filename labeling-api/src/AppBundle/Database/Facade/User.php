@@ -257,12 +257,26 @@ class User
      *
      * @return Model\User[]
      */
-    public function getUserByRole(AnnoStationBundleModel\Organisation $organisation, $role)
+    public function getUsersByOrganisationAndRole(AnnoStationBundleModel\Organisation $organisation, $role)
     {
         return $this->documentManager
             ->createQuery('annostation_user_by_organisation_and_role_001', 'view')
             ->onlyDocs(true)
             ->setKey([$organisation->getId(), $role])
+            ->execute();
+    }
+
+    /**
+     * @param $role
+     *
+     * @return Model\User[]
+     */
+    public function getUsersByRole($role)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_user_by_role_001', 'view')
+            ->onlyDocs(true)
+            ->setKey([$role])
             ->execute();
     }
 

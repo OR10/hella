@@ -25,5 +25,13 @@
             <argument>%couchdb_host%</argument>
             <argument>%couchdb_port%</argument>
         </service>
+
+        <service id="annostation.labeling_api.database.facade.couch_db_security" class="AppBundle\Database\Facade\CouchDbSecurity">
+            <argument type="service" id="guzzle.client"/>
+            <argument>%couchdb_user%</argument>
+            <argument>%couchdb_password%</argument>
+            <argument>%couchdb_host%</argument>
+            <argument>%couchdb_port%</argument>
+        </service>
     </services>
 </container>
