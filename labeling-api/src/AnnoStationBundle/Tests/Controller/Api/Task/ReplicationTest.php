@@ -40,14 +40,22 @@ class ReplicationTest extends Tests\WebTestCase
 
         $client = static::createClient();
 
-        $databaseName   = sprintf('taskdb-project-%s-task-%s', $this->project->getId(), $this->task->getId());
-        $databaseServer = $client->getKernel()->getContainer()->getParameter('couchdb_external_url');
+        $databaseName        = sprintf('taskdb-project-%s-task-%s', $this->project->getId(), $this->task->getId());
+        $externalCouchDbHost = $client->getKernel()->getContainer()->getParameter('couchdb_host_external');
+        $externalCouchDbPort = $client->getKernel()->getContainer()->getParameter('couchdb_port_external');
 
         $expectedResponse = [
             'result' => [
                 'taskId'         => $this->task->getId(),
                 'databaseName'   => $databaseName,
-                'databaseServer' => $databaseServer,
+                'databaseServer' => sprintf(
+                    'http://%s%s:%s@%s:%s',
+                    Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
+                    'admin',
+                    'password1234',
+                    $externalCouchDbHost,
+                    $externalCouchDbPort
+                ),
             ],
         ];
 
@@ -63,6 +71,8 @@ class ReplicationTest extends Tests\WebTestCase
 
         $organisation = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
         $this->admin  = $this->createAdminUser($organisation);
+        $this->admin->setCouchDbPassword('password1234');
+        $this->userFacade->saveUser($this->admin);
 
         $this->project = $projectFacade->save(Tests\Helper\ProjectBuilder::create($organisation)->build());
         $this->video   = $videoFacade->save(Tests\Helper\VideoBuilder::create($organisation)->build());
