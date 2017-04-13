@@ -50,10 +50,16 @@ class CouchDbUsers
         $this->couchPort         = $couchPort;
     }
 
-    public function purgeCouchDbsUserDatabase()
+    public function purgeCouchDbsUserDatabase($prefix = null)
     {
         $usernames = $this->getAllUserDocuments();
         foreach ($usernames as $username) {
+            if ($prefix !== null) {
+                if (strpos($username, $prefix) !== 0) {
+                    continue;
+                }
+            }
+
             $this->deleteUser($username);
         }
     }

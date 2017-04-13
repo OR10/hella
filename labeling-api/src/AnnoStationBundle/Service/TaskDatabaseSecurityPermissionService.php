@@ -8,7 +8,7 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service;
 
-class TaskDatabaseValidator
+class TaskDatabaseSecurityPermissionService
 {
     const LABELGROUP_PREFIX = 'label-group-member-';
 
@@ -61,7 +61,7 @@ class TaskDatabaseValidator
     /**
      * @param Model\LabelingTask $labelingTask
      */
-    public function updateSecurityPermissions(Model\LabelingTask $labelingTask)
+    public function updateTask(Model\LabelingTask $labelingTask)
     {
         if (!$this->pouchDbFeatureEnabled) {
             return;
@@ -71,7 +71,6 @@ class TaskDatabaseValidator
         $organisation = $this->organisationFacade->find($project->getOrganisationId());
 
         $memberNames = [];
-        $memberRoles = [];
 
         $memberNames = array_merge(
             $memberNames,

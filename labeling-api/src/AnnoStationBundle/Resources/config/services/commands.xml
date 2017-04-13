@@ -20,6 +20,7 @@
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
             <argument type="service" id="annostation.labeling_api.service.task_creator"/>
             <argument>%database_name%</argument>
+            <argument>%couchdb_user_read_only%</argument>
             <argument>%user_password%</argument>
             <argument>%cache_dir%</argument>
             <argument>%frame_cdn_dir%</argument>
@@ -29,6 +30,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
             <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory"/>
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.couchdb_users"/>
             <tag name="console.command"/>
         </service>
 

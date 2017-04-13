@@ -77,6 +77,11 @@ class CouchDbTestCase extends Tests\WebTestCase
     protected $organisationFacade;
 
     /**
+     * @var Service\TaskDatabaseCreator
+     */
+    protected $taskDatabaseCreatorService;
+
+    /**
      * @param Model\Project           $project
      * @param Model\Video             $video
      * @param Model\TaskConfiguration $taskConfiguration
@@ -105,8 +110,11 @@ class CouchDbTestCase extends Tests\WebTestCase
             $taskConfiguration === null ? null : $taskConfiguration->getId()
         );
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
+        $this->labelingTaskFacade->save($task);
 
-        return $this->labelingTaskFacade->save($task);
+        $this->taskDatabaseCreatorService->createDatabase($project->getId(), $task->getId());
+
+        return $task;
     }
 
     protected function createLabeledThing(Model\LabelingTask $task, $id = null)
@@ -305,6 +313,7 @@ class CouchDbTestCase extends Tests\WebTestCase
         $this->organisationFacade                   = $this->getAnnostationService(
             'database.facade.organisation'
         );
+        $this->taskDatabaseCreatorService           = $this->getAnnostationService('service.task_database_creator');
 
         $this->userManipulator = $this->getService('fos_user.util.user_manipulator');
     }

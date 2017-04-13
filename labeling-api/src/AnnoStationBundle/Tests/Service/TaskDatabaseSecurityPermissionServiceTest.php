@@ -10,7 +10,7 @@ use AnnoStationBundle\Tests\Helper;
 use AnnoStationBundle\Database\Facade;
 use GuzzleHttp;
 
-class TaskDatabaseValidatorTest extends Tests\KernelTestCase
+class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 {
     /**
      * @var Facade\Organisation
@@ -38,9 +38,9 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
     private $taskDatabaseCreatorService;
 
     /**
-     * @var Service\TaskDatabaseValidator
+     * @var Service\TaskDatabaseSecurityPermissionService
      */
-    private $taskDatabaseValidatorService;
+    private $taskDatabaseSecurityPermissionService;
 
     /**
      * @var GuzzleHttp\Client
@@ -80,7 +80,7 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
         $user->addRole(Model\User::ROLE_SUPER_ADMIN);
         $this->userFacade->saveUser($user);
 
-        $this->taskDatabaseValidatorService->updateSecurityPermissions($this->labelingTask);
+        $this->taskDatabaseSecurityPermissionService->updateTask($this->labelingTask);
 
         $this->assertEquals($this->getExpectedResponse(['superadmin']), $this->getDatabaseSecurityDocumentResponse());
     }
@@ -93,14 +93,14 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
         $user->addRole(Model\User::ROLE_ADMIN);
         $this->userFacade->saveUser($user);
 
-        $this->taskDatabaseValidatorService->updateSecurityPermissions($this->labelingTask);
+        $this->taskDatabaseSecurityPermissionService->updateTask($this->labelingTask);
 
         $this->assertEquals($this->getExpectedResponse(['admin']), $this->getDatabaseSecurityDocumentResponse());
 
         $user->setOrganisations([]);
         $this->userFacade->saveUser($user);
 
-        $this->taskDatabaseValidatorService->updateSecurityPermissions($this->labelingTask);
+        $this->taskDatabaseSecurityPermissionService->updateTask($this->labelingTask);
 
         $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
     }
@@ -113,7 +113,7 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
         $user->addRole(Model\User::ROLE_CLIENT);
         $this->userFacade->saveUser($user);
 
-        $this->taskDatabaseValidatorService->updateSecurityPermissions($this->labelingTask);
+        $this->taskDatabaseSecurityPermissionService->updateTask($this->labelingTask);
 
         $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
     }
@@ -126,7 +126,7 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
         $user->addRole(Model\User::ROLE_OBSERVER);
         $this->userFacade->saveUser($user);
 
-        $this->taskDatabaseValidatorService->updateSecurityPermissions($this->labelingTask);
+        $this->taskDatabaseSecurityPermissionService->updateTask($this->labelingTask);
 
         $this->assertEquals($this->getExpectedResponse(['observer']), $this->getDatabaseSecurityDocumentResponse());
     }
@@ -139,14 +139,14 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
         $user->addRole(Model\User::ROLE_LABEL_COORDINATOR);
         $this->userFacade->saveUser($user);
 
-        $this->taskDatabaseValidatorService->updateSecurityPermissions($this->labelingTask);
+        $this->taskDatabaseSecurityPermissionService->updateTask($this->labelingTask);
 
         $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
 
         $this->project->addCoordinatorAssignmentHistory($user);
         $this->projectFacade->save($this->project);
 
-        $this->taskDatabaseValidatorService->updateSecurityPermissions($this->labelingTask);
+        $this->taskDatabaseSecurityPermissionService->updateTask($this->labelingTask);
 
         $this->assertEquals(
             $this->getExpectedResponse(['label_coordinator']),
@@ -162,7 +162,7 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
         $user->addRole(Model\User::ROLE_LABELER);
         $this->userFacade->saveUser($user);
 
-        $this->taskDatabaseValidatorService->updateSecurityPermissions($this->labelingTask);
+        $this->taskDatabaseSecurityPermissionService->updateTask($this->labelingTask);
 
         $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
 
@@ -173,12 +173,12 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
         $this->project->setLabelingGroupId($labelingGroup->getId());
         $this->projectFacade->save($this->project);
 
-        $this->taskDatabaseValidatorService->updateSecurityPermissions($this->labelingTask);
+        $this->taskDatabaseSecurityPermissionService->updateTask($this->labelingTask);
 
         $this->assertEquals(
             $this->getExpectedResponse(
                 [],
-                [sprintf('%s%s', Service\TaskDatabaseValidator::LABELGROUP_PREFIX, $labelingGroup->getId())]
+                [sprintf('%s%s', Service\TaskDatabaseSecurityPermissionService::LABELGROUP_PREFIX, $labelingGroup->getId())]
             ),
             $this->getDatabaseSecurityDocumentResponse()
         );
@@ -243,7 +243,7 @@ class TaskDatabaseValidatorTest extends Tests\KernelTestCase
         $this->videoFacade                  = $this->getAnnostationService('database.facade.video');
         $this->labelingGroupFacade          = $this->getAnnostationService('database.facade.labeling_group');
         $this->taskDatabaseCreatorService   = $this->getAnnostationService('service.task_database_creator');
-        $this->taskDatabaseValidatorService = $this->getAnnostationService('service.task_database_validator');
+        $this->taskDatabaseSecurityPermissionService = $this->getAnnostationService('service.task_database_security_permission_service');
         $this->guzzleClient                 = $this->getService('guzzle.client');
 
         $this->organisation = Helper\OrganisationBuilder::create()->build();
