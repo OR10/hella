@@ -6,7 +6,7 @@
     <services>
 
         <service id="annostation.labeling_api.request.param_converter.user" class="AppBundle\Request\ParamConverter\User">
-            <argument type="service" id="annostation.labeling_api.database.facade.user" />
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias" />
             <tag name="request.param_converter" converter="annostation.user" priority="10" />
         </service>
 
