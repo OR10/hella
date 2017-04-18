@@ -255,6 +255,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 

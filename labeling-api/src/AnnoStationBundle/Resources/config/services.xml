@@ -339,5 +339,10 @@
             <argument type="service" id="annostation.labeling_api.database.facade.couch_db_security"/>
             <argument>%pouchdb_feature_enabled%</argument>
         </service>
+
+        <service id="annostation.labeling_api.service.user_roles_rebuilder" class="AnnoStationBundle\Service\UserRolesRebuilder">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.couchdb_users"/>
+        </service>
     </services>
 </container>
