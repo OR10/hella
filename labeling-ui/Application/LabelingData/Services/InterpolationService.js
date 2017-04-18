@@ -192,7 +192,7 @@ InterpolationService.$inject = [
   'pouchDbSyncManager',
   'pouchDbContextService',
   // All Interpolations listed here will be auto registered.
-  'linearBackendInterpolation',
+  'linearFrontendInterpolation',
 ];
 
 export default InterpolationService;

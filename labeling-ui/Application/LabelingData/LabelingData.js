@@ -1,3 +1,8 @@
+/**
+ * Module containing all functionality related to Labels and its Data
+ *
+ * @extends Module
+ */
 import Module from '../Module';
 import CacheHeatingLabeledThingInFrameGateway from './Gateways/CacheHeatingLabeledThingInFrameGateway';
 import CachingLabeledThingInFrameGateway from './Gateways/CachingLabeledThingInFrameGateway';
@@ -13,12 +18,8 @@ import GhostingService from './Services/GhostingService';
 import PouchDbLabeledThingGateway from './Gateways/PouchDbLabeledThingGateway';
 import PouchDbLabeledThingInFrameGateway from './Gateways/PouchDbLabeledThingInFrameGateway';
 import PouchDbLabeledThingGroupGateway from './Gateways/PouchDbLabeledThingGroupGateway';
+import LinearFrontendInterpolation from './Interpolations/LinearFrontendInterpolation';
 
-/**
- * Module containing all functionality related to Labels and its Data
- *
- * @extends Module
- */
 class LabelingData extends Module {
   /**
    * @inheritDoc
@@ -34,6 +35,7 @@ class LabelingData extends Module {
 
     this.module.service('interpolationService', InterpolationService);
     this.module.service('linearBackendInterpolation', LinearBackendInterpolation);
+    this.module.service('linearFrontendInterpolation', LinearFrontendInterpolation);
 
     this.module.service('cacheService', CacheService);
     this.module.service('cacheHeaterService', CacheHeaterService);
