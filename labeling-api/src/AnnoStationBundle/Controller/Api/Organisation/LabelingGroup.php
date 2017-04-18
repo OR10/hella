@@ -288,6 +288,8 @@ class LabelingGroup extends Controller\Base
             throw new Exception\ConflictHttpException('Revision mismatch');
         }
 
+        $oldUsers = $this->getUserListForLabelingGroup([$labelingGroup]);
+
         $labelingGroup->setCoordinators($coordinators);
         $labelingGroup->setLabeler($labeler);
         $labelingGroup->setName($name);
@@ -297,6 +299,10 @@ class LabelingGroup extends Controller\Base
         foreach ($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
             $this->userRolesRebuilderService->rebuildForUser($user);
             $users[$user->getId()] = $user;
+        }
+
+        foreach($oldUsers as $user) {
+            $this->userRolesRebuilderService->rebuildForUser($user);
         }
 
         $users = new Response\SimpleUsers($users);
