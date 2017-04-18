@@ -43,19 +43,25 @@ class ReplicationTest extends Tests\WebTestCase
         $databaseName        = sprintf('taskdb-project-%s-task-%s', $this->project->getId(), $this->task->getId());
         $externalCouchDbHost = $client->getKernel()->getContainer()->getParameter('couchdb_host_external');
         $externalCouchDbPort = $client->getKernel()->getContainer()->getParameter('couchdb_port_external');
+        $username            = sprintf(
+            '%s%s',
+            Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
+            'admin'
+        );
 
         $expectedResponse = [
             'result' => [
                 'taskId'         => $this->task->getId(),
                 'databaseName'   => $databaseName,
                 'databaseServer' => sprintf(
-                    'http://%s%s:%s@%s:%s',
-                    Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
-                    'admin',
+                    'http://%s:%s@%s:%s',
+                    $username,
                     'password1234',
                     $externalCouchDbHost,
                     $externalCouchDbPort
                 ),
+                'databaseUsername' => $username,
+                'databasePassword' => 'password1234',
             ],
         ];
 

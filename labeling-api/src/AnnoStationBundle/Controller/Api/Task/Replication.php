@@ -55,8 +55,13 @@ class Replication extends Controller\Base
     public function getReplicationDatabaseAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
         /** @var Model\User $currentUser */
-        $currentUser  = $this->tokenStorage->getToken()->getUser();
+        $currentUser = $this->tokenStorage->getToken()->getUser();
         $databaseName = sprintf('taskdb-project-%s-task-%s', $task->getProjectId(), $task->getId());
+        $username = sprintf(
+            '%s%s',
+            Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
+            $currentUser->getUsername()
+        );
 
         return View\View::create()->setData(
             [
@@ -64,13 +69,14 @@ class Replication extends Controller\Base
                     'taskId'         => $task->getId(),
                     'databaseName'   => $databaseName,
                     'databaseServer' => sprintf(
-                        'http://%s%s:%s@%s:%s',
-                        Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
-                        $currentUser->getUsername(),
+                        'http://%s:%s@%s:%s',
+                        $username,
                         $currentUser->getCouchDbPassword(),
                         $this->externalCouchDbHost,
                         $this->externalCouchDbPort
                     ),
+                    'databaseUsername' => $username,
+                    'databasePassword' => $currentUser->getCouchDbPassword(),
                 ],
             ]
         );
