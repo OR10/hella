@@ -46,23 +46,31 @@ class LabelingGroup extends Controller\Base
     private $authorizationService;
 
     /**
+     * @var Service\UserRolesRebuilder
+     */
+    private $userRolesRebuilderService;
+
+    /**
      * LabelingGroup constructor.
      *
-     * @param Facade\LabelingGroup  $labelingGroupFacade
-     * @param AppFacade\User        $userFacade
-     * @param Storage\TokenStorage  $tokenStorage
-     * @param Service\Authorization $authorizationService
+     * @param Facade\LabelingGroup       $labelingGroupFacade
+     * @param AppFacade\User             $userFacade
+     * @param Storage\TokenStorage       $tokenStorage
+     * @param Service\UserRolesRebuilder $userRolesRebuilderService
+     * @param Service\Authorization      $authorizationService
      */
     public function __construct(
         Facade\LabelingGroup $labelingGroupFacade,
         AppFacade\User $userFacade,
         Storage\TokenStorage $tokenStorage,
+        Service\UserRolesRebuilder $userRolesRebuilderService,
         Service\Authorization $authorizationService
     ) {
-        $this->labelingGroupFacade  = $labelingGroupFacade;
-        $this->userFacade           = $userFacade;
-        $this->tokenStorage         = $tokenStorage;
-        $this->authorizationService = $authorizationService;
+        $this->labelingGroupFacade       = $labelingGroupFacade;
+        $this->userFacade                = $userFacade;
+        $this->tokenStorage              = $tokenStorage;
+        $this->authorizationService      = $authorizationService;
+        $this->userRolesRebuilderService = $userRolesRebuilderService;
     }
 
     /**
@@ -232,6 +240,7 @@ class LabelingGroup extends Controller\Base
 
         $users = [];
         foreach ($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
+            $this->userRolesRebuilderService->rebuildForUser($user);
             $users[$user->getId()] = $user;
         }
 
@@ -286,6 +295,7 @@ class LabelingGroup extends Controller\Base
 
         $users = [];
         foreach ($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
+            $this->userRolesRebuilderService->rebuildForUser($user);
             $users[$user->getId()] = $user;
         }
 
@@ -320,7 +330,12 @@ class LabelingGroup extends Controller\Base
             throw new Exception\BadRequestHttpException('This LabelingGroup is not assigned to this Organisation');
         }
 
+        $users = $this->getUserListForLabelingGroup([$labelingGroup]);
         $this->labelingGroupFacade->delete($labelingGroup);
+
+        foreach ($users as $user) {
+            $this->userRolesRebuilderService->rebuildForUser($user);
+        }
 
         return View\View::create()->setData(
             [
