@@ -20,6 +20,10 @@ class UserRolesRebuilder
      */
     private $couchDbUsersFacade;
 
+    /**
+     * @param Facade\LabelingGroup         $labelingGroupFacade
+     * @param AppBundleFacade\CouchDbUsers $couchDbUsersFacade
+     */
     public function __construct(
         Facade\LabelingGroup $labelingGroupFacade,
         AppBundleFacade\CouchDbUsers $couchDbUsersFacade
