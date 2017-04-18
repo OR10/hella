@@ -89,33 +89,43 @@ class CouchDbUsers
     }
 
     /**
-     * @param $username
-     * @param $password
+     * @param       $username
+     * @param       $password
+     * @param array $roles
      */
-    public function updateUser($username, $password)
+    public function updateUser($username, $password, $roles = [])
     {
-        if ($password !== null) {
             $resource = $this->guzzleClient->request(
-                'GET',
-                $this->generateCouchDbUrl($username),
-                ['http_errors' => false]
-            );
-            if ($resource->getStatusCode() === 200) {
-                $couchDbUser = json_decode($resource->getBody()->getContents(), true);
-                $this->createOrUpdateCouchDbUserDocument($username, $password, $couchDbUser['_rev']);
-            } else {
-                $this->createOrUpdateCouchDbUserDocument($username, $password);
-            }
+            'GET',
+            $this->generateCouchDbUrl($username),
+            ['http_errors' => false]
+        );
+        if ($resource->getStatusCode() === 200) {
+            $couchDbUser = json_decode($resource->getBody()->getContents(), true);
+            $this->createOrUpdateCouchDbUserDocument($username, $password, $roles, $couchDbUser['_rev']);
+        } else {
+            $this->createOrUpdateCouchDbUserDocument($username, $password, $roles);
         }
     }
 
     /**
      * @param      $username
      * @param      $password
+     * @param      $roles
      * @param null $revision
      */
-    private function createOrUpdateCouchDbUserDocument($username, $password, $revision = null)
+    private function createOrUpdateCouchDbUserDocument($username, $password, $roles, $revision = null)
     {
+        $json = [
+            'name'  => $username,
+            'type'  => 'user',
+            'roles' => $roles,
+        ];
+
+        if ($password !== null) {
+            $json['password'] = $password;
+        }
+
         $this->guzzleClient->request(
             'PUT',
             $this->generateCouchDbUrl($username),
@@ -123,12 +133,7 @@ class CouchDbUsers
                 'headers' => [
                     'If-Match' => $revision,
                 ],
-                'json'    => [
-                    'name'     => $username,
-                    'password' => $password,
-                    'type'     => 'user',
-                    'roles'    => [],
-                ],
+                'json'    => $json,
             ]
         );
     }
@@ -160,6 +165,7 @@ class CouchDbUsers
         $couchDbUsers = array_map(
             function ($user) {
                 preg_match('/^(org.couchdb.user:)(\w+)$/', $user['id'], $matches);
+
                 return $matches[2];
             },
             $couchDbUsers
