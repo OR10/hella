@@ -26,7 +26,8 @@ labeling_api::couch::max_dbs_open: 65535
 labeling_api::couch::max_erlang_ports: 40000
 
 couchdb::cors_origins: '*'
-couchdb::cors_methods: '*'
+couchdb::cors_methods: 'GET, PUT, POST, HEAD, DELETE'
+couchdb::cors_headers: 'accept, authorization, content-type, origin, referer, x-csrf-token'
 couchdb::admin_username: "%{labeling_api::params::couchdb_user}"
 couchdb::admin_password: "%{labeling_api::params::couchdb_password}"
 couchdb::admin_salt: 'klsdagksdalsaasasafksdasahklfahklf'
