@@ -13,7 +13,7 @@ class GroupCreationTool extends CreationTool {
    * @param {ToolService} toolService
    * @param {LabeledThingGroupService} labeledThingGroupService
    */
-  constructor(drawingContext, $scope, $q, loggerService, entityColorService, hierarchyCreationService, toolService, labeledThingGroupService) {
+  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService) {
     super(drawingContext, $scope, $q, loggerService, hierarchyCreationService);
 
     /**
