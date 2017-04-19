@@ -41,14 +41,19 @@ class TaskDocumentsToTaskDatabase extends Command\Base
      * @var Service\CouchDbReplicatorService
      */
     private $couchDbReplicatorService;
+    /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
 
     /**
-     * @param Service\DatabaseDocumentManagerFactory    $databaseDocumentManagerFactory
-     * @param Service\CouchDbReplicatorService          $couchDbReplicatorService
-     * @param AnnoStationService\TaskDatabaseCreator    $taskDatabaseCreator
-     * @param Facade\LabelingTask                       $labelingTaskFacade
-     * @param Facade\LabeledThing                       $labeledThingFacade
-     * @param Facade\LabeledThingInFrame                $labeledThingInFrameFacade
+     * @param Service\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
+     * @param Service\CouchDbReplicatorService       $couchDbReplicatorService
+     * @param AnnoStationService\TaskDatabaseCreator $taskDatabaseCreator
+     * @param Facade\LabelingTask                    $labelingTaskFacade
+     * @param Facade\LabeledThing                    $labeledThingFacade
+     * @param Facade\LabeledThingInFrame             $labeledThingInFrameFacade
+     * @param Facade\Project                         $projectFacade
      */
     public function __construct(
         Service\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
@@ -56,7 +61,8 @@ class TaskDocumentsToTaskDatabase extends Command\Base
         AnnoStationService\TaskDatabaseCreator $taskDatabaseCreator,
         Facade\LabelingTask $labelingTaskFacade,
         Facade\LabeledThing $labeledThingFacade,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade
+        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Facade\Project $projectFacade
     ) {
         parent::__construct();
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
@@ -65,6 +71,7 @@ class TaskDocumentsToTaskDatabase extends Command\Base
         $this->labelingTaskFacade             = $labelingTaskFacade;
         $this->labeledThingFacade             = $labeledThingFacade;
         $this->labeledThingInFrameFacade      = $labeledThingInFrameFacade;
+        $this->projectFacade                  = $projectFacade;
     }
 
     protected function configure()
@@ -77,12 +84,11 @@ class TaskDocumentsToTaskDatabase extends Command\Base
         $tasks = $this->labelingTaskFacade->findAll();
 
         foreach ($tasks as $task) {
-            $projectId = $task->getProjectId();
-            $taskId = $task->getId();
+            $project = $this->projectFacade->find($task->getProjectId());
             try {
-                $this->taskDatabaseCreator->createDatabase($projectId, $taskId);
+                $this->taskDatabaseCreator->createDatabase($project, $task);
             } catch (\Exception $exception) {
-                $databaseName = $this->taskDatabaseCreator->getDatabaseName($projectId, $taskId);
+                $databaseName = $this->taskDatabaseCreator->getDatabaseName($project->getId(), $task->getId());
                 $this->writeInfo($output, 'Failed to create Database: ' . $databaseName);
             }
         }
