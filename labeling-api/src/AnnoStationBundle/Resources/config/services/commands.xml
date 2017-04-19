@@ -230,6 +230,13 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.rebuild_user_roles_permissions"
+                 class="AnnoStationBundle\Command\RebuildUserRolesPermissions">
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
 
