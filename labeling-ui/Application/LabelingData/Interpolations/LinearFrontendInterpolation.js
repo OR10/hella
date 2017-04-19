@@ -6,7 +6,7 @@ import FrontendInterpolation from './FrontendInterpolation';
  * @extends FrontendInterpolation
  */
 class LinearFrontendInterpolation extends FrontendInterpolation {
-  
+
   /**
    * public
    */

@@ -1,106 +1,161 @@
+import uuid from 'uuid';
+
 /**
  * Interpolation base class, for all {@link Interpolation}s, which are executed on the backend
  *
  * @implements Interpolation
  * @abstract
  */
-import PaperCuboid from "../../ThirdDimension/Shapes/PaperCuboid";
-import PaperPedestrian from "../../Viewer/Shapes/PaperPedestrian";
-import paper from 'paper';
+
 class FrontendInterpolation {
-  
+
   /**
-   *
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {PaperShapeFactory} paperShapeFactory
    */
   constructor(labeledThingInFrameGateway) {
-  
     /**
      * @type {LabeledThingInFrameGateway}
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
-    
   }
-  
+
   /**
    * @param {Task} task
    * @param {LabeledThing} labeledThing
    * @param {FrameRange} frameRange
    */
   execute(task, labeledThing, frameRange) {
-    this._labeledThingInFrameGateway.getLabeledThingInFrame
-    (
-        task,
-        frameRange.startFrameIndex,
-        labeledThing,
-        frameRange.startFrameIndex,
-        frameRange.endFrameIndex
+    this._labeledThingInFrameGateway.getLabeledThingInFrame(
+      task,
+      frameRange.startFrameIndex,
+      labeledThing,
+      frameRange.startFrameIndex,
+      frameRange.endFrameIndex
     ).then(labeledThingInFrames => {
-      if (labeledThingInFrames.length == 0) {
+      if (labeledThingInFrames.length === 0) {
         throw new Error('Insufficient labeled things in frame');
       }
-      
-      labeledThingInFrames = labeledThingInFrames.filter(labeledThingInFrame => {
-        // remove ghosts
-        return labeledThingInFrame.id !== null;
-      });
-      while (labeledThingInFrames.length > 1) {
-        const currentLtif = labeledThingInFrames.shift();
-        this._doInterpolation(currentLtif, frameRange);
+
+      if (frameRange.endFrameIndex - frameRange.startFrameIndex < 2) {
+        throw new Error(`Error in _doInterpolation: endFrameIndex (${frameRange.endFrameIndex}) - startFrameIndex (${frameRange.startFrameIndex}) < 2`);
       }
-    })
-    
-  }
 
-  /**
-   *
-   * @param labeledThingInFrame
-   * @param frameRange
-   * @private
-   */
-  _doInterpolation(labeledThingInFrame, frameRange) {
-    if (frameRange.endFrameIndex - frameRange.startFrameIndex < 2) {
-      throw new Error(`Error in _doInterpolation: endFrameIndex (${frameRange.endFrameIndex}) - startFrameIndex (${frameRange.startFrameIndex}) < 2`);
-    }
+      const end = labeledThingInFrames[labeledThingInFrames.length - 1];
+      const remainingSteps = frameRange.endFrameIndex - frameRange.startFrameIndex;
 
-    let remainingSteps = frameRange.endFrameIndex - frameRange.startFrameIndex;
-    const frameIndex = (frameRange.endFrameIndex-1) - (frameRange.startFrameIndex + 1);
-    let currentShapes = labeledThingInFrame.shapes;
-    
-    angular.forEach(Array.from(Array(frameIndex).keys()), (index) => {
-      currentShapes = currentShapes.map(shape => {
-        this._interpolateShape(labeledThingInFrame, remainingSteps);
+      labeledThingInFrames.forEach((labeledThingInFrame, index) => {
+        const frameIndexCounter = index + 1;
+        if (frameIndexCounter === frameRange.startFrameIndex || frameIndexCounter === frameRange.endFrameIndex) {
+          return;
+        }
+        const currentShape = labeledThingInFrame.shapes[0];
+        const endShape = end.shapes[0];
+
+        const stepsToCalculate = remainingSteps - index;
+        this._interpolateShape(labeledThingInFrame, currentShape, endShape, stepsToCalculate);
       });
-      --remainingSteps;
-    })
+    });
   }
 
   /**
    *
-   * @param labeledThingInFrame
-   * @param step
-   * @returns {*}
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {PaperThingShape} currentShape
+   * @param {PaperThingShape} endShape
+   * @param {Number} step
    * @private
    */
-  _interpolateShape(labeledThingInFrame, step) {
-    switch (labeledThingInFrame.type){
+  _interpolateShape(labeledThingInFrame, currentShape, endShape, step) {
+    switch (currentShape.type) {
+      case 'rectangle':
+        this._interpolateRectangle(labeledThingInFrame, currentShape, endShape, step);
+        break;
+      case 'ellipse':
+        this._interpolateEllipse(labeledThingInFrame, currentShape, endShape, step);
+        break;
       case 'pedestrian':
-        return this._interpolatePedestrian(labeledThingInFrame, step);
+        this._interpolatePedestrian(labeledThingInFrame, currentShape, endShape, step);
+        break;
+      case 'cuboid':
+        this._interpolateCuboid3d(labeledThingInFrame, currentShape, endShape, step);
+        break;
+      case 'polygon':
+        this._interpolatePolygon(labeledThingInFrame, currentShape, endShape, step);
+        break;
+      case 'polyline':
+        this._interpolatePolyline(labeledThingInFrame, currentShape, endShape, step);
+        break;
+      case 'point':
+        this._interpolatePoint(labeledThingInFrame, currentShape, endShape, step);
         break;
       default:
-        return null;
     }
+  }
+
+  _interpolateRectangle(labeledThingInFrame, currentShape, endShape, step) {
+
+  }
+  _interpolateEllipse(labeledThingInFrame, currentShape, endShape, step) {
+
+  }
+  _interpolatePedestrian(labeledThingInFrame, currentShape, endShape, step) {
+
+  }
+  _interpolatePolygon(labeledThingInFrame, currentShape, endShape, step) {
+
+  }
+  _interpolatePolyline(labeledThingInFrame, currentShape, endShape, step) {
+
+  }
+  _interpolateCuboid3d(labeledThingInFrame, currentShape, endShape, step) {
+
+  }
+
+  /**
+   *
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {PaperThingShape} start
+   * @param {PaperThingShape} end
+   * @param step
+   * @private
+   */
+  _interpolatePoint(labeledThingInFrame, start, end, step) {
+    const currentPoint = start.point;
+    const endPoint = end.point;
+    const point = { x: currentPoint.x + (endPoint.x - currentPoint.x) / step, y: currentPoint.y + (endPoint.y - currentPoint.y) / step };
+    start.point = point;
+    this._transformGhostToLabeledThing(labeledThingInFrame);
+    // console.log(labeledThingInFrame);
+    this._saveLabeledThingInFrame(labeledThingInFrame);
   }
 
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {Number} step
    * @private
    */
-  _interpolatePedestrian(labeledThingInFrame, step) {
-    //TODO Here: Manipulate labeledThingInFrame and changed his postion and save it to couch db with this._labeledThingInFrameGateway.saveLabeledThingInFrame()
+  _transformGhostToLabeledThing(labeledThingInFrame) {
+    if (labeledThingInFrame.id === null) {
+      labeledThingInFrame.id = uuid.v4();
+    }
+    if (labeledThingInFrame.ghost === true) {
+      labeledThingInFrame.ghost = false;
+    }
+  }
+
+  /**
+   * @param labeledThingInFrame
+   * @private
+   */
+  _saveLabeledThingInFrame(labeledThingInFrame) {
+    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame)
+      .then(() => {
+        return labeledThingInFrame;
+      })
+      .catch(error => {
+        throw error;
+      });
   }
 }
 
