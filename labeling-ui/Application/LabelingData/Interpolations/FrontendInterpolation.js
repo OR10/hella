@@ -82,10 +82,10 @@ class FrontendInterpolation {
         this._interpolateCuboid3d(labeledThingInFrame, currentShape, endShape, step);
         break;
       case 'polygon':
-        this._interpolatePolygon(labeledThingInFrame, currentShape, endShape, step);
+        this._interpolatePolygonAndPolyline(labeledThingInFrame, currentShape, endShape, step);
         break;
       case 'polyline':
-        this._interpolatePolyline(labeledThingInFrame, currentShape, endShape, step);
+        this._interpolatePolygonAndPolyline(labeledThingInFrame, currentShape, endShape, step);
         break;
       case 'point':
         this._interpolatePoint(labeledThingInFrame, currentShape, endShape, step);
@@ -141,28 +141,45 @@ class FrontendInterpolation {
     this._transformGhostToLabeledThing(labeledThingInFrame);
     this._saveLabeledThingInFrame(labeledThingInFrame);
   }
-  _interpolatePolygon(labeledThingInFrame, currentShape, endShape, step) {
+  _interpolatePolygonAndPolyline(labeledThingInFrame, currentShape, endShape, step) {
+    const currentPoints = currentShape.points;
+    const endPoints = endShape.points;
+    const points = [];
 
-  }
-  _interpolatePolyline(labeledThingInFrame, currentShape, endShape, step) {
+    if (currentPoints.length !== endPoints.length) {
+      throw new Error(`Failed to interpolate ${labeledThingInFrame.type} with different points.`);
+    }
 
-  }
-  _interpolateCuboid3d(labeledThingInFrame, currentShape, endShape, step) {
+    currentPoints.forEach((point, index) => {
+      const newCalculatePoint = {
+        x: point.x + (endPoints[index].x - point.x) / step,
+        y: point.y + (endPoints[index].y - point.y) / step,
+      };
+      points.push(newCalculatePoint);
+    });
 
+    currentShape.points = points;
+
+    this._transformGhostToLabeledThing(labeledThingInFrame);
+    this._saveLabeledThingInFrame(labeledThingInFrame);
   }
 
   _interpolatePoint(labeledThingInFrame, currentShape, endShape, step) {
     const currentPoint = currentShape.point;
     const endPoint = endShape.point;
-
+ 
     const point = {
-        x: currentPoint.x + (endPoint.x - currentPoint.x) / step,
-        y: currentPoint.y + (endPoint.y - currentPoint.y) / step
-      };
+      x: currentPoint.x + (endPoint.x - currentPoint.x) / step,
+      y: currentPoint.y + (endPoint.y - currentPoint.y) / step
+    };
     currentShape.point = point;
 
     this._transformGhostToLabeledThing(labeledThingInFrame);
     this._saveLabeledThingInFrame(labeledThingInFrame);
+  }
+
+  _interpolateCuboid3d(labeledThingInFrame, currentShape, endShape, step) {
+
   }
 
   /**
