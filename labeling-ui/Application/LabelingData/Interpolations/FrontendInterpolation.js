@@ -111,16 +111,34 @@ class FrontendInterpolation {
 
     currentShape.topLeft = topLeft;
     currentShape.bottomRight = bottomRight;
-
+  
     this._transformGhostToLabeledThing(labeledThingInFrame);
     this._saveLabeledThingInFrame(labeledThingInFrame);
   }
 
   _interpolateEllipse(labeledThingInFrame, currentShape, endShape, step) {
-  
+    const currentTopCenter = currentShape.topCenter;
+    const currentBottomCenter = currentShape.bottomCenter;
+    const endTopCenter = endShape.topCenter;
+    const endBottomCenter = endShape.bottomCenter;
+
+    const topCenter = {
+      x: currentTopCenter.x + (endTopCenter.x - currentTopCenter.x) / step,
+      y: currentTopCenter.y + (endTopCenter.y - currentTopCenter.y) / step
+    };
+    const bottomCenter = {
+      x: currentBottomCenter.x + (endBottomCenter.x - currentBottomCenter.x) / step,
+      y: currentBottomCenter.y + (endBottomCenter.y - currentBottomCenter.y) / step
+    };
+
+    currentShape.topCenter = topCenter;
+    currentShape.bottomCenter = bottomCenter;
+
+    this._transformGhostToLabeledThing(labeledThingInFrame);
+    this._saveLabeledThingInFrame(labeledThingInFrame);
   }
   _interpolatePedestrian(labeledThingInFrame, currentShape, endShape, step) {
-
+  
   }
   _interpolatePolygon(labeledThingInFrame, currentShape, endShape, step) {
 
