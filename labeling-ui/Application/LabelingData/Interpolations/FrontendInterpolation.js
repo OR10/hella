@@ -93,12 +93,31 @@ class FrontendInterpolation {
       default:
     }
   }
-
+  
   _interpolateRectangle(labeledThingInFrame, currentShape, endShape, step) {
+    const currentTopLeft = currentShape.topLeft;
+    const currentBottomRight = currentShape.bottomRight;
+    const endTopLeft = endShape.topLeft;
+    const endBottomRight = endShape.bottomRight;
 
+    const topLeft = {
+      x: currentTopLeft.x + (endTopLeft.x - currentTopLeft.x) / step,
+      y: currentTopLeft.y + (endTopLeft.y - currentTopLeft.y) / step
+    };
+    const bottomRight = {
+      x: currentBottomRight.x + (endBottomRight.x - currentBottomRight.x) / step,
+      y: currentBottomRight.y + (endBottomRight.y - currentBottomRight.y) / step
+    };
+
+    currentShape.topLeft = topLeft;
+    currentShape.bottomRight = bottomRight;
+
+    this._transformGhostToLabeledThing(labeledThingInFrame);
+    this._saveLabeledThingInFrame(labeledThingInFrame);
   }
-  _interpolateEllipse(labeledThingInFrame, currentShape, endShape, step) {
 
+  _interpolateEllipse(labeledThingInFrame, currentShape, endShape, step) {
+  
   }
   _interpolatePedestrian(labeledThingInFrame, currentShape, endShape, step) {
 
@@ -113,21 +132,17 @@ class FrontendInterpolation {
 
   }
 
-  /**
-   *
-   * @param {LabeledThingInFrame} labeledThingInFrame
-   * @param {PaperThingShape} start
-   * @param {PaperThingShape} end
-   * @param step
-   * @private
-   */
-  _interpolatePoint(labeledThingInFrame, start, end, step) {
-    const currentPoint = start.point;
-    const endPoint = end.point;
-    const point = { x: currentPoint.x + (endPoint.x - currentPoint.x) / step, y: currentPoint.y + (endPoint.y - currentPoint.y) / step };
-    start.point = point;
+  _interpolatePoint(labeledThingInFrame, currentShape, endShape, step) {
+    const currentPoint = currentShape.point;
+    const endPoint = endShape.point;
+
+    const point = {
+        x: currentPoint.x + (endPoint.x - currentPoint.x) / step,
+        y: currentPoint.y + (endPoint.y - currentPoint.y) / step
+      };
+    currentShape.point = point;
+
     this._transformGhostToLabeledThing(labeledThingInFrame);
-    // console.log(labeledThingInFrame);
     this._saveLabeledThingInFrame(labeledThingInFrame);
   }
 
