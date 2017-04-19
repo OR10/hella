@@ -35,7 +35,7 @@ class RebuildTaskDatabaseSecurityPermissions extends Base
         parent::__construct();
         $this->labelingTaskFacade = $labelingTaskFacade;
         $this->amqpFacade         = $amqpFacade;
-        $this->projectFacade = $projectFacade;
+        $this->projectFacade      = $projectFacade;
     }
 
     protected function configure()
@@ -54,11 +54,11 @@ class RebuildTaskDatabaseSecurityPermissions extends Base
         $projectId = $input->getArgument('projectId');
         if ($projectId === null) {
             $labelingTasks = $this->labelingTaskFacade->findAll();
-        }else{
-            $project = $this->projectFacade->find($projectId);
+        } else {
+            $project       = $this->projectFacade->find($projectId);
             $labelingTasks = $this->labelingTaskFacade->findAllByProject($project, true);
         }
-        $progress      = new ProgressBar($output, count($labelingTasks));
+        $progress = new ProgressBar($output, count($labelingTasks));
 
         /** @var Model\LabelingTask $task */
         foreach ($labelingTasks as $labelingTask) {
