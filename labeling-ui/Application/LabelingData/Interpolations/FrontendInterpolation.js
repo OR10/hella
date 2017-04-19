@@ -78,7 +78,7 @@ class FrontendInterpolation {
       case 'pedestrian':
         this._interpolatePedestrian(labeledThingInFrame, currentShape, endShape, step);
         break;
-      case 'cuboid':
+      case 'cuboid3d':
         this._interpolateCuboid3d(labeledThingInFrame, currentShape, endShape, step);
         break;
       case 'polygon':
@@ -179,7 +179,7 @@ class FrontendInterpolation {
   }
 
   _interpolateCuboid3d(labeledThingInFrame, currentShape, endShape, step) {
-
+    console.log(currentShape);
   }
 
   /**
