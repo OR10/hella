@@ -37,17 +37,11 @@ class Replication extends Controller\Base
      */
     private $tokenStorage;
 
-    /**
-     * @var string
-     */
-    private $externalCouchDbPath;
-
-    public function __construct(Storage\TokenStorageInterface $tokenStorage, $externalCouchDbHost, $externalCouchDbPort, $externalCouchDbPath)
+    public function __construct(Storage\TokenStorageInterface $tokenStorage, $externalCouchDbHost, $externalCouchDbPort)
     {
         $this->externalCouchDbHost = $externalCouchDbHost;
         $this->externalCouchDbPort = $externalCouchDbPort;
         $this->tokenStorage        = $tokenStorage;
-        $this->externalCouchDbPath = $externalCouchDbPath;
     }
 
     /**
@@ -75,12 +69,11 @@ class Replication extends Controller\Base
                     'taskId'         => $task->getId(),
                     'databaseName'   => $databaseName,
                     'databaseServer' => sprintf(
-                        'http://%s:%s@%s:%s/%s',
+                        'http://%s:%s@%s:%s',
                         $username,
                         $currentUser->getCouchDbPassword(),
                         $this->externalCouchDbHost,
-                        $this->externalCouchDbPort,
-                        $this->externalCouchDbPath
+                        $this->externalCouchDbPort
                     ),
                     'databaseUsername' => $username,
                     'databasePassword' => $currentUser->getCouchDbPassword(),

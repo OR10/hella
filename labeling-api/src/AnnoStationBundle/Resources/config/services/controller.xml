@@ -311,7 +311,6 @@
             <argument type="service" id="security.token_storage"/>
             <argument>%couchdb_host_external%</argument>
             <argument>%couchdb_port_external%</argument>
-            <argument>%couchdb_path_external%</argument>
         </service>
     </services>
 </container>

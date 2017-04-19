@@ -43,7 +43,6 @@ class ReplicationTest extends Tests\WebTestCase
         $databaseName        = sprintf('taskdb-project-%s-task-%s', $this->project->getId(), $this->task->getId());
         $externalCouchDbHost = $client->getKernel()->getContainer()->getParameter('couchdb_host_external');
         $externalCouchDbPort = $client->getKernel()->getContainer()->getParameter('couchdb_port_external');
-        $externalCouchDbPath = $client->getKernel()->getContainer()->getParameter('couchdb_path_external');
         $username            = sprintf(
             '%s%s',
             Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
@@ -55,12 +54,11 @@ class ReplicationTest extends Tests\WebTestCase
                 'taskId'         => $this->task->getId(),
                 'databaseName'   => $databaseName,
                 'databaseServer' => sprintf(
-                    'http://%s:%s@%s:%s/%s',
+                    'http://%s:%s@%s:%s',
                     $username,
                     'password1234',
                     $externalCouchDbHost,
-                    $externalCouchDbPort,
-                    $externalCouchDbPath
+                    $externalCouchDbPort
                 ),
                 'databaseUsername' => $username,
                 'databasePassword' => 'password1234',
