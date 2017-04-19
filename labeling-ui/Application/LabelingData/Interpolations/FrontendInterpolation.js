@@ -117,6 +117,10 @@ class FrontendInterpolation {
   }
 
   _interpolateEllipse(labeledThingInFrame, currentShape, endShape, step) {
+  
+  }
+  
+  _interpolatePedestrian(labeledThingInFrame, currentShape, endShape, step) {
     const currentTopCenter = currentShape.topCenter;
     const currentBottomCenter = currentShape.bottomCenter;
     const endTopCenter = endShape.topCenter;
@@ -133,12 +137,9 @@ class FrontendInterpolation {
 
     currentShape.topCenter = topCenter;
     currentShape.bottomCenter = bottomCenter;
-
+  
     this._transformGhostToLabeledThing(labeledThingInFrame);
     this._saveLabeledThingInFrame(labeledThingInFrame);
-  }
-  _interpolatePedestrian(labeledThingInFrame, currentShape, endShape, step) {
-  
   }
   _interpolatePolygon(labeledThingInFrame, currentShape, endShape, step) {
 
