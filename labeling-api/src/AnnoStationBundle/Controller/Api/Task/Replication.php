@@ -25,11 +25,23 @@ class Replication extends Controller\Base
     /**
      * @var string
      */
-    private $couchDbExternalUrl;
+    private $externalCouchDbHost;
 
-    public function __construct($couchDbExternalUrl)
+    /**
+     * @var string
+     */
+    private $externalCouchDbPort;
+
+    /**
+     * @var Storage\TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    public function __construct(Storage\TokenStorageInterface $tokenStorage, $externalCouchDbHost, $externalCouchDbPort)
     {
-        $this->couchDbExternalUrl = $couchDbExternalUrl;
+        $this->externalCouchDbHost = $externalCouchDbHost;
+        $this->externalCouchDbPort = $externalCouchDbPort;
+        $this->tokenStorage        = $tokenStorage;
     }
 
     /**
@@ -42,14 +54,29 @@ class Replication extends Controller\Base
      */
     public function getReplicationDatabaseAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
+        /** @var Model\User $currentUser */
+        $currentUser = $this->tokenStorage->getToken()->getUser();
         $databaseName = sprintf('taskdb-project-%s-task-%s', $task->getProjectId(), $task->getId());
+        $username = sprintf(
+            '%s%s',
+            Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
+            $currentUser->getUsername()
+        );
 
         return View\View::create()->setData(
             [
                 'result' => [
                     'taskId'         => $task->getId(),
                     'databaseName'   => $databaseName,
-                    'databaseServer' => $this->couchDbExternalUrl,
+                    'databaseServer' => sprintf(
+                        'http://%s:%s@%s:%s',
+                        $username,
+                        $currentUser->getCouchDbPassword(),
+                        $this->externalCouchDbHost,
+                        $this->externalCouchDbPort
+                    ),
+                    'databaseUsername' => $username,
+                    'databasePassword' => $currentUser->getCouchDbPassword(),
                 ],
             ]
         );
