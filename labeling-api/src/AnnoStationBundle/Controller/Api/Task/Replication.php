@@ -69,7 +69,7 @@ class Replication extends Controller\Base
             $currentUser->getUsername()
         );
 
-        if (isset($_SERVER['SERVER_PROTOCOL']) && stripos($_SERVER['SERVER_PROTOCOL'], 'https') === true) {
+        if (isset($_SERVER['HTTPS']) && strlen($_SERVER['HTTPS']) > 0) {
             $protocol = 'https';
         } else {
             $protocol = 'http';
