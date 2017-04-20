@@ -75,7 +75,7 @@ class Replication extends Controller\Base
                     'taskId'         => $task->getId(),
                     'databaseName'   => $databaseName,
                     'databaseServer' => sprintf(
-                        'http://%s:%s@%s:%s/%s',
+                        '//%s:%s@%s:%s/%s',
                         $username,
                         $currentUser->getCouchDbPassword(),
                         $this->externalCouchDbHost,

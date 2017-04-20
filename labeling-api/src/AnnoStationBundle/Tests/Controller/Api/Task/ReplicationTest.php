@@ -55,7 +55,7 @@ class ReplicationTest extends Tests\WebTestCase
                 'taskId'         => $this->task->getId(),
                 'databaseName'   => $databaseName,
                 'databaseServer' => sprintf(
-                    'http://%s:%s@%s:%s/%s',
+                    '//%s:%s@%s:%s/%s',
                     $username,
                     'password1234',
                     $externalCouchDbHost,
