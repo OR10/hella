@@ -292,7 +292,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getSetting(string $key, string $default = null)
+    public function getSetting(string $key, $default = null)
     {
         if (isset($this->settings[$key])) {
             return $this->settings[$key];
