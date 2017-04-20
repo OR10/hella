@@ -69,13 +69,21 @@ class Replication extends Controller\Base
             $currentUser->getUsername()
         );
 
+        if (isset($_SERVER['SERVER_PROTOCOL']) && stripos($_SERVER['SERVER_PROTOCOL'], 'https') === true) {
+            $protocol = 'https';
+        } else {
+            $protocol = 'http';
+        }
+
+
         return View\View::create()->setData(
             [
                 'result' => [
                     'taskId'         => $task->getId(),
                     'databaseName'   => $databaseName,
                     'databaseServer' => sprintf(
-                        '//%s:%s@%s:%s/%s',
+                        '%s://%s:%s@%s:%s/%s',
+                        $protocol,
                         $username,
                         $currentUser->getCouchDbPassword(),
                         $this->externalCouchDbHost,
