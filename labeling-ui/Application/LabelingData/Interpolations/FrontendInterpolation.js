@@ -11,7 +11,6 @@ class FrontendInterpolation {
 
   /**
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
-   * @param {PaperShapeFactory} paperShapeFactory
    */
   constructor(labeledThingInFrameGateway) {
     /**
@@ -44,7 +43,9 @@ class FrontendInterpolation {
 
       const end = labeledThingInFrames[labeledThingInFrames.length - 1];
       const remainingSteps = frameRange.endFrameIndex - frameRange.startFrameIndex;
-
+      if (remainingSteps < labeledThingInFrames.length) {
+        throw new Error('More labeledThingInFrames than range in FrameRange reach');
+      }
       labeledThingInFrames.forEach((labeledThingInFrame, index) => {
         const frameIndexCounter = index + 1;
         if (frameIndexCounter === frameRange.startFrameIndex || frameIndexCounter === frameRange.endFrameIndex) {
@@ -54,6 +55,7 @@ class FrontendInterpolation {
         const endShape = end.shapes[0];
 
         const stepsToCalculate = remainingSteps - index;
+
         this._interpolateShape(labeledThingInFrame, currentShape, endShape, stepsToCalculate);
       });
     });
@@ -72,9 +74,11 @@ class FrontendInterpolation {
       case 'rectangle':
         this._interpolateRectangle(labeledThingInFrame, currentShape, endShape, step);
         break;
+        /*
       case 'ellipse':
         this._interpolateEllipse(labeledThingInFrame, currentShape, endShape, step);
         break;
+        */
       case 'pedestrian':
         this._interpolatePedestrian(labeledThingInFrame, currentShape, endShape, step);
         break;
@@ -93,7 +97,7 @@ class FrontendInterpolation {
       default:
     }
   }
-  
+
   _interpolateRectangle(labeledThingInFrame, currentShape, endShape, step) {
     const currentTopLeft = currentShape.topLeft;
     const currentBottomRight = currentShape.bottomRight;
@@ -102,24 +106,26 @@ class FrontendInterpolation {
 
     const topLeft = {
       x: currentTopLeft.x + (endTopLeft.x - currentTopLeft.x) / step,
-      y: currentTopLeft.y + (endTopLeft.y - currentTopLeft.y) / step
+      y: currentTopLeft.y + (endTopLeft.y - currentTopLeft.y) / step,
     };
     const bottomRight = {
       x: currentBottomRight.x + (endBottomRight.x - currentBottomRight.x) / step,
-      y: currentBottomRight.y + (endBottomRight.y - currentBottomRight.y) / step
+      y: currentBottomRight.y + (endBottomRight.y - currentBottomRight.y) / step,
     };
 
     currentShape.topLeft = topLeft;
     currentShape.bottomRight = bottomRight;
-  
+
     this._transformGhostToLabeledThing(labeledThingInFrame);
     this._saveLabeledThingInFrame(labeledThingInFrame);
   }
 
+  /*
   _interpolateEllipse(labeledThingInFrame, currentShape, endShape, step) {
-  
+
   }
-  
+  */
+
   _interpolatePedestrian(labeledThingInFrame, currentShape, endShape, step) {
     const currentTopCenter = currentShape.topCenter;
     const currentBottomCenter = currentShape.bottomCenter;
@@ -128,19 +134,20 @@ class FrontendInterpolation {
 
     const topCenter = {
       x: currentTopCenter.x + (endTopCenter.x - currentTopCenter.x) / step,
-      y: currentTopCenter.y + (endTopCenter.y - currentTopCenter.y) / step
+      y: currentTopCenter.y + (endTopCenter.y - currentTopCenter.y) / step,
     };
     const bottomCenter = {
       x: currentBottomCenter.x + (endBottomCenter.x - currentBottomCenter.x) / step,
-      y: currentBottomCenter.y + (endBottomCenter.y - currentBottomCenter.y) / step
+      y: currentBottomCenter.y + (endBottomCenter.y - currentBottomCenter.y) / step,
     };
 
     currentShape.topCenter = topCenter;
     currentShape.bottomCenter = bottomCenter;
-  
+
     this._transformGhostToLabeledThing(labeledThingInFrame);
     this._saveLabeledThingInFrame(labeledThingInFrame);
   }
+
   _interpolatePolygonAndPolyline(labeledThingInFrame, currentShape, endShape, step) {
     const currentPoints = currentShape.points;
     const endPoints = endShape.points;
@@ -167,10 +174,10 @@ class FrontendInterpolation {
   _interpolatePoint(labeledThingInFrame, currentShape, endShape, step) {
     const currentPoint = currentShape.point;
     const endPoint = endShape.point;
- 
+
     const point = {
       x: currentPoint.x + (endPoint.x - currentPoint.x) / step,
-      y: currentPoint.y + (endPoint.y - currentPoint.y) / step
+      y: currentPoint.y + (endPoint.y - currentPoint.y) / step,
     };
     currentShape.point = point;
 
@@ -179,7 +186,79 @@ class FrontendInterpolation {
   }
 
   _interpolateCuboid3d(labeledThingInFrame, currentShape, endShape, step) {
-    console.log(currentShape);
+    const newCuboid3d = [];
+    const currentCuboid = this._getCuboidFromRect(currentShape, endShape);
+    const endCuboid = this._getCuboidFromRect(endShape, currentShape);
+
+    for (let index = 0; index <= 7; index++) {
+      const newCoordinates = this._cuboid3dCalculateNewVertex(
+          currentCuboid.vehicleCoordinates[index],
+          endCuboid.vehicleCoordinates[index],
+          step
+      );
+      newCuboid3d.push(newCoordinates);
+    }
+    currentCuboid.vehicleCoordinates = newCuboid3d;
+
+    this._transformGhostToLabeledThing(labeledThingInFrame);
+    this._saveLabeledThingInFrame(labeledThingInFrame);
+  }
+
+  _getCuboidFromRect(currentCuboid, endCuboid) {
+    const numberOfCurrentInvisibleVertices = currentCuboid.vehicleCoordinates.filter(vertex => {
+      return vertex === null;
+    });
+    const numberOfEndInvisibleVertices = endCuboid.vehicleCoordinates.filter(vertex => {
+      return vertex === null;
+    });
+
+    if (numberOfCurrentInvisibleVertices.length === 0 ||
+        (numberOfCurrentInvisibleVertices.length === 4 && numberOfEndInvisibleVertices.length === 4)) {
+      return currentCuboid;
+    }
+
+    let invisibleVerticesIndex;
+    if (numberOfCurrentInvisibleVertices.length === 4) {
+      invisibleVerticesIndex = numberOfCurrentInvisibleVertices;
+    } else {
+      invisibleVerticesIndex = numberOfEndInvisibleVertices;
+    }
+
+    let oppositeVertex;
+    console.log(Object.keys(invisibleVerticesIndex));
+    switch (Object.keys(invisibleVerticesIndex)) {
+      case new Array('0', '1', '2', '3'):
+        console.log('0, 1, 2, 3');
+        break;
+      case new Array('1', '2', '5', '6'):
+        console.log('1, 2, 5, 6');
+        break;
+      case new Array('4', '5', '6', '7'):
+        console.log('4, 5, 6, 7');
+        break;
+      case new Array('0', '3', '4', '7'):
+        console.log('0, 3, 4, 7');
+        break;
+      case new Array('0', '1', '4', '5'):
+        console.log('0, 1, 4, 5');
+        break;
+      case new Array('2', '3', '6', '7'):
+        console.log('2, 3, 6, 7');
+        break;
+      default:
+        oppositeVertex = new Array();
+    }
+  }
+
+  _cuboid3dCalculateNewVertex(currentVertex, endVertex, steps) {
+    if (currentVertex === null && endVertex === null) {
+      return null;
+    }
+    return [
+      currentVertex[0] + (endVertex[0] - currentVertex[0]) / steps,
+      currentVertex[1] + (endVertex[1] - currentVertex[1]) / steps,
+      currentVertex[2] + (endVertex[2] - currentVertex[2]) / steps,
+    ];
   }
 
   /**
