@@ -119,7 +119,7 @@ class Video
     /**
      * @param $id
      *
-     * @return mixed
+     * @return string
      */
     public function getVideoNameForId($id)
     {
