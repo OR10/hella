@@ -117,7 +117,7 @@ class PouchDbTimerGateway {
 
     return this._packagingExecutor.execute(
       queueIdentifier,
-      () => db.query(this._pouchDbViewService.get('taskTimerByTaskIdAndUserId'), {
+      () => db.query(this._pouchDbViewService.getDesignDocumentViewName('taskTimerByTaskIdAndUserId'), {
         include_docs: true,
         key: [task.id, user.id],
       }))

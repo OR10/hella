@@ -101,7 +101,7 @@ class PouchDbLabeledThingInFrameGateway {
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
-      return db.query(this._pouchDbViewService.get('labeledThingInFrameByTaskIdAndFrameIndex'), {
+      return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByTaskIdAndFrameIndex'), {
         startkey,
         endkey,
         include_docs: true,
@@ -145,7 +145,7 @@ class PouchDbLabeledThingInFrameGateway {
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     return this._packagingExecutor.execute('labeledThingInFrame', () => {
-      return db.query(this._pouchDbViewService.get('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
+      return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
         startkey,
         endkey,
         include_docs: true,
@@ -195,7 +195,7 @@ class PouchDbLabeledThingInFrameGateway {
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute('labeledThingInFrame', () => {
-      return db.query(this._pouchDbViewService.get('labeledThingInFrameIncomplete'), {
+      return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameIncomplete'), {
         startkey,
         endkey,
         limit: count,
@@ -267,7 +267,7 @@ class PouchDbLabeledThingInFrameGateway {
           storedLabeledThing = deserializedLabeledThingInFrame.labeledThing;
           return this._packagingExecutor.execute(
             'labeledThing',
-            () => dbContext.query(this._pouchDbViewService.get('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
+            () => dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
               reduce: true,
               keys: [storedLabeledThing.id],
             }));

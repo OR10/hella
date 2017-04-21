@@ -9,9 +9,9 @@ class TaskReplicationService {
    * @param {TimerGateway} timerGateway
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
-   * @param {PouchDbViewHeater} pouchDbViewHeater
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor(loggerService, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService, pouchDbViewHeater) {
+  constructor(loggerService, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService, pouchDbViewService) {
     /**
      * @type {LoggerService}
      * @private
@@ -47,10 +47,10 @@ class TaskReplicationService {
     this._pouchDbContextService = pouchDbContextService;
 
     /**
-     * @type {PouchDbViewHeater}
+     * @type {PouchDbViewService}
      * @private
      */
-    this._pouchDbViewHeater = pouchDbViewHeater;
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   replicateTaskDataToLocalMachine(project, task) {
@@ -75,7 +75,7 @@ class TaskReplicationService {
 
     return this._pouchDbSyncManager.pullUpdatesForContext(context)
       .then(() => {
-        return this._pouchDbViewHeater.heatAllViews(context, 'annostation_');
+        return this._pouchDbViewService.installDesignDocuments(task.id);
       })
       .then(() => {
         return this._pouchDbSyncManager.startDuplexLiveReplication(context);
@@ -112,7 +112,7 @@ TaskReplicationService.$inject = [
   'timerGateway',
   'pouchDbSyncManager',
   'pouchDbContextService',
-  'pouchDbViewHeater',
+  'pouchDbViewService',
 ];
 
 export default TaskReplicationService;
