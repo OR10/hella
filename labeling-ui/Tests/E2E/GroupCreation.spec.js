@@ -56,7 +56,6 @@ describe('Rectangle drawing', () => {
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateNoGroup')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        // () => browser.pause()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateNoGroup);
@@ -89,7 +88,6 @@ describe('Rectangle drawing', () => {
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        // () => browser.pause()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
@@ -122,7 +120,6 @@ describe('Rectangle drawing', () => {
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoRectangles')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        // () => browser.pause()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoRectangles);
@@ -130,6 +127,38 @@ describe('Rectangle drawing', () => {
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+        done();
+      });
+  });
+
+  it('creates a group around 2 point shapes', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint,
+    ]));
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 660, y: 500}) // drag
+          .mouseUp()
+          .perform();
+      })
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoRectangles')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoPoints);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint);
         expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
         done();
       });
