@@ -130,11 +130,11 @@ class Video
             ->execute()
             ->toArray();
 
-        if (!empty($video)) {
-            return $video[0]['value'];
+        if (empty($video)) {
+            throw new \RuntimeException(sprintf('VideoId not found "%s"', $id));
         }
 
-        return false;
+        return $video[0]['value'];
     }
 
     /**
