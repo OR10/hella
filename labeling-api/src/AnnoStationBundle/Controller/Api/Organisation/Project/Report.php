@@ -108,9 +108,8 @@ class Report extends Controller\Base
 
         $tasks = array();
         foreach ($this->projectFacade->getTasksByProject($project) as $task) {
-            $video                 = $this->videoFacade->find($task->getVideoId());
             $tasks[$task->getId()] = array(
-                'videoName'        => $video->getName(),
+                'videoName'        => $this->videoFacade->getVideoNameForId($task->getVideoId()),
                 'labelInstruction' => $task->getLabelInstruction(),
             );
         }
