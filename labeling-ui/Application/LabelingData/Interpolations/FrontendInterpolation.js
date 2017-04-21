@@ -50,19 +50,16 @@ class FrontendInterpolation {
         throw new Error('Error in _doInterpolation: You need more then 1 real labeledThingInFrames for interpolation');
       }
 
-      console.log(labeledThingInFramesWithGhosts);
-      console.log(labeledThingInFrames);
-      
-      let indexSet = [];
+      const indexSet = [];
       labeledThingInFrames.forEach(labeledThingInFrame => {
         indexSet.push(labeledThingInFramesWithGhosts.indexOf(labeledThingInFrame));
       });
-      
-      indexSet.forEach((index, i ) => {
-        if (indexSet.indexOf(indexSet[i + 1]) !== -1) {
-          const lastLabeledThingInFrame = labeledThingInFrames[i + 1];
-          let remainingSteps = indexSet[i + 1] - (i + 1);
-          for(let runner = i + 1; runner < indexSet[i + 1]; runner++) {
+
+      indexSet.forEach((value, key ) => {
+        if (indexSet.indexOf(indexSet[key + 1]) !== -1) {
+          const lastLabeledThingInFrame = labeledThingInFrames[key + 1];
+          let remainingSteps = indexSet[key + 1] - (key + 1);
+          for (let runner = key + 1; runner < indexSet[key + 1]; runner++) {
             const currentLabeledThingInFrame = labeledThingInFramesWithGhosts[runner];
 
             const currentShape = currentLabeledThingInFrame.shapes[0];
@@ -194,11 +191,8 @@ class FrontendInterpolation {
       x: currentPoint.x + (endPoint.x - currentPoint.x) / step,
       y: currentPoint.y + (endPoint.y - currentPoint.y) / step,
     };
-    console.log(step);
-    console.log(currentShape.point)
-    console.log(point)
     currentShape.point = point;
-    
+
     this._transformGhostToLabeledThing(labeledThingInFrame);
     this._saveLabeledThingInFrame(labeledThingInFrame);
   }
@@ -299,7 +293,6 @@ class FrontendInterpolation {
    * @private
    */
   _saveLabeledThingInFrame(labeledThingInFrame) {
-    return;
     this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame)
       .then(() => {
         return labeledThingInFrame;
