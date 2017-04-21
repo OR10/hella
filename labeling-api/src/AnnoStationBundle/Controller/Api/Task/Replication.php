@@ -68,13 +68,12 @@ class Replication extends Controller\Base
             Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
             $currentUser->getUsername()
         );
+        $externalCouchDbPort = (int)$this->externalCouchDbPort;
+        $externalCouchDbProtocol = 'http';
 
-        if (isset($_SERVER['HTTPS']) && strlen($_SERVER['HTTPS']) > 0) {
-            $protocol = 'https';
-        } else {
-            $protocol = 'http';
+        if ($externalCouchDbPort === 443) {
+            $externalCouchDbProtocol = 'https';
         }
-
 
         return View\View::create()->setData(
             [
@@ -82,12 +81,12 @@ class Replication extends Controller\Base
                     'taskId'         => $task->getId(),
                     'databaseName'   => $databaseName,
                     'databaseServer' => sprintf(
-                        '%s://%s:%s@%s:%s/%s',
-                        $protocol,
+                        '%s://%s:%s@%s:%d/%s',
+                        $externalCouchDbProtocol,
                         $username,
                         $currentUser->getCouchDbPassword(),
                         $this->externalCouchDbHost,
-                        $this->externalCouchDbPort,
+                        $externalCouchDbPort,
                         $this->externalCouchDbPath
                     ),
                     'databaseUsername' => $username,
