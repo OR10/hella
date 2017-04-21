@@ -95,13 +95,15 @@ class PouchDbLabeledThingInFrameGateway {
    *
    * @returns {AbortablePromise<LabeledThingInFrame[]|Error>}
    */
-  listLabeledThingInFrame(task, frameIndex, offset = 0) {
-    const key = [task.id, frameIndex + offset];
+  listLabeledThingInFrame(task, frameIndex, offset = 0, limit = 1) {
+    const startkey = [task.id, frameIndex + offset];
+    const endkey = [task.id, frameIndex + offset + limit - 1];
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query(this._pouchDbViewService.get('labeledThingInFrameByTaskIdAndFrameIndex'), {
-        key,
+        startkey,
+        endkey,
         include_docs: true,
       });
     }).then(result => {
