@@ -26,37 +26,52 @@ class FrontendInterpolation {
    * @param {FrameRange} frameRange
    */
   execute(task, labeledThing, frameRange) {
+    const limit = (frameRange.endFrameIndex - frameRange.startFrameIndex) - 1;
     this._labeledThingInFrameGateway.getLabeledThingInFrame(
       task,
       frameRange.startFrameIndex,
       labeledThing,
       frameRange.startFrameIndex,
-      frameRange.endFrameIndex
-    ).then(labeledThingInFrames => {
-      if (labeledThingInFrames.length === 0) {
-        throw new Error('Insufficient labeled things in frame');
+      limit
+    ).then(labeledThingInFramesWithGhosts => {
+      if (labeledThingInFramesWithGhosts.length === 0) {
+        throw new Error('Error in _doInterpolation: Insufficient labeled things in frame');
       }
 
       if (frameRange.endFrameIndex - frameRange.startFrameIndex < 2) {
         throw new Error(`Error in _doInterpolation: endFrameIndex (${frameRange.endFrameIndex}) - startFrameIndex (${frameRange.startFrameIndex}) < 2`);
       }
 
-      const end = labeledThingInFrames[labeledThingInFrames.length - 1];
-      const remainingSteps = frameRange.endFrameIndex - frameRange.startFrameIndex;
-      if (remainingSteps < labeledThingInFrames.length) {
-        throw new Error('More labeledThingInFrames than range in FrameRange reach');
+      const labeledThingInFrames = labeledThingInFramesWithGhosts.filter(labeledThingInFrame => {
+        return labeledThingInFrame.id !== null;
+      });
+
+      if (labeledThingInFrames.length <= 1) {
+        throw new Error('Error in _doInterpolation: You need more then 1 real labeledThingInFrames for interpolation');
       }
-      labeledThingInFrames.forEach((labeledThingInFrame, index) => {
-        const frameIndexCounter = index + 1;
-        if (frameIndexCounter === frameRange.startFrameIndex || frameIndexCounter === frameRange.endFrameIndex) {
-          return;
+
+      console.log(labeledThingInFramesWithGhosts);
+      console.log(labeledThingInFrames);
+      
+      let indexSet = [];
+      labeledThingInFrames.forEach(labeledThingInFrame => {
+        indexSet.push(labeledThingInFramesWithGhosts.indexOf(labeledThingInFrame));
+      });
+      
+      indexSet.forEach((index, i ) => {
+        if (indexSet.indexOf(indexSet[i + 1]) !== -1) {
+          const lastLabeledThingInFrame = labeledThingInFrames[i + 1];
+          let remainingSteps = indexSet[i + 1] - (i + 1);
+          for(let runner = i + 1; runner < indexSet[i + 1]; runner++) {
+            const currentLabeledThingInFrame = labeledThingInFramesWithGhosts[runner];
+
+            const currentShape = currentLabeledThingInFrame.shapes[0];
+            const endShape = lastLabeledThingInFrame.shapes[0];
+
+            this._interpolateShape(currentLabeledThingInFrame, currentShape, endShape, remainingSteps);
+            --remainingSteps;
+          }
         }
-        const currentShape = labeledThingInFrame.shapes[0];
-        const endShape = end.shapes[0];
-
-        const stepsToCalculate = remainingSteps - index;
-
-        this._interpolateShape(labeledThingInFrame, currentShape, endShape, stepsToCalculate);
       });
     });
   }
@@ -179,8 +194,11 @@ class FrontendInterpolation {
       x: currentPoint.x + (endPoint.x - currentPoint.x) / step,
       y: currentPoint.y + (endPoint.y - currentPoint.y) / step,
     };
+    console.log(step);
+    console.log(currentShape.point)
+    console.log(point)
     currentShape.point = point;
-
+    
     this._transformGhostToLabeledThing(labeledThingInFrame);
     this._saveLabeledThingInFrame(labeledThingInFrame);
   }
@@ -205,13 +223,15 @@ class FrontendInterpolation {
   }
 
   _getCuboidFromRect(currentCuboid, endCuboid) {
+    // debugger;
     const numberOfCurrentInvisibleVertices = currentCuboid.vehicleCoordinates.filter(vertex => {
       return vertex === null;
     });
     const numberOfEndInvisibleVertices = endCuboid.vehicleCoordinates.filter(vertex => {
       return vertex === null;
     });
-
+    console.log(numberOfCurrentInvisibleVertices);
+    console.log(numberOfEndInvisibleVertices);
     if (numberOfCurrentInvisibleVertices.length === 0 ||
         (numberOfCurrentInvisibleVertices.length === 4 && numberOfEndInvisibleVertices.length === 4)) {
       return currentCuboid;
@@ -279,6 +299,7 @@ class FrontendInterpolation {
    * @private
    */
   _saveLabeledThingInFrame(labeledThingInFrame) {
+    return;
     this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame)
       .then(() => {
         return labeledThingInFrame;
