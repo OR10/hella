@@ -37,11 +37,17 @@ class Replication extends Controller\Base
      */
     private $tokenStorage;
 
-    public function __construct(Storage\TokenStorageInterface $tokenStorage, $externalCouchDbHost, $externalCouchDbPort)
+    /**
+     * @var string
+     */
+    private $externalCouchDbPath;
+
+    public function __construct(Storage\TokenStorageInterface $tokenStorage, $externalCouchDbHost, $externalCouchDbPort, $externalCouchDbPath)
     {
         $this->externalCouchDbHost = $externalCouchDbHost;
         $this->externalCouchDbPort = $externalCouchDbPort;
         $this->tokenStorage        = $tokenStorage;
+        $this->externalCouchDbPath = $externalCouchDbPath;
     }
 
     /**
@@ -55,8 +61,19 @@ class Replication extends Controller\Base
     public function getReplicationDatabaseAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
         /** @var Model\User $currentUser */
-        $currentUser  = $this->tokenStorage->getToken()->getUser();
+        $currentUser = $this->tokenStorage->getToken()->getUser();
         $databaseName = sprintf('taskdb-project-%s-task-%s', $task->getProjectId(), $task->getId());
+        $username = sprintf(
+            '%s%s',
+            Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
+            $currentUser->getUsername()
+        );
+        $externalCouchDbPort = (int)$this->externalCouchDbPort;
+        $externalCouchDbProtocol = 'http';
+
+        if ($externalCouchDbPort === 443) {
+            $externalCouchDbProtocol = 'https';
+        }
 
         return View\View::create()->setData(
             [
@@ -64,13 +81,16 @@ class Replication extends Controller\Base
                     'taskId'         => $task->getId(),
                     'databaseName'   => $databaseName,
                     'databaseServer' => sprintf(
-                        'http://%s%s:%s@%s:%s',
-                        Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
-                        $currentUser->getUsername(),
+                        '%s://%s:%s@%s:%d/%s',
+                        $externalCouchDbProtocol,
+                        $username,
                         $currentUser->getCouchDbPassword(),
                         $this->externalCouchDbHost,
-                        $this->externalCouchDbPort
+                        $externalCouchDbPort,
+                        $this->externalCouchDbPath
                     ),
+                    'databaseUsername' => $username,
+                    'databasePassword' => $currentUser->getCouchDbPassword(),
                 ],
             ]
         );

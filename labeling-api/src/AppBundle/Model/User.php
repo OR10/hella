@@ -151,8 +151,12 @@ class User extends BaseUser
      */
     public function setRolesForProject(string $projectId, array $roles)
     {
-        $projectRoles = $this->getOrCreateProjectRolesForProjectId($projectId);
-        $projectRoles->setRoles($roles);
+        if (empty($roles)) {
+            unset($this->projectRoles[$projectId]);
+        } else {
+            $projectRoles = $this->getOrCreateProjectRolesForProjectId($projectId);
+            $projectRoles->setRoles($roles);
+        }
     }
 
     /**

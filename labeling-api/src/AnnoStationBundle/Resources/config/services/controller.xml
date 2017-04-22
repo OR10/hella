@@ -10,6 +10,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
@@ -310,6 +311,7 @@
             <argument type="service" id="security.token_storage"/>
             <argument>%couchdb_host_external%</argument>
             <argument>%couchdb_port_external%</argument>
+            <argument>%couchdb_path_external%</argument>
         </service>
     </services>
 </container>

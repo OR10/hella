@@ -60,9 +60,19 @@ class TaskDatabaseCreatorTest extends Tests\WebTestCase
     public function testCreateDatabaseCreatesCouchDatabase()
     {
         if ($this->pouchDbFeatureEnabled) {
-            $projectId            = "Arrested-Development";
-            $taskId               = "Gilmore-Girls";
-            $expectedDatabaseName = "taskdb-project-$projectId-task-$taskId";
+            $organisation         = Tests\Helper\OrganisationBuilder::create()->build();
+            $project              = Tests\Helper\ProjectBuilder::create($organisation)
+                ->withId('Arrested-Development')
+                ->build();
+            $task                 = Tests\Helper\LabelingTaskBuilder::create(
+                $project,
+                Tests\Helper\VideoBuilder::create($organisation)->build()
+            )->build();
+            $expectedDatabaseName = sprintf(
+                "taskdb-project-%s-task-%s",
+                $project->getId(),
+                $task->getId()
+            );
 
             $expectedDocumentManager = 'Document Manager Mock';
 
@@ -84,7 +94,7 @@ class TaskDatabaseCreatorTest extends Tests\WebTestCase
                 $couchReplicatorMock,
                 $this->pouchDbFeatureEnabled
             );
-            $actualDocumentManager = $creator->createDatabase($projectId, $taskId);
+            $actualDocumentManager = $creator->createDatabase($project, $task);
 
             $this->assertEquals($actualDocumentManager, $expectedDocumentManager);
         }

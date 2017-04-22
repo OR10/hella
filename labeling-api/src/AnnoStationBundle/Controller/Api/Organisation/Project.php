@@ -342,6 +342,10 @@ class Project extends Controller\Base
      */
     private function mapCampaignIdsToCampaigns(AnnoStationBundleModel\Organisation $organisation, $campaignIds)
     {
+        if ($campaignIds === null) {
+            return [];
+        }
+
         return array_map(
             function ($id) {
                 $campaign = $this->campaignFacade->find($id);
@@ -619,9 +623,7 @@ class Project extends Controller\Base
         $project->addCoordinatorAssignmentHistory($coordinator);
         $project = $this->projectFacade->save($project);
 
-        foreach($this->projectFacade->getTasksByProject($project) as $labelingTask) {
-            $this->taskDatabaseSecurityPermissionService->updateTask($labelingTask);
-        }
+        $this->taskDatabaseSecurityPermissionService->updateForProject($project);
 
         return View\View::create()->setData(['result' => $project]);
     }

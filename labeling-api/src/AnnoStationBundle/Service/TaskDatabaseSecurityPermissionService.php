@@ -42,8 +42,14 @@ class TaskDatabaseSecurityPermissionService
      */
     private $pouchDbFeatureEnabled;
 
+    /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
+
     public function __construct(
         Facade\Project $projectFacade,
+        Facade\LabelingTask $labelingTaskFacade,
         Facade\Organisation $organisationFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         AppBundleFacade\User $userFacade,
@@ -56,12 +62,25 @@ class TaskDatabaseSecurityPermissionService
         $this->userFacade            = $userFacade;
         $this->labelingGroupFacade   = $labelingGroupFacade;
         $this->pouchDbFeatureEnabled = $pouchDbFeatureEnabled;
+        $this->labelingTaskFacade    = $labelingTaskFacade;
+    }
+
+    /**
+     * @param Model\Project $project
+     */
+    public function updateForProject(Model\Project $project)
+    {
+        $labelingTasks = $this->labelingTaskFacade->findAllByProject($project, true);
+
+        foreach($labelingTasks as $labelingTask) {
+            $this->updateForTask($labelingTask);
+        }
     }
 
     /**
      * @param Model\LabelingTask $labelingTask
      */
-    public function updateTask(Model\LabelingTask $labelingTask)
+    public function updateForTask(Model\LabelingTask $labelingTask)
     {
         if (!$this->pouchDbFeatureEnabled) {
             return;

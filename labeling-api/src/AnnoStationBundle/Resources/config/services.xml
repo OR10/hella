@@ -88,6 +88,7 @@
             <argument type="service" id="annostation.labeling_api.service.couch_db_update_conflict_retry"/>
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
         </service>
 
         <service id="annostation.labeling_api.service.task_incomplete" class="AnnoStationBundle\Service\TaskIncomplete">
@@ -333,6 +334,7 @@
 
         <service id="annostation.labeling_api.service.task_database_security_permission_service" class="AnnoStationBundle\Service\TaskDatabaseSecurityPermissionService">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>

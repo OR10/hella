@@ -51,24 +51,32 @@ class Status extends Controller\Base
     private $userPermissions;
 
     /**
-     * @param Facade\Project                 $projectFacade
-     * @param Facade\LabelingTask            $labelingTaskFacade
-     * @param Storage\TokenStorage           $tokenStorage
-     * @param Service\Authorization          $authorizationService
-     * @param Authentication\UserPermissions $userPermissions
+     * @var Service\TaskDatabaseSecurityPermissionService
+     */
+    private $databaseSecurityPermissionService;
+
+    /**
+     * @param Facade\Project                                $projectFacade
+     * @param Facade\LabelingTask                           $labelingTaskFacade
+     * @param Storage\TokenStorage                          $tokenStorage
+     * @param Service\Authorization                         $authorizationService
+     * @param Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
+     * @param Authentication\UserPermissions                $userPermissions
      */
     public function __construct(
         Facade\Project $projectFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Storage\TokenStorage $tokenStorage,
         Service\Authorization $authorizationService,
+        Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService,
         Authentication\UserPermissions $userPermissions
     ) {
-        $this->tokenStorage         = $tokenStorage;
-        $this->projectFacade        = $projectFacade;
-        $this->labelingTaskFacade   = $labelingTaskFacade;
-        $this->authorizationService = $authorizationService;
-        $this->userPermissions      = $userPermissions;
+        $this->tokenStorage                      = $tokenStorage;
+        $this->projectFacade                     = $projectFacade;
+        $this->labelingTaskFacade                = $labelingTaskFacade;
+        $this->authorizationService              = $authorizationService;
+        $this->userPermissions                   = $userPermissions;
+        $this->databaseSecurityPermissionService = $databaseSecurityPermissionService;
     }
 
     /**
@@ -112,6 +120,8 @@ class Status extends Controller\Base
         $project->addCoordinatorAssignmentHistory($user);
         $project->setLabelingGroupId($assignedGroupId);
         $this->projectFacade->save($project);
+
+        $this->databaseSecurityPermissionService->updateForProject($project);
 
         return View\View::create()->setData(['result' => true]);
     }

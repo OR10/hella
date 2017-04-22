@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Service;
 
 use Doctrine\ODM\CouchDB;
 use AppBundle\Service;
+use AppBundle\Model;
 
 /**
  * Class TaskDatabaseCreator
@@ -63,15 +64,15 @@ class TaskDatabaseCreator
     /**
      * Create a Couch database for the given Project and Task ID
      *
-     * @param string $projectId
-     * @param string $taskId
+     * @param Model\Project      $project
+     * @param Model\LabelingTask $task
      *
      * @return CouchDB\DocumentManager
      */
-    public function createDatabase($projectId, $taskId)
+    public function createDatabase(Model\Project $project, Model\LabelingTask $task)
     {
         if ($this->pouchDbFeatureEnabled) {
-            $databaseName    = $this->getDatabaseName($projectId, $taskId);
+            $databaseName    = $this->getDatabaseName($project->getId(), $task->getId());
             $documentManager = $this->documentManager->getCouchDBClient()->createDatabase($databaseName);
 
             return $documentManager;
