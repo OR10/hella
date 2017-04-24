@@ -161,11 +161,13 @@ class PaperPoint extends PaperThingShape {
    * @returns {{width: number, height: number}}
    */
   get bounds() {
+    const x = this._centerPoint.x - PaperPoint.RADIUS;
+    const y = this._centerPoint.y - PaperPoint.RADIUS;
     return {
-      width: PaperPoint.CONTROL_SIZE,
-      height: PaperPoint.CONTROL_SIZE,
-      x: this._centerPoint.x,
-      y: this._centerPoint.y,
+      width: PaperPoint.DIAMETER,
+      height: PaperPoint.DIAMETER,
+      x: x,
+      y: y,
       point: this._centerPoint,
     };
   }
@@ -245,5 +247,7 @@ PaperPoint.getClass = () => {
 
 PaperPoint.CONTROL_SIZE = 10;
 PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE = 2;
+PaperPoint.RADIUS = (PaperPoint.CONTROL_SIZE / 2) + PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE;
+PaperPoint.DIAMETER = PaperPoint.RADIUS * 2;
 
 export default PaperPoint;
