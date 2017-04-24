@@ -149,8 +149,9 @@ class TaskDatabaseSecurityPermissionService
         $memberNames                     = [];
         $latestAssignedCoordinatorUserId = $project->getLatestAssignedCoordinatorUserId();
         if ($latestAssignedCoordinatorUserId !== null) {
-            $memberNames[] = $this->userFacade->getUserById($latestAssignedCoordinatorUserId)
-                ->getUsername();
+            $memberNames[] = $this->addCouchDbPrefix(
+                $this->userFacade->getUserById($latestAssignedCoordinatorUserId)->getUsername()
+            );
         }
 
         return $memberNames;
@@ -163,7 +164,7 @@ class TaskDatabaseSecurityPermissionService
     {
         return array_map(
             function (Model\User $user) {
-                return $user->getUsername();
+                return $this->addCouchDbPrefix($user->getUsername());
             },
             $this->userFacade->getUsersByRole(Model\User::ROLE_SUPER_ADMIN)->toArray()
         );
@@ -179,9 +180,19 @@ class TaskDatabaseSecurityPermissionService
     {
         return array_map(
             function (Model\User $user) {
-                return $user->getUsername();
+                return $this->addCouchDbPrefix($user->getUsername());
             },
             $this->userFacade->getUsersByOrganisationAndRole($organisation, $role)->toArray()
         );
+    }
+
+    /**
+     * @param $username
+     *
+     * @return string
+     */
+    private function addCouchDbPrefix($username)
+    {
+        return sprintf('%s%s', Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX, $username);
     }
 }
