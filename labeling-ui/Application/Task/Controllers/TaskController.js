@@ -432,10 +432,17 @@ class TaskController {
       .then(labelStructure => {
         const labelStructureThingArray = Array.from(labelStructure.getThings().values());
         const labelStructureGroupArray = Array.from(labelStructure.getGroups().values());
-        const labelStructureThing = labelStructureThingArray[0];
+        let labelStructureThingOrGroup;
+        if (labelStructureThingArray.length > 0) {
+          labelStructureThingOrGroup = labelStructureThingArray[0];
+        } else if (labelStructureGroupArray.length > 0) {
+          labelStructureThingOrGroup = labelStructureGroupArray[0];
+        } else {
+          throw new Error('No valid Thing or Group defined in requirements.xml');
+        }
 
         this.labelStructure = labelStructure;
-        this.selectedLabelStructureThing = labelStructureThing;
+        this.selectedLabelStructureThing = labelStructureThingOrGroup;
         this.selectedLabeledObject = this._getSelectedLabeledObject();
         this.drawableThings = labelStructureThingArray;
         this.drawableGroups = labelStructureGroupArray;

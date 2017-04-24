@@ -18,6 +18,7 @@ class labeling_api::params(
   $couchdb_port = 5984,
   $couchdb_port_tests = 5989,
   $couchdb_port_external = 5984,
+  $couchdb_path_external = '/',
   $couchdb_user = undef,
   $couchdb_password = undef,
   $couchdb_user_read_only = 'root',

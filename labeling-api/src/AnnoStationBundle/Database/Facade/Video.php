@@ -43,7 +43,7 @@ class Video
     public function findAll()
     {
         $result = $this->documentManager
-            ->createQuery('annostation_video', 'by_id')
+            ->createQuery('annostation_video_001', 'by_id')
             ->onlyDocs(true)
             ->execute();
 
@@ -73,7 +73,7 @@ class Video
             $videos = array_merge(
                 $videos,
                 $this->documentManager
-                    ->createQuery('annostation_video', 'by_id')
+                    ->createQuery('annostation_video_001', 'by_id')
                     ->setKeys($idsInChunk)
                     ->onlyDocs(true)
                     ->execute()
@@ -117,6 +117,27 @@ class Video
     }
 
     /**
+     * @param $id
+     *
+     * @return string
+     */
+    public function getVideoNameForId($id)
+    {
+        $video = $this->documentManager
+            ->createQuery('annostation_video_001', 'by_id')
+            ->setKey($id)
+            ->onlyDocs(false)
+            ->execute()
+            ->toArray();
+
+        if (empty($video)) {
+            throw new \RuntimeException(sprintf('VideoId not found "%s"', $id));
+        }
+
+        return $video[0]['value'];
+    }
+
+    /**
      * Fetch all videos with a certain name
      *
      * @param string $name
@@ -126,7 +147,7 @@ class Video
     public function fetchAllByName($name)
     {
         return $this->documentManager
-            ->createQuery('annostation_video', 'by_name')
+            ->createQuery('annostation_video_001', 'by_name')
             ->setKey([$name])
             ->onlyDocs(true)
             ->execute()
