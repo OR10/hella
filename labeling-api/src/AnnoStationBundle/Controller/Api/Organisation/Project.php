@@ -342,6 +342,10 @@ class Project extends Controller\Base
      */
     private function mapCampaignIdsToCampaigns(AnnoStationBundleModel\Organisation $organisation, $campaignIds)
     {
+        if ($campaignIds === null) {
+            return [];
+        }
+
         return array_map(
             function ($id) {
                 $campaign = $this->campaignFacade->find($id);
