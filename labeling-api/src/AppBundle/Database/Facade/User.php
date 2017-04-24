@@ -174,6 +174,10 @@ class User
      */
     public function getCurrentUser()
     {
+        if ($this->tokenStorage->getToken() === null) {
+            return null;
+        }
+        
         return $this->tokenStorage->getToken()->getUser();
     }
 
