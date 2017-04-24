@@ -118,10 +118,33 @@ class TaskDatabaseSecurityPermissionService
                 $labelingTask->getId()
             ),
             array_values(array_unique($memberNames)),
-            $memberRoles
+            $memberRoles,
+            [],
+            [],
+            $this->getAssignedLabeler($labelingTask)
         );
     }
 
+    /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return null
+     */
+    private function getAssignedLabeler(Model\LabelingTask $labelingTask)
+    {
+        $latestAssignedUserId = $labelingTask->getLatestAssignedUserIdForPhase($labelingTask->getCurrentPhase());
+        if ($latestAssignedUserId !== null) {
+            return $this->addCouchDbPrefix($this->userFacade->getUserById($latestAssignedUserId)->getUsername());
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Model\Project $project
+     *
+     * @return array
+     */
     private function getLabelingGroupRole(Model\Project $project)
     {
         $labelingGroupId = $project->getLabelingGroupId();
