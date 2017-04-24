@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Service;
 
 use Doctrine\ODM\CouchDB;
 use AppBundle\Service;
+use AnnoStationBundle\Service as AnnoStationBundleService;
 use AppBundle\Model;
 
 /**
@@ -27,6 +28,11 @@ class TaskDatabaseCreator
     private $couchDbReplicatorService;
 
     /**
+     * @var TaskDatabaseValidateDocUpdateDocumentService
+     */
+    private $databaseValidateDocUpdateDocumentService;
+
+    /**
      * @var bool
      */
     private $pouchDbFeatureEnabled;
@@ -34,18 +40,21 @@ class TaskDatabaseCreator
     /**
      * LabelingTask constructor.
      *
-     * @param CouchDB\DocumentManager          $documentManager
-     * @param Service\CouchDbReplicatorService $couchDbReplicatorService
-     * @param                                  $pouchDbFeatureEnabled
+     * @param CouchDB\DocumentManager                      $documentManager
+     * @param Service\CouchDbReplicatorService             $couchDbReplicatorService
+     * @param TaskDatabaseValidateDocUpdateDocumentService $databaseValidateDocUpdateDocumentService
+     * @param                                              $pouchDbFeatureEnabled
      */
     public function __construct(
         CouchDB\DocumentManager $documentManager,
         Service\CouchDbReplicatorService $couchDbReplicatorService,
+        AnnoStationBundleService\TaskDatabaseValidateDocUpdateDocumentService $databaseValidateDocUpdateDocumentService,
         $pouchDbFeatureEnabled
     ) {
-        $this->documentManager          = $documentManager;
-        $this->couchDbReplicatorService = $couchDbReplicatorService;
-        $this->pouchDbFeatureEnabled    = $pouchDbFeatureEnabled;
+        $this->documentManager                          = $documentManager;
+        $this->couchDbReplicatorService                 = $couchDbReplicatorService;
+        $this->pouchDbFeatureEnabled                    = $pouchDbFeatureEnabled;
+        $this->databaseValidateDocUpdateDocumentService = $databaseValidateDocUpdateDocumentService;
     }
 
     /**
@@ -74,6 +83,7 @@ class TaskDatabaseCreator
         if ($this->pouchDbFeatureEnabled) {
             $databaseName    = $this->getDatabaseName($project->getId(), $task->getId());
             $documentManager = $this->documentManager->getCouchDBClient()->createDatabase($databaseName);
+            $this->databaseValidateDocUpdateDocumentService->updateForDatabase($databaseName);
 
             return $documentManager;
         }
