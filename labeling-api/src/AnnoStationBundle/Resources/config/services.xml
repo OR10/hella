@@ -123,6 +123,7 @@
         </service>
         <service id="annostation.labeling_api.service.xml_validator.schema.requirements_xml_label_config"
                  class="AnnoStationBundle\Service\XmlValidator\Schema\RequirementsXmlLabelConfig">
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
         <service id="annostation.labeling_api.service.xml_validator.schema.requirements_xml_import"
                  class="AnnoStationBundle\Service\XmlValidator\Schema\RequirementsXmlImport">
