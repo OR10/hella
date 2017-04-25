@@ -119,7 +119,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
     $rootScope.$apply();
 
     expect(pouchDbContext.query)
-      .toHaveBeenCalledWith({ map: jasmine.any(Function) }, {
+      .toHaveBeenCalledWith('labeledThingGroupInFrameByTaskIdAndFrameIndex', {
         key: [task.id, frameIndex],
       });
     expect(pouchDbContext.get).toHaveBeenCalledWith(labeledThingGroupResponse._id);
