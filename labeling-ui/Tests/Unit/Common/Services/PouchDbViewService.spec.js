@@ -2,19 +2,30 @@ import PouchDbViewService from 'Application/Common/Services/PouchDbViewService';
 
 describe('PouchDbViewService specs', () => {
   let service;
+  let logger;
+  let pouchDbContext;
+  let pouchDbContextService;
 
   beforeEach(() => {
-    service = new PouchDbViewService();
+    logger = jasmine.createSpyObj(['log', 'groupStart', 'groupEnd']);
   });
+  beforeEach(() => {
+    pouchDbContext = undefined;
+  });
+  beforeEach(() => {
+    pouchDbContextService = jasmine.createSpyObj(['provideContextForTaskId']);
+    pouchDbContextService.provideContextForTaskId.and.returnValue(pouchDbContext);
+  });
+  beforeEach(() => service = new PouchDbViewService(logger, pouchDbContextService));
 
   it('can be created', () => {
     expect(service).toEqual(jasmine.any(PouchDbViewService));
   });
 
-  describe('get()', () => {
+  describe('getViewFunctions', () => {
     it('throws if the viewIdentifier is unknown', () => {
       function throwWrapper() {
-        service.get('Wurstbrot');
+        service.getViewFunctions('Wurstbrot');
       }
 
       expect(throwWrapper).toThrowError('Unknown view identifier Wurstbrot');
@@ -25,9 +36,10 @@ describe('PouchDbViewService specs', () => {
         map: jasmine.any(Function),
       };
 
-      const view = service.get('labeledThingGroupInFrameByTaskIdAndFrameIndex');
+      const view = service.getViewFunctions('labeledThingGroupInFrameByTaskIdAndFrameIndex');
 
       expect(view).toEqual(expected);
     });
   });
+
 });
