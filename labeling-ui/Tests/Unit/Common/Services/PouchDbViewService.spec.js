@@ -1,6 +1,6 @@
 import PouchDbViewService from 'Application/Common/Services/PouchDbViewService';
 
-fdescribe('PouchDbViewService specs', () => {
+describe('PouchDbViewService specs', () => {
   let angularQ;
   let rootScope;
   let service;
@@ -97,5 +97,89 @@ fdescribe('PouchDbViewService specs', () => {
       const expectedDesignDocumentIds = Object.keys(PouchDbViewService.VIEWS).map(viewName => `_design/${viewName}`);
       expect(actualDesignDocumentIds).toEqual(expectedDesignDocumentIds);
     });
+
+    it('should PUT design documents with correct view names', () => {
+      // No design document is previously present in the db
+      pouchDbContext.get.and.returnValue(angularQ.reject());
+
+      // All puts are accepted
+      pouchDbContext.put.and.callFake(designDocument => angularQ.resolve(designDocument));
+
+      service.installDesignDocuments();
+
+      rootScope.$apply();
+
+      const actualDesignDocumentViews = pouchDbContext.put.calls.all().map(callInfo => callInfo.args[0].views);
+      const actualDesignDocumentViewNames = actualDesignDocumentViews.map(views => Object.keys(views)[0]);
+      const expectedDesignDocumentViewNames = Object.keys(PouchDbViewService.VIEWS);
+      expect(actualDesignDocumentViewNames).toEqual(expectedDesignDocumentViewNames);
+    });
+
+    it('should PUT design documents with stringified map functions', () => {
+      // No design document is previously present in the db
+      pouchDbContext.get.and.returnValue(angularQ.reject());
+
+      // All puts are accepted
+      pouchDbContext.put.and.callFake(designDocument => angularQ.resolve(designDocument));
+
+      service.installDesignDocuments();
+
+      rootScope.$apply();
+
+      const actualDesignDocumentViews = pouchDbContext.put.calls.all().map(callInfo => callInfo.args[0].views);
+      const actualDesignDocumentMapFunctions = actualDesignDocumentViews.map(views => views[Object.keys(views)[0]].map);
+      const expectedDesignDocumentMapFunctions = Object.keys(PouchDbViewService.VIEWS).map(viewName => PouchDbViewService.VIEWS[viewName].map.toString());
+      expect(actualDesignDocumentMapFunctions).toEqual(expectedDesignDocumentMapFunctions);
+    });
+
+    it('should PUT design documents with stringified reduce functions', () => {
+      // No design document is previously present in the db
+      pouchDbContext.get.and.returnValue(angularQ.reject());
+
+      // All puts are accepted
+      pouchDbContext.put.and.callFake(designDocument => angularQ.resolve(designDocument));
+
+      service.installDesignDocuments();
+
+      rootScope.$apply();
+
+      const actualDesignDocumentViews = pouchDbContext.put.calls.all().map(callInfo => callInfo.args[0].views);
+      const actualDesignDocumentReduceFunctions = actualDesignDocumentViews.map(views => views[Object.keys(views)[0]].reduce);
+      const expectedDesignDocumentReduceFunctions = Object.keys(PouchDbViewService.VIEWS).map(
+        viewName => PouchDbViewService.VIEWS[viewName].reduce ? PouchDbViewService.VIEWS[viewName].reduce.toString() : undefined
+      );
+      expect(actualDesignDocumentReduceFunctions).toEqual(expectedDesignDocumentReduceFunctions);
+    });
+
+    it('should update design documents which already exist', () => {
+      // One document does already exist.
+      const existingRevision = '123-abcdefghijklmnopqrstuvwxyz';
+      const existingId = '_design/labeledThingGroupInFrameByTaskIdAndFrameIndex';
+      pouchDbContext.get.and.callFake(documentId => {
+        if (documentId === '_design/labeledThingGroupInFrameByTaskIdAndFrameIndex') {
+          return angularQ.resolve({
+            _id: existingId,
+            _rev: existingRevision,
+            views: {}
+          });
+        }
+
+        return angularQ.reject();
+      });
+
+      // All puts are accepted
+      pouchDbContext.put.and.callFake(designDocument => angularQ.resolve(designDocument));
+
+      service.installDesignDocuments();
+
+      rootScope.$apply();
+
+      const actualUpdatedDesignDocument = pouchDbContext.put.calls.all().filter(
+        callInfo => callInfo.args[0]._id === existingId
+      )[0].args[0];
+
+      expect(actualUpdatedDesignDocument._rev).toEqual(existingRevision);
+    });
+
   });
 });
