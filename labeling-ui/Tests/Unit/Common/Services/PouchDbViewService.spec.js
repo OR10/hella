@@ -1,22 +1,29 @@
 import PouchDbViewService from 'Application/Common/Services/PouchDbViewService';
 
 fdescribe('PouchDbViewService specs', () => {
+  let angularQ;
+  let rootScope;
   let service;
   let logger;
   let pouchDbContext;
   let pouchDbContextService;
 
+  beforeEach(inject(($q, $rootScope) => {
+    angularQ = $q;
+    rootScope = $rootScope;
+  }));
+
   beforeEach(() => {
     logger = jasmine.createSpyObj(['log', 'groupStart', 'groupEnd']);
   });
   beforeEach(() => {
-    pouchDbContext = undefined;
+    pouchDbContext = jasmine.createSpyObj(['get', 'put']);
   });
   beforeEach(() => {
     pouchDbContextService = jasmine.createSpyObj(['provideContextForTaskId']);
     pouchDbContextService.provideContextForTaskId.and.returnValue(pouchDbContext);
   });
-  beforeEach(() => service = new PouchDbViewService(logger, pouchDbContextService));
+  beforeEach(() => service = new PouchDbViewService(angularQ, logger, pouchDbContextService));
 
   it('can be created', () => {
     expect(service).toEqual(jasmine.any(PouchDbViewService));
@@ -60,4 +67,35 @@ fdescribe('PouchDbViewService specs', () => {
     });
   });
 
+  describe('installDesignDocuments', () => {
+    it('should PUT one design document for each registered VIEW', () => {
+      // No design document is previously present in the db
+      pouchDbContext.get.and.returnValue(angularQ.reject());
+
+      // All puts are accepted
+      pouchDbContext.put.and.callFake(designDocument => angularQ.resolve(designDocument));
+
+      service.installDesignDocuments();
+
+      rootScope.$apply();
+
+      expect(pouchDbContext.put.calls.count()).toEqual(Object.keys(PouchDbViewService.VIEWS).length);
+    });
+
+    it('should PUT design documents with same name as view for each registered VIEW', () => {
+      // No design document is previously present in the db
+      pouchDbContext.get.and.returnValue(angularQ.reject());
+
+      // All puts are accepted
+      pouchDbContext.put.and.callFake(designDocument => angularQ.resolve(designDocument));
+
+      service.installDesignDocuments();
+
+      rootScope.$apply();
+
+      const actualDesignDocumentIds = pouchDbContext.put.calls.all().map(callInfo => callInfo.args[0]._id);
+      const expectedDesignDocumentIds = Object.keys(PouchDbViewService.VIEWS).map(viewName => `_design/${viewName}`);
+      expect(actualDesignDocumentIds).toEqual(expectedDesignDocumentIds);
+    });
+  });
 });
