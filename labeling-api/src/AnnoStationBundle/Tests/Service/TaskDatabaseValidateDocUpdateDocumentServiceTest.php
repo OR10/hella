@@ -75,6 +75,8 @@ class TaskDatabaseValidateDocUpdateDocumentServiceTest extends Tests\KernelTestC
 
     public function testCreateValidateUpdateDocument()
     {
+        $this->isPouchDbEnabled();
+        
         $this->taskDatabaseValidateDocUpdateService->updateForDatabase($this->databaseName);
 
         $resource = $this->guzzleClient->request(
@@ -99,6 +101,8 @@ class TaskDatabaseValidateDocUpdateDocumentServiceTest extends Tests\KernelTestC
 
     public function testCreateDocumentForAssignedUser()
     {
+        $this->isPouchDbEnabled();
+
         $organisation  = $this->organisationFacade->save(Helper\OrganisationBuilder::create()->build());
         $user          = $this->userFacade->createUser('user', 'foo@bar.com', '1234');
         $labelingGroup = $this->labelingGroupFacade->save(
@@ -155,6 +159,8 @@ class TaskDatabaseValidateDocUpdateDocumentServiceTest extends Tests\KernelTestC
 
     public function testCreateDocumentForUnassignedUser()
     {
+        $this->isPouchDbEnabled();
+
         $organisation = $this->organisationFacade->save(Helper\OrganisationBuilder::create()->build());
         $user         = $this->userFacade->createUser('user', 'foo@bar.com', '1234');
         $project      = $this->projectFacade->save(
@@ -197,6 +203,13 @@ class TaskDatabaseValidateDocUpdateDocumentServiceTest extends Tests\KernelTestC
     {
         $this->documentManager->getCouchDBClient()->deleteDatabase($this->databaseName);
         parent::tearDownImplementation();
+    }
+
+    private function isPouchDbEnabled()
+    {
+        if (!$this->getContainer()->getParameter('pouchdb_feature_enabled')){
+            $this->markTestSkipped('PouchDB not enabled');
+        }
     }
 
     public function setUpImplementation()
