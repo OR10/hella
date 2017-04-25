@@ -28,14 +28,6 @@ class LiveSyncIndicatorDirective {
       scope.syncState = icon;
       scope.syncTooltip = toolTip;
     });
-    this._liveSyncIndicatorService.on('syncstate:updated', (icon, toolTip) => {
-      scope.syncState = icon;
-      scope.syncTooltip = toolTip;
-    });
-    this._liveSyncIndicatorService.on('syncstate:updated', (icon, toolTip) => {
-      scope.syncState = icon;
-      scope.syncTooltip = toolTip;
-    });
   }
 }
 
