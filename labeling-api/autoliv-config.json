@@ -1,0 +1,682 @@
+{
+  "roles": [
+    {
+      "name": "Admin",
+      "permissions": ["SEARCH", "SEARCH.SAVE", "SEARCH.DOWNLOAD", "SEARCH.DELETE", "GLOBAL_ADMIN_AREA", "ADMIN"],
+      "system": true
+    },
+    {
+      "name": "Extended User",
+      "permissions": ["SEARCH", "SEARCH.SAVE", "SEARCH.DOWNLOAD", "SEARCH.DELETE"]
+    },
+    {
+      "name": "User",
+      "permissions": ["SEARCH", "SEARCH.SAVE", "SEARCH.DOWNLOAD", "SEARCH.DELETE"]
+    },
+    {
+      "name": "Observer",
+      "permissions": ["SEARCH", "SEARCH.SAVE", "SEARCH.DOWNLOAD", "SEARCH.DELETE"]
+    },
+    {
+      "name": "Akquise Manager",
+      "permissions": ["SEARCH", "SEARCH.SAVE", "SEARCH.DOWNLOAD", "SEARCH.DELETE"]
+    },
+    {
+      "name": "Label Manager",
+      "permissions": ["SEARCH", "SEARCH.SAVE", "SEARCH.DOWNLOAD", "SEARCH.DELETE"]
+    },
+    {
+      "name": "Sil Manager",
+      "permissions": ["SEARCH", "SEARCH.SAVE", "SEARCH.DOWNLOAD", "SEARCH.DELETE"]
+    },
+    {
+      "name": "Hil Manager",
+      "permissions": ["SEARCH", "SEARCH.SAVE", "SEARCH.DOWNLOAD", "SEARCH.DELETE"]
+    },
+    {
+      "name": "Testdriver",
+      "permissions": []
+    }
+  ],
+  "users": [
+    {
+      "username": "user",
+      "email": "user@example.org",
+      "roles": ["User"]
+    },
+    {
+      "username": "admin",
+      "email": "admin.example.org",
+      "roles": ["Admin"]
+    },
+    {
+      "username": "extended_user",
+      "email": "extended_user@example.org",
+      "roles": ["Extended User"]
+    },
+    {
+      "username": "observer",
+      "email": "observer@example.org",
+      "roles": ["Observer"]
+    },
+    {
+      "username": "akquise_manager",
+      "email": "akquise_manager@example.org",
+      "roles": ["Akquise Manager"]
+    },
+    {
+      "username": "label_manager",
+      "email": "label_manager@example.org",
+      "roles": ["Label Manager"]
+    },
+    {
+      "username": "sil_manager",
+      "email": "sil_manager@example.org",
+      "roles": ["Sil Manager"]
+    },
+    {
+      "username": "hil_manager",
+      "email": "hil_manager@example.org",
+      "roles": ["Hil Manager"]
+    },
+    {
+      "username": "testdriver",
+      "email": "testdriver@example.org",
+      "roles": ["Testdriver"]
+    }
+  ],
+  "settings": {
+    "annostation.requirement_xmls": "@DataStationBundle/Resources/assets/autoliv_requirements.xml"
+  },
+  "recordingSpecification": {},
+  "checkInSpecification": {
+    "groupingStrategy": "autoliv",
+    "groupingStrategyConfig": {
+      "pattern": "/^(?<recordingId>(?<camera>[^_]+)[_-]{1}(?<licensePlate>\\w+(?:-\\w+)?(?:-\\w+)?)_(?<recordingTime>[0-9]{8}_[0-9]{6})).*$/",
+      "type": "RegexBasedGroupingStrategy"
+    },
+    "fileConfig": {
+      "defaultClassification": {
+        "key": "active",
+        "label": "default"
+      },
+      "classifications": {
+        "ignored": {
+          "patterns": [
+            ".*_CanCheck\\.csv$"
+          ],
+          "label": "Ignored"
+        }
+      },
+      "fileTypes": {
+        "pdLabelFile": {
+          "patterns": [
+            "\\.pd\\.xml$"
+          ],
+          "label": "pd"
+        },
+        "vdLabelFile": {
+          "patterns": [
+            "\\.vd\\.xml$"
+          ],
+          "label": "vd"
+        },
+        "tsrLabelFile": {
+          "patterns": [
+            "\\.tsr\\.xml$"
+          ],
+          "label": "tsr"
+        },
+        "tsaLabelFile": {
+          "patterns": [
+            "\\.tsa\\.xml$"
+          ],
+          "label": "tsa"
+        },
+        "lsrLabelFile": {
+          "patterns": [
+            "\\.lsr\\.xml$"
+          ],
+          "label": "lsr"
+        },
+        "pscwLabelFile": {
+          "patterns": [
+            "\\.pscw\\.xml$"
+          ],
+          "label": "pscw"
+        },
+        "laneLabelFile": {
+          "patterns": [
+            "\\.lane\\.xml$"
+          ],
+          "label": "lane"
+        },
+        "odLabelFile": {
+          "patterns": [
+            "\\.od\\.xml$"
+          ],
+          "label": "od"
+        },
+        "jsonFile": {
+          "patterns": [
+            "\\.json$"
+          ],
+          "label": "json"
+        },
+        "canFile": {
+          "patterns": [
+            "\\.mdex$"
+          ],
+          "label": "mdex"
+        },
+        "datFile": {
+          "patterns": [
+            "\\.dat$"
+          ],
+          "label": "dat"
+        },
+        "annoFile": {
+          "patterns": [
+            "\\.anno\\.xml$"
+          ],
+          "label": "anno"
+        }
+      }
+    }
+  },
+  "dataExtractorSpecification": {
+    "dataExtractors": [
+      {
+        "type": "filetype-existence",
+        "config": {
+          "fileTypes": {
+            "datFile": {
+              "label": "Recording with dat File"
+            },
+            "annoFile": {
+              "label": "Recording with AnnoStation File"
+            },
+            "jsonFile": {
+              "label": "Recording with JSON File"
+            },
+            "canFile": {
+              "label": "Recording with CAN File"
+            },
+            "laneLabelFile": {
+              "label": "Recording with Lane Labelfile"
+            },
+            "tsrLabelFile": {
+              "label": "Recording with TSR Labelfile"
+            },
+            "tsaLabelFile": {
+              "label": "Recording with TSA Labelfile"
+            },
+            "lsrLabelFile": {
+              "label": "Recording with LSR Labelfile"
+            },
+            "odLabelFile": {
+              "label": "Recording with OD Labelfile"
+            },
+            "vdLabelFile": {
+              "label": "Recording with VD Labelfile"
+            },
+            "pdLabelFile": {
+              "label": "Recording with PD Labelfile"
+            },
+            "pscwLabelFile": {
+              "label": "Recording with PSCW Labelfile"
+            }
+          },
+          "fieldSetReferences": {
+            "general": {
+              "id": "file-existence"
+            }
+          }
+        }
+      },
+      {
+        "type": "filename-regex-tagger",
+        "config": {
+          "\\.lane\\.xml$": {
+            "sensingModule": "Lane"
+          },
+          "\\.lsr\\.xml$": {
+            "sensingModule": "LSR"
+          },
+          "\\.pscw\\.xml$": {
+            "sensingModule": "PSCW"
+          },
+          "\\.tsa\\.xml$": {
+            "sensingModule": "TSA"
+          },
+          "\\.tsr\\.xml$": {
+            "sensingModule": "TSR"
+          },
+          "\\.od\\.xml$": {
+            "sensingModule": "OD"
+          },
+          "\\.pd\\.xml$": {
+            "sensingModule": "PD"
+          },
+          "\\.vd\\.xml$": {
+            "sensingModule": "VD"
+          }
+        }
+      },
+      {
+        "type": "project",
+        "config": {}
+      },
+      {
+        "type": "anno_station",
+        "config": {
+          "fileExtension": ".anno.xml",
+          "fieldSetReferences": {
+            "metaData": {
+              "id": "anno-station-metadata"
+            }
+          }
+        }
+      },
+      {
+        "type": "can",
+        "config": {
+          "fieldSetReferences": {
+            "general": {
+              "id": "can",
+              "position": 0
+            }
+          },
+          "fileExtension": ".mdex",
+          "schema": "@DataStationBundle/Resources/assets/mdex.schema.xml",
+          "attributeActions": {
+            "Maneuver": {
+              "Driven Distance": {
+                "customRanges": {
+                  "value": {
+                    "boundaries": [
+                      "-infty",
+                      0,
+                      100,
+                      1000,
+                      10000,
+                      100000,
+                      1000000
+                    ]
+                  }
+                }
+              },
+              "Scene Speed Mean": {
+                "customRanges": {
+                  "value": {
+                    "boundaries": [
+                      "-infty",
+                      0,
+                      0,
+                      15,
+                      25,
+                      35,
+                      45,
+                      55,
+                      65,
+                      75,
+                      85,
+                      105,
+                      125,
+                      145,
+                      165,
+                      185,
+                      205,
+                      "infty"
+                    ],
+                    "types": [
+                      "exclusive",
+                      "exclusive",
+                      "inclusive"
+                    ]
+                  }
+                }
+              }
+            },
+            "Recording Information": {
+              "Video Length (Frames)": {
+                "customRanges": {
+                  "value": {
+                    "boundaries": [
+                      0,
+                      100,
+                      200,
+                      300,
+                      400,
+                      500,
+                      600,
+                      700,
+                      800,
+                      900,
+                      1000,
+                      1200,
+                      1400,
+                      1600,
+                      1800,
+                      2000,
+                      2200,
+                      2400,
+                      2600,
+                      2800,
+                      3000,
+                      3500,
+                      4000,
+                      4500,
+                      5000,
+                      5500,
+                      6000,
+                      6500,
+                      7000,
+                      7500,
+                      8000,
+                      8500,
+                      9000,
+                      9500,
+                      10000
+                    ]
+                  }
+                }
+              },
+              "Video Length (Seconds)": {
+                "customRanges": {
+                  "value": {
+                    "boundaries": [
+                      0,
+                      0,
+                      1,
+                      10,
+                      20,
+                      30,
+                      40,
+                      50,
+                      100,
+                      1000,
+                      "infty"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "recording",
+        "config": {
+          "fieldSetReferences": {
+            "general": {
+              "id": "general",
+              "position": 0
+            }
+          }
+        }
+      },
+      {
+        "type": "recordingPart",
+        "config": {
+          "fieldSetReferences": {
+            "general": {
+              "id": "general",
+              "position": 1
+            }
+          }
+        }
+      },
+      {
+        "type": "checkIn",
+        "config": {
+          "fieldSetReferences": {
+            "general": {
+              "id": "general"
+            }
+          }
+        }
+      },
+      {
+        "type": "tags",
+        "config": {
+          "mapping": {
+            "sensingModule": {
+              "label": "Sensing Module"
+            }
+          },
+          "fieldSetReferences": {
+            "general": {
+              "id": "general"
+            }
+          }
+        }
+      },
+      {
+        "type": "listing-metadata",
+        "config": {
+          "mapping": {
+            "camera": {
+              "label": "Camera",
+              "type": "select"
+            },
+            "licensePlate": {
+              "label": "License Plate",
+              "type": "select"
+            },
+            "recordingTime": {
+              "label": "Recording Time",
+              "type": "datetime",
+              "format": "Ymd_His",
+              "timezone": "UTC"
+            }
+          },
+          "fieldSetReferences": {
+            "general": {
+              "id": "listing-metadata"
+            }
+          }
+        }
+      },
+      {
+        "type": "codriver",
+        "config": {
+          "mapping": {
+            "properties": {
+              "label": "Properties"
+            },
+            "properties.cameraID": {
+              "label": "Camera ID"
+            },
+            "properties.bobCh1": {
+              "label": "Bob Channel 1"
+            },
+            "properties.bobCh2": {
+              "label": "Bob Channel 2"
+            },
+            "properties.bobCh3": {
+              "label": "Bob Channel 3"
+            },
+            "properties.bobCh4": {
+              "label": "Bob Channel 4"
+            },
+            "properties.bobFw": {
+              "label": "Firmware Version"
+            },
+            "properties.bobHw": {
+              "label": "Hardware Version"
+            },
+            "properties.comments": {
+              "label": "Comments"
+            },
+            "properties.dataTransfer": {
+              "label": "Data Transfer"
+            },
+            "properties.driver": {
+              "label": "Driver"
+            },
+            "properties.dspRev": {
+              "label": "DSP Rev"
+            },
+            "properties.ecuCh1": {
+              "label": "ECU Channel 1"
+            },
+            "properties.ecuCh2": {
+              "label": "ECU Channel 2"
+            },
+            "properties.ecuID": {
+              "label": "ECU ID"
+            },
+            "properties.labelsFile": {
+              "label": "Labels File"
+            },
+            "properties.leftType": {
+              "label": "Left Type"
+            },
+            "properties.orderedBy": {
+              "label": "Ordered By"
+            },
+            "properties.otherHardware": {
+              "label": "Other Hardware"
+            },
+            "properties.otherSoftware": {
+              "label": "Other Software"
+            },
+            "properties.propertiesFile": {
+              "label": "Properties File"
+            },
+            "properties.purpose": {
+              "label": "Purpose"
+            },
+            "properties.registerSettingsFile": {
+              "label": "Register Settings File"
+            },
+            "properties.rigthType": {
+              "label": "Right Type"
+            },
+            "properties.systemRelease": {
+              "label": "System Release"
+            },
+            "properties.vehicleID": {
+              "label": "Vehicle ID"
+            },
+            "labels": {
+              "label": "Labels"
+            },
+            "labels.com_country_code": {
+              "label": "Country Code"
+            },
+            "labels.com_global_illumination": {
+              "label": "Global Illumination"
+            },
+            "labels.com_road_surface": {
+              "label": "Road Surface"
+            },
+            "labels.com_road_type": {
+              "label": "Road Type"
+            },
+            "labels.com_weather": {
+              "label": "Weather"
+            },
+            "labels.sli_sign_value": {
+              "label": "SLI Sign Value"
+            },
+            "labels.specialEvent": {
+              "label": "Special Event"
+            },
+            "labels.streetLighting": {
+              "label": "Street Lighting"
+            },
+            "labels.useCase": {
+              "label": "Use Case"
+            }
+          },
+          "attributeActions": {
+            "removeKey": [
+              "sky",
+              "UseCase",
+              "navigation",
+              "WWAuseCase"
+            ],
+            "renameKey": {
+              "timeOfDay": "com_global_illumination",
+              "roadType": "com_road_type",
+              "com_road_location": "com_road_type",
+              "precipitation": "com_weather"
+            }
+          },
+          "fieldSetReferences": {
+            "general": {
+              "id": "co-driver"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "csvExportSpecification": {
+    "columns": [
+      {
+        "path": "filePath",
+        "label": "Filepath"
+      },
+      {
+        "path": "data.recording.identifier",
+        "label": "Recording Identifier"
+      },
+      {
+        "path": "data.listing-metadata.camera",
+        "label": "Camera"
+      },
+      {
+        "path": "data.listing-metadata.licensePlate",
+        "label": "License Plate"
+      },
+      {
+        "path": "data.checkIn.checkInTime",
+        "label": "CheckIn Time"
+      },
+      {
+        "path": "frameRange.start",
+        "label": "Framerange (Start)"
+      },
+      {
+        "path": "frameRange.end",
+        "label": "Framerange (End)"
+      }
+    ]
+  },
+  "playlistExportSpecification": {
+    "rangeDelimiter": "|"
+  },
+  "fieldSets": [
+    {
+      "id": "general",
+      "name": "General"
+    },
+    {
+      "id": "listing-metadata",
+      "name": "Listing Metadata"
+    },
+    {
+      "id": "tags",
+      "name": "Tags"
+    },
+    {
+      "id": "file-existence",
+      "name": "File Existence"
+    },
+    {
+      "id": "co-driver",
+      "name": "Co-Driver"
+    },
+    {
+      "id": "can",
+      "name": "CAN"
+    },
+    {
+      "id": "anno-station-metadata",
+      "name": "AnnoStation Metadata"
+    }
+  ]
+}
