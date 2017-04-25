@@ -19,8 +19,15 @@ class PouchDbViewService {
   }
 
   /**
+   * Get a map/reduce function for a specific `viewIdentifier`
+   *
+   * This method returns the **real** javascript functions.
+   *
+   * Those should not be used directly for view queries! Instead use
+   * {@link PouchDbViewService#getDesignDocumentViewName} to utilize a prepared view.
+   *
    * @param {string} viewIdentifier
-   * @return {{map: map}}
+   * @return {{map: function, reduce: function?}}
    */
   getViewFunctions(viewIdentifier) {
     if (PouchDbViewService.VIEWS[viewIdentifier] === undefined) {
@@ -29,6 +36,15 @@ class PouchDbViewService {
     return PouchDbViewService.VIEWS[viewIdentifier];
   }
 
+  /**
+   * Get a design document identifier for a specific `viewIdentifier`.
+   *
+   * This identifier can be used directly inside {@link PouchDB#query} calls to utilize the corresponding
+   * prepared view.
+   *
+   * @param {string} viewIdentifier
+   * @return {string}
+   */
   getDesignDocumentViewName(viewIdentifier) {
     if (PouchDbViewService.VIEWS[viewIdentifier] === undefined) {
       throw new Error(`Unknown view identifier ${viewIdentifier}`);
@@ -36,10 +52,18 @@ class PouchDbViewService {
     return `${viewIdentifier}`;
   }
 
-  get(viewIdentifier) {
-    return this.getDesignDocumentViewName(viewIdentifier);
-  }
-
+  /**
+   * Install the design documents containing prepared views for the given `taskId`.
+   *
+   * The installed documents will be automatically updated on changes.
+   *
+   * They will not be heated! Use the {@link PouchDbViewHeater} for this.
+   *
+   * The returned Promise is resolved once the views are properly installed.
+   *
+   * @param {string} taskId
+   * @return {Promise}
+   */
   installDesignDocuments(taskId) {
     this._logger.groupStart('pouchdb:viewService', 'Installing design documents for taskId ', taskId);
     const db = this._pouchDbContextService.provideContextForTaskId(taskId);
@@ -77,6 +101,11 @@ class PouchDbViewService {
       .then(() => this._logger.groupEnd('pouchdb:viewService'));
   }
 
+  /**
+   * @param {string} viewName
+   * @param {function} mapFunction
+   * @param {function?} reduceFunction
+   */
   _buildDesignDocument(viewName, mapFunction = null, reduceFunction = null) {
     let mapFunctionString = 'function() {}';
     if (mapFunction !== null) {
@@ -113,6 +142,9 @@ class PouchDbViewService {
   }
 }
 
+/**
+ * List of Views to be installed for usage in PouchDB task databases.
+ */
 PouchDbViewService.VIEWS = {
   'labeledThingInFrameByLabeledThingIdAndIncomplete': {
     map: function (doc) { // eslint-disable-line func-names
