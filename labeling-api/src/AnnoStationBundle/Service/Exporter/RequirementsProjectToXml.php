@@ -78,6 +78,11 @@ class RequirementsProjectToXml
     private $pouchdbFeatureEnabled;
 
     /**
+     * @var Service\LabeledFrameEndCalculationService
+     */
+    private $labeledFrameEndCalculationService;
+
+    /**
      * @param Facade\Exporter                                 $exporterFacade
      * @param Facade\Project                                  $projectFacade
      * @param Facade\Video                                    $videoFacade
@@ -90,6 +95,7 @@ class RequirementsProjectToXml
      * @param Facade\LabeledThingGroup                        $labeledThingGroupFacade
      * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
      * @param Service\TaskDatabaseCreator                     $taskDatabaseCreatorService
+     * @param Service\LabeledFrameEndCalculationService       $labeledFrameEndCalculationService
      * @param                                                 $pouchdbFeatureEnabled
      */
     public function __construct(
@@ -105,21 +111,23 @@ class RequirementsProjectToXml
         Facade\LabeledThingGroup $labeledThingGroupFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
+        Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService,
         $pouchdbFeatureEnabled
     ) {
-        $this->exporterFacade                 = $exporterFacade;
-        $this->projectFacade                  = $projectFacade;
-        $this->videoFacade                    = $videoFacade;
-        $this->labelingTaskFacade             = $labelingTaskFacade;
-        $this->taskConfiguration              = $taskConfiguration;
-        $this->ghostClassesPropagation        = $ghostClassesPropagation;
-        $this->userFacade                     = $userFacade;
-        $this->labelingGroupFacade            = $labelingGroupFacade;
-        $this->labeledThingFacade             = $labeledThingFacade;
-        $this->labeledThingGroupFacade        = $labeledThingGroupFacade;
-        $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
-        $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
-        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
+        $this->exporterFacade                    = $exporterFacade;
+        $this->projectFacade                     = $projectFacade;
+        $this->videoFacade                       = $videoFacade;
+        $this->labelingTaskFacade                = $labelingTaskFacade;
+        $this->taskConfiguration                 = $taskConfiguration;
+        $this->ghostClassesPropagation           = $ghostClassesPropagation;
+        $this->userFacade                        = $userFacade;
+        $this->labelingGroupFacade               = $labelingGroupFacade;
+        $this->labeledThingFacade                = $labeledThingFacade;
+        $this->labeledThingGroupFacade           = $labeledThingGroupFacade;
+        $this->taskDatabaseCreatorService        = $taskDatabaseCreatorService;
+        $this->databaseDocumentManagerFactory    = $databaseDocumentManagerFactory;
+        $this->pouchdbFeatureEnabled             = $pouchdbFeatureEnabled;
+        $this->labeledFrameEndCalculationService = $labeledFrameEndCalculationService;
     }
 
     /**
@@ -246,6 +254,8 @@ class RequirementsProjectToXml
                         }
                         $xmlVideo->addThing($thing);
                     }
+
+                    $xmlVideo->addFrame($this->getLabeledFrameElement($task, $labelingTaskFacade, $xml->getDocument()));
                 }
                 $xml->appendChild($xmlVideo->getElement($xml->getDocument()));
                 $taskConfiguration = reset($taskConfigurations);
@@ -275,6 +285,55 @@ class RequirementsProjectToXml
 
             throw $exception;
         }
+    }
+
+    /**
+     * @param Model\LabelingTask  $task
+     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param \DOMDocument        $xmlDocument
+     *
+     * @return ExportXml\Element\Video\FrameLabeling
+     */
+    private function getLabeledFrameElement(
+        Model\LabelingTask $task,
+        Facade\LabelingTask $labelingTaskFacade,
+        \DOMDocument $xmlDocument
+    ) {
+        $references = new ExportXml\Element\Video\References(
+            new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
+            self::XML_NAMESPACE
+        );
+
+        $labeledFrames = new Iterator\LabeledFrame($task, $labelingTaskFacade);
+
+        $xmlLabeledFrame = new ExportXml\Element\Video\FrameLabeling(self::XML_NAMESPACE, $references);
+        $previousLabeledFrame = null;
+        /** @var Model\LabeledFrame $labeledFrame */
+        foreach ($labeledFrames as $labeledFrame) {
+            foreach ($labeledFrame->getClasses() as $class) {
+                if ($previousLabeledFrame === null || ($previousLabeledFrame instanceof Model\LabeledFrame && !in_array(
+                            $class,
+                            $previousLabeledFrame->getClasses()
+                        ))
+                ) {
+                    $xmlLabeledFrame->addValue(
+                        $xmlDocument,
+                        $class,
+                        $labeledFrame->getFrameIndex(),
+                        $this->labeledFrameEndCalculationService->getEndOfForClassOfLabeledFrame(
+                            $labeledFrame,
+                            $class
+                        )
+                    );
+                }
+            }
+            $previousLabeledFrame = $labeledFrame;
+            if ($labeledFrame->getIncomplete()) {
+                $xmlLabeledFrame->setIncomplete(true);
+            }
+        }
+
+        return $xmlLabeledFrame;
     }
 
     /**

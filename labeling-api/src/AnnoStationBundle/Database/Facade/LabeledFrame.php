@@ -57,4 +57,29 @@ class LabeledFrame
         $this->documentManager->remove($labeledFrame);
         $this->documentManager->flush();
     }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @param                    $start
+     *
+     * @return null|Model\LabeledFrame
+     */
+    public function getNextLabeledFrameFromFrameIndex(Model\LabelingTask $labelingTask, $start)
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_labeled_frame', 'by_taskId_frameIndex')
+            ->onlyDocs(true)
+            ->setStartKey([$labelingTask->getId(), $start])
+            ->setEndKey([$labelingTask->getId(), '*'])
+            ->setLimit(1)
+            ->setDescending(false)
+            ->execute()
+            ->toArray();
+
+        if (empty($result)) {
+            return null;
+        }
+
+        return $result[0];
+    }
 }
