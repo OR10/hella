@@ -43,13 +43,13 @@ class TaskDatabaseCreator
      * @param CouchDB\DocumentManager                      $documentManager
      * @param Service\CouchDbReplicatorService             $couchDbReplicatorService
      * @param TaskDatabaseValidateDocUpdateDocumentService $databaseValidateDocUpdateDocumentService
-     * @param                                              $pouchDbFeatureEnabled
+     * @param bool                                         $pouchDbFeatureEnabled
      */
     public function __construct(
         CouchDB\DocumentManager $documentManager,
         Service\CouchDbReplicatorService $couchDbReplicatorService,
         AnnoStationBundleService\TaskDatabaseValidateDocUpdateDocumentService $databaseValidateDocUpdateDocumentService,
-        $pouchDbFeatureEnabled
+        bool $pouchDbFeatureEnabled
     ) {
         $this->documentManager                          = $documentManager;
         $this->couchDbReplicatorService                 = $couchDbReplicatorService;
