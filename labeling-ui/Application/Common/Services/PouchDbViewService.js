@@ -1,10 +1,17 @@
 // TODO: This needs to be fixed to a nicer implementation! This is just a prototype!
 class PouchDbViewService {
   /**
+   * @param {$q} $q
    * @param {LoggerService} logger
    * @param {PouchDbContextService} pouchDbContextService
    */
-  constructor(logger, pouchDbContextService) {
+  constructor($q, logger, pouchDbContextService) {
+    /**
+     * @type {$q}
+     * @private
+     */
+    this._$q = $q;
+
     /**
      * @type {LoggerService}
      * @private
@@ -69,7 +76,7 @@ class PouchDbViewService {
     const db = this._pouchDbContextService.provideContextForTaskId(taskId);
     const designDocuments = [];
 
-    return Promise.resolve()
+    return this._$q.resolve()
       .then(
         () => Object.keys(PouchDbViewService.VIEWS).forEach(viewName => {
           const view = PouchDbViewService.VIEWS[viewName];
@@ -78,26 +85,30 @@ class PouchDbViewService {
         })
       )
       .then(() => {
-        let promise = Promise.resolve();
+        let promise = this._$q.resolve();
         designDocuments.forEach(designDocument => {
           const id = designDocument._id;
-          promise = promise.then(
-            () => db.get(id)
+          promise = promise.then(() => {
+            return db.get(id)
               .then(document => {
                 designDocument._rev = document._rev;
               })
               .catch(() => {
+                // Skip non existing documents
+                return this._$q.resolve();
               })
-          );
+          });
         });
         return promise;
       })
-      .then(() => Promise.all(
-        designDocuments.map(designDocument => {
-          this._logger.log('pouchdb:viewService', 'Storing design document: ', designDocument._id, designDocument);
-          return db.put(designDocument)
-        })
-      ))
+      .then(() => {
+        this._$q.all(
+          designDocuments.map(designDocument => {
+            this._logger.log('pouchdb:viewService', 'Storing design document: ', designDocument._id, designDocument);
+            return db.put(designDocument)
+          })
+        )
+      })
       .then(() => this._logger.groupEnd('pouchdb:viewService'));
   }
 
@@ -205,6 +216,7 @@ PouchDbViewService.VIEWS = {
 };
 
 PouchDbViewService.$inject = [
+  '$q',
   'loggerService',
   'pouchDbContextService',
 ];
