@@ -110,6 +110,7 @@
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.user"

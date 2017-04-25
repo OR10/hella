@@ -43,21 +43,29 @@ class Status extends Controller\Base
     private $authorizationService;
 
     /**
-     * @param Facade\LabelingTask   $labelingTaskFacade
-     * @param Storage\TokenStorage  $tokenStorage
-     * @param Facade\Project        $projectFacade
-     * @param Service\Authorization $authorizationService
+     * @var Service\TaskDatabaseSecurityPermissionService
+     */
+    private $databaseSecurityPermissionService;
+
+    /**
+     * @param Facade\LabelingTask                           $labelingTaskFacade
+     * @param Storage\TokenStorage                          $tokenStorage
+     * @param Facade\Project                                $projectFacade
+     * @param Service\Authorization                         $authorizationService
+     * @param Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Storage\TokenStorage $tokenStorage,
         Facade\Project $projectFacade,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
     ) {
-        $this->labelingTaskFacade   = $labelingTaskFacade;
-        $this->tokenStorage         = $tokenStorage;
-        $this->projectFacade        = $projectFacade;
-        $this->authorizationService = $authorizationService;
+        $this->labelingTaskFacade                = $labelingTaskFacade;
+        $this->tokenStorage                      = $tokenStorage;
+        $this->projectFacade                     = $projectFacade;
+        $this->authorizationService              = $authorizationService;
+        $this->databaseSecurityPermissionService = $databaseSecurityPermissionService;
     }
 
     /**
@@ -206,6 +214,7 @@ class Status extends Controller\Base
             $task->addAssignmentHistory($phase, $task->getStatus($phase), $user);
         }
         $this->labelingTaskFacade->save($task);
+        $this->databaseSecurityPermissionService->updateForTask($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }

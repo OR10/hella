@@ -82,7 +82,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
-        $this->assertEquals($this->getExpectedResponse(['superadmin']), $this->getDatabaseSecurityDocumentResponse());
+        $this->assertEquals($this->getExpectedResponse(['annostation_superadmin']), $this->getDatabaseSecurityDocumentResponse());
     }
 
     public function testAdminPermissions()
@@ -95,7 +95,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
-        $this->assertEquals($this->getExpectedResponse(['admin']), $this->getDatabaseSecurityDocumentResponse());
+        $this->assertEquals($this->getExpectedResponse(['annostation_admin']), $this->getDatabaseSecurityDocumentResponse());
 
         $user->setOrganisations([]);
         $this->userFacade->saveUser($user);
@@ -128,7 +128,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
-        $this->assertEquals($this->getExpectedResponse(['observer']), $this->getDatabaseSecurityDocumentResponse());
+        $this->assertEquals($this->getExpectedResponse(['annostation_observer']), $this->getDatabaseSecurityDocumentResponse());
     }
 
     public function testLabelCoordinatorPermissions()
@@ -149,7 +149,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
         $this->assertEquals(
-            $this->getExpectedResponse(['label_coordinator']),
+            $this->getExpectedResponse(['annostation_label_coordinator']),
             $this->getDatabaseSecurityDocumentResponse()
         );
     }
@@ -187,14 +187,15 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
     private function getExpectedResponse($memberNames = [], $memberRoles = [])
     {
         return [
-            'admins'  => [
+            'admins'          => [
                 'names' => [],
                 'roles' => [],
             ],
-            'members' => [
+            'members'         => [
                 'names' => $memberNames,
                 'roles' => $memberRoles,
             ],
+            'assignedLabeler' => null,
         ];
     }
 

@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Tests\Service;
 
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Service\TaskDatabaseCreator;
+use AnnoStationBundle\Service as AnnoStationBundleService;
 use AppBundle\Service;
 use Doctrine\ODM\CouchDB;
 use MyProject\Proxies\__CG__\OtherProject\Proxies\__CG__\stdClass;
@@ -45,13 +46,23 @@ class TaskDatabaseCreatorTest extends Tests\WebTestCase
             ->getMock();
     }
 
+    private function getTaskDatabaseValidateDocUpdateDocumentServiceMock()
+    {
+        return $this->getMockBuilder(AnnoStationBundleService\TaskDatabaseValidateDocUpdateDocumentService::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['updateForDatabase'])
+            ->getMock();
+    }
+
     public function testSmoke()
     {
-        $couchDocumentManagerMock = $this->getCouchDocumentManagerMock();
-        $couchReplicatorMock      = $this->getCouchDbReplicatorMock();
-        $creator                  = new TaskDatabaseCreator(
+        $couchDocumentManagerMock                         = $this->getCouchDocumentManagerMock();
+        $couchReplicatorMock                              = $this->getCouchDbReplicatorMock();
+        $taskDatabaseValidateDocUpdateDocumentServiceMock = $this->getTaskDatabaseValidateDocUpdateDocumentServiceMock();
+        $creator                                          = new TaskDatabaseCreator(
             $couchDocumentManagerMock,
             $couchReplicatorMock,
+            $taskDatabaseValidateDocUpdateDocumentServiceMock,
             $this->pouchDbFeatureEnabled
         );
         $this->assertInstanceOf(TaskDatabaseCreator::class, $creator);
@@ -89,9 +100,12 @@ class TaskDatabaseCreatorTest extends Tests\WebTestCase
                 ->method('getCouchDBClient')
                 ->will($this->returnValue($couchClientMock));
 
+            $taskDatabaseValidateDocUpdateDocumentServiceMock = $this->getTaskDatabaseValidateDocUpdateDocumentServiceMock();
+
             $creator = new TaskDatabaseCreator(
                 $documentManagerMock,
                 $couchReplicatorMock,
+                $taskDatabaseValidateDocUpdateDocumentServiceMock,
                 $this->pouchDbFeatureEnabled
             );
             $actualDocumentManager = $creator->createDatabase($project, $task);
@@ -106,14 +120,16 @@ class TaskDatabaseCreatorTest extends Tests\WebTestCase
         $taskId               = "Al-Bundy";
         $expectedDatabaseName = "taskdb-project-$projectId-task-$taskId";
 
-        $documentManagerMock = $this->getCouchDocumentManagerMock();
-        $couchReplicatorMock = $this->getCouchDbReplicatorMock();
-        $creator             = new TaskDatabaseCreator(
+        $documentManagerMock                              = $this->getCouchDocumentManagerMock();
+        $couchReplicatorMock                              = $this->getCouchDbReplicatorMock();
+        $taskDatabaseValidateDocUpdateDocumentServiceMock = $this->getTaskDatabaseValidateDocUpdateDocumentServiceMock();
+        $creator                                          = new TaskDatabaseCreator(
             $documentManagerMock,
             $couchReplicatorMock,
+            $taskDatabaseValidateDocUpdateDocumentServiceMock,
             $this->pouchDbFeatureEnabled
         );
-        $actual              = $creator->getDatabaseName($projectId, $taskId);
+        $actual                                           = $creator->getDatabaseName($projectId, $taskId);
 
         $this->assertEquals($expectedDatabaseName, $actual);
     }
