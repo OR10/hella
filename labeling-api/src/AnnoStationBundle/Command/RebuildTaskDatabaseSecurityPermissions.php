@@ -40,7 +40,7 @@ class RebuildTaskDatabaseSecurityPermissions extends Base
 
     protected function configure()
     {
-        $this->setName('annostation:RebuildTaskDatabaseSecurityPermissions')
+        $this->setName('annostation:rebuild-task-database-security-permissions')
             ->setDescription('Rebuild all _security task database documents for all tasks')
             ->addArgument(
                 'projectId',

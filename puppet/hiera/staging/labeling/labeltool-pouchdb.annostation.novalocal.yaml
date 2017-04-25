@@ -18,6 +18,8 @@ labeling_api::params::couchdb_password: '3,udvezdxp}2Rh.UNmuZ'
 labeling_api::params::couchdb_external_url: 'https://pouch:3,udvezdxp}2Rh.UNmuZ@labeltool.crosscan.com/couchdb/'
 labeling_api::params::pouchdb_feature_enabled: true
 labeling_api::params::couchdb_host_external: 'labeltool.crosscan.com'
+labeling_api::params::couchdb_port_external: '443'
+labeling_api::params::couchdb_path_external: 'couchdb'
 labeling_api::params::fos_user_bundle_to_couchdb_sync_enabled: true
 labeling_api::letsencrypt: true
 
@@ -26,7 +28,8 @@ labeling_api::couch::max_dbs_open: 65535
 labeling_api::couch::max_erlang_ports: 40000
 
 couchdb::cors_origins: '*'
-couchdb::cors_methods: '*'
+couchdb::cors_methods: 'GET, PUT, POST, HEAD, DELETE'
+couchdb::cors_headers: 'accept, authorization, content-type, origin, referer, x-csrf-token'
 couchdb::admin_username: "%{labeling_api::params::couchdb_user}"
 couchdb::admin_password: "%{labeling_api::params::couchdb_password}"
 couchdb::admin_salt: 'klsdagksdalsaasasafksdasahklfahklf'
