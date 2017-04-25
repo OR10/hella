@@ -90,26 +90,21 @@ class TaskDatabaseSecurityPermissionService
         $organisation = $this->organisationFacade->find($project->getOrganisationId());
 
         $memberNames = [];
-
-        $memberNames = array_merge(
-            $memberNames,
-            $this->getAllowedUsernamesForRole($organisation, Model\User::ROLE_ADMIN)
-        );
-        $memberNames = array_merge(
-            $memberNames,
-            $this->getAllowedUsernamesForRole($organisation, Model\User::ROLE_OBSERVER)
-        );
-        $memberNames = array_merge(
-            $memberNames,
-            $this->getAllowedSuperAdminUsernames()
-        );
+        $memberRoles = [
+            UserRolesRebuilder::SUPER_ADMIN_GROUP,
+            sprintf('%s%s', UserRolesRebuilder::ADMIN_GROUP_PREFIX, $organisation->getId()),
+            sprintf('%s%s', UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $organisation->getId()),
+        ];
 
         $memberNames = array_merge(
             $memberNames,
             $this->getCoordinatorUsernames($project)
         );
 
-        $memberRoles = $this->getLabelingGroupRole($project);
+        $memberRoles = array_merge(
+            $this->getLabelingGroupRole($project),
+            $memberRoles
+        );
 
         $this->couchDbSecurity->updateSecurity(
             sprintf(
