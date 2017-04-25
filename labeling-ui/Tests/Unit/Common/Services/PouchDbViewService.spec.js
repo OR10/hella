@@ -1,6 +1,6 @@
 import PouchDbViewService from 'Application/Common/Services/PouchDbViewService';
 
-describe('PouchDbViewService specs', () => {
+fdescribe('PouchDbViewService specs', () => {
   let service;
   let logger;
   let pouchDbContext;
@@ -38,6 +38,24 @@ describe('PouchDbViewService specs', () => {
 
       const view = service.getViewFunctions('labeledThingGroupInFrameByTaskIdAndFrameIndex');
 
+      expect(view).toEqual(expected);
+    });
+  });
+
+  describe('getDesignDocumentViewName', () => {
+    it('throws if the viewIdentifier is unknown', () => {
+      function throwWrapper() {
+        service.getDesignDocumentViewName('Wurstbrot');
+      }
+
+      expect(throwWrapper).toThrowError('Unknown view identifier Wurstbrot');
+    });
+
+    it('return pouchdb usable view name viewIdentifier exists', () => {
+      // if the design document and viewname are identical pouchdb allows the shorthand of only specifying one!
+      const expected = 'labeledThingGroupInFrameByTaskIdAndFrameIndex';
+
+      const view = service.getDesignDocumentViewName('labeledThingGroupInFrameByTaskIdAndFrameIndex');
       expect(view).toEqual(expected);
     });
   });
