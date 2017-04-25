@@ -3,6 +3,7 @@
  */
 class TaskReplicationService {
   /**
+   * @param {$q} $q
    * @param {LoggerService} loggerService
    * @param {UserGateway} userGateway
    * @param {ReplicationStateService} replicationStateService
@@ -10,8 +11,15 @@ class TaskReplicationService {
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
    * @param {PouchDbViewService} pouchDbViewService
+   * @param {PouchDbViewHeater} pouchDbViewHeater
    */
-  constructor(loggerService, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService, pouchDbViewService) {
+  constructor($q, loggerService, userGateway, replicationStateService, timerGateway, pouchDbSyncManager, pouchDbContextService, pouchDbViewService, pouchDbViewHeater) {
+    /**
+     * @type {$q}
+     * @private
+     */
+    this._$q = $q;
+
     /**
      * @type {LoggerService}
      * @private
@@ -51,6 +59,12 @@ class TaskReplicationService {
      * @private
      */
     this._pouchDbViewService = pouchDbViewService;
+
+    /**
+     * @type {PouchDbViewHeater}
+     * @private
+     */
+    this._pouchDbViewHeater = pouchDbViewHeater;
   }
 
   replicateTaskDataToLocalMachine(project, task) {
@@ -73,20 +87,18 @@ class TaskReplicationService {
     const context = this._pouchDbContextService.provideContextForTaskId(task.id);
     this._logger.log(loggerContext, 'Pulling task updates from server');
 
-    return this._pouchDbSyncManager.pullUpdatesForContext(context)
+    return this._$q.resolve()
+      .then(() => this._pouchDbSyncManager.pullUpdatesForContext(context))
+      .then(() => this._pouchDbViewService.installDesignDocuments(task.id))
+      .then(() => this._pouchDbViewHeater.heatAllViews(context))
       .then(() => {
-        return this._pouchDbViewService.installDesignDocuments(task.id);
+        this._logger.log(loggerContext, 'Initial synchronizaton complete');
+        this._logger.groupEnd(loggerContext);
       })
-      .then(() => {
-        return this._pouchDbSyncManager.startDuplexLiveReplication(context);
-      })
-      .then(() => {
-        this._logger.log(loggerContext, 'Synchronizaton complete');
-        this._logger.groupEnd('pouchDb:taskSynchronization');
-      })
-      .catch(error => {
-        return this._logger.warn('Error while checkoutTaskFromRemote', error);
-      });
+      .then(() => this._logger.log(loggerContext, 'Starting duplex live replication'))
+      .then(() => this._pouchDbSyncManager.startDuplexLiveReplication(context))
+      .then(() => this._logger.log(loggerContext, 'Duplex live replication stopped'))
+      .catch(error => this._logger.warn('Error while checkoutTaskFromRemote', error));
   }
 
 
@@ -106,6 +118,7 @@ class TaskReplicationService {
 
 
 TaskReplicationService.$inject = [
+  '$q',
   'loggerService',
   'userGateway',
   'replicationStateService',
@@ -113,6 +126,7 @@ TaskReplicationService.$inject = [
   'pouchDbSyncManager',
   'pouchDbContextService',
   'pouchDbViewService',
+  'pouchDbViewHeater',
 ];
 
 export default TaskReplicationService;
