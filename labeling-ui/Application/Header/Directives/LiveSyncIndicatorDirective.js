@@ -4,45 +4,43 @@ import liveSyncIndicatorTemplate from './LiveSyncIndicatorDirective.html!';
  * Directive to display sync progress
  */
 class LiveSyncIndicatorDirective {
-  constructor(pouchDbSyncManager) {
-    this._pouchDbSyncManager = pouchDbSyncManager;
-    this.scope = {};
+  /**
+   * @param {LiveSyncIndicatorService} liveSyncIndicatorService
+   */
+  constructor(liveSyncIndicatorService) {
+    /**
+     * @type {LiveSyncIndicatorService}
+     * @private
+     */
+    this._liveSyncIndicatorService = liveSyncIndicatorService;
+
+    /**
+     * @type {string}
+     */
     this.template = liveSyncIndicatorTemplate;
   }
 
   link(scope) {
-    const stateToIcon = {
-      'offline': 'chain-broken',
-      'alive': 'signal',
-      'transfer': 'exchange',
-    };
+    scope.syncState = this._liveSyncIndicatorService.getIcon();
+    scope.syncTooltip = this._liveSyncIndicatorService.getToolTip();
 
-    const stateTooltipText = {
-      'offline': 'There is currently no connection to the server',
-      'alive': 'Connection to the server established, no data to transfer',
-      'transfer': 'Data is synced with the server',
-    };
-
-    scope.syncState = stateToIcon.offline;
-    scope.syncTooltip = stateTooltipText.offline;
-
-    this._pouchDbSyncManager.on('offline', () => {
-      scope.syncState = stateToIcon.offline;
-      scope.syncTooltip = stateTooltipText.offline;
+    this._liveSyncIndicatorService.on('syncstate:updated', (icon, toolTip) => {
+      scope.syncState = icon;
+      scope.syncTooltip = toolTip;
     });
-    this._pouchDbSyncManager.on('alive', () => {
-      scope.syncState = stateToIcon.alive;
-      scope.syncTooltip = stateTooltipText.alive;
+    this._liveSyncIndicatorService.on('syncstate:updated', (icon, toolTip) => {
+      scope.syncState = icon;
+      scope.syncTooltip = toolTip;
     });
-    this._pouchDbSyncManager.on('transfer', () => {
-      scope.syncState = stateToIcon.transfer;
-      scope.syncTooltip = stateTooltipText.transfer;
+    this._liveSyncIndicatorService.on('syncstate:updated', (icon, toolTip) => {
+      scope.syncState = icon;
+      scope.syncTooltip = toolTip;
     });
   }
 }
 
 LiveSyncIndicatorDirective.$inject = [
-  'pouchDbSyncManager',
+  'liveSyncIndicatorService',
 ];
 
 export default LiveSyncIndicatorDirective;
