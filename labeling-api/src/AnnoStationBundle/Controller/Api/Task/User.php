@@ -5,6 +5,7 @@ namespace AnnoStationBundle\Controller\Api\Task;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
 use AnnoStationBundle\Controller;
+use AnnoStationBundle\Service;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
@@ -31,24 +32,33 @@ class User extends Controller\Base
      * @var Storage\TokenStorageInterface
      */
     private $tokenStorage;
+
     /**
      * @var Authentication\UserPermissions
      */
     private $userPermissions;
 
     /**
-     * @param Facade\LabelingTask            $labelingTaskFacade
-     * @param Storage\TokenStorageInterface  $tokenStorage
-     * @param Authentication\UserPermissions $userPermissions
+     * @var Service\TaskDatabaseSecurityPermissionService
+     */
+    private $databaseSecurityPermissionService;
+
+    /**
+     * @param Facade\LabelingTask                           $labelingTaskFacade
+     * @param Storage\TokenStorageInterface                 $tokenStorage
+     * @param Authentication\UserPermissions                $userPermissions
+     * @param Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Storage\TokenStorageInterface $tokenStorage,
-        Authentication\UserPermissions $userPermissions
+        Authentication\UserPermissions $userPermissions,
+        Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
     ) {
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->tokenStorage       = $tokenStorage;
-        $this->userPermissions    = $userPermissions;
+        $this->labelingTaskFacade                = $labelingTaskFacade;
+        $this->tokenStorage                      = $tokenStorage;
+        $this->userPermissions                   = $userPermissions;
+        $this->databaseSecurityPermissionService = $databaseSecurityPermissionService;
     }
 
     /**
@@ -64,6 +74,8 @@ class User extends Controller\Base
         $task->addAssignmentHistory(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS, $user);
 
         $this->labelingTaskFacade->save($task);
+
+        $this->databaseSecurityPermissionService->updateForTask($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
@@ -86,6 +98,8 @@ class User extends Controller\Base
         $task->addAssignmentHistory($phase, $task->getStatus($phase));
 
         $this->labelingTaskFacade->save($task);
+
+        $this->databaseSecurityPermissionService->updateForTask($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
