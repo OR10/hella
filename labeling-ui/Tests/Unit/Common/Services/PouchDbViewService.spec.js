@@ -1,4 +1,5 @@
 import PouchDbViewService from 'Application/Common/Services/PouchDbViewService';
+import {inject} from 'angular-mocks';
 
 describe('PouchDbViewService specs', () => {
   let angularQ;
@@ -160,7 +161,7 @@ describe('PouchDbViewService specs', () => {
           return angularQ.resolve({
             _id: existingId,
             _rev: existingRevision,
-            views: {}
+            views: {},
           });
         }
 
@@ -180,6 +181,5 @@ describe('PouchDbViewService specs', () => {
 
       expect(actualUpdatedDesignDocument._rev).toEqual(existingRevision);
     });
-
   });
 });

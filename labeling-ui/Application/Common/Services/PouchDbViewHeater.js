@@ -94,7 +94,7 @@ class PouchDbViewHeater {
 
       return this._$q.all(promises)
         .then(() => {
-          this._logger.groupEnd('pouchdb:viewHeater')
+          this._logger.groupEnd('pouchdb:viewHeater');
         });
     });
   }

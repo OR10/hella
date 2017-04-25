@@ -96,7 +96,7 @@ class PouchDbViewService {
               .catch(() => {
                 // Skip non existing documents
                 return this._$q.resolve();
-              })
+              });
           });
         });
         return promise;
@@ -105,9 +105,9 @@ class PouchDbViewService {
         this._$q.all(
           designDocuments.map(designDocument => {
             this._logger.log('pouchdb:viewService', 'Storing design document: ', designDocument._id, designDocument);
-            return db.put(designDocument)
+            return db.put(designDocument);
           })
-        )
+        );
       })
       .then(() => this._logger.groupEnd('pouchdb:viewService'));
   }
@@ -140,9 +140,9 @@ class PouchDbViewService {
       _id: `_design/${viewName}`,
       views: {
         [viewName]: {
-          map: mapFunctionString
-        }
-      }
+          map: mapFunctionString,
+        },
+      },
     };
 
     if (reduceFunctionString !== null) {
@@ -158,7 +158,7 @@ class PouchDbViewService {
  */
 PouchDbViewService.VIEWS = {
   'labeledThingInFrameByLabeledThingIdAndIncomplete': {
-    map: function (doc) { // eslint-disable-line func-names
+    map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
         emit(doc.labeledThingId, 0 + doc.incomplete); // eslint-disable-line no-undef
       }
@@ -166,45 +166,45 @@ PouchDbViewService.VIEWS = {
     reduce: '_sum',
   },
   'labeledThingInFrameByTaskIdAndFrameIndex': {
-    map: function (doc) { // eslint-disable-line func-names
+    map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
         emit([doc.taskId, doc.frameIndex]); // eslint-disable-line no-undef
       }
     },
   },
   'taskTimerByTaskIdAndUserId': {
-    map: function (doc) { // eslint-disable-line func-names
+    map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.TaskTimer') {
         emit([doc.taskId, doc.userId]); // eslint-disable-line no-undef
       }
     },
   },
   'labeledThingIncomplete': {
-    map: function (doc) { // eslint-disable-line func-names
+    map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.LabeledThing') {
         emit([doc.taskId, doc.incomplete]); // eslint-disable-line no-undef
       }
     },
   },
   'labeledThingInFrameIncomplete': {
-    map: function (doc) { // eslint-disable-line func-names
+    map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
         emit([doc.taskId, doc.incomplete]); // eslint-disable-line no-undef
       }
     },
   },
   'labeledThingInFrameByLabeledThingIdAndFrameIndex': {
-    map: function (doc) { // eslint-disable-line func-names
+    map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
         emit([doc.labeledThingId, doc.frameIndex]); // eslint-disable-line no-undef
       }
     },
   },
   'labeledThingGroupInFrameByTaskIdAndFrameIndex': {
-    map: function (doc) { // eslint-disable-line func-names
+    map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.LabeledThing') {
         doc.groupIds.forEach(
-          function (groupId) { // eslint-disable-line func-names
+          function(groupId) { // eslint-disable-line func-names
             for (var i = doc.frameRange.startFrameIndex; i <= doc.frameRange.endFrameIndex; i++) { // eslint-disable-line vars-on-top, no-var, id-length
               emit([doc.taskId, i], groupId); // eslint-disable-line no-undef
             }
@@ -212,7 +212,7 @@ PouchDbViewService.VIEWS = {
         );
       }
     },
-  }
+  },
 };
 
 PouchDbViewService.$inject = [
