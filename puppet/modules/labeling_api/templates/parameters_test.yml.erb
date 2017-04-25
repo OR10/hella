@@ -1,6 +1,6 @@
 # This file is auto-generated during the composer install
 parameters:
     database_name: <%= @database_name %>_test
-    couchdb_user: ~
-    couchdb_password: ~
+    couchdb_user: <% if @couchdb_user != nil %><%= @couchdb_user %><% else %>~<% end %>
+    couchdb_password: <% if @couchdb_password != nil %><%= @couchdb_password %><% else %>~<% end %>
     couchdb_port: <%= @couchdb_port_tests %>
