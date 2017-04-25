@@ -33,7 +33,7 @@ class RebuildUserRolesPermissions extends Base
 
     protected function configure()
     {
-        $this->setName('annostation:RebuildUserRolesPermissions')
+        $this->setName('annostation:rebuild-user-roles-permissions')
             ->setDescription('Rebuild all user roles permissions')
             ->addArgument(
                 'userId',
