@@ -65,5 +65,12 @@
             <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.user_role_permission_rebuilder"
+                 class="AnnoStationBundle\Worker\JobInstruction\UserRolePermissionRebuilder">
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
+            <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
     </services>
 </container>
