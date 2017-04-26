@@ -5,7 +5,6 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 import LabelingData from 'Application/LabelingData/LabelingData';
 
-import PouchDbViewService from 'Application/Common/Services/PouchDbViewService';
 import PouchDbHelper from 'Tests/Support/PouchDb/PouchDbHelper';
 
 import PouchDbLabeledThingGateway from 'Application/LabelingData/Gateways/PouchDbLabeledThingGateway';
