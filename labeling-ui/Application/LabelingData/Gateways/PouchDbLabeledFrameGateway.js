@@ -4,7 +4,43 @@ import LabeledFrame from '../Models/LabeledFrame';
  * Gateway for saving and retrieving {@link LabeledFrame}s from pouchdb
  */
 class PouchDbLabeledFrameGateway {
-  constructor() {
+  /**
+   * @param {$q} $q
+   * @param {PackagingExecutor} packagingExecutor
+   * @param {PouchDbContextService} pouchDbContextService
+   * @param {CouchDbModelDeserializer} couchDbModelDeserializer
+   * @param {PouchDbViewService} pouchDbViewService
+   */
+  constructor($q, packagingExecutor, pouchDbContextService, couchDbModelDeserializer, pouchDbViewService) {
+    /**
+     * @type {$q}
+     * @private
+     */
+    this._$q = $q;
+
+    /**
+     * @type {PackagingExecutor}
+     * @private
+     */
+    this._packagingExecutor = packagingExecutor;
+
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._pouchDbContextService = pouchDbContextService;
+
+    /**
+     * @type {CouchDbModelDeserializer}
+     * @private
+     */
+    this._couchDbModelDeserializer = couchDbModelDeserializer;
+
+    /**
+     * @type {PouchDbViewService}
+     * @private
+     */
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
@@ -16,6 +52,7 @@ class PouchDbLabeledFrameGateway {
    * @returns {AbortablePromise<LabeledFrame|Error>}
    */
   getLabeledFrame(taskId, frameIndex) {
+
   }
 
 
@@ -44,6 +81,11 @@ class PouchDbLabeledFrameGateway {
 }
 
 PouchDbLabeledFrameGateway.$inject = [
+  '$q',
+  'packagingExecutor',
+  'pouchDbContextService',
+  'couchDbModelDeserializer',
+  'pouchDbViewService',
 ];
 
 export default PouchDbLabeledFrameGateway;
