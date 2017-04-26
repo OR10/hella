@@ -20,7 +20,11 @@ class FrontendInterpolation {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
-  
+
+    /**
+     * @type {AngularQ}
+     * @private
+     */
     this._$q = $q;
   }
 
@@ -31,11 +35,12 @@ class FrontendInterpolation {
    */
   execute(task, labeledThing, frameRange) {
     const limit = (frameRange.endFrameIndex - frameRange.startFrameIndex) + 1;
+
     this._labeledThingInFrameGateway.getLabeledThingInFrame(
       task,
       frameRange.startFrameIndex,
       labeledThing,
-      frameRange.startFrameIndex,
+      0,
       limit
     ).then(labeledThingInFramesWithGhosts => {
       if (labeledThingInFramesWithGhosts.length === 0) {
@@ -49,8 +54,7 @@ class FrontendInterpolation {
       const labeledThingInFrames = labeledThingInFramesWithGhosts.filter(labeledThingInFrame => {
         return labeledThingInFrame.ghost === false;
       });
-      console.log(labeledThingInFramesWithGhosts)
-      console.log(labeledThingInFrames)
+
       if (labeledThingInFrames.length <= 1) {
         throw new Error('Error in _doInterpolation: You need more then 1 real labeledThingInFrames for interpolation');
       }
@@ -68,8 +72,7 @@ class FrontendInterpolation {
             steps.push(index); 
           }
           steps.forEach(step => {
-            const currentGhostIndex = currentLtifIndex + step;
-            const currentGhost = labeledThingInFramesWithGhosts[currentGhostIndex];
+            const currentGhost = labeledThingInFramesWithGhosts[step];
             const delta = step / (steps.length + 1);
             savePromises.push(this._interpolateShape(currentGhost, endLtif, delta));
           });
@@ -91,7 +94,6 @@ class FrontendInterpolation {
     switch (ghost.shapes[0].type) {
       case 'rectangle':
         return this._interpolateRectangle(ghost, endLtif, delta);
-        break;
         /*
       case 'ellipse':
         this._interpolateEllipse(ghost, endLtif, delta);
@@ -99,19 +101,14 @@ class FrontendInterpolation {
          */
       case 'pedestrian':
         return this._interpolatePedestrian(ghost, endLtif, delta);
-        break;
       case 'cuboid3d':
         return this._interpolateCuboid3d(ghost, endLtif, delta);
-        break;
       case 'polygon':
         return this._interpolatePolygonAndPolyline(ghost, endLtif, delta);
-        break;
       case 'polyline':
         return this._interpolatePolygonAndPolyline(ghost, endLtif, delta);
-        break;
       case 'point':
         return this._interpolatePoint(ghost, endLtif, delta);
-        break;
       default:
         throw new Error(`Unknown shape type ${ghost.shapes[0].type}`);
     }
@@ -173,7 +170,7 @@ class FrontendInterpolation {
     const points = [];
 
     if (currentPoints.length !== endPoints.length) {
-      throw new Error(`Failed to interpolate ${labeledThingInFrame.type} with different points.`);
+      throw new Error(`Failed to interpolate ${ltifGhost.type} with different points.`);
     }
 
     currentPoints.forEach((point, index) => {
@@ -191,7 +188,7 @@ class FrontendInterpolation {
   }
 
   _interpolatePoint(ltifGhost, endLtif, delta) {
-    const currentPoint =  clone(ltifGhost.shapes[0].point);
+    const currentPoint = clone(ltifGhost.shapes[0].point);
     const endPoint = clone(endLtif.shapes[0].point);
 
     const point = {
@@ -219,7 +216,7 @@ class FrontendInterpolation {
       newCuboid3d.push(newCoordinates);
     }
     currentCuboid.vehicleCoordinates = newCuboid3d;
-  
+
     const transformedGhost = this._transformGhostToLabeledThing(ltifGhost);
     return this._saveLabeledThingInFrame(transformedGhost);
   }
@@ -249,56 +246,56 @@ class FrontendInterpolation {
     switch (Object.keys(invisibleVerticesIndex).toString()) {
       case '0,1,2,3':
         oppositeVertex = {
-          0:4,
-          1:5,
-          2:6,
-          3:7,
-          'normal': [[6, 5], [6, 7]]
+          0: 4,
+          1: 5,
+          2: 6,
+          3: 7,
+          'normal': [[6, 5], [6, 7]],
         };
         break;
       case '1,2,5,6':
         oppositeVertex = {
-          1:0,
-          2:3,
-          5:4,
-          6:7,
-          'normal': [[7, 4], [7, 3]]
+          1: 0,
+          2: 3,
+          5: 4,
+          6: 7,
+          'normal': [[7, 4], [7, 3]],
         };
         break;
       case '4,5,6,7':
         oppositeVertex = {
-          4:0,
-          5:1,
-          6:2,
-          7:3,
-          'normal': [[3, 0], [3, 2]]
+          4: 0,
+          5: 1,
+          6: 2,
+          7: 3,
+          'normal': [[3, 0], [3, 2]],
         };
         break;
       case '0,3,4,7':
         oppositeVertex = {
-          0:1,
-          3:2,
-          4:5,
-          7:6,
-          'normal': [[2, 1], [2, 6]]
+          0: 1,
+          3: 2,
+          4: 5,
+          7: 6,
+          'normal': [[2, 1], [2, 6]],
         };
         break;
       case '0,1,4,5':
         oppositeVertex = {
-          0:3,
-          1:2,
-          4:7,
-          5:6,
-          'normal': [[3, 7], [3, 2]]
+          0: 3,
+          1: 2,
+          4: 7,
+          5: 6,
+          'normal': [[3, 7], [3, 2]],
         };
         break;
       case '2,3,6,7':
         oppositeVertex = {
-          2:1,
-          3:0,
-          6:5,
-          7:4,
-          'normal': [[1, 0], [1, 5]]
+          2: 1,
+          3: 0,
+          6: 5,
+          7: 4,
+          'normal': [[1, 0], [1, 5]],
         };
         break;
       default:
@@ -362,7 +359,7 @@ class FrontendInterpolation {
     
     //console.log(normalVector);
   }
-  
+
   /**
    * @param currentVertex
    * @param endVertex
@@ -389,12 +386,12 @@ class FrontendInterpolation {
     if (labeledThingInFrame.id === null) {
       labeledThingInFrame.id = uuid.v4();
     } else {
-      throw new Error('labeledThingInFrame.id should be null')
+      throw new Error('labeledThingInFrame.id should be null');
     }
     if (labeledThingInFrame.ghost === true) {
       labeledThingInFrame.ghost = false;
     } else {
-      throw new Error('labeledThingInFrame.ghost should be true')
+      throw new Error('labeledThingInFrame.ghost should be true');
     }
     return labeledThingInFrame;
   }

@@ -108,7 +108,7 @@ class PouchDbLabeledThingGateway {
             doc._deleted = true;
             return doc;
           });
-  
+
           // Bulk update as deleted marked documents
           return dbContext.bulkDocs(docs);
         })
