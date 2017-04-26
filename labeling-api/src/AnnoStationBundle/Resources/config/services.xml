@@ -187,6 +187,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument type="service" id="annostation.labeling_api.service.labeled_frame_end_calculation_service"/>
             <argument>%pouchdb_feature_enabled%</argument>
         </service>
 
@@ -350,6 +351,15 @@
 
         <service id="annostation.labeling_api.service.task_database_validate_doc_update_document_service" class="AnnoStationBundle\Service\TaskDatabaseValidateDocUpdateDocumentService">
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.labeled_frame_end_calculation_service"
+                 class="AnnoStationBundle\Service\LabeledFrameEndCalculationService">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame"/>
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
     </services>
 </container>

@@ -58,6 +58,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         );
 
         $this->createCuboids($task);
+        $this->createLabeledFrames($task);
 
         $export = $this->exporterFacade->save(
             new AppBundleModel\Export($project, $clientUser, $date)
@@ -93,9 +94,13 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         foreach ($groupIds as $groupId) {
             $groupId->setAttribute('id', '');
         }
-        $taskIds = $xpath->query('/x:export/x:video/x:thing/x:references/x:task[@id]');
-        foreach ($taskIds as $taskId) {
-            $taskId->setAttribute('id', '');
+        $thingTaskIds = $xpath->query('/x:export/x:video/x:thing/x:references/x:task[@id]');
+        foreach ($thingTaskIds as $thingTaskId) {
+            $thingTaskId->setAttribute('id', '');
+        }
+        $frameTaskIds = $xpath->query('/x:export/x:video/x:frame-labeling/x:references/x:task[@id]');
+        foreach ($frameTaskIds as $frameTaskId) {
+            $frameTaskId->setAttribute('id', '');
         }
         $groupIds = $xpath->query('/x:export/x:video/x:thing/x:references/x:group[@ref]');
         foreach ($groupIds as $groupId) {
@@ -106,17 +111,50 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
     }
 
+    private function getDocumentManagerForTask(AppBundleModel\LabelingTask $task)
+    {
+        return $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+            $this->taskDatabaseCreatorService->getDatabaseName(
+                $task->getProjectId(),
+                $task->getId()
+            )
+        );
+    }
+
+    private function createLabeledFrames(AppBundleModel\LabelingTask $task)
+    {
+        if ($this->pouchdbFeatureEnabled) {
+            $databaseDocumentManager = $this->getDocumentManagerForTask($task);
+            $this->labeledFrameFacade = new Facade\LabeledFrame($databaseDocumentManager);
+        }
+        $labeledFrame = Tests\Helper\LabeledFrameBuilder::create($task, 1)
+            ->withClasses(['sun', 'summer'])
+            ->build();
+        $this->labeledFrameFacade->save($labeledFrame);
+
+        $labeledFrame = Tests\Helper\LabeledFrameBuilder::create($task, 25)
+            ->withClasses(['rain', 'summer'])
+            ->withIncompleteFlag(true)
+            ->build();
+        $this->labeledFrameFacade->save($labeledFrame);
+
+        $labeledFrame = Tests\Helper\LabeledFrameBuilder::create($task, 50)
+            ->withClasses(['thunderstorm', 'summer'])
+            ->build();
+        $this->labeledFrameFacade->save($labeledFrame);
+
+        $labeledFrame = Tests\Helper\LabeledFrameBuilder::create($task, 75)
+            ->withClasses(['sun', 'summer'])
+            ->build();
+        $this->labeledFrameFacade->save($labeledFrame);
+    }
+
     private function createCuboids(AppBundleModel\LabelingTask $task)
     {
         if ($this->pouchdbFeatureEnabled) {
-            $databaseDocumentManager  = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $this->taskDatabaseCreatorService->getDatabaseName(
-                    $task->getProjectId(),
-                    $task->getId()
-                )
-            );
-            $this->labeledThingGroupFacade = new Facade\LabeledThingGroup($databaseDocumentManager);
-            $this->labeledThingFacade       = new Facade\LabeledThing($databaseDocumentManager);
+            $databaseDocumentManager         = $this->getDocumentManagerForTask($task);
+            $this->labeledThingGroupFacade   = new Facade\LabeledThingGroup($databaseDocumentManager);
+            $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
             $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
         }
 

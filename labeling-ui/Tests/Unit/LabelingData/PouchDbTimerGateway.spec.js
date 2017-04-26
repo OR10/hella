@@ -2,7 +2,7 @@ import PouchDbTimerGateway from 'Application/Header/Gateways/PouchDbTimerGateway
 import angular from 'angular';
 import {inject} from 'angular-mocks';
 
-describe('PouchDbTimerGateway Test suite', () => {
+describe('PouchDbTimerGateway', () => {
   /**
    * @type {PouchDbContextService}
    */
@@ -80,7 +80,7 @@ describe('PouchDbTimerGateway Test suite', () => {
     packagingExecutorMock.execute.and.callFake((queueIdentifier, callback) => {
       return callback();
     });
-    const pouchDbViewServiceMock = jasmine.createSpyObj('PouchDbViewService', ['get']);
+    const pouchDbViewServiceMock = jasmine.createSpyObj('PouchDbViewService', ['getDesignDocumentViewName']);
 
     gateway = new PouchDbTimerGateway(
       pouchDbContextServiceMock,

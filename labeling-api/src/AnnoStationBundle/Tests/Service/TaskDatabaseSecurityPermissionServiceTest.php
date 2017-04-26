@@ -82,7 +82,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
-        $this->assertEquals($this->getExpectedResponse(['annostation_superadmin']), $this->getDatabaseSecurityDocumentResponse());
+        $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
     }
 
     public function testAdminPermissions()
@@ -95,7 +95,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
-        $this->assertEquals($this->getExpectedResponse(['annostation_admin']), $this->getDatabaseSecurityDocumentResponse());
+        $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
 
         $user->setOrganisations([]);
         $this->userFacade->saveUser($user);
@@ -128,7 +128,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
-        $this->assertEquals($this->getExpectedResponse(['annostation_observer']), $this->getDatabaseSecurityDocumentResponse());
+        $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
     }
 
     public function testLabelCoordinatorPermissions()
@@ -186,6 +186,11 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
     private function getExpectedResponse($memberNames = [], $memberRoles = [])
     {
+        $fixedRoles = [
+            Service\UserRolesRebuilder::SUPER_ADMIN_GROUP,
+            sprintf('%s%s', Service\UserRolesRebuilder::ADMIN_GROUP_PREFIX, $this->organisation->getId()),
+            sprintf('%s%s', Service\UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $this->organisation->getId()),
+        ];
         return [
             'admins'          => [
                 'names' => [],
@@ -193,7 +198,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
             ],
             'members'         => [
                 'names' => $memberNames,
-                'roles' => $memberRoles,
+                'roles' => array_merge($memberRoles, $fixedRoles),
             ],
             'assignedLabeler' => null,
         ];
