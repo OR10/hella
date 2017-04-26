@@ -7,7 +7,6 @@ class PouchDbLabeledFrameGateway {
   constructor() {
   }
 
-
   /**
    * Returns the {@link LabeledFrame} for the given `taskId` and `frameIndex`
    *
