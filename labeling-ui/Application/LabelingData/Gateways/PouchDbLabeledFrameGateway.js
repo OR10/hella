@@ -52,7 +52,9 @@ class PouchDbLabeledFrameGateway {
    * @returns {AbortablePromise<LabeledFrame|Error>}
    */
   getLabeledFrame(taskId, frameIndex) {
+    return this._packagingExecutor.execute('labeledFrame', () => {
 
+    });
   }
 
 
