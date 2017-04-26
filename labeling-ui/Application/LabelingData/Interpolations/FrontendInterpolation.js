@@ -64,14 +64,13 @@ class FrontendInterpolation {
       const labeledThingInFrameIndices = labeledThingInFrames.map(labeledThingInFrame => labeledThingInFrame.frameIndex);
 
       const savePromises = [];
-
       labeledThingInFrameIndices.forEach((currentLtifIndex, ltifIndicesIndex) => {
         if (labeledThingInFrameIndices[ltifIndicesIndex + 1 ] !== undefined) {
           const endLtif = labeledThingInFrames[ltifIndicesIndex + 1];
           const endLtifIndex = labeledThingInFrameIndices[ltifIndicesIndex + 1];
-          const steps = [];  
+          const steps = [];
           for (let index = 1; index < (endLtifIndex - currentLtifIndex); index++) {
-            steps.push(index); 
+            steps.push(index);
           }
           steps.forEach(step => {
             const currentGhost = labeledThingInFramesWithGhosts[step];
