@@ -311,11 +311,7 @@ class RequirementsProjectToXml
         /** @var Model\LabeledFrame $labeledFrame */
         foreach ($labeledFrames as $labeledFrame) {
             foreach ($labeledFrame->getClasses() as $class) {
-                if ($previousLabeledFrame === null || ($previousLabeledFrame instanceof Model\LabeledFrame && !in_array(
-                            $class,
-                            $previousLabeledFrame->getClasses()
-                        ))
-                ) {
+                if (!$this->isClassInLabeledFrame($previousLabeledFrame, $class)) {
                     $xmlLabeledFrame->addValue(
                         $xmlDocument,
                         $class,
@@ -334,6 +330,21 @@ class RequirementsProjectToXml
         }
 
         return $xmlLabeledFrame;
+    }
+
+    /**
+     * @param $labeledFrame
+     * @param $class
+     *
+     * @return bool
+     */
+    private function isClassInLabeledFrame($labeledFrame, $class)
+    {
+        if ($labeledFrame === null) {
+            return false;
+        }
+
+        return $labeledFrame instanceof Model\LabeledFrame && in_array($class, $labeledFrame->getClasses());
     }
 
     /**
