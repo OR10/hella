@@ -89,7 +89,7 @@ grammar {
   Video = element e:video {
     attribute id {text},
     attribute filename {text},
-    FrameLabeling*,
+    FrameLabeling?,
     (Group | Thing)*
   }
 # </video>

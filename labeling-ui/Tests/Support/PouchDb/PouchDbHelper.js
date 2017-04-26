@@ -1,6 +1,7 @@
 import PouchDB from 'pouchdb';
 import uuid from 'uuid';
 import {forEach, pickBy} from 'lodash';
+import PouchDbViewService from '../../../Application/Common/Services/PouchDbViewService';
 
 class PouchDbHelper {
   constructor() {
@@ -14,6 +15,18 @@ class PouchDbHelper {
      * @private
      */
     this._databaseName = null;
+
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._mockedPouchDbContextService = jasmine.createSpyObj(['provideContextForTaskId']);
+
+    /**
+     * @type {LoggerService}
+     * @private
+     */
+    this._mockedLogger = jasmine.createSpyObj(['log', 'groupStart', 'groupEnd','groupStartOpened', 'warn']);
   }
 
   /**
@@ -43,57 +56,21 @@ class PouchDbHelper {
   /**
    * Install the couchdb view fixtures into the database
    *
-   * The fixtures are loaded using the js2js-preprocessor.
-   * They are loaded from the following path: `Tests/Fixtures/CouchDb/Views/`
+   * The fixtures are installed via the PouchDbViewService.
    *
    * @return {Promise}
    */
   installViews() {
-    const prefix = 'Tests/Fixtures/CouchDb/Views/';
-    const keyMatcher = new RegExp(`^${prefix}([a-zA-Z0-9_-]+)/views/([a-zA-Z0-9_-]+)/(map|reduce)\\.js\$`);
-
-    if (window.__fixtures__ === undefined) {
-      throw new Error('Can not install couchdb views, because they are not loaded. Check karma.conf.js and the corresponding fixtures directory');
+    if (this.database === null) {
+      throw new Error('Init database before installing views!');
     }
 
-    const views = pickBy(
-      window.__fixtures__,
-      (content, key) => key.match(keyMatcher) !== null
-    );
+    this._mockedPouchDbContextService.provideContextForTaskId.and.returnValue(this.database);
 
-    // Collect and cluster by design document
-    const designDocuments = new Map();
-    forEach(
-      views,
-      (content, key) => {
-        const [, designDocName, viewName, functionType] = keyMatcher.exec(key);
+    // No idea, why the import does not work correctly in this scenario, but we get the Module instead of the default export here
+    const viewService = new PouchDbViewService.default(Promise, this._mockedLogger, this._mockedPouchDbContextService);
 
-        if (!designDocuments.has(designDocName)) {
-          designDocuments.set(designDocName, {});
-        }
-
-        const viewsInDesignDoc = designDocuments.get(designDocName);
-
-        if (viewsInDesignDoc[viewName] === undefined) {
-          viewsInDesignDoc[viewName] = {};
-        }
-
-        viewsInDesignDoc[viewName][functionType] = content;
-      }
-    );
-
-    // Write all the design documents to the database
-    const promises = [];
-    for (const [designDocName, viewsInDesignDoc] of designDocuments.entries()) {
-      promises.push(
-        this.database.put({
-          '_id': `_design/${designDocName}`,
-          'views': viewsInDesignDoc
-        })
-      );
-    }
-
-    return Promise.all(promises);
+    return viewService.installDesignDocuments('task-id-not-relevant-as-context-is-mocked');
   }
 
   /**
