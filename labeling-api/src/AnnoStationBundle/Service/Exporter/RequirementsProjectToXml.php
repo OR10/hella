@@ -255,7 +255,7 @@ class RequirementsProjectToXml
                         $xmlVideo->addThing($thing);
                     }
 
-                    $xmlVideo->addFrame($this->getLabeledFrameElement($task, $labelingTaskFacade, $xml->getDocument()));
+                    $xmlVideo->setFrame($this->getLabeledFrameElement($task, $labelingTaskFacade, $xml->getDocument()));
                 }
                 $xml->appendChild($xmlVideo->getElement($xml->getDocument()));
                 $taskConfiguration = reset($taskConfigurations);

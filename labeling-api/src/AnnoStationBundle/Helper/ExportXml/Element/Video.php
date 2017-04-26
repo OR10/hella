@@ -76,7 +76,7 @@ class Video extends ExportXml\Element
     /**
      * @param Video\FrameLabeling $frame
      */
-    public function addFrame(Video\FrameLabeling $frame)
+    public function setFrame(Video\FrameLabeling $frame)
     {
         $this->frame = $frame;
     }
