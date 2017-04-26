@@ -58,7 +58,7 @@ class LabeledFrameEndCalculationService
     {
         $task = $this->labelingTaskFacade->find($labeledFrame->getTaskId());
 
-        return $this->findEnd($task, $labeledFrame->getFrameIndex() + 1, $class);
+        return $this->findEnd($task, $labeledFrame->getFrameIndex(), $class);
     }
 
     /**
@@ -91,7 +91,7 @@ class LabeledFrameEndCalculationService
         }
 
         if (in_array($class, $nextLabeledFrame->getClasses())) {
-            return $this->findEnd($task, $nextLabeledFrame->getFrameIndex() + 1, $class);
+            return $this->findEnd($task, $nextLabeledFrame->getFrameIndex(), $class);
         }
 
         return $nextLabeledFrame->getFrameIndex() - 1;

@@ -69,7 +69,7 @@ class LabeledFrame
         $result = $this->documentManager
             ->createQuery('annostation_labeled_frame', 'by_taskId_frameIndex')
             ->onlyDocs(true)
-            ->setStartKey([$labelingTask->getId(), $start])
+            ->setStartKey([$labelingTask->getId(), $start + 1])
             ->setEndKey([$labelingTask->getId(), '*'])
             ->setLimit(1)
             ->setDescending(false)
