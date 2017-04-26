@@ -204,7 +204,7 @@ class PouchDbLabeledThingGateway {
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThing',
-      () => db.query(this._pouchDbViewService.get('labeledThingIncomplete'), {
+      () => db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingIncomplete'), {
         include_docs: false,
         key: [taskId, true],
       })
@@ -223,7 +223,7 @@ class PouchDbLabeledThingGateway {
   _getAssociatedLabeledThingsInFrames(task, labeledThing) {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return dbContext.query(this._pouchDbViewService.get('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
+    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
       include_docs: true,
       startkey: [labeledThing.id, 0],
       endkey: [labeledThing.id, {}],

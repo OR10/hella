@@ -289,4 +289,19 @@ class User extends BaseUser
     {
         $this->couchDbPassword = $couchDbPassword;
     }
+
+    /**
+     * @param string $key
+     * @param string $default
+     *
+     * @return string
+     */
+    public function getSetting(string $key, $default = null)
+    {
+        if (isset($this->settings[$key])) {
+            return $this->settings[$key];
+        } else {
+            return $default;
+        }
+    }
 }

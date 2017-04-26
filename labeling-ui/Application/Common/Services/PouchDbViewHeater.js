@@ -42,7 +42,7 @@ class PouchDbViewHeater {
 
   /**
    * Heats multiple views in the database
-   *L
+   *
    * @param {object} context
    * @param {Array} viewNames
    */
@@ -89,12 +89,13 @@ class PouchDbViewHeater {
           return;
         }
         const document = row.doc;
-        this._logger.groupStart('pouchdb:viewHeater', `Heating ${documentName}`);
         promises.push(this.heatAllViewsForDesignDocument(context, document));
       });
 
       return this._$q.all(promises)
-        .then(() => this._logger.groupEnd('pouchdb:viewHeater'));
+        .then(() => {
+          this._logger.groupEnd('pouchdb:viewHeater');
+        });
     });
   }
 
