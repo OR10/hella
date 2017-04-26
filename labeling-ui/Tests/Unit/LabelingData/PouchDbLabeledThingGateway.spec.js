@@ -5,6 +5,7 @@ import {module, inject} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 import LabelingData from 'Application/LabelingData/LabelingData';
 
+import PouchDbViewService from 'Application/Common/Services/PouchDbViewService';
 import PouchDbHelper from 'Tests/Support/PouchDb/PouchDbHelper';
 
 import PouchDbLabeledThingGateway from 'Application/LabelingData/Gateways/PouchDbLabeledThingGateway';
@@ -45,12 +46,6 @@ describe('PouchDbLabeledThingGateway', () => {
    * @type {Object}
    */
   let labeledThingPouchDbModel;
-
-  beforeEach(() => {
-    // PouchDB updates the incomplete status after saving
-    labeledThingPouchDbModel = angular.copy(labeledThingCouchDbModel);
-    labeledThingPouchDbModel.incomplete = true;
-  });
 
   beforeEach(done => {
     const featureFlags = {
@@ -97,6 +92,12 @@ describe('PouchDbLabeledThingGateway', () => {
         });
       })
       .then(() => done());
+  });
+
+  beforeEach(() => {
+    // PouchDB updates the incomplete status after saving
+    labeledThingPouchDbModel = angular.copy(labeledThingCouchDbModel);
+    labeledThingPouchDbModel.incomplete = true;
   });
 
   it('should receive a labeled thing by id', done => {
