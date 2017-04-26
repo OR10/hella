@@ -196,7 +196,7 @@ class TaskDatabaseValidateDocUpdateDocumentServiceTest extends Tests\KernelTestC
             ]
         );
 
-        $this->assertEquals(403, $request->getStatusCode());
+        $this->assertEquals(401, $request->getStatusCode());
     }
 
     public function tearDownImplementation()
