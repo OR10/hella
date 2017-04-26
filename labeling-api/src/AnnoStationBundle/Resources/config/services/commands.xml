@@ -245,6 +245,11 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.rebuild_all_security_permissions"
+                 class="AnnoStationBundle\Command\RebuildAllSecurityPermissions">
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
 

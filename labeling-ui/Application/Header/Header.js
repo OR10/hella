@@ -10,6 +10,8 @@ import TimerGateway from './Gateways/TimerGateway';
 import PouchDbTimerGateway from './Gateways/PouchDbTimerGateway';
 import LiveSyncIndicatorDirective from './Directives/LiveSyncIndicatorDirective';
 
+import LiveSyncIndicatorService from './Services/LiveSyncIndicatorService';
+
 /**
  * Module containing all functionality related to the header bar
  *
@@ -22,6 +24,7 @@ class Header extends Module {
   registerWithAngular(angular, featureFlags) {
     this.module = angular.module('AnnoStation.Header', []);
 
+    this.module.service('liveSyncIndicatorService', LiveSyncIndicatorService);
 
     if (featureFlags.pouchdb === true) {
       this.module.service('timerGateway', PouchDbTimerGateway);
