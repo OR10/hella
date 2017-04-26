@@ -15,6 +15,7 @@ class FrontendInterpolation {
 
   /**
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {angular.$q} $q
    */
   constructor(labeledThingInFrameGateway, $q) {
     /**
@@ -24,7 +25,7 @@ class FrontendInterpolation {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
-     * @type {AngularQ}
+     * @type {angular.$q}
      * @private
      */
     this._$q = $q;
