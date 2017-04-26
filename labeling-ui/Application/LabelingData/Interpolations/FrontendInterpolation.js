@@ -1,6 +1,8 @@
+import angular from 'angular';
 import uuid from 'uuid';
 import {clone} from 'lodash';
-import {Vector3} from 'three-math';
+import Cuboid3d from '../../ThirdDimension/Models/Cuboid3d';
+import {Vector4} from 'three-math';
 
 /**
  * Interpolation base class, for all {@link Interpolation}s, which are executed on the backend
@@ -63,7 +65,7 @@ class FrontendInterpolation {
 
       const savePromises = [];
 
-      labeledThingInFrameIndices.forEach((currentLtifIndex, ltifIndicesIndex ) => {
+      labeledThingInFrameIndices.forEach((currentLtifIndex, ltifIndicesIndex) => {
         if (labeledThingInFrameIndices[ltifIndicesIndex + 1 ] !== undefined) {
           const endLtif = labeledThingInFrames[ltifIndicesIndex + 1];
           const endLtifIndex = labeledThingInFrameIndices[ltifIndicesIndex + 1];
@@ -205,17 +207,19 @@ class FrontendInterpolation {
   _interpolateCuboid3d(ltifGhost, endLtif, delta) {
     const newCuboid3d = [];
     const currentCuboid = this._getCuboidFromRect(clone(ltifGhost.shapes[0]), clone(endLtif.shapes[0]));
-    const endCuboid = this._getCuboidFromRect(clone(endLtif.shapes[0]), clone(ltifGhost.shapes[0]));
+    const endCuboid = this._getCuboidFromRect(clone(endLtif.shapes[0]), currentCuboid);
 
-    for (let index = 0; index <= 7; index++) {
+    const steps = [...Array(7).keys()];
+    steps.forEach(index => {
       const newCoordinates = this._cuboid3dCalculateNewVertex(
           currentCuboid.vehicleCoordinates[index],
           endCuboid.vehicleCoordinates[index],
           delta
       );
       newCuboid3d.push(newCoordinates);
-    }
-    currentCuboid.vehicleCoordinates = newCuboid3d;
+    });
+
+    ltifGhost.shapes[0].vehicleCoordinates = newCuboid3d;
 
     const transformedGhost = this._transformGhostToLabeledThing(ltifGhost);
     return this._saveLabeledThingInFrame(transformedGhost);
@@ -228,8 +232,7 @@ class FrontendInterpolation {
     const numberOfEndInvisibleVertices = endCuboid.vehicleCoordinates.filter(vertex => {
       return vertex !== null;
     });
-    console.log(numberOfCurrentInvisibleVertices);
-    console.log(numberOfEndInvisibleVertices);
+
     if (numberOfCurrentInvisibleVertices.length === 0 ||
         (numberOfCurrentInvisibleVertices.length === 4 && numberOfEndInvisibleVertices.length === 4)) {
       return currentCuboid;
@@ -301,63 +304,60 @@ class FrontendInterpolation {
       default:
         throw new Error('Something went wrong with 3D Cuboid that seems to be a 2D object');
     }
-    
-    //return this.filter(function(i) {return a.indexOf(i) < 0;});
-    console.log(currentCuboid.vehicleCoordinates);
-    console.log(oppositeVertex.normal[0][0]);
-   
-    const plainVector1 = currentCuboid.vehicleCoordinates[oppositeVertex.normal[0][0]].filter(index => {
-      return currentCuboid.vehicleCoordinates[oppositeVertex.normal[0][0]].indexOf(index) < 0;
-    });
-    
-    const plainVector2 = currentCuboid.vehicleCoordinates[oppositeVertex.normal[1][0]].filter(index => {
-      return currentCuboid.vehicleCoordinates[oppositeVertex.normal[1][1]].indexOf(index) < 0;
-    });
-    /**
-    console.log(plainVector1);
-    console.log(plainVector2);
-    // need to get cross product
-    // const v1 = new Vector3(plainVector1);
-    // const v2 = new Vector3(plainVector2);
-     const normalVector = v1.cross(v2);
-    
-    // get distance
-    
-    // const endDistanceKey = endCuboid.vehicleCoordinates[Object.keys(oppositeVertex)[0]];
-    // const endDistanceValues = endCuboid.vehicleCoordinates[Object.values(oppositeVertex)[0]];
-    
-    // const distance = new Vector3()
-    
-    //get distance vector
-    
-    // const distanceVector = normalVector.divide(normalVector.length()).multiply(distance);
-    
-    // console.log(endDistanceKey);
-    // console.log(endDistanceValues);
-    
-    const newVertices = {
-      'id': currentCuboid.id,
-      'type': currentCuboid.type,
-      'vehicleCoordinates': []
-    };
-    
-    oppositeVertex.forEach(sourceVertexIndex, targetVertexIndex => {
-      if (targetVertexIndex === 'normal'){
-      
-      }
-      let sourceVertex = currentCuboid.vehicleCoordinates[sourceVertexIndex];
-      //newVertices.vehicleCoordinates[sourceVertex] = sourceVertex.add(distanceVector);
-    });
-    new Array(7).forEach(index => {
-      if (typeof newVertices.vehicleCoordinates[index] === 'undefined'){
-        newVertices.vehicleCoordinates[index] = currentCuboid.vehicleCoordinates[index];
+
+    const currentCuboid3d = Cuboid3d.createFromRawVertices(currentCuboid.vehicleCoordinates);
+    const endCuboid3d = Cuboid3d.createFromRawVertices(endCuboid.vehicleCoordinates);
+
+    const plainVector1 = currentCuboid3d.vertices[oppositeVertex.normal[0][0]]
+        .sub(currentCuboid3d.vertices[oppositeVertex.normal[0][1]]);
+
+    const plainVector2 = currentCuboid3d.vertices[oppositeVertex.normal[1][0]]
+        .sub(currentCuboid3d.vertices[oppositeVertex.normal[1][1]]);
+
+    const normalVector = this._crossProduct(plainVector1, plainVector2);
+
+    const distance = this._distanceTo(endCuboid3d.vertices[Object.keys(oppositeVertex)[0]], endCuboid3d.vertices[Object.keys(oppositeVertex)[0]]);
+
+    const distanceVector = normalVector.divideScalar(normalVector.length()).multiplyScalar(distance);
+
+    const newVehicleCoordinates = [];
+    angular.forEach(oppositeVertex, (sourceVertexIndex, targetVertexIndex) => {
+      if (targetVertexIndex !== 'normal') {
+        const sourceVertex = currentCuboid3d.vertices[sourceVertexIndex];
+        newVehicleCoordinates[targetVertexIndex] = sourceVertex.add(distanceVector).toArray();
       }
     });
-    */
-    //return newVertices;
-    
-    
-    //console.log(normalVector);
+
+    const steps = [...Array(7).keys()];
+    steps.forEach(index => {
+      if (typeof newVehicleCoordinates[index] === undefined) {
+        newVehicleCoordinates[index] = currentCuboid3d.vertices[index].toArray();
+      }
+    });
+
+    const cuboid = clone(currentCuboid);
+    cuboid.vehicleCoordinates = newVehicleCoordinates;
+    return cuboid;
+  }
+
+  /**
+   * @param {THREE.Vector4} v1
+   * @param {THREE.Vector4} v2
+   * @returns {THREE.Vector4}
+   * @private
+   */
+  _crossProduct(v1, v2) {
+    return new Vector4((v1.y * v2.z) - (v1.z * v2.y), (v1.z * v2.x) - (v1.x * v2.z), (v1.x * v2.y) - (v1.y * v2.x), 1);
+  }
+
+  /**
+   * @param {THREE.Vector4} v1
+   * @param {THREE.Vector4} v2
+   * @returns {THREE.Vector4}
+   * @private
+   */
+  _distanceTo(v1, v2) {
+    return Math.sqrt(Math.pow(v1.x - v2.x, 2) + Math.pow(v1.y - v2.y, 2) + Math.pow(v1.z - v2.z, 2));
   }
 
   /**
@@ -368,6 +368,12 @@ class FrontendInterpolation {
    * @private
    */
   _cuboid3dCalculateNewVertex(currentVertex, endVertex, delta) {
+    if (currentVertex === undefined && endVertex === null) {
+      return null;
+    }
+    if (endVertex === undefined && currentVertex === null) {
+      return null;
+    }
     if (currentVertex === null && endVertex === null) {
       return null;
     }
