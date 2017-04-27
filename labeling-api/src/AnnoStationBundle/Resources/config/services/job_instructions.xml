@@ -80,5 +80,12 @@
             <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.labeling_task_remove_assignment"
+                 class="AnnoStationBundle\Worker\JobInstruction\LabelingTaskRemoveAssignment">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
     </services>
 </container>
