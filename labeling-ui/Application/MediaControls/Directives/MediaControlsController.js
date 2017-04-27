@@ -142,6 +142,10 @@ class MediaControlsController {
       }
     );
 
+    $rootScope.$on('tool:selected', (event, tool) => {
+      console.log(tool.supportsDefaultShapeCreation);
+    });
+
     this._applicationState.$watch('mediaControls.isDisabled', disabled => this.mediaControlsDisabled = disabled);
 
     this._registerHotkeys();
