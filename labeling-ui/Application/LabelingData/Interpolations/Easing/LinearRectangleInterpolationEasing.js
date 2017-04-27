@@ -30,8 +30,6 @@ class LinearRectangleInterpolationEasing extends InterpolationEasing {
 
     ghost.shapes[0].topLeft = topLeft;
     ghost.shapes[0].bottomRight = bottomRight;
-
-    return ghost;
   }
 
   /**

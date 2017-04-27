@@ -20,6 +20,7 @@ import PouchDbLabeledThingInFrameGateway from './Gateways/PouchDbLabeledThingInF
 import PouchDbLabeledThingGroupGateway from './Gateways/PouchDbLabeledThingGroupGateway';
 import LinearRectangleInterpolationEasing from './Interpolations/Easing/LinearRectangleInterpolationEasing';
 import FrontendInterpolation from './Interpolations/FrontendInterpolation';
+import LinearPedestrianInterpolationEasing from './Interpolations/Easing/LinearPedestrianInterpolationEasing';
 
 
 class LabelingData extends Module {
@@ -40,6 +41,8 @@ class LabelingData extends Module {
 
     this.module.service('frontendInterpolation', FrontendInterpolation);
     this.module.service('linearRectangleInterpolationEasing', LinearRectangleInterpolationEasing);
+    this.module.service('linearPedestrianInterpolationEasing', LinearPedestrianInterpolationEasing);
+    
 
     this.module.service('cacheService', CacheService);
     this.module.service('cacheHeaterService', CacheHeaterService);

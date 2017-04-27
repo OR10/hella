@@ -12,10 +12,10 @@ import {Vector4} from 'three-math';
  */
 
 class FrontendInterpolation {
-
   /**
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {angular.$q} $q
+   * @param {*[]} easings
    */
   constructor(labeledThingInFrameGateway, $q, ...easings) {
     /**
@@ -387,7 +387,7 @@ class FrontendInterpolation {
 FrontendInterpolation.$inject = [
   'labeledThingInFrameGateway',
   '$q',
-  'linearRectangleInterpolationEasing'
+  'linearRectangleInterpolationEasing', 'linearPedestrianInterpolationEasing',
 ];
 
 export default FrontendInterpolation;
