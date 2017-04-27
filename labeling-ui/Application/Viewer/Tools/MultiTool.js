@@ -95,7 +95,7 @@ class MultiTool extends PaperTool {
 
     const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
     const tool = this._getToolForRequirementsShape(requirementsShape);
-    this._$rootScope.$emit('tool:selected', tool);
+    this._$rootScope.$emit('tool:selected:supportsDefaultShapeCreation', tool.supportsDefaultShapeCreation);
 
     if (selectedPaperShape !== null) {
       const keyboardTool = this._toolService.getTool(this._context, requirementsShape, 'keyboard');
