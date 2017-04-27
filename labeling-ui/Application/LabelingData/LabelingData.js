@@ -42,7 +42,7 @@ class LabelingData extends Module {
     this.module.service('frontendInterpolation', FrontendInterpolation);
     this.module.service('linearRectangleInterpolationEasing', LinearRectangleInterpolationEasing);
     this.module.service('linearPedestrianInterpolationEasing', LinearPedestrianInterpolationEasing);
-    
+    this.module.service('linearPolyInterpolationEasing', LinearPolyInterpolationEasing);
 
     this.module.service('cacheService', CacheService);
     this.module.service('cacheHeaterService', CacheHeaterService);

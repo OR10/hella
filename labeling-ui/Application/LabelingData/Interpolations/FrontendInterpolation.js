@@ -111,51 +111,6 @@ class FrontendInterpolation {
   }
   
 
-  _interpolatePedestrian(ltifGhost, endLtif, delta) {
-    const currentTopCenter = clone(ltifGhost.shapes[0].topCenter);
-    const currentBottomCenter = clone(ltifGhost.shapes[0].bottomCenter);
-    const endTopCenter = clone(endLtif.shapes[0].topCenter);
-    const endBottomCenter = clone(endLtif.shapes[0].bottomCenter);
-
-    const topCenter = {
-      x: currentTopCenter.x + (endTopCenter.x - currentTopCenter.x) * delta,
-      y: currentTopCenter.y + (endTopCenter.y - currentTopCenter.y) * delta,
-    };
-    const bottomCenter = {
-      x: currentBottomCenter.x + (endBottomCenter.x - currentBottomCenter.x) * delta,
-      y: currentBottomCenter.y + (endBottomCenter.y - currentBottomCenter.y) * delta,
-    };
-
-    ltifGhost.shapes[0].topCenter = topCenter;
-    ltifGhost.shapes[0].bottomCenter = bottomCenter;
-
-    const transformedGhost = this._transformGhostToLabeledThing(ltifGhost);
-    return this._saveLabeledThingInFrame(transformedGhost);
-  }
-
-  _interpolatePolygonAndPolyline(ltifGhost, endLtif, delta) {
-    const currentPoints = clone(ltifGhost.shapes[0].points);
-    const endPoints = clone(endLtif.shapes[0].points);
-    const points = [];
-
-    if (currentPoints.length !== endPoints.length) {
-      throw new Error(`Failed to interpolate ${ltifGhost.type} with different points.`);
-    }
-
-    currentPoints.forEach((point, index) => {
-      const newCalculatePoint = {
-        x: point.x + (endPoints[index].x - point.x) * delta,
-        y: point.y + (endPoints[index].y - point.y) * delta,
-      };
-      points.push(newCalculatePoint);
-    });
-
-    ltifGhost.shapes[0].points = points;
-
-    const transformedGhost = this._transformGhostToLabeledThing(ltifGhost);
-    return this._saveLabeledThingInFrame(transformedGhost);
-  }
-
   _interpolatePoint(ltifGhost, endLtif, delta) {
     const currentPoint = clone(ltifGhost.shapes[0].point);
     const endPoint = clone(endLtif.shapes[0].point);
@@ -387,7 +342,9 @@ class FrontendInterpolation {
 FrontendInterpolation.$inject = [
   'labeledThingInFrameGateway',
   '$q',
-  'linearRectangleInterpolationEasing', 'linearPedestrianInterpolationEasing',
+  'linearRectangleInterpolationEasing',
+  'linearPedestrianInterpolationEasing',
+  'linearPolyInterpolationEasing',
 ];
 
 export default FrontendInterpolation;
