@@ -18,7 +18,9 @@ import GhostingService from './Services/GhostingService';
 import PouchDbLabeledThingGateway from './Gateways/PouchDbLabeledThingGateway';
 import PouchDbLabeledThingInFrameGateway from './Gateways/PouchDbLabeledThingInFrameGateway';
 import PouchDbLabeledThingGroupGateway from './Gateways/PouchDbLabeledThingGroupGateway';
-import LinearFrontendInterpolation from './Interpolations/LinearFrontendInterpolation';
+import LinearRectangleInterpolationEasing from './Interpolations/Easing/LinearRectangleInterpolationEasing';
+import FrontendInterpolation from './Interpolations/FrontendInterpolation';
+
 
 class LabelingData extends Module {
   /**
@@ -35,7 +37,9 @@ class LabelingData extends Module {
 
     this.module.service('interpolationService', InterpolationService);
     this.module.service('linearBackendInterpolation', LinearBackendInterpolation);
-    this.module.service('linearFrontendInterpolation', LinearFrontendInterpolation);
+
+    this.module.service('frontendInterpolation', FrontendInterpolation);
+    this.module.service('linearRectangleInterpolationEasing', LinearRectangleInterpolationEasing);
 
     this.module.service('cacheService', CacheService);
     this.module.service('cacheHeaterService', CacheHeaterService);

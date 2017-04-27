@@ -17,7 +17,7 @@ class FrontendInterpolation {
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {angular.$q} $q
    */
-  constructor(labeledThingInFrameGateway, $q) {
+  constructor(labeledThingInFrameGateway, $q, ...easings) {
     /**
      * @type {LabeledThingInFrameGateway}
      * @private
@@ -29,6 +29,12 @@ class FrontendInterpolation {
      * @private
      */
     this._$q = $q;
+  
+    /**
+     * @type {*[]}
+     * @private
+     */
+    this._easings = easings;
   }
 
   /**
@@ -67,82 +73,43 @@ class FrontendInterpolation {
       const savePromises = [];
       labeledThingInFrameIndices.forEach((currentLtifIndex, ltifIndicesIndex) => {
         if (labeledThingInFrameIndices[ltifIndicesIndex + 1 ] !== undefined) {
+          const startLtif = labeledThingInFrames[ltifIndicesIndex];
           const endLtif = labeledThingInFrames[ltifIndicesIndex + 1];
           const endLtifIndex = labeledThingInFrameIndices[ltifIndicesIndex + 1];
+
           const steps = [];
           for (let index = 1; index < (endLtifIndex - currentLtifIndex); index++) {
             steps.push(index);
           }
+
+          const easing = this._getEasingForShapeAndType(startLtif);
+
           steps.forEach(step => {
             const currentGhost = labeledThingInFramesWithGhosts[step];
             const delta = step / (steps.length + 1);
-            savePromises.push(this._interpolateShape(currentGhost, endLtif, delta));
+
+            easing.step(currentGhost, startLtif, endLtif, delta);
+
+            const transformedGhost = this._transformGhostToLabeledThing(currentGhost);
+            savePromises.push(this._saveLabeledThingInFrame(transformedGhost));
           });
         }
       });
       return this._$q.all(savePromises);
     });
   }
-
+  
   /**
-   *
-   * @param {LabeledThingInFrame} ghost
-   * @param {LabeledThingInFrame} endLtif
-   * @param {Float} delta
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {String} easingType
    * @returns {*}
    * @private
    */
-  _interpolateShape(ghost, endLtif, delta) {
-    switch (ghost.shapes[0].type) {
-      case 'rectangle':
-        return this._interpolateRectangle(ghost, endLtif, delta);
-        /*
-      case 'ellipse':
-        this._interpolateEllipse(ghost, endLtif, delta);
-        break;
-         */
-      case 'pedestrian':
-        return this._interpolatePedestrian(ghost, endLtif, delta);
-      case 'cuboid3d':
-        return this._interpolateCuboid3d(ghost, endLtif, delta);
-      case 'polygon':
-        return this._interpolatePolygonAndPolyline(ghost, endLtif, delta);
-      case 'polyline':
-        return this._interpolatePolygonAndPolyline(ghost, endLtif, delta);
-      case 'point':
-        return this._interpolatePoint(ghost, endLtif, delta);
-      default:
-        throw new Error(`Unknown shape type ${ghost.shapes[0].type}`);
-    }
+  _getEasingForShapeAndType(labeledThingInFrame, easingType = 'linear') {
+    const shape = labeledThingInFrame.shapes[0].type;
+    return this._easings.find(easing => easing.supportsShape(shape) && easing.supportsEasing(easingType));
   }
-
-  _interpolateRectangle(ltifGhost, endLtif, delta) {
-    const currentTopLeft = clone(ltifGhost.shapes[0].topLeft);
-    const currentBottomRight = clone(ltifGhost.shapes[0].bottomRight);
-    const endTopLeft = clone(endLtif.shapes[0].topLeft);
-    const endBottomRight = clone(endLtif.shapes[0].bottomRight);
-
-    const topLeft = {
-      x: currentTopLeft.x + (endTopLeft.x - currentTopLeft.x) * delta,
-      y: currentTopLeft.y + (endTopLeft.y - currentTopLeft.y) * delta,
-    };
-    const bottomRight = {
-      x: currentBottomRight.x + (endBottomRight.x - currentBottomRight.x) * delta,
-      y: currentBottomRight.y + (endBottomRight.y - currentBottomRight.y) * delta,
-    };
-
-    ltifGhost.shapes[0].topLeft = topLeft;
-    ltifGhost.shapes[0].bottomRight = bottomRight;
-
-    const transformedGhost = this._transformGhostToLabeledThing(ltifGhost);
-    return this._saveLabeledThingInFrame(transformedGhost);
-  }
-
-  /*
-  _interpolateEllipse(labeledThingInFrame, currentShape, endShape, step) {
-
-  }
-  */
+  
 
   _interpolatePedestrian(ltifGhost, endLtif, delta) {
     const currentTopCenter = clone(ltifGhost.shapes[0].topCenter);
@@ -420,6 +387,7 @@ class FrontendInterpolation {
 FrontendInterpolation.$inject = [
   'labeledThingInFrameGateway',
   '$q',
+  'linearRectangleInterpolationEasing'
 ];
 
 export default FrontendInterpolation;

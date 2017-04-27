@@ -12,7 +12,7 @@ class InterpolationService {
    * @param {PouchDbContextService} pouchDbContextService
    * @param {Array.<Interpolation>} interpolations
    */
-  constructor($q, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, ...interpolations) {
+  constructor($q, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, frontEndInterpolation) {
     /**
      * @type {$q}
      * @private
@@ -67,12 +67,14 @@ class InterpolationService {
      *
      * @type {Map.<string, Interpolation>}
      * @private
-     */
+     
     this._interpolations = new Map();
     interpolations.forEach(interpolation => this._interpolations.set(interpolation.id, interpolation));
     if (interpolations.length > 0) {
       this.setDefaultInterpolation(interpolations[0].id);
     }
+     */
+    this._frontEndInterpolation = frontEndInterpolation;
   }
 
   /**
@@ -97,10 +99,12 @@ class InterpolationService {
    * @return {Promise.<*>}
    */
   interpolate(id, task, labeledThing, frameRange = null) {
+    /*
     if (!this._interpolations.has(id)) {
       throw new Error(`Interpolation with id '${id}' is not currently registered on the InterpolationService.`);
     }
     const interpolation = this._interpolations.get(id);
+    */
     let interpolationFrameRange = frameRange;
     if (!frameRange) {
       interpolationFrameRange = labeledThing.frameRange;
@@ -115,20 +119,20 @@ class InterpolationService {
           return this._pouchDbSyncManager.pushUpdatesForContext(pouchDBContext);
         })
         .then(() => {
-          return interpolation.execute(task, labeledThing, interpolationFrameRange);
+          return this._frontEndInterpolation.execute(task, labeledThing, interpolationFrameRange);
         })
         .then(() => {
           return this._pouchDbSyncManager.pullUpdatesForContext(pouchDBContext);
         })
         .then(() => {
-          this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolation.endFrameIndex);
+          this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex);
           return this._pouchDbSyncManager.startDuplexLiveReplication(pouchDBContext);
         });
     }
     return interpolation
       .execute(task, labeledThing, interpolationFrameRange)
       .then(result => {
-        this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolation.endFrameIndex);
+        this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex);
         return result;
       });
   }
@@ -192,7 +196,7 @@ InterpolationService.$inject = [
   'pouchDbSyncManager',
   'pouchDbContextService',
   // All Interpolations listed here will be auto registered.
-  'linearFrontendInterpolation',
+  'frontendInterpolation',
 ];
 
 export default InterpolationService;
