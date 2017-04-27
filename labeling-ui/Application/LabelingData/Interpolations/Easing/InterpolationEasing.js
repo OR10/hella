@@ -1,5 +1,6 @@
 /**
- * Abstract class InterpolationEasing
+ * InterpolationEasing
+ * @abstract
  */
 class InterpolationEasing {
   /**

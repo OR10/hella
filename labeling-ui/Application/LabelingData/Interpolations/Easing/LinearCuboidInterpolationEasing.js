@@ -6,7 +6,7 @@ import Cuboid3d from '../../../ThirdDimension/Models/Cuboid3d';
 
 /**
  * LinearCuboidInterpolationEasing
- * extends InterpolationEasing
+ * @extends InterpolationEasing
  */
 class LinearCuboidInterpolationEasing extends InterpolationEasing {
   /**
@@ -34,6 +34,12 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     ghost.shapes[0].vehicleCoordinates = newCuboid3d;
   }
 
+  /**
+   * @param {LabeledThingInFrame} currentCuboid
+   * @param {LabeledThingInFrame} endCuboid
+   * @returns {LabeledThingInFrame}
+   * @private
+   */
   _getCuboidFromRect(currentCuboid, endCuboid) {
     const numberOfCurrentInvisibleVertices = currentCuboid.vehicleCoordinates.filter(vertex => {
       return vertex !== null;

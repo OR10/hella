@@ -3,7 +3,7 @@ import {clone} from 'lodash';
 
 /**
  * LinearPedestrianInterpolationEasing
- * extends InterpolationEasing
+ * @extends InterpolationEasing
  */
 class LinearPedestrianInterpolationEasing extends InterpolationEasing {
   /**

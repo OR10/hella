@@ -10,9 +10,9 @@ class InterpolationService {
    * @param {Object} featureFlags
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
-   * @param {Array.<Interpolation>} frontEndInterpolation
+   * @param {Array.<Interpolation>} interpolation
    */
-  constructor($q, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, frontEndInterpolation) {
+  constructor($q, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, interpolation) {
     /**
      * @type {$q}
      * @private
@@ -67,7 +67,7 @@ class InterpolationService {
      * @type {Array.<Interpolation>}
      * @private
      */
-    this._frontEndInterpolation = frontEndInterpolation;
+    this._interpolation = interpolation;
   }
 
   /**
@@ -105,7 +105,7 @@ class InterpolationService {
           return this._pouchDbSyncManager.pushUpdatesForContext(pouchDBContext);
         })
         .then(() => {
-          return this._frontEndInterpolation.execute(task, labeledThing, interpolationFrameRange);
+          return this._interpolation.execute(task, labeledThing, interpolationFrameRange);
         })
         .then(() => {
           return this._pouchDbSyncManager.pullUpdatesForContext(pouchDBContext);
@@ -115,7 +115,7 @@ class InterpolationService {
           return this._pouchDbSyncManager.startDuplexLiveReplication(pouchDBContext);
         });
     }
-    return this._frontEndInterpolation
+    return this._interpolation
       .execute(task, labeledThing, interpolationFrameRange)
       .then(result => {
         this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex);
