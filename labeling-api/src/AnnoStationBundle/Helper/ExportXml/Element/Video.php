@@ -27,6 +27,11 @@ class Video extends ExportXml\Element
      */
     private $namespace;
 
+    /**
+     * @var Video\FrameLabeling
+     */
+    private $frame;
+
     public function __construct(Model\Video $video, $namespace)
     {
         $this->video     = $video;
@@ -55,6 +60,7 @@ class Video extends ExportXml\Element
         foreach ($this->things as $thing) {
             $video->appendChild($thing->getElement($document));
         }
+        $video->appendChild($this->frame->getElement($document));
 
         return $video;
     }
@@ -65,6 +71,14 @@ class Video extends ExportXml\Element
     public function addThing(Video\Thing $thing)
     {
         $this->things[] = $thing;
+    }
+
+    /**
+     * @param Video\FrameLabeling $frame
+     */
+    public function setFrame(Video\FrameLabeling $frame)
+    {
+        $this->frame = $frame;
     }
 
     /**

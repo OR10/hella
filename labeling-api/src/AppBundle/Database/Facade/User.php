@@ -182,6 +182,16 @@ class User
     }
 
     /**
+     * @param string $username
+     *
+     * @return Model\User|FosUserModel\UserInterface
+     */
+    public function getUserByUsername(string $username)
+    {
+        return $this->userManager->findUserByUsername($username);
+    }
+
+    /**
      * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return Model\User[]
