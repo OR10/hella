@@ -9,7 +9,7 @@ class InterpolationEasing {
    * @param {Float} delta
    * @abstract
    */
-  step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
+  step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta) { // eslint-disable-line no-unused-vars
     throw new Error('step is abstract. Override in implementing class!');
   }
 
@@ -17,7 +17,7 @@ class InterpolationEasing {
    * @param {String} easing
    * @abstract
    */
-  supportsEasing(easing) {
+  supportsEasing(easing) { // eslint-disable-line no-unused-vars
     throw new Error('supportsType is abstract. Override in implementing class!');
   }
 
@@ -25,7 +25,7 @@ class InterpolationEasing {
    * @param {String} shape
    * @abstract
    */
-  supportsShape(shape) {
+  supportsShape(shape) { // eslint-disable-line no-unused-vars
     throw new Error('supportsShape is abstract. Override in implementing class!');
   }
 }

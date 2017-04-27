@@ -10,7 +10,7 @@ class InterpolationService {
    * @param {Object} featureFlags
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
-   * @param {Array.<Interpolation>} interpolations
+   * @param {Array.<Interpolation>} frontEndInterpolation
    */
   constructor($q, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, frontEndInterpolation) {
     /**
@@ -63,16 +63,9 @@ class InterpolationService {
     this._pouchDbContextService = pouchDbContextService;
 
     /**
-     * All registered Interpolations
      *
-     * @type {Map.<string, Interpolation>}
+     * @type {Array.<Interpolation>}
      * @private
-     
-    this._interpolations = new Map();
-    interpolations.forEach(interpolation => this._interpolations.set(interpolation.id, interpolation));
-    if (interpolations.length > 0) {
-      this.setDefaultInterpolation(interpolations[0].id);
-    }
      */
     this._frontEndInterpolation = frontEndInterpolation;
   }
@@ -92,19 +85,12 @@ class InterpolationService {
    *
    * Regarding the chosen {@link Interpolation} the operation may take some time.
    *
-   * @param {string} id
    * @param {Task} task
    * @param {LabeledThing} labeledThing
    * @param {FrameRange} frameRange
    * @return {Promise.<*>}
    */
-  interpolate(id, task, labeledThing, frameRange = null) {
-    /*
-    if (!this._interpolations.has(id)) {
-      throw new Error(`Interpolation with id '${id}' is not currently registered on the InterpolationService.`);
-    }
-    const interpolation = this._interpolations.get(id);
-    */
+  interpolate(task, labeledThing, frameRange = null) {
     let interpolationFrameRange = frameRange;
     if (!frameRange) {
       interpolationFrameRange = labeledThing.frameRange;
@@ -129,7 +115,7 @@ class InterpolationService {
           return this._pouchDbSyncManager.startDuplexLiveReplication(pouchDBContext);
         });
     }
-    return interpolation
+    return this._frontEndInterpolation
       .execute(task, labeledThing, interpolationFrameRange)
       .then(result => {
         this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex);
@@ -168,23 +154,6 @@ class InterpolationService {
       }
     }
   }
-
-  /**
-   * Set a default interpolation, gets the special 'default' id
-   *
-   * @param {string} id
-   * @returns {Interpolation}
-   */
-  setDefaultInterpolation(id) {
-    if (!this._interpolations.has(id)) {
-      throw new Error(`Interpolation with id '${id}' is not currently registered on the InterpolationService.`);
-    }
-
-    const defaultInterpolation = this._interpolations.get(id);
-    this._interpolations.set('default', defaultInterpolation);
-
-    return defaultInterpolation;
-  }
 }
 
 InterpolationService.$inject = [
@@ -195,7 +164,7 @@ InterpolationService.$inject = [
   'featureFlags',
   'pouchDbSyncManager',
   'pouchDbContextService',
-  // All Interpolations listed here will be auto registered.
+  // You can choose between frontend or backend interpolation by changing this service
   'frontendInterpolation',
 ];
 
