@@ -131,6 +131,11 @@ class MediaControlsController {
 
     this.fpsInputVisible = false;
 
+    /**
+     * @type {boolean}
+     */
+    this.currentToolSupportsDefaultShapeCreation = true;
+
     // Disable Zoom Tool if the panel is closed
     $scope.$watchGroup(
       ['vm.popupPanelState', 'vm.popupPanelOpen'], ([newState, newOpen], [oldState]) => {
@@ -142,9 +147,26 @@ class MediaControlsController {
       }
     );
 
+    $rootScope.$on('tool:selected:supportsDefaultShapeCreation', (event, supportsDefaultShapeCreation) => {
+      this.currentToolSupportsDefaultShapeCreation = supportsDefaultShapeCreation;
+    });
+
     this._applicationState.$watch('mediaControls.isDisabled', disabled => this.mediaControlsDisabled = disabled);
 
     this._registerHotkeys();
+  }
+
+  /**
+   * Whether to show the default shape creation tool or not
+   *
+   * @returns {boolean}
+   */
+  showDefaultShapeCreationButton() {
+    if (this.readOnly) {
+      return false;
+    }
+
+    return this.currentToolSupportsDefaultShapeCreation;
   }
 
   /**
