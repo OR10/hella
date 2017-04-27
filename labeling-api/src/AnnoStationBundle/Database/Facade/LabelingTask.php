@@ -731,4 +731,23 @@ class LabelingTask
 
         return 0;
     }
+
+    /**
+     * @param Model\Project $project
+     * @param Model\User    $user
+     *
+     * @return array
+     */
+    public function getTaskIdsForAssignedUserForProject(Model\Project $project, Model\User $user)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_labeling_task_by_assigned_user_001', 'view')
+            ->setKey([$project->getId(), $user->getId()]);
+
+        $result = $query->execute()->toArray();
+
+        return array_map(function($result) {
+            return $result['value'];
+        }, $result);
+    }
 }
