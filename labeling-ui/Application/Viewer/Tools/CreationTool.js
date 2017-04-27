@@ -47,7 +47,7 @@ class CreationTool extends PaperTool {
    *
    * @returns {boolean}
    */
-  get supportsDefaultCreation() {
+  get supportsDefaultShapeCreation() {
     return true;
   }
 }
