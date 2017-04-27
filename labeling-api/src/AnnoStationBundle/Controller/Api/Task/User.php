@@ -41,24 +41,24 @@ class User extends Controller\Base
     /**
      * @var Service\TaskDatabaseSecurityPermissionService
      */
-    private $databaseSecurityPermissionService;
+    private $taskDatabaseSecurityPermissionService;
 
     /**
      * @param Facade\LabelingTask                           $labelingTaskFacade
      * @param Storage\TokenStorageInterface                 $tokenStorage
      * @param Authentication\UserPermissions                $userPermissions
-     * @param Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
+     * @param Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Storage\TokenStorageInterface $tokenStorage,
         Authentication\UserPermissions $userPermissions,
-        Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
+        Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService
     ) {
-        $this->labelingTaskFacade                = $labelingTaskFacade;
-        $this->tokenStorage                      = $tokenStorage;
-        $this->userPermissions                   = $userPermissions;
-        $this->databaseSecurityPermissionService = $databaseSecurityPermissionService;
+        $this->labelingTaskFacade                    = $labelingTaskFacade;
+        $this->tokenStorage                          = $tokenStorage;
+        $this->userPermissions                       = $userPermissions;
+        $this->taskDatabaseSecurityPermissionService = $taskDatabaseSecurityPermissionService;
     }
 
     /**
@@ -75,7 +75,7 @@ class User extends Controller\Base
 
         $this->labelingTaskFacade->save($task);
 
-        $this->databaseSecurityPermissionService->updateForTask($task);
+        $this->taskDatabaseSecurityPermissionService->updateForTask($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
@@ -99,7 +99,7 @@ class User extends Controller\Base
 
         $this->labelingTaskFacade->save($task);
 
-        $this->databaseSecurityPermissionService->updateForTask($task);
+        $this->taskDatabaseSecurityPermissionService->updateForTask($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
