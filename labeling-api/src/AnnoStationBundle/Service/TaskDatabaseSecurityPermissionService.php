@@ -96,15 +96,16 @@ class TaskDatabaseSecurityPermissionService
             sprintf('%s%s', UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $organisation->getId()),
         ];
 
-        $memberNames = array_merge(
-            $memberNames,
-            $this->getCoordinatorUsernames($project)
-        );
-
         $memberRoles = array_merge(
             $this->getLabelingGroupRole($project),
             $memberRoles
         );
+
+        $memberRoles = array_merge(
+            $this->getCoordinatorRoles($project),
+            $memberRoles
+        );
+        sort($memberRoles);
 
         $this->couchDbSecurity->updateSecurity(
             sprintf(
@@ -118,6 +119,11 @@ class TaskDatabaseSecurityPermissionService
             [],
             $this->getAssignedLabeler($labelingTask)
         );
+    }
+
+    private function getCoordinatorRoles(Model\Project $project)
+    {
+        return [sprintf('%s%s-%s', UserRolesRebuilder::COORDINATORS_PREFIX, $project->getOrganisationId(), $project->getId())];
     }
 
     /**
@@ -173,35 +179,6 @@ class TaskDatabaseSecurityPermissionService
         }
 
         return $memberNames;
-    }
-
-    /**
-     * @return array
-     */
-    private function getAllowedSuperAdminUsernames()
-    {
-        return array_map(
-            function (Model\User $user) {
-                return $this->addCouchDbPrefix($user->getUsername());
-            },
-            $this->userFacade->getUsersByRole(Model\User::ROLE_SUPER_ADMIN)->toArray()
-        );
-    }
-
-    /**
-     * @param AnnoStationBundleModel\Organisation $organisation
-     * @param                                     $role
-     *
-     * @return array
-     */
-    private function getAllowedUsernamesForRole(AnnoStationBundleModel\Organisation $organisation, $role)
-    {
-        return array_map(
-            function (Model\User $user) {
-                return $this->addCouchDbPrefix($user->getUsername());
-            },
-            $this->userFacade->getUsersByOrganisationAndRole($organisation, $role)->toArray()
-        );
     }
 
     /**
