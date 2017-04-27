@@ -269,6 +269,28 @@ class Project
     /**
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
+     *
+     * @return array|View\Result
+     */
+    public function findAllForCoordinator(AnnoStationBundleModel\Organisation $organisation, Model\User $user)
+    {
+        if (!$user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+            throw new \RuntimeException('You are not allowed to request this method');
+        }
+
+        $query = $this->documentManager
+            ->createQuery('annostation_project_by_organisation_and_assigned_userId_and_status_003', 'view')
+            ->setStartKey([$organisation->getId(), $user->getId(), null])
+            ->setEndKey([$organisation->getId(), $user->getId(), []])
+            ->setReduce(false)
+            ->onlyDocs(true);
+
+        return $query->execute();
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\User                          $user
      * @param                                     $status
      * @param bool                                $countOnly
      *
@@ -342,6 +364,23 @@ class Project
 
             return $query->execute();
         }
+    }
+
+    /**
+     * @param Model\LabelingGroup $labelingGroup
+     *
+     * @return Model\Project[]
+     */
+    public function getProjectsForLabelGroup(Model\LabelingGroup $labelingGroup)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_project_by_labeling_group_and_status_003', 'view')
+            ->setStartKey([$labelingGroup->getId(), null])
+            ->setEndKey([$labelingGroup->getId(), []])
+            ->setReduce(false)
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
     }
 
     /**

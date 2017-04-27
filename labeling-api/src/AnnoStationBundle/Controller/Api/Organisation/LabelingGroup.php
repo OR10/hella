@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Controller\Api\Organisation;
 
+use AnnoStationBundle\Worker\Jobs\DeleteProjectAssignmentsForUserJobCreator;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
@@ -16,6 +17,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use crosscan\WorkerPool\AMQP;
 
 /**
  * @Rest\Prefix("/api/organisation")
@@ -51,26 +53,42 @@ class LabelingGroup extends Controller\Base
     private $userRolesRebuilderService;
 
     /**
+     * @var AMQP\FacadeAMQP
+     */
+    private $amqpFacade;
+
+    /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * LabelingGroup constructor.
      *
      * @param Facade\LabelingGroup       $labelingGroupFacade
+     * @param Facade\Project             $projectFacade
      * @param AppFacade\User             $userFacade
      * @param Storage\TokenStorage       $tokenStorage
      * @param Service\UserRolesRebuilder $userRolesRebuilderService
      * @param Service\Authorization      $authorizationService
+     * @param AMQP\FacadeAMQP            $amqpFacade
      */
     public function __construct(
         Facade\LabelingGroup $labelingGroupFacade,
+        Facade\Project $projectFacade,
         AppFacade\User $userFacade,
         Storage\TokenStorage $tokenStorage,
         Service\UserRolesRebuilder $userRolesRebuilderService,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        AMQP\FacadeAMQP $amqpFacade
     ) {
         $this->labelingGroupFacade       = $labelingGroupFacade;
         $this->userFacade                = $userFacade;
         $this->tokenStorage              = $tokenStorage;
         $this->authorizationService      = $authorizationService;
         $this->userRolesRebuilderService = $userRolesRebuilderService;
+        $this->amqpFacade                = $amqpFacade;
+        $this->projectFacade             = $projectFacade;
     }
 
     /**
@@ -336,11 +354,23 @@ class LabelingGroup extends Controller\Base
             throw new Exception\BadRequestHttpException('This LabelingGroup is not assigned to this Organisation');
         }
 
-        $users = $this->getUserListForLabelingGroup([$labelingGroup]);
+        $users      = $this->getUserListForLabelingGroup([$labelingGroup]);
+        $projects   = $this->projectFacade->getProjectsForLabelGroup($labelingGroup);
+        $projectIds = array_map(function(Model\Project $project) {
+            return $project->getId();
+        }, $projects);
+
         $this->labelingGroupFacade->delete($labelingGroup);
+
+        foreach($projects as $project) {
+            $project->setLabelingGroupId(null);
+            $this->projectFacade->save($project);
+        }
 
         foreach ($users as $user) {
             $this->userRolesRebuilderService->rebuildForUser($user);
+            $job = new DeleteProjectAssignmentsForUserJobCreator($user->getId(), $projectIds);
+            $this->amqpFacade->addJob($job);
         }
 
         return View\View::create()->setData(
