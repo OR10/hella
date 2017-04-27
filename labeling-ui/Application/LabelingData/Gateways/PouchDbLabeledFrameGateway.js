@@ -53,7 +53,21 @@ class PouchDbLabeledFrameGateway {
    */
   getLabeledFrame(taskId, frameIndex) {
     return this._packagingExecutor.execute('labeledFrame', () => {
-
+      const db = this._pouchDbContextService.provideContextForTaskId(taskId);
+      const viewIdentifier = this._pouchDbViewService.getDesignDocumentViewName(
+        'labeledFrameByTaskIdAndFrameIndex'
+      );
+      return this._$q.resolve()
+        .then(() => db.query(viewIdentifier, {
+          key: [taskId, frameIndex],
+          include_docs: true,
+          limit: 1
+        }))
+        .then(result => {
+          const labeledFrameDocument = result.rows[0].doc;
+          const labeledFrame = this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument);
+          return labeledFrame;
+        })
     });
   }
 
