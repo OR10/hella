@@ -124,6 +124,7 @@
         </service>
         <service id="annostation.labeling_api.service.xml_validator.schema.requirements_xml_label_config"
                  class="AnnoStationBundle\Service\XmlValidator\Schema\RequirementsXmlLabelConfig">
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
         <service id="annostation.labeling_api.service.xml_validator.schema.requirements_xml_import"
                  class="AnnoStationBundle\Service\XmlValidator\Schema\RequirementsXmlImport">
@@ -346,6 +347,8 @@
 
         <service id="annostation.labeling_api.service.user_roles_rebuilder" class="AnnoStationBundle\Service\UserRolesRebuilder">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="annostation.labeling_api.database.facade.couchdb_users"/>
         </service>
 

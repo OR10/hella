@@ -149,7 +149,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
         $this->assertEquals(
-            $this->getExpectedResponse(['annostation_label_coordinator']),
+            $this->getExpectedResponse(),
             $this->getDatabaseSecurityDocumentResponse()
         );
     }
@@ -187,10 +187,18 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
     private function getExpectedResponse($memberNames = [], $memberRoles = [])
     {
         $fixedRoles = [
+            sprintf(
+                '%s%s-%s',
+                Service\UserRolesRebuilder::COORDINATORS_PREFIX,
+                $this->organisation->getId(),
+                $this->project->getId()
+            ),
             Service\UserRolesRebuilder::SUPER_ADMIN_GROUP,
             sprintf('%s%s', Service\UserRolesRebuilder::ADMIN_GROUP_PREFIX, $this->organisation->getId()),
             sprintf('%s%s', Service\UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $this->organisation->getId()),
         ];
+        $roles = array_merge($memberRoles, $fixedRoles);
+        sort($roles);
         return [
             'admins'          => [
                 'names' => [],
@@ -198,7 +206,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
             ],
             'members'         => [
                 'names' => $memberNames,
-                'roles' => array_merge($memberRoles, $fixedRoles),
+                'roles' => $roles,
             ],
             'assignedLabeler' => null,
         ];

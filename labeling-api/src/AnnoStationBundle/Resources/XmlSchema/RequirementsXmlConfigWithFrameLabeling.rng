@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:r="http://weblabel.hella-aglaia.com/schema/requirements" xmlns="http://relaxng.org/ns/structure/1.0">
+    <a:documentation/>
+    <!--
+        This version is a restriction of the requirements.rnc, which does only allow the following:
+        - Things (no frames)
+        - Values with children (dependent classes)
+        
+        It explicitly disallows logical expressions as well as dependent classes
+    -->
+    <a:documentation/>
+    <define name="Requirements">
+        <element name="r:requirements">
+            <interleave>
+                <ref name="Metadata"/>
+                <optional>
+                    <ref name="Frame"/>
+                </optional>
+                <zeroOrMore>
+                    <ref name="Thing"/>
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="Group"/>
+                </zeroOrMore>
+                <optional>
+                    <ref name="Private"/>
+                </optional>
+            </interleave>
+        </element>
+    </define>
+    <define name="Frame">
+        <element name="r:frame">
+            <zeroOrMore>
+                <ref name="Class"/>
+            </zeroOrMore>
+        </element>
+    </define>
+    <define name="ThingLikeStructure">
+        <attribute name="id"/>
+        <attribute name="name"/>
+        <zeroOrMore>
+            <ref name="Class"/>
+        </zeroOrMore>
+    </define>
+    <define name="Metadata">
+        <element name="r:metadata">
+            <element name="r:export-postfix">
+                <text/>
+            </element>
+        </element>
+    </define>
+    <define name="Thing">
+        <element name="r:thing">
+            <attribute name="shape"/>
+            <ref name="ThingLikeStructure"/>
+        </element>
+    </define>
+    <define name="Group">
+        <element name="r:group">
+            <ref name="ThingLikeStructure"/>
+        </element>
+    </define>
+    <define name="Class">
+        <element name="r:class">
+            <choice>
+                <group>
+                    <attribute name="id"/>
+                    <attribute name="name"/>
+                    <oneOrMore>
+                        <ref name="Value"/>
+                    </oneOrMore>
+                </group>
+                <attribute name="ref"/>
+            </choice>
+        </element>
+    </define>
+    <define name="Value">
+        <element name="r:value">
+            <attribute name="id"/>
+            <attribute name="name"/>
+            <zeroOrMore>
+                <ref name="Class"/>
+            </zeroOrMore>
+        </element>
+    </define>
+    <define name="Private">
+        <element name="r:private">
+            <oneOrMore>
+                <ref name="Class"/>
+            </oneOrMore>
+        </element>
+    </define>
+    <start>
+        <ref name="Requirements"/>
+    </start>
+</grammar>
