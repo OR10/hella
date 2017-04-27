@@ -120,5 +120,15 @@
       </shape>
       <value id="lightsource-yes" start="2" end="2"/>
     </thing>
+    <frame-labeling incomplete="true">
+      <references>
+        <task id=""/>
+      </references>
+      <value id="sun" start="1" end="24"/>
+      <value id="summer" start="1" end="100"/>
+      <value id="rain" start="25" end="49"/>
+      <value id="thunderstorm" start="50" end="74"/>
+      <value id="sun" start="75" end="100"/>
+    </frame-labeling>
   </video>
 </export>

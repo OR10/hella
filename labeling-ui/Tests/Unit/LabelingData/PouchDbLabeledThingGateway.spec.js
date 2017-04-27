@@ -46,12 +46,6 @@ describe('PouchDbLabeledThingGateway', () => {
    */
   let labeledThingPouchDbModel;
 
-  beforeEach(() => {
-    // PouchDB updates the incomplete status after saving
-    labeledThingPouchDbModel = angular.copy(labeledThingCouchDbModel);
-    labeledThingPouchDbModel.incomplete = true;
-  });
-
   beforeEach(done => {
     const featureFlags = {
       pouchdb: true,
@@ -97,6 +91,12 @@ describe('PouchDbLabeledThingGateway', () => {
         });
       })
       .then(() => done());
+  });
+
+  beforeEach(() => {
+    // PouchDB updates the incomplete status after saving
+    labeledThingPouchDbModel = angular.copy(labeledThingCouchDbModel);
+    labeledThingPouchDbModel.incomplete = true;
   });
 
   it('should receive a labeled thing by id', done => {

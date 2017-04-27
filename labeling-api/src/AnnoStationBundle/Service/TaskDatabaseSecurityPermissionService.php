@@ -90,26 +90,21 @@ class TaskDatabaseSecurityPermissionService
         $organisation = $this->organisationFacade->find($project->getOrganisationId());
 
         $memberNames = [];
-
-        $memberNames = array_merge(
-            $memberNames,
-            $this->getAllowedUsernamesForRole($organisation, Model\User::ROLE_ADMIN)
-        );
-        $memberNames = array_merge(
-            $memberNames,
-            $this->getAllowedUsernamesForRole($organisation, Model\User::ROLE_OBSERVER)
-        );
-        $memberNames = array_merge(
-            $memberNames,
-            $this->getAllowedSuperAdminUsernames()
-        );
+        $memberRoles = [
+            UserRolesRebuilder::SUPER_ADMIN_GROUP,
+            sprintf('%s%s', UserRolesRebuilder::ADMIN_GROUP_PREFIX, $organisation->getId()),
+            sprintf('%s%s', UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $organisation->getId()),
+        ];
 
         $memberNames = array_merge(
             $memberNames,
             $this->getCoordinatorUsernames($project)
         );
 
-        $memberRoles = $this->getLabelingGroupRole($project);
+        $memberRoles = array_merge(
+            $this->getLabelingGroupRole($project),
+            $memberRoles
+        );
 
         $this->couchDbSecurity->updateSecurity(
             sprintf(
@@ -118,10 +113,33 @@ class TaskDatabaseSecurityPermissionService
                 $labelingTask->getId()
             ),
             array_values(array_unique($memberNames)),
-            $memberRoles
+            $memberRoles,
+            [],
+            [],
+            $this->getAssignedLabeler($labelingTask)
         );
     }
 
+    /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return null
+     */
+    private function getAssignedLabeler(Model\LabelingTask $labelingTask)
+    {
+        $latestAssignedUserId = $labelingTask->getLatestAssignedUserIdForPhase($labelingTask->getCurrentPhase());
+        if ($latestAssignedUserId !== null) {
+            return $this->addCouchDbPrefix($this->userFacade->getUserById($latestAssignedUserId)->getUsername());
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Model\Project $project
+     *
+     * @return array
+     */
     private function getLabelingGroupRole(Model\Project $project)
     {
         $labelingGroupId = $project->getLabelingGroupId();
@@ -149,8 +167,9 @@ class TaskDatabaseSecurityPermissionService
         $memberNames                     = [];
         $latestAssignedCoordinatorUserId = $project->getLatestAssignedCoordinatorUserId();
         if ($latestAssignedCoordinatorUserId !== null) {
-            $memberNames[] = $this->userFacade->getUserById($latestAssignedCoordinatorUserId)
-                ->getUsername();
+            $memberNames[] = $this->addCouchDbPrefix(
+                $this->userFacade->getUserById($latestAssignedCoordinatorUserId)->getUsername()
+            );
         }
 
         return $memberNames;
@@ -163,7 +182,7 @@ class TaskDatabaseSecurityPermissionService
     {
         return array_map(
             function (Model\User $user) {
-                return $user->getUsername();
+                return $this->addCouchDbPrefix($user->getUsername());
             },
             $this->userFacade->getUsersByRole(Model\User::ROLE_SUPER_ADMIN)->toArray()
         );
@@ -179,9 +198,19 @@ class TaskDatabaseSecurityPermissionService
     {
         return array_map(
             function (Model\User $user) {
-                return $user->getUsername();
+                return $this->addCouchDbPrefix($user->getUsername());
             },
             $this->userFacade->getUsersByOrganisationAndRole($organisation, $role)->toArray()
         );
+    }
+
+    /**
+     * @param $username
+     *
+     * @return string
+     */
+    private function addCouchDbPrefix($username)
+    {
+        return sprintf('%s%s', Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX, $username);
     }
 }

@@ -58,5 +58,27 @@
             <argument type="service" id="annostation.labeling_api.service.project_deleter.project"/>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.task_database_security_rebuilder"
+                 class="AnnoStationBundle\Worker\JobInstruction\TaskDatabaseSecurityRebuilder">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.user_role_permission_rebuilder"
+                 class="AnnoStationBundle\Worker\JobInstruction\UserRolePermissionRebuilder">
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
+            <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.task_database_validate_doc_update_rebuilder"
+                 class="AnnoStationBundle\Worker\JobInstruction\TaskDatabaseValidateDocUpdateRebuilder">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_validate_doc_update_document_service"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
     </services>
 </container>

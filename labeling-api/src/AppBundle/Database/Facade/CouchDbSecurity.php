@@ -54,22 +54,30 @@ class CouchDbSecurity
      * @param array $memberRoles
      * @param array $adminNames
      * @param array $adminRoles
+     * @param null  $assignedLabeler
      */
-    public function updateSecurity($database, $memberNames = [], $memberRoles = [], $adminNames = [], $adminRoles = [])
-    {
+    public function updateSecurity(
+        $database,
+        $memberNames = [],
+        $memberRoles = [],
+        $adminNames = [],
+        $adminRoles = [],
+        $assignedLabeler = null
+    ) {
         $this->guzzleClient->request(
             'PUT',
             $this->generateCouchDbUrl($database),
             [
                 'json' => [
-                    'admins'  => [
+                    'admins'          => [
                         'names' => $adminNames,
                         'roles' => $adminRoles,
                     ],
-                    'members' => [
+                    'members'         => [
                         'names' => $memberNames,
                         'roles' => $memberRoles,
                     ],
+                    'assignedLabeler' => $assignedLabeler,
                 ],
             ]
         );

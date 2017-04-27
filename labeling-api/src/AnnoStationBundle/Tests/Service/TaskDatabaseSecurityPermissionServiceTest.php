@@ -82,7 +82,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
-        $this->assertEquals($this->getExpectedResponse(['superadmin']), $this->getDatabaseSecurityDocumentResponse());
+        $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
     }
 
     public function testAdminPermissions()
@@ -95,7 +95,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
-        $this->assertEquals($this->getExpectedResponse(['admin']), $this->getDatabaseSecurityDocumentResponse());
+        $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
 
         $user->setOrganisations([]);
         $this->userFacade->saveUser($user);
@@ -128,7 +128,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
-        $this->assertEquals($this->getExpectedResponse(['observer']), $this->getDatabaseSecurityDocumentResponse());
+        $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
     }
 
     public function testLabelCoordinatorPermissions()
@@ -149,7 +149,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
         $this->assertEquals(
-            $this->getExpectedResponse(['label_coordinator']),
+            $this->getExpectedResponse(['annostation_label_coordinator']),
             $this->getDatabaseSecurityDocumentResponse()
         );
     }
@@ -186,15 +186,21 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
     private function getExpectedResponse($memberNames = [], $memberRoles = [])
     {
+        $fixedRoles = [
+            Service\UserRolesRebuilder::SUPER_ADMIN_GROUP,
+            sprintf('%s%s', Service\UserRolesRebuilder::ADMIN_GROUP_PREFIX, $this->organisation->getId()),
+            sprintf('%s%s', Service\UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $this->organisation->getId()),
+        ];
         return [
-            'admins'  => [
+            'admins'          => [
                 'names' => [],
                 'roles' => [],
             ],
-            'members' => [
+            'members'         => [
                 'names' => $memberNames,
-                'roles' => $memberRoles,
+                'roles' => array_merge($memberRoles, $fixedRoles),
             ],
+            'assignedLabeler' => null,
         ];
     }
 
