@@ -328,6 +328,23 @@ class Project
     }
 
     /**
+     * @param Model\LabelingGroup $labelingGroup
+     *
+     * @return Model\Project[]
+     */
+    public function getProjectsForLabelGroup(Model\LabelingGroup $labelingGroup)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_project_by_labeling_group_and_status_003', 'view')
+            ->setStartKey([$labelingGroup->getId(), null])
+            ->setEndKey([$labelingGroup->getId(), []])
+            ->setReduce(false)
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
+    /**
      * @return array
      */
     public function getNumberOfProjectsByOrganisations()
