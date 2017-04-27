@@ -80,5 +80,14 @@
             <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.delete_project_assignments_for_user_job_creator"
+                 class="AnnoStationBundle\Worker\JobInstruction\DeleteProjectAssignmentsForUserJobCreator">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
     </services>
 </container>
