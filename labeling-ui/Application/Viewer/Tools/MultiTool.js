@@ -89,6 +89,8 @@ class MultiTool extends PaperTool {
     // this._initializeOptions(options);
 
     const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
+    const tool = this._getToolForRequirementsShape(requirementsShape);
+    console.log(tool.supportsDefaultShapeCreation);
     if (selectedPaperShape !== null) {
       const keyboardTool = this._toolService.getTool(this._context, requirementsShape, 'keyboard');
       if (keyboardTool !== null) {
@@ -237,7 +239,8 @@ class MultiTool extends PaperTool {
 
       // Invoke mutation tool
       const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
-      this._invokePaperToolDelegation(this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier), actionIdentifier, hitShape, hitHandle);
+      const tool = this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier);
+      this._invokePaperToolDelegation(tool, actionIdentifier, hitShape, hitHandle);
       this._activePaperTool.delegateMouseEvent('down', event);
     });
   }
