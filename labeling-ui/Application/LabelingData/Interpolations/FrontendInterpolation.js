@@ -345,6 +345,7 @@ FrontendInterpolation.$inject = [
   'linearRectangleInterpolationEasing',
   'linearPedestrianInterpolationEasing',
   'linearPolyInterpolationEasing',
+  'linearPointInterpolationEasing',
 ];
 
 export default FrontendInterpolation;
