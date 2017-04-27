@@ -1,4 +1,3 @@
-
 import uuid from 'uuid';
 
 /**
@@ -7,7 +6,6 @@ import uuid from 'uuid';
  * @implements Interpolation
  * @abstract
  */
-
 class FrontendInterpolation {
   /**
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
@@ -104,7 +102,11 @@ class FrontendInterpolation {
    */
   _getEasingForShapeAndType(labeledThingInFrame, easingType = 'linear') {
     const shape = labeledThingInFrame.shapes[0].type;
-    return this._easings.find(easing => easing.supportsShape(shape) && easing.supportsEasing(easingType));
+    const interpolationEasing = this._easings.find(easing => easing.supportsShape(shape) && easing.supportsEasing(easingType));
+    if (interpolationEasing === undefined) {
+      throw new Error(`There is no easing for ${shape} with type ${easingType}`);
+    }
+    return interpolationEasing;
   }
 
   /**
