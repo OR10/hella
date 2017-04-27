@@ -23,14 +23,19 @@ import KeyboardToolActionStruct from './ToolActionStructs/KeyboardToolActionStru
 class MultiTool extends PaperTool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {$rootScope.Scope} $scope
+   * @param {$rootScope.Scope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
    * @param {ToolService} toolService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
    */
-  constructor(drawingContext, $scope, $q, loggerService, toolService, viewerMouseCursorService) {
-    super(drawingContext, $scope, $q, loggerService);
+  constructor(drawingContext, $rootScope, $q, loggerService, toolService, viewerMouseCursorService) {
+    super(drawingContext, $rootScope, $q, loggerService);
+
+    /**
+     * @type {$rootScope.Scope}
+     */
+    this._$rootScope = $rootScope;
 
     /**
      * @type {ToolService}
@@ -90,7 +95,8 @@ class MultiTool extends PaperTool {
 
     const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
     const tool = this._getToolForRequirementsShape(requirementsShape);
-    console.log(tool.supportsDefaultShapeCreation);
+    this._$rootScope.$emit('tool:selected', tool);
+
     if (selectedPaperShape !== null) {
       const keyboardTool = this._toolService.getTool(this._context, requirementsShape, 'keyboard');
       if (keyboardTool !== null) {
