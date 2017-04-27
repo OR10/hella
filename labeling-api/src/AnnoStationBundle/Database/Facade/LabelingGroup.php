@@ -78,7 +78,7 @@ class LabelingGroup
      *
      * @return \Doctrine\CouchDB\View\Result
      */
-    public function findAllByOrganisationAndUser(
+    public function findAllByOrganisationAndCoordinator(
         AnnoStationBundleModel\Organisation $organisation,
         Model\User $user
     ) {
