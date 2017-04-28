@@ -1,7 +1,7 @@
 import {inject} from 'angular-mocks';
 import InterpolationService from 'Application/LabelingData/Services/InterpolationService';
 
-fdescribe('Interpolation with PouchDB Spec', () => {
+describe('Interpolation with PouchDB Spec', () => {
   const featureFlag = {pouchdb: false};
   let interpolationService;
   let firstInterpolation;
