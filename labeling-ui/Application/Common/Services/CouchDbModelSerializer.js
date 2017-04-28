@@ -1,6 +1,7 @@
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup';
+import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 
 import {cloneDeep} from 'lodash';
 
@@ -23,6 +24,7 @@ class CouchDbModelSerializer {
       [LabeledThing, CouchDbModelSerializer.TYPE_LABELED_THING],
       [LabeledThingInFrame, CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME],
       [LabeledThingGroup, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP],
+      [LabeledFrame, CouchDbModelSerializer.TYPE_LABELED_FRAME],
     ]);
   }
 
@@ -130,6 +132,25 @@ class CouchDbModelSerializer {
   }
 
   /**
+   * Serialize a LabeledFrame Model
+   *
+   * @param {LabeledFrame} labeledFrame
+   *
+   * @return {object}
+   *
+   * @private
+   */
+  _serializeAppBundleModelLabeledFrame(labeledFrame) {
+    const document = labeledFrame.toJSON();
+    this._prefixIdAndRevision(document);
+
+    // Type annotation
+    document.type = CouchDbModelSerializer.TYPE_LABELED_FRAME;
+
+    return document;
+  }
+
+  /**
    * Try to determine the type of the given model using the `_modelClassToDocumentTypeMapping` table.
    *
    * @param {*} model
@@ -189,6 +210,7 @@ CouchDbModelSerializer.TYPE_LABELED_THING_GROUP = 'AnnoStationBundle.Model.Label
 CouchDbModelSerializer.TYPE_LABELED_THING = 'AppBundle.Model.LabeledThing';
 CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME = 'AppBundle.Model.LabeledThingInFrame';
 CouchDbModelSerializer.TYPE_FRAME_RANGE = 'AppBundle.Model.FrameIndexRange';
+CouchDbModelSerializer.TYPE_LABELED_FRAME = 'AppBundle.Model.LabeledFrame';
 
 CouchDbModelSerializer.$inject = [];
 
