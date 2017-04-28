@@ -16,6 +16,8 @@ import LabeledThingGroupCouchDbModel from 'Tests/Fixtures/Models/CouchDb/Labeled
 import LabeledThingGroupFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThingGroup';
 import LabeledThingInFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThingInFrame';
 import LabeledThingInFrameFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThingInFrame';
+import LabeledFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledFrame';
+import LabeledFrameFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledFrame';
 
 describe('CouchDbModelDeserializer', () => {
   /**
@@ -55,5 +57,10 @@ describe('CouchDbModelDeserializer', () => {
   it('should deserialize a labeledThingGroup', () => {
     const labeledThing = deserializer.deserializeLabeledThingGroup(LabeledThingGroupCouchDbModel, TaskFrontendModel);
     expect(labeledThing).toEqual(LabeledThingGroupFrontendModel);
+  });
+
+  it('should deserialize a LabeledFrame', () => {
+    const labeledFrame = deserializer.deserializeLabeledFrame(LabeledFrameCouchDbModel);
+    expect(labeledFrame).toEqual(LabeledFrameFrontendModel);
   });
 });
