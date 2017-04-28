@@ -78,12 +78,12 @@ class LabelingGroup
      *
      * @return \Doctrine\CouchDB\View\Result
      */
-    public function findAllByOrganisationAndUser(
+    public function findAllByOrganisationAndCoordinator(
         AnnoStationBundleModel\Organisation $organisation,
         Model\User $user
     ) {
         $query = $this->documentManager
-            ->createQuery('annostation_labeling_group_by_organisation_and_user_001', 'view')
+            ->createQuery('annostation_labeling_group_by_organisation_and_coordinator_002', 'view')
             ->onlyDocs(true)
             ->setKey([$organisation->getId(), $user->getId()]);
 
