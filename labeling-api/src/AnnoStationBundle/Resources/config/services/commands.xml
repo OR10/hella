@@ -250,6 +250,16 @@
                  class="AnnoStationBundle\Command\RebuildAllSecurityPermissions">
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.remove_expired_user_assignments_and_memberships"
+                 class="AnnoStationBundle\Command\RemoveExpiredUserAssignmentsAndMemberships">
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
 
