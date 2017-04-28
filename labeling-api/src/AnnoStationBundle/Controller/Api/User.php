@@ -7,6 +7,7 @@ use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
+use AnnoStationBundle\Worker\Jobs;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\View;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use crosscan\WorkerPool\AMQP;
 
 /**
  * @Rest\Prefix("/api/user")
@@ -46,23 +48,47 @@ class User extends Controller\Base
     private $organisationFacade;
 
     /**
+     * @var AMQP\FacadeAMQP
+     */
+    private $amqpFacade;
+
+    /**
+     * @var Facade\LabelingGroup
+     */
+    private $labelingGroupFacade;
+
+    /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * Users constructor.
      *
      * @param AppFacade\User        $userFacade
      * @param Facade\Organisation   $organisationFacade
+     * @param Facade\LabelingGroup  $labelingGroupFacade
+     * @param Facade\Project        $projectFacade
      * @param Storage\TokenStorage  $tokenStorage
      * @param Service\Authorization $authorizationService
+     * @param AMQP\FacadeAMQP       $amqpFacade
      */
     public function __construct(
         AppFacade\User $userFacade,
         Facade\Organisation $organisationFacade,
+        Facade\LabelingGroup $labelingGroupFacade,
+        Facade\Project $projectFacade,
         Storage\TokenStorage $tokenStorage,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        AMQP\FacadeAMQP $amqpFacade
     ) {
         $this->userFacade           = $userFacade;
         $this->tokenStorage         = $tokenStorage;
         $this->authorizationService = $authorizationService;
         $this->organisationFacade   = $organisationFacade;
+        $this->labelingGroupFacade  = $labelingGroupFacade;
+        $this->projectFacade        = $projectFacade;
+        $this->amqpFacade           = $amqpFacade;
     }
 
     /**
@@ -294,8 +320,43 @@ class User extends Controller\Base
         }
 
         $this->userFacade->deleteUser($user);
+        $this->deleteUserFromLabelingGroups($user);
+        $this->removeAllLabelingTaskAssignmentsForUser($user);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
+    }
+
+    /**
+     * @param Model\User $user
+     */
+    private function removeAllLabelingTaskAssignmentsForUser(Model\User $user)
+    {
+        foreach ($user->getOrganisations() as $organisationId) {
+            $organisation = $this->organisationFacade->find($organisationId);
+            $projects   = $this->projectFacade->findAllByOrganisation($organisation)->toArray();
+            $projectIds = array_map(
+                function (Model\Project $project) {
+                    return $project->getId();
+                },
+                $projects
+            );
+
+            $job = new Jobs\DeleteProjectAssignmentsForUserJobCreator($user->getId(), $projectIds);
+            $this->amqpFacade->addJob($job);
+        }
+    }
+
+    /**
+     * @param Model\User $user
+     */
+    private function deleteUserFromLabelingGroups(Model\User $user)
+    {
+        $labelingGroups = $this->labelingGroupFacade->findAllByUser($user);
+
+        /** @var Model\LabelingGroup $labelingGroup */
+        foreach ($labelingGroups as $labelingGroup) {
+            $this->labelingGroupFacade->deleteUserFromLabelGroup($labelingGroup, $user);
+        }
     }
 
     /**
