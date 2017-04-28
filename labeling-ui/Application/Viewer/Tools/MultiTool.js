@@ -23,14 +23,19 @@ import KeyboardToolActionStruct from './ToolActionStructs/KeyboardToolActionStru
 class MultiTool extends PaperTool {
   /**
    * @param {DrawingContext} drawingContext
-   * @param {$rootScope.Scope} $scope
+   * @param {$rootScope.Scope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
    * @param {ToolService} toolService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
    */
-  constructor(drawingContext, $scope, $q, loggerService, toolService, viewerMouseCursorService) {
-    super(drawingContext, $scope, $q, loggerService);
+  constructor(drawingContext, $rootScope, $q, loggerService, toolService, viewerMouseCursorService) {
+    super(drawingContext, $rootScope, $q, loggerService);
+
+    /**
+     * @type {$rootScope.Scope}
+     */
+    this._$rootScope = $rootScope;
 
     /**
      * @type {ToolService}
@@ -89,6 +94,9 @@ class MultiTool extends PaperTool {
     // this._initializeOptions(options);
 
     const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
+    const tool = this._getToolForRequirementsShape(requirementsShape);
+    this._$rootScope.$emit('tool:selected:supportsDefaultShapeCreation', tool.supportsDefaultShapeCreation);
+
     if (selectedPaperShape !== null) {
       const keyboardTool = this._toolService.getTool(this._context, requirementsShape, 'keyboard');
       if (keyboardTool !== null) {
@@ -237,7 +245,8 @@ class MultiTool extends PaperTool {
 
       // Invoke mutation tool
       const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
-      this._invokePaperToolDelegation(this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier), actionIdentifier, hitShape, hitHandle);
+      const tool = this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier);
+      this._invokePaperToolDelegation(tool, actionIdentifier, hitShape, hitHandle);
       this._activePaperTool.delegateMouseEvent('down', event);
     });
   }
