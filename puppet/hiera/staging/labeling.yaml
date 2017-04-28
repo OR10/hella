@@ -1,4 +1,6 @@
 annostation_base::authorized_keys: true
+annostation_base::symfonyRoot: '/var/www/labeling-api/current'
+
 php::fpm::pools:
   www:
     listen: 127.0.0.1:9000
