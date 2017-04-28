@@ -141,7 +141,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       groupType: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
-      type: 'AppBundle.Model.LabeledThingGroup',
+      type: 'AnnoStationBundle.Model.LabeledThingGroup',
     };
 
     groupGateway.deleteLabeledThingGroup(labeledThingGroup);
@@ -170,7 +170,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       groupType: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
-      type: 'AppBundle.Model.LabeledThingGroup',
+      type: 'AnnoStationBundle.Model.LabeledThingGroup',
     };
 
     groupGateway.createLabeledThingGroup(task, labeledThingGroup);

@@ -1,6 +1,8 @@
 import {inject} from 'angular-mocks';
 import PouchDbLabeledFrameGateway from 'Application/LabelingData/Gateways/PouchDbLabeledFrameGateway';
 
+import {cloneDeep} from 'lodash';
+
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledFrame';
 import LabeledFrameFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledFrame';
@@ -16,6 +18,9 @@ describe('PouchDbLabeledFrameGateway', () => {
   let pouchDbViewService;
   let revisionManager;
   let entityIdService;
+
+  let labeledFrameFrontendModel;
+  let labeledFrameCouchDbModel;
 
   /**
    * @type {PouchDbLabeledFrameGateway}
@@ -55,6 +60,11 @@ describe('PouchDbLabeledFrameGateway', () => {
     )
   );
 
+  beforeEach(() => {
+    labeledFrameFrontendModel = new LabeledFrame(LabeledFrameFrontendModel.toJSON());
+    labeledFrameCouchDbModel = cloneDeep(LabeledFrameCouchDbModel);
+  });
+
   it('should be able to instantiate', () => {
     expect(labeledFrameGateway).toEqual(jasmine.any(PouchDbLabeledFrameGateway));
   });
@@ -63,14 +73,14 @@ describe('PouchDbLabeledFrameGateway', () => {
     beforeEach(() => {
       pouchDb.query.and.returnValue({
         rows: [{
-          doc: LabeledFrameCouchDbModel,
+          doc: labeledFrameCouchDbModel,
         }],
       });
     });
 
     beforeEach(() => {
       couchDbModelDeserializer.deserializeLabeledFrame.and.returnValue(
-        LabeledFrameFrontendModel
+        labeledFrameFrontendModel
       );
     });
 
@@ -127,14 +137,14 @@ describe('PouchDbLabeledFrameGateway', () => {
       labeledFrameGateway.getLabeledFrame('TASK-ID', 42);
       rootScope.$apply();
 
-      expect(couchDbModelDeserializer.deserializeLabeledFrame).toHaveBeenCalledWith(LabeledFrameCouchDbModel);
+      expect(couchDbModelDeserializer.deserializeLabeledFrame).toHaveBeenCalledWith(labeledFrameCouchDbModel);
     });
 
     it('should extract the revision from the loaded document', () => {
       labeledFrameGateway.getLabeledFrame('TASK-ID', 42);
       rootScope.$apply();
 
-      expect(revisionManager.extractRevision).toHaveBeenCalledWith(LabeledFrameCouchDbModel);
+      expect(revisionManager.extractRevision).toHaveBeenCalledWith(labeledFrameCouchDbModel);
     });
 
     it('should return the deserialized model labeledFrame model', () => {
@@ -143,7 +153,7 @@ describe('PouchDbLabeledFrameGateway', () => {
       const responsePromiseSpy = jasmine.createSpy();
       actualResponse.then(responsePromiseSpy);
       rootScope.$apply();
-      expect(responsePromiseSpy).toHaveBeenCalledWith(LabeledFrameFrontendModel);
+      expect(responsePromiseSpy).toHaveBeenCalledWith(labeledFrameFrontendModel);
     });
   });
 
@@ -158,30 +168,30 @@ describe('PouchDbLabeledFrameGateway', () => {
       );
 
       pouchDb.get.and.returnValue(
-        angularQ.resolve(LabeledFrameCouchDbModel)
+        angularQ.resolve(labeledFrameCouchDbModel)
       );
     });
 
     beforeEach(() => {
-      couchDbModelSerializer.serialize.and.returnValue(LabeledFrameCouchDbModel);
+      couchDbModelSerializer.serialize.and.returnValue(labeledFrameCouchDbModel);
     });
 
     it('should use the packaging executor with the labeledFrame queue', () => {
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, LabeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(packagingExecutor.execute).toHaveBeenCalledWith('labeledFrame', jasmine.any(Function));
     });
 
     it('should call the packaging executor once', () => {
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, LabeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(packagingExecutor.execute).toHaveBeenCalledTimes(1);
     });
 
     it('should return the promise of the packaging executor', () => {
-      const actualResult = labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, LabeledFrameFrontendModel);
+      const actualResult = labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       const expectedResult = packagingExecutor.execute.calls.first().returnValue;
@@ -190,17 +200,17 @@ describe('PouchDbLabeledFrameGateway', () => {
 
     it('should use the context of the given taskId', () => {
       const givenTaskId = 'some-task-id-42';
-      labeledFrameGateway.saveLabeledFrame(givenTaskId, 42, LabeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame(givenTaskId, 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(pouchDbContextService.provideContextForTaskId).toHaveBeenCalledWith(givenTaskId);
     });
 
     it('should serialize the given document', () => {
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, LabeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
-      expect(couchDbModelSerializer.serialize).toHaveBeenCalledWith(LabeledFrameFrontendModel);
+      expect(couchDbModelSerializer.serialize).toHaveBeenCalledWith(labeledFrameFrontendModel);
     });
 
     it('should set the id before storage if it is not explicitly provided', () => {
@@ -215,7 +225,7 @@ describe('PouchDbLabeledFrameGateway', () => {
       });
       couchDbModelSerializer.serialize.and.returnValue(labeledFrameWithoutId);
 
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, LabeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(entityIdService.getUniqueId).toHaveBeenCalled();
@@ -224,12 +234,12 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
 
     it('should store the serialized document', () => {
-      couchDbModelSerializer.serialize.and.returnValue(LabeledFrameCouchDbModel);
+      couchDbModelSerializer.serialize.and.returnValue(labeledFrameCouchDbModel);
 
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, LabeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
-      expect(pouchDb.put).toHaveBeenCalledWith(LabeledFrameCouchDbModel);
+      expect(pouchDb.put).toHaveBeenCalledWith(labeledFrameCouchDbModel);
     });
 
     it('should provide revisionManager with new revision after storage', () => {
@@ -240,14 +250,14 @@ describe('PouchDbLabeledFrameGateway', () => {
       };
 
       pouchDb.put.and.returnValue(angularQ.resolve(putResponse));
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, LabeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(revisionManager.extractRevision).toHaveBeenCalledWith(putResponse);
     });
 
     it('should store new frameIndex', () => {
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 423, LabeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame('TASK-ID', 423, labeledFrameFrontendModel);
       rootScope.$apply();
 
       const storedDocument = pouchDb.put.calls.argsFor(0)[0];
@@ -324,7 +334,7 @@ describe('PouchDbLabeledFrameGateway', () => {
     beforeEach(() => {
       pouchDb.query.and.returnValue({
         rows: [{
-          doc: LabeledFrameCouchDbModel,
+          doc: labeledFrameCouchDbModel,
         }],
       });
     });
@@ -391,7 +401,7 @@ describe('PouchDbLabeledFrameGateway', () => {
       rootScope.$apply();
 
       const removedId = pouchDb.remove.calls.argsFor(0)[0];
-      expect(removedId).toEqual(LabeledFrameCouchDbModel._id);
+      expect(removedId).toEqual(labeledFrameCouchDbModel._id);
     });
 
     it('should remove document with retrieved labeledFrame revision', () => {
@@ -399,7 +409,7 @@ describe('PouchDbLabeledFrameGateway', () => {
       rootScope.$apply();
 
       const removedRevision = pouchDb.remove.calls.argsFor(0)[1];
-      expect(removedRevision).toEqual(LabeledFrameCouchDbModel._rev);
+      expect(removedRevision).toEqual(labeledFrameCouchDbModel._rev);
     });
 
     it('should work if requested document is not actually stored', done => {
