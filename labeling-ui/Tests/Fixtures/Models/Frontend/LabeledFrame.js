@@ -7,7 +7,7 @@ export default new LabeledFrame({
     "sun",
     "summer"
   ],
-  "ghosClasses": null,
+  "ghostClasses": null,
   "incomplete": true,
   "taskId": "5242f8bff15774fe72586e569a05ce0c",
 });
