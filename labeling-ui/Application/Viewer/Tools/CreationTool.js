@@ -41,6 +41,15 @@ class CreationTool extends PaperTool {
   invokeDefaultShapeCreation(toolActionStruct) {
     return this._invoke(toolActionStruct);
   }
+
+  /**
+   * By default all the Tools support default creation (the + Button in the Media Bar)
+   *
+   * @returns {boolean}
+   */
+  get supportsDefaultShapeCreation() {
+    return true;
+  }
 }
 
 CreationTool.$inject = [
