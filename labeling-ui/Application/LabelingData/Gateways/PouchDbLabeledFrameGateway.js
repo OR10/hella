@@ -139,7 +139,30 @@ class PouchDbLabeledFrameGateway {
    * @returns {AbortablePromise<Boolean|Error>}
    */
   deleteLabeledFrame(taskId, frameIndex) {
-
+    return this._packagingExecutor.execute('labeledFrame', () => {
+      const db = this._pouchDbContextService.provideContextForTaskId(taskId);
+      return this._$q.resolve()
+        .then(() => {
+          const viewDesignDocument = this._pouchDbViewService.getDesignDocumentViewName('labeledFrameByTaskIdAndFrameIndex');
+          return db.query(viewDesignDocument, {
+            key: [taskId, frameIndex],
+            include_docs: true,
+            limit: 1
+          });
+        })
+        .then(result => {
+          if (result.rows.length === 0) {
+            // No document there. We are finished.
+            return {ok: true};
+          }
+          const labeledFrameDocument = result.rows[0].doc;
+          const {_id: id, _rev: revision} = labeledFrameDocument;
+          return db.remove(id, revision);
+        })
+        .then(result => {
+          return result.ok;
+        });
+    });
   }
 
   /**
