@@ -9,9 +9,12 @@ class PouchDbLabeledFrameGateway {
    * @param {PackagingExecutor} packagingExecutor
    * @param {PouchDbContextService} pouchDbContextService
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
+   * @param {CouchDbModelSerializer} couchDbModelSerializer
    * @param {PouchDbViewService} pouchDbViewService
+   * @param {RevisionManager} revisionManager
+   * @param {EntityIdService} entityIdService
    */
-  constructor($q, packagingExecutor, pouchDbContextService, couchDbModelDeserializer, pouchDbViewService) {
+  constructor($q, packagingExecutor, pouchDbContextService, couchDbModelDeserializer, couchDbModelSerializer, pouchDbViewService, revisionManager, entityIdService) {
     /**
      * @type {$q}
      * @private
@@ -37,10 +40,28 @@ class PouchDbLabeledFrameGateway {
     this._couchDbModelDeserializer = couchDbModelDeserializer;
 
     /**
+     * @type {CouchDbModelSerializer}
+     * @private
+     */
+    this._couchDbModelSerializer = couchDbModelSerializer;
+
+    /**
      * @type {PouchDbViewService}
      * @private
      */
     this._pouchDbViewService = pouchDbViewService;
+
+    /**
+     * @type {RevisionManager}
+     * @private
+     */
+    this._revisionManager = revisionManager;
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
   }
 
   /**
@@ -65,6 +86,7 @@ class PouchDbLabeledFrameGateway {
         }))
         .then(result => {
           const labeledFrameDocument = result.rows[0].doc;
+          this._revisionManager.extractRevision(labeledFrameDocument);
           const labeledFrame = this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument);
           return labeledFrame;
         })
@@ -82,6 +104,30 @@ class PouchDbLabeledFrameGateway {
    * @returns {AbortablePromise<LabeledFrame|Error>}
    */
   saveLabeledFrame(taskId, frameIndex, labeledFrame) {
+    return this._packagingExecutor.execute('labeledFrame', () => {
+      const db = this._pouchDbContextService.provideContextForTaskId(taskId);
+      return this._$q.resolve()
+        .then(() => {
+          const labeledFrameDocument = this._couchDbModelSerializer.serialize(labeledFrame);
+          labeledFrameDocument.frameIndex = frameIndex;
+          this._injectRevisionOrFailSilently(labeledFrameDocument);
+          if (labeledFrameDocument._id === undefined || labeledFrameDocument._id === null) {
+            // The backend currently explicitly creates those ids if not present
+            // @TODO: Check why this is necessary, if it is. In may opinion the Frontend Models should already
+            //        have an id.
+            labeledFrameDocument._id = this._entityIdService.getUniqueId();
+          }
+
+          return db.put(labeledFrameDocument);
+        })
+        .then(result => {
+          this._revisionManager.extractRevision(result);
+          return db.get(result.id)
+        })
+        .then(
+          document => this._couchDbModelDeserializer.deserializeLabeledFrame(document)
+        );
+    });
   }
 
   /**
@@ -93,6 +139,21 @@ class PouchDbLabeledFrameGateway {
    * @returns {AbortablePromise<Boolean|Error>}
    */
   deleteLabeledFrame(taskId, frameIndex) {
+
+  }
+
+  /**
+   * Inject a revision into the document or fail silently and ignore the error.
+   *
+   * @param {object} document
+   * @private
+   */
+  _injectRevisionOrFailSilently(document) {
+    try {
+      this._revisionManager.injectRevision(document);
+    } catch (error) {
+      // Simply ignore
+    }
   }
 }
 
@@ -101,7 +162,10 @@ PouchDbLabeledFrameGateway.$inject = [
   'packagingExecutor',
   'pouchDbContextService',
   'couchDbModelDeserializer',
+  'couchDbModelSerializer',
   'pouchDbViewService',
+  'revisionManager',
+  'entityIdService',
 ];
 
 export default PouchDbLabeledFrameGateway;
