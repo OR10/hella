@@ -93,6 +93,8 @@ class UserTest extends Tests\WebTestCase
 
     public function testRemoveUserFromOrganisationAsSuperAdmin()
     {
+        $this->markTestSkipped('This test requires a RabbitMQ Server!');
+
         $user       = $this->createLabelerUser($this->organisation);
         $superAdmin = $this->createSuperAdminUser($this->organisation);
 
@@ -114,6 +116,8 @@ class UserTest extends Tests\WebTestCase
 
     public function testRemoveUserFromOrganisationAsAdmin()
     {
+        $this->markTestSkipped('This test requires a RabbitMQ Server!');
+
         $user  = $this->createLabelerUser($this->organisation);
         $admin = $this->createAdminUser($this->organisation);
 

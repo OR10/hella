@@ -59,6 +59,35 @@ class LabelingGroup
     }
 
     /**
+     * @param Model\LabelingGroup $labelingGroup
+     * @param Model\User          $user
+     *
+     * @return Model\LabelingGroup
+     */
+    public function deleteUserFromLabelGroup(Model\LabelingGroup $labelingGroup, Model\User $user)
+    {
+        $labelingGroup->setLabeler(
+            array_filter(
+                $labelingGroup->getLabeler(),
+                function ($userId) use ($user) {
+                    return $userId !== $user->getId();
+                }
+            )
+        );
+        $labelingGroup->setCoordinators(
+            array_filter(
+                $labelingGroup->getCoordinators(),
+                function ($userId) use ($user) {
+                    return $userId !== $user->getId();
+                }
+            )
+        );
+        $this->save($labelingGroup);
+
+        return $labelingGroup;
+    }
+
+    /**
      * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return \Doctrine\CouchDB\View\Result
@@ -78,12 +107,12 @@ class LabelingGroup
      *
      * @return \Doctrine\CouchDB\View\Result
      */
-    public function findAllByOrganisationAndUser(
+    public function findAllByOrganisationAndCoordinator(
         AnnoStationBundleModel\Organisation $organisation,
         Model\User $user
     ) {
         $query = $this->documentManager
-            ->createQuery('annostation_labeling_group_by_organisation_and_user_001', 'view')
+            ->createQuery('annostation_labeling_group_by_organisation_and_coordinator_002', 'view')
             ->onlyDocs(true)
             ->setKey([$organisation->getId(), $user->getId()]);
 

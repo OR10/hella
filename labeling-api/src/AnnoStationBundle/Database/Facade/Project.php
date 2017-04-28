@@ -56,6 +56,23 @@ class Project
     }
 
     /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
+     * @return View\Result
+     */
+    public function findAllByOrganisation(AnnoStationBundleModel\Organisation $organisation)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_project_by_organisation_and_status_002', 'view')
+            ->setStartKey([$organisation->getId(), null])
+            ->setEndKey([$organisation->getId(), []])
+            ->setReduce(false)
+            ->onlyDocs(true);
+
+        return $query->execute();
+    }
+
+    /**
      * @param null     $limit
      * @param int|null $offset
      * @return View\Result

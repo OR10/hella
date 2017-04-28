@@ -213,6 +213,13 @@ PouchDbViewService.VIEWS = {
       }
     },
   },
+  'labeledFrameByTaskIdAndFrameIndex': {
+    map: function(doc) { // eslint-disable-line func-names
+      if (doc.type === 'AppBundle.Model.LabeledFrame') {
+        emit([doc.taskId, doc.frameIndex]); // eslint-disable-line no-undef
+      }
+    },
+  },
 };
 
 PouchDbViewService.$inject = [

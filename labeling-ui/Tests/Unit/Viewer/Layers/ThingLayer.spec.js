@@ -126,7 +126,9 @@ describe('ThingLayer test suite', () => {
 
     const thing = createThingLayerInstance();
     const event = {type: 'mouseenter'};
-    thing.activateTool('multi', {});
+
+    const selectedLabelStructureThing = {id: 'bla', shape: 'pedestrian'};
+    thing.activateTool('multi', selectedLabelStructureThing);
 
     const promiseMock = jasmine.createSpyObj('activeTool.invoke promise mock', ['then', 'catch']);
     promiseMock.then.and.returnValue(promiseMock);
@@ -233,7 +235,7 @@ describe('ThingLayer test suite', () => {
       beforeEach(() => {
         selectedLabelStructureThing = {
           id: 'foobar',
-          shape: 'heinz',
+          shape: 'pedestrian',
         };
 
         const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort']);

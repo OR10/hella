@@ -4,6 +4,7 @@ import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup';
 import LabeledThingGroupInFrame from 'Application/LabelingData/Models/LabeledThingGroupInFrame';
+import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 
 /**
  * The CouchDbModelDeserializer is capable of converting CouchDb document into our internal models.
@@ -140,6 +141,19 @@ class CouchDbModelDeserializer {
     return new LabeledThingInFrame(
       Object.assign({}, model, {labeledThing})
     );
+  }
+
+  /**
+   * Deserialize a labeledFrame to our frontend model
+   *
+   * @param {object} labeledFrameDocument
+   * @return {LabeledFrame}
+   */
+  deserializeLabeledFrame(labeledFrameDocument) {
+    const document = this._cloneDocument(labeledFrameDocument);
+    this._removePrefixFromIdAndRevision(document);
+
+    return new LabeledFrame(document);
   }
 
   /**
