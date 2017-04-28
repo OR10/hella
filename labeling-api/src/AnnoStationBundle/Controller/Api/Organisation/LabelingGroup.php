@@ -306,21 +306,38 @@ class LabelingGroup extends Controller\Base
             throw new Exception\ConflictHttpException('Revision mismatch');
         }
 
-        $oldUsers = $this->getUserListForLabelingGroup([$labelingGroup]);
+        $oldUserIds = array_unique(array_merge($labelingGroup->getLabeler(), $labelingGroup->getCoordinators()));
 
         $labelingGroup->setCoordinators($coordinators);
         $labelingGroup->setLabeler($labeler);
         $labelingGroup->setName($name);
         $this->labelingGroupFacade->save($labelingGroup);
 
-        $users = [];
-        foreach ($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
+        $projectIds = array_map(
+            function (Model\Project $project) {
+                return $project->getId();
+            },
+            $this->projectFacade->getProjectsForLabelGroup($labelingGroup)
+        );
+
+        $deletedUsersIds = array_diff($oldUserIds, array_unique(array_merge($labeler, $coordinators)));
+        $newUsersIds     = array_diff(array_unique(array_merge($labeler, $coordinators)), $oldUserIds);
+
+        foreach ($deletedUsersIds as $deletedUsersId) {
+            $user = $this->userFacade->getUserById($deletedUsersId);
             $this->userRolesRebuilderService->rebuildForUser($user);
-            $users[$user->getId()] = $user;
+            $job = new DeleteProjectAssignmentsForUserJobCreator($user->getId(), $projectIds);
+            $this->amqpFacade->addJob($job);
         }
 
-        foreach($oldUsers as $user) {
+        foreach ($newUsersIds as $newUsersId) {
+            $user = $this->userFacade->getUserById($newUsersId);
             $this->userRolesRebuilderService->rebuildForUser($user);
+        }
+
+        $users = [];
+        foreach ($this->getUserListForLabelingGroup([$labelingGroup]) as $user) {
+            $users[$user->getId()] = $user;
         }
 
         $users = new Response\SimpleUsers($users);
