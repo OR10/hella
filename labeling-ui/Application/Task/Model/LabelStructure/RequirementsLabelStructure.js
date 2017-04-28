@@ -60,6 +60,14 @@ class RequirementsLabelStructure extends LabelStructure {
      * @private
      */
     this._groupMap = null;
+
+    /**
+     * Map containing all {@link LabelStructureFrame} objects of this {@link LabelStructure} stored by their `id`.
+     *
+     * @type {null}
+     * @private
+     */
+    this._requirementFramesMap = null;
   }
 
   /**
@@ -76,10 +84,9 @@ class RequirementsLabelStructure extends LabelStructure {
    */
   getEnabledClassesForLabeledObjectAndClassList(labelStructureObject, classList) {
     const identifier = labelStructureObject.id;
-    if (!this.isLabelStructureObjectDefinedById(identifier)) {
+    if (!this._isLabelStructureObjectDefinedById(identifier)) {
       throw new Error(`LabelStructureObject with identifier '${identifier}' could not be found in LabelStructure`);
     }
-
     const element = this._getLabelStructureObjectElementById(identifier);
     const enabledElements = this._getEnabledElementsByStartingElementAndClassList(element, classList);
     const enabledThingClasses = enabledElements.map(
@@ -90,6 +97,37 @@ class RequirementsLabelStructure extends LabelStructure {
     );
 
     return enabledThingClasses;
+  }
+
+  /**
+   * Retrieve information about whether a LabelStructureObject with a specific id is defined inside this {@link LabelStructure}
+   *
+   * @param {string} identifier
+   * @return {boolean}
+   * @private
+   */
+  _isLabelStructureObjectDefinedById(identifier) {
+    const objects = this._getLabelStructureObjects();
+
+    return objects.has(identifier);
+  }
+
+  /**
+   * Gets an accumulated map of all labelStructure objects that are defined in the {@link LabelStructure}
+   *
+   * @return {Map}
+   * @private
+   */
+  _getLabelStructureObjects() {
+    const things = this.getThings();
+    const groups = this.getGroups();
+    const frames = this.getRequirementFrames();
+
+    return new Map([
+      ...things,
+      ...groups,
+      ...frames,
+    ]);
   }
 
   /**
@@ -384,16 +422,9 @@ class RequirementsLabelStructure extends LabelStructure {
    * @private
    */
   _getLabelStructureObjectElementById(identifier) {
-    const labeledObjects = [];
-    labeledObjects.push(this._extractLabeledObjectDOMElementById('thing', identifier));
-    labeledObjects.push(this._extractLabeledObjectDOMElementById('group', identifier));
-    labeledObjects.push(this._extractLabeledObjectDOMElementById('frame', identifier));
+    const labeledObject = this._extractLabeledObjectDOMElementById(identifier);
 
-    if (labeledObjects.length !== 1) {
-      throw new Error(`Expected to find one labeled object node with the id "${identifier}", found ${labeledObjects.length}`);
-    }
-
-    return labeledObjects[0];
+    return labeledObject;
   }
 
   /**
@@ -401,15 +432,22 @@ class RequirementsLabelStructure extends LabelStructure {
    *
    * If a node with the given identifier could not be found an exception will be thrown.
    *
-   * @param {string} type
    * @param {string} identifier
    * @returns {Node}
    * @private
    */
-  _extractLabeledObjectDOMElementById(type, identifier) {
-    const searchNodePath = `/r:requirements/r:${type}[@id="${identifier}"]`;
+  _extractLabeledObjectDOMElementById(identifier) {
+    const searchNodePath = `/r:requirements/r:thing[@id="${identifier}"]|/r:requirements/r:group[@id="${identifier}"]|/r:requirements/r:frame[@id="${identifier}"]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
     const requirementsElement = searchSnapshot.snapshotItem(0);
+
+    if (searchSnapshot.snapshotLength > 1) {
+      throw new Error(`Expected to find one labeled object node with the id "${identifier}", found ${searchSnapshot.snapshotLength}`);
+    }
+
+    if (requirementsElement === null) {
+      throw new Error(`Could not find a DOMElement with the id "${identifier}"`);
+    }
 
     return requirementsElement;
   }
