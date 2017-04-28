@@ -235,7 +235,7 @@ describe('ThingLayer test suite', () => {
       beforeEach(() => {
         selectedLabelStructureThing = {
           id: 'foobar',
-          shape: 'heinz',
+          shape: 'pedestrian',
         };
 
         const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort']);
