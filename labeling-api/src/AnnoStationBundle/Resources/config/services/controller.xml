@@ -184,8 +184,11 @@
                 class="AnnoStationBundle\Controller\Api\User">
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
         </service>
 
         <service
