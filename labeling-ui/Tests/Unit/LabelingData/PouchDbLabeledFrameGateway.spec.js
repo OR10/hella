@@ -1,4 +1,3 @@
-import {cloneDeep} from 'lodash';
 import {inject} from 'angular-mocks';
 import PouchDbLabeledFrameGateway from 'Application/LabelingData/Gateways/PouchDbLabeledFrameGateway';
 
@@ -6,7 +5,7 @@ import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledFrame';
 import LabeledFrameFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledFrame';
 
-fdescribe('PouchDbLabeledFrameGateway', () => {
+describe('PouchDbLabeledFrameGateway', () => {
   let rootScope;
   let angularQ;
   let packagingExecutor;
@@ -29,7 +28,7 @@ fdescribe('PouchDbLabeledFrameGateway', () => {
       (queue, executionFn) => angularQ.resolve(executionFn())
     );
   });
-  beforeEach(() => pouchDb = jasmine.createSpyObj('pouchDb', ['query', 'put', 'get']));
+  beforeEach(() => pouchDb = jasmine.createSpyObj('pouchDb', ['query', 'put', 'get', 'remove']));
   beforeEach(() => {
     pouchDbContextService = jasmine.createSpyObj('pouchDbContextService', ['provideContextForTaskId']);
     pouchDbContextService.provideContextForTaskId.and.returnValue(pouchDb);
@@ -317,6 +316,104 @@ fdescribe('PouchDbLabeledFrameGateway', () => {
         done();
       });
 
+      rootScope.$apply();
+    });
+  });
+
+  describe('deleteLabeledFrame', () => {
+    beforeEach(() => {
+      pouchDb.query.and.returnValue({
+        rows: [{
+          doc: LabeledFrameCouchDbModel,
+        }],
+      });
+    });
+
+    beforeEach(() => {
+      pouchDb.remove.and.returnValue(angularQ.resolve({
+        "ok": true,
+        "id": "mydoc",
+        "rev": "2-9AF304BE281790604D1D8A4B0F4C9ADB"
+      }));
+    });
+
+    it('should use the packaging executor with the labeledFrame queue', () => {
+      labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      rootScope.$apply();
+
+      expect(packagingExecutor.execute).toHaveBeenCalledWith('labeledFrame', jasmine.any(Function));
+    });
+
+    it('should call the packaging executor once', () => {
+      labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      rootScope.$apply();
+
+      expect(packagingExecutor.execute).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return the promise of the packaging executor', () => {
+      const actualResult = labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      rootScope.$apply();
+
+      const expectedResult = packagingExecutor.execute.calls.first().returnValue;
+      expect(actualResult).toBe(expectedResult);
+    });
+
+    it('should use the context of the given taskId', () => {
+      const givenTaskId = 'some-task-id-42';
+      labeledFrameGateway.deleteLabeledFrame(givenTaskId, 42);
+      rootScope.$apply();
+
+      expect(pouchDbContextService.provideContextForTaskId).toHaveBeenCalledWith(givenTaskId);
+    });
+
+    it('should utilize the "labeledFrameByTaskIdAndFrameIndex" couchdb view through the view service', () => {
+      labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      rootScope.$apply();
+
+      expect(pouchDbViewService.getDesignDocumentViewName).toHaveBeenCalledWith('labeledFrameByTaskIdAndFrameIndex');
+    });
+
+    it('should query the view using the given taskId and frameIndex', () => {
+      const givenTaskId = 'some-task-id-42';
+      const givenFrameIndex = 423;
+      labeledFrameGateway.deleteLabeledFrame(givenTaskId, givenFrameIndex);
+      rootScope.$apply();
+
+      expect(pouchDb.query).toHaveBeenCalled();
+
+      const actualQueryOptionsObject = pouchDb.query.calls.argsFor(0)[1];
+      expect(actualQueryOptionsObject.key).toEqual([givenTaskId, givenFrameIndex]);
+    });
+
+    it('should remove document with retrieved labeledFrame id', () => {
+      labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      rootScope.$apply();
+
+      const removedId = pouchDb.remove.calls.argsFor(0)[0];
+      expect(removedId).toEqual(LabeledFrameCouchDbModel._id);
+    });
+
+    it('should remove document with retrieved labeledFrame revision', () => {
+      labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      rootScope.$apply();
+
+      const removedRevision = pouchDb.remove.calls.argsFor(0)[1];
+      expect(removedRevision).toEqual(LabeledFrameCouchDbModel._rev);
+    });
+
+    it('should work if requested document is not actually stored', done => {
+      pouchDb.query.and.returnValue(angularQ.resolve({
+        rows: [],
+      }));
+
+      const resultPromise = labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      rootScope.$apply();
+
+      resultPromise.then(result => {
+        expect(result).toBeTruthy();
+        done();
+      });
       rootScope.$apply();
     });
   });
