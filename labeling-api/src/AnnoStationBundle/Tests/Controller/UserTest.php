@@ -296,6 +296,8 @@ class UserTest extends Tests\WebTestCase
 
     public function testDeleteUserAsAdminInSameOrganisation()
     {
+        $this->markTestSkipped('This test requires a RabbitMQ Server!');
+
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
