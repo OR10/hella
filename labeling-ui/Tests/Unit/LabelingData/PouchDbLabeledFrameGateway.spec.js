@@ -104,7 +104,7 @@ describe('PouchDbLabeledFrameGateway', () => {
       expect(pouchDbContextService.provideContextForTaskId).toHaveBeenCalledWith(givenTaskId);
     });
 
-    it('should utilize the "labeledFrameByTaskIdAndFrameIndex" couchdb view through the view service', () => {
+    it('should utilize the labeledFrameByTaskIdAndFrameIndex couchdb view through the view service', () => {
       labeledFrameGateway.getLabeledFrame('TASK-ID', 42);
       rootScope.$apply();
 
@@ -151,9 +151,9 @@ describe('PouchDbLabeledFrameGateway', () => {
     beforeEach(() => {
       pouchDb.put.and.callFake(
         document => angularQ.resolve({
-          "ok": true,
-          "id": document._id,
-          "rev": "1-A6157A5EA545C99B00FF904EEF05FD9F"
+          'ok': true,
+          'id': document._id,
+          'rev': '1-A6157A5EA545C99B00FF904EEF05FD9F',
         })
       );
 
@@ -211,7 +211,7 @@ describe('PouchDbLabeledFrameGateway', () => {
         classes: ['foo', 'bar'],
         incomplete: true,
         taskId: 'TASK-ID',
-        frameIndex: 42
+        frameIndex: 42,
       });
       couchDbModelSerializer.serialize.and.returnValue(labeledFrameWithoutId);
 
@@ -260,36 +260,36 @@ describe('PouchDbLabeledFrameGateway', () => {
         classes: ['foo', 'bar', 'baz'],
         incomplete: false,
         taskId: 'TASK-ID',
-        frameIndex: 42
+        frameIndex: 42,
       });
 
       const serializedLabeledFrame = {
-        "_id": "LT-ID",
-        "type": "AppBundle.Model.LabeledFrame",
-        "frameIndex": 42,
-        "classes": [
-          "foo",
-          "bar",
-          "baz",
+        '_id': 'LT-ID',
+        'type': 'AppBundle.Model.LabeledFrame',
+        'frameIndex': 42,
+        'classes': [
+          'foo',
+          'bar',
+          'baz',
         ],
         ghostClasses: null,
-        "taskId": "TASK-ID",
-        "incomplete": false
+        'taskId': 'TASK-ID',
+        'incomplete': false,
       };
 
       const updatedLabeledFrameDocument = {
-        "_id": "LT-ID",
-        "_rev": "1-abcdefgh",
-        "type": "AppBundle.Model.LabeledFrame",
-        "frameIndex": 42,
-        "classes": [
-          "foo",
-          "bar",
-          "baz",
+        '_id': 'LT-ID',
+        '_rev': '1-abcdefgh',
+        'type': 'AppBundle.Model.LabeledFrame',
+        'frameIndex': 42,
+        'classes': [
+          'foo',
+          'bar',
+          'baz',
         ],
         ghostClasses: null,
-        "taskId": "TASK-ID",
-        "incomplete": false
+        'taskId': 'TASK-ID',
+        'incomplete': false,
       };
 
       const expectedLabeledFrame = new LabeledFrame({
@@ -297,7 +297,7 @@ describe('PouchDbLabeledFrameGateway', () => {
         classes: ['foo', 'bar', 'baz'],
         incomplete: false,
         taskId: 'TASK-ID',
-        frameIndex: 42
+        frameIndex: 42,
       });
 
       couchDbModelSerializer.serialize.and.returnValue(serializedLabeledFrame);
@@ -311,8 +311,8 @@ describe('PouchDbLabeledFrameGateway', () => {
       expect(pouchDb.put).toHaveBeenCalledWith(serializedLabeledFrame);
       expect(pouchDb.get).toHaveBeenCalledWith('LT-ID');
       expect(couchDbModelDeserializer.deserializeLabeledFrame).toHaveBeenCalledWith(updatedLabeledFrameDocument);
-      returnPromise.then(labeledFrame => {
-        expect(labeledFrame).toBe(expectedLabeledFrame);
+      returnPromise.then(actualLabeledFrame => {
+        expect(actualLabeledFrame).toBe(expectedLabeledFrame);
         done();
       });
 
@@ -331,9 +331,9 @@ describe('PouchDbLabeledFrameGateway', () => {
 
     beforeEach(() => {
       pouchDb.remove.and.returnValue(angularQ.resolve({
-        "ok": true,
-        "id": "mydoc",
-        "rev": "2-9AF304BE281790604D1D8A4B0F4C9ADB"
+        'ok': true,
+        'id': 'mydoc',
+        'rev': '2-9AF304BE281790604D1D8A4B0F4C9ADB',
       }));
     });
 
@@ -367,7 +367,7 @@ describe('PouchDbLabeledFrameGateway', () => {
       expect(pouchDbContextService.provideContextForTaskId).toHaveBeenCalledWith(givenTaskId);
     });
 
-    it('should utilize the "labeledFrameByTaskIdAndFrameIndex" couchdb view through the view service', () => {
+    it('should utilize the labeledFrameByTaskIdAndFrameIndex couchdb view through the view service', () => {
       labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
       rootScope.$apply();
 
