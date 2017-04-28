@@ -4,15 +4,7 @@ class annostation_base(
   $github_tokens = false,
   $jenkins_slave = false,
   $docker = false,
-  $symfonyUser = undef,
-  $symfonyRoot,
 ) {
-    if $symfonyUser == undef {
-      $_symfonyUser = hiera('php::fpm::pools')['www']['user']
-    } else {
-      $_symfonyUser = $symfonyUser
-    }
-
     if $nodejs {
       include ::annostation_base::nodejs
     }
@@ -85,10 +77,4 @@ class annostation_base(
       ensure => present,
       source => 'puppet:///modules/annostation_base/inputrc',
     }
-
-    file { '/etc/cron.d/remove-expired-user-assignments-and-memberships':
-          ensure  => present,
-          content => "0 1 * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:remove-expired-user-assignments-and-memberships",
-          mode    => '644',
-        }
 }
