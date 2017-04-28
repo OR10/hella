@@ -1,9 +1,7 @@
 import {inject} from 'angular-mocks';
 import InterpolationService from 'Application/LabelingData/Services/InterpolationService';
 
-describe('Interpolation with PouchDB Spec', () => {
-  const interpolationTypeId = 'linear';
-
+fdescribe('Interpolation with PouchDB Spec', () => {
   const featureFlag = {pouchdb: false};
   let interpolationService;
   let firstInterpolation;
@@ -23,8 +21,7 @@ describe('Interpolation with PouchDB Spec', () => {
 
     firstInterpolation = jasmine.createSpyObj('firstInterpolation', ['execute']);
     firstInterpolation.execute.and.returnValue({then: () => {}});
-    firstInterpolation.id = interpolationTypeId;
-
+  
     interpolations = firstInterpolation;
   });
 
@@ -50,21 +47,10 @@ describe('Interpolation with PouchDB Spec', () => {
       cacheMock.container.and.returnValue(cacheContainerMock);
     }));
 
-    it('throws if interpolation id is unknown', () => {
-      const id = 'Unknown';
-
-      createInterpolationService();
-
-      function throwWrapper() {
-        interpolationService.interpolate(id);
-      }
-      expect(throwWrapper).toThrowError(`Interpolation with id '${id}' is not currently registered on the InterpolationService.`);
-    });
-
     it('invalidates the caches', () => {
       createInterpolationService();
 
-      interpolationService.interpolate(interpolationTypeId, null, labeledThing, frameRange);
+      interpolationService.interpolate(null, labeledThing, frameRange);
       expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.${labeledThing.id}`);
       expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.complete`);
       expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.endFrameIndex}.${labeledThing.id}`);
@@ -77,7 +63,7 @@ describe('Interpolation with PouchDB Spec', () => {
 
       createInterpolationService();
 
-      interpolationService.interpolate(interpolationTypeId, null, labeledThing, frameRange);
+      interpolationService.interpolate(null, labeledThing, frameRange);
       expect(cacheContainerMock.invalidate).not.toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.1`);
       expect(cacheContainerMock.invalidate).not.toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.2`);
     });
@@ -88,7 +74,7 @@ describe('Interpolation with PouchDB Spec', () => {
 
       createInterpolationService();
 
-      interpolationService.interpolate(interpolationTypeId, null, labeledThing, frameRange);
+      interpolationService.interpolate(null, labeledThing, frameRange);
       expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.1`);
       expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.2`);
     });
@@ -99,7 +85,7 @@ describe('Interpolation with PouchDB Spec', () => {
       cacheHeaterMock = jasmine.createSpyObj('cacheHeaterMock', ['heatFrames']);
 
       createInterpolationService();
-      interpolationService.interpolate(interpolationTypeId, task, labeledThing, frameRange);
+      interpolationService.interpolate(task, labeledThing, frameRange);
       rootScope.$apply();
 
       expect(cacheHeaterMock.heatFrames).toHaveBeenCalledWith(task, frameRange.startFrameIndex, firstInterpolation.endFrameIndex);
@@ -132,16 +118,16 @@ describe('Interpolation with PouchDB Spec', () => {
         firstInterpolation.execute.and.returnValue(angularQ.resolve());
       });
 
-      it('calls the context service with correct paramter', () => {
+      it('calls the context service with correct parameter', () => {
         createInterpolationService();
-        interpolationService.interpolate(interpolationTypeId, task, labeledThing, frameRange);
+        interpolationService.interpolate(task, labeledThing, frameRange);
 
         expect(pouchDbContextServiceMock.provideContextForTaskId).toHaveBeenCalledWith(task.id);
       });
 
       it('calls the SyncManager correctly', () => {
         createInterpolationService();
-        interpolationService.interpolate(interpolationTypeId, task, labeledThing, frameRange);
+        interpolationService.interpolate(task, labeledThing, frameRange);
         rootScope.$apply();
 
         expect(pouchDBSyncManagerMock.stopReplicationsForContext).toHaveBeenCalledWith(pouchDbMock);
@@ -154,7 +140,7 @@ describe('Interpolation with PouchDB Spec', () => {
         firstInterpolation.endFrameIndex = 19;
 
         createInterpolationService();
-        interpolationService.interpolate(interpolationTypeId, task, labeledThing, frameRange);
+        interpolationService.interpolate(task, labeledThing, frameRange);
         rootScope.$apply();
 
         expect(cacheHeaterMock.heatFrames).toHaveBeenCalledWith(task, frameRange.startFrameIndex, firstInterpolation.endFrameIndex);

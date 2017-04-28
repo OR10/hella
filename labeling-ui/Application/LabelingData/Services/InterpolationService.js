@@ -111,14 +111,14 @@ class InterpolationService {
           return this._pouchDbSyncManager.pullUpdatesForContext(pouchDBContext);
         })
         .then(() => {
-          this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex);
+          this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex + 1);
           return this._pouchDbSyncManager.startDuplexLiveReplication(pouchDBContext);
         });
     }
     return this._interpolation
       .execute(task, labeledThing, interpolationFrameRange)
       .then(result => {
-        this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex);
+        this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex + 1);
         return result;
       });
   }
