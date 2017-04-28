@@ -46,16 +46,23 @@ class User extends Controller\Base
      * @var Facade\Project
      */
     private $projectFacade;
+
     /**
      * @var AMQP\FacadeAMQP
      */
     private $amqpFacade;
 
     /**
+     * @var Facade\LabelingGroup
+     */
+    private $labelingGroupFacade;
+
+    /**
      * Users constructor.
      *
      * @param AppFacade\User                 $userFacade
      * @param Facade\Project                 $projectFacade
+     * @param Facade\LabelingGroup           $labelingGroupFacade
      * @param Service\Authorization          $authorizationService
      * @param Authentication\UserPermissions $userPermissions
      * @param AMQP\FacadeAMQP                $amqpFacade
@@ -63,6 +70,7 @@ class User extends Controller\Base
     public function __construct(
         AppFacade\User $userFacade,
         Facade\Project $projectFacade,
+        Facade\LabelingGroup $labelingGroupFacade,
         Service\Authorization $authorizationService,
         Authentication\UserPermissions $userPermissions,
         AMQP\FacadeAMQP $amqpFacade
@@ -72,6 +80,7 @@ class User extends Controller\Base
         $this->userPermissions      = $userPermissions;
         $this->projectFacade        = $projectFacade;
         $this->amqpFacade           = $amqpFacade;
+        $this->labelingGroupFacade  = $labelingGroupFacade;
     }
 
     /**
@@ -128,6 +137,20 @@ class User extends Controller\Base
 
         $user->removeFromOrganisation($organisation);
         $this->userFacade->updateUser($user);
+
+        $labelingGroups = $this->labelingGroupFacade->findAllByUser($user);
+
+        $labelingGroups = array_filter(
+            $labelingGroups,
+            function (Model\LabelingGroup $labelingGroup) use ($organisation) {
+                return $organisation->getId() === $labelingGroup->getOrganisationId();
+            }
+        );
+
+        /** @var Model\LabelingGroup $labelingGroup */
+        foreach ($labelingGroups as $labelingGroup) {
+            $this->labelingGroupFacade->deleteUserFromLabelGroup($labelingGroup, $user);
+        }
 
         $this->removeLabelingTaskAssignments($organisation, $user);
 

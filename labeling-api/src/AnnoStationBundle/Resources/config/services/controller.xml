@@ -165,6 +165,7 @@
                 class="AnnoStationBundle\Controller\Api\Organisation\User">
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>

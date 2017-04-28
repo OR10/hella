@@ -59,6 +59,35 @@ class LabelingGroup
     }
 
     /**
+     * @param Model\LabelingGroup $labelingGroup
+     * @param Model\User          $user
+     *
+     * @return Model\LabelingGroup
+     */
+    public function deleteUserFromLabelGroup(Model\LabelingGroup $labelingGroup, Model\User $user)
+    {
+        $labelingGroup->setLabeler(
+            array_filter(
+                $labelingGroup->getLabeler(),
+                function ($userId) use ($user) {
+                    return $userId !== $user->getId();
+                }
+            )
+        );
+        $labelingGroup->setCoordinators(
+            array_filter(
+                $labelingGroup->getCoordinators(),
+                function ($userId) use ($user) {
+                    return $userId !== $user->getId();
+                }
+            )
+        );
+        $this->save($labelingGroup);
+
+        return $labelingGroup;
+    }
+
+    /**
      * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return \Doctrine\CouchDB\View\Result
