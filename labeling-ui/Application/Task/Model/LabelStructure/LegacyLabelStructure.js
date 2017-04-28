@@ -61,7 +61,7 @@ class LegacyLabelStructure extends LabelStructure {
    * @param {Array.<string>} classList
    * @return {Array.<object>}
    */
-  getEnabledThingClassesForThingAndClassList(thing, classList) { // eslint-disable-line no-unused-vars
+  getEnabledClassesForLabeledObjectAndClassList(thing, classList) { // eslint-disable-line no-unused-vars
     if (thing.id !== 'legacy') {
       throw new Error(`LegacyLabelStructures only know the 'legacy' thing. ${thing.id} was given!`);
     }
@@ -89,13 +89,24 @@ class LegacyLabelStructure extends LabelStructure {
   }
 
   /**
-   * Retrieve a `Map` of all `Things` defined inside the {@link LabelStructure}
+   * Retrieve a `Map` of all `Groups` defined inside the {@link LabelStructure}
    *
    * As the LegacyLabelStructure does not support groups the map will be always empty.
    *
    * @return {Map.<string, LabelStructureGroup>}
    */
   getGroups() {
+    return new Map();
+  }
+
+  /**
+   * Retrieve a `Map` of all `Frames` defined inside the {@link LabelStructure}
+   *
+   * As the LegacyLabelStructure does not support frames the map will be always empty.
+   *
+   * @return {Map.<string, LabelStructureFrame>}
+   */
+  getRequirementFrames() {
     return new Map();
   }
 }

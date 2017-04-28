@@ -3,6 +3,7 @@ import {cloneDeep} from 'lodash';
 import LabelStructure from '../LabelStructure';
 import LabelStructureThing from '../LabelStructureThing';
 import LabelStructureGroup from '../LabelStructureGroup';
+import LabelStructureFrame from '../LabeledStructureFrame';
 import XMLClassElement from '../XMLClassElement';
 
 /**
@@ -69,17 +70,17 @@ class RequirementsLabelStructure extends LabelStructure {
    * defined by the utilized {@link LabelStructure}.
    *
    * @abstract
-   * @param {LabelStructureThing} thing
+   * @param {LabelStructureObject} labelStructureObject
    * @param {Array.<string>} classList
    * @return {Array.<object>}
    */
-  getEnabledThingClassesForThingAndClassList(thing, classList) {
-    const identifier = thing.id;
-    if (!this.isThingDefinedById(identifier)) {
-      throw new Error(`Thing with identifier '${identifier}' could not be found in LabelStructure`);
+  getEnabledClassesForLabeledObjectAndClassList(labelStructureObject, classList) {
+    const identifier = labelStructureObject.id;
+    if (!this.isLabelStructureObjectDefinedById(identifier)) {
+      throw new Error(`LabelStructureObject with identifier '${identifier}' could not be found in LabelStructure`);
     }
 
-    const element = this._getThingElementById(identifier);
+    const element = this._getLabelStructureObjectElementById(identifier);
     const enabledElements = this._getEnabledElementsByStartingElementAndClassList(element, classList);
     const enabledThingClasses = enabledElements.map(
       enabledElement => this._annotateClassJsonWithActiveValue(
@@ -115,6 +116,19 @@ class RequirementsLabelStructure extends LabelStructure {
     }
 
     return this._groupMap;
+  }
+
+  /**
+   * Retrieve a `Map` of all `Frames` defined inside the {@link LabelStructure}
+   *
+   * @return {*}
+   */
+  getRequirementFrames() {
+    if (this._requirementFramesMap === null) {
+      this._requirementFramesMap = this._extractRequirementFrames();
+    }
+
+    return this._requirementFramesMap;
   }
 
   /**
@@ -156,14 +170,33 @@ class RequirementsLabelStructure extends LabelStructure {
       const groupElement = groupsSnapshot.snapshotItem(index);
       const identifier = groupElement.attributes.id.value;
       const name = groupElement.attributes.name.value;
+      const shape = 'group-rectangle';
 
       groupMap.set(
         identifier,
-        new LabelStructureGroup(identifier, name, 'group-rectangle')
+        new LabelStructureGroup(identifier, name, shape)
       );
     }
 
     return groupMap;
+  }
+
+  _extractRequirementFrames() {
+    const requirementFramesMap = new Map();
+    const requirementFrameSnapshot = this._evaluateXPath('/r:requirements/r:frame', null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    for (let index = 0; index < requirementFrameSnapshot.snapshotLength; index++) {
+      const identifier = 'frame-id';
+      const name = 'frame-name';
+      const shape = 'frame-shape';
+
+      requirementFramesMap.set(
+        identifier,
+        new LabelStructureFrame(identifier, name, shape)
+      );
+    }
+
+    return requirementFramesMap;
   }
 
   /**
@@ -345,19 +378,22 @@ class RequirementsLabelStructure extends LabelStructure {
    * Currently searched DOMElements are:
    * - Thing
    * - Group
+   * - Frame
    *
    * @param identifier
    * @private
    */
-  _getThingElementById(identifier) {
-    const thing = this._extractThingDOMElementById(identifier);
-    const group = this._extractGroupDOMElementById(identifier);
+  _getLabelStructureObjectElementById(identifier) {
+    const labeledObjects = [];
+    labeledObjects.push(this._extractLabeledObjectDOMElementById('thing', identifier));
+    labeledObjects.push(this._extractLabeledObjectDOMElementById('group', identifier));
+    labeledObjects.push(this._extractLabeledObjectDOMElementById('frame', identifier));
 
-    if (!thing && !group) {
-      throw new Error(`Expected to find one thing node with a specific id, but found none.`);
+    if (labeledObjects.length !== 1) {
+      throw new Error(`Expected to find one labeled object node with the id "${identifier}", found ${labeledObjects.length}`);
     }
 
-    return thing || group;
+    return labeledObjects[0];
   }
 
   /**
@@ -365,33 +401,17 @@ class RequirementsLabelStructure extends LabelStructure {
    *
    * If a node with the given identifier could not be found an exception will be thrown.
    *
+   * @param {string} type
    * @param {string} identifier
    * @returns {Node}
    * @private
    */
-  _extractThingDOMElementById(identifier) {
-    const searchNodePath = `/r:requirements/r:thing[@id="${identifier}"]`;
+  _extractLabeledObjectDOMElementById(type, identifier) {
+    const searchNodePath = `/r:requirements/r:${type}[@id="${identifier}"]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    const requirementsElement = searchSnapshot.snapshotItem(0);
 
-    const thingElement = searchSnapshot.snapshotItem(0);
-    return thingElement;
-  }
-
-  /**
-   * Get the group DOMElement of thing with a specific identifier
-   *
-   * If a node with the given identifier could not be found an exception will be thrown.
-   *
-   * @param {string} identifier
-   * @returns {Node}
-   * @private
-   */
-  _extractGroupDOMElementById(identifier) {
-    const searchNodePath = `/r:requirements/r:group[@id="${identifier}"]`;
-    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
-
-    const groupElement = searchSnapshot.snapshotItem(0);
-    return groupElement;
+    return requirementsElement;
   }
 
   /**
