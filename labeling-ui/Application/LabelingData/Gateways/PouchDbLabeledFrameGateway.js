@@ -1,5 +1,3 @@
-import LabeledFrame from '../Models/LabeledFrame';
-
 /**
  * Gateway for saving and retrieving {@link LabeledFrame}s from pouchdb
  */
@@ -82,14 +80,14 @@ class PouchDbLabeledFrameGateway {
         .then(() => db.query(viewIdentifier, {
           key: [taskId, frameIndex],
           include_docs: true,
-          limit: 1
+          limit: 1,
         }))
         .then(result => {
           const labeledFrameDocument = result.rows[0].doc;
           this._revisionManager.extractRevision(labeledFrameDocument);
           const labeledFrame = this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument);
           return labeledFrame;
-        })
+        });
     });
   }
 
@@ -122,7 +120,7 @@ class PouchDbLabeledFrameGateway {
         })
         .then(result => {
           this._revisionManager.extractRevision(result);
-          return db.get(result.id)
+          return db.get(result.id);
         })
         .then(
           document => this._couchDbModelDeserializer.deserializeLabeledFrame(document)
@@ -147,7 +145,7 @@ class PouchDbLabeledFrameGateway {
           return db.query(viewDesignDocument, {
             key: [taskId, frameIndex],
             include_docs: true,
-            limit: 1
+            limit: 1,
           });
         })
         .then(result => {
