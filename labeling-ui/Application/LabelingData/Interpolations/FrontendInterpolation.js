@@ -39,7 +39,6 @@ class FrontendInterpolation {
    */
   execute(task, labeledThing, frameRange) {
     const limit = (frameRange.endFrameIndex - frameRange.startFrameIndex) + 1;
-
     this._labeledThingInFrameGateway.getLabeledThingInFrame(
       task,
       frameRange.startFrameIndex,
@@ -67,21 +66,25 @@ class FrontendInterpolation {
 
       const savePromises = [];
       labeledThingInFrameIndices.forEach((currentLtifIndex, ltifIndicesIndex) => {
-        if (labeledThingInFrameIndices[ltifIndicesIndex + 1 ] !== undefined) {
+        if (labeledThingInFrameIndices[ltifIndicesIndex + 1] !== undefined) {
           const startLtif = labeledThingInFrames[ltifIndicesIndex];
           const endLtif = labeledThingInFrames[ltifIndicesIndex + 1];
-          const endLtifIndex = labeledThingInFrameIndices[ltifIndicesIndex + 1];
+          console.log(startLtif.frameIndex + 1 === endLtif.frameIndex);
+          if (startLtif.frameIndex + 1 === endLtif.frameIndex) {
+            return;
+          }
 
+          const endLtifIndex = labeledThingInFrameIndices[ltifIndicesIndex + 1];
           const steps = [];
           for (let index = 1; index < (endLtifIndex - currentLtifIndex); index++) {
-            steps.push(index);
+            steps.push(currentLtifIndex + index);
           }
 
           const easing = this._getEasingForShapeAndType(startLtif);
 
-          steps.forEach(step => {
+          steps.forEach((step, stepIndex) => {
             const currentGhost = labeledThingInFramesWithGhosts[step];
-            const delta = step / (steps.length + 1);
+            const delta = (stepIndex + 1) / (steps.length + 1);
 
             easing.step(currentGhost, startLtif, endLtif, delta);
 
