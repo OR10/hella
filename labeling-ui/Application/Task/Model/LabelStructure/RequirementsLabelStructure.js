@@ -3,6 +3,7 @@ import {cloneDeep} from 'lodash';
 import LabelStructure from '../LabelStructure';
 import LabelStructureThing from '../LabelStructureThing';
 import LabelStructureGroup from '../LabelStructureGroup';
+import LabelStructureFrame from '../LabeledStructureFrame';
 import XMLClassElement from '../XMLClassElement';
 
 /**
@@ -59,6 +60,14 @@ class RequirementsLabelStructure extends LabelStructure {
      * @private
      */
     this._groupMap = null;
+
+    /**
+     * Map containing all {@link LabelStructureFrame} objects of this {@link LabelStructure} stored by their `id`.
+     *
+     * @type {null}
+     * @private
+     */
+    this._requirementFramesMap = null;
   }
 
   /**
@@ -69,17 +78,16 @@ class RequirementsLabelStructure extends LabelStructure {
    * defined by the utilized {@link LabelStructure}.
    *
    * @abstract
-   * @param {LabelStructureThing} thing
+   * @param {LabelStructureObject} labelStructureObject
    * @param {Array.<string>} classList
    * @return {Array.<object>}
    */
-  getEnabledThingClassesForThingAndClassList(thing, classList) {
-    const identifier = thing.id;
-    if (!this.isThingDefinedById(identifier)) {
-      throw new Error(`Thing with identifier '${identifier}' could not be found in LabelStructure`);
+  getEnabledClassesForLabeledObjectAndClassList(labelStructureObject, classList) {
+    const identifier = labelStructureObject.id;
+    if (!this._isLabelStructureObjectDefinedById(identifier)) {
+      throw new Error(`LabelStructureObject with identifier '${identifier}' could not be found in LabelStructure`);
     }
-
-    const element = this._getThingElementById(identifier);
+    const element = this._getLabelStructureObjectElementById(identifier);
     const enabledElements = this._getEnabledElementsByStartingElementAndClassList(element, classList);
     const enabledThingClasses = enabledElements.map(
       enabledElement => this._annotateClassJsonWithActiveValue(
@@ -89,6 +97,37 @@ class RequirementsLabelStructure extends LabelStructure {
     );
 
     return enabledThingClasses;
+  }
+
+  /**
+   * Retrieve information about whether a LabelStructureObject with a specific id is defined inside this {@link LabelStructure}
+   *
+   * @param {string} identifier
+   * @return {boolean}
+   * @private
+   */
+  _isLabelStructureObjectDefinedById(identifier) {
+    const objects = this._getLabelStructureObjects();
+
+    return objects.has(identifier);
+  }
+
+  /**
+   * Gets an accumulated map of all labelStructure objects that are defined in the {@link LabelStructure}
+   *
+   * @return {Map}
+   * @private
+   */
+  _getLabelStructureObjects() {
+    const things = this.getThings();
+    const groups = this.getGroups();
+    const frames = this.getRequirementFrames();
+
+    return new Map([
+      ...things,
+      ...groups,
+      ...frames,
+    ]);
   }
 
   /**
@@ -115,6 +154,19 @@ class RequirementsLabelStructure extends LabelStructure {
     }
 
     return this._groupMap;
+  }
+
+  /**
+   * Retrieve a `Map` of all `Frames` defined inside the {@link LabelStructure}
+   *
+   * @return {*}
+   */
+  getRequirementFrames() {
+    if (this._requirementFramesMap === null) {
+      this._requirementFramesMap = this._extractRequirementFrames();
+    }
+
+    return this._requirementFramesMap;
   }
 
   /**
@@ -156,14 +208,33 @@ class RequirementsLabelStructure extends LabelStructure {
       const groupElement = groupsSnapshot.snapshotItem(index);
       const identifier = groupElement.attributes.id.value;
       const name = groupElement.attributes.name.value;
+      const shape = 'group-rectangle';
 
       groupMap.set(
         identifier,
-        new LabelStructureGroup(identifier, name, 'group-rectangle')
+        new LabelStructureGroup(identifier, name, shape)
       );
     }
 
     return groupMap;
+  }
+
+  _extractRequirementFrames() {
+    const requirementFramesMap = new Map();
+    const requirementFrameSnapshot = this._evaluateXPath('/r:requirements/r:frame', null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    for (let index = 0; index < requirementFrameSnapshot.snapshotLength; index++) {
+      const identifier = 'frame-id';
+      const name = 'frame-name';
+      const shape = 'frame-shape';
+
+      requirementFramesMap.set(
+        identifier,
+        new LabelStructureFrame(identifier, name, shape)
+      );
+    }
+
+    return requirementFramesMap;
   }
 
   /**
@@ -345,19 +416,15 @@ class RequirementsLabelStructure extends LabelStructure {
    * Currently searched DOMElements are:
    * - Thing
    * - Group
+   * - Frame
    *
    * @param identifier
    * @private
    */
-  _getThingElementById(identifier) {
-    const thing = this._extractThingDOMElementById(identifier);
-    const group = this._extractGroupDOMElementById(identifier);
+  _getLabelStructureObjectElementById(identifier) {
+    const labeledObject = this._extractLabeledObjectDOMElementById(identifier);
 
-    if (!thing && !group) {
-      throw new Error(`Expected to find one thing node with a specific id, but found none.`);
-    }
-
-    return thing || group;
+    return labeledObject;
   }
 
   /**
@@ -369,29 +436,20 @@ class RequirementsLabelStructure extends LabelStructure {
    * @returns {Node}
    * @private
    */
-  _extractThingDOMElementById(identifier) {
-    const searchNodePath = `/r:requirements/r:thing[@id="${identifier}"]`;
+  _extractLabeledObjectDOMElementById(identifier) {
+    const searchNodePath = `/r:requirements/r:thing[@id="${identifier}"]|/r:requirements/r:group[@id="${identifier}"]|/r:requirements/r:frame[@id="${identifier}"]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    const requirementsElement = searchSnapshot.snapshotItem(0);
 
-    const thingElement = searchSnapshot.snapshotItem(0);
-    return thingElement;
-  }
+    if (searchSnapshot.snapshotLength > 1) {
+      throw new Error(`Expected to find one labeled object node with the id "${identifier}", found ${searchSnapshot.snapshotLength}`);
+    }
 
-  /**
-   * Get the group DOMElement of thing with a specific identifier
-   *
-   * If a node with the given identifier could not be found an exception will be thrown.
-   *
-   * @param {string} identifier
-   * @returns {Node}
-   * @private
-   */
-  _extractGroupDOMElementById(identifier) {
-    const searchNodePath = `/r:requirements/r:group[@id="${identifier}"]`;
-    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    if (requirementsElement === null) {
+      throw new Error(`Could not find a DOMElement with the id "${identifier}"`);
+    }
 
-    const groupElement = searchSnapshot.snapshotItem(0);
-    return groupElement;
+    return requirementsElement;
   }
 
   /**
