@@ -69,7 +69,6 @@ class FrontendInterpolation {
         if (labeledThingInFrameIndices[ltifIndicesIndex + 1] !== undefined) {
           const startLtif = labeledThingInFrames[ltifIndicesIndex];
           const endLtif = labeledThingInFrames[ltifIndicesIndex + 1];
-          console.log(startLtif.frameIndex + 1 === endLtif.frameIndex);
           if (startLtif.frameIndex + 1 === endLtif.frameIndex) {
             return;
           }
