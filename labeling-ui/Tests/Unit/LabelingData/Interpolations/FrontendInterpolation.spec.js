@@ -96,9 +96,9 @@ describe('FrontendInterpolation Test Suite', () => {
 
         labeledThingInFramesWithGhosts = [
           startLtif,
+          endLtif,
           firstGhost,
           secondGhost,
-          endLtif,
         ];
 
         promise = angularQ.resolve(labeledThingInFramesWithGhosts);
