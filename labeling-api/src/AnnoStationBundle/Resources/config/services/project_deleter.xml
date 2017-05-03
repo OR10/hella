@@ -30,6 +30,7 @@
             <argument type="service"
                       id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_in_frames"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.task_timers"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_group"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.video"/>
         </service>
         <service id="annostation.labeling_api.service.project_deleter.delete.reports"
@@ -43,6 +44,13 @@
         <service id="annostation.labeling_api.service.project_deleter.delete.task_timers"
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\TaskTimers">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+        </service>
+        <service id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_group"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabeledThingGroup">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
         <service id="annostation.labeling_api.service.project_deleter.delete.video"
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\Video">
