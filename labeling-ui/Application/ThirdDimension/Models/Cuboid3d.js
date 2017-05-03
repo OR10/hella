@@ -225,8 +225,22 @@ class Cuboid3d {
     }
   }
 
+  /**
+   * The vertices as is
+   *
+   * @returns {Array.<Vector4>}
+   */
   get vertices() {
     return this._vertices.map(vertex => vertex.clone());
+  }
+
+  /**
+   * The vertices in their raw form
+   *
+   * @returns {Array.<Array>}
+   */
+  get rawVertices() {
+    return this._vertices.map(vertex => [vertex.x, vertex.y, vertex.z]);
   }
 
   /**

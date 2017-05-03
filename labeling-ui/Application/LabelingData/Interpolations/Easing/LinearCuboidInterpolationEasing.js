@@ -31,7 +31,8 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
       newCuboid3d.push(newCoordinates);
     });
 
-    ghost.shapes[0].vehicleCoordinates = newCuboid3d;
+    const verticesWithPredictedVertices = Cuboid3d.createFromRawVertices(newCuboid3d).rawVertices;
+    ghost.shapes[0].vehicleCoordinates = verticesWithPredictedVertices;
   }
 
   _getFrontFaceVertexIndicesFromBackgroundFaceVertexIndices(backgroundFaceVertices) {
