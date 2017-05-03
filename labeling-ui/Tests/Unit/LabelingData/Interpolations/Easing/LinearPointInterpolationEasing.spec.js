@@ -1,14 +1,14 @@
 import InterpolationEasing from 'Application/LabelingData/Interpolations/Easing/InterpolationEasing';
-import LinearPedestrianInterpolationEasing from 'Application/LabelingData/Interpolations/Easing/LinearPedestrianInterpolationEasing';
+import LinearPointInterpolationEasing from 'Application/LabelingData/Interpolations/Easing/LinearPointInterpolationEasing';
 
-describe('LinearPedestrianInterpolationEasing Test Suite', () => {
+fdescribe('LinearPointInterpolationEasing Test Suite', () => {
   /**
-   * @type {LinearPedestrianInterpolationEasing}
+   * @type {LinearPointInterpolationEasing}
    */
   let easing;
 
   beforeEach(() => {
-    easing = new LinearPedestrianInterpolationEasing();
+    easing = new LinearPointInterpolationEasing();
   });
 
   it('can be instantiated', () => {
@@ -29,7 +29,7 @@ describe('LinearPedestrianInterpolationEasing Test Suite', () => {
 
   describe('supportsShape', () => {
     it('returns true if shape is pedestrian', () => {
-      const actual = easing.supportsShape('pedestrian');
+      const actual = easing.supportsShape('point');
       expect(actual).toBe(true);
     });
 
@@ -44,21 +44,18 @@ describe('LinearPedestrianInterpolationEasing Test Suite', () => {
       const delta = 0.5;
 
       const ghostShape = {
-        topCenter: {x: 1, y: 1},
-        bottomCenter: {x: 1, y: 5}
+        point: {x: 1, y: 1}
       };
 
       const endShape = {
-        topCenter: {x: 5, y: 2},
-        bottomCenter: {x: 3, y: 3}
+        point: {x: 5, y: 5}
       };
 
       const ghost = {shapes: [ghostShape]};
       const endLtif = {shapes: [endShape]};
 
       const expectedGhostShapeAfterEasing = {
-        topCenter: { x: 3, y: 1.5 },
-        bottomCenter: { x: 2, y: 4 }
+        point: {x: 3, y: 3}
       };
 
       easing.step(ghost, null, endLtif, delta);
