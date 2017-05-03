@@ -1,7 +1,7 @@
 import InterpolationEasing from 'Application/LabelingData/Interpolations/Easing/InterpolationEasing';
 import LinearPolyInterpolationEasing from 'Application/LabelingData/Interpolations/Easing/LinearPolyInterpolationEasing';
 
-fdescribe('LinearPolyInterpolationEasing Test Suite', () => {
+describe('LinearPolyInterpolationEasing Test Suite', () => {
   /**
    * @type {LinearPolyInterpolationEasing}
    */
