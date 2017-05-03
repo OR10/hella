@@ -199,16 +199,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
    * @private
    */
   _cuboid3dCalculateNewVertex(startVertex, endVertex, delta) {
-    if (startVertex === undefined && endVertex === null) {
-      return null;
-    }
-    if (endVertex === undefined && startVertex === null) {
-      return null;
-    }
-    if (startVertex === null && endVertex === null) {
-      return null;
-    }
-    if (endVertex === undefined) {
+    if (startVertex === undefined || startVertex === null || endVertex === undefined || endVertex === null) {
       return null;
     }
     return [
