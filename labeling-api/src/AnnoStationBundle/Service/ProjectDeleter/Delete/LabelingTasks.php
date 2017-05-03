@@ -33,6 +33,11 @@ class LabelingTasks
     private $taskTimerDeleter;
 
     /**
+     * @var LabeledThingGroup
+     */
+    private $labeledThingGroup;
+
+    /**
      * @var Video
      */
     private $videoDeleter;
@@ -43,6 +48,7 @@ class LabelingTasks
         LabeledThings $labeledThingsDeleter,
         LabeledThingInFrames $labeledThingInFrameDeleter,
         TaskTimers $taskTimerDeleter,
+        LabeledThingGroup $labeledThingGroup,
         Video $videoDeleter
 
     ) {
@@ -51,6 +57,7 @@ class LabelingTasks
         $this->labeledThingsDeleter       = $labeledThingsDeleter;
         $this->labeledThingInFrameDeleter = $labeledThingInFrameDeleter;
         $this->taskTimerDeleter           = $taskTimerDeleter;
+        $this->labeledThingGroup          = $labeledThingGroup;
         $this->videoDeleter               = $videoDeleter;
     }
 
@@ -61,6 +68,7 @@ class LabelingTasks
     {
         $tasks = $this->labelingTaskFacade->findAllByProject($project, true);
         foreach ($tasks as $task) {
+            $this->labeledThingGroup->delete($task);
             $this->labeledFramesDeleter->delete($task);
             $this->labeledThingsDeleter->delete($task);
             $this->labeledThingInFrameDeleter->delete($task);
