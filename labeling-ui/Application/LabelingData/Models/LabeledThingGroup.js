@@ -1,15 +1,13 @@
 import {clone} from 'lodash';
+import LabeledObject from './LabeledObject';
 
-class LabeledThingGroup {
+class LabeledThingGroup extends LabeledObject {
   /**
    *
    * @param {Object} labeledThingGroupDocument
    */
   constructor(labeledThingGroupDocument) {
-    /**
-     * @type {string}
-     */
-    this.id = labeledThingGroupDocument.id;
+    super(labeledThingGroupDocument);
 
     /**
      * @type {Task}
