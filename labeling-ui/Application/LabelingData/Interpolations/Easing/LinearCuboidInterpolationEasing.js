@@ -21,7 +21,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     const startCuboid = this._getCuboidFromRect(clone(ghost.shapes[0]), clone(endLabeledThingInFrame.shapes[0]));
     const endCuboid = this._getCuboidFromRect(clone(endLabeledThingInFrame.shapes[0]), startCuboid);
 
-    const steps = [...Array(7).keys()];
+    const steps = [...Array(8).keys()];
     steps.forEach(index => {
       const newCoordinates = this._cuboid3dCalculateNewVertex(
           startCuboid.vehicleCoordinates[index],
@@ -158,7 +158,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
       }
     });
 
-    const steps = [...Array(7).keys()];
+    const steps = [...Array(8).keys()];
     steps.forEach(index => {
       if (typeof newVehicleCoordinates[index] === undefined) {
         newVehicleCoordinates[index] = currentCuboid3d.vertices[index].toArray();
