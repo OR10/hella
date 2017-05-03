@@ -363,10 +363,16 @@ class MultiTool extends PaperTool {
    */
   _handleMouseMoveCursor(point) {
     this._context.withScope(scope => {
+
+      let hitTestTolerance = null;
+      if (this._toolActionStruct !== null) {
+        this._toolActionStruct.options.hitTestTolerance
+      }
+
       const hitResult = scope.project.hitTest(point, {
         fill: true,
         bounds: false,
-        tolerance: this._toolActionStruct.options.hitTestTolerance,
+        tolerance: hitTestTolerance,
       });
 
       if (!hitResult) {
