@@ -164,7 +164,7 @@ class Common extends Module {
           loggerServiceProvider.addContexts('http:*');
 
           if (Environment.isDevelopment) {
-            // loggerServiceProvider.addContexts('*');
+            loggerServiceProvider.addContexts('*');
           }
         },
       ]);
