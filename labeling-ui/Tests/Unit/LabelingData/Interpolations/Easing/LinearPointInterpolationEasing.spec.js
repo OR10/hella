@@ -1,7 +1,7 @@
 import InterpolationEasing from 'Application/LabelingData/Interpolations/Easing/InterpolationEasing';
 import LinearPointInterpolationEasing from 'Application/LabelingData/Interpolations/Easing/LinearPointInterpolationEasing';
 
-fdescribe('LinearPointInterpolationEasing Test Suite', () => {
+describe('LinearPointInterpolationEasing Test Suite', () => {
   /**
    * @type {LinearPointInterpolationEasing}
    */
@@ -28,7 +28,7 @@ fdescribe('LinearPointInterpolationEasing Test Suite', () => {
   });
 
   describe('supportsShape', () => {
-    it('returns true if shape is pedestrian', () => {
+    it('returns true if shape is point', () => {
       const actual = easing.supportsShape('point');
       expect(actual).toBe(true);
     });
