@@ -1,7 +1,7 @@
 import InterpolationEasing from 'Application/LabelingData/Interpolations/Easing/InterpolationEasing';
 import LinearCuboidInterpolationEasing from 'Application/LabelingData/Interpolations/Easing/LinearCuboidInterpolationEasing';
 
-fdescribe('LinearCuboidInterpolationEasing Test Suite', () => {
+describe('LinearCuboidInterpolationEasing Test Suite', () => {
   /**
    * @type {LinearCuboidInterpolationEasing}
    */
