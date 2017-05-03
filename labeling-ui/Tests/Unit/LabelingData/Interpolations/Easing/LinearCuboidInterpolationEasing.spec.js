@@ -21,7 +21,7 @@ fdescribe('LinearCuboidInterpolationEasing Test Suite', () => {
       expect(actual).toBe(true);
     });
 
-    it('returna false if type is anything else', () => {
+    it('returns false if type is anything else', () => {
       const actual = easing.supportsEasing('something-not-linear');
       expect(actual).toBe(false);
     });
@@ -40,7 +40,7 @@ fdescribe('LinearCuboidInterpolationEasing Test Suite', () => {
   });
 
   describe('step()', () => {
-    it('throws an error if Cuboid seems to be a 2D Object', () => {
+    it('throws an error if providing a Pseudo 3D cube', () => {
       const ghostShape = {
         vehicleCoordinates: [
           [5, 5, 5]
@@ -60,21 +60,32 @@ fdescribe('LinearCuboidInterpolationEasing Test Suite', () => {
         easing.step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta);
       };
 
-      expect(throwWrapper).toThrowError('Something went wrong with 3D Cuboid that seems to be a 2D object');
+      expect(throwWrapper).toThrowError('Invalid pseudo 3d cuboid found (0). Can\'t make 3d again');
     });
 
-    it('calculates the step for the cuboid', () => {
+    it('calculates the step for the cuboid if current and end shape are Pseudo2D cuboids', () => {
       const ghostShape = {
         vehicleCoordinates: [
-          [2, 3, 4, 5],
-          [2, 3, 4, 5],
-          [2, 3, 4, 5],
-          [2, 3, 4, 5],
+          [5, 5, 1],
+          [5, 5, 1],
+          [5, 6, 1],
+          [5, 7, 1],
+          null,
+          null,
+          null,
+          null,
         ],
       };
       const endLtifShape = {
         vehicleCoordinates: [
-          [0, 1, 2, 3]
+          [4, 5, 1],
+          [4, 5, 1],
+          [4, 6, 1],
+          [4, 7, 1],
+          null,
+          null,
+          null,
+          null
         ],
       };
 
@@ -85,8 +96,155 @@ fdescribe('LinearCuboidInterpolationEasing Test Suite', () => {
 
       easing.step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta);
 
-      const expectedCoordinates = {};
-      expect(ghost.shapes[0].vehicleCoordinates).toEqual(expectedCoordinates);
+      const expectedStepCoordinates = [
+        [4.7, 5, 1],
+        [4.7, 5, 1],
+        [4.7, 6, 1],
+        [4.7, 7, 1],
+        [4.7, 5, 1],
+        [4.7, 5, 1],
+        [4.7, 6, 1],
+        [4.7, 7, 1],
+      ];
+      expect(ghost.shapes[0].vehicleCoordinates).toEqual(expectedStepCoordinates);
+    });
+
+    it('calculates the step for the cuboid if current is pseuodo2d but end shape is a 3D cuboid', () => {
+      const ghostShape = {
+        vehicleCoordinates: [
+          [5, 4, 1],
+          [5, 5, 1],
+          [5, 6, 1],
+          [5, 7, 1],
+          null,
+          null,
+          null,
+          null,
+        ],
+      };
+      const endLtifShape = {
+        vehicleCoordinates: [
+          [4, 4, 1],
+          [4, 5, 1],
+          [4, 6, 1],
+          [4, 7, 1],
+          [3, 2, 8],
+          [3, 2, 7],
+          [3, 2, 8],
+          [3, 2, 7],
+        ],
+      };
+
+      const ghost = {shapes: [ghostShape]};
+      const startLabeledThingInFrame = {};
+      const endLabeledThingInFrame = {shapes: [endLtifShape]};
+      const delta = 0.15;
+
+      easing.step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta);
+
+      const expectedStepCoordinates = [
+        [4.85, 4, 1],
+        [4.85, 5, 1],
+        [4.85, 6, 1],
+        [4.85, 7, 1],
+        [4.85, 4, 1],
+        [4.85, 5, 1],
+        [4.85, 6, 1],
+        [4.85, 7, 1],
+      ];
+      expect(ghost.shapes[0].vehicleCoordinates).toEqual(expectedStepCoordinates);
+    });
+
+    it('calculates the step for the cuboid if current is a 3d but end shape is a Pseudo2D cuboid', () => {
+      const ghostShape = {
+        vehicleCoordinates: [
+          [4, 4, 1],
+          [4, 5, 1],
+          [4, 6, 1],
+          [4, 7, 1],
+          [3, 2, 8],
+          [3, 2, 7],
+          [3, 2, 8],
+          [3, 2, 7],
+        ],
+      };
+      const endLtifShape = {
+        vehicleCoordinates: [
+          [5, 4, 1],
+          [5, 5, 1],
+          [5, 6, 1],
+          [5, 7, 1],
+          null,
+          null,
+          null,
+          null,
+        ],
+      };
+
+      const ghost = {shapes: [ghostShape]};
+      const startLabeledThingInFrame = {};
+      const endLabeledThingInFrame = {shapes: [endLtifShape]};
+      const delta = 0.15;
+
+      easing.step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta);
+
+      const expectedStepCoordinates = [
+        [4.15, 4, 1],
+        [4.15, 5, 1],
+        [4.15, 6, 1],
+        [4.15, 7, 1],
+        [4.15, 4, 1],
+        [4.15, 5, 1],
+        [4.15, 6, 1],
+        [4.15, 7, 1],
+      ];
+      expect(ghost.shapes[0].vehicleCoordinates).toEqual(expectedStepCoordinates);
+    });
+
+    it('calculates the step for the cuboid if current and end shape are 3D cuboids', () => {
+      const ghostShape = {
+        vehicleCoordinates: [
+          [1, 1, 1],
+          [1, 5, 1],
+          [5, 1, 1],
+          [5, 5, 1],
+          [3, 3, 2],
+          [3, 8, 2],
+          [8, 3, 2],
+          [8, 8, 2],
+        ],
+      };
+      const endLtifShape = {
+        vehicleCoordinates: [
+          [10, 10, 1],
+          [10, 7, 1],
+          [7, 10, 1],
+          [7, 7, 1],
+          [5, 5, 2],
+          [5, 3, 2],
+          [3, 5, 2],
+          [3, 3, 2],
+        ],
+      };
+
+      const ghost = {shapes: [ghostShape]};
+      const startLabeledThingInFrame = {};
+      const endLabeledThingInFrame = {shapes: [endLtifShape]};
+      const delta = 0.15;
+
+      easing.step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta);
+
+      const expectedStepCoordinates = [
+        [ 2.3499999999999996, 2.3499999999999996, 1 ],
+        [ 2.3499999999999996, 5.3, 1 ],
+        [ 5.3, 2.3499999999999996, 1 ],
+        [ 5.3, 5.3, 1 ],
+        [ 3.3, 3.3, 2 ],
+        [ 3.3, 7.25, 2 ],
+        [ 7.25, 3.3, 2 ],
+        [ 7.25, 7.25, 2 ],
+      ];
+      expect(ghost.shapes[0].vehicleCoordinates).toEqual(expectedStepCoordinates);
     });
   });
 });
