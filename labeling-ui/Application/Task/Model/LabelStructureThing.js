@@ -1,14 +1,13 @@
-class LabelStructureThing {
+import LabelStructureObject from './LabelStructureObject';
+
+class LabelStructureThing extends LabelStructureObject {
   /**
    * @param {string} id
    * @param {string} name
    * @param {string} shape
    */
   constructor(id, name, shape) {
-    /**
-     * @type {string}
-     */
-    this.id = id;
+    super(id);
 
     /**
      * @type {string}

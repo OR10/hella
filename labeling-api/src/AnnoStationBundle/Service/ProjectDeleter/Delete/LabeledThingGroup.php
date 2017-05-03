@@ -7,12 +7,12 @@ use AppBundle\Service as AppBundleService;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Database\Facade;
 
-class TaskTimers
+class LabeledThingGroup
 {
     /**
-     * @var Facade\LabelingTask
+     * @var Facade\LabeledThingGroup
      */
-    private $labelingTaskFacade;
+    private $labeledThingGroupFacade;
 
     /**
      * @var AppBundleService\DatabaseDocumentManagerFactory
@@ -30,33 +30,37 @@ class TaskTimers
     private $pouchdbFeatureEnabled;
 
     public function __construct(
-        Facade\LabelingTask $labelingTaskFacade,
+        Facade\LabeledThingGroup $labeledThingGroupFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
         $pouchdbFeatureEnabled
     ) {
-        $this->labelingTaskFacade             = $labelingTaskFacade;
+        $this->labeledThingGroupFacade        = $labeledThingGroupFacade;
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
         $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
     }
 
+    /**
+     * @param Model\LabelingTask $labelingTask
+     */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labelingTaskFacade = $this->labelingTaskFacade;
+        $labeledThingGroupFacade = $this->labeledThingGroupFacade;
         if ($this->pouchdbFeatureEnabled) {
-            $databaseDocumentManager   = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+            $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
                 $this->taskDatabaseCreatorService->getDatabaseName(
                     $labelingTask->getProjectId(),
                     $labelingTask->getId()
                 )
             );
-            $labelingTaskFacade = new Facade\LabelingTask($databaseDocumentManager);
+            $labeledThingGroupFacade = new Facade\LabeledThingGroup($databaseDocumentManager);
         }
 
-        $taskTimers = $labelingTaskFacade->getTaskTimerByTask($labelingTask);
-        foreach ($taskTimers as $taskTimer) {
-            $labelingTaskFacade->deleteTimer($taskTimer);
+        $labeledThingGroupIds = $labeledThingGroupFacade->getLabeledThingGroupIdsByTask($labelingTask);
+        foreach ($labeledThingGroupIds as $labeledThingGroupId) {
+            $labeledThingGroup = $labeledThingGroupFacade->find($labeledThingGroupId);
+            $labeledThingGroupFacade->delete($labeledThingGroup);
         }
     }
 }

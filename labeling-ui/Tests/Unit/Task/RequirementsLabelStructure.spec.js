@@ -60,7 +60,7 @@ describe('RequirementsLabelStructure', () => {
     it('should throw if non existent thing is provided', () => {
       const nonExistentThing = new LabelStructureThing('some-non-existent-id', 'Foobar', 'rectangle');
       expect(
-        () => structure.getEnabledThingClassesForThingAndClassList(nonExistentThing, [])
+        () => structure.getEnabledClassesForLabeledObjectAndClassList(nonExistentThing, [])
       ).toThrow();
     });
 
@@ -74,7 +74,7 @@ describe('RequirementsLabelStructure', () => {
     ], (classList, expectedThingClasses) => {
       it('should provide correct active classes for class list', () => {
         const signThing = new LabelStructureThing('sign', 'Traffic Sign', 'rectangle');
-        const thingClasses = structure.getEnabledThingClassesForThingAndClassList(signThing, classList);
+        const thingClasses = structure.getEnabledClassesForLabeledObjectAndClassList(signThing, classList);
         expect(thingClasses).toEqual(expectedThingClasses);
       });
     });
