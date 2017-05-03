@@ -47,6 +47,11 @@ class TaskDatabaseSecurityPermissionService
      */
     private $labelingTaskFacade;
 
+    /**
+     * @var string
+     */
+    private $replicationUser;
+
     public function __construct(
         Facade\Project $projectFacade,
         Facade\LabelingTask $labelingTaskFacade,
@@ -54,7 +59,8 @@ class TaskDatabaseSecurityPermissionService
         Facade\LabelingGroup $labelingGroupFacade,
         AppBundleFacade\User $userFacade,
         AppBundleFacade\CouchDbSecurity $couchDbSecurity,
-        $pouchDbFeatureEnabled
+        $pouchDbFeatureEnabled,
+        $replicationUser
     ) {
         $this->couchDbSecurity       = $couchDbSecurity;
         $this->projectFacade         = $projectFacade;
@@ -63,6 +69,7 @@ class TaskDatabaseSecurityPermissionService
         $this->labelingGroupFacade   = $labelingGroupFacade;
         $this->pouchDbFeatureEnabled = $pouchDbFeatureEnabled;
         $this->labelingTaskFacade    = $labelingTaskFacade;
+        $this->replicationUser       = $replicationUser;
     }
 
     /**
@@ -89,7 +96,7 @@ class TaskDatabaseSecurityPermissionService
         $project      = $this->projectFacade->find($labelingTask->getProjectId());
         $organisation = $this->organisationFacade->find($project->getOrganisationId());
 
-        $memberNames = [];
+        $memberNames = [$this->replicationUser];
         $memberRoles = [
             UserRolesRebuilder::SUPER_ADMIN_GROUP,
             sprintf('%s%s', UserRolesRebuilder::ADMIN_GROUP_PREFIX, $organisation->getId()),
