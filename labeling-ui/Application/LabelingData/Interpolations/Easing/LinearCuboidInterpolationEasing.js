@@ -18,13 +18,13 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
    */
   step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
     const newCuboid3d = [];
-    const currentCuboid = this._getCuboidFromRect(clone(ghost.shapes[0]), clone(endLabeledThingInFrame.shapes[0]));
-    const endCuboid = this._getCuboidFromRect(clone(endLabeledThingInFrame.shapes[0]), currentCuboid);
+    const startCuboid = this._getCuboidFromRect(clone(ghost.shapes[0]), clone(endLabeledThingInFrame.shapes[0]));
+    const endCuboid = this._getCuboidFromRect(clone(endLabeledThingInFrame.shapes[0]), startCuboid);
 
     const steps = [...Array(7).keys()];
     steps.forEach(index => {
       const newCoordinates = this._cuboid3dCalculateNewVertex(
-          currentCuboid.vehicleCoordinates[index],
+          startCuboid.vehicleCoordinates[index],
           endCuboid.vehicleCoordinates[index],
           delta
       );
@@ -34,34 +34,10 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     ghost.shapes[0].vehicleCoordinates = newCuboid3d;
   }
 
-  /**
-   * @param {LabeledThingInFrame} currentCuboid
-   * @param {LabeledThingInFrame} endCuboid
-   * @returns {LabeledThingInFrame}
-   * @private
-   */
-  _getCuboidFromRect(currentCuboid, endCuboid) {
-    const numberOfCurrentInvisibleVertices = currentCuboid.vehicleCoordinates.filter(vertex => {
-      return vertex !== null;
-    });
-    const numberOfEndInvisibleVertices = endCuboid.vehicleCoordinates.filter(vertex => {
-      return vertex !== null;
-    });
-
-    if (numberOfCurrentInvisibleVertices.length === 0 ||
-        (numberOfCurrentInvisibleVertices.length === 4 && numberOfEndInvisibleVertices.length === 4)) {
-      return currentCuboid;
-    }
-
-    let invisibleVerticesIndex;
-    if (numberOfCurrentInvisibleVertices.length === 4) {
-      invisibleVerticesIndex = numberOfCurrentInvisibleVertices;
-    } else {
-      invisibleVerticesIndex = numberOfEndInvisibleVertices;
-    }
-
+  _getFrontFaceVertexIndicesFromBackgroundFaceVertexIndices(backgroundFaceVertices) {
     let oppositeVertex;
-    switch (Object.keys(invisibleVerticesIndex).toString()) {
+
+    switch (Object.keys(backgroundFaceVertices).toString()) {
       case '0,1,2,3':
         oppositeVertex = {
           0: 4,
@@ -120,7 +96,46 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
         throw new Error('Something went wrong with 3D Cuboid that seems to be a 2D object');
     }
 
-    const currentCuboid3d = Cuboid3d.createFromRawVertices(currentCuboid.vehicleCoordinates);
+    return oppositeVertex;
+  }
+
+  /**
+   * @param {JSON} startCuboid
+   * @param {JSON} endCuboid
+   * @returns {JSON}
+   * @private
+   */
+  _getCuboidFromRect(startCuboid, endCuboid) {
+    const startCuboidBackgroundFaceVertices = startCuboid.vehicleCoordinates.filter(vertex => {
+      return vertex === null;
+    });
+
+    const endCuboidBackgroundFaceVertices = endCuboid.vehicleCoordinates.filter(vertex => {
+      return vertex === null;
+    });
+
+    const startCuboidIs3D = (startCuboidBackgroundFaceVertices.length === 0);
+    const startCuboidIs2D = (startCuboidBackgroundFaceVertices.length === 4);
+    const endCuboidIs2D = (endCuboidBackgroundFaceVertices.length === 4);
+
+    if (startCuboidIs3D || (startCuboidIs2D && endCuboidIs2D)) {
+      return startCuboid;
+    }
+
+    // throw new Error('Interpolation between Pseudo 2D and 3D Cuboids is not yet supported');
+
+    // Anything from here: One cuboid is 2D, the other one is 3D
+
+    let backgroundFaceVertexIndices;
+    if (startCuboidIs2D) {
+      backgroundFaceVertexIndices = startCuboidBackgroundFaceVertices;
+    } else {
+      backgroundFaceVertexIndices = endCuboidBackgroundFaceVertices;
+    }
+
+    const oppositeVertex = this._getFrontFaceVertexIndicesFromBackgroundFaceVertexIndices(backgroundFaceVertexIndices);
+
+    const currentCuboid3d = Cuboid3d.createFromRawVertices(startCuboid.vehicleCoordinates);
     const endCuboid3d = Cuboid3d.createFromRawVertices(endCuboid.vehicleCoordinates);
 
     const plainVector1 = currentCuboid3d.vertices[oppositeVertex.normal[0][0]]
@@ -150,7 +165,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
       }
     });
 
-    const cuboid = clone(currentCuboid);
+    const cuboid = clone(startCuboid);
     cuboid.vehicleCoordinates = newVehicleCoordinates;
     return cuboid;
   }
@@ -176,26 +191,29 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
   }
 
   /**
-   * @param currentVertex
+   * @param startVertex
    * @param endVertex
    * @param delta
    * @returns {*}
    * @private
    */
-  _cuboid3dCalculateNewVertex(currentVertex, endVertex, delta) {
-    if (currentVertex === undefined && endVertex === null) {
+  _cuboid3dCalculateNewVertex(startVertex, endVertex, delta) {
+    if (startVertex === undefined && endVertex === null) {
       return null;
     }
-    if (endVertex === undefined && currentVertex === null) {
+    if (endVertex === undefined && startVertex === null) {
       return null;
     }
-    if (currentVertex === null && endVertex === null) {
+    if (startVertex === null && endVertex === null) {
+      return null;
+    }
+    if (endVertex === undefined) {
       return null;
     }
     return [
-      currentVertex[0] + (endVertex[0] - currentVertex[0]) * delta,
-      currentVertex[1] + (endVertex[1] - currentVertex[1]) * delta,
-      currentVertex[2] + (endVertex[2] - currentVertex[2]) * delta,
+      startVertex[0] + (endVertex[0] - startVertex[0]) * delta,
+      startVertex[1] + (endVertex[1] - startVertex[1]) * delta,
+      startVertex[2] + (endVertex[2] - startVertex[2]) * delta,
     ];
   }
 
