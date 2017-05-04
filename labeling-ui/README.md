@@ -79,6 +79,17 @@ Static assets will be served from the `Public` directory. Everything in this dir
 
 Every request, which can not be satisfied by files from the `Public` directory, or the generated bundles, will be proxied to `192.168.222.20:80`, which is the default value of the `labeling-api` vm webserver.
 
+### Icons
+
+The icon-font is generated from the svg files located in the `Resources\icons` directory using [fontcustom](https://github.com/FontCustom/fontcustom).
+All necessary options and paths are defined in the `fontcustom.yaml` located in `Resources\icons`.
+
+To compile the icons using the given config file, simply run:
+```
+fontcustom compile
+```
+
+
 ### Livereload
 
 Once the development server is started a [livereload](http://livereload.com/) server will be spawned automatically at the default port `35729`. It will be informed about any change in the JavaScript or asset folders.
