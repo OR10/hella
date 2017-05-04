@@ -141,6 +141,7 @@ class LabelingGroupsDetailController {
   }
 
   removeLabeler(id) {
+    this.labelerSelectionMessage = null;
     this.groupLabelers.splice(
       this.groupLabelers.findIndex(user => user.id === id),
       1
