@@ -45,12 +45,12 @@ describe('LinearRectangleInterpolationEasing Test Suite', () => {
 
       const ghostShape = {
         topLeft: {x: 1, y: 8},
-        bottomRight: {x: 8, y: 1}
+        bottomRight: {x: 8, y: 1},
       };
 
       const endShape = {
         topLeft: {x: 10, y: 100},
-        bottomRight: {x: 88, y: 80}
+        bottomRight: {x: 88, y: 80},
       };
 
       const ghost = {shapes: [ghostShape]};
@@ -58,7 +58,7 @@ describe('LinearRectangleInterpolationEasing Test Suite', () => {
 
       const expectedGhostShapeAfterEasing = {
         topLeft: { x: 3.6999999999999997, y: 35.599999999999994 },
-        bottomRight: { x: 32, y: 24.7 }
+        bottomRight: { x: 32, y: 24.7 },
       };
 
       easing.step(ghost, null, endLtif, delta);

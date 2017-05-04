@@ -6,7 +6,7 @@ describe('LinearPolyInterpolationEasing Test Suite', () => {
    * @type {LinearPolyInterpolationEasing}
    */
   let easing;
-
+  const delta = 0.5;
   beforeEach(() => {
     easing = new LinearPolyInterpolationEasing();
   });
@@ -45,15 +45,13 @@ describe('LinearPolyInterpolationEasing Test Suite', () => {
   });
 
   describe('step()', () => {
-    const delta = 0.5;
-
     it('throws an error if for some reason ghost and and shape have a different amount of points', () => {
       const ghostShape = {
-        points: [1]
+        points: [1],
       };
 
       const endShape = {
-        points: [1, 2]
+        points: [1, 2],
       };
 
       const ghost = {type: 'foobar', shapes: [ghostShape]};
@@ -61,21 +59,19 @@ describe('LinearPolyInterpolationEasing Test Suite', () => {
 
       const throwWrapper = () => {
         easing.step(ghost, null, endLtif, delta);
-      }
+      };
 
       expect(throwWrapper).toThrowError('Failed to interpolate foobar with different points.');
     });
 
     it('calculates the step between the ghost and the end shape', () => {
-      const delta = 0.5;
-
       const ghostShape = {
         points: [
           {x: 1, y: 1},
           {x: 2, y: 2},
           {x: 3, y: 4},
           {x: 8, y: 2},
-        ]
+        ],
       };
 
       const endShape = {
@@ -84,7 +80,7 @@ describe('LinearPolyInterpolationEasing Test Suite', () => {
           {x: 3, y: 1},
           {x: 4, y: 8},
           {x: 1, y: 9},
-        ]
+        ],
       };
 
       const ghost = {shapes: [ghostShape]};
@@ -96,7 +92,7 @@ describe('LinearPolyInterpolationEasing Test Suite', () => {
           { x: 2.5, y: 1.5 },
           { x: 3.5, y: 6 },
           { x: 4.5, y: 5.5 },
-        ]
+        ],
       };
 
       easing.step(ghost, null, endLtif, delta);

@@ -45,12 +45,12 @@ describe('LinearPedestrianInterpolationEasing Test Suite', () => {
 
       const ghostShape = {
         topCenter: {x: 1, y: 1},
-        bottomCenter: {x: 1, y: 5}
+        bottomCenter: {x: 1, y: 5},
       };
 
       const endShape = {
         topCenter: {x: 5, y: 2},
-        bottomCenter: {x: 3, y: 3}
+        bottomCenter: {x: 3, y: 3},
       };
 
       const ghost = {shapes: [ghostShape]};
@@ -58,7 +58,7 @@ describe('LinearPedestrianInterpolationEasing Test Suite', () => {
 
       const expectedGhostShapeAfterEasing = {
         topCenter: { x: 3, y: 1.5 },
-        bottomCenter: { x: 2, y: 4 }
+        bottomCenter: { x: 2, y: 4 },
       };
 
       easing.step(ghost, null, endLtif, delta);

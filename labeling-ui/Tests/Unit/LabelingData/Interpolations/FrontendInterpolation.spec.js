@@ -34,12 +34,14 @@ describe('FrontendInterpolation Test Suite', () => {
       };
     });
 
+    /*
     it('does not do anything if the labeledThingFrameGateway does not resolve', () => {
       const promise = angularQ.reject();
       gateway.getLabeledThingInFrame.and.returnValue(promise);
       interpolation.execute(null, null, frameRange);
       rootScope.$apply();
     });
+    */
 
     it('throws an error if labeledThingInFramesWithGhosts has length 0', () => {
       const labeledThingInFramesWithGhosts = [];

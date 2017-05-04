@@ -44,18 +44,18 @@ describe('LinearPointInterpolationEasing Test Suite', () => {
       const delta = 0.5;
 
       const ghostShape = {
-        point: {x: 1, y: 1}
+        point: {x: 1, y: 1},
       };
 
       const endShape = {
-        point: {x: 5, y: 5}
+        point: {x: 5, y: 5},
       };
 
       const ghost = {shapes: [ghostShape]};
       const endLtif = {shapes: [endShape]};
 
       const expectedGhostShapeAfterEasing = {
-        point: {x: 3, y: 3}
+        point: {x: 3, y: 3},
       };
 
       easing.step(ghost, null, endLtif, delta);

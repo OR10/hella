@@ -43,12 +43,12 @@ describe('LinearCuboidInterpolationEasing Test Suite', () => {
     it('throws an error if providing a Pseudo 3D cube', () => {
       const ghostShape = {
         vehicleCoordinates: [
-          [5, 5, 5]
+          [5, 5, 5],
         ],
       };
       const endLtifShape = {
         vehicleCoordinates: [
-          [8, 8, 8]
+          [8, 8, 8],
         ],
       };
       const ghost = {shapes: [ghostShape]};
@@ -85,7 +85,7 @@ describe('LinearCuboidInterpolationEasing Test Suite', () => {
           null,
           null,
           null,
-          null
+          null,
         ],
       };
 
