@@ -10,7 +10,7 @@ class InterpolationService {
    * @param {Object} featureFlags
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
-   * @param {Array.<Interpolation>} interpolation
+   * @param {Interpolation} interpolation
    */
   constructor($q, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, interpolation) {
     /**
@@ -64,7 +64,7 @@ class InterpolationService {
 
     /**
      *
-     * @type {Array.<Interpolation>}
+     * @type {Interpolation}
      * @private
      */
     this._interpolation = interpolation;
@@ -75,8 +75,6 @@ class InterpolationService {
    *
    * `frameRange` is optional. It will automatically fallback to the `frameRange` of the
    * {@link LabeledThing} if not provided.
-   *
-   * A special `id` of `default` is available, which will fallback to the default interpolation set.
    *
    * The return value is a promise, which will be fired, after the interpolation is complete.
    * A completed interpolation implies, that every frame inside the specified frame range has been
