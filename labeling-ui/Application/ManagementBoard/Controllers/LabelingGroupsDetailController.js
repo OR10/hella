@@ -132,6 +132,7 @@ class LabelingGroupsDetailController {
 
     const user = this.users.find(candidate => candidate.id === id);
     if (this.groupLabelers.includes(user)) {
+      this.labelerSelectionMessage = 'Users can not be added twice into the list.';
       return;
     }
 
