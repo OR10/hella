@@ -10,9 +10,9 @@ class InterpolationService {
    * @param {Object} featureFlags
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
-   * @param {Interpolation} interpolation
+   * @param {Interpolation} interpolationType
    */
-  constructor($q, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, interpolation) {
+  constructor($q, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, interpolationType) {
     /**
      * @type {$q}
      * @private
@@ -67,7 +67,7 @@ class InterpolationService {
      * @type {Interpolation}
      * @private
      */
-    this._interpolation = interpolation;
+    this._interpolation = interpolationType;
   }
 
   /**
@@ -162,8 +162,7 @@ InterpolationService.$inject = [
   'featureFlags',
   'pouchDbSyncManager',
   'pouchDbContextService',
-  // You can choose between frontend or backend interpolation by changing this service
-  'frontendInterpolation',
+  'interpolationType',
 ];
 
 export default InterpolationService;

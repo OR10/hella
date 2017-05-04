@@ -40,14 +40,7 @@ class LabelingData extends Module {
     this.module.service('labeledThingGroupGateway', LabeledThingGroupGateway);
 
     this.module.service('interpolationService', InterpolationService);
-    this.module.service('linearBackendInterpolation', LinearBackendInterpolation);
-
-    this.module.service('frontendInterpolation', FrontendInterpolation);
-    this.module.service('linearRectangleInterpolationEasing', LinearRectangleInterpolationEasing);
-    this.module.service('linearPedestrianInterpolationEasing', LinearPedestrianInterpolationEasing);
-    this.module.service('linearPolyInterpolationEasing', LinearPolyInterpolationEasing);
-    this.module.service('linearPointInterpolationEasing', LinearPointInterpolationEasing);
-    this.module.service('linearCuboidInterpolationEasing', LinearCuboidInterpolationEasing);
+    this.module.service('interpolationType', LinearBackendInterpolation);
 
     this.module.service('cacheService', CacheService);
     this.module.service('cacheHeaterService', CacheHeaterService);
@@ -58,6 +51,13 @@ class LabelingData extends Module {
       this.module.service('labeledThingInFrameGateway', PouchDbLabeledThingInFrameGateway);
       this.module.service('labeledThingGateway', PouchDbLabeledThingGateway);
       this.module.service('labeledThingGroupGateway', PouchDbLabeledThingGroupGateway);
+
+      this.module.service('interpolationType', FrontendInterpolation);
+      this.module.service('linearRectangleInterpolationEasing', LinearRectangleInterpolationEasing);
+      this.module.service('linearPedestrianInterpolationEasing', LinearPedestrianInterpolationEasing);
+      this.module.service('linearPolyInterpolationEasing', LinearPolyInterpolationEasing);
+      this.module.service('linearPointInterpolationEasing', LinearPointInterpolationEasing);
+      this.module.service('linearCuboidInterpolationEasing', LinearCuboidInterpolationEasing);
     }
   }
 }
