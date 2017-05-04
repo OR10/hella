@@ -223,7 +223,7 @@ export default class LabelSelectorController {
    */
   _updatePagesAndChoices() {
     const classList = this.selectedLabeledObject.extractClassList();
-    const list = this.labelStructure.getEnabledThingClassesForThingAndClassList(
+    const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
       this.selectedLabelStructureThing,
       classList
     );
