@@ -77,14 +77,12 @@ class FrontendInterpolation {
 
           const endLtifIndex = labeledThingInFrameIndices[ltifIndicesIndex + 1];
           const steps = [];
-          debugger;
           for (let index = 1; index < (endLtifIndex - currentLtifIndex); index++) {
             steps.push(ltifIndicesIndex + index);
           }
 
           steps.forEach((step, stepIndex) => {
             const currentGhost = labeledThingInFramesWithGhosts[step];
-            debugger;
             const delta = (stepIndex + 1) / (steps.length + 1);
 
             easing.step(currentGhost, startLtif, endLtif, delta);

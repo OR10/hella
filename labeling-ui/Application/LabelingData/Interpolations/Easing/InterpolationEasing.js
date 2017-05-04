@@ -1,6 +1,6 @@
 /**
  * InterpolationEasing
- * Providing a wrapper where any kind of interpolation can be implemented.
+ * A construct for any kind of interpolation that you want to implement.
  *
  * So you can specify which kind of interpolation and shape you want support while
  * using supportsEasing where you return e.g 'linear'
@@ -14,6 +14,7 @@
  *
  * @abstract
  */
+
 class InterpolationEasing {
   /**
    * @param {LabeledThingInFrame} currentGhostLabeledThingInFrame
