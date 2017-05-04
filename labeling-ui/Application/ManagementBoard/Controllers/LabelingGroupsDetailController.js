@@ -213,6 +213,7 @@ class LabelingGroupsDetailController {
     }
 
     if (this.groupLabelers.length === 0) {
+      this.labelerSelectionMessage = 'The list of Labelers can not be empty.';
       this.validation.labelers = valid = false;
     }
 
