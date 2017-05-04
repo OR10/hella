@@ -136,6 +136,7 @@ class LabelingGroupsDetailController {
       return;
     }
 
+    this.labelerSelectionMessage = null;
     this.groupLabelers.push(user);
   }
 
@@ -217,6 +218,11 @@ class LabelingGroupsDetailController {
 
     if (this.groupName === '') {
       this.validation.name = valid = false;
+    }
+
+    // Remove message if everything is okay.
+    if (valid) {
+      this.labelerSelectionMessage = null;
     }
 
     return valid;
