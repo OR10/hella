@@ -94,14 +94,14 @@ describe('FrontendInterpolation Test Suite', () => {
       beforeEach(() => {
         startLtif = {ghost: false, frameIndex: 1, shapes: [{type: 'foobar'}]};
         endLtif = {ghost: false, frameIndex: 4};
-        firstGhost = {ghost: true, id: null};
-        secondGhost = {ghost: true, id: null};
+        firstGhost = {ghost: true, id: null, ghostBust: jasmine.createSpy('ghostBust')};
+        secondGhost = {ghost: true, id: null, ghostBust: jasmine.createSpy('ghostBust')};
 
         labeledThingInFramesWithGhosts = [
           startLtif,
-          endLtif,
           firstGhost,
           secondGhost,
+          endLtif,
         ];
 
         promise = angularQ.resolve(labeledThingInFramesWithGhosts);
@@ -112,12 +112,12 @@ describe('FrontendInterpolation Test Suite', () => {
       it('saves each ghost as new LabeledThingInFrame', () => {
         easingMock.supportsShape.and.returnValue(true);
         easingMock.supportsEasing.and.returnValue(true);
-
+        
         interpolation.execute(null, null, frameRange);
         rootScope.$apply();
 
-        expect(firstGhost.ghost).toBe(false);
-        expect(secondGhost.ghost).toBe(false);
+        expect(firstGhost.ghostBust).toHaveBeenCalled();
+        expect(secondGhost.ghostBust).toHaveBeenCalled();
         expect(gateway.saveLabeledThingInFrame).toHaveBeenCalledWith(firstGhost);
         expect(gateway.saveLabeledThingInFrame).toHaveBeenCalledWith(secondGhost);
         expect(gateway.saveLabeledThingInFrame).toHaveBeenCalledTimes(2);
@@ -159,32 +159,6 @@ describe('FrontendInterpolation Test Suite', () => {
         expect(throwWrapper).toThrowError('There is no easing for foobar with type linear');
       });
 
-      it('throws an error if the id of a ghost is not null', () => {
-        easingMock.supportsShape.and.returnValue(true);
-        easingMock.supportsEasing.and.returnValue(true);
-        secondGhost.id = 'something';
-
-        const throwWrapper = () => {
-          interpolation.execute(null, null, frameRange);
-          rootScope.$apply();
-        };
-
-        expect(throwWrapper).toThrowError('labeledThingInFrame.id should be null');
-      });
-
-      it('throws an error if the ghost property of a ghost is not false', () => {
-        easingMock.supportsShape.and.returnValue(true);
-        easingMock.supportsEasing.and.returnValue(true);
-        firstGhost.ghost = 'something';
-
-        const throwWrapper = () => {
-          interpolation.execute(null, null, frameRange);
-          rootScope.$apply();
-        };
-
-        expect(throwWrapper).toThrowError('labeledThingInFrame.ghost should be true');
-      });
-
       it('calls step method of the easing class for every ghost', () => {
         easingMock.supportsShape.and.returnValue(true);
         easingMock.supportsEasing.and.returnValue(true);
@@ -195,21 +169,6 @@ describe('FrontendInterpolation Test Suite', () => {
         expect(easingMock.step).toHaveBeenCalledWith(firstGhost, startLtif, endLtif, 0.3333333333333333);
         expect(easingMock.step).toHaveBeenCalledWith(secondGhost, startLtif, endLtif, 0.6666666666666666);
         expect(easingMock.step).toHaveBeenCalledTimes(2);
-      });
-
-      it('throws an error if saving the ghosts as labeled thing in frame fails', () => {
-        easingMock.supportsShape.and.returnValue(true);
-        easingMock.supportsEasing.and.returnValue(true);
-        const rejectedMessage = 'NEIN.';
-        const rejectedPromise = angularQ.reject(rejectedMessage);
-        gateway.saveLabeledThingInFrame.and.returnValue(rejectedPromise);
-
-        const throwWrapper = () => {
-          interpolation.execute(null, null, frameRange);
-          rootScope.$apply();
-        };
-
-        expect(throwWrapper).toThrow(rejectedMessage);
       });
     });
   });

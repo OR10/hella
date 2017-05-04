@@ -116,7 +116,8 @@ class FrontendInterpolation {
    * @private
    */
   _transformGhostToLabeledThing(labeledThingInFrame) {
-    return labeledThingInFrame.ghostBust(uuid.v4(), labeledThingInFrame.frameIndex);
+    labeledThingInFrame.ghostBust(uuid.v4(), labeledThingInFrame.frameIndex);
+    return labeledThingInFrame;
   }
 
   /**
