@@ -226,7 +226,7 @@ class Cuboid3d {
   }
 
   /**
-   * The vertices as is
+   * Returns vertices as array of {@link Vector4} instances
    *
    * @returns {Array.<Vector4>}
    */
