@@ -7,15 +7,15 @@ import {clone} from 'lodash';
  */
 class LinearPedestrianInterpolationEasing extends InterpolationEasing {
   /**
-   * @param {LabeledThingInFrame} ghost
+   * @param {LabeledThingInFrame} currentGhostLabeledThingInFrame
    * @param {LabeledThingInFrame} startLabeledThingInFrame
    * @param {LabeledThingInFrame} endLabeledThingInFrame
    * @param {Float} delta
    * @public
    */
-  step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
-    const currentTopCenter = clone(ghost.shapes[0].topCenter);
-    const currentBottomCenter = clone(ghost.shapes[0].bottomCenter);
+  step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
+    const currentTopCenter = clone(currentGhostLabeledThingInFrame.shapes[0].topCenter);
+    const currentBottomCenter = clone(currentGhostLabeledThingInFrame.shapes[0].bottomCenter);
     const endTopCenter = clone(endLabeledThingInFrame.shapes[0].topCenter);
     const endBottomCenter = clone(endLabeledThingInFrame.shapes[0].bottomCenter);
 
@@ -28,8 +28,8 @@ class LinearPedestrianInterpolationEasing extends InterpolationEasing {
       y: currentBottomCenter.y + (endBottomCenter.y - currentBottomCenter.y) * delta,
     };
 
-    ghost.shapes[0].topCenter = topCenter;
-    ghost.shapes[0].bottomCenter = bottomCenter;
+    currentGhostLabeledThingInFrame.shapes[0].topCenter = topCenter;
+    currentGhostLabeledThingInFrame.shapes[0].bottomCenter = bottomCenter;
   }
 
   /**

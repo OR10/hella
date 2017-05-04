@@ -7,15 +7,15 @@ import {clone} from 'lodash';
  */
 class LinearRectangleInterpolationEasing extends InterpolationEasing {
   /**
-   * @param {LabeledThingInFrame} ghost
+   * @param {LabeledThingInFrame} currentGhostLabeledThingInFrame
    * @param {LabeledThingInFrame} startLabeledThingInFrame
    * @param {LabeledThingInFrame} endLabeledThingInFrame
    * @param {Float} delta
    * @public
    */
-  step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
-    const currentTopLeft = clone(ghost.shapes[0].topLeft);
-    const currentBottomRight = clone(ghost.shapes[0].bottomRight);
+  step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
+    const currentTopLeft = clone(currentGhostLabeledThingInFrame.shapes[0].topLeft);
+    const currentBottomRight = clone(currentGhostLabeledThingInFrame.shapes[0].bottomRight);
     const endTopLeft = clone(endLabeledThingInFrame.shapes[0].topLeft);
     const endBottomRight = clone(endLabeledThingInFrame.shapes[0].bottomRight);
 
@@ -28,8 +28,8 @@ class LinearRectangleInterpolationEasing extends InterpolationEasing {
       y: currentBottomRight.y + (endBottomRight.y - currentBottomRight.y) * delta,
     };
 
-    ghost.shapes[0].topLeft = topLeft;
-    ghost.shapes[0].bottomRight = bottomRight;
+    currentGhostLabeledThingInFrame.shapes[0].topLeft = topLeft;
+    currentGhostLabeledThingInFrame.shapes[0].bottomRight = bottomRight;
   }
 
   /**

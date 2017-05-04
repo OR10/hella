@@ -7,19 +7,19 @@ import {clone} from 'lodash';
  */
 class LinearPolyInterpolationEasing extends InterpolationEasing {
   /**
-   * @param {LabeledThingInFrame} ghost
+   * @param {LabeledThingInFrame} currentGhostLabeledThingInFrame
    * @param {LabeledThingInFrame} startLabeledThingInFrame
    * @param {LabeledThingInFrame} endLabeledThingInFrame
    * @param {Float} delta
    * @public
    */
-  step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
-    const currentPoints = clone(ghost.shapes[0].points);
+  step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
+    const currentPoints = clone(currentGhostLabeledThingInFrame.shapes[0].points);
     const endPoints = clone(endLabeledThingInFrame.shapes[0].points);
     const points = [];
 
     if (currentPoints.length !== endPoints.length) {
-      throw new Error(`Failed to interpolate ${ghost.type} with different points.`);
+      throw new Error(`Failed to interpolate ${currentGhostLabeledThingInFrame.type} with different points.`);
     }
 
     currentPoints.forEach((point, index) => {
@@ -30,7 +30,7 @@ class LinearPolyInterpolationEasing extends InterpolationEasing {
       points.push(newCalculatePoint);
     });
 
-    ghost.shapes[0].points = points;
+    currentGhostLabeledThingInFrame.shapes[0].points = points;
   }
 
   /**

@@ -10,15 +10,15 @@ import Cuboid3d from '../../../ThirdDimension/Models/Cuboid3d';
  */
 class LinearCuboidInterpolationEasing extends InterpolationEasing {
   /**
-   * @param {LabeledThingInFrame} ghost
+   * @param {LabeledThingInFrame} currentGhostLabeledThingInFrame
    * @param {LabeledThingInFrame} startLabeledThingInFrame
    * @param {LabeledThingInFrame} endLabeledThingInFrame
    * @param {Float} delta
    * @public
    */
-  step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
+  step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
     const newCuboid3d = [];
-    const startCuboid = this._getCuboidFromRect(clone(ghost.shapes[0]), clone(endLabeledThingInFrame.shapes[0]));
+    const startCuboid = this._getCuboidFromRect(clone(currentGhostLabeledThingInFrame.shapes[0]), clone(endLabeledThingInFrame.shapes[0]));
     const endCuboid = this._getCuboidFromRect(clone(endLabeledThingInFrame.shapes[0]), startCuboid);
 
     const steps = [...Array(8).keys()];
@@ -32,7 +32,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     });
 
     const verticesWithPredictedVertices = Cuboid3d.createFromRawVertices(newCuboid3d).rawVertices;
-    ghost.shapes[0].vehicleCoordinates = verticesWithPredictedVertices;
+    currentGhostLabeledThingInFrame.shapes[0].vehicleCoordinates = verticesWithPredictedVertices;
   }
 
   _getFrontFaceVertexIndicesFromBackgroundFaceVertexIndices(backgroundFaceVertices) {

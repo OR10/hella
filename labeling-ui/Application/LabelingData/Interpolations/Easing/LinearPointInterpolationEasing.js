@@ -7,14 +7,14 @@ import {clone} from 'lodash';
  */
 class LinearPointInterpolationEasing extends InterpolationEasing {
   /**
-   * @param {LabeledThingInFrame} ghost
+   * @param {LabeledThingInFrame} currentGhostLabeledThingInFrame
    * @param {LabeledThingInFrame} startLabeledThingInFrame
    * @param {LabeledThingInFrame} endLabeledThingInFrame
    * @param {Float} delta
    * @public
    */
-  step(ghost, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
-    const currentPoint = clone(ghost.shapes[0].point);
+  step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
+    const currentPoint = clone(currentGhostLabeledThingInFrame.shapes[0].point);
     const endPoint = clone(endLabeledThingInFrame.shapes[0].point);
 
     const point = {
@@ -22,7 +22,7 @@ class LinearPointInterpolationEasing extends InterpolationEasing {
       y: currentPoint.y + (endPoint.y - currentPoint.y) * delta,
     };
 
-    ghost.shapes[0].point = point;
+    currentGhostLabeledThingInFrame.shapes[0].point = point;
   }
 
   /**
