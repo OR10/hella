@@ -11,12 +11,19 @@ import DeepMap from '../Support/DeepMap';
  */
 class PouchDbSyncManager {
   /**
+   * @param {$rootScope} $rootScope
    * @param {LoggerService} loggerService
    * @param {angular.$q} $q
    * @param {PouchDbContextService} pouchDbContextService
    * @param {TaskGateway} taskGateway
    */
-  constructor(loggerService, $q, pouchDbContextService, taskGateway) {
+  constructor($rootScope, loggerService, $q, pouchDbContextService, taskGateway) {
+    /**
+     * @type {$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
+
     /**
      * @type {Logger}
      * @private
@@ -77,6 +84,7 @@ class PouchDbSyncManager {
       ['offline', []],
       ['alive', []],
       ['transfer', []],
+      ['unauthorized', []],
     ]);
   }
 
@@ -196,6 +204,7 @@ class PouchDbSyncManager {
    * - offline
    * - alive
    * - transfer
+   * - unauthorized
    *
    * @param {string} eventName
    * @param {Function} callback
@@ -445,6 +454,19 @@ class PouchDbSyncManager {
     replication.on('active', () => {
       this._emit('transfer');
     });
+
+    replication.on('error', errorObject => {
+      const {error} = errorObject;
+      switch(error) {
+        case 'unauthorized':
+          this._emit('unauthorized', [errorObject]);
+          this._$rootScope.$emit('pouchdb:replication:unauthorized', errorObject);
+          break;
+        default:
+          this._logger.warn('pouchDb:syncManager', 'Unknown replication error encountered:', errorObject);
+          this._$rootScope.$emit('pouchdb:replication:error', errorObject);
+      }
+    });
   }
 
   /**
@@ -465,6 +487,7 @@ class PouchDbSyncManager {
 }
 
 PouchDbSyncManager.$inject = [
+  '$rootScope',
   'loggerService',
   '$q',
   'pouchDbContextService',
