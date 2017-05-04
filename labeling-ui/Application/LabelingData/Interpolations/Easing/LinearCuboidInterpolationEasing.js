@@ -1,6 +1,6 @@
 import angular from 'angular';
 import {clone} from 'lodash';
-import {Vector4} from 'three-math';
+import {Vector3, Vector4} from 'three-math';
 import InterpolationEasing from './InterpolationEasing';
 import Cuboid3d from '../../../ThirdDimension/Models/Cuboid3d';
 
@@ -18,17 +18,17 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
    */
   step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
     const newCuboid3d = [];
-    const startCuboid = this._getCuboidFromRect(clone(currentGhostLabeledThingInFrame.shapes[0]), clone(endLabeledThingInFrame.shapes[0]));
-    const endCuboid = this._getCuboidFromRect(clone(endLabeledThingInFrame.shapes[0]), startCuboid);
+    const startCuboid = this._normalizeCuboid(clone(currentGhostLabeledThingInFrame.shapes[0]), clone(endLabeledThingInFrame.shapes[0]));
+    const endCuboid = this._normalizeCuboid(clone(endLabeledThingInFrame.shapes[0]), startCuboid);
 
     const steps = [...Array(8).keys()];
     steps.forEach(index => {
-      const newCoordinates = this._cuboid3dCalculateNewVertex(
+      const newVertex = this._cuboid3dCalculateNewVertex(
           startCuboid.vehicleCoordinates[index],
           endCuboid.vehicleCoordinates[index],
           delta
       );
-      newCuboid3d.push(newCoordinates);
+      newCuboid3d.push(newVertex);
     });
 
     const verticesWithPredictedVertices = Cuboid3d.createFromRawVertices(newCuboid3d).rawVertices;
@@ -101,12 +101,15 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
   }
 
   /**
+   * Returns a 3d cuboid when your startCuboid and endCuboid seems to be a 2D Rectangle or startCuboid is a 3d cuboid.
+   * Or re-calculate a new cuboid when startCuboid is an 2d Rectangle
+   *
    * @param {JSON} startCuboid
    * @param {JSON} endCuboid
    * @returns {JSON}
    * @private
    */
-  _getCuboidFromRect(startCuboid, endCuboid) {
+  _normalizeCuboid(startCuboid, endCuboid) {
     const startCuboidBackgroundFaceVertices = startCuboid.vehicleCoordinates.filter(vertex => {
       return vertex === null;
     });
@@ -145,11 +148,18 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     const plainVector2 = currentCuboid3d.vertices[oppositeVertex.normal[1][0]]
         .sub(currentCuboid3d.vertices[oppositeVertex.normal[1][1]]);
 
-    const normalVector = this._crossProduct(plainVector1, plainVector2);
+    const plainVector1V3 = new Vector3(plainVector1.x, plainVector1.y, plainVector1.z);
+    const plainVector2V3 = new Vector3(plainVector2.x, plainVector2.y, plainVector2.z);
 
-    const distance = this._distanceTo(endCuboid3d.vertices[Object.keys(oppositeVertex)[0]], endCuboid3d.vertices[Object.keys(oppositeVertex)[0]]);
+    const normalVectorV3 = plainVector1V3.cross(plainVector2V3);
+    const normalVectorV4 = new Vector4(normalVectorV3.x, normalVectorV3.y, normalVectorV3.z, 1);
 
-    const distanceVector = normalVector.divideScalar(normalVector.length()).multiplyScalar(distance);
+    const endCuboidVectorV4 = endCuboid3d.vertices[Object.keys(oppositeVertex)[0]];
+    const endCuboidVectorV3 = new Vector3(endCuboidVectorV4.x, endCuboidVectorV4.y, endCuboidVectorV4.z);
+    const distanceV3 = endCuboidVectorV3.distanceTo(endCuboidVectorV3);
+    const distanceV4 = new Vector4(distanceV3.x, distanceV3.y, distanceV3.z, 1);
+
+    const distanceVector = normalVectorV4.divideScalar(normalVectorV4.length()).multiplyScalar(distanceV4);
 
     const newVehicleCoordinates = [];
     angular.forEach(oppositeVertex, (sourceVertexIndex, targetVertexIndex) => {
@@ -169,26 +179,6 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     const cuboid = clone(startCuboid);
     cuboid.vehicleCoordinates = newVehicleCoordinates;
     return cuboid;
-  }
-
-  /**
-   * @param {THREE.Vector4} v1
-   * @param {THREE.Vector4} v2
-   * @returns {THREE.Vector4}
-   * @private
-   */
-  _crossProduct(v1, v2) {
-    return new Vector4((v1.y * v2.z) - (v1.z * v2.y), (v1.z * v2.x) - (v1.x * v2.z), (v1.x * v2.y) - (v1.y * v2.x), 1);
-  }
-
-  /**
-   * @param {THREE.Vector4} v1
-   * @param {THREE.Vector4} v2
-   * @returns {number}
-   * @private
-   */
-  _distanceTo(v1, v2) {
-    return Math.sqrt(Math.pow(v1.x - v2.x, 2) + Math.pow(v1.y - v2.y, 2) + Math.pow(v1.z - v2.z, 2));
   }
 
   /**

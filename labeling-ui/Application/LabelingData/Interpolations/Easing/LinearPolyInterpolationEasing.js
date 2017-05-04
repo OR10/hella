@@ -19,7 +19,7 @@ class LinearPolyInterpolationEasing extends InterpolationEasing {
     const points = [];
 
     if (currentPoints.length !== endPoints.length) {
-      throw new Error(`Failed to interpolate ${currentGhostLabeledThingInFrame.type} with different points.`);
+      throw new Error(`Failed to interpolate ${currentGhostLabeledThingInFrame.type} with different number of points.`);
     }
 
     currentPoints.forEach((point, index) => {

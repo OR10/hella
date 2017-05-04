@@ -10,7 +10,7 @@ class FrontendInterpolation {
   /**
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {angular.$q} $q
-   * @param {*[]} easings
+   * @param {InterpolationEasing[]} easings
    */
   constructor(labeledThingInFrameGateway, $q, ...easings) {
     /**
@@ -26,7 +26,7 @@ class FrontendInterpolation {
     this._$q = $q;
 
     /**
-     * @type {*[]}
+     * @type {InterpolationEasing[]}
      * @private
      */
     this._easings = easings;
@@ -64,6 +64,8 @@ class FrontendInterpolation {
 
       const labeledThingInFrameIndices = labeledThingInFrames.map(labeledThingInFrame => labeledThingInFrame.frameIndex);
 
+      const easing = this._getEasingForShapeAndType(labeledThingInFrames[0]);
+
       const savePromises = [];
       labeledThingInFrameIndices.forEach((currentLtifIndex, ltifIndicesIndex) => {
         if (labeledThingInFrameIndices[ltifIndicesIndex + 1] !== undefined) {
@@ -75,14 +77,14 @@ class FrontendInterpolation {
 
           const endLtifIndex = labeledThingInFrameIndices[ltifIndicesIndex + 1];
           const steps = [];
+          debugger;
           for (let index = 1; index < (endLtifIndex - currentLtifIndex); index++) {
-            steps.push(currentLtifIndex + index);
+            steps.push(ltifIndicesIndex + index);
           }
-
-          const easing = this._getEasingForShapeAndType(startLtif);
 
           steps.forEach((step, stepIndex) => {
             const currentGhost = labeledThingInFramesWithGhosts[step];
+            debugger;
             const delta = (stepIndex + 1) / (steps.length + 1);
 
             easing.step(currentGhost, startLtif, endLtif, delta);
@@ -116,17 +118,7 @@ class FrontendInterpolation {
    * @private
    */
   _transformGhostToLabeledThing(labeledThingInFrame) {
-    if (labeledThingInFrame.id === null) {
-      labeledThingInFrame.id = uuid.v4();
-    } else {
-      throw new Error('labeledThingInFrame.id should be null');
-    }
-    if (labeledThingInFrame.ghost === true) {
-      labeledThingInFrame.ghost = false;
-    } else {
-      throw new Error('labeledThingInFrame.ghost should be true');
-    }
-    return labeledThingInFrame;
+    return labeledThingInFrame.ghostBust(uuid.v4(), labeledThingInFrame.frameIndex);
   }
 
   /**
@@ -134,13 +126,7 @@ class FrontendInterpolation {
    * @private
    */
   _saveLabeledThingInFrame(labeledThingInFrame) {
-    return this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame)
-      .then(() => {
-        return labeledThingInFrame;
-      })
-      .catch(error => {
-        throw error;
-      });
+    return this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
   }
 }
 
