@@ -21,7 +21,7 @@ describe('Interpolation with PouchDB Spec', () => {
 
     firstInterpolation = jasmine.createSpyObj('firstInterpolation', ['execute']);
     firstInterpolation.execute.and.returnValue({then: () => {}});
-  
+
     interpolations = firstInterpolation;
   });
 

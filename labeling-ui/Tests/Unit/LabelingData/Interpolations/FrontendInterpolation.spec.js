@@ -1,3 +1,4 @@
+import {inject} from 'angular-mocks';
 import FrontendInterpolation from 'Application/LabelingData/Interpolations/FrontendInterpolation';
 
 describe('FrontendInterpolation Test Suite', () => {
@@ -30,7 +31,7 @@ describe('FrontendInterpolation Test Suite', () => {
       frameRange = {
         startFrameIndex: 1,
         endFrameIndex: 4,
-      }
+      };
     });
 
     it('does not do anything if the labeledThingFrameGateway does not resolve', () => {
@@ -103,7 +104,7 @@ describe('FrontendInterpolation Test Suite', () => {
 
         promise = angularQ.resolve(labeledThingInFramesWithGhosts);
         gateway.getLabeledThingInFrame.and.returnValue(promise);
-        gateway.saveLabeledThingInFrame.and.returnValue(promise)
+        gateway.saveLabeledThingInFrame.and.returnValue(promise);
       });
 
       it('saves each ghost as new LabeledThingInFrame', () => {
