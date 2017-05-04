@@ -3,12 +3,7 @@ var matchNamedParamsInParamsAndData = require('./ContainNamedParamsRequest/Match
 var features = require('../../../../Application/features.json');
 
 if (features.pouchdb) {
-  var PouchDbContextService = require('../../../../Application/Common/Services/PouchDbContextService');
-  var PouchDB = require('../../../../Application/Vendor/github/pouchdb/pouchdb@6.0.7/dist/pouchdb');
   var configuration = require('../../../../Application/Common/config.json');
-  const contextService = new PouchDbContextService(configuration, PouchDB);
-
-  // console.log(contextService.provideContextForTaskId('TASKID-TASKID'));
 
   module.exports = function toContainNamedParamsRequest() {
     return {
@@ -18,16 +13,27 @@ if (features.pouchdb) {
           message: 'Läuft',
         };
 
-        const pouchDocument = browser.executeScript((configuration) => {
-          // const db = new PouchDB(`TASKID-TASKID-${configuration.storage.local.databaseName}`);
+        browser.executeScript(() => {
           const db = new PouchDB(`TASKID-TASKID-AnnoStation`);
-          return db.allDocs({include_docs: true});
+          db.put({id: 'foobar'});
+        });
+
+        browser.sleep(4000);
+
+        const pouchDocument = browser.executeAsyncScript((configuration, callback) => {
+          const db = new PouchDB(`TASKID-TASKID-${configuration.storage.local.databaseName}`);
+
+          return db.allDocs({include_docs: true}).then((result) => {
+            callback(result);
+          });
         }, configuration);
 
+        console.log(pouchDocument);
         result.pass = pouchDocument.then((result) => {
           console.log(result);
           return true;
         });
+        // result.pass = true;
 
         return result;
       },
