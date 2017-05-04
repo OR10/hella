@@ -14,6 +14,7 @@ describe('Mouse Crosshair', () => {
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
     sharedMocks = [
+      assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
       assets.mocks.Shared.UserOrganisations,

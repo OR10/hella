@@ -9,7 +9,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Cuboid creation', () => {
+fdescribe('Cuboid creation', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -17,6 +17,7 @@ describe('Cuboid creation', () => {
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
     sharedMocks = [
+      assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
       assets.mocks.Shared.UserOrganisations,
@@ -38,7 +39,7 @@ describe('Cuboid creation', () => {
   });
 
   describe('3d', () => {
-    it('should create a new 3d cuboid starting top to bottom', done => {
+    fit('should create a new 3d cuboid starting top to bottom', done => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,

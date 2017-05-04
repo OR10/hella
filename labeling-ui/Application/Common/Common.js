@@ -33,6 +33,7 @@ import PouchDbViewService from './Services/PouchDbViewService';
 
 import PouchDbContextService from './Services/PouchDbContextService';
 import PouchDbSyncManager from './Services/PouchDbSyncManager';
+import PouchDbSyncManagerMock from 'Tests/Support/PouchDbSyncManager';
 import PouchDbViewHeater from './Services/PouchDbViewHeater';
 
 import DebouncerService from './Services/DebouncerService';
@@ -109,8 +110,13 @@ class Common extends Module {
 
     // Without feature flag, as those services do not override others.
     this.module.service('pouchDbContextService', PouchDbContextService);
-    this.module.service('pouchDbSyncManager', PouchDbSyncManager);
     this.module.service('pouchDbViewHeater', PouchDbViewHeater);
+
+    if (Environment.isTesting) {
+      this.module.service('pouchDbSyncManager', PouchDbSyncManagerMock);
+    } else {
+      this.module.service('pouchDbSyncManager', PouchDbSyncManager);
+    }
 
     this.module.service('debouncerService', DebouncerService);
     this.module.service('couchDbModelSerializer', CouchDbModelSerializer);
