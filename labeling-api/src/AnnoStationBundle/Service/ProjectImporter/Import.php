@@ -203,7 +203,7 @@ class Import
             $organisation,
             $user,
             $requirementsElement->item(0)->getAttribute('name'),
-            sprintf('%s.xml', $requirementsElement->item(0)->getAttribute('name')),
+            $requirementsElement->item(0)->getAttribute('filename'),
             $expectedHash
         );
 
