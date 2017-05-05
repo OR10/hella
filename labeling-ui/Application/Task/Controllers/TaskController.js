@@ -220,6 +220,11 @@ class TaskController {
     this.drawableRequirementFrames = [];
 
     /**
+     * @type {boolean}
+     */
+    this.showToolSelector = true;
+
+    /**
      * @type {LabelStructure|null}
      */
     this.labelStructure = null;
@@ -418,6 +423,8 @@ class TaskController {
    * - `selectedLabelStructureObject`
    * - `selectedLabeledObject`
    * - `drawableThings`
+   * - `drawableGroups`
+   * - `drawableRequirementFrames`
    *
    * All of these values will be *nulled* before the update and filled as soon as the needed {@link LabelStructure}
    * was retrieved.
@@ -448,6 +455,8 @@ class TaskController {
         } else {
           throw new Error('No valid label structure object defined in requirements.xml');
         }
+
+        this.showToolSelector = labelStructureObjects.length > 1;
 
         this.labelStructure = labelStructure;
         this.selectedLabelStructureObject = labelStructureObject;
