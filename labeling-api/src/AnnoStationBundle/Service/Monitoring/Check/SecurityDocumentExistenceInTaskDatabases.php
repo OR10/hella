@@ -107,19 +107,9 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
             return new Result\Skip('PouchDB not enabled');
         }
 
-        $this->urls = array_map(
-            function (Model\LabelingTask $task) {
-                $database = $this->taskDatabaseCreator->getDatabaseName($task->getProjectId(), $task->getId());
+        $this->buildUrls();
 
-                return [
-                    'database' => $database,
-                    'url'      => $this->generateCouchDbSecurityUrl($database),
-                ];
-            },
-            $this->labelingTaskFacade->findAll()
-        );
-
-        $this->createConcurrentRequest($this->urls);
+        $this->executeConcurrentRequests($this->urls);
 
         if (!empty($this->failedDatabases)) {
             return $this->getFailureResponseForMissingDatabases();
@@ -129,7 +119,7 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
         if (!empty($this->missingSecurityDocuments) && $diff < 10 && $diff > 0) {
             sleep($diff - time());
         }
-        $this->createConcurrentRequest($this->missingSecurityDocuments);
+        $this->executeConcurrentRequests($this->missingSecurityDocuments);
 
         if (!empty($this->missingSecurityDocuments)) {
             return $this->getFailureResponseForMissingSecurityDoc();
@@ -138,22 +128,31 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
         return new Result\Success();
     }
 
+    private function buildUrls()
+    {
+        $this->urls = array_map(
+            function (Model\LabelingTask $task) {
+                $database = $this->taskDatabaseCreator->getDatabaseName($task->getProjectId(), $task->getId());
+
+                return [
+                    'database' => $database,
+                    'url'      => $this->getCouchDbSecurityUrl($database),
+                ];
+            },
+            $this->labelingTaskFacade->findAll()
+        );
+    }
+
     /**
      * @param $urls
      */
-    private function createConcurrentRequest($urls)
+    private function executeConcurrentRequests($urls)
     {
         $this->missingSecurityDocuments = [];
         $this->failedDatabases          = [];
 
-        $requests = function () use ($urls) {
-            foreach ($urls as $index => $url) {
-                yield new Request('GET', $url['url']);
-            }
-        };
-
         $pool = new Pool(
-            $this->guzzleClient, $requests(), [
+            $this->guzzleClient, $this->requestIterator($urls), [
                 'concurrency' => 32,
                 'fulfilled'   => function (GuzzleHttp\Psr7\Response $response, $index) use (&$missingSecurityDocuments
                 ) {
@@ -173,6 +172,18 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
 
         // Force the pool of requests to complete.
         $promise->wait();
+    }
+
+    /**
+     * @param $urls
+     *
+     * @return \Generator
+     */
+    private function requestIterator($urls)
+    {
+        foreach ($urls as $index => $url) {
+            yield new Request('GET', $url['url']);
+        }
     }
 
     /**
@@ -247,7 +258,7 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
      *
      * @return string
      */
-    private function generateCouchDbSecurityUrl($database)
+    private function getCouchDbSecurityUrl($database)
     {
         return sprintf(
             'http://%s:%s@%s:%s/%s/_security',
