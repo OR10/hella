@@ -12,15 +12,24 @@
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabeledFrames">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame"/>
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
         <service id="annostation.labeling_api.service.project_deleter.delete.labeled_things"
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabeledThings">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
         <service id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_in_frames"
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabeledThingInFrames">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
         <service id="annostation.labeling_api.service.project_deleter.delete.labeling_tasks"
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabelingTasks">
@@ -30,6 +39,7 @@
             <argument type="service"
                       id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_in_frames"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.task_timers"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_group"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.video"/>
         </service>
         <service id="annostation.labeling_api.service.project_deleter.delete.reports"
@@ -43,6 +53,16 @@
         <service id="annostation.labeling_api.service.project_deleter.delete.task_timers"
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\TaskTimers">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%pouchdb_feature_enabled%</argument>
+        </service>
+        <service id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_group"
+                 class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabeledThingGroup">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
         <service id="annostation.labeling_api.service.project_deleter.delete.video"
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\Video">

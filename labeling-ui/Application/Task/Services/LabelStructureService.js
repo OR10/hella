@@ -108,7 +108,7 @@ class LabelStructureService {
     });
     const currentThing = filteredThings[0];
 
-    return labelStructure.getEnabledThingClassesForThingAndClassList(
+    return labelStructure.getEnabledClassesForLabeledObjectAndClassList(
       currentThing,
       labeledThingInFrame.extractClassList()
     );

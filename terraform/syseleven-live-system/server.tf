@@ -25,7 +25,7 @@ resource "openstack_compute_instance_v2" "live" {
     count = "${var.app-count}"
 
     name = "app-${count.index}.live"
-    image_name = "Ubuntu 14.04 sys11-cloudimg amd64-20161101-0857"
+    image_id = "d82d843b-bcb5-41d2-b545-a0937c3796ad"
     flavor_name = "${var.flavors["app-${count.index}.live"]}"
     key_pair = "crosscan-chh"
     stop_before_destroy = false
@@ -65,7 +65,7 @@ resource "openstack_compute_instance_v2" "live-couchdb" {
     count = "${var.couchdb-count}"
 
     name = "couchdb-${count.index}.live"
-    image_name = "Ubuntu 14.04 sys11-cloudimg amd64-20161101-0857"
+    image_id = "d82d843b-bcb5-41d2-b545-a0937c3796ad"
     flavor_name = "${var.flavors["couchdb-${count.index}.live"]}"
     key_pair = "crosscan-chh"
     stop_before_destroy = false

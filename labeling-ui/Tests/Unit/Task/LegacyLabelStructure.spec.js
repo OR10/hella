@@ -66,7 +66,7 @@ describe('LegacyLabelStructure', () => {
   ], (classList, expectedResult) => {
     it('should provide correctly annotated and processed class json', () => {
       const legacyThing = new LabelStructureThing('legacy', 'rectangle', 'rectangle');
-      const annotatedEnabledClasses = structure.getEnabledThingClassesForThingAndClassList(legacyThing, classList);
+      const annotatedEnabledClasses = structure.getEnabledClassesForLabeledObjectAndClassList(legacyThing, classList);
       expect(annotatedEnabledClasses).toEqual(expectedResult);
     });
   });

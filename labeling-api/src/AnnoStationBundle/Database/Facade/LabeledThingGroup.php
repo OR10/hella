@@ -58,6 +58,29 @@ class LabeledThingGroup
 
     /**
      * @param AppBundleModel\LabelingTask $labelingTask
+     *
+     * @return mixed[]
+     */
+    public function getLabeledThingGroupIdsByTask(AppBundleModel\LabelingTask $labelingTask)
+    {
+        $documentManager = $this->documentManager
+            ->createQuery('annostation_labeled_thing_group_in_frame_by_taskId_frameIndex', 'view')
+            ->onlyDocs(false)
+            ->setStartKey([$labelingTask->getId(), null])
+            ->setEndKey([$labelingTask->getId(), []]);
+
+        return array_unique(
+            array_map(
+                function ($taskByLabeledThingGroup) {
+                    return $taskByLabeledThingGroup['value'];
+                },
+                $documentManager->execute()->toArray()
+            )
+        );
+    }
+
+    /**
+     * @param AppBundleModel\LabelingTask $labelingTask
      * @param                             $frameIndex
      *
      * @return array

@@ -186,7 +186,8 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
     private function getExpectedResponse($memberNames = [], $memberRoles = [])
     {
-        $fixedRoles = [
+        $fixedMemberNames = [$this->getContainer()->getParameter('couchdb_user_read_only')];
+        $fixedRoles       = [
             sprintf(
                 '%s%s-%s',
                 Service\UserRolesRebuilder::COORDINATORS_PREFIX,
@@ -197,8 +198,11 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
             sprintf('%s%s', Service\UserRolesRebuilder::ADMIN_GROUP_PREFIX, $this->organisation->getId()),
             sprintf('%s%s', Service\UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $this->organisation->getId()),
         ];
-        $roles = array_merge($memberRoles, $fixedRoles);
+        $memberNames      = array_merge($memberNames, $fixedMemberNames);
+        $roles            = array_merge($memberRoles, $fixedRoles);
+        sort($memberNames);
         sort($roles);
+
         return [
             'admins'          => [
                 'names' => [],

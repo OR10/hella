@@ -11,11 +11,19 @@ class labeling_api::app(
   $sslCertFile = undef,
   $sslKeyFile = undef,
   $listenIp = '*',
+  $symfonyUser = undef,
+  $symfonyRoot,
 ) {
   include ::labeling_api::common
 
   if $labeling_api::params::frame_cdn_type == 's3-cmd' {
     ensure_packages(['s3cmd', 'parallel'])
+  }
+
+  if $symfonyUser == undef {
+    $_symfonyUser = hiera('php::fpm::pools')['www']['user']
+  } else {
+    $_symfonyUser = $symfonyUser
   }
 
   ::annostation_base::symfony { 'labeling_api':
@@ -65,5 +73,11 @@ class labeling_api::app(
       ensure => 'link',
       target => '/labeling-ui/Distribution',
     }
+  }
+
+  file { '/etc/cron.d/remove-expired-user-assignments-and-memberships':
+    ensure  => present,
+    content => "0 1 * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:remove-expired-user-assignments-and-memberships",
+    mode    => '644',
   }
 }
