@@ -628,7 +628,7 @@ describe('PouchDbSyncManager', () => {
       });
     });
 
-    describe('on startDuplexLiveReplication', () => {
+    describe('startDuplexLiveReplication', () => {
       it('should fire "alive" event on start of startDuplexLiveReplication', () => {
         const aliveEventSpy = jasmine.createSpy('event:alive');
 
