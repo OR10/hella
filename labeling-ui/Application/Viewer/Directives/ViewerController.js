@@ -439,7 +439,7 @@ class ViewerController {
      * Inform the user about authoriztion loss with the couchdb.
      */
     let unauthorizedAccessModalOpen = false;
-    $rootScope.$on('pouchdb:replication:unauthorized', errorObject => {
+    $rootScope.$on('pouchdb:replication:unauthorized', () => {
       if (unauthorizedAccessModalOpen === true) {
         this._logger.log('pouchdb:replication:unauthorized', 'Unauthorized event already handled, skipping dialog');
         return;

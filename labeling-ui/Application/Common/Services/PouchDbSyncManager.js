@@ -461,7 +461,7 @@ class PouchDbSyncManager {
 
     replication.on('error', errorObject => {
       const {error} = errorObject;
-      switch(error) {
+      switch (error) {
         case 'unauthorized':
           this._emitUnauthorized(errorObject);
           break;
