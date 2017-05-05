@@ -9,7 +9,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Cuboid creation', () => {
+describe('Cuboid creation', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -39,7 +39,7 @@ fdescribe('Cuboid creation', () => {
   });
 
   describe('3d', () => {
-    fit('should create a new 3d cuboid starting top to bottom', done => {
+    it('should create a new 3d cuboid starting top to bottom', done => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,

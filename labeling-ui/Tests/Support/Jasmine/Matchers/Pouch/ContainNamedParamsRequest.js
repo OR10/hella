@@ -6,7 +6,7 @@ module.exports = function toContainNamedParamsRequest() {
     compare: function (mockedRequests, namedParamsMock) {
 
       let result = {
-        message: 'Läuft',
+        message: 'Expected document not found in Pouch DB',
       };
 
       const pouchQuery = browser.executeAsyncScript((configuration, callback) => {

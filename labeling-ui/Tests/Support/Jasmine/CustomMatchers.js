@@ -5,16 +5,17 @@ beforeEach(function() {
     toEqualRenderedDrawingStack: require('./Matchers/EqualRenderedDrawingStack'),
     toMatchBelowThreshold: require('./Matchers/MatchBelowThreshold'),
     toContainNamedParamsRequestOnce: require('./Matchers/ContainNamedParamsRequestOnce'),
-    toContainRequest: require('./Matchers/ContainRequest'),
   });
 
   if (features.pouchdb) {
     jasmine.addMatchers({
       toContainNamedParamsRequest: require('./Matchers/Pouch/ContainNamedParamsRequest'),
+      toContainRequest: require('./Matchers/Pouch/ContainNamedParamsRequest'),
     });
   } else {
     jasmine.addMatchers({
       toContainNamedParamsRequest: require('./Matchers/ContainNamedParamsRequest'),
+      toContainRequest: require('./Matchers/ContainRequest'),
     });
   }
 });
