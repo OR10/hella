@@ -216,4 +216,5 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     ].includes(shape);
   }
 }
+
 export default LinearCuboidInterpolationEasing;
