@@ -137,7 +137,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     const oppositeVertex = this._getFrontFaceVertexIndicesFromBackgroundFaceVertexIndices(backgroundFaceVertexIndices);
 
     const currentCuboid3d = Cuboid3d.createFromRawVertices(startCuboid.vehicleCoordinates);
-    const endCuboid3d = Cuboid3d.createFromRawVertices(endCuboid.vehicleCoordinates);
+    // const endCuboid3d = Cuboid3d.createFromRawVertices(endCuboid.vehicleCoordinates);
 
     const plainVector1 = currentCuboid3d.vertices[oppositeVertex.normal[0][0]]
         .clone()
@@ -153,10 +153,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     const normalVectorV3 = plainVector1V3.clone().cross(plainVector2V3);
     const normalVectorV4 = new Vector4(normalVectorV3.x, normalVectorV3.y, normalVectorV3.z, 1);
 
-    const endCuboidVectorV4 = endCuboid3d.vertices[Object.keys(oppositeVertex)[0]];
-    const endCuboidVectorV3 = new Vector3(endCuboidVectorV4.x, endCuboidVectorV4.y, endCuboidVectorV4.z);
-    const distance = endCuboidVectorV3.distanceTo(endCuboidVectorV3);
-    const distanceVector = normalVectorV4.clone().divideScalar(normalVectorV4.length()).multiplyScalar(distance);
+    const distanceVector = normalVectorV4.clone().divideScalar(normalVectorV4.length()).multiplyScalar(0);
 
     const newVehicleCoordinates = [];
     Object.keys(oppositeVertex).forEach((targetVertexIndex, sourceVertexIndex) => {
