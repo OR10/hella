@@ -87,11 +87,6 @@ class MultiTool extends PaperTool {
     this._keyboardTool = null;
     this._paperToolDelegationInvoked = false;
     this._keyboardToolDelegationInvoked = false;
-    // if (!this._readOnly) {
-    //   // Register Keyboard shortcuts
-    //   this._registerShortcuts();
-    // }
-    // this._initializeOptions(options);
 
     const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
     const tool = this._getToolForRequirementsShape(requirementsShape);
@@ -147,18 +142,6 @@ class MultiTool extends PaperTool {
 
     super._complete(result);
   }
-
-  // /**
-  //  * @param {Object} options
-  //  * @private
-  //  */
-  // _initializeOptions(options) {
-  //   const defaultOptions = {
-  //     minDistance: 1,
-  //     hitTestTolerance: 8,
-  //   };
-  //   this._options = Object.assign({}, defaultOptions, options);
-  // }
 
   /**
    * @param {string} requirementsShape
