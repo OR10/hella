@@ -142,10 +142,12 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     const currentCuboid3d = Cuboid3d.createFromRawVertices(startCuboid.vehicleCoordinates);
     const endCuboid3d = Cuboid3d.createFromRawVertices(endCuboid.vehicleCoordinates);
 
-    const plainVector1 = currentCuboid3d.vertices[oppositeVertex.normal[0][0]].clone()
+    const plainVector1 = currentCuboid3d.vertices[oppositeVertex.normal[0][0]]
+        .clone()
         .sub(currentCuboid3d.vertices[oppositeVertex.normal[0][1]]);
 
-    const plainVector2 = currentCuboid3d.vertices[oppositeVertex.normal[1][0]].clone()
+    const plainVector2 = currentCuboid3d.vertices[oppositeVertex.normal[1][0]]
+        .clone()
         .sub(currentCuboid3d.vertices[oppositeVertex.normal[1][1]]);
 
     const plainVector1V3 = new Vector3(plainVector1.x, plainVector1.y, plainVector1.z);

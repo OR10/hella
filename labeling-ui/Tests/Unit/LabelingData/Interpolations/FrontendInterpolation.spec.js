@@ -112,7 +112,7 @@ describe('FrontendInterpolation Test Suite', () => {
       it('saves each ghost as new LabeledThingInFrame', () => {
         easingMock.supportsShape.and.returnValue(true);
         easingMock.supportsEasing.and.returnValue(true);
-        
+
         interpolation.execute(null, null, frameRange);
         rootScope.$apply();
 
