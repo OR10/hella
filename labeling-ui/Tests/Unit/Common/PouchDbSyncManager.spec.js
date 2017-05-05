@@ -8,6 +8,7 @@ describe('PouchDbSyncManager', () => {
   let rootScope;
   let taskGateway;
   let syncManager;
+  let rootScopeMock;
   let pouchDbContextServiceMock;
   let taskReplicationInformation;
   let contextReplicate;
@@ -47,7 +48,9 @@ describe('PouchDbSyncManager', () => {
     };
     taskGateway.getTaskReplicationInformationForTaskId.and.returnValue(taskReplicationInformation);
 
-    syncManager = new PouchDbSyncManager(loggerMock, angularQ, pouchDbContextServiceMock, taskGateway);
+    rootScopeMock = jasmine.createSpyObj('$rootScope', ['$emit']);
+
+    syncManager = new PouchDbSyncManager(rootScopeMock, loggerMock, angularQ, pouchDbContextServiceMock, taskGateway);
   });
 
   beforeEach(() => {
