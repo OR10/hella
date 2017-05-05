@@ -11,12 +11,19 @@ import DeepMap from '../Support/DeepMap';
  */
 class PouchDbSyncManager {
   /**
+   * @param {$rootScope} $rootScope
    * @param {LoggerService} loggerService
    * @param {angular.$q} $q
    * @param {PouchDbContextService} pouchDbContextService
    * @param {TaskGateway} taskGateway
    */
-  constructor(loggerService, $q, pouchDbContextService, taskGateway) {
+  constructor($rootScope, loggerService, $q, pouchDbContextService, taskGateway) {
+    /**
+     * @type {$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
+
     /**
      * @type {Logger}
      * @private
@@ -77,6 +84,7 @@ class PouchDbSyncManager {
       ['offline', []],
       ['alive', []],
       ['transfer', []],
+      ['unauthorized', []],
     ]);
   }
 
@@ -196,6 +204,7 @@ class PouchDbSyncManager {
    * - offline
    * - alive
    * - transfer
+   * - unauthorized
    *
    * @param {string} eventName
    * @param {Function} callback
@@ -445,6 +454,40 @@ class PouchDbSyncManager {
     replication.on('active', () => {
       this._emit('transfer');
     });
+
+    replication.on('denied', errorObject => {
+      this._emitUnauthorized(errorObject);
+    });
+
+    replication.on('error', errorObject => {
+      const {error} = errorObject;
+      switch (error) {
+        case 'unauthorized':
+          this._emitUnauthorized(errorObject);
+          break;
+        default:
+          this._logger.warn('pouchDb:syncManager', 'Unknown replication error encountered:', errorObject);
+          this._$rootScope.$emit('pouchdb:replication:error', errorObject);
+      }
+    });
+  }
+
+  /**
+   * Take care of emitting an unauthorized error if applicable.
+   *
+   * @param {{error: string, message: string, status: number}} errorObject
+   * @private
+   */
+  _emitUnauthorized(errorObject) {
+    if (errorObject.id !== undefined) {
+      if (errorObject.id.substr(0, 8) === '_design/') {
+        // Design documents can't be synced on purpose.
+        return;
+      }
+    }
+
+    this._emit('unauthorized', [errorObject]);
+    this._$rootScope.$emit('pouchdb:replication:unauthorized', errorObject);
   }
 
   /**
@@ -465,6 +508,7 @@ class PouchDbSyncManager {
 }
 
 PouchDbSyncManager.$inject = [
+  '$rootScope',
   'loggerService',
   '$q',
   'pouchDbContextService',

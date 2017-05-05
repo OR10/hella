@@ -50,7 +50,9 @@ class RebuildUserRolesPermissions extends Base
         } else {
             $users = [$this->userFacade->getUserById($userId)];
         }
-        $progress = new ProgressBar($output, count($users));
+        $numberOfUsers = count($users);
+        $progress = new ProgressBar($output, $numberOfUsers);
+        $output->writeln('<info>Adding ' . $numberOfUsers . ' RabbitMQ jobs to rebuild user roles permissions</info>');
 
         /** @var Model\User $user */
         foreach ($users as $user) {
