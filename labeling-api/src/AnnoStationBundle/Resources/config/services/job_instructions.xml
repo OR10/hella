@@ -96,5 +96,12 @@
             <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.database_deleter"
+                 class="AnnoStationBundle\Worker\JobInstruction\DatabaseDeleter">
+            <argument type="service" id="annostation.services.couch_db_replicator_service"/>
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
     </services>
 </container>
