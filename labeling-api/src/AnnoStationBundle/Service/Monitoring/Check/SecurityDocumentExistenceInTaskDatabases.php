@@ -61,6 +61,21 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
      */
     private $urls;
 
+    /**
+     * @var array
+     */
+    private $failedDatabases = [];
+
+    /**
+     * @var array
+     */
+    private $missingSecurityDocuments = [];
+
+    /**
+     * @var null|string
+     */
+    private $lastMissingSecurityDocument = null;
+
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Service\TaskDatabaseCreator $taskDatabaseCreator,
@@ -97,32 +112,58 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
                 $database = $this->taskDatabaseCreator->getDatabaseName($task->getProjectId(), $task->getId());
 
                 return [
-                    'database'  => $database,
-                    'url'       => $this->generateCouchDbSecurityUrl($database),
+                    'database' => $database,
+                    'url'      => $this->generateCouchDbSecurityUrl($database),
                 ];
             },
             $this->labelingTaskFacade->findAll()
         );
 
-        $requests = function () {
-            foreach ($this->urls as $index => $url) {
+        $this->createConcurrentRequest($this->urls);
+
+        if (!empty($this->failedDatabases)) {
+            return $this->getFailureResponseForMissingDatabases();
+        }
+
+        $diff = $this->lastMissingSecurityDocument - time();
+        if (!empty($this->missingSecurityDocuments) && $diff < 10 && $diff > 0) {
+            sleep($diff - time());
+        }
+        $this->createConcurrentRequest($this->missingSecurityDocuments);
+
+        if (!empty($this->missingSecurityDocuments)) {
+            return $this->getFailureResponseForMissingSecurityDoc();
+        }
+
+        return new Result\Success();
+    }
+
+    /**
+     * @param $urls
+     */
+    private function createConcurrentRequest($urls)
+    {
+        $this->missingSecurityDocuments = [];
+        $this->failedDatabases          = [];
+
+        $requests = function () use ($urls) {
+            foreach ($urls as $index => $url) {
                 yield new Request('GET', $url['url']);
             }
         };
 
-        $failedDatabases          = [];
-        $missingSecurityDocuments = [];
-
         $pool = new Pool(
             $this->guzzleClient, $requests(), [
                 'concurrency' => 32,
-                'fulfilled'   => function (GuzzleHttp\Psr7\Response $response, $index) use (&$missingSecurityDocuments) {
+                'fulfilled'   => function (GuzzleHttp\Psr7\Response $response, $index) use (&$missingSecurityDocuments
+                ) {
                     if (!$this->isSecurityDocumentResponseValid($response)) {
-                        $missingSecurityDocuments[] = $this->urls[$index]['database'];
+                        $this->missingSecurityDocuments[]  = $this->urls[$index];
+                        $this->lastMissingSecurityDocument = time();
                     }
                 },
                 'rejected'    => function ($reason, $index) use (&$failedDatabases) {
-                    $failedDatabases[] = $this->urls[$index]['database'];
+                    $this->failedDatabases[] = $this->urls[$index];
                 },
             ]
         );
@@ -132,20 +173,13 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
 
         // Force the pool of requests to complete.
         $promise->wait();
-
-        if (!empty($failedDatabases)) {
-            return new Result\Failure(sprintf('Failed to get databases: %s', join(',', $failedDatabases)));
-        }
-
-        if (!empty($missingSecurityDocuments)) {
-            return new Result\Failure(
-                sprintf('Missing security documents in: %s', join(',', $missingSecurityDocuments))
-            );
-        }
-
-        return new Result\Success();
     }
 
+    /**
+     * @param GuzzleHttp\Psr7\Response $response
+     *
+     * @return bool
+     */
     private function isSecurityDocumentResponseValid(GuzzleHttp\Psr7\Response $response)
     {
         $securityDocument = \json_decode(
@@ -154,6 +188,48 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
         );
 
         return !empty($securityDocument);
+    }
+
+    /**
+     * @return Result\Failure
+     */
+    private function getFailureResponseForMissingDatabases()
+    {
+        return new Result\Failure(
+            sprintf(
+                'Failed to get databases: %s',
+                join(
+                    ',',
+                    array_map(
+                        function ($url) {
+                            return $url['database'];
+                        },
+                        $this->failedDatabases
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * @return Result\Failure
+     */
+    private function getFailureResponseForMissingSecurityDoc()
+    {
+        return new Result\Failure(
+            sprintf(
+                'Missing security documents in: %s',
+                join(
+                    ',',
+                    array_map(
+                        function ($url) {
+                            return $url['database'];
+                        },
+                        $this->missingSecurityDocuments
+                    )
+                )
+            )
+        );
     }
 
     /**
