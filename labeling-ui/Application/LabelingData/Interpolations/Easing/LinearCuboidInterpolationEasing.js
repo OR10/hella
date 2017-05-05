@@ -120,11 +120,10 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
       return vertex === null;
     });
 
-    const startCuboidIs3D = (startCuboidBackgroundFaceVertices.length === 0);
     const startCuboidIs2D = (startCuboidBackgroundFaceVertices.length === 4);
     const endCuboidIs2D = (endCuboidBackgroundFaceVertices.length === 4);
 
-    if (startCuboidIs3D || (startCuboidIs2D && endCuboidIs2D)) {
+    if (!startCuboidIs2D || (startCuboidIs2D && endCuboidIs2D)) {
       return startCuboid;
     }
 
@@ -217,5 +216,4 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     ].includes(shape);
   }
 }
-
 export default LinearCuboidInterpolationEasing;
