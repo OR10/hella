@@ -773,12 +773,12 @@ class ViewerController {
     this._layerManager.addLayer('annotations', this.thingLayer);
 
     this._$scope.$watchGroup(
-      ['vm.activeTool', 'vm.selectedLabelStructureThing'],
-      ([newActiveTool, newSelectedLabelStructureThings]) => {
+      ['vm.activeTool', 'vm.selectedLabelStructureObject'],
+      ([newActiveTool, newSelectedLabelStructureObject]) => {
         /* @TODO: Refactor (into service?!) to not have zoomPanel switch to 'multi'
          * while labelStructureThings are not loaded yet
          */
-        if (newActiveTool === 'multi' && newSelectedLabelStructureThings === null) {
+        if (newActiveTool === 'multi' && newSelectedLabelStructureObject === null) {
           return;
         }
         // Only called if all tools are initialized
@@ -786,7 +786,7 @@ class ViewerController {
           return;
         }
 
-        this.thingLayer.activateTool(newActiveTool, newSelectedLabelStructureThings);
+        this.thingLayer.activateTool(newActiveTool, newSelectedLabelStructureObject);
       }
     );
   }

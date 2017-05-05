@@ -230,7 +230,7 @@ class TaskController {
     /**
      * @type {{id, shape, name}|null}
      */
-    this.selectedLabelStructureThing = null;
+    this.selectedLabelStructureObject = null;
 
     /**
      * @type {LabeledObject|null}
@@ -292,7 +292,7 @@ class TaskController {
                     throw new Error('Cannot read identifier name of unknown shape!');
                 }
 
-                this.selectedLabelStructureThing = labelStructureThing;
+                this.selectedLabelStructureObject = labelStructureThing;
                 // The selectedObject needs to be set in the same cycle as the new LabelStructureThing. Otherwise there might be race conditions in
                 // updating its structure against the wrong LabelStructureThing.
                 this.selectedLabeledObject = this._getSelectedLabeledObject();
