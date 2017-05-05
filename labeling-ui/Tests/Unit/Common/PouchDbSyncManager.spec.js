@@ -665,6 +665,38 @@ describe('PouchDbSyncManager', () => {
 
         expect(unauthorizedEventSpy).toHaveBeenCalledWith(errorDocument);
       });
+
+      it('should emit "pouchdb:replication:unauthorized" to $rootScope if a write error happens', () => {
+        syncManager.pushUpdatesForContext(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          id: 'some-document-id',
+          error: 'forbidden',
+          status: 500,
+          name: 'forbidden',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
+        expect(rootScopeMock.$emit).toHaveBeenCalledWith('pouchdb:replication:unauthorized', errorDocument);
+      });
+
+      it('should not emit "pouchdb:replication:unauthorized" to $rootScope if a write error happens for a design doc', () => {
+        syncManager.pushUpdatesForContext(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          id: '_design/some-design-document-id',
+          error: 'forbidden',
+          status: 500,
+          name: 'forbidden',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
+        expect(rootScopeMock.$emit).not.toHaveBeenCalled();
+      });
     });
 
     describe('startDuplexLiveReplication', () => {
@@ -842,6 +874,38 @@ describe('PouchDbSyncManager', () => {
         contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
 
         expect(unauthorizedEventSpy).not.toHaveBeenCalled();
+      });
+
+      it('should emit "pouchdb:replication:unauthorized" to $rootScope ia write error happens in "to" replication', () => {
+        syncManager.startDuplexLiveReplication(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          id: 'some-document-id',
+          error: 'forbidden',
+          status: 500,
+          name: 'forbidden',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
+        expect(rootScopeMock.$emit).toHaveBeenCalledWith('pouchdb:replication:unauthorized', errorDocument);
+      });
+
+      it('should not emit "pouchdb:replication:unauthorized" to $rootScope if a write error happens in "to" replication for a design doc', () => {
+        syncManager.startDuplexLiveReplication(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          id: '_design/some-design-document-id',
+          error: 'forbidden',
+          status: 500,
+          name: 'forbidden',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
+        expect(rootScopeMock.$emit).not.toHaveBeenCalled();
       });
     });
   });
