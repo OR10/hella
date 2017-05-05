@@ -61,7 +61,7 @@ describe('LinearPolyInterpolationEasing Test Suite', () => {
         easing.step(ghost, null, endLtif, delta);
       };
 
-      expect(throwWrapper).toThrowError('Failed to interpolate foobar with different points.');
+      expect(throwWrapper).toThrowError('Failed to interpolate foobar with different number of points.');
     });
 
     it('calculates the step between the ghost and the end shape', () => {
