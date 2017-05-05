@@ -438,21 +438,30 @@ class ViewerController {
     /**
      * Inform the user about authoriztion loss with the couchdb.
      */
-    $rootScope.$on('pouchdb:replication:unauthorized', errorObject => {
-        modalService.info(
-          {
-            title: 'Unauthorized Access',
-            headline: 'You do not longer have the access rights to work on this task.',
-            message: 'You have lost the authorization to work on this task. This can for example happen if the task was reassigned to another labeler, while you were working on it. Please contact your label coordinator for further instructions.',
-            confirmButtonText: 'Understood',
-          },
-          () => this._$state.go('labeling.tasks.list', {projectId: this.task.projectId}),
-          undefined,
-          {
-            abortable: false,
-            warning: true,
-          }
-        );
+    let unauthorizedAccessModalOpen = false;
+    $rootScope.$on('pouchdb:replication:unauthorized', () => {
+      if (unauthorizedAccessModalOpen === true) {
+        this._logger.log('pouchdb:replication:unauthorized', 'Unauthorized event already handled, skipping dialog');
+        return;
+      }
+      unauthorizedAccessModalOpen = true;
+      modalService.info(
+        {
+          title: 'Unauthorized Access',
+          headline: 'You do not longer have the access rights to work on this task.',
+          message: 'You have lost the authorization to work on this task. This can for example happen if the task was reassigned to another labeler, while you were working on it. Please contact your label coordinator for further instructions.',
+          confirmButtonText: 'Understood',
+        },
+        () => {
+          unauthorizedAccessModalOpen = false;
+          this._$state.go('labeling.tasks.list', {projectId: this.task.projectId});
+        },
+        undefined,
+        {
+          abortable: false,
+          warning: true,
+        }
+      );
     });
 
     const {width, height} = this.video.metaData;

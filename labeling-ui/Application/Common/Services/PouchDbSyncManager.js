@@ -455,18 +455,39 @@ class PouchDbSyncManager {
       this._emit('transfer');
     });
 
+    replication.on('denied', errorObject => {
+      this._emitUnauthorized(errorObject);
+    });
+
     replication.on('error', errorObject => {
       const {error} = errorObject;
-      switch(error) {
+      switch (error) {
         case 'unauthorized':
-          this._emit('unauthorized', [errorObject]);
-          this._$rootScope.$emit('pouchdb:replication:unauthorized', errorObject);
+          this._emitUnauthorized(errorObject);
           break;
         default:
           this._logger.warn('pouchDb:syncManager', 'Unknown replication error encountered:', errorObject);
           this._$rootScope.$emit('pouchdb:replication:error', errorObject);
       }
     });
+  }
+
+  /**
+   * Take care of emitting an unauthorized error if applicable.
+   *
+   * @param {{error: string, message: string, status: number}} errorObject
+   * @private
+   */
+  _emitUnauthorized(errorObject) {
+    if (errorObject.id !== undefined) {
+      if (errorObject.id.substr(0, 8) === '_design/') {
+        // Design documents can't be synced on purpose.
+        return;
+      }
+    }
+
+    this._emit('unauthorized', [errorObject]);
+    this._$rootScope.$emit('pouchdb:replication:unauthorized', errorObject);
   }
 
   /**
