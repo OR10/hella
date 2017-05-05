@@ -9,6 +9,7 @@ class ToolSelectorDirective {
     this.scope = {
       drawableThings: '=',
       drawableGroups: '=',
+      drawableRequirementFrames: '=',
       selectedLabelStructureObject: '=',
       selectedPaperShape: '=',
     };
