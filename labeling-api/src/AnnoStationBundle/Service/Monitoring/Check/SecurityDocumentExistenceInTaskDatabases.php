@@ -2,12 +2,17 @@
 
 namespace AnnoStationBundle\Service\Monitoring\Check;
 
+use Psr\Http\Message\RequestInterface;
 use ZendDiagnostics\Check;
 use ZendDiagnostics\Result;
 use ZendDiagnostics\Result\ResultInterface;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
+use AppBundle\Model;
 use GuzzleHttp;
+use GuzzleHttp\Pool;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 
 class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
 {
@@ -51,6 +56,11 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
      */
     private $pouchdbFeatureEnabled;
 
+    /**
+     * @var array
+     */
+    private $urls;
+
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Service\TaskDatabaseCreator $taskDatabaseCreator,
@@ -82,46 +92,68 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
             return new Result\Skip('PouchDB not enabled');
         }
 
-        $tasks            = $this->labelingTaskFacade->findAll();
-        $missingDocuments = [];
-        foreach ($tasks as $task) {
-            $databaseName = $this->taskDatabaseCreator->getDatabaseName($task->getProjectId(), $task->getId());
+        $this->urls = array_map(
+            function (Model\LabelingTask $task) {
+                $database = $this->taskDatabaseCreator->getDatabaseName($task->getProjectId(), $task->getId());
 
-            if (!$this->isSecurityDocPresent($databaseName)) {
-                $missingDocuments[] = $databaseName;
+                return [
+                    'database'  => $database,
+                    'url'       => $this->generateCouchDbSecurityUrl($database),
+                ];
+            },
+            $this->labelingTaskFacade->findAll()
+        );
+
+        $requests = function () {
+            foreach ($this->urls as $index => $url) {
+                yield new Request('GET', $url['url']);
             }
+        };
+
+        $failedDatabases          = [];
+        $missingSecurityDocuments = [];
+
+        $pool = new Pool(
+            $this->guzzleClient, $requests(), [
+                'concurrency' => 32,
+                'fulfilled'   => function (GuzzleHttp\Psr7\Response $response, $index) use (&$missingSecurityDocuments) {
+                    if (!$this->isSecurityDocumentResponseValid($response)) {
+                        $missingSecurityDocuments[] = $this->urls[$index]['database'];
+                    }
+                },
+                'rejected'    => function ($reason, $index) use (&$failedDatabases) {
+                    $failedDatabases[] = $this->urls[$index]['database'];
+                },
+            ]
+        );
+
+        // Initiate the transfers and create a promise
+        $promise = $pool->promise();
+
+        // Force the pool of requests to complete.
+        $promise->wait();
+
+        if (!empty($failedDatabases)) {
+            return new Result\Failure(sprintf('Failed to get databases: %s', join(',', $failedDatabases)));
         }
-        if (!empty($missingDocuments)) {
-            return new Result\Failure('Missing _security document in: ' . join(', ', $missingDocuments));
+
+        if (!empty($missingSecurityDocuments)) {
+            return new Result\Failure(
+                sprintf('Missing security documents in: %s', join(',', $missingSecurityDocuments))
+            );
         }
 
         return new Result\Success();
     }
 
-    /**
-     * @param     $databaseName
-     * @param int $retryCount
-     *
-     * @return bool
-     */
-    private function isSecurityDocPresent($databaseName, $retryCount = 0)
+    private function isSecurityDocumentResponseValid(GuzzleHttp\Psr7\Response $response)
     {
-        $request = $this->guzzleClient->request(
-            'GET',
-            $this->generateCouchDbSecurityUrl($databaseName)
+        $securityDocument = \json_decode(
+            $response->getBody()->getContents(),
+            true
         );
 
-        if (empty(json_decode($request->getBody()->getContents(), true))) {
-            if ($retryCount <= 10) {
-                sleep(1);
-
-                return $this->isSecurityDocPresent($databaseName, $retryCount + 1);
-            } else {
-                return false;
-            }
-        }
-
-        return true;
+        return !empty($securityDocument);
     }
 
     /**
