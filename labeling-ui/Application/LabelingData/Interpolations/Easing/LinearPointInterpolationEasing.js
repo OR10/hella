@@ -14,15 +14,18 @@ class LinearPointInterpolationEasing extends InterpolationEasing {
    * @public
    */
   step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
-    const currentPoint = clone(currentGhostLabeledThingInFrame.shapes[0].point);
-    const endPoint = clone(endLabeledThingInFrame.shapes[0].point);
+    const ghostShape = currentGhostLabeledThingInFrame.shapes[0];
+    const endShape = endLabeledThingInFrame.shapes[0];
+
+    const currentPoint = clone(ghostShape.point);
+    const endPoint = clone(endShape.point);
 
     const point = {
       x: currentPoint.x + (endPoint.x - currentPoint.x) * delta,
       y: currentPoint.y + (endPoint.y - currentPoint.y) * delta,
     };
 
-    currentGhostLabeledThingInFrame.shapes[0].point = point;
+    ghostShape.point = point;
   }
 
   /**

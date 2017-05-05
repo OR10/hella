@@ -1,4 +1,3 @@
-import angular from 'angular';
 import {clone} from 'lodash';
 import {Vector3, Vector4} from 'three-math';
 import InterpolationEasing from './InterpolationEasing';
@@ -18,8 +17,11 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
    */
   step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
     const newCuboid3d = [];
-    const startCuboid = this._normalizeCuboid(clone(currentGhostLabeledThingInFrame.shapes[0]), clone(endLabeledThingInFrame.shapes[0]));
-    const endCuboid = this._normalizeCuboid(clone(endLabeledThingInFrame.shapes[0]), startCuboid);
+    const ghostShape = currentGhostLabeledThingInFrame.shapes[0];
+    const endShape = endLabeledThingInFrame.shapes[0];
+
+    const startCuboid = this._normalizeCuboid(clone(ghostShape), clone(endShape));
+    const endCuboid = this._normalizeCuboid(clone(endShape), startCuboid);
 
     const steps = [...Array(8).keys()];
     steps.forEach(index => {
@@ -32,7 +34,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     });
 
     const verticesWithPredictedVertices = Cuboid3d.createFromRawVertices(newCuboid3d).rawVertices;
-    currentGhostLabeledThingInFrame.shapes[0].vehicleCoordinates = verticesWithPredictedVertices;
+    ghostShape.vehicleCoordinates = verticesWithPredictedVertices;
   }
 
   _getFrontFaceVertexIndicesFromBackgroundFaceVertexIndices(backgroundFaceVertices) {
@@ -126,10 +128,6 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
       return startCuboid;
     }
 
-    // throw new Error('Interpolation between Pseudo 2D and 3D Cuboids is not yet supported');
-
-    // Anything from here: One cuboid is 2D, the other one is 3D
-
     let backgroundFaceVertexIndices;
     if (startCuboidIs2D) {
       backgroundFaceVertexIndices = startCuboidBackgroundFaceVertices;
@@ -162,7 +160,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     const distanceVector = normalVectorV4.clone().divideScalar(normalVectorV4.length()).multiplyScalar(distance);
 
     const newVehicleCoordinates = [];
-    angular.forEach(oppositeVertex, (sourceVertexIndex, targetVertexIndex) => {
+    Object.keys(oppositeVertex).forEach((targetVertexIndex, sourceVertexIndex) => {
       if (targetVertexIndex !== 'normal') {
         const sourceVertex = currentCuboid3d.vertices[sourceVertexIndex];
         newVehicleCoordinates[targetVertexIndex] = sourceVertex.add(distanceVector).toArray();

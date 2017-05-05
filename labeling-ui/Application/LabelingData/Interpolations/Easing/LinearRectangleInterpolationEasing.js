@@ -14,10 +14,13 @@ class LinearRectangleInterpolationEasing extends InterpolationEasing {
    * @public
    */
   step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
-    const currentTopLeft = clone(currentGhostLabeledThingInFrame.shapes[0].topLeft);
-    const currentBottomRight = clone(currentGhostLabeledThingInFrame.shapes[0].bottomRight);
-    const endTopLeft = clone(endLabeledThingInFrame.shapes[0].topLeft);
-    const endBottomRight = clone(endLabeledThingInFrame.shapes[0].bottomRight);
+    const ghostShape = currentGhostLabeledThingInFrame.shapes[0];
+    const endShape = endLabeledThingInFrame.shapes[0];
+
+    const currentTopLeft = clone(ghostShape.topLeft);
+    const currentBottomRight = clone(ghostShape.bottomRight);
+    const endTopLeft = clone(endShape.topLeft);
+    const endBottomRight = clone(endShape.bottomRight);
 
     const topLeft = {
       x: currentTopLeft.x + (endTopLeft.x - currentTopLeft.x) * delta,
@@ -28,8 +31,8 @@ class LinearRectangleInterpolationEasing extends InterpolationEasing {
       y: currentBottomRight.y + (endBottomRight.y - currentBottomRight.y) * delta,
     };
 
-    currentGhostLabeledThingInFrame.shapes[0].topLeft = topLeft;
-    currentGhostLabeledThingInFrame.shapes[0].bottomRight = bottomRight;
+    ghostShape.topLeft = topLeft;
+    ghostShape.bottomRight = bottomRight;
   }
 
   /**

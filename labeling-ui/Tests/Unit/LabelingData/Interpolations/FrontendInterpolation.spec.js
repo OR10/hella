@@ -34,15 +34,6 @@ describe('FrontendInterpolation Test Suite', () => {
       };
     });
 
-    /*
-    it('does not do anything if the labeledThingFrameGateway does not resolve', () => {
-      const promise = angularQ.reject();
-      gateway.getLabeledThingInFrame.and.returnValue(promise);
-      interpolation.execute(null, null, frameRange);
-      rootScope.$apply();
-    });
-    */
-
     it('throws an error if labeledThingInFramesWithGhosts has length 0', () => {
       const labeledThingInFramesWithGhosts = [];
       const promise = angularQ.resolve(labeledThingInFramesWithGhosts);
@@ -53,7 +44,7 @@ describe('FrontendInterpolation Test Suite', () => {
         rootScope.$apply();
       };
 
-      expect(throwWrapper).toThrowError('Error in _doInterpolation: Insufficient labeled things in frame');
+      expect(throwWrapper).toThrowError('Error in _doInterpolation: Insufficient labeled things in frame ghosts');
     });
 
     it('throws an error if interpolation is done with less than 2 frames', () => {

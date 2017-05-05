@@ -14,8 +14,11 @@ class LinearPolyInterpolationEasing extends InterpolationEasing {
    * @public
    */
   step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
-    const currentPoints = clone(currentGhostLabeledThingInFrame.shapes[0].points);
-    const endPoints = clone(endLabeledThingInFrame.shapes[0].points);
+    const ghostShape = currentGhostLabeledThingInFrame.shapes[0];
+    const endShape = endLabeledThingInFrame.shapes[0];
+
+    const currentPoints = clone(ghostShape.points);
+    const endPoints = clone(endShape.points);
     const points = [];
 
     if (currentPoints.length !== endPoints.length) {
@@ -30,7 +33,7 @@ class LinearPolyInterpolationEasing extends InterpolationEasing {
       points.push(newCalculatePoint);
     });
 
-    currentGhostLabeledThingInFrame.shapes[0].points = points;
+    ghostShape.points = points;
   }
 
   /**

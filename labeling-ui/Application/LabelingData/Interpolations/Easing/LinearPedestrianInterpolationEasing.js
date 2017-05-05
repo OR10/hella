@@ -14,10 +14,13 @@ class LinearPedestrianInterpolationEasing extends InterpolationEasing {
    * @public
    */
   step(currentGhostLabeledThingInFrame, startLabeledThingInFrame, endLabeledThingInFrame, delta) {
-    const currentTopCenter = clone(currentGhostLabeledThingInFrame.shapes[0].topCenter);
-    const currentBottomCenter = clone(currentGhostLabeledThingInFrame.shapes[0].bottomCenter);
-    const endTopCenter = clone(endLabeledThingInFrame.shapes[0].topCenter);
-    const endBottomCenter = clone(endLabeledThingInFrame.shapes[0].bottomCenter);
+    const ghostShape = currentGhostLabeledThingInFrame.shapes[0];
+    const endShape = endLabeledThingInFrame.shapes[0];
+
+    const currentTopCenter = clone(ghostShape.topCenter);
+    const currentBottomCenter = clone(ghostShape.bottomCenter);
+    const endTopCenter = clone(endShape.topCenter);
+    const endBottomCenter = clone(endShape.bottomCenter);
 
     const topCenter = {
       x: currentTopCenter.x + (endTopCenter.x - currentTopCenter.x) * delta,
@@ -28,8 +31,8 @@ class LinearPedestrianInterpolationEasing extends InterpolationEasing {
       y: currentBottomCenter.y + (endBottomCenter.y - currentBottomCenter.y) * delta,
     };
 
-    currentGhostLabeledThingInFrame.shapes[0].topCenter = topCenter;
-    currentGhostLabeledThingInFrame.shapes[0].bottomCenter = bottomCenter;
+    ghostShape.topCenter = topCenter;
+    ghostShape.bottomCenter = bottomCenter;
   }
 
   /**

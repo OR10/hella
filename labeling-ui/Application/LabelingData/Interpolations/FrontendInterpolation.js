@@ -47,7 +47,7 @@ class FrontendInterpolation {
       limit
     ).then(labeledThingInFramesWithGhosts => {
       if (labeledThingInFramesWithGhosts.length === 0) {
-        throw new Error('Error in _doInterpolation: Insufficient labeled things in frame');
+        throw new Error('Error in _doInterpolation: Insufficient labeled things in frame ghosts');
       }
 
       if (frameRange.endFrameIndex - frameRange.startFrameIndex < 2) {
@@ -92,6 +92,7 @@ class FrontendInterpolation {
           });
         }
       });
+
       return this._$q.all(savePromises);
     });
   }
@@ -108,6 +109,7 @@ class FrontendInterpolation {
     if (interpolationEasing === undefined) {
       throw new Error(`There is no easing for ${shape} with type ${easingType}`);
     }
+
     return interpolationEasing;
   }
 
@@ -117,6 +119,7 @@ class FrontendInterpolation {
    */
   _transformGhostToLabeledThing(labeledThingInFrame) {
     labeledThingInFrame.ghostBust(uuid.v4(), labeledThingInFrame.frameIndex);
+
     return labeledThingInFrame;
   }
 
