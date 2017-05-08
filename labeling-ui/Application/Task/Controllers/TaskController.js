@@ -215,6 +215,16 @@ class TaskController {
     this.drawableGroups = [];
 
     /**
+     * @type {Object[]}
+     */
+    this.drawableRequirementFrames = [];
+
+    /**
+     * @type {boolean}
+     */
+    this.showToolSelector = true;
+
+    /**
      * @type {LabelStructure|null}
      */
     this.labelStructure = null;
@@ -230,7 +240,7 @@ class TaskController {
     /**
      * @type {{id, shape, name}|null}
      */
-    this.selectedLabelStructureThing = null;
+    this.selectedLabelStructureObject = null;
 
     /**
      * @type {LabeledObject|null}
@@ -292,7 +302,7 @@ class TaskController {
                     throw new Error('Cannot read identifier name of unknown shape!');
                 }
 
-                this.selectedLabelStructureThing = labelStructureThing;
+                this.selectedLabelStructureObject = labelStructureThing;
                 // The selectedObject needs to be set in the same cycle as the new LabelStructureThing. Otherwise there might be race conditions in
                 // updating its structure against the wrong LabelStructureThing.
                 this.selectedLabeledObject = this._getSelectedLabeledObject();
@@ -410,9 +420,11 @@ class TaskController {
    *
    * Dependant values are:
    *
-   * - `selectedLabelStructureThing`
+   * - `selectedLabelStructureObject`
    * - `selectedLabeledObject`
    * - `drawableThings`
+   * - `drawableGroups`
+   * - `drawableRequirementFrames`
    *
    * All of these values will be *nulled* before the update and filled as soon as the needed {@link LabelStructure}
    * was retrieved.
@@ -424,28 +436,34 @@ class TaskController {
    */
   _initializeLabelStructure() {
     this.labelStructure = null;
-    this.selectedLabeledStructureThing = null;
+    this.selectedLabeledStructureObject = null;
     this.selectedLabeledObject = null;
     this.drawableThings = [];
+    this.drawableGroups = [];
+    this.drawableRequirementFrames = [];
 
     const labelStructurePromise = this._labelStructureService.getLabelStructure(this.task)
       .then(labelStructure => {
         const labelStructureThingArray = Array.from(labelStructure.getThings().values());
         const labelStructureGroupArray = Array.from(labelStructure.getGroups().values());
-        let labelStructureThingOrGroup;
-        if (labelStructureThingArray.length > 0) {
-          labelStructureThingOrGroup = labelStructureThingArray[0];
-        } else if (labelStructureGroupArray.length > 0) {
-          labelStructureThingOrGroup = labelStructureGroupArray[0];
+        const labelStructureFrameArray = Array.from(labelStructure.getRequirementFrames().values());
+
+        let labelStructureObject;
+        const labelStructureObjects = [].concat(labelStructureThingArray, labelStructureGroupArray, labelStructureFrameArray);
+        if (labelStructureObjects.length > 0) {
+          labelStructureObject = labelStructureObjects[0];
         } else {
-          throw new Error('No valid Thing or Group defined in requirements.xml');
+          throw new Error('No valid label structure object defined in requirements.xml');
         }
 
+        this.showToolSelector = labelStructureObjects.length > 1;
+
         this.labelStructure = labelStructure;
-        this.selectedLabelStructureThing = labelStructureThingOrGroup;
+        this.selectedLabelStructureObject = labelStructureObject;
         this.selectedLabeledObject = this._getSelectedLabeledObject();
         this.drawableThings = labelStructureThingArray;
         this.drawableGroups = labelStructureGroupArray;
+        this.drawableRequirementFrames = labelStructureFrameArray;
         this.activeTool = 'multi';
 
         // Pipe labelStructure to next chain function

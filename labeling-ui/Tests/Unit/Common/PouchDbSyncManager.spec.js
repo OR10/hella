@@ -8,6 +8,7 @@ describe('PouchDbSyncManager', () => {
   let rootScope;
   let taskGateway;
   let syncManager;
+  let rootScopeMock;
   let pouchDbContextServiceMock;
   let taskReplicationInformation;
   let contextReplicate;
@@ -47,7 +48,9 @@ describe('PouchDbSyncManager', () => {
     };
     taskGateway.getTaskReplicationInformationForTaskId.and.returnValue(taskReplicationInformation);
 
-    syncManager = new PouchDbSyncManager(loggerMock, angularQ, pouchDbContextServiceMock, taskGateway);
+    rootScopeMock = jasmine.createSpyObj('$rootScope', ['$emit']);
+
+    syncManager = new PouchDbSyncManager(rootScopeMock, loggerMock, angularQ, pouchDbContextServiceMock, taskGateway);
   });
 
   beforeEach(() => {
@@ -565,6 +568,7 @@ describe('PouchDbSyncManager', () => {
       ['offline'],
       ['alive'],
       ['transfer'],
+      ['unauthorized'],
     ], eventName => {
       it('should allow registration of events via "on" function', () => {
         const eventSpy = jasmine.createSpy('onEvent');
@@ -598,6 +602,25 @@ describe('PouchDbSyncManager', () => {
 
         expect(transferEventSpy).toHaveBeenCalled();
       });
+
+      it('should fire "unauthorized" event, if an "unauthorized" replication error occured', () => {
+        const unauthorizedEventSpy = jasmine.createSpy('event:unauthorized');
+
+        syncManager.on('unauthorized', unauthorizedEventSpy);
+        syncManager.pullUpdatesForContext(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          error: 'unauthorized',
+          status: 403,
+          name: 'unauthorized',
+          message: 'some error message',
+        };
+        contextReplicateFromEvents.get('error').forEach(callback => callback(errorDocument));
+
+        expect(unauthorizedEventSpy).toHaveBeenCalledWith(errorDocument);
+      });
     });
 
     describe('pushUpdatesForContext', () => {
@@ -623,9 +646,60 @@ describe('PouchDbSyncManager', () => {
 
         expect(transferEventSpy).toHaveBeenCalled();
       });
+
+      it('should fire "unauthorized" event, if an "unauthorized" replication error occured', () => {
+        const unauthorizedEventSpy = jasmine.createSpy('event:unauthorized');
+
+        syncManager.on('unauthorized', unauthorizedEventSpy);
+        syncManager.pushUpdatesForContext(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          error: 'unauthorized',
+          status: 403,
+          name: 'unauthorized',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('error').forEach(callback => callback(errorDocument));
+
+        expect(unauthorizedEventSpy).toHaveBeenCalledWith(errorDocument);
+      });
+
+      it('should emit "pouchdb:replication:unauthorized" to $rootScope if a write error happens', () => {
+        syncManager.pushUpdatesForContext(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          id: 'some-document-id',
+          error: 'forbidden',
+          status: 500,
+          name: 'forbidden',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
+        expect(rootScopeMock.$emit).toHaveBeenCalledWith('pouchdb:replication:unauthorized', errorDocument);
+      });
+
+      it('should not emit "pouchdb:replication:unauthorized" to $rootScope if a write error happens for a design doc', () => {
+        syncManager.pushUpdatesForContext(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          id: '_design/some-design-document-id',
+          error: 'forbidden',
+          status: 500,
+          name: 'forbidden',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
+        expect(rootScopeMock.$emit).not.toHaveBeenCalled();
+      });
     });
 
-    describe('on startDuplexLiveReplication', () => {
+    describe('startDuplexLiveReplication', () => {
       it('should fire "alive" event on start of startDuplexLiveReplication', () => {
         const aliveEventSpy = jasmine.createSpy('event:alive');
 
@@ -722,6 +796,116 @@ describe('PouchDbSyncManager', () => {
         rootScope.$apply();
 
         expect(transferEventSpy.calls.count()).toEqual(1);
+      });
+
+      it('should fire "unauthorized" event, if an "unauthorized" replication error occured in "from" replication', () => {
+        const unauthorizedEventSpy = jasmine.createSpy('event:unauthorized');
+
+        syncManager.on('unauthorized', unauthorizedEventSpy);
+        syncManager.startDuplexLiveReplication(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          error: 'unauthorized',
+          status: 403,
+          name: 'unauthorized',
+          message: 'some error message',
+        };
+        contextReplicateFromEvents.get('error').forEach(callback => callback(errorDocument));
+
+        expect(unauthorizedEventSpy).toHaveBeenCalledWith(errorDocument);
+      });
+
+      it('should fire "unauthorized" event, if an "unauthorized" replication error occured in "to" replication', () => {
+        const unauthorizedEventSpy = jasmine.createSpy('event:unauthorized');
+
+        syncManager.on('unauthorized', unauthorizedEventSpy);
+        syncManager.startDuplexLiveReplication(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          error: 'unauthorized',
+          status: 403,
+          name: 'unauthorized',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('error').forEach(callback => callback(errorDocument));
+
+        expect(unauthorizedEventSpy).toHaveBeenCalledWith(errorDocument);
+      });
+
+      it('should fire "unauthorized" event, if a write error happens in "to" replication', () => {
+        const unauthorizedEventSpy = jasmine.createSpy('event:unauthorized');
+
+        syncManager.on('unauthorized', unauthorizedEventSpy);
+        syncManager.startDuplexLiveReplication(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          id: 'some-document-id',
+          error: 'forbidden',
+          status: 500,
+          name: 'forbidden',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
+
+        expect(unauthorizedEventSpy).toHaveBeenCalledWith(errorDocument);
+      });
+
+      it('should not fire "unauthorized" event, if a write error happens in "to" replication with a design document', () => {
+        const unauthorizedEventSpy = jasmine.createSpy('event:unauthorized');
+
+        syncManager.on('unauthorized', unauthorizedEventSpy);
+        syncManager.startDuplexLiveReplication(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          id: '_design/some-design-document-id',
+          error: 'forbidden',
+          status: 500,
+          name: 'forbidden',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
+
+        expect(unauthorizedEventSpy).not.toHaveBeenCalled();
+      });
+
+      it('should emit "pouchdb:replication:unauthorized" to $rootScope ia write error happens in "to" replication', () => {
+        syncManager.startDuplexLiveReplication(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          id: 'some-document-id',
+          error: 'forbidden',
+          status: 500,
+          name: 'forbidden',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
+        expect(rootScopeMock.$emit).toHaveBeenCalledWith('pouchdb:replication:unauthorized', errorDocument);
+      });
+
+      it('should not emit "pouchdb:replication:unauthorized" to $rootScope if a write error happens in "to" replication for a design doc', () => {
+        syncManager.startDuplexLiveReplication(context);
+
+        rootScope.$apply();
+
+        const errorDocument = {
+          id: '_design/some-design-document-id',
+          error: 'forbidden',
+          status: 500,
+          name: 'forbidden',
+          message: 'some error message',
+        };
+        contextReplicateToEvents.get('denied').forEach(callback => callback(errorDocument));
+        expect(rootScopeMock.$emit).not.toHaveBeenCalled();
       });
     });
   });
