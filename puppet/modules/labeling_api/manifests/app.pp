@@ -83,7 +83,7 @@ class labeling_api::app(
 
   file { '/etc/cron.d/rabbitmq-rescheduler':
     ensure  => present,
-    content => "* * * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.30s\n* * * * * /bin/sleep 30;${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.30s\n* * * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.60s\n*/5 * * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.300s\n*/15 * * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.900s",
+    content => template('labeling_api/cronjob/rescheduler.erb'),
     mode    => '644',
   }
 }
