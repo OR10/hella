@@ -102,5 +102,10 @@
             <property name="heartBeatSeconds">0</property>
         </service>
 
+        <service id="annostation.labeling_api.vendor.worker_pool.job_rescheduler" class="crosscan\WorkerPool\JobRescheduler">
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
+            <argument type="service" id="annostation.labeling_api.service.amqp_pool_config" />
+        </service>
+
     </services>
 </container>
