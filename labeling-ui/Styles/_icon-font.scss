@@ -71,6 +71,7 @@
 .icon-selection-view:before,
 .icon-simple-xml-project:before,
 .icon-tool-cuboid:before,
+.icon-tool-frame-shape:before,
 .icon-tool-group-rectangle:before,
 .icon-tool-pedestrian:before,
 .icon-tool-point:before,
@@ -146,6 +147,7 @@
 .icon-selection-view:before { content: "\f129"; }
 .icon-simple-xml-project:before { content: "\f13d"; }
 .icon-tool-cuboid:before { content: "\f12a"; }
+.icon-tool-frame-shape:before { content: "\f142"; }
 .icon-tool-group-rectangle:before { content: "\f13e"; }
 .icon-tool-pedestrian:before { content: "\f12b"; }
 .icon-tool-point:before { content: "\f140"; }
@@ -209,6 +211,7 @@ $font-icon-font-selection-start: "\f128";
 $font-icon-font-selection-view: "\f129"; 
 $font-icon-font-simple-xml-project: "\f13d"; 
 $font-icon-font-tool-cuboid: "\f12a"; 
+$font-icon-font-tool-frame-shape: "\f142"; 
 $font-icon-font-tool-group-rectangle: "\f13e"; 
 $font-icon-font-tool-pedestrian: "\f12b"; 
 $font-icon-font-tool-point: "\f140"; 
