@@ -80,4 +80,10 @@ class labeling_api::app(
     content => "0 1 * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:remove-expired-user-assignments-and-memberships",
     mode    => '644',
   }
+
+  file { '/etc/cron.d/rabbitmq-rescheduler':
+    ensure  => present,
+    content => "* * * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.30s\n* * * * * /bin/sleep 30;${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.30s\n* * * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.60s\n*/5 * * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.300s\n*/15 * * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.900s",
+    mode    => '644',
+  }
 }
