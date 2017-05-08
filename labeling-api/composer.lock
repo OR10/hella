@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5f58da51a60a8de8407b1e724064d68a",
+    "content-hash": "cdd85e6a651472f235501136e77193aa",
     "packages": [
         {
             "name": "arbit/phpillow",
@@ -119,20 +119,22 @@
             "source": {
                 "type": "git",
                 "url": "git@github.crosscan.com:crosscan/logger.git",
-                "reference": "7c97bdc0b32ad5c4aec60dd70e4ff18bdf889a9a"
+                "reference": "b68e4e95f9acbc448570e93b35c1580a0c740238"
             },
             "require": {
                 "arbit/phpillow": "dev-master",
-                "crosscan/php-stdlib": "dev-master",
-                "mlehner/gelf-php": "dev-master",
-                "php": ">=5.3.0"
+                "crosscan/php-stdlib": "*",
+                "graylog2/gelf-php": "~1.5",
+                "hco/phar-installer-plugin": "^0.1.3",
+                "php": ">=5.3.0",
+                "psr/log": "1.*"
             },
             "require-dev": {
                 "mayflower/php-codebrowser": "~1.1",
                 "pdepend/pdepend": "*",
                 "phploc/phploc": "*",
                 "phpmd/phpmd": "*",
-                "phpunit/phpunit": "4.0.17",
+                "phpunit/phpunit": "~4.0",
                 "sebastian/phpcpd": "*",
                 "squizlabs/php_codesniffer": "1.*",
                 "toolphar/phpab": "1.14.2"
@@ -151,17 +153,18 @@
                 "log",
                 "logger"
             ],
-            "time": "2015-03-09 13:27:15"
+            "time": "2017-04-10 07:33:58"
         },
         {
             "name": "crosscan/php-stdlib",
-            "version": "dev-master",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.crosscan.com:crosscan/php-stdlib.git",
-                "reference": "615c818f514f202dac8c201a957b3bc14150d342"
+                "reference": "ddd288754b5d63c884792969f3c13839952ec344"
             },
             "require": {
+                "hco/phar-installer-plugin": "^0.1.3",
                 "phake/phake": "dev-master",
                 "php": ">=5.4.0"
             },
@@ -194,7 +197,7 @@
                 "stdlib",
                 "utils"
             ],
-            "time": "2015-12-14 10:41:32"
+            "time": "2017-05-03T08:51:55+00:00"
         },
         {
             "name": "crosscan/worker-pool",
@@ -202,17 +205,17 @@
             "source": {
                 "type": "git",
                 "url": "git@github.crosscan.com:crosscan/WorkerPool.git",
-                "reference": "5348461282e60a6d6754e932a17bf0467aacfa76"
+                "reference": "357ace31c70d569f1bcd70e80f2877135ba78ba6"
             },
             "require": {
                 "arbit/phpillow": "dev-master",
                 "crosscan/logger": "dev-master",
-                "crosscan/php-stdlib": "dev-master",
-                "mlehner/gelf-php": "dev-master",
+                "crosscan/php-stdlib": "^2.0.0",
+                "graylog2/gelf-php": "~1.5",
                 "phake/phake": "dev-master",
                 "php": ">=5.3.0",
-                "qafoolabs/profiler": "dev-master",
-                "videlalvaro/php-amqplib": "dev-master"
+                "php-amqplib/php-amqplib": "~2.6",
+                "qafoolabs/profiler": "dev-master"
             },
             "require-dev": {
                 "pdepend/pdepend": "2.0.4",
@@ -237,7 +240,7 @@
                 "rabbitmq",
                 "worker"
             ],
-            "time": "2016-11-30 08:53:00"
+            "time": "2017-05-05 11:35:45"
         },
         {
             "name": "doctrine/annotations",
@@ -1419,6 +1422,62 @@
             "time": "2015-05-29T06:29:14+00:00"
         },
         {
+            "name": "graylog2/gelf-php",
+            "version": "1.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bzikarsky/gelf-php.git",
+                "reference": "bdf3c93d62d8e2896879c7a9e3f0df48e50fd436"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bzikarsky/gelf-php/zipball/bdf3c93d62d8e2896879c7a9e3f0df48e50fd436",
+                "reference": "bdf3c93d62d8e2896879c7a9e3f0df48e50fd436",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9",
+                "psr/log": "~1.0"
+            },
+            "provide": {
+                "psr/log-implementation": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.3",
+                "squizlabs/php_codesniffer": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Gelf\\": "src/Gelf"
+                },
+                "files": [
+                    "src/check_technical_requirements.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Zikarsky",
+                    "email": "benjamin@zikarsky.de"
+                },
+                {
+                    "name": "gelf-php contributors",
+                    "homepage": "https://github.com/bzikarsky/gelf-php/contributors"
+                }
+            ],
+            "description": "A php implementation to send log-messages to a GELF compatible backend like Graylog2.",
+            "time": "2017-01-20T16:39:57+00:00"
+        },
+        {
             "name": "guzzlehttp/guzzle",
             "version": "6.2.2",
             "source": {
@@ -2467,6 +2526,76 @@
                 "testing"
             ],
             "time": "2015-09-27 22:43:40"
+        },
+        {
+            "name": "php-amqplib/php-amqplib",
+            "version": "v2.6.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-amqplib/php-amqplib.git",
+                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/fa2f0d4410a11008cb36b379177291be7ee9e4f6",
+                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-bcmath": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.3.0"
+            },
+            "replace": {
+                "videlalvaro/php-amqplib": "self.version"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8",
+                "scrutinizer/ocular": "^1.1",
+                "squizlabs/php_codesniffer": "^2.5"
+            },
+            "suggest": {
+                "ext-sockets": "Use AMQPSocketConnection"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PhpAmqpLib\\": "PhpAmqpLib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1"
+            ],
+            "authors": [
+                {
+                    "name": "Alvaro Videla",
+                    "role": "Original Maintainer"
+                },
+                {
+                    "name": "John Kelly",
+                    "email": "johnmkelly86@gmail.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Raúl Araya",
+                    "email": "nubeiro@gmail.com",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Formerly videlalvaro/php-amqplib.  This library is a pure PHP implementation of the AMQP protocol. It's been tested against RabbitMQ.",
+            "homepage": "https://github.com/php-amqplib/php-amqplib/",
+            "keywords": [
+                "message",
+                "queue",
+                "rabbitmq"
+            ],
+            "time": "2016-04-11T14:30:01+00:00"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -4672,7 +4801,6 @@
         "crosscan/worker-pool": 20,
         "mlehner/gelf-php": 20,
         "crosscan/logger": 20,
-        "crosscan/php-stdlib": 20,
         "qafoolabs/profiler": 20,
         "videlalvaro/php-amqplib": 20,
         "arbit/phpillow": 20,

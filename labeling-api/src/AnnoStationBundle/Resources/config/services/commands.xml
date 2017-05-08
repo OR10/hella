@@ -260,6 +260,12 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.worker_pool.job_rescheduler"
+                 class="AnnoStationBundle\Command\WorkerPool\JobRescheduler">
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.job_rescheduler"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
 

@@ -3,7 +3,10 @@
 namespace AnnoStationBundle\Service\ProjectDeleter\Delete;
 
 use AppBundle\Model;
+use AnnoStationBundle\Service;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Worker\Jobs;
+use crosscan\WorkerPool\AMQP;
 
 class LabelingTasks
 {
@@ -42,6 +45,21 @@ class LabelingTasks
      */
     private $videoDeleter;
 
+    /**
+     * @var AMQP\FacadeAMQP
+     */
+    private $amqpFacade;
+
+    /**
+     * @var Service\TaskDatabaseCreator
+     */
+    private $taskDatabaseCreatorService;
+
+    /**
+     * @var bool
+     */
+    private $pouchdbFeatureEnabled;
+
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         LabeledFrames $labeledFramesDeleter,
@@ -49,16 +67,21 @@ class LabelingTasks
         LabeledThingInFrames $labeledThingInFrameDeleter,
         TaskTimers $taskTimerDeleter,
         LabeledThingGroup $labeledThingGroup,
-        Video $videoDeleter
-
+        Video $videoDeleter,
+        AMQP\FacadeAMQP $amqpFacade,
+        Service\TaskDatabaseCreator $taskDatabaseCreatorService,
+        $pouchdbFeatureEnabled
     ) {
-        $this->labelingTaskFacade         = $labelingTaskFacade;
-        $this->labeledFramesDeleter       = $labeledFramesDeleter;
-        $this->labeledThingsDeleter       = $labeledThingsDeleter;
-        $this->labeledThingInFrameDeleter = $labeledThingInFrameDeleter;
-        $this->taskTimerDeleter           = $taskTimerDeleter;
-        $this->labeledThingGroup          = $labeledThingGroup;
-        $this->videoDeleter               = $videoDeleter;
+        $this->labelingTaskFacade             = $labelingTaskFacade;
+        $this->labeledFramesDeleter           = $labeledFramesDeleter;
+        $this->labeledThingsDeleter           = $labeledThingsDeleter;
+        $this->labeledThingInFrameDeleter     = $labeledThingInFrameDeleter;
+        $this->taskTimerDeleter               = $taskTimerDeleter;
+        $this->labeledThingGroup              = $labeledThingGroup;
+        $this->videoDeleter                   = $videoDeleter;
+        $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
+        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
+        $this->amqpFacade                     = $amqpFacade;
     }
 
     /**
@@ -75,6 +98,16 @@ class LabelingTasks
             $this->taskTimerDeleter->delete($task);
             $this->videoDeleter->delete($task);
             $this->labelingTaskFacade->delete($task);
+
+            if ($this->pouchdbFeatureEnabled) {
+                $database = $this->taskDatabaseCreatorService->getDatabaseName(
+                    $task->getProjectId(),
+                    $task->getId()
+                );
+
+                $job = new Jobs\DatabaseDeleter($database);
+                $this->amqpFacade->addJob($job);
+            }
         }
     }
 }

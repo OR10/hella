@@ -53,18 +53,6 @@ class LabelingGroupsDetailController {
     this.loadingInProgress = 0;
 
     /**
-     * @type {LabelingGroupGateway}
-     * @private
-     */
-    this._labelingGroupGateway = labelingGroupGateway;
-
-    /**
-     * @type {UserGateway}
-     * @private
-     */
-    this._userGateway = userGateway;
-
-    /**
      * @type {null|LabelingGroup}
      */
     this.group = null;
@@ -108,6 +96,26 @@ class LabelingGroupsDetailController {
       name: true,
     };
 
+    /**
+     * Message displayed above the "add labeler" combo box if not `null`
+     *
+     * @type {null|string}
+     */
+    this.labelerSelectionMessage = null;
+
+    /**
+     * @type {LabelingGroupGateway}
+     * @private
+     */
+    this._labelingGroupGateway = labelingGroupGateway;
+
+    /**
+     * @type {UserGateway}
+     * @private
+     */
+    this._userGateway = userGateway;
+
+
     if (!this.createMode) {
       this._loadGroup();
     }
@@ -116,15 +124,24 @@ class LabelingGroupsDetailController {
   }
 
   addLabeler(id) {
-    const user = this.users.find(candidate => candidate.id === id);
-    if (this.groupLabelers.includes(user)) {
+    if (id === undefined) {
+      // Selection is empty
+      this.labelerSelectionMessage = 'Please specify a labeler in the selection field to add.';
       return;
     }
 
+    const user = this.users.find(candidate => candidate.id === id);
+    if (this.groupLabelers.find(candidate => candidate.id === user.id) !== undefined) {
+      this.labelerSelectionMessage = 'Users can not be added twice into the list.';
+      return;
+    }
+
+    this.labelerSelectionMessage = null;
     this.groupLabelers.push(user);
   }
 
   removeLabeler(id) {
+    this.labelerSelectionMessage = null;
     this.groupLabelers.splice(
       this.groupLabelers.findIndex(user => user.id === id),
       1
@@ -197,11 +214,17 @@ class LabelingGroupsDetailController {
     }
 
     if (this.groupLabelers.length === 0) {
+      this.labelerSelectionMessage = 'The list of Labelers can not be empty.';
       this.validation.labelers = valid = false;
     }
 
     if (this.groupName === '') {
       this.validation.name = valid = false;
+    }
+
+    // Remove message if everything is okay.
+    if (valid) {
+      this.labelerSelectionMessage = null;
     }
 
     return valid;

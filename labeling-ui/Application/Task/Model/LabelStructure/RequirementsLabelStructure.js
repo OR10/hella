@@ -225,7 +225,7 @@ class RequirementsLabelStructure extends LabelStructure {
 
     for (let index = 0; index < requirementFrameSnapshot.snapshotLength; index++) {
       const identifier = 'frame-id';
-      const name = 'frame-name';
+      const name = 'Meta-Labeling';
       const shape = 'frame-shape';
 
       requirementFramesMap.set(

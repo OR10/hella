@@ -58,7 +58,9 @@ class RebuildTaskDatabaseSecurityPermissions extends Base
             $project       = $this->projectFacade->find($projectId);
             $labelingTasks = $this->labelingTaskFacade->findAllByProject($project, true);
         }
-        $progress = new ProgressBar($output, count($labelingTasks));
+        $numberOfLabelingTasks = count($labelingTasks);
+        $progress = new ProgressBar($output, $numberOfLabelingTasks);
+        $output->writeln('<info>Adding ' . $numberOfLabelingTasks . ' RabbitMQ jobs to rebuild _security documents</info>');
 
         /** @var Model\LabelingTask $task */
         foreach ($labelingTasks as $labelingTask) {

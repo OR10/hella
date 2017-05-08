@@ -9,7 +9,7 @@ export default class LabelSelectorDirective {
     this.scope = {
       labelStructure: '=',
       selectedLabeledObject: '=',
-      selectedLabelStructureThing: '=',
+      selectedLabelStructureObject: '=',
       task: '=',
       framePosition: '=',
       isCompleted: '=?',

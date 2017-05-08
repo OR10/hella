@@ -41,6 +41,9 @@
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.task_timers"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_group"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.video"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%pouchdb_feature_enabled%</argument>
         </service>
         <service id="annostation.labeling_api.service.project_deleter.delete.reports"
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\Reports">
