@@ -141,15 +141,15 @@ export default class LabelSelectorController {
     $scope.$watchGroup(
       [
         'vm.labelStructure',
-        'vm.selectedLabelStructureThing',
+        'vm.selectedLabelStructureObject',
         'vm.selectedLabeledObject',
       ],
       ([
         newLabelStructure,
-        newSelectedLabelStructureThing,
+        newSelectedLabelStructureObject,
         newSelectedLabeledObject,
       ])=> {
-        if (newLabelStructure === null || newSelectedLabelStructureThing === null || newSelectedLabeledObject === null) {
+        if (newLabelStructure === null || newSelectedLabelStructureObject === null || newSelectedLabeledObject === null) {
           this.pages = null;
           this.activePageIndex = null;
           this.labelingInstructions = null;
@@ -224,7 +224,7 @@ export default class LabelSelectorController {
   _updatePagesAndChoices() {
     const classList = this.selectedLabeledObject.extractClassList();
     const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
-      this.selectedLabelStructureThing,
+      this.selectedLabelStructureObject,
       classList
     );
     const newChoices = {};

@@ -13,7 +13,7 @@ export default class ViewerDirective {
       paperGroupShapes: '=',
       selectedPaperShape: '=',
       activeTool: '=',
-      selectedLabelStructureThing: '=',
+      selectedLabelStructureObject: '=',
       task: '=',
       taskPhase: '@',
       video: '=',

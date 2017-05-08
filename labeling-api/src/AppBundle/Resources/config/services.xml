@@ -77,6 +77,7 @@
         </service>
 
         <service id="annostation.services.couch_db_replicator_service" class="AppBundle\Service\CouchDbReplicatorService">
+            <argument type="service" id="guzzle.client" />
             <argument>%couchdb_host%</argument>
             <argument>%couchdb_port%</argument>
             <argument>%couchdb_user%</argument>
@@ -99,6 +100,11 @@
             <property name="workerNormalPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.normal_prio</property>
             <property name="workerLowPrioRoutingKey">%worker_pool.queue_prefix%worker.queue.low_prio</property>
             <property name="heartBeatSeconds">0</property>
+        </service>
+
+        <service id="annostation.labeling_api.vendor.worker_pool.job_rescheduler" class="crosscan\WorkerPool\JobRescheduler">
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
+            <argument type="service" id="annostation.labeling_api.service.amqp_pool_config" />
         </service>
 
     </services>
