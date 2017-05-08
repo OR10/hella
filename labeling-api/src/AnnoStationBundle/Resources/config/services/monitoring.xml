@@ -37,7 +37,7 @@
             <argument>%couchdb_host%</argument>
             <argument>%couchdb_port%</argument>
             <argument>%pouchdb_feature_enabled%</argument>
-            <tag name="liip_monitor.check" alias="flysystem_api" group="default"/>
+            <tag name="liip_monitor.check" alias="security_document_existence_in_task_databases" group="default"/>
         </service>
     </services>
 </container>
