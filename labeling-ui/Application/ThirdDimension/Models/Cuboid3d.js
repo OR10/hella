@@ -235,15 +235,6 @@ class Cuboid3d {
   }
 
   /**
-   * The vertices in their raw form
-   *
-   * @returns {Array.<Array>}
-   */
-  get rawVertices() {
-    return this._vertices.map(vertex => [vertex.x, vertex.y, vertex.z]);
-  }
-
-  /**
    * Retrieve only non predicted vertices, null otherwise
    *
    * @returns {Array.<Vector4|null>}

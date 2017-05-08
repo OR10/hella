@@ -1,5 +1,5 @@
 import {clone} from 'lodash';
-import {Vector3, Vector4} from 'three-math';
+import {Vector3} from 'three-math';
 import InterpolationEasing from './InterpolationEasing';
 import Cuboid3d from '../../../ThirdDimension/Models/Cuboid3d';
 
@@ -20,8 +20,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     const ghostShape = currentGhostLabeledThingInFrame.shapes[0];
     const endShape = endLabeledThingInFrame.shapes[0];
 
-    const startCuboid = this._normalizeCuboid(clone(ghostShape), clone(endShape));
-    const endCuboid = this._normalizeCuboid(clone(endShape), startCuboid);
+    const {startCuboid, endCuboid} = this._equalizeVertexCount(clone(ghostShape), clone(endShape));
 
     const steps = [...Array(8).keys()];
     steps.forEach(index => {
@@ -33,15 +32,28 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
       newCuboid3d.push(newVertex);
     });
 
-    const verticesWithPredictedVertices = Cuboid3d.createFromRawVertices(newCuboid3d).rawVertices;
+    // if you interpolate two 2d cuboids the steps will be made 3d again here
+    const verticesWithPredictedVertices = Cuboid3d.createFromRawVertices(newCuboid3d).vertices
+        .map(vertex => [vertex.x, vertex.y, vertex.z]);
+
     ghostShape.vehicleCoordinates = verticesWithPredictedVertices;
   }
 
-  _getFrontFaceVertexIndicesFromBackgroundFaceVertexIndices(backgroundFaceVertices) {
+  /**
+   * Return a mapping between two opposite faces
+   *
+   * The return value also contains the indices of the two vectors creating the front face plane
+   * Those vectors can be used to calculate the normal vector pointing from the front face to the back face
+   *
+   * @param {Array.<Number>} frontFaceVertices
+   * @returns {Object}
+   * @private
+   */
+  _getBackFaceVertexIndicesFromFrontFaceVertexObject(frontFaceVertices) {
     let oppositeVertex;
 
-    switch (Object.keys(backgroundFaceVertices).toString()) {
-      case '0,1,2,3':
+    switch (Object.keys(frontFaceVertices).toString()) {
+      case '4,5,6,7':
         oppositeVertex = {
           0: 4,
           1: 5,
@@ -50,7 +62,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
           'normal': [[6, 5], [6, 7]],
         };
         break;
-      case '1,2,5,6':
+      case '0,3,4,7':
         oppositeVertex = {
           1: 0,
           2: 3,
@@ -59,7 +71,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
           'normal': [[7, 4], [7, 3]],
         };
         break;
-      case '4,5,6,7':
+      case '0,1,2,3':
         oppositeVertex = {
           4: 0,
           5: 1,
@@ -68,7 +80,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
           'normal': [[3, 0], [3, 2]],
         };
         break;
-      case '0,3,4,7':
+      case '1,2,5,6':
         oppositeVertex = {
           0: 1,
           3: 2,
@@ -77,7 +89,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
           'normal': [[2, 1], [2, 6]],
         };
         break;
-      case '0,1,4,5':
+      case '2,3,6,7':
         oppositeVertex = {
           0: 3,
           1: 2,
@@ -86,7 +98,7 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
           'normal': [[3, 7], [3, 2]],
         };
         break;
-      case '2,3,6,7':
+      case '0,1,4,5':
         oppositeVertex = {
           2: 1,
           3: 0,
@@ -103,83 +115,153 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
   }
 
   /**
-   * Returns a 3d cuboid when your startCuboid and endCuboid seems to be a 2D Rectangle or startCuboid is a 3d cuboid.
-   * Or re-calculate a new cuboid when startCuboid is an 2d Rectangle
+   * Map vehicleCoordinates to an object containing fixed indices and coordinates without null values
    *
-   * @param {JSON} startCuboid
-   * @param {JSON} endCuboid
-   * @returns {JSON}
+   * @param {Array.<Array.<Number>>} vehicleCoordinates
+   * @returns {Object.<Number, Array.<Number>>}
    * @private
    */
-  _normalizeCuboid(startCuboid, endCuboid) {
-    const startCuboidBackgroundFaceVertices = startCuboid.vehicleCoordinates.filter(vertex => {
-      return vertex === null;
-    });
-
-    const endCuboidBackgroundFaceVertices = endCuboid.vehicleCoordinates.filter(vertex => {
-      return vertex === null;
-    });
-
-    const startCuboidIs2D = (startCuboidBackgroundFaceVertices.length === 4);
-    const endCuboidIs2D = (endCuboidBackgroundFaceVertices.length === 4);
-
-    if (!startCuboidIs2D || (startCuboidIs2D && endCuboidIs2D)) {
-      return startCuboid;
-    }
-
-    let backgroundFaceVertexIndices;
-    if (startCuboidIs2D) {
-      backgroundFaceVertexIndices = startCuboidBackgroundFaceVertices;
-    } else {
-      backgroundFaceVertexIndices = endCuboidBackgroundFaceVertices;
-    }
-
-    const oppositeVertex = this._getFrontFaceVertexIndicesFromBackgroundFaceVertexIndices(backgroundFaceVertexIndices);
-
-    const currentCuboid3d = Cuboid3d.createFromRawVertices(startCuboid.vehicleCoordinates);
-    // const endCuboid3d = Cuboid3d.createFromRawVertices(endCuboid.vehicleCoordinates);
-
-    const plainVector1 = currentCuboid3d.vertices[oppositeVertex.normal[0][0]]
-        .clone()
-        .sub(currentCuboid3d.vertices[oppositeVertex.normal[0][1]]);
-
-    const plainVector2 = currentCuboid3d.vertices[oppositeVertex.normal[1][0]]
-        .clone()
-        .sub(currentCuboid3d.vertices[oppositeVertex.normal[1][1]]);
-
-    const plainVector1V3 = new Vector3(plainVector1.x, plainVector1.y, plainVector1.z);
-    const plainVector2V3 = new Vector3(plainVector2.x, plainVector2.y, plainVector2.z);
-
-    const normalVectorV3 = plainVector1V3.clone().cross(plainVector2V3);
-    const normalVectorV4 = new Vector4(normalVectorV3.x, normalVectorV3.y, normalVectorV3.z, 1);
-
-    const distanceVector = normalVectorV4.clone().divideScalar(normalVectorV4.length()).multiplyScalar(0);
-
-    const newVehicleCoordinates = [];
-    Object.keys(oppositeVertex).forEach((targetVertexIndex, sourceVertexIndex) => {
-      if (targetVertexIndex !== 'normal') {
-        const sourceVertex = currentCuboid3d.vertices[sourceVertexIndex];
-        newVehicleCoordinates[targetVertexIndex] = sourceVertex.add(distanceVector).toArray();
+  _mapVehicleCoordinatesToVertexObject(vehicleCoordinates) {
+    const vertexObject = {};
+    vehicleCoordinates.forEach((coordinates, index) => {
+      if (coordinates === null) {
+        return;
       }
+      vertexObject[index] = coordinates;
     });
 
-    const steps = [...Array(8).keys()];
-    steps.forEach(index => {
-      if (typeof newVehicleCoordinates[index] === undefined) {
-        newVehicleCoordinates[index] = currentCuboid3d.vertices[index].toArray();
-      }
-    });
-
-    const cuboid = clone(startCuboid);
-    cuboid.vehicleCoordinates = newVehicleCoordinates;
-    return cuboid;
+    return vertexObject;
   }
 
   /**
-   * @param startVertex
-   * @param endVertex
-   * @param delta
-   * @returns {*}
+   * Map object to an array containing all calculated coordinates
+   *
+   * @param {Object.<Number, Array.<Number>>} vertexObject
+   * @returns {Array.<Array.<Number>>}
+   * @private
+   */
+  _mapVertexObjectToVehicleCoordinates(vertexObject) {
+    const coordinates = [];
+    Object.keys(vertexObject).forEach(index => {
+      coordinates[index] = vertexObject[index];
+    });
+
+    return coordinates;
+  }
+
+  /**
+   *
+   * @param {Object.<Number, Array.<Number>>} vertexObject
+   * @returns {boolean}
+   * @private
+   */
+  _isVertexObjectIs2D(vertexObject) {
+    return Object.keys(vertexObject).length === 4;
+  }
+
+  /**
+   * @param {Array.<Number>} vertex
+   * @returns {THREE.Vector3}
+   * @private
+   */
+  _createVectorFromVertex(vertex) {
+    return new Vector3(vertex[0], vertex[1], vertex[2]);
+  }
+
+  /**
+   * Ensure that the two given cuboids are either both 2d or 3d.
+   *
+   * If only one of them is 3d convert the given 2d cuboid to a 3d cuboid as given as well.
+   *
+   * @param {JSON} startCuboid
+   * @param {JSON} endCuboid
+   * @returns {{startCuboid: JSON, endCuboid: JSON}}
+   * @private
+   */
+  _equalizeVertexCount(startCuboid, endCuboid) {
+    const startCuboidVertexObject = this._mapVehicleCoordinatesToVertexObject(startCuboid.vehicleCoordinates);
+    const endCuboidVertexObject = this._mapVehicleCoordinatesToVertexObject(endCuboid.vehicleCoordinates);
+
+    const startCuboidIs2D = this._isVertexObjectIs2D(startCuboidVertexObject);
+    const endCuboidIs2D = this._isVertexObjectIs2D(endCuboidVertexObject);
+
+    if ((!startCuboidIs2D && !endCuboidIs2D) || (startCuboidIs2D && endCuboidIs2D)) {
+      // Both cuboids are already 3d or 2d
+      return {startCuboid, endCuboid};
+    }
+
+    if (startCuboidIs2D) {
+      const newStartCuboidVertexObject = this._convert2dCuboidTo3dCuboidWithReference(startCuboidVertexObject, endCuboidVertexObject);
+      const newStartCuboid = clone(startCuboid);
+      newStartCuboid.vehicleCoordinates = this._mapVertexObjectToVehicleCoordinates(newStartCuboidVertexObject);
+
+      return {startCuboid: newStartCuboid, endCuboid};
+    }
+
+    const newEndCuboidVertexObject = this._convert2dCuboidTo3dCuboidWithReference(endCuboidVertexObject, startCuboidVertexObject);
+    const newEndCuboid = clone(endCuboid);
+    newEndCuboid.vehicleCoordinates = this._mapVertexObjectToVehicleCoordinates(newEndCuboidVertexObject);
+
+    return {startCuboid, endCuboid: newEndCuboid};
+  }
+
+  /**
+   * Create a 3d interpolation of a 2d cuboid based on the depth information of a 3d cuboid
+   *
+   * @param {Object.<Number, Array.<Number>>} vertexObject2d
+   * @param {Object.<Number, Array.<Number>>} vertexObject3d
+   * @returns {Object.<Number, Array.<Number>>}
+   * @private
+   */
+  _convert2dCuboidTo3dCuboidWithReference(vertexObject2d, vertexObject3d) {
+    const vertexIndicesMappingObject = this._getBackFaceVertexIndicesFromFrontFaceVertexObject(vertexObject2d);
+
+    // calculate distance between front- and back face
+    const backFaceVertexIndex = Object.keys(vertexIndicesMappingObject)[0];
+    const frontFaceVertexIndex = vertexIndicesMappingObject[backFaceVertexIndex];
+
+    const frontFaceVector = this._createVectorFromVertex(vertexObject3d[frontFaceVertexIndex]);
+    const backFaceVector = this._createVectorFromVertex(vertexObject3d[backFaceVertexIndex]);
+
+    const distance = frontFaceVector.distanceTo(backFaceVector);
+
+    // calculate normal vector on 2d front face
+    const frontFaceNormalIndices = vertexIndicesMappingObject.normal;
+    const frontFaceNormalIndices1 = frontFaceNormalIndices[0];
+    const frontFaceNormalIndices2 = frontFaceNormalIndices[1];
+
+    const frontFaceVector1 = this._createVectorFromVertex(vertexObject2d[frontFaceNormalIndices1[0]]);
+    const frontFaceVector2 = this._createVectorFromVertex(vertexObject2d[frontFaceNormalIndices1[1]]);
+    const frontFaceVector3 = this._createVectorFromVertex(vertexObject2d[frontFaceNormalIndices2[0]]);
+    const frontFaceVector4 = this._createVectorFromVertex(vertexObject2d[frontFaceNormalIndices2[1]]);
+
+    const planeVector1 = frontFaceVector2.clone().sub(frontFaceVector1);
+    const planeVector2 = frontFaceVector4.clone().sub(frontFaceVector3);
+
+    const normalVector = planeVector1.clone().cross(planeVector2).normalize();
+
+    const directionVector = normalVector.clone().multiplyScalar(distance);
+
+    const newVertexObject3d = clone(vertexObject2d);
+
+    const steps = [...Array(8).keys()];
+    steps.forEach(index => {
+      if (newVertexObject3d[index] !== undefined) {
+        return;
+      }
+      const frontFaceIndex = vertexIndicesMappingObject[index];
+      const frontFaceIndexVector = this._createVectorFromVertex(vertexObject2d[frontFaceIndex]);
+      newVertexObject3d[index] = frontFaceIndexVector.clone().add(directionVector).toArray();
+    });
+
+    return newVertexObject3d;
+  }
+
+  /**
+   * @param {Array.<Number>} startVertex
+   * @param {Array.<Number>} endVertex
+   * @param {Float} delta
+   * @returns {Array.<Number>}
    * @private
    */
   _cuboid3dCalculateNewVertex(startVertex, endVertex, delta) {

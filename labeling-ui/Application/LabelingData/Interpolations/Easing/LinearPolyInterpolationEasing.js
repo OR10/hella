@@ -37,7 +37,8 @@ class LinearPolyInterpolationEasing extends InterpolationEasing {
   }
 
   /**
-   * @param {String} easing
+   *
+   * @param easing
    * @returns {boolean}
    */
   supportsEasing(easing) {
