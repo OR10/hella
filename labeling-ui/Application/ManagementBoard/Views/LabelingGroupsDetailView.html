@@ -57,6 +57,11 @@
                         </tr>
                         </tbody>
                     </table>
+                    <div class="grid-block" ng-show="vm.labelerSelectionMessage != null">
+                        <div class="grid-content">
+                            <h6>{{vm.labelerSelectionMessage}}</h6>
+                        </div>
+                    </div>
                     <div class="grid-block horizontal">
                         <div class="grid-content">
                             <select id="newLabeler" ng-model="vm.labelerToAddId"
