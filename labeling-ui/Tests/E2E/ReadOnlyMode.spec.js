@@ -168,6 +168,33 @@ describe('ReadOnly Mode', () => {
         .then(() => expectAllModalsToBeClosed())
         .then(() => done());
     });
+
+    it('should not be interpolatable by mouse', done => {
+      mock(sharedMocks);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => clickRectangle())
+        .then(() => browser.sleep(200))
+        .then(() => {
+          const interpolateShapeButton = element(by.css('#interpolate-shape-button'));
+          return expect(interpolateShapeButton.isDisplayed()).toBeFalsy();
+        })
+        .then(() => done());
+    });
+
+    it('should not be interpolatable by keyboard', done => {
+      mock(sharedMocks);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => clickRectangle())
+        .then(() => browser.sleep(200))
+        .then(() => {
+          return browser.actions()
+            .sendKeys("t") // Interpolation shortcut
+            .perform();
+        })
+        .then(() => browser.sleep(200))
+        .then(() => expectAllModalsToBeClosed()) // Error modal regarding non mocked request
+        .then(() => done());
+    });
   });
 
   describe('New Shape', () => {
