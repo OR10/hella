@@ -1,6 +1,7 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -159,6 +160,44 @@ describe('ReadOnly Mode', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoDrawingPossible);
           done();
         });
+    });
+  });
+
+  describe('Attribute on Shape', () => {
+    let labelSelectorHelper;
+
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0,
+        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0to4,
+        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.getLabeledThingInFrame1,
+      ]);
+    });
+
+    beforeEach(() => {
+      const labelSelector = element(by.css('label-selector'));
+      labelSelectorHelper = new LabelSelectorHelper(labelSelector);
+    });
+
+    fit('should not be changable', done => {
+      mock(sharedMocks);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 150, y: 350})
+            .click()
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Sign type').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Sign type', 'U-Turn').click())
+        .then(() => expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Sign type')).toEqual(
+          {
+            'U-Turn': false,
+            'Speed sign': false,
+          }
+        ))
+        .then(() => done());
     });
   });
 
