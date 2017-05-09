@@ -147,10 +147,10 @@ describe('LinearCuboidInterpolationEasing Test Suite', () => {
         [4.85, 5, 1],
         [4.85, 6, 1],
         [4.85, 7, 1],
-        [4.85, 4, 1],
-        [4.85, 5, 1],
-        [4.85, 6, 1],
-        [4.85, 7, 1],
+        [4.7, 3.7, 2.05],
+        [4.7, 4.55, 1.9],
+        [4.7, 5.4, 2.05],
+        [4.7, 6.25, 1.9],
       ];
       expect(ghost.shapes[0].vehicleCoordinates).toEqual(expectedStepCoordinates);
     });
@@ -193,10 +193,10 @@ describe('LinearCuboidInterpolationEasing Test Suite', () => {
         [4.15, 5, 1],
         [4.15, 6, 1],
         [4.15, 7, 1],
-        [4.15, 4, 1],
-        [4.15, 5, 1],
-        [4.15, 6, 1],
-        [4.15, 7, 1],
+        [3.3, 2.3, 6.95],
+        [3.3, 2.45, 6.1],
+        [3.3, 2.6, 6.95],
+        [3.3, 2.75, 6.1],
       ];
       expect(ghost.shapes[0].vehicleCoordinates).toEqual(expectedStepCoordinates);
     });
