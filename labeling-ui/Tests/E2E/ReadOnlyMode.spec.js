@@ -62,6 +62,35 @@ fdescribe('ReadOnly Mode', () => {
           done();
         });
     });
+
+    it('should not be movable', done => {
+      mock(sharedMocks);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 150, y: 350})
+            .click()
+            .perform();
+        })
+        .then(() => browser.sleep(200))
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 150, y: 350})
+            .mouseDown()
+            .mouseMove(viewer, {x: 450, y: 550})
+            .mouseUp()
+            .perform();
+        })
+        .then(() => browser.sleep(200))
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoShapeMovement')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoShapeMovement);
+          done();
+        });
+    });
   });
 
   afterEach(() => {
