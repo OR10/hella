@@ -1,4 +1,5 @@
 import UrlBuilder from '../UrlBuilder';
+import featureFlags from '../../../Application/features.json';
 
 export function getMockRequestsMade(mock) {
   return mock.requestsMade().then(requests => {
@@ -47,12 +48,53 @@ function waitForApplicationReady() {
   });
 }
 
+function storeMocksInPouch(mocks) {
+  const configuration = require('../../../Application/Common/config.json');
+  let documents = [];
+
+  mocks.forEach(mock => {
+    let things = mock.response.data.result;
+    let labeledThing;
+
+    if (things.labeledThings) {
+      labeledThing = things.labeledThings['LABELED-THING-ID-1'];
+      labeledThing._id = labeledThing.id;
+      // labeledThing._rev = labeledThing.rev;
+      labeledThing.type = 'AppBundle.Model.LabeledThing';
+      labeledThing.frameRange = {
+        "startFrameIndex": labeledThing.frameRange.startFrameNumber,
+        "endFrameIndex": labeledThing.frameRange.endFrameNumber,
+        "type": "AppBundle.Model.FrameIndexRange"
+      };
+      documents.push(labeledThing);
+    }
+
+    if (things.labeledThingsInFrame) {
+      things.labeledThingsInFrame.forEach(ltif => {
+        ltif._id = ltif.id;
+        ltif.taskId = labeledThing.taskId;
+        ltif.identifierName = 'cuboid3d';
+        ltif.type = 'AppBundle.Model.LabeledThingInFrame';
+      });
+      documents = documents.concat(things.labeledThingsInFrame);
+    }
+  });
+
+  return browser.executeAsyncScript((configuration, documents, callback) => {
+    const db = new PouchDB(`TASKID-TASKID-${configuration.storage.local.databaseName}`);
+
+    return db.bulkDocs(documents).then((result) => {
+      callback(result);
+    });
+  }, configuration, documents);
+};
+
 const defaultTestConfig = {
   viewerWidth: 1024,
   viewerHeight: 620,
 };
 
-export function initApplication(url, testConfig = defaultTestConfig) {
+export function initApplication(url, testConfig = defaultTestConfig, pouchMocks = []) {
   const builder = new UrlBuilder(testConfig);
   (function() {
     browser.get(builder.url(url));
@@ -60,7 +102,15 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   browser.wait(() => {
     return browser.executeScript('return !!window.angular');
   }, 10000);
-  return waitForApplicationReady();
+
+  // For some strange reason simply returning Promise.resolve() in storeMocksInPouch if Pouch is not active
+  // does not work.
+  if (featureFlags.pouchdb) {
+    return storeMocksInPouch(pouchMocks)
+      .then(() => waitForApplicationReady());
+  } else {
+    return waitForApplicationReady();
+  }
 }
 
 export function expectAllModalsToBeClosed() {

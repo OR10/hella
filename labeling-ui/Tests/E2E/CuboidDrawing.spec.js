@@ -9,7 +9,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Cuboid Drawing', () => {
+describe('Cuboid Drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -73,13 +73,15 @@ fdescribe('Cuboid Drawing', () => {
         });
     });
 
-    it('should load and draw one cuboid in the back right', done => {
-      mock(sharedMocks.concat([
+    fit('should load and draw one cuboid in the back right', done => {
+      const pouchMocks = [
         assets.mocks.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ];
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      mock(sharedMocks.concat(pouchMocks));
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', undefined, pouchMocks)
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -194,7 +196,7 @@ fdescribe('Cuboid Drawing', () => {
   });
 
   describe('DepthBuffer', () => {
-    fit('should properly render a cuboid with low height from all sides', done => {
+    it('should properly render a cuboid with low height from all sides', done => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0to4,
