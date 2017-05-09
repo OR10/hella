@@ -36,6 +36,13 @@ describe('ReadOnly Mode', () => {
   });
 
   describe('Existing Shape', () => {
+    function clickRectangle() {
+      return browser.actions()
+        .mouseMove(viewer, {x: 150, y: 350})
+        .click()
+        .perform();
+    }
+
     beforeEach(() => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0,
@@ -47,12 +54,7 @@ describe('ReadOnly Mode', () => {
     it('should not show handles', done => {
       mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => {
-          return browser.actions()
-            .mouseMove(viewer, {x: 150, y: 350})
-            .click()
-            .perform();
-        })
+        .then(() => clickRectangle())
         .then(() => browser.sleep(200))
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoShapeHandles')
@@ -64,15 +66,10 @@ describe('ReadOnly Mode', () => {
         });
     });
 
-    it('should not be movable', done => {
+    it('should not be movable by mouse', done => {
       mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => {
-          return browser.actions()
-            .mouseMove(viewer, {x: 150, y: 350})
-            .click()
-            .perform();
-        })
+        .then(() => clickRectangle())
         .then(() => browser.sleep(200))
         .then(() => {
           return browser.actions()
@@ -93,15 +90,38 @@ describe('ReadOnly Mode', () => {
         });
     });
 
+    it('should not be movable by keyboard', done => {
+      mock(sharedMocks);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => clickRectangle())
+        .then(() => browser.sleep(200))
+        .then(() => {
+          return browser.actions()
+            .sendKeys(protractor.Key.ARROW_UP)
+            .sendKeys(protractor.Key.ARROW_DOWN)
+            .sendKeys(protractor.Key.ARROW_LEFT)
+            .sendKeys(protractor.Key.ARROW_RIGHT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.SHIFT)
+            .perform();
+        })
+        .then(() => browser.sleep(200))
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoShapeMovement')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoShapeMovement);
+          done();
+        });
+    });
+
     it('should not be resizable', done => {
       mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => {
-          return browser.actions()
-            .mouseMove(viewer, {x: 150, y: 350})
-            .click()
-            .perform();
-        })
+        .then(() => clickRectangle())
         .then(() => browser.sleep(200))
         .then(() => {
           return browser.actions()
@@ -179,7 +199,7 @@ describe('ReadOnly Mode', () => {
       labelSelectorHelper = new LabelSelectorHelper(labelSelector);
     });
 
-    fit('should not be changable', done => {
+    it('should not be changable', done => {
       mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
