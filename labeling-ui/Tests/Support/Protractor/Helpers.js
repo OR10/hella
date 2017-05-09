@@ -1,6 +1,6 @@
 import UrlBuilder from '../UrlBuilder';
 import featureFlags from '../../../Application/features.json';
-import mock from 'protractor-http-mock';
+import httpMock from 'protractor-http-mock';
 
 export function getMockRequestsMade(mock) {
   return mock.requestsMade().then(requests => {
@@ -95,8 +95,22 @@ const defaultTestConfig = {
   viewerHeight: 620,
 };
 
-export function initApplication(url, testConfig = defaultTestConfig, sharedMocks = [], fixtures = []) {
-  mock(sharedMocks.concat(fixtures));
+let mocks = {
+  shared: [],
+  specific: []
+};
+
+export function mock(sharedMocks, specificMocks = []) {
+  mocks.shared = sharedMocks;
+  mocks.specific = specificMocks;
+}
+
+mock.teardown = () => {
+  httpMock.teardown();
+};
+
+export function initApplication(url, testConfig = defaultTestConfig) {
+  httpMock(mocks.shared.concat(mocks.specific));
 
   const builder = new UrlBuilder(testConfig);
   (function() {
@@ -109,7 +123,7 @@ export function initApplication(url, testConfig = defaultTestConfig, sharedMocks
   // For some strange reason simply returning Promise.resolve() in storeMocksInPouch if Pouch is not active
   // does not work.
   if (featureFlags.pouchdb) {
-    return storeDocumentsInPouch(fixtures)
+    return storeDocumentsInPouch(mocks.specific)
       .then(() => waitForApplicationReady());
   } else {
     return waitForApplicationReady();

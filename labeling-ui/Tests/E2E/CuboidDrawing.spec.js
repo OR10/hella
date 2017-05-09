@@ -1,9 +1,10 @@
-import mock from 'protractor-http-mock';
+// import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
   expectAllModalsToBeClosed,
   getMockRequestsMade,
   initApplication,
+  mock
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -57,12 +58,12 @@ describe('Cuboid Drawing', () => {
     });
 
     fit('should load and draw one cuboid in the back left', done => {
-      const thingMocks = [
+      mock(sharedMocks, [
         assets.mocks.CuboidDrawing.BackLeft.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidDrawing.BackLeft.LabeledThingInFrame.frameIndex0to4,
-      ];
+      ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', undefined, sharedMocks, thingMocks)
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -74,12 +75,12 @@ describe('Cuboid Drawing', () => {
     });
 
     fit('should load and draw one cuboid in the back right', done => {
-      const thingMocks = [
+      mock(sharedMocks, [
         assets.mocks.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0to4,
-      ];
+      ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', undefined, sharedMocks, thingMocks)
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
