@@ -34,29 +34,34 @@ fdescribe('ReadOnly Mode', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  it('it should not show handles on shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0,
-      assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.getLabeledThingInFrame1,
-    ]));
+  describe('Existing Shape', () => {
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0,
+        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0to4,
+        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.getLabeledThingInFrame1,
+      ]);
+    });
 
-    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
-          .mouseMove(viewer, {x: 150, y: 350})
-          .click()
-          .perform();
-      })
-      .then(() => browser.sleep(200))
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoShapeHandles')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoShapeHandles);
-        done();
-      });
+    it('should not show handles', done => {
+      mock(sharedMocks);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 150, y: 350})
+            .click()
+            .perform();
+        })
+        .then(() => browser.sleep(200))
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoShapeHandles')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoShapeHandles);
+          done();
+        });
+    });
   });
 
   afterEach(() => {
