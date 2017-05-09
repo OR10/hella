@@ -214,15 +214,7 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
         return new Result\Failure(
             sprintf(
                 'Failed to get databases: %s',
-                join(
-                    ',',
-                    array_map(
-                        function ($url) {
-                            return $url['database'];
-                        },
-                        $this->failedDatabases
-                    )
-                )
+                $this->getDatabasesAsString($this->failedDatabases)
             )
         );
     }
@@ -235,15 +227,25 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
         return new Result\Failure(
             sprintf(
                 'Missing security documents in: %s',
-                join(
-                    ',',
-                    array_map(
-                        function ($url) {
-                            return $url['database'];
-                        },
-                        $this->missingSecurityDocuments
-                    )
-                )
+                $this->getDatabasesAsString($this->missingSecurityDocuments)
+            )
+        );
+    }
+
+    /**
+     * @param $documents
+     *
+     * @return string
+     */
+    private function getDatabasesAsString($documents)
+    {
+        return join(
+            ',',
+            array_map(
+                function ($url) {
+                    return $url['database'];
+                },
+                $documents
             )
         );
     }
