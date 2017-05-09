@@ -20,7 +20,7 @@ export function getMockRequestsMade(mock) {
 }
 
 export function dumpAllRequestsMade(mock) {
-  return mock.allRequestsMade().then(requests => {
+  return httpMock.allRequestsMade().then(requests => {
     const strippedRequests = requests.map(request => {
       const strippedRequest = {
         method: request.method,
