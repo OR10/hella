@@ -22,5 +22,7 @@ afterEach(done => {
     pouchDocument.then(() => {
       done();
     });
+  } else {
+    done();
   }
 });
