@@ -255,6 +255,18 @@ describe('Task model', () => {
         const actualResult = taskModel.isUserAllowedToBeAssigned(user);
         expect(actualResult).toBeFalsy();
       });
+
+      it('should allow assignment of task, which is assigned in current phase to the same user', () => {
+        const user = createUser('Bernd-das-Brot', 'user-id-5');
+
+        const assignmentHistory = [
+          {userId: user.id, assignedAt: '123', phase: activePhase, status: activeStatus},
+        ];
+        const taskModel = new Task({status, assignmentHistory}, users);
+
+        const actualResult = taskModel.isUserAllowedToBeAssigned(user);
+        expect(actualResult).toBeTruthy();
+      });
     });
   });
 });

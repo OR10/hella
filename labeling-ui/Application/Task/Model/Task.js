@@ -315,6 +315,11 @@ class Task {
       return true;
     }
 
+    // Reassignment of the same user is allowed.
+    if (activeAssignedUser.id === user.id) {
+      return true;
+    }
+
     // Every not specifically allowed request is denied.
     return false;
   }
