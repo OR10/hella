@@ -3,7 +3,7 @@ import featureFlags from '../../../Application/features.json';
 import httpMock from 'protractor-http-mock';
 
 export function getMockRequestsMade(mock) {
-  return mock.requestsMade().then(requests => {
+  return httpMock.requestsMade().then(requests => {
     return requests.map(request => {
       const strippedRequest = {
         method: request.method,
