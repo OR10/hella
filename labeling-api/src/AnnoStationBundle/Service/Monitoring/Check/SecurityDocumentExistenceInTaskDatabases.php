@@ -52,11 +52,6 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
     private $couchPort;
 
     /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
-
-    /**
      * @var array
      */
     private $urls;
@@ -83,17 +78,15 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
         $couchAuthUser,
         $couchAuthPassword,
         $couchHost,
-        $couchPort,
-        $pouchdbFeatureEnabled
+        $couchPort
     ) {
-        $this->labelingTaskFacade    = $labelingTaskFacade;
-        $this->taskDatabaseCreator   = $taskDatabaseCreator;
-        $this->guzzleClient          = $guzzleClient;
-        $this->couchAuthUser         = $couchAuthUser;
-        $this->couchAuthPassword     = $couchAuthPassword;
-        $this->couchHost             = $couchHost;
-        $this->couchPort             = $couchPort;
-        $this->pouchdbFeatureEnabled = $pouchdbFeatureEnabled;
+        $this->labelingTaskFacade  = $labelingTaskFacade;
+        $this->taskDatabaseCreator = $taskDatabaseCreator;
+        $this->guzzleClient        = $guzzleClient;
+        $this->couchAuthUser       = $couchAuthUser;
+        $this->couchAuthPassword   = $couchAuthPassword;
+        $this->couchHost           = $couchHost;
+        $this->couchPort           = $couchPort;
     }
 
     /**
@@ -103,10 +96,6 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
      */
     public function check()
     {
-        if (!$this->pouchdbFeatureEnabled) {
-            return new Result\Skip('PouchDB not enabled');
-        }
-
         $this->buildUrls();
 
         $this->executeConcurrentRequests($this->urls);

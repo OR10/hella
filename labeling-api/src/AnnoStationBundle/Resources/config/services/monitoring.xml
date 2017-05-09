@@ -27,17 +27,5 @@
             <argument type="service" id="oneup_flysystem.frame_cdn_filesystem"/>
             <tag name="liip_monitor.check" alias="flysystem_api" group="default"/>
         </service>
-        <service id="annostation.labeling_api.monitoring.check.security_document_existence_in_task_databases"
-                 class="AnnoStationBundle\Service\Monitoring\Check\SecurityDocumentExistenceInTaskDatabases">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
-            <argument type="service" id="guzzle.client"/>
-            <argument>%couchdb_user%</argument>
-            <argument>%couchdb_password%</argument>
-            <argument>%couchdb_host%</argument>
-            <argument>%couchdb_port%</argument>
-            <argument>%pouchdb_feature_enabled%</argument>
-            <tag name="liip_monitor.check" alias="security_document_existence_in_task_databases" group="default"/>
-        </service>
     </services>
 </container>
