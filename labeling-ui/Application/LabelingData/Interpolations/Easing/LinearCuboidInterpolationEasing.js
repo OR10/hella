@@ -150,7 +150,6 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
   }
 
   /**
-   *
    * @param {Object.<Number, Array.<Number>>} vertexObject
    * @returns {boolean}
    * @private
