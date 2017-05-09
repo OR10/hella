@@ -141,6 +141,33 @@ describe('ReadOnly Mode', () => {
           done();
         });
     });
+
+    it('should not be removable by mouse', done => {
+      mock(sharedMocks);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => clickRectangle())
+        .then(() => browser.sleep(200))
+        .then(() => {
+          const deleteShapeButton = element(by.css('#delete-shape-button'));
+          return expect(deleteShapeButton.isDisplayed()).toBeFalsy();
+        })
+        .then(() => done());
+    });
+
+    it('should not be removable by keyboard', done => {
+      mock(sharedMocks);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => clickRectangle())
+        .then(() => browser.sleep(200))
+        .then(() => {
+          return browser.actions()
+            .sendKeys(protractor.Key.DELETE)
+            .perform();
+        })
+        .then(() => browser.sleep(200))
+        .then(() => expectAllModalsToBeClosed())
+        .then(() => done());
+    });
   });
 
   describe('New Shape', () => {
