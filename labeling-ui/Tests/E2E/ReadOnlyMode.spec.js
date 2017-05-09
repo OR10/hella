@@ -122,6 +122,46 @@ fdescribe('ReadOnly Mode', () => {
     });
   });
 
+  describe('New Shape', () => {
+    let toolButton0;
+
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.ReadOnlyMode.Empty.LabeledThingInFrame.frameIndex0,
+        assets.mocks.ReadOnlyMode.Empty.LabeledThingInFrame.frameIndex0to4,
+      ]);
+    });
+
+    beforeEach(() => toolButton0 = element(by.css('button.tool-button.tool-0')));
+
+    it('should not be possible to be created', done => {
+      mock(sharedMocks);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => browser.actions()
+          .click(toolButton0) // Rect drawing
+          .perform()
+        )
+        .then(() => browser.sleep(200))
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 204, y: 428})
+            .mouseDown()
+            .mouseMove(viewer, {x: 450, y: 550})
+            .mouseUp()
+            .perform();
+        })
+        .then(() => browser.sleep(200))
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoDrawingPossible')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoDrawingPossible);
+          done();
+        });
+    });
+  });
+
   afterEach(() => {
     expectAllModalsToBeClosed();
     mock.teardown();
