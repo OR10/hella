@@ -151,7 +151,18 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
         $this->missingSecurityDocuments = [];
         $this->failedDatabases          = [];
 
-        $pool = new Pool(
+        $pool = $this->createConcurrentRequestPool($urls);
+
+        // Initiate the transfers and create a promise
+        $promise = $pool->promise();
+
+        // Force the pool of requests to complete.
+        $promise->wait();
+    }
+
+    private function createConcurrentRequestPool($urls)
+    {
+        return new Pool(
             $this->guzzleClient, $this->requestIterator($urls), [
                 'concurrency' => 32,
                 'fulfilled'   => function (GuzzleHttp\Psr7\Response $response, $index) use (&$missingSecurityDocuments
@@ -166,12 +177,6 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
                 },
             ]
         );
-
-        // Initiate the transfers and create a promise
-        $promise = $pool->promise();
-
-        // Force the pool of requests to complete.
-        $promise->wait();
     }
 
     /**
