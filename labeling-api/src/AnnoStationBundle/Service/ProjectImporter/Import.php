@@ -203,7 +203,7 @@ class Import
             $organisation,
             $user,
             $requirementsElement->item(0)->getAttribute('name'),
-            sprintf('%s.xml', $requirementsElement->item(0)->getAttribute('name')),
+            $requirementsElement->item(0)->getAttribute('filename'),
             $expectedHash
         );
 
@@ -216,7 +216,7 @@ class Import
         $requirements = new Model\TaskConfiguration\RequirementsXml(
             $organisation,
             $requirementsElement->item(0)->getAttribute('name'),
-            sprintf('%s.xml', $requirementsElement->item(0)->getAttribute('name')),
+            $requirementsElement->item(0)->getAttribute('filename'),
             mime_content_type($filePath),
             file_get_contents($filePath),
             $user->getId(),

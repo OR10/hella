@@ -435,6 +435,35 @@ class ViewerController {
       return;
     }
 
+    /**
+     * Inform the user about authoriztion loss with the couchdb.
+     */
+    let unauthorizedAccessModalOpen = false;
+    $rootScope.$on('pouchdb:replication:unauthorized', () => {
+      if (unauthorizedAccessModalOpen === true) {
+        this._logger.log('pouchdb:replication:unauthorized', 'Unauthorized event already handled, skipping dialog');
+        return;
+      }
+      unauthorizedAccessModalOpen = true;
+      modalService.info(
+        {
+          title: 'Unauthorized Access',
+          headline: 'You do not longer have the access rights to work on this task.',
+          message: 'You have lost the authorization to work on this task. This can for example happen if the task was reassigned to another labeler, while you were working on it. Please contact your label coordinator for further instructions.',
+          confirmButtonText: 'Understood',
+        },
+        () => {
+          unauthorizedAccessModalOpen = false;
+          this._$state.go('labeling.tasks.list', {projectId: this.task.projectId});
+        },
+        undefined,
+        {
+          abortable: false,
+          warning: true,
+        }
+      );
+    });
+
     const {width, height} = this.video.metaData;
     this._contentWidth = width;
     this._contentHeight = height;
@@ -773,12 +802,12 @@ class ViewerController {
     this._layerManager.addLayer('annotations', this.thingLayer);
 
     this._$scope.$watchGroup(
-      ['vm.activeTool', 'vm.selectedLabelStructureThing'],
-      ([newActiveTool, newSelectedLabelStructureThings]) => {
+      ['vm.activeTool', 'vm.selectedLabelStructureObject'],
+      ([newActiveTool, newSelectedLabelStructureObject]) => {
         /* @TODO: Refactor (into service?!) to not have zoomPanel switch to 'multi'
          * while labelStructureThings are not loaded yet
          */
-        if (newActiveTool === 'multi' && newSelectedLabelStructureThings === null) {
+        if (newActiveTool === 'multi' && newSelectedLabelStructureObject === null) {
           return;
         }
         // Only called if all tools are initialized
@@ -786,7 +815,7 @@ class ViewerController {
           return;
         }
 
-        this.thingLayer.activateTool(newActiveTool, newSelectedLabelStructureThings);
+        this.thingLayer.activateTool(newActiveTool, newSelectedLabelStructureObject);
       }
     );
   }
