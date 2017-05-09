@@ -203,7 +203,7 @@ describe('Task model', () => {
         enabled: true,
         lastLogin: '12345678',
         locked: false,
-        roles: []
+        roles: [],
       });
     }
 

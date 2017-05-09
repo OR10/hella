@@ -1,6 +1,6 @@
 import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication} from '../Support/Protractor/Helpers';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -188,7 +188,7 @@ describe('ReadOnly Mode', () => {
         .then(() => browser.sleep(200))
         .then(() => {
           return browser.actions()
-            .sendKeys("t") // Interpolation shortcut
+            .sendKeys('t') // Interpolation shortcut
             .perform();
         })
         .then(() => browser.sleep(200))
