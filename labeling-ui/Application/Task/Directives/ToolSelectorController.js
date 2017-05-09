@@ -6,12 +6,12 @@ class ToolSelectorController {
   }
 
   /**
-   * @param {{id, shape, name}} thing
+   * @param {{id, shape, name}} labelStructureObject
    */
-  setCurrentThing(thing) {
-    this.selectedLabelStructureThing = thing;
+  setCurrentObject(labelStructureObject) {
+    this.selectedLabelStructureObject = labelStructureObject;
 
-    if (this.selectedPaperShape && this._hasSelectedPaperShapeIdentifierName(this.selectedLabelStructureThing.id)) {
+    if (this.selectedPaperShape && this._hasSelectedPaperShapeIdentifierName(this.selectedLabelStructureObject.id)) {
       this.selectedPaperShape = null;
     }
   }

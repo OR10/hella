@@ -1,9 +1,18 @@
 <div class="tool-selector grid-block vertical">
-    <h1 ng-if="vm.things.length > 0"><i class="fa fa-pencil"></i></h1>
+    <h1 ng-if="vm.drawableRequirementFrames.length > 0"><i class="fa fa-picture-o"></i></h1>
+    <button ng-repeat="frame in vm.drawableRequirementFrames"
+            class="tool-button tool-{{$index}}"
+            ng-class="{'active': frame.id === vm.selectedLabelStructureObject.id}"
+            ng-click="vm.setCurrentObject(frame)"
+            tooltip="{{frame.name}}"
+    >
+        <i class="icon icon-tool-{{frame.shape}}"></i>
+    </button>
+    <h1 ng-if="vm.drawableThings.length > 0"><i class="fa fa-pencil"></i></h1>
     <button ng-repeat="thing in vm.drawableThings"
             class="tool-button tool-{{$index}}"
-            ng-class="{'active': thing.id === vm.selectedLabelStructureThing.id}"
-            ng-click="vm.setCurrentThing(thing)"
+            ng-class="{'active': thing.id === vm.selectedLabelStructureObject.id}"
+            ng-click="vm.setCurrentObject(thing)"
             tooltip="{{thing.name}}"
     >
         <i class="icon icon-tool-{{thing.shape}}"></i>
@@ -11,8 +20,8 @@
     <h1 ng-if="vm.drawableGroups.length > 0"><i class="fa fa-object-group"></i></h1>
     <button ng-repeat="group in vm.drawableGroups"
             class="tool-button tool-group tool-{{$index}}"
-            ng-class="{'active': group.id === vm.selectedLabelStructureThing.id}"
-            ng-click="vm.setCurrentThing(group)"
+            ng-class="{'active': group.id === vm.selectedLabelStructureObject.id}"
+            ng-click="vm.setCurrentObject(group)"
             tooltip="{{group.name}}"
     >
         <i class="icon icon-tool-{{group.shape}}"></i>
