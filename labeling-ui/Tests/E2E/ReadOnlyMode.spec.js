@@ -5,7 +5,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('ReadOnly Mode', () => {
+describe('ReadOnly Mode', () => {
   let assets;
   let sharedMocks;
   let viewer;
