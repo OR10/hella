@@ -6,6 +6,7 @@ use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 use AppBundle\Database\Facade as AppFacade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
@@ -32,11 +33,6 @@ class Project extends Controller\Base
      * @var Facade\Project
      */
     private $projectFacade;
-
-    /**
-     * @var Facade\LabeledThingInFrame
-     */
-    private $labeledThingInFrameFacade;
 
     /**
      * @var Facade\LabelingTask
@@ -89,11 +85,28 @@ class Project extends Controller\Base
     private $taskDatabaseSecurityPermissionService;
 
     /**
+     * @var Factory\LabelingTask
+     */
+    private $labelingTaskFacadeFactory;
+
+    /**
+     * @var Factory\LabeledThingInFrame
+     */
+    private $labeledThingInFrameFacadeFactory;
+    
+    /**
+     * @var Factory\Project
+     */
+    private $projectFacadeFactory;
+
+    /**
      * @param Facade\Project                                $projectFacade
-     * @param Facade\LabeledThingInFrame                    $labeledThingInFrameFacade
      * @param Facade\LabelingTask                           $labelingTaskFacade
      * @param Facade\Organisation                           $organisationFacade
      * @param Facade\Campaign                               $campaignFacade
+     * @param Factory\Project                               $projectFacadeFactory
+     * @param Factory\LabelingTask                          $labelingTaskFacadeFactory
+     * @param Factory\LabeledThingInFrame                   $labeledThingInFrameFacadeFactory
      * @param Storage\TokenStorage                          $tokenStorage
      * @param AppFacade\User                                $userFacade
      * @param Service\Authorization                         $authorizationService
@@ -103,10 +116,12 @@ class Project extends Controller\Base
      */
     public function __construct(
         Facade\Project $projectFacade,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Organisation $organisationFacade,
         Facade\Campaign $campaignFacade,
+        Factory\Project $projectFacadeFactory,
+        Factory\LabelingTask $labelingTaskFacadeFactory,
+        Factory\LabeledThingInFrame $labeledThingInFrameFacadeFactory,
         Storage\TokenStorage $tokenStorage,
         AppFacade\User $userFacade,
         Service\Authorization $authorizationService,
@@ -115,7 +130,6 @@ class Project extends Controller\Base
         Authentication\UserPermissions $userPermissions
     ) {
         $this->projectFacade                         = $projectFacade;
-        $this->labeledThingInFrameFacade             = $labeledThingInFrameFacade;
         $this->labelingTaskFacade                    = $labelingTaskFacade;
         $this->tokenStorage                          = $tokenStorage;
         $this->userFacade                            = $userFacade;
@@ -125,6 +139,9 @@ class Project extends Controller\Base
         $this->campaignFacade                        = $campaignFacade;
         $this->userPermissions                       = $userPermissions;
         $this->taskDatabaseSecurityPermissionService = $taskDatabaseSecurityPermissionService;
+        $this->projectFacadeFactory                  = $projectFacadeFactory;
+        $this->labelingTaskFacadeFactory             = $labelingTaskFacadeFactory;
+        $this->labeledThingInFrameFacadeFactory      = $labeledThingInFrameFacadeFactory;
     }
 
     /**
@@ -139,6 +156,8 @@ class Project extends Controller\Base
      */
     public function listAction(HttpFoundation\Request $request, AnnoStationBundleModel\Organisation $organisation)
     {
+        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getReadOnlyFacade();
+
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
         $limit  = $request->query->get('limit', null);
@@ -176,13 +195,14 @@ class Project extends Controller\Base
             null                              => array() //@TODO remove this later
         );
 
-        foreach ($this->projectFacade->getTimePerProject() as $mapping) {
+        $projectFacadeReadOnly = $this->projectFacadeFactory->getReadOnlyFacade();
+        foreach ($projectFacadeReadOnly->getTimePerProject() as $mapping) {
             $projectTimeMapping[$mapping['key'][0]] = array_sum($mapping['value']);
         }
 
         $diskUsageByVideoIds = $this->organisationFacade->getDiskUsageForOrganisationVideos($organisation);
 
-        $tasksByProjects = $this->labelingTaskFacade->findAllByProjects($projects);
+        $tasksByProjects = $labelingTaskFacade->findAllByProjects($projects);
         $numberOfVideos     = array();
         $diskUsageByProject = [];
         foreach ($tasksByProjects as $taskByProjects) {
@@ -218,10 +238,10 @@ class Project extends Controller\Base
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
             $sumOfTasksForProject          = $this->getSumOfTasksForProject($project);
-            $sumOfCompletedTasksForProject = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
+            $sumOfCompletedTasksForProject = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
                 $project
             );
-            $sumOfTasksByPhaseForProject   = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
+            $sumOfTasksByPhaseForProject   = $labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
 
             $sumOfFailedTasks        = 0;
             $sumOfPreProcessingTasks = 0;
@@ -268,7 +288,8 @@ class Project extends Controller\Base
                 $responseProject['taskInProgressCount']        = $taskInProgressCount;
                 $responseProject['taskFailedCount']            = $taskFailedCount;
                 $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
-                $responseProject['labeledThingInFramesCount']  = $this->labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject(
+                $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getReadOnlyFacade();
+                $responseProject['labeledThingInFramesCount']  = $labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject(
                     $project
                 );
                 $responseProject['videosCount']                = isset(
@@ -509,7 +530,8 @@ class Project extends Controller\Base
      */
     private function getSumOfTasksForProject(Model\Project $project)
     {
-        $tasks = $this->labelingTaskFacade->findAllByProject($project);
+        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getReadOnlyFacade();
+        $tasks = $labelingTaskFacade->findAllByProject($project);
 
         return count($tasks);
     }
