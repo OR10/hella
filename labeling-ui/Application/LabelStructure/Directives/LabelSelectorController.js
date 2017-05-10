@@ -331,7 +331,7 @@ export default class LabelSelectorController {
     labeledFrame.incomplete = !this.isCompleted;
 
     return this._labeledFrameGateway.saveLabeledFrame(
-      this.task.id,
+      this.task,
       this.framePosition.position,
       labeledFrame
     );

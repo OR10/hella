@@ -480,7 +480,7 @@ class TaskController {
    * @private
    */
   _loadLabeledFrame(frameIndex) {
-    return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameIndex);
+    return this._labeledFrameGateway.getLabeledFrame(this.task, frameIndex);
   }
 
   onSplitViewInitialized() {

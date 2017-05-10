@@ -63,22 +63,22 @@ class PouchDbLabeledFrameGateway {
   }
 
   /**
-   * Returns the {@link LabeledFrame} for the given `taskId` and `frameIndex`
+   * Returns the {@link LabeledFrame} for the given `task` and `frameIndex`
    *
-   * @param {String} taskId
+   * @param {String} task
    * @param {Integer} frameIndex
    *
    * @returns {AbortablePromise<LabeledFrame|Error>}
    */
-  getLabeledFrame(taskId, frameIndex) {
+  getLabeledFrame(task, frameIndex) {
     return this._packagingExecutor.execute('labeledFrame', () => {
-      const db = this._pouchDbContextService.provideContextForTaskId(taskId);
+      const db = this._pouchDbContextService.provideContextForTaskId(task.id);
       const viewIdentifier = this._pouchDbViewService.getDesignDocumentViewName(
         'labeledFrameByTaskIdAndFrameIndex'
       );
       return this._$q.resolve()
         .then(() => db.query(viewIdentifier, {
-          key: [taskId, frameIndex],
+          key: [task.id, frameIndex],
           include_docs: true,
           limit: 1,
         }))
@@ -95,15 +95,15 @@ class PouchDbLabeledFrameGateway {
   /**
    * Updates the labeled frame for the given task and frame number in the database
    *
-   * @param {String} taskId
+   * @param {Task} task
    * @param {Integer} frameIndex
    * @param {LabeledFrame} labeledFrame
    *
    * @returns {AbortablePromise<LabeledFrame|Error>}
    */
-  saveLabeledFrame(taskId, frameIndex, labeledFrame) {
+  saveLabeledFrame(task, frameIndex, labeledFrame) {
     return this._packagingExecutor.execute('labeledFrame', () => {
-      const db = this._pouchDbContextService.provideContextForTaskId(taskId);
+      const db = this._pouchDbContextService.provideContextForTaskId(task.id);
       return this._$q.resolve()
         .then(() => {
           const labeledFrameDocument = this._couchDbModelSerializer.serialize(labeledFrame);
@@ -131,19 +131,19 @@ class PouchDbLabeledFrameGateway {
   /**
    * Deletes the labeled thing in frame object in the database
    *
-   * @param {String} taskId
+   * @param {Task} task
    * @param {Integer} frameIndex
    *
    * @returns {AbortablePromise<Boolean|Error>}
    */
-  deleteLabeledFrame(taskId, frameIndex) {
+  deleteLabeledFrame(task, frameIndex) {
     return this._packagingExecutor.execute('labeledFrame', () => {
-      const db = this._pouchDbContextService.provideContextForTaskId(taskId);
+      const db = this._pouchDbContextService.provideContextForTaskId(task.id);
       return this._$q.resolve()
         .then(() => {
           const viewDesignDocument = this._pouchDbViewService.getDesignDocumentViewName('labeledFrameByTaskIdAndFrameIndex');
           return db.query(viewDesignDocument, {
-            key: [taskId, frameIndex],
+            key: [task.id, frameIndex],
             include_docs: true,
             limit: 1,
           });
