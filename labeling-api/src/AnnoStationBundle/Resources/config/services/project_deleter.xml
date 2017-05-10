@@ -15,8 +15,8 @@
         </service>
         <service id="annostation.labeling_api.service.project_deleter.delete.labeled_things"
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabeledThings">
-            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
         </service>
         <service id="annostation.labeling_api.service.project_deleter.delete.labeled_thing_in_frames"
                  class="AnnoStationBundle\Service\ProjectDeleter\Delete\LabeledThingInFrames">
