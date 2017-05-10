@@ -446,7 +446,13 @@ class MediaControlsController {
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 't',
       description: 'Interpolate the current selection',
-      callback: this.handleInterpolation.bind(this),
+      callback: () => {
+        if (this.readOnly === true) {
+          return;
+        }
+
+        this.handleInterpolation()
+      }
     });
 
     this._keyboardShortcutService.addHotkey('labeling-task', {
