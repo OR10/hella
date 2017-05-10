@@ -3,42 +3,20 @@
 namespace AnnoStationBundle\Service\ProjectDeleter\Delete;
 
 use AppBundle\Model;
-use AppBundle\Service as AppBundleService;
-use AnnoStationBundle\Service;
-use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 
 class LabeledThingInFrames
 {
     /**
-     * @var Facade\LabeledThingInFrame
+     * @var Factory\LabeledThingInFrame
      */
-    private $labeledThingInFrameFacade;
-
-    /**
-     * @var AppBundleService\DatabaseDocumentManagerFactory
-     */
-    private $databaseDocumentManagerFactory;
-
-    /**
-     * @var Service\TaskDatabaseCreator
-     */
-    private $taskDatabaseCreatorService;
-
-    /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
+    private $labeledThingInFrameFacadeFactory;
 
     public function __construct(
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $pouchdbFeatureEnabled
+        Factory\LabeledThingInFrame $labeledThingInFrameFacadeFactory
     ) {
-        $this->labeledThingInFrameFacade      = $labeledThingInFrameFacade;
-        $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
-        $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
-        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
+
+        $this->labeledThingInFrameFacadeFactory = $labeledThingInFrameFacadeFactory;
     }
 
     /**
@@ -46,16 +24,10 @@ class LabeledThingInFrames
      */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labeledThingInFrameFacade = $this->labeledThingInFrameFacade;
-        if ($this->pouchdbFeatureEnabled) {
-            $databaseDocumentManager   = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $this->taskDatabaseCreatorService->getDatabaseName(
-                    $labelingTask->getProjectId(),
-                    $labelingTask->getId()
-                )
-            );
-            $labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
-        }
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getProjectAndTaskFacade(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
 
         $labeledThingInFrames = $labeledThingInFrameFacade->getLabeledThingsInFrame($labelingTask);
 
