@@ -89,7 +89,7 @@ class MultiTool extends PaperTool {
     this._keyboardToolDelegationInvoked = false;
 
     const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
-    const tool = this._getToolForRequirementsShape(requirementsShape);
+    const tool = this._getCreationToolForRequirementsShape(requirementsShape);
     this._$rootScope.$emit('tool:selected:supportsDefaultShapeCreation', tool.supportsDefaultShapeCreation);
 
     if (toolActionStruct.readOnly !== true && selectedPaperShape !== null) {
@@ -148,7 +148,7 @@ class MultiTool extends PaperTool {
    * @private
    */
   _invokeCreationToolDelegation(requirementsShape) {
-    const tool = this._getToolForRequirementsShape(requirementsShape);
+    const tool = this._getCreationToolForRequirementsShape(requirementsShape);
     this._invokePaperToolDelegation(tool, 'creation', null, null);
   }
 
@@ -157,7 +157,7 @@ class MultiTool extends PaperTool {
    * @return {Tool}
    * @private
    */
-  _getToolForRequirementsShape(requirementsShape) {
+  _getCreationToolForRequirementsShape(requirementsShape) {
     switch (requirementsShape) {
       case 'rectangle':
         return this._toolService.getTool(this._context, PaperRectangle.getClass());
@@ -457,7 +457,7 @@ class MultiTool extends PaperTool {
    * @param {CreationToolActionStruct} toolActionStruct
    */
   invokeDefaultShapeCreation(toolActionStruct) {
-    this._getToolForRequirementsShape(toolActionStruct.requirementsShape);
+    this._getCreationToolForRequirementsShape(toolActionStruct.requirementsShape);
     const {viewport, video, task, framePosition, requirementsThingOrGroupId} = this._toolActionStruct;
     const struct = new CreationToolActionStruct(
       viewport,
