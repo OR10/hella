@@ -31,11 +31,11 @@ class LabeledFrames
      */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getProjectAndTaskFacade(
+        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );
-        $labeledFrameFacade = $this->labeledFrameFacadeFactory->getProjectAndTaskFacade(
+        $labeledFrameFacade = $this->labeledFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );

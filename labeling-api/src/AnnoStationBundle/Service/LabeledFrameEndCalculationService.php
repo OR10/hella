@@ -50,7 +50,7 @@ class LabeledFrameEndCalculationService
      */
     private function findEnd(Model\LabelingTask $task, $index, $class)
     {
-        $labeledFrameFacade = $this->labeledFrameFacadeFactory->getProjectAndTaskFacade(
+        $labeledFrameFacade = $this->labeledFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
             $task->getProjectId(),
             $task->getId()
         );

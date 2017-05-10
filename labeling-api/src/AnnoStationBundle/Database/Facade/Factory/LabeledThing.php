@@ -47,7 +47,7 @@ class LabeledThing implements Facade\Factory
         $this->readOnlyDatabase               = $readOnlyDatabase;
     }
 
-    public function getProjectAndTaskFacade($projectId, $taskId)
+    public function getFacadeByProjectIdAndTaskId($projectId, $taskId)
     {
         if ($this->pouchdbFeatureEnabled) {
             $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(

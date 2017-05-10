@@ -22,7 +22,7 @@ class LabeledThingGroup
      */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labeledThingGroupFacade = $this->labeledThingGroupFacadeFactory->getProjectAndTaskFacade(
+        $labeledThingGroupFacade = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );

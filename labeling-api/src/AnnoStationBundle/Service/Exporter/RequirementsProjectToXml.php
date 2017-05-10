@@ -154,15 +154,15 @@ class RequirementsProjectToXml
                 $xmlVideo = new ExportXml\Element\Video($video, self::XML_NAMESPACE);
 
                 foreach ($labelingTaskIterator as $task) {
-                    $labelingTaskFacade = $this->labelingTaskFacadeFactory->getProjectAndTaskFacade(
+                    $labelingTaskFacade = $this->labelingTaskFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
                     );
-                    $labelingThingGroupFacade = $this->labeledThingGroupFacadeFactory->getProjectAndTaskFacade(
+                    $labelingThingGroupFacade = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
                     );
-                    $labeledThingFacade = $this->labeledThingFacadeFactory->getProjectAndTaskFacade(
+                    $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
                     );

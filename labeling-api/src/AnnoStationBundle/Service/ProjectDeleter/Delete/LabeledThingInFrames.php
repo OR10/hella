@@ -24,7 +24,7 @@ class LabeledThingInFrames
      */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getProjectAndTaskFacade(
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );
