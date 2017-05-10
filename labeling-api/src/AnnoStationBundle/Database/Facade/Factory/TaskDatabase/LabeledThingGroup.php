@@ -7,7 +7,7 @@ use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
 
-class LabeledThingGroup implements Facade\Factory
+class LabeledThingGroup extends Facade\Factory
 {
     /**
      * @var Facade\LabeledThingGroup
@@ -43,23 +43,32 @@ class LabeledThingGroup implements Facade\Factory
 
     public function getFacadeByProjectIdAndTaskId($projectId, $taskId)
     {
-        $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-            $this->taskDatabaseCreatorService->getDatabaseName(
-                $projectId,
-                $taskId
-            )
+        $databaseName = $this->taskDatabaseCreatorService->getDatabaseName(
+            $projectId,
+            $taskId
         );
+        if (!$this->isInFacadeCache($databaseName)) {
+            $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+                $databaseName
+            );
 
-        return new Facade\LabeledThingGroup($databaseDocumentManager);
+            $this->addFacadeCache($databaseName, new Facade\LabeledThingGroup($databaseDocumentManager));
+        }
+
+        return $this->getFacadeCache($databaseName);
     }
 
     public function getReadOnlyFacade()
     {
-        $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-            $this->readOnlyDatabase
-        );
+        if (!$this->isInFacadeCache($this->readOnlyDatabase)) {
+            $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+                $this->readOnlyDatabase
+            );
 
-        return new Facade\LabeledThingGroup($databaseDocumentManager);
+            $this->addFacadeCache($this->readOnlyDatabase, new Facade\LabeledThingGroup($databaseDocumentManager));
+        }
+
+        return $this->getFacadeCache($this->readOnlyDatabase);
     }
 
     public function getFacade()

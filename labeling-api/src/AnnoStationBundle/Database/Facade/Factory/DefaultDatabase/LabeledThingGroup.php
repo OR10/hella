@@ -7,7 +7,7 @@ use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
 
-class LabeledThingGroup implements Facade\Factory
+class LabeledThingGroup extends Facade\Factory
 {
     /**
      * @var Facade\LabeledThingGroup

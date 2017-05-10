@@ -7,7 +7,7 @@ use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
 
-class LabeledFrame implements Facade\Factory
+class LabeledFrame extends Facade\Factory
 {
     /**
      * @var Facade\LabeledFrame
@@ -43,23 +43,32 @@ class LabeledFrame implements Facade\Factory
 
     public function getFacadeByProjectIdAndTaskId($projectId, $taskId)
     {
-        $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-            $this->taskDatabaseCreatorService->getDatabaseName(
-                $projectId,
-                $taskId
-            )
+        $databaseName = $this->taskDatabaseCreatorService->getDatabaseName(
+            $projectId,
+            $taskId
         );
+        if (!$this->isInFacadeCache($databaseName)) {
+            $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+                $databaseName
+            );
 
-        return new Facade\LabeledFrame($databaseDocumentManager);
+            $this->addFacadeCache($databaseName, new Facade\LabeledFrame($databaseDocumentManager));
+        }
+
+        return $this->getFacadeCache($databaseName);
     }
 
     public function getReadOnlyFacade()
     {
-        $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-            $this->readOnlyDatabase
-        );
+        if (!$this->isInFacadeCache($this->readOnlyDatabase)) {
+            $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+                $this->readOnlyDatabase
+            );
 
-        return new Facade\LabeledFrame($databaseDocumentManager);
+            $this->addFacadeCache($this->readOnlyDatabase, new Facade\LabeledFrame($databaseDocumentManager));
+        }
+
+        return $this->getFacadeCache($this->readOnlyDatabase);
     }
 
     public function getFacade()

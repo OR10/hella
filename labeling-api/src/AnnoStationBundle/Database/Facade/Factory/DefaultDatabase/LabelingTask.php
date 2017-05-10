@@ -7,7 +7,7 @@ use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
 
-class LabelingTask implements Facade\Factory
+class LabelingTask extends Facade\Factory
 {
     /**
      * @var Facade\LabelingTask

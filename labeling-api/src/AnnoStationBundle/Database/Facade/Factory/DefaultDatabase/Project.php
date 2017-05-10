@@ -6,7 +6,7 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AppBundle\Service as AppBundleService;
 
-class Project implements Facade\Factory
+class Project extends Facade\Factory
 {
     /**
      * @var Facade\Project

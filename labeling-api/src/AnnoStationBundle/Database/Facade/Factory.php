@@ -2,11 +2,35 @@
 
 namespace AnnoStationBundle\Database\Facade;
 
-interface Factory
+abstract class Factory
 {
-    public function getFacadeByProjectIdAndTaskId($projectId, $taskId);
+    /**
+     * @var array
+     */
+    private $facadeCache = [];
 
-    public function getReadOnlyFacade();
+    abstract public function getFacadeByProjectIdAndTaskId($projectId, $taskId);
 
-    public function getFacade();
+    abstract public function getReadOnlyFacade();
+
+    abstract public function getFacade();
+
+    protected function getFacadeCache($database)
+    {
+        if (!$this->isInFacadeCache($database)) {
+            throw new \RuntimeException('There is no facade in cache for ' . $database);
+        }
+
+        return $this->facadeCache[$database];
+    }
+
+    protected function isInFacadeCache($database)
+    {
+        return isset($this->facadeCache[$database]);
+    }
+
+    protected function addFacadeCache($database, $facade)
+    {
+        $this->facadeCache[$database] = $facade;
+    }
 }
