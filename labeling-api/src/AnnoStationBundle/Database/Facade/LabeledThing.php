@@ -135,6 +135,19 @@ class LabeledThing
     }
 
     /**
+     * @return Model\LabeledThing[]
+     */
+    public function findByTaskId(Model\LabelingTask $task)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeled_thing', 'by_taskId')
+            ->setKey($task->getId())
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
+    /**
      * @param Model\LabeledThing $labeledThing
      */
     public function delete(Model\LabeledThing $labeledThing)
