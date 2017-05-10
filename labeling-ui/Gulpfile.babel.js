@@ -37,8 +37,8 @@ function chokidarWatch(glob, fn) {
 function execLive(command, options, next) {
   if (typeof options === 'function') {
     // options have been skipped
-    next = options;
-    options = {};
+    next = options; // eslint-disable-line no-param-reassign
+    options = {}; // eslint-disable-line no-param-reassign
   }
 
   const child = exec(command, Object.assign({}, options, {maxBuffer: Number.MAX_SAFE_INTEGER}), next);
@@ -277,10 +277,10 @@ gulp.task('build-iconfont', next => {
   let fontCustomBinary;
   try {
     fontCustomBinary = which('fontcustom');
-  } catch(e) {
+  } catch (error) {
     throw new PluginError({
       plugin: 'FontCustom',
-      message: `The fontcustom binary could not be found in your path. Please see README.md for details on how to install it.`
+      message: `The fontcustom binary could not be found in your path. Please see README.md for details on how to install it.`,
     });
   }
 
