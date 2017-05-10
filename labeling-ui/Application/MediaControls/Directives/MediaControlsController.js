@@ -284,7 +284,7 @@ class MediaControlsController {
       const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
       this._applicationState.disableAll();
       this._applicationState.viewer.work();
-      this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
+      this._interpolationService.interpolate(this.task, selectedLabeledThing)
         .then(
           () => {
             this._applicationState.viewer.finish();

@@ -41,10 +41,11 @@
         <!--</div>&ndash;&gt;-->
         <!--&lt;!&ndash;<div class="grid-block vertical noscrollbars"></div>&ndash;&gt;-->
     <!--</div>-->
-    <tool-selector ng-if="vm.task.taskType !== 'meta-labeling' && vm.drawableThings.length > 1"
+    <tool-selector ng-if="vm.task.taskType !== 'meta-labeling' && vm.showToolSelector"
                    drawable-things="vm.drawableThings"
                    drawable-groups="vm.drawableGroups"
-                   selected-label-structure-thing="vm.selectedLabelStructureThing"
+                   drawable-requirement-frames="vm.drawableRequirementFrames"
+                   selected-label-structure-object="vm.selectedLabelStructureObject"
                    selected-paper-shape="vm.selectedPaperShape"
                    class="grid-block"
     ></tool-selector>
@@ -71,7 +72,7 @@
             paper-thing-shapes="vm.paperThingShapes"
             paper-group-shapes="vm.paperGroupShapes"
             selected-paper-shape="vm.selectedPaperShape"
-            selected-label-structure-thing="vm.selectedLabelStructureThing"
+            selected-label-structure-object="vm.selectedLabelStructureObject"
             active-tool="vm.activeTool"
             task="vm.task"
             taskPhase="{{vm.taskPhase}}"
@@ -99,7 +100,7 @@
         ></loading-mask>
         <label-selector class="grid-block no-select"
                         label-structure="vm.labelStructure"
-                        selected-label-structure-thing="vm.selectedLabelStructureThing"
+                        selected-label-structure-object="vm.selectedLabelStructureObject"
                         selected-labeled-object="vm.selectedLabeledObject"
                         task="vm.task"
                         frame-position="vm.framePosition"
