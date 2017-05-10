@@ -4,7 +4,7 @@ namespace AppBundle\Service;
 
 use Doctrine\CouchDB;
 use Doctrine\ODM\CouchDB as CouchDBODM;
-use GuzzleHttp\Client;
+use GuzzleHttp;
 
 class CouchDbReplicatorService
 {
@@ -27,13 +27,18 @@ class CouchDbReplicatorService
      * @var string
      */
     private $password;
+    /**
+     * @var GuzzleHttp\Client
+     */
+    private $guzzleClient;
 
-    public function __construct($host, $port, $username, $password)
+    public function __construct(GuzzleHttp\Client $guzzleClient, $host, $port, $username, $password)
     {
-        $this->host     = $host;
-        $this->port     = $port;
-        $this->username = $username;
-        $this->password = $password;
+        $this->guzzleClient = $guzzleClient;
+        $this->host         = $host;
+        $this->port         = $port;
+        $this->username     = $username;
+        $this->password     = $password;
     }
 
     /**
@@ -72,22 +77,47 @@ class CouchDbReplicatorService
             $params['query_params'] = $queryParams;
         }
 
-        $client = new Client(
-            [
-                'base_uri' => sprintf(
-                    'http://%s:%s@%s:%s/_replicator',
-                    $this->username,
-                    $this->password,
-                    $this->host,
-                    $this->port
-                ),
-            ]
-        );
-
-        return $client->request(
+        return $this->guzzleClient->request(
             'PUT',
-            sprintf('_replicator/%s_%s', $sourceDb, $targetDb),
+            sprintf(
+                'http://%s:%s@%s:%s/_replicator/%s_%s',
+                $this->username,
+                $this->password,
+                $this->host,
+                $this->port,
+                $sourceDb,
+                $targetDb
+            ),
             ['json' => $params]
         );
+    }
+
+    /**
+     * @param $db
+     *
+     * @return bool
+     */
+    public function isReplicationActive($db)
+    {
+        $request = $this->guzzleClient->request(
+            'GET',
+            sprintf(
+                'http://%s:%s@%s:%s/_active_tasks',
+                $this->username,
+                $this->password,
+                $this->host,
+                $this->port
+            )
+        );
+
+        $activeTasks = json_decode($request->getBody()->getContents(), true);
+
+        foreach ($activeTasks as $activeTask) {
+            if ($activeTask['source'] === $db || $activeTask['target'] === $db) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

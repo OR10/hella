@@ -284,7 +284,7 @@ class MediaControlsController {
       const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
       this._applicationState.disableAll();
       this._applicationState.viewer.work();
-      this._interpolationService.interpolate('default', this.task, selectedLabeledThing)
+      this._interpolationService.interpolate(this.task, selectedLabeledThing)
         .then(
           () => {
             this._applicationState.viewer.finish();
@@ -422,7 +422,13 @@ class MediaControlsController {
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['del'],
       description: 'Delete selected object',
-      callback: this.handleDeleteSelectionClicked.bind(this),
+      callback: () => {
+        if (this.readOnly === true) {
+          return;
+        }
+
+        this.handleDeleteSelectionClicked();
+      },
     });
 
     this._keyboardShortcutService.addHotkey('labeling-task', {
@@ -440,7 +446,13 @@ class MediaControlsController {
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: 't',
       description: 'Interpolate the current selection',
-      callback: this.handleInterpolation.bind(this),
+      callback: () => {
+        if (this.readOnly === true) {
+          return;
+        }
+
+        this.handleInterpolation();
+      },
     });
 
     this._keyboardShortcutService.addHotkey('labeling-task', {

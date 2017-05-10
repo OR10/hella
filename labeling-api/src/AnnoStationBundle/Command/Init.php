@@ -12,6 +12,7 @@ use Doctrine\CouchDB;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use AppBundle\Database\Facade as AppBundleFacade;
 
 class Init extends Base
 {
@@ -91,6 +92,26 @@ class Init extends Base
     private $couchDbUsersFacade;
 
     /**
+     * @var AppFacade\CouchDbSecurity
+     */
+    private $couchDbSecurityFacade;
+
+    /**
+     * @var string
+     */
+    private $couchUser;
+
+    /**
+     * @var string
+     */
+    private $couchReadOnlyUser;
+
+    /**
+     * @var bool
+     */
+    private $pouchdbFeatureEnabled;
+
+    /**
      * Init constructor.
      *
      * @param CouchDB\CouchDBClient                        $couchClient
@@ -108,6 +129,10 @@ class Init extends Base
      * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
      * @param Facade\Organisation                          $organisationFacade
      * @param AppFacade\CouchDbUsers                       $couchDbUsersFacade
+     * @param AppFacade\CouchDbSecurity                    $couchDbSecurityFacade
+     * @param string                                       $couchUser
+     * @param string                                       $couchReadOnlyUser
+     * @param bool                                         $pouchdbFeatureEnabled
      */
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
@@ -124,7 +149,11 @@ class Init extends Base
         Facade\TaskConfiguration $taskConfigurationFacade,
         Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
         Facade\Organisation $organisationFacade,
-        AppFacade\CouchDbUsers $couchDbUsersFacade
+        AppFacade\CouchDbUsers $couchDbUsersFacade,
+        AppBundleFacade\CouchDbSecurity $couchDbSecurityFacade,
+        $couchUser,
+        $couchReadOnlyUser,
+        $pouchdbFeatureEnabled
     ) {
         parent::__construct();
 
@@ -143,6 +172,10 @@ class Init extends Base
         $this->taskConfigurationFacade          = $taskConfigurationFacade;
         $this->organisationFacade               = $organisationFacade;
         $this->couchDbUsersFacade               = $couchDbUsersFacade;
+        $this->couchDbSecurityFacade            = $couchDbSecurityFacade;
+        $this->couchUser                        = $couchUser;
+        $this->couchReadOnlyUser                = $couchReadOnlyUser;
+        $this->pouchdbFeatureEnabled            = $pouchdbFeatureEnabled;
     }
 
     protected function configure()
@@ -280,6 +313,8 @@ class Init extends Base
             $this->writeVerboseInfo($output, 'creating couch databases');
             $this->couchClient->createDatabase($this->couchDatabase);
             $this->couchClient->createDatabase($this->couchDatabaseReadOnly);
+            $this->createSecurityDocument($this->couchDatabase);
+            $this->createSecurityDocument($this->couchDatabaseReadOnly);
         } catch (\Exception $e) {
             $this->writeError($output, "Error deleting couch database: {$e->getMessage()}");
 
@@ -292,6 +327,17 @@ class Init extends Base
         }
 
         return true;
+    }
+
+    private function createSecurityDocument($database)
+    {
+        if (!$this->pouchdbFeatureEnabled) {
+            return;
+        }
+        $this->couchDbSecurityFacade->updateSecurity(
+            $database,
+            [$this->couchUser, $this->couchReadOnlyUser]
+        );
     }
 
     private function getOrganisation()

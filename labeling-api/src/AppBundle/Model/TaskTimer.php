@@ -102,4 +102,12 @@ class TaskTimer
     {
         return $this->projectId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }
