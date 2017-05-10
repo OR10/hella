@@ -58,6 +58,23 @@ class LabeledFrame
         $this->documentManager->flush();
     }
 
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return null|Model\LabeledFrame[]
+     */
+    public function findBylabelingTask(Model\LabelingTask $labelingTask)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeled_frame', 'by_taskId_frameIndex')
+            ->onlyDocs(true)
+            ->setStartKey([$labelingTask->getId(), null])
+            ->setEndKey([$labelingTask->getId(), []])
+            ->execute()
+            ->toArray();
+    }
+
     /**
      * @param Model\LabelingTask $labelingTask
      * @param                    $start

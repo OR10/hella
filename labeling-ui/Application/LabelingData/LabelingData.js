@@ -1,3 +1,8 @@
+/**
+ * Module containing all functionality related to Labels and its Data
+ *
+ * @extends Module
+ */
 import Module from '../Module';
 import CacheHeatingLabeledThingInFrameGateway from './Gateways/CacheHeatingLabeledThingInFrameGateway';
 import CachingLabeledThingInFrameGateway from './Gateways/CachingLabeledThingInFrameGateway';
@@ -13,12 +18,14 @@ import GhostingService from './Services/GhostingService';
 import PouchDbLabeledThingGateway from './Gateways/PouchDbLabeledThingGateway';
 import PouchDbLabeledThingInFrameGateway from './Gateways/PouchDbLabeledThingInFrameGateway';
 import PouchDbLabeledThingGroupGateway from './Gateways/PouchDbLabeledThingGroupGateway';
+import LinearRectangleInterpolationEasing from './Interpolations/Easing/LinearRectangleInterpolationEasing';
+import FrontendInterpolation from './Interpolations/FrontendInterpolation';
+import LinearPedestrianInterpolationEasing from './Interpolations/Easing/LinearPedestrianInterpolationEasing';
+import LinearPolyInterpolationEasing from './Interpolations/Easing/LinearPolyInterpolationEasing';
+import LinearPointInterpolationEasing from './Interpolations/Easing/LinearPointInterpolationEasing';
+import LinearCuboidInterpolationEasing from './Interpolations/Easing/LinearCuboidInterpolationEasing';
 
-/**
- * Module containing all functionality related to Labels and its Data
- *
- * @extends Module
- */
+
 class LabelingData extends Module {
   /**
    * @inheritDoc
@@ -33,7 +40,7 @@ class LabelingData extends Module {
     this.module.service('labeledThingGroupGateway', LabeledThingGroupGateway);
 
     this.module.service('interpolationService', InterpolationService);
-    this.module.service('linearBackendInterpolation', LinearBackendInterpolation);
+    this.module.service('interpolationType', LinearBackendInterpolation);
 
     this.module.service('cacheService', CacheService);
     this.module.service('cacheHeaterService', CacheHeaterService);
@@ -44,6 +51,13 @@ class LabelingData extends Module {
       this.module.service('labeledThingInFrameGateway', PouchDbLabeledThingInFrameGateway);
       this.module.service('labeledThingGateway', PouchDbLabeledThingGateway);
       this.module.service('labeledThingGroupGateway', PouchDbLabeledThingGroupGateway);
+
+      this.module.service('interpolationType', FrontendInterpolation);
+      this.module.service('linearRectangleInterpolationEasing', LinearRectangleInterpolationEasing);
+      this.module.service('linearPedestrianInterpolationEasing', LinearPedestrianInterpolationEasing);
+      this.module.service('linearPolyInterpolationEasing', LinearPolyInterpolationEasing);
+      this.module.service('linearPointInterpolationEasing', LinearPointInterpolationEasing);
+      this.module.service('linearCuboidInterpolationEasing', LinearCuboidInterpolationEasing);
     }
   }
 }

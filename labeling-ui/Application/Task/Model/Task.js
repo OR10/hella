@@ -301,40 +301,26 @@ class Task {
   }
 
   /**
-   * Checks if the given user is allowed to assign this task
+   * Checks if the given user is allowed to be assigned to the task under the current pretence
    *
    * @param {User} user
    * @returns {boolean}
    */
-  isUserAllowedToAssign(user) {
-    if (this.status.labeling && this.status.labeling === 'todo' || !this.getLatestAssignedUserForPhase('labeling')) {
-      const assignment = this.getLatestAssignedUserForPhase('labeling');
+  isUserAllowedToBeAssigned(user) {
+    const activePhase = this.getPhase();
+    const activeAssignedUser = this.getLatestAssignedUserForPhase(activePhase);
 
-      return !assignment || assignment.id !== user.id;
-    }
-
-    if (this.status.review && this.status.review === 'todo' || !this.getLatestAssignedUserForPhase('review')) {
-      const assignment = this.getLatestAssignedUserForPhase('review');
-
-      return !assignment || assignment.id !== user.id;
-    }
-
-    if (this.status.revision && this.status.revision === 'todo' || !this.getLatestAssignedUserForPhase('revision')) {
-      const assignment = this.getLatestAssignedUserForPhase('revision');
-
-      return !assignment || assignment.id !== user.id;
-    }
-
-    // If no user is assigned, assignment is always allowed
-    // TODO: This is no longer necessary is it?
-    if (
-      !this.getLatestAssignedUserForPhase('labeling')
-      && !this.getLatestAssignedUserForPhase('review')
-      && !this.getLatestAssignedUserForPhase('revision')
-    ) {
+    // No assignment in current phase, means the user might assign himself
+    if (activeAssignedUser === null) {
       return true;
     }
 
+    // Reassignment of the same user is allowed.
+    if (activeAssignedUser.id === user.id) {
+      return true;
+    }
+
+    // Every not specifically allowed request is denied.
     return false;
   }
 

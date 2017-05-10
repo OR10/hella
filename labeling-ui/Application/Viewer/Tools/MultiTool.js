@@ -87,17 +87,12 @@ class MultiTool extends PaperTool {
     this._keyboardTool = null;
     this._paperToolDelegationInvoked = false;
     this._keyboardToolDelegationInvoked = false;
-    // if (!this._readOnly) {
-    //   // Register Keyboard shortcuts
-    //   this._registerShortcuts();
-    // }
-    // this._initializeOptions(options);
 
     const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
     const tool = this._getToolForRequirementsShape(requirementsShape);
     this._$rootScope.$emit('tool:selected:supportsDefaultShapeCreation', tool.supportsDefaultShapeCreation);
 
-    if (selectedPaperShape !== null) {
+    if (toolActionStruct.readOnly !== true && selectedPaperShape !== null) {
       const keyboardTool = this._toolService.getTool(this._context, requirementsShape, 'keyboard');
       if (keyboardTool !== null) {
         this._invokeKeyboardToolDelegation(keyboardTool, selectedPaperShape);
@@ -147,18 +142,6 @@ class MultiTool extends PaperTool {
 
     super._complete(result);
   }
-
-  // /**
-  //  * @param {Object} options
-  //  * @private
-  //  */
-  // _initializeOptions(options) {
-  //   const defaultOptions = {
-  //     minDistance: 1,
-  //     hitTestTolerance: 8,
-  //   };
-  //   this._options = Object.assign({}, defaultOptions, options);
-  // }
 
   /**
    * @param {string} requirementsShape
@@ -228,6 +211,10 @@ class MultiTool extends PaperTool {
           this._complete({actionIdentifier: 'selection', paperShape: null});
           return;
         }
+        // Do not invoke any further action if readOnly is active
+        if (this._toolActionStruct.readOnly === true) {
+          return;
+        }
         // Invoke shape creation
         this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
         this._activePaperTool.delegateMouseEvent('down', event);
@@ -240,6 +227,11 @@ class MultiTool extends PaperTool {
       // If selected paperShape changed select the new one
       if (this._toolActionStruct.selectedPaperShape !== hitShape) {
         this._complete({actionIdentifier: 'selection', paperShape: hitShape});
+        return;
+      }
+
+      // Do not delegate to PaperTool if we are readOnly
+      if (this._toolActionStruct.readOnly === true) {
         return;
       }
 
@@ -363,10 +355,15 @@ class MultiTool extends PaperTool {
    */
   _handleMouseMoveCursor(point) {
     this._context.withScope(scope => {
+      let hitTestTolerance = null;
+      if (this._toolActionStruct !== null) {
+        hitTestTolerance = this._toolActionStruct.options.hitTestTolerance;
+      }
+
       const hitResult = scope.project.hitTest(point, {
         fill: true,
         bounds: false,
-        tolerance: this._toolActionStruct.options.hitTestTolerance,
+        tolerance: hitTestTolerance,
       });
 
       if (!hitResult) {
