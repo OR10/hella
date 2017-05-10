@@ -58,7 +58,9 @@ class RebuildTaskDatabaseValidateDocUpdateDocuments extends Base
             $project = $this->projectFacade->find($projectId);
             $labelingTasks = $this->labelingTaskFacade->findAllByProject($project, true);
         }
-        $progress = new ProgressBar($output, count($labelingTasks));
+        $numberOfLabelingTasks = count($labelingTasks);
+        $progress = new ProgressBar($output, $numberOfLabelingTasks);
+        $output->writeln('<info>Adding ' . $numberOfLabelingTasks . ' RabbitMQ jobs to rebuild validate_doc_update docs</info>');
 
         /** @var Model\LabelingTask $task */
         foreach ($labelingTasks as $labelingTask) {
