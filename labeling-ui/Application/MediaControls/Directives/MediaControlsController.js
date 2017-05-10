@@ -427,8 +427,8 @@ class MediaControlsController {
           return;
         }
 
-        this.handleDeleteSelectionClicked()
-      }
+        this.handleDeleteSelectionClicked();
+      },
     });
 
     this._keyboardShortcutService.addHotkey('labeling-task', {
@@ -451,8 +451,8 @@ class MediaControlsController {
           return;
         }
 
-        this.handleInterpolation()
-      }
+        this.handleInterpolation();
+      },
     });
 
     this._keyboardShortcutService.addHotkey('labeling-task', {
