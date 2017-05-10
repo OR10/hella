@@ -422,7 +422,13 @@ class MediaControlsController {
     this._keyboardShortcutService.addHotkey('labeling-task', {
       combo: ['del'],
       description: 'Delete selected object',
-      callback: this.handleDeleteSelectionClicked.bind(this),
+      callback: () => {
+        if (this.readOnly === true) {
+          return;
+        }
+
+        this.handleDeleteSelectionClicked()
+      }
     });
 
     this._keyboardShortcutService.addHotkey('labeling-task', {
