@@ -76,4 +76,9 @@ class LabeledThingGroup implements Facade\Factory
 
         return $this->labeledThingGroupFacade;
     }
+
+    public function getFacade()
+    {
+        $this->labeledThingGroupFacade;
+    }
 }

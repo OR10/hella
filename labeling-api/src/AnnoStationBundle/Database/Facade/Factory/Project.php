@@ -75,4 +75,9 @@ class Project implements Facade\Factory
 
         return $this->projectFacade;
     }
+
+    public function getFacade()
+    {
+        $this->projectFacade;
+    }
 }

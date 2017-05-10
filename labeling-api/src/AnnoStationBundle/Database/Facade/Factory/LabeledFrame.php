@@ -76,4 +76,9 @@ class LabeledFrame implements Facade\Factory
 
         return $this->labeledFrameFacade;
     }
+
+    public function getFacade()
+    {
+        $this->labeledFrameFacade;
+    }
 }

@@ -76,4 +76,9 @@ class LabelingTask implements Facade\Factory
 
         return $this->labelingTaskFacade;
     }
+
+    public function getFacade()
+    {
+        $this->labelingTaskFacade;
+    }
 }
