@@ -9,18 +9,18 @@ class LabeledFrames
 {
 
     /**
-     * @var Factory\LabelingTask
+     * @var Factory
      */
     private $labelingTaskFacadeFactory;
 
     /**
-     * @var Factory\LabeledFrame
+     * @var Factory
      */
     private $labeledFrameFacadeFactory;
 
     public function __construct(
-        Factory\LabelingTask $labelingTaskFacadeFactory,
-        Factory\LabeledFrame $labeledFrameFacadeFactory
+        Factory $labelingTaskFacadeFactory,
+        Factory $labeledFrameFacadeFactory
     ) {
         $this->labelingTaskFacadeFactory = $labelingTaskFacadeFactory;
         $this->labeledFrameFacadeFactory = $labeledFrameFacadeFactory;

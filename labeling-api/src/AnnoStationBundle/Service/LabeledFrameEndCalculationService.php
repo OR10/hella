@@ -16,13 +16,13 @@ class LabeledFrameEndCalculationService
     private $labelingTaskFacade;
 
     /**
-     * @var Factory\LabeledFrame
+     * @var Factory
      */
     private $labeledFrameFacadeFactory;
 
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
-        Factory\LabeledFrame $labeledFrameFacadeFactory
+        Factory $labeledFrameFacadeFactory
     ) {
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->labeledFrameFacadeFactory = $labeledFrameFacadeFactory;

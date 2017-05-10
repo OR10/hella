@@ -8,11 +8,11 @@ use AnnoStationBundle\Database\Facade\Factory;
 class TaskTimers
 {
     /**
-     * @var Factory\LabelingTask
+     * @var Factory
      */
     private $labelingTaskFacadeFactory;
 
-    public function __construct(Factory\LabelingTask $labelingTaskFacadeFactory)
+    public function __construct(Factory $labelingTaskFacadeFactory)
     {
         $this->labelingTaskFacadeFactory = $labelingTaskFacadeFactory;
     }

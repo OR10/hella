@@ -8,18 +8,18 @@ use AnnoStationBundle\Database\Facade\Factory;
 class LabeledThings
 {
     /**
-     * @var Factory\LabelingTask
+     * @var Factory
      */
     private $labelingTaskFacadeFactory;
 
     /**
-     * @var Factory\LabeledThing
+     * @var Factory
      */
     private $labeledThingFacadeFactory;
 
     public function __construct(
-        Factory\LabelingTask $labelingTaskFacadeFactory,
-        Factory\LabeledThing $labeledThingFacadeFactory
+        Factory $labelingTaskFacadeFactory,
+        Factory $labeledThingFacadeFactory
     ) {
         $this->labelingTaskFacadeFactory = $labelingTaskFacadeFactory;
         $this->labeledThingFacadeFactory = $labeledThingFacadeFactory;

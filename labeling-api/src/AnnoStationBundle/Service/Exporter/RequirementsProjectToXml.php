@@ -60,21 +60,23 @@ class RequirementsProjectToXml
     private $labeledFrameEndCalculationService;
 
     /**
-     * @var Factory\LabeledThing
+     * @var Factory
      */
     private $labeledThingFacadeFactory;
 
     /**
-     * @var Factory\LabeledThingGroup
+     * @var Factory
      */
     private $labeledThingGroupFacadeFactory;
 
     /**
-     * @var Factory\LabelingTask
+     * @var Factory
      */
     private $labelingTaskFacadeFactory;
 
     /**
+     * RequirementsProjectToXml constructor.
+     *
      * @param Facade\Exporter                           $exporterFacade
      * @param Facade\Project                            $projectFacade
      * @param Facade\Video                              $videoFacade
@@ -84,9 +86,9 @@ class RequirementsProjectToXml
      * @param AppBundleFacade\User                      $userFacade
      * @param Facade\LabelingGroup                      $labelingGroupFacade
      * @param Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService
-     * @param Factory\LabelingTask                      $labelingTaskFacadeFactory
-     * @param Factory\LabeledThing                      $labeledThingFacadeFactory
-     * @param Factory\LabeledThingGroup                 $labeledThingGroupFacadeFactory
+     * @param Factory                                   $labelingTaskFacadeFactory
+     * @param Factory                                   $labeledThingFacadeFactory
+     * @param Factory                                   $labeledThingGroupFacadeFactory
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -98,9 +100,9 @@ class RequirementsProjectToXml
         AppBundleFacade\User $userFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService,
-        Factory\LabelingTask $labelingTaskFacadeFactory,
-        Factory\LabeledThing $labeledThingFacadeFactory,
-        Factory\LabeledThingGroup $labeledThingGroupFacadeFactory
+        Factory $labelingTaskFacadeFactory,
+        Factory $labeledThingFacadeFactory,
+        Factory $labeledThingGroupFacadeFactory
     ) {
         $this->exporterFacade                    = $exporterFacade;
         $this->projectFacade                     = $projectFacade;

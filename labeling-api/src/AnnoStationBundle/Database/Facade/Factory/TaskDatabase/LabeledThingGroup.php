@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade\Factory;
+namespace AnnoStationBundle\Database\Facade\Factory\TaskDatabase;
 
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
@@ -25,11 +25,6 @@ class LabeledThingGroup implements Facade\Factory
     private $taskDatabaseCreatorService;
 
     /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
-
-    /**
      * @var string
      */
     private $readOnlyDatabase;
@@ -38,43 +33,33 @@ class LabeledThingGroup implements Facade\Factory
         Facade\LabeledThingGroup $labeledThingGroupFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $pouchdbFeatureEnabled,
         $readOnlyDatabase
     ) {
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
-        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
         $this->labeledThingGroupFacade        = $labeledThingGroupFacade;
         $this->readOnlyDatabase               = $readOnlyDatabase;
     }
 
     public function getFacadeByProjectIdAndTaskId($projectId, $taskId)
     {
-        if ($this->pouchdbFeatureEnabled) {
-            $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $this->taskDatabaseCreatorService->getDatabaseName(
-                    $projectId,
-                    $taskId
-                )
-            );
+        $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+            $this->taskDatabaseCreatorService->getDatabaseName(
+                $projectId,
+                $taskId
+            )
+        );
 
-            return new Facade\LabeledThingGroup($databaseDocumentManager);
-        }
-
-        return $this->labeledThingGroupFacade;
+        return new Facade\LabeledThingGroup($databaseDocumentManager);
     }
 
     public function getReadOnlyFacade()
     {
-        if ($this->pouchdbFeatureEnabled) {
-            $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $this->readOnlyDatabase
-            );
+        $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+            $this->readOnlyDatabase
+        );
 
-            return new Facade\LabeledThingGroup($databaseDocumentManager);
-        }
-
-        return $this->labeledThingGroupFacade;
+        return new Facade\LabeledThingGroup($databaseDocumentManager);
     }
 
     public function getFacade()

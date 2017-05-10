@@ -52,20 +52,20 @@ class Report
      * @param Facade\Report                                   $reportFacade
      * @param GhostClassesPropagation                         $ghostClassesPropagation
      * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
-     * @param Factory\Project                                 $projectFacadeFactory
-     * @param Factory\LabelingTask                            $labelingTaskFacadeFactory
-     * @param Factory\LabeledThing                            $labeledThingFacadeFactory
-     * @param Factory\LabeledThingInFrame                     $labeledThingInFrameFacadeFactory
+     * @param Factory                                         $projectFacadeFactory
+     * @param Factory                                         $labelingTaskFacadeFactory
+     * @param Factory                                         $labeledThingFacadeFactory
+     * @param Factory                                         $labeledThingInFrameFacadeFactory
      */
     public function __construct(
         Facade\Video $videoFacade,
         Facade\Report $reportFacade,
         Service\GhostClassesPropagation $ghostClassesPropagation,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        Factory\Project $projectFacadeFactory,
-        Factory\LabelingTask $labelingTaskFacadeFactory,
-        Factory\LabeledThing $labeledThingFacadeFactory,
-        Factory\LabeledThingInFrame $labeledThingInFrameFacadeFactory
+        Factory $projectFacadeFactory,
+        Factory $labelingTaskFacadeFactory,
+        Factory $labeledThingFacadeFactory,
+        Factory $labeledThingInFrameFacadeFactory
     ) {
         $this->videoFacade               = $videoFacade;
         $this->reportFacade              = $reportFacade;

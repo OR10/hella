@@ -8,14 +8,12 @@ use AnnoStationBundle\Database\Facade\Factory;
 class LabeledThingInFrames
 {
     /**
-     * @var Factory\LabeledThingInFrame
+     * @var Factory
      */
     private $labeledThingInFrameFacadeFactory;
 
-    public function __construct(
-        Factory\LabeledThingInFrame $labeledThingInFrameFacadeFactory
-    ) {
-
+    public function __construct(Factory $labeledThingInFrameFacadeFactory)
+    {
         $this->labeledThingInFrameFacadeFactory = $labeledThingInFrameFacadeFactory;
     }
 
