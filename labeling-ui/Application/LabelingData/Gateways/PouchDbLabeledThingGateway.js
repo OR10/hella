@@ -84,38 +84,38 @@ class PouchDbLabeledThingGateway {
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute('labeledThing', () => {
       this._injectRevisionOrFailSilently(serializedLabeledThing);
-      return dbContext.put(serializedLabeledThing);
-    })
-      .then(dbResponse => {
-        return dbContext.get(dbResponse.id);
-      })
-      .then(readLabeledThingDocument => {
-        this._revisionManager.extractRevision(readLabeledThingDocument);
-        readLabeledThing = this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThingDocument, task);
-      })
-      .then(() => {
-        return this._getAssociatedLabeledThingsInFrames(task, readLabeledThing);
-      })
-      .then(documents => {
-        return documents.rows.filter(document => {
-          return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
-          document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
-        });
-      })
-      .then(toBeDeletedDocuments => {
-        // Mark filtered documents as deleted
-        const docs = toBeDeletedDocuments.map(document => {
-          const doc = document.doc;
-          doc._deleted = true;
-          return doc;
-        });
+      return dbContext.put(serializedLabeledThing)
+        .then(dbResponse => {
+          return dbContext.get(dbResponse.id);
+        })
+        .then(readLabeledThingDocument => {
+          this._revisionManager.extractRevision(readLabeledThingDocument);
+          readLabeledThing = this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThingDocument, task);
+        })
+        .then(() => {
+          return this._getAssociatedLabeledThingsInFrames(task, readLabeledThing);
+        })
+        .then(documents => {
+          return documents.rows.filter(document => {
+            return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
+            document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
+          });
+        })
+        .then(toBeDeletedDocuments => {
+          // Mark filtered documents as deleted
+          const docs = toBeDeletedDocuments.map(document => {
+            const doc = document.doc;
+            doc._deleted = true;
+            return doc;
+          });
 
-        // Bulk update as deleted marked documents
-        return dbContext.bulkDocs(docs);
-      })
-      .then(() => {
-        return readLabeledThing;
-      });
+          // Bulk update as deleted marked documents
+          return dbContext.bulkDocs(docs);
+        })
+        .then(() => {
+          return readLabeledThing;
+        });
+    });
   }
 
   /**
