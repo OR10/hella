@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Service;
 
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 use AnnoStationBundle\Service;
 use AppBundle\Service as AppBundleService;
 
@@ -47,47 +48,32 @@ class Report
     /**
      * Report constructor.
      *
-     * @param Facade\Project                                  $projectFacade
      * @param Facade\Video                                    $videoFacade
-     * @param Facade\LabelingTask                             $labelingTaskFacade
-     * @param Facade\LabeledThing                             $labeledThingFacade
-     * @param Facade\LabeledThingInFrame                      $labeledThingInFrameFacade
      * @param Facade\Report                                   $reportFacade
      * @param GhostClassesPropagation                         $ghostClassesPropagation
      * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
-     * @param                                                 $pouchdbFeatureEnabled
-     * @param                                                 $databaseNameReadOnly
+     * @param Factory\Project                                 $projectFacadeFactory
+     * @param Factory\LabelingTask                            $labelingTaskFacadeFactory
+     * @param Factory\LabeledThing                            $labeledThingFacadeFactory
+     * @param Factory\LabeledThingInFrame                     $labeledThingInFrameFacadeFactory
      */
     public function __construct(
-        Facade\Project $projectFacade,
         Facade\Video $videoFacade,
-        Facade\LabelingTask $labelingTaskFacade,
-        Facade\LabeledThing $labeledThingFacade,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\Report $reportFacade,
         Service\GhostClassesPropagation $ghostClassesPropagation,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        bool $pouchdbFeatureEnabled,
-        string $databaseNameReadOnly
+        Factory\Project $projectFacadeFactory,
+        Factory\LabelingTask $labelingTaskFacadeFactory,
+        Factory\LabeledThing $labeledThingFacadeFactory,
+        Factory\LabeledThingInFrame $labeledThingInFrameFacadeFactory
     ) {
-        $this->videoFacade             = $videoFacade;
-        $this->reportFacade            = $reportFacade;
-        $this->ghostClassesPropagation = $ghostClassesPropagation;
-
-        if ($pouchdbFeatureEnabled) {
-            $databaseDocumentManager         = $databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $databaseNameReadOnly
-            );
-            $this->projectFacade             = new Facade\Project($databaseDocumentManager);
-            $this->labelingTaskFacade        = new Facade\LabelingTask($databaseDocumentManager);
-            $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
-            $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
-        } else {
-            $this->projectFacade             = $projectFacade;
-            $this->labelingTaskFacade        = $labelingTaskFacade;
-            $this->labeledThingFacade        = $labeledThingFacade;
-            $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
-        }
+        $this->videoFacade               = $videoFacade;
+        $this->reportFacade              = $reportFacade;
+        $this->ghostClassesPropagation   = $ghostClassesPropagation;
+        $this->projectFacade             = $projectFacadeFactory->getReadOnlyFacade();
+        $this->labelingTaskFacade        = $labelingTaskFacadeFactory->getReadOnlyFacade();
+        $this->labeledThingFacade        = $labeledThingFacadeFactory->getReadOnlyFacade();
+        $this->labeledThingInFrameFacade = $labeledThingInFrameFacadeFactory->getReadOnlyFacade();
     }
 
     /**
