@@ -6,6 +6,7 @@ use AppBundle\Database\Facade as AppBundleFacade;
 use AppBundle\Service as AppBundleService;
 use AnnoStationBundle\Helper\Iterator;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper\ExportXml;
 
@@ -37,6 +38,7 @@ class RequirementsProjectToXml
      * @var Facade\TaskConfiguration
      */
     private $taskConfiguration;
+
     /**
      * @var Service\GhostClassesPropagation
      */
@@ -53,50 +55,38 @@ class RequirementsProjectToXml
     private $labelingGroupFacade;
 
     /**
-     * @var Facade\LabeledThing
-     */
-    private $labeledThingFacade;
-
-    /**
-     * @var Facade\LabeledThingGroup
-     */
-    private $labeledThingGroupFacade;
-
-    /**
-     * @var Service\TaskDatabaseCreator
-     */
-    private $taskDatabaseCreatorService;
-
-    /**
-     * @var AppBundleService\DatabaseDocumentManagerFactory
-     */
-    private $databaseDocumentManagerFactory;
-
-    /**
-     * @var string
-     */
-    private $pouchdbFeatureEnabled;
-
-    /**
      * @var Service\LabeledFrameEndCalculationService
      */
     private $labeledFrameEndCalculationService;
 
     /**
-     * @param Facade\Exporter                                 $exporterFacade
-     * @param Facade\Project                                  $projectFacade
-     * @param Facade\Video                                    $videoFacade
-     * @param Facade\LabelingTask                             $labelingTaskFacade
-     * @param Facade\TaskConfiguration                        $taskConfiguration
-     * @param Service\GhostClassesPropagation                 $ghostClassesPropagation
-     * @param AppBundleFacade\User                            $userFacade
-     * @param Facade\LabelingGroup                            $labelingGroupFacade
-     * @param Facade\LabeledThing                             $labeledThingFacade
-     * @param Facade\LabeledThingGroup                        $labeledThingGroupFacade
-     * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
-     * @param Service\TaskDatabaseCreator                     $taskDatabaseCreatorService
-     * @param Service\LabeledFrameEndCalculationService       $labeledFrameEndCalculationService
-     * @param                                                 $pouchdbFeatureEnabled
+     * @var Factory\LabeledThing
+     */
+    private $labeledThingFacadeFactory;
+
+    /**
+     * @var Factory\LabeledThingGroup
+     */
+    private $labeledThingGroupFacadeFactory;
+
+    /**
+     * @var Factory\LabelingTask
+     */
+    private $labelingTaskFacadeFactory;
+
+    /**
+     * @param Facade\Exporter                           $exporterFacade
+     * @param Facade\Project                            $projectFacade
+     * @param Facade\Video                              $videoFacade
+     * @param Facade\LabelingTask                       $labelingTaskFacade
+     * @param Facade\TaskConfiguration                  $taskConfiguration
+     * @param Service\GhostClassesPropagation           $ghostClassesPropagation
+     * @param AppBundleFacade\User                      $userFacade
+     * @param Facade\LabelingGroup                      $labelingGroupFacade
+     * @param Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService
+     * @param Factory\LabelingTask                      $labelingTaskFacadeFactory
+     * @param Factory\LabeledThing                      $labeledThingFacadeFactory
+     * @param Factory\LabeledThingGroup                 $labeledThingGroupFacadeFactory
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -107,12 +97,10 @@ class RequirementsProjectToXml
         Service\GhostClassesPropagation $ghostClassesPropagation,
         AppBundleFacade\User $userFacade,
         Facade\LabelingGroup $labelingGroupFacade,
-        Facade\LabeledThing $labeledThingFacade,
-        Facade\LabeledThingGroup $labeledThingGroupFacade,
-        AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        Service\TaskDatabaseCreator $taskDatabaseCreatorService,
         Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService,
-        $pouchdbFeatureEnabled
+        Factory\LabelingTask $labelingTaskFacadeFactory,
+        Factory\LabeledThing $labeledThingFacadeFactory,
+        Factory\LabeledThingGroup $labeledThingGroupFacadeFactory
     ) {
         $this->exporterFacade                    = $exporterFacade;
         $this->projectFacade                     = $projectFacade;
@@ -122,12 +110,10 @@ class RequirementsProjectToXml
         $this->ghostClassesPropagation           = $ghostClassesPropagation;
         $this->userFacade                        = $userFacade;
         $this->labelingGroupFacade               = $labelingGroupFacade;
-        $this->labeledThingFacade                = $labeledThingFacade;
-        $this->labeledThingGroupFacade           = $labeledThingGroupFacade;
-        $this->taskDatabaseCreatorService        = $taskDatabaseCreatorService;
-        $this->databaseDocumentManagerFactory    = $databaseDocumentManagerFactory;
-        $this->pouchdbFeatureEnabled             = $pouchdbFeatureEnabled;
         $this->labeledFrameEndCalculationService = $labeledFrameEndCalculationService;
+        $this->labelingTaskFacadeFactory         = $labelingTaskFacadeFactory;
+        $this->labeledThingFacadeFactory         = $labeledThingFacadeFactory;
+        $this->labeledThingGroupFacadeFactory    = $labeledThingGroupFacadeFactory;
     }
 
     /**
@@ -168,21 +154,18 @@ class RequirementsProjectToXml
                 $xmlVideo = new ExportXml\Element\Video($video, self::XML_NAMESPACE);
 
                 foreach ($labelingTaskIterator as $task) {
-                    $labelingTaskFacade       = $this->labelingTaskFacade;
-                    $labelingThingGroupFacade = $this->labeledThingGroupFacade;
-                    $labeledThingFacade       = $this->labeledThingFacade;
-
-                    if ($this->pouchdbFeatureEnabled) {
-                        $databaseDocumentManager  = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                            $this->taskDatabaseCreatorService->getDatabaseName(
-                                $project->getId(),
-                                $task->getId()
-                            )
-                        );
-                        $labelingTaskFacade       = new Facade\LabelingTask($databaseDocumentManager);
-                        $labelingThingGroupFacade = new Facade\LabeledThingGroup($databaseDocumentManager);
-                        $labeledThingFacade       = new Facade\LabeledThing($databaseDocumentManager);
-                    }
+                    $labelingTaskFacade = $this->labelingTaskFacadeFactory->getProjectAndTaskFacade(
+                        $project->getId(),
+                        $task->getId()
+                    );
+                    $labelingThingGroupFacade = $this->labeledThingGroupFacadeFactory->getProjectAndTaskFacade(
+                        $project->getId(),
+                        $task->getId()
+                    );
+                    $labeledThingFacade = $this->labeledThingFacadeFactory->getProjectAndTaskFacade(
+                        $project->getId(),
+                        $task->getId()
+                    );
 
                     $frameMapping = $task->getFrameNumberMapping();
 
