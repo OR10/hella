@@ -1,0 +1,112 @@
+{
+  "request": {
+    "method": "GET",
+    "namedParams": true,
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/:frame/:labeledThingId",
+    "queryString": {
+      "limit": "5",
+      "offset": "0"
+    }
+  },
+  "response": {
+    "data": {
+      "result": [
+        {
+            "id": "LABELED-THING-IN-FRAME-THUMBNAIL-NEW",
+            "rev": "2-abcdefghijklmno",
+            "frameIndex": 0,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-NEW",
+                "type": "rectangle",
+                "topLeft": {"x": 100, "y": 100},
+                "bottomRight": {"x": 300, "y": 300},
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+              }
+            ],
+            "labeledThingId": "{{labeledThingId}}",
+            "incomplete": true,
+            "ghost": false
+        },
+        {
+            "id": null,
+            "rev": null,
+            "frameIndex": 1,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-NEW",
+                "type": "rectangle",
+                "topLeft": {"x": 100, "y": 100},
+                "bottomRight": {"x": 300, "y": 300},
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+              }
+            ],
+            "labeledThingId": "{{labeledThingId}}",
+            "incomplete": true,
+            "ghost": true
+        },
+        {
+            "id": null,
+            "rev": null,
+            "frameIndex": 2,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-NEW",
+                "type": "rectangle",
+                "topLeft": {"x": 100, "y": 100},
+                "bottomRight": {"x": 300, "y": 300},
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+              }
+            ],
+            "labeledThingId": "{{labeledThingId}}",
+            "incomplete": true,
+            "ghost": true
+        },
+        {
+            "id": null,
+            "rev": null,
+            "frameIndex": 3,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-NEW",
+                "type": "rectangle",
+                "topLeft": {"x": 100, "y": 100},
+                "bottomRight": {"x": 300, "y": 300},
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+              }
+            ],
+            "labeledThingId": "{{labeledThingId}}",
+            "incomplete": true,
+            "ghost": true
+        },
+        {
+            "id": null,
+            "rev": null,
+            "frameIndex": 4,
+            "classes": [],
+            "ghostClasses": null,
+            "shapes": [
+              {
+                "id": "SHAPE-ID-NEW",
+                "type": "rectangle",
+                "topLeft": {"x": 100, "y": 100},
+                "bottomRight": {"x": 300, "y": 300},
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+              }
+            ],
+            "labeledThingId": "{{labeledThingId}}",
+            "incomplete": true,
+            "ghost": true
+        }
+      ]
+    }
+  }
+}
