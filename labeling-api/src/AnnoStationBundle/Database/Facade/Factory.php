@@ -13,13 +13,13 @@ abstract class Factory
 
     abstract public function getReadOnlyFacade();
 
-    protected function getFacadeCache($database)
+    protected function getFacadeCache($key)
     {
-        if (!$this->isInFacadeCache($database)) {
-            throw new \RuntimeException('There is no facade in cache for ' . $database);
+        if (!$this->isInFacadeCache($key)) {
+            throw new \RuntimeException('There is no facade in cache for ' . $key);
         }
 
-        return $this->facadeCache[$database];
+        return $this->facadeCache[$key];
     }
 
     protected function isInFacadeCache($database)
