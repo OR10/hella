@@ -1,3 +1,5 @@
+import LabeledFrame from '../Models/LabeledFrame';
+
 /**
  * Gateway for saving and retrieving {@link LabeledFrame}s from pouchdb
  */
@@ -73,22 +75,58 @@ class PouchDbLabeledFrameGateway {
   getLabeledFrame(task, frameIndex) {
     return this._packagingExecutor.execute('labeledFrame', () => {
       const db = this._pouchDbContextService.provideContextForTaskId(task.id);
-      const viewIdentifier = this._pouchDbViewService.getDesignDocumentViewName(
-        'labeledFrameByTaskIdAndFrameIndex'
-      );
       return this._$q.resolve()
-        .then(() => db.query(viewIdentifier, {
-          key: [task.id, frameIndex],
-          include_docs: true,
-          limit: 1,
-        }))
-        .then(result => {
-          const labeledFrameDocument = result.rows[0].doc;
-          this._revisionManager.extractRevision(labeledFrameDocument);
-          const labeledFrame = this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument);
+        .then(() => this._getCurrentOrPreceedingLabeledFrame(db, task, frameIndex))
+        .then(labeledFrame => {
+          if (labeledFrame === null) {
+            return new LabeledFrame({
+              frameIndex,
+              id: this._entityIdService.getUniqueId(),
+              incomplete: true,
+              taskId: task.id,
+              classes: [],
+            });
+          }
+
           return labeledFrame;
         });
     });
+  }
+
+  /**
+   * @param {PouchDB} db
+   * @param {Task} task
+   * @param {number} frameIndex
+   * @return {Promise.<Object|null>}
+   * @private
+   */
+  _getCurrentOrPreceedingLabeledFrame(db, task, frameIndex) {
+    const viewIdentifier = this._pouchDbViewService.getDesignDocumentViewName(
+      'labeledFrameByTaskIdAndFrameIndex'
+    );
+    return this._$q.resolve()
+      .then(() => db.query(viewIdentifier, {
+        startkey: [task.id, frameIndex],
+        endkey: [task.id, 0],
+        include_docs: true,
+        descending: true,
+        limit: 1,
+      })).then(result => {
+        if (result.rows.length === 0) {
+          return null;
+        }
+        const labeledFrameDocument = result.rows[0].doc;
+
+        if (labeledFrameDocument.frameIndex === frameIndex) {
+          this._revisionManager.extractRevision(labeledFrameDocument);
+        } else {
+          labeledFrameDocument.frameIndex = frameIndex;
+          labeledFrameDocument._id = this._entityIdService.getUniqueId();
+          delete labeledFrameDocument._rev;
+        }
+
+        return this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument);
+      });
   }
 
 
