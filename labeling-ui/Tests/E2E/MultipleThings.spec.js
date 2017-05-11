@@ -1,11 +1,10 @@
-import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Multiple Things', () => {
+fdescribe('Multiple Things', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -36,10 +35,10 @@ describe('Multiple Things', () => {
   });
 
   it('it should display multiple different things', done => {
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.MultipleThings.Display.LabeledThingInFrame.frameIndex0,
       assets.mocks.MultipleThings.Display.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -53,14 +52,14 @@ describe('Multiple Things', () => {
   });
 
   it('it should select multiple different things', done => {
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.MultipleThings.Display.LabeledThingInFrame.frameIndex0,
       assets.mocks.MultipleThings.Display.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.MultipleThings.Display.LabeledThingInFrame.getLabeledThingInFrame1,
       assets.mocks.MultipleThings.Display.LabeledThingInFrame.getLabeledThingInFrame2,
       assets.mocks.MultipleThings.Display.LabeledThingInFrame.getLabeledThingInFrame3,
       assets.mocks.MultipleThings.Display.LabeledThingInFrame.getLabeledThingInFrame4,
-    ]));
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -134,7 +133,7 @@ describe('Multiple Things', () => {
     const toolButton1 = element(by.css('button.tool-button.tool-1'));
     const toolButton2 = element(by.css('button.tool-button.tool-2'));
     const toolButton3 = element(by.css('button.tool-button.tool-3'));
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0to4,
       assets.mocks.MultipleThings.Draw.StoreLabeledThing,
@@ -144,7 +143,7 @@ describe('Multiple Things', () => {
       assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid,
       assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid,
       assets.mocks.MultipleThings.Shared.SingleLabeledThingInFrame,
-    ]));
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(

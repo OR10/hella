@@ -7,7 +7,7 @@ import {
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
-fdescribe('LabelSelector (right sidebar)', () => {
+describe('LabelSelector (right sidebar)', () => {
   let assets;
   let sharedMocks;
   let labelSelector;
@@ -63,7 +63,7 @@ fdescribe('LabelSelector (right sidebar)', () => {
     labelSelectorHelper = new LabelSelectorHelper(labelSelector);
   });
 
-  fdescribe('Basic Behaviour', () => {
+  describe('Basic Behaviour', () => {
     let specificMocks;
 
     beforeEach(() => {
