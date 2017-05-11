@@ -83,7 +83,7 @@ class PouchDbLabeledFrameGateway {
               frameIndex,
               id: this._entityIdService.getUniqueId(),
               incomplete: true,
-              taskId: task.id,
+              task: task,
               classes: [],
             });
           }
@@ -125,7 +125,8 @@ class PouchDbLabeledFrameGateway {
           delete labeledFrameDocument._rev;
         }
 
-        return this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument);
+        const foo = this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument, task);
+        return foo;
       });
   }
 
@@ -161,7 +162,10 @@ class PouchDbLabeledFrameGateway {
           return db.get(result.id);
         })
         .then(
-          document => this._couchDbModelDeserializer.deserializeLabeledFrame(document)
+          document => {
+            const foo = this._couchDbModelDeserializer.deserializeLabeledFrame(document, task);
+            return foo;
+          }
         );
     });
   }
