@@ -13,8 +13,6 @@ abstract class Factory
 
     abstract public function getReadOnlyFacade();
 
-    abstract public function getFacade();
-
     protected function getFacadeCache($database)
     {
         if (!$this->isInFacadeCache($database)) {

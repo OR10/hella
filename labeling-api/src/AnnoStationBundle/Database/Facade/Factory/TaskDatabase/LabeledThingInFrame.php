@@ -70,9 +70,4 @@ class LabeledThingInFrame extends Facade\Factory
 
         return $this->getFacadeCache($this->readOnlyDatabase);
     }
-
-    public function getFacade()
-    {
-        $this->labeledThingInFrameFacade;
-    }
 }

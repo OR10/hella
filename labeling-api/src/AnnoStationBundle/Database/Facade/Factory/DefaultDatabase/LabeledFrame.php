@@ -29,9 +29,4 @@ class LabeledFrame extends Facade\Factory
 
         return $this->labeledFrameFacade;
     }
-
-    public function getFacade()
-    {
-        return $this->labeledFrameFacade;
-    }
 }

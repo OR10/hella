@@ -70,9 +70,4 @@ class LabeledThingGroup extends Facade\Factory
 
         return $this->getFacadeCache($this->readOnlyDatabase);
     }
-
-    public function getFacade()
-    {
-        $this->labeledThingGroupFacade;
-    }
 }

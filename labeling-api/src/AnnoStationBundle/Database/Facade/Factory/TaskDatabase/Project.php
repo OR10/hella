@@ -69,9 +69,4 @@ class Project extends Facade\Factory
 
         return $this->getFacadeCache($this->readOnlyDatabase);
     }
-
-    public function getFacade()
-    {
-        $this->projectFacade;
-    }
 }
