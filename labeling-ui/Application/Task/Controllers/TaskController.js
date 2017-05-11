@@ -244,11 +244,6 @@ class TaskController {
     this.selectedLabelStructureObject = null;
 
     /**
-     * @type {LabeledObject|null}
-     */
-    this.selectedLabeledObject = null;
-
-    /**
      * @type {LabeledFrameGateway}
      */
     this._labeledFrameGateway = labeledFrameGateway;
@@ -307,9 +302,6 @@ class TaskController {
               }
 
               this.selectedLabelStructureObject = labelStructureThing;
-              // The selectedObject needs to be set in the same cycle as the new LabelStructureThing. Otherwise there might be race conditions in
-              // updating its structure against the wrong LabelStructureThing.
-              this.selectedLabeledObject = this._getSelectedLabeledObject();
             });
         } else {
           this.selectedLabeledObject = null;
@@ -382,35 +374,11 @@ class TaskController {
   }
 
   /**
-   * Retrieve the currently active `labeledObject`.
-   *
-   * The {@link LabeledObject} is determined based on the `labeledFrame` or the `selectedPaperShape`. It is not taken
-   * from the `selectedLabeledObject` property. Actually this method is most likely to be used to update the
-   * `selectedLabeledObject` property.
-   *
-   * @returns {LabeledObject|null}
-   * @private
-   */
-  _getSelectedLabeledObject() {
-    switch (true) {
-      case this.selectedPaperShape instanceof PaperThingShape:
-        return this.selectedPaperShape.labeledThingInFrame;
-      case this.selectedPaperShape instanceof PaperGroupShape:
-        return this.selectedPaperShape.labeledThingGroupInFrame;
-      case this.selectedPaperShape instanceof PaperFrame:
-        return this.selectedPaperShape.labeledFrame;
-      default:
-        return null;
-    }
-  }
-
-  /**
    * Initialize the `labelStructure` property as well as all the dependant values.
    *
    * Dependant values are:
    *
    * - `selectedLabelStructureObject`
-   * - `selectedLabeledObject`
    * - `drawableThings`
    * - `drawableGroups`
    * - `drawableRequirementFrames`
@@ -426,7 +394,6 @@ class TaskController {
   _initializeLabelStructure() {
     this.labelStructure = null;
     this.selectedLabeledStructureObject = null;
-    this.selectedLabeledObject = null;
     this.drawableThings = [];
     this.drawableGroups = [];
     this.drawableRequirementFrames = [];
@@ -449,7 +416,6 @@ class TaskController {
 
         this.labelStructure = labelStructure;
         this.selectedLabelStructureObject = labelStructureObject;
-        this.selectedLabeledObject = this._getSelectedLabeledObject();
         this.drawableThings = labelStructureThingArray;
         this.drawableGroups = labelStructureGroupArray;
         this.drawableRequirementFrames = labelStructureFrameArray;
