@@ -1,6 +1,5 @@
-import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -38,10 +37,10 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Rectangle* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.DefaultShapeCreation.Rectangle.Task,
       assets.mocks.DefaultShapeCreation.Rectangle.StoreLabeledThingInFrame,
-    ]));
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
@@ -62,10 +61,10 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Pedestrian* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.DefaultShapeCreation.Pedestrian.Task,
       assets.mocks.DefaultShapeCreation.Pedestrian.StoreLabeledThingInFrame,
-    ]));
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
@@ -86,10 +85,10 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Polygon* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.DefaultShapeCreation.Polygon.Task,
       assets.mocks.DefaultShapeCreation.Polygon.StoreLabeledThingInFrame,
-    ]));
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
@@ -110,10 +109,10 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Cuboid* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
       assets.mocks.DefaultShapeCreation.Cuboid.StoreLabeledThingInFrame,
-    ]));
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
