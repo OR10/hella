@@ -1,17 +1,18 @@
-import {equals} from 'angular';
-import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
-import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
-
 /**
  * @property {string} labeledObjectType
- * @property {LabeledObject} labeledObject
  * @property {LegacyLabelStructureInterface} structure
  * @property {Object} annotation
  * @property {Array<{header: string, offset: int?, limit: init?}>} sections
  * @property {Task} task
  * @property {FramePosition} framePosition
  * @property {boolean} isCompleted
+ * @property {LabeledThingInFrame} selectedLabeledObject
+ * @property {PaperShape} selectedPaperShape
  */
+import {equals} from 'angular';
+import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
+import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
+
 export default class LabelSelectorController {
   /**
    * @param {angular.$scope} $scope
@@ -142,21 +143,20 @@ export default class LabelSelectorController {
       [
         'vm.labelStructure',
         'vm.selectedLabelStructureObject',
-        'vm.selectedLabeledObject',
+        'vm.selectedPaperShape',
       ],
       ([
         newLabelStructure,
         newSelectedLabelStructureObject,
-        newSelectedLabeledObject,
+        newSelectedPaperShape,
       ])=> {
-        if (newLabelStructure === null || newSelectedLabelStructureObject === null || newSelectedLabeledObject === null) {
+        if (newLabelStructure === null || newSelectedLabelStructureObject === null || newSelectedPaperShape === null) {
           this.pages = null;
           this.activePageIndex = null;
           this.labelingInstructions = null;
           this.choices = null;
           return;
         }
-
         this.activePageIndex = null;
         this._updatePagesAndChoices();
       });
@@ -176,11 +176,9 @@ export default class LabelSelectorController {
         return;
       }
 
-      this._$rootScope.$emit('shape:class-update:before', labels);
-
       labeledObject.setClasses(labels);
-
       let labeledThingNeedsUpdate = false;
+
       if (labeledObject instanceof LabeledThingInFrame) {
         const labeledThingInFrame = labeledObject;
         const {labeledThing} = labeledThingInFrame;
@@ -215,6 +213,16 @@ export default class LabelSelectorController {
   }
 
   /**
+   * @returns {LabeledThingInFrame}
+   */
+  get selectedLabeledObject() {
+    if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame) {
+      return this.selectedPaperShape.labeledThingInFrame;
+    }
+    return null;
+  }
+
+  /**
    * Generate a valid set of pages to be rendered to the Wizzard View
    *
    * Pages depend on the `labelObject`, the `structure` as well as the `annotation`
@@ -222,11 +230,20 @@ export default class LabelSelectorController {
    * @private
    */
   _updatePagesAndChoices() {
-    const classList = this.selectedLabeledObject.extractClassList();
+    const labeledObject = this.selectedLabeledObject;
+    if (labeledObject === null) {
+      return;
+    }
+    const classList = labeledObject.extractClassList();
     const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
       this.selectedLabelStructureObject,
       classList
     );
+
+    if (labeledObject.shapes[0].type !== this.selectedLabelStructureObject.shape) {
+      return;
+    }
+
     const newChoices = {};
     const newPages = [];
     const seenPages = {};
@@ -283,12 +300,10 @@ export default class LabelSelectorController {
 
     switch (true) {
       case selectedLabeledObject instanceof LabeledThingInFrame:
-        this._storeUpdatedLabeledThingInFrame(selectedLabeledObject, updateAssociatedLabeledThing)
-          .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
+        this._storeUpdatedLabeledThingInFrame(selectedLabeledObject, updateAssociatedLabeledThing);
         break;
       case selectedLabeledObject instanceof LabeledFrame:
-        this._storeUpdatedLabeledFrame(selectedLabeledObject)
-          .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
+        this._storeUpdatedLabeledFrame(selectedLabeledObject);
         break;
       default:
         throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);
@@ -304,7 +319,6 @@ export default class LabelSelectorController {
    */
   _storeUpdatedLabeledThingInFrame(labeledThingInFrame, updateAssociatedLabeledThing) {
     labeledThingInFrame.incomplete = !this.isCompleted;
-
     let storagePromise = Promise.resolve();
     if (updateAssociatedLabeledThing) {
       const {labeledThing} = labeledThingInFrame;
