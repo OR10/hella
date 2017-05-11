@@ -9,7 +9,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Cuboid Drawing', () => {
+fdescribe('Cuboid Drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -193,7 +193,7 @@ describe('Cuboid Drawing', () => {
     });
   });
 
-  fdescribe('DepthBuffer', () => {
+  describe('DepthBuffer', () => {
     it('should properly render a cuboid with low height from all sides', done => {
       mock(sharedMocks, [
         assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0,
