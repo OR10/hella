@@ -1,6 +1,7 @@
 import RequirementsLabelStructure from 'Application/Task/Model/LabelStructure/RequirementsLabelStructure';
 import LabelStructureThing from 'Application/Task/Model/LabelStructureThing';
 import LabelStructureGroup from 'Application/Task/Model/LabelStructureGroup';
+import LabelStructureFrame from 'Application/Task/Model/LabeledStructureFrame';
 
 import requirementsXmlData from 'Tests/Fixtures/LabelStructure/requirements.xml!text';
 import signTypeEmptyClassListThingClasses from 'Tests/Fixtures/LabelStructure/requirements/signType/empty.json!';
@@ -12,13 +13,19 @@ import extensionSignEmptyClassListGroupClasses from 'Tests/Fixtures/LabelStructu
 import extensionSignPositionAboveListGroupClasses from 'Tests/Fixtures/LabelStructure/requirements/extensionSign/position-above.json!';
 import extensionSignPositionSubclass1GroupClasses from 'Tests/Fixtures/LabelStructure/requirements/extensionSign/subclass-1.json!';
 
+import timeEmptyClassListFrameClasses from 'Tests/Fixtures/LabelStructure/requirements/time/empty.json!';
+import timeNightClassListFrameClasses from 'Tests/Fixtures/LabelStructure/requirements/time/night.json!';
+import timeNightNeonClassListFrameClasses from 'Tests/Fixtures/LabelStructure/requirements/time/night-neon.json!';
+import timeNightHalogenClassListFrameClasses from 'Tests/Fixtures/LabelStructure/requirements/time/night-halogen.json!';
+
+
 describe('RequirementsLabelStructure', () => {
   /**
    * @type {RequirementsLabelStructure}
    */
   let structure;
 
-  beforeEach(()=> {
+  beforeEach(() => {
     structure = new RequirementsLabelStructure(requirementsXmlData);
   });
 
@@ -75,6 +82,14 @@ describe('RequirementsLabelStructure', () => {
         () => structure.getEnabledClassesForLabeledObjectAndClassList(nonExistentThing, [])
       ).toThrow();
     });
+
+    it('should throw if non existent frame is provided', () => {
+      const nonExistentThing = new LabelStructureFrame('some-non-existent-id', 'Meta-Labeling', 'frame-shape');
+      expect(
+        () => structure.getEnabledClassesForLabeledObjectAndClassList(nonExistentThing, [])
+      ).toThrow();
+    });
+
     // @TODO: Erweitern um tests mit references.
     using([
       [[], signTypeEmptyClassListThingClasses],
@@ -101,6 +116,20 @@ describe('RequirementsLabelStructure', () => {
         const group = new LabelStructureGroup('extension-sign-group', 'Sign with extension', 'group-rectangle');
         const groupClasses = structure.getEnabledClassesForLabeledObjectAndClassList(group, classList);
         expect(groupClasses).toEqual(expectedGroupClasses);
+      });
+    });
+
+    using([
+      [[], timeEmptyClassListFrameClasses],
+      [['night'], timeNightClassListFrameClasses],
+      [['night', 'non-existent-class'], timeNightClassListFrameClasses],
+      [['night', 'neon'], timeNightNeonClassListFrameClasses],
+      [['night', 'halogen'], timeNightHalogenClassListFrameClasses],
+    ], (classList, expectedFrameClasses) => {
+      it('should provide correct active frame classes for class list', () => {
+        const frame = new LabelStructureFrame('frame-id', 'Meta-Labeling', 'frame-shape');
+        const frameClasses = structure.getEnabledClassesForLabeledObjectAndClassList(frame, classList);
+        expect(frameClasses).toEqual(expectedFrameClasses);
       });
     });
   });
