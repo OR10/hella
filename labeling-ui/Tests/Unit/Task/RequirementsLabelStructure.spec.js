@@ -127,7 +127,7 @@ describe('RequirementsLabelStructure', () => {
       [['night', 'halogen'], timeNightHalogenClassListFrameClasses],
     ], (classList, expectedFrameClasses) => {
       it('should provide correct active frame classes for class list', () => {
-        const frame = new LabelStructureFrame('frame-id', 'Meta-Labeling', 'frame-shape');
+        const frame = new LabelStructureFrame('__meta-labeling-frame-identifier__', 'Meta-Labeling', 'frame-shape');
         const frameClasses = structure.getEnabledClassesForLabeledObjectAndClassList(frame, classList);
         expect(frameClasses).toEqual(expectedFrameClasses);
       });
