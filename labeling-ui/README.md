@@ -86,8 +86,27 @@ All necessary options and paths are defined in the `fontcustom.yaml` located in 
 
 To compile the icons using the given config file, simply run:
 ```
-fontcustom compile
+gulp build-iconfont
 ```
+
+*Note:* The icon-font will not be automatically created during the default build process of the project, as the icon font is seldomly changed and the the requirements for the **fontcustom** tool are sometimes a little tricky to be installed.
+
+#### Requirements for the fontcustom tool
+
+The **fontcustom** tool requires Ruby 1.9.2+ and FontForge with Python scripting. Furthermore the tool itself needs to be installed. As of writing this document the following installation schould work on macOS as well as Linux. For always up2date information visit [fontcustoms github page](https://github.com/FontCustom/fontcustom).
+
+##### macOS
+
+brew install fontforge --with-python
+brew install eot-utils
+gem install fontcustom
+
+##### Linux
+
+sudo apt-get install fontforge
+wget http://people.mozilla.com/~jkew/woff/woff-code-latest.zip
+unzip woff-code-latest.zip -d sfnt2woff && cd sfnt2woff && make && sudo mv sfnt2woff /usr/local/bin/
+gem install fontcustom
 
 
 ### Livereload
