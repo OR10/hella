@@ -28,9 +28,4 @@ class Project extends Facade\Factory
 
         return $this->projectFacade;
     }
-
-    public function getFacade()
-    {
-        return $this->projectFacade;
-    }
 }

@@ -70,9 +70,4 @@ class LabelingTask extends Facade\Factory
 
         return $this->getFacadeCache($this->readOnlyDatabase);
     }
-
-    public function getFacade()
-    {
-        $this->labelingTaskFacade;
-    }
 }

@@ -1,6 +1,8 @@
 import gulp from 'gulp';
+import {PluginError} from 'gulp-util';
 import del from 'del';
 import path from 'path';
+import {sync as which} from 'which';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import {Server as KarmaServer} from 'karma';
 import fs from 'fs';
@@ -25,8 +27,21 @@ function chokidarWatch(glob, fn) {
   });
 }
 
-function execLive(command, next) {
-  const child = exec(command, {maxBuffer: Number.MAX_SAFE_INTEGER}, next);
+/**
+ * Execute a commandline and print its output to stdout/stderr
+ *
+ * @param {string} command
+ * @param {object?} options
+ * @param {function?} next
+ */
+function execLive(command, options, next) {
+  if (typeof options === 'function') {
+    // options have been skipped
+    next = options; // eslint-disable-line no-param-reassign
+    options = {}; // eslint-disable-line no-param-reassign
+  }
+
+  const child = exec(command, Object.assign({}, options, {maxBuffer: Number.MAX_SAFE_INTEGER}), next);
 
   child.stdout.on('data', data => {
     process.stdout.write(data);
@@ -256,6 +271,23 @@ gulp.task('build-release-config', next => {
         .then(() => fs.writeFile(releaseConfigFile, JSON.stringify(releaseConfig), next));
     });
   }
+});
+
+gulp.task('build-iconfont', next => {
+  let fontCustomBinary;
+  try {
+    fontCustomBinary = which('fontcustom');
+  } catch (error) {
+    throw new PluginError({
+      plugin: 'FontCustom',
+      message: `The fontcustom binary could not be found in your path. Please see README.md for details on how to install it.`,
+    });
+  }
+
+  const fontCustomCommand = `${fontCustomBinary} compile`;
+  const fontCustomWorkingDirectory = `${__dirname}/Resources/icons`;
+
+  execLive(fontCustomCommand, {cwd: fontCustomWorkingDirectory}, next);
 });
 
 gulp.task('build', next => run(

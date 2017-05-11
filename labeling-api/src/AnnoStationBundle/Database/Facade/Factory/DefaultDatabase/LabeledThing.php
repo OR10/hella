@@ -28,9 +28,4 @@ class LabeledThing extends Facade\Factory
 
         return $this->labeledThingFacade;
     }
-
-    public function getFacade()
-    {
-        return $this->labeledThingFacade;
-    }
 }

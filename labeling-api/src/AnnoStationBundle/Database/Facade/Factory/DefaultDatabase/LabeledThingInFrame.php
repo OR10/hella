@@ -28,9 +28,4 @@ class LabeledThingInFrame extends Facade\Factory
     {
         return $this->labeledThingInFrameFacade;
     }
-
-    public function getFacade()
-    {
-        return $this->labeledThingInFrameFacade;
-    }
 }

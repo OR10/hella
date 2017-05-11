@@ -28,9 +28,4 @@ class LabelingTask extends Facade\Factory
     {
         return $this->labelingTaskFacade;
     }
-
-    public function getFacade()
-    {
-        return $this->labelingTaskFacade;
-    }
 }
