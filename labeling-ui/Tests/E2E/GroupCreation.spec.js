@@ -1,11 +1,10 @@
-import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Rectangle drawing', () => {
+fdescribe('Group Creation', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -38,12 +37,12 @@ describe('Rectangle drawing', () => {
   });
 
   it('does not create a group', done => {
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
-    ]));
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -70,12 +69,12 @@ describe('Rectangle drawing', () => {
   });
 
   it('creates a group around 1 rectangle', done => {
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
-    ]));
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -102,12 +101,12 @@ describe('Rectangle drawing', () => {
   });
 
   it('creates a group around 2 rectangles', done => {
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
-    ]));
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -134,12 +133,12 @@ describe('Rectangle drawing', () => {
   });
 
   it('creates a group around 2 point shapes', done => {
-    mock(sharedMocks.concat([
+    mock(sharedMocks, [
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint,
-    ]));
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
