@@ -487,18 +487,7 @@ class ThumbnailReelController {
 
     const currentFramePosition = this.framePosition.position - this._thumbnailLookahead + index;
 
-    let frameRange;
-    switch (true) {
-      case this.selectedPaperShape instanceof PaperThingShape:
-        frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-        break;
-      case this.selectedPaperShape instanceof PaperGroupShape:
-        frameRange = this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
-        break;
-      default:
-        throw new Error('Cannot get frame range of unknown shape type');
-    }
-
+    const frameRange = this._getFrameRange();
 
     // Start frame brackets are placed in a spacer element "before" the actual frame so an offset of 1 is required here
     return currentFramePosition + 1 > frameRange.startFrameIndex
@@ -516,17 +505,7 @@ class ThumbnailReelController {
       return false;
     }
 
-    let frameRange;
-    switch (true) {
-      case this.selectedPaperShape instanceof PaperThingShape:
-        frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-        break;
-      case this.selectedPaperShape instanceof PaperGroupShape:
-        frameRange = this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
-        break;
-      default:
-        throw new Error('Cannot get frame range of unknown shape type');
-    }
+    const frameRange = this._getFrameRange();
 
     return frameRange.startFrameIndex <= thumbnail.location.frameIndex
       && frameRange.endFrameIndex >= thumbnail.location.frameIndex;
@@ -537,18 +516,7 @@ class ThumbnailReelController {
       return false;
     }
 
-    let startFrameIndex;
-    switch (true) {
-      case this.selectedPaperShape instanceof PaperThingShape:
-        startFrameIndex = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex;
-        break;
-      case this.selectedPaperShape instanceof PaperGroupShape:
-        const frameRange = this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
-        startFrameIndex = frameRange.startFrameIndex;
-        break;
-      default:
-        throw new Error('Cannot get frame range of unknown shape type');
-    }
+    const startFrameIndex = this._getFrameRange().startFrameIndex;
 
     if (index < 0) {
       return startFrameIndex === this.framePosition.position - this._thumbnailLookahead;
@@ -564,22 +532,36 @@ class ThumbnailReelController {
       return false;
     }
 
-    let endFrameIndex;
+    const endFrameIndex = this._getFrameRange().endFrameIndex;
+    const thumbnail = this.thumbnails[index];
+
+    return thumbnail.location && thumbnail.location.frameIndex === endFrameIndex;
+  }
+
+  /**
+   * @return {FrameRange}
+   * @private
+   */
+  _getFrameRange() {
+    let frameRange;
     switch (true) {
       case this.selectedPaperShape instanceof PaperThingShape:
-        endFrameIndex = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameIndex;
+        frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
         break;
       case this.selectedPaperShape instanceof PaperGroupShape:
-        const frameRange = this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
-        endFrameIndex = frameRange.endFrameIndex;
+        frameRange = this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
+        break;
+      case this.selectedPaperShape instanceof PaperFrame:
+        frameRange = {
+          startFrameIndex: 0,
+          endFrameIndex: this.task.frameNumberMapping.length - 1,
+        };
         break;
       default:
         throw new Error('Cannot get frame range of unknown shape type');
     }
 
-    const thumbnail = this.thumbnails[index];
-
-    return thumbnail.location && thumbnail.location.frameIndex === endFrameIndex;
+    return frameRange;
   }
 
   /**
