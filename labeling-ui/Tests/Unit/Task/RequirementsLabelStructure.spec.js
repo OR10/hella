@@ -1,11 +1,16 @@
 import RequirementsLabelStructure from 'Application/Task/Model/LabelStructure/RequirementsLabelStructure';
 import LabelStructureThing from 'Application/Task/Model/LabelStructureThing';
+import LabelStructureGroup from 'Application/Task/Model/LabelStructureGroup';
 
 import requirementsXmlData from 'Tests/Fixtures/LabelStructure/requirements.xml!text';
 import signTypeEmptyClassListThingClasses from 'Tests/Fixtures/LabelStructure/requirements/signType/empty.json!';
 import signTypeUTurnClassListThingClasses from 'Tests/Fixtures/LabelStructure/requirements/signType/u-turn.json!';
 import signTypeSpeedSignClassListThingClasses from 'Tests/Fixtures/LabelStructure/requirements/signType/speed-sign.json!';
 import signTypeSpeedSignSpeed30ClassListThingClasses from 'Tests/Fixtures/LabelStructure/requirements/signType/speed-sign-speed-30.json!';
+
+import extensionSignEmptyClassListGroupClasses from 'Tests/Fixtures/LabelStructure/requirements/extensionSign/empty.json!';
+import extensionSignPositionAboveListGroupClasses from 'Tests/Fixtures/LabelStructure/requirements/extensionSign/position-above.json!';
+import extensionSignPositionSubclass1GroupClasses from 'Tests/Fixtures/LabelStructure/requirements/extensionSign/subclass-1.json!';
 
 describe('RequirementsLabelStructure', () => {
   /**
@@ -64,6 +69,12 @@ describe('RequirementsLabelStructure', () => {
       ).toThrow();
     });
 
+    it('should throw if non existent group is provided', () => {
+      const nonExistentThing = new LabelStructureGroup('some-non-existent-id', 'Foobar', 'group-rectangle');
+      expect(
+        () => structure.getEnabledClassesForLabeledObjectAndClassList(nonExistentThing, [])
+      ).toThrow();
+    });
     // @TODO: Erweitern um tests mit references.
     using([
       [[], signTypeEmptyClassListThingClasses],
@@ -72,10 +83,24 @@ describe('RequirementsLabelStructure', () => {
       [['speed-sign'], signTypeSpeedSignClassListThingClasses],
       [['speed-sign', 'speed-30'], signTypeSpeedSignSpeed30ClassListThingClasses],
     ], (classList, expectedThingClasses) => {
-      it('should provide correct active classes for class list', () => {
+      it('should provide correct active thing classes for class list', () => {
         const signThing = new LabelStructureThing('sign', 'Traffic Sign', 'rectangle');
         const thingClasses = structure.getEnabledClassesForLabeledObjectAndClassList(signThing, classList);
         expect(thingClasses).toEqual(expectedThingClasses);
+      });
+    });
+
+    // @TODO: Erweitern um tests mit references.
+    using([
+      [[], extensionSignEmptyClassListGroupClasses],
+      [['position-above'], extensionSignPositionAboveListGroupClasses],
+      [['position-above', 'non-existent-class'], extensionSignPositionAboveListGroupClasses],
+      [['position-above', 'extension-sign-subclass-1'], extensionSignPositionSubclass1GroupClasses],
+    ], (classList, expectedGroupClasses) => {
+      it('should provide correct active group classes for class list', () => {
+        const group = new LabelStructureGroup('extension-sign-group', 'Sign with extension', 'group-rectangle');
+        const groupClasses = structure.getEnabledClassesForLabeledObjectAndClassList(group, classList);
+        expect(groupClasses).toEqual(expectedGroupClasses);
       });
     });
   });

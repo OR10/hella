@@ -1,0 +1,44 @@
+[
+  {
+    "name": "extension-position",
+    "metadata": {
+      "value": "position-above",
+      "challenge": "Position of the extension sign"
+    },
+    "children": [
+      {
+        "name": "position-below",
+        "metadata": {
+          "response": "Below"
+        }
+      },
+      {
+        "name": "position-above",
+        "metadata": {
+          "response": "Above"
+        }
+      }
+    ]
+  },
+  {
+    "name": "extension-sign-subclass",
+    "metadata": {
+      "value": null,
+      "challenge": "Subclass"
+    },
+    "children": [
+      {
+        "name": "extension-sign-subclass-1",
+        "metadata": {
+          "response": "Extension sign subclass 1"
+        }
+      },
+      {
+        "name": "extension-sign-subclass-2",
+        "metadata": {
+          "response": "Extension sign subclass 2"
+        }
+      }
+    ]
+  }
+]
