@@ -63,10 +63,10 @@ class TaskListController {
     this._SelectionDialog = SelectionDialog;
 
     /**
-     * @type {Object}
+     * @type {Object.<Task>}
      * @private
      */
-    this._rawTasksById = {};
+    this._tasksById = {};
 
     /**
      * @type {boolean}
@@ -108,18 +108,18 @@ class TaskListController {
   }
 
   openTask(taskId) {
+    const task = this._tasksById[taskId];
+
     // If this is the users task open it
-    if (this._rawTasksById[taskId].isUsersTask(this.user)) {
+    if (task.isUsersTask(this.user)) {
       return this._gotoTask(taskId, this.taskPhase);
     }
 
     // If it is not the users tasks check if assignment is possible
-    if (this.userPermissions.canBeginTask && (!this._rawTasksById[taskId] || this._rawTasksById[taskId].isUserAllowedToAssign(this.user))) {
-      this.loadingInProgress = true;
-      this._taskGateway.assignAndMarkAsInProgress(taskId).then(
-        () => this._gotoTask(taskId, this.taskPhase)
-      );
-    } else {
+    if (
+      !this.userPermissions.canBeginTask ||
+      !task.isUserAllowedToBeAssigned(this.user)
+    ) {
       this._modalService.info(
         {
           title: 'Task is read-only',
@@ -127,6 +127,11 @@ class TaskListController {
           message: 'You are only allowed to open it in real only mode',
           confirmButtonText: 'Open read only',
         }, () => this._gotoTask(taskId, this.taskPhase)
+      );
+    } else {
+      this.loadingInProgress = true;
+      this._taskGateway.assignAndMarkAsInProgress(taskId).then(
+        () => this._gotoTask(taskId, this.taskPhase)
       );
     }
   }
@@ -144,7 +149,7 @@ class TaskListController {
   }
 
   flagTask(taskId) {
-    if (this._rawTasksById[taskId].taskAttentionFlag) {
+    if (this._tasksById[taskId].taskAttentionFlag) {
       this._modalService.info(
         {
           title: 'Already Flagged',
@@ -230,7 +235,7 @@ class TaskListController {
         this.totalRows = result.totalRows;
 
         result.tasks.forEach(task => {
-          this._rawTasksById[task.id] = task;
+          this._tasksById[task.id] = task;
         });
 
         this.tasks = result.tasks.map(task => {

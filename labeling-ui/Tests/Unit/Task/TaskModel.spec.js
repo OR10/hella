@@ -193,4 +193,80 @@ describe('Task model', () => {
       expect(phase).toEqual('foobar');
     });
   });
+
+  describe('isUserAllowedtoBeAssigned', () => {
+    function createUser(username, id = `user-id-${username}`) {
+      return new User({
+        id,
+        username,
+        email: 'foo@bar.com',
+        enabled: true,
+        lastLogin: '12345678',
+        locked: false,
+        roles: [],
+      });
+    }
+
+    using([
+      [{revision: 'waiting', labeling: 'todo', 'review': 'waiting', 'processing': 'done'}, 'labeling', 'todo'],
+      [{revision: 'waiting', labeling: 'in_progress', 'review': 'waiting', 'processing': 'done'}, 'labeling', 'in_progress'],
+      [{revision: 'todo', labeling: 'done', 'review': 'done', 'processing': 'done'}, 'revision', 'todo'],
+      [{revision: 'in_progress', labeling: 'done', 'review': 'done', 'processing': 'done'}, 'revision', 'in_progress'],
+      [{revision: 'waiting', labeling: 'done', 'review': 'todo', 'processing': 'done'}, 'review', 'todo'],
+      [{revision: 'waiting', labeling: 'done', 'review': 'in_progress', 'processing': 'done'}, 'review', 'in_progress'],
+      [{revision: 'done', labeling: 'done', 'review': 'done', 'processing': 'done'}, 'all_phases_done', null],
+    ], (status, activePhase, activeStatus) => {
+      it('should allow assignment of non assigned task', () => {
+        const assignmentHistory = [];
+        const taskModel = new Task({status, assignmentHistory});
+
+        const user = createUser('Bernd-das-Brot');
+
+        const actualResult = taskModel.isUserAllowedToBeAssigned(user);
+        expect(actualResult).toBeTruthy();
+      });
+
+      it('should allow assignment of task assigned in non active phases', () => {
+        const nonActivePhase = activePhase === 'labeling' ? 'review' : 'labeling';
+
+        const assignedUser = createUser('Jay-der-Jogurt', 'user-id-1');
+
+        const assignmentHistory = [
+          {userId: assignedUser.id, assignedAt: '123', phase: nonActivePhase, status: activeStatus},
+        ];
+        const taskModel = new Task({status, assignmentHistory}, users);
+
+        const user = createUser('Bernd-das-Brot');
+
+        const actualResult = taskModel.isUserAllowedToBeAssigned(user);
+        expect(actualResult).toBeTruthy();
+      });
+
+      it('should disallow assignment of task, which is assigned in current phase to another user', () => {
+        const assignedUser = createUser('Jay-der-Jogurt', 'user-id-1');
+
+        const assignmentHistory = [
+          {userId: assignedUser.id, assignedAt: '123', phase: activePhase, status: activeStatus},
+        ];
+        const taskModel = new Task({status, assignmentHistory}, users);
+
+        const user = createUser('Bernd-das-Brot', 'user-id-5');
+
+        const actualResult = taskModel.isUserAllowedToBeAssigned(user);
+        expect(actualResult).toBeFalsy();
+      });
+
+      it('should allow assignment of task, which is assigned in current phase to the same user', () => {
+        const user = createUser('Bernd-das-Brot', 'user-id-5');
+
+        const assignmentHistory = [
+          {userId: user.id, assignedAt: '123', phase: activePhase, status: activeStatus},
+        ];
+        const taskModel = new Task({status, assignmentHistory}, users);
+
+        const actualResult = taskModel.isUserAllowedToBeAssigned(user);
+        expect(actualResult).toBeTruthy();
+      });
+    });
+  });
 });

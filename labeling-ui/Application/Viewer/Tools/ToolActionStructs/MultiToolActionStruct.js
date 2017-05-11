@@ -5,6 +5,7 @@ class MultiToolActionStruct extends ToolActionStruct {
    * @param {Object} options
    * @param {Viewport} viewport
    * @param {Object} delegatedOptions
+   * @param {boolean} readOnly
    * @param {Video} video
    * @param {Task} task
    * @param {FramePosition} framePosition
@@ -12,13 +13,18 @@ class MultiToolActionStruct extends ToolActionStruct {
    * @param {string} requirementsShape
    * @param {PaperShape|null} selectedPaperShape
    */
-  constructor(options, viewport, delegatedOptions, video, task, framePosition, requirementsThingOrGroupId, requirementsShape, selectedPaperShape) {
+  constructor(options, viewport, delegatedOptions, readOnly, video, task, framePosition, requirementsThingOrGroupId, requirementsShape, selectedPaperShape) {
     super(options, viewport);
 
     /**
      * @type {Object}
      */
     this.delegatedOptions = delegatedOptions;
+
+    /**
+     * @type {boolean}
+     */
+    this.readOnly = readOnly;
 
     /**
      * @type {Video}

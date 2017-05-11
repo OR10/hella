@@ -43,6 +43,7 @@
     "gulp-svgmin": "^1.2.0",
     "gulp-svgstore": "^5.0.5",
     "gulp-uglifyjs": "^0.6.2",
+    "gulp-util": "^3.0.8",
     "inquirer": "^0.12.0",
     "ip": "^1.0.1",
     "jasmine-collection-matchers": "^0.1.2",
@@ -93,6 +94,7 @@
     "systemjs-builder": "^0.14.15",
     "three-math": "^0.69.0",
     "tiny-lr": "^0.2.1",
+    "which": "^1.2.14",
     "window-size": "^0.2.0",
     "yargs": "^4.3.2"
   },
