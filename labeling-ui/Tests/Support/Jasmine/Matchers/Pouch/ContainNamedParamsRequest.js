@@ -1,11 +1,11 @@
 var configuration = require('../../../../../Application/Common/config.json');
-import matchDocuments from './MatchDocuments';
+import {matchDocuments, lastMatchChecked} from './MatchDocuments';
 
 module.exports = function toContainNamedParamsRequest() {
   return {
     compare: function (mockedRequests, namedParamsMock) {
 
-      let result = {
+      let overallResult = {
         message: 'Expected document not found in Pouch DB',
       };
 
@@ -17,14 +17,18 @@ module.exports = function toContainNamedParamsRequest() {
         });
       }, configuration);
 
-      result.pass = pouchQuery.then((allPouchDocuments) => {
+      overallResult.pass = pouchQuery.then((allPouchDocuments) => {
+        console.log(namedParamsMock);
+        console.log(allPouchDocuments);
         const namedParamsRequestData = namedParamsMock.request.data;
         const matchingDocuments = allPouchDocuments.rows.filter(row => matchDocuments(namedParamsRequestData, row.doc));
         const result = matchingDocuments.length > 0;
+        const lastMatchMade = lastMatchChecked();
+        overallResult.message = `Expected key "${lastMatchMade.key} to be "${lastMatchMade.expected}". Got "${lastMatchMade.actual}"`;
         return result;
       });
 
-      return result;
+      return overallResult;
     },
   };
 };

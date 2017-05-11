@@ -1,6 +1,12 @@
 const namedParamsTest = new RegExp(/{{:[^}:]+}}/);
 
-export default function matchDocuments(namedParamsRequestData, storedData) {
+let lastMatch = {
+  actual: null,
+  expected: null,
+  key: null,
+};
+
+export function matchDocuments(namedParamsRequestData, storedData) {
   let result = true;
 
   let keys;
@@ -21,6 +27,10 @@ export default function matchDocuments(namedParamsRequestData, storedData) {
       currentStoredValue = storedData[key];
     }
 
+    lastMatch.actual = currentValue;
+    lastMatch.expected = currentStoredValue;
+    lastMatch.key = key;
+
     if (typeof currentValue === 'object' && currentValue !== null) {
       result = matchDocuments(currentValue, storedData);
     } else if (typeof currentValue === 'string' && namedParamsTest.test(currentValue)) {
@@ -36,3 +46,7 @@ export default function matchDocuments(namedParamsRequestData, storedData) {
 
   return result;
 };
+
+export function lastMatchChecked() {
+  return lastMatch;
+}
