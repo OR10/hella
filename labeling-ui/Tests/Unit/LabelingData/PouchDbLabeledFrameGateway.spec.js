@@ -128,7 +128,7 @@ describe('PouchDbLabeledFrameGateway', () => {
       expect(pouchDbViewService.getDesignDocumentViewName).toHaveBeenCalledWith('labeledFrameByTaskIdAndFrameIndex');
     });
 
-    it('should query the view using the given taskId and frameIndex', () => {
+    it('should query the view starting at the given taskId and frameIndex', () => {
       const givenTaskId = 'some-task-id-42';
       const givenFrameIndex = 423;
       labeledFrameGateway.getLabeledFrame(createTask(givenTaskId), givenFrameIndex);
@@ -137,7 +137,38 @@ describe('PouchDbLabeledFrameGateway', () => {
       expect(pouchDb.query).toHaveBeenCalled();
 
       const actualQueryOptionsObject = pouchDb.query.calls.argsFor(0)[1];
-      expect(actualQueryOptionsObject.key).toEqual([givenTaskId, givenFrameIndex]);
+      expect(actualQueryOptionsObject.startkey).toEqual([givenTaskId, givenFrameIndex]);
+    });
+
+    it('should query the view ending at the first frameIndex', () => {
+      const givenTaskId = 'some-task-id';
+      labeledFrameGateway.getLabeledFrame(createTask(givenTaskId), 42);
+      rootScope.$apply();
+
+      expect(pouchDb.query).toHaveBeenCalled();
+
+      const actualQueryOptionsObject = pouchDb.query.calls.argsFor(0)[1];
+      expect(actualQueryOptionsObject.endkey).toEqual([givenTaskId, 0]);
+    });
+
+    it('should query the view descending to map downwards to the beginning from the starting frame', () => {
+      labeledFrameGateway.getLabeledFrame(createTask(), 42);
+      rootScope.$apply();
+
+      expect(pouchDb.query).toHaveBeenCalled();
+
+      const actualQueryOptionsObject = pouchDb.query.calls.argsFor(0)[1];
+      expect(actualQueryOptionsObject.descending).toBeTruthy();
+    });
+
+    it('should query the view with a limit of 1 document', () => {
+      labeledFrameGateway.getLabeledFrame(createTask(), 42);
+      rootScope.$apply();
+
+      expect(pouchDb.query).toHaveBeenCalled();
+
+      const actualQueryOptionsObject = pouchDb.query.calls.argsFor(0)[1];
+      expect(actualQueryOptionsObject.limit).toEqual(1);
     });
 
     it('should deserialize the received document', () => {
@@ -161,6 +192,100 @@ describe('PouchDbLabeledFrameGateway', () => {
       actualResponse.then(responsePromiseSpy);
       rootScope.$apply();
       expect(responsePromiseSpy).toHaveBeenCalledWith(labeledFrameFrontendModel);
+    });
+
+    it('should return the deserialized model labeledFrame model', () => {
+      const actualResponse = labeledFrameGateway.getLabeledFrame(createTask(), 42);
+      rootScope.$apply();
+      const responsePromiseSpy = jasmine.createSpy();
+      actualResponse.then(responsePromiseSpy);
+      rootScope.$apply();
+      expect(responsePromiseSpy).toHaveBeenCalledWith(labeledFrameFrontendModel);
+    });
+
+    it('should return a new empty LabeledFrame if nothing is stored in the database', () => {
+      const newUniqueId = 'some-new-ultra-unique-id';
+      const givenFrameIndex = 42;
+      const givenTaskId = 'ultra-cool-task-id';
+
+      const expectedLabeledFrame = new LabeledFrame({
+        id: newUniqueId,
+        frameIndex: givenFrameIndex,
+        incomplete: true,
+        taskId: givenTaskId,
+        classes: []
+      });
+
+      pouchDb.query.and.returnValue({
+        rows: [],
+      });
+
+      entityIdService.getUniqueId.and.returnValue(newUniqueId);
+
+      const actualResponse = labeledFrameGateway.getLabeledFrame(createTask(givenTaskId), givenFrameIndex);
+      rootScope.$apply();
+      const responsePromiseSpy = jasmine.createSpy();
+      actualResponse.then(responsePromiseSpy);
+      rootScope.$apply();
+
+      const actualLabeledFrame = responsePromiseSpy.calls.argsFor(0)[0];
+
+      expect(actualLabeledFrame).toEqual(expectedLabeledFrame);
+    });
+
+    it('should return the first found LabeledThing before the requested one with new id and adapted frameindex if requested one is not stored in the database', () => {
+      const newUniqueId = 'some-new-ultra-unique-id';
+      const givenFrameIndex = 42;
+      const givenTaskId = 'ultra-cool-task-id';
+
+      const expectedLabeledFrame = new LabeledFrame({
+        id: newUniqueId,
+        frameIndex: givenFrameIndex,
+        incomplete: true,
+        taskId: givenTaskId,
+        classes: ['foo', 'bar'],
+      });
+
+      const foundDocumentInDb = {
+        _id: 'some-other-id',
+        _rev: '1-abcdefg',
+        frameIndex: 9999,
+        incomplete: false,
+        taskId: givenTaskId,
+        class: ['foo', 'bar'],
+      };
+
+      const modifiedDocument = {
+        _id: newUniqueId,
+        frameIndex: 42,
+        incomplete: false,
+        taskId: givenTaskId,
+        class: ['foo', 'bar'],
+      };
+
+      pouchDb.query.and.returnValue({
+        rows: [{
+          doc: foundDocumentInDb
+        }],
+      });
+
+      entityIdService.getUniqueId.and.returnValue(newUniqueId);
+
+      couchDbModelDeserializer.deserializeLabeledFrame.and.returnValue(expectedLabeledFrame);
+
+      const actualResponse = labeledFrameGateway.getLabeledFrame(createTask(givenTaskId), givenFrameIndex);
+      rootScope.$apply();
+      const responsePromiseSpy = jasmine.createSpy();
+      actualResponse.then(responsePromiseSpy);
+      rootScope.$apply();
+
+      const actualLabeledFrame = responsePromiseSpy.calls.argsFor(0)[0];
+
+      expect(actualLabeledFrame).toEqual(expectedLabeledFrame);
+      expect(couchDbModelDeserializer.deserializeLabeledFrame).toHaveBeenCalled();
+
+      const deserializedDocument = couchDbModelDeserializer.deserializeLabeledFrame.calls.argsFor(0)[0];
+      expect(deserializedDocument).toEqual(modifiedDocument);
     });
   });
 
