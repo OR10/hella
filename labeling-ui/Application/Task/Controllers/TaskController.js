@@ -406,13 +406,16 @@ class TaskController {
    * @private
    */
   _getSelectedLabeledObject() {
-    if (this.task.taskType === 'meta-labeling') {
-      return this.labeledFrame;
-    } else if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame) {
-      return this.selectedPaperShape.labeledThingInFrame;
+    switch (true) {
+      case this.selectedPaperShape instanceof PaperThingShape:
+        return this.selectedPaperShape.labeledThingInFrame;
+      case this.selectedPaperShape instanceof PaperGroupShape:
+        return this.selectedPaperShape.labeledThingGroupInFrame;
+      case this.selectedPaperShape instanceof PaperFrame:
+        return this.selectedPaperShape.labeledFrame;
+      default:
+        return null;
     }
-
-    return null;
   }
 
   /**

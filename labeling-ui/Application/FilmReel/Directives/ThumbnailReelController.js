@@ -1,6 +1,7 @@
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
+import PaperFrame from '../../Viewer/Shapes/PaperFrame';
 
 /**
  * Controller of the {@link ThumbnailReelDirective}
@@ -210,6 +211,9 @@ class ThumbnailReelController {
               case this.selectedPaperShape instanceof PaperGroupShape:
                 this._updateLabeledThingGroupsInFrame(this.selectedPaperShape);
                 break;
+              case this.selectedPaperShape instanceof PaperFrame:
+                this._updateLabeledFrame(this.selectedPaperShape);
+                break;
               default:
                 throw new Error('Cannot update thumbnails for unknown shape type');
             }
@@ -341,6 +345,19 @@ class ThumbnailReelController {
     return Promise.resolve();
   }
 
+  /**
+   * @param {PaperFrame} paperFrame
+   * @returns {Promise}
+   * @private
+   */
+  _updateLabeledFrame() {
+    // Clear all thumbnail shape previews
+    this._clearThumbnailShapes();
+  }
+
+  /**
+   * @private
+   */
   _updateThumbnailData() {
     this._frameLocationsBuffer.add(
       this._loadFrameLocations(this.framePosition)
