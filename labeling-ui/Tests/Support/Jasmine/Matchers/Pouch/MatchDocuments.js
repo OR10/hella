@@ -1,6 +1,6 @@
 const namedParamsTest = new RegExp(/{{:[^}:]+}}/);
 
-const skipKeys = [
+const unstableKeys = [
   'rev',
   '_rev'
 ];
@@ -11,8 +11,8 @@ let lastMatch = {
   key: null,
 };
 
-function skipKey(key) {
-  return (skipKeys.indexOf(key) > -1);
+function isUnstableKey(key) {
+  return (unstableKeys.indexOf(key) > -1);
 }
 
 export function matchDocuments(namedParamsRequestData, storedData) {
@@ -30,10 +30,6 @@ export function matchDocuments(namedParamsRequestData, storedData) {
 
     let key = keys[i];
 
-    if (skipKey(key)) {
-      continue;
-    }
-
     let expectedValue = namedParamsRequestData[key];
     if (key === 'id') {
       actualValue = storedData['_id'];
@@ -48,6 +44,8 @@ export function matchDocuments(namedParamsRequestData, storedData) {
     if (typeof expectedValue === 'object' && expectedValue !== null) {
       result = matchDocuments(expectedValue, storedData);
     } else if (typeof expectedValue === 'string' && namedParamsTest.test(expectedValue)) {
+      result = expectedValue.length > 0;
+    } else if (isUnstableKey(key)) {
       result = expectedValue.length > 0;
     } else {
       result = (expectedValue === actualValue);
