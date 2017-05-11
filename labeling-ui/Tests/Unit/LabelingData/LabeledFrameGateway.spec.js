@@ -5,10 +5,17 @@ import Common from 'Application/Common/Common';
 
 import LabeledFrameGateway from 'Application/LabelingData/Gateways/LabeledFrameGateway';
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
+import Task from 'Application/Task/Model/Task';
 
 describe('LabeledFrameGateway', () => {
   let $httpBackend;
   let gateway;
+
+  function createTask(id) {
+    return new Task({
+      id,
+    });
+  }
 
   beforeEach(() => {
     const featureFlags = {
@@ -43,6 +50,7 @@ describe('LabeledFrameGateway', () => {
 
   it('should get a labeled frame', done => {
     const taskId = '2';
+    const task = createTask(taskId);
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${taskId}/labeledFrame/${frameNumber}`;
     const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']});
@@ -52,7 +60,7 @@ describe('LabeledFrameGateway', () => {
       .expect('GET', expectedUrl)
       .respond(200, expectedResult);
 
-    gateway.getLabeledFrame(taskId, frameNumber)
+    gateway.getLabeledFrame(task, frameNumber)
       .then(result => {
         expect(result).toEqual(labeledFrame);
         done();
@@ -63,6 +71,7 @@ describe('LabeledFrameGateway', () => {
 
   it('should save a labeled frame', done => {
     const taskId = '2';
+    const task = createTask(taskId);
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${taskId}/labeledFrame/${frameNumber}`;
     const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']});
@@ -72,7 +81,7 @@ describe('LabeledFrameGateway', () => {
       .expect('PUT', expectedUrl, labeledFrame)
       .respond(200, expectedResult);
 
-    gateway.saveLabeledFrame(taskId, frameNumber, labeledFrame)
+    gateway.saveLabeledFrame(task, frameNumber, labeledFrame)
       .then(result => {
         expect(result).toEqual(labeledFrame);
         done();
@@ -84,6 +93,7 @@ describe('LabeledFrameGateway', () => {
 
   it('should delete a labeled thing in frame', done => {
     const taskId = '2';
+    const task = createTask(taskId);
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${taskId}/labeledFrame/${frameNumber}`;
     const expectedResult = true;
@@ -92,7 +102,7 @@ describe('LabeledFrameGateway', () => {
       .expect('DELETE', expectedUrl)
       .respond(200, expectedResult);
 
-    gateway.deleteLabeledFrame(taskId, frameNumber)
+    gateway.deleteLabeledFrame(task, frameNumber)
       .then(result => {
         expect(result).toEqual(expectedResult);
         done();
