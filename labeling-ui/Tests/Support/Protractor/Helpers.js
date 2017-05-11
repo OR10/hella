@@ -58,23 +58,30 @@ function storeDocumentsInPouch(mocks) {
     let labeledThing;
 
     if (things.labeledThings) {
-      labeledThing = things.labeledThings['LABELED-THING-ID-1'];
+      const labeledThingKeys = Object.keys(things.labeledThings);
+      labeledThing = things.labeledThings[labeledThingKeys[0]];
+      delete labeledThing.rev;
+
       labeledThing._id = labeledThing.id;
-      // labeledThing._rev = labeledThing.rev;
       labeledThing.type = 'AppBundle.Model.LabeledThing';
       labeledThing.frameRange = {
         "startFrameIndex": labeledThing.frameRange.startFrameNumber,
         "endFrameIndex": labeledThing.frameRange.endFrameNumber,
         "type": "AppBundle.Model.FrameIndexRange"
       };
+
       documents.push(labeledThing);
     }
 
     if (things.labeledThingsInFrame) {
       things.labeledThingsInFrame.forEach(ltif => {
+        delete ltif.id;
+        delete ltif.rev;
+        delete ltif.ghost;
         ltif._id = ltif.id;
         ltif.taskId = labeledThing.taskId;
-        ltif.identifierName = 'cuboid3d';
+        ltif.labeledThingId = labeledThing._id;
+        ltif.identifierName = 'legacy';
         ltif.type = 'AppBundle.Model.LabeledThingInFrame';
       });
       documents = documents.concat(things.labeledThingsInFrame);
