@@ -106,10 +106,5 @@ class labeling_api::params(
         content => template('labeling_api/parameters_test.yml.erb'),
       }
     }
-
-    file { "${config_dir}/liip_monitor.yml":
-      ensure  => file,
-      content => template('labeling_api/liip_monitor.yml.erb'),
-    }
   }
 }
