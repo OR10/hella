@@ -3,7 +3,7 @@
     <button ng-repeat="frame in vm.drawableRequirementFrames"
             class="tool-button tool-{{$index}}"
             ng-class="{'active': frame.id === vm.selectedLabelStructureObject.id}"
-            ng-click="vm.setCurrentObject(frame)"
+            ng-click="vm.setCurrentLabelStructureObject(frame)"
             tooltip="{{frame.name}}"
     >
         <i class="icon icon-tool-{{frame.shape}}"></i>
@@ -12,7 +12,7 @@
     <button ng-repeat="thing in vm.drawableThings"
             class="tool-button tool-{{$index}}"
             ng-class="{'active': thing.id === vm.selectedLabelStructureObject.id}"
-            ng-click="vm.setCurrentObject(thing)"
+            ng-click="vm.setCurrentLabelStructureObject(thing)"
             tooltip="{{thing.name}}"
     >
         <i class="icon icon-tool-{{thing.shape}}"></i>
@@ -21,7 +21,7 @@
     <button ng-repeat="group in vm.drawableGroups"
             class="tool-button tool-group tool-{{$index}}"
             ng-class="{'active': group.id === vm.selectedLabelStructureObject.id}"
-            ng-click="vm.setCurrentObject(group)"
+            ng-click="vm.setCurrentLabelStructureObject(group)"
             tooltip="{{group.name}}"
     >
         <i class="icon icon-tool-{{group.shape}}"></i>
