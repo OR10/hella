@@ -68,12 +68,12 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
     /**
      * @var array
      */
-    private $missingSecurityDocuments = [];
+    private $missingValidateDocUpdateDocuments = [];
 
     /**
      * @var null|string
      */
-    private $lastMissingSecurityDocument = null;
+    private $lastMissingValidateDocUpdateDocument = null;
 
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
@@ -106,25 +106,40 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
             return new Result\Skip('PouchDB not enabled');
         }
 
-        $this->buildUrls();
-
-        $this->executeConcurrentRequests($this->urls);
-
-        if (!empty($this->invalidValidateFunctions)) {
+        if (!empty($this->invalidValidateFunctions())) {
             return $this->getInvalidValidateFunctionFailureResponseForMissingDatabases();
         }
 
-        $diff = $this->lastMissingSecurityDocument - time();
-        if (!empty($this->missingSecurityDocuments) && $diff < 10 && $diff > 0) {
-            sleep($diff - time());
-        }
-        $this->executeConcurrentRequests($this->missingSecurityDocuments);
+        $this->hasCheckTimeoutOccurred();
 
-        if (!empty($this->missingSecurityDocuments)) {
-            return $this->getFailureResponseForMissingSecurityDoc();
+        $this->executeConcurrentRequests($this->missingValidateDocUpdateDocuments);
+
+        if ($this->hasMissingValidateDocDocuments()) {
+            return $this->getFailureResponseForMissingValidateDocUpdateDoc();
         }
 
         return new Result\Success();
+    }
+
+    private function invalidValidateFunctions()
+    {
+        $this->buildUrls();
+        $this->executeConcurrentRequests($this->urls);
+
+        return $this->invalidValidateFunctions;
+    }
+
+    private function hasCheckTimeoutOccurred()
+    {
+        $diff = $this->lastMissingValidateDocUpdateDocument - time();
+        if ($this->hasMissingValidateDocDocuments() && $diff < 10 && $diff > 0) {
+            sleep($diff - time());
+        }
+    }
+
+    private function hasMissingValidateDocDocuments()
+    {
+        return !empty($this->missingValidateDocUpdateDocuments);
     }
 
     private function buildUrls()
@@ -147,8 +162,8 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
      */
     private function executeConcurrentRequests($urls)
     {
-        $this->missingSecurityDocuments = [];
-        $this->invalidValidateFunctions = [];
+        $this->missingValidateDocUpdateDocuments = [];
+        $this->invalidValidateFunctions          = [];
 
         $pool = new Pool(
             $this->guzzleClient, $this->requestIterator($urls), [
@@ -159,9 +174,9 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
                         $this->invalidValidateFunctions[] = $this->urls[$index];
                     }
                 },
-                'rejected'    => function ($reason, $index) use (&$missingSecurityDocuments) {
-                    $this->missingSecurityDocuments[]  = $this->urls[$index];
-                    $this->lastMissingSecurityDocument = time();
+                'rejected'    => function ($reason, $index) {
+                    $this->missingValidateDocUpdateDocuments[]  = $this->urls[$index];
+                    $this->lastMissingValidateDocUpdateDocument = time();
                 },
             ]
         );
@@ -226,7 +241,7 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
     /**
      * @return Result\Failure
      */
-    private function getFailureResponseForMissingSecurityDoc()
+    private function getFailureResponseForMissingValidateDocUpdateDoc()
     {
         return new Result\Failure(
             sprintf(
@@ -237,7 +252,7 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
                         function ($url) {
                             return $url['database'];
                         },
-                        $this->missingSecurityDocuments
+                        $this->missingValidateDocUpdateDocuments
                     )
                 )
             )
