@@ -213,7 +213,7 @@ export default class LabelSelectorController {
   }
 
   /**
-   * @returns {labeledThingInFrame}
+   * @returns {LabeledThingInFrame}
    */
   get selectedLabeledObject() {
     if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame) {
@@ -296,7 +296,7 @@ export default class LabelSelectorController {
    */
   _storeUpdatedLabeledObject(updateAssociatedLabeledThing = false) {
     // Store reference in case it is changed while being stored.
-    const selectedLabeledObject = this.selectedPaperShape.labeledThingInFrame;
+    const selectedLabeledObject = this.selectedLabeledObject;
 
     switch (true) {
       case selectedLabeledObject instanceof LabeledThingInFrame:
