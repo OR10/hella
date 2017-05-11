@@ -6,7 +6,9 @@ use AppBundle\Database\Facade as AppBundleFacade;
 use AppBundle\Service as AppBundleService;
 use AnnoStationBundle\Helper\Iterator;
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabelingTask;
+use AnnoStationBundle\Database\Facade\LabeledThing;
+use AnnoStationBundle\Database\Facade\LabeledThingGroup;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper\ExportXml;
 
@@ -80,15 +82,15 @@ class RequirementsProjectToXml
      * @param Facade\Exporter                           $exporterFacade
      * @param Facade\Project                            $projectFacade
      * @param Facade\Video                              $videoFacade
-     * @param Facade\LabelingTask                       $labelingTaskFacade
+     * @param LabelingTask                              $labelingTaskFacade
      * @param Facade\TaskConfiguration                  $taskConfiguration
      * @param Service\GhostClassesPropagation           $ghostClassesPropagation
      * @param AppBundleFacade\User                      $userFacade
      * @param Facade\LabelingGroup                      $labelingGroupFacade
      * @param Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService
-     * @param Factory                                   $labelingTaskFacadeFactory
-     * @param Factory                                   $labeledThingFacadeFactory
-     * @param Factory                                   $labeledThingGroupFacadeFactory
+     * @param LabelingTask\FacadeInterface              $labelingTaskFacadeFactory
+     * @param LabeledThing\FacadeInterface              $labeledThingFacadeFactory
+     * @param LabeledThingGroup\FacadeInterface         $labeledThingGroupFacadeFactory
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -100,9 +102,9 @@ class RequirementsProjectToXml
         AppBundleFacade\User $userFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService,
-        Factory $labelingTaskFacadeFactory,
-        Factory $labeledThingFacadeFactory,
-        Factory $labeledThingGroupFacadeFactory
+        LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
+        LabeledThing\FacadeInterface $labeledThingFacadeFactory,
+        LabeledThingGroup\FacadeInterface $labeledThingGroupFacadeFactory
     ) {
         $this->exporterFacade                    = $exporterFacade;
         $this->projectFacade                     = $projectFacade;

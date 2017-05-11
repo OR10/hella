@@ -1,18 +1,18 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade\Factory\TaskDatabase;
+namespace AnnoStationBundle\Database\Facade\LabelingTask;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 use AnnoStationBundle\Service;
-use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
 
-class LabeledThingGroup extends Facade\Factory
+class TaskDatabase extends Factory\Cache implements FacadeInterface
 {
     /**
-     * @var Facade\LabeledThingGroup
+     * @var Facade\LabelingTask
      */
-    private $labeledThingGroupFacade;
+    private $labelingTaskFacade;
 
     /**
      * @var AppBundleService\DatabaseDocumentManagerFactory
@@ -30,14 +30,14 @@ class LabeledThingGroup extends Facade\Factory
     private $readOnlyDatabase;
 
     public function __construct(
-        Facade\LabeledThingGroup $labeledThingGroupFacade,
+        Facade\LabelingTask $labelingTaskFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
         $readOnlyDatabase
     ) {
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
-        $this->labeledThingGroupFacade        = $labeledThingGroupFacade;
+        $this->labelingTaskFacade             = $labelingTaskFacade;
         $this->readOnlyDatabase               = $readOnlyDatabase;
     }
 
@@ -52,7 +52,7 @@ class LabeledThingGroup extends Facade\Factory
                 $databaseName
             );
 
-            $this->addFacadeCache($databaseName, new Facade\LabeledThingGroup($databaseDocumentManager));
+            $this->addFacadeCache($databaseName, new Facade\LabelingTask($databaseDocumentManager));
         }
 
         return $this->getFacadeCache($databaseName);
@@ -65,7 +65,7 @@ class LabeledThingGroup extends Facade\Factory
                 $this->readOnlyDatabase
             );
 
-            $this->addFacadeCache($this->readOnlyDatabase, new Facade\LabeledThingGroup($databaseDocumentManager));
+            $this->addFacadeCache($this->readOnlyDatabase, new Facade\LabelingTask($databaseDocumentManager));
         }
 
         return $this->getFacadeCache($this->readOnlyDatabase);

@@ -1,12 +1,10 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade\Factory\DefaultDatabase;
+namespace AnnoStationBundle\Database\Facade\LabeledThing;
 
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Service;
-use AppBundle\Service as AppBundleService;
 
-class LabeledThing extends Facade\Factory
+class DefaultDatabase implements FacadeInterface
 {
     /**
      * @var Facade\LabeledThing

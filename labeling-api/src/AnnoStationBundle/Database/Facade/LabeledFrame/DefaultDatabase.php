@@ -1,13 +1,11 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade\Factory\DefaultDatabase;
+namespace AnnoStationBundle\Database\Facade\LabeledFrame;
 
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Service;
-use AppBundle\Model;
-use AppBundle\Service as AppBundleService;
+use AnnoStationBundle\Database\Facade\Factory;
 
-class LabeledFrame extends Facade\Factory
+class DefaultDatabase extends Factory\Cache implements FacadeInterface
 {
     /**
      * @var Facade\LabeledFrame

@@ -1,17 +1,13 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade;
+namespace AnnoStationBundle\Database\Facade\Factory;
 
-abstract class Factory
+class Cache
 {
     /**
      * @var array
      */
     private $facadeCache = [];
-
-    abstract public function getFacadeByProjectIdAndTaskId($projectId, $taskId);
-
-    abstract public function getReadOnlyFacade();
 
     protected function getFacadeCache($key)
     {

@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Service;
 
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabeledFrame;
 use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
@@ -16,13 +16,13 @@ class LabeledFrameEndCalculationService
     private $labelingTaskFacade;
 
     /**
-     * @var Factory
+     * @var LabeledFrame\FacadeInterface
      */
     private $labeledFrameFacadeFactory;
 
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
-        Factory $labeledFrameFacadeFactory
+        LabeledFrame\FacadeInterface $labeledFrameFacadeFactory
     ) {
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->labeledFrameFacadeFactory = $labeledFrameFacadeFactory;
