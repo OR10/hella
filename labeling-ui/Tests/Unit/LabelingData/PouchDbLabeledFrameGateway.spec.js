@@ -4,6 +4,7 @@ import PouchDbLabeledFrameGateway from 'Application/LabelingData/Gateways/PouchD
 import {cloneDeep} from 'lodash';
 
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
+import Task from 'Application/Task/Model/Task';
 import LabeledFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledFrame';
 import LabeledFrameFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledFrame';
 
@@ -26,6 +27,12 @@ describe('PouchDbLabeledFrameGateway', () => {
    * @type {PouchDbLabeledFrameGateway}
    */
   let labeledFrameGateway;
+
+  function createTask(id = 'TASK-ID') {
+    return new Task({
+      id,
+    });
+  }
 
   beforeEach(() => {
     packagingExecutor = jasmine.createSpyObj('packagingExecutor', ['execute']);
@@ -85,21 +92,21 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
 
     it('should use the packaging executor with the labeledFrame queue', () => {
-      labeledFrameGateway.getLabeledFrame('TASK-ID', 42);
+      labeledFrameGateway.getLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       expect(packagingExecutor.execute).toHaveBeenCalledWith('labeledFrame', jasmine.any(Function));
     });
 
     it('should call the packaging executor once', () => {
-      labeledFrameGateway.getLabeledFrame('TASK-ID', 42);
+      labeledFrameGateway.getLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       expect(packagingExecutor.execute).toHaveBeenCalledTimes(1);
     });
 
     it('should return the promise of the packaging executor', () => {
-      const actualResult = labeledFrameGateway.getLabeledFrame('TASK-ID', 42);
+      const actualResult = labeledFrameGateway.getLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       const expectedResult = packagingExecutor.execute.calls.first().returnValue;
@@ -108,14 +115,14 @@ describe('PouchDbLabeledFrameGateway', () => {
 
     it('should use the context of the given taskId', () => {
       const givenTaskId = 'some-task-id-42';
-      labeledFrameGateway.getLabeledFrame(givenTaskId, 42);
+      labeledFrameGateway.getLabeledFrame(createTask(givenTaskId), 42);
       rootScope.$apply();
 
       expect(pouchDbContextService.provideContextForTaskId).toHaveBeenCalledWith(givenTaskId);
     });
 
     it('should utilize the labeledFrameByTaskIdAndFrameIndex couchdb view through the view service', () => {
-      labeledFrameGateway.getLabeledFrame('TASK-ID', 42);
+      labeledFrameGateway.getLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       expect(pouchDbViewService.getDesignDocumentViewName).toHaveBeenCalledWith('labeledFrameByTaskIdAndFrameIndex');
@@ -124,7 +131,7 @@ describe('PouchDbLabeledFrameGateway', () => {
     it('should query the view using the given taskId and frameIndex', () => {
       const givenTaskId = 'some-task-id-42';
       const givenFrameIndex = 423;
-      labeledFrameGateway.getLabeledFrame(givenTaskId, givenFrameIndex);
+      labeledFrameGateway.getLabeledFrame(createTask(givenTaskId), givenFrameIndex);
       rootScope.$apply();
 
       expect(pouchDb.query).toHaveBeenCalled();
@@ -134,21 +141,21 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
 
     it('should deserialize the received document', () => {
-      labeledFrameGateway.getLabeledFrame('TASK-ID', 42);
+      labeledFrameGateway.getLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       expect(couchDbModelDeserializer.deserializeLabeledFrame).toHaveBeenCalledWith(labeledFrameCouchDbModel);
     });
 
     it('should extract the revision from the loaded document', () => {
-      labeledFrameGateway.getLabeledFrame('TASK-ID', 42);
+      labeledFrameGateway.getLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       expect(revisionManager.extractRevision).toHaveBeenCalledWith(labeledFrameCouchDbModel);
     });
 
     it('should return the deserialized model labeledFrame model', () => {
-      const actualResponse = labeledFrameGateway.getLabeledFrame('TASK-ID', 42);
+      const actualResponse = labeledFrameGateway.getLabeledFrame(createTask(), 42);
       rootScope.$apply();
       const responsePromiseSpy = jasmine.createSpy();
       actualResponse.then(responsePromiseSpy);
@@ -177,21 +184,21 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
 
     it('should use the packaging executor with the labeledFrame queue', () => {
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame(createTask(), 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(packagingExecutor.execute).toHaveBeenCalledWith('labeledFrame', jasmine.any(Function));
     });
 
     it('should call the packaging executor once', () => {
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame(createTask(), 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(packagingExecutor.execute).toHaveBeenCalledTimes(1);
     });
 
     it('should return the promise of the packaging executor', () => {
-      const actualResult = labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
+      const actualResult = labeledFrameGateway.saveLabeledFrame(createTask(), 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       const expectedResult = packagingExecutor.execute.calls.first().returnValue;
@@ -200,14 +207,14 @@ describe('PouchDbLabeledFrameGateway', () => {
 
     it('should use the context of the given taskId', () => {
       const givenTaskId = 'some-task-id-42';
-      labeledFrameGateway.saveLabeledFrame(givenTaskId, 42, labeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame(createTask(givenTaskId), 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(pouchDbContextService.provideContextForTaskId).toHaveBeenCalledWith(givenTaskId);
     });
 
     it('should serialize the given document', () => {
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame(createTask(), 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(couchDbModelSerializer.serialize).toHaveBeenCalledWith(labeledFrameFrontendModel);
@@ -225,7 +232,7 @@ describe('PouchDbLabeledFrameGateway', () => {
       });
       couchDbModelSerializer.serialize.and.returnValue(labeledFrameWithoutId);
 
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame(createTask('TASK-ID'), labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(entityIdService.getUniqueId).toHaveBeenCalled();
@@ -236,7 +243,7 @@ describe('PouchDbLabeledFrameGateway', () => {
     it('should store the serialized document', () => {
       couchDbModelSerializer.serialize.and.returnValue(labeledFrameCouchDbModel);
 
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame(createTask('TASK-ID'), 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(pouchDb.put).toHaveBeenCalledWith(labeledFrameCouchDbModel);
@@ -250,14 +257,14 @@ describe('PouchDbLabeledFrameGateway', () => {
       };
 
       pouchDb.put.and.returnValue(angularQ.resolve(putResponse));
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame(createTask(), 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
       expect(revisionManager.extractRevision).toHaveBeenCalledWith(putResponse);
     });
 
     it('should store new frameIndex', () => {
-      labeledFrameGateway.saveLabeledFrame('TASK-ID', 423, labeledFrameFrontendModel);
+      labeledFrameGateway.saveLabeledFrame(createTask('TASK-ID'), 423, labeledFrameFrontendModel);
       rootScope.$apply();
 
       const storedDocument = pouchDb.put.calls.argsFor(0)[0];
@@ -314,7 +321,7 @@ describe('PouchDbLabeledFrameGateway', () => {
       pouchDb.get.and.returnValue(angularQ.resolve(updatedLabeledFrameDocument));
       couchDbModelDeserializer.deserializeLabeledFrame.and.returnValue(expectedLabeledFrame);
 
-      const returnPromise = labeledFrameGateway.saveLabeledFrame('TASK-ID', 42, labeledFrame);
+      const returnPromise = labeledFrameGateway.saveLabeledFrame(createTask('TASK-ID'), 42, labeledFrame);
       rootScope.$apply();
 
       expect(couchDbModelSerializer.serialize).toHaveBeenCalledWith(labeledFrame);
@@ -348,21 +355,21 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
 
     it('should use the packaging executor with the labeledFrame queue', () => {
-      labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      labeledFrameGateway.deleteLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       expect(packagingExecutor.execute).toHaveBeenCalledWith('labeledFrame', jasmine.any(Function));
     });
 
     it('should call the packaging executor once', () => {
-      labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      labeledFrameGateway.deleteLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       expect(packagingExecutor.execute).toHaveBeenCalledTimes(1);
     });
 
     it('should return the promise of the packaging executor', () => {
-      const actualResult = labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      const actualResult = labeledFrameGateway.deleteLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       const expectedResult = packagingExecutor.execute.calls.first().returnValue;
@@ -371,14 +378,14 @@ describe('PouchDbLabeledFrameGateway', () => {
 
     it('should use the context of the given taskId', () => {
       const givenTaskId = 'some-task-id-42';
-      labeledFrameGateway.deleteLabeledFrame(givenTaskId, 42);
+      labeledFrameGateway.deleteLabeledFrame(createTask(givenTaskId), 42);
       rootScope.$apply();
 
       expect(pouchDbContextService.provideContextForTaskId).toHaveBeenCalledWith(givenTaskId);
     });
 
     it('should utilize the labeledFrameByTaskIdAndFrameIndex couchdb view through the view service', () => {
-      labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      labeledFrameGateway.deleteLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       expect(pouchDbViewService.getDesignDocumentViewName).toHaveBeenCalledWith('labeledFrameByTaskIdAndFrameIndex');
@@ -387,7 +394,7 @@ describe('PouchDbLabeledFrameGateway', () => {
     it('should query the view using the given taskId and frameIndex', () => {
       const givenTaskId = 'some-task-id-42';
       const givenFrameIndex = 423;
-      labeledFrameGateway.deleteLabeledFrame(givenTaskId, givenFrameIndex);
+      labeledFrameGateway.deleteLabeledFrame(createTask(givenTaskId), givenFrameIndex);
       rootScope.$apply();
 
       expect(pouchDb.query).toHaveBeenCalled();
@@ -397,7 +404,7 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
 
     it('should remove document with retrieved labeledFrame id', () => {
-      labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      labeledFrameGateway.deleteLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       const removedId = pouchDb.remove.calls.argsFor(0)[0];
@@ -405,7 +412,7 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
 
     it('should remove document with retrieved labeledFrame revision', () => {
-      labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      labeledFrameGateway.deleteLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       const removedRevision = pouchDb.remove.calls.argsFor(0)[1];
@@ -417,7 +424,7 @@ describe('PouchDbLabeledFrameGateway', () => {
         rows: [],
       }));
 
-      const resultPromise = labeledFrameGateway.deleteLabeledFrame('TASK-ID', 42);
+      const resultPromise = labeledFrameGateway.deleteLabeledFrame(createTask(), 42);
       rootScope.$apply();
 
       resultPromise.then(result => {
