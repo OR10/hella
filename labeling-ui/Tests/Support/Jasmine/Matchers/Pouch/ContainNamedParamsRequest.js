@@ -18,7 +18,10 @@ module.exports = function toContainNamedParamsRequest() {
       }, configuration);
 
       overallResult.pass = pouchQuery.then((allPouchDocuments) => {
-        const namedParamsRequestData = namedParamsMock.request.data;
+        let namedParamsRequestData = namedParamsMock.request.data;
+        if (namedParamsRequestData.labeledThing && namedParamsRequestData.labeledThingInFrame) {
+          namedParamsRequestData = namedParamsRequestData.labeledThingInFrame;
+        }
         const matchingDocuments = allPouchDocuments.rows.filter(row => matchDocuments(namedParamsRequestData, row.doc));
         const result = matchingDocuments.length > 0;
         const lastMatchMade = lastMatchChecked();

@@ -1,13 +1,13 @@
-import mock from 'protractor-http-mock';
 import {
   expectAllModalsToBeClosed,
   getMockRequestsMade,
   initApplication,
+  mock
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
-describe('LabelSelector (right sidebar)', () => {
+fdescribe('LabelSelector (right sidebar)', () => {
   let assets;
   let sharedMocks;
   let labelSelector;
@@ -63,15 +63,20 @@ describe('LabelSelector (right sidebar)', () => {
     labelSelectorHelper = new LabelSelectorHelper(labelSelector);
   });
 
-  describe('Basic Behaviour', () => {
+  fdescribe('Basic Behaviour', () => {
+    let specificMocks;
+
     beforeEach(() => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.Task,
         assets.mocks.LabelSelector.BasicBehaviour.LabelStructure,
+      ]);
+
+      specificMocks = [
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.frameIndex0,
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.frameIndex0to4,
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.getLabeledThingInFrame0to4,
-      ]);
+      ];
     });
 
     it('should have no panes if nothing is selected', done => {
@@ -86,7 +91,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should start with all panes closed', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks, specificMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -107,7 +112,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('pane should open on click', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks, specificMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -129,7 +134,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('open pane should close on click', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks, specificMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -152,7 +157,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should only have one pane open at a time in single-select mode', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks, specificMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -176,7 +181,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should allow multiple open panes in multi-select mode', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks, specificMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -200,7 +205,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should close clicked open open panes in multi-select mode', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks, specificMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -226,7 +231,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should set entry upon click', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
@@ -252,7 +257,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should send LTIF storage request once entry is set', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
@@ -271,7 +276,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should send LTIF storage request once entry is set', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
@@ -290,7 +295,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should change entry upon click', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar,
       ]));
@@ -319,7 +324,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should send LTIF storage request once entry is changed', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar,
       ]));
