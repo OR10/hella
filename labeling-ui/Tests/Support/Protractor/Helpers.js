@@ -56,29 +56,35 @@ function storeDocumentsInPouch(mocks) {
   mocks.forEach(mock => {
     let things = mock.response.data.result;
     let labeledThing;
+    let taskId;
 
     if (things.labeledThings) {
       const labeledThingKeys = Object.keys(things.labeledThings);
-      labeledThing = things.labeledThings[labeledThingKeys[0]];
-      labeledThing._id = labeledThing.id;
-      labeledThing.type = 'AppBundle.Model.LabeledThing';
-      labeledThing.frameRange = {
-        "startFrameIndex": labeledThing.frameRange.startFrameNumber,
-        "endFrameIndex": labeledThing.frameRange.endFrameNumber,
-        "type": "AppBundle.Model.FrameIndexRange"
-      };
+      labeledThingKeys.forEach(labeledThingKey => {
+        labeledThing = things.labeledThings[labeledThingKey];
+        taskId = labeledThing.taskId;
 
-      delete labeledThing.rev;
-      delete labeledThing.id;
+        labeledThing._id = labeledThing.id;
+        labeledThing.type = 'AppBundle.Model.LabeledThing';
+        labeledThing.lineColor = parseInt(labeledThing.lineColor);
+        labeledThing.frameRange = {
+          "startFrameIndex": labeledThing.frameRange.startFrameNumber,
+          "endFrameIndex": labeledThing.frameRange.endFrameNumber,
+          "type": "AppBundle.Model.FrameIndexRange"
+        };
 
-      documents.push(labeledThing);
+        delete labeledThing.rev;
+        delete labeledThing.id;
+
+        documents.push(labeledThing);
+      });
     }
 
     if (things.labeledThingsInFrame) {
       things.labeledThingsInFrame.forEach(ltif => {
         ltif._id = ltif.id;
-        ltif.taskId = labeledThing.taskId;
-        ltif.labeledThingId = labeledThing._id;
+        ltif.taskId = taskId;
+        ltif.labeledThingId = ltif.labeledThingId;
         ltif.identifierName = 'legacy';
         ltif.type = 'AppBundle.Model.LabeledThingInFrame';
 
