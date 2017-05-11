@@ -7,6 +7,7 @@ import ContrastFilter from '../../Common/Filters/ContrastFilter';
 
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
+import PaperFrame from '../../Viewer/Shapes/PaperFrame';
 
 class TaskController {
   /**
@@ -280,56 +281,41 @@ class TaskController {
 
     this._labelStructurePromise = this._initializeLabelStructure();
 
-    if (this.task.taskType === 'object-labeling') {
-      $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
-        if (newShape !== oldShape) {
-          if (newShape !== null) {
-            // @TODO: Should be loaded in the resolver of the viewer. This would make synchronization easier
-            this._labelStructurePromise
-              .then(labelStructure => {
-                let thingIdentifier;
-                let labelStructureThing;
-                switch (true) {
-                  case newShape instanceof PaperThingShape:
-                    thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
-                    labelStructureThing = labelStructure.getThingById(thingIdentifier);
-                    break;
-                  case newShape instanceof PaperGroupShape:
-                    thingIdentifier = newShape.labeledThingGroupInFrame.labeledThingGroup.type;
-                    labelStructureThing = labelStructure.getGroupById(thingIdentifier);
-                    break;
-                  default:
-                    throw new Error('Cannot read identifier name of unknown shape!');
-                }
+    $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
+      if (newShape !== oldShape) {
+        if (newShape !== null) {
+          // @TODO: Should be loaded in the resolver of the viewer. This would make synchronization easier
+          this._labelStructurePromise
+            .then(labelStructure => {
+              let thingIdentifier;
+              let labelStructureThing;
 
-                this.selectedLabelStructureObject = labelStructureThing;
-                // The selectedObject needs to be set in the same cycle as the new LabelStructureThing. Otherwise there might be race conditions in
-                // updating its structure against the wrong LabelStructureThing.
-                this.selectedLabeledObject = this._getSelectedLabeledObject();
-              });
-          } else {
-            this.selectedLabeledObject = null;
-          }
+              switch (true) {
+                case newShape instanceof PaperThingShape:
+                  thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
+                  labelStructureThing = labelStructure.getThingById(thingIdentifier);
+                  break;
+                case newShape instanceof PaperGroupShape:
+                  thingIdentifier = newShape.labeledThingGroupInFrame.labeledThingGroup.type;
+                  labelStructureThing = labelStructure.getGroupById(thingIdentifier);
+                  break;
+                case newShape instanceof PaperFrame:
+                  labelStructureThing = labelStructure.getRequirementFrameById('__meta-labeling-frame-identifier__');
+                  break;
+                default:
+                  throw new Error('Cannot read identifier name of unknown shape!');
+              }
+
+              this.selectedLabelStructureObject = labelStructureThing;
+              // The selectedObject needs to be set in the same cycle as the new LabelStructureThing. Otherwise there might be race conditions in
+              // updating its structure against the wrong LabelStructureThing.
+              this.selectedLabeledObject = this._getSelectedLabeledObject();
+            });
+        } else {
+          this.selectedLabeledObject = null;
         }
-      });
-    }
-
-    if (this.task.taskType === 'meta-labeling') {
-      $scope.$watch('vm.framePosition.position', newPosition => {
-        this.framePosition.lock.acquire();
-        // Watch for changes of the Frame position to correctly update all
-        // data structures for the new frame
-        this._labeledFrameBuffer.add(this._loadLabeledFrame(newPosition))
-          .aborted(() => {
-            this.framePosition.lock.release();
-          })
-          .then(labeledFrame => {
-            this.labeledFrame = labeledFrame;
-            this.selectedLabeledObject = this._getSelectedLabeledObject();
-            this.framePosition.lock.release();
-          });
-      });
-    }
+      }
+    });
 
     this._initializeLayout();
 
