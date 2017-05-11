@@ -1,6 +1,5 @@
 /**
  * @property {string} labeledObjectType
- * @property {LabeledObject} labeledObject
  * @property {LegacyLabelStructureInterface} structure
  * @property {Object} annotation
  * @property {Array<{header: string, offset: int?, limit: init?}>} sections
@@ -240,6 +239,11 @@ export default class LabelSelectorController {
       this.selectedLabelStructureObject,
       classList
     );
+
+    if (labeledObject.shapes[0].type !== this.selectedLabelStructureObject.shape) {
+      return;
+    }
+
     const newChoices = {};
     const newPages = [];
     const seenPages = {};
