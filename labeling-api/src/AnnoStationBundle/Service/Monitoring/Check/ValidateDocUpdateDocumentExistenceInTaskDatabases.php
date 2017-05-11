@@ -106,7 +106,7 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
             return new Result\Skip('PouchDB not enabled');
         }
 
-        if (!empty($this->invalidValidateFunctions())) {
+        if ($this->hasInvalidValidateFunctions()) {
             return $this->getInvalidValidateFunctionFailureResponseForMissingDatabases();
         }
 
@@ -121,12 +121,12 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
         return new Result\Success();
     }
 
-    private function invalidValidateFunctions()
+    private function hasInvalidValidateFunctions()
     {
         $this->buildUrls();
         $this->executeConcurrentRequests($this->urls);
 
-        return $this->invalidValidateFunctions;
+        return !empty($this->invalidValidateFunctions);
     }
 
     private function hasCheckTimeoutOccurred()
