@@ -213,7 +213,7 @@ describe('PouchDbLabeledFrameGateway', () => {
         frameIndex: givenFrameIndex,
         incomplete: true,
         taskId: givenTaskId,
-        classes: []
+        classes: [],
       });
 
       pouchDb.query.and.returnValue({
@@ -265,7 +265,7 @@ describe('PouchDbLabeledFrameGateway', () => {
 
       pouchDb.query.and.returnValue({
         rows: [{
-          doc: foundDocumentInDb
+          doc: foundDocumentInDb,
         }],
       });
 
