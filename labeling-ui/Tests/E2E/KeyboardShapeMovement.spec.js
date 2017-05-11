@@ -1,6 +1,5 @@
-import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -8,6 +7,7 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 describe('Keyboard Shape Movement', () => {
   let assets;
   let sharedMocks;
+  let specificMocks;
   let viewer;
 
   beforeEach(() => {
@@ -35,16 +35,16 @@ describe('Keyboard Shape Movement', () => {
 
   describe('Rectangle', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      specificMocks = [
         assets.mocks.KeyboardShapeMovement.Rectangle.frameIndex0,
         assets.mocks.KeyboardShapeMovement.Rectangle.frameIndex0to4,
         assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
         assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
-      ]);
+      ];
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameUp,
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameRight,
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameDown,
@@ -134,7 +134,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp,
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight,
         assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftDown,
@@ -226,16 +226,16 @@ describe('Keyboard Shape Movement', () => {
 
   describe('Pedestrian', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      specificMocks = [
         assets.mocks.KeyboardShapeMovement.Pedestrian.frameIndex0,
         assets.mocks.KeyboardShapeMovement.Pedestrian.frameIndex0to4,
         assets.mocks.Shared.Thumbnails.pedestrianLabeledThingsInFrame0to3,
         assets.mocks.Shared.Thumbnails.pedestrianLabeledThingsInFrame0to4,
-      ]);
+      ];
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp,
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight,
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameDown,
@@ -325,7 +325,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp,
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight,
         assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftDown,
@@ -417,15 +417,15 @@ describe('Keyboard Shape Movement', () => {
 
   describe('Cuboid', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      specificMocks = [
         assets.mocks.KeyboardShapeMovement.Cuboid.frameIndex0,
         assets.mocks.KeyboardShapeMovement.Cuboid.frameIndex0to4,
         assets.mocks.Shared.Thumbnails.cuboidLabeledThingsInFrame0to4,
-      ]);
+      ];
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp,
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight,
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameDown,
@@ -515,7 +515,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks.concat([
+      mock(sharedMocks, specificMocks.concat([
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp,
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight,
         assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftDown,
