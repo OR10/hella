@@ -129,7 +129,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @type {LabelStructureThing|null}
      * @private
      */
-    this._selectedLabelStructureThing = null;
+    this._selectedLabelStructureObject = null;
 
     /**
      * @type {boolean}
@@ -236,7 +236,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     $scope.$root.$on('action:create-new-default-shape', () => {
-      if (this._selectedLabelStructureThing === null) {
+      if (this._selectedLabelStructureObject === null) {
         return;
       }
 
@@ -435,14 +435,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
     const {viewport, video, task, framePosition} = this._$scope.vm;
 
     /** @type {CreationTool} */
-    const tool = this._toolService.getTool(this._context, this._selectedLabelStructureThing.shape, 'creation');
+    const tool = this._toolService.getTool(this._context, this._selectedLabelStructureObject.shape, 'creation');
     const creationToolStruct = new CreationToolActionStruct(
       toolOptions,
       viewport,
       video,
       task,
       framePosition,
-      this._selectedLabelStructureThing.id
+      this._selectedLabelStructureObject.id
     );
     tool.invokeDefaultShapeCreation(creationToolStruct)
       .then(paperShape => {
@@ -504,7 +504,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._multiTool.abort();
 
     // selectedLabelStructure not yet initialized
-    if (this._selectedLabelStructureThing === null) {
+    if (this._selectedLabelStructureObject === null) {
       return;
     }
 
@@ -514,7 +514,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       hitTestTolerance: 8,
     };
 
-    const {viewport, video, task, selectedPaperShape} = this._$scope.vm;
+    const {viewport, video, task, selectedPaperShape, readOnly} = this._$scope.vm;
 
     // @TODO: move with other drawint tool options to labelStructureThing
     // @TODO: Should be handled using a proper ToolOptionStruct in the future.
@@ -525,17 +525,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
       minDragDistance: 1,
       minimalHeight: 1,
     };
-    const delegatedOptions = this._getOptionsForTool(task, this._selectedLabelStructureThing.shape, defaultOptions);
+    const delegatedOptions = this._getOptionsForTool(task, this._selectedLabelStructureObject.shape, defaultOptions);
 
     const struct = new MultiToolActionStruct(
       multiToolOptions,
       viewport,
       delegatedOptions,
+      readOnly,
       video,
       task,
       this._framePosition,
-      this._selectedLabelStructureThing.id,
-      this._selectedLabelStructureThing.shape,
+      this._selectedLabelStructureObject.id,
+      this._selectedLabelStructureObject.shape,
       selectedPaperShape
     );
     this._activeTool.invoke(struct)
@@ -675,15 +676,15 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * Activates the tool identified by the given name
    *
    * @param {String} toolName
-   * @param {LabelStructureThing|null} selectedLabelStructureThing
+   * @param {LabelStructureObject|null} selectedLabelStructureObject
    */
-  activateTool(toolName, selectedLabelStructureThing) {
+  activateTool(toolName, selectedLabelStructureObject) {
     this._abortActiveTool();
     // @TODO can be removed when zoomtools are refactored
     this._context.withScope(scope => {
       scope.tool = null;
     });
-    this._selectedLabelStructureThing = selectedLabelStructureThing;
+    this._selectedLabelStructureObject = selectedLabelStructureObject;
 
     // Reset possible mouse cursor left-overs from the last tool
     this._viewerMouseCursorService.setMouseCursor(null);

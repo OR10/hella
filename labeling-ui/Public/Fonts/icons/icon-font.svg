@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <!--
-2017-3-31: Created with FontForge (http://fontforge.org)
+2017-5-5: Created with FontForge (http://fontforge.org)
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
 <metadata>
-Created by FontForge 20150913 at Fri Mar 31 09:53:44 2017
+Created by FontForge 20150913 at Fri May  5 09:58:30 2017
  By Felix Knischewski
 Copyright (c) 2017, Felix Knischewski
 </metadata>
@@ -22,7 +22,7 @@ Copyright (c) 2017, Felix Knischewski
     bbox="0 -61.001 640 445.982"
     underline-thickness="25.6"
     underline-position="-51.2"
-    unicode-range="U+0020-F140"
+    unicode-range="U+0020-F142"
   />
     <missing-glyph />
     <glyph glyph-name="space" unicode=" " horiz-adv-x="200" 
@@ -72,6 +72,8 @@ c-3.2002 -3.2002 -6.40039 -4.7998 -11.2002 -4.7998z" />
     <glyph glyph-name="uniF10C" unicode="&#xf10c;" 
 d="M96 16c-3.2002 0 -6.40039 1.59961 -8 1.59961c-4.7998 3.2002 -8 9.60059 -8 14.4004v320c0 4.7998 3.2002 11.2002 8 14.4004c4.7998 3.19922 11.2002 3.19922 16 0l320 -160c4.7998 -3.2002 9.59961 -8 9.59961 -14.4004s-3.19922 -11.2002 -9.59961 -14.4004
 l-320 -160c-3.2002 -1.59961 -4.7998 -1.59961 -8 -1.59961zM112 326.4v-268.801l268.8 134.4z" />
+    <glyph glyph-name="uniF142" unicode="&#xf142;" 
+d="M454.309 396.587h-403.51v-403.51h403.51v403.51zM487.384 429.661v0v-469.659h-469.66v469.659h469.66zM418.44 0.369141h-362.81v191.58l85.6152 85.6152zM447.508 121.948v-121.107l-145.277 145.277l60.5537 60.5537z" />
     <glyph glyph-name="uniF114" unicode="&#xf114;" 
 d="M432 208c9.59961 0 16 -4.7998 16 -14.4004c0 -9.59961 -6.40039 -16 -16 -16h-16c-1.59961 -17.5996 -6.40039 -33.5996 -12.7998 -49.5996l14.3994 -8c8 -4.7998 11.2002 -14.4004 6.40039 -22.4004c-3.2002 -4.7998 -9.59961 -8 -14.4004 -8
 c-3.19922 0 -4.7998 0 -8 1.60059l-14.3994 8c-9.60059 -14.4004 -22.4004 -27.2002 -36.7998 -36.7998l8 -14.4004c3.19922 -8 1.59961 -17.5996 -6.40039 -22.4004c-3.2002 -1.59961 -4.7998 -1.59961 -8 -1.59961c-6.40039 0 -11.2002 3.2002 -14.4004 8l-8 14.4004

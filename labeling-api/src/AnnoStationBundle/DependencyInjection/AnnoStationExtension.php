@@ -12,5 +12,9 @@ class AnnoStationExtension extends Extension
     {
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
+
+        if ($container->getParameter('pouchdb_feature_enabled')) {
+            $loader->load('services_pouchdb.xml');
+        }
     }
 }

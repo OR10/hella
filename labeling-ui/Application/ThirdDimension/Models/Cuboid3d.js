@@ -225,6 +225,11 @@ class Cuboid3d {
     }
   }
 
+  /**
+   * Returns vertices as array of {@link Vector4} instances
+   *
+   * @returns {Array.<Vector4>}
+   */
   get vertices() {
     return this._vertices.map(vertex => vertex.clone());
   }
