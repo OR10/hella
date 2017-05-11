@@ -223,8 +223,9 @@ class RequirementsLabelStructure extends LabelStructure {
     const requirementFramesMap = new Map();
     const requirementFrameSnapshot = this._evaluateXPath('/r:requirements/r:frame', null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
+    // Only one frame is currently supported. This code kind of supports more frames in the future
     for (let index = 0; index < requirementFrameSnapshot.snapshotLength; index++) {
-      const identifier = 'frame-id';
+      const identifier = '__meta-labeling-frame-identifier__';
       const name = 'Meta-Labeling';
       const shape = 'frame-shape';
 
@@ -422,13 +423,15 @@ class RequirementsLabelStructure extends LabelStructure {
    * @private
    */
   _getLabelStructureObjectElementById(identifier) {
-    const labeledObject = this._extractLabeledObjectDOMElementById(identifier);
+    if (identifier === '__meta-labeling-frame-identifier__') {
+      return this._extractLabeledFrameDOMElement();
+    }
 
-    return labeledObject;
+    return this._extractLabeledObjectDOMElementById(identifier);
   }
 
   /**
-   * Get the Thing DOMElement of thing with a specific identifier
+   * Get the Thing/Group DOMElement of object with a specific identifier
    *
    * If a node with the given identifier could not be found an exception will be thrown.
    *
@@ -437,7 +440,7 @@ class RequirementsLabelStructure extends LabelStructure {
    * @private
    */
   _extractLabeledObjectDOMElementById(identifier) {
-    const searchNodePath = `/r:requirements/r:thing[@id="${identifier}"]|/r:requirements/r:group[@id="${identifier}"]|/r:requirements/r:frame[@id="${identifier}"]`;
+    const searchNodePath = `/r:requirements/r:thing[@id="${identifier}"]|/r:requirements/r:group[@id="${identifier}"]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
     const requirementsElement = searchSnapshot.snapshotItem(0);
 
@@ -447,6 +450,30 @@ class RequirementsLabelStructure extends LabelStructure {
 
     if (requirementsElement === null) {
       throw new Error(`Could not find a DOMElement with the id "${identifier}"`);
+    }
+
+    return requirementsElement;
+  }
+
+  /**
+   * Get the Frame DOMElement of frame with a specific identifier
+   *
+   * If a frame node could not be found an exception will be thrown.
+   *
+   * @return {Node}
+   * @private
+   */
+  _extractLabeledFrameDOMElement() {
+    const searchNodePath = `/r:requirements/r:frame`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    const requirementsElement = searchSnapshot.snapshotItem(0);
+
+    if (searchSnapshot.snapshotLength > 1) {
+      throw new Error(`Expected to find one labeled frame, found ${searchSnapshot.snapshotLength}`);
+    }
+
+    if (requirementsElement === null) {
+      throw new Error(`Could not find any labeled frame DOMElement`);
     }
 
     return requirementsElement;
