@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Service;
 
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper;
 
@@ -13,16 +14,6 @@ class TaskIncomplete
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
-
-    /**
-     * @var Facade\LabeledThingInFrame
-     */
-    private $labeledThingInFrameFacade;
-
-    /**
-     * @var Facade\LabeledThing
-     */
-    private $labeledThingFacade;
 
     /**
      * @var Facade\TaskConfiguration
@@ -35,26 +26,36 @@ class TaskIncomplete
     private $configurationXmlConverterFactory;
 
     /**
+     * @var Factory
+     */
+    private $labeledThingFactory;
+
+    /**
+     * @var Factory
+     */
+    private $labeledThingInFrameFactory;
+
+    /**
      * TaskIncomplete constructor.
      *
      * @param Facade\LabelingTask                  $labelingTaskFacade
-     * @param Facade\LabeledThing                  $labeledThingFacade
-     * @param Facade\LabeledThingInFrame           $labeledThingInFrameFacade
      * @param Facade\TaskConfiguration             $taskConfigurationFacade
      * @param TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
+     * @param Factory                 $labeledThingFactory
+     * @param Factory          $labeledThingInFrameFactory
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
-        Facade\LabeledThing $labeledThingFacade,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\TaskConfiguration $taskConfigurationFacade,
-        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
+        Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
+        Factory $labeledThingFactory,
+        Factory $labeledThingInFrameFactory
     ) {
         $this->labelingTaskFacade               = $labelingTaskFacade;
-        $this->labeledThingInFrameFacade        = $labeledThingInFrameFacade;
-        $this->labeledThingFacade               = $labeledThingFacade;
         $this->taskConfigurationFacade          = $taskConfigurationFacade;
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
+        $this->labeledThingFactory              = $labeledThingFactory;
+        $this->labeledThingInFrameFactory       = $labeledThingInFrameFactory;
     }
 
     /**
@@ -65,7 +66,12 @@ class TaskIncomplete
         Model\LabeledThing $labeledThing,
         Model\LabeledThingInFrame $labeledThingInFrame
     ) {
-        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames(
+        $labeledThingFacade = $this->labeledThingFactory->getFacadeByProjectIdAndTaskId(
+            $labeledThing->getProjectId(),
+            $labeledThing->getTaskId()
+        );
+
+        $labeledThingInFrames = $labeledThingFacade->getLabeledThingInFrames(
             $labeledThing,
             $labeledThingInFrame->getFrameIndex() + 1,
             0,
@@ -90,7 +96,14 @@ class TaskIncomplete
             $updatedLabeledThingInFrame[] = $labeledThingInFrameToCheck;
         }
 
-        $this->labeledThingInFrameFacade->saveAll($updatedLabeledThingInFrame);
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFactory->getFacadeByProjectIdAndTaskId(
+            $labeledThing->getProjectId(),
+            $labeledThing->getTaskId()
+        );
+
+        $labeledThingInFrameFacade->saveAll(
+            $updatedLabeledThingInFrame
+        );
     }
 
     /**
@@ -100,7 +113,11 @@ class TaskIncomplete
      */
     public function isLabeledThingIncomplete(Model\LabeledThing $labeledThing)
     {
-        $labeledThingInFrames = $this->labeledThingFacade->getLabeledThingInFrames($labeledThing);
+        $labeledThingFacade   = $this->labeledThingFactory->getFacadeByProjectIdAndTaskId(
+            $labeledThing->getProjectId(),
+            $labeledThing->getTaskId()
+        );
+        $labeledThingInFrames = $labeledThingFacade->getLabeledThingInFrames($labeledThing);
         if (empty($labeledThingInFrames)) {
             return false;
         }
@@ -120,7 +137,16 @@ class TaskIncomplete
      */
     public function isLabeledThingInFrameIncomplete(Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $labeledThing = $this->labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
+        $labeledThingFacade        = $this->labeledThingFactory->getFacadeByProjectIdAndTaskId(
+            $labeledThingInFrame->getProjectId(),
+            $labeledThingInFrame->getTaskId()
+        );
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFactory->getFacadeByProjectIdAndTaskId(
+            $labeledThingInFrame->getProjectId(),
+            $labeledThingInFrame->getTaskId()
+        );
+
+        $labeledThing = $labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
         $task         = $this->labelingTaskFacade->find($labeledThing->getTaskId());
 
         $taskConfiguration = null;
@@ -147,7 +173,7 @@ class TaskIncomplete
         }
 
         if (empty($labeledThingInFrame->getClasses())) {
-            $labeledThingInFrame = $this->labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
+            $labeledThingInFrame = $labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
                 $labeledThingInFrame
             );
             if ($labeledThingInFrame === null) {

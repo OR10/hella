@@ -1,24 +1,25 @@
 <?php
+
 namespace AnnoStationBundle\Service\ProjectImporter\Facade;
 
-use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 use AppBundle\Model;
 
 class LabeledThing
 {
     /**
-     * @var Facade\LabeledThing
+     * @var Factory
      */
-    private $labeledThing;
+    private $labeledThingFacadeFactory;
 
     /**
      * LabeledThing constructor.
      *
-     * @param Facade\LabeledThing $labeledThing
+     * @param Factory $labeledThingFacadeFactory
      */
-    public function __construct(Facade\LabeledThing $labeledThing)
+    public function __construct(Factory $labeledThingFacadeFactory)
     {
-        $this->labeledThing = $labeledThing;
+        $this->labeledThingFacadeFactory = $labeledThingFacadeFactory;
     }
 
     /**
@@ -28,6 +29,11 @@ class LabeledThing
      */
     public function save(Model\LabeledThing $labeledThing)
     {
-        return $this->labeledThing->save($labeledThing);
+        $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labeledThing->getProjectId(),
+            $labeledThing->getTaskId()
+        );
+
+        return $labeledThingFacade->save($labeledThing);
     }
 }

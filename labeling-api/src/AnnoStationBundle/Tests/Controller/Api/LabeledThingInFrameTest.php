@@ -81,6 +81,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testGetLabeledThingInFrameDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $labeledThingInFrame = $this->createLabeledThingInFrame();
         $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
             ->execute()
@@ -91,6 +93,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testGetLabeledThingInFrameDocumentNotExists()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $response = $this->createRequest(self::ROUTE, [12345])->execute()->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_NOT_FOUND, $response->getStatusCode());
@@ -98,6 +102,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testPutLabeledThingInFrameDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $labeledThingInFrame = Model\LabeledThingInFrame::create($this->labeledThing, 4);
         $response            = $this->createRequest(self::ROUTE, ['foooobar-foooobar-foooobar-foooobar'])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
@@ -131,6 +137,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testPutLabeledThingInFrameDocumentWithInvalidContent()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $labeledThingInFrame = $this->createLabeledThingInFrame();
         $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
@@ -149,6 +157,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testPutLabeledThingInFrameDocumentMissingDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $response = $this->createRequest(self::ROUTE, [1231231231231])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
@@ -168,6 +178,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testPutLabeledThingInFrameDocumentInvalidRevision()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $labeledThingInFrame = $this->createLabeledThingInFrame();
         $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
@@ -188,6 +200,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testPutLabeledThingInFrameDocumentframeIndexOutOfRange()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $labeledThingInFrame = $this->createLabeledThingInFrame();
         $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
@@ -208,6 +222,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testDeleteLabeledThingInFrameDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $labeledThingInFrame = $this->createLabeledThingInFrame();
         $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
@@ -224,6 +240,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testDeleteLabeledThingInFrameDocumentMissingDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $labeledThingInFrame = $this->createLabeledThingInFrame();
         $response            = $this->createRequest(self::ROUTE, [123123123123])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
@@ -240,6 +258,8 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
 
     public function testDeleteLabeledThingInFrameDocumentInvalidRevision()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $labeledThingInFrame = $this->createLabeledThingInFrame();
         $response            = $this->createRequest(self::ROUTE, [$labeledThingInFrame->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
