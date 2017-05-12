@@ -85,7 +85,9 @@ function storeDocumentsInPouch(mocks) {
         ltif._id = ltif.id;
         ltif.taskId = taskId;
         ltif.labeledThingId = ltif.labeledThingId;
-        ltif.identifierName = 'legacy';
+        if (ltif.identifierName !== 'sign') {
+          ltif.identifierName = 'legacy';
+        }
         ltif.type = 'AppBundle.Model.LabeledThingInFrame';
 
         delete ltif.id;
