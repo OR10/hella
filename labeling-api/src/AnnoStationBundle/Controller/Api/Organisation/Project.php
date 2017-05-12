@@ -6,7 +6,9 @@ use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\Project as ProjectFacadeFactory;
+use AnnoStationBundle\Database\Facade\LabelingTask as LabelingTaskFacadeFactory;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame as LabeledThingInFrameFacadeFactory;
 use AppBundle\Database\Facade as AppFacade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
@@ -85,43 +87,45 @@ class Project extends Controller\Base
     private $taskDatabaseSecurityPermissionService;
 
     /**
-     * @var Factory\LabelingTask
+     * @var LabelingTaskFacadeFactory\FacadeInterface
      */
     private $labelingTaskFacadeFactory;
 
     /**
-     * @var Factory\LabeledThingInFrame
+     * @var LabeledThingInFrameFacadeFactory\FacadeInterface
      */
     private $labeledThingInFrameFacadeFactory;
-    
+
     /**
-     * @var Factory\Project
+     * @var ProjectFacadeFactory\FacadeInterface
      */
     private $projectFacadeFactory;
 
     /**
-     * @param Facade\Project                                $projectFacade
-     * @param Facade\LabelingTask                           $labelingTaskFacade
-     * @param Facade\Organisation                           $organisationFacade
-     * @param Facade\Campaign                               $campaignFacade
-     * @param Factory\Project                               $projectFacadeFactory
-     * @param Factory\LabelingTask                          $labelingTaskFacadeFactory
-     * @param Factory\LabeledThingInFrame                   $labeledThingInFrameFacadeFactory
-     * @param Storage\TokenStorage                          $tokenStorage
-     * @param AppFacade\User                                $userFacade
-     * @param Service\Authorization                         $authorizationService
-     * @param Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService
-     * @param AMQP\FacadeAMQP                               $amqpFacade
-     * @param Authentication\UserPermissions                $userPermissions
+     * Project constructor.
+     *
+     * @param Facade\Project                                   $projectFacade
+     * @param Facade\LabelingTask                              $labelingTaskFacade
+     * @param Facade\Organisation                              $organisationFacade
+     * @param Facade\Campaign                                  $campaignFacade
+     * @param ProjectFacadeFactory\FacadeInterface             $projectFacadeFactory
+     * @param LabelingTaskFacadeFactory\FacadeInterface        $labelingTaskFacadeFactory
+     * @param LabeledThingInFrameFacadeFactory\FacadeInterface $labeledThingInFrameFacadeFactory
+     * @param Storage\TokenStorage                             $tokenStorage
+     * @param AppFacade\User                                   $userFacade
+     * @param Service\Authorization                            $authorizationService
+     * @param Service\TaskDatabaseSecurityPermissionService    $taskDatabaseSecurityPermissionService
+     * @param AMQP\FacadeAMQP                                  $amqpFacade
+     * @param Authentication\UserPermissions                   $userPermissions
      */
     public function __construct(
         Facade\Project $projectFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Organisation $organisationFacade,
         Facade\Campaign $campaignFacade,
-        Factory\Project $projectFacadeFactory,
-        Factory\LabelingTask $labelingTaskFacadeFactory,
-        Factory\LabeledThingInFrame $labeledThingInFrameFacadeFactory,
+        ProjectFacadeFactory\FacadeInterface $projectFacadeFactory,
+        LabelingTaskFacadeFactory\FacadeInterface $labelingTaskFacadeFactory,
+        LabeledThingInFrameFacadeFactory\FacadeInterface $labeledThingInFrameFacadeFactory,
         Storage\TokenStorage $tokenStorage,
         AppFacade\User $userFacade,
         Service\Authorization $authorizationService,
