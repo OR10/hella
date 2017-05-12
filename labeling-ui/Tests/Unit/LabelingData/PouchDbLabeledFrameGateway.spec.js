@@ -7,6 +7,7 @@ import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import Task from 'Application/Task/Model/Task';
 import LabeledFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledFrame';
 import LabeledFrameFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledFrame';
+import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
 
 describe('PouchDbLabeledFrameGateway', () => {
   let rootScope;
@@ -29,9 +30,7 @@ describe('PouchDbLabeledFrameGateway', () => {
   let labeledFrameGateway;
 
   function createTask(id = 'TASK-ID') {
-    return new Task({
-      id,
-    });
+    return new Task(Object.assign({}, TaskFrontendModel.toJSON(), {id}));
   }
 
   beforeEach(() => {
@@ -172,10 +171,11 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
 
     it('should deserialize the received document', () => {
-      labeledFrameGateway.getLabeledFrame(createTask(), 42);
+      const givenTask = createTask();
+      labeledFrameGateway.getLabeledFrame(givenTask, 42);
       rootScope.$apply();
 
-      expect(couchDbModelDeserializer.deserializeLabeledFrame).toHaveBeenCalledWith(labeledFrameCouchDbModel);
+      expect(couchDbModelDeserializer.deserializeLabeledFrame).toHaveBeenCalledWith(labeledFrameCouchDbModel, givenTask);
     });
 
     it('should extract the revision from the loaded document', () => {
@@ -206,13 +206,13 @@ describe('PouchDbLabeledFrameGateway', () => {
     it('should return a new empty LabeledFrame if nothing is stored in the database', () => {
       const newUniqueId = 'some-new-ultra-unique-id';
       const givenFrameIndex = 42;
-      const givenTaskId = 'ultra-cool-task-id';
+      const givenTask = createTask('ultra-cool-task-id');
 
       const expectedLabeledFrame = new LabeledFrame({
         id: newUniqueId,
         frameIndex: givenFrameIndex,
         incomplete: true,
-        taskId: givenTaskId,
+        task: givenTask,
         classes: [],
       });
 
@@ -222,7 +222,7 @@ describe('PouchDbLabeledFrameGateway', () => {
 
       entityIdService.getUniqueId.and.returnValue(newUniqueId);
 
-      const actualResponse = labeledFrameGateway.getLabeledFrame(createTask(givenTaskId), givenFrameIndex);
+      const actualResponse = labeledFrameGateway.getLabeledFrame(givenTask, givenFrameIndex);
       rootScope.$apply();
       const responsePromiseSpy = jasmine.createSpy();
       actualResponse.then(responsePromiseSpy);
@@ -397,11 +397,12 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
 
     it('should update and store labeledFrame', done => {
+      const givenTask = createTask('TASK-ID');
       const labeledFrame = new LabeledFrame({
         id: 'LT-ID',
         classes: ['foo', 'bar', 'baz'],
         incomplete: false,
-        taskId: 'TASK-ID',
+        task: givenTask,
         frameIndex: 42,
       });
 
@@ -446,13 +447,13 @@ describe('PouchDbLabeledFrameGateway', () => {
       pouchDb.get.and.returnValue(angularQ.resolve(updatedLabeledFrameDocument));
       couchDbModelDeserializer.deserializeLabeledFrame.and.returnValue(expectedLabeledFrame);
 
-      const returnPromise = labeledFrameGateway.saveLabeledFrame(createTask('TASK-ID'), 42, labeledFrame);
+      const returnPromise = labeledFrameGateway.saveLabeledFrame(givenTask, 42, labeledFrame);
       rootScope.$apply();
 
       expect(couchDbModelSerializer.serialize).toHaveBeenCalledWith(labeledFrame);
       expect(pouchDb.put).toHaveBeenCalledWith(serializedLabeledFrame);
       expect(pouchDb.get).toHaveBeenCalledWith('LT-ID');
-      expect(couchDbModelDeserializer.deserializeLabeledFrame).toHaveBeenCalledWith(updatedLabeledFrameDocument);
+      expect(couchDbModelDeserializer.deserializeLabeledFrame).toHaveBeenCalledWith(updatedLabeledFrameDocument, givenTask);
       returnPromise.then(actualLabeledFrame => {
         expect(actualLabeledFrame).toBe(expectedLabeledFrame);
         done();

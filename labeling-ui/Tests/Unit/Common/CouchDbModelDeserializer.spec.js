@@ -60,7 +60,7 @@ describe('CouchDbModelDeserializer', () => {
   });
 
   it('should deserialize a LabeledFrame', () => {
-    const labeledFrame = deserializer.deserializeLabeledFrame(LabeledFrameCouchDbModel);
+    const labeledFrame = deserializer.deserializeLabeledFrame(LabeledFrameCouchDbModel, TaskFrontendModel);
     expect(labeledFrame).toEqual(LabeledFrameFrontendModel);
   });
 });

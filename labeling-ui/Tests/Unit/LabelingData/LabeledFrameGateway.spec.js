@@ -74,7 +74,7 @@ describe('LabeledFrameGateway', () => {
     const task = createTask(taskId);
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${taskId}/labeledFrame/${frameNumber}`;
-    const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']});
+    const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c'], task: {id: 'TASKID-TASKID'}});
     const expectedResult = {result: labeledFrame};
 
     $httpBackend
