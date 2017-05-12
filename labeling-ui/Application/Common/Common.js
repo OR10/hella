@@ -33,7 +33,7 @@ import PouchDbViewService from './Services/PouchDbViewService';
 
 import PouchDbContextService from './Services/PouchDbContextService';
 import PouchDbSyncManager from './Services/PouchDbSyncManager';
-import PouchDbSyncManagerMock from 'Tests/Support/PouchDbSyncManager';
+import PouchDbSyncManagerMock from 'Tests/Support/PouchDb/PouchDbSyncManager';
 import PouchDbViewHeater from './Services/PouchDbViewHeater';
 
 import DebouncerService from './Services/DebouncerService';
