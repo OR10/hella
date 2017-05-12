@@ -12,6 +12,10 @@ import {equals} from 'angular';
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
+import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
+import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
+import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
+
 export default class LabelSelectorController {
   /**
    * @param {angular.$scope} $scope
@@ -247,7 +251,7 @@ export default class LabelSelectorController {
 
     // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
     // TODO: find the source of the race condition and eliminate the problem there!
-    if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, labeledObject)) {
+    if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, this.selectedPaperShape)) {
       return;
     }
 
@@ -405,26 +409,30 @@ export default class LabelSelectorController {
   }
 
   /**
-   * @param {LabelStructureObject} selectedLabelStructureObject
-   * @param {LabeledObject} labeledObject
+   * @param {LabelStructureObject} labelStructureObject
+   * @param {PaperShape} selectedPaperShape
    * @private
    */
-  _labelStructureFitsLabeledObject(selectedLabelStructureObject, labeledObject) {
-    const labelStructureObjectShape = selectedLabelStructureObject.shape;
-    const labeledObjectShapeType = labeledObject.shapes[0].type;
+  _labelStructureFitsLabeledObject(labelStructureObject, selectedPaperShape) {
+    let labeledObjectType;
 
     // For some shapes the database shape type and the requirements shape type are not the same.
     // Therefor we need a mapping!
-    let normalizedLabeledObjectType;
-    switch (labeledObjectShapeType) {
-      case 'cuboid3d':
-        normalizedLabeledObjectType = 'cuboid';
+    switch (true) {
+      case selectedPaperShape instanceof PaperThingShape:
+        labeledObjectType = selectedPaperShape.labeledThingInFrame.shapes[0].type;
+        break;
+      case selectedPaperShape instanceof PaperGroupShape:
+        labeledObjectType = 'group-rectangle';
+        break;
+      case selectedPaperShape instanceof PaperFrame:
+        labeledObjectType = 'frame-shape';
         break;
       default:
-        normalizedLabeledObjectType = labeledObjectShapeType;
+        throw new Error('Can not get shape type of unknown paper shape');
     }
 
-    return labelStructureObjectShape === normalizedLabeledObjectType;
+    return labelStructureObject.shape === labeledObjectType;
   }
 }
 
