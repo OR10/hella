@@ -1,18 +1,18 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade\Factory;
+namespace AnnoStationBundle\Database\Facade\LabeledFrame;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 use AnnoStationBundle\Service;
-use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
 
-class LabelingTask implements Facade\Factory
+class TaskDatabase extends Factory\Cache implements FacadeInterface
 {
     /**
-     * @var Facade\LabelingTask
+     * @var Facade\LabeledFrame
      */
-    private $labelingTaskFacade;
+    private $labeledFrameFacade;
 
     /**
      * @var AppBundleService\DatabaseDocumentManagerFactory
@@ -25,55 +25,49 @@ class LabelingTask implements Facade\Factory
     private $taskDatabaseCreatorService;
 
     /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
-
-    /**
      * @var string
      */
     private $readOnlyDatabase;
 
     public function __construct(
-        Facade\LabelingTask $labelingTaskFacade,
+        Facade\LabeledFrame $labeledFrameFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $pouchdbFeatureEnabled,
         $readOnlyDatabase
     ) {
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
-        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
-        $this->labelingTaskFacade             = $labelingTaskFacade;
         $this->readOnlyDatabase               = $readOnlyDatabase;
+        $this->labeledFrameFacade             = $labeledFrameFacade;
     }
 
-    public function getProjectAndTaskFacade($projectId, $taskId)
+    public function getFacadeByProjectIdAndTaskId($projectId, $taskId)
     {
-        if ($this->pouchdbFeatureEnabled) {
+        $databaseName = $this->taskDatabaseCreatorService->getDatabaseName(
+            $projectId,
+            $taskId
+        );
+        if (!$this->isInFacadeCache($databaseName)) {
             $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $this->taskDatabaseCreatorService->getDatabaseName(
-                    $projectId,
-                    $taskId
-                )
+                $databaseName
             );
 
-            return new Facade\LabelingTask($databaseDocumentManager);
+            $this->addFacadeCache($databaseName, new Facade\LabeledFrame($databaseDocumentManager));
         }
 
-        return $this->labelingTaskFacade;
+        return $this->getFacadeCache($databaseName);
     }
 
     public function getReadOnlyFacade()
     {
-        if ($this->pouchdbFeatureEnabled) {
+        if (!$this->isInFacadeCache($this->readOnlyDatabase)) {
             $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
                 $this->readOnlyDatabase
             );
 
-            return new Facade\LabelingTask($databaseDocumentManager);
+            $this->addFacadeCache($this->readOnlyDatabase, new Facade\LabeledFrame($databaseDocumentManager));
         }
 
-        return $this->labelingTaskFacade;
+        return $this->getFacadeCache($this->readOnlyDatabase);
     }
 }

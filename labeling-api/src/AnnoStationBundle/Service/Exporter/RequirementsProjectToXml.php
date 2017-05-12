@@ -6,7 +6,9 @@ use AppBundle\Database\Facade as AppBundleFacade;
 use AppBundle\Service as AppBundleService;
 use AnnoStationBundle\Helper\Iterator;
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabelingTask;
+use AnnoStationBundle\Database\Facade\LabeledThing;
+use AnnoStationBundle\Database\Facade\LabeledThingGroup;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper\ExportXml;
 
@@ -60,33 +62,35 @@ class RequirementsProjectToXml
     private $labeledFrameEndCalculationService;
 
     /**
-     * @var Factory\LabeledThing
+     * @var Factory
      */
     private $labeledThingFacadeFactory;
 
     /**
-     * @var Factory\LabeledThingGroup
+     * @var Factory
      */
     private $labeledThingGroupFacadeFactory;
 
     /**
-     * @var Factory\LabelingTask
+     * @var Factory
      */
     private $labelingTaskFacadeFactory;
 
     /**
+     * RequirementsProjectToXml constructor.
+     *
      * @param Facade\Exporter                           $exporterFacade
      * @param Facade\Project                            $projectFacade
      * @param Facade\Video                              $videoFacade
-     * @param Facade\LabelingTask                       $labelingTaskFacade
+     * @param LabelingTask                              $labelingTaskFacade
      * @param Facade\TaskConfiguration                  $taskConfiguration
      * @param Service\GhostClassesPropagation           $ghostClassesPropagation
      * @param AppBundleFacade\User                      $userFacade
      * @param Facade\LabelingGroup                      $labelingGroupFacade
      * @param Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService
-     * @param Factory\LabelingTask                      $labelingTaskFacadeFactory
-     * @param Factory\LabeledThing                      $labeledThingFacadeFactory
-     * @param Factory\LabeledThingGroup                 $labeledThingGroupFacadeFactory
+     * @param LabelingTask\FacadeInterface              $labelingTaskFacadeFactory
+     * @param LabeledThing\FacadeInterface              $labeledThingFacadeFactory
+     * @param LabeledThingGroup\FacadeInterface         $labeledThingGroupFacadeFactory
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -98,9 +102,9 @@ class RequirementsProjectToXml
         AppBundleFacade\User $userFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService,
-        Factory\LabelingTask $labelingTaskFacadeFactory,
-        Factory\LabeledThing $labeledThingFacadeFactory,
-        Factory\LabeledThingGroup $labeledThingGroupFacadeFactory
+        LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
+        LabeledThing\FacadeInterface $labeledThingFacadeFactory,
+        LabeledThingGroup\FacadeInterface $labeledThingGroupFacadeFactory
     ) {
         $this->exporterFacade                    = $exporterFacade;
         $this->projectFacade                     = $projectFacade;
@@ -154,15 +158,15 @@ class RequirementsProjectToXml
                 $xmlVideo = new ExportXml\Element\Video($video, self::XML_NAMESPACE);
 
                 foreach ($labelingTaskIterator as $task) {
-                    $labelingTaskFacade = $this->labelingTaskFacadeFactory->getProjectAndTaskFacade(
+                    $labelingTaskFacade = $this->labelingTaskFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
                     );
-                    $labelingThingGroupFacade = $this->labeledThingGroupFacadeFactory->getProjectAndTaskFacade(
+                    $labelingThingGroupFacade = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
                     );
-                    $labeledThingFacade = $this->labeledThingFacadeFactory->getProjectAndTaskFacade(
+                    $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
                     );

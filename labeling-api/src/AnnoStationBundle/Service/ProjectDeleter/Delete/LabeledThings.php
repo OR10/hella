@@ -3,23 +3,24 @@
 namespace AnnoStationBundle\Service\ProjectDeleter\Delete;
 
 use AppBundle\Model;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabelingTask;
+use AnnoStationBundle\Database\Facade\LabeledThing;
 
 class LabeledThings
 {
     /**
-     * @var Factory\LabelingTask
+     * @var LabelingTask\FacadeInterface
      */
     private $labelingTaskFacadeFactory;
 
     /**
-     * @var Factory\LabeledThing
+     * @var LabeledThing\FacadeInterface
      */
     private $labeledThingFacadeFactory;
 
     public function __construct(
-        Factory\LabelingTask $labelingTaskFacadeFactory,
-        Factory\LabeledThing $labeledThingFacadeFactory
+        LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
+        LabeledThing\FacadeInterface $labeledThingFacadeFactory
     ) {
         $this->labelingTaskFacadeFactory = $labelingTaskFacadeFactory;
         $this->labeledThingFacadeFactory = $labeledThingFacadeFactory;
@@ -30,11 +31,11 @@ class LabeledThings
      */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getProjectAndTaskFacade(
+        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );
-        $labeledThingFacade = $this->labeledThingFacadeFactory->getProjectAndTaskFacade(
+        $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );

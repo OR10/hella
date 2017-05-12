@@ -3,16 +3,16 @@
 namespace AnnoStationBundle\Service\ProjectDeleter\Delete;
 
 use AppBundle\Model;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabeledThingGroup as LabeledThingGroupFacadeFactory;
 
 class LabeledThingGroup
 {
     /**
-     * @var Factory\LabeledThingGroup
+     * @var LabeledThingGroupFacadeFactory\FacadeInterface
      */
     private $labeledThingGroupFacadeFactory;
 
-    public function __construct(Factory\LabeledThingGroup $labeledThingGroupFacadeFactory)
+    public function __construct(LabeledThingGroupFacadeFactory\FacadeInterface $labeledThingGroupFacadeFactory)
     {
         $this->labeledThingGroupFacadeFactory = $labeledThingGroupFacadeFactory;
     }
@@ -22,7 +22,7 @@ class LabeledThingGroup
      */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labeledThingGroupFacade = $this->labeledThingGroupFacadeFactory->getProjectAndTaskFacade(
+        $labeledThingGroupFacade = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );

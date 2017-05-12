@@ -1,12 +1,13 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade\Factory;
+namespace AnnoStationBundle\Database\Facade\Project;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 use AnnoStationBundle\Service;
 use AppBundle\Service as AppBundleService;
 
-class Project implements Facade\Factory
+class TaskDatabase extends Factory\Cache implements FacadeInterface
 {
     /**
      * @var Facade\Project
@@ -24,11 +25,6 @@ class Project implements Facade\Factory
     private $taskDatabaseCreatorService;
 
     /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
-
-    /**
      * @var string
      */
     private $readOnlyDatabase;
@@ -37,42 +33,41 @@ class Project implements Facade\Factory
         Facade\Project $projectFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $pouchdbFeatureEnabled,
         $readOnlyDatabase
     ) {
         $this->projectFacade                  = $projectFacade;
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
-        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
         $this->readOnlyDatabase               = $readOnlyDatabase;
     }
 
-    public function getProjectAndTaskFacade($projectId, $taskId)
+    public function getFacadeByProjectIdAndTaskId($projectId, $taskId)
     {
-        if ($this->pouchdbFeatureEnabled) {
+        $databaseName = $this->taskDatabaseCreatorService->getDatabaseName(
+            $projectId,
+            $taskId
+        );
+        if (!$this->isInFacadeCache($databaseName)) {
             $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $this->taskDatabaseCreatorService->getDatabaseName(
-                    $projectId,
-                    $taskId
-                )
+                $databaseName
             );
 
-            return new Facade\Project($databaseDocumentManager);
+            $this->addFacadeCache($databaseName, new Facade\Project($databaseDocumentManager));
         }
 
-        return $this->projectFacade;
+        return $this->getFacadeCache($databaseName);
     }
 
     public function getReadOnlyFacade()
     {
-        if ($this->pouchdbFeatureEnabled) {
+        if (!$this->isInFacadeCache($this->readOnlyDatabase)) {
             $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
                 $this->readOnlyDatabase
             );
 
-            return new Facade\Project($databaseDocumentManager);
+            $this->addFacadeCache($this->readOnlyDatabase, new Facade\Project($databaseDocumentManager));
         }
 
-        return $this->projectFacade;
+        return $this->getFacadeCache($this->readOnlyDatabase);
     }
 }

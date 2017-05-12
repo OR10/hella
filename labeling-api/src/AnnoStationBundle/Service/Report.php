@@ -2,10 +2,13 @@
 
 namespace AnnoStationBundle\Service;
 
-use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Database\Facade\Factory;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Database\Facade\Project;
+use AnnoStationBundle\Database\Facade\LabelingTask;
+use AnnoStationBundle\Database\Facade\LabeledThing;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
+use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
 
 class Report
@@ -52,20 +55,20 @@ class Report
      * @param Facade\Report                                   $reportFacade
      * @param GhostClassesPropagation                         $ghostClassesPropagation
      * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
-     * @param Factory\Project                                 $projectFacadeFactory
-     * @param Factory\LabelingTask                            $labelingTaskFacadeFactory
-     * @param Factory\LabeledThing                            $labeledThingFacadeFactory
-     * @param Factory\LabeledThingInFrame                     $labeledThingInFrameFacadeFactory
+     * @param Project\FacadeInterface                         $projectFacadeFactory
+     * @param LabelingTask\FacadeInterface                    $labelingTaskFacadeFactory
+     * @param LabeledThing\FacadeInterface                    $labeledThingFacadeFactory
+     * @param LabeledThingInFrame\FacadeInterface             $labeledThingInFrameFacadeFactory
      */
     public function __construct(
         Facade\Video $videoFacade,
         Facade\Report $reportFacade,
         Service\GhostClassesPropagation $ghostClassesPropagation,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        Factory\Project $projectFacadeFactory,
-        Factory\LabelingTask $labelingTaskFacadeFactory,
-        Factory\LabeledThing $labeledThingFacadeFactory,
-        Factory\LabeledThingInFrame $labeledThingInFrameFacadeFactory
+        Project\FacadeInterface $projectFacadeFactory,
+        LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
+        LabeledThing\FacadeInterface $labeledThingFacadeFactory,
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory
     ) {
         $this->videoFacade               = $videoFacade;
         $this->reportFacade              = $reportFacade;

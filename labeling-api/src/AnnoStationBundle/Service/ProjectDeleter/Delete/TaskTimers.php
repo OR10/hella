@@ -3,23 +3,23 @@
 namespace AnnoStationBundle\Service\ProjectDeleter\Delete;
 
 use AppBundle\Model;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabelingTask;
 
 class TaskTimers
 {
     /**
-     * @var Factory\LabelingTask
+     * @var LabelingTask\FacadeInterface
      */
     private $labelingTaskFacadeFactory;
 
-    public function __construct(Factory\LabelingTask $labelingTaskFacadeFactory)
+    public function __construct(LabelingTask\FacadeInterface $labelingTaskFacadeFactory)
     {
         $this->labelingTaskFacadeFactory = $labelingTaskFacadeFactory;
     }
 
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getProjectAndTaskFacade(
+        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );
