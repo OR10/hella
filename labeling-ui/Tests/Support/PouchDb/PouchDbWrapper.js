@@ -26,5 +26,15 @@ PouchDbWrapper.bulkDocs = documents => {
   }, PouchDbWrapper.DATABASE_NAME, documents);
 };
 
+PouchDbWrapper.destroy = () => {
+  return browser.executeAsyncScript((databaseName, callback) => {
+    const db = new PouchDB(databaseName);
+
+    return db.destroy().then((result) => {
+      callback(result);
+    });
+  }, PouchDbWrapper.DATABASE_NAME);
+}
+
 
 export default PouchDbWrapper;
