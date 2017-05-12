@@ -41,8 +41,8 @@ export function matchDocuments(namedParamsRequestData, storedData) {
     lastMatch.actual = actualValue;
     lastMatch.key = key;
 
-    if (typeof expectedValue === 'object' && expectedValue !== null) {
-      result = matchDocuments(expectedValue, storedData);
+    if (typeof expectedValue === 'object' && expectedValue !== null && actualValue !== undefined) {
+      result = matchDocuments(expectedValue, actualValue);
     } else if (typeof expectedValue === 'string' && namedParamsTest.test(expectedValue)) {
       result = expectedValue.length > 0;
     } else if (isUnstableKey(key)) {
