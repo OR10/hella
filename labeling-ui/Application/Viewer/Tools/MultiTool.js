@@ -247,6 +247,12 @@ class MultiTool extends PaperTool {
       if (!hitResult) {
         // Deselection if there was a selection
         if (this._toolActionStruct.selectedPaperShape !== null) {
+
+          // Metalabeling is can not be deselected
+          if (this._toolActionStruct.selectedPaperShape instanceof PaperFrame) {
+            return;
+          }
+
           this._complete({actionIdentifier: 'selection', paperShape: null});
           return;
         }
