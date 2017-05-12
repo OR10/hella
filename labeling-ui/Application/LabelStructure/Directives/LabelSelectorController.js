@@ -1,3 +1,6 @@
+import {equals} from 'angular';
+import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
+import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 /**
  * @property {string} labeledObjectType
  * @property {LegacyLabelStructureInterface} structure
@@ -9,9 +12,6 @@
  * @property {LabeledThingInFrame} selectedLabeledObject
  * @property {PaperShape} selectedPaperShape
  */
-import {equals} from 'angular';
-import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
-import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
 export default class LabelSelectorController {
   /**
@@ -240,9 +240,13 @@ export default class LabelSelectorController {
       classList
     );
 
+<<<<<<< Updated upstream
     // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
     // TODO: find the source of the race condition and eliminate the problem there!
     if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, labeledObject)) {
+=======
+    if (!this._shapeEqualsStructure(labeledObject, this.selectedLabelStructureObject)) {
+>>>>>>> Stashed changes
       return;
     }
 
@@ -288,6 +292,16 @@ export default class LabelSelectorController {
     if (this.activePageIndex === null && this.pages.length > 0) {
       this.activePageIndex = 0;
     }
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledObject
+   * @param {LabelStructure} labeledStructureObject
+   * @returns {boolean}
+   * @private
+   */
+  _shapeEqualsStructure(labeledObject, labeledStructureObject) {
+    return labeledObject.shapes[0].type === labeledStructureObject.shape;
   }
 
   /**
