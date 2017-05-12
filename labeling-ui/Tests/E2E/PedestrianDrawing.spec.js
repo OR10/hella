@@ -250,9 +250,7 @@ describe('Pedestrian drawing', () => {
   it('should keep the pedestrian shape selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex1,
       assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.frameIndex1to5,
       assets.mocks.PedestrianDrawing.OnePedestrianTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 
