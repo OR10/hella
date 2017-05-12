@@ -264,35 +264,32 @@ class TaskController {
     this._labelStructurePromise = this._initializeLabelStructure();
 
     $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
-      if (newShape !== oldShape) {
-        if (newShape !== null) {
-          // @TODO: Should be loaded in the resolver of the viewer. This would make synchronization easier
-          this._labelStructurePromise
-            .then(labelStructure => {
-              let thingIdentifier;
-              let labelStructureThing;
+      if (newShape !== oldShape && newShape !== null) {
+        // @TODO: Should be loaded in the resolver of the viewer. This would make synchronization easier
+        this._labelStructurePromise
+          .then(labelStructure => {
+            let thingIdentifier;
+            let labelStructureObject;
 
-              switch (true) {
-                case newShape instanceof PaperThingShape:
-                  thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
-                  labelStructureThing = labelStructure.getThingById(thingIdentifier);
-                  break;
-                case newShape instanceof PaperGroupShape:
-                  thingIdentifier = newShape.labeledThingGroupInFrame.labeledThingGroup.type;
-                  labelStructureThing = labelStructure.getGroupById(thingIdentifier);
-                  break;
-                case newShape instanceof PaperFrame:
-                  labelStructureThing = labelStructure.getRequirementFrameById('__meta-labeling-frame-identifier__');
-                  break;
-                default:
-                  throw new Error('Cannot read identifier name of unknown shape!');
-              }
+            switch (true) {
+              case newShape instanceof PaperThingShape:
+                thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
+                labelStructureObject = labelStructure.getThingById(thingIdentifier);
+                break;
+              case newShape instanceof PaperGroupShape:
+                thingIdentifier = newShape.labeledThingGroupInFrame.labeledThingGroup.type;
+                labelStructureObject = labelStructure.getGroupById(thingIdentifier);
+                break;
+              case newShape instanceof PaperFrame:
+                labelStructureObject = labelStructure.getRequirementFrameById('__meta-labeling-frame-identifier__');
+                break;
+              default:
+                throw new Error('Cannot read identifier name of unknown shape!');
+            }
 
-              this.selectedLabelStructureObject = labelStructureThing;
-            });
-        } else {
-          this.selectedLabeledObject = null;
-        }
+            console.log('labelStructureObject', labelStructureObject);
+            this.selectedLabelStructureObject = labelStructureObject;
+          });
       }
     });
 
