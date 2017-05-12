@@ -6,7 +6,6 @@
  * @property {Task} task
  * @property {FramePosition} framePosition
  * @property {boolean} isCompleted
- * @property {LabeledThingInFrame} selectedLabeledObject
  * @property {PaperShape} selectedPaperShape
  */
 import {equals} from 'angular';
@@ -163,7 +162,7 @@ export default class LabelSelectorController {
 
     // Store and process choices made by the user
     $scope.$watch('vm.choices', newChoices => {
-      const labeledObject = this.selectedLabeledObject;
+      const labeledObject = this._getSelectedLabeledObject();
       if (!labeledObject || newChoices === null) {
         return;
       }
@@ -215,11 +214,17 @@ export default class LabelSelectorController {
   /**
    * @returns {LabeledThingInFrame}
    */
-  get selectedLabeledObject() {
-    if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame) {
-      return this.selectedPaperShape.labeledThingInFrame;
+  _getSelectedLabeledObject() {
+    switch (true) {
+      case this.selectedPaperShape instanceof PaperThingShape:
+        return this.selectedPaperShape.labeledThingInFrame;
+      case this.selectedPaperShape instanceof PaperGroupShape:
+        return this.selectedPaperShape.labeledThingGroupInFrame;
+      case this.selectedPaperShape instanceof PaperFrame:
+        return this.selectedPaperShape.labeledFrame;
+      default:
+        return null;
     }
-    return null;
   }
 
   /**
@@ -230,11 +235,11 @@ export default class LabelSelectorController {
    * @private
    */
   _updatePagesAndChoices() {
-    const labeledObject = this.selectedLabeledObject;
-    if (labeledObject === null) {
+    const selectedLabeledObject = this._getSelectedLabeledObject();
+    if (selectedLabeledObject === null) {
       return;
     }
-    const classList = labeledObject.extractClassList();
+    const classList = selectedLabeledObject.extractClassList();
     const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
       this.selectedLabelStructureObject,
       classList
@@ -273,8 +278,8 @@ export default class LabelSelectorController {
         }
         if (this.choices[id] !== null) {
           // Remove the chosen value from the labelsObject
-          this.selectedLabeledObject.setClasses(
-            this.selectedLabeledObject.classes.filter(
+          selectedLabeledObject.setClasses(
+            selectedLabeledObject.classes.filter(
               label => label !== this.choices[id]
             )
           );
@@ -298,7 +303,7 @@ export default class LabelSelectorController {
    */
   _storeUpdatedLabeledObject(updateAssociatedLabeledThing = false) {
     // Store reference in case it is changed while being stored.
-    const selectedLabeledObject = this.selectedLabeledObject;
+    const selectedLabeledObject = this._getSelectedLabeledObject();
 
     switch (true) {
       case selectedLabeledObject instanceof LabeledThingInFrame:
