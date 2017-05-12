@@ -37,6 +37,20 @@ class PaperFrame extends PaperShape {
   }
 
   /**
+   * @return {boolean}
+   */
+  canBeDeleted() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canBeInterpolated() {
+    return false;
+  }
+
+  /**
    * @return {Object}
    */
   toJSON() {
