@@ -182,9 +182,7 @@ describe('Point drawing', () => {
   it('should keep the point shape selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex1,
       assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex1to5,
       assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 
