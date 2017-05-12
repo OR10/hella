@@ -1,5 +1,6 @@
 import UrlBuilder from '../UrlBuilder';
 import featureFlags from '../../../Application/features.json';
+import PouchDb from '../PouchDb/PouchDbWrapper';
 import httpMock from 'protractor-http-mock';
 
 export function getMockRequestsMade(mock) {
@@ -50,7 +51,6 @@ function waitForApplicationReady() {
 }
 
 function storeDocumentsInPouch(mocks) {
-  const configuration = require('../../../Application/Common/config.json');
   const knownIdentifierNames = [
     'sign',
     'lsr-01'
@@ -102,13 +102,7 @@ function storeDocumentsInPouch(mocks) {
     }
   });
 
-  return browser.executeAsyncScript((configuration, documents, callback) => {
-    const db = new PouchDB(`TASKID-TASKID-${configuration.storage.local.databaseName}`);
-
-    return db.bulkDocs(documents).then((result) => {
-      callback(result);
-    });
-  }, configuration, documents);
+  return PouchDb.bulkDocs(documents);
 };
 
 const defaultTestConfig = {

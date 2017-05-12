@@ -1,5 +1,5 @@
-var configuration = require('../../../../../Application/Common/config.json');
 import {matchDocuments, lastMatchChecked} from './MatchDocuments';
+import PouchDb from '../../../PouchDb/PouchDbWrapper';
 
 function checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult) {
   if (namedParamsRequestData.labeledThing && namedParamsRequestData.labeledThingInFrame) {
@@ -35,15 +35,7 @@ module.exports = function toContainNamedParamsRequest() {
         message: 'Expected document not found in Pouch DB',
       };
 
-      const pouchQuery = browser.executeAsyncScript((configuration, callback) => {
-        const db = new PouchDB(`TASKID-TASKID-${configuration.storage.local.databaseName}`);
-
-        return db.allDocs({include_docs: true}).then((result) => {
-          callback(result);
-        });
-      }, configuration);
-
-      overallResult.pass = pouchQuery.then((allPouchDocuments) => {
+      overallResult.pass = PouchDb.allDocs().then((allPouchDocuments) => {
         let namedParamsRequestData;
         const requestMethod = namedParamsMock.request.method.toUpperCase();
 
