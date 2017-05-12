@@ -10,11 +10,6 @@ use AnnoStationBundle\Database\Facade;
 class LabeledThings
 {
     /**
-     * @var Facade\LabelingTask
-     */
-    private $labelingTaskFacade;
-
-    /**
      * @var Facade\LabeledThing
      */
     private $labeledThingFacade;
@@ -36,12 +31,10 @@ class LabeledThings
 
     public function __construct(
         Facade\LabeledThing $labeledThingFacade,
-        Facade\LabelingTask $labelingTaskFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
         $pouchdbFeatureEnabled
     ) {
-        $this->labelingTaskFacade             = $labelingTaskFacade;
         $this->labeledThingFacade             = $labeledThingFacade;
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
@@ -53,7 +46,6 @@ class LabeledThings
      */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labelingTaskFacade = $this->labelingTaskFacade;
         $labeledThingFacade = $this->labeledThingFacade;
         if ($this->pouchdbFeatureEnabled) {
             $databaseDocumentManager   = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
@@ -62,11 +54,10 @@ class LabeledThings
                     $labelingTask->getId()
                 )
             );
-            $labelingTaskFacade = new Facade\LabelingTask($databaseDocumentManager);
             $labeledThingFacade = new Facade\LabeledThing($databaseDocumentManager);
         }
 
-        $labeledThings = $labelingTaskFacade->getLabeledThings($labelingTask);
+        $labeledThings = $labeledThingFacade->findByTaskId($labelingTask);
         foreach ($labeledThings as $labeledThing) {
             $labeledThingFacade->delete($labeledThing);
         }

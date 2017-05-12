@@ -303,22 +303,6 @@ class LabelingTask
 
     /**
      * @param Model\LabelingTask $labelingTask
-     *
-     * @return Model\LabeledThing[]
-     */
-    public function getLabeledThings(Model\LabelingTask $labelingTask)
-    {
-        return $this->documentManager
-            ->createQuery('annostation_labeled_thing', 'by_taskId')
-            ->setStartKey($labelingTask->getId())
-            ->setEndKey($labelingTask->getId())
-            ->onlyDocs(true)
-            ->execute()
-            ->toArray();
-    }
-
-    /**
-     * @param Model\LabelingTask $labelingTask
      * @param null               $skip
      * @param null               $limit
      *
