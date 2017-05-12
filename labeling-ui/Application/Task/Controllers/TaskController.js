@@ -17,7 +17,6 @@ class TaskController {
    * @param {{task: Task, video: Video}} initialData
    * @param {User} user
    * @param {Object} userPermissions
-   * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {$location} $location
    * @param {ApplicationState} applicationState
    * @param {angular.$timeout} $timeout
@@ -32,7 +31,6 @@ class TaskController {
               initialData,
               user,
               userPermissions,
-              labeledFrameGateway,
               $location,
               applicationState,
               $timeout,
@@ -176,12 +174,6 @@ class TaskController {
     this._constrastFilter = null;
 
     /**
-     * @type {LabeledFrameGateway}
-     * @private
-     */
-    this._labeledFrameGateway = labeledFrameGateway;
-
-    /**
      * @TODO Move into LabelSelector when refactoring for different task types
      * @type {AbortablePromiseRingBuffer}
      */
@@ -242,11 +234,6 @@ class TaskController {
      * @type {{id, shape, name}|null}
      */
     this.selectedLabelStructureObject = null;
-
-    /**
-     * @type {LabeledFrameGateway}
-     */
-    this._labeledFrameGateway = labeledFrameGateway;
 
     /**
      * @type {AbortablePromiseRingBuffer}
@@ -428,16 +415,6 @@ class TaskController {
     return labelStructurePromise;
   }
 
-  /**
-   * Load the {@link LabeledFrame} structure for the given frame
-   * @param frameIndex
-   * @returns {AbortablePromise<LabeledFrame>}
-   * @private
-   */
-  _loadLabeledFrame(frameIndex) {
-    return this._labeledFrameGateway.getLabeledFrame(this.task, frameIndex);
-  }
-
   onSplitViewInitialized() {
     this.$scope.$broadcast('sidebar.resized');
   }
@@ -506,7 +483,6 @@ TaskController.$inject = [
   'initialData',
   'user',
   'userPermissions',
-  'labeledFrameGateway',
   '$location',
   'applicationState',
   '$timeout',
