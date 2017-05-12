@@ -4,20 +4,24 @@ import PouchDb from '../PouchDb/PouchDbWrapper';
 import httpMock from 'protractor-http-mock';
 
 export function getMockRequestsMade(mock) {
-  return httpMock.requestsMade().then(requests => {
-    return requests.map(request => {
-      const strippedRequest = {
-        method: request.method,
-        path: request.url,
-      };
+  if (featureFlags.pouchdb) {
+    return PouchDb.allDocs();
+  } else {
+    return httpMock.requestsMade().then(requests => {
+      return requests.map(request => {
+        const strippedRequest = {
+          method: request.method,
+          path: request.url,
+        };
 
-      if (request.data) {
-        strippedRequest.data = request.data;
-      }
+        if (request.data) {
+          strippedRequest.data = request.data;
+        }
 
-      return strippedRequest;
+        return strippedRequest;
+      });
     });
-  });
+  }
 }
 
 export function dumpAllRequestsMade(mock) {
@@ -31,7 +35,7 @@ export function dumpAllRequestsMade(mock) {
       if (request.data) {
         strippedRequest.data = request.data;
       }
-      
+
       return strippedRequest;
     });
 

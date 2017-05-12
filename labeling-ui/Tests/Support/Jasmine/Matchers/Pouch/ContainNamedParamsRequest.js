@@ -1,5 +1,4 @@
 import {matchDocuments, lastMatchChecked} from './MatchDocuments';
-import PouchDb from '../../../PouchDb/PouchDbWrapper';
 
 function checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult) {
   if (namedParamsRequestData.labeledThing && namedParamsRequestData.labeledThingInFrame) {
@@ -27,6 +26,22 @@ function getIdFromUrl(url) {
   return matches[1];
 }
 
+function checkDocuments(allPouchDocuments, namedParamsMock, overallResult) {
+  const requestMethod = namedParamsMock.request.method.toUpperCase();
+  let namedParamsRequestData;
+
+  if (requestMethod === 'DELETE') {
+    const id = getIdFromUrl(namedParamsMock.request.path);
+    namedParamsRequestData = {
+      id: id,
+    };
+    return isDocumentDeleted(namedParamsRequestData, allPouchDocuments, overallResult);
+  } else {
+    namedParamsRequestData = namedParamsMock.request.data;
+    return checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult);
+  }
+};
+
 module.exports = function toContainNamedParamsRequest() {
   return {
     compare: function (mockedRequests, namedParamsMock) {
@@ -35,21 +50,8 @@ module.exports = function toContainNamedParamsRequest() {
         message: 'Expected document not found in Pouch DB',
       };
 
-      overallResult.pass = PouchDb.allDocs().then(allPouchDocuments => {
-        let namedParamsRequestData;
-        const requestMethod = namedParamsMock.request.method.toUpperCase();
-
-        if (requestMethod === 'DELETE') {
-          const id = getIdFromUrl(namedParamsMock.request.path);
-          namedParamsRequestData = {
-            id: id,
-          };
-          return isDocumentDeleted(namedParamsRequestData, allPouchDocuments, overallResult);
-        } else {
-          namedParamsRequestData = namedParamsMock.request.data;
-          return checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult);
-        }
-      });
+      // Message might be changed during checking
+      overallResult.pass = checkDocuments(mockedRequests, namedParamsMock, overallResult);
 
       return overallResult;
     },
