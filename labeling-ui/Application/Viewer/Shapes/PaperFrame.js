@@ -48,7 +48,7 @@ class PaperFrame extends PaperShape {
  * @return {string}
  */
 PaperFrame.getClass = () => {
-  return 'frame';
+  return 'frame-shape';
 };
 
 export default PaperFrame;

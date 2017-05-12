@@ -68,7 +68,7 @@ FrameCreationTool.getToolName = () => {
  */
 FrameCreationTool.isShapeClassSupported = shapeClass => {
   return [
-    'frame',
+    'frame-shape',
   ].includes(shapeClass);
 };
 
