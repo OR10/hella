@@ -115,9 +115,24 @@ let mocks = {
   specific: []
 };
 
-export function mock(sharedMocks, specificMocks = []) {
+export function mock(sharedMocks) {
+  let specificMocksKeys = [];
+
   mocks.shared = sharedMocks;
-  mocks.specific = specificMocks;
+  mocks.specific = mocks.shared.filter((mock, key) => {
+    const hasLabeledThings = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThings);
+    const hasLabeledThingsInFrame = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThingsInFrame);
+    const mustBeStoredInCouch = (hasLabeledThings || hasLabeledThingsInFrame);
+    if (mustBeStoredInCouch) {
+      specificMocksKeys.push(key);
+    }
+    return mustBeStoredInCouch;
+  });
+
+  // Remove the keys from the shared array, which will be stored in the Pouch
+  specificMocksKeys.forEach(key => {
+    mocks.shared.splice(key, 1);
+  });
 }
 
 mock.teardown = () => {
