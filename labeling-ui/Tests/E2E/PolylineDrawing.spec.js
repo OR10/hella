@@ -227,9 +227,7 @@ describe('Polyline drawing', () => {
   it('should keep the polyline shape selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex1,
       assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex1to5,
       assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 
