@@ -240,13 +240,7 @@ export default class LabelSelectorController {
       classList
     );
 
-<<<<<<< Updated upstream
-    // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
-    // TODO: find the source of the race condition and eliminate the problem there!
-    if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, labeledObject)) {
-=======
-    if (!this._shapeEqualsStructure(labeledObject, this.selectedLabelStructureObject)) {
->>>>>>> Stashed changes
+    if (!this._labelStructureFitsLabeledObject(labeledObject, this.selectedLabelStructureObject)) {
       return;
     }
 
@@ -292,16 +286,6 @@ export default class LabelSelectorController {
     if (this.activePageIndex === null && this.pages.length > 0) {
       this.activePageIndex = 0;
     }
-  }
-
-  /**
-   * @param {LabeledThingInFrame} labeledObject
-   * @param {LabelStructure} labeledStructureObject
-   * @returns {boolean}
-   * @private
-   */
-  _shapeEqualsStructure(labeledObject, labeledStructureObject) {
-    return labeledObject.shapes[0].type === labeledStructureObject.shape;
   }
 
   /**
