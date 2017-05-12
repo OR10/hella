@@ -1,8 +1,8 @@
 imports:
+  - resource: liip_monitor.yml
   - resource: parameters.yml
   - resource: services.yml
   - resource: security.yml
-  - resource: liip_monitor.yml
 
 parameters:
   redirectAfterLogin: /labeling
