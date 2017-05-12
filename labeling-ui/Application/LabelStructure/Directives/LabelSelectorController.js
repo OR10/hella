@@ -240,7 +240,9 @@ export default class LabelSelectorController {
       classList
     );
 
-    if (labeledObject.shapes[0].type !== this.selectedLabelStructureObject.shape) {
+    // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
+    // TODO: find the source of the race condition and eliminate the problem there!
+    if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, labeledObject)) {
       return;
     }
 
@@ -397,6 +399,28 @@ export default class LabelSelectorController {
     }
   }
 
+  /**
+   * @param {LabelStructureObject} selectedLabelStructureObject
+   * @param {LabeledObject} labeledObject
+   * @private
+   */
+  _labelStructureFitsLabeledObject(selectedLabelStructureObject, labeledObject) {
+    const labelStructureObjectShape = selectedLabelStructureObject.shape;
+    const labeledObjectShapeType = labeledObject.shapes[0].type;
+
+    // For some shapes the database shape type and the requirements shape type are not the same.
+    // Therefor we need a mapping!
+    let normalizedLabeledObjectType;
+    switch (labeledObjectShapeType) {
+      case 'cuboid3d':
+        normalizedLabeledObjectType = 'cuboid';
+        break;
+      default:
+        normalizedLabeledObjectType = labeledObjectShapeType;
+    }
+
+    return labelStructureObjectShape === normalizedLabeledObjectType;
+  }
 }
 
 LabelSelectorController.$inject = [
