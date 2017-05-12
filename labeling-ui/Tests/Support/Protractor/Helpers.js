@@ -128,11 +128,6 @@ export function mock(sharedMocks) {
     }
     return mustBeStoredInCouch;
   });
-
-  // Remove the keys from the shared array, which will be stored in the Pouch
-  specificMocksKeys.forEach(key => {
-    mocks.shared.splice(key, 1);
-  });
 }
 
 mock.teardown = () => {
