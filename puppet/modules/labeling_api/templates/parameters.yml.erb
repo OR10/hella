@@ -196,3 +196,15 @@ services:
     annostation.labeling_api.database.facade.user.selected-alias:
         alias: annostation.labeling_api.database.facade.user_with_couch_db_sync
 <% end %>
+<% if @couchdb_user != nil && @couchdb_password != nil %>
+liip_monitor:
+    checks:
+        groups:
+            default:
+                guzzle_http_service:
+                    couch_db:
+                        options:
+                            auth:
+                                - %couchdb_user%
+                                - %couchdb_password%
+<% end %>
