@@ -4,7 +4,8 @@ namespace AnnoStationBundle\Service;
 
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabeledThing;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper;
 
@@ -26,30 +27,29 @@ class TaskIncomplete
     private $configurationXmlConverterFactory;
 
     /**
-     * @var Factory
+     * @var LabeledThing\FacadeInterface
      */
     private $labeledThingFactory;
 
     /**
-     * @var Factory
+     * @var LabeledThingInFrame\FacadeInterface
      */
     private $labeledThingInFrameFactory;
-
     /**
      * TaskIncomplete constructor.
      *
      * @param Facade\LabelingTask                  $labelingTaskFacade
      * @param Facade\TaskConfiguration             $taskConfigurationFacade
      * @param TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
-     * @param Factory                 $labeledThingFactory
-     * @param Factory          $labeledThingInFrameFactory
+     * @param LabeledThing\FacadeInterface         $labeledThingFactory
+     * @param LabeledThingInFrame\FacadeInterface  $labeledThingInFrameFactory
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\TaskConfiguration $taskConfigurationFacade,
         Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
-        Factory $labeledThingFactory,
-        Factory $labeledThingInFrameFactory
+        LabeledThing\FacadeInterface $labeledThingFactory,
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFactory
     ) {
         $this->labelingTaskFacade               = $labelingTaskFacade;
         $this->taskConfigurationFacade          = $taskConfigurationFacade;

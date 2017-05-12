@@ -2,22 +2,22 @@
 
 namespace AnnoStationBundle\Service\ProjectImporter\Facade;
 
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabeledThing as LabeledThingFacadeFactory;
 use AppBundle\Model;
 
 class LabeledThing
 {
     /**
-     * @var Factory
+     * @var LabeledThingFacadeFactory\FacadeInterface
      */
     private $labeledThingFacadeFactory;
 
     /**
      * LabeledThing constructor.
      *
-     * @param Factory $labeledThingFacadeFactory
+     * @param LabeledThingFacadeFactory\FacadeInterface $labeledThingFacadeFactory
      */
-    public function __construct(Factory $labeledThingFacadeFactory)
+    public function __construct(LabeledThingFacadeFactory\FacadeInterface $labeledThingFacadeFactory)
     {
         $this->labeledThingFacadeFactory = $labeledThingFacadeFactory;
     }
