@@ -398,11 +398,12 @@ export default class LabelSelectorController {
   }
 
   /**
-   * @param {LabelStructureObject} selectedLabelStructureObject
    * @param {LabeledObject} labeledObject
+   * @param {LabelStructureObject} selectedLabelStructureObject
+   * @returns {boolean}
    * @private
    */
-  _labelStructureFitsLabeledObject(selectedLabelStructureObject, labeledObject) {
+  _labelStructureFitsLabeledObject(labeledObject, selectedLabelStructureObject) {
     const labelStructureObjectShape = selectedLabelStructureObject.shape;
     const labeledObjectShapeType = labeledObject.shapes[0].type;
 
