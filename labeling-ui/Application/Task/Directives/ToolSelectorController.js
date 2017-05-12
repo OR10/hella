@@ -34,7 +34,7 @@ class ToolSelectorController {
       case this.selectedPaperShape instanceof PaperGroupShape:
         return this.selectedPaperShape.labeledThingGroupInFrame;
       case this.selectedPaperShape instanceof PaperFrame:
-        return this.selectedPaperShape.labeledThingInFrame;
+        return this.selectedPaperShape.labeledFrame;
       default:
         throw new Error(`Unknown type of selected paper shape`);
     }
