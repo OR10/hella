@@ -145,10 +145,10 @@ export default class LabelSelectorController {
         'vm.selectedPaperShape',
       ],
       ([
-        newLabelStructure,
-        newSelectedLabelStructureObject,
-        newSelectedPaperShape,
-      ])=> {
+         newLabelStructure,
+         newSelectedLabelStructureObject,
+         newSelectedPaperShape,
+       ]) => {
         if (newLabelStructure === null || newSelectedLabelStructureObject === null || newSelectedPaperShape === null) {
           this.pages = null;
           this.activePageIndex = null;
