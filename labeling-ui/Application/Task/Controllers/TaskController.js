@@ -287,7 +287,6 @@ class TaskController {
                 throw new Error('Cannot read identifier name of unknown shape!');
             }
 
-            console.log('labelStructureObject', labelStructureObject);
             this.selectedLabelStructureObject = labelStructureObject;
           });
       }
