@@ -210,6 +210,8 @@ class MultiTool extends PaperTool {
         return this._toolService.getTool(this._context, PaperPoint.getClass());
       case 'group-rectangle':
         return this._toolService.getTool(this._context, PaperGroupRectangle.getClass());
+      case 'frame-shape':
+        return this._toolService.getTool(this._context, PaperFrame.getClass());
       default:
         throw new Error(`Cannot create tool of unknown type: ${requirementsShape}.`);
     }
