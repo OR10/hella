@@ -51,6 +51,10 @@ function waitForApplicationReady() {
 
 function storeDocumentsInPouch(mocks) {
   const configuration = require('../../../Application/Common/config.json');
+  const knownIdentifierNames = [
+    'sign',
+    'lsr-01'
+  ];
   let documents = [];
 
   mocks.forEach(mock => {
@@ -85,7 +89,7 @@ function storeDocumentsInPouch(mocks) {
         ltif._id = ltif.id;
         ltif.taskId = taskId;
         ltif.labeledThingId = ltif.labeledThingId;
-        if (ltif.identifierName !== 'sign') {
+        if (knownIdentifierNames.indexOf(ltif.identifierName) === -1) {
           ltif.identifierName = 'legacy';
         }
         ltif.type = 'AppBundle.Model.LabeledThingInFrame';
