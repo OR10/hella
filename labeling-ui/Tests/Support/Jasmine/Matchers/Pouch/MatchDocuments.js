@@ -33,9 +33,17 @@ export function matchDocuments(namedParamsRequestData, storedData) {
     let expectedValue = namedParamsRequestData[key];
     if (key === 'id') {
       actualValue = storedData['_id'];
+    } else if (key === 'startFrameNumber') {
+      actualValue = storedData['startFrameIndex'];
+    } else if (key === 'endFrameNumber') {
+      actualValue = storedData['endFrameIndex'];
     } else {
       actualValue = storedData[key];
     }
+
+    // console.log('Key: ', key);
+    // console.log('Expected: ', expectedValue);
+    // console.log('Actual: ', actualValue);
 
     lastMatch.expected = expectedValue;
     lastMatch.actual = actualValue;
