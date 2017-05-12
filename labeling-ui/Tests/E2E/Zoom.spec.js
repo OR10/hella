@@ -1,9 +1,8 @@
 import using from '../Support/Protractor/DataProvider';
-import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import ImageComparisionService from '../Support/ImageComparisonService';
 import InteractionService from '../Support/InteractionService';
-import {expectAllModalsToBeClosed, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 

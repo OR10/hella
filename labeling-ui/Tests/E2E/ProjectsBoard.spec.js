@@ -1,5 +1,4 @@
-import mock from 'protractor-http-mock';
-import {expectAllModalsToBeClosed, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import GridObjectTest from '../Support/angular-ui-grid';
 

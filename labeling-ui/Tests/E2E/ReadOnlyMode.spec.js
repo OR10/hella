@@ -1,6 +1,5 @@
-import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
