@@ -1,3 +1,11 @@
+import {equals} from 'angular';
+import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
+import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
+
+import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
+import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
+import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
+
 /**
  * @property {string} labeledObjectType
  * @property {LegacyLabelStructureInterface} structure
@@ -8,13 +16,6 @@
  * @property {boolean} isCompleted
  * @property {PaperShape} selectedPaperShape
  */
-import {equals} from 'angular';
-import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
-import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
-
-import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
-import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
-import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
 
 export default class LabelSelectorController {
   /**
