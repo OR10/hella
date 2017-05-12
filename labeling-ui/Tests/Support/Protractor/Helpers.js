@@ -50,7 +50,7 @@ function waitForApplicationReady() {
   });
 }
 
-function storeDocumentsInPouch(mocks) {
+function bootstrapPouchDb(mocks) {
   const knownIdentifierNames = [
     'sign',
     'lsr-01'
@@ -148,7 +148,7 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   // For some strange reason simply returning Promise.resolve() in storeMocksInPouch if Pouch is not active
   // does not work.
   if (featureFlags.pouchdb) {
-    return storeDocumentsInPouch(mocks.specific)
+    return bootstrapPouchDb(mocks.specific)
       .then(() => waitForApplicationReady());
   } else {
     return waitForApplicationReady();

@@ -35,7 +35,7 @@ module.exports = function toContainNamedParamsRequest() {
         message: 'Expected document not found in Pouch DB',
       };
 
-      overallResult.pass = PouchDb.allDocs().then((allPouchDocuments) => {
+      overallResult.pass = PouchDb.allDocs().then(allPouchDocuments => {
         let namedParamsRequestData;
         const requestMethod = namedParamsMock.request.method.toUpperCase();
 
