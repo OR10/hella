@@ -1239,7 +1239,6 @@ class ViewerController {
    * @private
    */
   _onThingCreate(paperShape) {
-    this._$rootScope.$emit('shape:add:before');
     const newLabeledThingInFrame = paperShape.labeledThingInFrame;
     const newLabeledThing = newLabeledThingInFrame.labeledThing;
 
@@ -1285,8 +1284,6 @@ class ViewerController {
    * @private
    */
   _onGroupCreate(paperGroupShape) {
-    this._$rootScope.$emit('shape:add:before');
-
     let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(this._thingLayerContext, paperGroupShape.bounds);
     // Service finds the group shape itself, so we need to remove the shape id from the array
     shapesInGroup = shapesInGroup.filter(shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
