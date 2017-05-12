@@ -663,6 +663,13 @@ class ThumbnailReelController {
     // After this call the locations should be inside their respective cache
     this._frameLocationGateway.getFrameLocations(this.task.id, 'thumbnail', 0, frameCount);
   }
+
+  /**
+   * @return {boolean}
+   */
+  canPerformModifications() {
+    return !(this.readOnly === true) && this.selectedPaperShape instanceof PaperThingShape;
+  }
 }
 
 ThumbnailReelController.$inject = [
