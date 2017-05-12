@@ -3,16 +3,16 @@
 namespace AnnoStationBundle\Service\ProjectDeleter\Delete;
 
 use AppBundle\Model;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabelingTask;
 
 class TaskTimers
 {
     /**
-     * @var Factory
+     * @var LabelingTask\FacadeInterface
      */
     private $labelingTaskFacadeFactory;
 
-    public function __construct(Factory $labelingTaskFacadeFactory)
+    public function __construct(LabelingTask\FacadeInterface $labelingTaskFacadeFactory)
     {
         $this->labelingTaskFacadeFactory = $labelingTaskFacadeFactory;
     }

@@ -1,17 +1,18 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade\Factory\TaskDatabase;
+namespace AnnoStationBundle\Database\Facade\LabeledFrame;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 use AnnoStationBundle\Service;
 use AppBundle\Service as AppBundleService;
 
-class Project extends Facade\Factory
+class TaskDatabase extends Factory\Cache implements FacadeInterface
 {
     /**
-     * @var Facade\Project
+     * @var Facade\LabeledFrame
      */
-    private $projectFacade;
+    private $labeledFrameFacade;
 
     /**
      * @var AppBundleService\DatabaseDocumentManagerFactory
@@ -29,15 +30,15 @@ class Project extends Facade\Factory
     private $readOnlyDatabase;
 
     public function __construct(
-        Facade\Project $projectFacade,
+        Facade\LabeledFrame $labeledFrameFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
         $readOnlyDatabase
     ) {
-        $this->projectFacade                  = $projectFacade;
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
         $this->readOnlyDatabase               = $readOnlyDatabase;
+        $this->labeledFrameFacade             = $labeledFrameFacade;
     }
 
     public function getFacadeByProjectIdAndTaskId($projectId, $taskId)
@@ -51,7 +52,7 @@ class Project extends Facade\Factory
                 $databaseName
             );
 
-            $this->addFacadeCache($databaseName, new Facade\Project($databaseDocumentManager));
+            $this->addFacadeCache($databaseName, new Facade\LabeledFrame($databaseDocumentManager));
         }
 
         return $this->getFacadeCache($databaseName);
@@ -64,7 +65,7 @@ class Project extends Facade\Factory
                 $this->readOnlyDatabase
             );
 
-            $this->addFacadeCache($this->readOnlyDatabase, new Facade\Project($databaseDocumentManager));
+            $this->addFacadeCache($this->readOnlyDatabase, new Facade\LabeledFrame($databaseDocumentManager));
         }
 
         return $this->getFacadeCache($this->readOnlyDatabase);

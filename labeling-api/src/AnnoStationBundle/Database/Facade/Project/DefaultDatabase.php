@@ -1,12 +1,11 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade\Factory\DefaultDatabase;
+namespace AnnoStationBundle\Database\Facade\Project;
 
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Service;
-use AppBundle\Service as AppBundleService;
+use AnnoStationBundle\Database\Facade\Factory;
 
-class Project extends Facade\Factory
+class DefaultDatabase extends Factory\Cache implements FacadeInterface
 {
     /**
      * @var Facade\Project

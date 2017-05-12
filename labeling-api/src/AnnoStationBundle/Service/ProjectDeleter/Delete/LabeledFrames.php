@@ -3,24 +3,24 @@
 namespace AnnoStationBundle\Service\ProjectDeleter\Delete;
 
 use AppBundle\Model;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabelingTask;
+use AnnoStationBundle\Database\Facade\LabeledFrame;
 
 class LabeledFrames
 {
-
     /**
-     * @var Factory
+     * @var LabelingTask\FacadeInterface
      */
     private $labelingTaskFacadeFactory;
 
     /**
-     * @var Factory
+     * @var LabeledFrame\FacadeInterface
      */
     private $labeledFrameFacadeFactory;
 
     public function __construct(
-        Factory $labelingTaskFacadeFactory,
-        Factory $labeledFrameFacadeFactory
+        LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
+        LabeledFrame\FacadeInterface $labeledFrameFacadeFactory
     ) {
         $this->labelingTaskFacadeFactory = $labelingTaskFacadeFactory;
         $this->labeledFrameFacadeFactory = $labeledFrameFacadeFactory;

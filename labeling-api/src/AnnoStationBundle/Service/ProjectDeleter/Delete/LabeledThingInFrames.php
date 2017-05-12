@@ -3,16 +3,16 @@
 namespace AnnoStationBundle\Service\ProjectDeleter\Delete;
 
 use AppBundle\Model;
-use AnnoStationBundle\Database\Facade\Factory;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
 
 class LabeledThingInFrames
 {
     /**
-     * @var Factory
+     * @var LabeledThingInFrame\FacadeInterface
      */
     private $labeledThingInFrameFacadeFactory;
 
-    public function __construct(Factory $labeledThingInFrameFacadeFactory)
+    public function __construct(LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory)
     {
         $this->labeledThingInFrameFacadeFactory = $labeledThingInFrameFacadeFactory;
     }
