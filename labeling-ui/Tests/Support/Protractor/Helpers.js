@@ -25,27 +25,42 @@ export function getMockRequestsMade(mock) {
 }
 
 export function dumpAllRequestsMade(mock) {
-  return httpMock.allRequestsMade().then(requests => {
-    const strippedRequests = requests.map(request => {
-      const strippedRequest = {
-        method: request.method,
-        path: request.url,
-      };
+  const failTest = Promise.reject(new Error('Dumping all requests causes automatic test fail.'));
 
-      if (request.data) {
-        strippedRequest.data = request.data;
-      }
+  if (featureFlags.pouchdb) {
+    return PouchDb.allDocs().then(docs => {
+      let strippedRequests = docs.rows.map(row => row.doc);
+      strippedRequests = strippedRequests.filter(doc => doc._id.indexOf('_design') === -1);
 
-      return strippedRequest;
+      console.log( // eslint-disable-line no-console
+        `The following documents are in the Pouch. Design documents have been filtered out.\n${JSON.stringify(strippedRequests, undefined, 2)}`
+      );
+
+      return failTest;
     });
+  } else {
+    return httpMock.allRequestsMade().then(requests => {
+      const strippedRequests = requests.map(request => {
+        const strippedRequest = {
+          method: request.method,
+          path: request.url,
+        };
 
-   console.log( // eslint-disable-line no-console
-      `The following requests were made against the backend. Not all of them may have been mocked!\n${JSON.stringify(strippedRequests, undefined, 2)}`
-    );
+        if (request.data) {
+          strippedRequest.data = request.data;
+        }
 
-    // fail('Dumping all requests causes automatic test fail.');
-    return Promise.reject(new Error('Dumping all requests causes automatic test fail.'));
-  });
+        return strippedRequest;
+      });
+
+      console.log( // eslint-disable-line no-console
+        `The following requests were made against the backend. Not all of them may have been mocked!\n${JSON.stringify(strippedRequests, undefined, 2)}`
+      );
+
+      // fail('Dumping all requests causes automatic test fail.');
+      return failTest;
+    });
+  }
 }
 
 function waitForApplicationReady() {
