@@ -4,7 +4,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Rectangle drawing', () => {
+describe('Rectangle drawing', () => {
   let assets;
   let sharedMocks;
   let viewer;
