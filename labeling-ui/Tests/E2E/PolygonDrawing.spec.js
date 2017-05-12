@@ -228,9 +228,7 @@ describe('Polygon drawing', () => {
   it('should keep the polygon shape selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex1,
       assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex1to5,
       assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 
