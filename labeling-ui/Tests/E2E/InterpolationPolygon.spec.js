@@ -1,11 +1,11 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock, dumpAllRequestsMade} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import featureFlags from '../../Application/features.json';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Interpolation Point Tests', () => {
+describe('Interpolation Polygon Tests', () => {
   if (!featureFlags.pouchdb) {
     pending('These tests only work with activated Pouch');
   }
@@ -34,13 +34,13 @@ describe('Interpolation Point Tests', () => {
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
       assets.mocks.Interpolation.Shared.Task,
-      assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex0and4,
+      assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex0and4,
     ];
 
     viewer = element(by.css('.layer-container'));
   });
 
-  it('should interpolate a Point when selecting the start LTIF', done => {
+  it('should interpolate a Polygon when selecting the start LTIF', done => {
     let nextFrameButton;
 
     mock(sharedMocks);
@@ -50,7 +50,7 @@ describe('Interpolation Point Tests', () => {
         nextFrameButton = element(by.css('.next-frame-button'));
 
         browser.actions()
-          .mouseMove(viewer, {x: 200, y: 100}) // Point in first frame
+          .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
           .click()
           .perform();
       })
@@ -59,61 +59,61 @@ describe('Interpolation Point Tests', () => {
         interpolateButton.click();
       })
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame0')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame0);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame0);
       })
       .then(() => nextFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame1')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame1);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame1);
       })
       .then(() => nextFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame2')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame2);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame2);
       })
       .then(() => nextFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame3')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame3);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame3);
       })
       .then(() => nextFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame4')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame4);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame4);
       })
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex0);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex1);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex4);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex0);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex1);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex2);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex3);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex4);
         done();
       });
   });
 
-  it('should interpolate a Point when selecting the end LTIF', done => {
+  it('should interpolate a Polygon when selecting the end LTIF', done => {
     let previousFrameButton;
 
     mock(sharedMocks);
@@ -123,7 +123,7 @@ describe('Interpolation Point Tests', () => {
         previousFrameButton = element(by.css('.previous-frame-button'));
 
         browser.actions()
-          .mouseMove(viewer, {x: 200, y: 100}) // Point in first frame
+          .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
           .click()
           .perform();
       })
@@ -137,56 +137,56 @@ describe('Interpolation Point Tests', () => {
         interpolateButton.click();
       })
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame4')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame4);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame4);
       })
       .then(() => previousFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame3')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame3);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame3);
       })
       .then(() => previousFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame2')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame2);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame2);
       })
       .then(() => previousFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame1')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame1);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame1);
       })
       .then(() => previousFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame0')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame0);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame0);
       })
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex0);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex1);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Point.LabeledThingInFrame.frameIndex4);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex0);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex1);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex2);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex3);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex4);
         done();
       });
   });
