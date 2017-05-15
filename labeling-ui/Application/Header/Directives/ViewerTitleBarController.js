@@ -152,7 +152,7 @@ class ViewerTitleBarController {
     this._applicationState.viewer.work();
 
     return this._$q.resolve()
-      .then(() => this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id))
+      .then(() => this._labeledThingGateway.getIncompleteLabeledThingCount(this.task))
       .then(result => {
         if (result.count > 0) {
           // Jump to next incomplete directly, if there still is one
@@ -319,7 +319,7 @@ class ViewerTitleBarController {
 
   refreshIncompleteCount() {
     this._$scope.$applyAsync(() => {
-      this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id).then(result => {
+      this._labeledThingGateway.getIncompleteLabeledThingCount(this.task).then(result => {
         this.incompleteCount = result.count;
       });
     });
