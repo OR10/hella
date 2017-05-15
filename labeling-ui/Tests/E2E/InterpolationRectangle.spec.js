@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock, dumpAllRequestsMade} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import featureFlags from '../../Application/features.json';
 
@@ -101,7 +101,16 @@ fdescribe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame4);
       })
-      .then(done);
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex1);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex3);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex4);
+        done();
+      });
   });
 
   it('should interpolate a Rectangle when selecting the end LTIF', done => {
@@ -170,7 +179,16 @@ fdescribe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame0);
       })
-      .then(done);
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex1);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex3);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex4);
+        done();
+      });
   });
 
   afterEach(() => {
