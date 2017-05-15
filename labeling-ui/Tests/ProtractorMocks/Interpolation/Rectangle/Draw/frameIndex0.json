@@ -6,10 +6,10 @@
       "identifierName": "legacy",
       "frameIndex": 0,
       "incomplete": true,
-      "labeledThingId": "LABELED-THING-ID-1",
+      "labeledThingId": "{{:ltid}}",
       "shapes": [
         {
-          "id": "SHAPE-ID-1",
+          "id": "{{:shapeid}}",
           "type": "rectangle",
           "bottomRight": {
             "x": 200,
@@ -32,3 +32,4 @@
   },
   "response": {}
 }
+
