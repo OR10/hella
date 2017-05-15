@@ -1,11 +1,11 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock, dumpAllRequestsMade} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import featureFlags from '../../Application/features.json';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Interpolation Rectangle Tests', () => {
+describe('Interpolation Pedestrian Tests', () => {
   if (!featureFlags.pouchdb) {
     pending('These tests only work with activated Pouch');
   }
@@ -34,13 +34,13 @@ describe('Interpolation Rectangle Tests', () => {
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
       assets.mocks.Interpolation.Shared.Task,
-      assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0and4,
+      assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex0and4,
     ];
 
     viewer = element(by.css('.layer-container'));
   });
 
-  it('should interpolate a Rectangle when selecting the start LTIF', done => {
+  it('should interpolate a Pedestrian when selecting the start LTIF', done => {
     let nextFrameButton;
 
     mock(sharedMocks);
@@ -50,7 +50,7 @@ describe('Interpolation Rectangle Tests', () => {
         nextFrameButton = element(by.css('.next-frame-button'));
 
         browser.actions()
-          .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
+          .mouseMove(viewer, {x: 110, y: 110}) // Rectangle in first frame
           .click()
           .perform();
       })
@@ -59,61 +59,61 @@ describe('Interpolation Rectangle Tests', () => {
         interpolateButton.click();
       })
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame0')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame0);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame0);
       })
       .then(() => nextFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame1')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame1);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame1);
       })
       .then(() => nextFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame2')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame2);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame2);
       })
       .then(() => nextFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame3')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame3);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame3);
       })
       .then(() => nextFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame4')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame4);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame4);
       })
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex1);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex4);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex0);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex1);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex2);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex3);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex4);
         done();
       });
   });
 
-  it('should interpolate a Rectangle when selecting the end LTIF', done => {
+  it('should interpolate a Pedestrian when selecting the end LTIF', done => {
     let previousFrameButton;
 
     mock(sharedMocks);
@@ -123,7 +123,7 @@ describe('Interpolation Rectangle Tests', () => {
         previousFrameButton = element(by.css('.previous-frame-button'));
 
         browser.actions()
-          .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
+          .mouseMove(viewer, {x: 110, y: 110}) // Rectangle in first frame
           .click()
           .perform();
       })
@@ -137,56 +137,56 @@ describe('Interpolation Rectangle Tests', () => {
         interpolateButton.click();
       })
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame4')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame4);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame4);
       })
       .then(() => previousFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame3')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame3);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame3);
       })
       .then(() => previousFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame2')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame2);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame2);
       })
       .then(() => previousFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame1')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame1);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame1);
       })
       .then(() => previousFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame0')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame0);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame0);
       })
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex1);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex4);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex0);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex1);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex2);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex3);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex4);
         done();
       });
   });
