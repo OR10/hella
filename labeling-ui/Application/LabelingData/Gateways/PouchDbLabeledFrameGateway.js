@@ -125,8 +125,8 @@ class PouchDbLabeledFrameGateway {
           delete labeledFrameDocument._rev;
         }
 
-        const foo = this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument, task);
-        return foo;
+        const labeledFrame = this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument, task);
+        return labeledFrame;
       });
   }
 
