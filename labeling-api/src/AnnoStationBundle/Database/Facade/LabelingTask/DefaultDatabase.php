@@ -3,9 +3,8 @@
 namespace AnnoStationBundle\Database\Facade\LabelingTask;
 
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Database\Facade\Factory;
 
-class DefaultDatabase extends Factory\Cache implements FacadeInterface
+class DefaultDatabase implements FacadeInterface
 {
     /**
      * @var Facade\LabelingTask
