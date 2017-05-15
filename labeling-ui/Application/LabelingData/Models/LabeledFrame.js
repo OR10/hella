@@ -8,7 +8,7 @@ import {clone} from 'lodash';
  */
 class LabeledFrame extends LabeledObject {
   /**
-   * @param {{id: string, classes: Array.<string>, incomplete: boolean, taskId: string, frameIndex: int}} labeledFrame
+   * @param {{id: string, classes: Array.<string>, incomplete: boolean, task: Task, frameIndex: int, ghostClasses: Array.<string>}} labeledFrame
    */
   constructor(labeledFrame) {
     super(labeledFrame);
