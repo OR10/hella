@@ -244,7 +244,7 @@ class ViewerTitleBarController {
   }
 
   /**
-   * Jump to the next incomplete ltif
+   * Jump to the next incomplete labeled object
    *
    * A promise is returned, which is fulfilled once the jump and selection is completed.
    *
@@ -252,10 +252,27 @@ class ViewerTitleBarController {
    * @protected
    */
   _jumpToNextIncomplete() {
-    if (this.task.taskType !== 'object-labeling') {
-      return this._$q.resolve();
-    }
+    return this._$q.all([
+      this._labeledThingGateway.getIncompleteLabeledThingCount(this.task),
+      this._labeledFrameGateway.getIncompleteLabeledFrameCount(this.task),
+    ])
+      .then(([incompleteThingResponse, incompleteFrameResponse]) => {
+        if (incompleteFrameResponse.count > 0) {
+          return this._jumpToNextIncompleteFrame();
+        }
+        if (incompleteThingResponse.count > 0) {
+          return this._jumpToNextIncompleteThing();
+        }
+      });
+  }
 
+  /**
+   * Load the next incomplete labeled thing, jump to the frameIndex of this labeled thing and select it.
+   *
+   * @return {Promise}
+   * @private
+   */
+  _jumpToNextIncompleteThing() {
     return this._$q.resolve()
       .then(() => this._labeledThingInFrameGateway.getNextIncomplete(this.task))
       .then(labeledThingsInFrames => {
@@ -275,6 +292,37 @@ class ViewerTitleBarController {
           this.framePosition.afterFrameChangeOnce('selectNextIncomplete', () => {
             this._selectLabeledThingInFrame(nextIncomplete)
               .then(() => resolve());
+          });
+          this.framePosition.goto(nextIncomplete.frameIndex);
+        });
+      });
+  }
+
+  /**
+   * Load the next incomplete labeled frame, jump to the frameIndex of this labeled frame and enable meta labeling.
+   *
+   * @return {Promise}
+   * @private
+   */
+  _jumpToNextIncompleteFrame() {
+    return this._$q.resolve()
+      .then(() => this._labeledFrameGateway.getNextIncomplete(this.task))
+      .then(labeledFrames => {
+        if (labeledFrames.length === 0) {
+          return this._$q.resolve();
+        }
+        const nextIncomplete = labeledFrames[0];
+
+        if (this.framePosition.position === nextIncomplete.frameIndex) {
+          // Incomplete frame is the current frame
+          this._$rootScope.$emit('label-structure-type:change', nextIncomplete);
+          return this._$q.resolve();
+        }
+
+        return this._$q(resolve => {
+          this.framePosition.afterFrameChangeOnce('selectNextIncomplete', () => {
+            this._$rootScope.$emit('label-structure-type:change', nextIncomplete);
+            resolve();
           });
           this.framePosition.goto(nextIncomplete.frameIndex);
         });
