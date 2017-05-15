@@ -91,5 +91,71 @@
             <argument type="service" id="fos_user.util.token_generator"/>
         </service>
 
+        <service id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"
+                 class="AnnoStationBundle\Database\Facade\LabeledThingInFrame\FacadeInterface"
+                 factory-class="AnnoStationBundle\Database\Facade\LabeledThingInFrame\FacadeFactory"
+                 factory-method="get">
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.factory.labeled_thing_group"
+                 class="AnnoStationBundle\Database\Facade\LabeledThingGroup\FacadeInterface"
+                 factory-class="AnnoStationBundle\Database\Facade\LabeledThingGroup\FacadeFactory"
+                 factory-method="get">
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.factory.labeling_task"
+                 class="AnnoStationBundle\Database\Facade\LabelingTask\FacadeInterface"
+                 factory-class="AnnoStationBundle\Database\Facade\LabelingTask\FacadeFactory"
+                 factory-method="get">
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.factory.project"
+                 class="AnnoStationBundle\Database\Facade\Project\FacadeInterface"
+                 factory-class="AnnoStationBundle\Database\Facade\Project\FacadeFactory"
+                 factory-method="get">
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.project" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.factory.labeled_thing"
+                 class="AnnoStationBundle\Database\Facade\LabeledThing\FacadeInterface"
+                 factory-class="AnnoStationBundle\Database\Facade\LabeledThing\FacadeFactory"
+                 factory-method="get">
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.factory.labeled_frame"
+                 class="AnnoStationBundle\Database\Facade\LabeledFrame\FacadeInterface"
+                 factory-class="AnnoStationBundle\Database\Facade\LabeledFrame\FacadeFactory"
+                 factory-method="get">
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
     </services>
 </container>

@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Service;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\LabeledFrame;
 use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
@@ -10,42 +11,21 @@ use AppBundle\Service as AppBundleService;
 class LabeledFrameEndCalculationService
 {
     /**
-     * @var Facade\LabeledFrame
-     */
-    private $labeledFrameFacade;
-
-    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
 
     /**
-     * @var bool
+     * @var LabeledFrame\FacadeInterface
      */
-    private $pouchdbFeatureEnabled;
-
-    /**
-     * @var AppBundleService\DatabaseDocumentManagerFactory
-     */
-    private $databaseDocumentManagerFactory;
-
-    /**
-     * @var TaskDatabaseCreator
-     */
-    private $taskDatabaseCreatorService;
+    private $labeledFrameFacadeFactory;
 
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
-        Facade\LabeledFrame $labeledFrameFacade,
-        AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        bool $pouchdbFeatureEnabled
+        LabeledFrame\FacadeInterface $labeledFrameFacadeFactory
     ) {
-        $this->labeledFrameFacade             = $labeledFrameFacade;
-        $this->labelingTaskFacade             = $labelingTaskFacade;
-        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
-        $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
-        $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
+        $this->labelingTaskFacade        = $labelingTaskFacade;
+        $this->labeledFrameFacadeFactory = $labeledFrameFacadeFactory;
     }
 
     /**
@@ -70,16 +50,10 @@ class LabeledFrameEndCalculationService
      */
     private function findEnd(Model\LabelingTask $task, $index, $class)
     {
-        $labeledFrameFacade = $this->labeledFrameFacade;
-        if ($this->pouchdbFeatureEnabled) {
-            $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $this->taskDatabaseCreatorService->getDatabaseName(
-                    $task->getProjectId(),
-                    $task->getId()
-                )
-            );
-            $labeledFrameFacade      = new Facade\LabeledFrame($databaseDocumentManager);
-        }
+        $labeledFrameFacade = $this->labeledFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $task->getProjectId(),
+            $task->getId()
+        );
 
         $nextLabeledFrame = $labeledFrameFacade->getNextLabeledFrameFromFrameIndex(
             $task,

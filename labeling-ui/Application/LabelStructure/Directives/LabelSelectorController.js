@@ -311,10 +311,12 @@ export default class LabelSelectorController {
 
     switch (true) {
       case selectedLabeledObject instanceof LabeledThingInFrame:
-        this._storeUpdatedLabeledThingInFrame(selectedLabeledObject, updateAssociatedLabeledThing);
+        this._storeUpdatedLabeledThingInFrame(selectedLabeledObject, updateAssociatedLabeledThing)
+            .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
       case selectedLabeledObject instanceof LabeledFrame:
-        this._storeUpdatedLabeledFrame(selectedLabeledObject);
+        this._storeUpdatedLabeledFrame(selectedLabeledObject)
+            .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
       default:
         throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);

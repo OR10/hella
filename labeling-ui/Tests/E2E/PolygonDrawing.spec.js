@@ -1,10 +1,10 @@
-import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
   expectAllModalsToBeClosed,
   expectModalToBePresent,
   getMockRequestsMade,
   initApplication,
+  mock,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -18,6 +18,7 @@ describe('Polygon drawing', () => {
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
     sharedMocks = [
+      assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
       assets.mocks.Shared.UserOrganisations,
@@ -227,9 +228,7 @@ describe('Polygon drawing', () => {
   it('should keep the polygon shape selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex1,
       assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex1to5,
       assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 

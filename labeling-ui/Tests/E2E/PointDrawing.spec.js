@@ -1,6 +1,5 @@
-import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {getMockRequestsMade, initApplication} from '../Support/Protractor/Helpers';
+import {getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -13,6 +12,7 @@ describe('Point drawing', () => {
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
     sharedMocks = [
+      assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
       assets.mocks.Shared.UserOrganisations,
@@ -182,9 +182,7 @@ describe('Point drawing', () => {
   it('should keep the point shape selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex1,
       assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex1to5,
       assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 
