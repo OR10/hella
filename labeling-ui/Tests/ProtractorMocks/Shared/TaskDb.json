@@ -1,0 +1,13 @@
+{
+  "request": {
+    "path": "/api/organisation/ORGANISATION-ID-1/project/PROJECTID-PROJECTID",
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "id": "PROJECTID-PROJECTID"
+      }
+    }
+  }
+}

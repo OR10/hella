@@ -1,11 +1,12 @@
-import mock from 'protractor-http-mock';
 import {
   expectAllModalsToBeClosed,
   getMockRequestsMade,
   initApplication,
+  mock,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
+import featureFlags from '../../Application/features.json';
 
 describe('LabelSelector (right sidebar)', () => {
   let assets;
@@ -42,6 +43,7 @@ describe('LabelSelector (right sidebar)', () => {
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
     sharedMocks = [
+      assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
       assets.mocks.Shared.UserOrganisations,
@@ -85,7 +87,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should start with all panes closed', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -106,7 +108,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('pane should open on click', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -128,7 +130,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('open pane should close on click', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -151,7 +153,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should only have one pane open at a time in single-select mode', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -175,7 +177,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should allow multiple open panes in multi-select mode', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -199,7 +201,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should close clicked open open panes in multi-select mode', done => {
-      mock(sharedMocks.concat([]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -265,6 +267,7 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
         .then(() => browser.sleep(250))
         .then(() => getMockRequestsMade(mock))
+        // .then(() => dumpAllRequestsMade(mock))
         .then(requests => expect(requests).toContainRequest(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck))
         .then(() => done());
     });
