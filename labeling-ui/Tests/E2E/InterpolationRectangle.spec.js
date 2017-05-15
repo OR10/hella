@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock, dumpAllRequestsMade } from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import featureFlags from '../../Application/features.json';
 
@@ -233,7 +233,7 @@ describe('Interpolation Rectangle Tests', () => {
           .perform();
       })
       .then(() => {
-        browser.sleep(500)
+        browser.sleep(500);
       })
       .then(() => {
         const interpolateButton = element(by.css('#interpolate-shape-button'));
