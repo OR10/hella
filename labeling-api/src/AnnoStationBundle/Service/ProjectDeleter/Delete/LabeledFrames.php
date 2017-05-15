@@ -3,49 +3,27 @@
 namespace AnnoStationBundle\Service\ProjectDeleter\Delete;
 
 use AppBundle\Model;
-use AppBundle\Service as AppBundleService;
-use AnnoStationBundle\Service;
-use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\LabelingTask;
+use AnnoStationBundle\Database\Facade\LabeledFrame;
 
 class LabeledFrames
 {
     /**
-     * @var Facade\LabeledFrame
+     * @var LabelingTask\FacadeInterface
      */
-    private $labeledFrameFacade;
+    private $labelingTaskFacadeFactory;
 
     /**
-     * @var Facade\LabelingTask
+     * @var LabeledFrame\FacadeInterface
      */
-
-    private $labelingTaskFacade;
-    /**
-     * @var AppBundleService\DatabaseDocumentManagerFactory
-     */
-
-    private $databaseDocumentManagerFactory;
-    /**
-     * @var Service\TaskDatabaseCreator
-     */
-    private $taskDatabaseCreatorService;
-
-    /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
+    private $labeledFrameFacadeFactory;
 
     public function __construct(
-        Facade\LabelingTask $labelingTaskFacade,
-        Facade\LabeledFrame $labeledFrameFacade,
-        AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $pouchdbFeatureEnabled
+        LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
+        LabeledFrame\FacadeInterface $labeledFrameFacadeFactory
     ) {
-        $this->labeledFrameFacade             = $labeledFrameFacade;
-        $this->labelingTaskFacade             = $labelingTaskFacade;
-        $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
-        $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
-        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
+        $this->labelingTaskFacadeFactory = $labelingTaskFacadeFactory;
+        $this->labeledFrameFacadeFactory = $labeledFrameFacadeFactory;
     }
 
     /**
@@ -53,19 +31,15 @@ class LabeledFrames
      */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labelingTaskFacade = $this->labelingTaskFacade;
-        $labeledFrameFacade = $this->labeledFrameFacade;
-        if ($this->pouchdbFeatureEnabled) {
-            $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $this->taskDatabaseCreatorService->getDatabaseName(
-                    $labelingTask->getProjectId(),
-                    $labelingTask->getId()
-                )
-            );
-            $labelingTaskFacade = new Facade\LabelingTask($databaseDocumentManager);
-            $labeledFrameFacade = new Facade\LabeledFrame($databaseDocumentManager);
+        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
+        $labeledFrameFacade = $this->labeledFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
 
-        }
         $labeledFrames = $labelingTaskFacade->getLabeledFrames($labelingTask);
         foreach ($labeledFrames as $labeledFrame) {
             $labeledFrameFacade->delete($labeledFrame);
