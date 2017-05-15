@@ -171,6 +171,57 @@ class PouchDbLabeledFrameGateway {
   }
 
   /**
+   * Returns the nex incomplete labeled frame.
+   * The count can be specified, the default is one.
+   *
+   * @param {Task} task
+   * @param {int?} count
+   *
+   * @return {AbortablePromise<Array<LabeledFrame>>|Error}
+   */
+  getNextIncomplete(task, count = 1) {
+    return this._packagingExecutor.execute('labeledFrame', () => {
+      const startkey = [task.id, true];
+      const endkey = [task.id, true];
+      const db = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+      return this._$q.resolve()
+        .then(() => {
+          const incompletePromise = db.query(
+            this._pouchDbViewService.getDesignDocumentViewName('labeledFrameIncomplete'),
+            {
+              startkey,
+              endkey,
+              include_docs: true,
+            });
+          const firstLabeledFramePromise = this._getCurrentOrPreceedingLabeledFrame(db, task, 0);
+
+          return this._$q.all([incompletePromise, firstLabeledFramePromise]);
+        })
+        .then(([icompleteLabeledFrameResult, firstLabeledFrameOrNull]) => {
+          let firstLabeledFrame = firstLabeledFrameOrNull;
+          if (firstLabeledFrameOrNull === null) {
+            firstLabeledFrame = new LabeledFrame({
+              id: this._entityIdService.getUniqueId(),
+              classes: [],
+              incomplete: true,
+              task,
+              frameIndex: 0,
+              ghostClasses: null,
+            });
+          }
+
+          const incompleteLabeledFrames = icompleteLabeledFrameResult.rows.map(
+            row => this._couchDbModelDeserializer.deserializeLabeledFrame(row.doc, task)
+          );
+          const filteredIncompleteLabeledFrames = incompleteLabeledFrames.filter(labeledFrame => labeledFrame.frameIndex !== 0);
+          const incompletes = [firstLabeledFrame].concat(filteredIncompleteLabeledFrames);
+
+          return incompletes.slice(0, count);
+        });
+    });
+  }
+
   /**
    * @param {Task} task
    * @return {AbortablePromise.<{count: int}|Error>}
