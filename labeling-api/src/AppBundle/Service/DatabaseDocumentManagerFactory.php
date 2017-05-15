@@ -12,6 +12,11 @@ class DatabaseDocumentManagerFactory
      */
     private $documentManager;
 
+    /**
+     * @var CouchDBODM\DocumentManager[]
+     */
+    private $documentManagerCache = [];
+
     public function __construct(CouchDBODM\DocumentManager $documentManager)
     {
         $this->documentManager = $documentManager;
@@ -26,11 +31,15 @@ class DatabaseDocumentManagerFactory
      */
     public function getDocumentManagerForDatabase($databaseName)
     {
-        return new CouchDBODM\DocumentManager(
-            new CouchDB\CouchDBClient($this->documentManager->getHttpClient(), $databaseName),
-            $this->documentManager->getConfiguration(),
-            $this->documentManager->getEventManager()
-        );
+        if (!isset($this->documentManagerCache[$databaseName])) {
+            $this->documentManagerCache[$databaseName] = new CouchDBODM\DocumentManager(
+                new CouchDB\CouchDBClient($this->documentManager->getHttpClient(), $databaseName),
+                $this->documentManager->getConfiguration(),
+                $this->documentManager->getEventManager()
+            );
+        }
+
+        return $this->documentManagerCache[$databaseName];
     }
 
     /**
