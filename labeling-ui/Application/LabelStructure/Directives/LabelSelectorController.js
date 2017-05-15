@@ -1,3 +1,6 @@
+import {equals} from 'angular';
+import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
+import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 /**
  * @property {string} labeledObjectType
  * @property {LegacyLabelStructureInterface} structure
@@ -9,9 +12,6 @@
  * @property {LabeledThingInFrame} selectedLabeledObject
  * @property {PaperShape} selectedPaperShape
  */
-import {equals} from 'angular';
-import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
-import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
 export default class LabelSelectorController {
   /**
@@ -240,7 +240,7 @@ export default class LabelSelectorController {
       classList
     );
 
-    if (labeledObject.shapes[0].type !== this.selectedLabelStructureObject.shape) {
+    if (!this._labelStructureFitsLabeledObject(labeledObject, this.selectedLabelStructureObject)) {
       return;
     }
 
@@ -397,6 +397,29 @@ export default class LabelSelectorController {
     }
   }
 
+  /**
+   * @param {LabeledObject} labeledObject
+   * @param {LabelStructureObject} selectedLabelStructureObject
+   * @returns {boolean}
+   * @private
+   */
+  _labelStructureFitsLabeledObject(labeledObject, selectedLabelStructureObject) {
+    const labelStructureObjectShape = selectedLabelStructureObject.shape;
+    const labeledObjectShapeType = labeledObject.shapes[0].type;
+
+    // For some shapes the database shape type and the requirements shape type are not the same.
+    // Therefor we need a mapping!
+    let normalizedLabeledObjectType;
+    switch (labeledObjectShapeType) {
+      case 'cuboid3d':
+        normalizedLabeledObjectType = 'cuboid';
+        break;
+      default:
+        normalizedLabeledObjectType = labeledObjectShapeType;
+    }
+
+    return labelStructureObjectShape === normalizedLabeledObjectType;
+  }
 }
 
 LabelSelectorController.$inject = [

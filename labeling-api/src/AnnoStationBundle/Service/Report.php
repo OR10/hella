@@ -2,9 +2,13 @@
 
 namespace AnnoStationBundle\Service;
 
-use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Database\Facade\Project;
+use AnnoStationBundle\Database\Facade\LabelingTask;
+use AnnoStationBundle\Database\Facade\LabeledThing;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
+use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
 
 class Report
@@ -47,47 +51,32 @@ class Report
     /**
      * Report constructor.
      *
-     * @param Facade\Project                                  $projectFacade
      * @param Facade\Video                                    $videoFacade
-     * @param Facade\LabelingTask                             $labelingTaskFacade
-     * @param Facade\LabeledThing                             $labeledThingFacade
-     * @param Facade\LabeledThingInFrame                      $labeledThingInFrameFacade
      * @param Facade\Report                                   $reportFacade
      * @param GhostClassesPropagation                         $ghostClassesPropagation
      * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
-     * @param                                                 $pouchdbFeatureEnabled
-     * @param                                                 $databaseNameReadOnly
+     * @param Project\FacadeInterface                         $projectFacadeFactory
+     * @param LabelingTask\FacadeInterface                    $labelingTaskFacadeFactory
+     * @param LabeledThing\FacadeInterface                    $labeledThingFacadeFactory
+     * @param LabeledThingInFrame\FacadeInterface             $labeledThingInFrameFacadeFactory
      */
     public function __construct(
-        Facade\Project $projectFacade,
         Facade\Video $videoFacade,
-        Facade\LabelingTask $labelingTaskFacade,
-        Facade\LabeledThing $labeledThingFacade,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\Report $reportFacade,
         Service\GhostClassesPropagation $ghostClassesPropagation,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        bool $pouchdbFeatureEnabled,
-        string $databaseNameReadOnly
+        Project\FacadeInterface $projectFacadeFactory,
+        LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
+        LabeledThing\FacadeInterface $labeledThingFacadeFactory,
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory
     ) {
-        $this->videoFacade             = $videoFacade;
-        $this->reportFacade            = $reportFacade;
-        $this->ghostClassesPropagation = $ghostClassesPropagation;
-
-        if ($pouchdbFeatureEnabled) {
-            $databaseDocumentManager         = $databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $databaseNameReadOnly
-            );
-            $this->projectFacade             = new Facade\Project($databaseDocumentManager);
-            $this->labelingTaskFacade        = new Facade\LabelingTask($databaseDocumentManager);
-            $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
-            $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
-        } else {
-            $this->projectFacade             = $projectFacade;
-            $this->labelingTaskFacade        = $labelingTaskFacade;
-            $this->labeledThingFacade        = $labeledThingFacade;
-            $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
-        }
+        $this->videoFacade               = $videoFacade;
+        $this->reportFacade              = $reportFacade;
+        $this->ghostClassesPropagation   = $ghostClassesPropagation;
+        $this->projectFacade             = $projectFacadeFactory->getReadOnlyFacade();
+        $this->labelingTaskFacade        = $labelingTaskFacadeFactory->getReadOnlyFacade();
+        $this->labeledThingFacade        = $labeledThingFacadeFactory->getReadOnlyFacade();
+        $this->labeledThingInFrameFacade = $labeledThingInFrameFacadeFactory->getReadOnlyFacade();
     }
 
     /**
