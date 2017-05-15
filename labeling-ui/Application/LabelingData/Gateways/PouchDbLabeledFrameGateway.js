@@ -171,6 +171,25 @@ class PouchDbLabeledFrameGateway {
   }
 
   /**
+  /**
+   * @param {Task} task
+   * @return {AbortablePromise.<{count: int}|Error>}
+   */
+  getIncompleteLabeledFrameCount(task) {
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
+    return this._packagingExecutor.execute('labeledFrame',
+      () => db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledFrameIncomplete'), {
+        include_docs: false,
+        key: [task.id, true],
+      }))
+      .then(response => {
+        return {
+          count: response.rows.length,
+        };
+      });
+  }
+
+  /**
    * Deletes the labeled thing in frame object in the database
    *
    * @param {Task} task
