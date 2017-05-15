@@ -73,6 +73,8 @@ function bootstrapPouchDb(mocks) {
   const knownIdentifierNames = [
     'sign',
     'lsr-01',
+    'thing-one',
+    'thing-two',
     null
   ];
   let documents = [];

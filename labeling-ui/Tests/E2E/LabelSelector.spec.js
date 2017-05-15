@@ -609,11 +609,6 @@ describe('LabelSelector (right sidebar)', () => {
   });
 
   describe('RequirementsXml LabelStructure', () => {
-    if (featureFlags.pouchdb) {
-      pending('Not yet working in Pouch context');
-      return;
-    }
-
     beforeEach(() => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.LabelSelector.RequirementsXml.Task,
