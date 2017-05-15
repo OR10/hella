@@ -1,8 +1,14 @@
 const namedParamsTest = new RegExp(/{{:[^}:]+}}/);
 
+// Keys that cannot be tested for the hard value in a Pouch environment
 const unstableKeys = [
   'rev',
   '_rev'
+];
+
+// Keys that are not stored in Pouch Documents
+const omitKeys = [
+  'ghost'
 ];
 
 let lastMatch = {
@@ -13,6 +19,10 @@ let lastMatch = {
 
 function isUnstableKey(key) {
   return (unstableKeys.indexOf(key) > -1);
+}
+
+function isOmittedKey(key) {
+  return (omitKeys.indexOf(key) > -1);
 }
 
 export function matchDocuments(namedParamsRequestData, storedData) {
@@ -30,6 +40,10 @@ export function matchDocuments(namedParamsRequestData, storedData) {
 
     let key = keys[i];
 
+    if (isOmittedKey(key)) {
+      continue;
+    }
+
     let expectedValue = namedParamsRequestData[key];
     if (key === 'id') {
       actualValue = storedData['_id'];
@@ -41,13 +55,17 @@ export function matchDocuments(namedParamsRequestData, storedData) {
       actualValue = storedData[key];
     }
 
+    // For debugging purposes uncomment the following lines
+    // console.log('=======');
     // console.log('Key: ', key);
     // console.log('Expected: ', expectedValue);
     // console.log('Actual: ', actualValue);
 
-    lastMatch.expected = expectedValue;
-    lastMatch.actual = actualValue;
-    lastMatch.key = key;
+    if (i > 0) {
+      lastMatch.expected = expectedValue;
+      lastMatch.actual = actualValue;
+      lastMatch.key = key;
+    }
 
     if (typeof expectedValue === 'object' && expectedValue !== null && actualValue !== undefined) {
       result = matchDocuments(expectedValue, actualValue);

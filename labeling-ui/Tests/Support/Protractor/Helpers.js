@@ -72,7 +72,8 @@ function waitForApplicationReady() {
 function bootstrapPouchDb(mocks) {
   const knownIdentifierNames = [
     'sign',
-    'lsr-01'
+    'lsr-01',
+    null
   ];
   let documents = [];
 
