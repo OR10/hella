@@ -13,7 +13,6 @@ import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
  * @property {Array<{header: string, offset: int?, limit: init?}>} sections
  * @property {Task} task
  * @property {FramePosition} framePosition
- * @property {boolean} isCompleted
  * @property {PaperShape} selectedPaperShape
  */
 
@@ -330,7 +329,7 @@ export default class LabelSelectorController {
    * @private
    */
   _storeUpdatedLabeledThingInFrame(labeledThingInFrame, updateAssociatedLabeledThing) {
-    labeledThingInFrame.incomplete = !this.isCompleted;
+    labeledThingInFrame.incomplete = !this._isCompleted();
     let storagePromise = Promise.resolve();
     if (updateAssociatedLabeledThing) {
       const {labeledThing} = labeledThingInFrame;
@@ -354,7 +353,7 @@ export default class LabelSelectorController {
       labeledFrame.id = this._entityIdService.getUniqueId();
     }
 
-    labeledFrame.incomplete = !this.isCompleted;
+    labeledFrame.incomplete = !this._isCompleted();
 
     return this._labeledFrameGateway.saveLabeledFrame(
       this.task,
