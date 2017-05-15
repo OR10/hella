@@ -45,14 +45,21 @@ export function matchDocuments(namedParamsRequestData, storedData) {
     }
 
     let expectedValue = namedParamsRequestData[key];
-    if (key === 'id') {
-      actualValue = storedData['_id'];
-    } else if (key === 'startFrameNumber') {
-      actualValue = storedData['startFrameIndex'];
-    } else if (key === 'endFrameNumber') {
-      actualValue = storedData['endFrameIndex'];
-    } else {
-      actualValue = storedData[key];
+    switch(key) {
+      case 'id':
+        actualValue = storedData['_id'];
+        break;
+
+      case 'startFrameNumber':
+        actualValue = storedData['startFrameIndex'];
+        break;
+
+      case 'endFrameNumber':
+        actualValue = storedData['endFrameIndex'];
+        break;
+
+      default:
+        actualValue = storedData[key];
     }
 
     // For debugging purposes uncomment the following lines
