@@ -3,7 +3,7 @@
     "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0",
     "method": "GET",
     "queryString": {
-      "limit": "1",
+      "limit": "5",
       "offset": "0"
     }
   },
@@ -17,7 +17,7 @@
             ],
             "frameRange": {
               "startFrameNumber": 0,
-              "endFrameNumber": 0
+              "endFrameNumber": 4
             },
             "id": "LABELED-THING-ID-1",
             "incomplete": true,
@@ -36,7 +36,6 @@
             "incomplete": true,
             "labeledThingId": "LABELED-THING-ID-1",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "identifierName": null,
             "shapes": [
               {
                 "bottomRight": {
@@ -48,6 +47,31 @@
                 "topLeft": {
                   "x": 100,
                   "y": 100
+                },
+                "type": "rectangle"
+              }
+            ]
+          },
+          {
+            "classes": [],
+            "frameIndex": 4,
+            "ghost": false,
+            "ghostClasses": null,
+            "id": "LABELED-THING-IN-FRAME-ID-5",
+            "incomplete": true,
+            "labeledThingId": "LABELED-THING-ID-1",
+            "rev": "2-b65227715b51dadd97f8521646e88a22",
+            "shapes": [
+              {
+                "bottomRight": {
+                  "x": 550,
+                  "y": 570
+                },
+                "id": "SHAPE-ID-1",
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "topLeft": {
+                  "x": 300,
+                  "y": 300
                 },
                 "type": "rectangle"
               }

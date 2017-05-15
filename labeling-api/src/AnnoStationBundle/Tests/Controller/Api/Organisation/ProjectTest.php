@@ -587,11 +587,13 @@ class ProjectTest extends Tests\WebTestCase
 
     protected function setUpImplementation()
     {
-        $this->projectFacade    = $this->getAnnostationService('database.facade.project');
-        $this->taskFacade       = $this->getAnnostationService('database.facade.labeling_task');
-        $organisationFacade     = $this->getAnnostationService('database.facade.organisation');
-        $this->organisation     = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
-        $this->client           = $this->createClientUser($this->organisation);
-        $this->labelCoordinator = $this->createLabelCoordinatorUser($this->organisation);
+        /** @var Facade\Factory\LabelingTask $taskFacadeFactory */
+        $taskFacadeFactory        = $this->getAnnostationService('database.facade.factory.labeling_task');
+        $this->projectFacade      = $this->getAnnostationService('database.facade.project');
+        $this->taskFacade         = $taskFacadeFactory->getReadOnlyFacade();
+        $organisationFacade       = $this->getAnnostationService('database.facade.organisation');
+        $this->organisation       = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
+        $this->client             = $this->createClientUser($this->organisation);
+        $this->labelCoordinator   = $this->createLabelCoordinatorUser($this->organisation);
     }
 }
