@@ -40,13 +40,15 @@ fdescribe('Interpolation Rectangle Tests', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  it('should interpolate a Rectangle', done => {
+  it('should interpolate a Rectangle when selecting the start LTIF', done => {
     let nextFrameButton;
 
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
+        nextFrameButton = element(by.css('.next-frame-button'));
+
         browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
@@ -55,9 +57,6 @@ fdescribe('Interpolation Rectangle Tests', () => {
       .then(() => {
         const interpolateButton = element(by.css('#interpolate-shape-button'));
         interpolateButton.click();
-      })
-      .then(() => {
-        nextFrameButton = element(by.css('.next-frame-button'));
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame0')
@@ -101,6 +100,75 @@ fdescribe('Interpolation Rectangle Tests', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame4);
+      })
+      .then(done);
+  });
+
+  it('should interpolate a Rectangle when selecting the end LTIF', done => {
+    let previousFrameButton;
+
+    mock(sharedMocks);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        previousFrameButton = element(by.css('.previous-frame-button'));
+
+        browser.actions()
+          .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
+          .click()
+          .perform();
+      })
+      .then(() => {
+        const goEnd = element(by.css('.icon-selection-goend'));
+        goEnd.click();
+      })
+      .then(() => browser.sleep(500))
+      .then(() => {
+        const interpolateButton = element(by.css('#interpolate-shape-button'));
+        interpolateButton.click();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame4')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame4);
+      })
+      .then(() => previousFrameButton.click())
+      .then(() => browser.sleep(500))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame3')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame3);
+      })
+      .then(() => previousFrameButton.click())
+      .then(() => browser.sleep(500))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame2);
+      })
+      .then(() => previousFrameButton.click())
+      .then(() => browser.sleep(500))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame1);
+      })
+      .then(() => previousFrameButton.click())
+      .then(() => browser.sleep(500))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame0')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame0);
       })
       .then(done);
   });
