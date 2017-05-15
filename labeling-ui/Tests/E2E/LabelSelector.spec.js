@@ -609,7 +609,6 @@ describe('LabelSelector (right sidebar)', () => {
   });
 
   describe('RequirementsXml LabelStructure', () => {
-
     if (featureFlags.pouchdb) {
       pending('Not yet working in Pouch context');
       return;

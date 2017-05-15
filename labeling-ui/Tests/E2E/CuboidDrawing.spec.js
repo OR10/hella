@@ -3,7 +3,7 @@ import {
   expectAllModalsToBeClosed,
   getMockRequestsMade,
   initApplication,
-  mock
+  mock,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
