@@ -126,9 +126,11 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
 
     return this._$q.resolve()
       .then(() => this._pushChangesToBackend())
-      .then(() => this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id))
-      .then(result => {
-        if (result.count > 0) {
+      .then(() => {
+        return this._getComposedIncompleteCount(this.task);
+      })
+      .then(composedIncompleteCount => {
+        if (composedIncompleteCount > 0) {
           // Jump to next incomplete directly, if there still is one
           return this._jumpToNextIncomplete();
         }
@@ -146,6 +148,26 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
   }
 
   /**
+   * Get the incomplete count for all different labeled object.
+   * The following objects are currently used:
+   * - LabeledThings
+   * - LabeledFrames
+   *
+   * @param {Task} task
+   * @return {number}
+   * @private
+   */
+  _getComposedIncompleteCount(task) {
+    return this._$q.all([
+      this._labeledThingGateway.getIncompleteLabeledThingCount(task),
+      this._labeledFrameGateway.getIncompleteLabeledFrameCount(task),
+    ])
+      .then(([thingIncompleteResult, frameIncompleteResult]) => {
+        return thingIncompleteResult.count + frameIncompleteResult.count;
+      });
+  }
+
+  /**
    * Jump to the next incomplete ltif
    *
    * A promise is returned, which is fulfilled once the jump and selection is completed.
@@ -157,6 +179,17 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
     return super._jumpToNextIncomplete()
       .then(() => this._pullChangesFromBackend())
       .then(() => this._reinitializeContinuousReplication());
+  }
+
+  /**
+   * Update the count of incomplete objects
+   */
+  refreshIncompleteCount() {
+    this._$scope.$applyAsync(() => {
+      this._getComposedIncompleteCount(this.task).then(incompleteCount => {
+        this.incompleteCount = incompleteCount;
+      });
+    });
   }
 
   /**
