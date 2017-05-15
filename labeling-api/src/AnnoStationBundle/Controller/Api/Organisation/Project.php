@@ -97,9 +97,9 @@ class Project extends Controller\Base
     private $labeledThingInFrameFacadeFactory;
 
     /**
-     * @var ProjectFacadeFactory\FacadeInterface
+     * @var Facade\Project
      */
-    private $projectFacadeFactory;
+    private $projectFacadeReadOnly;
 
     /**
      * Project constructor.
@@ -143,7 +143,7 @@ class Project extends Controller\Base
         $this->campaignFacade                        = $campaignFacade;
         $this->userPermissions                       = $userPermissions;
         $this->taskDatabaseSecurityPermissionService = $taskDatabaseSecurityPermissionService;
-        $this->projectFacadeFactory                  = $projectFacadeFactory;
+        $this->projectFacadeReadOnly                 = $projectFacadeFactory->getReadOnlyFacade();
         $this->labelingTaskFacadeFactory             = $labelingTaskFacadeFactory;
         $this->labeledThingInFrameFacadeFactory      = $labeledThingInFrameFacadeFactory;
     }
@@ -199,8 +199,7 @@ class Project extends Controller\Base
             null                              => array() //@TODO remove this later
         );
 
-        $projectFacadeReadOnly = $this->projectFacadeFactory->getReadOnlyFacade();
-        foreach ($projectFacadeReadOnly->getTimePerProject() as $mapping) {
+        foreach ($this->projectFacadeReadOnly->getTimePerProject() as $mapping) {
             $projectTimeMapping[$mapping['key'][0]] = array_sum($mapping['value']);
         }
 
