@@ -6,6 +6,7 @@ import {
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
+import featureFlags from '../../Application/features.json';
 
 describe('LabelSelector (right sidebar)', () => {
   let assets;
@@ -608,6 +609,12 @@ describe('LabelSelector (right sidebar)', () => {
   });
 
   describe('RequirementsXml LabelStructure', () => {
+
+    if (featureFlags.pouchdb) {
+      pending('Not yet working in Pouch context');
+      return;
+    }
+
     beforeEach(() => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.LabelSelector.RequirementsXml.Task,
