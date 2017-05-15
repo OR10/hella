@@ -13,6 +13,7 @@ class ViewerTitleBarController {
    * @param {TaskGateway} taskGateway
    * @param labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {FrameIndexService} frameIndexService
    * @param {Object} featureFlags
    */
@@ -26,6 +27,7 @@ class ViewerTitleBarController {
               taskGateway,
               labeledThingGateway,
               labeledThingInFrameGateway,
+              labeledFrameGateway,
               frameIndexService,
               featureFlags) {
     this._$timeout = $timeout;
@@ -82,6 +84,12 @@ class ViewerTitleBarController {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {LabeledFrameGateway}
+     * @protected
+     */
+    this._labeledFrameGateway = labeledFrameGateway;
 
     /**
      * @type {FrameIndexService}
@@ -341,6 +349,7 @@ ViewerTitleBarController.$inject = [
   'taskGateway',
   'labeledThingGateway',
   'labeledThingInFrameGateway',
+  'labeledFrameGateway',
   'frameIndexService',
   'featureFlags',
 ];

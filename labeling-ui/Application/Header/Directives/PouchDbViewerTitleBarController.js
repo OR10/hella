@@ -14,6 +14,7 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
    * @param {TaskGateway} taskGateway
    * @param labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {FrameIndexService} frameIndexService
    * @param {Object} featureFlags
    * @param {PouchDbSyncManager} pouchDbSyncManager
@@ -30,6 +31,7 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
               taskGateway,
               labeledThingGateway,
               labeledThingInFrameGateway,
+              labeledFrameGateway,
               frameIndexService,
               featureFlags,
               pouchDbSyncManager,
@@ -46,6 +48,7 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
       taskGateway,
       labeledThingGateway,
       labeledThingInFrameGateway,
+      labeledFrameGateway,
       frameIndexService,
       featureFlags
     );
@@ -67,6 +70,12 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
      * @private
      */
     this._applicationLoadingMaskService = applicationLoadingMaskService;
+
+    /**
+     * @type {LabeledFrameGateway}
+     * @private
+     */
+    this._labeledFrameGateway = labeledFrameGateway;
   }
 
   /**
