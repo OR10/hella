@@ -14,8 +14,8 @@
           "LABELED-THING-ID-1": {
             "classes": [],
             "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 1
+              "startFrameNumber": 0,
+              "endFrameNumber": 0
             },
             "id": "LABELED-THING-ID-1",
             "incomplete": true,
@@ -26,8 +26,8 @@
           "LABELED-THING-ID-2": {
             "classes": [],
             "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 1
+              "startFrameNumber": 0,
+              "endFrameNumber": 0
             },
             "id": "LABELED-THING-ID-2",
             "incomplete": true,
