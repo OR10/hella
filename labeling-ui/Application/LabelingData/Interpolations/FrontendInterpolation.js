@@ -75,12 +75,12 @@ class FrontendInterpolation {
             return;
           }
 
-          const endLtifIndex = labeledThingInFrameIndices[ltifIndicesIndex + 1];
+          const endLtifIndex = labeledThingInFramesWithGhosts.indexOf(endLtif);
+          const startLtifIndex = labeledThingInFramesWithGhosts.indexOf(startLtif) + 1;
           const steps = [];
-          for (let index = 1; index < (endLtifIndex - currentLtifIndex); index++) {
-            steps.push(ltifIndicesIndex + index);
+          for (let index = startLtifIndex; index < endLtifIndex; index++) {
+            steps.push(index);
           }
-
           steps.forEach((step, stepIndex) => {
             const currentGhost = labeledThingInFramesWithGhosts[step];
             const delta = (stepIndex + 1) / (steps.length + 1);
