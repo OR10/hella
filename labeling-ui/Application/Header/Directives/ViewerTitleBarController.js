@@ -75,7 +75,7 @@ class ViewerTitleBarController {
 
     /**
      * @type {LabeledThingGateway}
-     * @private
+     * @protected
      */
     this._labeledThingGateway = labeledThingGateway;
 
