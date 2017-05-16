@@ -5,7 +5,7 @@ import featureFlags from '../../Application/features.json';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Interpolation RectangleWithGroup Tests', () => {
+describe('Interpolation RectangleWithGroup Tests', () => {
   if (!featureFlags.pouchdb) {
     pending('These tests only work with activated Pouch');
   }
@@ -13,6 +13,11 @@ fdescribe('Interpolation RectangleWithGroup Tests', () => {
   let assets;
   let sharedMocks;
   let viewer;
+  let groupButton;
+  let interpolateButton;
+  let nextFrameButton;
+  let previousFrameButton;
+  let goEndButton;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
@@ -40,16 +45,19 @@ fdescribe('Interpolation RectangleWithGroup Tests', () => {
     ];
 
     viewer = element(by.css('.layer-container'));
+    groupButton = element(by.css('.tool-button.tool-group'));
+    interpolateButton = element(by.css('#interpolate-shape-button'));
+    nextFrameButton = element(by.css('.next-frame-button'));
+    previousFrameButton = element(by.css('.previous-frame-button'));
+    goEndButton = element(by.css('.icon-selection-goend'));
   });
 
   it('should interpolate a RectangleWithGroup when selecting the start LTIF', done => {
-    let nextFrameButton;
 
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        const groupButton = element(by.css('.tool-button.tool-group'));
         groupButton.click();
       })
       .then(() => {
@@ -61,15 +69,12 @@ fdescribe('Interpolation RectangleWithGroup Tests', () => {
           .perform();
       })
       .then(() => {
-        nextFrameButton = element(by.css('.next-frame-button'));
-
         browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // RectangleWithGroup in first frame
           .click()
           .perform();
       })
       .then(() => {
-        const interpolateButton = element(by.css('#interpolate-shape-button'));
         interpolateButton.click();
       })
       .then(
@@ -128,7 +133,6 @@ fdescribe('Interpolation RectangleWithGroup Tests', () => {
   });
 
   it('should interpolate a RectangleWithGroup when selecting the end LTIF', done => {
-    let previousFrameButton;
 
     mock(sharedMocks);
 
@@ -146,20 +150,16 @@ fdescribe('Interpolation RectangleWithGroup Tests', () => {
           .perform();
       })
       .then(() => {
-        previousFrameButton = element(by.css('.previous-frame-button'));
-
         browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // RectangleWithGroup in first frame
           .click()
           .perform();
       })
       .then(() => {
-        const goEnd = element(by.css('.icon-selection-goend'));
-        goEnd.click();
+        goEndButton.click();
       })
       .then(() => browser.sleep(500))
       .then(() => {
-        const interpolateButton = element(by.css('#interpolate-shape-button'));
         interpolateButton.click();
       })
       .then(
