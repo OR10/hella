@@ -1,11 +1,11 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock, dumpAllRequestsMade} from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import featureFlags from '../../Application/features.json';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Interpolation Rectangle Tests', () => {
+describe('Interpolation Rectangle Tests', () => {
   if (!featureFlags.pouchdb) {
     pending('These tests only work with activated Pouch');
   }
