@@ -252,14 +252,8 @@ class ViewerTitleBarController {
    * @protected
    */
   _jumpToNextIncomplete() {
-    return this._$q.all([
-      this._labeledThingGateway.getIncompleteLabeledThingCount(this.task),
-      this._labeledFrameGateway.getIncompleteLabeledFrameCount(this.task),
-    ])
-      .then(([incompleteThingResponse, incompleteFrameResponse]) => {
-        if (incompleteFrameResponse.count > 0) {
-          return this._jumpToNextIncompleteFrame();
-        }
+    return this._labeledThingGateway.getIncompleteLabeledThingCount(this.task)
+      .then(incompleteThingResponse => {
         if (incompleteThingResponse.count > 0) {
           return this._jumpToNextIncompleteThing();
         }
@@ -270,7 +264,7 @@ class ViewerTitleBarController {
    * Load the next incomplete labeled thing, jump to the frameIndex of this labeled thing and select it.
    *
    * @return {Promise}
-   * @private
+   * @protected
    */
   _jumpToNextIncompleteThing() {
     return this._$q.resolve()
@@ -302,7 +296,7 @@ class ViewerTitleBarController {
    * Load the next incomplete labeled frame, jump to the frameIndex of this labeled frame and enable meta labeling.
    *
    * @return {Promise}
-   * @private
+   * @protected
    */
   _jumpToNextIncompleteFrame() {
     return this._$q.resolve()

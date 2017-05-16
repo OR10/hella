@@ -168,7 +168,7 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
   }
 
   /**
-   * Jump to the next incomplete ltif
+   * Jump to the next incomplete labeled object
    *
    * A promise is returned, which is fulfilled once the jump and selection is completed.
    *
@@ -176,7 +176,18 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
    * @protected
    */
   _jumpToNextIncomplete() {
-    return super._jumpToNextIncomplete()
+    return this._$q.all([
+      this._labeledThingGateway.getIncompleteLabeledThingCount(this.task),
+      this._labeledFrameGateway.getIncompleteLabeledFrameCount(this.task),
+    ])
+      .then(([incompleteThingResponse, incompleteFrameResponse]) => {
+        if (incompleteFrameResponse.count > 0) {
+          return this._jumpToNextIncompleteFrame();
+        }
+        if (incompleteThingResponse.count > 0) {
+          return this._jumpToNextIncompleteThing();
+        }
+      })
       .then(() => this._pullChangesFromBackend())
       .then(() => this._reinitializeContinuousReplication());
   }
