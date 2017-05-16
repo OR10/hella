@@ -1,0 +1,45 @@
+{
+  "request": {
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0",
+    "method": "GET",
+    "data": {
+      "identifierName": "legacy",
+      "frameIndex": 0,
+      "incomplete": true,
+      "labeledThingId": "LABELED-THING-ID-1",
+      "shapes": [
+        {
+          "id": "SHAPE-ID-1",
+          "type": "polyline",
+          "points": [
+            {
+              "x": 200,
+              "y": 100
+            },
+            {
+              "x": 300,
+              "y": 200
+            },
+            {
+              "x": 200,
+              "y": 300
+            },
+            {
+              "x": 100,
+              "y": 200
+            }
+          ],
+          "labeledThingInFrameId": "{{:ltifid}}"
+        }
+      ],
+      "classes": [],
+      "_rev": "1-2f2582ec9aa0facea08079dfabe215f1",
+      "_id": "{{:ltifid}}",
+      "type": "AppBundle.Model.LabeledThingInFrame",
+      "ghostClasses": null,
+      "taskId": "TASKID-TASKID"
+    }
+  },
+  "response": {}
+}
+

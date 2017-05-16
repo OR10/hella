@@ -11,7 +11,6 @@ export default class LabelSelectorDirective {
       selectedLabelStructureObject: '=',
       task: '=',
       framePosition: '=',
-      isCompleted: '=?',
       labelingInstructions: '=',
       readOnly: '@',
       selectedPaperShape: '=',

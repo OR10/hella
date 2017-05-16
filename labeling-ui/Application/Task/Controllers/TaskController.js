@@ -7,6 +7,7 @@ import ContrastFilter from '../../Common/Filters/ContrastFilter';
 
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
+import PaperFrame from '../../Viewer/Shapes/PaperFrame';
 
 class TaskController {
   /**
@@ -16,7 +17,6 @@ class TaskController {
    * @param {{task: Task, video: Video}} initialData
    * @param {User} user
    * @param {Object} userPermissions
-   * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {$location} $location
    * @param {ApplicationState} applicationState
    * @param {angular.$timeout} $timeout
@@ -31,7 +31,6 @@ class TaskController {
               initialData,
               user,
               userPermissions,
-              labeledFrameGateway,
               $location,
               applicationState,
               $timeout,
@@ -175,12 +174,6 @@ class TaskController {
     this._constrastFilter = null;
 
     /**
-     * @type {LabeledFrameGateway}
-     * @private
-     */
-    this._labeledFrameGateway = labeledFrameGateway;
-
-    /**
      * @TODO Move into LabelSelector when refactoring for different task types
      * @type {AbortablePromiseRingBuffer}
      */
@@ -243,11 +236,6 @@ class TaskController {
     this.selectedLabelStructureObject = null;
 
     /**
-     * @type {LabeledFrameGateway}
-     */
-    this._labeledFrameGateway = labeledFrameGateway;
-
-    /**
      * @type {AbortablePromiseRingBuffer}
      */
     this._labeledFrameBuffer = new AbortablePromiseRingBuffer(1);
@@ -275,52 +263,34 @@ class TaskController {
 
     this._labelStructurePromise = this._initializeLabelStructure();
 
-    if (this.task.taskType === 'object-labeling') {
-      $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
-        if (newShape !== oldShape) {
-          if (newShape !== null) {
-            // @TODO: Should be loaded in the resolver of the viewer. This would make synchronization easier
-            this._labelStructurePromise
-              .then(labelStructure => {
-                let thingIdentifier;
-                let labelStructureThing;
-                switch (true) {
-                  case newShape instanceof PaperThingShape:
-                    thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
-                    labelStructureThing = labelStructure.getThingById(thingIdentifier);
-                    break;
-                  case newShape instanceof PaperGroupShape:
-                    thingIdentifier = newShape.labeledThingGroupInFrame.labeledThingGroup.type;
-                    labelStructureThing = labelStructure.getGroupById(thingIdentifier);
-                    break;
-                  default:
-                    throw new Error('Cannot read identifier name of unknown shape!');
-                }
+    $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
+      if (newShape !== oldShape && newShape !== null) {
+        // @TODO: Should be loaded in the resolver of the viewer. This would make synchronization easier
+        this._labelStructurePromise
+          .then(labelStructure => {
+            let thingIdentifier;
+            let labelStructureObject;
 
-                this.selectedLabelStructureObject = labelStructureThing;
-                // The selectedObject needs to be set in the same cycle as the new LabelStructureThing. Otherwise there might be race conditions in
-                // updating its structure against the wrong LabelStructureThing.
-              });
-          }
-        }
-      });
-    }
+            switch (true) {
+              case newShape instanceof PaperThingShape:
+                thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
+                labelStructureObject = labelStructure.getThingById(thingIdentifier);
+                break;
+              case newShape instanceof PaperGroupShape:
+                thingIdentifier = newShape.labeledThingGroupInFrame.labeledThingGroup.type;
+                labelStructureObject = labelStructure.getGroupById(thingIdentifier);
+                break;
+              case newShape instanceof PaperFrame:
+                labelStructureObject = labelStructure.getRequirementFrameById('__meta-labeling-frame-identifier__');
+                break;
+              default:
+                throw new Error('Cannot read identifier name of unknown shape!');
+            }
 
-    if (this.task.taskType === 'meta-labeling') {
-      $scope.$watch('vm.framePosition.position', newPosition => {
-        this.framePosition.lock.acquire();
-        // Watch for changes of the Frame position to correctly update all
-        // data structures for the new frame
-        this._labeledFrameBuffer.add(this._loadLabeledFrame(newPosition))
-          .aborted(() => {
-            this.framePosition.lock.release();
-          })
-          .then(labeledFrame => {
-            this.labeledFrame = labeledFrame;
-            this.framePosition.lock.release();
+            this.selectedLabelStructureObject = labelStructureObject;
           });
-      });
-    }
+      }
+    });
 
     this._initializeLayout();
 
@@ -441,16 +411,6 @@ class TaskController {
     return labelStructurePromise;
   }
 
-  /**
-   * Load the {@link LabeledFrame} structure for the given frame
-   * @param frameIndex
-   * @returns {AbortablePromise<LabeledFrame>}
-   * @private
-   */
-  _loadLabeledFrame(frameIndex) {
-    return this._labeledFrameGateway.getLabeledFrame(this.task.id, frameIndex);
-  }
-
   onSplitViewInitialized() {
     this.$scope.$broadcast('sidebar.resized');
   }
@@ -519,7 +479,6 @@ TaskController.$inject = [
   'initialData',
   'user',
   'userPermissions',
-  'labeledFrameGateway',
   '$location',
   'applicationState',
   '$timeout',

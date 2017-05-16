@@ -228,7 +228,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
     $rootScope.$apply();
 
     expect(thingGateway.saveLabeledThing)
-      .toHaveBeenCalledWith(labeledThingCalled);
+      .toHaveBeenCalledWith(labeledThingCalled, labeledThing.incomplete);
   });
 
   it('should unassign labeled things from a labeled thing group', () => {
@@ -277,6 +277,6 @@ describe('PouchDbLabeledThingGroupGateway', () => {
     $rootScope.$apply();
 
     expect(thingGateway.saveLabeledThing)
-      .toHaveBeenCalledWith(labeledThingCalled);
+      .toHaveBeenCalledWith(labeledThingCalled, labeledThing.incomplete);
   });
 });

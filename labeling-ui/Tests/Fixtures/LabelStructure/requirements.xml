@@ -145,7 +145,12 @@
   <group id="extension-sign-group" name="Sign with extension">
     <class id="extension-position" name="Position of the extension sign">
       <value id="position-below" name="Below" />
-      <value id="position-above" name="Above" />
+      <value id="position-above" name="Above" >
+        <class id="extension-sign-subclass" name="Subclass">
+          <value id="extension-sign-subclass-1" name="Extension sign subclass 1" />
+          <value id="extension-sign-subclass-2" name="Extension sign subclass 2" />
+        </class>
+      </value>
     </class>
   </group>
 

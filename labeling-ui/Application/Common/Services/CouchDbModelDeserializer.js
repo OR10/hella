@@ -80,6 +80,8 @@ class CouchDbModelDeserializer {
       delete document.frameRange.type;
     }
 
+    delete document.taskId;
+
     return new LabeledThing(
       Object.assign({}, document, {task})
     );
@@ -100,6 +102,8 @@ class CouchDbModelDeserializer {
   deserializeLabeledThingGroup(labeledThingGroupDocument, task) {
     const document = this._cloneDocument(labeledThingGroupDocument);
     this._removePrefixFromIdAndRevision(document);
+
+    delete document.taskId;
 
     return new LabeledThingGroup(
       Object.assign({}, document, {task})
@@ -147,13 +151,16 @@ class CouchDbModelDeserializer {
    * Deserialize a labeledFrame to our frontend model
    *
    * @param {object} labeledFrameDocument
+   * @param {Task} task
    * @return {LabeledFrame}
    */
-  deserializeLabeledFrame(labeledFrameDocument) {
+  deserializeLabeledFrame(labeledFrameDocument, task) {
     const document = this._cloneDocument(labeledFrameDocument);
     this._removePrefixFromIdAndRevision(document);
 
-    return new LabeledFrame(document);
+    delete document.taskId;
+
+    return new LabeledFrame(Object.assign({}, document, {task}));
   }
 
   /**

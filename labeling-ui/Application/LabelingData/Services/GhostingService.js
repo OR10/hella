@@ -90,8 +90,8 @@ class GhostingService {
   _createGhostLabeledThingInFrameForPartialSequence(ltif, localGhostIndex) {
     return new LabeledThingInFrame({
       id: null,
-      classes: [],
-      ghostClasses: clone(ltif.classes),
+      classes: clone(ltif.classes),
+      ghostClasses: clone(ltif.ghostClasses),
       incomplete: false,
       frameIndex: ltif.frameIndex + localGhostIndex,
       labeledThing: ltif.labeledThing,
