@@ -4,7 +4,7 @@
     "method": "GET",
     "data": {
       "identifierName": "legacy",
-      "frameIndex": 0,
+      "frameIndex": 2,
       "incomplete": true,
       "labeledThingId": "LABELED-THING-ID-1",
       "shapes": [
@@ -12,12 +12,12 @@
           "id": "SHAPE-ID-1",
           "type": "rectangle",
           "bottomRight": {
-            "x": 200,
-            "y": 200
+            "x": 375,
+            "y": 385
           },
           "topLeft": {
-            "x": 100,
-            "y": 100
+            "x": 200,
+            "y": 200
           },
           "labeledThingInFrameId": "{{:ltifid}}"
         }
@@ -26,9 +26,9 @@
       "_rev": "1-2f2582ec9aa0facea08079dfabe215f1",
       "_id": "{{:ltifid}}",
       "type": "AppBundle.Model.LabeledThingInFrame",
-      "ghostClasses": null,
       "taskId": "TASKID-TASKID"
     }
   },
   "response": {}
 }
+

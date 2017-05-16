@@ -10,13 +10,9 @@
       "shapes": [
         {
           "id": "SHAPE-ID-1",
-          "type": "rectangle",
-          "bottomRight": {
+          "type": "point",
+          "point": {
             "x": 200,
-            "y": 200
-          },
-          "topLeft": {
-            "x": 100,
             "y": 100
           },
           "labeledThingInFrameId": "{{:ltifid}}"
@@ -32,3 +28,4 @@
   },
   "response": {}
 }
+

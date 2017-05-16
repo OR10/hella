@@ -4,21 +4,31 @@
     "method": "GET",
     "data": {
       "identifierName": "legacy",
-      "frameIndex": 0,
+      "frameIndex": 4,
       "incomplete": true,
       "labeledThingId": "LABELED-THING-ID-1",
       "shapes": [
         {
           "id": "SHAPE-ID-1",
-          "type": "rectangle",
-          "bottomRight": {
-            "x": 200,
-            "y": 200
-          },
-          "topLeft": {
-            "x": 100,
-            "y": 100
-          },
+          "type": "polygon",
+          "points": [
+            {
+              "x": 500,
+              "y": 300
+            },
+            {
+              "x": 200,
+              "y": 500
+            },
+            {
+              "x": 300,
+              "y": 200
+            },
+            {
+              "x": 400,
+              "y": 700
+            }
+          ],
           "labeledThingInFrameId": "{{:ltifid}}"
         }
       ],
@@ -32,3 +42,4 @@
   },
   "response": {}
 }
+
