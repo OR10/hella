@@ -192,9 +192,6 @@ describe('Interpolation Rectangle Tests', () => {
   });
 
   it('should draw and interpolate a new rectangle', done => {
-    let nextFrameButton;
-    let previousFrameButton;
-
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -207,9 +204,6 @@ describe('Interpolation Rectangle Tests', () => {
           .perform();
       })
       .then(() => {
-        nextFrameButton = element(by.css('.next-frame-button'));
-        previousFrameButton = element(by.css('.previous-frame-button'));
-
         browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
@@ -233,7 +227,6 @@ describe('Interpolation Rectangle Tests', () => {
         browser.sleep(500);
       })
       .then(() => {
-        const interpolateButton = element(by.css('#interpolate-shape-button'));
         interpolateButton.click();
       })
       .then(
