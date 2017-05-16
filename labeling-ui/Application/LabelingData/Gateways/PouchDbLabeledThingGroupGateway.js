@@ -243,7 +243,7 @@ class PouchDbLabeledThingGroupGateway {
         const promises = [];
 
         modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
+          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing, labeledThing.incomplete));
         });
 
         return this._abortablePromiseFactory(this._$q.all(promises));
