@@ -66,10 +66,7 @@ class TaskIncomplete
         Model\LabeledThing $labeledThing,
         Model\LabeledThingInFrame $labeledThingInFrame
     ) {
-        $labeledThingFacade = $this->labeledThingFactory->getFacadeByProjectIdAndTaskId(
-            $labeledThing->getProjectId(),
-            $labeledThing->getTaskId()
-        );
+        $labeledThingFacade = $this->getFacadeByProjectAndTaskId($this->labeledThingFactory, $labeledThing);
 
         $labeledThingInFrames = $labeledThingFacade->getLabeledThingInFrames(
             $labeledThing,
@@ -96,9 +93,9 @@ class TaskIncomplete
             $updatedLabeledThingInFrame[] = $labeledThingInFrameToCheck;
         }
 
-        $labeledThingInFrameFacade = $this->labeledThingInFrameFactory->getFacadeByProjectIdAndTaskId(
-            $labeledThing->getProjectId(),
-            $labeledThing->getTaskId()
+        $labeledThingInFrameFacade = $this->getFacadeByProjectAndTaskId(
+            $this->labeledThingInFrameFactory,
+            $labeledThing
         );
 
         $labeledThingInFrameFacade->saveAll(
@@ -113,10 +110,7 @@ class TaskIncomplete
      */
     public function isLabeledThingIncomplete(Model\LabeledThing $labeledThing)
     {
-        $labeledThingFacade   = $this->labeledThingFactory->getFacadeByProjectIdAndTaskId(
-            $labeledThing->getProjectId(),
-            $labeledThing->getTaskId()
-        );
+        $labeledThingFacade   = $this->getFacadeByProjectAndTaskId($this->labeledThingFactory, $labeledThing);
         $labeledThingInFrames = $labeledThingFacade->getLabeledThingInFrames($labeledThing);
         if (empty($labeledThingInFrames)) {
             return false;
@@ -137,13 +131,13 @@ class TaskIncomplete
      */
     public function isLabeledThingInFrameIncomplete(Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $labeledThingFacade        = $this->labeledThingFactory->getFacadeByProjectIdAndTaskId(
-            $labeledThingInFrame->getProjectId(),
-            $labeledThingInFrame->getTaskId()
+        $labeledThingFacade = $this->getFacadeByProjectAndTaskId(
+            $this->labeledThingFactory,
+            $labeledThingInFrame
         );
-        $labeledThingInFrameFacade = $this->labeledThingInFrameFactory->getFacadeByProjectIdAndTaskId(
-            $labeledThingInFrame->getProjectId(),
-            $labeledThingInFrame->getTaskId()
+        $labeledThingInFrameFacade = $this->getFacadeByProjectAndTaskId(
+            $this->labeledThingInFrameFactory,
+            $labeledThingInFrame
         );
 
         $labeledThing = $labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
@@ -208,6 +202,20 @@ class TaskIncomplete
         }
 
         return false;
+    }
+
+    /**
+     * @param Facade\LabeledThing\FacadeInterface|Facade\LabeledThingInFrame\FacadeInterface $factory
+     * @param Model\LabeledThing|Model\LabeledThingInFrame                                   $ltOrLtif
+     *
+     * @return Facade\LabeledThing|Facade\LabeledThingInFrame
+     */
+    private function getFacadeByProjectAndTaskId($factory, $ltOrLtif)
+    {
+        return $factory->getFacadeByProjectIdAndTaskId(
+            $ltOrLtif->getProjectId(),
+            $ltOrLtif->getTaskId()
+        );
     }
 
     /**
