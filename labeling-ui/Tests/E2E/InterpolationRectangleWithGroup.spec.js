@@ -214,6 +214,94 @@ describe('Interpolation RectangleWithGroup Tests', () => {
       });
   });
 
+  it('should interpolate both rectangles within a RectangleWithGroup when selecting the start LTIF', done => {
+    mock(sharedMocks);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        groupButton.click();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 80, y: 80}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 500, y: 500}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 150, y: 150}) // First RectangleWithGroup in first frame
+          .click()
+          .perform();
+      })
+      .then(() => {
+        interpolateButton.click();
+      })
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 350, y: 150}) // Second RectangleWithGroup in first frame
+          .click()
+          .perform();
+      })
+      .then(() => {
+        interpolateButton.click();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame0BothInterpolated')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame0BothInterpolated);
+      })
+      .then(() => nextFrameButton.click())
+      .then(() => browser.sleep(500))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame1BothInterpolated')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame1BothInterpolated);
+      })
+      .then(() => nextFrameButton.click())
+      .then(() => browser.sleep(500))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame2BothInterpolated')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame2BothInterpolated);
+      })
+      .then(() => nextFrameButton.click())
+      .then(() => browser.sleep(500))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame3BothInterpolated')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame3BothInterpolated);
+      })
+      .then(() => nextFrameButton.click())
+      .then(() => browser.sleep(500))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame4BothInterpolated')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame4BothInterpolated);
+      })
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex0);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex1);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex2);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex3);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex4);
+        done();
+      });
+  });
+
   afterEach(() => {
     expectAllModalsToBeClosed();
     mock.teardown();
