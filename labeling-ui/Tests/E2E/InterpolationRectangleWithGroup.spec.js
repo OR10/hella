@@ -5,7 +5,7 @@ import featureFlags from '../../Application/features.json';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Interpolation RectangleWithGroup Tests', () => {
+fdescribe('Interpolation RectangleWithGroup Tests', () => {
   if (!featureFlags.pouchdb) {
     pending('These tests only work with activated Pouch');
   }
@@ -199,11 +199,11 @@ describe('Interpolation RectangleWithGroup Tests', () => {
       .then(() => previousFrameButton.click())
       .then(() => browser.sleep(500))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame0')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame0Backwards')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame0);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame0Backwards);
       })
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
