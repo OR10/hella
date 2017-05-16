@@ -53,7 +53,6 @@ describe('Interpolation RectangleWithGroup Tests', () => {
   });
 
   it('should interpolate a RectangleWithGroup when selecting the start LTIF', done => {
-
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -133,12 +132,10 @@ describe('Interpolation RectangleWithGroup Tests', () => {
   });
 
   it('should interpolate a RectangleWithGroup when selecting the end LTIF', done => {
-
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        const groupButton = element(by.css('.tool-button.tool-group'));
         groupButton.click();
       })
       .then(() => {

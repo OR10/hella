@@ -13,6 +13,10 @@ describe('Interpolation Rectangle Tests', () => {
   let assets;
   let sharedMocks;
   let viewer;
+  let nextFrameButton;
+  let previousFrameButton;
+  let interpolateButton;
+  let goEndButton;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
@@ -37,26 +41,25 @@ describe('Interpolation Rectangle Tests', () => {
     ];
 
     viewer = element(by.css('.layer-container'));
+    nextFrameButton = element(by.css('.next-frame-button'));
+    previousFrameButton = element(by.css('.previous-frame-button'));
+    interpolateButton = element(by.css('#interpolate-shape-button'));
+    goEndButton = element(by.css('.icon-selection-goend'));
   });
 
   it('should interpolate a Rectangle when selecting the start LTIF', done => {
-    let nextFrameButton;
-
     mock(sharedMocks.concat([
       assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0and4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        nextFrameButton = element(by.css('.next-frame-button'));
-
         browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
           .perform();
       })
       .then(() => {
-        const interpolateButton = element(by.css('#interpolate-shape-button'));
         interpolateButton.click();
       })
       .then(
@@ -115,28 +118,22 @@ describe('Interpolation Rectangle Tests', () => {
   });
 
   it('should interpolate a Rectangle when selecting the end LTIF', done => {
-    let previousFrameButton;
-
     mock(sharedMocks.concat([
       assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0and4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        previousFrameButton = element(by.css('.previous-frame-button'));
-
         browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
           .perform();
       })
       .then(() => {
-        const goEnd = element(by.css('.icon-selection-goend'));
-        goEnd.click();
+        goEndButton.click();
       })
       .then(() => browser.sleep(500))
       .then(() => {
-        const interpolateButton = element(by.css('#interpolate-shape-button'));
         interpolateButton.click();
       })
       .then(
