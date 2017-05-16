@@ -413,6 +413,7 @@ export default class LabelSelectorController {
   /**
    * @param {LabelStructureObject} labelStructureObject
    * @param {PaperShape} selectedPaperShape
+   * @return {boolean}
    * @private
    */
   _labelStructureFitsLabeledObject(labelStructureObject, selectedPaperShape) {
