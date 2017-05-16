@@ -217,6 +217,7 @@ export default class LabelSelectorController {
 
   /**
    * @returns {LabeledThingInFrame}
+   * @private
    */
   _getSelectedLabeledObject() {
     switch (true) {
