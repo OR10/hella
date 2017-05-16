@@ -10,6 +10,7 @@ import Environment from '../../Common/Support/Environment';
 
 import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
+import PaperFrame from '../Shapes/PaperFrame';
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -665,6 +666,14 @@ class ViewerController {
         }, 100);
       });
 
+    // TODO: look for a better position for this kind of handling?!
+    // Handle the change from thing to meta labeling here.
+    this._$rootScope.$on('label-structure-type:change', (event, labeledFrame) =>{
+      this._thingLayerContext.withScope(() => {
+        this.selectedPaperShape = new PaperFrame(labeledFrame);
+      });
+    });
+
     // Initial prefetching of all frames
     if (this.task.taskType === 'object-labeling') {
       setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
@@ -1085,6 +1094,10 @@ class ViewerController {
     }
 
     if (this.selectedPaperShape instanceof PaperGroupShape) {
+      return Promise.resolve(null);
+    }
+
+    if (this.selectedPaperShape instanceof PaperFrame) {
       return Promise.resolve(null);
     }
 

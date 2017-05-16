@@ -91,14 +91,14 @@ describe('LabelStructure', () => {
   });
 
   it('should provide frame with specific id correctly (1)', () => {
-    const retrievedFrame = structure.getRequirementFramesById('mocked-frame-1');
+    const retrievedFrame = structure.getRequirementFrameById('mocked-frame-1');
     const expectedFrame = new LabelStructureFrame('mocked-frame-1', 'Mocked Frame One', 'frame');
 
     expect(retrievedFrame).toEqual(expectedFrame);
   });
 
   it('should provide frame with specific id correctly (2)', () => {
-    const retrievedFrame = structure.getRequirementFramesById('mocked-frame-2');
+    const retrievedFrame = structure.getRequirementFrameById('mocked-frame-2');
     const expectedFrame = new LabelStructureFrame('mocked-frame-2', 'Mocked Frame Two', 'frame');
 
     expect(retrievedFrame).toEqual(expectedFrame);

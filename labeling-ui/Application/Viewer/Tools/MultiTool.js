@@ -6,7 +6,10 @@ import PaperPoint from '../../Viewer/Shapes/PaperPoint';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
 import PaperPolyline from '../../Viewer/Shapes/PaperPolyline';
+import PaperFrame from '../../Viewer/Shapes/PaperFrame';
 import hitResolver from '../Support/HitResolver';
+
+import FrameCreationTool from './FrameCreationTool';
 
 import CreationToolActionStruct from './ToolActionStructs/CreationToolActionStruct';
 import MovingToolActionStruct from './ToolActionStructs/MovingToolActionStruct';
@@ -28,8 +31,9 @@ class MultiTool extends PaperTool {
    * @param {LoggerService} loggerService
    * @param {ToolService} toolService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
+   * @param {LabeledFrameGateway} labeledFrameGateway
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, toolService, viewerMouseCursorService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, toolService, viewerMouseCursorService, labeledFrameGateway) {
     super(drawingContext, $rootScope, $q, loggerService);
 
     /**
@@ -75,6 +79,12 @@ class MultiTool extends PaperTool {
      * @private
      */
     this._keyboardToolDelegationInvoked = false;
+
+    /**
+     * @type {LabeledFrameGateway}
+     * @private
+     */
+    this._labeledFrameGateway = labeledFrameGateway;
   }
 
   /**
@@ -82,15 +92,28 @@ class MultiTool extends PaperTool {
    * @return {Promise}
    */
   invoke(toolActionStruct) {
-    const promise = this._invoke(toolActionStruct);
     this._activePaperTool = null;
     this._keyboardTool = null;
     this._paperToolDelegationInvoked = false;
     this._keyboardToolDelegationInvoked = false;
 
-    const {selectedPaperShape, requirementsShape} = this._toolActionStruct;
-    const tool = this._getToolForRequirementsShape(requirementsShape);
+    const {selectedPaperShape, requirementsShape, task, framePosition} = toolActionStruct;
+    const tool = this._getCreationToolForRequirementsShape(requirementsShape);
     this._$rootScope.$emit('tool:selected:supportsDefaultShapeCreation', tool.supportsDefaultShapeCreation);
+
+    // If we are in the frame labeling case, handle stuff outside the default tool invokation
+    if (tool instanceof FrameCreationTool && (
+        !(selectedPaperShape instanceof PaperFrame) || selectedPaperShape.labeledFrame.frameIndex !== framePosition.position
+      )) {
+      return this._$q.resolve()
+        .then(() => this._labeledFrameGateway.getLabeledFrame(task, framePosition.position))
+        .then(labeledFrame => {
+          const frameShape = this._getFrameShapeForLabeledFrame(labeledFrame);
+
+          return {actionIdentifier: 'selection', paperShape: frameShape};
+        });
+    }
+    const promise = this._invoke(toolActionStruct);
 
     if (toolActionStruct.readOnly !== true && selectedPaperShape !== null) {
       const keyboardTool = this._toolService.getTool(this._context, requirementsShape, 'keyboard');
@@ -100,6 +123,20 @@ class MultiTool extends PaperTool {
     }
 
     return promise;
+  }
+
+  /**
+   * @param labeledFrame
+   * @return {PaperFrame}
+   * @private
+   */
+  _getFrameShapeForLabeledFrame(labeledFrame) {
+    let shape;
+    this._context.withScope(() => {
+      shape = new PaperFrame(labeledFrame);
+    });
+
+    return shape;
   }
 
   /**
@@ -148,7 +185,7 @@ class MultiTool extends PaperTool {
    * @private
    */
   _invokeCreationToolDelegation(requirementsShape) {
-    const tool = this._getToolForRequirementsShape(requirementsShape);
+    const tool = this._getCreationToolForRequirementsShape(requirementsShape);
     this._invokePaperToolDelegation(tool, 'creation', null, null);
   }
 
@@ -157,7 +194,7 @@ class MultiTool extends PaperTool {
    * @return {Tool}
    * @private
    */
-  _getToolForRequirementsShape(requirementsShape) {
+  _getCreationToolForRequirementsShape(requirementsShape) {
     switch (requirementsShape) {
       case 'rectangle':
         return this._toolService.getTool(this._context, PaperRectangle.getClass());
@@ -173,6 +210,8 @@ class MultiTool extends PaperTool {
         return this._toolService.getTool(this._context, PaperPoint.getClass());
       case 'group-rectangle':
         return this._toolService.getTool(this._context, PaperGroupRectangle.getClass());
+      case 'frame-shape':
+        return this._toolService.getTool(this._context, PaperFrame.getClass());
       default:
         throw new Error(`Cannot create tool of unknown type: ${requirementsShape}.`);
     }
@@ -208,6 +247,11 @@ class MultiTool extends PaperTool {
       if (!hitResult) {
         // Deselection if there was a selection
         if (this._toolActionStruct.selectedPaperShape !== null) {
+          // Metalabeling is can not be deselected
+          if (this._toolActionStruct.selectedPaperShape instanceof PaperFrame) {
+            return;
+          }
+
           this._complete({actionIdentifier: 'selection', paperShape: null});
           return;
         }
@@ -457,7 +501,7 @@ class MultiTool extends PaperTool {
    * @param {CreationToolActionStruct} toolActionStruct
    */
   invokeDefaultShapeCreation(toolActionStruct) {
-    this._getToolForRequirementsShape(toolActionStruct.requirementsShape);
+    this._getCreationToolForRequirementsShape(toolActionStruct.requirementsShape);
     const {viewport, video, task, framePosition, requirementsThingOrGroupId} = this._toolActionStruct;
     const struct = new CreationToolActionStruct(
       viewport,
@@ -533,6 +577,7 @@ MultiTool.$inject = [
   'loggerService',
   'toolService',
   'viewerMouseCursorService',
+  'labeledFrameGateway',
 ];
 
 export default MultiTool;

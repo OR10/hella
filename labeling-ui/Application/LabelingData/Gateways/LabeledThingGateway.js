@@ -89,11 +89,11 @@ class LabeledThingGateway {
   }
 
   /**
-   * @param {string} taskId
+   * @param {string} task
    * @returns {AbortablePromise.<LabeledThing|Error>}
    */
-  getIncompleteLabeledThingCount(taskId) {
-    const url = this._apiService.getApiUrl(`/task/${taskId}/labeledThingsIncompleteCount`);
+  getIncompleteLabeledThingCount(task) {
+    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingsIncompleteCount`);
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {

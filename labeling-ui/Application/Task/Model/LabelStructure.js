@@ -94,7 +94,7 @@ class LabelStructure {
    * @param {string} identifier
    * @returns {LabelStructureThing}
    */
-  getRequirementFramesById(identifier) {
+  getRequirementFrameById(identifier) {
     if (!this.isRequirementFrameDefinedById(identifier)) {
       throw new Error(`Frame with identifier '${identifier}' could not be found in LabelStructure`);
     }

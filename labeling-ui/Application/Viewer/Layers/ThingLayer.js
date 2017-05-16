@@ -53,8 +53,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
               applicationState,
               modalService,
               labeledThingGateway,
-              labeledThingGroupGateway
-              ) {
+              labeledThingGroupGateway) {
     super(width, height, $scope, drawingContext);
 
     /**
@@ -271,31 +270,31 @@ class ThingLayer extends PanAndZoomPaperLayer {
     // TODO: fix the revision error in the backend
     try {
       this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
-          .then(() => {
-            shape.remove();
-            viewModel.selectedPaperShape = null;
-            viewModel.paperThingShapes = viewModel.paperThingShapes.filter(
-                paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
-            );
+        .then(() => {
+          shape.remove();
+          viewModel.selectedPaperShape = null;
+          viewModel.paperThingShapes = viewModel.paperThingShapes.filter(
+            paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
+          );
 
-            return selectedLabeledThing;
-          })
-          .then(() => {
-            selectedLabeledThing.groupIds.forEach(groupId => {
-              const relatedThingShapes = viewModel.paperThingShapes.filter(thingShape =>
-              thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
-              const shapeGroup = viewModel.paperGroupShapes.find(
-                  paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
+          return selectedLabeledThing;
+        })
+        .then(() => {
+          selectedLabeledThing.groupIds.forEach(groupId => {
+            const relatedThingShapes = viewModel.paperThingShapes.filter(thingShape =>
+            thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
+            const shapeGroup = viewModel.paperGroupShapes.find(
+              paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
 
-              if (relatedThingShapes.length === 0) {
-                return this._deleteGroupShape(shapeGroup);
-              }
-            });
-          })
-          .then(() => {
-            this._deleteAfterAction();
-          })
-          .catch(() => this._onDeletionError());
+            if (relatedThingShapes.length === 0) {
+              return this._deleteGroupShape(shapeGroup);
+            }
+          });
+        })
+        .then(() => {
+          this._deleteAfterAction();
+        })
+        .catch(() => this._onDeletionError());
     } catch (error) {
       this._onDeletionError();
     }
@@ -309,7 +308,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     const viewModel = this._$scope.vm;
     const labeledThingGroup = shape.labeledThingGroupInFrame.labeledThingGroup;
     const relatedThingShapes = viewModel.paperThingShapes.filter(
-        thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(labeledThingGroup.id) !== -1
+      thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(labeledThingGroup.id) !== -1
     );
     const relatedLabeledThings = relatedThingShapes.map(thingShape => thingShape.labeledThingInFrame.labeledThing);
 
@@ -317,18 +316,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     try {
       this._labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
-          .then(() => {
-            return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
-          })
-          .then(() => {
-            shape.remove();
-            viewModel.selectedPaperShape = null;
-            viewModel.paperGroupShapes = viewModel.paperGroupShapes.filter(
-                paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id !== labeledThingGroup.id
-            );
-            this._deleteAfterAction();
-          })
-          .catch(() => this._onDeletionError());
+        .then(() => {
+          return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
+        })
+        .then(() => {
+          shape.remove();
+          viewModel.selectedPaperShape = null;
+          viewModel.paperGroupShapes = viewModel.paperGroupShapes.filter(
+            paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id !== labeledThingGroup.id
+          );
+          this._deleteAfterAction();
+        })
+        .catch(() => this._onDeletionError());
     } catch (error) {
       this._onDeletionError();
     }
@@ -898,6 +897,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 }
 
-ThingLayer.deregisterDeleteEventListener = () => {};
+ThingLayer.deregisterDeleteEventListener = () => {
+};
 
 export default ThingLayer;

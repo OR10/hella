@@ -21,6 +21,7 @@ import PathKeyboardTool from '../Tools/PathKeyboardTool';
 import PointDrawingTool from '../Tools/Point/PointDrawingTool';
 import PointMoveTool from '../Tools/Point/PointMoveTool';
 import PointKeyboardTool from '../Tools/Point/PointKeyboardTool';
+import FrameCreationTool from '../Tools/FrameCreationTool';
 
 class ToolService {
   /**
@@ -87,6 +88,7 @@ class ToolService {
       PointDrawingTool,
       PointMoveTool,
       PointKeyboardTool,
+      FrameCreationTool,
     ];
     // Attention: NoOperationPaperTool has to be the last Tool in this._classes
     this._classes.push(NoOperationPaperTool);

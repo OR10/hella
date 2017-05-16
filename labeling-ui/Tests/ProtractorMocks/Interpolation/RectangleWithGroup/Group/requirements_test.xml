@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+  <group id="extension-sign-group" name="Sign with extension">
+    <class id="extension-position" name="Position of the extension sign">
+      <value id="position-below" name="Below" />
+      <value id="position-above" name="Above" />
+    </class>
+  </group>
+  <thing id="legacy" shape="rectangle" name="Time Range Sign">
+    <class id="time-limit-start" name="Start of time limit">
+      <value id="time-limit-start-0" name="0" />
+    </class>
+    <class id="time-limit-end" name="End of time limit">
+      <value id="time-limit-end-0" name="0" />
+    </class>
+  </thing>
+</requirements>
