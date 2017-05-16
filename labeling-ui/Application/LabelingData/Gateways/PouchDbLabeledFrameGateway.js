@@ -161,12 +161,7 @@ class PouchDbLabeledFrameGateway {
           this._revisionManager.extractRevision(result);
           return db.get(result.id);
         })
-        .then(
-          document => {
-            const foo = this._couchDbModelDeserializer.deserializeLabeledFrame(document, task);
-            return foo;
-          }
-        );
+        .then(document => this._couchDbModelDeserializer.deserializeLabeledFrame(document, task));
     });
   }
 
