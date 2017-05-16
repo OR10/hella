@@ -210,4 +210,11 @@ class KernelTestCase extends Test\KernelTestCase
     {
         $this->defaultUser = $this->userService->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
     }
+
+    protected function skipOnPouchDbEnviroment()
+    {
+        if ($this->getContainer()->getParameter('pouchdb_feature_enabled')){
+            $this->markTestSkipped('This test is not for the PouchDB environment!');
+        }
+    }
 }

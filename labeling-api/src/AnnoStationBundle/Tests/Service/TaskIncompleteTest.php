@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Tests\Service;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\Factory;
 use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AppBundle\Tests;
@@ -17,9 +18,9 @@ class TaskIncompleteTest extends Tests\KernelTestCase
     private $taskIncompleteService;
 
     /**
-     * @var Facade\LabeledThingInFrame
+     * @var Factory
      */
-    private $labeledThingInFrameFacade;
+    private $labeledThingInFrameFacadeFactory;
 
     /**
      * @var Facade\Video
@@ -37,9 +38,9 @@ class TaskIncompleteTest extends Tests\KernelTestCase
     private $labelingTaskFacade;
 
     /**
-     * @var Facade\LabeledThing
+     * @var Factory
      */
-    private $labeledThingFacade;
+    private $labeledThingFacadeFactory;
 
     /**
      * @var Service\TaskConfigurationXmlConverterFactory
@@ -51,8 +52,14 @@ class TaskIncompleteTest extends Tests\KernelTestCase
      */
     private $taskConfigurationFacade;
 
+    /**
+     * @var Service\TaskDatabaseCreator
+     */
+    private $taskDatabaseCreatorService;
+
     public function testSimpleXml()
     {
+
         $xml = file_get_contents(__DIR__ . '/TaskIncomplete/Simple.xml');
 
         $labelStructure = $this->taskConfigurationXmlConverter->createConverter(
@@ -67,10 +74,21 @@ class TaskIncompleteTest extends Tests\KernelTestCase
                 ->withLabelStructure($labelStructure->getLabelStructure())
                 ->build()
         );
-        $labeledThing        = $this->labeledThingFacade->save(
+        $this->taskDatabaseCreatorService->createDatabase($project, $task);
+
+        $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $project->getId(),
+            $task->getId()
+        );
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $project->getId(),
+            $task->getId()
+        );
+
+        $labeledThing        = $labeledThingFacade->save(
             Helper\LabeledThingBuilder::create()->withTask($task)->build()
         );
-        $labeledThingInFrame = $this->labeledThingInFrameFacade->save(
+        $labeledThingInFrame = $labeledThingInFrameFacade->save(
             Helper\LabeledThingInFrameBuilder::create()
                 ->withLabeledThing($labeledThing)
                 ->build()
@@ -87,7 +105,7 @@ class TaskIncompleteTest extends Tests\KernelTestCase
                 'direction-back-left',
             ]
         );
-        $this->labeledThingInFrameFacade->save($labeledThingInFrame);
+        $labeledThingInFrameFacade->save($labeledThingInFrame);
 
         $this->assertFalse($this->taskIncompleteService->isLabeledThingInFrameIncomplete($labeledThingInFrame));
     }
@@ -107,10 +125,21 @@ class TaskIncompleteTest extends Tests\KernelTestCase
                 ->withTaskConfiguration($taskConfiguration)
                 ->build()
         );
-        $labeledThing        = $this->labeledThingFacade->save(
+        $this->taskDatabaseCreatorService->createDatabase($project, $task);
+
+        $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $project->getId(),
+            $task->getId()
+        );
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $project->getId(),
+            $task->getId()
+        );
+
+        $labeledThing        = $labeledThingFacade->save(
             Helper\LabeledThingBuilder::create()->withTask($task)->build()
         );
-        $labeledThingInFrame = $this->labeledThingInFrameFacade->save(
+        $labeledThingInFrame = $labeledThingInFrameFacade->save(
             Helper\LabeledThingInFrameBuilder::create()
                 ->withLabeledThing($labeledThing)
                 ->withIdentifierName('sign')
@@ -128,21 +157,24 @@ class TaskIncompleteTest extends Tests\KernelTestCase
                 'spain',
             ]
         );
-        $this->labeledThingInFrameFacade->save($labeledThingInFrame);
+        $labeledThingInFrameFacade->save($labeledThingInFrame);
 
         $this->assertFalse($this->taskIncompleteService->isLabeledThingInFrameIncomplete($labeledThingInFrame));
     }
 
     public function setUpImplementation()
     {
-        $this->videoFacade                   = $this->getAnnostationService('database.facade.video');
-        $this->projectFacade                 = $this->getAnnostationService('database.facade.project');
-        $this->labelingTaskFacade            = $this->getAnnostationService('database.facade.labeling_task');
-        $this->labeledThingFacade            = $this->getAnnostationService('database.facade.labeled_thing');
-        $this->labeledThingInFrameFacade     = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
-        $this->taskConfigurationFacade       = $this->getAnnostationService('database.facade.task_configuration');
-        $this->taskIncompleteService         = $this->getAnnostationService('service.task_incomplete');
-        $this->taskConfigurationXmlConverter = $this->getAnnostationService(
+        $this->videoFacade                      = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade                    = $this->getAnnostationService('database.facade.project');
+        $this->labelingTaskFacade               = $this->getAnnostationService('database.facade.labeling_task');
+        $this->taskDatabaseCreatorService       = $this->getAnnostationService('service.task_database_creator');
+        $this->labeledThingFacadeFactory        = $this->getAnnostationService('database.facade.factory.labeled_thing');
+        $this->labeledThingInFrameFacadeFactory = $this->getAnnostationService(
+            'database.facade.factory.labeled_thing_in_frame'
+        );
+        $this->taskConfigurationFacade          = $this->getAnnostationService('database.facade.task_configuration');
+        $this->taskIncompleteService            = $this->getAnnostationService('service.task_incomplete');
+        $this->taskConfigurationXmlConverter    = $this->getAnnostationService(
             'service.task_configuration_xml_converter_factory'
         );
     }
