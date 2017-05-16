@@ -1,3 +1,5 @@
+import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
+
 /**
  * Controller handling the control elements below the viewer frame
  *
@@ -423,7 +425,7 @@ class MediaControlsController {
       combo: ['del'],
       description: 'Delete selected object',
       callback: () => {
-        if (this.readOnly === true) {
+        if (!this.canSelectedPaperShapeBeDeleted()) {
           return;
         }
 
@@ -447,7 +449,7 @@ class MediaControlsController {
       combo: 't',
       description: 'Interpolate the current selection',
       callback: () => {
-        if (this.readOnly === true) {
+        if (!this.canSelectedPaperShapeBeInterpolated()) {
           return;
         }
 
@@ -460,6 +462,27 @@ class MediaControlsController {
       description: 'Toggle crosshairs',
       callback: () => this.handleShowCrosshairsToggle(),
     });
+  }
+
+  /**
+   * @return {boolean}
+   */
+  showOpenCloseBrackets() {
+    return !(this.selectedPaperShape === null) && this.selectedPaperShape instanceof PaperThingShape;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canSelectedPaperShapeBeDeleted() {
+    return !(this.readOnly === true || this.selectedPaperShape === null) && this.selectedPaperShape.canBeDeleted();
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canSelectedPaperShapeBeInterpolated() {
+    return !(this.readOnly === true || this.selectedPaperShape === null) && this.selectedPaperShape.canBeInterpolated();
   }
 }
 

@@ -8,18 +8,17 @@ import {clone} from 'lodash';
  */
 class LabeledFrame extends LabeledObject {
   /**
-   * @param {{id: string, classes: Array.<string>, incomplete: boolean, taskId: string, frameIndex: int}} labeledFrame
+   * @param {{id: string, classes: Array.<string>, incomplete: boolean, task: Task, frameIndex: int, ghostClasses: Array.<string>}} labeledFrame
    */
   constructor(labeledFrame) {
     super(labeledFrame);
 
-    // Required properties
     /**
-     * Unique identifier of the {@link Task} associated with this `LabeledFrame`
+     * {@link Task} associated with this `LabeledFrame`
      *
      * @type {string}
      */
-    this.taskId = labeledFrame.taskId;
+    this.task = labeledFrame.task;
 
     /**
      * Frame number this label information belongs to inside the associated {@link Task}
@@ -66,15 +65,23 @@ class LabeledFrame extends LabeledObject {
   }
 
   /**
+   * @return {Array.<String>}
+   */
+  extractClassList() {
+    return this.classes;
+  }
+
+  /**
    * Convert this model into a datastructure suitable for backend storage
    *
    * @return {Object}
    */
   toJSON() {
-    const {taskId, frameIndex, ghostClasses} = this;
+    const {task, frameIndex, ghostClasses} = this;
+
     return Object.assign(super.toJSON(), {
-      taskId,
       frameIndex,
+      taskId: task.id,
       ghostClasses: clone(ghostClasses),
     });
   }

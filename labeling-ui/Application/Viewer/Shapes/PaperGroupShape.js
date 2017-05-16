@@ -20,6 +20,13 @@ class PaperGroupShape extends PaperShape {
     this._labeledThingGroupInFrame = labeledThingGroupInFrame;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeInterpolated() {
+    return false;
+  }
+
 
   /**
    * {@link LabeledThingGroup} associated with this `PaperGroupShape`

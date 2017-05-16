@@ -1,6 +1,11 @@
 import {equals} from 'angular';
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
+
+import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
+import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
+import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
+
 /**
  * @property {string} labeledObjectType
  * @property {LegacyLabelStructureInterface} structure
@@ -8,8 +13,6 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
  * @property {Array<{header: string, offset: int?, limit: init?}>} sections
  * @property {Task} task
  * @property {FramePosition} framePosition
- * @property {boolean} isCompleted
- * @property {LabeledThingInFrame} selectedLabeledObject
  * @property {PaperShape} selectedPaperShape
  */
 
@@ -146,10 +149,10 @@ export default class LabelSelectorController {
         'vm.selectedPaperShape',
       ],
       ([
-        newLabelStructure,
-        newSelectedLabelStructureObject,
-        newSelectedPaperShape,
-      ])=> {
+         newLabelStructure,
+         newSelectedLabelStructureObject,
+         newSelectedPaperShape,
+       ]) => {
         if (newLabelStructure === null || newSelectedLabelStructureObject === null || newSelectedPaperShape === null) {
           this.pages = null;
           this.activePageIndex = null;
@@ -163,7 +166,7 @@ export default class LabelSelectorController {
 
     // Store and process choices made by the user
     $scope.$watch('vm.choices', newChoices => {
-      const labeledObject = this.selectedLabeledObject;
+      const labeledObject = this._getSelectedLabeledObject();
       if (!labeledObject || newChoices === null) {
         return;
       }
@@ -214,12 +217,19 @@ export default class LabelSelectorController {
 
   /**
    * @returns {LabeledThingInFrame}
+   * @private
    */
-  get selectedLabeledObject() {
-    if (this.selectedPaperShape && this.selectedPaperShape.labeledThingInFrame) {
-      return this.selectedPaperShape.labeledThingInFrame;
+  _getSelectedLabeledObject() {
+    switch (true) {
+      case this.selectedPaperShape instanceof PaperThingShape:
+        return this.selectedPaperShape.labeledThingInFrame;
+      case this.selectedPaperShape instanceof PaperGroupShape:
+        return this.selectedPaperShape.labeledThingGroupInFrame;
+      case this.selectedPaperShape instanceof PaperFrame:
+        return this.selectedPaperShape.labeledFrame;
+      default:
+        return null;
     }
-    return null;
   }
 
   /**
@@ -230,17 +240,19 @@ export default class LabelSelectorController {
    * @private
    */
   _updatePagesAndChoices() {
-    const labeledObject = this.selectedLabeledObject;
-    if (labeledObject === null) {
+    const selectedLabeledObject = this._getSelectedLabeledObject();
+    if (selectedLabeledObject === null) {
       return;
     }
-    const classList = labeledObject.extractClassList();
+    const classList = selectedLabeledObject.extractClassList();
     const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
       this.selectedLabelStructureObject,
       classList
     );
 
-    if (!this._labelStructureFitsLabeledObject(labeledObject, this.selectedLabelStructureObject)) {
+    // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
+    // TODO: find the source of the race condition and eliminate the problem there!
+    if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, this.selectedPaperShape)) {
       return;
     }
 
@@ -271,8 +283,8 @@ export default class LabelSelectorController {
         }
         if (this.choices[id] !== null) {
           // Remove the chosen value from the labelsObject
-          this.selectedLabeledObject.setClasses(
-            this.selectedLabeledObject.classes.filter(
+          selectedLabeledObject.setClasses(
+            selectedLabeledObject.classes.filter(
               label => label !== this.choices[id]
             )
           );
@@ -296,7 +308,7 @@ export default class LabelSelectorController {
    */
   _storeUpdatedLabeledObject(updateAssociatedLabeledThing = false) {
     // Store reference in case it is changed while being stored.
-    const selectedLabeledObject = this.selectedLabeledObject;
+    const selectedLabeledObject = this._getSelectedLabeledObject();
 
     switch (true) {
       case selectedLabeledObject instanceof LabeledThingInFrame:
@@ -320,7 +332,7 @@ export default class LabelSelectorController {
    * @private
    */
   _storeUpdatedLabeledThingInFrame(labeledThingInFrame, updateAssociatedLabeledThing) {
-    labeledThingInFrame.incomplete = !this.isCompleted;
+    labeledThingInFrame.incomplete = !this._isCompleted();
     let storagePromise = Promise.resolve();
     if (updateAssociatedLabeledThing) {
       const {labeledThing} = labeledThingInFrame;
@@ -344,10 +356,10 @@ export default class LabelSelectorController {
       labeledFrame.id = this._entityIdService.getUniqueId();
     }
 
-    labeledFrame.incomplete = !this.isCompleted;
+    labeledFrame.incomplete = !this._isCompleted();
 
     return this._labeledFrameGateway.saveLabeledFrame(
-      this.task.id,
+      this.task,
       this.framePosition.position,
       labeledFrame
     );
@@ -400,27 +412,31 @@ export default class LabelSelectorController {
   }
 
   /**
-   * @param {LabeledObject} labeledObject
-   * @param {LabelStructureObject} selectedLabelStructureObject
-   * @returns {boolean}
+   * @param {LabelStructureObject} labelStructureObject
+   * @param {PaperShape} selectedPaperShape
+   * @return {boolean}
    * @private
    */
-  _labelStructureFitsLabeledObject(labeledObject, selectedLabelStructureObject) {
-    const labelStructureObjectShape = selectedLabelStructureObject.shape;
-    const labeledObjectShapeType = labeledObject.shapes[0].type;
+  _labelStructureFitsLabeledObject(labelStructureObject, selectedPaperShape) {
+    let labeledObjectType;
 
     // For some shapes the database shape type and the requirements shape type are not the same.
     // Therefor we need a mapping!
-    let normalizedLabeledObjectType;
-    switch (labeledObjectShapeType) {
-      case 'cuboid3d':
-        normalizedLabeledObjectType = 'cuboid';
+    switch (true) {
+      case selectedPaperShape instanceof PaperThingShape:
+        labeledObjectType = selectedPaperShape.labeledThingInFrame.shapes[0].type;
+        break;
+      case selectedPaperShape instanceof PaperGroupShape:
+        labeledObjectType = 'group-rectangle';
+        break;
+      case selectedPaperShape instanceof PaperFrame:
+        labeledObjectType = 'frame-shape';
         break;
       default:
-        normalizedLabeledObjectType = labeledObjectShapeType;
+        throw new Error('Can not get shape type of unknown paper shape');
     }
 
-    return labelStructureObjectShape === normalizedLabeledObjectType;
+    return labelStructureObject.shape === labeledObjectType;
   }
 }
 

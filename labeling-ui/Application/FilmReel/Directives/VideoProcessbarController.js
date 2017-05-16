@@ -1,5 +1,6 @@
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
+import PaperFrame from '../../Viewer/Shapes/PaperFrame';
 
 
 /**
@@ -58,6 +59,9 @@ class VideoProcessbarController {
           frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
           break;
         case this.selectedPaperShape instanceof PaperGroupShape:
+          this.rangeWidth = 0;
+          return;
+        case this.selectedPaperShape instanceof PaperFrame:
           this.rangeWidth = 0;
           return;
         default:
