@@ -1,0 +1,23 @@
+[
+  {
+    "name": "extension-position",
+    "metadata": {
+      "value": null,
+      "challenge": "Position of the extension sign"
+    },
+    "children": [
+      {
+        "name": "position-below",
+        "metadata": {
+          "response": "Below"
+        }
+      },
+      {
+        "name": "position-above",
+        "metadata": {
+          "response": "Above"
+        }
+      }
+    ]
+  }
+]

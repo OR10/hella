@@ -1,0 +1,152 @@
+[
+  {
+    "name": "time",
+    "metadata": {
+      "value": "night",
+      "challenge": "Time"
+    },
+    "children": [
+      {
+        "name": "day",
+        "metadata": {
+          "response": "Day"
+        }
+      },
+      {
+        "name": "night",
+        "metadata": {
+          "response": "Night"
+        }
+      }
+    ]
+  },
+  {
+    "name": "street-lights",
+    "metadata": {
+      "value": "neon",
+      "challenge": "Street lights"
+    },
+    "children": [
+      {
+        "name": "neon",
+        "metadata": {
+          "response": "Neon lights"
+        }
+      },
+      {
+        "name": "halogen",
+        "metadata": {
+          "response": "Halogen lights"
+        }
+      },
+      {
+        "name": "xenon",
+        "metadata": {
+          "response": "Xenon lights"
+        }
+      }
+    ]
+  },
+  {
+    "name": "lamp-color",
+    "metadata": {
+      "value": null,
+      "challenge": "Lamp Color"
+    },
+    "children": [
+      {
+        "name": "white",
+        "metadata": {
+          "response": "White"
+        }
+      },
+      {
+        "name": "orange",
+        "metadata": {
+          "response": "Orange"
+        }
+      }
+    ]
+  },
+  {
+    "name": "weather",
+    "metadata": {
+      "value": null,
+      "challenge": "Weather"
+    },
+    "children": [
+      {
+        "name": "sunny",
+        "metadata": {
+          "response": "Sunny"
+        }
+      },
+      {
+        "name": "rain",
+        "metadata": {
+          "response": "Raining"
+        }
+      },
+      {
+        "name": "foggy",
+        "metadata": {
+          "response": "Foggy"
+        }
+      }
+    ]
+  },
+  {
+    "name": "rain-level",
+    "metadata": {
+      "value": null,
+      "challenge": "Rain level"
+    },
+    "children": [
+      {
+        "name": "low",
+        "metadata": {
+          "response": "Low"
+        }
+      },
+      {
+        "name": "medium",
+        "metadata": {
+          "response": "Medium"
+        }
+      },
+      {
+        "name": "high",
+        "metadata": {
+          "response": "High"
+        }
+      }
+    ]
+  },
+  {
+    "name": "country",
+    "metadata": {
+      "value": null,
+      "challenge": "Country"
+    },
+    "children": [
+      {
+        "name": "germany",
+        "metadata": {
+          "response": "Germany"
+        }
+      },
+      {
+        "name": "spain",
+        "metadata": {
+          "response": "Spain"
+        }
+      },
+      {
+        "name": "france",
+        "metadata": {
+          "response": "France"
+        }
+      }
+    ]
+  }
+]

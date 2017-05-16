@@ -118,6 +118,20 @@ class PaperShape extends paper.Group {
   }
 
   /**
+   * @return {boolean}
+   */
+  canBeDeleted() {
+    return true;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canBeInterpolated() {
+    return true;
+  }
+
+  /**
    * @abstract
    * @method PaperShape#toJSON
    */

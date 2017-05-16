@@ -57,6 +57,8 @@ class LabeledThingTest extends Tests\WebTestCase
 
     public function testGetLabeledThingDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $task = $this->createLabelingTask();
         $this->createLabeledThing($task);
 
@@ -69,6 +71,8 @@ class LabeledThingTest extends Tests\WebTestCase
 
     public function testGetNotExistingLabeledThingDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $response = $this->createRequest(self::ROUTE, ['1231239vc890xcv908'])
             ->execute()
             ->getResponse();
@@ -78,6 +82,8 @@ class LabeledThingTest extends Tests\WebTestCase
 
     public function testSaveLabeledThingDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $task = $this->createLabelingTask();
 
         $response = $this->createRequest(self::ROUTE, [$task->getId()])
@@ -98,6 +104,8 @@ class LabeledThingTest extends Tests\WebTestCase
 
     public function testSaveLabeledThingWithInvalidTaskDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $response = $this->createRequest(self::ROUTE, ['casacsgaaasfcxbx'])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
@@ -116,6 +124,8 @@ class LabeledThingTest extends Tests\WebTestCase
 
     public function testUpdateLabeledThingDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $task         = $this->createLabelingTask();
         $labeledThing = $this->createLabeledThing($task);
 
@@ -137,6 +147,8 @@ class LabeledThingTest extends Tests\WebTestCase
 
     public function testUpdateLabeledThingAndDeleteDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $task                           = $this->createLabelingTask(9, 11);
         $labeledThing                   = $this->createLabeledThing($task);
         $labeledThingInFrameBeforeRange = $this->createLabeledThingInFrame($labeledThing, 0);
@@ -171,6 +183,8 @@ class LabeledThingTest extends Tests\WebTestCase
 
     public function testUpdateLabeledThingMovesLabeledThingInFrameToStartFrameIndexIfLabeledThingDoesNotYetExistForStartFrameIndex()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);
         $labeledThingInFrame = $this->createLabeledThingInFrame($labeledThing, 1);
@@ -203,6 +217,8 @@ class LabeledThingTest extends Tests\WebTestCase
 
     public function testUpdateLabeledThingMovesLabeledThingInFrameToEndFrameIndexIfLabeledThingDoesNotYetExistForEndFrameIndex()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $task                = $this->createLabelingTask(9, 11);
         $labeledThing        = $this->createLabeledThing($task);
         $labeledThingInFrame = $this->createLabeledThingInFrame($labeledThing, 2);
@@ -235,6 +251,8 @@ class LabeledThingTest extends Tests\WebTestCase
 
     public function testUpdateLabeledThingWithInvalidRevDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $task         = $this->createLabelingTask();
         $labeledThing = $this->createLabeledThing($task);
 
@@ -256,6 +274,8 @@ class LabeledThingTest extends Tests\WebTestCase
 
     public function testDeleteLabeledThingDocument()
     {
+        $this->skipOnPouchDbEnviroment();
+
         $task         = $this->createLabelingTask();
         $labeledThing = $this->createLabeledThing($task);
 

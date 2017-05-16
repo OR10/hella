@@ -138,7 +138,7 @@ class FramePosition {
   }
 
   /**
-   * Retrieve the currently active position
+   * Retrieve the currently active frame index
    *
    * @returns {integer}
    */

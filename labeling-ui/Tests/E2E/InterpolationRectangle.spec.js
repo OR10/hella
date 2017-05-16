@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import featureFlags from '../../Application/features.json';
 
@@ -13,6 +13,10 @@ describe('Interpolation Rectangle Tests', () => {
   let assets;
   let sharedMocks;
   let viewer;
+  let nextFrameButton;
+  let previousFrameButton;
+  let interpolateButton;
+  let goEndButton;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
@@ -34,28 +38,28 @@ describe('Interpolation Rectangle Tests', () => {
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
       assets.mocks.Interpolation.Shared.Task,
-      assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0and4,
     ];
 
     viewer = element(by.css('.layer-container'));
+    nextFrameButton = element(by.css('.next-frame-button'));
+    previousFrameButton = element(by.css('.previous-frame-button'));
+    interpolateButton = element(by.css('#interpolate-shape-button'));
+    goEndButton = element(by.css('.icon-selection-goend'));
   });
 
   it('should interpolate a Rectangle when selecting the start LTIF', done => {
-    let nextFrameButton;
-
-    mock(sharedMocks);
+    mock(sharedMocks.concat([
+      assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0and4,
+    ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        nextFrameButton = element(by.css('.next-frame-button'));
-
         browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
           .perform();
       })
       .then(() => {
-        const interpolateButton = element(by.css('#interpolate-shape-button'));
         interpolateButton.click();
       })
       .then(
@@ -114,26 +118,22 @@ describe('Interpolation Rectangle Tests', () => {
   });
 
   it('should interpolate a Rectangle when selecting the end LTIF', done => {
-    let previousFrameButton;
-
-    mock(sharedMocks);
+    mock(sharedMocks.concat([
+      assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0and4,
+    ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        previousFrameButton = element(by.css('.previous-frame-button'));
-
         browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
           .perform();
       })
       .then(() => {
-        const goEnd = element(by.css('.icon-selection-goend'));
-        goEnd.click();
+        goEndButton.click();
       })
       .then(() => browser.sleep(500))
       .then(() => {
-        const interpolateButton = element(by.css('#interpolate-shape-button'));
         interpolateButton.click();
       })
       .then(
@@ -187,6 +187,79 @@ describe('Interpolation Rectangle Tests', () => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2);
         expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex3);
         expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex4);
+        done();
+      });
+  });
+
+  it('should draw and interpolate a new rectangle', done => {
+    mock(sharedMocks);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 100}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
+          .click()
+          .perform();
+      })
+      .then(() => {
+        nextFrameButton.click();
+        nextFrameButton.click();
+        browser.sleep(500);
+      })
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 150, y: 150})
+          .mouseDown()
+          .mouseMove(viewer, {x: 310, y: 330}) // drag
+          .mouseUp()
+          .click()
+          .perform();
+      })
+      .then(() => {
+        browser.sleep(500);
+      })
+      .then(() => {
+        interpolateButton.click();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'DrawFrame2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.DrawFrame2);
+      })
+      .then(() => previousFrameButton.click())
+      .then(() => browser.sleep(500))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'DrawFrame1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.DrawFrame1);
+      })
+      .then(() => previousFrameButton.click())
+      .then(() => browser.sleep(500))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'DrawFrame0')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.DrawFrame0);
+      })
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.Draw.frameIndex0);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.Draw.frameIndex1);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.Draw.frameIndex2);
         done();
       });
   });

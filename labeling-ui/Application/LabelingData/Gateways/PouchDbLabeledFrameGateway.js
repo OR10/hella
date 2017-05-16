@@ -1,3 +1,5 @@
+import LabeledFrame from '../Models/LabeledFrame';
+
 /**
  * Gateway for saving and retrieving {@link LabeledFrame}s from pouchdb
  */
@@ -63,47 +65,84 @@ class PouchDbLabeledFrameGateway {
   }
 
   /**
-   * Returns the {@link LabeledFrame} for the given `taskId` and `frameIndex`
+   * Returns the {@link LabeledFrame} for the given `task` and `frameIndex`
    *
-   * @param {String} taskId
+   * @param {String} task
    * @param {Integer} frameIndex
    *
    * @returns {AbortablePromise<LabeledFrame|Error>}
    */
-  getLabeledFrame(taskId, frameIndex) {
+  getLabeledFrame(task, frameIndex) {
     return this._packagingExecutor.execute('labeledFrame', () => {
-      const db = this._pouchDbContextService.provideContextForTaskId(taskId);
-      const viewIdentifier = this._pouchDbViewService.getDesignDocumentViewName(
-        'labeledFrameByTaskIdAndFrameIndex'
-      );
+      const db = this._pouchDbContextService.provideContextForTaskId(task.id);
       return this._$q.resolve()
-        .then(() => db.query(viewIdentifier, {
-          key: [taskId, frameIndex],
-          include_docs: true,
-          limit: 1,
-        }))
-        .then(result => {
-          const labeledFrameDocument = result.rows[0].doc;
-          this._revisionManager.extractRevision(labeledFrameDocument);
-          const labeledFrame = this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument);
+        .then(() => this._getCurrentOrPreceedingLabeledFrame(db, task, frameIndex))
+        .then(labeledFrame => {
+          if (labeledFrame === null) {
+            return new LabeledFrame({
+              frameIndex,
+              id: this._entityIdService.getUniqueId(),
+              incomplete: true,
+              task: task,
+              classes: [],
+            });
+          }
+
           return labeledFrame;
         });
     });
+  }
+
+  /**
+   * @param {PouchDB} db
+   * @param {Task} task
+   * @param {number} frameIndex
+   * @return {Promise.<Object|null>}
+   * @private
+   */
+  _getCurrentOrPreceedingLabeledFrame(db, task, frameIndex) {
+    const viewIdentifier = this._pouchDbViewService.getDesignDocumentViewName(
+      'labeledFrameByTaskIdAndFrameIndex'
+    );
+    return this._$q.resolve()
+      .then(() => db.query(viewIdentifier, {
+        startkey: [task.id, frameIndex],
+        endkey: [task.id, 0],
+        include_docs: true,
+        descending: true,
+        limit: 1,
+      })).then(result => {
+        if (result.rows.length === 0) {
+          return null;
+        }
+        const labeledFrameDocument = result.rows[0].doc;
+
+        if (labeledFrameDocument.frameIndex === frameIndex) {
+          this._revisionManager.extractRevision(labeledFrameDocument);
+        } else {
+          labeledFrameDocument.frameIndex = frameIndex;
+          labeledFrameDocument._id = this._entityIdService.getUniqueId();
+          delete labeledFrameDocument._rev;
+        }
+
+        const labeledFrame = this._couchDbModelDeserializer.deserializeLabeledFrame(labeledFrameDocument, task);
+        return labeledFrame;
+      });
   }
 
 
   /**
    * Updates the labeled frame for the given task and frame number in the database
    *
-   * @param {String} taskId
+   * @param {Task} task
    * @param {Integer} frameIndex
    * @param {LabeledFrame} labeledFrame
    *
    * @returns {AbortablePromise<LabeledFrame|Error>}
    */
-  saveLabeledFrame(taskId, frameIndex, labeledFrame) {
+  saveLabeledFrame(task, frameIndex, labeledFrame) {
     return this._packagingExecutor.execute('labeledFrame', () => {
-      const db = this._pouchDbContextService.provideContextForTaskId(taskId);
+      const db = this._pouchDbContextService.provideContextForTaskId(task.id);
       return this._$q.resolve()
         .then(() => {
           const labeledFrameDocument = this._couchDbModelSerializer.serialize(labeledFrame);
@@ -122,28 +161,107 @@ class PouchDbLabeledFrameGateway {
           this._revisionManager.extractRevision(result);
           return db.get(result.id);
         })
-        .then(
-          document => this._couchDbModelDeserializer.deserializeLabeledFrame(document)
-        );
+        .then(document => this._couchDbModelDeserializer.deserializeLabeledFrame(document, task));
     });
+  }
+
+  /**
+   * Returns the nex incomplete labeled frame.
+   * The count can be specified, the default is one.
+   *
+   * @param {Task} task
+   * @param {int?} count
+   *
+   * @return {AbortablePromise<Array<LabeledFrame>>|Error}
+   */
+  getNextIncomplete(task, count = 1) {
+    return this._packagingExecutor.execute('labeledFrame', () => {
+      const startkey = [task.id, true];
+      const endkey = [task.id, true];
+      const db = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+      return this._$q.resolve()
+        .then(() => {
+          const incompletePromise = db.query(
+            this._pouchDbViewService.getDesignDocumentViewName('labeledFrameIncomplete'),
+            {
+              startkey,
+              endkey,
+              include_docs: true,
+            });
+          const firstLabeledFramePromise = this._getCurrentOrPreceedingLabeledFrame(db, task, 0);
+
+          return this._$q.all([incompletePromise, firstLabeledFramePromise]);
+        })
+        .then(([icompleteLabeledFrameResult, firstLabeledFrameOrNull]) => {
+          const incompleteLabeledFrames = icompleteLabeledFrameResult.rows.map(
+            row => this._couchDbModelDeserializer.deserializeLabeledFrame(row.doc, task)
+          );
+          // Get all incompletes without the first frame since it is added manually later if needed
+          let incompletes = incompleteLabeledFrames.filter(labeledFrame => labeledFrame.frameIndex !== 0);
+
+          if (firstLabeledFrameOrNull === null) {
+            const firstLabeledFrame = new LabeledFrame({
+              id: this._entityIdService.getUniqueId(),
+              classes: [],
+              incomplete: true,
+              task,
+              frameIndex: 0,
+              ghostClasses: null,
+            });
+
+            // If the first frame is not set, create a object and add it to the beginning of the array
+            incompletes = [firstLabeledFrame].concat(incompletes);
+          }
+
+          return incompletes.slice(0, count);
+        });
+    });
+  }
+
+  /**
+   * @param {Task} task
+   * @return {AbortablePromise.<{count: int}|Error>}
+   */
+  getIncompleteLabeledFrameCount(task) {
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
+    return this._packagingExecutor.execute('labeledFrame',
+      () => {
+        const incompletePromise = db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledFrameIncomplete'), {
+          include_docs: false,
+          key: [task.id, true],
+        });
+        const firstFramePromise = this._getCurrentOrPreceedingLabeledFrame(db, task, 0);
+
+        return this._$q.all([incompletePromise, firstFramePromise]);
+      })
+      .then(([incomplete, firstFrame]) => {
+        let count = incomplete.rows.length;
+
+        if (firstFrame === null) {
+          count++;
+        }
+
+        return {count};
+      });
   }
 
   /**
    * Deletes the labeled thing in frame object in the database
    *
-   * @param {String} taskId
+   * @param {Task} task
    * @param {Integer} frameIndex
    *
    * @returns {AbortablePromise<Boolean|Error>}
    */
-  deleteLabeledFrame(taskId, frameIndex) {
+  deleteLabeledFrame(task, frameIndex) {
     return this._packagingExecutor.execute('labeledFrame', () => {
-      const db = this._pouchDbContextService.provideContextForTaskId(taskId);
+      const db = this._pouchDbContextService.provideContextForTaskId(task.id);
       return this._$q.resolve()
         .then(() => {
           const viewDesignDocument = this._pouchDbViewService.getDesignDocumentViewName('labeledFrameByTaskIdAndFrameIndex');
           return db.query(viewDesignDocument, {
-            key: [taskId, frameIndex],
+            key: [task.id, frameIndex],
             include_docs: true,
             limit: 1,
           });

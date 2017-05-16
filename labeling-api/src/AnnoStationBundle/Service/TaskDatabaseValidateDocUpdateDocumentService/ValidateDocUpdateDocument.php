@@ -11,7 +11,7 @@ class ValidateDocUpdateDocument implements View\DesignDocument
         return [
             'language'            => 'javascript',
             'validate_doc_update' => 'function(newDoc, oldDoc, userCtx, secObj) {
-  if (userCtx.name === \'admin\' || secObj.assignedLabeler === userCtx.name) {
+  if (userCtx.name === \'admin\' || userCtx.name === \'pouch\' || secObj.assignedLabeler === userCtx.name) {
     return;
   }
   

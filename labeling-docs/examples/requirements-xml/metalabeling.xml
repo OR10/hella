@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+    <metadata>
+        <export-postfix>OD</export-postfix>
+    </metadata>
+    <frame>
+        <!--
+          Each requirement block may consist of an arbitrary number of `class` tags, which define categories
+        -->
+        <class id="time" name="Time">
+            <!--
+              Each `class` block may contain an arbitrary number of `value` tags, which define the attributes to be labeled
+            -->
+            <value id="day" name="Day" />
+            <value id="night" name="Night">
+                <!--
+                  `class`es may be nested inside of `value` blocks to implicitly define dependencies
+                -->
+                <class id="street-lights" name="Street lights">
+                    <value id="neon" name="Neon lights">
+                        <class name="Lamp Color" id="lamp-color">
+                            <value id="white" name="White" />
+                            <value id="orange" name="Orange" />
+                        </class>
+                    </value>
+                    <value id="halogen" name="Halogen lights">
+                        <!--
+                          `class` tags may be referenced from anywhere else inside the document by their id.
+                        -->
+                        <class ref="lamp-color" />
+                    </value>
+                    <value id="xenon" name="Xenon lights" />
+                </class>
+            </value>
+        </class>
+        <class ref="country" />
+    </frame>
+    <thing id="sign" shape="cuboid" name="Traffic Sign">
+        <class id="sign-type" name="Sign type">
+            <value id="u-turn" name="U-Turn"/>
+            <value id="speed-sign" name="Speed sign">
+                <class ref="speed"/>
+            </value>
+        </class>
+        <class ref="country"/>
+    </thing>
+    <thing id="person" shape="pedestrian" name="Person">
+        <class id="has-hat" name="Hat">
+            <value id="hat-yes" name="yes"/>
+            <value id="hat-no" name="no"/>
+        </class>
+    </thing>
+    <thing id="lane" shape="polygon" name="Lane">
+        <class id="is-lane" name="Lane">
+            <value id="lane-yes" name="yes"/>
+            <value id="lane-no" name="no"/>
+        </class>
+    </thing>
+    <thing id="time-range-sign" shape="rectangle" name="Time Range Sign">
+        <class id="speed" name="Speed">
+            <value id="10" name="10"/>
+            <value id="20" name="20"/>
+            <value id="30" name="30"/>
+            <value id="40" name="40"/>
+            <value id="50" name="50"/>
+        </class>
+    </thing>
+    <private>
+        <class name="Country" id="country">
+            <value id="germany" name="Germany"/>
+            <value id="spain" name="Spain"/>
+            <value id="france" name="France"/>
+        </class>
+    </private>
+</requirements>

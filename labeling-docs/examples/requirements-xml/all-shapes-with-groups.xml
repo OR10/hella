@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+    <metadata>
+        <export-postfix>OD</export-postfix>
+    </metadata>
+    <thing id="sign" shape="cuboid" name="Traffic Sign">
+        <class id="sign-type" name="Sign type">
+            <value id="u-turn" name="U-Turn"/>
+            <value id="speed-sign" name="Speed sign"/>
+        </class>
+        <class ref="country"/>
+    </thing>
+    <thing id="person" shape="pedestrian" name="Person">
+        <class id="has-hat" name="Hat">
+            <value id="hat-yes" name="yes"/>
+            <value id="hat-no" name="no"/>
+        </class>
+    </thing>
+    <thing id="time-range-sign" shape="rectangle" name="Time Range Sign">
+        <class id="speed" name="Speed">
+            <value id="10" name="10"/>
+            <value id="20" name="20"/>
+            <value id="30" name="30"/>
+            <value id="40" name="40"/>
+            <value id="50" name="50"/>
+        </class>
+    </thing>
+    <thing id="lane" shape="polygon" name="Lane">
+        <class id="is-lane" name="Lane">
+            <value id="lane-yes" name="yes"/>
+            <value id="lane-no" name="no"/>
+        </class>
+    </thing>
+    <thing id="road-type" shape="polyline" name="road-type">
+        <class id="roadCategorySign" name="Road Category Type">
+            <value id="highwayBegin" name="Highway Begin"/>
+            <value id="highwayEnd" name="Highway End"/>
+            <value id="expressWayBegin" name="Expressway begin"/>
+            <value id="livingStreetBegin" name="Living street begin"/>
+            <value id="livingStreetEnd" name="Living street end"/>
+            <value id="CityEntry" name="City Entry"/>
+            <value id="CityExit" name="City Exit"/>
+        </class>
+    </thing>
+    <thing id="lsr-01" shape="point" name="Light Source">
+        <class id="lightSource" name="Lightsource">
+            <value id="reflexOnRoad" name="Reflex on Road"/>
+            <value id="reflexOnVehicle" name="Reflex on Vehicle"/>
+            <value id="static-Light" name="Static Light"/>
+            <value id="streetLamp" name="Street Lamp"/>
+            <value id="Tail_Light" name="Tail Light"/>
+            <value id="traffic_Sign" name="Traffic Light"/>
+            <value id="undefined" name="Undefined"/>
+            <value id="NA" name="NA"/>
+        </class>
+    </thing>
+    <group id="extension-sign-group" name="Sign with extension">
+        <class id="extension-position" name="Position of the extension sign">
+            <value id="position-below" name="Below"/>
+            <value id="position-above" name="Above"/>
+        </class>
+    </group>
+    <group id="lights-group" name="Lights">
+        <class id="color" name="Color">
+            <value id="red" name="Red"/>
+            <value id="blue" name="Blue"/>
+            <value id="rainbow" name="Rainbow"/>
+        </class>
+    </group>
+    <private>
+        <class name="Country" id="country">
+            <value id="germany" name="Germany"/>
+            <value id="spain" name="Spain"/>
+            <value id="france" name="France"/>
+        </class>
+    </private>
+</requirements>
