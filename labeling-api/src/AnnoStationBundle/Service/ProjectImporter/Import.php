@@ -62,15 +62,21 @@ class Import
     private $xmlValidator;
 
     /**
+     * @var Service\TaskDatabaseCreator
+     */
+    private $taskDatabaseCreatorService;
+
+    /**
      * Import constructor.
      *
-     * @param Facade\Project         $projectFacade
-     * @param Facade\RequirementsXml $requirementsXmlFacade
-     * @param Facade\LabelingTask    $labelingTaskFacade
-     * @param Facade\Video           $videoFacade
-     * @param Service\VideoImporter  $videoImporter
-     * @param Service\XmlValidator   $xmlValidator
-     * @param AMQP\FacadeAMQP        $amqpFacade
+     * @param Facade\Project              $projectFacade
+     * @param Facade\RequirementsXml      $requirementsXmlFacade
+     * @param Facade\LabelingTask         $labelingTaskFacade
+     * @param Facade\Video                $videoFacade
+     * @param Service\VideoImporter       $videoImporter
+     * @param Service\XmlValidator        $xmlValidator
+     * @param Service\TaskDatabaseCreator $taskDatabaseCreatorService
+     * @param AMQP\FacadeAMQP             $amqpFacade
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -79,15 +85,17 @@ class Import
         Facade\Video $videoFacade,
         Service\VideoImporter $videoImporter,
         Service\XmlValidator $xmlValidator,
+        Service\TaskDatabaseCreator $taskDatabaseCreatorService,
         AMQP\FacadeAMQP $amqpFacade
     ) {
-        $this->projectFacade         = $projectFacade;
-        $this->requirementsXmlFacade = $requirementsXmlFacade;
-        $this->videoImporter         = $videoImporter;
-        $this->labelingTaskFacade    = $labelingTaskFacade;
-        $this->videoFacade           = $videoFacade;
-        $this->amqpFacade            = $amqpFacade;
-        $this->xmlValidator          = $xmlValidator;
+        $this->projectFacade              = $projectFacade;
+        $this->requirementsXmlFacade      = $requirementsXmlFacade;
+        $this->videoImporter              = $videoImporter;
+        $this->labelingTaskFacade         = $labelingTaskFacade;
+        $this->videoFacade                = $videoFacade;
+        $this->amqpFacade                 = $amqpFacade;
+        $this->xmlValidator               = $xmlValidator;
+        $this->taskDatabaseCreatorService = $taskDatabaseCreatorService;
     }
 
     /**
@@ -332,6 +340,7 @@ class Import
             $task->setDrawingToolOptions($drawingToolOptions);
             $task->setLabelInstruction(Model\LabelingTask::INSTRUCTION_MISCELLANEOUS);
             $this->labelingTaskFacade->save($task);
+            $this->taskDatabaseCreatorService->createDatabase($project, $task);
             foreach ($frameNumberMapping as $frameNumber) {
                 $this->tasks[$frameNumber] = $task;
             }

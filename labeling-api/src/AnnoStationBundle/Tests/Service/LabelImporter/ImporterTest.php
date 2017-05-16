@@ -268,6 +268,8 @@ class LabelImporterTest extends Tests\KernelTestCase
      */
     public function testRectanglesImport($configuration, $expected)
     {
+        $this->skipOnPouchDbEnviroment();
+
         $xml = file_get_contents($configuration['taskConfigurationFile']);
 
         $organisation = Helper\OrganisationBuilder::create()->build();
