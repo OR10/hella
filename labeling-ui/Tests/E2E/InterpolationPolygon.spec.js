@@ -13,6 +13,10 @@ describe('Interpolation Polygon Tests', () => {
   let assets;
   let sharedMocks;
   let viewer;
+  let nextFrameButton;
+  let previousFrameButton;
+  let interpolateButton;
+  let goEndButton;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
@@ -38,24 +42,23 @@ describe('Interpolation Polygon Tests', () => {
     ];
 
     viewer = element(by.css('.layer-container'));
+    nextFrameButton = element(by.css('.next-frame-button'));
+    previousFrameButton = element(by.css('.previous-frame-button'));
+    interpolateButton = element(by.css('#interpolate-shape-button'));
+    goEndButton = element(by.css('.icon-selection-goend'));
   });
 
   it('should interpolate a Polygon when selecting the start LTIF', done => {
-    let nextFrameButton;
-
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        nextFrameButton = element(by.css('.next-frame-button'));
-
         browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
           .click()
           .perform();
       })
       .then(() => {
-        const interpolateButton = element(by.css('#interpolate-shape-button'));
         interpolateButton.click();
       })
       .then(
@@ -114,26 +117,20 @@ describe('Interpolation Polygon Tests', () => {
   });
 
   it('should interpolate a Polygon when selecting the end LTIF', done => {
-    let previousFrameButton;
-
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        previousFrameButton = element(by.css('.previous-frame-button'));
-
         browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
           .click()
           .perform();
       })
       .then(() => {
-        const goEnd = element(by.css('.icon-selection-goend'));
-        goEnd.click();
+        goEndButton.click();
       })
       .then(() => browser.sleep(500))
       .then(() => {
-        const interpolateButton = element(by.css('#interpolate-shape-button'));
         interpolateButton.click();
       })
       .then(
