@@ -199,9 +199,14 @@ class PouchDbLabeledFrameGateway {
           return this._$q.all([incompletePromise, firstLabeledFramePromise]);
         })
         .then(([icompleteLabeledFrameResult, firstLabeledFrameOrNull]) => {
-          let firstLabeledFrame = firstLabeledFrameOrNull;
+          const incompleteLabeledFrames = icompleteLabeledFrameResult.rows.map(
+            row => this._couchDbModelDeserializer.deserializeLabeledFrame(row.doc, task)
+          );
+          // Get all incompletes without the first frame since it is added manually later if needed
+          let incompletes = incompleteLabeledFrames.filter(labeledFrame => labeledFrame.frameIndex !== 0);
+
           if (firstLabeledFrameOrNull === null) {
-            firstLabeledFrame = new LabeledFrame({
+            const firstLabeledFrame = new LabeledFrame({
               id: this._entityIdService.getUniqueId(),
               classes: [],
               incomplete: true,
@@ -209,13 +214,10 @@ class PouchDbLabeledFrameGateway {
               frameIndex: 0,
               ghostClasses: null,
             });
-          }
 
-          const incompleteLabeledFrames = icompleteLabeledFrameResult.rows.map(
-            row => this._couchDbModelDeserializer.deserializeLabeledFrame(row.doc, task)
-          );
-          const filteredIncompleteLabeledFrames = incompleteLabeledFrames.filter(labeledFrame => labeledFrame.frameIndex !== 0);
-          const incompletes = [firstLabeledFrame].concat(filteredIncompleteLabeledFrames);
+            // If the first frame is not set, create a object and add it to the beginning of the array
+            incompletes = [firstLabeledFrame].concat(incompletes);
+          }
 
           return incompletes.slice(0, count);
         });
