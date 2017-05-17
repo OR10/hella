@@ -347,7 +347,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(requests => expect(requests).toContainRequest(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar))
         .then(() => done());
     });
-
   });
 
   describe('Legacy and SimpleXml LabelStructure', () => {
@@ -622,7 +621,7 @@ describe('LabelSelector (right sidebar)', () => {
     ];
 
     const rectangleLabelTitleTexts = [
-      'Sign type'
+      'Sign type',
     ];
 
     beforeEach(() => {
@@ -637,7 +636,6 @@ describe('LabelSelector (right sidebar)', () => {
       ]);
 
       mock(sharedMocks);
-
     });
 
     it('shows the correct panes if selected tool and selected shape are of different types', done => {
