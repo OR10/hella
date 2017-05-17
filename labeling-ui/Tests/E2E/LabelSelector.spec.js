@@ -615,7 +615,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
   });
 
-  describe('Multiple, different Shapes', () => {
+  describe('Multiple, different Shapes (TTANNO-1671)', () => {
     const pedestrianLabelTitleTexts = [
       'Time',
       'Rain level',
@@ -640,7 +640,7 @@ describe('LabelSelector (right sidebar)', () => {
 
     });
 
-    it('shows the correct panes if selected tool and selected shape are of different types (TTANNO-1671)', done => {
+    it('shows the correct panes if selected tool and selected shape are of different types', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
