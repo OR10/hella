@@ -49,6 +49,7 @@
             <argument type="service" id="annostation.labeling_api.service.task_incomplete"/>
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.service.project_importer.facade.labeled_frame"/>
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <tag name="hagl.workerpool.job_instruction"/>

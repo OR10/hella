@@ -54,28 +54,35 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         './x:cuboid',
         './x:point',
     ];
+    /**
+     * @var Facade\LabeledFrame
+     */
+    private $labeledFrameFacade;
 
     /**
      * ThingImporter constructor.
      *
-     * @param Service\TaskIncomplete     $taskIncompleteService
-     * @param Facade\LabeledThing        $labeledThingFacade
-     * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Facade\Project             $project
-     * @param AnnoStationFacade\LabelingTask        $labelingTaskFacade
+     * @param Service\TaskIncomplete         $taskIncompleteService
+     * @param Facade\LabeledThing            $labeledThingFacade
+     * @param Facade\LabeledThingInFrame     $labeledThingInFrameFacade
+     * @param Facade\LabeledFrame            $labeledFrameFacade
+     * @param Facade\Project                 $project
+     * @param AnnoStationFacade\LabelingTask $labelingTaskFacade
      */
     public function __construct(
         Service\TaskIncomplete $taskIncompleteService,
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
+        Facade\LabeledFrame $labeledFrameFacade,
         Facade\Project $project,
         AnnoStationFacade\LabelingTask $labelingTaskFacade
     ) {
         $this->taskIncompleteService     = $taskIncompleteService;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
+        $this->labeledFrameFacade        = $labeledFrameFacade;
         $this->project                   = $project;
-        $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->labelingTaskFacade        = $labelingTaskFacade;
     }
 
     /**
@@ -106,6 +113,8 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                     $thing->getAttribute('type')
                 );
             }
+            $frameLabeling = $xpath->query('./x:frame-labeling', $videoElement);
+            $this->saveFrameLabeling($xpath, $frameLabeling->item(0));
         }
     }
 
@@ -202,6 +211,44 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                     $this->labeledThingFacade->save($labeledThing);
                 }
             }
+        }
+    }
+
+    /**
+     * @param \DOMXPath   $xpath
+     * @param \DOMElement $frameLabeling
+     */
+    private function saveFrameLabeling(\DOMXPath $xpath, \DOMElement $frameLabeling)
+    {
+        $values              = $xpath->query('./x:value', $frameLabeling);
+        $valuesByFrameNumber = [];
+        foreach ($values as $value) {
+            $id    = $value->getAttribute('id');
+            $start = $value->getAttribute('start');
+            $end   = $value->getAttribute('end');
+            foreach (range($start, $end) as $frameNumber) {
+                $valuesByFrameNumber[$frameNumber][] = $id;
+            }
+        }
+        $previousValues = [];
+
+        foreach ($valuesByFrameNumber as $frameNumber => $values) {
+            $values = array_values($values);
+            if (count(array_diff($values, $previousValues)) === 0) {
+                continue;
+            }
+
+            $task       = $this->labelingTaskFacade->find($this->taskIds[$frameNumber]);
+            $frameIndex = array_search($frameNumber, $task->getFrameNumberMapping());
+
+            if ($frameIndex === false) {
+                continue;
+            }
+
+            $labeledFrame = new Model\LabeledFrame($task, $frameIndex);
+            $labeledFrame->setClasses($values);
+            $this->labeledFrameFacade->save($labeledFrame);
+            $previousValues = $values;
         }
     }
 
