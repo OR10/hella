@@ -120,7 +120,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         $start      = $xpath->getAttribute('start');
         $end        = $xpath->getAttribute('end');
 
-        if ($this->taskIds[$start] === $this->taskIds[$end]) {
+        if ($this->isStartAndEndTheSameTask($start, $end)) {
             $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
             $frameMapping = array_flip($task->getFrameNumberMapping());
             $labeledThing = new Model\LabeledThing($task, $xpath->getAttribute('line-color'));
@@ -158,7 +158,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         foreach ($shapeElements as $shapeElement) {
             $start = $shapeElement->getAttribute('start');
             $end   = $shapeElement->getAttribute('end');
-            if ($this->taskIds[$start] === $this->taskIds[$end]) {
+            if ($this->isStartAndEndTheSameTask($start, $end)) {
                 /** @var Model\LabelingTask $task */
                 $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
                 $frameMapping = array_flip($task->getFrameNumberMapping());
@@ -203,6 +203,17 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                 }
             }
         }
+    }
+
+    /**
+     * @param string $start
+     * @param string $end
+     *
+     * @return bool
+     */
+    private function isStartAndEndTheSameTask($start, $end)
+    {
+        return ($this->taskIds[$start] === $this->taskIds[$end]);
     }
 
     /**
