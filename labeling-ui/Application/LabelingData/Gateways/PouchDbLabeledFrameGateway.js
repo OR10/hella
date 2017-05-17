@@ -13,8 +13,10 @@ class PouchDbLabeledFrameGateway {
    * @param {PouchDbViewService} pouchDbViewService
    * @param {RevisionManager} revisionManager
    * @param {EntityIdService} entityIdService
+   * @param {LabelStructureService} labelStructureService
+   * @param {AbortablePromiseFactory} abortablePromiseFactory
    */
-  constructor($q, packagingExecutor, pouchDbContextService, couchDbModelDeserializer, couchDbModelSerializer, pouchDbViewService, revisionManager, entityIdService) {
+  constructor($q, packagingExecutor, pouchDbContextService, couchDbModelDeserializer, couchDbModelSerializer, pouchDbViewService, revisionManager, entityIdService, labelStructureService, abortablePromiseFactory) {
     /**
      * @type {$q}
      * @private
@@ -62,6 +64,18 @@ class PouchDbLabeledFrameGateway {
      * @private
      */
     this._entityIdService = entityIdService;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
+
+    /**
+     * @type {AbortablePromiseFactory}
+     * @private
+     */
+    this._abortablePromiseFactory = abortablePromiseFactory;
   }
 
   /**
@@ -224,6 +238,23 @@ class PouchDbLabeledFrameGateway {
    * @return {AbortablePromise.<{count: int}|Error>}
    */
   getIncompleteLabeledFrameCount(task) {
+    return this._labelStructureService.getLabelStructure(task).then(labelStructure => {
+      const requirementsFrames = labelStructure.getRequirementFrames();
+      if (requirementsFrames.size > 0) {
+        return this._getFrameIncompleteCount(task);
+      }
+
+      return this._getZeroIncompleteCount();
+    });
+  }
+
+  /**
+   *
+   * @param task
+   * @return {AbortablePromise.<{count: int}|Error>}
+   * @private
+   */
+  _getFrameIncompleteCount(task) {
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
     return this._packagingExecutor.execute('labeledFrame',
       () => {
@@ -244,6 +275,18 @@ class PouchDbLabeledFrameGateway {
 
         return {count};
       });
+  }
+
+  /**
+   * @return {AbortablePromise.<{count: int}|Error>}
+   * @private
+   */
+  _getZeroIncompleteCount() {
+    return this._abortablePromiseFactory(
+      this._$q.resolve(
+        {count: 0}
+      )
+    );
   }
 
   /**
@@ -305,6 +348,8 @@ PouchDbLabeledFrameGateway.$inject = [
   'pouchDbViewService',
   'revisionManager',
   'entityIdService',
+  'labelStructureService',
+  'abortablePromiseFactory',
 ];
 
 export default PouchDbLabeledFrameGateway;
