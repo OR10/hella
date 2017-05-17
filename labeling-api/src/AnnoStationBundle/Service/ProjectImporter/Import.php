@@ -137,7 +137,7 @@ class Import
         foreach ($videoElements as $videoElement) {
             $video        = $this->createVideo($organisation, $videoElement, $project, dirname($xmlImportFilePath));
             $tasks        = $this->taskCreatorService->createTasks($project, $video, $user);
-            $createdTasks = array_merge($tasks, $tasks);
+            $createdTasks = array_merge($createdTasks, $tasks);
 
             $job = new Jobs\ThingImporter($xmlImportFilePath, $this->getTasksFrameMapping($tasks));
             $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
