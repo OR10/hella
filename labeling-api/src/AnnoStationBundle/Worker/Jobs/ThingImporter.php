@@ -10,9 +10,9 @@ use AnnoStationBundle\Database\Facade;
 class ThingImporter extends WorkerPool\Job
 {
     /**
-     * @var
+     * @var array
      */
-    private $tasks;
+    private $taskIds = [];
 
     /**
      * @var string
@@ -23,23 +23,20 @@ class ThingImporter extends WorkerPool\Job
      * ThingImporter constructor.
      *
      * @param $xmlImportFilePath
-     * @param $tasks
-     *
-     * @internal param \DOMXPath $elements
-     * @internal param $thingElement
+     * @param $taskIds
      */
-    public function __construct($xmlImportFilePath, $tasks)
+    public function __construct($xmlImportFilePath, $taskIds)
     {
-        $this->tasks             = $tasks;
+        $this->taskIds           = $taskIds;
         $this->xmlImportFilePath = $xmlImportFilePath;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getTasks()
+    public function getTaskIds()
     {
-        return $this->tasks;
+        return $this->taskIds;
     }
 
     /**

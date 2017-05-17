@@ -62,9 +62,9 @@ class Import
     private $xmlValidator;
 
     /**
-     * @var Service\TaskDatabaseCreator
+     * @var Service\TaskCreator
      */
-    private $taskDatabaseCreatorService;
+    private $taskCreatorService;
 
     /**
      * Import constructor.
@@ -75,7 +75,7 @@ class Import
      * @param Facade\Video                $videoFacade
      * @param Service\VideoImporter       $videoImporter
      * @param Service\XmlValidator        $xmlValidator
-     * @param Service\TaskDatabaseCreator $taskDatabaseCreatorService
+     * @param Service\TaskCreator         $taskCreatorService
      * @param AMQP\FacadeAMQP             $amqpFacade
      */
     public function __construct(
@@ -85,17 +85,17 @@ class Import
         Facade\Video $videoFacade,
         Service\VideoImporter $videoImporter,
         Service\XmlValidator $xmlValidator,
-        Service\TaskDatabaseCreator $taskDatabaseCreatorService,
+        Service\TaskCreator $taskCreatorService,
         AMQP\FacadeAMQP $amqpFacade
     ) {
-        $this->projectFacade              = $projectFacade;
-        $this->requirementsXmlFacade      = $requirementsXmlFacade;
-        $this->videoImporter              = $videoImporter;
-        $this->labelingTaskFacade         = $labelingTaskFacade;
-        $this->videoFacade                = $videoFacade;
-        $this->amqpFacade                 = $amqpFacade;
-        $this->xmlValidator               = $xmlValidator;
-        $this->taskDatabaseCreatorService = $taskDatabaseCreatorService;
+        $this->projectFacade         = $projectFacade;
+        $this->requirementsXmlFacade = $requirementsXmlFacade;
+        $this->videoImporter         = $videoImporter;
+        $this->labelingTaskFacade    = $labelingTaskFacade;
+        $this->videoFacade           = $videoFacade;
+        $this->amqpFacade            = $amqpFacade;
+        $this->xmlValidator          = $xmlValidator;
+        $this->taskCreatorService    = $taskCreatorService;
     }
 
     /**
@@ -133,16 +133,39 @@ class Import
         }
 
         $videoElements = $xpath->query('/x:export/x:video');
-        $tasks = [];
+        $createdTasks  = [];
         foreach ($videoElements as $videoElement) {
-            $video = $this->createVideo($organisation, $videoElement, $project, dirname($xmlImportFilePath));
-            $tasks = array_merge($this->createTasks($project, $video, $requirementsXml), $tasks);
+            $video        = $this->createVideo($organisation, $videoElement, $project, dirname($xmlImportFilePath));
+            $tasks        = $this->taskCreatorService->createTasks($project, $video, $user);
+            $createdTasks = array_merge($createdTasks, $tasks);
 
-            $job = new Jobs\ThingImporter($xmlImportFilePath, $this->tasks);
+            $job = new Jobs\ThingImporter($xmlImportFilePath, $this->getTasksFrameMapping($tasks));
             $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
         }
 
-        return $tasks;
+        return $createdTasks;
+    }
+
+    /**
+     * @param array $tasks
+     *
+     * @return array
+     */
+    private function getTasksFrameMapping(array $tasks)
+    {
+        $taskFrameMapping = [];
+        /** @var Model\LabelingTask $task */
+        foreach ($tasks as $task) {
+            $taskFrameNumberMapping = $task->getFrameNumberMapping();
+            $start      = min($taskFrameNumberMapping);
+            $end        = max($taskFrameNumberMapping);
+            $frameRange = range($start, $end);
+            foreach ($frameRange as $frame) {
+                $taskFrameMapping[$frame] = $task->getId();
+            }
+        }
+
+        return $taskFrameMapping;
     }
 
     /**
@@ -271,82 +294,5 @@ class Import
         }
 
         return $video;
-    }
-
-    /**
-     * @param Model\Project                           $project
-     * @param Model\Video                             $video
-     * @param Model\TaskConfiguration\RequirementsXml $requirementsXml
-     *
-     * @return array
-     */
-    private function createTasks(
-        Model\Project $project,
-        Model\Video $video,
-        Model\TaskConfiguration\RequirementsXml $requirementsXml
-    ) {
-        $taskVideoSettings   = $project->getTaskVideoSettings();
-        $splitLength         = (int) $taskVideoSettings['splitEach'];
-        $frameSkip           = (int) $taskVideoSettings['frameSkip'];
-        $startFrameNumber    = (int) $taskVideoSettings['startFrameNumber'];
-        $framesPerVideoChunk = $video->getMetaData()->numberOfFrames;
-        $frameMappingChunks  = [];
-        $videoFrameMapping   = [];
-        $drawingToolOptions  = [
-            'pedestrian' => [
-                'minimalHeight' => 22,
-            ],
-            'cuboid'     => [
-                'minimalHeight' => 15,
-            ],
-            'polygon'    => [
-                'minHandles' => 3,
-                'maxHandles' => 15,
-            ],
-        ];
-
-        if ($video->getMetaData()->numberOfFrames >= ($startFrameNumber + $frameSkip)) {
-            $videoFrameMapping = range($startFrameNumber, $video->getMetaData()->numberOfFrames, $frameSkip);
-        } elseif ($video->getMetaData()->numberOfFrames >= $startFrameNumber) {
-            $videoFrameMapping = [$startFrameNumber];
-        }
-
-        if ($splitLength > 0) {
-            $framesPerVideoChunk = min($framesPerVideoChunk, round($splitLength * $video->getMetaData()->fps));
-        }
-
-        while (count($videoFrameMapping) > 0) {
-            $frameMappingChunks[] = array_splice(
-                $videoFrameMapping,
-                0,
-                round($framesPerVideoChunk / $frameSkip)
-            );
-        }
-
-        $tasks = [];
-        foreach ($frameMappingChunks as $frameNumberMapping) {
-            $task = new Model\LabelingTask(
-                $video,
-                $project,
-                $frameNumberMapping,
-                Model\LabelingTask::TYPE_OBJECT_LABELING,
-                null,
-                [],
-                array_keys($video->getImageTypes()),
-                null,
-                false,
-                $requirementsXml->getId()
-            );
-            $task->setDrawingToolOptions($drawingToolOptions);
-            $task->setLabelInstruction(Model\LabelingTask::INSTRUCTION_MISCELLANEOUS);
-            $this->labelingTaskFacade->save($task);
-            $this->taskDatabaseCreatorService->createDatabase($project, $task);
-            foreach ($frameNumberMapping as $frameNumber) {
-                $this->tasks[$frameNumber] = $task;
-            }
-            $tasks[] = $task;
-        }
-
-        return $tasks;
     }
 }

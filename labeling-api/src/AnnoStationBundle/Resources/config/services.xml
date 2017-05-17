@@ -297,7 +297,7 @@
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.video"/>
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
             <argument type="service" id="annostation.labeling_api.service.xml_validator_requirements_xml_import"/>
-            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument type="service" id="annostation.labeling_api.service.task_creator"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
         </service>
 
