@@ -124,11 +124,11 @@
       <references>
         <task id=""/>
       </references>
-      <value id="sun" start="1" end="24"/>
+      <value id="sun" start="1" end="25"/>
       <value id="summer" start="1" end="100"/>
-      <value id="rain" start="25" end="49"/>
-      <value id="thunderstorm" start="50" end="74"/>
-      <value id="sun" start="75" end="100"/>
+      <value id="rain" start="26" end="50"/>
+      <value id="thunderstorm" start="51" end="75"/>
+      <value id="sun" start="76" end="100"/>
     </frame-labeling>
   </video>
 </export>

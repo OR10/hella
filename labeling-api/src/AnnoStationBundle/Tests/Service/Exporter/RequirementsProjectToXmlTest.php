@@ -127,7 +127,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             $databaseDocumentManager = $this->getDocumentManagerForTask($task);
             $this->labeledFrameFacade = new Facade\LabeledFrame($databaseDocumentManager);
         }
-        $labeledFrame = Tests\Helper\LabeledFrameBuilder::create($task, 1)
+        $labeledFrame = Tests\Helper\LabeledFrameBuilder::create($task, 0)
             ->withClasses(['sun', 'summer'])
             ->build();
         $this->labeledFrameFacade->save($labeledFrame);
