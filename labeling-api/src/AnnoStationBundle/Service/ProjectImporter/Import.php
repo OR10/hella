@@ -156,8 +156,9 @@ class Import
         $taskFrameMapping = [];
         /** @var Model\LabelingTask $task */
         foreach ($tasks as $task) {
-            $start      = min($task->getFrameNumberMapping());
-            $end        = max($task->getFrameNumberMapping());
+            $taskFrameNumberMapping = $task->getFrameNumberMapping();
+            $start      = min($taskFrameNumberMapping);
+            $end        = max($taskFrameNumberMapping);
             $frameRange = range($start, $end);
             foreach ($frameRange as $frame) {
                 $taskFrameMapping[$frame] = $task->getId();
