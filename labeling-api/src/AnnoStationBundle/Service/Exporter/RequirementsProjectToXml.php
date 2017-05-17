@@ -175,7 +175,7 @@ class RequirementsProjectToXml
 
                     $labeledThingIterator = new Iterator\LabeledThing(
                         $task,
-                        $labelingTaskFacade
+                        $labeledThingFacade
                     );
 
                     /** @var Model\LabeledThing $labeledThing */
