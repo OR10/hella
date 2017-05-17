@@ -340,6 +340,7 @@ describe('LabelSelector (right sidebar)', () => {
         .then(requests => expect(requests).toContainRequest(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar))
         .then(() => done());
     });
+
   });
 
   describe('Legacy and SimpleXml LabelStructure', () => {
@@ -604,6 +605,42 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => getMockRequestsMade(mock))
         .then(requests => expect(requests).toContainRequest(assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesTruck))
         .then(() => done());
+    });
+  });
+
+  fdescribe('Multiple Shapes', () => {
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.LabelSelector.MultipleShapes.Task,
+        assets.mocks.LabelSelector.MultipleShapes.TaskConfiguration,
+        assets.mocks.LabelSelector.MultipleShapes.RequirementsXmlFile,
+        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.frameIndex0,
+      ]);
+
+      mock(sharedMocks);
+
+    });
+
+    it('shows the correct panes if selected tool and selected shape are of different types (TTANNO-1671)', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 429, y: 380})
+            .click()
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => {
+          const labelTitleTexts = [
+            'Time',
+            'Rain level',
+          ];
+          expect(labelSelectorHelper.getTitleTexts()).toEqual(labelTitleTexts);
+        })
+        .then(done);
     });
   });
 
