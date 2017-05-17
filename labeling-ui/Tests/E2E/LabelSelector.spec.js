@@ -608,7 +608,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
   });
 
-  fdescribe('Multiple Shapes', () => {
+  fdescribe('Multiple, different Shapes', () => {
     beforeEach(() => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.LabelSelector.MultipleShapes.Task,
