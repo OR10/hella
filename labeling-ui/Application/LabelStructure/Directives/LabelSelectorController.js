@@ -446,7 +446,7 @@ export default class LabelSelectorController {
     // Therefor we need a mapping!
     switch (true) {
       case selectedPaperShape instanceof PaperThingShape:
-        labeledObjectType = selectedPaperShape.labeledThingInFrame.shapes[0].type;
+        labeledObjectType = this._normalizeLabeledObjectType(selectedPaperShape.labeledThingInFrame.shapes[0].type);
         break;
       case selectedPaperShape instanceof PaperGroupShape:
         labeledObjectType = 'group-rectangle';
@@ -459,6 +459,20 @@ export default class LabelSelectorController {
     }
 
     return labelStructureObject.shape === labeledObjectType;
+  }
+
+  /**
+   * @param {string} labeledObjectShapeType
+   * @return {string}
+   * @private
+   */
+  _normalizeLabeledObjectType(labeledObjectShapeType) {
+    switch (labeledObjectShapeType) {
+      case 'cuboid3d':
+        return 'cuboid';
+      default:
+        return labeledObjectShapeType;
+    }
   }
 }
 
