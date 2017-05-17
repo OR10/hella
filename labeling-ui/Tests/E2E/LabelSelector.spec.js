@@ -32,6 +32,13 @@ describe('LabelSelector (right sidebar)', () => {
       .perform();
   }
 
+  function clickPedestrian() {
+    return browser.actions()
+      .mouseMove(viewer, {x: 429, y: 380})
+      .click()
+      .perform();
+  }
+
   // function deselectAllShapes() {
   //   return browser.actions()
   //     .mouseMove(viewer, {x: 1, y: 1})
@@ -608,13 +615,25 @@ describe('LabelSelector (right sidebar)', () => {
     });
   });
 
-  fdescribe('Multiple, different Shapes', () => {
+  describe('Multiple, different Shapes', () => {
+    const pedestrianLabelTitleTexts = [
+      'Time',
+      'Rain level',
+    ];
+
+    const rectangleLabelTitleTexts = [
+      'Sign type'
+    ];
+
     beforeEach(() => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.LabelSelector.MultipleShapes.Task,
         assets.mocks.LabelSelector.MultipleShapes.TaskConfiguration,
         assets.mocks.LabelSelector.MultipleShapes.RequirementsXmlFile,
         assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.frameIndex0,
+        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.frameIndex0to4,
+        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
+        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
       ]);
 
       mock(sharedMocks);
@@ -626,20 +645,44 @@ describe('LabelSelector (right sidebar)', () => {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
-        .then(() => {
-          return browser.actions()
-            .mouseMove(viewer, {x: 429, y: 380})
-            .click()
-            .perform();
-        })
+        .then(() => clickPedestrian())
         .then(() => browser.sleep(250))
-        .then(() => {
-          const labelTitleTexts = [
-            'Time',
-            'Rain level',
-          ];
-          expect(labelSelectorHelper.getTitleTexts()).toEqual(labelTitleTexts);
-        })
+        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(pedestrianLabelTitleTexts))
+        .then(done);
+    });
+
+    it('correctly switches the label selector when switching the shapes', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangleOne())
+        .then(browser.sleep(250))
+        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(rectangleLabelTitleTexts))
+        .then(() => clickPedestrian())
+        .then(() => browser.sleep(250))
+        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(pedestrianLabelTitleTexts))
+        .then(() => clickRectangleOne())
+        .then(browser.sleep(250))
+        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(rectangleLabelTitleTexts))
+        .then(() => clickPedestrian())
+        .then(() => browser.sleep(250))
+        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(pedestrianLabelTitleTexts))
+        .then(done);
+    });
+
+    it('keeps the label selector values when selecting a different tool', done => {
+      const toolButton0 = element(by.css('button.tool-button.tool-0'));
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickPedestrian())
+        .then(() => browser.sleep(250))
+        .then(() => toolButton0.click())
+        .then(() => browser.sleep(250))
+        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(pedestrianLabelTitleTexts))
         .then(done);
     });
   });
