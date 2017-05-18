@@ -75,7 +75,7 @@
       flex-shrink: 0;
 
       div.frame-range-bracket {
-        background-color: $selected-frame;
+        background-color: $selected-box;
         width: 8px;
         position: absolute;
         top: 0;
@@ -139,7 +139,7 @@
     }
 
     .range-position .inner-bar {
-      background: $selected-frame;
+      background: $selected-box;
     }
   }
 }
