@@ -7,25 +7,25 @@
   }
 
   .ROLE_SUPER_ADMIN {
-    background-color: #FFA500;
+    background-color: $color-orange;
   }
   .ROLE_ADMIN {
-    background-color: #FF0000;
+    background-color: $color-lightred;
   }
   .ROLE_LABEL_COORDINATOR {
-    background-color: #FFD700;
+    background-color: $color-yellow;
   }
   .ROLE_CLIENT {
-    background-color: #8A2BE2;
+    background-color: $color-midblue-1;
   }
   .ROLE_LABELER {
-    background-color: #BBBBBB;
+    background-color: $color-lightgrey;
   }
   .ROLE_OBSERVER {
-    background-color: #2A60BB;
+    background-color: $color-midblue-2;
   }
   .ROLE_USER {
-    background-color: #008000;
+    background-color: $color-applegreen;
     /** Don't show this role in the frontend **/
     display: none;
   }
