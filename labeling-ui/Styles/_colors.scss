@@ -1,16 +1,23 @@
-$headlines: #bedb31;
-$sub-headlines: #dadfe6;
+$color-green: #bedb31;
+$color-lightblue: #dadfe6;
+$color-midgreen: #919ca9;
+$color-darkgreen: #727f8f;
 
-$color-active: $headlines;
-$color-overlay: $sub-headlines;
 
-$selected-frame: $headlines;
-$selected-box: $headlines;
+$headlines: $color-green;
+$sub-headlines: $color-lightblue;
 
-$icon: #919ca9;
-$icon-hover: #bedb31;
+$color-active: $color-green;
+$color-overlay: $color-lightblue;
+$color-disabled: #919ca9;
 
-$text: #727f8f;
+$selected-frame: $color-green;
+$selected-box: $color-green;
+
+$icon: $color-midgreen;
+$icon-hover: $color-green;
+
+$text: $color-darkgreen;
 
 $element-background: #2b3036;
 $element-divider: #1a1a1a;
@@ -20,5 +27,7 @@ $body-background: #181d23;
 
 $button: #30363c;
 $button-selected: #353b42;
+$button-disabled: $color-midgreen;
+$button-hover: $color-midgreen;
 
 $accordion-header-background: #343b43;
