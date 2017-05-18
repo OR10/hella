@@ -8,7 +8,7 @@
 
     /* Shadows are visible under slightly transparent text color */
     color: rgba(152, 156, 160, 0.3);
-    text-shadow: 1px 4px 6px #181d23, 0 0 0 $color-black, 1px 4px 6px #181d23;
+    text-shadow: 1px 4px 6px $color-darkgrey, 0 0 0 $color-black, 1px 4px 6px $color-darkgrey;
     text-align: center;
   }
 }
