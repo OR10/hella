@@ -21,14 +21,14 @@ table.table {
 
         td {
           background: darken($icon-hover, 10%);
-          color: $element-background;
+          color: $element-active;
 
           a {
-            color: $element-background;
+            color: $element-active;
           }
 
           .icon, .fa {
-            color: $element-background;
+            color: $element-active;
           }
 
           .icon:hover, .fa:hover {
