@@ -50,7 +50,7 @@
 
         &:focus{
           color: $element-background;
-          background-color: $headlines;
+          background-color: $color-active;
         }
 
         &:disabled{
@@ -78,6 +78,6 @@
 
 .modal-dialog-warning {
   .modal {
-    border: 2px solid $headlines;
+    border: 2px solid $color-active;
   }
 }
