@@ -22,7 +22,7 @@
         left: 0;
         width: 100%;
         height: calc(100% - 4px);
-        border: 2px solid $sub-headlines;
+        border: 2px solid $color-overlay;
         border-right-width: 8px;
         border-left-width: 8px;
       }
@@ -131,11 +131,11 @@
     }
 
     .thumbnail-position .inner-bar {
-      background: $sub-headlines;
+      background: $color-overlay;
     }
 
     .center-frame-position .inner-bar {
-      background: $sub-headlines;
+      background: $color-overlay;
     }
 
     .range-position .inner-bar {
