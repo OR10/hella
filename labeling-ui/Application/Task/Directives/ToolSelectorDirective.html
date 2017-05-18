@@ -1,7 +1,7 @@
 <div class="tool-selector grid-block vertical">
     <h1 ng-if="vm.drawableRequirementFrames.length > 0"><i class="fa fa-picture-o"></i></h1>
     <button ng-repeat="frame in vm.drawableRequirementFrames"
-            class="tool-button tool-{{$index}}"
+            class="tool-button tool-{{$index}} tool-{{frame.shape}}"
             ng-class="{'active': frame.id === vm.selectedLabelStructureObject.id}"
             ng-click="vm.setCurrentLabelStructureObject(frame)"
             tooltip="{{frame.name}}"
@@ -10,7 +10,7 @@
     </button>
     <h1 ng-if="vm.drawableThings.length > 0"><i class="fa fa-pencil"></i></h1>
     <button ng-repeat="thing in vm.drawableThings"
-            class="tool-button tool-{{$index}}"
+            class="tool-button tool-{{$index}} tool-{{thing.shape}}"
             ng-class="{'active': thing.id === vm.selectedLabelStructureObject.id}"
             ng-click="vm.setCurrentLabelStructureObject(thing)"
             tooltip="{{thing.name}}"
@@ -19,7 +19,7 @@
     </button>
     <h1 ng-if="vm.drawableGroups.length > 0"><i class="fa fa-object-group"></i></h1>
     <button ng-repeat="group in vm.drawableGroups"
-            class="tool-button tool-group tool-{{$index}}"
+            class="tool-button tool-group tool-{{$index}} tool-{{group.shape}}"
             ng-class="{'active': group.id === vm.selectedLabelStructureObject.id}"
             ng-click="vm.setCurrentLabelStructureObject(group)"
             tooltip="{{group.name}}"
