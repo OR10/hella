@@ -243,7 +243,7 @@ $dropdown-link-color: $gray-dark !default;
 //** Hover color for dropdown links.
 $dropdown-link-hover-color: darken($gray-dark, 5%) !default;
 //** Hover background for dropdown links.
-$dropdown-link-hover-bg: #f5f5f5 !default;
+$dropdown-link-hover-bg: $color-very-lightblue !default;
 
 //** Active dropdown menu item text color.
 $dropdown-link-active-color: $component-active-color !default;
@@ -376,9 +376,9 @@ $navbar-default-brand-hover-color: darken($navbar-default-brand-color, 10%) !def
 $navbar-default-brand-hover-bg: transparent !default;
 
 // Navbar toggle
-$navbar-default-toggle-hover-bg: #ddd !default;
+$navbar-default-toggle-hover-bg: $color-very-lightgrey !default;
 $navbar-default-toggle-icon-bar-bg: #888 !default;
-$navbar-default-toggle-border-color: #ddd !default;
+$navbar-default-toggle-border-color: $color-very-lightgrey !default;
 
 //=== Inverted navbar
 // Reset inverted navbar basics
@@ -417,15 +417,15 @@ $nav-disabled-link-color: $gray-light !default;
 $nav-disabled-link-hover-color: $gray-light !default;
 
 //== Tabs
-$nav-tabs-border-color: #ddd !default;
+$nav-tabs-border-color: $color-very-lightgrey !default;
 
 $nav-tabs-link-hover-border-color: $gray-lighter !default;
 
 $nav-tabs-active-link-hover-bg: $body-bg !default;
 $nav-tabs-active-link-hover-color: $gray !default;
-$nav-tabs-active-link-hover-border-color: #ddd !default;
+$nav-tabs-active-link-hover-border-color: $color-very-lightgrey !default;
 
-$nav-tabs-justified-link-border-color: #ddd !default;
+$nav-tabs-justified-link-border-color: $color-very-lightgrey !default;
 $nav-tabs-justified-active-link-border-color: $body-bg !default;
 
 //== Pills
@@ -439,11 +439,11 @@ $nav-pills-active-link-hover-color: $component-active-color !default;
 
 $pagination-color: $link-color !default;
 $pagination-bg: $color-lightblue !default;
-$pagination-border: #ddd !default;
+$pagination-border: $color-very-lightgrey !default;
 
 $pagination-hover-color: $link-hover-color !default;
 $pagination-hover-bg: $gray-lighter !default;
-$pagination-hover-border: #ddd !default;
+$pagination-hover-border: $color-very-lightgrey !default;
 
 $pagination-active-color: $color-lightblue !default;
 $pagination-active-bg: $brand-primary !default;
@@ -451,7 +451,7 @@ $pagination-active-border: $brand-primary !default;
 
 $pagination-disabled-color: $gray-light !default;
 $pagination-disabled-bg: $color-lightblue !default;
-$pagination-disabled-border: #ddd !default;
+$pagination-disabled-border: $color-very-lightgrey !default;
 
 //== Pager
 //
@@ -627,7 +627,7 @@ $alert-danger-border: $state-danger-border !default;
 //##
 
 //** Background color of the whole progress component
-$progress-bg: #f5f5f5 !default;
+$progress-bg: $color-very-lightblue !default;
 //** Progress bar text color
 $progress-bar-color: $color-white !default;
 //** Variable for setting rounded corners on progress bar.
@@ -651,12 +651,12 @@ $progress-bar-info-bg: $brand-info !default;
 //** Background color on `.list-group-item`
 $list-group-bg: $color-white !default;
 //** `.list-group-item` border color
-$list-group-border: #ddd !default;
+$list-group-border: $color-very-lightgrey !default;
 //** List group border radius
 $list-group-border-radius: $border-radius-base !default;
 
 //** Background color of single list items on hover
-$list-group-hover-bg: #f5f5f5 !default;
+$list-group-hover-bg: $color-very-lightblue !default;
 //** Text color of active list items
 $list-group-active-color: $component-active-color !default;
 //** Background color of active list items
@@ -688,11 +688,11 @@ $panel-footer-padding: $panel-heading-padding !default;
 $panel-border-radius: $border-radius-base !default;
 
 //** Border color for elements within panels
-$panel-inner-border: #ddd !default;
+$panel-inner-border: $color-very-lightgrey !default;
 $panel-footer-bg: $body-bg !default;
 
 $panel-default-text: $gray-dark !default;
-$panel-default-border: #ddd !default;
+$panel-default-border: $color-very-lightgrey !default;
 $panel-default-heading-bg: $body-bg !default;
 
 $panel-primary-text: $text-color !default;
@@ -724,7 +724,7 @@ $thumbnail-padding: 4px !default;
 //** Thumbnail background color
 $thumbnail-bg: $body-bg !default;
 //** Thumbnail border color
-$thumbnail-border: #ddd !default;
+$thumbnail-border: $color-very-lightgrey !default;
 //** Thumbnail border radius
 $thumbnail-border-radius: $border-radius-base !default;
 
@@ -737,7 +737,7 @@ $thumbnail-caption-padding: 9px !default;
 //
 //##
 
-$well-bg: #f5f5f5 !default;
+$well-bg: $color-very-lightblue !default;
 $well-border: darken($well-bg, 7%) !default;
 
 //== Badges
@@ -765,7 +765,7 @@ $badge-border-radius: 10px !default;
 $breadcrumb-padding-vertical: 8px !default;
 $breadcrumb-padding-horizontal: 15px !default;
 //** Breadcrumb background color
-$breadcrumb-bg: #f5f5f5 !default;
+$breadcrumb-bg: $color-very-lightblue !default;
 //** Breadcrumb text color
 $breadcrumb-color: #ccc !default;
 //** Text color of current page in the breadcrumb
@@ -807,7 +807,7 @@ $code-bg: #f9f2f4 !default;
 $kbd-color: $color-lightblue !default;
 $kbd-bg: #333 !default;
 
-$pre-bg: #f5f5f5 !default;
+$pre-bg: $color-very-lightblue !default;
 $pre-color: $gray-dark !default;
 $pre-border-color: #ccc !default;
 $pre-scrollable-max-height: 340px !default;

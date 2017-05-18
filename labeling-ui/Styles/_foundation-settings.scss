@@ -202,7 +202,7 @@
 // We use these to style the <hr> element
 // $hr-border-width: 1px;
 // $hr-border-style: solid;
-// $hr-border-color: #ddd;
+// $hr-border-color: $color-very-lightgrey;
 // $hr-margin: rem-calc(20);
 
 // We use these to style lists
@@ -222,13 +222,13 @@
 // We use these to style blockquotes
 // $blockquote-font-color: scale-color($header-font-color, $lightness: 35%);
 // $blockquote-padding: rem-calc(9 20 0 19);
-// $blockquote-border: 1px solid #ddd;
+// $blockquote-border: 1px solid $color-very-lightgrey;
 // $blockquote-cite-font-size: rem-calc(13);
 // $blockquote-cite-font-color: scale-color($header-font-color, $lightness: 23%);
 // $blockquote-cite-link-color: $blockquote-cite-font-color;
 
 // Acronym styles
-// $acronym-underline: 1px dotted #ddd; 
+// $acronym-underline: 1px dotted $color-very-lightgrey;
 
 // 5. Grid
 // - - - - - - - - - - - - - - -
