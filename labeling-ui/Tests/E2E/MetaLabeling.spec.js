@@ -74,7 +74,24 @@ describe('Metalabeling', () => {
       })
         .then(() => incompleteBadge.getText())
         // Two incomplete shapes + One incomplete/not existent frame
-        .then(incompleteCount => expect(incompleteCount).toEqual(3))
+        .then(incompleteCount => expect(incompleteCount).toEqual('3'))
+        .then(() => done());
+    });
+
+    it('updates the incomplete number when completing the meta labeling', done => {
+      mock(sharedMocks);
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => metaLabelingButton.click())
+        .then(() => browser.sleep(150))
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Day').click())
+        .then(() => browser.pause())
+        .then(() => incompleteBadge.getText())
+        .then(incompleteCount => expect(incompleteCount).toEqual('2'))
         .then(() => done());
     });
 
