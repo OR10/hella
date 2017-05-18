@@ -437,7 +437,7 @@ $inlinelabel-background: $element-background;
 // 17. Modal
 // - - - - - - - - - - - - - - -
 
- $modal-background: #fff;
+ $modal-background: $color-white;
  $modal-border: 0;
  $modal-radius: 0px;
  $modal-shadow: none;

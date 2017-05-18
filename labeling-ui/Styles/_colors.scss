@@ -12,7 +12,8 @@ $color-darkblue-3: #353b42;
 $color-darkgrey: #181d23;
 $color-midgrey: #30363c;
 
-$color-black: #1a1a1a;
+$color-white: #fff;
+$color-almost-black: #1a1a1a;
 
 $color-active: $color-green;
 $color-overlay: $color-lightblue;
@@ -36,7 +37,7 @@ $text: $color-darkgreen-1;
 
 $element-background: $color-darkblue-1;
 $element-active: $color-darkblue-1;
-$element-divider: $color-black;
+$element-divider: $color-almost-black;
 $element-inline-divider: $color-darkblue-2;
 $element-border: $color-darkgreen-2;
 
