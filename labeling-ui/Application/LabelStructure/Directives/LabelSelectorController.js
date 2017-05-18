@@ -142,26 +142,26 @@ export default class LabelSelectorController {
      */
     this.accordionControl = {};
 
+    $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape) => {
+      if (newSelectedPaperShape === null) {
+        return this._clearLabelSelector();
+      }
+      this._startWithFirstPageOfLabelSelector();
+    });
+
     $scope.$watchGroup(
       [
         'vm.labelStructure',
         'vm.selectedLabelStructureObject',
-        'vm.selectedPaperShape',
       ],
       ([
          newLabelStructure,
          newSelectedLabelStructureObject,
-         newSelectedPaperShape,
        ]) => {
-        if (newLabelStructure === null || newSelectedLabelStructureObject === null || newSelectedPaperShape === null) {
-          this.pages = null;
-          this.activePageIndex = null;
-          this.labelingInstructions = null;
-          this.choices = null;
-          return;
+        if (newLabelStructure === null || newSelectedLabelStructureObject === null) {
+          return this._clearLabelSelector();
         }
-        this.activePageIndex = null;
-        this._updatePagesAndChoices();
+        this._startWithFirstPageOfLabelSelector();
       });
 
     // Store and process choices made by the user
@@ -213,6 +213,28 @@ export default class LabelSelectorController {
         this.labelingInstructions = this.pages[newPageIndex].instructions;
       }
     });
+  }
+
+  /**
+   * Sets active page to null and updates pages an choices
+   *
+   * @private
+   */
+  _startWithFirstPageOfLabelSelector() {
+    this.activePageIndex = null;
+    this._updatePagesAndChoices();
+  }
+
+  /**
+   * Clears some variables of the label selector
+   *
+   * @private
+   */
+  _clearLabelSelector() {
+    this.pages = null;
+    this.activePageIndex = null;
+    this.labelingInstructions = null;
+    this.choices = null;
   }
 
   /**
@@ -313,11 +335,11 @@ export default class LabelSelectorController {
     switch (true) {
       case selectedLabeledObject instanceof LabeledThingInFrame:
         this._storeUpdatedLabeledThingInFrame(selectedLabeledObject, updateAssociatedLabeledThing)
-            .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
+          .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
       case selectedLabeledObject instanceof LabeledFrame:
         this._storeUpdatedLabeledFrame(selectedLabeledObject)
-            .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
+          .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
       default:
         throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);
@@ -424,7 +446,7 @@ export default class LabelSelectorController {
     // Therefor we need a mapping!
     switch (true) {
       case selectedPaperShape instanceof PaperThingShape:
-        labeledObjectType = selectedPaperShape.labeledThingInFrame.shapes[0].type;
+        labeledObjectType = this._normalizeLabeledObjectType(selectedPaperShape.labeledThingInFrame.shapes[0].type);
         break;
       case selectedPaperShape instanceof PaperGroupShape:
         labeledObjectType = 'group-rectangle';
@@ -437,6 +459,20 @@ export default class LabelSelectorController {
     }
 
     return labelStructureObject.shape === labeledObjectType;
+  }
+
+  /**
+   * @param {string} labeledObjectShapeType
+   * @return {string}
+   * @private
+   */
+  _normalizeLabeledObjectType(labeledObjectShapeType) {
+    switch (labeledObjectShapeType) {
+      case 'cuboid3d':
+        return 'cuboid';
+      default:
+        return labeledObjectShapeType;
+    }
   }
 }
 
