@@ -22,7 +22,7 @@ class SimpleXml extends Helper\ClassesStructure
      *
      * @return array
      */
-    public function getStructure(Model\LabeledThingInFrame $labeledThingInFrame)
+    public function getLabeledThingInFrameStructure(Model\LabeledThingInFrame $labeledThingInFrame)
     {
         return $this->getRequiredClasses();
     }

@@ -247,6 +247,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
 
             $labeledFrame = new Model\LabeledFrame($task, $frameIndex);
             $labeledFrame->setClasses($values);
+            $labeledFrame->setIncomplete($this->taskIncompleteService->isLabeledFrameIncomplete($labeledFrame));
             $this->labeledFrameFacade->save($labeledFrame);
             $previousValues = $values;
         }
