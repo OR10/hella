@@ -16,6 +16,9 @@ $color-white: #fff;
 $color-black: #000;
 $color-almost-black: #1a1a1a;
 
+$color-darkred: #a00;
+$color-midred: #A52A2A;
+
 $color-active: $color-green;
 $color-overlay: $color-lightblue;
 $color-disabled: $color-midgreen;
@@ -50,3 +53,5 @@ $button-active: $color-darkblue-3;
 $table-meta-background: $color-darkblue-3;
 
 $accordion-header-background: $color-darkgreen-2;
+
+$warning: $color-midred;
