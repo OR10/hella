@@ -54,13 +54,14 @@ class Video extends ExportXml\Element
         }
         $video->setAttribute('filename', $this->video->getName());
 
+        $video->appendChild($this->frame->getElement($document));
+
         foreach ($this->groups as $group) {
             $video->appendChild($group->getElement($document));
         }
         foreach ($this->things as $thing) {
             $video->appendChild($thing->getElement($document));
         }
-        $video->appendChild($this->frame->getElement($document));
 
         return $video;
     }

@@ -288,6 +288,8 @@ class TaskController {
             }
 
             this.selectedLabelStructureObject = labelStructureObject;
+
+            $scope.$root.$emit('selected-paper-shape:after', this.selectedPaperShape);
           });
       }
     });

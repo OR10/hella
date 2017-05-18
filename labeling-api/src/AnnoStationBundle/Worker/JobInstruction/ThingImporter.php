@@ -6,6 +6,7 @@ use crosscan\Logger;
 use crosscan\WorkerPool;
 use crosscan\WorkerPool\Job;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Database\Facade as AnnoStationFacade;
 use AnnoStationBundle\Worker\Jobs;
 use Hagl\WorkerPoolBundle;
 use AnnoStationBundle\Service\ProjectImporter\Facade;
@@ -33,9 +34,14 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     private $project;
 
     /**
-     * @var Model\LabelingTask[]
+     * @var array
      */
-    private $tasks;
+    private $taskIds;
+
+    /**
+     * @var AnnoStationFacade\LabelingTask
+     */
+    private $labelingTaskFacade;
 
     /**
      * @var array
@@ -56,17 +62,20 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
      * @param Facade\LabeledThing        $labeledThingFacade
      * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
      * @param Facade\Project             $project
+     * @param AnnoStationFacade\LabelingTask        $labelingTaskFacade
      */
     public function __construct(
         Service\TaskIncomplete $taskIncompleteService,
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        Facade\Project $project
+        Facade\Project $project,
+        AnnoStationFacade\LabelingTask $labelingTaskFacade
     ) {
         $this->taskIncompleteService     = $taskIncompleteService;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->project                   = $project;
+        $this->labelingTaskFacade = $labelingTaskFacade;
     }
 
     /**
@@ -81,7 +90,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         $xpath = new \DOMXPath($xmlImport);
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
 
-        $this->tasks   = $job->getTasks();
+        $this->taskIds = $job->getTaskIds();
         $videoElements = $xpath->query('/x:export/x:video');
         foreach ($videoElements as $videoElement) {
             $things = $xpath->query('./x:thing', $videoElement);
@@ -111,8 +120,8 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         $start      = $xpath->getAttribute('start');
         $end        = $xpath->getAttribute('end');
 
-        if ($this->tasks[$start]->getId() === $this->tasks[$end]->getId()) {
-            $task         = $this->tasks[$start];
+        if ($this->isStartAndEndTheSameTask($start, $end)) {
+            $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
             $frameMapping = array_flip($task->getFrameNumberMapping());
             $labeledThing = new Model\LabeledThing($task, $xpath->getAttribute('line-color'));
             $labeledThing->setOriginalId($originalId);
@@ -149,9 +158,9 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         foreach ($shapeElements as $shapeElement) {
             $start = $shapeElement->getAttribute('start');
             $end   = $shapeElement->getAttribute('end');
-            if ($this->tasks[$start]->getId() === $this->tasks[$end]->getId()) {
+            if ($this->isStartAndEndTheSameTask($start, $end)) {
                 /** @var Model\LabelingTask $task */
-                $task         = $this->tasks[$start];
+                $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
                 $frameMapping = array_flip($task->getFrameNumberMapping());
 
                 $projectVideoSettings = $this->project->find($task->getProjectId())->getTaskVideoSettings();
@@ -194,6 +203,17 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                 }
             }
         }
+    }
+
+    /**
+     * @param string $start
+     * @param string $end
+     *
+     * @return bool
+     */
+    private function isStartAndEndTheSameTask($start, $end)
+    {
+        return ($this->taskIds[$start] === $this->taskIds[$end]);
     }
 
     /**
