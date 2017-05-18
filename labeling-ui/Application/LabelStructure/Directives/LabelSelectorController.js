@@ -142,10 +142,11 @@ export default class LabelSelectorController {
      */
     this.accordionControl = {};
 
-    $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape) => {
+    $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
       if (newSelectedPaperShape === null) {
         return this._clearLabelSelector();
       }
+      this.selectedLabelStructureObject = selectedLabeledStructureObject;
       this._startWithFirstPageOfLabelSelector();
     });
 
