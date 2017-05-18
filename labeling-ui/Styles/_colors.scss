@@ -1,3 +1,4 @@
+// Color definitions
 $color-green: #bedb31;
 $color-midgreen: #919ca9;
 $color-darkgreen-1: #727f8f;
@@ -17,12 +18,13 @@ $color-active: $color-green;
 $color-overlay: $color-lightblue;
 $color-disabled: $color-midgreen;
 
+// Color variables for usage in Stylesheets
 $headlines: $color-green;
 $sub-headlines: $color-lightblue;
 
-
 $selected-frame: $color-green;
 $selected-box: $color-green;
+$selected-background: $color-darkgreen-1;
 
 $icon: $color-midgreen;
 $icon-hover: $color-green;
