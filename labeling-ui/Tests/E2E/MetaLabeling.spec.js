@@ -1,11 +1,11 @@
 import {
   expectAllModalsToBeClosed,
-  getMockRequestsMade,
   initApplication,
   mock,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
+import featureFlags from '../../Application/features.json';
 
 describe('Metalabeling', () => {
   let assets;
@@ -14,6 +14,10 @@ describe('Metalabeling', () => {
   let viewer;
   let metaLabelingButton;
   let incompleteBadge;
+
+  if (!featureFlags.pouchdb) {
+    pending('This feature is Pouch-only');
+  }
 
   /**
    * @type {LabelSelectorHelper}
