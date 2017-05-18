@@ -55,19 +55,17 @@ describe('Metalabeling', () => {
 
   describe('Basic behaviour', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      mock(sharedMocks.concat([
         assets.mocks.MetaLabeling.Shared.Task,
         assets.mocks.MetaLabeling.Shared.TaskConfiguration,
         assets.mocks.MetaLabeling.Shared.RequirementsXmlFile,
         assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0,
         assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0to4,
         assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.getLabeledThingInFrame0to4,
-      ]);
+      ]));
     });
 
     it('should show incomplete object if meta labeling is activated and frame one is not labeled', done => {
-      mock(sharedMocks);
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
@@ -79,8 +77,6 @@ describe('Metalabeling', () => {
     });
 
     it('updates the incomplete number when completing the meta labeling', done => {
-      mock(sharedMocks);
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
@@ -89,15 +85,13 @@ describe('Metalabeling', () => {
         .then(() => browser.sleep(150))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Day').click())
-        .then(() => browser.pause())
+        .then(() => browser.sleep(150))
         .then(() => incompleteBadge.getText())
         .then(incompleteCount => expect(incompleteCount).toEqual('2'))
         .then(() => done());
     });
 
     it('should show the correct labels before and after switching to meta labeling', done => {
-      mock(sharedMocks);
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
@@ -109,6 +103,44 @@ describe('Metalabeling', () => {
         .then(() => browser.sleep(150))
         .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(['Time']))
         .then(() => done());
+    });
+  });
+
+  describe('No Metalabeling (TTANNO-1670)', () => {
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.MetaLabeling.Shared.Task,
+        assets.mocks.MetaLabeling.Shared.TaskConfiguration,
+        assets.mocks.MetaLabeling.NoMetaLabeling.RequirementsXmlFile,
+      ]);
+    });
+
+    it('is not incomplete if Metalabeling is not active (no shapes exist)', done => {
+      mock(sharedMocks);
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => incompleteBadge.getText())
+        .then(incompleteCount => expect(incompleteCount).toEqual(''))
+        .then(done);
+    });
+
+    it('is not incomplete if Metalabeling is not active (shapes exist)', done => {
+      mock(sharedMocks.concat([
+        assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0,
+        assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0to4,
+        assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.getLabeledThingInFrame0to4,
+      ]));
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => incompleteBadge.getText())
+        .then(incompleteCount => expect(incompleteCount).toEqual('2'))
+        .then(done);
     });
   });
 
