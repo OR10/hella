@@ -33,6 +33,7 @@ class labeling_api::params(
   $mailer_host = '127.0.0.1',
   $mailer_user = 'null',
   $mailer_password = 'null',
+  $mailer_from = 'no-reply@crosscan.com',
 
   $secret = 'ThisTokenIsNotSoSecretChangeIt',
 
