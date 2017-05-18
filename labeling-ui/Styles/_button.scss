@@ -20,10 +20,10 @@ button {
   }
 
   &.disabled i {
-    color: darken($icon, 30%);
+    color: darken($icon-disabled, 30%);
 
     &:hover{
-      color: darken($icon, 30%) !important;
+      color: darken($icon-disabled, 30%) !important;
     }
   }
 
