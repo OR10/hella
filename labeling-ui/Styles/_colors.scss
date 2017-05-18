@@ -19,6 +19,8 @@ $color-overlay: $color-lightblue;
 $color-disabled: $color-midgreen;
 
 // Color variables for usage in Stylesheets
+$body-background: $color-darkgrey;
+
 $headlines: $color-green;
 $sub-headlines: $color-lightblue;
 
@@ -36,10 +38,13 @@ $element-background: $color-darkblue-1;
 $element-active: $color-darkblue-1;
 $element-divider: $color-black;
 $element-inline-divider: $color-darkblue-2;
+$element-border: $color-darkgreen-2;
 
-$body-background: $color-darkgrey;
+$frame-tools-background: $color-darkgreen-2;
 
 $button: $color-midgrey;
-$button-selected: $color-darkblue-3;
+$button-active: $color-darkblue-3;
+
+$table-meta-background: $color-darkblue-3;
 
 $accordion-header-background: $color-darkgreen-2;

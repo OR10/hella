@@ -67,7 +67,7 @@ table.table {
 
   thead, tfoot {
     th, td {
-      background-color: $button-selected;
+      background-color: $table-meta-background;
       padding: 0.6rem 0.725rem 0.725rem;
       font-weight: bold;
     }
@@ -132,6 +132,6 @@ pagination-controls {
 
   button.is-active {
     background-color: $icon-hover;
-    color: $button-selected;
+    color: $button-active;
   }
 }
