@@ -106,7 +106,8 @@
 
     input[type="radio"]:checked + label {
       .response {
-        color: $sub-headlines;
+        color: $text-lightbg;
+        font-weight: bold;
       }
     }
 
