@@ -52,31 +52,33 @@ $color-disabled: $color-midgreen;
 // Color variables for usage in Stylesheets
 $body-background: $color-darkgrey;
 
-$headlines: $color-green;
+$headlines: $color-ut-8;
 $sub-headlines: $color-lightblue;
 
 $selected-frame: $color-green;
 $selected-box: $color-green;
 $selected-background: $color-darkgreen-1;
 
-$icon: $color-midgreen;
+$icon: $color-ut-8;
 $icon-hover: $color-green;
 $icon-disabled: $color-midgreen;
 
 $text: $color-darkgreen-1;
+$text-lightbg: $color-ut-5;
+$text-inactive: $color-ut-10;
 
-$element-background: $color-darkblue-1;
-$element-active: $color-darkblue-1;
+$element-background: $color-ut-4;
+$element-active: $color-ut-8;
 $element-divider: $color-almost-black;
 $element-inline-divider: $color-darkblue-2;
 $element-border: $color-darkgreen-2;
 
 $frame-tools-background: $color-darkgreen-2;
 
-$button: $color-midgrey;
+$button: $color-ut-8;
 $button-active: $color-darkblue-3;
 
-$table-meta-background: $color-darkblue-3;
+$table-meta-background: $color-ut-1;
 
 $accordion-header-background: $color-darkgreen-2;
 

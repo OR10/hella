@@ -2,7 +2,7 @@ table.table {
   width: 100%;
 
   a {
-    color: $color-white;
+    color: $text-lightbg;
     text-decoration: underline;
   }
 
@@ -55,7 +55,7 @@ table.table {
 
   thead,
   tfoot {
-    color: $sub-headlines;
+    color: $text-lightbg;
   }
 
   thead,
@@ -110,13 +110,13 @@ table.table {
 
   th.st-sort-descent:after {
     padding-left: .6rem;
-    color: $icon-hover;
+    color: $text-lightbg;
     content: "▲";
   }
 
   th.st-sort-ascent:after {
     padding-left: .3rem;
-    color: $icon-hover;
+    color: $text-lightbg;
     content: "▼";
   }
 }
@@ -132,6 +132,6 @@ pagination-controls {
 
   button.is-active {
     background-color: $icon-hover;
-    color: $button-active;
+    color: $text-lightbg;
   }
 }
