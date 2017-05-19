@@ -162,7 +162,7 @@ class TaskIncomplete
             }
         }
 
-        if (empty($helper->getStructure($labeledThingInFrame))) {
+        if (empty($helper->getLabeledThingInFrameStructure($labeledThingInFrame))) {
             return false;
         }
 
@@ -175,7 +175,7 @@ class TaskIncomplete
             }
         }
 
-        foreach ($helper->getStructure($labeledThingInFrame) as $child) {
+        foreach ($helper->getLabeledThingInFrameStructure($labeledThingInFrame) as $child) {
             if (!$this->searchStructureForClasses($labeledThingInFrame->getClasses(), $child)) {
                 return true;
             }
@@ -191,12 +191,20 @@ class TaskIncomplete
      */
     public function isLabeledFrameIncomplete(Model\LabeledFrame $labeledFrame)
     {
-        $classes       = $labeledFrame->getClasses();
-        $task          = $this->labelingTaskFacade->find($labeledFrame->getTaskId());
-        $rootStructure = $this->labelingTaskFacade->getLabelStructure($task);
+        $classes = $labeledFrame->getClasses();
+        $task    = $this->labelingTaskFacade->find($labeledFrame->getTaskId());
 
-        foreach ($rootStructure['children'] as $child) {
-            if (!$this->searchStructureForClasses($classes, [$child])) {
+        $taskConfiguration     = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
+        $helper                = new Helper\IncompleteClassesChecker\RequirementsXml($taskConfiguration->getRawData());
+        $labeledFrameStructure = $helper->getLabeledFrameStructure();
+
+
+        if (empty($labeledFrameStructure)) {
+            return false;
+        }
+
+        foreach ($labeledFrameStructure as $child) {
+            if (!$this->searchStructureForClasses($classes, $child)) {
                 return true;
             }
         }
