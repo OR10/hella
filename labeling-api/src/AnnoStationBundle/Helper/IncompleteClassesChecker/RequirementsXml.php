@@ -12,11 +12,21 @@ class RequirementsXml extends Helper\ClassesStructure
      */
     private $document = null;
 
+    /**
+     * RequirementsXml constructor.
+     *
+     * @param $xml
+     */
     public function __construct($xml)
     {
         $this->document = $this->loadXmlDocument($xml);
     }
 
+    /**
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
+     *
+     * @return array
+     */
     public function getLabeledThingInFrameStructure(Model\LabeledThingInFrame $labeledThingInFrame)
     {
         return $this->getRequiredClassesForLabeledThingInFrame($labeledThingInFrame->getIdentifierName());
@@ -88,6 +98,13 @@ class RequirementsXml extends Helper\ClassesStructure
         throw new \RuntimeException('XML Reference not found ' . $id);
     }
 
+    /**
+     * @param \DOMXPath $xpath
+     * @param           $expression
+     * @param           $id
+     *
+     * @return bool|\DOMElement|null
+     */
     private function findReferenceClassForExpression(\DOMXPath $xpath, $expression, $id)
     {
         foreach ($xpath->query($expression) as $class) {
@@ -139,15 +156,29 @@ class RequirementsXml extends Helper\ClassesStructure
 
         $classes = [];
         foreach ($xpath->query('//x:requirements/x:thing[@id="' . $identifier . '"]') as $thing) {
-            foreach ($xpath->query('x:class', $thing) as $classNode) {
-                if ($classNode->hasAttribute('ref')) {
-                    $classNode = $this->findReferenceClassForLabeledThingInFrame(
-                        $xpath,
-                        $classNode->getAttribute('ref')
-                    );
-                }
-                $classes[] = $this->getValuesFromLabeledThingInFrameNode($xpath, $classNode);
+            $classes = array_merge($classes, $this->getClassesForLabeledThingInFrame($xpath, $thing));
+        }
+
+        return $classes;
+    }
+
+    /**
+     * @param \DOMXPath $xpath
+     * @param \DOMNode  $thing
+     *
+     * @return array
+     */
+    private function getClassesForLabeledThingInFrame(\DOMXPath $xpath, \DOMNode $thing)
+    {
+        $classes = [];
+        foreach ($xpath->query('x:class', $thing) as $classNode) {
+            if ($classNode->hasAttribute('ref')) {
+                $classNode = $this->findReferenceClassForLabeledThingInFrame(
+                    $xpath,
+                    $classNode->getAttribute('ref')
+                );
             }
+            $classes[] = $this->getValuesFromLabeledThingInFrameNode($xpath, $classNode);
         }
 
         return $classes;
