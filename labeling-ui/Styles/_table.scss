@@ -20,8 +20,7 @@ table.table {
         cursor: pointer;
 
         td {
-          background: darken($icon-hover, 10%);
-          color: $element-active;
+          background: darken($element-background, 10%);
 
           a {
             color: $element-active;
