@@ -3,12 +3,13 @@ fieldset {
   margin: 2rem 1rem;
 
   legend {
-    color: $icon-hover;
+    color: $text-lightbg;
     padding: 1rem;
   }
 }
 
-input, select {
+select, input, textarea {
+  color: $text-lightbg;
   &.error {
     border: 2px solid orangered !important;
   }
@@ -27,5 +28,5 @@ form{
 }
 
 ::-webkit-input-placeholder {
-  color: darken($text, 23%);
+  color: darken($text-lightbg, 23%);
 }
