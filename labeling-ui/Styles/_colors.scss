@@ -1,3 +1,15 @@
+// UseTree colors
+$color-ut-1: #E8EDF3;
+$color-ut-2: #D0D6DD;
+$color-ut-3: #88919C;
+$color-ut-4: #B2BBC4;
+$color-ut-5: #2B3036;
+$color-ut-6: #BFDB31;
+$color-ut-7: #FFFFFF;
+$color-ut-8: #3D444C;
+$color-ut-9: #2B3036;
+$color-ut-10: #7B8999;
+
 // Color definitions
 $color-green: #bedb31;
 $color-midgreen: #919ca9;
@@ -13,7 +25,7 @@ $color-darkblue-1: #2b3036;
 $color-darkblue-2: #232a33;
 $color-darkblue-3: #353b42;
 
-$color-darkgrey: #181d23;
+$color-darkgrey: $color-ut-1; // UseTree
 $color-midgrey: #30363c;
 $color-lightgrey-1: #BBBBBB;
 $color-lightgrey-2: #cdcdcd;
