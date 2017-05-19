@@ -86,6 +86,26 @@ class ProjectBuilder
     private $organisation;
 
     /**
+     * @var Model\TaskConfiguration\RequirementsXml
+     */
+    private $requirementsXmlId;
+
+    /**
+     * @var int
+     */
+    private $frameSkip = 1;
+
+    /**
+     * @var int
+     */
+    private $startFrameNumber = 1;
+
+    /**
+     * @var int
+     */
+    private $splitEach = 0;
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      *
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -280,6 +300,42 @@ class ProjectBuilder
     }
 
     /**
+     * @param $skip
+     *
+     * @return $this
+     */
+    public function withFrameSkip($skip)
+    {
+        $this->frameSkip = $skip;
+
+        return $this;
+    }
+
+    /**
+     * @param $startFrameNumber
+     *
+     * @return $this
+     */
+    public function withStartFrameNumber($startFrameNumber)
+    {
+        $this->startFrameNumber = $startFrameNumber;
+
+        return $this;
+    }
+
+    /**
+     * @param $splitEach
+     *
+     * @return $this
+     */
+    public function withSplitEach($splitEach)
+    {
+        $this->splitEach = $splitEach;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function buildArray()
@@ -320,9 +376,9 @@ class ProjectBuilder
             $creationDate,
             $this->dueDate,
             $this->phases,
-            1,
-            1,
-            0
+            $this->frameSkip,
+            $this->startFrameNumber,
+            $this->splitEach
         );
 
         if ($this->owningUserId !== null) {
