@@ -92,7 +92,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     protected function runJob(Job $job, Logger\Facade\LoggerFacade $logger)
     {
         $xmlImport = new \DOMDocument();
-        $xmlImport->load($job->getXmlImportFilePath());
+        $xmlImport->loadXML($this->beautifyXml($job->getXmlImportFilePath()));
 
         $xpath = new \DOMXPath($xmlImport);
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
@@ -134,16 +134,22 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         if ($this->isStartAndEndTheSameTask($start, $end)) {
             $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
             $frameMapping = array_flip($task->getFrameNumberMapping());
-            $labeledThing = new Model\LabeledThing($task, $xpath->getAttribute('line-color'));
-            $labeledThing->setOriginalId($originalId);
-            $labeledThing->setFrameRange(
-                new Model\FrameIndexRange(
-                    $frameMapping[$start],
-                    $frameMapping[$end]
-                )
-            );
 
-            $this->labeledThingFacade->save($labeledThing);
+            if ($this->labeledThingFacade->getMaxLabeledThingImportLineNoForTask($task) >= $xpath->getLineNo()) {
+                $labeledThing = $this->labeledThingFacade->getLabeledThingForImportedLineNo($task, $xpath->getLineNo());
+            }else{
+                $labeledThing = new Model\LabeledThing($task, $xpath->getAttribute('line-color'));
+                $labeledThing->setImportLineNo($xpath->getLineNo());
+                $labeledThing->setOriginalId($originalId);
+                $labeledThing->setFrameRange(
+                    new Model\FrameIndexRange(
+                        $frameMapping[$start],
+                        $frameMapping[$end]
+                    )
+                );
+
+                $this->labeledThingFacade->save($labeledThing);
+            }
 
             return $labeledThing;
         }
@@ -182,6 +188,9 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                     $frameSkip
                 );
                 foreach ($frameRange as $frame) {
+                    if ($this->labeledThingInFrameFacade->getMaxLabeledThingInFrameImportLineNoForTask($task) >= $shapeElement->getLineNo()) {
+                        continue;
+                    }
                     $shapes              = $this->getShapes(
                         $xpath,
                         $xpath->query(
@@ -196,6 +205,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                         isset($values[$frame]) ? $values[$frame] : [],
                         $shapes
                     );
+                    $labeledThingInFrame->setImportLineNo($shapeElement->getLineNo());
                     $labeledThingInFrame->setIdentifierName($identifier);
 
                     $labeledThingInFrame->setIncomplete(
@@ -244,6 +254,11 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
             $frameIndex = array_search($frameNumber, $task->getFrameNumberMapping());
 
             if ($frameIndex === false) {
+                continue;
+            }
+
+            if (count($this->labeledFrameFacade->findBylabelingTask($task, $frameIndex)) > 0) {
+                $previousValues = $values;
                 continue;
             }
 
@@ -459,5 +474,19 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     public function supports(WorkerPool\Job $job)
     {
         return $job instanceof Jobs\ThingImporter;
+    }
+
+    /**
+     * @param $xmlPath
+     *
+     * @return string
+     */
+    private function beautifyXml($xmlPath)
+    {
+        $xmlImport = new \DOMDocument();
+        $xmlImport->formatOutput = true;
+        $xmlImport->preserveWhiteSpace = false;
+        $xmlImport->load($xmlPath);
+        return $xmlImport->saveXML();
     }
 }

@@ -60,6 +60,11 @@ class LabeledThing
     private $originalId;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $importLineNo;
+
+    /**
      * @param LabelingTask $task
      * @param $lineColor
      *
@@ -255,5 +260,13 @@ class LabeledThing
     public function setOriginalId($originalId)
     {
         $this->originalId = $originalId;
+    }
+
+    /**
+     * @param mixed $importLineNo
+     */
+    public function setImportLineNo($importLineNo)
+    {
+        $this->importLineNo = $importLineNo;
     }
 }

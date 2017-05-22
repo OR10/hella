@@ -73,6 +73,11 @@ class LabeledThingInFrame
     private $ghost = false;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $importLineNo;
+
+    /**
      * @param LabeledThing $labeledThing
      * @param int $frameIndex
      * @param array $classes
@@ -404,5 +409,13 @@ class LabeledThingInFrame
     public function getTaskId()
     {
         return $this->taskId;
+    }
+
+    /**
+     * @param mixed $importLineNo
+     */
+    public function setImportLineNo($importLineNo)
+    {
+        $this->importLineNo = $importLineNo;
     }
 }
