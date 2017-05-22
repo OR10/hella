@@ -67,6 +67,7 @@ import 'angular-ui-router';
 import 'flowjs/dist/flow.js';
 import 'ng-flow/dist/ng-flow';
 import 'angular-hotkeys';
+import UserAvatarDirective from "./Directives/UserAvatarDirective";
 
 /**
  * Common Module
@@ -148,6 +149,7 @@ class Common extends Module {
     this.registerDirective('asRightClick', RightClickDirective);
     this.registerDirective('tooltip', TooltipDirective);
     this.registerDirective('fileModel', FileModelDirective);
+    this.registerDirective('userAvatar', UserAvatarDirective);
 
     this.module.config(
       ['$compileProvider', '$httpProvider', 'hotkeysProvider', 'loggerServiceProvider',
