@@ -114,7 +114,9 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                 );
             }
             $frameLabeling = $xpath->query('./x:frame-labeling', $videoElement);
-            $this->saveFrameLabeling($xpath, $frameLabeling->item(0));
+            if ($frameLabeling->length > 0) {
+                $this->saveFrameLabeling($xpath, $frameLabeling->item(0));
+            }
         }
     }
 
