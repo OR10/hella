@@ -12,7 +12,6 @@ $color-ut-10: #7B8999;
 $color-ut-11: #D7DDE4;
 
 // Color definitions
-$color-midgreen: #919ca9;
 $color-darkgreen-1: #727f8f;
 $color-darkgreen-2: #343b43;
 $color-applegreen: #008000;
@@ -47,7 +46,7 @@ $color-yellow: #FFD700;
 
 $color-active: $color-ut-3;
 $color-overlay: $color-lightblue;
-$color-disabled: $color-midgreen;
+$color-disabled: $color-ut-3;
 
 // Color variables for usage in Stylesheets
 $body-background: $color-darkgrey;
@@ -62,7 +61,7 @@ $selected-background: $color-darkgreen-1;
 
 $icon: $color-ut-8;
 $icon-hover: $color-ut-10;
-$icon-disabled: $color-midgreen;
+$icon-disabled: $color-ut-3;
 
 $text: $color-ut-5;
 $text-lightbg: $color-ut-5;
