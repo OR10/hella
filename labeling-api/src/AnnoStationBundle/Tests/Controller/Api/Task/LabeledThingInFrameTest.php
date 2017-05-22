@@ -256,6 +256,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                         'ghost'          => true,
                         'ghostClasses'   => null,
                         'identifierName' => null,
+                        'importLineNo'   => null,
                     ),
                     array(
                         'id'             => $labeledThingInFrameIndex10->getId(),
@@ -268,6 +269,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                         'ghost'          => false,
                         'ghostClasses'   => null,
                         'identifierName' => null,
+                        'importLineNo'   => null,
                     ),
                     array(
                         'id'             => $labeledThingInFrameIndex11->getId(),
@@ -280,6 +282,7 @@ class LabeledThingInFrameTest extends Tests\WebTestCase
                         'ghost'          => false,
                         'ghostClasses'   => null,
                         'identifierName' => null,
+                        'importLineNo'   => null,
                     ),
                 ),
             ),
