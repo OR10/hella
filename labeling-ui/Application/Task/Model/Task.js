@@ -156,6 +156,11 @@ class Task {
      * @type {string}
      */
     this.taskConfigurationId = task.taskConfigurationId;
+
+    /**
+     * @type {Boolean}
+     */
+    this.labelDataImportInProgress = task.labelDataImportInProgress;
   }
 
   /**
