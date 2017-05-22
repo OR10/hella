@@ -59,7 +59,7 @@ class UserPermissions
 
         // System Information
         'canViewSystemQueues'             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN                                                                                                                                                 ],
-        'canViewSystemStatus'             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN                                                                                                                                                 ],
+        'canViewSystemStatus'             => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
 
         //Organisation management
         'canViewOrganisationManagement'   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                                                                                                                                                ],
