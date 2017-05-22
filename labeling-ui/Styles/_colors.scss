@@ -12,10 +12,6 @@ $color-ut-10: #7B8999;
 $color-ut-11: #D7DDE4;
 
 // Color definitions
-$color-very-lightblue: #f5f5f5;
-$color-lightblue: #dadfe6;
-$color-midblue-1: #8A2BE2;
-$color-midblue-2: #2A60BB;
 $color-darkblue-1: #2b3036;
 $color-darkblue-2: #232a33;
 $color-darkblue-3: #353b42;
@@ -41,7 +37,7 @@ $color-orange: #FFA500;
 $color-yellow: #FFD700;
 
 $color-active: $color-ut-3;
-$color-overlay: $color-lightblue;
+$color-overlay: $color-ut-2;
 $color-disabled: $color-ut-3;
 
 // Color variables for usage in Stylesheets
@@ -49,7 +45,7 @@ $body-background: $color-darkgrey;
 $overlay-background: $color-ut-5;
 
 $headlines: $color-ut-8;
-$sub-headlines: $color-lightblue;
+$sub-headlines: $color-ut-2;
 
 $selected-frame: $color-ut-8;
 $selected-box: $color-ut-6;
