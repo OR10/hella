@@ -66,23 +66,27 @@ class AssetHelper {
    * @returns {Object}
    */
   get fixtures() {
-    if (this._fixtureStructure === null) {
-      this._fixtureStructure = this._loadDirStructure(this._fixturePath, '.json');
+    if (AssetHelper.FIXTURE_STRUCTURE === null) {
+      AssetHelper.FIXTURE_STRUCTURE = this._loadDirStructure(this._fixturePath, '.json');
     }
 
-    return this._fixtureStructure;
+    return AssetHelper.FIXTURE_STRUCTURE;
   }
 
   /**
    * @returns {Object}
    */
   get mocks() {
-    if (this._mockStructure === null) {
-      this._mockStructure = this._loadDirStructure(this._mockPath, '.json');
+    if (AssetHelper.MOCK_STRUCTURE === null) {
+      const mockStructure = this._loadDirStructure(this._mockPath, '.json');
+      AssetHelper.MOCK_STRUCTURE = JSON.stringify(mockStructure);
     }
-
-    return this._mockStructure;
+    // Make sure that always a copy is returned
+    return JSON.parse(AssetHelper.MOCK_STRUCTURE);
   }
 }
+
+AssetHelper.FIXTURE_STRUCTURE = null;
+AssetHelper.MOCK_STRUCTURE = null;
 
 export default AssetHelper;
