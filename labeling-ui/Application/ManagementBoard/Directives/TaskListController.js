@@ -125,7 +125,7 @@ class TaskListController {
           abortable: false,
         }
       );
-      return;
+      return false;
     }
 
     // If this is the users task open it
