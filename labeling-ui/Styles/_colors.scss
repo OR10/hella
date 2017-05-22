@@ -12,7 +12,6 @@ $color-ut-10: #7B8999;
 $color-ut-11: #D7DDE4;
 
 // Color definitions
-$color-darkgreen-2: #343b43;
 $color-applegreen: #008000;
 
 $color-very-lightblue: #f5f5f5;
@@ -70,9 +69,9 @@ $element-background: $color-ut-4;
 $element-active: $color-ut-8;
 $element-divider: $color-almost-black;
 $element-inline-divider: $color-darkblue-2;
-$element-border: $color-darkgreen-2;
+$element-border: $color-ut-8;
 
-$frame-tools-background: $color-darkgreen-2;
+$frame-tools-background: $color-ut-8;
 
 $button: $color-ut-8;
 $button-active: $color-darkblue-3;
@@ -81,6 +80,6 @@ $table-meta-background: $color-ut-1;
 $table-odd-row-background: $color-ut-2;
 $table-even-row-background: $color-ut-11;
 
-$accordion-header-background: $color-darkgreen-2;
+$accordion-header-background: $color-ut-8;
 
 $warning: $color-midred;
