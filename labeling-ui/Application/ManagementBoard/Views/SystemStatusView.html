@@ -10,7 +10,7 @@
     </title-bar>
     <div class="grid-block vertical">
         <div class="grid-block text-center vertical">
-            <h2 ng-if="vm.userPermissions.canViewSystemQueues">Queue Status</h2>
+            <h1 ng-if="vm.userPermissions.canViewSystemQueues">Queue Status</h1>
             <div class="grid-content">
                 <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
                 <table ng-if="vm.userPermissions.canViewSystemQueues" class="table hover">
