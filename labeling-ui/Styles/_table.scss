@@ -20,7 +20,7 @@ table.table {
         cursor: pointer;
 
         td {
-          background: darken($element-background, 10%);
+          background: darken($table-odd-row-background, 10%);
 
           a {
             color: $element-active;
@@ -46,7 +46,7 @@ table.table {
     background-color: $body-background;
 
     td, th {
-      background-color: $element-background;
+      background-color: $table-odd-row-background;
       text-align: left;
     }
   }
@@ -80,7 +80,7 @@ table.table {
   tbody {
     tr:nth-child(even) {
       td {
-        background-color: lighten($element-background, 4%);
+        background-color: $table-even-row-background;
       }
     }
 
