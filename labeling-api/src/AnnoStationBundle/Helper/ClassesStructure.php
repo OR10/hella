@@ -11,7 +11,7 @@ abstract class ClassesStructure
      *
      * @return mixed
      */
-    abstract public function getStructure(Model\LabeledThingInFrame $labeledThingInFrame);
+    abstract public function getLabeledThingInFrameStructure(Model\LabeledThingInFrame $labeledThingInFrame);
 
     /**
      * Load the given xml as a string or throw an exception on error.

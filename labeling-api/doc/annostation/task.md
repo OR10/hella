@@ -112,46 +112,6 @@ when the associated labeled things are not required.
 + Response 200 (application/json)
     + Attributes (object)
 
-## LabeledFrame [/api/task/{taskId}/labeledFrame/{frameNumber}{?offset,limit}]
-
-+ Parameters
-    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
-    + frameNumber: `3` (number, required) - The frame number for which the labeled things should be retrieved, added or replaced (number).
-
-### Get [GET]
-
-Return the labeled frame document for this frame number.
-
-If no document exists for this frame, the api will return a copy of the
-previous document or an empty document if no document exists for a previous
-frame.
-
-In case offset/limit are given as query parameters, a list instead of a single
-document is returned.
-
-+ Parameters
-    + offset: `3` (number, optional) - The offset relative to the given frameNumber.
-    + limit: `10` (number, optional) - The maximum number of labeled frames that should be returned.
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (LabeledFrame)
-
-### Save or update [PUT]
-
-Save or update a labeled frame. If you want to update a document it is necessary to provide the current revision id.
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (LabeledFrame)
-
-### Delete [DELETE]
-
-Delete a labeled frame document
-
-+ Response 200 (application/json)
-    + Attributes (object)
-
 ## Interpolate labeled things in frame [/api/task/{taskId}/interpolate/{labeledThingId}]
 
 + Parameters

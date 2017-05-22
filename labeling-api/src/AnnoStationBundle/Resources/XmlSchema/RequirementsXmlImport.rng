@@ -130,9 +130,9 @@
         <element name="e:video">
             <attribute name="id"/>
             <attribute name="filename"/>
-            <zeroOrMore>
+            <optional>
                 <ref name="FrameLabeling"/>
-            </zeroOrMore>
+            </optional>
             <zeroOrMore>
                 <choice>
                     <ref name="Group"/>

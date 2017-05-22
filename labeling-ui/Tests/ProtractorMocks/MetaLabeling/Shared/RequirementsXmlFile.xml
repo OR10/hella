@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  THIS FILE NEEDS TO BE EMBEDDED INTO `RequirementsFileXml.json` IN ORDER TO BE RECOGNIZED BY THE TESTS.
+  IT WILL **NOT** BE SOURCED ON ITS OWN
+  IT IS ONLY STORED HERE FOR EDITING AND READABILITY PURPOSES
+
+  USE THE FOLLOWING COMMAND TO CREATE THE NEEDED STRING:
+  cat RequirementsXmlFile.xml|sed -e 's@"@\\"@g'|sed -e ':a' -e 'N' -e '$!ba' -e 's@\n@\\n@g'
+-->
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+  <frame>
+    <class id="time" name="Time">
+      <value id="day" name="Day" />
+      <value id="night" name="Night">
+        <class id="street-lights" name="Street lights">
+          <value id="neon" name="Neon lights">
+            <class name="Lamp Color" id="lamp-color">
+              <value id="white" name="White" />
+              <value id="orange" name="Orange" />
+            </class>
+          </value>
+          <value id="halogen" name="Halogen lights">
+            <class ref="lamp-color" />
+          </value>
+          <value id="xenon" name="Xenon lights" />
+        </class>
+      </value>
+    </class>
+  </frame>
+  <thing id="thing-one" shape="rectangle" name="Traffic Sign">
+    <class id="sign-type" name="Sign type">
+      <value id="u-turn" name="U-Turn" />
+      <value id="speed-sign" name="Speed sign">
+        <class id="speed-limit" name="Speed limit">
+          <value id="speed-30" name="Speed Limit 30">
+            <class id="inside-city" name="Inside City Limits">
+              <value id="inside-city-yes" name="Yes" />
+              <value id="inside-city-no" name="No" />
+            </class>
+          </value>
+          <value id="speed-100" name="Speed Limit 100" />
+        </class>
+        <class id="limited-by-type" name="Limited by type">
+          <value id="no-type-limit" name="No type limit" />
+          <value id="only-car" name="Only car" />
+          <value id="only-truck" name="Only truck" />
+        </class>
+      </value>
+    </class>
+  </thing>
+
+  <thing id="thing-two" shape="rectangle" name="Blub">
+    <class id="time" name="Time">
+      <value id="day" name="Day" />
+      <value id="night" name="Night">
+        <class id="street-lights" name="Street lights">
+          <value id="neon" name="Neon lights">
+            <class name="Lamp Color" id="lamp-color">
+              <value id="white" name="White" />
+              <value id="orange" name="Orange" />
+            </class>
+          </value>
+          <value id="halogen" name="Halogen lights" />
+          <value id="xenon" name="Xenon lights" />
+        </class>
+      </value>
+    </class>
+    <class id="rain-level" name="Rain level">
+      <value id="low" name="Low" />
+      <value id="medium" name="Medium" />
+      <value id="high" name="High" />
+    </class>
+  </thing>
+</requirements>

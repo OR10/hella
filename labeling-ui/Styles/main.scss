@@ -1,20 +1,4 @@
-$headlines: #bedb31;
-$selected-frame: #bedb31;
-$sub-headlines: #dadfe6;
-$icon: #919ca9;
-$icon-hover: #bedb31;
-$text: #727f8f;
-
-$element-background: #2b3036;
-$element-divider: #1a1a1a;
-$element-inline-divider: #232a33;
-$body-background: #181d23;
-
-$button: #30363c;
-$button-selected: #353b42;
-
-$accordion-header-background: #343b43;
-
+@import "colors";
 @import "foundation";
 @import "font-awesome";
 @import "icon-font";
@@ -45,10 +29,12 @@ $accordion-header-background: #343b43;
 @import "idle-indicator";
 @import "live-sync-indicator";
 @import "ribbon";
+@import "headlines";
 
 html, body {
   // Prevent overscroll
   overflow: hidden;
+  color: $text-lightbg;
 }
 
 .no-select {
@@ -68,7 +54,7 @@ html, body {
 
 viewer {
   text-align: center;
-  //box-shadow: inset 0 0 10px 0 #000000;
+  //box-shadow: inset 0 0 10px 0 $color-black;
 }
 
 .timer-text {
@@ -80,7 +66,7 @@ div.popup-panel {
   font-size: 16px;
   padding-left: 1rem;
   padding-right: 1rem;
-  background-color: $button;
+  background-color: $frame-tools-background;
   border-top: 2px solid $element-inline-divider;
   flex: 0;
 
@@ -197,7 +183,7 @@ div.popup-panel {
     font-size: 3rem;
     line-height: 1em;
     color: rgba(213, 217, 221, 0.3);
-    text-shadow: 1px 4px 6px #181d23, 0 0 0 #000, 1px 4px 6px #181d23;
+    text-shadow: 1px 4px 6px $color-darkgrey, 0 0 0 $color-black, 1px 4px 6px $color-darkgrey;
     text-align: center;
     margin-top: 50%;
   }
@@ -257,7 +243,7 @@ div.popup-panel {
 
       .thumbnail-zone-zoom-label {
         border-radius: 10px;
-        background-color: #30363c;
+        background-color: $color-midgrey;
         padding: 0 5px;
         color: $sub-headlines;
       }
@@ -408,8 +394,8 @@ title-bar {
   text-decoration: none;
   font-size: 10px;
   font-weight: bold;
-  color: #353b42;
-  background-color: #bedb31;
+  color: $color-darkblue-3;
+  background-color: $color-green;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   -khtml-border-radius: 5px;

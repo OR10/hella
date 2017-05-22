@@ -21,21 +21,23 @@ tab-view {
 //}
 
 .tabs {
-  border-bottom: 1px solid $icon-hover;
-
   .tab-item {
+    color: $text-inactive;
     margin-bottom: -1px;
-    border-bottom: 1px solid $icon-hover;
+    background: none;
 
     &.is-active {
-      border-top: 1px solid $icon-hover;
-      border-left: 1px solid $icon-hover;
-      border-right: 1px solid $icon-hover;
-      border-bottom: 1px solid transparent;
+      color: $text-lightbg;
+      font-weight: bold;
+
+      &:hover {
+        background: none;
+      }
     }
 
-    &.is-active:hover {
-      background-color: $body-background;
+    &:hover {
+      color: $text-lightbg;
+      background: none;
     }
   }
 }
