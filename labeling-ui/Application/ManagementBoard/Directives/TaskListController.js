@@ -110,6 +110,24 @@ class TaskListController {
   openTask(taskId) {
     const task = this._tasksById[taskId];
 
+    if (task.labelDataImportInProgress) {
+      this._modalService.info(
+        {
+          title: 'Labeled-Data import in progress',
+          headline: 'We are still importing label-data please wait...',
+          message: 'You can\'t access this task until all labels are processed',
+          confirmButtonText: 'Understood',
+        },
+        undefined,
+        undefined,
+        {
+          warning: true,
+          abortable: false,
+        }
+      );
+      return;
+    }
+
     // If this is the users task open it
     if (task.isUsersTask(this.user)) {
       return this._gotoTask(taskId, this.taskPhase);
@@ -252,6 +270,7 @@ class TaskListController {
             labelInstruction: task.labelInstruction,
             reopen: task.reopen,
             attentionFlag: task.taskAttentionFlag,
+            labelDataImportInProgress: task.labelDataImportInProgress,
           };
         });
 
