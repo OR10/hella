@@ -35,9 +35,14 @@ class ImportTest extends Tests\KernelTestCase
      */
     private $workerPoolFacade;
 
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
     public function testImport()
     {
-        $organisation = OrganisationBuilder::create()->build();
+        $organisation = $this->organisationFacade->save(OrganisationBuilder::create()->build());
         $jobs = [];
         $this->workerPoolFacade->expects($this->any())->method('addJob')->with(
             $this->callback(
@@ -95,6 +100,7 @@ class ImportTest extends Tests\KernelTestCase
         );
 
         $this->projectImporterService  = $this->getAnnostationService('service.project_importer.import');
+        $this->organisationFacade      = $this->getAnnostationService('database.facade.organisation');
         $this->projectFacade           = $this->getAnnostationService('database.facade.project');
         $this->taskConfigurationFacade = $this->getAnnostationService('database.facade.task_configuration');
         $this->createDefaultUser();

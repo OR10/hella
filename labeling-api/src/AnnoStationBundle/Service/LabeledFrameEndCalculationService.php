@@ -61,7 +61,7 @@ class LabeledFrameEndCalculationService
         );
 
         if ($nextLabeledFrame === null) {
-            return max($task->getFrameNumberMapping());
+            return max(array_keys($task->getFrameNumberMapping()));
         }
 
         if (in_array($class, $nextLabeledFrame->getClasses())) {

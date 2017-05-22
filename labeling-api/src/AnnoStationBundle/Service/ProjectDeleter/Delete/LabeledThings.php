@@ -9,20 +9,12 @@ use AnnoStationBundle\Database\Facade\LabeledThing;
 class LabeledThings
 {
     /**
-     * @var LabelingTask\FacadeInterface
-     */
-    private $labelingTaskFacadeFactory;
-
-    /**
      * @var LabeledThing\FacadeInterface
      */
     private $labeledThingFacadeFactory;
 
-    public function __construct(
-        LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
-        LabeledThing\FacadeInterface $labeledThingFacadeFactory
-    ) {
-        $this->labelingTaskFacadeFactory = $labelingTaskFacadeFactory;
+    public function __construct(LabeledThing\FacadeInterface $labeledThingFacadeFactory)
+    {
         $this->labeledThingFacadeFactory = $labeledThingFacadeFactory;
     }
 
@@ -31,16 +23,12 @@ class LabeledThings
      */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getFacadeByProjectIdAndTaskId(
-            $labelingTask->getProjectId(),
-            $labelingTask->getId()
-        );
         $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );
 
-        $labeledThings = $labelingTaskFacade->getLabeledThings($labelingTask);
+        $labeledThings = $labeledThingFacade->findByTaskId($labelingTask);
         foreach ($labeledThings as $labeledThing) {
             $labeledThingFacade->delete($labeledThing);
         }

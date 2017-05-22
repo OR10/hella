@@ -175,7 +175,7 @@ class RequirementsProjectToXml
 
                     $labeledThingIterator = new Iterator\LabeledThing(
                         $task,
-                        $labelingTaskFacade
+                        $labeledThingFacade
                     );
 
                     /** @var Model\LabeledThing $labeledThing */
@@ -291,9 +291,10 @@ class RequirementsProjectToXml
             self::XML_NAMESPACE
         );
 
-        $labeledFrames = new Iterator\LabeledFrame($task, $labelingTaskFacade);
+        $labeledFrames    = new Iterator\LabeledFrame($task, $labelingTaskFacade);
+        $xmlLabeledFrame  = new ExportXml\Element\Video\FrameLabeling(self::XML_NAMESPACE, $references);
+        $taskFrameMapping = $task->getFrameNumberMapping();
 
-        $xmlLabeledFrame = new ExportXml\Element\Video\FrameLabeling(self::XML_NAMESPACE, $references);
         $previousLabeledFrame = null;
         /** @var Model\LabeledFrame $labeledFrame */
         foreach ($labeledFrames as $labeledFrame) {
@@ -302,11 +303,11 @@ class RequirementsProjectToXml
                     $xmlLabeledFrame->addValue(
                         $xmlDocument,
                         $class,
-                        $labeledFrame->getFrameIndex(),
-                        $this->labeledFrameEndCalculationService->getEndOfForClassOfLabeledFrame(
+                        $taskFrameMapping[$labeledFrame->getFrameIndex()],
+                        $taskFrameMapping[$this->labeledFrameEndCalculationService->getEndOfForClassOfLabeledFrame(
                             $labeledFrame,
                             $class
-                        )
+                        )]
                     );
                 }
             }

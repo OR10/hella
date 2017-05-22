@@ -305,7 +305,7 @@ class Report
         $tasks = $this->projectFacade->getTasksByProject($project);
         $count = 0;
         foreach ($tasks as $task) {
-            $count += count($this->labelingTaskFacade->getLabeledThings($task));
+            $count += count($this->labeledThingFacade->findByTaskId($task));
         }
 
         return $count;
@@ -325,7 +325,7 @@ class Report
                 function (Model\LabeledThing $labeledThing) {
                     return count($labeledThing->getClasses());
                 },
-                $this->labelingTaskFacade->getLabeledThings($task)
+                $this->labeledThingFacade->findByTaskId($task)
             );
 
             $count += array_sum($labeledThingsClassCount);

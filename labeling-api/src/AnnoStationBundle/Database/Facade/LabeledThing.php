@@ -135,6 +135,8 @@ class LabeledThing
     }
 
     /**
+     * @param Model\LabelingTask $task
+     *
      * @return Model\LabeledThing[]
      */
     public function findByTaskId(Model\LabelingTask $task)
