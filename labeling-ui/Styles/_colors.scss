@@ -12,10 +12,6 @@ $color-ut-10: #7B8999;
 $color-ut-11: #D7DDE4;
 
 // Color definitions
-$color-darkblue-1: #2b3036;
-$color-darkblue-2: #232a33;
-$color-darkblue-3: #353b42;
-
 $color-darkgrey: $color-ut-1; // UseTree
 $color-midgrey: #30363c;
 $color-lightgrey-1: #BBBBBB;
@@ -62,13 +58,13 @@ $text-inactive: $color-ut-10;
 $element-background: $color-ut-4;
 $element-active: $color-ut-8;
 $element-divider: $color-almost-black;
-$element-inline-divider: $color-darkblue-2;
+$element-inline-divider: $color-ut-9;
 $element-border: $color-ut-8;
 
 $frame-tools-background: $color-ut-8;
 
 $button: $color-ut-8;
-$button-active: $color-darkblue-3;
+$button-active: $color-ut-8;
 
 $table-meta-background: $color-ut-1;
 $table-odd-row-background: $color-ut-2;
