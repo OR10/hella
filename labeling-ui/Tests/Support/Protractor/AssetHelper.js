@@ -66,27 +66,27 @@ class AssetHelper {
    * @returns {Object}
    */
   get fixtures() {
-    if (AssetHelper.FIXTURE_STRUCTURE === null) {
-      AssetHelper.FIXTURE_STRUCTURE = this._loadDirStructure(this._fixturePath, '.json');
+    if (AssetHelper.FIXTURE_STRUCTURE[this._fixturePath] === undefined) {
+      AssetHelper.FIXTURE_STRUCTURE[this._fixturePath] = this._loadDirStructure(this._fixturePath, '.json');
     }
 
-    return AssetHelper.FIXTURE_STRUCTURE;
+    return AssetHelper.FIXTURE_STRUCTURE[this._fixturePath];
   }
 
   /**
    * @returns {Object}
    */
   get mocks() {
-    if (AssetHelper.MOCK_STRUCTURE === null) {
+    if (AssetHelper.MOCK_STRUCTURE[this._mockPath] === undefined) {
       const mockStructure = this._loadDirStructure(this._mockPath, '.json');
-      AssetHelper.MOCK_STRUCTURE = JSON.stringify(mockStructure);
+      AssetHelper.MOCK_STRUCTURE[this._mockPath] = JSON.stringify(mockStructure);
     }
     // Make sure that always a copy is returned
-    return JSON.parse(AssetHelper.MOCK_STRUCTURE);
+    return JSON.parse(AssetHelper.MOCK_STRUCTURE[this._mockPath]);
   }
 }
 
-AssetHelper.FIXTURE_STRUCTURE = null;
-AssetHelper.MOCK_STRUCTURE = null;
+AssetHelper.FIXTURE_STRUCTURE = {};
+AssetHelper.MOCK_STRUCTURE = {};
 
 export default AssetHelper;
