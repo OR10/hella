@@ -5,6 +5,7 @@
 
     <div class="side-navigation__main-area">
         <div class="side-navigation__button"
+             ui-sref-active="side-navigation__button--active"
              ng-show="vm.userPermissions.canCreateProject"
              ui-sref="labeling.projects.create"
              tooltip="Create Project"
@@ -13,6 +14,7 @@
         </div>
 
         <div class="side-navigation__button"
+             ui-sref-active="side-navigation__button--active"
              ng-show="vm.userPermissions.canUploadTaskConfiguration"
              ui-sref="labeling.task-configurations.list"
              tooltip="Upload Task Configurations"
@@ -21,6 +23,7 @@
         </div>
 
         <div class="side-navigation__button"
+             ui-sref-active="side-navigation__button--active"
              ng-show="vm.userPermissions.canViewUserList"
              ui-sref="labeling.users.list"
              tooltip="Manage Users"
@@ -29,6 +32,7 @@
         </div>
 
         <div class="side-navigation__button"
+             ui-sref-active="side-navigation__button--active"
              ng-show="vm.userPermissions.canEditLabelingGroups"
              ui-sref="labeling.labeling-groups.list"
              tooltip="Manage Labeling Groups"
@@ -37,6 +41,7 @@
         </div>
 
         <div class="side-navigation__button"
+             ui-sref-active="side-navigation__button--active"
              ng-show="vm.userPermissions.canViewOrganisationManagement"
              ui-sref="labeling.organisation-management.list"
              tooltip="Manage Organisations"
@@ -45,11 +50,12 @@
         </div>
 
         <div class="side-navigation__button"
+             ui-sref-active="side-navigation__button--active"
              ng-show="vm.userPermissions.canViewSystemStatus"
              ui-sref="labeling.system.status"
              tooltip="System Health"
         >
-            <a><i class="side-navigation__icon fa fa-medkit"></i></a>
+            <a><i class="side-navigation__icon fa fa-medikit"></i></a>
         </div>
     </div>
 
