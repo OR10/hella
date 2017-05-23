@@ -45,6 +45,7 @@ swiftmailer:
     transport: smtp
     host: '127.0.0.1'
     port: 1025
+    logging: true
 
 #swiftmailer:
 #    delivery_address: me@example.com
