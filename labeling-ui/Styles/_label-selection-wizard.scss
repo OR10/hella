@@ -1,4 +1,4 @@
-$wizardTextColor: #DADFE6;
+$wizardTextColor: $color-lightblue;
 
 .label-wizard {
   .label-wizard-challenge {
@@ -59,7 +59,7 @@ $wizardTextColor: #DADFE6;
     border: 1px solid $wizardTextColor;
     border-radius: 10px;
     cursor: pointer;
-    background-color: #000 \9;
+    background-color: $color-black \9;
     background-color: transparent;
   }
 }

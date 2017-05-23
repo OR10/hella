@@ -28,7 +28,7 @@
       max-height: 60vh;
 
       .modal-body-headline {
-        color: $sub-headlines;
+        color: $text-lightbg;
         font-size: 16px;
         font-weight: bold;
       }
@@ -49,8 +49,8 @@
         padding: 10px !important;
 
         &:focus{
-          color: $element-background;
-          background-color: $headlines;
+          color: $element-active;
+          background-color: $color-active;
         }
 
         &:disabled{
@@ -78,6 +78,6 @@
 
 .modal-dialog-warning {
   .modal {
-    border: 2px solid $headlines;
+    border: 2px solid $color-active;
   }
 }

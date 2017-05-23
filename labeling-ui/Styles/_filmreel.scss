@@ -22,7 +22,7 @@
         left: 0;
         width: 100%;
         height: calc(100% - 4px);
-        border: 2px solid $sub-headlines;
+        border: 2px solid $color-overlay;
         border-right-width: 8px;
         border-left-width: 8px;
       }
@@ -34,7 +34,7 @@
 
         .frame-range {
           border-radius: 20px;
-          background-color: $button;
+          background-color: $frame-tools-background;
           padding: 5px 10px;
           margin-bottom: 11px;
 
@@ -75,7 +75,7 @@
       flex-shrink: 0;
 
       div.frame-range-bracket {
-        background-color: $selected-frame;
+        background-color: $selected-box;
         width: 8px;
         position: absolute;
         top: 0;
@@ -127,19 +127,19 @@
     }
 
     .video-position .inner-bar {
-      background: $text;
+      background: $selected-background;
     }
 
     .thumbnail-position .inner-bar {
-      background: $sub-headlines;
+      background: $color-overlay;
     }
 
     .center-frame-position .inner-bar {
-      background: $sub-headlines;
+      background: $color-overlay;
     }
 
     .range-position .inner-bar {
-      background: $selected-frame;
+      background: $selected-box;
     }
   }
 }

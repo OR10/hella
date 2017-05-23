@@ -346,7 +346,7 @@ class ViewerController {
       (shape, frameIndex) => shape.labeledThingInFrame.ghost
         ? `${frameIndex}.${shape.id}`
         : `${shape.labeledThingInFrame.frameIndex}.${shape.id}`,
-      500
+      100
     );
 
     // Store a reference to the LayerManager for E2E tests.

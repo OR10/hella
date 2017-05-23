@@ -20,15 +20,15 @@
     width: 100%;
     height: 100%;
     border-radius: 3px;
-    border: 1px solid #ddd;
-    background: #f5f5f5;
+    border: 1px solid $color-very-lightgrey;
+    background: $color-very-lightblue;
     overflow: hidden;
   }
 
   .angular-range-slider div.bar .selection {
     width: 0;
     height: 100%;
-    background: #cdcdcd;
+    background: $color-lightgrey-2;
   }
 
   .angular-range-slider div.handle {
@@ -36,13 +36,13 @@
     width: 8px;
     height: 18px;
     top: -4px;
-    background-color: #777777;
+    background-color: $color-purple;
     border-radius: 2px;
     z-index: 2;
   }
 
   .angular-range-slider div.handle.active {
-    background-color: #585858;
+    background-color: $color-darkred-2;
   }
 
   .angular-range-slider div.bubble {
@@ -51,8 +51,8 @@
     top: -32px;
     font-size: 0.7em;
     font-family: sans-serif;
-    background: #777777;
-    color: #fff;
+    background: $color-purple;
+    color: $color-white;
     padding: 4px;
     border-radius: 3px;
   }
@@ -62,6 +62,6 @@
   }
 
   .angular-range-slider div.bubble.limit {
-    color: #777;
+    color: $color-purple;
   }
 }

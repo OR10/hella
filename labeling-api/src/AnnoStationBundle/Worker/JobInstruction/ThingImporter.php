@@ -118,6 +118,8 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                 $this->saveFrameLabeling($xpath, $frameLabeling->item(0));
             }
         }
+
+        $this->markImportAsComplete();
     }
 
     /**
@@ -449,6 +451,15 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         }
 
         return $values;
+    }
+
+    private function markImportAsComplete()
+    {
+        foreach ($this->taskIds as $taskId) {
+            $task = $this->labelingTaskFacade->find($taskId);
+            $task->setLabelDataImportInProgress(false);
+            $this->labelingTaskFacade->save($task);
+        }
     }
 
     /**
