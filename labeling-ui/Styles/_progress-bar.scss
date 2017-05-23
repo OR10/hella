@@ -4,7 +4,7 @@
   height: 1rem;
 
   .success {
-    background-color: $headlines;
+    background-color: $color-active;
   }
 }
 
@@ -24,7 +24,7 @@
     margin: 0;
     font-size: 0.75rem;
     font-weight: bold;
-    color: #fff;
+    color: $color-white;
     white-space: nowrap;
   }
 }

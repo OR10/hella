@@ -2,7 +2,7 @@ table.table {
   width: 100%;
 
   a {
-    color: #fff;
+    color: $text-lightbg;
     text-decoration: underline;
   }
 
@@ -20,15 +20,14 @@ table.table {
         cursor: pointer;
 
         td {
-          background: darken($icon-hover, 10%);
-          color: $element-background;
+          background: darken($table-odd-row-background, 10%);
 
           a {
-            color: $element-background;
+            color: $element-active;
           }
 
           .icon, .fa {
-            color: $element-background;
+            color: $element-active;
           }
 
           .icon:hover, .fa:hover {
@@ -47,15 +46,14 @@ table.table {
     background-color: $body-background;
 
     td, th {
-      background-color: $element-background;
+      background-color: $table-odd-row-background;
       text-align: left;
-      border: 1px solid $element-divider;
     }
   }
 
   thead,
   tfoot {
-    color: $sub-headlines;
+    color: $text-lightbg;
   }
 
   thead,
@@ -67,7 +65,7 @@ table.table {
 
   thead, tfoot {
     th, td {
-      background-color: $button-selected;
+      background-color: $table-meta-background;
       padding: 0.6rem 0.725rem 0.725rem;
       font-weight: bold;
     }
@@ -82,7 +80,7 @@ table.table {
   tbody {
     tr:nth-child(even) {
       td {
-        background-color: lighten($element-background, 4%);
+        background-color: $table-even-row-background;
       }
     }
 
@@ -110,13 +108,13 @@ table.table {
 
   th.st-sort-descent:after {
     padding-left: .6rem;
-    color: $icon-hover;
+    color: $text-lightbg;
     content: "▲";
   }
 
   th.st-sort-ascent:after {
     padding-left: .3rem;
-    color: $icon-hover;
+    color: $text-lightbg;
     content: "▼";
   }
 }
@@ -132,6 +130,6 @@ pagination-controls {
 
   button.is-active {
     background-color: $icon-hover;
-    color: $button-selected;
+    color: $text-lightbg;
   }
 }

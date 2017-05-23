@@ -4,7 +4,7 @@ module.exports = function toContainRequest() {
   function fixDecimals(input) {
     return JSON.parse(
       JSON.stringify(input, function(key, value) {
-        if (value !== null && typeof value.toPrecision === 'function' && Number(value.toFixed(0)) !== value) {
+        if (value !== null && value !== undefined && typeof value.toPrecision === 'function' && Number(value.toFixed(0)) !== value) {
           return Number(value.toPrecision(14));
         }
 
