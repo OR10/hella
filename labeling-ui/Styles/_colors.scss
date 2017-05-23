@@ -12,12 +12,6 @@ $color-ut-10: #7B8999;
 $color-ut-11: #D7DDE4;
 
 // Color definitions
-$color-darkgrey: $color-ut-1; // UseTree
-$color-midgrey: #30363c;
-$color-lightgrey-1: #BBBBBB;
-$color-lightgrey-2: #cdcdcd;
-$color-very-lightgrey: #ddd;
-
 $color-white: #fff;
 $color-black: #000;
 $color-almost-black: #1a1a1a;
@@ -37,7 +31,7 @@ $color-overlay: $color-ut-2;
 $color-disabled: $color-ut-3;
 
 // Color variables for usage in Stylesheets
-$body-background: $color-darkgrey;
+$body-background: $color-ut-1;
 $overlay-background: $color-ut-5;
 
 $headlines: $color-ut-8;

@@ -376,9 +376,9 @@ $navbar-default-brand-hover-color: darken($navbar-default-brand-color, 10%) !def
 $navbar-default-brand-hover-bg: transparent !default;
 
 // Navbar toggle
-$navbar-default-toggle-hover-bg: $color-very-lightgrey !default;
+$navbar-default-toggle-hover-bg: $color-ut-1 !default;
 $navbar-default-toggle-icon-bar-bg: #888 !default;
-$navbar-default-toggle-border-color: $color-very-lightgrey !default;
+$navbar-default-toggle-border-color: $color-ut-1 !default;
 
 //=== Inverted navbar
 // Reset inverted navbar basics
@@ -417,15 +417,15 @@ $nav-disabled-link-color: $gray-light !default;
 $nav-disabled-link-hover-color: $gray-light !default;
 
 //== Tabs
-$nav-tabs-border-color: $color-very-lightgrey !default;
+$nav-tabs-border-color: $color-ut-1 !default;
 
 $nav-tabs-link-hover-border-color: $gray-lighter !default;
 
 $nav-tabs-active-link-hover-bg: $body-bg !default;
 $nav-tabs-active-link-hover-color: $gray !default;
-$nav-tabs-active-link-hover-border-color: $color-very-lightgrey !default;
+$nav-tabs-active-link-hover-border-color: $color-ut-1 !default;
 
-$nav-tabs-justified-link-border-color: $color-very-lightgrey !default;
+$nav-tabs-justified-link-border-color: $color-ut-1 !default;
 $nav-tabs-justified-active-link-border-color: $body-bg !default;
 
 //== Pills
@@ -439,11 +439,11 @@ $nav-pills-active-link-hover-color: $component-active-color !default;
 
 $pagination-color: $link-color !default;
 $pagination-bg: $color-ut-2 !default;
-$pagination-border: $color-very-lightgrey !default;
+$pagination-border: $color-ut-1 !default;
 
 $pagination-hover-color: $link-hover-color !default;
 $pagination-hover-bg: $gray-lighter !default;
-$pagination-hover-border: $color-very-lightgrey !default;
+$pagination-hover-border: $color-ut-1 !default;
 
 $pagination-active-color: $color-ut-2 !default;
 $pagination-active-bg: $brand-primary !default;
@@ -451,7 +451,7 @@ $pagination-active-border: $brand-primary !default;
 
 $pagination-disabled-color: $gray-light !default;
 $pagination-disabled-bg: $color-ut-2 !default;
-$pagination-disabled-border: $color-very-lightgrey !default;
+$pagination-disabled-border: $color-ut-1 !default;
 
 //== Pager
 //
@@ -651,7 +651,7 @@ $progress-bar-info-bg: $brand-info !default;
 //** Background color on `.list-group-item`
 $list-group-bg: $color-white !default;
 //** `.list-group-item` border color
-$list-group-border: $color-very-lightgrey !default;
+$list-group-border: $color-ut-1 !default;
 //** List group border radius
 $list-group-border-radius: $border-radius-base !default;
 
@@ -688,11 +688,11 @@ $panel-footer-padding: $panel-heading-padding !default;
 $panel-border-radius: $border-radius-base !default;
 
 //** Border color for elements within panels
-$panel-inner-border: $color-very-lightgrey !default;
+$panel-inner-border: $color-ut-1 !default;
 $panel-footer-bg: $body-bg !default;
 
 $panel-default-text: $gray-dark !default;
-$panel-default-border: $color-very-lightgrey !default;
+$panel-default-border: $color-ut-1 !default;
 $panel-default-heading-bg: $body-bg !default;
 
 $panel-primary-text: $text-color !default;
@@ -724,7 +724,7 @@ $thumbnail-padding: 4px !default;
 //** Thumbnail background color
 $thumbnail-bg: $body-bg !default;
 //** Thumbnail border color
-$thumbnail-border: $color-very-lightgrey !default;
+$thumbnail-border: $color-ut-1 !default;
 //** Thumbnail border radius
 $thumbnail-border-radius: $border-radius-base !default;
 

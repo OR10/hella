@@ -183,7 +183,7 @@ div.popup-panel {
     font-size: 3rem;
     line-height: 1em;
     color: rgba(213, 217, 221, 0.3);
-    text-shadow: 1px 4px 6px $color-darkgrey, 0 0 0 $color-black, 1px 4px 6px $color-darkgrey;
+    text-shadow: 1px 4px 6px $color-ut-1, 0 0 0 $color-black, 1px 4px 6px $color-ut-1;
     text-align: center;
     margin-top: 50%;
   }
@@ -243,7 +243,7 @@ div.popup-panel {
 
       .thumbnail-zone-zoom-label {
         border-radius: 10px;
-        background-color: $color-midgrey;
+        background-color: $color-ut-8;
         padding: 0 5px;
         color: $sub-headlines;
       }
