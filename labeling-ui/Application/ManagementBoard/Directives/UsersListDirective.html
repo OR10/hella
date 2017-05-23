@@ -1,6 +1,14 @@
 <div class="grid-content">
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-    <h1>Users</h1>
+    <div id="page-title" class="horizontal grid-block">
+        <h1>Users</h1>
+        <div id="page-title-progress-bar" class="grid-block align-right"></div>
+        <div id="logged-in-user" class="grid-block align-right text-right vertical">
+            <p id="logged-in-user-name">Gunnar Hildebrandt</p>
+            <p id="logged-in-user-role">Manager</p>
+            <p id="logged-in-user-organisation">Organisation</p>
+        </div>
+    </div>
     <div class="grid-block shrink">
         <div class="grid-content">
             <table class="table hover"
