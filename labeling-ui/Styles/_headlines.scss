@@ -5,6 +5,7 @@ h1 {
     margin: $h1-margin 0 $h1-margin $h1-margin;
     width: 631px;
     border-bottom: 1px solid $color-ut-6;
+    @include font-xl();
 }
 
 .text-center h1 {

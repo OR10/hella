@@ -54,6 +54,7 @@ table.table {
   thead,
   tfoot {
     color: $color-ut-5;
+    @include font-m();
   }
 
   thead,

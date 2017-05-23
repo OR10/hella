@@ -35,6 +35,7 @@ html, body {
   // Prevent overscroll
   overflow: hidden;
   color: $color-ut-5;
+  @include font-s();
 }
 
 .no-select {
