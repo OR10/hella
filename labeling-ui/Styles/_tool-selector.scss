@@ -1,18 +1,18 @@
 tool-selector {
   flex: 0 0 35px !important;
-  border-right: 1px solid $element-inline-divider;
-  background-color: $element-background;
+  border-right: 1px solid $color-ut-9;
+  background-color: $color-ut-4;
 
   .tool-selector {
 
     h1{
-      border-bottom: 2px solid $element-inline-divider;
+      border-bottom: 2px solid $color-ut-9;
       padding: 8px 5px;
       text-align: center;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: $icon-hover;
+      color: $color-ut-10;
       font-size: 20px;
     }
 
@@ -21,14 +21,14 @@ tool-selector {
       text-align: center;
       display: inline-flex;
       cursor: pointer;
-      border-bottom: 1px solid $element-inline-divider;
+      border-bottom: 1px solid $color-ut-9;
       align-items: center;
       justify-content: center;
 
       &:hover, &.active {
-        background-color: darken($element-background, 10);
+        background-color: darken($color-ut-4, 10);
         .icon{
-          color: $icon-hover;
+          color: $color-ut-10;
         }
       }
 

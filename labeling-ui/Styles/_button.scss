@@ -1,5 +1,5 @@
 button {
-  background-color: $element-background;
+  background-color: $color-ut-4;
   color: $color-ut-8;
   font-weight: bold;
   font-size: 18px;
@@ -7,36 +7,36 @@ button {
   padding: 0.3em;
 
   &:hover {
-    color: $color-active;
+    color: $color-ut-3;
   }
 
   &:active {
-    background-color: $color-active;
-    color: $button-active;
+    background-color: $color-ut-3;
+    color: $color-ut-8;
   }
 
   &.divider {
-    border-right: 2px solid $element-inline-divider;
+    border-right: 2px solid $color-ut-9;
   }
 
   &.disabled i {
-    color: darken($icon-disabled, 30%);
+    color: darken($color-ut-3, 30%);
 
     &:hover{
-      color: darken($icon-disabled, 30%) !important;
+      color: darken($color-ut-3, 30%) !important;
     }
   }
 
   //&:focus {
   //  outline: none;
-  //  border: 1px solid $icon-hover;
+  //  border: 1px solid $color-ut-10;
   //}
   &:focus {
     outline: none;
   }
 
   &.green{
-    color: $icon-hover;
+    color: $color-ut-10;
   }
 }
 

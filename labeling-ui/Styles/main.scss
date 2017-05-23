@@ -34,7 +34,7 @@
 html, body {
   // Prevent overscroll
   overflow: hidden;
-  color: $text-lightbg;
+  color: $color-ut-5;
 }
 
 .no-select {
@@ -66,8 +66,8 @@ div.popup-panel {
   font-size: 16px;
   padding-left: 1rem;
   padding-right: 1rem;
-  background-color: $frame-tools-background;
-  border-top: 2px solid $element-inline-divider;
+  background-color: $color-ut-8;
+  border-top: 2px solid $color-ut-9;
   flex: 0;
 
   .zoom {
@@ -103,21 +103,21 @@ div.popup-panel {
 
 .sidebar-left {
   width: 330px;
-  background-color: $element-background;
-  border-right: 2px solid $element-divider;
+  background-color: $color-ut-4;
+  border-right: 2px solid $color-ut-9;
 
 }
 
 .sidebar-right {
-  background-color: $element-background;
-  border-left: 2px solid $element-divider;
+  background-color: $color-ut-4;
+  border-left: 2px solid $color-ut-9;
 }
 
 .task-bar {
   box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.5);
-  background-color: $element-background;
-  border-top: 2px solid $element-divider;
-  border-bottom: 2px solid $element-divider;
+  background-color: $color-ut-4;
+  border-top: 2px solid $color-ut-9;
+  border-bottom: 2px solid $color-ut-9;
   align-items: stretch;
   flex: 0 0 percentage(1/24);
 
@@ -126,7 +126,7 @@ div.popup-panel {
     text-align: center;
 
     .icon {
-      color: $icon;
+      color: $color-ut-8;
     }
   }
 }
@@ -137,11 +137,11 @@ div.popup-panel {
 }
 
 .task-bar-left {
-  border-right: 2px solid $element-divider;
+  border-right: 2px solid $color-ut-9;
 }
 
 .task-bar-right {
-  border-left: 2px solid $element-divider;
+  border-left: 2px solid $color-ut-9;
 }
 
 .task-description {
@@ -151,8 +151,8 @@ div.popup-panel {
 .task-description-header {
   align-items: center;
   text-transform: uppercase;
-  color: $headlines;
-  border-bottom: 2px solid $element-inline-divider;
+  color: $color-ut-8;
+  border-bottom: 2px solid $color-ut-9;
   cursor: pointer;
   height: 2.8rem;
   min-height: 2.8rem;
@@ -164,7 +164,7 @@ div.popup-panel {
   }
 
   .icon {
-    color: $icon;
+    color: $color-ut-8;
   }
 
   .handle {
@@ -172,7 +172,7 @@ div.popup-panel {
     padding-right: 10px;
     text-transform: lowercase;
     font-weight: bold;
-    color: $text;
+    color: $color-ut-5;
   }
 }
 
@@ -191,11 +191,11 @@ div.popup-panel {
 
 .task-description-content {
   padding-top: 10px;
-  color: $text;
+  color: $color-ut-5;
 
   h1 {
     font-size: 18px;
-    color: $sub-headlines;
+    color: $color-ut-2;
     font-weight: bold;
   }
 }
@@ -219,8 +219,8 @@ div.popup-panel {
   flex: 0 0 percentage(3/24);
 
   .thumbnail-zone-layer {
-    background-color: $element-background;
-    border-right: 2px solid $element-divider;
+    background-color: $color-ut-4;
+    border-right: 2px solid $color-ut-9;
     box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.5);
     position: absolute;
     left: 0;
@@ -245,7 +245,7 @@ div.popup-panel {
         border-radius: 10px;
         background-color: $color-ut-8;
         padding: 0 5px;
-        color: $sub-headlines;
+        color: $color-ut-2;
       }
     }
   }
@@ -255,9 +255,9 @@ div.popup-panel {
   flex: 0 0 percentage(5/24);
 
   .timeline-layer {
-    border-top: 2px solid $element-divider;
-    background-color: $element-background;
-    border-right: 2px solid $element-divider;
+    border-top: 2px solid $color-ut-9;
+    background-color: $color-ut-4;
+    border-right: 2px solid $color-ut-9;
     box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.5);
     position: absolute;
     left: 0;
@@ -267,7 +267,7 @@ div.popup-panel {
   }
 
   .timeline-inner {
-    border-top: 2px solid $element-divider;
+    border-top: 2px solid $color-ut-9;
   }
 }
 
@@ -285,7 +285,7 @@ div.popup-panel {
   }
 
   viewer + .gutter {
-    border-left: 2px solid $element-divider;
+    border-left: 2px solid $color-ut-9;
     margin-right: -10px;
   }
 
@@ -317,11 +317,11 @@ popup-panel.ng-hide-remove {
 }
 
 .popup-panel button {
-  background-color: $button;
+  background-color: $color-ut-8;
 }
 
 .task-bar button, .header button {
-  background-color: $element-background;
+  background-color: $color-ut-4;
 }
 
 .noscrollbars::-webkit-scrollbar {
@@ -370,7 +370,7 @@ title-bar {
 }
 
 .fa.flagged {
-  color: $icon-hover;
+  color: $color-ut-10;
 }
 
 .system-health {

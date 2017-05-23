@@ -7,7 +7,7 @@
   font-size: 30px;
 
   &.active {
-    color: $icon-hover !important;
+    color: $color-ut-10 !important;
   }
 
   &.icon-small {
@@ -19,33 +19,33 @@
   }
 
   &.disabled {
-    color: darken($icon, 30%);
+    color: darken($color-ut-8, 30%);
 
     &:hover{
-      color: darken($icon, 30%) !important;
+      color: darken($color-ut-8, 30%) !important;
       cursor: alias;
     }
   }
 }
 
 .icon-fa, .icon {
-  color: $icon;
+  color: $color-ut-8;
 
   &:hover {
-    color: $icon-hover !important;
+    color: $color-ut-10 !important;
   }
 
   &.toggled {
-    color: $icon-hover !important;
+    color: $color-ut-10 !important;
   }
 
   &.no-hover:hover {
-    color: $icon !important;
+    color: $color-ut-8 !important;
     cursor: auto !important;
   }
 
   &.warning-color {
-    color: $warning;
+    color: $color-ut-12;
   }
 }
 
