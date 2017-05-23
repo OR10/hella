@@ -564,7 +564,7 @@ $label-danger-bg: $brand-danger !default;
 //** Default label text color
 $label-color: $color-ut-2 !default;
 //** Default text color of a linked label
-$label-link-hover-color: $color-white !default;
+$label-link-hover-color: $color-ut-7 !default;
 
 //== Modals
 //
@@ -629,7 +629,7 @@ $alert-danger-border: $state-danger-border !default;
 //** Background color of the whole progress component
 $progress-bg: $color-ut-1 !default;
 //** Progress bar text color
-$progress-bar-color: $color-white !default;
+$progress-bar-color: $color-ut-7 !default;
 //** Variable for setting rounded corners on progress bar.
 $progress-border-radius: $border-radius-base !default;
 
@@ -649,7 +649,7 @@ $progress-bar-info-bg: $brand-info !default;
 //##
 
 //** Background color on `.list-group-item`
-$list-group-bg: $color-white !default;
+$list-group-bg: $color-ut-7 !default;
 //** `.list-group-item` border color
 $list-group-border: $color-ut-1 !default;
 //** List group border radius
@@ -744,15 +744,15 @@ $well-border: darken($well-bg, 7%) !default;
 //
 //##
 
-$badge-color: $color-white !default;
+$badge-color: $color-ut-7 !default;
 //** Linked badge text color on hover
-$badge-link-hover-color: $color-white !default;
+$badge-link-hover-color: $color-ut-7 !default;
 $badge-bg: $gray-light !default;
 
 //** Badge text color in active nav link
 $badge-active-color: $link-color !default;
 //** Badge background color in active nav link
-$badge-active-bg: $color-white !default;
+$badge-active-bg: $color-ut-7 !default;
 
 $badge-font-weight: bold !default;
 $badge-line-height: 1 !default;
@@ -779,15 +779,15 @@ $breadcrumb-separator: "/" !default;
 
 $carousel-text-shadow: 0 1px 2px rgba(0, 0, 0, .6) !default;
 
-$carousel-control-color: $color-white !default;
+$carousel-control-color: $color-ut-7 !default;
 $carousel-control-width: 15% !default;
 $carousel-control-opacity: .5 !default;
 $carousel-control-font-size: 20px !default;
 
-$carousel-indicator-active-bg: $color-white !default;
-$carousel-indicator-border-color: $color-white !default;
+$carousel-indicator-active-bg: $color-ut-7 !default;
+$carousel-indicator-border-color: $color-ut-7 !default;
 
-$carousel-caption-color: $color-white !default;
+$carousel-caption-color: $color-ut-7 !default;
 
 //== Close
 //
@@ -795,7 +795,7 @@ $carousel-caption-color: $color-white !default;
 
 $close-font-weight: bold !default;
 $close-color: $color-black !default;
-$close-text-shadow: 0 1px 0 $color-white !default;
+$close-text-shadow: 0 1px 0 $color-ut-7 !default;
 
 //== Code
 //
