@@ -5,4 +5,7 @@ export default {
   "groupType": "extension-sign-group",
   "lineColor": "10",
   "groupIds": null,
+  "classes": [],
+  "incomplete": true,
+  "taskId": "5242f8bff15774fe72586e569a05ce0c",
 }
