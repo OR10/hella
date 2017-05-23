@@ -202,6 +202,30 @@ class LabeledThingInFrame
     }
 
     /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return int
+     */
+    public function getMaxLabeledThingInFrameImportLineNoForTask(Model\LabelingTask $labelingTask)
+    {
+        $documentManager = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame_import_line_number_001', 'view')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->setGroupLevel(1)
+            ->setStartKey([$labelingTask->getId(), null])
+            ->setEndKey([$labelingTask->getId(), []]);
+
+        $response = $documentManager->execute()->toArray();
+
+        if (empty($response)) {
+            return -1;
+        }
+
+        return $response[0]['value'];
+    }
+
+    /**
      * Get a number of uuids.
      *
      * @param int $count
