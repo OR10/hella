@@ -97,11 +97,12 @@ class TaskCreator
      * @param Model\Project   $project
      * @param Model\Video     $video
      * @param Model\User|null $user
+     * @param bool            $labelDataImportInProgress
      *
      * @return Model\LabelingTask[]
      * @throws \Exception
      */
-    public function createTasks(Model\Project $project, Model\Video $video, Model\User $user = null)
+    public function createTasks(Model\Project $project, Model\Video $video, Model\User $user = null, $labelDataImportInProgress = false)
     {
         $this->loggerFacade->logString(
             sprintf(
@@ -309,7 +310,8 @@ class TaskCreator
                         $instruction,
                         $minimalVisibleShapeOverflow,
                         $drawingToolOptions,
-                        $taskConfiguration
+                        $taskConfiguration,
+                        $labelDataImportInProgress
                     );
                 }
             }
@@ -327,20 +329,20 @@ class TaskCreator
      * @param Model\Video             $video
      * @param Model\Project           $project
      * @param                         $frameNumberMapping
-     * @param string                  $taskType
-     * @param string|null             $drawingTool
-     * @param string[]                $predefinedClasses
      * @param                         $imageTypes
-     * @param                         $instruction
-     * @param int|null                $minimalVisibleShapeOverflow
-     * @param                         $drawingToolOptions
      * @param                         $metadata
      * @param                         $review
      * @param                         $revision
+     * @param string                  $taskType
+     * @param string|null             $drawingTool
+     * @param string[]                $predefinedClasses
+     * @param                         $instruction
+     * @param int|null                $minimalVisibleShapeOverflow
+     * @param array                   $drawingToolOptions
      * @param Model\TaskConfiguration $taskConfiguration
+     * @param bool                    $labelDataImportInProgress
      *
      * @return Model\LabelingTask
-     *
      */
     private function addTask(
         Model\Video $video,
@@ -356,7 +358,8 @@ class TaskCreator
         $instruction = null,
         $minimalVisibleShapeOverflow = null,
         $drawingToolOptions = [],
-        Model\TaskConfiguration $taskConfiguration = null
+        Model\TaskConfiguration $taskConfiguration = null,
+        $labelDataImportInProgress = false
     ) : Model\LabelingTask
     {
         switch ($instruction) {
@@ -429,6 +432,7 @@ class TaskCreator
         $task->setDrawingToolOptions($drawingToolOptions);
         $task->setMetaData($metadata);
         $task->setStatusIfAllImagesAreConverted($video);
+        $task->setLabelDataImportInProgress($labelDataImportInProgress);
 
         if ($review) {
             $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION);
