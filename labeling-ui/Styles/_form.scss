@@ -1,15 +1,15 @@
 fieldset {
-  border: 1px solid lighten($color-ut-8, 10%);
+  border: 1px solid lighten($color-ut-midgrey-3, 10%);
   margin: 2rem 1rem;
 
   legend {
-    color: $color-ut-10;
+    color: $color-ut-midgrey-2;
     padding: 1rem;
   }
 }
 
 select, input, textarea {
-  color: $color-ut-10;
+  color: $color-ut-midgrey-2;
   &.error {
     border: 2px solid orangered !important;
   }
@@ -28,5 +28,5 @@ form{
 }
 
 ::-webkit-input-placeholder {
-  color: darken($color-ut-10, 23%);
+  color: darken($color-ut-midgrey-2, 23%);
 }

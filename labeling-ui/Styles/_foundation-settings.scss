@@ -90,8 +90,8 @@
 // $font-weight-bold: bold;
 
 // We use these to control various global styles
- $color-ut-1: $color-ut-1;
- $body-font-color: $color-ut-2;
+ $color-ut-1: $color-ut-lightgrey-1;
+ $body-font-color: $color-ut-lightgrey-3;
  $body-font-family: "montserrat-regular", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
  //$body-font-weight: $font-weight-normal;
 // $body-font-style: normal;
@@ -139,7 +139,7 @@
 // $header-font-family: $body-font-family;
 // $header-font-weight: $font-weight-normal;
 // $header-font-style: $font-weight-normal;
- $header-font-color: $color-ut-8;
+ $header-font-color: $color-ut-midgrey-3;
 // $header-line-height: 1.4;
 // $header-top-margin: .2rem;
 // $header-bottom-margin: .5rem;
@@ -262,11 +262,11 @@ $block-grid-max-size: 12;
 // - - - - - - - - - - - - - - -
 
 $accordion-border: none;
-$accordion-title-background: $color-ut-8;
+$accordion-title-background: $color-ut-midgrey-3;
 $accordion-title-background-hover: smartscale($accordion-title-background, 5%);
 $accordion-title-background-active: smartscale($accordion-title-background, 3%);
-$accordion-title-color: $color-ut-2;
-$accordion-title-color-active: $color-ut-2;
+$accordion-title-color: $color-ut-lightgrey-3;
+$accordion-title-color-active: $color-ut-lightgrey-3;
 
 // $accordion-title-padding: $global-padding;
 // $accordion-content-padding: $global-padding; 
@@ -351,33 +351,33 @@ $accordion-title-color-active: $color-ut-2;
 // $form-padding: 0.5rem;
 
 // Text fields
- $input-color: $color-ut-8;
+ $input-color: $color-ut-midgrey-3;
 // $input-color-hover: $input-color;
 // $input-color-focus: $input-color;
- $input-background: $color-ut-4;
+ $input-background: $color-ut-lightgrey-4;
 // $input-background-hover: $input-background;
 // $input-background-focus: $input-background;
 // $input-background-disabled: smartscale($input-background);
- $input-border: 1px solid $color-ut-8;
- $input-border-hover: 1px solid $color-ut-2;
- $input-border-focus: 1px solid $color-ut-10;
+ $input-border: 1px solid $color-ut-midgrey-3;
+ $input-border-hover: 1px solid $color-ut-lightgrey-3;
+ $input-border-focus: 1px solid $color-ut-midgrey-2;
 // $input-cursor-disabled: not-allowed;
 
 // Select menus
- $select-color: $color-ut-2;
- $select-background: $color-ut-4;
+ $select-color: $color-ut-lightgrey-3;
+ $select-background: $color-ut-lightgrey-4;
 // $select-background-hover: smartscale($select-background, 4%);
 // $select-arrow: true;
-$select-arrow-color: $color-ut-10;
+$select-arrow-color: $color-ut-midgrey-2;
 
 // Labels
 // $form-label-fontsize: 0.9rem;
 // $form-label-margin: 0.5rem;
-$form-label-color: $color-ut-5;
+$form-label-color: $color-ut-darkgrey-2;
 
 // Inline labels
-$inlinelabel-color: $color-ut-2;
-$inlinelabel-background: $color-ut-4;
+$inlinelabel-color: $color-ut-lightgrey-3;
+$inlinelabel-background: $color-ut-lightgrey-4;
 // $inlinelabel-border: $input-border;
 
 // Range slider
@@ -385,7 +385,7 @@ $inlinelabel-background: $color-ut-4;
  $slider-height: 0.15rem;
  $slider-radius: 50%;
  $slider-thumb-height: 0.5rem;
- $slider-thumb-color: $color-ut-8;
+ $slider-thumb-color: $color-ut-midgrey-3;
  $slider-thumb-radius: 50%;
 
 // Progress and meter
@@ -437,7 +437,7 @@ $inlinelabel-background: $color-ut-4;
 // 17. Modal
 // - - - - - - - - - - - - - - -
 
- $modal-background: $color-ut-7;
+ $modal-background: $color-ut-white;
  $modal-border: 0;
  $modal-radius: 0px;
  $modal-shadow: none;
@@ -450,7 +450,7 @@ $inlinelabel-background: $color-ut-4;
  );
 
  $modal-overlay-class: 'modal-overlay';
- $modal-overlay-background: rgba($color-ut-9, 0.4);
+ $modal-overlay-background: rgba($color-ut-darkgrey-1, 0.4);
 
 // 18. Motion UI
 // - - - - - - - - - - - - - - -
@@ -590,8 +590,8 @@ $inlinelabel-background: $color-ut-4;
  $tab-title-background: smartscale($color-ut-1, 6%);
  $tab-title-background-hover: smartscale($color-ut-1, 10%);
  $tab-title-background-active: $color-ut-1;
- $tab-title-color: $color-ut-8;
- $tab-title-color-active: $color-ut-2;
+ $tab-title-color: $color-ut-midgrey-3;
+ $tab-title-color-active: $color-ut-lightgrey-3;
 
 // $tab-title-padding: $global-padding;
 // $tab-content-padding: $global-padding; 

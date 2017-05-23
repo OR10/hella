@@ -4,7 +4,7 @@ h1 {
     text-align: left;
     margin: $h1-margin 0 $h1-margin $h1-margin;
     width: 631px;
-    border-bottom: 1px solid $color-ut-6;
+    border-bottom: 1px solid $color-ut-yellow;
     @include font-xl();
 }
 

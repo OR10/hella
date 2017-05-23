@@ -1,4 +1,4 @@
-$wizardTextColor: $color-ut-2;
+$wizardTextColor: $color-ut-lightgrey-3;
 
 .label-wizard {
   .label-wizard-challenge {
@@ -59,7 +59,7 @@ $wizardTextColor: $color-ut-2;
     border: 1px solid $wizardTextColor;
     border-radius: 10px;
     cursor: pointer;
-    background-color: $color-ut-9 \9;
+    background-color: $color-ut-darkgrey-1 \9;
     background-color: transparent;
   }
 }

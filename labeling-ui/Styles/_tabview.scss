@@ -22,13 +22,13 @@ tab-view {
 
 .tabs {
   .tab-item {
-    color: $color-ut-10;
+    color: $color-ut-midgrey-2;
     margin-bottom: -1px;
     background: none;
     @include font-l();
 
     &.is-active {
-      color: $color-ut-5;
+      color: $color-ut-darkgrey-2;
       font-weight: bold;
       background: none;
 
@@ -38,7 +38,7 @@ tab-view {
     }
 
     &:hover {
-      color: $color-ut-5;
+      color: $color-ut-darkgrey-2;
       background: none;
     }
   }
