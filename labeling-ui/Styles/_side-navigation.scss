@@ -31,6 +31,8 @@ $sideNavigationButtonSpacing: 23px;
 
     justify-content: flex-end;
     align-items: center;
+
+    margin-bottom: $sideNavigationTopAndBottomSpacing;
   }
 
   &__main-area {
@@ -40,17 +42,16 @@ $sideNavigationButtonSpacing: 23px;
 
     justify-content: center;
     align-items: center;
-
-    margin-bottom: $sideNavigationTopAndBottomSpacing;
   }
 
   &__button {
+    overflow: hidden;
     width: $sideNavigationIconSize;
     height: $sideNavigationIconSize;
   }
 
   &__button {
-    margin: $sideNavigationButtonSpacing;
+    margin: $sideNavigationButtonSpacing 0;
 
     &:first-child {
       margin-top: 0;
@@ -64,5 +65,12 @@ $sideNavigationButtonSpacing: 23px;
   &__icon {
     font-size: $sideNavigationIconSize;
     color: $color-ut-1;
+  }
+
+  /* Button highlight on active route */
+  &__button--active {
+    .side-navigation__icon {
+      color: $color-ut-6;
+    }
   }
 }
