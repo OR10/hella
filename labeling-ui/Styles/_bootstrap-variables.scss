@@ -257,7 +257,7 @@ $dropdown-link-disabled-color: $gray-light !default;
 $dropdown-header-color: $gray-light !default;
 
 //** Deprecated `$dropdown-caret-color` as of v3.1.0
-$dropdown-caret-color: $color-black !default;
+$dropdown-caret-color: $color-ut-9 !default;
 
 //-- Z-index master list
 //
@@ -508,7 +508,7 @@ $tooltip-max-width: 200px !default;
 //** Tooltip text color
 $tooltip-color: $color-ut-2 !default;
 //** Tooltip background color
-$tooltip-bg: $color-black !default;
+$tooltip-bg: $color-ut-9 !default;
 $tooltip-opacity: .9 !default;
 
 //** Tooltip arrow width
@@ -586,7 +586,7 @@ $modal-content-border-color: rgba(0, 0, 0, .2) !default;
 $modal-content-fallback-border-color: #999 !default;
 
 //** Modal backdrop background color
-$modal-backdrop-bg: $color-black !default;
+$modal-backdrop-bg: $color-ut-9 !default;
 //** Modal backdrop opacity
 $modal-backdrop-opacity: .5 !default;
 //** Modal header border color
@@ -794,7 +794,7 @@ $carousel-caption-color: $color-ut-7 !default;
 //##
 
 $close-font-weight: bold !default;
-$close-color: $color-black !default;
+$close-color: $color-ut-9 !default;
 $close-text-shadow: 0 1px 0 $color-ut-7 !default;
 
 //== Code

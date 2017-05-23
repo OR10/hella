@@ -12,18 +12,10 @@ $color-ut-10: #7B8999;
 $color-ut-11: #D7DDE4;
 
 // Color definitions
-$color-black: #000;
-$color-almost-black: #1a1a1a;
-
 $color-darkred-1: #a00;
 $color-darkred-2: #585858;
 $color-midred: #A52A2A;
 $color-lightred: #FF0000;
-
-$color-purple: #777777;
-
-$color-orange: #FFA500;
-$color-yellow: #FFD700;
 
 $color-active: $color-ut-3;
 $color-overlay: $color-ut-2;
@@ -50,7 +42,7 @@ $text-inactive: $color-ut-10;
 
 $element-background: $color-ut-4;
 $element-active: $color-ut-8;
-$element-divider: $color-almost-black;
+$element-divider: $color-ut-9;
 $element-inline-divider: $color-ut-9;
 $element-border: $color-ut-8;
 

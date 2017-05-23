@@ -54,7 +54,7 @@ html, body {
 
 viewer {
   text-align: center;
-  //box-shadow: inset 0 0 10px 0 $color-black;
+  //box-shadow: inset 0 0 10px 0 $color-ut-9;
 }
 
 .timer-text {
@@ -183,7 +183,7 @@ div.popup-panel {
     font-size: 3rem;
     line-height: 1em;
     color: rgba(213, 217, 221, 0.3);
-    text-shadow: 1px 4px 6px $color-ut-1, 0 0 0 $color-black, 1px 4px 6px $color-ut-1;
+    text-shadow: 1px 4px 6px $color-ut-1, 0 0 0 $color-ut-9, 1px 4px 6px $color-ut-1;
     text-align: center;
     margin-top: 50%;
   }
