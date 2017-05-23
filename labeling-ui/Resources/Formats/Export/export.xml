@@ -54,7 +54,7 @@
         </frame-labeling>
         <!-- ... -->
         <!-- #31 -->
-        <group id="0906b0b1-24a7-446d-aa34-b3e23a58cb9a" start="22" end="66" incomplete="true">
+        <group id="0906b0b1-24a7-446d-aa34-b3e23a58cb9a" start="22" end="66" type="sign" line-color="1" incomplete="true">
             <value id="has-hat" start="22" end="44" />
         </group>
         <thing id="b177fd9beccd9fbc2f85307aa5bb4efc" start="22" end="66" line-color="15" incomplete="true" type="sign">

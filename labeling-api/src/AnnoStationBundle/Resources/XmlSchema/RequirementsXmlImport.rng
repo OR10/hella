@@ -314,6 +314,10 @@
         <element name="e:group">
             <attribute name="id"/>
             <ref name="FrameRangeAttributes"/>
+            <attribute name="type"/>
+            <optional>
+                <attribute name="line-color"/>
+            </optional>
             <optional>
                 <attribute name="incomplete"/>
             </optional>
