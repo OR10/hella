@@ -7,8 +7,8 @@ ribbon{
   text-align: center;
   line-height: 40px;
   letter-spacing: 1px;
-  border-top: 1px solid $headlines;
-  border-bottom: 1px solid $headlines;
+  border-top: 1px solid $selected-frame;
+  border-bottom: 1px solid $selected-frame;
   color: $headlines;
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);

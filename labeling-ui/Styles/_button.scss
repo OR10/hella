@@ -1,18 +1,18 @@
 button {
   background-color: $element-background;
-  color: $sub-headlines;
+  color: $color-ut-8;
   font-weight: bold;
   font-size: 18px;
   border: none;
   padding: 0.3em;
 
   &:hover {
-    color: $icon-hover;
+    color: $color-active;
   }
 
   &:active {
-    background-color: $icon-hover;
-    color: $button-selected;
+    background-color: $color-active;
+    color: $button-active;
   }
 
   &.divider {
@@ -20,10 +20,10 @@ button {
   }
 
   &.disabled i {
-    color: darken($icon, 30%);
+    color: darken($icon-disabled, 30%);
 
     &:hover{
-      color: darken($icon, 30%) !important;
+      color: darken($icon-disabled, 30%) !important;
     }
   }
 
