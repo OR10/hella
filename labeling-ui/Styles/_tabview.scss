@@ -27,8 +27,9 @@ tab-view {
     background: none;
 
     &.is-active {
-      color: $color-ut-10;
+      color: $color-ut-5;
       font-weight: bold;
+      background: none;
 
       &:hover {
         background: none;
@@ -36,7 +37,7 @@ tab-view {
     }
 
     &:hover {
-      color: $color-ut-10;
+      color: $color-ut-5;
       background: none;
     }
   }
