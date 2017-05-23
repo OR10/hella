@@ -1,57 +1,102 @@
-$sideNavigationWidth: 80px;
-$sideNavigationTopAndBottomSpacing: 16px;
-$sideNavigationIconSize: 48px;
-$sideNavigationButtonSpacing: 23px;
+$side-navigation-width: 80px;
+$side-navigation-top-and-bottom-spacing: 16px;
+$side-navigation-icon-size: 48px;
+$side-navigation-button-spacing: 23px;
+$side-navigation-scroll-hack: 30px;
+$side-navigation-main-area-top-and-bottom-spacing: 10px;
 
 .side-navigation {
   @include grid-block;
   @include grid-orient(vertical);
 
-  flex: 0 0 $sideNavigationWidth;
-  width: $sideNavigationWidth;
+  flex: 0 0 $side-navigation-width;
+  width: $side-navigation-width;
   height: 100%;
 
   background-color: $color-ut-9;
 
   &__top-area {
     @include grid-block;
-    @include grid-size(expand);
     @include grid-orient(vertical);
 
+    flex: 0 0 auto;
     justify-content: flex-start;
     align-items: center;
 
-    margin-top: $sideNavigationTopAndBottomSpacing;
+    margin-top: $side-navigation-top-and-bottom-spacing;
   }
 
   &__bottom-area {
     @include grid-block;
-    @include grid-size(expand);
     @include grid-orient(vertical);
 
+    flex: 0 0 auto;
     justify-content: flex-end;
     align-items: center;
 
-    margin-bottom: $sideNavigationTopAndBottomSpacing;
+    margin-bottom: $side-navigation-top-and-bottom-spacing;
   }
 
   &__main-area {
     @include grid-block;
-    @include grid-size(shrink);
     @include grid-orient(vertical);
 
-    justify-content: center;
+    flex: 1 1 auto;
+    justify-content: flex-start;
     align-items: center;
+
+    margin: $side-navigation-main-area-top-and-bottom-spacing 0;
+
+    width: $side-navigation-width + $side-navigation-scroll-hack;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    .side-navigation__button {
+      margin-left: -1 * $side-navigation-scroll-hack;
+
+      /* spacer before first button */
+      &:nth-child(2) {
+        margin-top: 0;
+      }
+
+      /* spacer after last button */
+      &:nth-last-child(2) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__spacer{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    &:first-child {
+      margin-top: auto;
+    }
+
+    &:last-child {
+      margin-bottom: auto;
+    }
+
+    /* In case of odd count of buttons add a virtual one at the bottom to shift all others up! */
+    &:last-child:nth-child(2n+0):before {
+      flex: 0 1 $side-navigation-icon-size + $side-navigation-button-spacing;
+      content: '';
+    }
   }
 
   &__button {
+    flex: 0 0 $side-navigation-icon-size;
+
     overflow: hidden;
-    width: $sideNavigationIconSize;
-    height: $sideNavigationIconSize;
+    width: $side-navigation-icon-size;
+    height: $side-navigation-icon-size;
   }
 
   &__button {
-    margin: $sideNavigationButtonSpacing 0;
+    margin: $side-navigation-button-spacing 0;
 
     &:first-child {
       margin-top: 0;
@@ -63,7 +108,7 @@ $sideNavigationButtonSpacing: 23px;
   }
 
   &__icon {
-    font-size: $sideNavigationIconSize;
+    font-size: $side-navigation-icon-size;
     color: $color-ut-1;
   }
 
