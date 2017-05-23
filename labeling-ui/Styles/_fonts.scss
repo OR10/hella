@@ -36,7 +36,7 @@
 
 @mixin font-xl() {
   font-family: "montserrat-light", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-  font-size: 36px !important;
+  font-size: 36px;
 }
 
 @mixin font-s-to-l($px) {
