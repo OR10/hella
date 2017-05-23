@@ -135,7 +135,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
             $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
             $frameMapping = array_flip($task->getFrameNumberMapping());
 
-            if ($this->labeledThingFacade->getMaxLabeledThingImportLineNoForTask($task) >= $xpath->getLineNo()) {
+            if ($this->isLabeledThingInFrameElementAlreadyImported($task, $xpath)) {
                 $labeledThing = $this->labeledThingFacade->getLabeledThingForImportedLineNo($task, $xpath->getLineNo());
             }else{
                 $labeledThing = new Model\LabeledThing($task, $xpath->getAttribute('line-color'));
@@ -188,7 +188,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                     $frameSkip
                 );
                 foreach ($frameRange as $frame) {
-                    if ($this->labeledThingInFrameFacade->getMaxLabeledThingInFrameImportLineNoForTask($task) >= $shapeElement->getLineNo()) {
+                    if ($this->isLabeledThingInFrameElementAlreadyImported($task, $shapeElement)) {
                         continue;
                     }
                     $shapes              = $this->getShapes(
@@ -224,6 +224,19 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                 }
             }
         }
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @param \DOMElement        $element
+     *
+     * @return bool
+     */
+    private function isLabeledThingInFrameElementAlreadyImported(Model\LabelingTask $task, \DOMElement $element)
+    {
+        $max = $this->labeledThingInFrameFacade->getMaxLabeledThingInFrameImportLineNoForTask($task);
+
+        return $max >= $element->getLineNo();
     }
 
     /**
