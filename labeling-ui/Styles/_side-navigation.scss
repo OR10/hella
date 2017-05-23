@@ -43,7 +43,7 @@ $side-navigation-main-area-top-and-bottom-spacing: 10px;
 
     flex: 1 1 auto;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
 
     margin: $side-navigation-main-area-top-and-bottom-spacing 0;
 
@@ -53,7 +53,7 @@ $side-navigation-main-area-top-and-bottom-spacing: 10px;
     overflow-y: auto;
 
     .side-navigation__button {
-      margin-left: -1 * $side-navigation-scroll-hack;
+      margin-left: ($side-navigation-width - $side-navigation-icon-size) / 2;
 
       /* spacer before first button */
       &:nth-child(2) {
