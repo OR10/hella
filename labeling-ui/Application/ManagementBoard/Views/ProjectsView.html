@@ -15,9 +15,6 @@
             <tab ng-if="vm.userPermissions.canViewTodoProjects"
                  header="Todo {{vm.projectCount !== null ? '(' + vm.projectCount.todo + ')' : ''}}"
                  create-on-first-view="true">
-                <h2>
-                    Todo <span ng-hide='vm.projectCount == null'>({{vm.projectCount.todo}})</span>
-                </h2>
                 <project-list user="vm.user"
                               show-loading-mask="vm.showLoadingMask"
                               user-permissions="vm.userPermissions"
@@ -25,9 +22,6 @@
             </tab>
             <tab header="In Progress {{vm.projectCount !== null ? '(' + vm.projectCount.in_progress + ')' : ''}}"
                  create-on-first-view="true">
-                <h2>
-                    In Progress <span ng-hide='vm.projectCount == null'>({{vm.projectCount.in_progress}})</span>
-                </h2>
                 <project-list user="vm.user"
                               show-loading-mask="vm.showLoadingMask"
                               user-permissions="vm.userPermissions"
@@ -36,9 +30,6 @@
             <tab ng-if="vm.userPermissions.canViewClosedProjects"
                  header="Done {{vm.projectCount !== null ? '(' + vm.projectCount.done + ')' : ''}}"
                  create-on-first-view="true">
-                <h2>
-                    Done <span ng-hide='vm.projectCount == null'>({{vm.projectCount.done}})</span>
-                </h2>
                 <project-list user="vm.user"
                               show-loading-mask="vm.showLoadingMask"
                               user-permissions="vm.userPermissions"
@@ -47,9 +38,6 @@
             <tab ng-if="vm.userPermissions.canViewDeletedProjects"
                  header="Deleted {{vm.projectCount !== null ? '(' + vm.projectCount.deleted + ')' : ''}}"
                  create-on-first-view="true">
-                <h2>
-                    Deleted <span ng-hide='vm.projectCount == null'>({{vm.projectCount.deleted}})</span>
-                </h2>
                 <project-list user="vm.user"
                               show-loading-mask="vm.showLoadingMask"
                               user-permissions="vm.userPermissions"

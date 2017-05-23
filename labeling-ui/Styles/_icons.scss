@@ -7,7 +7,7 @@
   font-size: 30px;
 
   &.active {
-    color: $color-ut-10 !important;
+    color: $color-ut-midgrey-2 !important;
   }
 
   &.icon-small {
@@ -19,33 +19,33 @@
   }
 
   &.disabled {
-    color: darken($color-ut-8, 30%);
+    color: darken($color-ut-midgrey-3, 30%);
 
     &:hover{
-      color: darken($color-ut-8, 30%) !important;
+      color: darken($color-ut-midgrey-3, 30%) !important;
       cursor: alias;
     }
   }
 }
 
 .icon-fa, .icon {
-  color: $color-ut-8;
+  color: $color-ut-midgrey-3;
 
   &:hover {
-    color: $color-ut-10 !important;
+    color: $color-ut-midgrey-2 !important;
   }
 
   &.toggled {
-    color: $color-ut-10 !important;
+    color: $color-ut-midgrey-2 !important;
   }
 
   &.no-hover:hover {
-    color: $color-ut-8 !important;
+    color: $color-ut-midgrey-3 !important;
     cursor: auto !important;
   }
 
   &.warning-color {
-    color: $color-ut-12;
+    color: $color-ut-red;
   }
 }
 

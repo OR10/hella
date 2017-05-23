@@ -2,7 +2,7 @@ table.table {
   width: 100%;
 
   a {
-    color: $color-ut-10;
+    color: $color-ut-midgrey-2;
     text-decoration: underline;
   }
 
@@ -20,14 +20,14 @@ table.table {
         cursor: pointer;
 
         td {
-          background: darken($color-ut-2, 10%);
+          background: darken($color-ut-lightgrey-3, 10%);
 
           a {
-            color: $color-ut-8;
+            color: $color-ut-midgrey-3;
           }
 
           .icon, .fa {
-            color: $color-ut-8;
+            color: $color-ut-midgrey-3;
           }
 
           .icon:hover, .fa:hover {
@@ -43,17 +43,18 @@ table.table {
   thead,
   tbody,
   tfoot {
-    background-color: $color-ut-1;
+    background-color: $color-ut-lightgrey-1;
 
     td, th {
-      background-color: $color-ut-2;
+      background-color: $color-ut-lightgrey-3;
       text-align: left;
     }
   }
 
   thead,
   tfoot {
-    color: $color-ut-5;
+    color: $color-ut-darkgrey-2;
+    @include font-m();
   }
 
   thead,
@@ -65,7 +66,7 @@ table.table {
 
   thead, tfoot {
     th, td {
-      background-color: $color-ut-1;
+      background-color: $color-ut-lightgrey-1;
       padding: 0.6rem 0.725rem 0.725rem;
       font-weight: bold;
     }
@@ -80,7 +81,7 @@ table.table {
   tbody {
     tr:nth-child(even) {
       td {
-        background-color: $color-ut-11;
+        background-color: $color-ut-lightgrey-2;
       }
     }
 
@@ -101,20 +102,20 @@ table.table {
   thead {
     tr {
       th {
-        border-bottom: 1px solid $color-ut-10;
+        border-bottom: 1px solid $color-ut-midgrey-2;
       }
     }
   }
 
   th.st-sort-descent:after {
     padding-left: .6rem;
-    color: $color-ut-10;
+    color: $color-ut-midgrey-2;
     content: "▲";
   }
 
   th.st-sort-ascent:after {
     padding-left: .3rem;
-    color: $color-ut-10;
+    color: $color-ut-midgrey-2;
     content: "▼";
   }
 }
@@ -129,7 +130,7 @@ pagination-controls {
   }
 
   button.is-active {
-    background-color: $color-ut-10;
-    color: $color-ut-2;
+    background-color: $color-ut-midgrey-2;
+    color: $color-ut-lightgrey-3;
   }
 }
