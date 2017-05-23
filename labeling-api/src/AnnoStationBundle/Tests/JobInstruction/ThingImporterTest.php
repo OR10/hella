@@ -89,66 +89,22 @@ class ThingImporterTest extends Tests\KernelTestCase
     /**
      * @return array
      */
-    public function provider()
+    public function providerLabeledThing()
     {
         return [
             [
                 __DIR__ . '/../Resources/Exports/rectangle_meta.xml',
                 [
-                    'labeledThings'        => [
-                        [
-                            'frameRange' => [
-                                'startFrameIndex' => 21,
-                                'endFrameIndex'   => 43,
-                            ],
-                            'classes'    => [],
-                            'incomplete' => false,
-                            'lineColor'  => 2,
-                            'groupIds'   => [],
-                            'originalId' => 'fd4539b4-9b42-4415-b3f7-f7a15c31424b',
+                    [
+                        'frameRange' => [
+                            'startFrameIndex' => 21,
+                            'endFrameIndex'   => 43,
                         ],
-                    ],
-                    'labeledThingsInFrame' => [
-                        [
-                            'frameIndex'     => 21,
-                            'classes'        => ['50'],
-                            'ghostClasses'   => null,
-                            'shape'          => [
-                                'type'        => 'rectangle',
-                                'topLeft'     => ['x' => 820, 'y' => 436],
-                                'bottomRight' => ['x' => 968, 'y' => 583],
-                            ],
-                            'incomplete'     => false,
-                            'identifierName' => 'time-range-sign',
-                            'ghost'          => false,
-                        ],
-                        [
-                            'frameIndex'     => 43,
-                            'classes'        => ['10'],
-                            'ghostClasses'   => null,
-                            'shape'          => [
-                                'type'        => 'rectangle',
-                                'topLeft'     => ['x' => 120, 'y' => 136],
-                                'bottomRight' => ['x' => 268, 'y' => 283],
-                            ],
-                            'incomplete'     => false,
-                            'identifierName' => 'time-range-sign',
-                            'ghost'          => false,
-                        ],
-                    ],
-                    'labeledFrames'        => [
-                        [
-                            'frameIndex'   => 21,
-                            'classes'      => ['night', 'spain'],
-                            'ghostClasses' => null,
-                            'incomplete'   => true,
-                        ],
-                        [
-                            'frameIndex'   => 637,
-                            'classes'      => ['night', 'halogen', 'orange', 'germany'],
-                            'ghostClasses' => null,
-                            'incomplete'   => false,
-                        ],
+                        'classes'    => [],
+                        'incomplete' => false,
+                        'lineColor'  => 2,
+                        'groupIds'   => [],
+                        'originalId' => 'fd4539b4-9b42-4415-b3f7-f7a15c31424b',
                     ],
                 ],
             ],
@@ -156,12 +112,78 @@ class ThingImporterTest extends Tests\KernelTestCase
     }
 
     /**
-     * @dataProvider provider
+     * @return array
+     */
+    public function providerLabeledThingInFrames()
+    {
+        return [
+            [
+                __DIR__ . '/../Resources/Exports/rectangle_meta.xml',
+                [
+                    [
+                        'frameIndex'     => 21,
+                        'classes'        => ['50'],
+                        'ghostClasses'   => null,
+                        'shape'          => [
+                            'type'        => 'rectangle',
+                            'topLeft'     => ['x' => 820, 'y' => 436],
+                            'bottomRight' => ['x' => 968, 'y' => 583],
+                        ],
+                        'incomplete'     => false,
+                        'identifierName' => 'time-range-sign',
+                        'ghost'          => false,
+                    ],
+                    [
+                        'frameIndex'     => 43,
+                        'classes'        => ['10'],
+                        'ghostClasses'   => null,
+                        'shape'          => [
+                            'type'        => 'rectangle',
+                            'topLeft'     => ['x' => 120, 'y' => 136],
+                            'bottomRight' => ['x' => 268, 'y' => 283],
+                        ],
+                        'incomplete'     => false,
+                        'identifierName' => 'time-range-sign',
+                        'ghost'          => false,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function providerLabeledFrames()
+    {
+        return [
+            [
+                __DIR__ . '/../Resources/Exports/rectangle_meta.xml',
+                [
+                    [
+                        'frameIndex'   => 21,
+                        'classes'      => ['night', 'spain'],
+                        'ghostClasses' => null,
+                        'incomplete'   => true,
+                    ],
+                    [
+                        'frameIndex'   => 637,
+                        'classes'      => ['night', 'halogen', 'orange', 'germany'],
+                        'ghostClasses' => null,
+                        'incomplete'   => false,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerLabeledThing
      *
      * @param string $xmlFile
      * @param array  $expectedData
      */
-    public function testImport($xmlFile, $expectedData)
+    public function testImportLabeledThings($xmlFile, $expectedData)
     {
         $job = new Jobs\ThingImporter($xmlFile, $this->getTaskToFrameMapping());
         $this->thingImportJobInstruction->run($job, $this->logger);
@@ -169,23 +191,15 @@ class ThingImporterTest extends Tests\KernelTestCase
         $projectId = $this->task->getProjectId();
         $taskId    = $this->task->getId();
 
-        $labeledThingFacade        = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
-            $projectId,
-            $taskId
-        );
-        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
-            $projectId,
-            $taskId
-        );
-        $labeledFrameFacade        = $this->labeledFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+        $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
             $projectId,
             $taskId
         );
 
         $labeledThings = $labeledThingFacade->findByTaskId($this->task);
-        $this->assertCount(count($expectedData['labeledThings']), $labeledThings);
+        $this->assertCount(count($expectedData), $labeledThings);
         foreach ($labeledThings as $index => $labeledThing) {
-            $expectedLabeledThingData = $expectedData['labeledThings'][$index];
+            $expectedLabeledThingData = $expectedData[$index];
 
             $this->assertEquals(
                 $expectedLabeledThingData['frameRange']['startFrameIndex'],
@@ -201,11 +215,31 @@ class ThingImporterTest extends Tests\KernelTestCase
             $this->assertEquals($expectedLabeledThingData['groupIds'], $labeledThing->getGroupIds());
             $this->assertEquals($expectedLabeledThingData['originalId'], $labeledThing->getOriginalId());
         }
+    }
+
+    /**
+     * @dataProvider providerLabeledThingInFrames
+     *
+     * @param string $xmlFile
+     * @param array  $expectedData
+     */
+    public function testImportLabeledThingsInFrame($xmlFile, $expectedData)
+    {
+        $job = new Jobs\ThingImporter($xmlFile, $this->getTaskToFrameMapping());
+        $this->thingImportJobInstruction->run($job, $this->logger);
+
+        $projectId = $this->task->getProjectId();
+        $taskId    = $this->task->getId();
+
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $projectId,
+            $taskId
+        );
 
         $labeledThingInFrames = $labeledThingInFrameFacade->getLabeledThingsInFrame($this->task);
-        $this->assertCount(count($expectedData['labeledThingsInFrame']), $labeledThingInFrames);
+        $this->assertCount(count($expectedData), $labeledThingInFrames);
         foreach ($labeledThingInFrames as $index => $labeledThingInFrame) {
-            $expectedLabeledThingInFrameData = $expectedData['labeledThingsInFrame'][$index];
+            $expectedLabeledThingInFrameData = $expectedData[$index];
             $shape                           = $labeledThingInFrame->getShapes()[0];
 
             $this->assertEquals($expectedLabeledThingInFrameData['frameIndex'], $labeledThingInFrame->getFrameIndex());
@@ -224,11 +258,31 @@ class ThingImporterTest extends Tests\KernelTestCase
             );
             $this->assertEquals($expectedLabeledThingInFrameData['ghost'], $labeledThingInFrame->isGhost());
         }
+    }
+
+    /**
+     * @dataProvider providerLabeledFrames
+     *
+     * @param string $xmlFile
+     * @param array  $expectedData
+     */
+    public function testImportLabeledFrame($xmlFile, $expectedData)
+    {
+        $job = new Jobs\ThingImporter($xmlFile, $this->getTaskToFrameMapping());
+        $this->thingImportJobInstruction->run($job, $this->logger);
+
+        $projectId = $this->task->getProjectId();
+        $taskId    = $this->task->getId();
+
+        $labeledFrameFacade = $this->labeledFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $projectId,
+            $taskId
+        );
 
         $labeledFrames = $labeledFrameFacade->findBylabelingTask($this->task);
-        $this->assertCount(count($expectedData['labeledFrames']), $labeledFrames);
+        $this->assertCount(count($expectedData), $labeledFrames);
         foreach ($labeledFrames as $index => $labeledFrame) {
-            $expectedLabeledFrameData = $expectedData['labeledFrames'][$index];
+            $expectedLabeledFrameData = $expectedData[$index];
             $this->assertEquals($expectedLabeledFrameData['frameIndex'], $labeledFrame->getFrameIndex());
             $this->assertEquals($expectedLabeledFrameData['classes'], $labeledFrame->getClasses());
             $this->assertEquals($expectedLabeledFrameData['ghostClasses'], $labeledFrame->getGhostClasses());
