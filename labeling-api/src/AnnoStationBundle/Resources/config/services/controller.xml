@@ -278,6 +278,8 @@
         </service>
 
         <service id="annostation.labeling_api.controller.api.system" class="AnnoStationBundle\Controller\Api\System">
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+            <argument type="service" id="guzzle.client"/>
             <argument>%rabbitmq_host%</argument>
             <argument>%rabbitmq_management_port%</argument>
             <argument>%rabbitmq_user%</argument>

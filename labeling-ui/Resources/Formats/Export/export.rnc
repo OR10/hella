@@ -196,6 +196,8 @@ grammar {
   Group = element e:group {
     attribute id {text},
     FrameRangeAttributes,
+    attribute type {text},
+    attribute line-color {text}?,
     attribute incomplete {text}?,
     Value?
   }
