@@ -1,11 +1,11 @@
 .drop-area {
   margin-top: 1em;
   padding: 5em;
-  border: 4px dashed $color-white;
+  border: 4px dashed $color-ut-7;
   text-align: center;
 }
 
 .drop-area-active {
-  border: 4px dashed $selected-frame;
+  border: 4px dashed $color-ut-8;
   background-color: $color-ut-4;
 }

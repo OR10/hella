@@ -1,4 +1,8 @@
 .viewer-film-reel-container {
+  frame-number-input {
+    color: $color-ut-4;
+  }
+
   .thumbnail-reel-list {
     margin: 0;
     justify-content: center;
@@ -22,7 +26,7 @@
         left: 0;
         width: 100%;
         height: calc(100% - 4px);
-        border: 2px solid $color-overlay;
+        border: 2px solid $color-ut-2;
         border-right-width: 8px;
         border-left-width: 8px;
       }
@@ -34,7 +38,7 @@
 
         .frame-range {
           border-radius: 20px;
-          background-color: $frame-tools-background;
+          background-color: $color-ut-8;
           padding: 5px 10px;
           margin-bottom: 11px;
 
@@ -56,8 +60,8 @@
     }
 
     > .thumbnail.active {
-      border-top: 2px solid $selected-frame;
-      border-bottom: 2px solid $selected-frame;
+      border-top: 2px solid $color-ut-8;
+      border-bottom: 2px solid $color-ut-8;
 
       .center-thumbnail-overlay {
         display: none;
@@ -65,8 +69,8 @@
     }
 
     .thumbnail-spacer.active {
-      border-top: 2px solid $selected-frame;
-      border-bottom: 2px solid $selected-frame;
+      border-top: 2px solid $color-ut-8;
+      border-bottom: 2px solid $color-ut-8;
     }
 
     > .thumbnail-spacer {
@@ -75,7 +79,7 @@
       flex-shrink: 0;
 
       div.frame-range-bracket {
-        background-color: $selected-box;
+        background-color: $color-ut-6;
         width: 8px;
         position: absolute;
         top: 0;
@@ -91,7 +95,7 @@
             margin-top: 2px;
             margin-bottom: 1px;
             opacity: 0.6;
-            background-color: $element-divider;
+            background-color: $color-ut-9;
           }
         }
       }
@@ -109,11 +113,11 @@
     position: relative;
     height: 5px;
     margin: 0 2px 2px 1px;
-    background: $element-background;
+    background: $color-ut-4;
 
     .thumbnail-position, .range-position, .video-position, .center-frame-position {
       position: absolute;
-      background: $element-background;
+      background: $color-ut-4;
       top: 0;
       left: 0;
       height: 100%;
@@ -127,19 +131,19 @@
     }
 
     .video-position .inner-bar {
-      background: $selected-background;
+      background: $color-ut-10;
     }
 
     .thumbnail-position .inner-bar {
-      background: $color-overlay;
+      background: $color-ut-2;
     }
 
     .center-frame-position .inner-bar {
-      background: $color-overlay;
+      background: $color-ut-2;
     }
 
     .range-position .inner-bar {
-      background: $selected-box;
+      background: $color-ut-6;
     }
   }
 }
