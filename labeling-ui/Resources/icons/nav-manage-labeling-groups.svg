@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 65 65" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;">
+    <g id="labeler.-managment" transform="matrix(1,0,0,1,3.5,19)">
+        <g id="user.-icon" transform="matrix(1,0,0,1,14.9053,0)">
+            <ellipse id="Oval.-6" cx="13.858" cy="8.459" rx="8.45" ry="8.459" style="fill:none;stroke:rgb(232,237,243);stroke-width:2px;"/>
+            <path id="Combined.-Shape" d="M0.675,26.391C3.758,22.282 8.667,19.624 14.195,19.624C19.724,19.624 24.633,22.282 27.716,26.391L0.675,26.391Z" style="fill:none;stroke:rgb(232,237,243);stroke-width:2px;"/>
+        </g>
+        <g id="user.-icon.-copy" transform="matrix(1,0,0,1,0,1.42105)">
+            <ellipse id="Oval.-61" cx="9.794" cy="5.921" rx="5.972" ry="5.921" style="fill:none;stroke:rgb(232,237,243);stroke-width:2px;"/>
+            <path id="Combined.-Shape1" d="M0.477,18.474C2.656,15.597 6.125,13.737 10.032,13.737C13.94,13.737 17.409,15.597 19.588,18.474L0.477,18.474Z" style="fill:none;stroke:rgb(232,237,243);stroke-width:2px;"/>
+        </g>
+        <g id="user.-icon.-copy.-2" transform="matrix(1,0,0,1,38.3278,1.42105)">
+            <ellipse id="Oval.-62" cx="9.794" cy="5.921" rx="5.972" ry="5.921" style="fill:none;stroke:rgb(232,237,243);stroke-width:2px;"/>
+            <path id="Combined.-Shape2" d="M0.477,18.474C2.656,15.597 6.125,13.737 10.032,13.737C13.94,13.737 17.409,15.597 19.588,18.474L0.477,18.474Z" style="fill:none;stroke:rgb(232,237,243);stroke-width:2px;"/>
+        </g>
+    </g>
+</svg>

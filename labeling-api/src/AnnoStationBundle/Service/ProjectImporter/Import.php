@@ -136,7 +136,7 @@ class Import
         $createdTasks  = [];
         foreach ($videoElements as $videoElement) {
             $video        = $this->createVideo($organisation, $videoElement, $project, dirname($xmlImportFilePath));
-            $tasks        = $this->taskCreatorService->createTasks($project, $video, $user);
+            $tasks        = $this->taskCreatorService->createTasks($project, $video, $user, true);
             $createdTasks = array_merge($createdTasks, $tasks);
 
             $job = new Jobs\ThingImporter($xmlImportFilePath, $this->getTasksFrameMapping($tasks));

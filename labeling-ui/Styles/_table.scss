@@ -2,7 +2,7 @@ table.table {
   width: 100%;
 
   a {
-    color: #fff;
+    color: $color-ut-10;
     text-decoration: underline;
   }
 
@@ -20,15 +20,14 @@ table.table {
         cursor: pointer;
 
         td {
-          background: darken($icon-hover, 10%);
-          color: $element-background;
+          background: darken($color-ut-2, 10%);
 
           a {
-            color: $element-background;
+            color: $color-ut-8;
           }
 
           .icon, .fa {
-            color: $element-background;
+            color: $color-ut-8;
           }
 
           .icon:hover, .fa:hover {
@@ -44,18 +43,17 @@ table.table {
   thead,
   tbody,
   tfoot {
-    background-color: $body-background;
+    background-color: $color-ut-1;
 
     td, th {
-      background-color: $element-background;
+      background-color: $color-ut-2;
       text-align: left;
-      border: 1px solid $element-divider;
     }
   }
 
   thead,
   tfoot {
-    color: $sub-headlines;
+    color: $color-ut-5;
   }
 
   thead,
@@ -67,7 +65,7 @@ table.table {
 
   thead, tfoot {
     th, td {
-      background-color: $button-selected;
+      background-color: $color-ut-1;
       padding: 0.6rem 0.725rem 0.725rem;
       font-weight: bold;
     }
@@ -82,7 +80,7 @@ table.table {
   tbody {
     tr:nth-child(even) {
       td {
-        background-color: lighten($element-background, 4%);
+        background-color: $color-ut-11;
       }
     }
 
@@ -103,20 +101,20 @@ table.table {
   thead {
     tr {
       th {
-        border-bottom: 1px solid $icon-hover;
+        border-bottom: 1px solid $color-ut-10;
       }
     }
   }
 
   th.st-sort-descent:after {
     padding-left: .6rem;
-    color: $icon-hover;
+    color: $color-ut-10;
     content: "▲";
   }
 
   th.st-sort-ascent:after {
     padding-left: .3rem;
-    color: $icon-hover;
+    color: $color-ut-10;
     content: "▼";
   }
 }
@@ -131,7 +129,7 @@ pagination-controls {
   }
 
   button.is-active {
-    background-color: $icon-hover;
-    color: $button-selected;
+    background-color: $color-ut-10;
+    color: $color-ut-2;
   }
 }

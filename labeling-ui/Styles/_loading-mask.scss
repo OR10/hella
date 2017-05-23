@@ -19,7 +19,7 @@ loading-mask {
       bottom: 0;
       height: 100%;
       width: 100%;
-      background-color: #000000;
+      background-color: $color-ut-8;
       opacity: 0.4;
     }
 
@@ -55,7 +55,7 @@ loading-mask {
       width: 100vw;
       text-align: center;
       font-size: 2em;
-      color: $text;
+      color: $color-ut-5;
     }
 
     .circular {
@@ -76,11 +76,11 @@ loading-mask {
       stroke-dashoffset: 0;
       animation: dash 1.5s ease-in-out infinite;
       stroke-linecap: round;
-      stroke: $icon-hover;
+      stroke: $color-ut-6;
     }
 
     .path-background {
-      stroke: #919ca9;
+      stroke: $color-ut-9;
       opacity: 0.5;
     }
   }

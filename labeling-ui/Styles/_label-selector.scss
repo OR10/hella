@@ -2,8 +2,8 @@
 .label-selector .label-selector-title {
   align-items: center;
   text-transform: uppercase;
-  color: $headlines;
-  border-bottom: 2px solid $element-inline-divider;
+  color: $color-ut-8;
+  border-bottom: 2px solid $color-ut-9;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   height: 2.8rem;
@@ -21,11 +21,11 @@
   }
 
   input[type="radio"]:checked + label {
-    color: $text;
+    color: $color-ut-5;
   }
 
   input[type="radio"]:checked + label {
-    color: $icon-hover;
+    color: $color-ut-10;
   }
 
   .view-style {
@@ -58,7 +58,7 @@
     }
 
     label:hover {
-      color: $icon-hover;
+      color: $color-ut-10;
     }
 
     input[type="radio"] {
@@ -98,7 +98,7 @@
 
       font-size: 30px;
       overflow: hidden;
-      color: $icon-hover;
+      color: $color-ut-10;
 
       content: $font-icon-font-check;
       //margin-right: .5rem;
@@ -106,7 +106,8 @@
 
     input[type="radio"]:checked + label {
       .response {
-        color: $sub-headlines;
+        color: $color-ut-10;
+        font-weight: bold;
       }
     }
 
@@ -119,7 +120,7 @@
 /** Icon View **/
 .label-selector {
   .label-selector-controlls {
-    border-bottom: 1px solid $element-inline-divider;
+    border-bottom: 1px solid $color-ut-9;
     align-items: center;
     height: 5.6rem;
     min-height: 5.6rem;
@@ -162,11 +163,11 @@
         text-indent: -999px;
         border-radius: 5px;
         cursor: pointer;
-        background-color: $text;
+        background-color: $color-ut-10;
       }
 
       li.active {
-        background-color: $sub-headlines;
+        background-color: $color-ut-2;
       }
     }
   }
@@ -184,9 +185,9 @@
     .label-selector-item {
       padding: 1rem 0.1rem;
       text-align: center;
-      background-color: $button;
-      border-right: 1px solid $element-inline-divider;
-      border-bottom: 1px solid $element-inline-divider;
+      background-color: $color-ut-8;
+      border-right: 1px solid $color-ut-9;
+      border-bottom: 1px solid $color-ut-9;
       font-size: 16px;
       height: 115px;
 
@@ -200,7 +201,7 @@
 
       &.selected {
         position: relative;
-        background-color: $button-selected;
+        background-color: $color-ut-8;
         z-index: 2;
         box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
 
@@ -216,16 +217,16 @@
           position: absolute;
           top: 7px;
           right: 7px;
-          color: $icon-hover;
+          color: $color-ut-10;
         }
       }
 
       &:hover {
-        background-color: $button-selected;
+        background-color: $color-ut-8;
         cursor: pointer;
 
         .icon {
-          color: $icon-hover;
+          color: $color-ut-10;
         }
       }
     }
@@ -239,8 +240,8 @@
   height: 2.8rem;
   min-height: 2.8rem;
   font-size: 19px;
-  background-color: $button-selected;
-  border-top: 2px solid $element-inline-divider;
+  background-color: $color-ut-8;
+  border-top: 2px solid $color-ut-9;
   cursor: pointer;
   font-weight: bold;
 
@@ -249,16 +250,16 @@
     z-index: 2000;
 
     &:first-child {
-      border-right: 1px solid $element-inline-divider;
+      border-right: 1px solid $color-ut-9;
     }
 
     &:hover {
-      color: $icon-hover;
+      color: $color-ut-10;
     }
 
     &:active {
-      background-color: $icon-hover;
-      color: $button-selected;
+      background-color: $color-ut-10;
+      color: $color-ut-8;
     }
   }
 }
@@ -271,7 +272,7 @@
     font-size: 3rem;
     line-height: 1em;
     color: rgba(213, 217, 221, 0.3);
-    text-shadow: 1px 4px 6px #181d23, 0 0 0 #000, 1px 4px 6px #181d23;
+    text-shadow: 1px 4px 6px $color-ut-1, 0 0 0 $color-ut-9, 1px 4px 6px $color-ut-1;
     text-align: center;
     margin-top: 50%;
   }

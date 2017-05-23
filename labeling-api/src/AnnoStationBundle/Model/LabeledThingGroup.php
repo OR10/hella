@@ -64,4 +64,20 @@ class LabeledThingGroup
     {
         $this->taskId = $taskId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLineColor()
+    {
+        return $this->lineColor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroupType()
+    {
+        return $this->groupType;
+    }
 }
