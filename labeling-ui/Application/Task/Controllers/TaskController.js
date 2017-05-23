@@ -289,6 +289,8 @@ class TaskController {
 
             this.selectedLabelStructureObject = labelStructureObject;
 
+            // TODO: Fix the root cause for the reason that the labelStructureObject is different to the one
+            //       in the label selector controller $on method!
             $scope.$root.$emit('selected-paper-shape:after', this.selectedPaperShape, labelStructureObject);
           });
       }
