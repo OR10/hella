@@ -54,6 +54,9 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       'groupType': 'extension-sign-group',
       'lineColor': '15',
       'groupIds': null,
+      'classes': [],
+      'incomplete': true,
+      'taskId': 'TASK-ID',
     };
 
     const commonModule = new Common();
@@ -134,6 +137,8 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       groupType: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
+      classes: [],
+      incomplete: true,
     });
 
     const serializedGroup = {
@@ -142,6 +147,9 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       lineColor: 1,
       groupIds: [],
       type: 'AnnoStationBundle.Model.LabeledThingGroup',
+      classes: [],
+      incomplete: true,
+      taskId: 'TASK-ID',
     };
 
     groupGateway.deleteLabeledThingGroup(labeledThingGroup);
@@ -163,6 +171,8 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       groupType: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
+      classes: [],
+      incomplete: true,
     });
 
     const serializedGroup = {
@@ -171,6 +181,9 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       lineColor: 1,
       groupIds: [],
       type: 'AnnoStationBundle.Model.LabeledThingGroup',
+      classes: [],
+      incomplete: true,
+      taskId: 'TASK-ID',
     };
 
     groupGateway.createLabeledThingGroup(task, labeledThingGroup);

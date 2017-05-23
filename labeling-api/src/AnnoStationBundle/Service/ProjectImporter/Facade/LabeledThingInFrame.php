@@ -36,4 +36,19 @@ class LabeledThingInFrame
 
         return $labeledThingInFrameFacade->save($labeledThingInFrame);
     }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return int
+     */
+    public function getMaxLabeledThingInFrameImportLineNoForTask(Model\LabelingTask $labelingTask)
+    {
+        $labeledThingFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
+
+        return $labeledThingFacade->getMaxLabeledThingInFrameImportLineNoForTask($labelingTask);
+    }
 }

@@ -1,89 +1,15 @@
-// UseTree colors
-$color-ut-1: #E8EDF3;
-$color-ut-2: #D0D6DD;
-$color-ut-3: #88919C;
-$color-ut-4: #B2BBC4;
-$color-ut-5: #2B3036;
-$color-ut-6: #BFDB31;
-$color-ut-7: #FFFFFF;
-$color-ut-8: #3D444C;
-$color-ut-9: #2B3036;
-$color-ut-10: #7B8999;
-$color-ut-11: #D7DDE4;
+$color-ut-lightgrey-1: #E8EDF3;
+$color-ut-lightgrey-2: #D7DDE4;
+$color-ut-lightgrey-3: #D0D6DD;
+$color-ut-lightgrey-4: #B2BBC4;
 
-// Color definitions
-$color-green: #bedb31;
-$color-midgreen: #919ca9;
-$color-darkgreen-1: #727f8f;
-$color-darkgreen-2: #343b43;
-$color-applegreen: #008000;
+$color-ut-midgrey-1: #88919C;
+$color-ut-midgrey-2: #7B8999;
+$color-ut-midgrey-3: #3D444C;
 
-$color-very-lightblue: #f5f5f5;
-$color-lightblue: #dadfe6;
-$color-midblue-1: #8A2BE2;
-$color-midblue-2: #2A60BB;
-$color-darkblue-1: #2b3036;
-$color-darkblue-2: #232a33;
-$color-darkblue-3: #353b42;
+$color-ut-darkgrey-1: #2B3036;
+$color-ut-darkgrey-2: #2B3036;
 
-$color-darkgrey: $color-ut-1; // UseTree
-$color-midgrey: #30363c;
-$color-lightgrey-1: #BBBBBB;
-$color-lightgrey-2: #cdcdcd;
-$color-very-lightgrey: #ddd;
-
-$color-white: #fff;
-$color-black: #000;
-$color-almost-black: #1a1a1a;
-
-$color-darkred-1: #a00;
-$color-darkred-2: #585858;
-$color-midred: #A52A2A;
-$color-lightred: #FF0000;
-
-$color-purple: #777777;
-
-$color-orange: #FFA500;
-$color-yellow: #FFD700;
-
-$color-active: $color-ut-3;
-$color-overlay: $color-lightblue;
-$color-disabled: $color-midgreen;
-
-// Color variables for usage in Stylesheets
-$body-background: $color-darkgrey;
-$overlay-background: $color-ut-5;
-
-$headlines: $color-ut-8;
-$sub-headlines: $color-lightblue;
-
-$selected-frame: $color-ut-8;
-$selected-box: $color-green;
-$selected-background: $color-darkgreen-1;
-
-$icon: $color-ut-8;
-$icon-hover: $color-ut-10;
-$icon-disabled: $color-midgreen;
-
-$text: $color-ut-5;
-$text-lightbg: $color-ut-5;
-$text-inactive: $color-ut-10;
-
-$element-background: $color-ut-4;
-$element-active: $color-ut-8;
-$element-divider: $color-almost-black;
-$element-inline-divider: $color-darkblue-2;
-$element-border: $color-darkgreen-2;
-
-$frame-tools-background: $color-darkgreen-2;
-
-$button: $color-ut-8;
-$button-active: $color-darkblue-3;
-
-$table-meta-background: $color-ut-1;
-$table-odd-row-background: $color-ut-2;
-$table-even-row-background: $color-ut-11;
-
-$accordion-header-background: $color-darkgreen-2;
-
-$warning: $color-midred;
+$color-ut-yellow: #BFDB31;
+$color-ut-white: #FFFFFF;
+$color-ut-red: #DB315B;

@@ -38,15 +38,18 @@ class LabeledThingGroup extends LabeledObject {
   }
 
   /**
-   * @return {{id: string, groupType: string}}
+   * Convert this model into a datastructure suitable for backend storage
+   *
+   * @return {Object}
    */
   toJSON() {
-    return {
-      id: this.id,
-      groupType: this.type,
-      lineColor: this.lineColor,
-      groupIds: clone(this.groupIds),
-    };
+    const {type, task, lineColor, groupIds} = this;
+    return Object.assign(super.toJSON(), {
+      groupType: type,
+      lineColor: lineColor,
+      groupIds: clone(groupIds),
+      taskId: task.id,
+    });
   }
 }
 

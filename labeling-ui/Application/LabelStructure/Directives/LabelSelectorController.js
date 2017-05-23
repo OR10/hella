@@ -146,6 +146,8 @@ export default class LabelSelectorController {
       if (newSelectedPaperShape === null) {
         return this._clearLabelSelector();
       }
+      // TODO: Find the root caus why the selectedLabelStructureObject here is different from the one in the
+      //       controller where we emitted it
       this.selectedLabelStructureObject = selectedLabeledStructureObject;
       this._startWithFirstPageOfLabelSelector();
     });
