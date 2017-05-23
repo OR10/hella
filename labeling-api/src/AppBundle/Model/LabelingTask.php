@@ -193,7 +193,6 @@ class LabelingTask
      */
     private $taskConfigurationId;
 
-
     /**
      * @var array
      * @CouchDB\Field(type="mixed")
@@ -201,6 +200,12 @@ class LabelingTask
     private $attentionFlags = [
         'task' => false,
     ];
+
+    /**
+     * @var bool
+     * @CouchDB\Field(type="mixed")
+     */
+    private $labelDataImportInProgress = false;
 
     /**
      * @param Video     $video
@@ -750,5 +755,21 @@ class LabelingTask
         }
 
         return true;
+    }
+
+    /**
+     * @param bool $labelDataImportInProgress
+     */
+    public function setLabelDataImportInProgress(bool $labelDataImportInProgress)
+    {
+        $this->labelDataImportInProgress = $labelDataImportInProgress;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLabelDataImportInProgress()
+    {
+        return $this->labelDataImportInProgress;
     }
 }

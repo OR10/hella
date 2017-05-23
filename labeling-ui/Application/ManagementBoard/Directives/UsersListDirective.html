@@ -1,40 +1,43 @@
-<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-<div class="grid-block shrink">
-    <div class="grid-content">
-        <table class="table more-space auto-size hover"
-               ng-hide="vm.loadingInProgress"
-        >
-            <thead>
-            <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Last Login</th>
-                <th>Expires At</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="user in vm.users">
-                <td ui-sref="labeling.users.detail({userId: user.id})">{{user.username}}</td>
-                <td ui-sref="labeling.users.detail({userId: user.id})">{{user.email}}</td>
-                <td ui-sref="labeling.users.detail({userId: user.id})">{{user.roles | singleRole | readableRole}}</td>
-                <td ui-sref="labeling.users.detail({userId: user.id})">{{user.lastLogin === null ? 'Never' : (user.lastLogin | date:'d. MMM yyyy, HH:mm')}}</td>
-                <td ui-sref="labeling.users.detail({userId: user.id})">{{user.expiresAt === null ? 'Never' : (user.expiresAt | date:'d. MMM yyyy')}}</td>
-                <td class="action-cell">
-                    <button ng-if="vm.userPermissions.canDeleteUserFromOrganisation"
-                            tooltip="Remove from Organisation: {{user.username}}"
-                            ng-click="vm.removeUserFromOrganisation(user)">
-                        <i class="fa fa-close"></i>
-                    </button>
-                    <button ng-if="vm.userPermissions.canDeleteUser"
-                            tooltip="Delete: {{user.username}}"
-                            ng-click="vm.deleteUser(user)">
-                        <i class="fa fa-trash-o"></i>
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+<div class="grid-frame vertical">
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+    <h1>Users</h1>
+    <div class="grid-block shrink">
+        <div class="grid-content">
+            <table class="table hover"
+                   ng-hide="vm.loadingInProgress"
+            >
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Last Login</th>
+                    <th>Expires At</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="user in vm.users">
+                    <td ui-sref="labeling.users.detail({userId: user.id})">{{user.username}}</td>
+                    <td ui-sref="labeling.users.detail({userId: user.id})">{{user.email}}</td>
+                    <td ui-sref="labeling.users.detail({userId: user.id})">{{user.roles | singleRole | readableRole}}</td>
+                    <td ui-sref="labeling.users.detail({userId: user.id})">{{user.lastLogin === null ? 'Never' : (user.lastLogin | date:'d. MMM yyyy, HH:mm')}}</td>
+                    <td ui-sref="labeling.users.detail({userId: user.id})">{{user.expiresAt === null ? 'Never' : (user.expiresAt | date:'d. MMM yyyy')}}</td>
+                    <td class="action-cell">
+                        <button ng-if="vm.userPermissions.canDeleteUserFromOrganisation"
+                                tooltip="Remove from Organisation: {{user.username}}"
+                                ng-click="vm.removeUserFromOrganisation(user)">
+                            <i class="fa fa-close"></i>
+                        </button>
+                        <button ng-if="vm.userPermissions.canDeleteUser"
+                                tooltip="Delete: {{user.username}}"
+                                ng-click="vm.deleteUser(user)">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

@@ -50,7 +50,7 @@
         <div class="grid-content noscroll"
              ng-hide="vm.readOnly"
         >
-            <button ng-hide="vm.selectedPaperShape === null"
+            <button ng-show="vm.showOpenCloseBrackets()"
                     ng-click="vm.handleSetOpenBracketClicked()"
                     tooltip="Set the start frame of the active shape">
                 <i class="icon icon-selection-start"></i>
@@ -62,7 +62,7 @@
                 <i class="icon icon-control-backwards"></i>
             </button>
         </div>
-        <div class="grid-content noscroll">
+        <div class="grid-content noscroll previous-frame-button">
             <button ng-click="vm.handlePreviousFrameClicked()"
                     tooltip="Jump to previous frame">
                 <i class="icon icon-control-previous"></i>
@@ -103,7 +103,7 @@
         <div class="grid-content noscroll"
              ng-hide="vm.readOnly"
         >
-            <button ng-hide="vm.selectedPaperShape === null"
+            <button ng-show="vm.showOpenCloseBrackets()"
                     ng-click="vm.handleSetCloseBracketClicked()"
                     tooltip="Set the end frame of the active shape">
                 <i class="icon icon-selection-end"></i>
@@ -140,7 +140,7 @@
                 ></i>
             </button>
         </div>
-        <div class="grid-content noscroll" ng-if="vm.task.taskType === 'object-labeling'">
+        <div class="grid-content noscroll">
             <button ng-click="vm.handleShowCrosshairsToggle()"
                     tooltip="Show/Hide the crosshairs view inside the viewer">
                 <i class="icon fa fa-crosshairs"
@@ -151,7 +151,7 @@
         </div>
         <div class="grid-content noscroll">
             <button id="interpolate-shape-button"
-                    ng-hide="vm.readOnly || vm.selectedPaperShape === null"
+                    ng-show="vm.canSelectedPaperShapeBeInterpolated()"
                     ng-click="vm.handleInterpolation()"
                     tooltip="Interpolate shape between its start and end frames">
                 <i class="icon icon-selection-generate"></i>
@@ -159,7 +159,7 @@
         </div>
         <div class="grid-content noscroll">
             <button id="delete-shape-button"
-                    ng-hide="vm.readOnly || vm.selectedPaperShape === null"
+                    ng-show="vm.canSelectedPaperShapeBeDeleted()"
                     ng-click="vm.handleDeleteSelectionClicked()"
                     tooltip="Delete the active shape">
                 <i class="icon icon-selection-delete"></i>

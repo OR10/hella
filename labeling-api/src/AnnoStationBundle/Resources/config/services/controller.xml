@@ -68,15 +68,6 @@
         </service>
 
         <service
-                id="annostation.labeling_api.controller.api.task.labeled__frame"
-                class="AnnoStationBundle\Controller\Api\Task\LabeledFrame">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.service.task_incomplete"/>
-            <argument type="service" id="annostation.labeling_api.service.authorization"/>
-        </service>
-
-        <service
                 id="annostation.labeling_api.controller.api.task.labeled_thing"
                 class="AnnoStationBundle\Controller\Api\Task\LabeledThing">
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
@@ -109,6 +100,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
         </service>
@@ -207,10 +199,12 @@
                 id="annostation.labeling_api.controller.api.organisation.project"
                 class="AnnoStationBundle\Controller\Api\Organisation\Project">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
@@ -284,6 +278,8 @@
         </service>
 
         <service id="annostation.labeling_api.controller.api.system" class="AnnoStationBundle\Controller\Api\System">
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+            <argument type="service" id="guzzle.client"/>
             <argument>%rabbitmq_host%</argument>
             <argument>%rabbitmq_management_port%</argument>
             <argument>%rabbitmq_user%</argument>

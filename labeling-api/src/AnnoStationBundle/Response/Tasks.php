@@ -93,6 +93,7 @@ class Tasks
                 'project'                     => $projectFacade->find($labelingTask->getProjectId()),
                 'assignmentHistory'           => $labelingTask->getAssignmentHistory(),
                 'taskAttentionFlag'           => $labelingTask->isTaskAttentionFlag(),
+                'labelDataImportInProgress'   => $labelingTask->isLabelDataImportInProgress(),
             ];
         }
 

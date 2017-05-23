@@ -2,16 +2,20 @@ import {equals} from 'angular';
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
+import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
+import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
+import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
+
 /**
  * @property {string} labeledObjectType
- * @property {LabeledObject} labeledObject
  * @property {LegacyLabelStructureInterface} structure
  * @property {Object} annotation
  * @property {Array<{header: string, offset: int?, limit: init?}>} sections
  * @property {Task} task
  * @property {FramePosition} framePosition
- * @property {boolean} isCompleted
+ * @property {PaperShape} selectedPaperShape
  */
+
 export default class LabelSelectorController {
   /**
    * @param {angular.$scope} $scope
@@ -138,32 +142,34 @@ export default class LabelSelectorController {
      */
     this.accordionControl = {};
 
+    $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
+      if (newSelectedPaperShape === null) {
+        return this._clearLabelSelector();
+      }
+      // TODO: Find the root caus why the selectedLabelStructureObject here is different from the one in the
+      //       controller where we emitted it
+      this.selectedLabelStructureObject = selectedLabeledStructureObject;
+      this._startWithFirstPageOfLabelSelector();
+    });
+
     $scope.$watchGroup(
       [
         'vm.labelStructure',
         'vm.selectedLabelStructureObject',
-        'vm.selectedLabeledObject',
       ],
       ([
-        newLabelStructure,
-        newSelectedLabelStructureObject,
-        newSelectedLabeledObject,
-      ])=> {
-        if (newLabelStructure === null || newSelectedLabelStructureObject === null || newSelectedLabeledObject === null) {
-          this.pages = null;
-          this.activePageIndex = null;
-          this.labelingInstructions = null;
-          this.choices = null;
-          return;
+         newLabelStructure,
+         newSelectedLabelStructureObject,
+       ]) => {
+        if (newLabelStructure === null || newSelectedLabelStructureObject === null) {
+          return this._clearLabelSelector();
         }
-
-        this.activePageIndex = null;
-        this._updatePagesAndChoices();
+        this._startWithFirstPageOfLabelSelector();
       });
 
     // Store and process choices made by the user
     $scope.$watch('vm.choices', newChoices => {
-      const labeledObject = this.selectedLabeledObject;
+      const labeledObject = this._getSelectedLabeledObject();
       if (!labeledObject || newChoices === null) {
         return;
       }
@@ -176,11 +182,9 @@ export default class LabelSelectorController {
         return;
       }
 
-      this._$rootScope.$emit('shape:class-update:before', labels);
-
       labeledObject.setClasses(labels);
-
       let labeledThingNeedsUpdate = false;
+
       if (labeledObject instanceof LabeledThingInFrame) {
         const labeledThingInFrame = labeledObject;
         const {labeledThing} = labeledThingInFrame;
@@ -215,6 +219,45 @@ export default class LabelSelectorController {
   }
 
   /**
+   * Sets active page to null and updates pages an choices
+   *
+   * @private
+   */
+  _startWithFirstPageOfLabelSelector() {
+    this.activePageIndex = null;
+    this._updatePagesAndChoices();
+  }
+
+  /**
+   * Clears some variables of the label selector
+   *
+   * @private
+   */
+  _clearLabelSelector() {
+    this.pages = null;
+    this.activePageIndex = null;
+    this.labelingInstructions = null;
+    this.choices = null;
+  }
+
+  /**
+   * @returns {LabeledThingInFrame}
+   * @private
+   */
+  _getSelectedLabeledObject() {
+    switch (true) {
+      case this.selectedPaperShape instanceof PaperThingShape:
+        return this.selectedPaperShape.labeledThingInFrame;
+      case this.selectedPaperShape instanceof PaperGroupShape:
+        return this.selectedPaperShape.labeledThingGroupInFrame;
+      case this.selectedPaperShape instanceof PaperFrame:
+        return this.selectedPaperShape.labeledFrame;
+      default:
+        return null;
+    }
+  }
+
+  /**
    * Generate a valid set of pages to be rendered to the Wizzard View
    *
    * Pages depend on the `labelObject`, the `structure` as well as the `annotation`
@@ -222,11 +265,22 @@ export default class LabelSelectorController {
    * @private
    */
   _updatePagesAndChoices() {
-    const classList = this.selectedLabeledObject.extractClassList();
+    const selectedLabeledObject = this._getSelectedLabeledObject();
+    if (selectedLabeledObject === null) {
+      return;
+    }
+    const classList = selectedLabeledObject.extractClassList();
     const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
       this.selectedLabelStructureObject,
       classList
     );
+
+    // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
+    // TODO: find the source of the race condition and eliminate the problem there!
+    if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, this.selectedPaperShape)) {
+      return;
+    }
+
     const newChoices = {};
     const newPages = [];
     const seenPages = {};
@@ -254,8 +308,8 @@ export default class LabelSelectorController {
         }
         if (this.choices[id] !== null) {
           // Remove the chosen value from the labelsObject
-          this.selectedLabeledObject.setClasses(
-            this.selectedLabeledObject.classes.filter(
+          selectedLabeledObject.setClasses(
+            selectedLabeledObject.classes.filter(
               label => label !== this.choices[id]
             )
           );
@@ -279,7 +333,7 @@ export default class LabelSelectorController {
    */
   _storeUpdatedLabeledObject(updateAssociatedLabeledThing = false) {
     // Store reference in case it is changed while being stored.
-    const selectedLabeledObject = this.selectedLabeledObject;
+    const selectedLabeledObject = this._getSelectedLabeledObject();
 
     switch (true) {
       case selectedLabeledObject instanceof LabeledThingInFrame:
@@ -303,8 +357,7 @@ export default class LabelSelectorController {
    * @private
    */
   _storeUpdatedLabeledThingInFrame(labeledThingInFrame, updateAssociatedLabeledThing) {
-    labeledThingInFrame.incomplete = !this.isCompleted;
-
+    labeledThingInFrame.incomplete = !this._isCompleted();
     let storagePromise = Promise.resolve();
     if (updateAssociatedLabeledThing) {
       const {labeledThing} = labeledThingInFrame;
@@ -328,10 +381,10 @@ export default class LabelSelectorController {
       labeledFrame.id = this._entityIdService.getUniqueId();
     }
 
-    labeledFrame.incomplete = !this.isCompleted;
+    labeledFrame.incomplete = !this._isCompleted();
 
     return this._labeledFrameGateway.saveLabeledFrame(
-      this.task.id,
+      this.task,
       this.framePosition.position,
       labeledFrame
     );
@@ -383,6 +436,47 @@ export default class LabelSelectorController {
     }
   }
 
+  /**
+   * @param {LabelStructureObject} labelStructureObject
+   * @param {PaperShape} selectedPaperShape
+   * @return {boolean}
+   * @private
+   */
+  _labelStructureFitsLabeledObject(labelStructureObject, selectedPaperShape) {
+    let labeledObjectType;
+
+    // For some shapes the database shape type and the requirements shape type are not the same.
+    // Therefor we need a mapping!
+    switch (true) {
+      case selectedPaperShape instanceof PaperThingShape:
+        labeledObjectType = this._normalizeLabeledObjectType(selectedPaperShape.labeledThingInFrame.shapes[0].type);
+        break;
+      case selectedPaperShape instanceof PaperGroupShape:
+        labeledObjectType = 'group-rectangle';
+        break;
+      case selectedPaperShape instanceof PaperFrame:
+        labeledObjectType = 'frame-shape';
+        break;
+      default:
+        throw new Error('Can not get shape type of unknown paper shape');
+    }
+
+    return labelStructureObject.shape === labeledObjectType;
+  }
+
+  /**
+   * @param {string} labeledObjectShapeType
+   * @return {string}
+   * @private
+   */
+  _normalizeLabeledObjectType(labeledObjectShapeType) {
+    switch (labeledObjectShapeType) {
+      case 'cuboid3d':
+        return 'cuboid';
+      default:
+        return labeledObjectShapeType;
+    }
+  }
 }
 
 LabelSelectorController.$inject = [

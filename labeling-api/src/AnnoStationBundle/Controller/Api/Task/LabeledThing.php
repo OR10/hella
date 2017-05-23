@@ -86,7 +86,7 @@ class LabeledThing extends Controller\Base
         if ($request->query->get('incompleteOnly', false) === 'true') {
             $labeledThings = $this->labeledThingFacade->getIncompleteLabeledThings($task);
         } else {
-            $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
+            $labeledThings = $this->labeledThingFacade->findByTaskId($task);
         }
 
         return View\View::create()->setData(

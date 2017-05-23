@@ -23,7 +23,7 @@ class Legacy extends Helper\ClassesStructure
      *
      * @return array
      */
-    public function getStructure(Model\LabeledThingInFrame $labeledThingInFrame)
+    public function getLabeledThingInFrameStructure(Model\LabeledThingInFrame $labeledThingInFrame)
     {
         $classes = [];
         foreach ($this->labelStructure['children'] as $child) {

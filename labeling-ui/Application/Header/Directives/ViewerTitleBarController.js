@@ -13,6 +13,7 @@ class ViewerTitleBarController {
    * @param {TaskGateway} taskGateway
    * @param labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {FrameIndexService} frameIndexService
    * @param {Object} featureFlags
    */
@@ -26,6 +27,7 @@ class ViewerTitleBarController {
               taskGateway,
               labeledThingGateway,
               labeledThingInFrameGateway,
+              labeledFrameGateway,
               frameIndexService,
               featureFlags) {
     this._$timeout = $timeout;
@@ -73,7 +75,7 @@ class ViewerTitleBarController {
 
     /**
      * @type {LabeledThingGateway}
-     * @private
+     * @protected
      */
     this._labeledThingGateway = labeledThingGateway;
 
@@ -82,6 +84,12 @@ class ViewerTitleBarController {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {LabeledFrameGateway}
+     * @protected
+     */
+    this._labeledFrameGateway = labeledFrameGateway;
 
     /**
      * @type {FrameIndexService}
@@ -152,7 +160,7 @@ class ViewerTitleBarController {
     this._applicationState.viewer.work();
 
     return this._$q.resolve()
-      .then(() => this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id))
+      .then(() => this._labeledThingGateway.getIncompleteLabeledThingCount(this.task))
       .then(result => {
         if (result.count > 0) {
           // Jump to next incomplete directly, if there still is one
@@ -236,7 +244,7 @@ class ViewerTitleBarController {
   }
 
   /**
-   * Jump to the next incomplete ltif
+   * Jump to the next incomplete labeled object
    *
    * A promise is returned, which is fulfilled once the jump and selection is completed.
    *
@@ -244,10 +252,21 @@ class ViewerTitleBarController {
    * @protected
    */
   _jumpToNextIncomplete() {
-    if (this.task.taskType !== 'object-labeling') {
-      return this._$q.resolve();
-    }
+    return this._labeledThingGateway.getIncompleteLabeledThingCount(this.task)
+      .then(incompleteThingResponse => {
+        if (incompleteThingResponse.count > 0) {
+          return this._jumpToNextIncompleteThing();
+        }
+      });
+  }
 
+  /**
+   * Load the next incomplete labeled thing, jump to the frameIndex of this labeled thing and select it.
+   *
+   * @return {Promise}
+   * @protected
+   */
+  _jumpToNextIncompleteThing() {
     return this._$q.resolve()
       .then(() => this._labeledThingInFrameGateway.getNextIncomplete(this.task))
       .then(labeledThingsInFrames => {
@@ -267,6 +286,37 @@ class ViewerTitleBarController {
           this.framePosition.afterFrameChangeOnce('selectNextIncomplete', () => {
             this._selectLabeledThingInFrame(nextIncomplete)
               .then(() => resolve());
+          });
+          this.framePosition.goto(nextIncomplete.frameIndex);
+        });
+      });
+  }
+
+  /**
+   * Load the next incomplete labeled frame, jump to the frameIndex of this labeled frame and enable meta labeling.
+   *
+   * @return {Promise}
+   * @protected
+   */
+  _jumpToNextIncompleteFrame() {
+    return this._$q.resolve()
+      .then(() => this._labeledFrameGateway.getNextIncomplete(this.task))
+      .then(labeledFrames => {
+        if (labeledFrames.length === 0) {
+          return this._$q.resolve();
+        }
+        const nextIncomplete = labeledFrames[0];
+
+        if (this.framePosition.position === nextIncomplete.frameIndex) {
+          // Incomplete frame is the current frame
+          this._$rootScope.$emit('label-structure-type:change', nextIncomplete);
+          return this._$q.resolve();
+        }
+
+        return this._$q(resolve => {
+          this.framePosition.afterFrameChangeOnce('selectNextIncomplete', () => {
+            this._$rootScope.$emit('label-structure-type:change', nextIncomplete);
+            resolve();
           });
           this.framePosition.goto(nextIncomplete.frameIndex);
         });
@@ -319,7 +369,7 @@ class ViewerTitleBarController {
 
   refreshIncompleteCount() {
     this._$scope.$applyAsync(() => {
-      this._labeledThingGateway.getIncompleteLabeledThingCount(this.task.id).then(result => {
+      this._labeledThingGateway.getIncompleteLabeledThingCount(this.task).then(result => {
         this.incompleteCount = result.count;
       });
     });
@@ -341,6 +391,7 @@ ViewerTitleBarController.$inject = [
   'taskGateway',
   'labeledThingGateway',
   'labeledThingInFrameGateway',
+  'labeledFrameGateway',
   'frameIndexService',
   'featureFlags',
 ];

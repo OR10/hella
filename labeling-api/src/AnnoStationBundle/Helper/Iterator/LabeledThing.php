@@ -13,9 +13,9 @@ class LabeledThing implements \IteratorAggregate
     private $labelingTask;
 
     /**
-     * @var Facade\LabelingTask
+     * @var Facade\LabeledThing
      */
-    private $labelingTaskFacade;
+    private $labeledThingFacade;
 
     /**
      * @var array
@@ -23,15 +23,15 @@ class LabeledThing implements \IteratorAggregate
     private $labeledThings = [];
 
     /**
-     * @param Model\LabelingTask  $labelingTask
-     * @param Facade\LabelingTask $labelingTaskFacade
+     * LabeledThing constructor.
      *
-     * @internal param Facade\LabeledThing $labeledThingFacade
+     * @param Model\LabelingTask  $labelingTask
+     * @param Facade\LabeledThing $labeledThingFacade
      */
-    public function __construct(Model\LabelingTask $labelingTask, Facade\LabelingTask $labelingTaskFacade)
+    public function __construct(Model\LabelingTask $labelingTask, Facade\LabeledThing $labeledThingFacade)
     {
         $this->labelingTask       = $labelingTask;
-        $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->labeledThingFacade = $labeledThingFacade;
     }
 
     public function getIterator()
@@ -41,7 +41,7 @@ class LabeledThing implements \IteratorAggregate
 
     private function labeledThingIteratorGenerator()
     {
-        $this->labeledThings = $this->labelingTaskFacade->getLabeledThings($this->labelingTask);
+        $this->labeledThings = $this->labeledThingFacade->findByTaskId($this->labelingTask);
 
         foreach ($this->labeledThings as $labeledThings) {
             yield $labeledThings;

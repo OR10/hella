@@ -22,8 +22,8 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
 
     const {startCuboid, endCuboid} = this._equalizeVertexCount(clone(ghostShape), clone(endShape));
 
-    const steps = [...Array(8).keys()];
-    steps.forEach(index => {
+    const cuboidIndices = [...Array(8).keys()];
+    cuboidIndices.forEach(index => {
       const newVertex = this._cuboid3dCalculateNewVertex(
           startCuboid.vehicleCoordinates[index],
           endCuboid.vehicleCoordinates[index],

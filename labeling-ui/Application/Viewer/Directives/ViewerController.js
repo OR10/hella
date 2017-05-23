@@ -10,6 +10,7 @@ import Environment from '../../Common/Support/Environment';
 
 import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
+import PaperFrame from '../Shapes/PaperFrame';
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -345,7 +346,7 @@ class ViewerController {
       (shape, frameIndex) => shape.labeledThingInFrame.ghost
         ? `${frameIndex}.${shape.id}`
         : `${shape.labeledThingInFrame.frameIndex}.${shape.id}`,
-      500
+      100
     );
 
     // Store a reference to the LayerManager for E2E tests.
@@ -664,6 +665,14 @@ class ViewerController {
           );
         }, 100);
       });
+
+    // TODO: look for a better position for this kind of handling?!
+    // Handle the change from thing to meta labeling here.
+    this._$rootScope.$on('label-structure-type:change', (event, labeledFrame) =>{
+      this._thingLayerContext.withScope(() => {
+        this.selectedPaperShape = new PaperFrame(labeledFrame);
+      });
+    });
 
     // Initial prefetching of all frames
     if (this.task.taskType === 'object-labeling') {
@@ -1088,6 +1097,10 @@ class ViewerController {
       return Promise.resolve(null);
     }
 
+    if (this.selectedPaperShape instanceof PaperFrame) {
+      return Promise.resolve(null);
+    }
+
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     return this._ghostedLabeledThingInFrameBuffer.add(
@@ -1239,7 +1252,6 @@ class ViewerController {
    * @private
    */
   _onThingCreate(paperShape) {
-    this._$rootScope.$emit('shape:add:before');
     const newLabeledThingInFrame = paperShape.labeledThingInFrame;
     const newLabeledThing = newLabeledThingInFrame.labeledThing;
 
@@ -1285,8 +1297,6 @@ class ViewerController {
    * @private
    */
   _onGroupCreate(paperGroupShape) {
-    this._$rootScope.$emit('shape:add:before');
-
     let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(this._thingLayerContext, paperGroupShape.bounds);
     // Service finds the group shape itself, so we need to remove the shape id from the array
     shapesInGroup = shapesInGroup.filter(shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));

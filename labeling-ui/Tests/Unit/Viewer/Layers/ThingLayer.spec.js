@@ -19,6 +19,7 @@ describe('ThingLayer test suite', () => {
   // Service mocks
   let loggerService;
   let toolService;
+  let labeledFrameGateway;
   let viewerMouseCursorService;
   let timeoutService;
   let applicationState;
@@ -36,6 +37,9 @@ describe('ThingLayer test suite', () => {
 
     viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['setMouseCursor']);
     $provide.service('viewerMouseCursorService', () => viewerMouseCursorService);
+
+    labeledFrameGateway = jasmine.createSpyObj('labeledFrameGateway', ['getLabeledFrame', 'saveLabeledFrame', 'deleteLabeledFrame']);
+    $provide.service('labeledFrameGateway', () => labeledFrameGateway);
 
     paperScope = jasmine.createSpy('paperScope');
     paperScope.view = jasmine.createSpyObj('scope.view', ['update']);

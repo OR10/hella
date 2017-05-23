@@ -135,6 +135,8 @@ class LabeledThing
     }
 
     /**
+     * @param Model\LabelingTask $task
+     *
      * @return Model\LabeledThing[]
      */
     public function findByTaskId(Model\LabelingTask $task)
@@ -154,5 +156,48 @@ class LabeledThing
     {
         $this->documentManager->remove($labeledThing);
         $this->documentManager->flush();
+    }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return int
+     */
+    public function getMaxLabeledThingImportLineNoForTask(Model\LabelingTask $labelingTask)
+    {
+        $documentManager = $this->documentManager
+            ->createQuery('annostation_labeled_thing_import_line_number_001', 'view')
+            ->onlyDocs(false)
+            ->setReduce(true)
+            ->setGroupLevel(1)
+            ->setStartKey([$labelingTask->getId(), null])
+            ->setEndKey([$labelingTask->getId(), []]);
+
+        $response = $documentManager->execute()->toArray();
+
+        if (empty($response)) {
+            return -1;
+        }
+
+        return $response[0]['value'];
+    }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @param                    $lineNo
+     *
+     * @return Model\LabeledThingInFrame[]
+     */
+    public function getLabeledThingForImportedLineNo(Model\LabelingTask $labelingTask, $lineNo)
+    {
+        $documentManager = $this->documentManager
+            ->createQuery('annostation_labeled_thing_import_line_number_001', 'view')
+            ->onlyDocs(true)
+            ->setReduce(false)
+            ->setKey([$labelingTask->getId(), (string) $lineNo]);
+
+        $response = $documentManager->execute()->toArray();
+
+        return $response[0];
     }
 }

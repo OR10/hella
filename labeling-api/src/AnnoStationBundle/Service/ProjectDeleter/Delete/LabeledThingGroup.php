@@ -3,42 +3,18 @@
 namespace AnnoStationBundle\Service\ProjectDeleter\Delete;
 
 use AppBundle\Model;
-use AppBundle\Service as AppBundleService;
-use AnnoStationBundle\Service;
-use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\LabeledThingGroup as LabeledThingGroupFacadeFactory;
 
 class LabeledThingGroup
 {
     /**
-     * @var Facade\LabeledThingGroup
+     * @var LabeledThingGroupFacadeFactory\FacadeInterface
      */
-    private $labeledThingGroupFacade;
+    private $labeledThingGroupFacadeFactory;
 
-    /**
-     * @var AppBundleService\DatabaseDocumentManagerFactory
-     */
-    private $databaseDocumentManagerFactory;
-
-    /**
-     * @var Service\TaskDatabaseCreator
-     */
-    private $taskDatabaseCreatorService;
-
-    /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
-
-    public function __construct(
-        Facade\LabeledThingGroup $labeledThingGroupFacade,
-        AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
-        Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $pouchdbFeatureEnabled
-    ) {
-        $this->labeledThingGroupFacade        = $labeledThingGroupFacade;
-        $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
-        $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
-        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
+    public function __construct(LabeledThingGroupFacadeFactory\FacadeInterface $labeledThingGroupFacadeFactory)
+    {
+        $this->labeledThingGroupFacadeFactory = $labeledThingGroupFacadeFactory;
     }
 
     /**
@@ -46,16 +22,10 @@ class LabeledThingGroup
      */
     public function delete(Model\LabelingTask $labelingTask)
     {
-        $labeledThingGroupFacade = $this->labeledThingGroupFacade;
-        if ($this->pouchdbFeatureEnabled) {
-            $databaseDocumentManager = $this->databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $this->taskDatabaseCreatorService->getDatabaseName(
-                    $labelingTask->getProjectId(),
-                    $labelingTask->getId()
-                )
-            );
-            $labeledThingGroupFacade = new Facade\LabeledThingGroup($databaseDocumentManager);
-        }
+        $labeledThingGroupFacade = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
 
         $labeledThingGroupIds = $labeledThingGroupFacade->getLabeledThingGroupIdsByTask($labelingTask);
         foreach ($labeledThingGroupIds as $labeledThingGroupId) {

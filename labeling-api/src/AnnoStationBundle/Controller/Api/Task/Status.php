@@ -48,9 +48,15 @@ class Status extends Controller\Base
     private $databaseSecurityPermissionService;
 
     /**
+     * @var Facade\LabeledThing
+     */
+    private $labeledThingFacade;
+
+    /**
      * @param Facade\LabelingTask                           $labelingTaskFacade
      * @param Storage\TokenStorage                          $tokenStorage
      * @param Facade\Project                                $projectFacade
+     * @param Facade\LabeledThing                           $labeledThingFacade
      * @param Service\Authorization                         $authorizationService
      * @param Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
      */
@@ -58,6 +64,7 @@ class Status extends Controller\Base
         Facade\LabelingTask $labelingTaskFacade,
         Storage\TokenStorage $tokenStorage,
         Facade\Project $projectFacade,
+        Facade\LabeledThing $labeledThingFacade,
         Service\Authorization $authorizationService,
         Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
     ) {
@@ -66,6 +73,7 @@ class Status extends Controller\Base
         $this->projectFacade                     = $projectFacade;
         $this->authorizationService              = $authorizationService;
         $this->databaseSecurityPermissionService = $databaseSecurityPermissionService;
+        $this->labeledThingFacade                = $labeledThingFacade;
     }
 
     /**
@@ -104,7 +112,7 @@ class Status extends Controller\Base
         }
 
         if ($task->getTaskType() === 'object-labeling') {
-            $labeledThings = $this->labelingTaskFacade->getLabeledThings($task);
+            $labeledThings = $this->labeledThingFacade->findByTaskId($task);
             foreach ($labeledThings as $labeledThing) {
                 if ($labeledThing->getIncomplete()) {
                     throw new Exception\PreconditionFailedHttpException('One or more LabeledThings are incomplete');

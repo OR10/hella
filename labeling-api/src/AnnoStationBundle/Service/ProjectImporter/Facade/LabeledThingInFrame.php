@@ -1,24 +1,25 @@
 <?php
+
 namespace AnnoStationBundle\Service\ProjectImporter\Facade;
 
-use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame as LabeledThingInFrameFacadeFactory;
 use AppBundle\Model;
 
 class LabeledThingInFrame
 {
     /**
-     * @var Facade\LabeledThingInFrame
+     * @var LabeledThingInFrameFacadeFactory\FacadeInterface
      */
-    private $labeledThingInFrame;
+    private $labeledThingInFrameFacadeFactory;
 
     /**
      * LabeledThing constructor.
      *
-     * @param Facade\LabeledThingInFrame $labeledThingInFrame
+     * @param LabeledThingInFrameFacadeFactory\FacadeInterface $labeledThingInFrameFacadeFactory
      */
-    public function __construct(Facade\LabeledThingInFrame $labeledThingInFrame)
+    public function __construct(LabeledThingInFrameFacadeFactory\FacadeInterface $labeledThingInFrameFacadeFactory)
     {
-        $this->labeledThingInFrame = $labeledThingInFrame;
+        $this->labeledThingInFrameFacadeFactory = $labeledThingInFrameFacadeFactory;
     }
 
     /**
@@ -28,6 +29,26 @@ class LabeledThingInFrame
      */
     public function save(Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        return $this->labeledThingInFrame->save($labeledThingInFrame);
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labeledThingInFrame->getProjectId(),
+            $labeledThingInFrame->getTaskId()
+        );
+
+        return $labeledThingInFrameFacade->save($labeledThingInFrame);
+    }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return int
+     */
+    public function getMaxLabeledThingInFrameImportLineNoForTask(Model\LabelingTask $labelingTask)
+    {
+        $labeledThingFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
+
+        return $labeledThingFacade->getMaxLabeledThingInFrameImportLineNoForTask($labelingTask);
     }
 }

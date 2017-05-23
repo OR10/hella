@@ -193,6 +193,13 @@ PouchDbViewService.VIEWS = {
       }
     },
   },
+  'labeledFrameIncomplete': {
+    map: function(doc) { // eslint-disable-line func-names
+      if (doc.type === 'AppBundle.Model.LabeledFrame') {
+        emit([doc.taskId, doc.incomplete]); // eslint-disable-line no-undef
+      }
+    },
+  },
   'labeledThingInFrameByLabeledThingIdAndFrameIndex': {
     map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
@@ -202,7 +209,7 @@ PouchDbViewService.VIEWS = {
   },
   'labeledThingGroupInFrameByTaskIdAndFrameIndex': {
     map: function(doc) { // eslint-disable-line func-names
-      if (doc.type === 'AppBundle.Model.LabeledThing') {
+      if (doc.type === 'AppBundle.Model.LabeledThing' && doc.groupIds) {
         doc.groupIds.forEach(
           function(groupId) { // eslint-disable-line func-names
             for (var i = doc.frameRange.startFrameIndex; i <= doc.frameRange.endFrameIndex; i++) { // eslint-disable-line vars-on-top, no-var, id-length

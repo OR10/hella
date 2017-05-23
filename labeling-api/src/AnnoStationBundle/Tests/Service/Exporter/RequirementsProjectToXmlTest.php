@@ -127,7 +127,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             $databaseDocumentManager = $this->getDocumentManagerForTask($task);
             $this->labeledFrameFacade = new Facade\LabeledFrame($databaseDocumentManager);
         }
-        $labeledFrame = Tests\Helper\LabeledFrameBuilder::create($task, 1)
+        $labeledFrame = Tests\Helper\LabeledFrameBuilder::create($task, 0)
             ->withClasses(['sun', 'summer'])
             ->build();
         $this->labeledFrameFacade->save($labeledFrame);
@@ -223,7 +223,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         );
         $this->createLabeledThingInFrame($labeledThing, 5, [$cuboid5->toArray()], ['u-turn', 'spain']);
 
-        $labeledThingGroup = new Model\LabeledThingGroup($task, 1);
+        $labeledThingGroup = new Model\LabeledThingGroup($task, 1, 'sign');
         $this->labeledThingGroupFacade->save($labeledThingGroup);
 
         $labeledThingWithGroup1 = $this->createLabeledThing($task);

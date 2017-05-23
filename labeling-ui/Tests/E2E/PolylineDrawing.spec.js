@@ -1,9 +1,9 @@
-import mock from 'protractor-http-mock';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
   expectModalToBePresent,
   getMockRequestsMade,
   initApplication,
+  mock,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -17,6 +17,7 @@ describe('Polyline drawing', () => {
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
     sharedMocks = [
+      assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
       assets.mocks.Shared.UserOrganisations,
@@ -189,6 +190,7 @@ describe('Polyline drawing', () => {
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1,
+      assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1IntermediateStep,
       assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.getLabeledThingsInFrame0to4,
       assets.mocks.PolylineDrawing.Shared.StoreLabeledThing,
     ]));
@@ -226,9 +228,7 @@ describe('Polyline drawing', () => {
   it('should keep the polyline shape selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex1,
       assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex1to5,
       assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
     ]));
 

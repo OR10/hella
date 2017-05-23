@@ -8,13 +8,12 @@ export default class LabelSelectorDirective {
   constructor() {
     this.scope = {
       labelStructure: '=',
-      selectedLabeledObject: '=',
       selectedLabelStructureObject: '=',
       task: '=',
       framePosition: '=',
-      isCompleted: '=?',
       labelingInstructions: '=',
       readOnly: '@',
+      selectedPaperShape: '=',
     };
 
     this.template = labelSelectorTemplate;

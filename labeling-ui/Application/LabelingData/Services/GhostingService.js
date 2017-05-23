@@ -27,7 +27,7 @@ class GhostingService {
 
     let foundLtif = null;
     let result = [];
-    let counter = 0;
+    let counter = 1;
 
     const endIndex = Math.max(frameRange.endFrameIndex, endKey);
 
@@ -39,6 +39,9 @@ class GhostingService {
         // in case index == 0 we need to check if there is a ltif for this case
         if (hasLtifForCurrentIndex) {
           foundLtif = labeledThingInFrameLookUpTable.get(index);
+        } else {
+          // If we are at index 0 and there is no given ltif there, copy last found and set frameIndex to 0
+          foundLtif = this._createGhostLabeledThingInFrameForPartialSequence(foundLtif, foundLtif.frameIndex * -1);
         }
         // Create clones of found ltif from current frameindex up to the last found/end
         let partialLabeledThingInFrameSequence = new Array(counter).fill(foundLtif);
@@ -90,8 +93,8 @@ class GhostingService {
   _createGhostLabeledThingInFrameForPartialSequence(ltif, localGhostIndex) {
     return new LabeledThingInFrame({
       id: null,
-      classes: [],
-      ghostClasses: clone(ltif.classes),
+      classes: clone(ltif.classes),
+      ghostClasses: clone(ltif.ghostClasses),
       incomplete: false,
       frameIndex: ltif.frameIndex + localGhostIndex,
       labeledThing: ltif.labeledThing,

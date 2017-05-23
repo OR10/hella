@@ -6,6 +6,7 @@ use crosscan\Logger;
 use crosscan\WorkerPool;
 use crosscan\WorkerPool\Job;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Database\Facade as AnnoStationFacade;
 use AnnoStationBundle\Worker\Jobs;
 use Hagl\WorkerPoolBundle;
 use AnnoStationBundle\Service\ProjectImporter\Facade;
@@ -33,9 +34,14 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     private $project;
 
     /**
-     * @var Model\LabelingTask[]
+     * @var array
      */
-    private $tasks;
+    private $taskIds;
+
+    /**
+     * @var AnnoStationFacade\LabelingTask
+     */
+    private $labelingTaskFacade;
 
     /**
      * @var array
@@ -48,25 +54,35 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         './x:cuboid',
         './x:point',
     ];
+    /**
+     * @var Facade\LabeledFrame
+     */
+    private $labeledFrameFacade;
 
     /**
      * ThingImporter constructor.
      *
-     * @param Service\TaskIncomplete     $taskIncompleteService
-     * @param Facade\LabeledThing        $labeledThingFacade
-     * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
-     * @param Facade\Project             $project
+     * @param Service\TaskIncomplete         $taskIncompleteService
+     * @param Facade\LabeledThing            $labeledThingFacade
+     * @param Facade\LabeledThingInFrame     $labeledThingInFrameFacade
+     * @param Facade\LabeledFrame            $labeledFrameFacade
+     * @param Facade\Project                 $project
+     * @param AnnoStationFacade\LabelingTask $labelingTaskFacade
      */
     public function __construct(
         Service\TaskIncomplete $taskIncompleteService,
         Facade\LabeledThing $labeledThingFacade,
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        Facade\Project $project
+        Facade\LabeledFrame $labeledFrameFacade,
+        Facade\Project $project,
+        AnnoStationFacade\LabelingTask $labelingTaskFacade
     ) {
         $this->taskIncompleteService     = $taskIncompleteService;
         $this->labeledThingFacade        = $labeledThingFacade;
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
+        $this->labeledFrameFacade        = $labeledFrameFacade;
         $this->project                   = $project;
+        $this->labelingTaskFacade        = $labelingTaskFacade;
     }
 
     /**
@@ -76,12 +92,12 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     protected function runJob(Job $job, Logger\Facade\LoggerFacade $logger)
     {
         $xmlImport = new \DOMDocument();
-        $xmlImport->load($job->getXmlImportFilePath());
+        $xmlImport->loadXML($this->beautifyXml($job->getXmlImportFilePath()));
 
         $xpath = new \DOMXPath($xmlImport);
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
 
-        $this->tasks   = $job->getTasks();
+        $this->taskIds = $job->getTaskIds();
         $videoElements = $xpath->query('/x:export/x:video');
         foreach ($videoElements as $videoElement) {
             $things = $xpath->query('./x:thing', $videoElement);
@@ -97,7 +113,13 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                     $thing->getAttribute('type')
                 );
             }
+            $frameLabeling = $xpath->query('./x:frame-labeling', $videoElement);
+            if ($frameLabeling->length > 0) {
+                $this->saveFrameLabeling($xpath, $frameLabeling->item(0));
+            }
         }
+
+        $this->markImportAsComplete();
     }
 
     /**
@@ -111,19 +133,25 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         $start      = $xpath->getAttribute('start');
         $end        = $xpath->getAttribute('end');
 
-        if ($this->tasks[$start]->getId() === $this->tasks[$end]->getId()) {
-            $task         = $this->tasks[$start];
+        if ($this->isStartAndEndTheSameTask($start, $end)) {
+            $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
             $frameMapping = array_flip($task->getFrameNumberMapping());
-            $labeledThing = new Model\LabeledThing($task, $xpath->getAttribute('line-color'));
-            $labeledThing->setOriginalId($originalId);
-            $labeledThing->setFrameRange(
-                new Model\FrameIndexRange(
-                    $frameMapping[$start],
-                    $frameMapping[$end]
-                )
-            );
 
-            $this->labeledThingFacade->save($labeledThing);
+            if ($this->isLabeledThingInFrameElementAlreadyImported($task, $xpath)) {
+                $labeledThing = $this->labeledThingFacade->getLabeledThingForImportedLineNo($task, $xpath->getLineNo());
+            }else{
+                $labeledThing = new Model\LabeledThing($task, $xpath->getAttribute('line-color'));
+                $labeledThing->setImportLineNo($xpath->getLineNo());
+                $labeledThing->setOriginalId($originalId);
+                $labeledThing->setFrameRange(
+                    new Model\FrameIndexRange(
+                        $frameMapping[$start],
+                        $frameMapping[$end]
+                    )
+                );
+
+                $this->labeledThingFacade->save($labeledThing);
+            }
 
             return $labeledThing;
         }
@@ -149,9 +177,9 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         foreach ($shapeElements as $shapeElement) {
             $start = $shapeElement->getAttribute('start');
             $end   = $shapeElement->getAttribute('end');
-            if ($this->tasks[$start]->getId() === $this->tasks[$end]->getId()) {
+            if ($this->isStartAndEndTheSameTask($start, $end)) {
                 /** @var Model\LabelingTask $task */
-                $task         = $this->tasks[$start];
+                $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
                 $frameMapping = array_flip($task->getFrameNumberMapping());
 
                 $projectVideoSettings = $this->project->find($task->getProjectId())->getTaskVideoSettings();
@@ -162,6 +190,9 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                     $frameSkip
                 );
                 foreach ($frameRange as $frame) {
+                    if ($this->isLabeledThingInFrameElementAlreadyImported($task, $shapeElement)) {
+                        continue;
+                    }
                     $shapes              = $this->getShapes(
                         $xpath,
                         $xpath->query(
@@ -176,6 +207,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                         isset($values[$frame]) ? $values[$frame] : [],
                         $shapes
                     );
+                    $labeledThingInFrame->setImportLineNo($shapeElement->getLineNo());
                     $labeledThingInFrame->setIdentifierName($identifier);
 
                     $labeledThingInFrame->setIncomplete(
@@ -194,6 +226,74 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                 }
             }
         }
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @param \DOMElement        $element
+     *
+     * @return bool
+     */
+    private function isLabeledThingInFrameElementAlreadyImported(Model\LabelingTask $task, \DOMElement $element)
+    {
+        $max = $this->labeledThingInFrameFacade->getMaxLabeledThingInFrameImportLineNoForTask($task);
+
+        return $max >= $element->getLineNo();
+    }
+
+    /**
+     * @param \DOMXPath   $xpath
+     * @param \DOMElement $frameLabeling
+     */
+    private function saveFrameLabeling(\DOMXPath $xpath, \DOMElement $frameLabeling)
+    {
+        $values              = $xpath->query('./x:value', $frameLabeling);
+        $valuesByFrameNumber = [];
+        foreach ($values as $value) {
+            $id    = $value->getAttribute('id');
+            $start = $value->getAttribute('start');
+            $end   = $value->getAttribute('end');
+            foreach (range($start, $end) as $frameNumber) {
+                $valuesByFrameNumber[$frameNumber][] = $id;
+            }
+        }
+        $previousValues = [];
+
+        foreach ($valuesByFrameNumber as $frameNumber => $values) {
+            $values = array_values($values);
+            if (count(array_diff($values, $previousValues)) === 0) {
+                continue;
+            }
+
+            $task       = $this->labelingTaskFacade->find($this->taskIds[$frameNumber]);
+            $frameIndex = array_search($frameNumber, $task->getFrameNumberMapping());
+
+            if ($frameIndex === false) {
+                continue;
+            }
+
+            if (count($this->labeledFrameFacade->findBylabelingTask($task, $frameIndex)) > 0) {
+                $previousValues = $values;
+                continue;
+            }
+
+            $labeledFrame = new Model\LabeledFrame($task, $frameIndex);
+            $labeledFrame->setClasses($values);
+            $labeledFrame->setIncomplete($this->taskIncompleteService->isLabeledFrameIncomplete($labeledFrame));
+            $this->labeledFrameFacade->save($labeledFrame);
+            $previousValues = $values;
+        }
+    }
+
+    /**
+     * @param string $start
+     * @param string $end
+     *
+     * @return bool
+     */
+    private function isStartAndEndTheSameTask($start, $end)
+    {
+        return ($this->taskIds[$start] === $this->taskIds[$end]);
     }
 
     /**
@@ -381,6 +481,15 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         return $values;
     }
 
+    private function markImportAsComplete()
+    {
+        foreach ($this->taskIds as $taskId) {
+            $task = $this->labelingTaskFacade->find($taskId);
+            $task->setLabelDataImportInProgress(false);
+            $this->labelingTaskFacade->save($task);
+        }
+    }
+
     /**
      * @param WorkerPool\Job $job
      *
@@ -389,5 +498,19 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     public function supports(WorkerPool\Job $job)
     {
         return $job instanceof Jobs\ThingImporter;
+    }
+
+    /**
+     * @param $xmlPath
+     *
+     * @return string
+     */
+    private function beautifyXml($xmlPath)
+    {
+        $xmlImport = new \DOMDocument();
+        $xmlImport->formatOutput = true;
+        $xmlImport->preserveWhiteSpace = false;
+        $xmlImport->load($xmlPath);
+        return $xmlImport->saveXML();
     }
 }
