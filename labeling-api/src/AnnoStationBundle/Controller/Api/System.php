@@ -8,6 +8,8 @@ use AnnoStationBundle\Controller;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpKernel\Exception;
+use AnnoStationBundle\Service\Authentication;
 
 /**
  * @Rest\Prefix("/api/system")
@@ -18,25 +20,46 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class System extends Controller\Base
 {
     /**
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
+
+    /**
+     * @var GuzzleHttp\Client
+     */
+    private $guzzleClient;
+
+    /**
      * @var string
      */
     private $amqpHost;
+
     /**
      * @var string
      */
     private $amqpManagmentPort;
+
     /**
      * @var string
      */
     private $amqpUsername;
+
     /**
      * @var string
      */
     private $amqpPassword;
 
-    public function __construct($amqpHost, $amqpManagmentPort, $amqpUsername, $amqpPassword)
-    {
+    public function __construct(
+        Authentication\UserPermissions $userPermissions,
+        GuzzleHttp\Client $guzzleClient,
+        $amqpHost,
+        $amqpManagmentPort,
+        $amqpUsername,
+        $amqpPassword
+    ) {
 
+        $this->userPermissions   = $userPermissions;
+        $this->guzzleClient      = $guzzleClient;
         $this->amqpHost          = $amqpHost;
         $this->amqpManagmentPort = $amqpManagmentPort;
         $this->amqpUsername      = $amqpUsername;
@@ -48,14 +71,15 @@ class System extends Controller\Base
      *
      * @Rest\Get("/queues")
      *
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
-     *
      * @return \FOS\RestBundle\View\View
      */
     public function queuedMessagesAction()
     {
-        $client = new GuzzleHttp\Client();
-        $res    = $client->request(
+        if (!$this->userPermissions->hasPermission('canCreateOrganisation')) {
+            throw new Exception\AccessDeniedHttpException();
+        }
+
+        $res    = $this->guzzleClient->request(
             'GET',
             sprintf(
                 'http://%s:%s/api/queues',
