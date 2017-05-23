@@ -99,15 +99,15 @@ class PouchDbLabeledThingInFrameGateway {
     const startkey = [task.id, frameIndex + offset];
     const endkey = [task.id, frameIndex + offset + limit - 1];
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
-
     const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByTaskIdAndFrameIndex'), {
-        startkey,
-        endkey,
+        startkey: startkey,
+        endkey: endkey,
         include_docs: true,
       });
     }).then(result => {
-      const promises = result.rows.map(row => {
+      const rows = result.rows.filter(row => row.doc !== undefined);
+      const promises = rows.map(row => {
         const labeledThingInFrame = row.doc;
         this._revisionManager.extractRevision(labeledThingInFrame);
 
