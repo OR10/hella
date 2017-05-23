@@ -190,6 +190,7 @@ describe('Polyline drawing', () => {
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1,
+      assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1IntermediateStep,
       assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.getLabeledThingsInFrame0to4,
       assets.mocks.PolylineDrawing.Shared.StoreLabeledThing,
     ]));
