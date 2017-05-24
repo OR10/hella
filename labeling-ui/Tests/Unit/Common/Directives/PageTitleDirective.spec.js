@@ -2,9 +2,9 @@ import {module, inject} from 'angular-mocks';
 import PageTitleDirective from 'Application/Common/Directives/PageTitleDirective';
 import ReadableRoleFilterProvider from 'Application/ManagementBoard/Filters/ReadableRoleFilterProvider';
 import SingleRoleFilterProvider from 'Application/ManagementBoard/Filters/SingleRoleFilterProvider';
-import Module from 'Application/Module';
-import AnnoStationUnitTestModuleCreator from 'Tests/Support/AnnoStationUnitTestModule';
-const AnnoStationUnitTestModule = AnnoStationUnitTestModuleCreator(Module);
+import ApplicationModule from 'Application/Module';
+import annoStationUnitTestModuleCreator from 'Tests/Support/AnnoStationUnitTestModule';
+const AnnoStationUnitTestModule = annoStationUnitTestModuleCreator(ApplicationModule);
 
 describe('PageTitle Directive Test Suite', () => {
   const username = 'Unit-Test';
@@ -127,6 +127,4 @@ describe('PageTitle Directive Test Suite', () => {
       expect(usernameElement.text()).toEqual('');
     });
   });
-
-
 });

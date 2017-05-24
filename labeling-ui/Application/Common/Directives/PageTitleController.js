@@ -17,7 +17,7 @@ class PageTitleController {
      */
     this._organisationService = organisationService;
 
-    if(this.title === undefined) {
+    if (this.title === undefined) {
       this.title = 'AnnoStation';
     }
 
