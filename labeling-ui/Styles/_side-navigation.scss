@@ -13,7 +13,7 @@ $side-navigation-main-area-top-and-bottom-spacing: 10px;
   width: $side-navigation-width;
   height: 100%;
 
-  background-color: $color-ut-9;
+  background-color: $color-ut-darkgrey-1;
 
   &__top-area {
     @include grid-block;
@@ -109,13 +109,13 @@ $side-navigation-main-area-top-and-bottom-spacing: 10px;
 
   &__icon {
     font-size: $side-navigation-icon-size;
-    color: $color-ut-1;
+    color: $color-ut-lightgrey-1;
   }
 
   /* Button highlight on active route */
   &__button--active {
     .side-navigation__icon {
-      color: $color-ut-6;
+      color: $color-ut-yellow;
     }
   }
 }
