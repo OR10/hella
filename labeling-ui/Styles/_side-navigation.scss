@@ -1,3 +1,4 @@
+$side-navigation-background-color: $color-ut-darkgrey-1;
 $side-navigation-width: 80px;
 $side-navigation-top-and-bottom-spacing: 16px;
 $side-navigation-icon-size: 48px;
@@ -13,7 +14,7 @@ $side-navigation-main-area-top-and-bottom-spacing: 10px;
   width: $side-navigation-width;
   height: 100%;
 
-  background-color: $color-ut-darkgrey-1;
+  background-color: $side-navigation-background-color;
 
   &__top-area {
     @include grid-block;
@@ -35,6 +36,47 @@ $side-navigation-main-area-top-and-bottom-spacing: 10px;
     align-items: center;
 
     margin-bottom: $side-navigation-top-and-bottom-spacing;
+  }
+
+  &__fader-area {
+    position: relative;
+    flex: 1 1 auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    overflow: hidden;
+  }
+
+  @mixin side-bar-fader-gradient($direction) {
+    background: linear-gradient(
+                    to #{$direction},
+                    rgba($side-navigation-background-color, 1) 0%,
+                    rgba($side-navigation-background-color, 1) $side-navigation-main-area-top-and-bottom-spacing,
+                    rgba($side-navigation-background-color, .25) $side-navigation-main-area-top-and-bottom-spacing + $side-navigation-icon-size + $side-navigation-button-spacing,
+                    rgba($side-navigation-background-color, 0) 100%
+    );
+  }
+
+  &__top-fader, &__bottom-fader {
+    display: block;
+    position: absolute;
+    height: ($side-navigation-icon-size * 2) + $side-navigation-button-spacing + $side-navigation-main-area-top-and-bottom-spacing;
+    width: $side-navigation-width;
+    content: '';
+    pointer-events: none;
+  }
+
+  &__top-fader {
+    top: 0;
+    @include side-bar-fader-gradient(bottom);
+  }
+
+  &__bottom-fader {
+    bottom: 0;
+    @include side-bar-fader-gradient(top);
   }
 
   &__main-area {
@@ -67,7 +109,7 @@ $side-navigation-main-area-top-and-bottom-spacing: 10px;
     }
   }
 
-  &__spacer{
+  &__spacer {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
