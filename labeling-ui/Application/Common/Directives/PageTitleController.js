@@ -32,6 +32,7 @@ class PageTitleController {
   _getActiveOrganisation() {
     const organisations = this._currentUserService.getOrganisations();
     const activeOrganisationId = this._organisationService.get();
+
     return organisations.find(
       candidate => candidate.id === activeOrganisationId
     );
