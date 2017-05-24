@@ -13,6 +13,7 @@ class labeling_api::app(
   $listenIp = '*',
   $symfonyUser = undef,
   $symfonyRoot,
+  $symfonyEnvironment = 'prod',
 ) {
   include ::labeling_api::common
 
