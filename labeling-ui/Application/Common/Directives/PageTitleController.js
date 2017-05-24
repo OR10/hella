@@ -5,25 +5,35 @@ class PageTitleController {
    * @param {OrganisationService} organisationService
    */
   constructor(currentUserService, organisationService) {
+    /**
+     * @type {CurrentUserService}
+     * @private
+     */
+    this._currentUserService = currentUserService;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
+
     if(this.title === undefined) {
       this.title = 'AnnoStation';
     }
 
-    this.user = currentUserService.get();
-
-    const organisations = currentUserService.getOrganisations();
-    const activeOrganisationId = organisationService.get();
-    this.activeOrganisation = this._findOrganisationById(organisations, activeOrganisationId);
+    this.user = this._currentUserService.get();
+    this.activeOrganisation = this._getActiveOrganisation();
   }
 
   /**
-   * @param organisationId
    * @return {Organisation}
    * @private
    */
-  _findOrganisationById(organisations, organisationId) {
+  _getActiveOrganisation() {
+    const organisations = this._currentUserService.getOrganisations();
+    const activeOrganisationId = this._organisationService.get();
     return organisations.find(
-      candidate => candidate.id === organisationId
+      candidate => candidate.id === activeOrganisationId
     );
   }
 }
