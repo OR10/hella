@@ -40,7 +40,7 @@
 
   &.left .tooltip-arrow {
     right: -5px;
-    top: 50%;
+    top: calc(50% - 1px);
     margin-top: -3px;
     border-top: 5px solid transparent;
     border-bottom: 5px solid transparent;
@@ -49,7 +49,7 @@
 
   &.right .tooltip-arrow {
     left: -5px;
-    top: 50%;
+    top: calc(50% - 1px);
     margin-top: -3px;
     border-top: 5px solid transparent;
     border-bottom: 5px solid transparent;

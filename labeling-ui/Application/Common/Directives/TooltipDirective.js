@@ -109,7 +109,7 @@ class TooltipDirective {
       } else if (tooltipOffset.top < realPosition) {
         arrowMovement = realPosition - maxPosition;
       }
-      this._arrowElement.css('top', `calc(50% + ${arrowMovement}px)`);
+      this._arrowElement.css('top', `calc(50% - 1 + ${arrowMovement}px)`);
 
       tooltipOffset.left = targetOffset.left + targetWidth + tooltipPositioningOffset;
     } else if (attrs.tooltipPosition && attrs.tooltipPosition === 'left') {
@@ -125,7 +125,7 @@ class TooltipDirective {
       } else if (tooltipOffset.top < realPosition) {
         arrowMovement = realPosition - maxPosition;
       }
-      this._arrowElement.css('top', `calc(50% + ${arrowMovement}px)`);
+      this._arrowElement.css('top', `calc(50% - 1 + ${arrowMovement}px)`);
 
       tooltipOffset.left = targetOffset.left - tooltipWidth - tooltipPositioningOffset;
     } else if (attrs.tooltipPosition && attrs.tooltipPosition === 'up') {
