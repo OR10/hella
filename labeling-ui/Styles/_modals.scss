@@ -4,17 +4,17 @@
 
   .modal {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    background-color: $element-background;
+    background-color: $color-ut-lightgrey-4;
     padding: 0;
     margin-top: -30vh;
     z-index: 10001;
 
     .modal-header {
       padding: 0 20px;
-      border-bottom: 2px solid $element-inline-divider;
+      border-bottom: 2px solid $color-ut-darkgrey-1;
 
       .modal-title {
-        color: $headlines;
+        color: $color-ut-midgrey-3;
         text-transform: uppercase;
         font-weight: bold;
         font-size: 18px;
@@ -28,39 +28,39 @@
       max-height: 60vh;
 
       .modal-body-headline {
-        color: $sub-headlines;
+        color: $color-ut-midgrey-2;
         font-size: 16px;
         font-weight: bold;
       }
 
       .modal-body-content {
         white-space: pre-wrap;
-        color: $text;
+        color: $color-ut-darkgrey-2;
         font-size: 14px;
         font-weight: bold;
       }
     }
 
     .modal-footer {
-      border-top: 2px solid $element-inline-divider;
+      border-top: 2px solid $color-ut-darkgrey-1;
 
       button {
         text-transform: uppercase;
         padding: 10px !important;
 
         &:focus{
-          color: $element-background;
-          background-color: $headlines;
+          color: $color-ut-midgrey-3;
+          background-color: $color-ut-midgrey-1;
         }
 
         &:disabled{
-          color: darken($text, 10);
-          background-color: darken($element-background, 20);
+          color: darken($color-ut-darkgrey-2, 10);
+          background-color: darken($color-ut-lightgrey-4, 20);
         }
       }
 
       .modal-button-cancel {
-        border-right: 2px solid $element-inline-divider;
+        border-right: 2px solid $color-ut-darkgrey-1;
       }
 
       .modal-button-confirm {
@@ -72,12 +72,12 @@
 
 .modal-dialog-normal {
   .modal {
-    border: 2px solid $element-divider;
+    border: 2px solid $color-ut-darkgrey-1;
   }
 }
 
 .modal-dialog-warning {
   .modal {
-    border: 2px solid $headlines;
+    border: 2px solid $color-ut-midgrey-1;
   }
 }

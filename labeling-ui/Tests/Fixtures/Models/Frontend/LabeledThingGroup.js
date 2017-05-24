@@ -9,4 +9,6 @@ export default new LabeledThingGroup({
   "lineColor": "10",
   "groupIds": null,
   "task": taskFixture,
+  "classes": [],
+  "incomplete": true,
 });

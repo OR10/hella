@@ -90,10 +90,10 @@
 // $font-weight-bold: bold;
 
 // We use these to control various global styles
- $body-background: #181d23;
- $body-font-color: #DADFE6;
- $body-font-family: "equiplight", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-// $body-font-weight: $font-weight-normal;
+ $color-ut-1: $color-ut-lightgrey-1;
+ $body-font-color: $color-ut-lightgrey-3;
+ $body-font-family: "montserrat-regular", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+ //$body-font-weight: $font-weight-normal;
 // $body-font-style: normal;
 // $body-antialiased: true;
 
@@ -139,7 +139,7 @@
 // $header-font-family: $body-font-family;
 // $header-font-weight: $font-weight-normal;
 // $header-font-style: $font-weight-normal;
- $header-font-color: $headlines;
+ $header-font-color: $color-ut-midgrey-3;
 // $header-line-height: 1.4;
 // $header-top-margin: .2rem;
 // $header-bottom-margin: .5rem;
@@ -202,7 +202,7 @@
 // We use these to style the <hr> element
 // $hr-border-width: 1px;
 // $hr-border-style: solid;
-// $hr-border-color: #ddd;
+// $hr-border-color: $color-ut-1;
 // $hr-margin: rem-calc(20);
 
 // We use these to style lists
@@ -222,13 +222,13 @@
 // We use these to style blockquotes
 // $blockquote-font-color: scale-color($header-font-color, $lightness: 35%);
 // $blockquote-padding: rem-calc(9 20 0 19);
-// $blockquote-border: 1px solid #ddd;
+// $blockquote-border: 1px solid $color-ut-1;
 // $blockquote-cite-font-size: rem-calc(13);
 // $blockquote-cite-font-color: scale-color($header-font-color, $lightness: 23%);
 // $blockquote-cite-link-color: $blockquote-cite-font-color;
 
 // Acronym styles
-// $acronym-underline: 1px dotted #ddd; 
+// $acronym-underline: 1px dotted $color-ut-1;
 
 // 5. Grid
 // - - - - - - - - - - - - - - -
@@ -262,11 +262,11 @@ $block-grid-max-size: 12;
 // - - - - - - - - - - - - - - -
 
 $accordion-border: none;
-$accordion-title-background: $accordion-header-background;
+$accordion-title-background: $color-ut-midgrey-3;
 $accordion-title-background-hover: smartscale($accordion-title-background, 5%);
 $accordion-title-background-active: smartscale($accordion-title-background, 3%);
-$accordion-title-color: $sub-headlines;
-$accordion-title-color-active: $sub-headlines;
+$accordion-title-color: $color-ut-lightgrey-3;
+$accordion-title-color-active: $color-ut-lightgrey-3;
 
 // $accordion-title-padding: $global-padding;
 // $accordion-content-padding: $global-padding; 
@@ -351,41 +351,41 @@ $accordion-title-color-active: $sub-headlines;
 // $form-padding: 0.5rem;
 
 // Text fields
- $input-color: $sub-headlines;
+ $input-color: $color-ut-midgrey-3;
 // $input-color-hover: $input-color;
 // $input-color-focus: $input-color;
- $input-background: $element-background;
+ $input-background: $color-ut-lightgrey-4;
 // $input-background-hover: $input-background;
 // $input-background-focus: $input-background;
 // $input-background-disabled: smartscale($input-background);
- $input-border: 1px solid $button-selected;
- $input-border-hover: 1px solid $sub-headlines;
- $input-border-focus: 1px solid $icon-hover;
+ $input-border: 1px solid $color-ut-midgrey-3;
+ $input-border-hover: 1px solid $color-ut-lightgrey-3;
+ $input-border-focus: 1px solid $color-ut-midgrey-2;
 // $input-cursor-disabled: not-allowed;
 
 // Select menus
- $select-color: $sub-headlines;
- $select-background: $element-background;
+ $select-color: $color-ut-lightgrey-3;
+ $select-background: $color-ut-lightgrey-4;
 // $select-background-hover: smartscale($select-background, 4%);
 // $select-arrow: true;
-$select-arrow-color: $icon-hover;
+$select-arrow-color: $color-ut-midgrey-2;
 
 // Labels
 // $form-label-fontsize: 0.9rem;
 // $form-label-margin: 0.5rem;
-$form-label-color: $text;
+$form-label-color: $color-ut-darkgrey-2;
 
 // Inline labels
-$inlinelabel-color: $sub-headlines;
-$inlinelabel-background: $element-background;
+$inlinelabel-color: $color-ut-lightgrey-3;
+$inlinelabel-background: $color-ut-lightgrey-4;
 // $inlinelabel-border: $input-border;
 
 // Range slider
- $slider-background: $body-background;
+ $slider-background: $color-ut-1;
  $slider-height: 0.15rem;
  $slider-radius: 50%;
  $slider-thumb-height: 0.5rem;
- $slider-thumb-color: $icon;
+ $slider-thumb-color: $color-ut-midgrey-3;
  $slider-thumb-radius: 50%;
 
 // Progress and meter
@@ -403,7 +403,7 @@ $inlinelabel-background: $element-background;
 // $iconic-primary-fill: $primary-color;
 // $iconic-primary-stroke: $primary-color;
 // $iconic-accent-fill: $iconic-primary-fill;
-// $iconic-accent-stroke: $iconic-accent-fill; 
+// $iconic-accent-stroke: $iconic-accent-fill;
 
 // 15. Label
 // - - - - - - - - - - - - - - -
@@ -437,7 +437,7 @@ $inlinelabel-background: $element-background;
 // 17. Modal
 // - - - - - - - - - - - - - - -
 
- $modal-background: #fff;
+ $modal-background: $color-ut-white;
  $modal-border: 0;
  $modal-radius: 0px;
  $modal-shadow: none;
@@ -450,7 +450,7 @@ $inlinelabel-background: $element-background;
  );
 
  $modal-overlay-class: 'modal-overlay';
- $modal-overlay-background: rgba(#000000, 0.4);
+ $modal-overlay-background: rgba($color-ut-darkgrey-1, 0.4);
 
 // 18. Motion UI
 // - - - - - - - - - - - - - - -
@@ -587,11 +587,11 @@ $inlinelabel-background: $element-background;
 
 // $tabstrip-background: transparent;
 
- $tab-title-background: smartscale($body-background, 6%);
- $tab-title-background-hover: smartscale($body-background, 10%);
- $tab-title-background-active: $body-background;
- $tab-title-color: $icon;
- $tab-title-color-active: $sub-headlines;
+ $tab-title-background: smartscale($color-ut-1, 6%);
+ $tab-title-background-hover: smartscale($color-ut-1, 10%);
+ $tab-title-background-active: $color-ut-1;
+ $tab-title-color: $color-ut-midgrey-3;
+ $tab-title-color-active: $color-ut-lightgrey-3;
 
 // $tab-title-padding: $global-padding;
 // $tab-content-padding: $global-padding; 

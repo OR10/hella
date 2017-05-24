@@ -2,7 +2,7 @@ table.table {
   width: 100%;
 
   a {
-    color: #fff;
+    color: $color-ut-midgrey-2;
     text-decoration: underline;
   }
 
@@ -20,15 +20,14 @@ table.table {
         cursor: pointer;
 
         td {
-          background: darken($icon-hover, 10%);
-          color: $element-background;
+          background: darken($color-ut-lightgrey-3, 10%);
 
           a {
-            color: $element-background;
+            color: $color-ut-midgrey-3;
           }
 
           .icon, .fa {
-            color: $element-background;
+            color: $color-ut-midgrey-3;
           }
 
           .icon:hover, .fa:hover {
@@ -44,18 +43,18 @@ table.table {
   thead,
   tbody,
   tfoot {
-    background-color: $body-background;
+    background-color: $color-ut-lightgrey-1;
 
     td, th {
-      background-color: $element-background;
+      background-color: $color-ut-lightgrey-3;
       text-align: left;
-      border: 1px solid $element-divider;
     }
   }
 
   thead,
   tfoot {
-    color: $sub-headlines;
+    color: $color-ut-darkgrey-2;
+    @include font-m();
   }
 
   thead,
@@ -67,7 +66,7 @@ table.table {
 
   thead, tfoot {
     th, td {
-      background-color: $button-selected;
+      background-color: $color-ut-lightgrey-1;
       padding: 0.6rem 0.725rem 0.725rem;
       font-weight: bold;
     }
@@ -82,7 +81,7 @@ table.table {
   tbody {
     tr:nth-child(even) {
       td {
-        background-color: lighten($element-background, 4%);
+        background-color: $color-ut-lightgrey-2;
       }
     }
 
@@ -103,20 +102,20 @@ table.table {
   thead {
     tr {
       th {
-        border-bottom: 1px solid $icon-hover;
+        border-bottom: 1px solid $color-ut-midgrey-2;
       }
     }
   }
 
   th.st-sort-descent:after {
     padding-left: .6rem;
-    color: $icon-hover;
+    color: $color-ut-midgrey-2;
     content: "▲";
   }
 
   th.st-sort-ascent:after {
     padding-left: .3rem;
-    color: $icon-hover;
+    color: $color-ut-midgrey-2;
     content: "▼";
   }
 }
@@ -131,7 +130,7 @@ pagination-controls {
   }
 
   button.is-active {
-    background-color: $icon-hover;
-    color: $button-selected;
+    background-color: $color-ut-midgrey-2;
+    color: $color-ut-lightgrey-3;
   }
 }

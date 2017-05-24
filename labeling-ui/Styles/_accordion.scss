@@ -13,7 +13,7 @@ v-pane {
 
 v-pane-header {
   @include grid-block();
-  border-bottom: 2px solid #232a33;
+  border-bottom: 2px solid $color-ut-darkgrey-1;
   overflow: hidden;
 
   .title {

@@ -21,21 +21,25 @@ tab-view {
 //}
 
 .tabs {
-  border-bottom: 1px solid $icon-hover;
-
   .tab-item {
+    color: $color-ut-midgrey-2;
     margin-bottom: -1px;
-    border-bottom: 1px solid $icon-hover;
+    background: none;
+    @include font-l();
 
     &.is-active {
-      border-top: 1px solid $icon-hover;
-      border-left: 1px solid $icon-hover;
-      border-right: 1px solid $icon-hover;
-      border-bottom: 1px solid transparent;
+      color: $color-ut-darkgrey-2;
+      font-weight: bold;
+      background: none;
+
+      &:hover {
+        background: none;
+      }
     }
 
-    &.is-active:hover {
-      background-color: $body-background;
+    &:hover {
+      color: $color-ut-darkgrey-2;
+      background: none;
     }
   }
 }

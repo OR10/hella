@@ -47,4 +47,20 @@ class LabeledFrame
 
         return $labeledFrameFacade->save($labeledFrame);
     }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @param null               $frameIndex
+     *
+     * @return Model\LabeledFrame[]
+     */
+    public function findBylabelingTask(Model\LabelingTask $labelingTask, $frameIndex = null)
+    {
+        $labeledFrameFacade = $this->labeledFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
+
+        return $labeledFrameFacade->findBylabelingTask($labelingTask, $frameIndex);
+    }
 }

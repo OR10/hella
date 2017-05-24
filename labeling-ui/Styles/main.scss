@@ -1,20 +1,4 @@
-$headlines: #bedb31;
-$selected-frame: #bedb31;
-$sub-headlines: #dadfe6;
-$icon: #919ca9;
-$icon-hover: #bedb31;
-$text: #727f8f;
-
-$element-background: #2b3036;
-$element-divider: #1a1a1a;
-$element-inline-divider: #232a33;
-$body-background: #181d23;
-
-$button: #30363c;
-$button-selected: #353b42;
-
-$accordion-header-background: #343b43;
-
+@import "colors";
 @import "foundation";
 @import "font-awesome";
 @import "icon-font";
@@ -45,10 +29,13 @@ $accordion-header-background: #343b43;
 @import "idle-indicator";
 @import "live-sync-indicator";
 @import "ribbon";
+@import "headlines";
 
 html, body {
   // Prevent overscroll
   overflow: hidden;
+  color: $color-ut-darkgrey-2;
+  @include font-s();
 }
 
 .no-select {
@@ -68,7 +55,7 @@ html, body {
 
 viewer {
   text-align: center;
-  //box-shadow: inset 0 0 10px 0 #000000;
+  //box-shadow: inset 0 0 10px 0 $color-ut-9;
 }
 
 .timer-text {
@@ -80,8 +67,8 @@ div.popup-panel {
   font-size: 16px;
   padding-left: 1rem;
   padding-right: 1rem;
-  background-color: $button;
-  border-top: 2px solid $element-inline-divider;
+  background-color: $color-ut-midgrey-3;
+  border-top: 2px solid $color-ut-darkgrey-1;
   flex: 0;
 
   .zoom {
@@ -117,21 +104,21 @@ div.popup-panel {
 
 .sidebar-left {
   width: 330px;
-  background-color: $element-background;
-  border-right: 2px solid $element-divider;
+  background-color: $color-ut-lightgrey-4;
+  border-right: 2px solid $color-ut-darkgrey-1;
 
 }
 
 .sidebar-right {
-  background-color: $element-background;
-  border-left: 2px solid $element-divider;
+  background-color: $color-ut-lightgrey-4;
+  border-left: 2px solid $color-ut-darkgrey-1;
 }
 
 .task-bar {
   box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.5);
-  background-color: $element-background;
-  border-top: 2px solid $element-divider;
-  border-bottom: 2px solid $element-divider;
+  background-color: $color-ut-lightgrey-4;
+  border-top: 2px solid $color-ut-darkgrey-1;
+  border-bottom: 2px solid $color-ut-darkgrey-1;
   align-items: stretch;
   flex: 0 0 percentage(1/24);
 
@@ -140,7 +127,7 @@ div.popup-panel {
     text-align: center;
 
     .icon {
-      color: $icon;
+      color: $color-ut-midgrey-3;
     }
   }
 }
@@ -151,11 +138,11 @@ div.popup-panel {
 }
 
 .task-bar-left {
-  border-right: 2px solid $element-divider;
+  border-right: 2px solid $color-ut-darkgrey-1;
 }
 
 .task-bar-right {
-  border-left: 2px solid $element-divider;
+  border-left: 2px solid $color-ut-darkgrey-1;
 }
 
 .task-description {
@@ -165,8 +152,8 @@ div.popup-panel {
 .task-description-header {
   align-items: center;
   text-transform: uppercase;
-  color: $headlines;
-  border-bottom: 2px solid $element-inline-divider;
+  color: $color-ut-midgrey-3;
+  border-bottom: 2px solid $color-ut-darkgrey-1;
   cursor: pointer;
   height: 2.8rem;
   min-height: 2.8rem;
@@ -178,7 +165,7 @@ div.popup-panel {
   }
 
   .icon {
-    color: $icon;
+    color: $color-ut-midgrey-3;
   }
 
   .handle {
@@ -186,7 +173,7 @@ div.popup-panel {
     padding-right: 10px;
     text-transform: lowercase;
     font-weight: bold;
-    color: $text;
+    color: $color-ut-darkgrey-2;
   }
 }
 
@@ -197,7 +184,7 @@ div.popup-panel {
     font-size: 3rem;
     line-height: 1em;
     color: rgba(213, 217, 221, 0.3);
-    text-shadow: 1px 4px 6px #181d23, 0 0 0 #000, 1px 4px 6px #181d23;
+    text-shadow: 1px 4px 6px $color-ut-lightgrey-1, 0 0 0 $color-ut-darkgrey-1, 1px 4px 6px $color-ut-lightgrey-1;
     text-align: center;
     margin-top: 50%;
   }
@@ -205,11 +192,11 @@ div.popup-panel {
 
 .task-description-content {
   padding-top: 10px;
-  color: $text;
+  color: $color-ut-darkgrey-2;
 
   h1 {
     font-size: 18px;
-    color: $sub-headlines;
+    color: $color-ut-lightgrey-3;
     font-weight: bold;
   }
 }
@@ -233,8 +220,8 @@ div.popup-panel {
   flex: 0 0 percentage(3/24);
 
   .thumbnail-zone-layer {
-    background-color: $element-background;
-    border-right: 2px solid $element-divider;
+    background-color: $color-ut-lightgrey-4;
+    border-right: 2px solid $color-ut-darkgrey-1;
     box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.5);
     position: absolute;
     left: 0;
@@ -257,9 +244,9 @@ div.popup-panel {
 
       .thumbnail-zone-zoom-label {
         border-radius: 10px;
-        background-color: #30363c;
+        background-color: $color-ut-midgrey-3;
         padding: 0 5px;
-        color: $sub-headlines;
+        color: $color-ut-lightgrey-3;
       }
     }
   }
@@ -269,9 +256,9 @@ div.popup-panel {
   flex: 0 0 percentage(5/24);
 
   .timeline-layer {
-    border-top: 2px solid $element-divider;
-    background-color: $element-background;
-    border-right: 2px solid $element-divider;
+    border-top: 2px solid $color-ut-darkgrey-1;
+    background-color: $color-ut-lightgrey-4;
+    border-right: 2px solid $color-ut-darkgrey-1;
     box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.5);
     position: absolute;
     left: 0;
@@ -281,7 +268,7 @@ div.popup-panel {
   }
 
   .timeline-inner {
-    border-top: 2px solid $element-divider;
+    border-top: 2px solid $color-ut-darkgrey-1;
   }
 }
 
@@ -299,7 +286,7 @@ div.popup-panel {
   }
 
   viewer + .gutter {
-    border-left: 2px solid $element-divider;
+    border-left: 2px solid $color-ut-darkgrey-1;
     margin-right: -10px;
   }
 
@@ -331,11 +318,11 @@ popup-panel.ng-hide-remove {
 }
 
 .popup-panel button {
-  background-color: $button;
+  background-color: $color-ut-midgrey-3;
 }
 
 .task-bar button, .header button {
-  background-color: $element-background;
+  background-color: $color-ut-lightgrey-4;
 }
 
 .noscrollbars::-webkit-scrollbar {
@@ -384,7 +371,7 @@ title-bar {
 }
 
 .fa.flagged {
-  color: $icon-hover;
+  color: $color-ut-midgrey-2;
 }
 
 .system-health {
@@ -408,8 +395,8 @@ title-bar {
   text-decoration: none;
   font-size: 10px;
   font-weight: bold;
-  color: #353b42;
-  background-color: #bedb31;
+  color: $color-ut-midgrey-3;
+  background-color: $color-ut-yellow;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   -khtml-border-radius: 5px;

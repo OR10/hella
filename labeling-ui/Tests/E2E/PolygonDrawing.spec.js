@@ -191,6 +191,7 @@ describe('Polygon drawing', () => {
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1,
+      assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1IntermediateStep,
       assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.getLabeledThingsInFrame0to4,
       assets.mocks.PolygonDrawing.Shared.StoreLabeledThing,
     ]));

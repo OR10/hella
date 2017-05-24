@@ -1,10 +1,12 @@
 import {clone} from 'lodash';
+import LabeledObject from './LabeledObject';
 
-class LabeledThingGroupInFrame {
+class LabeledThingGroupInFrame extends LabeledObject {
   /**
    * @param {Object} labeledThingGroupInFrameDocument
    */
   constructor(labeledThingGroupInFrameDocument) {
+    super(labeledThingGroupInFrameDocument);
     /**
      * @type {string}
      */
@@ -33,15 +35,17 @@ class LabeledThingGroupInFrame {
   }
 
   /**
-   * @return {{id: string, frameIndex: int, classes: Array.<string>}}
+   * Convert this model into a datastructure suitable for backend storage
+   *
+   * @return {Object}
    */
   toJSON() {
-    return {
-      id: this.id,
-      frameIndex: this.frameIndex,
-      classes: clone(this.classes),
-      labeledThingGroupId: this.labeledThingGroup.id,
-    };
+    const {frameIndex, classes, labeledThingGroup} = this;
+    return Object.assign(super.toJSON(), {
+      frameIndex: frameIndex,
+      classes: clone(classes),
+      labeledThingGroupId: labeledThingGroup.id,
+    });
   }
 }
 

@@ -36,4 +36,35 @@ class LabeledThing
 
         return $labeledThingFacade->save($labeledThing);
     }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     *
+     * @return int
+     */
+    public function getMaxLabeledThingImportLineNoForTask(Model\LabelingTask $labelingTask)
+    {
+        $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
+
+        return $labeledThingFacade->getMaxLabeledThingImportLineNoForTask($labelingTask);
+    }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
+     * @param                    $lineNo
+     *
+     * @return Model\LabeledThingInFrame[]
+     */
+    public function getLabeledThingForImportedLineNo(Model\LabelingTask $labelingTask, $lineNo)
+    {
+        $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
+
+        return $labeledThingFacade->getLabeledThingForImportedLineNo($labelingTask, $lineNo);
+    }
 }

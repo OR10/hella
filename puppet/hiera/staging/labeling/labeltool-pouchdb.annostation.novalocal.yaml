@@ -27,6 +27,7 @@ labeling_api::couch::max_open_files: 65535
 labeling_api::couch::max_dbs_open: 65535
 labeling_api::couch::max_erlang_ports: 40000
 
+couchdb::cors_credentials: true
 couchdb::cors_origins: '*'
 couchdb::cors_methods: 'GET, PUT, POST, HEAD, DELETE'
 couchdb::cors_headers: 'accept, authorization, content-type, origin, referer, x-csrf-token'

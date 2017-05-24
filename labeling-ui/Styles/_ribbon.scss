@@ -1,15 +1,15 @@
 ribbon{
   width: 200px;
-  background: $element-background;
+  background: $color-ut-lightgrey-4;
   position: absolute;
   top: 25px;
   left: -50px;
   text-align: center;
   line-height: 40px;
   letter-spacing: 1px;
-  border-top: 1px solid $headlines;
-  border-bottom: 1px solid $headlines;
-  color: $headlines;
+  border-top: 1px solid $color-ut-midgrey-3;
+  border-bottom: 1px solid $color-ut-midgrey-3;
+  color: $color-ut-midgrey-3;
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
 }
