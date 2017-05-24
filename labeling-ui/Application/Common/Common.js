@@ -35,7 +35,8 @@ import ApplicationLoadingMaskService from './Services/ApplicationLoadingMaskServ
 import ApplicationLoadingMaskStateService from './Services/ApplicationLoadingMaskStateService';
 import InProgressService from './Services/InProgressService';
 import PouchDbViewService from './Services/PouchDbViewService';
-import SideNavigationDirective from "./Directives/SideNavigationDirective";
+import SideNavigationDirective from './Directives/SideNavigationDirective';
+import UserAvatarDirective from './Directives/UserAvatarDirective';
 
 import PouchDbContextService from './Services/PouchDbContextService';
 import PouchDbSyncManager from './Services/PouchDbSyncManager';
@@ -73,7 +74,6 @@ import 'angular-ui-router';
 import 'flowjs/dist/flow.js';
 import 'ng-flow/dist/ng-flow';
 import 'angular-hotkeys';
-import UserAvatarDirective from "./Directives/UserAvatarDirective";
 
 class Common extends Module {
   /**
