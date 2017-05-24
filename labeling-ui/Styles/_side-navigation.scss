@@ -124,7 +124,12 @@ $side-navigation-main-area-top-and-bottom-spacing: 10px;
 
     /* In case of odd count of buttons add a virtual one at the bottom to shift all others up! */
     &:last-child:nth-child(2n+0):before {
-      flex: 0 1 $side-navigation-icon-size + $side-navigation-button-spacing;
+      /*
+       * The size to compensate is 1 button + the upper and lower margin of the button
+       * We need to compensate for 2 margins, as the button above the missing one is now the "last" and does not have
+       * a lower margin anymore
+       */
+      flex: 0 1 $side-navigation-icon-size + ($side-navigation-button-spacing * 2);
       content: '';
     }
   }
