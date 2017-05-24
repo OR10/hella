@@ -161,6 +161,9 @@ $side-navigation-main-area-top-and-bottom-spacing: 10px;
   &__icon {
     font-size: $side-navigation-icon-size;
     color: $color-ut-lightgrey-1;
+
+    transition: font-size ease-in .1s;
+
     &:hover {
       font-size: $side-navigation-icon-size-grown;
     }
