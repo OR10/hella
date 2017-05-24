@@ -1,3 +1,7 @@
+import ReadableRoleFilterProvider from '../../ManagementBoard/Filters/ReadableRoleFilterProvider';
+
+const getReadableRole = ReadableRoleFilterProvider();
+
 class PageTitleController {
   /**
    *
@@ -23,9 +27,12 @@ class PageTitleController {
 
     this.user = this._currentUserService.get();
     this.activeOrganisation = this._getActiveOrganisation();
+    this.roles = this._getUserRolesFlattened();
   }
 
   /**
+   * Get the active Organisation for the logged in user
+   *
    * @return {Organisation}
    * @private
    */
@@ -36,6 +43,27 @@ class PageTitleController {
     return organisations.find(
       candidate => candidate.id === activeOrganisationId
     );
+  }
+
+  /**
+   * Get all roles for the logged in user, flattened
+   *
+   * @returns {string}
+   * @private
+   */
+  _getUserRolesFlattened() {
+    const omitRoles = ['ROLE_USER'];
+
+    const readableRoles = [];
+    const roles = this._currentUserService.getRoles();
+    
+    roles.forEach(role => {
+      if (omitRoles.indexOf(role) === -1) {
+        readableRoles.push(getReadableRole(role));
+      }
+    });
+
+    return readableRoles.join(', ');
   }
 }
 
