@@ -2,7 +2,7 @@
     <h1>{{ vm.title }}</h1>
     <div id="page-title-progress-bar" class="grid-block align-right"></div>
     <div id="logged-in-user" class="grid-block align-right text-right vertical">
-        <p id="logged-in-user-name">{{ vm.user.username }}</p>
+        <p id="logged-in-user-name" ui-sref="labeling.user.profile">{{ vm.user.username }}</p>
         <p id="logged-in-user-role">{{ vm.user.roles | singleRole | readableRole }}</p>
         <p id="logged-in-user-organisation">{{ vm.activeOrganisation.name }}</p>
     </div>
