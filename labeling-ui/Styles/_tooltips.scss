@@ -2,13 +2,14 @@
   z-index: 9999;
   display: none;
   position: absolute;
-  border-radius: 4px;
   text-align: center;
 
   background-color: $color-ut-darkgrey-2;
   padding: 7px 10px;
   max-width: 250px;
   color: $color-ut-lightgrey-3;
+
+  box-shadow: $color-ut-midgrey-1 2px 2px 4px;
 
   .tooltip-arrow {
     position: absolute;
