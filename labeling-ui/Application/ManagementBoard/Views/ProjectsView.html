@@ -10,7 +10,7 @@
     </title-bar>
     <div class="grid-block text-center vertical">
         <loading-mask ng-if="vm.showLoadingMask" spinner="true"></loading-mask>
-        <h1>Choose a Project</h1>
+        <page-title title="Choose a Project"></page-title>
         <tab-view>
             <tab ng-if="vm.userPermissions.canViewTodoProjects"
                  header="Todo {{vm.projectCount !== null ? '(' + vm.projectCount.todo + ')' : ''}}"
