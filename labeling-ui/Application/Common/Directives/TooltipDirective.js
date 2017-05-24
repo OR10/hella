@@ -42,7 +42,7 @@ class TooltipDirective {
    */
   link(scope, element, attrs) {
     let hoverTimeout = null;
-    let displayDelay = attrs.tooltipDelay === undefined ? 800 : +attrs.tooltipDelay;
+    const displayDelay = attrs.tooltipDelay === undefined ? 800 : +attrs.tooltipDelay;
 
     element.on('mouseover', () => {
       this._tooltipElement.removeClass('active');
