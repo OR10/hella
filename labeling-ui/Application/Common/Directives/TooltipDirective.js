@@ -82,7 +82,7 @@ class TooltipDirective {
       this._tooltipElement.addClass('down');
     }
 
-    const tooltipPositioningOffset = 4;
+    const tooltipPositioningOffset = attrs.tooltipSpacing === undefined ? 4 : +attrs.tooltipSpacing;
 
     const targetOffset = $targetElement.offset();
     const targetWidth = $targetElement.outerWidth();
