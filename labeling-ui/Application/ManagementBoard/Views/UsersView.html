@@ -1,4 +1,4 @@
-<div class="grid-frame vertical">
+<div class="grid-block vertical">
     <title-bar class="grid-block noscroll header"
             user="vm.user"
             user-permissions="vm.userPermissions"
@@ -7,13 +7,12 @@
             show-username="true"
             show-logout-button="true"
     >
-        <a class="header-button" ui-sref="labeling.users.detail({userId: 'new'})"
-           tooltip="Create a new User"
-        >
-            Add new User
-        </a>
-
     </title-bar>
+    <div class="grid-block vertical">
+        <h1>Users</h1>
+        <div class="grid-block">
+            <users-list user-permissions="vm.userPermissions" class="grid-block"></users-list>
+        </div>
+    </div>
 
-    <users-list user-permissions="vm.userPermissions" class="grid-block align-center"></users-list>
 </div>

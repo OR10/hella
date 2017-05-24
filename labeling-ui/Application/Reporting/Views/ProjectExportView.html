@@ -7,10 +7,25 @@
                show-username="true"
                show-logout-button="true"
     >
-        <a class="header-button" ng-click="vm.startExport()">Start new Export</a>
     </title-bar>
 
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-    <project-export-list exports="vm.exports" project="vm.project" class="grid-block"></project-export-list>
-
+    <div class="grid-block vertical">
+        <h1>Available Project Exports</h1>
+        <div class="grid-block vertical">
+            <div class="grid-block align-right shrink">
+                <div class="grid-block horizontal shrink">
+                    <div class="grid-content noscroll"
+                         style="margin-bottom: .5rem; margin-top: 2rem;">
+                        <button tooltip="Start new Export"
+                                ng-click="vm.startExport()"
+                        >
+                            <i class="fa fa-plus"></i>&nbsp;Start new Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <project-export-list exports="vm.exports" project="vm.project" class="grid-block"></project-export-list>
+        </div>
+    </div>
 </div>
