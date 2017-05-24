@@ -8,6 +8,10 @@ const AnnoStationUnitTestModule = annoStationUnitTestModuleCreator(ApplicationMo
 
 describe('PageTitle Directive Test Suite', () => {
   const username = 'Unit-Test';
+  const roles = [
+    'ROLE_SUPER_ADMIN',
+    'ROLE_CLIENT',
+  ];
 
   let rootScope;
   let compile;
@@ -18,16 +22,15 @@ describe('PageTitle Directive Test Suite', () => {
   let organisationServiceMock;
 
   beforeEach(() => {
-    currentUserServiceMock = jasmine.createSpyObj('currentUserService', ['get', 'getOrganisations']);
+    currentUserServiceMock = jasmine.createSpyObj('currentUserService', ['get', 'getOrganisations', 'getRoles']);
     organisationServiceMock = jasmine.createSpyObj('organisationService', ['get']);
 
     currentUserServiceMock.get.and.returnValue({
       username: username,
-      roles: [
-        'ROLE_SUPER_ADMIN',
-        'ROLE_CLIENT',
-      ],
+      roles: roles,
     });
+
+    currentUserServiceMock.getRoles.and.returnValue(roles);
 
     currentUserServiceMock.getOrganisations.and.returnValue([]);
 
@@ -79,7 +82,7 @@ describe('PageTitle Directive Test Suite', () => {
   it('renders the username', () => {
     renderDirective();
 
-    const usernameElement = element.find('#logged-in-user-name');
+    const usernameElement = element.find('#logged-in-user-name span');
     expect(usernameElement.text()).toEqual(username);
   });
 
