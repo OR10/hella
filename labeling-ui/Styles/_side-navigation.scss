@@ -3,6 +3,7 @@ $side-navigation-width: 80px;
 $side-navigation-top-and-bottom-spacing: 16px;
 $side-navigation-icon-size: 48px;
 $side-navigation-icon-size-grown: $side-navigation-icon-size * 1.05; /* +5% */
+$side-navigation-icon-size-shrunken: $side-navigation-icon-size * 0.90; /* -10% */
 $side-navigation-button-spacing: 23px;
 $side-navigation-scroll-hack: 30px;
 $side-navigation-main-area-top-and-bottom-spacing: 10px;
@@ -162,6 +163,10 @@ $side-navigation-main-area-top-and-bottom-spacing: 10px;
     color: $color-ut-lightgrey-1;
     &:hover {
       font-size: $side-navigation-icon-size-grown;
+    }
+
+    &:active {
+      font-size: $side-navigation-icon-size-shrunken;
     }
   }
 
