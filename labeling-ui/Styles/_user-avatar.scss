@@ -1,0 +1,23 @@
+$userAvatarSize: 64px;
+
+.user-avatar {
+  @include grid-block;
+
+  @include grid-size(shrink);
+
+  &__container {
+    @include grid-block;
+    @include grid-size(shrink);
+
+    width: $userAvatarSize;
+    height: $userAvatarSize;
+
+    overflow: hidden;
+    border-radius: 50%;
+
+    > img {
+      width: $userAvatarSize;
+      height: $userAvatarSize;
+    }
+  }
+}
