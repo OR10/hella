@@ -38,10 +38,10 @@ describe('PageTitle Directive Test Suite', () => {
   });
 
   beforeEach(() => {
-    const module = new AnnoStationUnitTestModule();
-    module.registerDirective('pageTitle', PageTitleDirective);
-    module.registerFilter('readableRole', ReadableRoleFilterProvider);
-    module.registerFilter('singleRole', SingleRoleFilterProvider);
+    const angularModule = new AnnoStationUnitTestModule();
+    angularModule.registerDirective('pageTitle', PageTitleDirective);
+    angularModule.registerFilter('readableRole', ReadableRoleFilterProvider);
+    angularModule.registerFilter('singleRole', SingleRoleFilterProvider);
     // module.registerService('currentUserService', currentUserServiceMock);
     // module.registerService('organisationService', organisationServiceMock);
   });
