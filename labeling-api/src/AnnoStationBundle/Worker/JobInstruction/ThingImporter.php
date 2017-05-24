@@ -10,6 +10,7 @@ use AnnoStationBundle\Database\Facade as AnnoStationFacade;
 use AnnoStationBundle\Worker\Jobs;
 use Hagl\WorkerPoolBundle;
 use AnnoStationBundle\Service\ProjectImporter\Facade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 
 class ThingImporter extends WorkerPoolBundle\JobInstruction
@@ -60,6 +61,16 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     private $labeledFrameFacade;
 
     /**
+     * @var Facade\LabeledThingGroup
+     */
+    private $labeledThingGroupFacade;
+
+    /**
+     * @var array
+     */
+    private $labeledThingGroupCache = [];
+
+    /**
      * ThingImporter constructor.
      *
      * @param Service\TaskIncomplete         $taskIncompleteService
@@ -67,6 +78,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
      * @param Facade\LabeledThingInFrame     $labeledThingInFrameFacade
      * @param Facade\LabeledFrame            $labeledFrameFacade
      * @param Facade\Project                 $project
+     * @param Facade\LabeledThingGroup       $labeledThingGroupFacade
      * @param AnnoStationFacade\LabelingTask $labelingTaskFacade
      */
     public function __construct(
@@ -75,6 +87,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Facade\LabeledFrame $labeledFrameFacade,
         Facade\Project $project,
+        Facade\LabeledThingGroup $labeledThingGroupFacade,
         AnnoStationFacade\LabelingTask $labelingTaskFacade
     ) {
         $this->taskIncompleteService     = $taskIncompleteService;
@@ -83,6 +96,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         $this->labeledFrameFacade        = $labeledFrameFacade;
         $this->project                   = $project;
         $this->labelingTaskFacade        = $labelingTaskFacade;
+        $this->labeledThingGroupFacade   = $labeledThingGroupFacade;
     }
 
     /**
@@ -100,10 +114,11 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         $this->taskIds = $job->getTaskIds();
         $videoElements = $xpath->query('/x:export/x:video');
         foreach ($videoElements as $videoElement) {
+            $groups = $this->getLabeledThingGroupsReferences($xpath->query('./x:group', $videoElement));
             $things = $xpath->query('./x:thing', $videoElement);
             /** @var \DOMElement $thing */
             foreach ($things as $thing) {
-                $labeledThing = $this->getLabeledThing($thing);
+                $labeledThing = $this->getLabeledThing($thing, $xpath, $groups);
                 $values       = $this->getValues($xpath->query('./x:value', $thing));
                 $this->saveLabeledThingInFrame(
                     $xpath,
@@ -123,25 +138,79 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     }
 
     /**
-     * @param \DOMElement $xpath
+     * @param \DOMNodeList $groupsElement
+     *
+     * @return array
+     */
+    private function getLabeledThingGroupsReferences(\DOMNodeList $groupsElement)
+    {
+        $groups = [];
+        foreach ($groupsElement as $groupElement) {
+            $originalId = $groupElement->getAttribute('id');
+            $groups[$originalId] = [
+                'lineColor' => $groupElement->getAttribute('line-color'),
+                'groupType' => $groupElement->getAttribute('type'),
+            ];
+        }
+
+        return $groups;
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @param                    $originalId
+     * @param                    $groupReferences
+     *
+     * @return mixed
+     */
+    private function getLabeledThingGroup(Model\LabelingTask $task, $originalId, $groupReferences)
+    {
+        $labeledThingGroupByTaskIdAndOriginalId = $this->labeledThingGroupFacade->getLabeledThingGroupByTaskIdAndOriginalId(
+            $task,
+            $originalId
+        );
+        if ($labeledThingGroupByTaskIdAndOriginalId !== null) {
+            $this->labeledThingGroupCache[$task->getId()][$originalId] = $labeledThingGroupByTaskIdAndOriginalId;
+        }
+
+        if (!isset($this->labeledThingGroupCache[$task->getId()][$originalId])) {
+            $labeledThingGroup = new AnnoStationBundleModel\LabeledThingGroup(
+                $task,
+                $groupReferences[$originalId]['lineColor'],
+                $groupReferences[$originalId]['groupType']
+            );
+            $labeledThingGroup->setOriginalId($originalId);
+            $this->labeledThingGroupFacade->save($labeledThingGroup);
+
+            $this->labeledThingGroupCache[$task->getId()][$originalId] = $labeledThingGroup;
+        }
+
+        return $this->labeledThingGroupCache[$task->getId()][$originalId];
+    }
+
+    /**
+     * @param \DOMElement $thingElement
+     * @param             $groupReferences
      *
      * @return Model\LabeledThing|null
      */
-    private function getLabeledThing(\DOMElement $xpath)
+    private function getLabeledThing(\DOMElement $thingElement, \DOMXPath $xpath, $groupReferences)
     {
-        $originalId = $xpath->getAttribute('id');
-        $start      = $xpath->getAttribute('start');
-        $end        = $xpath->getAttribute('end');
+        $originalId = $thingElement->getAttribute('id');
+        $start      = $thingElement->getAttribute('start');
+        $end        = $thingElement->getAttribute('end');
 
         if ($this->isStartAndEndTheSameTask($start, $end)) {
             $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
             $frameMapping = array_flip($task->getFrameNumberMapping());
 
-            if ($this->isLabeledThingInFrameElementAlreadyImported($task, $xpath)) {
-                $labeledThing = $this->labeledThingFacade->getLabeledThingForImportedLineNo($task, $xpath->getLineNo());
+            if ($this->isLabeledThingInFrameElementAlreadyImported($task, $thingElement)) {
+                $labeledThing = $this->labeledThingFacade->getLabeledThingForImportedLineNo($task, $thingElement->getLineNo());
             }else{
-                $labeledThing = new Model\LabeledThing($task, $xpath->getAttribute('line-color'));
-                $labeledThing->setImportLineNo($xpath->getLineNo());
+                $groups = $xpath->query('./x:references/x:group', $thingElement);
+
+                $labeledThing = new Model\LabeledThing($task, $thingElement->getAttribute('line-color'));
+                $labeledThing->setImportLineNo($thingElement->getLineNo());
                 $labeledThing->setOriginalId($originalId);
                 $labeledThing->setFrameRange(
                     new Model\FrameIndexRange(
@@ -149,6 +218,13 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                         $frameMapping[$end]
                     )
                 );
+                $groupIds = [];
+                foreach ($groups as $group) {
+                    $originalLabeledThingGroupId = $group->getAttribute('ref');
+                    $labeledThingGroup = $this->getLabeledThingGroup($task, $originalLabeledThingGroupId, $groupReferences);
+                    $groupIds[] = $labeledThingGroup->getId();
+                }
+                $labeledThing->setGroupIds($groupIds);
 
                 $this->labeledThingFacade->save($labeledThing);
             }
