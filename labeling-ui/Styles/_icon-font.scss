@@ -54,6 +54,7 @@
 .icon-nav-create-project:before,
 .icon-nav-manage-labeling-groups:before,
 .icon-nav-manage-users:before,
+.icon-nav-software-suite:before,
 .icon-next:before,
 .icon-ok:before,
 .icon-precipitation-norain:before,
@@ -134,6 +135,7 @@
 .icon-nav-create-project:before { content: "\f13e"; }
 .icon-nav-manage-labeling-groups:before { content: "\f140"; }
 .icon-nav-manage-users:before { content: "\f142"; }
+.icon-nav-software-suite:before { content: "\f143"; }
 .icon-next:before { content: "\f119"; }
 .icon-ok:before { content: "\f11a"; }
 .icon-precipitation-norain:before { content: "\f11b"; }
@@ -202,6 +204,7 @@ $font-icon-font-nav-backwards: "\f13f";
 $font-icon-font-nav-create-project: "\f13e"; 
 $font-icon-font-nav-manage-labeling-groups: "\f140"; 
 $font-icon-font-nav-manage-users: "\f142"; 
+$font-icon-font-nav-software-suite: "\f143"; 
 $font-icon-font-next: "\f119"; 
 $font-icon-font-ok: "\f11a"; 
 $font-icon-font-precipitation-norain: "\f11b"; 
