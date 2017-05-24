@@ -330,6 +330,11 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
         </service>
 
+        <service id="annostation.labeling_api.service.project_importer.facade.labeled_thing_group" class="AnnoStationBundle\Service\ProjectImporter\Facade\LabeledThingGroup">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
+        </service>
+
         <service id="annostation.labeling_api.service.project_deleter.project" class="AnnoStationBundle\Service\ProjectDeleter\Project">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.exports"/>

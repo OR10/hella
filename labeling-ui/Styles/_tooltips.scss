@@ -2,13 +2,14 @@
   z-index: 9999;
   display: none;
   position: absolute;
-  border-radius: 4px;
   text-align: center;
 
-  background-color: $color-ut-5;
+  background-color: $color-ut-darkgrey-2;
   padding: 7px 10px;
   max-width: 250px;
-  color: $color-ut-2;
+  color: $color-ut-lightgrey-3;
+
+  box-shadow: $color-ut-midgrey-1 2px 2px 4px;
 
   .tooltip-arrow {
     position: absolute;
@@ -26,7 +27,7 @@
     margin-left: -5px;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 5px solid $color-ut-5;
+    border-bottom: 5px solid $color-ut-darkgrey-2;
   }
 
   &.up .tooltip-arrow {
@@ -35,25 +36,25 @@
     margin-left: -5px;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 5px solid $color-ut-5;
+    border-top: 5px solid $color-ut-darkgrey-2;
   }
 
   &.left .tooltip-arrow {
     right: -5px;
-    top: 50%;
+    top: calc(50% - 1px);
     margin-top: -3px;
     border-top: 5px solid transparent;
     border-bottom: 5px solid transparent;
-    border-left: 5px solid $color-ut-5;
+    border-left: 5px solid $color-ut-darkgrey-2;
   }
 
   &.right .tooltip-arrow {
     left: -5px;
-    top: 50%;
+    top: calc(50% - 1px);
     margin-top: -3px;
     border-top: 5px solid transparent;
     border-bottom: 5px solid transparent;
-    border-right: 5px solid $color-ut-5;
+    border-right: 5px solid $color-ut-darkgrey-2;
   }
 }
 

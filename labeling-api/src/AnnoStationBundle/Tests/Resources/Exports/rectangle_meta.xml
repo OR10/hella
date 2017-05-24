@@ -24,6 +24,7 @@
     </requirements>
   </metadata>
   <video id="1f3d8f5ede69b21da4f3d735d75cdcd7" filename="SMPCA5152_SE-OOX687_20140402_154746_rgb_c.avi">
+    <group id="f516e810-2ddc-4f8f-8d9a-49c5b19f769c" start="22" end="44" type="extension-sign-group" line-color="6" incomplete="false"/>
     <frame-labeling incomplete="true">
       <references>
         <task id="1f3d8f5ede69b21da4f3d735d7672710"/>
@@ -37,6 +38,7 @@
     <thing id="fd4539b4-9b42-4415-b3f7-f7a15c31424b" start="22" end="44" line-color="2" type="time-range-sign">
       <references>
         <task id="1f3d8f5ede69b21da4f3d735d7672710"/>
+        <group ref="f516e810-2ddc-4f8f-8d9a-49c5b19f769c"/>
       </references>
       <shape id="4cd89e40-c3e8-4806-a087-05ba0278046e" start="22" end="22">
         <rectangle>
@@ -52,6 +54,26 @@
       </shape>
       <value id="50" start="22" end="22"/>
       <value id="10" start="44" end="44"/>
+    </thing>
+    <thing id="11b2bf9f-a484-4b8c-a5ae-401920cc8600" start="22" end="44" line-color="10" type="time-range-sign">
+      <references>
+        <task id="1f3d8f5ede69b21da4f3d735d7672710"/>
+        <group ref="f516e810-2ddc-4f8f-8d9a-49c5b19f769c"/>
+      </references>
+      <shape id="226fa71a-c2eb-40ac-b9e4-b171749df463" start="22" end="22">
+        <rectangle>
+          <top-left x="120" y="136"/>
+          <bottom-right x="168" y="183"/>
+        </rectangle>
+      </shape>
+      <shape id="fdb439de-5c86-495c-b359-f094312b5dd8" start="44" end="44">
+        <rectangle>
+          <top-left x="320" y="336"/>
+          <bottom-right x="368" y="383"/>
+        </rectangle>
+      </shape>
+      <value id="20" start="22" end="22"/>
+      <value id="30" start="44" end="44"/>
     </thing>
   </video>
 </export>

@@ -51,7 +51,9 @@
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.labeled_thing_in_frame"/>
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.labeled_frame"/>
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.service.project_importer.facade.labeled_thing_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
 

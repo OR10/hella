@@ -9,6 +9,7 @@ import 'v-accordion';
 import 'v-accordion/dist/v-accordion.css!';
 
 import ApplicationController from './ApplicationController';
+import ApplicationTemplate from './Application.html!';
 import BodyController from './BodyController';
 
 import CommonModule from './Common/Common';
@@ -160,7 +161,7 @@ export default class Application {
             '@': {
               controller: ApplicationController,
               controllerAs: 'vm',
-              template: '<ui-view class="grid-frame vertical"></ui-view>',
+              template: ApplicationTemplate,
             },
           },
           resolve: {

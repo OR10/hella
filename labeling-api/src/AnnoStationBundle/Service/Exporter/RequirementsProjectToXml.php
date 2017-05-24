@@ -242,7 +242,10 @@ class RequirementsProjectToXml
                         $xmlVideo->addThing($thing);
                     }
 
-                    $xmlVideo->setFrame($this->getLabeledFrameElement($task, $labelingTaskFacade, $xml->getDocument()));
+                    $labeledFrames    = new Iterator\LabeledFrame($task, $labelingTaskFacade);
+                    if (count(iterator_to_array($labeledFrames, false)) > 0) {
+                        $xmlVideo->setFrame($this->getLabeledFrameElement($task, $labeledFrames, $xml->getDocument()));
+                    }
                 }
                 $xml->appendChild($xmlVideo->getElement($xml->getDocument()));
                 $taskConfiguration = reset($taskConfigurations);
@@ -275,15 +278,15 @@ class RequirementsProjectToXml
     }
 
     /**
-     * @param Model\LabelingTask  $task
-     * @param Facade\LabelingTask $labelingTaskFacade
-     * @param \DOMDocument        $xmlDocument
+     * @param Model\LabelingTask   $task
+     * @param Model\LabeledFrame[] $labeledFrames
+     * @param \DOMDocument         $xmlDocument
      *
      * @return ExportXml\Element\Video\FrameLabeling
      */
     private function getLabeledFrameElement(
         Model\LabelingTask $task,
-        Facade\LabelingTask $labelingTaskFacade,
+        $labeledFrames,
         \DOMDocument $xmlDocument
     ) {
         $references = new ExportXml\Element\Video\References(
@@ -291,7 +294,6 @@ class RequirementsProjectToXml
             self::XML_NAMESPACE
         );
 
-        $labeledFrames    = new Iterator\LabeledFrame($task, $labelingTaskFacade);
         $xmlLabeledFrame  = new ExportXml\Element\Video\FrameLabeling(self::XML_NAMESPACE, $references);
         $taskFrameMapping = $task->getFrameNumberMapping();
 
