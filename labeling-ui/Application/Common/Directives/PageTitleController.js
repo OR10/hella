@@ -1,6 +1,6 @@
-import ReadableRoleFilterProvider from '../../ManagementBoard/Filters/ReadableRoleFilterProvider';
+import readableRoleFilterProvider from '../../ManagementBoard/Filters/ReadableRoleFilterProvider';
 
-const getReadableRole = ReadableRoleFilterProvider();
+const getReadableRole = readableRoleFilterProvider();
 
 class PageTitleController {
   /**
@@ -56,7 +56,7 @@ class PageTitleController {
 
     const readableRoles = [];
     const roles = this._currentUserService.getRoles();
-    
+
     roles.forEach(role => {
       if (omitRoles.indexOf(role) === -1) {
         readableRoles.push(getReadableRole(role));
