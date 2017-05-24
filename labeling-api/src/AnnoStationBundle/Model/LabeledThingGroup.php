@@ -41,6 +41,11 @@ class LabeledThingGroup
      */
     private $groupIds = [];
 
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    private $originalId;
+
     public function __construct(AppBundleModel\LabelingTask $task, $lineColor, $groupType = null, $groupIds = [])
     {
         $this->taskId    = $task->getId();
@@ -79,5 +84,29 @@ class LabeledThingGroup
     public function getGroupType()
     {
         return $this->groupType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOriginalId()
+    {
+        return $this->originalId;
+    }
+
+    /**
+     * @param mixed $originalId
+     */
+    public function setOriginalId($originalId)
+    {
+        $this->originalId = $originalId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaskId()
+    {
+        return $this->taskId;
     }
 }
