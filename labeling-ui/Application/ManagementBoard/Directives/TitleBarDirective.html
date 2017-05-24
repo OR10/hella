@@ -6,42 +6,6 @@
             <i class="icon icon-nav-backwards"></i>
         </a>
     </div>
-
-    <div ng-if="!vm.showActionButtons" class="grid-block">
-        <!-- Placeholder to align other button elements to the right -->
-    </div>
-
-    <div ng-if="vm.showActionButtons" class="grid-block button-list">
-        <a class="header-button" ng-show="vm.userPermissions.canCreateProject" ui-sref="labeling.projects.create">
-            <i class="icon icon-nav-create-project"
-               tooltip="Create Project"
-            ></i>
-        </a>
-        <a class="header-button" ng-show="vm.userPermissions.canUploadTaskConfiguration" ui-sref="labeling.task-configurations.list">
-            <i class="icon fa fa-tasks"
-               tooltip="Upload Task Configurations"
-            ></i>
-        </a>
-        <a class="header-button" ng-show="vm.userPermissions.canViewUserList" ui-sref="labeling.users.list">
-            <i class="icon icon-nav-manage-users"
-               tooltip="Manage Users"
-            ></i>
-        </a>
-        <a class="header-button" ng-show="vm.userPermissions.canEditLabelingGroups" ui-sref="labeling.labeling-groups.list">
-            <i class="icon icon-nav-manage-labeling-groups"
-               tooltip="Manage Labeling Groups"
-            ></i>
-        </a>
-        <a class="header-button" ng-show="vm.userPermissions.canViewOrganisationManagement" ui-sref="labeling.organisation-management.list">
-            <i class="icon fa fa-sitemap"
-               tooltip="Manage Organisations"
-            ></i>
-        </a>
-        <a class="header-button" ng-show="vm.userPermissions.canViewSystemStatus" ui-sref="labeling.system.status">
-            <i class="icon fa fa-medkit"
-               tooltip="System Health"
-            ></i>
-        </a>
         <ng-transclude></ng-transclude>
     </div>
 

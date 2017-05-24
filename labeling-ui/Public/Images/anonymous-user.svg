@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 75 75" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+    <rect x="-0.038" y="0" width="75.038" height="45.974" style="fill:rgb(215,221,228);"/>
+    <g id="Group.-3.-Copy" transform="matrix(1,0,0,1,-1,2)">
+        <path id="Rectangle.-3" d="M0.962,43.348C0.962,43.348 24.687,40.476 38.481,36C49.813,40.476 76,43.348 76,43.348L76,73L0.962,73L0.962,43.348Z" style="fill:rgb(136,145,156);"/>
+        <path id="Oval.-2" d="M39,43.974C48.389,43.974 56,27.02 56,17.407C56,7.793 48.389,0 39,0C29.611,0 22,7.793 22,17.407C22,27.02 29.611,43.974 39,43.974Z" style="fill:rgb(136,145,156);"/>
+    </g>
+</svg>

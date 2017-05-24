@@ -12,6 +12,7 @@ use Hagl\WorkerPoolBundle;
 use AnnoStationBundle\Service\ProjectImporter\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
+use Doctrine\ODM\CouchDB;
 
 class ThingImporter extends WorkerPoolBundle\JobInstruction
 {
@@ -71,6 +72,11 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     private $labeledThingGroupCache = [];
 
     /**
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
+    /**
      * ThingImporter constructor.
      *
      * @param Service\TaskIncomplete         $taskIncompleteService
@@ -80,6 +86,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
      * @param Facade\Project                 $project
      * @param Facade\LabeledThingGroup       $labeledThingGroupFacade
      * @param AnnoStationFacade\LabelingTask $labelingTaskFacade
+     * @param CouchDB\DocumentManager        $documentManager
      */
     public function __construct(
         Service\TaskIncomplete $taskIncompleteService,
@@ -88,7 +95,8 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         Facade\LabeledFrame $labeledFrameFacade,
         Facade\Project $project,
         Facade\LabeledThingGroup $labeledThingGroupFacade,
-        AnnoStationFacade\LabelingTask $labelingTaskFacade
+        AnnoStationFacade\LabelingTask $labelingTaskFacade,
+        CouchDB\DocumentManager $documentManager
     ) {
         $this->taskIncompleteService     = $taskIncompleteService;
         $this->labeledThingFacade        = $labeledThingFacade;
@@ -97,6 +105,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         $this->project                   = $project;
         $this->labelingTaskFacade        = $labelingTaskFacade;
         $this->labeledThingGroupFacade   = $labeledThingGroupFacade;
+        $this->documentManager           = $documentManager;
     }
 
     /**
@@ -559,6 +568,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
 
     private function markImportAsComplete()
     {
+        $this->documentManager->clear();
         foreach ($this->taskIds as $taskId) {
             $task = $this->labelingTaskFacade->find($taskId);
             $task->setLabelDataImportInProgress(false);

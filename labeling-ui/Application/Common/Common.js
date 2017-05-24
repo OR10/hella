@@ -1,3 +1,8 @@
+/**
+ * Common Module
+ *
+ * @extends Module
+ */
 import Module from '../Module';
 import Environment from './Support/Environment';
 import ApiService from './Services/ApiService';
@@ -30,6 +35,8 @@ import ApplicationLoadingMaskService from './Services/ApplicationLoadingMaskServ
 import ApplicationLoadingMaskStateService from './Services/ApplicationLoadingMaskStateService';
 import InProgressService from './Services/InProgressService';
 import PouchDbViewService from './Services/PouchDbViewService';
+import SideNavigationDirective from './Directives/SideNavigationDirective';
+import UserAvatarDirective from './Directives/UserAvatarDirective';
 
 import PouchDbContextService from './Services/PouchDbContextService';
 import PouchDbSyncManager from './Services/PouchDbSyncManager';
@@ -68,11 +75,6 @@ import 'flowjs/dist/flow.js';
 import 'ng-flow/dist/ng-flow';
 import 'angular-hotkeys';
 
-/**
- * Common Module
- *
- * @extends Module
- */
 class Common extends Module {
   /**
    * Register this {@link Module} with the angular service container system
@@ -148,6 +150,8 @@ class Common extends Module {
     this.registerDirective('asRightClick', RightClickDirective);
     this.registerDirective('tooltip', TooltipDirective);
     this.registerDirective('fileModel', FileModelDirective);
+    this.registerDirective('sideNavigation', SideNavigationDirective);
+    this.registerDirective('userAvatar', UserAvatarDirective);
 
     this.module.config(
       ['$compileProvider', '$httpProvider', 'hotkeysProvider', 'loggerServiceProvider',
