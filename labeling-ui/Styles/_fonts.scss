@@ -55,3 +55,7 @@
 @mixin font-s() {
   @include font-s-to-l(16px);
 }
+
+@mixin font-xs() {
+  @include font-s-to-l(12px);
+}

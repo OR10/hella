@@ -42,6 +42,7 @@ class TooltipDirective {
    */
   link(scope, element, attrs) {
     let hoverTimeout = null;
+    const displayDelay = attrs.tooltipDelay === undefined ? 800 : +attrs.tooltipDelay;
 
     element.on('mouseover', () => {
       this._tooltipElement.removeClass('active');
@@ -51,7 +52,7 @@ class TooltipDirective {
 
       hoverTimeout = this._$timeout(
         () => this._showTooltip(element, attrs),
-        800
+        displayDelay
       );
     });
 
@@ -81,7 +82,7 @@ class TooltipDirective {
       this._tooltipElement.addClass('down');
     }
 
-    const tooltipPositioningOffset = 4;
+    const tooltipPositioningOffset = attrs.tooltipSpacing === undefined ? 4 : +attrs.tooltipSpacing;
 
     const targetOffset = $targetElement.offset();
     const targetWidth = $targetElement.outerWidth();
@@ -108,7 +109,7 @@ class TooltipDirective {
       } else if (tooltipOffset.top < realPosition) {
         arrowMovement = realPosition - maxPosition;
       }
-      this._arrowElement.css('top', `calc(50% + ${arrowMovement}px)`);
+      this._arrowElement.css('top', `calc(50% - 1 + ${arrowMovement}px)`);
 
       tooltipOffset.left = targetOffset.left + targetWidth + tooltipPositioningOffset;
     } else if (attrs.tooltipPosition && attrs.tooltipPosition === 'left') {
@@ -124,7 +125,7 @@ class TooltipDirective {
       } else if (tooltipOffset.top < realPosition) {
         arrowMovement = realPosition - maxPosition;
       }
-      this._arrowElement.css('top', `calc(50% + ${arrowMovement}px)`);
+      this._arrowElement.css('top', `calc(50% - 1 + ${arrowMovement}px)`);
 
       tooltipOffset.left = targetOffset.left - tooltipWidth - tooltipPositioningOffset;
     } else if (attrs.tooltipPosition && attrs.tooltipPosition === 'up') {
