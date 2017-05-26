@@ -1,5 +1,4 @@
 import moment from 'moment';
-import BytesFormatter from '../../Common/Helpers/BytesFormatter';
 
 /**
  * Controller of the {@link ProjectListDirective}
@@ -472,7 +471,7 @@ class ProjectListController {
         return filter.format(project.diskUsage.total);
       },
       */
-      'frameCount': project => project.totalFrames !== undefined ? project.totalFrames : null
+      'frameCount': project => project.totalFrames !== undefined ? project.totalFrames : null,
     };
 
     return projects.map(project => {
