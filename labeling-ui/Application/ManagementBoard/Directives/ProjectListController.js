@@ -122,7 +122,6 @@ class ProjectListController {
           }
           return project;
         });
-
         this.projects = this._createViewData(response.result);
         this.columns = this._buildColumns(this.projects[0]);
 
@@ -412,19 +411,14 @@ class ProjectListController {
     const columns = [];
 
     const propertyToColumnMap = {
-      'statusFormatted': 'Status',
-      'name': 'Name',
-      'videosCount': 'Video #',
-      'taskCount': 'Job #',
-      'taskInProgressCount': 'In Progress #',
-      'taskFinishedCount': 'Done #',
-      'taskFinishCount': 'Finished #',
-      'finishedPercentageFormatted': '% finished',
-      'labeledThingInFramesCount': 'Object frames',
-      'totalLabelingTimeInSecondsFormatted': 'Time spent',
-      'creationTimestampFormatted': 'Started',
-      'dueTimestampFormatted': 'Due date',
-      'diskUsageTotal': 'Disk Usage',
+      'name': 'name',
+      'dueTimestampFormatted': 'deadline',
+      'videosCount': 'videos',
+      'taskCount': 'jobs',
+      'frameCount': 'frames',
+      'taskInProgressCount': 'process',
+      'taskFinishedCount': 'done',
+      'totalLabelingTimeInSecondsFormatted': 'time',
     };
 
     Object.keys(propertyToColumnMap).forEach(
@@ -452,6 +446,7 @@ class ProjectListController {
             return project.status;
         }
       },
+      // TODO: This could be later use to calculate table process
       'creationTimestampFormatted': project => project.creationTimestamp !== undefined ? moment.unix(project.creationTimestamp).format('DD.MM.YYYY') : null,
       'dueTimestampFormatted': project => project.dueTimestamp !== undefined && project.dueTimestamp !== null ? moment.unix(project.dueTimestamp).format('DD.MM.YYYY') : null,
       'finishedPercentageFormatted': project => project.finishedPercentage !== undefined ? `${project.finishedPercentage} %` : null,
@@ -468,6 +463,7 @@ class ProjectListController {
 
         return `${time}h`;
       },
+      /*
       'diskUsageTotal': project => {
         const filter = new BytesFormatter();
         if (project.diskUsage.total === undefined) {
@@ -475,6 +471,8 @@ class ProjectListController {
         }
         return filter.format(project.diskUsage.total);
       },
+      */
+      'frameCount': project => project.totalFrames !== undefined ? project.totalFrames : null
     };
 
     return projects.map(project => {

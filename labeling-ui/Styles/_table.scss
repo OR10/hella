@@ -134,3 +134,32 @@ pagination-controls {
     color: $color-ut-lightgrey-3;
   }
 }
+.projectListTable {
+  thead {
+    th:first-child {
+      padding-left: 0px !important;
+      text-align: left !important;
+    }
+    th {
+      text-align: center !important;
+      padding: 0px !important;
+      font-size: 14px;
+      font-weight: lighter !important;
+    }
+    th:last-child {
+      text-align: left !important;
+    }
+  }
+  tbody {
+    tr td:first-child {
+      padding-left: 0px;
+      text-align: left;
+    }
+    tr td {
+      text-align: center;
+    }
+    tr td:last-child {
+      text-align: left;
+    }
+  }
+}

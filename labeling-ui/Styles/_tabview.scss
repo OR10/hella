@@ -25,11 +25,11 @@ tab-view {
     color: $color-ut-midgrey-2;
     margin-bottom: -1px;
     background: none;
-    @include font-l();
+    @include font-s();
 
     &.is-active {
       color: $color-ut-darkgrey-2;
-      font-weight: bold;
+      // font-weight: bold;
       background: none;
 
       &:hover {
