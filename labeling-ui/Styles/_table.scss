@@ -157,9 +157,17 @@ pagination-controls {
     }
     tr td {
       text-align: center;
+      font-size: 12px;
+      padding: 6px 0px 4px;
     }
     tr td:last-child {
       text-align: left;
     }
+  }
+}
+.project-list-info-box {
+  height: 200px;
+  h3 {
+    margin-top: 20px;
   }
 }
