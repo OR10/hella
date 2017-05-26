@@ -79,7 +79,7 @@ table.table {
   }
 
   tbody {
-    tr:nth-child(even) {
+    tr:nth-child(odd) {
       td {
         background-color: $color-ut-lightgrey-2;
       }
@@ -102,7 +102,7 @@ table.table {
   thead {
     tr {
       th {
-        border-bottom: 1px solid $color-ut-midgrey-2;
+        border-bottom: 1px solid $color-ut-darkgrey-1;
       }
     }
   }
@@ -159,6 +159,7 @@ pagination-controls {
       text-align: center;
       font-size: 12px;
       padding: 6px 0px 4px;
+      border-bottom: 2px solid $color-ut-lightgrey-1;
     }
     tr td:last-child {
       text-align: left;
