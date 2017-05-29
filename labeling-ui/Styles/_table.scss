@@ -173,3 +173,34 @@ pagination-controls {
     margin-top: 20px;
   }
 }
+
+.formular-table {
+  tr {
+    border-bottom: 2px solid $color-ut-lightgrey-2;
+    td:first-child {
+      @include font-s();
+      color: white;
+      width: 150px;
+    }
+    td {
+      background: $color-ut-midgrey-1 !important;
+      padding: 4dpx 5px !important;
+      input {
+        background: transparent;
+        border: none;
+        height: 20px;
+        padding: 0;
+        margin: 0;
+        @include font-s();
+      }
+      input:hover {
+        background: transparent;
+        border: none;
+      }
+      input:focus {
+        background: transparent;
+        border: none;
+      }
+    }
+  }
+}
