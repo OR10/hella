@@ -8,11 +8,4 @@
     </div>
         <ng-transclude></ng-transclude>
     </div>
-
-    <user-name ng-hide="!vm.showUsername" class="grid-block shrink align-self-center" user="vm.user"></user-name>
-    <organisation-picker ng-show="vm.showOrganisationPicker"
-                         class="grid-block shrink align-self-center">
-    </organisation-picker>
-
-    <logout-button ng-show="vm.showLogoutButton" class="grid-block shrink"></logout-button>
 </div>

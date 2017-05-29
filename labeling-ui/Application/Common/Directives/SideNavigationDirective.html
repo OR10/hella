@@ -2,63 +2,84 @@
     <div class="side-navigation__top-area">
         <user-avatar user="vm.user"></user-avatar>
     </div>
+    <div class="side-navigation__fader-area">
+        <div class="side-navigation__main-area">
+            <div class="side-navigation__spacer"></div>
+            <div class="side-navigation__button"
+                 ui-sref-active="side-navigation__button--active"
+                 ng-if="vm.userPermissions.canCreateProject"
+                 ui-sref="labeling.projects.create"
+                 tooltip="Create Project"
+                 tooltip-position="right"
+                 tooltip-delay="1500"
+                 tooltip-spacing="22"
+            >
+                <i class="side-navigation__icon icon-nav-create-project"></i>
+            </div>
 
-    <div class="side-navigation__main-area">
-        <div class="side-navigation__spacer"></div>
-        <div class="side-navigation__button"
-             ui-sref-active="side-navigation__button--active"
-             ng-if="vm.userPermissions.canCreateProject"
-             ui-sref="labeling.projects.create"
-             tooltip="Create Project"
-        >
-            <a><i class="side-navigation__icon icon-nav-create-project"></i></a>
-        </div>
+            <div class="side-navigation__button"
+                 ui-sref-active="side-navigation__button--active"
+                 ng-if="vm.userPermissions.canUploadTaskConfiguration"
+                 ui-sref="labeling.task-configurations.list"
+                 tooltip="Upload Task Configurations"
+                 tooltip-position="right"
+                 tooltip-delay="1500"
+                 tooltip-spacing="22"
+            >
+                <i class="side-navigation__icon fa fa-tasks"></i>
+            </div>
 
-        <div class="side-navigation__button"
-             ui-sref-active="side-navigation__button--active"
-             ng-if="vm.userPermissions.canUploadTaskConfiguration"
-             ui-sref="labeling.task-configurations.list"
-             tooltip="Upload Task Configurations"
-        >
-            <a><i class="side-navigation__icon fa fa-tasks"></i></a>
-        </div>
+            <div class="side-navigation__button"
+                 ui-sref-active="side-navigation__button--active"
+                 ng-if="vm.userPermissions.canViewUserList"
+                 ui-sref="labeling.users.list"
+                 tooltip="Manage Users"
+                 tooltip-position="right"
+                 tooltip-delay="1500"
+                 tooltip-spacing="22"
+            >
+                <i class="side-navigation__icon icon-nav-manage-users"></i>
+            </div>
 
-        <div class="side-navigation__button"
-             ui-sref-active="side-navigation__button--active"
-             ng-if="vm.userPermissions.canViewUserList"
-             ui-sref="labeling.users.list"
-             tooltip="Manage Users"
-        >
-            <a><i class="side-navigation__icon icon-nav-manage-users"></i></a>
-        </div>
+            <div class="side-navigation__button"
+                 ui-sref-active="side-navigation__button--active"
+                 ng-if="vm.userPermissions.canEditLabelingGroups"
+                 ui-sref="labeling.labeling-groups.list"
+                 tooltip="Manage Labeling Groups"
+                 tooltip-position="right"
+                 tooltip-delay="1500"
+                 tooltip-spacing="22"
+            >
+                <i class="side-navigation__icon icon-nav-manage-labeling-groups"></i>
+            </div>
 
-        <div class="side-navigation__button"
-             ui-sref-active="side-navigation__button--active"
-             ng-if="vm.userPermissions.canEditLabelingGroups"
-             ui-sref="labeling.labeling-groups.list"
-             tooltip="Manage Labeling Groups"
-        >
-            <a><i class="side-navigation__icon icon-nav-manage-labeling-groups"></i></a>
-        </div>
+            <div class="side-navigation__button"
+                 ui-sref-active="side-navigation__button--active"
+                 ng-if="vm.userPermissions.canViewOrganisationManagement"
+                 ui-sref="labeling.organisation-management.list"
+                 tooltip="Manage Organisations"
+                 tooltip-position="right"
+                 tooltip-delay="1500"
+                 tooltip-spacing="22"
+            >
+                <i class="side-navigation__icon fa fa-sitemap"></i>
+            </div>
 
-        <div class="side-navigation__button"
-             ui-sref-active="side-navigation__button--active"
-             ng-if="vm.userPermissions.canViewOrganisationManagement"
-             ui-sref="labeling.organisation-management.list"
-             tooltip="Manage Organisations"
-        >
-            <a><i class="side-navigation__icon fa fa-sitemap"></i></a>
+            <div class="side-navigation__button"
+                 ui-sref-active="side-navigation__button--active"
+                 ng-if="vm.userPermissions.canViewSystemStatus"
+                 ui-sref="labeling.system.status"
+                 tooltip="System Health"
+                 tooltip-position="right"
+                 tooltip-delay="1500"
+                 tooltip-spacing="22"
+            >
+                <i class="side-navigation__icon fa fa-medkit"></i>
+            </div>
+            <div class="side-navigation__spacer"></div>
         </div>
-
-        <div class="side-navigation__button"
-             ui-sref-active="side-navigation__button--active"
-             ng-if="vm.userPermissions.canViewSystemStatus"
-             ui-sref="labeling.system.status"
-             tooltip="System Health"
-        >
-            <a><i class="side-navigation__icon fa fa-medikit"></i></a>
-        </div>
-        <div class="side-navigation__spacer"></div>
+        <div class="side-navigation__top-fader"></div>
+        <div class="side-navigation__bottom-fader"></div>
     </div>
 
     <div class="side-navigation__bottom-area">

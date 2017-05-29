@@ -1,0 +1,38 @@
+$small-margin: 43px;
+$large-margin: 81px;
+
+#page-title-progress-bar {
+
+}
+
+#page-title {
+  margin: $small-margin $large-margin $small-margin $small-margin;
+
+  #logged-in-user {
+    max-width: 250px;
+
+    p, div {
+      margin: 0;
+      padding: 0;
+      font-family: inherit;
+      font-weight: normal;
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+    }
+  }
+
+  #logged-in-user-role, #logged-in-user-organisation {
+    @include font-xs();
+  }
+
+  logout-button {
+    position: absolute;
+    margin-left: -41px;
+    margin-top: -16px;
+
+  }
+
+  button {
+    background: none;
+  }
+}
