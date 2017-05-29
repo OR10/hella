@@ -203,28 +203,12 @@ class Project extends Controller\Base
             $projectTimeMapping[$mapping['key'][0]] = array_sum($mapping['value']);
         }
 
-        $diskUsageByVideoIds = $this->organisationFacade->getDiskUsageForOrganisationVideos($organisation);
-
         $tasksByProjects = $labelingTaskFacade->findAllByProjects($projects);
         $numberOfVideos     = array();
-        $diskUsageByProject = [];
         foreach ($tasksByProjects as $taskByProjects) {
             $projectId                    = $taskByProjects['key'];
             $videoId                      = $taskByProjects['value'];
             $numberOfVideos[$projectId][] = $videoId;
-        }
-
-        foreach($numberOfVideos as $projectId => $videoIds) {
-            $videoIds = array_unique($videoIds);
-            foreach($videoIds as $videoId) {
-                if (isset($diskUsageByVideoIds[$videoId])) {
-                    if (isset($diskUsageByProject[$projectId])) {
-                        $diskUsageByProject[$projectId]['total'] += $diskUsageByVideoIds[$videoId]['total'];
-                    } else {
-                        $diskUsageByProject[$projectId]['total'] = $diskUsageByVideoIds[$videoId]['total'];
-                    }
-                }
-            }
         }
 
         $numberOfVideos = array_map(
@@ -264,7 +248,7 @@ class Project extends Controller\Base
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
                 'taskInPreProcessingCount' => $sumOfPreProcessingTasks,
-                'diskUsage'                => isset($diskUsageByProject[$project->getId()]) ? $diskUsageByProject[$project->getId()] : [],
+                'diskUsage'                => $project->getDiskUsageInBytes() === null ? [] : ['total' => $project->getDiskUsageInBytes()],
                 'campaigns'                => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
             );
 
