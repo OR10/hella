@@ -125,14 +125,14 @@ class UserProfileController {
     }
 
     /**
-     * @type {{username: boolean, email: boolean, password: boolean, role: boolean}}
+     * @type {{username: boolean, email: boolean, password: boolean, role: boolean, organisations: boolean}}
      */
     this.validation = {
       username: true,
       email: true,
       password: true,
       role: true,
-      organisation: true,
+      organisations: true,
     };
 
     /**
@@ -390,6 +390,7 @@ class UserProfileController {
     this.validation.email = true;
     this.validation.role = true;
     this.validation.password = true;
+    this.validation.organisations = true;
 
     if (this.user.username.length < 3) {
       this.validation.username = valid = false;
@@ -409,6 +410,10 @@ class UserProfileController {
 
     if (this.user.id === undefined && (this.newPassword === null || this.newPassword === '')) {
       this.validation.password = valid = false;
+    }
+
+    if (this.userOrganisations.length === 0) {
+      this.validation.organisations = valid = false;
     }
 
     return valid;
