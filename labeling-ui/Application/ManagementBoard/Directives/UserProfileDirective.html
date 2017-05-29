@@ -59,7 +59,8 @@
                     <div class="grid-content">
                         <select id="newLabeler"
                                 ng-model="vm.organisationToAdd"
-                                ng-options="organisation.name for organisation in vm.organisations">
+                                ng-options="organisation.name for organisation in vm.organisations"
+                                ng-class="{error: !vm.validation.organisations}">
                         </select>
                     </div>
                     <div class="grid-content shrink">
