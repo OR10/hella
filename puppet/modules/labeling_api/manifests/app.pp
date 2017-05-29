@@ -78,7 +78,7 @@ class labeling_api::app(
 
   file { '/etc/cron.d/remove-expired-user-assignments-and-memberships':
     ensure  => present,
-    content => "0 1 * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:remove-expired-user-assignments-and-memberships",
+    content => "0 1 * * * ${_symfonyUser} ${symfonyRoot}/app/AnnoStation/console annostation:remove-expired-user-assignments-and-memberships --env=${symfonyEnvironment}",
     mode    => '644',
   }
 
