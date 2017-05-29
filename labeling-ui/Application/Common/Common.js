@@ -37,6 +37,7 @@ import InProgressService from './Services/InProgressService';
 import PouchDbViewService from './Services/PouchDbViewService';
 import SideNavigationDirective from './Directives/SideNavigationDirective';
 import UserAvatarDirective from './Directives/UserAvatarDirective';
+import PageTitleDirective from './Directives/PageTitleDirective';
 
 import PouchDbContextService from './Services/PouchDbContextService';
 import PouchDbSyncManager from './Services/PouchDbSyncManager';
@@ -152,6 +153,7 @@ class Common extends Module {
     this.registerDirective('fileModel', FileModelDirective);
     this.registerDirective('sideNavigation', SideNavigationDirective);
     this.registerDirective('userAvatar', UserAvatarDirective);
+    this.registerDirective('pageTitle', PageTitleDirective);
 
     this.module.config(
       ['$compileProvider', '$httpProvider', 'hotkeysProvider', 'loggerServiceProvider',
