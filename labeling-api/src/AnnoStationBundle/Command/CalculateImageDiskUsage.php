@@ -184,19 +184,19 @@ class CalculateImageDiskUsage extends Command\Base
             $bytesForAllTypes += array_sum($imageType['sizeInBytes']);
         }
 
-        $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
+        $tasks      = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
         $projectIds = [];
-        foreach($tasks as $task) {
+        foreach ($tasks as $task) {
             $projectIds[] = $task->getProjectId();
         }
 
-        foreach(array_unique($projectIds) as $projectId) {
+        foreach (array_unique($projectIds) as $projectId) {
             $project = $this->projectFacade->find($projectId);
 
             if (in_array($projectId, $this->resettetProjectsBytesCounter)) {
                 $sumImageBytes = $project->getDiskUsageInBytes();
-            }else {
-                $sumImageBytes = 0;
+            } else {
+                $sumImageBytes                        = 0;
                 $this->resettetProjectsBytesCounter[] = $projectId;
             }
 
@@ -204,7 +204,6 @@ class CalculateImageDiskUsage extends Command\Base
             $this->projectFacade->save($project);
             $this->documentManager->detach($project);
         }
-
     }
 
     private function getHeaderFromCurlResponse($response)
