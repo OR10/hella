@@ -30,6 +30,19 @@ class Project
     /**
      * @param Model\Project $project
      */
+    public function refresh(Model\Project $project)
+    {
+        $this->documentManager->refresh($project);
+    }
+
+    public function update()
+    {
+        $this->documentManager->flush();
+    }
+
+    /**
+     * @param Model\Project $project
+     */
     public function delete(Model\Project $project)
     {
         $this->documentManager->remove($project);
