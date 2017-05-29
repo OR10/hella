@@ -161,6 +161,8 @@
         <service id="annostation.labeling_api.command.calculate_image_disk_usage"
                  class="AnnoStationBundle\Command\CalculateImageDiskUsage">
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument>%frame_cdn_base_url%</argument>
             <argument>%kernel.environment%</argument>
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
