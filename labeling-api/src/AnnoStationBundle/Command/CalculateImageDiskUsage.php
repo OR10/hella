@@ -173,9 +173,9 @@ class CalculateImageDiskUsage extends Command\Base
                 if ($videoDocumentChanged) {
                     $this->videoFacade->save($video);
                 }
+                $this->documentManager->detach($video);
                 $this->updateProjectsDiskUsageForVideo($video);
             }
-            $this->documentManager->detach($video);
         }
         $this->closeCurl($curlHandle);
         $progress->finish();
