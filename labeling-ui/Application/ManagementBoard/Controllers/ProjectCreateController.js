@@ -75,6 +75,11 @@ class ProjectCreateController {
     this.description = null;
 
     /**
+     * @type {null}
+     */
+    this.deadline = new Date();
+
+    /**
      * @type {boolean}
      */
     this.review = true;
