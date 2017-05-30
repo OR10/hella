@@ -141,6 +141,7 @@ pagination-controls {
       text-align: left !important;
     }
     th {
+      background: white !important;
       text-align: center !important;
       padding: 0 !important;
       font-size: 14px;
@@ -151,18 +152,25 @@ pagination-controls {
     }
   }
   tbody {
-    tr td:first-child {
-      padding-left: 0;
-      text-align: left;
+    tr:first-child {
+      height: 0;
     }
-    tr td {
-      text-align: center;
-      font-size: 12px;
-      padding: 6px 0 4px;
-      border-bottom: 2px solid $color-ut-lightgrey-1;
-    }
-    tr td:last-child {
-      text-align: left;
+    tr {
+      height: 32px;
+
+      td:first-child {
+        padding-left: 0;
+        text-align: left;
+      }
+      td {
+        text-align: center;
+        font-size: 12px;
+        padding: 6px 0 4px;
+        border-bottom: 2px solid $color-ut-lightgrey-1;
+      }
+      td:last-child {
+        text-align: left;
+      }
     }
   }
 }
