@@ -10,17 +10,17 @@
     </title-bar>
     <div class="grid-block text-center vertical">
         <loading-mask ng-if="vm.showLoadingMask" spinner="true"></loading-mask>
-        <page-title title="Choose a Project"></page-title>
+        <page-title title="{{vm.campaignName}} - All Projects"></page-title>
         <tab-view>
             <tab ng-if="vm.userPermissions.canViewTodoProjects"
-                 header="Todo {{vm.projectCount !== null ? '(' + vm.projectCount.todo + ')' : ''}}"
+                 header="to do {{vm.projectCount !== null ? '(' + vm.projectCount.todo + ')' : ''}}"
                  create-on-first-view="true">
                 <project-list user="vm.user"
                               show-loading-mask="vm.showLoadingMask"
                               user-permissions="vm.userPermissions"
                               project-status="todo"></project-list>
             </tab>
-            <tab header="In Progress {{vm.projectCount !== null ? '(' + vm.projectCount.in_progress + ')' : ''}}"
+            <tab header="in progress {{vm.projectCount !== null ? '(' + vm.projectCount.in_progress + ')' : ''}}"
                  create-on-first-view="true">
                 <project-list user="vm.user"
                               show-loading-mask="vm.showLoadingMask"
@@ -28,7 +28,7 @@
                               project-status="in_progress"></project-list>
             </tab>
             <tab ng-if="vm.userPermissions.canViewClosedProjects"
-                 header="Done {{vm.projectCount !== null ? '(' + vm.projectCount.done + ')' : ''}}"
+                 header="done {{vm.projectCount !== null ? '(' + vm.projectCount.done + ')' : ''}}"
                  create-on-first-view="true">
                 <project-list user="vm.user"
                               show-loading-mask="vm.showLoadingMask"
@@ -36,7 +36,7 @@
                               project-status="done"></project-list>
             </tab>
             <tab ng-if="vm.userPermissions.canViewDeletedProjects"
-                 header="Deleted {{vm.projectCount !== null ? '(' + vm.projectCount.deleted + ')' : ''}}"
+                 header="deleted {{vm.projectCount !== null ? '(' + vm.projectCount.deleted + ')' : ''}}"
                  create-on-first-view="true">
                 <project-list user="vm.user"
                               show-loading-mask="vm.showLoadingMask"

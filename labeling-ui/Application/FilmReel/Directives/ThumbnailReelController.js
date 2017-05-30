@@ -456,7 +456,7 @@ class ThumbnailReelController {
   _loadLabeledThingsInFrame(framePosition) {
     // TODO: load labeledThingGroups for thumbnails
     // Currently Do not load shapes if paperGroup is selected
-    if (this.slectedPaperShape instanceof PaperGroupShape) {
+    if (this.selectedPaperShape instanceof PaperGroupShape) {
       return this._abortablePromiseFactory(this._$q.resolve(new Array(this.thumbnailCount).fill(null)));
     }
 
@@ -571,7 +571,7 @@ class ThumbnailReelController {
    * @private
    */
   _setStartFrameIndex(index) {
-    if (this.slectedPaperShape instanceof PaperGroupShape) {
+    if (this.selectedPaperShape instanceof PaperGroupShape) {
       throw new Error('Cannot change the frame range of groups!');
     }
 
@@ -586,14 +586,12 @@ class ThumbnailReelController {
         frameRange.startFrameIndex = frameIndex;
 
         // Synchronize operations on this LabeledThing
-        this._lockService.acquire(this.selectedPaperShape.labeledThingInFrame.labeledThing.id, release => {
-          this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
-            release();
-            // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-            if (frameIndex > oldStartFrameIndex) {
-              this._updateLabeledThingInFrames(this.selectedPaperShape);
-            }
-          });
+        this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
+          // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
+          if (frameIndex > oldStartFrameIndex) {
+            this._updateLabeledThingInFrames(this.selectedPaperShape);
+            this._$scope.$root.$emit('shape:delete:after');
+          }
         });
       }
     }
@@ -606,7 +604,7 @@ class ThumbnailReelController {
    * @private
    */
   _setEndFrameIndex(index) {
-    if (this.slectedPaperShape instanceof PaperGroupShape) {
+    if (this.selectedPaperShape instanceof PaperGroupShape) {
       throw new Error('Cannot change the frame range of groups!');
     }
 
@@ -624,6 +622,7 @@ class ThumbnailReelController {
           // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
           if (frameIndex < oldEndFrameIndex) {
             this._updateLabeledThingInFrames(this.selectedPaperShape);
+            this._$scope.$root.$emit('shape:delete:after');
           }
         });
       }
