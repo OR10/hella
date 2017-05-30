@@ -38,4 +38,11 @@ resource "openstack_compute_secgroup_v2" "labeltool-app" {
         ip_protocol = "tcp"
         cidr = "0.0.0.0/0"
     }
+
+    rule {
+        from_port = 8
+        to_port = 0
+        ip_protocol = "icmp"
+        cidr = "0.0.0.0/0"
+    }
 }
