@@ -158,13 +158,21 @@ class LabelingTask
             $projects
         );
 
-        $query = $this->documentManager
-            ->createQuery('annostation_labeling_task', 'by_project_and_video_as_value')
-            ->setKeys($projectIds)
-            ->execute()
-            ->toArray();
+        $idsInChunks = array_chunk($projectIds, 100);
 
-        return $query;
+        $tasks = array();
+        foreach ($idsInChunks as $idsInChunk) {
+            $tasks = array_merge(
+                $tasks,
+                $this->documentManager
+                    ->createQuery('annostation_labeling_task', 'by_project_and_video_as_value')
+                    ->setKeys($idsInChunk)
+                    ->execute()
+                    ->toArray()
+            );
+        }
+
+        return $tasks;
     }
 
     /**

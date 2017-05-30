@@ -235,12 +235,15 @@ class Project extends Controller\Base
         );
 
         $users = [];
+        $sumOfTasksForProjects          = $this->getSumOfTasksForProjects($projects);
 
         /** @var Model\Project $project */
         foreach ($projects as $project) {
+            if (!isset($sumOfTasksForProjects[$project->getId()])) {
+                $sumOfTasksForProjects[$project->getId()] = 0;
+            }
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
-            $sumOfTasksForProject          = $this->getSumOfTasksForProject($project);
             $sumOfCompletedTasksForProject = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
                 $project
             );
@@ -260,7 +263,7 @@ class Project extends Controller\Base
                 'name'               => $project->getName(),
                 'status'             => $project->getStatus(),
                 'finishedPercentage' => floor(
-                    $sumOfTasksForProject === 0 ? 0 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
+                    $sumOfTasksForProjects[$project->getId()] === 0 ? 0 : 100 / $sumOfTasksForProjects[$project->getId()] * $sumOfCompletedTasksForProject
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
                 'taskInPreProcessingCount' => $sumOfPreProcessingTasks,
@@ -286,7 +289,7 @@ class Project extends Controller\Base
                     $taskFailedCount += $states[Model\LabelingTask::STATUS_FAILED];
                 }
 
-                $responseProject['taskCount']                  = $sumOfTasksForProject;
+                $responseProject['taskCount']                  = $sumOfTasksForProjects[$project->getId()];
                 $responseProject['taskFinishedCount']          = $sumOfCompletedTasksForProject;
                 $responseProject['taskInProgressCount']        = $taskInProgressCount;
                 $responseProject['taskFailedCount']            = $taskFailedCount;
@@ -527,16 +530,23 @@ class Project extends Controller\Base
     }
 
     /**
-     * @param Model\Project $project
+     * @param $projects
      *
-     * @return int|mixed
+     * @return array
      */
-    private function getSumOfTasksForProject(Model\Project $project)
+    private function getSumOfTasksForProjects($projects)
     {
-        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getReadOnlyFacade();
-        $tasks = $labelingTaskFacade->findAllByProject($project);
 
-        return count($tasks);
+        $labelingTaskFacade  = $this->labelingTaskFacadeFactory->getReadOnlyFacade();
+        $taskIdsByProjectIds = $labelingTaskFacade->findAllByProjects($projects);
+
+        $numberOfTaskInProject = [];
+        foreach ($taskIdsByProjectIds as $taskIdsByProjectId) {
+            $projectId                         = $taskIdsByProjectId['key'];
+            $numberOfTaskInProject[$projectId] = isset($numberOfTaskInProject[$projectId]) ? $numberOfTaskInProject[$projectId] + 1 : 1;
+        }
+
+        return $numberOfTaskInProject;
     }
 
     /**
