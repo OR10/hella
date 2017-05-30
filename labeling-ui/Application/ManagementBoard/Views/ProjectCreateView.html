@@ -16,6 +16,18 @@
                 <div class="grid-block align-center">
                     <form class="grid-content">
                         <table class="table formular-table">
+                            <tr style="display: none">
+                                <td>Campaign</td>
+                                <td>
+                                    <select ng-model="vm.selectedCampaign">
+                                        <option value="" selected>Choose a Campaign</option>
+                                        <option ng-repeat="campaign in vm.campaigns"
+                                                value="{{campaign.id}}">
+                                            {{campaign.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
                             <tr>
                                 <td>Projectname</td>
                                 <td>

@@ -1,38 +1,51 @@
-<div class="grid-block align-center">
-    <div class="grid-container small-14">
-        <loading-mask ng-if="vm.loadingInProgress" spinner="true" backdrop="false"></loading-mask>
+<div class="grid-block vertical">
+    <div class="grid-block vertical">
 
+        <loading-mask ng-if="vm.loadingInProgress" spinner="true" backdrop="false"></loading-mask>
+        <page-title title="Create new user"></page-title>
         <form class="user-profile grid-content">
-            <fieldset>
-                <legend>Information</legend>
-                <label>
-                    Username
-                    <input id="username" type="text" placeholder="Username" ng-model="vm.user.username"
-                           ng-class="{error: !vm.validation.username}">
-                </label>
-                <label>
-                    EMail
-                    <input id="email" type="email" placeholder="me@example.com" ng-model="vm.user.email"
-                           ng-class="{error: !vm.validation.email}">
-                </label>
-                <label>Role</label>
-                <select id="role" ng-model="vm.singleRole" ng-options="role as role.label for role in vm.availableRoles track by role.id" ng-class="{error: !vm.validation.role}"></select>
-                <label>Expires</label>
-                <input type="date" ng-model="vm.user.expiresAt">
-            </fieldset>
-            <fieldset>
-                <legend>Security</legend>
-                <label>
-                    Password
-                    <input id="password" type="password" placeholder="Password" ng-model="vm.newPassword"
-                           ng-class="{error: !vm.validation.password}">
-                </label>
-                <label>
-                    Re-enter Password
-                    <input id="password-again" type="password" placeholder="Password validation"
-                           ng-model="vm.newPasswordValidation" ng-class="{error: !vm.validation.password}">
-                </label>
-            </fieldset>
+            <table class="table formular-table">
+                <tr>
+                    <td>Username</td>
+                    <td>
+                        <input id="username" type="text" placeholder="Username" ng-model="vm.user.username"
+                               ng-class="{error: !vm.validation.username}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>E-Mail</td>
+                    <td>
+                        <input id="email" type="email" placeholder="me@example.com" ng-model="vm.user.email"
+                               ng-class="{error: !vm.validation.email}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Role</td>
+                    <td>
+                        <select id="role" ng-model="vm.singleRole" ng-options="role as role.label for role in vm.availableRoles track by role.id" ng-class="{error: !vm.validation.role}"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Expires</td>
+                    <td>
+                        <input type="date" ng-model="vm.user.expiresAt">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Password</td>
+                    <td>
+                        <input id="password" type="password" placeholder="Password" ng-model="vm.newPassword"
+                               ng-class="{error: !vm.validation.password}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Re-enter Password</td>
+                    <td>
+                        <input id="password-again" type="password" placeholder="Password validation"
+                               ng-model="vm.newPasswordValidation" ng-class="{error: !vm.validation.password}">
+                    </td>
+                </tr>
+            </table>
             <fieldset ng-if="vm.userPermissions.canAddUserToAnyOrganisation">
                 <legend>Organisations</legend>
                 <table class="table"

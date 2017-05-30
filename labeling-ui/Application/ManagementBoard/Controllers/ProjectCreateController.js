@@ -138,6 +138,11 @@ class ProjectCreateController {
      * @type {string}
      */
     this.drawingToolVehicle = 'cuboid';
+  
+    /**
+     * @type {string}
+     */
+    this.selectedCampaign = '';
 
     /**
      * @type {string}
@@ -187,7 +192,14 @@ class ProjectCreateController {
       // {id: 'ignore-vehicle', name: 'Ignore Vehicle'},
       // {id: 'lane', name: 'Lane'},
     ];
-
+  
+    /**
+     * @type {Array.<Object>}
+     * TODO: Fill this later with real world data
+     */
+    this.campaigns = [
+      {id: 4711, name: 'Test'}
+    ];
     /**
      * @type {string}
      */
