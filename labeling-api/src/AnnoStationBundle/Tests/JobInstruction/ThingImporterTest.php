@@ -43,6 +43,11 @@ class ThingImporterTest extends Tests\KernelTestCase
      */
     private $labeledFrameFacadeFactory;
 
+    /**
+     * @var Facade\LabeledThingGroup\FacadeInterface
+     */
+    private $labeledThingGroupFacadeFactory;
+
     protected function setUpImplementation()
     {
         $this->createDefaultUser();
@@ -61,6 +66,9 @@ class ThingImporterTest extends Tests\KernelTestCase
             'database.facade.factory.labeled_thing_in_frame'
         );
         $this->labeledFrameFacadeFactory        = $this->getAnnostationService('database.facade.factory.labeled_frame');
+        $this->labeledThingGroupFacadeFactory   = $this->getAnnostationService(
+            'database.facade.factory.labeled_thing_group'
+        );
 
         $organisation    = Helper\OrganisationBuilder::create()->build();
         $requirementsXml = $taskConfigurationFacade->save(
@@ -103,8 +111,16 @@ class ThingImporterTest extends Tests\KernelTestCase
                         'classes'    => [],
                         'incomplete' => false,
                         'lineColor'  => 2,
-                        'groupIds'   => [],
                         'originalId' => 'fd4539b4-9b42-4415-b3f7-f7a15c31424b',
+                    ],                    [
+                        'frameRange' => [
+                            'startFrameIndex' => 21,
+                            'endFrameIndex'   => 43,
+                        ],
+                        'classes'    => [],
+                        'incomplete' => false,
+                        'lineColor'  => 10,
+                        'originalId' => '11b2bf9f-a484-4b8c-a5ae-401920cc8600',
                     ],
                 ],
             ],
@@ -145,6 +161,31 @@ class ThingImporterTest extends Tests\KernelTestCase
                         'incomplete'     => false,
                         'identifierName' => 'time-range-sign',
                         'ghost'          => false,
+                    ],                    [
+                        'frameIndex'     => 21,
+                        'classes'        => ['20'],
+                        'ghostClasses'   => null,
+                        'shape'          => [
+                            'type'        => 'rectangle',
+                            'topLeft'     => ['x' => 120, 'y' => 136],
+                            'bottomRight' => ['x' => 168, 'y' => 183],
+                        ],
+                        'incomplete'     => false,
+                        'identifierName' => 'time-range-sign',
+                        'ghost'          => false,
+                    ],
+                    [
+                        'frameIndex'     => 43,
+                        'classes'        => ['30'],
+                        'ghostClasses'   => null,
+                        'shape'          => [
+                            'type'        => 'rectangle',
+                            'topLeft'     => ['x' => 320, 'y' => 336],
+                            'bottomRight' => ['x' => 368, 'y' => 383],
+                        ],
+                        'incomplete'     => false,
+                        'identifierName' => 'time-range-sign',
+                        'ghost'          => false,
                     ],
                 ],
             ],
@@ -171,6 +212,25 @@ class ThingImporterTest extends Tests\KernelTestCase
                         'classes'      => ['night', 'halogen', 'orange', 'germany'],
                         'ghostClasses' => null,
                         'incomplete'   => false,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function providerLabeledThingGroups()
+    {
+        return [
+            [
+                __DIR__ . '/../Resources/Exports/rectangle_meta.xml',
+                [
+                    [
+                        'groupType'  => 'extension-sign-group',
+                        'lineColor'  => 6,
+                        'originalId' => 'f516e810-2ddc-4f8f-8d9a-49c5b19f769c',
                     ],
                 ],
             ],
@@ -212,7 +272,6 @@ class ThingImporterTest extends Tests\KernelTestCase
             $this->assertEquals($expectedLabeledThingData['classes'], $labeledThing->getClasses());
             $this->assertEquals($expectedLabeledThingData['incomplete'], $labeledThing->getIncomplete());
             $this->assertEquals($expectedLabeledThingData['lineColor'], $labeledThing->getLineColor());
-            $this->assertEquals($expectedLabeledThingData['groupIds'], $labeledThing->getGroupIds());
             $this->assertEquals($expectedLabeledThingData['originalId'], $labeledThing->getOriginalId());
         }
     }
@@ -287,6 +346,36 @@ class ThingImporterTest extends Tests\KernelTestCase
             $this->assertEquals($expectedLabeledFrameData['classes'], $labeledFrame->getClasses());
             $this->assertEquals($expectedLabeledFrameData['ghostClasses'], $labeledFrame->getGhostClasses());
             $this->assertEquals($expectedLabeledFrameData['incomplete'], $labeledFrame->getIncomplete());
+        }
+    }
+
+    /**
+     * @dataProvider providerLabeledThingGroups
+     *
+     * @param string $xmlFile
+     * @param array  $expectedData
+     */
+    public function testLabeledThingGroup($xmlFile, $expectedData)
+    {
+        $job = new Jobs\ThingImporter($xmlFile, $this->getTaskToFrameMapping());
+        $this->thingImportJobInstruction->run($job, $this->logger);
+
+        $projectId = $this->task->getProjectId();
+        $taskId    = $this->task->getId();
+
+        $labeledThingGroupFacadeFacade = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $projectId,
+            $taskId
+        );
+
+        $labeledThingGroupIds = $labeledThingGroupFacadeFacade->getLabeledThingGroupIdsByTask($this->task);
+        $this->assertCount(count($expectedData), $labeledThingGroupIds);
+        foreach ($labeledThingGroupIds as $index => $labeledThingGroupId) {
+            $expectedLabeledFrameData = $expectedData[$index];
+            $labeledThingGroup        = $labeledThingGroupFacadeFacade->find($labeledThingGroupId);
+            $this->assertEquals($expectedLabeledFrameData['groupType'], $labeledThingGroup->getGroupType());
+            $this->assertEquals($expectedLabeledFrameData['lineColor'], $labeledThingGroup->getLineColor());
+            $this->assertEquals($expectedLabeledFrameData['originalId'], $labeledThingGroup->getOriginalId());
         }
     }
 

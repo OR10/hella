@@ -77,6 +77,17 @@ class CurrentUserService {
   }
 
   /**
+   * @returns {Array}
+   */
+  getRoles() {
+    if (this._user === null) {
+      throw new Error('User roles retrieved before user was set!');
+    }
+
+    return this._user.roles;
+  }
+
+  /**
    * Get the info whether the current user is a super admin or not
    *
    * @returns {boolean}

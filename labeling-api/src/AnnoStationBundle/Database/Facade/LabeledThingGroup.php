@@ -137,4 +137,27 @@ class LabeledThingGroup
 
         return (count($response) > 0);
     }
+
+    /**
+     * @param AppBundleModel\LabelingTask $task
+     * @param                             $originalId
+     *
+     * @return Model\LabeledThingGroup|null
+     */
+    public function getLabeledThingGroupByTaskIdAndOriginalId(AppBundleModel\LabelingTask $task, $originalId)
+    {
+        $response = $this->documentManager
+            ->createQuery('annostation_labeled_thing_group_by_task_and_original_id_001', 'view')
+            ->onlyDocs(true)
+            ->setReduce(false)
+            ->setKey([$task->getId(), $originalId])
+            ->execute()
+            ->toArray();
+
+        if (empty($response)) {
+            return null;
+        }
+
+        return $response[0];
+    }
 }

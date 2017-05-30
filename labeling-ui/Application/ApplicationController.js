@@ -43,6 +43,10 @@ class ApplicationController {
     currentUserService.setPermissions(userPermissions);
     currentUserService.setOrganisations(userOrganisations);
 
+    this.user = user;
+    this.userPermissions = userPermissions;
+    this.userOrganisations = userOrganisations;
+
     // Initialize Organisation with the first one of the user, by default
     if (organisationService.get() === null) {
       organisationService.set(userOrganisations[0].id);
