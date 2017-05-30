@@ -101,8 +101,8 @@ class PouchDbLabeledThingInFrameGateway {
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
     const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByTaskIdAndFrameIndex'), {
-        startkey: startkey,
-        endkey: endkey,
+        startkey,
+        endkey,
         include_docs: true,
       });
     }).then(result => {
