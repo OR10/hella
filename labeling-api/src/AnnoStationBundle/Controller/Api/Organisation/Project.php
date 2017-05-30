@@ -203,28 +203,12 @@ class Project extends Controller\Base
             $projectTimeMapping[$mapping['key'][0]] = array_sum($mapping['value']);
         }
 
-        $diskUsageByVideoIds = $this->organisationFacade->getDiskUsageForOrganisationVideos($organisation);
-
         $tasksByProjects = $labelingTaskFacade->findAllByProjects($projects);
         $numberOfVideos     = array();
-        $diskUsageByProject = [];
         foreach ($tasksByProjects as $taskByProjects) {
             $projectId                    = $taskByProjects['key'];
             $videoId                      = $taskByProjects['value'];
             $numberOfVideos[$projectId][] = $videoId;
-        }
-
-        foreach($numberOfVideos as $projectId => $videoIds) {
-            $videoIds = array_unique($videoIds);
-            foreach($videoIds as $videoId) {
-                if (isset($diskUsageByVideoIds[$videoId])) {
-                    if (isset($diskUsageByProject[$projectId])) {
-                        $diskUsageByProject[$projectId]['total'] += $diskUsageByVideoIds[$videoId]['total'];
-                    } else {
-                        $diskUsageByProject[$projectId]['total'] = $diskUsageByVideoIds[$videoId]['total'];
-                    }
-                }
-            }
         }
 
         $numberOfVideos = array_map(
@@ -235,12 +219,15 @@ class Project extends Controller\Base
         );
 
         $users = [];
+        $sumOfTasksForProjects          = $this->getSumOfTasksForProjects($projects);
 
         /** @var Model\Project $project */
         foreach ($projects as $project) {
+            if (!isset($sumOfTasksForProjects[$project->getId()])) {
+                $sumOfTasksForProjects[$project->getId()] = 0;
+            }
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
-            $sumOfTasksForProject          = $this->getSumOfTasksForProject($project);
             $sumOfCompletedTasksForProject = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
                 $project
             );
@@ -260,11 +247,11 @@ class Project extends Controller\Base
                 'name'               => $project->getName(),
                 'status'             => $project->getStatus(),
                 'finishedPercentage' => floor(
-                    $sumOfTasksForProject === 0 ? 0 : 100 / $sumOfTasksForProject * $sumOfCompletedTasksForProject
+                    $sumOfTasksForProjects[$project->getId()] === 0 ? 0 : 100 / $sumOfTasksForProjects[$project->getId()] * $sumOfCompletedTasksForProject
                 ),
                 'creationTimestamp'        => $project->getCreationDate(),
                 'taskInPreProcessingCount' => $sumOfPreProcessingTasks,
-                'diskUsage'                => isset($diskUsageByProject[$project->getId()]) ? $diskUsageByProject[$project->getId()] : [],
+                'diskUsage'                => $project->getDiskUsageInBytes() === null ? [] : ['total' => $project->getDiskUsageInBytes()],
                 'campaigns'                => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
             );
 
@@ -286,7 +273,7 @@ class Project extends Controller\Base
                     $taskFailedCount += $states[Model\LabelingTask::STATUS_FAILED];
                 }
 
-                $responseProject['taskCount']                  = $sumOfTasksForProject;
+                $responseProject['taskCount']                  = $sumOfTasksForProjects[$project->getId()];
                 $responseProject['taskFinishedCount']          = $sumOfCompletedTasksForProject;
                 $responseProject['taskInProgressCount']        = $taskInProgressCount;
                 $responseProject['taskFailedCount']            = $taskFailedCount;
@@ -527,16 +514,23 @@ class Project extends Controller\Base
     }
 
     /**
-     * @param Model\Project $project
+     * @param $projects
      *
-     * @return int|mixed
+     * @return array
      */
-    private function getSumOfTasksForProject(Model\Project $project)
+    private function getSumOfTasksForProjects($projects)
     {
-        $labelingTaskFacade = $this->labelingTaskFacadeFactory->getReadOnlyFacade();
-        $tasks = $labelingTaskFacade->findAllByProject($project);
 
-        return count($tasks);
+        $labelingTaskFacade  = $this->labelingTaskFacadeFactory->getReadOnlyFacade();
+        $taskIdsByProjectIds = $labelingTaskFacade->findAllByProjects($projects);
+
+        $numberOfTaskInProject = [];
+        foreach ($taskIdsByProjectIds as $taskIdsByProjectId) {
+            $projectId                         = $taskIdsByProjectId['key'];
+            $numberOfTaskInProject[$projectId] = isset($numberOfTaskInProject[$projectId]) ? $numberOfTaskInProject[$projectId] + 1 : 1;
+        }
+
+        return $numberOfTaskInProject;
     }
 
     /**

@@ -134,7 +134,7 @@ pagination-controls {
     color: $color-ut-lightgrey-3;
   }
 }
-.project-list-table {
+.view-list-table {
   thead {
     th:first-child {
       padding-left: 0 !important;
@@ -152,14 +152,9 @@ pagination-controls {
     }
   }
   tbody {
-    tr:first-child {
-      height: 0;
-    }
     tr {
-      height: 32px;
-
       td:first-child {
-        padding-left: 0;
+        padding-left: 2px;
         text-align: left;
       }
       td {
@@ -167,6 +162,9 @@ pagination-controls {
         font-size: 12px;
         padding: 6px 0 4px;
         border-bottom: 2px solid $color-ut-lightgrey-1;
+        i {
+          font-size: 20px;
+        }
       }
       td:last-child {
         text-align: left;
@@ -174,7 +172,7 @@ pagination-controls {
     }
   }
 }
-.project-list-info-box {
+.view-list-info-box {
   height: 200px;
   h3 {
     margin-top: 20px;
@@ -191,7 +189,7 @@ pagination-controls {
     }
     td {
       background: $color-ut-midgrey-1 !important;
-      padding: 4dpx 5px !important;
+      padding: 4px 5px !important;
       input {
         background: transparent;
         border: none;
