@@ -1,5 +1,5 @@
-* * * * * <%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.30s
-* * * * * /bin/sleep 30;<%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.30s
-* * * * * <%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.60s
-*/5 * * * * <%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.300s
-*/15 * * * * <%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.900s
+* * * * * <%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.30s --env=<%= @symfonyEnvironment %>
+* * * * * <%= @_symfonyUser %> /bin/sleep 30; <%= @symfonyRoot %>/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.30s --env=<%= @symfonyEnvironment %>
+* * * * * <%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.60s --env=<%= @symfonyEnvironment %>
+*/5 * * * * <%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.300s --env=<%= @symfonyEnvironment %>
+*/15 * * * * <%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console annostation:worker-pool:job-rescheduler worker.reschedule.900s --env=<%= @symfonyEnvironment %>

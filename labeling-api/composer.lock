@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8468e52baff5d515da51f518dff3f07c",
+    "content-hash": "259580d83fc36279b9638b0cd569595b",
     "packages": [
         {
             "name": "arbit/phpillow",
@@ -157,7 +157,7 @@
         },
         {
             "name": "crosscan/php-stdlib",
-            "version": "2.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.crosscan.com:crosscan/php-stdlib.git",
@@ -197,7 +197,7 @@
                 "stdlib",
                 "utils"
             ],
-            "time": "2017-05-03T08:51:55+00:00"
+            "time": "2017-05-03 08:51:55"
         },
         {
             "name": "crosscan/worker-pool",
@@ -4885,7 +4885,14 @@
             }
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "2.0.0",
+            "alias_normalized": "2.0.0.0",
+            "version": "9999999-dev",
+            "package": "crosscan/php-stdlib"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "friendsofsymfony/user-bundle": 20,
@@ -4896,6 +4903,7 @@
         "crosscan/worker-pool": 20,
         "mlehner/gelf-php": 20,
         "crosscan/logger": 20,
+        "crosscan/php-stdlib": 20,
         "qafoolabs/profiler": 20,
         "videlalvaro/php-amqplib": 20,
         "arbit/phpillow": 20,

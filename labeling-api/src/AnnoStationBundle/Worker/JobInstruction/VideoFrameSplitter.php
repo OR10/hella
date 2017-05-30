@@ -48,11 +48,17 @@ class VideoFrameSplitter extends JobInstruction
     private $videoCdnService;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * Video constructor.
      *
      * @param VideoService\VideoFrameSplitter $videoFrameSplitter
      * @param Facade\Video                    $videoFacade
      * @param Facade\LabelingTask             $labelingTaskFacade
+     * @param Facade\Project                  $projectFacade
      * @param Flysystem\Filesystem            $fileSystem
      * @param Service\VideoCdn                $videoCdnService
      * @param string                          $cacheDir
@@ -61,6 +67,7 @@ class VideoFrameSplitter extends JobInstruction
         VideoService\VideoFrameSplitter $videoFrameSplitter,
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
+        Facade\Project $projectFacade,
         Flysystem\Filesystem $fileSystem,
         Service\VideoCdn $videoCdnService,
         $cacheDir
@@ -68,6 +75,7 @@ class VideoFrameSplitter extends JobInstruction
         $this->videoFrameSplitter = $videoFrameSplitter;
         $this->videoFacade        = $videoFacade;
         $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->projectFacade      = $projectFacade;
         $this->fileSystem         = $fileSystem;
         $this->cacheDir           = $cacheDir;
         $this->videoCdnService    = $videoCdnService;
@@ -107,9 +115,15 @@ class VideoFrameSplitter extends JobInstruction
 
             $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
 
+            $projectIds = [];
             foreach ($tasks as $task) {
+                $projectIds[] = $task->getProjectId();
                 $task->setStatusIfAllImagesAreConverted($video);
                 $this->labelingTaskFacade->save($task);
+            }
+            foreach(array_unique($projectIds) as $projectId) {
+                $project = $this->projectFacade->find($projectId);
+                $this->updateProject($project, $project->getDiskUsageInBytes() + array_sum($frameSizesInBytes));
             }
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
@@ -124,6 +138,31 @@ class VideoFrameSplitter extends JobInstruction
         }
     }
 
+    /**
+     * @param Model\Project $project
+     * @param               $diskUsage
+     * @param int           $retryCount
+     * @param int           $maxRetries
+     *
+     * @throws CouchDB\UpdateConflictException
+     */
+    private function updateProject(Model\Project $project, $diskUsage, $retryCount = 0, $maxRetries = 1)
+    {
+        try {
+            $this->projectFacade->refresh($project);
+            $project->setDiskUsageInBytes($diskUsage);
+            $this->projectFacade->update();
+        } catch (CouchDB\UpdateConflictException $updateConflictException) {
+            if ($retryCount > $maxRetries) {
+                throw $updateConflictException;
+            }
+            $this->updateProject($project, $diskUsage, $retryCount + 1);
+        }
+    }
+
+    /**
+     * @param Job $job
+     */
     private function setFailure(Job $job)
     {
         $video = $this->videoFacade->find($job->videoId);
