@@ -742,6 +742,12 @@ class LabelingTask
 
         $numberOfTasks = [];
         foreach ($idsInChunks as $idsInChunk) {
+            $idsInChunk    = array_map(
+                function ($id) {
+                    return [$id];
+                },
+                $idsInChunk
+            );
             $numberOfTasks = array_merge(
                 $numberOfTasks,
                 $this->documentManager
@@ -756,8 +762,8 @@ class LabelingTask
         }
 
         $result = [];
-        foreach($numberOfTasks as $numberOfTask) {
-            $result[$numberOfTask['key']] = $numberOfTask['value'];
+        foreach ($numberOfTasks as $numberOfTask) {
+            $result[$numberOfTask['key'][0]] = $numberOfTask['value'];
         }
 
         return $result;
