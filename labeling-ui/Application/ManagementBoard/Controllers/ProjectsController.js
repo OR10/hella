@@ -40,6 +40,11 @@ class ProjectsController {
     this.projectCount = null;
 
     /**
+     * @type {String|null}
+     */
+    this.campaignName = null;
+
+    /**
      * @type {boolean}
      */
     this.showLoadingMask = false;
@@ -52,11 +57,16 @@ class ProjectsController {
       this._$scope.$broadcast('project-list:reload-requested');
       this._loadProjectCount();
     });
+
+    this._getCampaignName();
   }
 
   _loadProjectCount() {
     this._projectGateway.getProjectCount()
       .then(projectCount => this.projectCount = Object.assign({}, {todo: 0, in_progress: 0, done: 0}, projectCount));
+  }
+  _getCampaignName() {
+    this.campaignName = 'Campaignname';
   }
 }
 

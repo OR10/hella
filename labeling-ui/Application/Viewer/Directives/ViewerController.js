@@ -553,6 +553,11 @@ class ViewerController {
       this._debouncedOnThingUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
+    $rootScope.$on('shape:delete:after', () => {
+      this._debouncedOnThingUpdate.triggerImmediately()
+        .then(() => this._handleFrameChange(this._currentFrameIndex));
+    });
+
     $scope.$watch(
       'vm.playing', (playingNow, playingBefore) => {
         if (playingNow === playingBefore) {
@@ -914,6 +919,7 @@ class ViewerController {
    * @private
    */
   _handleFrameChange(frameIndex) {
+    this._currentFrameIndex = frameIndex;
     if (this._frameChangeInProgress) {
       this._logger.warn('ViewerController', 'frame change already in progress');
     }
@@ -952,7 +958,6 @@ class ViewerController {
         this.framePosition.lock.release();
         this._frameChangeInProgress = false;
       });
-
 
     this._$q.all(
       [
@@ -1444,21 +1449,21 @@ class ViewerController {
 
   _currentFrameRemovedFromFrameRange(oldStart, newStart, oldEnd, newEnd) {
     const currentPosition = this.framePosition.position;
-    let removedCurrentFramFromRange = false;
+    let removedCurrentFrameFromRange = false;
 
     if (oldStart !== undefined && newStart !== undefined && newStart !== oldStart) {
       if (newStart > oldStart && oldStart <= currentPosition && newStart > currentPosition) {
-        removedCurrentFramFromRange = true;
+        removedCurrentFrameFromRange = true;
       }
     }
 
     if (oldEnd !== undefined && newEnd !== undefined && newEnd !== oldEnd) {
       if (newEnd < oldEnd && oldEnd >= currentPosition && newEnd < currentPosition) {
-        removedCurrentFramFromRange = true;
+        removedCurrentFrameFromRange = true;
       }
     }
 
-    return removedCurrentFramFromRange;
+    return removedCurrentFrameFromRange;
   }
 
   _handleScroll(event) {

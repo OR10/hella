@@ -79,7 +79,7 @@ table.table {
   }
 
   tbody {
-    tr:nth-child(even) {
+    tr:nth-child(odd) {
       td {
         background-color: $color-ut-lightgrey-2;
       }
@@ -102,7 +102,7 @@ table.table {
   thead {
     tr {
       th {
-        border-bottom: 1px solid $color-ut-midgrey-2;
+        border-bottom: 1px solid $color-ut-darkgrey-1;
       }
     }
   }
@@ -132,5 +132,80 @@ pagination-controls {
   button.is-active {
     background-color: $color-ut-midgrey-2;
     color: $color-ut-lightgrey-3;
+  }
+}
+.view-list-table {
+  thead {
+    th:first-child {
+      padding-left: 0 !important;
+      text-align: left !important;
+    }
+    th {
+      background: white !important;
+      text-align: center !important;
+      padding: 0 !important;
+      font-size: 14px;
+      font-weight: lighter !important;
+    }
+    th:last-child {
+      text-align: left !important;
+    }
+  }
+  tbody {
+    tr {
+      td:first-child {
+        padding-left: 2px;
+        text-align: left;
+      }
+      td {
+        text-align: center;
+        font-size: 12px;
+        padding: 6px 0 4px;
+        border-bottom: 2px solid $color-ut-lightgrey-1;
+        i {
+          font-size: 20px;
+        }
+      }
+      td:last-child {
+        text-align: left;
+      }
+    }
+  }
+}
+.view-list-info-box {
+  height: 200px;
+  h3 {
+    margin-top: 20px;
+  }
+}
+
+.formular-table {
+  tr {
+    border-bottom: 2px solid $color-ut-lightgrey-2;
+    td:first-child {
+      @include font-s();
+      color: white;
+      width: 150px;
+    }
+    td {
+      background: $color-ut-midgrey-1 !important;
+      padding: 4px 5px !important;
+      input {
+        background: transparent;
+        border: none;
+        height: 20px;
+        padding: 0;
+        margin: 0;
+        @include font-s();
+      }
+      input:hover {
+        background: transparent;
+        border: none;
+      }
+      input:focus {
+        background: transparent;
+        border: none;
+      }
+    }
   }
 }

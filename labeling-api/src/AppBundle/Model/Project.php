@@ -140,6 +140,12 @@ class Project
     protected $campaigns;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="mixed")
+     */
+    private $diskUsageInBytes;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param string                              $name
@@ -801,5 +807,21 @@ class Project
     public function getCampaigns()
     {
         return $this->campaigns;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDiskUsageInBytes()
+    {
+        return $this->diskUsageInBytes;
+    }
+
+    /**
+     * @param string $diskUsageInBytes
+     */
+    public function setDiskUsageInBytes($diskUsageInBytes)
+    {
+        $this->diskUsageInBytes = $diskUsageInBytes;
     }
 }

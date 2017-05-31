@@ -32,22 +32,43 @@ class CalculateImageDiskUsage extends Command\Base
     private $documentManager;
 
     /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
+
+    /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
+     * @var array
+     */
+    private $resettetProjectsBytesCounter = [];
+
+    /**
      * @param Facade\Video            $videoFacade
+     * @param Facade\LabelingTask     $labelingTaskFacade
+     * @param Facade\Project          $projectFacade
      * @param                         $frameCdnBaseUrl
      * @param                         $kernelEnvironment
      * @param CouchDB\DocumentManager $documentManager
      */
     public function __construct(
         Facade\Video $videoFacade,
+        Facade\LabelingTask $labelingTaskFacade,
+        Facade\Project $projectFacade,
         $frameCdnBaseUrl,
         $kernelEnvironment,
         CouchDB\DocumentManager $documentManager
     ) {
         parent::__construct();
-        $this->videoFacade       = $videoFacade;
-        $this->frameCdnBaseUrl   = $frameCdnBaseUrl;
-        $this->kernelEnvironment = $kernelEnvironment;
-        $this->documentManager   = $documentManager;
+        $this->videoFacade        = $videoFacade;
+        $this->frameCdnBaseUrl    = $frameCdnBaseUrl;
+        $this->kernelEnvironment  = $kernelEnvironment;
+        $this->documentManager    = $documentManager;
+        $this->labelingTaskFacade = $labelingTaskFacade;
+        $this->projectFacade      = $projectFacade;
     }
 
     protected function configure()
@@ -87,6 +108,7 @@ class CalculateImageDiskUsage extends Command\Base
         /** @var Model\Video $video */
         $calculatedBytesInThisRun = 0;
         foreach ($videos as $video) {
+            $videoDocumentChanged = false;
             /** refresh doctrine map */
             $video = $this->videoFacade->find($video->getId());
 
@@ -143,16 +165,49 @@ class CalculateImageDiskUsage extends Command\Base
                     $progress->advance();
                 }
                 if (!$dryRun) {
+                    $videoDocumentChanged = true;
                     $video->setImageSizesForType($type, $imageSizeForType);
                 }
             }
             if (!$dryRun) {
-                $this->videoFacade->save($video);
+                if ($videoDocumentChanged) {
+                    $this->videoFacade->save($video);
+                }
+                $this->documentManager->detach($video);
+                $this->updateProjectsDiskUsageForVideo($video);
             }
-            $this->documentManager->detach($video);
         }
         $this->closeCurl($curlHandle);
         $progress->finish();
+    }
+
+    private function updateProjectsDiskUsageForVideo(Model\Video $video)
+    {
+        $bytesForAllTypes = 0;
+        foreach ($video->getImageTypes() as $imageType) {
+            $bytesForAllTypes += array_sum($imageType['sizeInBytes']);
+        }
+
+        $tasks      = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
+        $projectIds = [];
+        foreach ($tasks as $task) {
+            $projectIds[] = $task->getProjectId();
+        }
+
+        foreach (array_unique($projectIds) as $projectId) {
+            $project = $this->projectFacade->find($projectId);
+
+            if (in_array($projectId, $this->resettetProjectsBytesCounter)) {
+                $sumImageBytes = $project->getDiskUsageInBytes();
+            } else {
+                $sumImageBytes                        = 0;
+                $this->resettetProjectsBytesCounter[] = $projectId;
+            }
+
+            $project->setDiskUsageInBytes($sumImageBytes + $video->getMetaData()->sizeInBytes + $bytesForAllTypes);
+            $this->projectFacade->save($project);
+            $this->documentManager->detach($project);
+        }
     }
 
     private function getHeaderFromCurlResponse($response)
