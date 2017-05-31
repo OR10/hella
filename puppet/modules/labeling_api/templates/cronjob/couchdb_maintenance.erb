@@ -1,0 +1,2 @@
+0 1 * * * <%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console doctrine:couchdb:maintenance:view-cleanup --env=<%= @symfonyEnvironment %>
+0 2 * * 0 <%= @_symfonyUser %> <%= @symfonyRoot %>/app/AnnoStation/console doctrine:couchdb:maintenance:compact-database --env=<%= @symfonyEnvironment %>
