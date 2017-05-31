@@ -1,4 +1,5 @@
 import moment from 'moment';
+import BytesFormatter from '../../Common/Helpers/BytesFormatter';
 
 /**
  * Controller of the {@link ProjectListDirective}
@@ -418,6 +419,7 @@ class ProjectListController {
       'taskInProgressCount': 'process',
       'taskFinishedCount': 'done',
       'totalLabelingTimeInSecondsFormatted': 'time',
+      'diskUsageTotal': 'disk usage',
     };
 
     Object.keys(propertyToColumnMap).forEach(
@@ -462,7 +464,6 @@ class ProjectListController {
 
         return `${time}h`;
       },
-      /*
       'diskUsageTotal': project => {
         const filter = new BytesFormatter();
         if (project.diskUsage.total === undefined) {
@@ -470,7 +471,6 @@ class ProjectListController {
         }
         return filter.format(project.diskUsage.total);
       },
-      */
       'frameCount': project => project.totalFrames !== undefined ? project.totalFrames : null,
     };
 

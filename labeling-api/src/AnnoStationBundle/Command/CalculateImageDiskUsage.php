@@ -108,6 +108,7 @@ class CalculateImageDiskUsage extends Command\Base
         /** @var Model\Video $video */
         $calculatedBytesInThisRun = 0;
         foreach ($videos as $video) {
+            $videoDocumentChanged = false;
             /** refresh doctrine map */
             $video = $this->videoFacade->find($video->getId());
 
@@ -164,14 +165,17 @@ class CalculateImageDiskUsage extends Command\Base
                     $progress->advance();
                 }
                 if (!$dryRun) {
+                    $videoDocumentChanged = true;
                     $video->setImageSizesForType($type, $imageSizeForType);
                 }
             }
             if (!$dryRun) {
-                $this->videoFacade->save($video);
+                if ($videoDocumentChanged) {
+                    $this->videoFacade->save($video);
+                }
+                $this->documentManager->detach($video);
                 $this->updateProjectsDiskUsageForVideo($video);
             }
-            $this->documentManager->detach($video);
         }
         $this->closeCurl($curlHandle);
         $progress->finish();
