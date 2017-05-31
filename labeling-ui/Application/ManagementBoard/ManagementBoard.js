@@ -51,6 +51,7 @@ import TaskConfigurationUploadView from './Views/TaskConfigurationUploadView.htm
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
 import FileSizeFilterProvider from './Filters/FileSizeFilterProvider';
+import IsArrayProvider from './Filters/IsArrayProvider';
 
 import SystemStatusController from './Controllers/SystemStatusController';
 import SystemStatusView from './Views/SystemStatusView.html!';
@@ -301,6 +302,7 @@ class ManagementBoard extends Module {
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);
     this.module.filter('fileSize', FileSizeFilterProvider);
+    this.module.filter('isArray', IsArrayProvider);
   }
 }
 

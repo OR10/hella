@@ -180,8 +180,20 @@ class ProjectImporter extends Controller\Base
         $uploadCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $uploadId]);
 
         $tasks = [];
-        foreach (glob(sprintf('%s%s*.xml', $uploadCacheDirectory, DIRECTORY_SEPARATOR)) as $filePath) {
-            $tasks = array_merge($this->projectImporter->importXml($filePath, $organisation, $user), $tasks);
+        try {
+            foreach (glob(sprintf('%s%s*.xml', $uploadCacheDirectory, DIRECTORY_SEPARATOR)) as $filePath) {
+                $tasks = array_merge($this->projectImporter->importXml($filePath, $organisation, $user), $tasks);
+            }
+        }catch (\Exception $exception) {
+            return new View\View(
+                [
+                    'result' => [
+                        'error' => [
+                            'message' => $exception->getMessage()
+                        ]
+                    ],
+                ]
+            );
         }
 
         return new View\View(

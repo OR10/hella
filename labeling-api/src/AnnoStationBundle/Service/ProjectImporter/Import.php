@@ -119,7 +119,7 @@ class Import
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
 
         if ($this->requirementsXml === null) {
-            $requirementsXml = $this->createRequirementsXml($xpath, dirname($xmlImportFilePath), $organisation, $user);
+            $requirementsXml = $this->createRequirementsXml($xpath, $xmlImportFilePath, $organisation, $user);
             $this->requirementsXml = $requirementsXml;
         } else {
             $requirementsXml = $this->requirementsXml;
@@ -207,7 +207,7 @@ class Import
 
     /**
      * @param \DOMXPath                           $xpath
-     * @param                                     $path
+     * @param                                     $xmlImportFilePath
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
      *
@@ -216,18 +216,26 @@ class Import
      */
     private function createRequirementsXml(
         \DOMXPath $xpath,
-        $path,
+        $xmlImportFilePath,
         AnnoStationBundleModel\Organisation $organisation,
         Model\User $user
     ) {
         $requirementsElement = $xpath->query('/x:export/x:metadata/x:requirements');
 
-        $filePath = sprintf('%s/%s', $path, $requirementsElement->item(0)->getAttribute('filename'));
+        $filePath = sprintf('%s/%s', dirname($xmlImportFilePath), $requirementsElement->item(0)->getAttribute('filename'));
 
         $expectedHash = hash('sha256', file_get_contents($filePath));
         $actualHash   = $xpath->query('x:sha256', $requirementsElement->item(0))->item(0)->nodeValue;
         if ($expectedHash !== $actualHash) {
-            throw new \Exception('Invalid sha256 hash');
+            throw new \Exception(
+                sprintf(
+                    'Your SHA256 hash:\n"%s"\nfound in file:\n"%s"\ndoes not match the expected hash:\n"%s"\nfor file:\n"%s"',
+                    $actualHash,
+                    basename($xmlImportFilePath),
+                    $expectedHash,
+                    basename($filePath)
+                )
+            );
         }
 
         $requirements = $this->requirementsXmlFacade->getTaskConfigurationByUserAndMd5Hash(
