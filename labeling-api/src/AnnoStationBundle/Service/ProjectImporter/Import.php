@@ -157,7 +157,7 @@ class Import
         $videoElements = $xpath->query('/x:export/x:video');
         $createdTasks  = [];
         foreach ($videoElements as $videoElement) {
-            $video        = $this->createVideo($organisation, $videoElement, $project, dirname($xmlImportFilePath));
+            $video        = $this->createVideo($organisation, $videoElement, $project, $xmlImportFilePath);
             $tasks        = $this->taskCreatorService->createTasks($project, $video, $user, true);
             $createdTasks = array_merge($createdTasks, $tasks);
 
@@ -293,28 +293,39 @@ class Import
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param \DOMElement                         $xpath
      * @param                                     $project
-     * @param                                     $directory
+     * @param                                     $xmlImportFilePath
      *
      * @return Model\Video
+     * @throws \Exception
      */
     private function createVideo(
         AnnoStationBundleModel\Organisation $organisation,
         \DOMElement $xpath,
         $project,
-        $directory
+        $xmlImportFilePath
     ) {
-        $videoSourcePath = sprintf('%s/%s', $directory, $xpath->getAttribute('filename'));
+        $filename = $xpath->getAttribute('filename');
+        $videoSourcePath = sprintf('%s/%s', dirname($xmlImportFilePath), $filename);
+        if (!is_file($videoSourcePath)) {
+            throw new \Exception(
+                sprintf(
+                    'Video File not found:\n"%s"\nreferenced in:\n"%s"',
+                    $filename,
+                    basename($xmlImportFilePath)
+                )
+            );
+        }
         $video           = $this->videoImporter->importVideo(
             $organisation,
             $project,
-            $xpath->getAttribute('filename'),
+            $filename,
             $videoSourcePath,
             false
         );
         $video->setOriginalId($xpath->getAttribute('id'));
 
         $fileInfo            = pathinfo($videoSourcePath);
-        $calibrationFilePath = sprintf('%s/%s.csv', $directory, $fileInfo['filename']);
+        $calibrationFilePath = sprintf('%s/%s.csv', dirname($xmlImportFilePath), $fileInfo['filename']);
 
         if (is_file($calibrationFilePath)) {
             $video->setCalibrationData(
