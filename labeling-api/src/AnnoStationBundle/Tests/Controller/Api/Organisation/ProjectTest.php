@@ -66,6 +66,7 @@ class ProjectTest extends Tests\WebTestCase
                         'taskInstructionType'        => 'legacy',
                         'diskUsage'                  => [],
                         'campaigns'                  => [],
+                        'labelingGroupId'            => null,
                     ],
                 ],
             ],
@@ -90,6 +91,7 @@ class ProjectTest extends Tests\WebTestCase
                         'taskInstructionType'        => 'legacy',
                         'diskUsage'                  => [],
                         'campaigns'                  => [],
+                        'labelingGroupId'            => null,
                     ],[
                         'name'                       => 'Test Project 1',
                         'status'                     => Model\LabelingTask::STATUS_TODO,
@@ -108,6 +110,7 @@ class ProjectTest extends Tests\WebTestCase
                         'taskInstructionType'        => 'legacy',
                         'diskUsage'                  => [],
                         'campaigns'                  => [],
+                        'labelingGroupId'            => null,
                     ],[
                         'name'                       => 'Test Project 2',
                         'status'                     => Model\LabelingTask::STATUS_TODO,
@@ -126,6 +129,7 @@ class ProjectTest extends Tests\WebTestCase
                         'taskInstructionType'        => 'legacy',
                         'diskUsage'                  => [],
                         'campaigns'                  => [],
+                        'labelingGroupId'            => null,
                     ],
                 ],
             ],
@@ -150,6 +154,7 @@ class ProjectTest extends Tests\WebTestCase
                         'taskInstructionType'        => 'legacy',
                         'diskUsage'                  => [],
                         'campaigns'                  => [],
+                        'labelingGroupId'            => null,
                     ],
                 ],
             ],
@@ -583,6 +588,34 @@ class ProjectTest extends Tests\WebTestCase
         $project = $this->projectFacade->find($project->getId());
 
         $this->assertTrue($project->isDeleted());
+    }
+
+    public function testAssignProjectToLabelGroup()
+    {
+        $projectBuilder    = Tests\Helper\ProjectBuilder::create($this->organisation)
+            ->withCreationDate(new \DateTime('2017-06-01 14:00:00', new \DateTimeZone('UTC')))
+            ->withProjectOwnedByUserId($this->client->getId())
+            ->build();
+        $labelGroupBuilder = Tests\Helper\LabelingGroupBuilder::create($this->organisation)->build();
+
+        $project = $this->projectFacade->save($projectBuilder);
+
+        $requestWrapper = $this->createRequest(
+            '/api/organisation/%s/project/%s/assignLabelGroup',
+            [$this->organisation->getId(), $project->getId()]
+        )
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentialsFromUsername($this->client)
+            ->setJsonBody(
+                [
+                    'labelGroupId' => $labelGroupBuilder->getId(),
+                ]
+            )
+            ->execute();
+
+        $project = $this->projectFacade->find($project->getId());
+
+        $this->assertEquals($labelGroupBuilder->getId(), $project->getLabelingGroupId());
     }
 
     protected function setUpImplementation()
