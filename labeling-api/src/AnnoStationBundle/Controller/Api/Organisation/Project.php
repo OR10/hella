@@ -220,6 +220,7 @@ class Project extends Controller\Base
 
         $users = [];
         $sumOfTasksForProjects          = $this->getSumOfTasksForProjects($projects);
+        $sumOfCompletedTasksForProjects = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProjects($projects);
 
         /** @var Model\Project $project */
         foreach ($projects as $project) {
@@ -228,9 +229,7 @@ class Project extends Controller\Base
             }
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
-            $sumOfCompletedTasksForProject = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
-                $project
-            );
+            $sumOfCompletedTasksForProject = !isset($sumOfCompletedTasksForProjects[$project->getId()]) ? 0 : $sumOfCompletedTasksForProjects[$project->getId()];
             $sumOfTasksByPhaseForProject   = $labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
 
             $sumOfFailedTasks        = 0;
