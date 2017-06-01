@@ -81,7 +81,9 @@ class UploadFormController {
         result => {
           this.uploadInProgress = false;
           this._inProgressService.end();
-          if (this._hasFilesWithError()) {
+          if (result.error !== undefined) {
+            this._showErrorsModal(result.error.message);
+          } else if (this._hasFilesWithError()) {
             this._showCompletedWithErrorsModal(result.missing3dVideoCalibrationData);
           } else {
             this._showCompletedModal(result.missing3dVideoCalibrationData);
@@ -92,7 +94,7 @@ class UploadFormController {
         () => {
           this.uploadInProgress = false;
           this._inProgressService.end();
-          this._showCompletedWithErrorsModal();
+          this._showCompletedWithErrorsModal([]);
         }
       );
   }
@@ -130,6 +132,24 @@ class UploadFormController {
         title: 'Upload completed with errors',
         headline: 'Your upload is complete, but errors occured.',
         message: 'Some errors occurred during your upload. Please check the file list for errors and act accordingly.',
+        confirmButtonText: 'Understood',
+      },
+      undefined,
+      undefined,
+      {
+        abortable: false,
+        warning: true,
+      }
+    );
+    this._showErrorsModal('Some errors occurred during your upload. Please check the file list for errors and act accordingly.');
+  }
+
+  _showErrorsModal(message) {
+    this._modalService.info(
+      {
+        title: 'Upload completed with errors',
+        headline: 'Your upload is complete, but errors occured.',
+        message: message.split('\\n'),
         confirmButtonText: 'Understood',
       },
       undefined,
