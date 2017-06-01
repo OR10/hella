@@ -419,6 +419,7 @@ class ProjectListController {
       'taskInProgressCount': 'process',
       'taskFinishedCount': 'done',
       'totalLabelingTimeInSecondsFormatted': 'time',
+      'labeledThingInFramesCount': 'object frames',
       'diskUsageTotal': 'disk usage',
     };
 

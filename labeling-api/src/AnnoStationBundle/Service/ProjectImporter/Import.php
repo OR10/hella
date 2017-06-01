@@ -59,7 +59,12 @@ class Import
     /**
      * @var Service\XmlValidator
      */
-    private $xmlValidator;
+    private $xmlValidatorForImportData;
+
+    /**
+     * @var Service\XmlValidator
+     */
+    private $xmlValidatorForRequirementsConfiguration;
 
     /**
      * @var Service\TaskCreator
@@ -69,14 +74,15 @@ class Import
     /**
      * Import constructor.
      *
-     * @param Facade\Project              $projectFacade
-     * @param Facade\RequirementsXml      $requirementsXmlFacade
-     * @param Facade\LabelingTask         $labelingTaskFacade
-     * @param Facade\Video                $videoFacade
-     * @param Service\VideoImporter       $videoImporter
-     * @param Service\XmlValidator        $xmlValidator
-     * @param Service\TaskCreator         $taskCreatorService
-     * @param AMQP\FacadeAMQP             $amqpFacade
+     * @param Facade\Project         $projectFacade
+     * @param Facade\RequirementsXml $requirementsXmlFacade
+     * @param Facade\LabelingTask    $labelingTaskFacade
+     * @param Facade\Video           $videoFacade
+     * @param Service\VideoImporter  $videoImporter
+     * @param Service\XmlValidator   $xmlValidatorForImportData
+     * @param Service\XmlValidator   $xmlValidatorForRequirementsConfiguration
+     * @param Service\TaskCreator    $taskCreatorService
+     * @param AMQP\FacadeAMQP        $amqpFacade
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -84,18 +90,20 @@ class Import
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Video $videoFacade,
         Service\VideoImporter $videoImporter,
-        Service\XmlValidator $xmlValidator,
+        Service\XmlValidator $xmlValidatorForImportData,
+        Service\XmlValidator $xmlValidatorForRequirementsConfiguration,
         Service\TaskCreator $taskCreatorService,
         AMQP\FacadeAMQP $amqpFacade
     ) {
-        $this->projectFacade         = $projectFacade;
-        $this->requirementsXmlFacade = $requirementsXmlFacade;
-        $this->videoImporter         = $videoImporter;
-        $this->labelingTaskFacade    = $labelingTaskFacade;
-        $this->videoFacade           = $videoFacade;
-        $this->amqpFacade            = $amqpFacade;
-        $this->xmlValidator          = $xmlValidator;
-        $this->taskCreatorService    = $taskCreatorService;
+        $this->projectFacade                            = $projectFacade;
+        $this->requirementsXmlFacade                    = $requirementsXmlFacade;
+        $this->videoImporter                            = $videoImporter;
+        $this->labelingTaskFacade                       = $labelingTaskFacade;
+        $this->videoFacade                              = $videoFacade;
+        $this->amqpFacade                               = $amqpFacade;
+        $this->xmlValidatorForImportData                = $xmlValidatorForImportData;
+        $this->taskCreatorService                       = $taskCreatorService;
+        $this->xmlValidatorForRequirementsConfiguration = $xmlValidatorForRequirementsConfiguration;
     }
 
     /**
@@ -104,14 +112,28 @@ class Import
      * @param Model\User                          $user
      *
      * @return array
+     * @throws \Exception
      */
     public function importXml($xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user)
     {
         $xmlImport = new \DOMDocument();
         $xmlImport->load($xmlImportFilePath);
 
-        $errorMessage = $this->xmlValidator->validateRelaxNg($xmlImport);
-        if ($errorMessage !== null) {
+        $errorMessageForRequirementsConfiguration = $this->xmlValidatorForRequirementsConfiguration->validateRelaxNg(
+            $xmlImport
+        );
+        $errorMessageForImportData                = $this->xmlValidatorForImportData->validateRelaxNg($xmlImport);
+        if ($errorMessageForImportData !== null && $errorMessageForRequirementsConfiguration !== null) {
+            throw new \Exception(
+                sprintf(
+                    'The file:\n"%s"\ndoes not match any expected XML Schema\n \nThing Import Error:\n%s\n \nRequirements.xml Configuration File Error:\n%s',
+                    basename($xmlImportFilePath),
+                    $errorMessageForImportData,
+                    $errorMessageForRequirementsConfiguration
+                )
+            );
+        }
+        if ($errorMessageForRequirementsConfiguration === null) {
             return [];
         }
 
@@ -119,7 +141,7 @@ class Import
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
 
         if ($this->requirementsXml === null) {
-            $requirementsXml = $this->createRequirementsXml($xpath, dirname($xmlImportFilePath), $organisation, $user);
+            $requirementsXml = $this->createRequirementsXml($xpath, $xmlImportFilePath, $organisation, $user);
             $this->requirementsXml = $requirementsXml;
         } else {
             $requirementsXml = $this->requirementsXml;
@@ -135,7 +157,7 @@ class Import
         $videoElements = $xpath->query('/x:export/x:video');
         $createdTasks  = [];
         foreach ($videoElements as $videoElement) {
-            $video        = $this->createVideo($organisation, $videoElement, $project, dirname($xmlImportFilePath));
+            $video        = $this->createVideo($organisation, $xpath, $videoElement, $project, $xmlImportFilePath);
             $tasks        = $this->taskCreatorService->createTasks($project, $video, $user, true);
             $createdTasks = array_merge($createdTasks, $tasks);
 
@@ -207,7 +229,7 @@ class Import
 
     /**
      * @param \DOMXPath                           $xpath
-     * @param                                     $path
+     * @param                                     $xmlImportFilePath
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
      *
@@ -216,18 +238,26 @@ class Import
      */
     private function createRequirementsXml(
         \DOMXPath $xpath,
-        $path,
+        $xmlImportFilePath,
         AnnoStationBundleModel\Organisation $organisation,
         Model\User $user
     ) {
         $requirementsElement = $xpath->query('/x:export/x:metadata/x:requirements');
 
-        $filePath = sprintf('%s/%s', $path, $requirementsElement->item(0)->getAttribute('filename'));
+        $filePath = sprintf('%s/%s', dirname($xmlImportFilePath), $requirementsElement->item(0)->getAttribute('filename'));
 
         $expectedHash = hash('sha256', file_get_contents($filePath));
         $actualHash   = $xpath->query('x:sha256', $requirementsElement->item(0))->item(0)->nodeValue;
         if ($expectedHash !== $actualHash) {
-            throw new \Exception('Invalid sha256 hash');
+            throw new \Exception(
+                sprintf(
+                    'Your SHA256 hash:\n"%s"\nfound in file:\n"%s"\ndoes not match the expected hash:\n"%s"\nfor file:\n"%s"',
+                    $actualHash,
+                    basename($xmlImportFilePath),
+                    $expectedHash,
+                    basename($filePath)
+                )
+            );
         }
 
         $requirements = $this->requirementsXmlFacade->getTaskConfigurationByUserAndMd5Hash(
@@ -261,30 +291,55 @@ class Import
 
     /**
      * @param AnnoStationBundleModel\Organisation $organisation
-     * @param \DOMElement                         $xpath
+     * @param \DOMXPath                           $xpath
+     * @param \DOMElement                         $videoDomElement
      * @param                                     $project
-     * @param                                     $directory
+     * @param                                     $xmlImportFilePath
      *
      * @return Model\Video
+     * @throws \Exception
      */
     private function createVideo(
         AnnoStationBundleModel\Organisation $organisation,
-        \DOMElement $xpath,
+        \DOMXPath $xpath,
+        \DOMElement $videoDomElement,
         $project,
-        $directory
+        $xmlImportFilePath
     ) {
-        $videoSourcePath = sprintf('%s/%s', $directory, $xpath->getAttribute('filename'));
+        $filename            = $videoDomElement->getAttribute('filename');
+        $videoSourcePath     = sprintf('%s/%s', dirname($xmlImportFilePath), $filename);
+        $fileInfo            = pathinfo($videoSourcePath);
+        $calibrationFilePath = sprintf('%s/%s.csv', dirname($xmlImportFilePath), $fileInfo['filename']);
+
+        $numberOfCuboids = $xpath->query('./x:thing/x:shape/x:cuboid', $videoDomElement)->length;
+
+        if ($numberOfCuboids > 0 && !is_file($calibrationFilePath)) {
+            throw new \Exception(
+                sprintf(
+                    'Missing Video Calibration File:\n"%s"\nfor Video:\n"%s"',
+                    basename($calibrationFilePath),
+                    $filename
+                )
+            );
+        }
+
+        if (!is_file($videoSourcePath)) {
+            throw new \Exception(
+                sprintf(
+                    'Video File not found:\n"%s"\nreferenced in:\n"%s"',
+                    $filename,
+                    basename($xmlImportFilePath)
+                )
+            );
+        }
         $video           = $this->videoImporter->importVideo(
             $organisation,
             $project,
-            $xpath->getAttribute('filename'),
+            $filename,
             $videoSourcePath,
             false
         );
-        $video->setOriginalId($xpath->getAttribute('id'));
-
-        $fileInfo            = pathinfo($videoSourcePath);
-        $calibrationFilePath = sprintf('%s/%s.csv', $directory, $fileInfo['filename']);
+        $video->setOriginalId($videoDomElement->getAttribute('id'));
 
         if (is_file($calibrationFilePath)) {
             $video->setCalibrationData(
