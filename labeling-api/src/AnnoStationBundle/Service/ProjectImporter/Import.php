@@ -59,7 +59,12 @@ class Import
     /**
      * @var Service\XmlValidator
      */
-    private $xmlValidator;
+    private $xmlValidatorForImportData;
+
+    /**
+     * @var Service\XmlValidator
+     */
+    private $xmlValidatorForRequirementsConfiguration;
 
     /**
      * @var Service\TaskCreator
@@ -69,14 +74,15 @@ class Import
     /**
      * Import constructor.
      *
-     * @param Facade\Project              $projectFacade
-     * @param Facade\RequirementsXml      $requirementsXmlFacade
-     * @param Facade\LabelingTask         $labelingTaskFacade
-     * @param Facade\Video                $videoFacade
-     * @param Service\VideoImporter       $videoImporter
-     * @param Service\XmlValidator        $xmlValidator
-     * @param Service\TaskCreator         $taskCreatorService
-     * @param AMQP\FacadeAMQP             $amqpFacade
+     * @param Facade\Project         $projectFacade
+     * @param Facade\RequirementsXml $requirementsXmlFacade
+     * @param Facade\LabelingTask    $labelingTaskFacade
+     * @param Facade\Video           $videoFacade
+     * @param Service\VideoImporter  $videoImporter
+     * @param Service\XmlValidator   $xmlValidatorForImportData
+     * @param Service\XmlValidator   $xmlValidatorForRequirementsConfiguration
+     * @param Service\TaskCreator    $taskCreatorService
+     * @param AMQP\FacadeAMQP        $amqpFacade
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -84,18 +90,20 @@ class Import
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Video $videoFacade,
         Service\VideoImporter $videoImporter,
-        Service\XmlValidator $xmlValidator,
+        Service\XmlValidator $xmlValidatorForImportData,
+        Service\XmlValidator $xmlValidatorForRequirementsConfiguration,
         Service\TaskCreator $taskCreatorService,
         AMQP\FacadeAMQP $amqpFacade
     ) {
-        $this->projectFacade         = $projectFacade;
-        $this->requirementsXmlFacade = $requirementsXmlFacade;
-        $this->videoImporter         = $videoImporter;
-        $this->labelingTaskFacade    = $labelingTaskFacade;
-        $this->videoFacade           = $videoFacade;
-        $this->amqpFacade            = $amqpFacade;
-        $this->xmlValidator          = $xmlValidator;
-        $this->taskCreatorService    = $taskCreatorService;
+        $this->projectFacade                            = $projectFacade;
+        $this->requirementsXmlFacade                    = $requirementsXmlFacade;
+        $this->videoImporter                            = $videoImporter;
+        $this->labelingTaskFacade                       = $labelingTaskFacade;
+        $this->videoFacade                              = $videoFacade;
+        $this->amqpFacade                               = $amqpFacade;
+        $this->xmlValidatorForImportData                = $xmlValidatorForImportData;
+        $this->taskCreatorService                       = $taskCreatorService;
+        $this->xmlValidatorForRequirementsConfiguration = $xmlValidatorForRequirementsConfiguration;
     }
 
     /**
@@ -104,14 +112,28 @@ class Import
      * @param Model\User                          $user
      *
      * @return array
+     * @throws \Exception
      */
     public function importXml($xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user)
     {
         $xmlImport = new \DOMDocument();
         $xmlImport->load($xmlImportFilePath);
 
-        $errorMessage = $this->xmlValidator->validateRelaxNg($xmlImport);
-        if ($errorMessage !== null) {
+        $errorMessageForRequirementsConfiguration = $this->xmlValidatorForRequirementsConfiguration->validateRelaxNg(
+            $xmlImport
+        );
+        $errorMessageForImportData                = $this->xmlValidatorForImportData->validateRelaxNg($xmlImport);
+        if ($errorMessageForImportData !== null && $errorMessageForRequirementsConfiguration !== null) {
+            throw new \Exception(
+                sprintf(
+                    'The file:\n"%s"\ndoes not match any expected XML Schema\n \nThing Import Error:\n%s\n \nRequirements.xml Configuration File Error:\n%s',
+                    basename($xmlImportFilePath),
+                    $errorMessageForImportData,
+                    $errorMessageForRequirementsConfiguration
+                )
+            );
+        }
+        if ($errorMessageForRequirementsConfiguration === null) {
             return [];
         }
 
