@@ -725,6 +725,51 @@ class LabelingTask
     }
 
     /**
+     * @param $projects
+     *
+     * @return array
+     */
+    public function getSumOfAllDoneLabelingTasksForProjects($projects)
+    {
+        $projectIds = array_map(
+            function (Model\Project $project) {
+                return $project->getId();
+            },
+            $projects
+        );
+
+        $idsInChunks = array_chunk($projectIds, 100);
+
+        $numberOfTasks = [];
+        foreach ($idsInChunks as $idsInChunk) {
+            $idsInChunk    = array_map(
+                function ($id) {
+                    return [$id];
+                },
+                $idsInChunk
+            );
+            $numberOfTasks = array_merge(
+                $numberOfTasks,
+                $this->documentManager
+                    ->createQuery('annostation_labeling_task_all_done_by_project_001', 'view')
+                    ->onlyDocs(false)
+                    ->setKeys($idsInChunk)
+                    ->setReduce(true)
+                    ->setGroup(true)
+                    ->execute()
+                    ->toArray()
+            );
+        }
+
+        $result = [];
+        foreach ($numberOfTasks as $numberOfTask) {
+            $result[$numberOfTask['key'][0]] = $numberOfTask['value'];
+        }
+
+        return $result;
+    }
+
+    /**
      * @param Model\Project $project
      * @param Model\User    $user
      *
