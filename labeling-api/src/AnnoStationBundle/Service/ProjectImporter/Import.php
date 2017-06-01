@@ -157,7 +157,7 @@ class Import
         $videoElements = $xpath->query('/x:export/x:video');
         $createdTasks  = [];
         foreach ($videoElements as $videoElement) {
-            $video        = $this->createVideo($organisation, $videoElement, $project, $xmlImportFilePath);
+            $video        = $this->createVideo($organisation, $xpath, $videoElement, $project, $xmlImportFilePath);
             $tasks        = $this->taskCreatorService->createTasks($project, $video, $user, true);
             $createdTasks = array_merge($createdTasks, $tasks);
 
@@ -291,7 +291,8 @@ class Import
 
     /**
      * @param AnnoStationBundleModel\Organisation $organisation
-     * @param \DOMElement                         $xpath
+     * @param \DOMXPath                           $xpath
+     * @param \DOMElement                         $videoDomElement
      * @param                                     $project
      * @param                                     $xmlImportFilePath
      *
@@ -300,12 +301,28 @@ class Import
      */
     private function createVideo(
         AnnoStationBundleModel\Organisation $organisation,
-        \DOMElement $xpath,
+        \DOMXPath $xpath,
+        \DOMElement $videoDomElement,
         $project,
         $xmlImportFilePath
     ) {
-        $filename = $xpath->getAttribute('filename');
-        $videoSourcePath = sprintf('%s/%s', dirname($xmlImportFilePath), $filename);
+        $filename            = $videoDomElement->getAttribute('filename');
+        $videoSourcePath     = sprintf('%s/%s', dirname($xmlImportFilePath), $filename);
+        $fileInfo            = pathinfo($videoSourcePath);
+        $calibrationFilePath = sprintf('%s/%s.csv', dirname($xmlImportFilePath), $fileInfo['filename']);
+
+        $numberOfCuboids = $xpath->query('./x:thing/x:shape/x:cuboid', $videoDomElement)->length;
+
+        if ($numberOfCuboids > 0 && !is_file($calibrationFilePath)) {
+            throw new \Exception(
+                sprintf(
+                    'Missing Video Calibration File:\n"%s"\nfor Video:\n"%s"',
+                    basename($calibrationFilePath),
+                    $filename
+                )
+            );
+        }
+
         if (!is_file($videoSourcePath)) {
             throw new \Exception(
                 sprintf(
@@ -322,10 +339,7 @@ class Import
             $videoSourcePath,
             false
         );
-        $video->setOriginalId($xpath->getAttribute('id'));
-
-        $fileInfo            = pathinfo($videoSourcePath);
-        $calibrationFilePath = sprintf('%s/%s.csv', dirname($xmlImportFilePath), $fileInfo['filename']);
+        $video->setOriginalId($videoDomElement->getAttribute('id'));
 
         if (is_file($calibrationFilePath)) {
             $video->setCalibrationData(
