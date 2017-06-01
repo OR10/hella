@@ -13,7 +13,7 @@
             <page-title ng-if="vm.userPermissions.canViewSystemQueues" title="Queue Status"></page-title>
             <div class="grid-content">
                 <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-                <table ng-if="vm.userPermissions.canViewSystemQueues" class="table hover">
+                <table ng-if="vm.userPermissions.canViewSystemQueues" class="table hover view-list-table">
                     <thead>
                     <tr>
                         <th>Queue</th>

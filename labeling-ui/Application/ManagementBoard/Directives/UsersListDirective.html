@@ -1,5 +1,16 @@
 <div class="grid-block vertical">
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+    <div class="grid-block align-right shrink">
+        <div class="grid-block horizontal shrink">
+            <div class="grid-content noscroll">
+                <button tooltip="Create a new User"
+                        ui-sref="labeling.users.detail({userId: 'new'})"
+                >
+                    <i class="fa fa-plus"></i>&nbsp;Create a new User
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="grid-content">
         <table class="table hover view-list-table"
                ng-hide="vm.loadingInProgress"
@@ -42,15 +53,5 @@
             </tbody>
         </table>
     </div>
-    <div class="grid-block align-right shrink">
-        <div class="grid-block horizontal shrink">
-            <div class="grid-content noscroll">
-                <button tooltip="Create a new User"
-                        ui-sref="labeling.users.detail({userId: 'new'})"
-                >
-                    <i class="fa fa-plus"></i>&nbsp;Create a new User
-                </button>
-            </div>
-        </div>
-    </div>
+
 </div>

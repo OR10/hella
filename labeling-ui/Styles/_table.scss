@@ -165,6 +165,13 @@ pagination-controls {
         i {
           font-size: 20px;
         }
+        ul {
+          line-height: 0;
+          margin-bottom: 0;
+          li {
+            font-size: 12px;
+          }
+        }
       }
       td:last-child {
         text-align: left;

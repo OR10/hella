@@ -12,7 +12,6 @@
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
     <page-title title="Organisations"></page-title>
     <div class="grid-block align-center vertical">
-
         <div class="grid-block align-right shrink" ng-if="vm.userPermissions.canCreateOrganisation === true">
             <div class="grid-block horizontal shrink">
                 <div class="grid-content noscroll"
@@ -26,16 +25,16 @@
             </div>
         </div>
         <div class="grid-content">
-            <table class="table" ng-class="{'hover': vm.userPermissions.canEditOrganisation === true}">
+            <table class="table view-list-table" ng-class="{'hover': vm.userPermissions.canEditOrganisation === true}">
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Projects</th>
-                    <th>Videos</th>
-                    <th>Quota</th>
-                    <th>User Quota</th>
-                    <th>Usage</th>
-                    <th>Usage %</th>
+                    <th>name</th>
+                    <th>projects</th>
+                    <th>videos</th>
+                    <th>quota</th>
+                    <th>user quota</th>
+                    <th>usage</th>
+                    <th>usage %</th>
                 </tr>
                 </thead>
                 <tbody>
