@@ -139,7 +139,7 @@ class ProjectCreateController {
      * @type {string}
      */
     this.drawingToolVehicle = 'cuboid';
-  
+
     /**
      * @type {string}
      */
@@ -193,13 +193,13 @@ class ProjectCreateController {
       // {id: 'ignore-vehicle', name: 'Ignore Vehicle'},
       // {id: 'lane', name: 'Lane'},
     ];
-  
+
     /**
      * @type {Array.<Object>}
      * TODO: Fill this later with real world data
      */
     this.campaigns = [
-      {id: 4711, name: 'Test'}
+      {id: 4711, name: 'Test'},
     ];
     /**
      * @type {string}
@@ -224,7 +224,7 @@ class ProjectCreateController {
       frameSkip: true,
       startFrameNumber: true,
       splitEach: true,
-      dueDate: true
+      dueDate: true,
     };
 
     /**
@@ -235,7 +235,6 @@ class ProjectCreateController {
     this._taskConfigurationGateway.getRequirementsXmlConfigurations().then(configurations => {
       this.requirementsXmlTaskConfigurations = configurations;
     });
-    console.log(moment(this.dueDate).format('YYYY-MM-DD H:mm:ss.SSSSSS'))
   }
 
   /**
@@ -433,8 +432,8 @@ class ProjectCreateController {
     if (this.dueDate === undefined) {
       this.validation.dueDate = valid = false;
     }
-    
-    if(moment(this.dueDate).toDate() < moment().toDate()) {
+
+    if (moment(this.dueDate).toDate() < moment().toDate()) {
       this.validation.dueDate = valid = false;
     }
 

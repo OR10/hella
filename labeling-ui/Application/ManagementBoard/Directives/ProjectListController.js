@@ -107,7 +107,7 @@ class ProjectListController {
     this._projectGateway.getProjects(this.projectStatus, limit, offset)
       .then(response => {
         this.totalRows = response.totalRows;
-        
+
         if (response.result.length === 0) {
           this.columns = [];
           this.projects = [];
@@ -122,7 +122,6 @@ class ProjectListController {
           }
           return project;
         });
-        console.log(response.result)
         this.projects = this._createViewData(response.result);
         this.columns = this._buildColumns(this.projects[0]);
 
