@@ -218,9 +218,13 @@ class Project extends Controller\Base
             $numberOfVideos
         );
 
-        $users = [];
-        $sumOfTasksForProjects          = $this->getSumOfTasksForProjects($projects);
-        $sumOfCompletedTasksForProjects = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProjects($projects);
+        $users                                  = [];
+        $sumOfTasksForProjects                  = $this->getSumOfTasksForProjects($projects);
+        $sumOfCompletedTasksForProjects         = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProjects(
+            $projects
+        );
+        $numberOfLabeledThingInFramesByProjects = $this->labeledThingInFrameFacadeFactory->getReadOnlyFacade()
+            ->getSumOfLabeledThingInFramesByProjects($projects);
 
         /** @var Model\Project $project */
         foreach ($projects as $project) {
@@ -277,10 +281,9 @@ class Project extends Controller\Base
                 $responseProject['taskInProgressCount']        = $taskInProgressCount;
                 $responseProject['taskFailedCount']            = $taskFailedCount;
                 $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
-                $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getReadOnlyFacade();
-                $responseProject['labeledThingInFramesCount']  = $labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject(
-                    $project
-                );
+                $responseProject['labeledThingInFramesCount'] = isset(
+                    $numberOfLabeledThingInFramesByProjects[$project->getId()]
+                ) ? $numberOfLabeledThingInFramesByProjects[$project->getId()] : 0;
                 $responseProject['videosCount']                = isset(
                     $numberOfVideos[$project->getId()]
                 ) ? $numberOfVideos[$project->getId()] : 0;
