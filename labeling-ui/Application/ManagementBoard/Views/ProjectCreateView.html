@@ -10,65 +10,94 @@
     </title-bar>
     <div class="grid-block vertical">
         <loading-mask ng-if="vm.loadingInProgress > 0" spinner="true"></loading-mask>
-        <page-title title="Create a new Project"></page-title>
-        <tab-view>
-            <tab header="New empty project">
+        <page-title title="Create a new project"></page-title>
+        <tab-view class="gray-tab-view">
+            <tab header="mainsettings">
                 <div class="grid-block align-center">
                     <form class="grid-content">
-                        <fieldset>
-                            <legend>Project</legend>
-                            <input type="text"
-                                   placeholder="Name"
-                                   ng-model="vm.name"
-                                   ng-class="{error: !vm.validation.name}">
-                            <input type="text"
-                                   placeholder="Description"
-                                   ng-model="vm.description">
-                        </fieldset>
-                        <fieldset>
-                            <legend>Project Settings</legend>
-                            <label for="review" style="margin-bottom: 1.5em;">
-                                <input type="checkbox"
-                                       id="review"
-                                       ng-model="vm.review">
-                                Create Review Job
-                            </label>
-
-                            <label for="frameSkip">
-                                Frame Skip
-                            </label>
-                            <input type="number"
-                                   id="frameSkip"
-                                   value="22"
-                                   min="1"
-                                   step="1"
-                                   ng-model="vm.frameSkip"
-                                   ng-class="{error: !vm.validation.frameSkip}"/>
-
-                            <label for="startFrameNumber">
-                                Start Frame Number
-                            </label>
-                            <input type="number"
-                                   id="startFrameNumber"
-                                   value="22"
-                                   min="1"
-                                   step="1"
-                                   ng-model="vm.startFrameNumber"
-                                   ng-class="{error: !vm.validation.startFrameNumber}"/>
-
-                            <label for="splitEach">
-                                Split Video
-                            </label>
-                            <input type="number"
-                                   id="splitEach"
-                                   value="0"
-                                   min="0"
-                                   step="1"
-                                   ng-model="vm.splitEach"
-                                   ng-class="{error: !vm.validation.splitEach}"/>
-                        </fieldset>
-                        <fieldset>
-                            <legend>Label Instruction</legend>
+                        <table class="table formular-table">
+                            <tr >
+                                <td>Campaign</td>
+                                <td>
+                                    <select ng-model="vm.selectedCampaign">
+                                        <option value="" selected>Choose a Campaign</option>
+                                        <option ng-repeat="campaign in vm.campaigns"
+                                                value="{{campaign.id}}">
+                                            {{campaign.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Projectname</td>
+                                <td>
+                                    <input type="text"
+                                           placeholder="Name"
+                                           ng-model="vm.name"
+                                           ng-class="{error: !vm.validation.name}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Description</td>
+                                <td>
+                                    <input type="text"
+                                           placeholder="Description"
+                                           ng-model="vm.description">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Deadline</td>
+                                <td>
+                                    <input type="date"
+                                           ng-model="vm.dueDate">
+                                </td>
+                            </tr>
+                            <tr style="display: none">
+                                <td>Create Review Job</td>
+                                <td>
+                                    <input type="checkbox"
+                                           id="review"
+                                           ng-model="vm.review">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Frameskip</td>
+                                <td>
+                                    <input type="number"
+                                           id="frameSkip"
+                                           value="22"
+                                           min="1"
+                                           step="1"
+                                           ng-model="vm.frameSkip"
+                                           ng-class="{error: !vm.validation.frameSkip}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Startframe</td>
+                                <td>
+                                    <input type="number"
+                                           id="startFrameNumber"
+                                           value="22"
+                                           min="1"
+                                           step="1"
+                                           ng-model="vm.startFrameNumber"
+                                           ng-class="{error: !vm.validation.startFrameNumber}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Split Video</td>
+                                <td>
+                                    <input type="number"
+                                           id="splitEach"
+                                           value="0"
+                                           min="0"
+                                           step="1"
+                                           ng-model="vm.splitEach"
+                                           ng-class="{error: !vm.validation.splitEach}"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="form-control">
                             <tab-view>
                                 <tab header="RequirementsXML">
                                     <div class="grid-block horizontal">
@@ -92,66 +121,68 @@
                                         </div>
                                     </div>
                                     <div class="button-area">
-                                        <button class="pull-right"
-                                                ng-click="vm.saveRequirementsXml()"
-                                        >
-                                            Create
-                                        </button>
-                                        <button class="pull-right divider"
-                                                ng-click="vm.goBack()"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
+                                       <button ng-click="vm.saveRequirementsXml()"
+												class="grid-block horizontal shrink pull-right"
+												style="padding: .7rem 1rem;">
+											<div class="grid-block vertical align-center">
+												<div class="grid-content shrink" style="margin-right: 15px;font-size: 14px">Save as review</div>
+											</div>
+											<div class="grid-block vertical align-center">
+												<div class="grid-content shrink">
+													<i class="fa fa-2x fa-check-circle-o"></i>
+												</div>
+											</div>
+										</button>
+									</div>
                                 </tab>
                                 <tab header="Legacy">
-                                    <fieldset>
-                                        <legend>
+                                    <div class="form-control">
+                                        <label>
                                             Vehicle &nbsp; <input type="checkbox" ng-model="vm.vehicle"/>
-                                        </legend>
+                                        </label>
                                         <select ng-model="vm.drawingToolVehicle">
                                             <option value="cuboid" selected>3D</option>
                                             <option value="rectangle">Rectangle</option>
                                             <option value="pedestrian">Pedestrian (Fixed-Aspect, Center-Line)</option>
                                         </select>
-                                    </fieldset>
-                                    <fieldset>
-                                        <legend>
+                                    </div>
+                                    <div class="form-control">
+                                        <label>
                                             Ignore Vehicle &nbsp; <input type="checkbox" ng-model="vm.ignoreVehicle"/>
-                                        </legend>
+                                        </label>
                                         <select ng-model="vm.drawingToolIgnoreVehicle">
                                             <option value="cuboid" selected>3D</option>
                                             <option value="rectangle">Rectangle</option>
                                             <option value="pedestrian">Pedestrian (Fixed-Aspect, Center-Line)</option>
                                         </select>
-                                    </fieldset>
-                                    <fieldset>
-                                        <legend>Lane &nbsp; <input type="checkbox" ng-model="vm.lane"/></legend>
+                                    </div>
+                                    <div class="form-control">
+                                        <label>Lane &nbsp; <input type="checkbox" ng-model="vm.lane"/></label>
                                         <select ng-model="vm.drawingToolLane">
                                             <option value="rectangle">Rectangle</option>
                                         </select>
-                                    </fieldset>
-                                    <fieldset>
-                                        <legend>
+                                    </div>
+                                    <div class="form-control">
+                                        <label>
                                             Person &nbsp; <input type="checkbox" ng-model="vm.person"/>
-                                        </legend>
+                                        </label>
                                         <select ng-model="vm.drawingToolPerson">
                                             <option value="cuboid" selected>3D</option>
                                             <option value="rectangle">Rectangle</option>
                                             <option value="pedestrian">Pedestrian (Fixed-Aspect, Center-Line)</option>
                                         </select>
-                                    </fieldset>
-                                    <fieldset>
-                                        <legend>
+                                    </div>
+                                    <div class="form-control">
+                                        <label>
                                             Cyclist &nbsp; <input type="checkbox" ng-model="vm.cyclist"/>
-                                        </legend>
+                                        </label>
                                         <select ng-model="vm.drawingToolCyclist">
                                             <option value="cuboid" selected>3D</option>
                                             <option value="rectangle">Rectangle</option>
                                             <option value="pedestrian">Pedestrian (Fixed-Aspect, Center-Line)</option>
                                         </select>
-                                    </fieldset>
-                                    <fieldset>
+                                    </div>
+                                    <div class="form-control">
                                         <legend>
                                             Ignore &nbsp; <input type="checkbox" ng-model="vm.ignore"/>
                                         </legend>
@@ -160,15 +191,15 @@
                                             <option value="rectangle">Rectangle</option>
                                             <option value="pedestrian">Pedestrian (Fixed-Aspect, Center-Line)</option>
                                         </select>
-                                    </fieldset>
-                                    <fieldset>
-                                        <legend>
+                                    </div>
+                                    <div class="form-control">
+                                        <label>
                                             Parked Cars &nbsp; <input type="checkbox" ng-model="vm.parkedCars"/>
-                                        </legend>
+                                        </label>
                                         <select ng-model="vm.drawingToolParkedCars">
                                             <option value="cuboid" selected>3D</option>
                                         </select>
-                                    </fieldset>
+                                    </div>
                                     <div class="button-area">
                                         <button class="pull-right"
                                                 ng-click="vm.saveLegacy()"
@@ -183,7 +214,7 @@
                                     </div>
                                 </tab>
                             </tab-view>
-                        </fieldset>
+                        </div>
                     </form>
                 </div>
             </tab>
