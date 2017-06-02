@@ -69,5 +69,12 @@
             </td>
         </tr>
         </tbody>
+        <tfoot ng-if="vm.tasks.length > 0">
+            <tr>
+                <td colspan="5">
+                    <pagination-controls></pagination-controls>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 </div>
