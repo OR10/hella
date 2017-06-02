@@ -146,6 +146,7 @@ pagination-controls {
       padding: 0 !important;
       @include font-m();
       font-weight: lighter !important;
+      text-transform: lowercase;
     }
     th:last-child {
       text-align: left !important;
