@@ -38,11 +38,20 @@ form{
 
   .button-area {
     margin: 0 17px;
-  }
+    button {
+      .grid-block {
+        padding: .7rem 1rem;
+        .grid-content .button-text{
+          margin-right: 15px;font-size: 14px
+        }
+        .grid-content .button-icon {
+          i {
 
-  .grid-content .grid-block .grid-content {
-    margin-right: 15px;
-    font-size: 14px;
+          }
+        }
+      }
+
+    }
   }
 }
 
