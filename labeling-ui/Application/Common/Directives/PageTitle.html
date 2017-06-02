@@ -1,9 +1,6 @@
 <div class="page-header">
     <div class="page-header__title">
-        <h1>
-            <ng-transclude></ng-transclude>
-            {{ vm.title }}
-        </h1>
+        <h1><ng-transclude></ng-transclude>{{ vm.title }}</h1>
     </div>
     <div class="page-header__custom-content"></div>
     <div class="page-header__user-info">
@@ -11,7 +8,7 @@
             <logout-button></logout-button>
             <span ui-sref="labeling.user.profile">{{ vm.user.username }}</span>
         </div>
-        <div class="page-header__user-info__line" tooltip="{{ vm.roles }}">{{ vm.user.roles | singleRole | readableRole }}</div>
-        <div class="page-header__user-info__line" >{{ vm.activeOrganisation.name }}</div>
+        <div class="page-header__user-info__line user-role" tooltip="{{ vm.roles }}">{{ vm.user.roles | singleRole | readableRole }}</div>
+        <div class="page-header__user-info__line user-organisation">{{ vm.activeOrganisation.name }}</div>
     </div>
 </div>
