@@ -141,10 +141,10 @@ pagination-controls {
       text-align: left !important;
     }
     th {
-      background: $color-ut-white !important;
+      background: white !important;
       text-align: center !important;
       padding: 0 !important;
-      @include font-m();
+      font-size: 14px;
       font-weight: lighter !important;
     }
     th:last-child {
@@ -154,23 +154,16 @@ pagination-controls {
   tbody {
     tr {
       td:first-child {
-        padding-left: 5px;
+        padding-left: 2px;
         text-align: left;
       }
       td {
         text-align: center;
-        @include font-s();
-        padding: 14px 0 10px;
+        font-size: 12px;
+        padding: 6px 0 4px;
         border-bottom: 2px solid $color-ut-lightgrey-1;
         i {
           font-size: 20px;
-        }
-        ul {
-          line-height: 0;
-          margin-bottom: 0;
-          li {
-            @include font-s();
-          }
         }
       }
       td:last-child {
@@ -187,18 +180,16 @@ pagination-controls {
 }
 
 .formular-table {
-  margin-bottom: 2em;
   tr {
     border-bottom: 2px solid $color-ut-lightgrey-2;
     td:first-child {
       @include font-s();
-      color: $color-ut-white;
-      width: 120px;
-      padding-left: 6px !important;
+      color: white;
+      width: 150px;
     }
     td {
       background: $color-ut-midgrey-1 !important;
-      padding: 13px 0 15px 11px !important;
+      padding: 4px 5px !important;
       input {
         background: transparent;
         border: none;
