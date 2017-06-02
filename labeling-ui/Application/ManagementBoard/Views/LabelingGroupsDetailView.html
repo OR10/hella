@@ -27,10 +27,10 @@
                         <td>Coordinator</td>
                         <td>
                             <select id="coordinator" ng-model="vm.groupCoordinatorId"
-                            ng-class="{error: !vm.validation.coordinator}">
+                                    ng-class="{error: !vm.validation.coordinator}">
                                 <option value="" disabled selected>Choose a user</option>
                                 <option ng-repeat="coordinator in vm.possibleCoordinators track by coordinator.id"
-                                    value="{{coordinator.id}}">
+                                        value="{{coordinator.id}}">
                                     {{coordinator.username}} &lt;{{coordinator.email}}&gt;
                                 </option>
                             </select>

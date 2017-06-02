@@ -1,16 +1,14 @@
-<div class="grid-block vertical">
-    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+<div class="grid-content">
     <!--
        Display proper no projects information
-   -->
+    -->
     <div class="view-list-info-box" ng-if="vm.groups.length == 0" ng-switch="vm.loadingInProgress">
         <h3 ng-switch-when="true">Loading labeling groups...</h3>
         <h3 ng-switch-default>There are currently no labeling groups available.</h3>
     </div>
-
     <table class="table view-list-table"
-           ng-class="{hover: vm.loadingInProgress == false && vm.groups.length > 0}"
-    >
+           ng-class="{hover: vm.loadingInProgress == false && vm.groups.length > 0}">
         <!--
              Display real information
          -->
@@ -34,7 +32,6 @@
                                 <i tooltip="This User has been deactivated.">{{vm.users[labelerId].username}}</i>
                             </span>
                 </div>
-
             </td>
             <td class="action-cell" ng-click="$event.stopPropagation()">
                 <button tooltip="Delete Group"
@@ -57,8 +54,5 @@
                 </button>
             </div>
         </div>
-    </div>
-    <div class="grid-content">
-
     </div>
 </div>

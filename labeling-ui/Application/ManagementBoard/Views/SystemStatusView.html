@@ -7,45 +7,45 @@
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
     <table ng-if="vm.userPermissions.canViewSystemQueues" class="table hover view-list-table">
         <thead>
-            <tr>
-                <th>Queue</th>
-                <th># Messages</th>
-            </tr>
+        <tr>
+            <th>Queue</th>
+            <th># Messages</th>
+        </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>
-                    High priority
-                </td>
-                <td>
-                    {{vm.queueData['worker.queue.high_prio']}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Normal priority
-                </td>
-                <td>
-                    {{vm.queueData['worker.queue.normal_prio']}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Low priority
-                </td>
-                <td>
-                    {{vm.queueData['worker.queue.low_prio']}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Deferred Jobs
-                </td>
-                <td>
-                    {{vm.queueData['worker.reschedule.30s'] + vm.queueData['worker.reschedule.60s'] +
-                    vm.queueData['worker.reschedule.300s'] + vm.queueData['worker.reschedule.900s']}}
-                </td>
-            </tr>
+        <tr>
+            <td>
+                High priority
+            </td>
+            <td>
+                {{vm.queueData['worker.queue.high_prio']}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Normal priority
+            </td>
+            <td>
+                {{vm.queueData['worker.queue.normal_prio']}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Low priority
+            </td>
+            <td>
+                {{vm.queueData['worker.queue.low_prio']}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Deferred Jobs
+            </td>
+            <td>
+                {{vm.queueData['worker.reschedule.30s'] + vm.queueData['worker.reschedule.60s'] +
+                vm.queueData['worker.reschedule.300s'] + vm.queueData['worker.reschedule.900s']}}
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>
