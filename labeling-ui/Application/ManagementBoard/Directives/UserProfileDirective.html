@@ -60,35 +60,38 @@
                 <select id="newLabeler"
                         ng-model="vm.organisationToAdd"
                         ng-options="organisation.name for organisation in vm.organisations"
-                        ng-class="{error: !vm.validation.organisations}">
+                        ng-class="{ERROR: !vm.validation.organisations}">
                 </select>
             </div>
             <div class="grid-content shrink">
                 <button tooltip="Add user to Organisation"
                         ng-click="vm.addUserToOrganisation(vm.organisationToAdd)">
                     <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="button-area">
+                <button class="pull-right"
+                        ng-click="vm.saveChanges()"
+                >
+                    <span ng-if="vm.createMode">Create</span>
+                    <span ng-if="!vm.createMode">Save</span>
+                </button>
+                <button class="pull-right divider"
+                        ng-click="vm.cancelEdit()"
+                >
+                    Cancel
+                </button>
+                <button ng-hide="vm.createMode"
+                        ng-if="vm.userPermissions.canDeleteUser"
+                        class="pull-left"
+                        ng-click="vm.deleteUser(vm.user)"
+                >
+                    Delete
                 </button>
             </div>
         </div>
     </fieldset>
-    <div class="button-area">
-        <button class="pull-right"
-                ng-click="vm.saveChanges()"
-        >
-            <span ng-if="vm.createMode">Create</span>
-            <span ng-if="!vm.createMode">Save</span>
-        </button>
-        <button class="pull-right divider"
-                ng-click="vm.cancelEdit()"
-        >
-            Cancel
-        </button>
-        <button ng-hide="vm.createMode"
-                ng-if="vm.userPermissions.canDeleteUser"
-                class="pull-left"
-                ng-click="vm.deleteUser(vm.user)"
-        >
-            Delete
-        </button>
-    </div>
+
 </form>

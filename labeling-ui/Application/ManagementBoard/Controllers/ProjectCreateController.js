@@ -1,5 +1,4 @@
 import uuid from 'uuid';
-import moment from 'moment';
 
 /**
  * Controller for the initial entrypoint route into the application
@@ -78,7 +77,7 @@ class ProjectCreateController {
     /**
      * @type {null}
      */
-    this.dueDate = moment().add(1, 'month').toDate();
+    this.deadline = new Date();
 
     /**
      * @type {boolean}
@@ -143,11 +142,6 @@ class ProjectCreateController {
     /**
      * @type {string}
      */
-    this.selectedCampaign = '';
-
-    /**
-     * @type {string}
-     */
     this.drawingToolIgnoreVehicle = 'rectangle';
 
     /**
@@ -195,13 +189,6 @@ class ProjectCreateController {
     ];
 
     /**
-     * @type {Array.<Object>}
-     * TODO: Fill this later with real world data
-     */
-    this.campaigns = [
-      {id: 4711, name: 'Test'},
-    ];
-    /**
      * @type {string}
      */
     this.taskTypeToAdd = '';
@@ -224,7 +211,6 @@ class ProjectCreateController {
       frameSkip: true,
       startFrameNumber: true,
       splitEach: true,
-      dueDate: true,
     };
 
     /**
@@ -306,7 +292,6 @@ class ProjectCreateController {
       splitEach: this.splitEach,
       projectType: 'requirementsXml',
       taskTypeConfigurations,
-      dueDate: moment(this.dueDate).format('YYYY-MM-DD H:mm:ss.SSSSSS'),
     };
 
     this._projectGateway.createProject(data)
@@ -411,7 +396,6 @@ class ProjectCreateController {
     this.validation.frameSkip = true;
     this.validation.startFrameNumber = true;
     this.validation.splitEach = true;
-    this.validation.dueDate = true;
 
     if (this.name === null || this.name === '') {
       this.validation.name = valid = false;
@@ -427,14 +411,6 @@ class ProjectCreateController {
 
     if (this.splitEach === undefined) {
       this.validation.splitEach = valid = false;
-    }
-
-    if (this.dueDate === undefined) {
-      this.validation.dueDate = valid = false;
-    }
-
-    if (moment(this.dueDate).toDate() < moment().toDate()) {
-      this.validation.dueDate = valid = false;
     }
 
     return valid;
