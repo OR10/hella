@@ -1,35 +1,26 @@
-<div class="grid-frame vertical">
-    <title-bar class="grid-block noscroll header"
-               user="vm.user"
-               back-link="labeling.projects"
-               back-link-text="Back to Project List"
-               show-username="true"
-               show-logout-button="true"
-    >
-    </title-bar>
+<page-title title="User Profile">
+    <back-link state-link="labeling.projects"
+               tooltip="Back to Project List"
+    ></back-link>
+</page-title>
 
-    <div class="grid-block align-center">
-        <div class="grid-block shrink">
-            <div class="grid-content">
-                <table class="table more-space auto-size">
-                    <tr>
-                        <td>Username:</td>
-                        <td>{{vm.user.username}}</td>
-                    </tr>
-                    <tr>
-                        <td>E-Mail:</td>
-                        <td>{{vm.user.email}}</td>
-                    </tr>
-                    <tr>
-                        <td>Account expires at:</td>
-                        <td>{{vm.user.expiresAt === null ? 'Never' : (vm.user.expiresAt | date:'d. MMM yyyy')}}</td>
-                    </tr>
-                    <tr>
-                        <td>Password:</td>
-                        <td><a href="" ui-sref="labeling.user.password">Change password</a></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
+<div class="page-content">
+    <table class="table auto-size">
+        <tr>
+            <td>Username:</td>
+            <td>{{vm.user.username}}</td>
+        </tr>
+        <tr>
+            <td>E-Mail:</td>
+            <td>{{vm.user.email}}</td>
+        </tr>
+        <tr>
+            <td>Account expires at:</td>
+            <td>{{vm.user.expiresAt === null ? 'Never' : (vm.user.expiresAt | date:'d. MMM yyyy')}}</td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><a href="" ui-sref="labeling.user.password">Change password</a></td>
+        </tr>
+    </table>
 </div>

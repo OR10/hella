@@ -1,111 +1,95 @@
-<div class="grid-frame vertical">
-    <title-bar class="grid-block noscroll header"
-               user="vm.user"
-               user-permissions="vm.userPermissions"
-               back-link="labeling.labeling-groups.list"
-               back-link-text="Back to labeling groups overview"
-               show-username="true"
-               show-logout-button="true"
-    >
-    </title-bar>
-    <div class="grid-block vertical">
-        <loading-mask ng-if="vm.loadingInProgress > 0" spinner="true"></loading-mask>
-        <page-title title="Labeling Group"></page-title>
-        <div class="grid-block align-center">
-            <form class="grid-content">
-                <table class="table formular-table">
-                    <tr>
-                        <td>Group Name</td>
-                        <td>
-                            <input type="text"
-                                   placeholder="Group name"
-                                   ng-class="{error: !vm.validation.name}"
-                                   ng-model="vm.groupName">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Coordinator</td>
-                        <td>
-                            <select id="coordinator" ng-model="vm.groupCoordinatorId"
-                            ng-class="{error: !vm.validation.coordinator}">
-                                <option value="" disabled selected>Choose a user</option>
-                                <option ng-repeat="coordinator in vm.possibleCoordinators track by coordinator.id"
-                                    value="{{coordinator.id}}">
-                                    {{coordinator.username}} &lt;{{coordinator.email}}&gt;
-                                </option>
-                            </select>
-                        </td>
-                    </tr>
-
-                </table>
-                <hr>
-                <table class="table view-list-table"
-                       style="margin-bottom: 2em;">
-                    <thead>
-                    <tr>
-                        <th>username</th>
-                        <th>email</th>
-                        <th>actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="labeler in vm.groupLabelers track by labeler.id">
-                        <td ng-if="!labeler.locked">{{labeler.username}}</td>
-                        <td ng-if="labeler.locked"><i tooltip="This User has been deactivated.">{{labeler.username}}</i></td>
-                        <td>{{labeler.email}}</td>
-                        <td class="action-cell">
-                            <button tooltip="Remove {{labeler.username}} from group"
-                                    ng-click="vm.removeLabeler(labeler.id)">
-                                <i class="fa fa-close"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <hr>
-                <div class="grid-block" ng-show="vm.labelerSelectionMessage != null">
-                    <div class="grid-content">
-                        <h6>{{vm.labelerSelectionMessage}}</h6>
-                    </div>
-                </div>
-                <div class="grid-block horizontal">
-                    <div class="grid-content">
-                        <select id="newLabeler" ng-model="vm.labelerToAddId"
-                                ng-class="{error: !vm.validation.labelers}">
-                            <option value="" disabled selected>Choose a labeler</option>
-                            <option ng-repeat="labeler in vm.possibleLabelers track by labeler.id"
-                                    value="{{labeler.id}}">
-                                {{labeler.username}} &lt;{{labeler.email}}&gt;
-                            </option>
-                        </select>
-                    </div>
-                    <div class="grid-content shrink">
-                        <button tooltip="Add labeler to group"
-                                ng-click="vm.addLabeler(vm.labelerToAddId)">
-                            <i class="fa fa-plus"></i>
+<loading-mask ng-if="vm.loadingInProgress > 0" spinner="true"></loading-mask>
+<page-title title="Labeling Group">
+    <back-link state-link="labeling.labeling-groups.list"
+               tooltip="Back to labeling groups overview"
+    ></back-link>
+</page-title>
+<div class="page-content">
+    <form>
+        <fieldset>
+            <legend>Label Group Name</legend>
+            <input type="text"
+                   placeholder="Group name"
+                   ng-class="{error: !vm.validation.name}"
+                   ng-model="vm.groupName">
+        </fieldset>
+        <fieldset>
+            <legend>Label Coordinator</legend>
+            <select id="coordinator" ng-model="vm.groupCoordinatorId"
+                    ng-class="{error: !vm.validation.coordinator}">
+                <option ng-repeat="coordinator in vm.possibleCoordinators track by coordinator.id"
+                        value="{{coordinator.id}}">
+                    {{coordinator.username}} &lt;{{coordinator.email}}&gt;
+                </option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <legend>Team</legend>
+            <table class="table"
+                   style="margin-bottom: 2em;">
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="labeler in vm.groupLabelers track by labeler.id">
+                    <td ng-if="!labeler.locked">{{labeler.username}}</td>
+                    <td ng-if="labeler.locked"><i
+                            tooltip="This User has been deactivated.">{{labeler.username}}</i></td>
+                    <td>{{labeler.email}}</td>
+                    <td class="action-cell">
+                        <button tooltip="Remove {{labeler.username}} from group"
+                                ng-click="vm.removeLabeler(labeler.id)">
+                            <i class="fa fa-close"></i>
                         </button>
-                    </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="grid-block" ng-show="vm.labelerSelectionMessage != null">
+                <div class="grid-content">
+                    <h6>{{vm.labelerSelectionMessage}}</h6>
                 </div>
-                <div class="button-area">
-                    <button class="pull-right"
-                            ng-click="vm.saveGroup()"
-                    >
-                        <span ng-if="vm.createMode">Create</span>
-                        <span ng-if="!vm.createMode">Save</span>
-                    </button>
-                    <button class="pull-right divider"
-                            ng-click="vm.cancelEdit()"
-                    >
-                        Cancel
-                    </button>
-                    <button ng-hide="vm.createMode"
-                            class="pull-left"
-                            ng-click="vm.deleteGroup(vm.group.id)"
-                    >
-                        Delete
+            </div>
+            <div class="grid-block horizontal">
+                <div class="grid-content">
+                    <select id="newLabeler" ng-model="vm.labelerToAddId"
+                            ng-class="{error: !vm.validation.labelers}">
+                        <option ng-repeat="labeler in vm.possibleLabelers track by labeler.id"
+                                value="{{labeler.id}}">
+                            {{labeler.username}} &lt;{{labeler.email}}&gt;
+                        </option>
+                    </select>
+                </div>
+                <div class="grid-content shrink">
+                    <button tooltip="Add labeler to group"
+                            ng-click="vm.addLabeler(vm.labelerToAddId)">
+                        <i class="fa fa-plus"></i>
                     </button>
                 </div>
-            </form>
+            </div>
+        </fieldset>
+        <div class="button-area">
+            <button class="pull-right"
+                    ng-click="vm.saveGroup()"
+            >
+                <span ng-if="vm.createMode">Create</span>
+                <span ng-if="!vm.createMode">Save</span>
+            </button>
+            <button class="pull-right divider"
+                    ng-click="vm.cancelEdit()"
+            >
+                Cancel
+            </button>
+            <button ng-hide="vm.createMode"
+                    class="pull-left"
+                    ng-click="vm.deleteGroup(vm.group.id)"
+            >
+                Delete
+            </button>
         </div>
-    </div>
+    </form>
 </div>

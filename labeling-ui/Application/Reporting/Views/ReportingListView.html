@@ -1,16 +1,17 @@
-<div class="grid-frame vertical">
-    <title-bar class="grid-block noscroll header"
-               user="vm.user"
-               user-permissions="vm.userPermissions"
-               back-link="labeling.projects"
-               back-link-text="Back to project list"
-               show-username="true"
-               show-logout-button="true"
-    >
-        <a class="header-button" ng-click="vm.startReport()">Start new Report</a>
-    </title-bar>
+<page-title title="Project Exports">
+    <back-link state-link="labeling.projects"
+               tooltip="Back to project list"
+    ></back-link>
+</page-title>
 
+<div class="page-content">
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
     <project-report-list reports="vm.reports" project="vm.project" class="grid-block"></project-report-list>
-
+    <div class="button-area">
+        <button class="pull-right"
+                ng-click="vm.startReport()"
+        >
+            Start new Report
+        </button>
+    </div>
 </div>
