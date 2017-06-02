@@ -89,7 +89,7 @@ class TaskConfigurationUploadController {
     this._taskConfigurationGateway.uploadRequirementsConfiguration(this.requirementsConfigurationName, this.requirementsConfigurationFile)
       .then(() => {
         --this.loadingInProgress;
-        this._$state.go('labeling.task-configurations.list');
+        this._$state.go('labeling.projects.list');
       })
       .catch(error => {
         --this.loadingInProgress;
@@ -130,7 +130,7 @@ class TaskConfigurationUploadController {
     this._taskConfigurationGateway.uploadTaskConfiguration(this.taskConfigurationName, this.taskConfigurationFile)
       .then(() => {
         --this.loadingInProgress;
-        this._$state.go('labeling.task-configurations.list');
+        this._$state.go('labeling.projects.list');
       })
       .catch(error => {
         --this.loadingInProgress;
