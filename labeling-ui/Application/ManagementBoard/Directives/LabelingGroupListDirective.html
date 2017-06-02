@@ -28,14 +28,13 @@
             <td>{{vm.users[group.coordinators[0]].username}}</td>
             <td>{{group.name}}</td>
             <td>
-                <ul>
-                    <li ng-repeat="labelerId in group.labelers">
-                        <span ng-if="!vm.users[labelerId].locked">{{vm.users[labelerId].username}}</span>
-                        <span ng-if="vm.users[labelerId].locked">
+                <div ng-repeat="labelerId in group.labelers">
+                    <span ng-if="!vm.users[labelerId].locked">{{vm.users[labelerId].username}}</span>
+                    <span ng-if="vm.users[labelerId].locked">
                                 <i tooltip="This User has been deactivated.">{{vm.users[labelerId].username}}</i>
                             </span>
-                    </li>
-                </ul>
+                </div>
+
             </td>
             <td class="action-cell" ng-click="$event.stopPropagation()">
                 <button tooltip="Delete Group"
