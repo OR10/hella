@@ -150,7 +150,10 @@ class LabelingGroup extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        if (!$user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+        if (!$user->hasOneRoleOf(
+            [Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN, Model\User::ROLE_SUPER_ADMIN]
+        )
+        ) {
             throw new Exception\AccessDeniedHttpException();
         }
 
