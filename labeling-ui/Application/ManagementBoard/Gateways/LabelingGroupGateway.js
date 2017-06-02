@@ -147,6 +147,10 @@ class LabelingGroupGateway {
           return response.data.result;
         }
 
+        if (response.data && response.data.error) {
+          return response.data.error;
+        }
+
         throw new Error('Failed deleting labeling group.');
       });
   }
