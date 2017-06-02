@@ -170,7 +170,9 @@ class TaskCreator
 
             $drawingTools = array_unique(array_merge($legacyDrawingTools, $genericXmlDrawingTools));
 
-            if ($calibrationDataId === null && in_array(Model\LabelingTask::DRAWING_TOOL_CUBOID, $drawingTools)) {
+            if ($calibrationDataId === null && (in_array(Model\LabelingTask::DRAWING_TOOL_CUBOID, $drawingTools)
+                    || $this->isCuboidInRequirementsXml($project))
+            ) {
                 throw new Missing3dVideoCalibrationData(
                     sprintf('Calibration data not found: %s', $calibrationDataId)
                 );
@@ -321,6 +323,35 @@ class TaskCreator
         }
 
         return $tasks;
+    }
+
+    /**
+     * Checks if there is any shape with a drawingtool of cuboid
+     *
+     * @param Model\Project $project
+     *
+     * @return bool
+     */
+    private function isCuboidInRequirementsXml(Model\Project $project)
+    {
+        foreach ($project->getRequirementsXmlTaskInstructions() as $requirementsXmlTaskInstruction) {
+            $taskConfiguration = $this->taskConfigurationFacade->find(
+                $requirementsXmlTaskInstruction['taskConfigurationId']
+            );
+            $xmlData           = $taskConfiguration->getRawData();
+            $xmlImport         = new \DOMDocument();
+            $xmlImport->loadXML($xmlData);
+            $xpath = new \DOMXPath($xmlImport);
+            $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/requirements");
+
+            $numberOfCuboids = $xpath->query('/x:requirements/x:thing[@shape="cuboid"]')->length;
+
+            if ($numberOfCuboids > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
