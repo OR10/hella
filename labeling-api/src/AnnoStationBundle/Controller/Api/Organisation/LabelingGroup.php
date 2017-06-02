@@ -377,7 +377,7 @@ class LabelingGroup extends Controller\Base
      * @param Model\LabelingGroup                 $labelingGroup
      * @param AnnoStationBundleModel\Organisation $organisation
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function deleteAction(Model\LabelingGroup $labelingGroup, AnnoStationBundleModel\Organisation $organisation)
     {
@@ -389,6 +389,28 @@ class LabelingGroup extends Controller\Base
 
         $users      = $this->getUserListForLabelingGroup([$labelingGroup]);
         $projects   = $this->projectFacade->getProjectsForLabelGroup($labelingGroup);
+
+        $inProgressProjects = array_filter(
+            $projects,
+            function (Model\Project $project) {
+                return $project->getStatus() === Model\Project::STATUS_IN_PROGRESS;
+            }
+        );
+
+        if (count($inProgressProjects) > 0) {
+            return View\View::create()->setData(
+                [
+                    'result' => false,
+                    'error'  => [
+                        'message'  => 'There are at least one ore more projects "in progress" with this labeling-group. Please unassign this group before.',
+                        'projectNames' => array_map(function(Model\Project $project) {
+                            return $project->getName();
+                        }, $projects),
+                    ],
+                ]
+            );
+        }
+
         $projectIds = array_map(function(Model\Project $project) {
             return $project->getId();
         }, $projects);
