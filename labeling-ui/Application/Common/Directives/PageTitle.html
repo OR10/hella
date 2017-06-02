@@ -1,12 +1,16 @@
-<div id="page-title" class="horizontal grid-block">
-    <h1>{{ vm.title }}</h1>
-    <div id="page-title-progress-bar" class="grid-block align-right"></div>
-    <div id="logged-in-user" class="grid-block align-right text-right vertical">
-        <div id="logged-in-user-name">
+<div class="page-header">
+    <div class="page-header__title">
+        <h1>
+            {{ vm.title }}
+        </h1>
+    </div>
+    <div class="page-header__custom-content"></div>
+    <div class="page-header__user-info">
+        <div class="page-header__user-info__line user-name">
             <logout-button></logout-button>
             <span ui-sref="labeling.user.profile">{{ vm.user.username }}</span>
         </div>
-        <div id="logged-in-user-role" tooltip="{{ vm.roles }}">{{ vm.user.roles | singleRole | readableRole }}</div>
-        <div id="logged-in-user-organisation">{{ vm.activeOrganisation.name }}</div>
+        <div class="page-header__user-info__line" tooltip="{{ vm.roles }}">{{ vm.user.roles | singleRole | readableRole }}</div>
+        <div class="page-header__user-info__line" >{{ vm.activeOrganisation.name }}</div>
     </div>
 </div>
