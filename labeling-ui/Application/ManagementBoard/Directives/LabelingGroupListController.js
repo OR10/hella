@@ -70,29 +70,27 @@ class LabelingGroupListController {
   deleteGroup(id) {
     this.loadingInProgress = true;
     this._labelingGroupGateway.deleteLabelingGroup(id)
-      .then(response => {
-        if (response.message !== undefined && response.projectNames !== undefined) {
-          this._modalService.show(
-            new this._ListDialog(
-              {
-                title: 'Failed to delete labeling-Group.',
-                headline: `An Error occurred`,
-                message: response.message,
-                confirmButtonText: 'Continue',
-                data: response.projectNames,
-              },
-              undefined,
-              undefined,
-              {
-                abortable: false,
-                warning: false,
-              }
+      .then(() => {
+        this.updateGroups();
+      }).catch(error => {
+        this._modalService.show(
+          new this._ListDialog(
+            {
+              title: 'Failed to delete labeling-Group.',
+              headline: `An Error occurred`,
+              message: error.message,
+              confirmButtonText: 'Continue',
+              data: error.projectNames,
+            },
+            undefined,
+            undefined,
+            {
+              abortable: false,
+              warning: false,
+            }
             )
-          );
-          this.loadingInProgress = false;
-        } else {
-          this.updateGroups();
-        }
+        );
+        this.loadingInProgress = false;
       });
   }
 }
