@@ -7,9 +7,49 @@
         <h3 ng-switch-when="true">Loading labeling groups...</h3>
         <h3 ng-switch-default>There are currently no labeling groups available.</h3>
     </div>
+
+    <table class="table view-list-table"
+           ng-class="{hover: vm.loadingInProgress == false && vm.groups.length > 0}"
+    >
+        <!--
+             Display real information
+         -->
+        <thead ng-if="vm.groups.length > 0">
+        <tr>
+            <th>Label Coordinator</th>
+            <th>Group Name</th>
+            <th>Group Members</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody ng-if="vm.groups.length > 0">
+        <tr ng-repeat="group in vm.groups track by group.id"
+            ng-click="vm.openGroup(group.id)">
+            <td>{{vm.users[group.coordinators[0]].username}}</td>
+            <td>{{group.name}}</td>
+            <td>
+                <ul>
+                    <li ng-repeat="labelerId in group.labelers">
+                        <span ng-if="!vm.users[labelerId].locked">{{vm.users[labelerId].username}}</span>
+                        <span ng-if="vm.users[labelerId].locked">
+                                <i tooltip="This User has been deactivated.">{{vm.users[labelerId].username}}</i>
+                            </span>
+                    </li>
+                </ul>
+            </td>
+            <td class="action-cell" ng-click="$event.stopPropagation()">
+                <button tooltip="Delete Group"
+                        ng-click="vm.deleteGroup(group.id)"
+                >
+                    <i class="fa fa-close"></i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
     <div class="grid-block align-right shrink">
         <div class="grid-block horizontal shrink">
-            <div class="grid-content noscroll"
+            <div class="noscroll"
                  style="margin-bottom: .5rem; margin-top: 2rem;">
                 <button tooltip="Create new Labeling Group"
                         ng-click="vm.createNewGroup()"
@@ -20,45 +60,6 @@
         </div>
     </div>
     <div class="grid-content">
-        <table class="table view-list-table"
-               ng-class="{hover: vm.loadingInProgress == false && vm.groups.length > 0}"
-        >
-            <!--
-                 Display real information
-             -->
-            <thead ng-if="vm.groups.length > 0">
-            <tr>
-                <th>Label Coordinator</th>
-                <th>Group Name</th>
-                <th>Group Members</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody ng-if="vm.groups.length > 0">
-            <tr ng-repeat="group in vm.groups track by group.id"
-                ng-click="vm.openGroup(group.id)">
-                <td>{{vm.users[group.coordinators[0]].username}}</td>
-                <td>{{group.name}}</td>
-                <td>
-                    <ul>
-                        <li ng-repeat="labelerId in group.labelers">
-                            <span ng-if="!vm.users[labelerId].locked">{{vm.users[labelerId].username}}</span>
-                            <span ng-if="vm.users[labelerId].locked">
-                                <i tooltip="This User has been deactivated.">{{vm.users[labelerId].username}}</i>
-                            </span>
-                        </li>
-                    </ul>
-                </td>
-                <td class="action-cell" ng-click="$event.stopPropagation()">
-                    <button tooltip="Delete Group"
-                            ng-click="vm.deleteGroup(group.id)"
-                    >
-                        <i class="fa fa-close"></i>
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+
     </div>
 </div>
-

@@ -1,72 +1,71 @@
-<div class="grid-content">
-    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-    <table class="table hover"
-           pagination-table
-           total-rows="vm.totalRows"
-           items-per-page="100"
-           on-page-update="vm.updatePage(page, itemsPerPage)">
+<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+<table class="table hover"
+       pagination-table
+       total-rows="vm.totalRows"
+       items-per-page="100"
+       on-page-update="vm.updatePage(page, itemsPerPage)">
 
-        <!--
-             Display proper no tasks information
-         -->
-        <thead ng-if="vm.tasks.length == 0">
-        <tr>
-            <th>Message</th>
-        </tr>
-        </thead>
-        <tbody ng-if="vm.tasks.length == 0">
+    <!--
+         Display proper no tasks information
+     -->
+    <thead ng-if="vm.tasks.length == 0">
+    <tr>
+        <th>Message</th>
+    </tr>
+    </thead>
+    <tbody ng-if="vm.tasks.length == 0">
 
-        <tr ng-switch="vm.loadingInProgress">
-            <td ng-switch-when="true">Loading tasks...</td>
-            <td ng-switch-default>There are currently no tasks in the selected state.</td>
-        </tr>
-        </tbody>
+    <tr ng-switch="vm.loadingInProgress">
+        <td ng-switch-when="true">Loading tasks...</td>
+        <td ng-switch-default>There are currently no tasks in the selected state.</td>
+    </tr>
+    </tbody>
 
-        <!--
-             Display real information
-         -->
-        <thead ng-if="vm.tasks.length > 0">
-        <tr>
-            <th>Type</th>
-            <th>Title</th>
-            <th>Range</th>
-            <th>Assignee</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody ng-if="vm.tasks.length > 0">
-        <tr ng-repeat="task in vm.tasks track by task.id" ng-click="vm.openTask(task.id)">
-            <td>
-                <i ng-if="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
-                <i ng-if="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
-                <i ng-if="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
-                <i ng-if="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
-                <i ng-if="task.labelInstruction === 'ignore-vehicle'" class="fa fa-eye-slash" tooltip="Ignore Vehicle"></i>
-                <i ng-if="task.labelInstruction === 'lane'" class="fa fa-long-arrow-up" tooltip="Lane"></i>
-                <i ng-if="task.labelInstruction === 'parked-cars'" class="fa fa-ellipsis-v " tooltip="Parked Cars"></i>
-                <i ng-if="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
-                <i ng-if="task.reopen[vm.taskPhase] === true" class="fa fa-retweet" tooltip="Reopened"></i>
-                &nbsp;{{task.type}}
-            </td>
-            <td>{{task.title}}</td>
-            <td>{{task.range}}</td>
-            <td ng-if="!task.latestAssignee.locked">{{task.latestAssignee.username}}</td>
-            <td ng-if="task.latestAssignee.locked"><i tooltip="This User has been deactivated.">{{task.latestAssignee.username}}</i></td>
-            <td class="action-cell" ng-click="$event.stopPropagation()">
-                <button tooltip="Unflag task"
-                        ng-if="vm.userPermissions.canUnflagLabelingTask"
-                        ng-click="vm.unflagTask(task.id)">
-                    <i class="fa fa-flag"></i>
-                </button>
-            </td>
-        </tr>
-        </tbody>
-        <tfoot ng-if="vm.tasks.length > 0">
-        <tr>
-            <td colspan="5">
-                <pagination-controls></pagination-controls>
-            </td>
-        </tr>
-        </tfoot>
-        </table>
-</div>
+    <!--
+         Display real information
+     -->
+    <thead ng-if="vm.tasks.length > 0">
+    <tr>
+        <th>Type</th>
+        <th>Title</th>
+        <th>Range</th>
+        <th>Assignee</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody ng-if="vm.tasks.length > 0">
+    <tr ng-repeat="task in vm.tasks track by task.id" ng-click="vm.openTask(task.id)">
+        <td>
+            <i ng-if="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
+            <i ng-if="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
+            <i ng-if="task.labelInstruction === 'cyclist'" class="fa fa-bicycle" tooltip="Cyclist"></i>
+            <i ng-if="task.labelInstruction === 'ignore'" class="fa fa-eye-slash" tooltip="Ignore"></i>
+            <i ng-if="task.labelInstruction === 'ignore-vehicle'" class="fa fa-eye-slash" tooltip="Ignore Vehicle"></i>
+            <i ng-if="task.labelInstruction === 'lane'" class="fa fa-long-arrow-up" tooltip="Lane"></i>
+            <i ng-if="task.labelInstruction === 'parked-cars'" class="fa fa-ellipsis-v " tooltip="Parked Cars"></i>
+            <i ng-if="task.labelInstruction === null" class="fa fa-picture-o" tooltip="Meta-Labeling"></i>
+            <i ng-if="task.reopen[vm.taskPhase] === true" class="fa fa-retweet" tooltip="Reopened"></i>
+            &nbsp;{{task.type}}
+        </td>
+        <td>{{task.title}}</td>
+        <td>{{task.range}}</td>
+        <td ng-if="!task.latestAssignee.locked">{{task.latestAssignee.username}}</td>
+        <td ng-if="task.latestAssignee.locked"><i tooltip="This User has been deactivated.">{{task.latestAssignee.username}}</i>
+        </td>
+        <td class="action-cell" ng-click="$event.stopPropagation()">
+            <button tooltip="Unflag task"
+                    ng-if="vm.userPermissions.canUnflagLabelingTask"
+                    ng-click="vm.unflagTask(task.id)">
+                <i class="fa fa-flag"></i>
+            </button>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot ng-if="vm.tasks.length > 0">
+    <tr>
+        <td colspan="5">
+            <pagination-controls></pagination-controls>
+        </td>
+    </tr>
+    </tfoot>
+</table>

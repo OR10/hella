@@ -11,6 +11,7 @@ class PageTitleDirective
     this.bindToController = true;
     this.controllerAs = 'vm';
     this.controller = PageTitleController;
+    this.transclude = true;
   }
 }
 

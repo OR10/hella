@@ -1,48 +1,41 @@
-<div class="grid-frame vertical">
-    <title-bar class="grid-block noscroll header"
-               user="vm.user"
-               user-permissions="vm.userPermissions"
-               back-link=""
-               back-link-text=""
-               show-username="true"
-               show-logout-button="true"
-    >
-    </title-bar>
-    <div class="grid-block text-center vertical">
-        <loading-mask ng-if="vm.showLoadingMask" spinner="true"></loading-mask>
-        <page-title title="{{vm.campaignName}} - All Projects"></page-title>
-        <tab-view>
-            <tab ng-if="vm.userPermissions.canViewTodoProjects"
-                 header="To Do {{vm.projectCount !== null ? '(' + vm.projectCount.todo + ')' : ''}}"
-                 create-on-first-view="true">
-                <project-list user="vm.user"
-                              show-loading-mask="vm.showLoadingMask"
-                              user-permissions="vm.userPermissions"
-                              project-status="todo"></project-list>
-            </tab>
-            <tab header="In Progress {{vm.projectCount !== null ? '(' + vm.projectCount.in_progress + ')' : ''}}"
-                 create-on-first-view="true">
-                <project-list user="vm.user"
-                              show-loading-mask="vm.showLoadingMask"
-                              user-permissions="vm.userPermissions"
-                              project-status="in_progress"></project-list>
-            </tab>
-            <tab ng-if="vm.userPermissions.canViewClosedProjects"
-                 header="Done {{vm.projectCount !== null ? '(' + vm.projectCount.done + ')' : ''}}"
-                 create-on-first-view="true">
-                <project-list user="vm.user"
-                              show-loading-mask="vm.showLoadingMask"
-                              user-permissions="vm.userPermissions"
-                              project-status="done"></project-list>
-            </tab>
-            <tab ng-if="vm.userPermissions.canViewDeletedProjects"
-                 header="Deleted {{vm.projectCount !== null ? '(' + vm.projectCount.deleted + ')' : ''}}"
-                 create-on-first-view="true">
-                <project-list user="vm.user"
-                              show-loading-mask="vm.showLoadingMask"
-                              user-permissions="vm.userPermissions"
-                              project-status="deleted"></project-list>
-            </tab>
-        </tab-view>
-    </div>
+<loading-mask ng-if="vm.showLoadingMask" spinner="true"></loading-mask>
+<page-title title="{{vm.campaignName}} - All Projects">
+    <back-link state-link="labeling.organisation-management.selection"
+               tooltip="Back to organisation selection"
+    ></back-link>
+</page-title>
+<div class="page-content">
+    <tab-view>
+        <tab ng-if="vm.userPermissions.canViewTodoProjects"
+             header="To Do {{vm.projectCount !== null ? '(' + vm.projectCount.todo + ')' : ''}}"
+             create-on-first-view="true">
+            <project-list user="vm.user"
+                          show-loading-mask="vm.showLoadingMask"
+                          user-permissions="vm.userPermissions"
+                          project-status="todo"></project-list>
+        </tab>
+        <tab header="In Progress {{vm.projectCount !== null ? '(' + vm.projectCount.in_progress + ')' : ''}}"
+             create-on-first-view="true">
+            <project-list user="vm.user"
+                          show-loading-mask="vm.showLoadingMask"
+                          user-permissions="vm.userPermissions"
+                          project-status="in_progress"></project-list>
+        </tab>
+        <tab ng-if="vm.userPermissions.canViewClosedProjects"
+             header="Done {{vm.projectCount !== null ? '(' + vm.projectCount.done + ')' : ''}}"
+             create-on-first-view="true">
+            <project-list user="vm.user"
+                          show-loading-mask="vm.showLoadingMask"
+                          user-permissions="vm.userPermissions"
+                          project-status="done"></project-list>
+        </tab>
+        <tab ng-if="vm.userPermissions.canViewDeletedProjects"
+             header="Deleted {{vm.projectCount !== null ? '(' + vm.projectCount.deleted + ')' : ''}}"
+             create-on-first-view="true">
+            <project-list user="vm.user"
+                          show-loading-mask="vm.showLoadingMask"
+                          user-permissions="vm.userPermissions"
+                          project-status="deleted"></project-list>
+        </tab>
+    </tab-view>
 </div>

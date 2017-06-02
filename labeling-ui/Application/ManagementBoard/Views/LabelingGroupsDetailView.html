@@ -86,26 +86,26 @@
                         </button>
                     </div>
                 </div>
-                <div class="button-area">
-                    <button class="pull-right"
-                            ng-click="vm.saveGroup()"
-                    >
-                        <span ng-if="vm.createMode">Create</span>
-                        <span ng-if="!vm.createMode">Save</span>
-                    </button>
-                    <button class="pull-right divider"
-                            ng-click="vm.cancelEdit()"
-                    >
-                        Cancel
-                    </button>
-                    <button ng-hide="vm.createMode"
-                            class="pull-left"
-                            ng-click="vm.deleteGroup(vm.group.id)"
-                    >
-                        Delete
-                    </button>
-                </div>
             </form>
+        </div>
+        <div class="button-area">
+            <button class="pull-right"
+                    ng-click="vm.saveGroup()"
+            >
+                <span ng-if="vm.createMode">Create</span>
+                <span ng-if="!vm.createMode">Save</span>
+            </button>
+            <button class="pull-right divider"
+                    ng-click="vm.cancelEdit()"
+            >
+                Cancel
+            </button>
+            <button ng-hide="vm.createMode"
+                    class="pull-left"
+                    ng-click="vm.deleteGroup(vm.group.id)"
+            >
+                Delete
+            </button>
         </div>
     </div>
 </div>

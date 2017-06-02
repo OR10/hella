@@ -64,10 +64,12 @@ class Reporting extends Module {
           controllerAs: 'vm',
           template: ReportingTemplate,
           resolve: {
-            project: ['$stateParams', 'projectGateway', ($stateParams, projectGateway) => {
+            project: ['$stateParams', 'projectGateway', 'organisationService', ($stateParams, projectGateway, organisationService) => {
+              organisationService.set($stateParams.organisationId);
               return projectGateway.getProject($stateParams.projectId);
             }],
-            report: ['$stateParams', 'reportGateway', ($stateParams, reportGateway) => {
+            report: ['$stateParams', 'reportGateway', 'organisationService', ($stateParams, reportGateway, organisationService) => {
+              organisationService.set($stateParams.organisationId);
               return reportGateway.getReport($stateParams.projectId, $stateParams.reportId);
             }],
           },

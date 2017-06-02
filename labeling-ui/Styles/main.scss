@@ -1,4 +1,5 @@
 @import "colors";
+@import "sizings";
 @import "foundation";
 @import "font-awesome";
 @import "icon-font";
@@ -33,6 +34,9 @@
 @import "page-title";
 @import "user-avatar";
 @import "side-navigation";
+@import "page-layout";
+@import "tasklist";
+@import "user-profile";
 
 html, body {
   // Prevent overscroll
