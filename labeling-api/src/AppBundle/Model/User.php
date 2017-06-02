@@ -246,15 +246,17 @@ class User extends BaseUser
     public function removeFromOrganisation(AnnoStationBundleModel\Organisation $organisation)
     {
         $idToRemove          = $organisation->getId();
-        $this->organisations = array_filter(
-            $this->organisations,
-            function ($organisationId) use ($idToRemove) {
-                if ($organisationId === $idToRemove) {
-                    return false;
-                }
+        $this->organisations = array_values(
+            array_filter(
+                $this->organisations,
+                function ($organisationId) use ($idToRemove) {
+                    if ($organisationId === $idToRemove) {
+                        return false;
+                    }
 
-                return true;
-            }
+                    return true;
+                }
+            )
         );
     }
 
