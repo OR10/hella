@@ -151,6 +151,21 @@ describe('ProjectGateway', () => {
     $httpBackend.flush();
   });
 
+  it('should change projects label-group assignment', done => {
+    const response = {
+      result: true,
+    };
+
+    $httpBackend.expectPOST('/backend/api/organisation/ORGANISATION-ID/project/PROJECT_ID/assignLabelGroup').respond(response);
+
+    gateway.changeLabelGroupAssignment('PROJECT_ID', 'LABEL_GROUP_ID').then(result => {
+      expect(result).toEqual(response.result);
+      done();
+    });
+
+    $httpBackend.flush();
+  });
+
   it('should close a project', done => {
     const response = {
       result: true,

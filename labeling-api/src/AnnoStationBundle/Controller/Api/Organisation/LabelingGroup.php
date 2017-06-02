@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use crosscan\WorkerPool\AMQP;
+use AnnoStationBundle\Service\Authentication;
 
 /**
  * @Rest\Prefix("/api/organisation")
@@ -53,6 +54,11 @@ class LabelingGroup extends Controller\Base
     private $userRolesRebuilderService;
 
     /**
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissionService;
+
+    /**
      * @var AMQP\FacadeAMQP
      */
     private $amqpFacade;
@@ -65,13 +71,14 @@ class LabelingGroup extends Controller\Base
     /**
      * LabelingGroup constructor.
      *
-     * @param Facade\LabelingGroup       $labelingGroupFacade
-     * @param Facade\Project             $projectFacade
-     * @param AppFacade\User             $userFacade
-     * @param Storage\TokenStorage       $tokenStorage
-     * @param Service\UserRolesRebuilder $userRolesRebuilderService
-     * @param Service\Authorization      $authorizationService
-     * @param AMQP\FacadeAMQP            $amqpFacade
+     * @param Facade\LabelingGroup           $labelingGroupFacade
+     * @param Facade\Project                 $projectFacade
+     * @param AppFacade\User                 $userFacade
+     * @param Storage\TokenStorage           $tokenStorage
+     * @param Service\UserRolesRebuilder     $userRolesRebuilderService
+     * @param Service\Authorization          $authorizationService
+     * @param Authentication\UserPermissions $userPermissionService
+     * @param AMQP\FacadeAMQP                $amqpFacade
      */
     public function __construct(
         Facade\LabelingGroup $labelingGroupFacade,
@@ -80,6 +87,7 @@ class LabelingGroup extends Controller\Base
         Storage\TokenStorage $tokenStorage,
         Service\UserRolesRebuilder $userRolesRebuilderService,
         Service\Authorization $authorizationService,
+        Authentication\UserPermissions $userPermissionService,
         AMQP\FacadeAMQP $amqpFacade
     ) {
         $this->labelingGroupFacade       = $labelingGroupFacade;
@@ -89,6 +97,7 @@ class LabelingGroup extends Controller\Base
         $this->userRolesRebuilderService = $userRolesRebuilderService;
         $this->amqpFacade                = $amqpFacade;
         $this->projectFacade             = $projectFacade;
+        $this->userPermissionService     = $userPermissionService;
     }
 
     /**
@@ -145,7 +154,11 @@ class LabelingGroup extends Controller\Base
             throw new Exception\AccessDeniedHttpException();
         }
 
-        $labelingGroups = $this->labelingGroupFacade->findAllByOrganisationAndCoordinator($organisation, $user);
+        if ($this->userPermissionService->hasPermission('canAssignAllGroupsToProjects')) {
+            $labelingGroups = $this->labelingGroupFacade->findAllByOrganisation($organisation);
+        } else {
+            $labelingGroups = $this->labelingGroupFacade->findAllByOrganisationAndCoordinator($organisation, $user);
+        }
         $users = [];
         foreach ($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
             $users[$user->getId()] = $user;

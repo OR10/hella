@@ -69,6 +69,12 @@
                 >
                     <i class="fa fa-check-square-o"></i>
                 </button>
+                <button tooltip="Change label group assignment"
+                        ng-if="vm.userPermissions.canChangeProjectLabelGroupAssignment && project.status == 'in_progress'"
+                        ng-click="vm.changeLabelGroupAssignment(project.id, project.labelingGroupId, project.name)"
+                >
+                    <i class="fa fa-users"></i>
+                </button>
 
                 <button ng-if="vm.userPermissions.canAssignProject && project.status == 'todo'"
                         ng-click="vm.assignProject(project.id, project.taskInPreProcessingCount)"
