@@ -7,7 +7,7 @@ class LabelingGroupListController {
    * @param {LabelingGroupGateway} labelingGroupGateway
    * @param {ModalService} modalService
    */
-  constructor($state, labelingGroupGateway, modalService) {
+  constructor($state, labelingGroupGateway, modalService, ListDialog) {
     /**
      * @type {$state}
      * @private
@@ -25,6 +25,12 @@ class LabelingGroupListController {
      * @private
      */
     this._modalService = modalService;
+
+    /**
+     * @type {ListDialog}
+     * @private
+     */
+    this._ListDialog = ListDialog;
 
     /**
      * @type {boolean}
@@ -64,7 +70,28 @@ class LabelingGroupListController {
   deleteGroup(id) {
     this.loadingInProgress = true;
     this._labelingGroupGateway.deleteLabelingGroup(id)
-      .then(() => this.updateGroups());
+      .then(() => {
+        this.updateGroups();
+      }).catch(error => {
+        this._modalService.show(
+          new this._ListDialog(
+            {
+              title: 'Failed to delete labeling-Group.',
+              headline: `An Error occurred`,
+              message: error.message,
+              confirmButtonText: 'Continue',
+              data: error.projectNames,
+            },
+            undefined,
+            undefined,
+            {
+              abortable: false,
+              warning: false,
+            }
+            )
+        );
+        this.loadingInProgress = false;
+      });
   }
 }
 
@@ -72,6 +99,7 @@ LabelingGroupListController.$inject = [
   '$state',
   'labelingGroupGateway',
   'modalService',
+  'ListDialog',
 ];
 
 export default LabelingGroupListController;
