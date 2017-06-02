@@ -1,74 +1,61 @@
-<title-bar class="grid-block noscroll header"
-           user="vm.user"
-           user-permissions="vm.userPermissions"
-           back-link="labeling.organisation-management.selection"
-           back-link-text="Back to Organisation Selection"
-           show-username="true"
-           show-logout-button="true"
->
-</title-bar>
-
-<div class="grid-block vertical">
-    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-    <page-title title="Organisations"></page-title>
-    <div class="grid-block align-center vertical">
-        <div class="grid-block align-right shrink" ng-if="vm.userPermissions.canCreateOrganisation === true">
-            <div class="grid-block horizontal shrink">
-                <div class="grid-content noscroll"
-                     style="margin-bottom: .5rem; margin-top: 2rem;">
-                    <button tooltip="Create new Organisation"
-                            ng-click="vm.createNewOrganisation()"
-                    >
-                        <i class="fa fa-plus"></i>&nbsp;Create new Organisation
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="grid-content">
-            <table class="table view-list-table" ng-class="{'hover': vm.userPermissions.canEditOrganisation === true}">
-                <thead>
-                <tr>
-                    <th>name</th>
-                    <th>projects</th>
-                    <th>videos</th>
-                    <th>quota</th>
-                    <th>user quota</th>
-                    <th>usage</th>
-                    <th>usage %</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="organisation in vm.organisations" ng-click="vm.updateOrganisation(organisation)">
-                    <td>
-                        {{organisation.name}}
-                    </td>
-                    <td>
-                        {{organisation.numberOfProjects}}
-                    </td>
-                    <td>
-                        {{organisation.numberOfVideos}}
-                    </td>
-                    <td>
-                        {{organisation.quota | fileSize:1:'unlimited'}}
-                    </td>
-                    <td ng-if="organisation.userQuota === 0">
-                        unlimited
-                    </td>
-                    <td ng-if="organisation.userQuota !== 0">
-                        {{organisation.userQuota}}
-                    </td>
-                    <td>
-                        {{organisation.diskUsage.total | fileSize}}
-                    </td>
-                    <td ng-if="organisation.quota === 0">
-                        -
-                    </td>
-                    <td ng-if="organisation.quota !== 0">
-                        {{organisation.diskUsage.total / organisation.quota * 100 | number:2}}
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+<page-title title="Organisations">
+    <back-link state-link="labeling.organisation-management.selection"
+               tooltip="Back to Organisation Selection"
+    ></back-link>
+</page-title>
+<div class="page-content">
+    <table class="table" ng-class="{'hover': vm.userPermissions.canEditOrganisation === true}">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Projects</th>
+            <th>Videos</th>
+            <th>Quota</th>
+            <th>User Quota</th>
+            <th>Usage</th>
+            <th>Usage %</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="organisation in vm.organisations" ng-click="vm.updateOrganisation(organisation)">
+            <td>
+                {{organisation.name}}
+            </td>
+            <td>
+                {{organisation.numberOfProjects}}
+            </td>
+            <td>
+                {{organisation.numberOfVideos}}
+            </td>
+            <td>
+                {{organisation.quota | fileSize:1:'unlimited'}}
+            </td>
+            <td ng-if="organisation.userQuota === 0">
+                unlimited
+            </td>
+            <td ng-if="organisation.userQuota !== 0">
+                {{organisation.userQuota}}
+            </td>
+            <td>
+                {{organisation.diskUsage.total | fileSize}}
+            </td>
+            <td ng-if="organisation.quota === 0">
+                -
+            </td>
+            <td ng-if="organisation.quota !== 0">
+                {{organisation.diskUsage.total / organisation.quota * 100 | number:2}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="grid-block align-right shrink" ng-if="vm.userPermissions.canCreateOrganisation === true">
+        <div class="grid-block horizontal shrink">
+            <button tooltip="Create new Organisation"
+                    ng-click="vm.createNewOrganisation()"
+            >
+                <i class="fa fa-plus"></i>&nbsp;Create new Organisation
+            </button>
         </div>
     </div>
 </div>

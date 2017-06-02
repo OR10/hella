@@ -1,20 +1,17 @@
-<div class="grid-frame vertical upload-form" flow-prevent-drop>
-    <title-bar class="grid-block noscroll header"
-               user="vm.user"
-               user-permissions="vm.userPermissions"
-               back-link="labeling.projects.list"
-               back-link-text="Go to project list"
-               show-username="true"
-               show-logout-button="true"
-    >
-    </title-bar>
-
-    <upload-form
-            class="grid-block"
-            project="vm.project"
-            upload-path="/organisation/{{vm.organisationId}}/project/batchUpload/{{vm.project.id}}"
-            upload-complete-path="/organisation/{{vm.organisationId}}/project/batchUpload/{{vm.project.id}}/complete"
-            upload-complete-message="Your upload is complete and the task creation process has started. This may take a while. You can check the progress of the job creation for your project in the ToDo Tab. Do you want to go to the project list to view this project?"
-            upload-additional-for-text=" for Project: '{{vm.project.name}}'"
-    ></upload-form>
+<div flow-prevent-drop>
+    <page-title title="Project File uploader">
+        <back-link state-link="labeling.projects.list"
+                   tooltip="Go to project list"
+        ></back-link>
+    </page-title>
+    <div class="page-content">
+        <upload-form
+                class="grid-block"
+                project="vm.project"
+                upload-path="/organisation/{{vm.organisationId}}/project/batchUpload/{{vm.project.id}}"
+                upload-complete-path="/organisation/{{vm.organisationId}}/project/batchUpload/{{vm.project.id}}/complete"
+                upload-complete-message="Your upload is complete and the task creation process has started. This may take a while. You can check the progress of the job creation for your project in the ToDo Tab. Do you want to go to the project list to view this project?"
+                upload-additional-for-text=" for Project: '{{vm.project.name}}'"
+        ></upload-form>
+    </div>
 </div>

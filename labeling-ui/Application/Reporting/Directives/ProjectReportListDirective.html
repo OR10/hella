@@ -1,44 +1,37 @@
-<div class="grid-block text-center vertical container">
-
-    <page-title title="Available Project Reports"></page-title>
-    <div class="grid-container">
-        <div class="grid-content">
-            <table class="table hover">
-                <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Creation Date</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-if="vm.reports.length"
-                    ng-repeat="report in vm.reports track by report.id"
-                    ng-click="vm.openReport(report.id)">
-                    <td>
-                        {{report.id}}
-                    </td>
-                    <td>
-                        {{report.reportCreationDate * 1000 | date: 'yyyy-MM-dd H:mm:ss'}}
-                    </td>
-                    <td ng-switch="report.reportStatus" ng-click="$event.stopPropagation()">
-                        <div ng-switch-when="done">
-                            <i class="fa fa-download" ng-click="vm.showJSON(report.projectId, report.id)" tooltip="Open JSON representation of this report"></i>
-                        </div>
-                        <div ng-switch-when="error">
-                            <i ng-if="report.errorMessage != null" class="fa fa-warning" tooltip="{{report.errorMessage}}"></i>
-                            <i ng-if="report.errorMessage == null" class="fa fa-warning" tooltip="Failed to generate report"></i>
-                        </div>
-                        <div ng-switch-default>
-                            <i class="fa fa-spinner fa-pulse"></i>
-                        </div>
-                    </td>
-                </tr>
-                <tr ng-if="!vm.reports.length" class="no-hover">
-                    <td colspan="3" class="no-tasks">No Reports available.</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+<table class="table hover">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Creation Date</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-if="vm.reports.length"
+        ng-repeat="report in vm.reports track by report.id"
+        ng-click="vm.openReport(report.id)">
+        <td>
+            {{report.id}}
+        </td>
+        <td>
+            {{report.reportCreationDate * 1000 | date: 'yyyy-MM-dd H:mm:ss'}}
+        </td>
+        <td ng-switch="report.reportStatus" ng-click="$event.stopPropagation()">
+            <div ng-switch-when="done">
+                <i class="fa fa-download" ng-click="vm.showJSON(report.projectId, report.id)"
+                   tooltip="Open JSON representation of this report"></i>
+            </div>
+            <div ng-switch-when="error">
+                <i ng-if="report.errorMessage != null" class="fa fa-warning" tooltip="{{report.errorMessage}}"></i>
+                <i ng-if="report.errorMessage == null" class="fa fa-warning" tooltip="Failed to generate report"></i>
+            </div>
+            <div ng-switch-default>
+                <i class="fa fa-spinner fa-pulse"></i>
+            </div>
+        </td>
+    </tr>
+    <tr ng-if="!vm.reports.length" class="no-hover">
+        <td colspan="3" class="no-tasks">No Reports available.</td>
+    </tr>
+    </tbody>
+</table>

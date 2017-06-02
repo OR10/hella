@@ -1,6 +1,5 @@
 fieldset {
   border: 1px solid lighten($color-ut-midgrey-3, 10%);
-  margin: 2rem 1rem;
 
   legend {
     color: $color-ut-midgrey-3;
@@ -34,10 +33,6 @@ select:focus {
 form{
   button{
     padding: 10px !important;
-  }
-
-  .button-area {
-    margin: 0 17px;
   }
 
   .grid-content .grid-block .grid-content {
