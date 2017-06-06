@@ -43,7 +43,8 @@
                             <td>Deadline</td>
                             <td>
                                 <input type="date"
-                                       ng-model="vm.dueDate">
+                                       ng-model="vm.dueDate"
+                                       ng-class="{error: !vm.validation.dueDate}">
                             </td>
                         </tr>
                         <tr style="display: none">

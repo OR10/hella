@@ -78,7 +78,7 @@ class ProjectCreateController {
     /**
      * @type {null}
      */
-    this.dueDate = moment().add(1, 'month').toDate();
+    this.dueDate = null;
 
     /**
      * @type {boolean}
@@ -306,7 +306,7 @@ class ProjectCreateController {
       splitEach: this.splitEach,
       projectType: 'requirementsXml',
       taskTypeConfigurations,
-      dueDate: moment(this.dueDate).format('YYYY-MM-DD H:mm:ss.SSSSSS'),
+      dueDate: this.dueDate === null ? null : moment(this.dueDate).format('YYYY-MM-DD H:mm:ss.SSSSSS'),
     };
 
     this._projectGateway.createProject(data)
