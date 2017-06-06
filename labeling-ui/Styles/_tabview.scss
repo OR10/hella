@@ -1,14 +1,15 @@
 tab-view {
-  margin: 1rem 2rem;
+  //margin: 1rem 2rem;
   //border: 1px solid goldenrod;
-//  @include grid-block(
-//  $size: expand, // Can be expand, shrink, or a number of columns
-//  $orientation: vertical, // Set to vertical for a vertical grid
-//  $wrap: false, // Set to true to make columns wrap if they get too wide
-//  $align: left, // Can be left, right, center, justify, or spaced
-//  $order: 0 // Can be any positive number
-//  );
+  //  @include grid-block(
+  //  $size: expand, // Can be expand, shrink, or a number of columns
+  //  $orientation: vertical, // Set to vertical for a vertical grid
+  //  $wrap: false, // Set to true to make columns wrap if they get too wide
+  //  $align: left, // Can be left, right, center, justify, or spaced
+  //  $order: 0 // Can be any positive number
+  //  );
 }
+
 //
 //tab {
 //  @include grid-block(
@@ -41,6 +42,12 @@ tab-view {
       color: $color-ut-darkgrey-2;
       background: none;
     }
+  }
+}
+
+.tab-content {
+  h2 {
+    @include font-s();
   }
 }
 

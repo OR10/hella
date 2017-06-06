@@ -91,9 +91,9 @@ class XmlValidator
     private function libxmlDisplayErrors()
     {
         $errors = libxml_get_errors();
+        libxml_clear_errors();
         foreach ($errors as $error) {
             return $this->libxmlDisplayError($error);
         }
-        libxml_clear_errors();
     }
 }

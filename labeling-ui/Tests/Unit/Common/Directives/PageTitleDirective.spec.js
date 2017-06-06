@@ -82,21 +82,21 @@ describe('PageTitle Directive Test Suite', () => {
   it('renders the username', () => {
     renderDirective();
 
-    const usernameElement = element.find('#logged-in-user-name span');
+    const usernameElement = element.find('div.page-header__user-info__line.user-name span');
     expect(usernameElement.text()).toEqual(username);
   });
 
   it('renders the role', () => {
     renderDirective();
 
-    const usernameElement = element.find('#logged-in-user-role');
+    const usernameElement = element.find('div.page-header__user-info__line.user-role');
     expect(usernameElement.text()).toEqual('SuperAdmin');
   });
 
   it('renders an empty organization', () => {
     renderDirective();
 
-    const usernameElement = element.find('#logged-in-user-organisation');
+    const usernameElement = element.find('div.page-header__user-info__line.user-organisation');
     expect(usernameElement.text()).toEqual('');
   });
 
@@ -117,7 +117,7 @@ describe('PageTitle Directive Test Suite', () => {
 
       renderDirective();
 
-      const usernameElement = element.find('#logged-in-user-organisation');
+      const usernameElement = element.find('div.page-header__user-info__line.user-organisation');
       expect(usernameElement.text()).toEqual(organizationName);
     });
 
@@ -126,7 +126,7 @@ describe('PageTitle Directive Test Suite', () => {
 
       renderDirective();
 
-      const usernameElement = element.find('#logged-in-user-organisation');
+      const usernameElement = element.find('div.page-header__user-info__line.user-organisation');
       expect(usernameElement.text()).toEqual('');
     });
   });

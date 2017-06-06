@@ -218,8 +218,13 @@ class Project extends Controller\Base
             $numberOfVideos
         );
 
-        $users = [];
-        $sumOfTasksForProjects          = $this->getSumOfTasksForProjects($projects);
+        $users                                  = [];
+        $sumOfTasksForProjects                  = $this->getSumOfTasksForProjects($projects);
+        $sumOfCompletedTasksForProjects         = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProjects(
+            $projects
+        );
+        $numberOfLabeledThingInFramesByProjects = $this->labeledThingInFrameFacadeFactory->getReadOnlyFacade()
+            ->getSumOfLabeledThingInFramesByProjects($projects);
 
         /** @var Model\Project $project */
         foreach ($projects as $project) {
@@ -228,9 +233,7 @@ class Project extends Controller\Base
             }
             $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
 
-            $sumOfCompletedTasksForProject = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
-                $project
-            );
+            $sumOfCompletedTasksForProject = !isset($sumOfCompletedTasksForProjects[$project->getId()]) ? 0 : $sumOfCompletedTasksForProjects[$project->getId()];
             $sumOfTasksByPhaseForProject   = $labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
 
             $sumOfFailedTasks        = 0;
@@ -246,6 +249,7 @@ class Project extends Controller\Base
                 'id'                 => $project->getId(),
                 'name'               => $project->getName(),
                 'status'             => $project->getStatus(),
+                'labelingGroupId'    => $project->getLabelingGroupId(),
                 'finishedPercentage' => floor(
                     $sumOfTasksForProjects[$project->getId()] === 0 ? 0 : 100 / $sumOfTasksForProjects[$project->getId()] * $sumOfCompletedTasksForProject
                 ),
@@ -278,10 +282,9 @@ class Project extends Controller\Base
                 $responseProject['taskInProgressCount']        = $taskInProgressCount;
                 $responseProject['taskFailedCount']            = $taskFailedCount;
                 $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
-                $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getReadOnlyFacade();
-                $responseProject['labeledThingInFramesCount']  = $labeledThingInFrameFacade->getSumOfLabeledThingInFramesByProject(
-                    $project
-                );
+                $responseProject['labeledThingInFramesCount'] = isset(
+                    $numberOfLabeledThingInFramesByProjects[$project->getId()]
+                ) ? $numberOfLabeledThingInFramesByProjects[$project->getId()] : 0;
                 $responseProject['videosCount']                = isset(
                     $numberOfVideos[$project->getId()]
                 ) ? $numberOfVideos[$project->getId()] : 0;
@@ -394,6 +397,7 @@ class Project extends Controller\Base
         $description      = $request->request->get('description');
         $projectType      = $request->request->get('projectType');
         $campaigns        = $request->request->get('campaigns', []);
+        $dueDate          = $request->request->get('dueDate');
 
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
@@ -409,7 +413,7 @@ class Project extends Controller\Base
                 $organisation,
                 $user,
                 null,
-                null,
+                $dueDate === null ? null : new \DateTime($dueDate, new \DateTimeZone('UTC')),
                 $labelingValidationProcesses,
                 $frameSkip,
                 $startFrameNumber,
@@ -643,6 +647,48 @@ class Project extends Controller\Base
         $project = $this->projectFacade->save($project);
 
         $this->taskDatabaseSecurityPermissionService->updateForProject($project);
+
+        return View\View::create()->setData(['result' => $project]);
+    }
+
+    /**
+     * Change the label-group project assignment
+     *
+     * @CheckPermissions({"canChangeProjectLabelGroupAssignment"})
+     *
+     * @Rest\Post("/{organisation}/project/{project}/assignLabelGroup")
+     *
+     * @param HttpFoundation\Request              $request
+     * @param Model\Project                       $project
+     * @param AnnoStationBundleModel\Organisation $organisation
+     *
+     * @return View\View
+     */
+    public function changeLabelGroupAssignmentAction(
+        HttpFoundation\Request $request,
+        Model\Project $project,
+        AnnoStationBundleModel\Organisation $organisation
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
+        $labelGroupId = $request->request->get('labelGroupId', null);
+        $project->setLabelingGroupId($labelGroupId);
+
+        $this->projectFacade->save($project);
+
+        $tasks = $this->labelingTaskFacade->findAllByProject($project, true);
+
+        foreach ($tasks as $task) {
+            $userId = $task->getLatestAssignedUserIdForPhase($task->getCurrentPhase());
+            if ($userId !== null) {
+                $job = new Jobs\LabelingTaskRemoveAssignment(
+                    $userId, $task->getId()
+                );
+                $this->amqpFacade->addJob($job);
+            }
+        }
 
         return View\View::create()->setData(['result' => $project]);
     }

@@ -1,5 +1,6 @@
 import LabelingGroup from '../Models/LabelingGroup';
 import User from '../Models/User';
+import DeleteLabelGroupErrorOfInProgressProjects from './Errors/DeleteLabelGroupErrorOfInProgressProjects';
 
 /**
  * Gateway for managing LabelingGroups
@@ -147,7 +148,14 @@ class LabelingGroupGateway {
           return response.data.result;
         }
 
-        throw new Error('Failed deleting labeling group.');
+        if (response.data && response.data.error) {
+          throw new DeleteLabelGroupErrorOfInProgressProjects(
+            response.data.error.message,
+            response.data.error.projectNames
+          );
+        }
+
+        throw new Error('Failed deleting labeling group. Please contact your administrator.');
       });
   }
 }

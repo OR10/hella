@@ -129,6 +129,24 @@ class ProjectGateway {
 
   /**
    * @param {string} projectId
+   * @param {string} groupId
+   * @returns {AbortablePromise}
+   */
+  changeLabelGroupAssignment(projectId, groupId) {
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/assignLabelGroup`);
+    return this._bufferedHttp.post(url, {labelGroupId: groupId}, undefined, 'project')
+      .then(response => {
+        if (response.data && response.data.result) {
+          return response.data.result;
+        }
+
+        throw new Error(`Failed changing the label-group for project  (${projectId}).`);
+      });
+  }
+
+  /**
+   * @param {string} projectId
    * @param {string} labelCoordinatorId
    * @returns {AbortablePromise}
    */

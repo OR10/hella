@@ -3,7 +3,8 @@
 </div>
 <div class="modal-body noscrollbars">
     <h3 class="modal-body-headline">{{headline}}</h3>
-    <p class="modal-body-content">{{message}}</p>
+    <div class="modal-body-content" ng-if="(message | isArray) == true" ng-repeat="messageLine in message track by $index">{{messageLine}}</div>
+    <div class="modal-body-content" ng-if="(message | isArray) == false">{{message}}</div>
 </div>
 <div class="modal-footer grid-block">
     <!-- Abortable Dialog -->

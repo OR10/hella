@@ -1,38 +1,37 @@
-$small-margin: 43px;
-$large-margin: 81px;
+.page-header {
+  display: flex;
+  flex-direction: row;
+  margin: $horizontal-block-size $vertical-block-size;
 
-#page-title-progress-bar {
+  .page-header__title {
+    flex-grow: 14;
+    margin: $horizontal-block-size 0;
+  }
 
-}
+  .page-header__custom-content {
+    flex-grow: 4;
+  }
 
-#page-title {
-  margin: $small-margin $large-margin $small-margin $small-margin;
+  .page-header__user-info {
+    flex-grow: 4;
+    text-align: right;
+    margin-top: $horizontal-block-size;
 
-  #logged-in-user {
-    max-width: 250px;
+    .page-header__user-info__line {
+      @include font-xs();
 
-    p, div {
-      margin: 0;
-      padding: 0;
-      font-family: inherit;
-      font-weight: normal;
-      line-height: 1.6;
-      text-rendering: optimizeLegibility;
+      logout-button{
+        display: inline-block;
+        margin-right: 0.2em;
+      }
+
+      button {
+        background: none;
+      }
     }
-  }
 
-  #logged-in-user-role, #logged-in-user-organisation {
-    @include font-xs();
-  }
-
-  logout-button {
-    position: absolute;
-    margin-left: -41px;
-    margin-top: -16px;
-
-  }
-
-  button {
-    background: none;
+    .user-name {
+      @include font-l();
+    }
   }
 }

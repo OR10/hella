@@ -1,4 +1,5 @@
 import moment from 'moment';
+import BytesFormatter from '../../Common/Helpers/BytesFormatter';
 
 /**
  * Controller of the {@link ProjectListDirective}
@@ -308,6 +309,71 @@ class ProjectListController {
     });
   }
 
+  changeLabelGroupAssignment(projectId, currentLabelingGroup, projectName) {
+    this.showLoadingMask = true;
+
+    this._labelingGroupGateway.getMyLabelingGroups().then(reponse => {
+      const selectionData = reponse.labelingGroups.filter(group => {
+        return group.id !== currentLabelingGroup;
+      }).map(group => {
+        return {id: group.id, name: group.name};
+      });
+
+      if (!selectionData.length) {
+        this._modalService.info(
+          {
+            title: 'No labeling groups',
+            headline: 'There are no labeling groups',
+            message: 'You have no labeling groups that could be assigned to this project. Please create a group and try to assign this project again.',
+            confirmButtonText: 'Understood',
+          },
+          undefined,
+          undefined,
+          {
+            abortable: false,
+          }
+        );
+        this.showLoadingMask = false;
+        return;
+      }
+
+      this._modalService.show(
+        new this._SelectionDialog(
+          {
+            title: 'Change Label-Group Assignment',
+            headline: `You are about to change the Label-Group for Project "${projectName}".`,
+            message: 'This will remove all task assignments for all users in this project!',
+            confirmButtonText: 'Change labelgroup and clean task assignments',
+            data: selectionData,
+          },
+          groupId => {
+            if (groupId) {
+              this.loadingInProgress = true;
+              this._projectGateway.changeLabelGroupAssignment(projectId, groupId)
+                .then(() => this._triggerReloadAll());
+            } else {
+              this._modalService.info(
+                {
+                  title: 'No Group Selected',
+                  headline: 'You need to select a labeling group',
+                  message: 'You need to select a labeling group to assign to this Project. Without a selected labeling group the project can not be accepted!',
+                  confirmButtonText: 'Understood',
+                },
+                undefined,
+                undefined,
+                {
+                  warning: true,
+                  abortable: false,
+                }
+              );
+            }
+          }
+        )
+      );
+      this.showLoadingMask = false;
+    });
+  }
+
   /**
    * @param {string} projectId
    */
@@ -418,6 +484,8 @@ class ProjectListController {
       'taskInProgressCount': 'process',
       'taskFinishedCount': 'done',
       'totalLabelingTimeInSecondsFormatted': 'time',
+      'labeledThingInFramesCount': 'object frames',
+      'diskUsageTotal': 'disk usage',
     };
 
     Object.keys(propertyToColumnMap).forEach(
@@ -462,7 +530,6 @@ class ProjectListController {
 
         return `${time}h`;
       },
-      /*
       'diskUsageTotal': project => {
         const filter = new BytesFormatter();
         if (project.diskUsage.total === undefined) {
@@ -470,7 +537,6 @@ class ProjectListController {
         }
         return filter.format(project.diskUsage.total);
       },
-      */
       'frameCount': project => project.totalFrames !== undefined ? project.totalFrames : null,
     };
 
