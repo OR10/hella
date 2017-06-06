@@ -5,32 +5,38 @@
     <h3 class="modal-body-headline">{{headline}}</h3>
     <p class="modal-body-content">{{message}}</p>
     <div class="grid-block">
-        <input type="text" ng-model="userInput"
-               ng-class="{error: userInput.length && userInput.length > maxLength}">
-        <div style="margin-bottom: 1rem;" class="grid-block vertical align-center">
-            <span class="grid-content shrink character-count">{{userInput.length || 0}}/{{maxLength}}</span>
-        </div>
-    </div>
-    Video/Image Quota
-    <div class="grid-block">
-        <div class="small-9">
-            <input type="text" ng-model="quota">
-        </div>
-        <div class="small-3">
-            <span class="postfix">
-                <select ng-model="unit">
-                    <option value="mb">MB</option>
-                    <option value="gb">GB</option>
-                    <option value="tb">TB</option>
-                </select>
-            </span>
-        </div>
-    </div>
-    User Quota
-    <div class="grid-block">
-        <div class="small-9">
-            <input type="text" ng-model="userQuota">
-        </div>
+        <table class="table formular-table">
+            <tr>
+                <td>Name</td>
+                <td>
+                    <input type="text" ng-model="userInput" placeholder="Organisation name"
+                           ng-class="{error: userInput.length && userInput.length > maxLength}">
+                </td>
+                <td>
+                    <span class="grid-content shrink character-count">{{userInput.length || 0}}/{{maxLength}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Video/Image Quota</td>
+                <td>
+                    <input type="text" ng-model="quota">
+                </td>
+                <td>
+                    <select ng-model="unit">
+                        <option value="mb">MB</option>
+                        <option value="gb">GB</option>
+                        <option value="tb">TB</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>User Quota</td>
+                <td>
+                    <input type="text" ng-model="userQuota">
+                </td>
+                <td></td>
+            </tr>
+        </table>
     </div>
 </div>
 <div class="modal-footer grid-block">

@@ -26,7 +26,8 @@ tab-view {
     color: $color-ut-midgrey-2;
     margin-bottom: -1px;
     background: none;
-    @include font-s();
+    @include font-l();
+    text-transform: lowercase;
 
     &.is-active {
       color: $color-ut-darkgrey-2;
