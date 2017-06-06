@@ -1,137 +1,139 @@
-<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-<!--
-    Display proper no projects information
--->
-
-<div class="view-list-info-box" ng-if="vm.projects.length == 0" ng-switch="vm.loadingInProgress">
-    <h3 ng-switch-when="true">Loading projects...</h3>
-    <h3 ng-switch-default>There are currently no projects in the selected state.</h3>
-</div>
-
-<table class="table hover view-list-table"
-       pagination-table
-       total-rows="vm.totalRows"
-       items-per-page="100"
-       on-page-update="vm.updatePage(page, itemsPerPage)">
+<div class="grid-block vertical">
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
     <!--
-         Display real information
-     -->
-    <thead ng-if="vm.projects.length > 0">
-    <tr>
-        <th ng-repeat="column in vm.columns track by $index">{{column.name}}</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody ng-if="vm.projects.length > 0">
-    <tr>
-    <tr ng-repeat="project in vm.projects track by project.id" ng-click="project.status != 'deleted' && vm.openProject(project.id)">
-        <td ng-repeat="column in vm.columns track by $index">
-            <i class="icon icon-medium icon-legacy-project" ng-if="column.property === 'name' && project.taskInstructionType === 'legacy'"></i>
-            <i class="icon icon-medium icon-requirements-xml-project" ng-if="column.property === 'name' && project.taskInstructionType === 'requirementsXml'"></i>
-            <i class="icon icon-medium icon-simple-xml-project" ng-if="column.property === 'name' && project.taskInstructionType === 'genericXml'"></i>
+        Display proper no projects information
+    -->
 
-            {{project[column.property]}}
+    <div class="view-list-info-box" ng-if="vm.projects.length == 0" ng-switch="vm.loadingInProgress">
+        <h3 ng-switch-when="true">Loading projects...</h3>
+        <h3 ng-switch-default>There are currently no projects in the selected state.</h3>
+    </div>
 
-            <span class="tagDisplay" ng-if="column.property === 'name'" ng-repeat="campaign in project.campaigns">
-                {{campaign.name}}
-            </span>
-
-            <i ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0"
-               class="fa fa-spin fa-spinner" tooltip="Import in progress. {{project.taskInPreProcessingCount}} are not finished yet."></i>
-            <span ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0">({{project.taskInPreProcessingCount}})</span>
-            <i ng-if="column.property === 'taskCount' && project.taskFailedCount > 0"
-               class="fa fa-warning" tooltip="Failed to create {{project.taskFailedCount}} tasks."></i>
-        </td>
-        <td class="action-cell" ng-click="$event.stopPropagation()">
-            <button tooltip="Upload Videos"
-                    ng-if="vm.userPermissions.canUploadNewVideo && project.status == 'todo'"
-                    ng-click="vm.goToUploadPage(project.id)"
-            >
-                <i class="fa fa-cloud-upload"></i>
-            </button>
-            <button tooltip="Export Project"
-                    ng-if="vm.userPermissions.canExportProject && project.status != 'deleted'"
-                    ng-click="vm.exportProject(project.id)"
-            >
-                <i class="fa fa-external-link"></i>
-            </button>
-
-            <button tooltip="Show flagged Tasks"
-                    ng-if="vm.userPermissions.canViewAttentionTasks && project.status != 'deleted'"
-                    ng-click="vm.showFlaggedTasks(project.id)"
-            >
-                <i class="fa fa-flag"></i>
-            </button>
-
-            <button tooltip="Accept Project and assign to team"
-                    ng-if="vm.userPermissions.canAcceptProject && project.status == 'todo'"
-                    ng-click="vm.acceptProject(project.id, project.name, project.taskInPreProcessingCount)"
-            >
-                <i class="fa fa-check-square-o"></i>
-            </button>
-            <button tooltip="Change label group assignment"
-                    ng-if="vm.userPermissions.canChangeProjectLabelGroupAssignment && project.status == 'in_progress'"
-                    ng-click="vm.changeLabelGroupAssignment(project.id, project.labelingGroupId, project.name)"
-            >
-                <i class="fa fa-users"></i>
-            </button>
-
-            <button ng-if="vm.userPermissions.canAssignProject && project.status == 'todo'"
-                    ng-click="vm.assignProject(project.id, project.taskInPreProcessingCount)"
-                    ng-class="{'green': project.coordinator !== undefined}"
-            >
-                <i ng-show="project.coordinator !== undefined" tooltip="Selected coordinator: {{project.coordinator.username}}" class="fa fa-user"></i>
-                <i ng-hide="project.coordinator !== undefined" tooltip="Assign project to a label coordinator" class="fa fa-user"></i>
-            </button>
-
-            <button tooltip="Close Project (Move to done)"
-                    ng-if="(vm.userPermissions.canMoveFinishedProjectToDone || vm.userPermissions.canMoveInProgressProjectToDone) && project.status == 'in_progress'"
-                    ng-click="vm.closeProject(project.id, project.name, project.taskCount == project.taskFinishedCount)"
-            >
-                <i class="fa fa-check-square"></i>
-            </button>
-
-            <!--
-            <button tooltip="Reopen Project"
-                    ng-if="vm.userPermissions.canReopenProject"
-                    ng-click="vm.reopenProject(project.id)"
-            >
-                <i class="fa fa-refresh"></i>
-            </button>
-            -->
-
-            <button tooltip="View Report of Project"
-                    ng-if="vm.userPermissions.canViewProjectReport && project.status != 'deleted'"
-                    ng-click="vm.openReport(project.id)"
-            >
-                <i class="fa fa-file-o"></i>
-            </button>
-
-            <button tooltip="Delete this Project. Warning: All data related to this project will be deleted and they are no longer available."
-                    ng-if="vm.userPermissions.canDeleteProject && (project.status === 'todo' || project.status === 'done')"
-                    ng-click="vm.setProjectStatusToDeleted(project.id, project.name)"
-            >
-                <i class="fa fa-trash-o"></i>
-            </button>
-
-            <button tooltip="Delete this Project. Warning: All data related to this project will be deleted and they are no longer available."
-                    ng-if="vm.userPermissions.canDeleteProject && project.status === 'deleted' && project.deletedState === 'unaccepted'"
-                    ng-click="vm.deleteProject(project.id, project.name)"
-            >
-                <i class="fa fa-trash-o icon-fa warning-color"></i>
-            </button>
-            <i ng-if="vm.userPermissions.canDeleteProject && project.status === 'deleted' && (project.deletedState === 'pending' || project.deletedState === 'in_progress')"
-               class="fa fa-spin fa-spinner"></i>
-        </td>
-    </tr>
-    </tbody>
-    <tfoot ng-if="vm.projects.length > 0">
+    <table class="table hover view-list-table"
+           pagination-table
+           total-rows="vm.totalRows"
+           items-per-page="100"
+           on-page-update="vm.updatePage(page, itemsPerPage)">
+        <!--
+             Display real information
+         -->
+        <thead ng-if="vm.projects.length > 0">
         <tr>
-            <td colspan="{{vm.columns.length + 1}}">
-                <pagination-controls></pagination-controls>
+            <th ng-repeat="column in vm.columns track by $index">{{column.name}}</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody ng-if="vm.projects.length > 0">
+        <tr>
+        <tr ng-repeat="project in vm.projects track by project.id" ng-click="project.status != 'deleted' && vm.openProject(project.id)">
+            <td ng-repeat="column in vm.columns track by $index">
+                <i class="icon icon-medium icon-legacy-project" ng-if="column.property === 'name' && project.taskInstructionType === 'legacy'"></i>
+                <i class="icon icon-medium icon-requirements-xml-project" ng-if="column.property === 'name' && project.taskInstructionType === 'requirementsXml'"></i>
+                <i class="icon icon-medium icon-simple-xml-project" ng-if="column.property === 'name' && project.taskInstructionType === 'genericXml'"></i>
+
+                {{project[column.property]}}
+
+                <span class="tagDisplay" ng-if="column.property === 'name'" ng-repeat="campaign in project.campaigns">
+                    {{campaign.name}}
+                </span>
+
+                <i ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0"
+                   class="fa fa-spin fa-spinner" tooltip="Import in progress. {{project.taskInPreProcessingCount}} are not finished yet."></i>
+                <span ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0">({{project.taskInPreProcessingCount}})</span>
+                <i ng-if="column.property === 'taskCount' && project.taskFailedCount > 0"
+                   class="fa fa-warning" tooltip="Failed to create {{project.taskFailedCount}} tasks."></i>
+            </td>
+            <td class="action-cell" ng-click="$event.stopPropagation()">
+                <button tooltip="Upload Videos"
+                        ng-if="vm.userPermissions.canUploadNewVideo && project.status == 'todo'"
+                        ng-click="vm.goToUploadPage(project.id)"
+                >
+                    <i class="fa fa-cloud-upload"></i>
+                </button>
+                <button tooltip="Export Project"
+                        ng-if="vm.userPermissions.canExportProject && project.status != 'deleted'"
+                        ng-click="vm.exportProject(project.id)"
+                >
+                    <i class="fa fa-external-link"></i>
+                </button>
+
+                <button tooltip="Show flagged Tasks"
+                        ng-if="vm.userPermissions.canViewAttentionTasks && project.status != 'deleted'"
+                        ng-click="vm.showFlaggedTasks(project.id)"
+                >
+                    <i class="fa fa-flag"></i>
+                </button>
+
+                <button tooltip="Accept Project and assign to team"
+                        ng-if="vm.userPermissions.canAcceptProject && project.status == 'todo'"
+                        ng-click="vm.acceptProject(project.id, project.name, project.taskInPreProcessingCount)"
+                >
+                    <i class="fa fa-check-square-o"></i>
+                </button>
+                <button tooltip="Change label group assignment"
+                        ng-if="vm.userPermissions.canChangeProjectLabelGroupAssignment && project.status == 'in_progress'"
+                        ng-click="vm.changeLabelGroupAssignment(project.id, project.labelingGroupId, project.name)"
+                >
+                    <i class="fa fa-users"></i>
+                </button>
+
+                <button ng-if="vm.userPermissions.canAssignProject && project.status == 'todo'"
+                        ng-click="vm.assignProject(project.id, project.taskInPreProcessingCount)"
+                        ng-class="{'green': project.coordinator !== undefined}"
+                >
+                    <i ng-show="project.coordinator !== undefined" tooltip="Selected coordinator: {{project.coordinator.username}}" class="fa fa-user"></i>
+                    <i ng-hide="project.coordinator !== undefined" tooltip="Assign project to a label coordinator" class="fa fa-user"></i>
+                </button>
+
+                <button tooltip="Close Project (Move to done)"
+                        ng-if="(vm.userPermissions.canMoveFinishedProjectToDone || vm.userPermissions.canMoveInProgressProjectToDone) && project.status == 'in_progress'"
+                        ng-click="vm.closeProject(project.id, project.name, project.taskCount == project.taskFinishedCount)"
+                >
+                    <i class="fa fa-check-square"></i>
+                </button>
+
+                <!--
+                <button tooltip="Reopen Project"
+                        ng-if="vm.userPermissions.canReopenProject"
+                        ng-click="vm.reopenProject(project.id)"
+                >
+                    <i class="fa fa-refresh"></i>
+                </button>
+                -->
+
+                <button tooltip="View Report of Project"
+                        ng-if="vm.userPermissions.canViewProjectReport && project.status != 'deleted'"
+                        ng-click="vm.openReport(project.id)"
+                >
+                    <i class="fa fa-file-o"></i>
+                </button>
+
+                <button tooltip="Delete this Project. Warning: All data related to this project will be deleted and they are no longer available."
+                        ng-if="vm.userPermissions.canDeleteProject && (project.status === 'todo' || project.status === 'done')"
+                        ng-click="vm.setProjectStatusToDeleted(project.id, project.name)"
+                >
+                    <i class="fa fa-trash-o"></i>
+                </button>
+
+                <button tooltip="Delete this Project. Warning: All data related to this project will be deleted and they are no longer available."
+                        ng-if="vm.userPermissions.canDeleteProject && project.status === 'deleted' && project.deletedState === 'unaccepted'"
+                        ng-click="vm.deleteProject(project.id, project.name)"
+                >
+                    <i class="fa fa-trash-o icon-fa warning-color"></i>
+                </button>
+                <i ng-if="vm.userPermissions.canDeleteProject && project.status === 'deleted' && (project.deletedState === 'pending' || project.deletedState === 'in_progress')"
+                   class="fa fa-spin fa-spinner"></i>
             </td>
         </tr>
-    </tfoot>
+        </tbody>
+        <tfoot ng-if="vm.projects.length > 0">
+            <tr>
+                <td colspan="{{vm.columns.length + 1}}">
+                    <pagination-controls></pagination-controls>
+                </td>
+            </tr>
+        </tfoot>
 
-</table>
+    </table>
 
+</div>

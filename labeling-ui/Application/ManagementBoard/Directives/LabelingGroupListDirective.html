@@ -1,5 +1,5 @@
-<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-<div class="grid-content">
+<div class="grid-block vertical">
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
     <!--
        Display proper no projects information
     -->
@@ -44,13 +44,11 @@
         </tbody>
     </table>
     <div class="grid-block align-right shrink">
-        <div class="shrink">
-            <div class="noscroll">
-                <button tooltip="Create new Labeling Group"
-                        ng-click="vm.createNewGroup()" >
-                    <i class="fa fa-plus"></i>&nbsp;Create new Group
-                </button>
-            </div>
+        <div class="noscroll">
+            <button tooltip="Create new Labeling Group"
+                    ng-click="vm.createNewGroup()" >
+                <i class="fa fa-plus"></i>&nbsp;Create new Group
+            </button>
         </div>
     </div>
 </div>
