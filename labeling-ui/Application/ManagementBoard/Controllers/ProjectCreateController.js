@@ -272,14 +272,14 @@ class ProjectCreateController {
     };
 
     this._projectGateway.createProject(data)
-        .then(() => {
-          --this.loadingInProgress;
-          this.goBack();
-        })
-        .catch(error => {
-          --this.loadingInProgress;
-          this._handleCreationError(error);
-        });
+      .then(() => {
+        --this.loadingInProgress;
+        this.goBack();
+      })
+      .catch(error => {
+        --this.loadingInProgress;
+        this._handleCreationError(error);
+      });
   }
 
   /**
@@ -310,16 +310,16 @@ class ProjectCreateController {
     };
 
     this._projectGateway.createProject(data)
-        .then(() => {
-          --this.loadingInProgress;
-          this.taskTypeToAdd = '';
-          this.taskConfigToAdd = '';
-          this.goBack();
-        })
-        .catch(error => {
-          --this.loadingInProgress;
-          this._handleCreationError(error);
-        });
+      .then(() => {
+        --this.loadingInProgress;
+        this.taskTypeToAdd = '';
+        this.taskConfigToAdd = '';
+        this.goBack();
+      })
+      .catch(error => {
+        --this.loadingInProgress;
+        this._handleCreationError(error);
+      });
   }
 
   _handleCreationError(error) {
