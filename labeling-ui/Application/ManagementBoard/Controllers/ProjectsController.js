@@ -66,7 +66,7 @@ class ProjectsController {
       .then(projectCount => this.projectCount = Object.assign({}, {todo: 0, in_progress: 0, done: 0}, projectCount));
   }
   _getCampaignName() {
-    this.campaignName = 'Campaignname';
+    this.campaignName = '';
   }
 }
 

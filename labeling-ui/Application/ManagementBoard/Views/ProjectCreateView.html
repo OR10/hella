@@ -1,5 +1,9 @@
 <loading-mask ng-if="vm.loadingInProgress > 0" spinner="true"></loading-mask>
-<page-title title="Create a new project"></page-title>
+<page-title title="Create a new project">
+    <back-link state-link="labeling.projects.list"
+               tooltip="Back to Project list"
+    ></back-link>
+</page-title>
 <div class="page-content">
     <tab-view class="gray-tab-view">
         <tab header="mainsettings">

@@ -1,5 +1,5 @@
 <loading-mask ng-if="vm.showLoadingMask" spinner="true"></loading-mask>
-<page-title title="{{vm.campaignName}} - All Projects">
+<page-title title="{{vm.campaignName == '' ? '' : vm.campaignName + ' - '}}All Projects">
     <back-link state-link="labeling.organisation-management.selection"
                tooltip="Back to organisation selection"
     ></back-link>
