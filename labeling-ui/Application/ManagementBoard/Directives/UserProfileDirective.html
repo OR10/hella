@@ -1,76 +1,81 @@
 <loading-mask ng-if="vm.loadingInProgress" spinner="true" backdrop="false"></loading-mask>
-
-<form class="user-profile">
-    <fieldset>
-        <legend>Information</legend>
-        <label>
-            Username
-            <input id="username" type="text" placeholder="Username" ng-model="vm.user.username"
-                   ng-class="{error: !vm.validation.username}">
-        </label>
-        <label>
-            EMail
-            <input id="email" type="email" placeholder="me@example.com" ng-model="vm.user.email"
-                   ng-class="{error: !vm.validation.email}">
-        </label>
-        <label>Role</label>
-        <select id="role" ng-model="vm.singleRole"
-                ng-options="role as role.label for role in vm.availableRoles track by role.id"
-                ng-class="{error: !vm.validation.role}"></select>
-        <label>Expires</label>
-        <input type="date" ng-model="vm.user.expiresAt">
-    </fieldset>
-    <fieldset>
-        <legend>Security</legend>
-        <label>
-            Password
-            <input id="password" type="password" placeholder="Password" ng-model="vm.newPassword"
-                   ng-class="{error: !vm.validation.password}">
-        </label>
-        <label>
-            Re-enter Password
-            <input id="password-again" type="password" placeholder="Password validation"
-                   ng-model="vm.newPasswordValidation" ng-class="{error: !vm.validation.password}">
-        </label>
-    </fieldset>
-    <fieldset ng-if="vm.userPermissions.canAddUserToAnyOrganisation">
-        <legend>Organisations</legend>
-        <table class="table"
-               style="margin-bottom: 2em;">
-            <thead>
-            <tr>
-                <th>Organisation</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="userOrganisation in vm.userOrganisations">
-                <td>{{userOrganisation.name}}</td>
-                <td class="action-cell">
-                    <button tooltip="Remove user {{vm.user.username}} from organisation"
-                            ng-click="vm.removeUserFromOrganisation(userOrganisation)">
-                        <i class="fa fa-close"></i>
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="grid-block horizontal">
-            <div class="grid-content">
-                <select id="newLabeler"
-                        ng-model="vm.organisationToAdd"
-                        ng-options="organisation.name for organisation in vm.organisations"
-                        ng-class="{error: !vm.validation.organisations}">
-                </select>
-            </div>
-            <div class="grid-content shrink">
-                <button tooltip="Add user to Organisation"
-                        ng-click="vm.addUserToOrganisation(vm.organisationToAdd)">
-                    <i class="fa fa-plus"></i>
+<form class="user-profile grid-content">
+    <table class="table formular-table">
+        <tr>
+            <td>Username</td>
+            <td>
+                <input id="username" type="text" placeholder="Username" ng-model="vm.user.username"
+                       ng-class="{error: !vm.validation.username}">
+            </td>
+        </tr>
+        <tr>
+            <td>E-Mail</td>
+            <td>
+                <input id="email" type="email" placeholder="me@example.com" ng-model="vm.user.email"
+                       ng-class="{error: !vm.validation.email}">
+            </td>
+        </tr>
+        <tr>
+            <td>Role</td>
+            <td>
+                <select id="role" ng-model="vm.singleRole" ng-options="role as role.label for role in vm.availableRoles track by role.id" ng-class="{error: !vm.validation.role}"></select>
+            </td>
+        </tr>
+        <tr>
+            <td>Expires</td>
+            <td>
+                <input type="date" ng-model="vm.user.expiresAt">
+            </td>
+        </tr>
+        <tr>
+            <td>Password</td>
+            <td>
+                <input id="password" type="password" placeholder="Password" ng-model="vm.newPassword"
+                       ng-class="{error: !vm.validation.password}">
+            </td>
+        </tr>
+        <tr>
+            <td>Re-enter Password</td>
+            <td>
+                <input id="password-again" type="password" placeholder="Password validation"
+                       ng-model="vm.newPasswordValidation" ng-class="{error: !vm.validation.password}">
+            </td>
+        </tr>
+    </table>
+    <table class="table view-list-table" ng-if="vm.userPermissions.canAddUserToAnyOrganisation">
+        <thead>
+        <tr>
+            <th>Organisation</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="userOrganisation in vm.userOrganisations">
+            <td>{{userOrganisation.name}}</td>
+            <td class="action-cell">
+                <button tooltip="Remove user {{vm.user.username}} from organisation"
+                        ng-click="vm.removeUserFromOrganisation(userOrganisation)">
+                    <i class="fa fa-close"></i>
                 </button>
-            </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="grid-block horizontal" ng-if="vm.userPermissions.canAddUserToAnyOrganisation">
+        <div class="grid-content">
+            <select id="newLabeler"
+                    ng-model="vm.organisationToAdd"
+                    ng-options="organisation.name for organisation in vm.organisations"
+                    ng-class="{error: !vm.validation.organisations}">
+            </select>
         </div>
-    </fieldset>
+        <div class="grid-content shrink">
+            <button tooltip="Add user to Organisation"
+                    ng-click="vm.addUserToOrganisation(vm.organisationToAdd)">
+                <i class="fa fa-plus"></i>
+            </button>
+        </div>
+    </div>
     <div class="button-area">
         <button class="pull-right"
                 ng-click="vm.saveChanges()"

@@ -1,4 +1,5 @@
 import uuid from 'uuid';
+import moment from 'moment';
 
 /**
  * Controller for the initial entrypoint route into the application
@@ -20,7 +21,7 @@ class ProjectCreateController {
      * @private
      */
     this._$scope = $scope;
-
+    
     /**
      * @type {$state}
      * @private
@@ -30,150 +31,155 @@ class ProjectCreateController {
      * @type {User}
      */
     this.user = user;
-
+    
     /**
      * @type {Object}
      */
     this.userPermissions = userPermissions;
-
+    
     /**
      * @type {ProjectGateway}
      * @private
      */
     this._projectGateway = projectGateway;
-
+    
     /**
      * @type {TaskConfigurationGateway}
      * @private
      */
     this._taskConfigurationGateway = taskConfigurationGateway;
-
+    
     /**
      * @type {ModalService}
      * @private
      */
     this._modalService = modalService;
-
+    
     /**
      * @type {string}
      */
     this.currentOrganisationId = organisationService.get();
-
+    
     /**
      * @type {integer}
      */
     this.loadingInProgress = 0;
-
+    
     /**
      * @type {null}
      */
     this.name = null;
-
+    
     /**
      * @type {null}
      */
     this.description = null;
-
+    
     /**
      * @type {null}
      */
-    this.deadline = new Date();
-
+    this.dueDate = moment().add(1, 'month').toDate();
+    
     /**
      * @type {boolean}
      */
     this.review = true;
-
+    
     /**
      * @type {number}
      */
     this.frameSkip = 22;
-
+    
     /**
      * @type {number}
      */
     this.startFrameNumber = 22;
-
+    
     /**
      * @type {number}
      */
     this.splitEach = 0;
-
+    
     /**
      * @type {boolean}
      */
     this.vehicle = true;
-
+    
     /**
      * @type {boolean}
      */
     this.ignoreVehicle = true;
-
+    
     /**
      * @type {boolean}
      */
     this.lane = true;
-
+    
     /**
      * @type {boolean}
      */
     this.person = false;
-
+    
     /**
      * @type {boolean}
      */
     this.cyclist = false;
-
+    
     /**
      * @type {boolean}
      */
     this.parkedCars = false;
-
+    
     /**
      * @type {boolean}
      */
     this.ignore = false;
-
+    
     /**
      * @type {string}
      */
     this.drawingToolVehicle = 'cuboid';
-
+    
+    /**
+     * @type {string}
+     */
+    this.selectedCampaign = '';
+    
     /**
      * @type {string}
      */
     this.drawingToolIgnoreVehicle = 'rectangle';
-
+    
     /**
      * @type {string}
      */
     this.drawingToolLane = 'rectangle';
-
+    
     /**
      * @type {string}
      */
     this.drawingToolPerson = 'pedestrian';
-
+    
     /**
      * @type {string}
      */
     this.drawingToolCyclist = 'rectangle';
-
+    
     /**
      * @type {string}
      */
     this.drawingToolIgnore = 'rectangle';
-
+    
     /**
      * @type {string}
      */
     this.drawingToolParkedCars = 'cuboid';
-
+    
     /**
      * @type {string}
      */
     this.uploadUuid = uuid.v4();
-
+    
     /**
      * @type {Array.<Object>}
      */
@@ -187,22 +193,29 @@ class ProjectCreateController {
       // {id: 'ignore-vehicle', name: 'Ignore Vehicle'},
       // {id: 'lane', name: 'Lane'},
     ];
-
+    
+    /**
+     * @type {Array.<Object>}
+     * TODO: Fill this later with real world data
+     */
+    this.campaigns = [
+      {id: 4711, name: 'Test'},
+    ];
     /**
      * @type {string}
      */
     this.taskTypeToAdd = '';
-
+    
     /**
      * @type {Array.<Object>}
      */
     this.requirementsXmlTaskConfigurations = [];
-
+    
     /**
      * @type {string}
      */
     this.taskConfigToAdd = '';
-
+    
     /**
      * @type {{username: boolean, frameSkip: boolean, startFrameNumber: boolean, splitEach: boolean}}
      */
@@ -211,18 +224,19 @@ class ProjectCreateController {
       frameSkip: true,
       startFrameNumber: true,
       splitEach: true,
+      dueDate: true,
     };
-
+    
     /**
      * @type {Array}
      */
     this.labelingTaskTypes = [];
-
+    
     this._taskConfigurationGateway.getRequirementsXmlConfigurations().then(configurations => {
       this.requirementsXmlTaskConfigurations = configurations;
     });
   }
-
+  
   /**
    * @param type
    */
@@ -230,7 +244,7 @@ class ProjectCreateController {
     this.taskTypes.push(type.type);
     this.labelingTaskTypes = this.labelingTaskTypes.filter(taskType => taskType.type.id !== type.type.id);
   }
-
+  
   /**
    * Save a project with genericXml export
    */
@@ -239,7 +253,7 @@ class ProjectCreateController {
       return;
     }
     ++this.loadingInProgress;
-
+    
     const taskTypeConfigurations = this.labelingTaskTypes.map(taskType => {
       return {
         type: taskType.type.id,
@@ -256,18 +270,18 @@ class ProjectCreateController {
       projectType: 'genericXml',
       taskTypeConfigurations,
     };
-
+    
     this._projectGateway.createProject(data)
-      .then(() => {
-        --this.loadingInProgress;
-        this.goBack();
-      })
-      .catch(error => {
-        --this.loadingInProgress;
-        this._handleCreationError(error);
-      });
+        .then(() => {
+          --this.loadingInProgress;
+          this.goBack();
+        })
+        .catch(error => {
+          --this.loadingInProgress;
+          this._handleCreationError(error);
+        });
   }
-
+  
   /**
    * Save a project with genericXml export
    */
@@ -276,7 +290,7 @@ class ProjectCreateController {
       return;
     }
     ++this.loadingInProgress;
-
+    
     const taskTypeConfigurations = [
       {
         type: this.taskTypeToAdd,
@@ -292,38 +306,39 @@ class ProjectCreateController {
       splitEach: this.splitEach,
       projectType: 'requirementsXml',
       taskTypeConfigurations,
+      dueDate: moment(this.dueDate).format('YYYY-MM-DD H:mm:ss.SSSSSS'),
     };
-
+    
     this._projectGateway.createProject(data)
-      .then(() => {
-        --this.loadingInProgress;
-        this.taskTypeToAdd = '';
-        this.taskConfigToAdd = '';
-        this.goBack();
-      })
-      .catch(error => {
-        --this.loadingInProgress;
-        this._handleCreationError(error);
-      });
+        .then(() => {
+          --this.loadingInProgress;
+          this.taskTypeToAdd = '';
+          this.taskConfigToAdd = '';
+          this.goBack();
+        })
+        .catch(error => {
+          --this.loadingInProgress;
+          this._handleCreationError(error);
+        });
   }
-
+  
   _handleCreationError(error) {
     this._modalService.info(
-      {
-        title: 'Error creating project',
-        headline: `The project could not be created.`,
-        message: error.data.error.message,
-        confirmButtonText: 'Understood',
-      },
-      undefined,
-      undefined,
-      {
-        warning: true,
-        abortable: false,
-      }
+        {
+          title: 'Error creating project',
+          headline: `The project could not be created.`,
+          message: error.data.error.message,
+          confirmButtonText: 'Understood',
+        },
+        undefined,
+        undefined,
+        {
+          warning: true,
+          abortable: false,
+        }
     );
   }
-
+  
   /**
    * Save a project with legacy export
    */
@@ -332,7 +347,7 @@ class ProjectCreateController {
       return;
     }
     ++this.loadingInProgress;
-
+    
     const data = {
       name: this.name,
       description: this.description,
@@ -356,25 +371,25 @@ class ProjectCreateController {
       'parked-cars': this.parkedCars,
       drawingToolParkedCars: this.drawingToolParkedCars,
     };
-
+    
     this._projectGateway.createProject(data)
-      .then(() => {
-        --this.loadingInProgress;
-        this.goBack();
-      })
-      .catch(error => {
-        --this.loadingInProgress;
-        this._handleCreationError(error);
-      });
+        .then(() => {
+          --this.loadingInProgress;
+          this.goBack();
+        })
+        .catch(error => {
+          --this.loadingInProgress;
+          this._handleCreationError(error);
+        });
   }
-
+  
   /**
    * Go back to the project list
    */
   goBack() {
     this._$state.go('labeling.projects.list');
   }
-
+  
   /**
    * Each upload got its own identifier
    *
@@ -383,7 +398,7 @@ class ProjectCreateController {
   getUuid() {
     return this.uploadUuid;
   }
-
+  
   /**
    * Validates the user
    *
@@ -391,31 +406,40 @@ class ProjectCreateController {
    */
   _validateProjectNameAndSettings() {
     let valid = true;
-
+    
     this.validation.name = true;
     this.validation.frameSkip = true;
     this.validation.startFrameNumber = true;
     this.validation.splitEach = true;
-
+    this.validation.dueDate = true;
+    
     if (this.name === null || this.name === '') {
       this.validation.name = valid = false;
     }
-
+    
     if (this.frameSkip === undefined) {
       this.validation.frameSkip = valid = false;
     }
-
+    
     if (this.startFrameNumber === undefined) {
       this.validation.startFrameNumber = valid = false;
     }
-
+    
     if (this.splitEach === undefined) {
       this.validation.splitEach = valid = false;
     }
-
+    
+    if (this.dueDate === undefined) {
+      this.validation.dueDate = valid = false;
+    }
+    
+    if (moment(this.dueDate).toDate() < moment().toDate()) {
+      this.validation.dueDate = valid = false;
+    }
+    
     return valid;
   }
-
+  
 }
 
 ProjectCreateController.$inject = [

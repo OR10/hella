@@ -8,9 +8,12 @@ fieldset {
 }
 
 select, input, textarea {
-  color: $color-ut-midgrey-2;
+  color: $color-ut-midgrey-3;
   border:none;
-  background-color:transparent;
+  padding: 0;
+  background-color:transparent !important;
+  margin: 0;
+  height: 20px;
   &.error {
     border: 2px solid orangered !important;
   }
