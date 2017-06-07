@@ -409,3 +409,39 @@ title-bar {
   -khtml-border-radius: 5px;
   border-radius: 5px;
 }
+
+.upload-content {
+  color:#fff !important;
+  table tr td{
+    background: $color-ut-midgrey-1 !important;
+    padding: 0;
+    h6 {
+      color:#fff;
+      position: fixed;
+      left: 50%;
+    }
+    a {
+      color:#fff !important;
+      text-decoration-color: $color-ut-yellow !important;
+    }
+  };
+  .upload-content-description {
+    padding-top: 24px;
+    padding-left: 5px;
+    vertical-align: text-top;
+    width: 20%;
+    div {
+      margin-top: 15px;
+      margin-left: 68px;
+    }
+  }
+  .upload-content-files {
+    position:relative;
+    top:-70px;
+    columns: 2;
+    text-align: left;
+    div {
+      padding: 3px;
+    }
+  }
+}

@@ -8,87 +8,50 @@
      flow-files-added="vm.filesAdded($files, $event, $flow)"
 >
 
-    <div class="grid-block align-center shrink">
+    <div class="grid-content shrink upload-content" flow-transfers>
         <loading-mask ng-if="vm.uploadInProgress" spinner="true"></loading-mask>
-        <div class="grid-content drop-area"
-             flow-drop
-             ng-class="class"
-             flow-drag-enter="class='drop-area-active'"
-             flow-drag-leave="class=''"
-        >
-            <h2><i class="fa fa-cloud-upload"></i> Select/Drop files {{vm.uploadAdditionalForText}}</h2>
-            <input
-                    type="file"
-                    flow-btn
-                    multiple
-                    style="margin: 0 auto;"
-            />
-        </div>
-    </div>
-
-    <div>
-        <h3 style="margin-top: 1em;">Selected files</h3>
-        <table class="table table-hover table-bordered table-striped view-list-table" flow-transfers>
-            <thead>
+        <table class="table">
             <tr>
-                <th>Name</th>
-                <th>Size</th>
-                <th>Progress</th>
-                <th width="150px">Status</th>
-                <th width="150px"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="file in transfers">
-                <td>{{file.name}}</td>
-                <td>{{file.size | fileSize}}</td>
-                <td>
-                    <div class="progress">
-                        <div class="progress-meter success"
-                             ng-style="{ 'width': (file.progress() * 100) + '%'}"
-                        ></div>
+                <td class="upload-content-description">
+                    Files to upload
+                    <div>
+                        Video files <br>
+                        3D Information
+
                     </div>
                 </td>
                 <td>
-                    <i class="fa fa-spinner fa-pulse"
-                       ng-style="{display: file.isUploading() ? 'inline-block' : 'none'}">
-                        <!-- For unknown reasons ng-show or ng-if have a strange 'delay' here. Therefore the style hack is used -->
-                    </i>
-                    <i class="fa fa-check"
-                       ng-if="!file.isUploading() && file.isComplete() && file.errorMessage.message == undefined">
-                    </i>
-                    <i class="fa fa-warning"
-                       ng-if="!file.isUploading() && file.isComplete() && file.hasUploadError()"
-                       tooltip="{{file.errorMessage.message}}">
-                    </i>
-                </td>
-                <td>
-                    <button tooltip="Pause upload for this file"
-                            ng-show="file.isUploading()"
-                            ng-click="file.pause()">
-                        <i class="fa fa-pause"></i>
-                    </button>
-                    <button tooltip="Resume upload for this file"
-                            ng-show="file.paused"
-                            ng-click="file.resume()">
-                        <i class="fa fa-cloud-upload"></i>
-                    </button>
-                    <button tooltip="Remove upload from list"
-                            ng-hide="file.isComplete()"
-                            ng-click="file.cancel()">
-                        <i class="fa fa-close"></i>
-                    </button>
-                    <!--<button tooltip="Retry upload for this file"-->
-                    <!--ng-show="file.error"-->
-                    <!--ng-click="file.retry()">-->
-                    <!--<i class="fa fa-refresh"></i>-->
-                    <!--</button>-->
-
+                    <div class="drop-area"
+                         flow-drop
+                         ng-class="class"
+                         flow-drag-enter="class='drop-area-active'"
+                         flow-drag-leave="class=''"
+                         ng-click="vm.uploadFilesFromSystem()"
+                    >
+                        <h6 ng-style="{opacity : transfers.length == 0 ? '1' : '0.3'}">
+                            <i class="fa fa-files-o fa-4x" style=" vertical-align: middle;"></i>
+                            paste link,
+                            <a href="#">select file</a>
+                            or drop files here
+                        </h6>
+                        <input
+                                type="file"
+                                flow-btn
+                                multiple
+                                style="display: none;"
+                                id="project-upload-input"
+                        />
+                        <div class="upload-content-files">
+                            <div ng-repeat="file in transfers">
+                                {{file.name}}
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
-            </tbody>
         </table>
-
+    </div>
+    <div flow-transfers>
         <div class="button-area"
              style="margin-top: 2em"
         >

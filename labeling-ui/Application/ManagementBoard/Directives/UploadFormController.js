@@ -1,5 +1,6 @@
 import {debounce} from 'lodash';
 
+
 /**
  * Controller of the {@link UploadFormDirective}
  */
@@ -210,6 +211,12 @@ class UploadFormController {
   fileError(file, message) {
     file.errorMessage = JSON.parse(message).error;
     file.hasUploadError = () => true;
+  }
+
+  uploadFilesFromSystem() {
+    setTimeout(() => {
+      document.getElementById('project-upload-input').click();
+    }, 0);
   }
 }
 
