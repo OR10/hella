@@ -13,7 +13,7 @@ class ValueComparator extends InnerDocumentVisitor {
      * @type {RegExp}
      * @private
      */
-    this._dictionaryKeyRegExp = /\{\{([a-zA-Z0-9-_]+)\}\}/;
+    this._dictionaryKeyRegExp = /\{\{:?([a-zA-Z0-9-_]+)\}\}/;
   }
 
   visitScalar(firstNode, secondNode, path) {
