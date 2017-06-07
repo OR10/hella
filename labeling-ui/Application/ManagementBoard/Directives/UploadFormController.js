@@ -1,6 +1,5 @@
 import {debounce} from 'lodash';
 
-
 /**
  * Controller of the {@link UploadFormDirective}
  */
