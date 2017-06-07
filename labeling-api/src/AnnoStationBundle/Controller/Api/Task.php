@@ -15,6 +15,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use AnnoStationBundle\Annotations\CheckPermissions;
 
 /**
  * @Rest\Prefix("/api/task")
@@ -91,6 +92,8 @@ class Task extends Controller\Base
      *
      * @Rest\Get("")
      *
+     * @CheckPermissions({"canViewTaskList"})
+     *
      * @param HttpFoundation\Request $request
      *
      * @return View\View
@@ -146,45 +149,25 @@ class Task extends Controller\Base
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[Model\LabelingTask::STATUS_TODO];
                 break;
             case Model\LabelingTask::STATUS_DONE:
-                if ($user->hasOneRoleOf(
-                    [
-                        Model\User::ROLE_LABELER,
-                        Model\User::ROLE_LABEL_COORDINATOR,
-                        Model\User::ROLE_ADMIN,
-                        Model\User::ROLE_OBSERVER,
-                    ]
-                )
-                ) {
-                    $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
-                        Model\LabelingTask::STATUS_DONE,
-                        $project,
-                        $offset,
-                        $limit,
-                        $taskPhase
-                    )->toArray();
-                }
+                $tasks                  = $this->labelingTaskFacade->findAllByStatusAndProject(
+                    Model\LabelingTask::STATUS_DONE,
+                    $project,
+                    $offset,
+                    $limit,
+                    $taskPhase
+                )->toArray();
                 $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[Model\LabelingTask::STATUS_DONE];
                 break;
             case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
-                if ($user->hasOneRoleOf(
-                    [
-                        Model\User::ROLE_LABELER,
-                        Model\User::ROLE_LABEL_COORDINATOR,
-                        Model\User::ROLE_ADMIN,
-                        Model\User::ROLE_OBSERVER,
-                    ]
-                )
-                ) {
-                    $tasks = $this->labelingTaskFacade->getAllDoneLabelingTasksForProject(
-                        $project,
-                        $offset,
-                        $limit
-                    )->toArray();
+                $tasks = $this->labelingTaskFacade->getAllDoneLabelingTasksForProject(
+                    $project,
+                    $offset,
+                    $limit
+                )->toArray();
 
-                    $numberOfTotalDocuments = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
-                        $project
-                    );
-                }
+                $numberOfTotalDocuments = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
+                    $project
+                );
                 break;
         }
 
