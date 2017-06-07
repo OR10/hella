@@ -47,11 +47,11 @@ tab-view {
 }
 
 .tab-content {
+  background: $color-ut-lightgrey-3;
   h2 {
-    @include font-s();
+    font-size: 24px;
+    padding-top: 33px;
+    padding-bottom: 44px;
   }
-}
 
-.gray-tab-view {
-  background: $color-ut-lightgrey-2 !important;
 }
