@@ -76,7 +76,7 @@ class OuterDocumentVisitor {
     this._innerVisitor.visitArrayBefore(firstNode, secondNode, this._getPath());
     forEach(firstNode, (childNode, key) => {
       if (!(key in secondNode)) {
-        throw new Error(`Array structure is different: Key "${key}" at location ${this._getPath()} does not exist in secondNode, but is there in first`);
+        throw new Error(`Array structure is different: Key "[${key}]" at location ${this._getPath()} does not exist in secondNode, but is there in first`);
       }
       this._visitNode(childNode, secondNode[key], `[${key}]`)
     });
