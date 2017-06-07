@@ -110,7 +110,7 @@ class TaskDocumentsToTaskDatabase extends WorkerPoolBundle\JobInstruction
     private $projectCache = [];
 
     /**
-     * @var Migration\Configuration
+     * @var Migration\Multi
      */
     private $migrationConfiguration;
 
@@ -165,7 +165,7 @@ class TaskDocumentsToTaskDatabase extends WorkerPoolBundle\JobInstruction
         $this->projectFacade                  = $projectFacade;
         $this->documentManager                = $documentManager;
         $this->guzzleClient                   = $guzzleClient;
-        $this->migrationConfiguration         = $migrationConfiguration;
+        $this->migrationConfiguration         = $migrationConfiguration->getMigrations();
         $this->username                       = $username;
         $this->password                       = $password;
         $this->host                           = $host;
@@ -320,7 +320,7 @@ class TaskDocumentsToTaskDatabase extends WorkerPoolBundle\JobInstruction
                 $databaseName,
                 $documentId
             ),
-            ['json' => $this->migrationConfiguration->getMigrations()->migrate($content)]
+            ['json' => $this->migrationConfiguration->migrate($content)]
         );
         $promise->then(
             function (ResponseInterface $res) use ($documentId, $revision) {
