@@ -1,38 +1,28 @@
 <div class="grid-block vertical">
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-    <table class="table hover"
+    <!--
+        Display proper no tasks information
+    -->
+    <div class="view-list-info-box" ng-if="vm.tasks.length == 0" ng-switch="vm.loadingInProgress">
+        <h3 ng-switch-when="true">Loading projects...</h3>
+        <h3 ng-switch-default>There are currently no tasks in the selected state.</h3>
+    </div>
+    <table class="table hover view-list-table"
            pagination-table
            total-rows="vm.totalRows"
            items-per-page="100"
            on-page-update="vm.updatePage(page, itemsPerPage)">
-
-        <!--
-             Display proper no tasks information
-         -->
-        <thead ng-if="vm.tasks.length == 0">
-        <tr>
-            <th>Message</th>
-        </tr>
-        </thead>
-        <tbody ng-if="vm.tasks.length == 0">
-
-        <tr ng-switch="vm.loadingInProgress">
-            <td ng-switch-when="true">Loading tasks...</td>
-            <td ng-switch-default>There are currently no tasks in the selected state.</td>
-        </tr>
-        </tbody>
-
         <!--
              Display real information
          -->
         <thead ng-if="vm.tasks.length > 0">
-        <tr>
-            <th>Type</th>
-            <th>Title</th>
-            <th>Range</th>
-            <th>Assignee</th>
-            <th>Actions</th>
-        </tr>
+            <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Range</th>
+                <th>Assignee</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody ng-if="vm.tasks.length > 0">
         <tr ng-repeat="task in vm.tasks track by task.id" ng-click="vm.openTask(task.id, user)">
@@ -80,11 +70,11 @@
         </tr>
         </tbody>
         <tfoot ng-if="vm.tasks.length > 0">
-        <tr>
-            <td colspan="5">
-                <pagination-controls></pagination-controls>
-            </td>
-        </tr>
+            <tr>
+                <td colspan="5">
+                    <pagination-controls></pagination-controls>
+                </td>
+            </tr>
         </tfoot>
-        </table>
+    </table>
 </div>

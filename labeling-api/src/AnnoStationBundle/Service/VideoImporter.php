@@ -122,6 +122,8 @@ class VideoImporter
             $conflictException = null;
             try {
                 $project->addVideo($video);
+                $videoSize = $video->getMetaData()->sizeInBytes;
+                $project->setDiskUsageInBytes($project->getDiskUsageInBytes() + $videoSize);
                 $this->projectFacade->save($project);
                 break;
             } catch (CouchDB\UpdateConflictException $exception) {

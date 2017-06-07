@@ -202,6 +202,44 @@ class LabeledThingInFrame
     }
 
     /**
+     * @param $projects
+     *
+     * @return array
+     */
+    public function getSumOfLabeledThingInFramesByProjects($projects)
+    {
+        $projectIds = array_map(
+            function (Model\Project $project) {
+                return $project->getId();
+            },
+            $projects
+        );
+
+        $idsInChunks = array_chunk($projectIds, 100);
+
+        $numberOfLabeledThingInFramesByProjects = [];
+        foreach ($idsInChunks as $idsInChunk) {
+            $numberOfLabeledThingInFramesByProjects = array_merge(
+                $numberOfLabeledThingInFramesByProjects,
+                $this->documentManager
+                    ->createQuery('annostation_labeled_thing_in_frame', 'sum_by_project')
+                    ->setReduce(true)
+                    ->setGroup(true)
+                    ->setKeys($idsInChunk)
+                    ->execute()
+                    ->toArray()
+            );
+        }
+
+        $response = [];
+        foreach ($numberOfLabeledThingInFramesByProjects as $numberOfLabeledThingInFramesByProject) {
+            $response[$numberOfLabeledThingInFramesByProject['key']] = $numberOfLabeledThingInFramesByProject['value'];
+        }
+
+        return $response;
+    }
+
+    /**
      * @param Model\LabelingTask $labelingTask
      *
      * @return int

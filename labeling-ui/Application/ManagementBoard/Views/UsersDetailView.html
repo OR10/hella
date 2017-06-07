@@ -1,13 +1,11 @@
-<div class="grid-frame vertical">
-    <title-bar class="grid-block noscroll header"
-               back-link="labeling.users"
-               back-link-text="Back to Users List"
-               show-username="true"
-               show-logout-button="true"
-               user="vm.user"
-    >
-    </title-bar>
+<page-title title="Edit: {{vm.user.username}}">
+    <back-link state-link="labeling.users"
+               tooltip="Back to Users List"
+    ></back-link>
+</page-title>
 
 
-    <user-profile user-permissions="vm.userPermissions" id="vm.userId" readonly="false" class="grid-block"></user-profile>
+<div class="page-content">
+    <user-profile user-permissions="vm.userPermissions" id="vm.userId" readonly="false"
+                  class="grid-block"></user-profile>
 </div>

@@ -1,50 +1,42 @@
 button {
-  background-color: $element-background;
-  color: $color-ut-8;
-  font-weight: bold;
+  background-color: transparent;
+  color: $color-ut-midgrey-3;
+  font-weight: normal;
   font-size: 18px;
   border: none;
   padding: 0.3em;
 
   &:hover {
-    color: $color-active;
+    color: $color-ut-midgrey-1;
   }
 
   &:active {
-    background-color: $color-active;
-    color: $button-active;
+    background-color: $color-ut-midgrey-1;
+    color: $color-ut-midgrey-3;
   }
 
   &.divider {
-    border-right: 2px solid $element-inline-divider;
+    border-right: 2px solid $color-ut-darkgrey-1;
   }
 
   &.disabled i {
-    color: darken($icon-disabled, 30%);
+    color: darken($color-ut-midgrey-1, 30%);
 
     &:hover{
-      color: darken($icon-disabled, 30%) !important;
+      color: darken($color-ut-midgrey-1, 30%) !important;
     }
   }
 
   //&:focus {
   //  outline: none;
-  //  border: 1px solid $icon-hover;
+  //  border: 1px solid $color-ut-10;
   //}
   &:focus {
     outline: none;
   }
 
   &.green{
-    color: $icon-hover;
-  }
-}
-
-.upload-form {
-  .button-area {
-    button {
-      padding: 0.5em;
-    }
+    color: $color-ut-midgrey-2;
   }
 }
 

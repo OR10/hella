@@ -5,28 +5,4 @@
   .role-line{
     height: 2px;
   }
-
-  .ROLE_SUPER_ADMIN {
-    background-color: $color-orange;
-  }
-  .ROLE_ADMIN {
-    background-color: $color-lightred;
-  }
-  .ROLE_LABEL_COORDINATOR {
-    background-color: $color-yellow;
-  }
-  .ROLE_CLIENT {
-    background-color: $color-midblue-1;
-  }
-  .ROLE_LABELER {
-    background-color: $color-lightgrey-1;
-  }
-  .ROLE_OBSERVER {
-    background-color: $color-midblue-2;
-  }
-  .ROLE_USER {
-    background-color: $color-applegreen;
-    /** Don't show this role in the frontend **/
-    display: none;
-  }
 }

@@ -1,19 +1,8 @@
-<div class="grid-frame vertical">
-    <title-bar class="grid-block noscroll header"
-            user="vm.user"
-            user-permissions="vm.userPermissions"
-            back-link="labeling.projects"
-            back-link-text="Back to Task List"
-            show-username="true"
-            show-logout-button="true"
-    >
-        <a class="header-button" ui-sref="labeling.users.detail({userId: 'new'})"
-           tooltip="Create a new User"
-        >
-            Add new User
-        </a>
-
-    </title-bar>
-
-    <users-list user-permissions="vm.userPermissions" class="grid-block align-center"></users-list>
+<page-title title="Users">
+    <back-link state-link="labeling.projects"
+               tooltip="Back to Project List"
+    ></back-link>
+</page-title>
+<div class="page-content">
+    <users-list user-permissions="vm.userPermissions" class="grid-block"></users-list>
 </div>

@@ -297,6 +297,7 @@
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.video"/>
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
             <argument type="service" id="annostation.labeling_api.service.xml_validator_requirements_xml_import"/>
+            <argument type="service" id="annostation.labeling_api.service.requirements_xml_validator"/>
             <argument type="service" id="annostation.labeling_api.service.task_creator"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
         </service>
@@ -328,6 +329,11 @@
 
         <service id="annostation.labeling_api.service.project_importer.facade.video" class="AnnoStationBundle\Service\ProjectImporter\Facade\Video">
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.project_importer.facade.labeled_thing_group" class="AnnoStationBundle\Service\ProjectImporter\Facade\LabeledThingGroup">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
         </service>
 
         <service id="annostation.labeling_api.service.project_deleter.project" class="AnnoStationBundle\Service\ProjectDeleter\Project">

@@ -1,27 +1,18 @@
 <div class="grid-block vertical">
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-    <table class="table hover"
+    <!--
+        Display proper no projects information
+    -->
+    <div class="view-list-info-box" ng-if="vm.projects.length == 0" ng-switch="vm.loadingInProgress">
+        <h3 ng-switch-when="true">Loading projects...</h3>
+        <h3 ng-switch-default>There are currently no projects in the selected state.</h3>
+    </div>
+
+    <table class="table hover view-list-table"
            pagination-table
            total-rows="vm.totalRows"
            items-per-page="100"
            on-page-update="vm.updatePage(page, itemsPerPage)">
-
-        <!--
-             Display proper no projects information
-         -->
-        <thead ng-if="vm.projects.length == 0">
-        <tr>
-            <th>Message</th>
-        </tr>
-        </thead>
-        <tbody ng-if="vm.projects.length == 0">
-
-        <tr ng-switch="vm.loadingInProgress">
-            <td ng-switch-when="true">Loading projects...</td>
-            <td ng-switch-default>There are currently no projects in the selected state.</td>
-        </tr>
-        </tbody>
-
         <!--
              Display real information
          -->
@@ -78,6 +69,12 @@
                 >
                     <i class="fa fa-check-square-o"></i>
                 </button>
+                <button tooltip="Change label group assignment"
+                        ng-if="vm.userPermissions.canChangeProjectLabelGroupAssignment && project.status == 'in_progress'"
+                        ng-click="vm.changeLabelGroupAssignment(project.id, project.labelingGroupId, project.name)"
+                >
+                    <i class="fa fa-users"></i>
+                </button>
 
                 <button ng-if="vm.userPermissions.canAssignProject && project.status == 'todo'"
                         ng-click="vm.assignProject(project.id, project.taskInPreProcessingCount)"
@@ -129,12 +126,13 @@
         </tr>
         </tbody>
         <tfoot ng-if="vm.projects.length > 0">
-        <tr>
-            <td colspan="{{vm.columns.length + 1}}">
-                <pagination-controls></pagination-controls>
-            </td>
-        </tr>
+            <tr>
+                <td colspan="{{vm.columns.length + 1}}">
+                    <pagination-controls></pagination-controls>
+                </td>
+            </tr>
         </tfoot>
-    </table>
-</div>
 
+    </table>
+
+</div>

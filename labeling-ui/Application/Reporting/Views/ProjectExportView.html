@@ -1,16 +1,25 @@
-<div class="grid-frame vertical">
-    <title-bar class="grid-block noscroll header"
-               user="vm.user"
-               user-permissions="vm.userPermissions"
-               back-link="labeling.projects"
-               back-link-text="Back to project list"
-               show-username="true"
-               show-logout-button="true"
-    >
-        <a class="header-button" ng-click="vm.startExport()">Start new Export</a>
-    </title-bar>
+<page-title title="Project Exports">
+    <back-link state-link="labeling.projects"
+               tooltip="Back to project list"
+    ></back-link>
+</page-title>
 
+<div class="page-content">
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-    <project-export-list exports="vm.exports" project="vm.project" class="grid-block"></project-export-list>
-
+    <div class="grid-block vertical">
+        <project-export-list exports="vm.exports" project="vm.project" class="grid-block"></project-export-list>
+        <div class="grid-block align-right shrink">
+            <div class="grid-block horizontal shrink">
+                <div class="noscroll"
+                     style="margin-bottom: .5rem; margin-top: 2rem;">
+                    <button tooltip="Start new Export"
+                            ng-click="vm.startExport()"
+                    >
+                        <i class="fa fa-plus"></i>&nbsp;Start new Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

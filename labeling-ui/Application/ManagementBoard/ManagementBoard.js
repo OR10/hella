@@ -6,7 +6,7 @@ import TabDirective from './Directives/TabDirective';
 import PaginationTableDirective from './Directives/PaginationTableDirective';
 import PaginationControlsDirective from './Directives/PaginationControlsDirective';
 
-import TitleBarDirective from './Directives/TitleBarDirective';
+import BackLinkDirective from './Directives/BackLinkDirective';
 
 import UploadView from './Views/UploadView.html!';
 
@@ -43,14 +43,13 @@ import LabelingGroupGateway from './Gateways/LabelingGroupGateway';
 import LabelingGroupListDirective from './Directives/LabelingGroupListDirective';
 
 import TaskConfigurationGateway from './Gateways/TaskConfigurationGateway';
-import TaskConfigurationController from './Controllers/TaskConfigurationController';
-import TaskConfigurationView from './Views/TaskConfigurationView.html!';
 import TaskConfigurationUploadController from './Controllers/TaskConfigurationUploadController';
 import TaskConfigurationUploadView from './Views/TaskConfigurationUploadView.html!';
 
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
 import ReadableRoleFilterProvider from './Filters/ReadableRoleFilterProvider';
 import FileSizeFilterProvider from './Filters/FileSizeFilterProvider';
+import IsArrayProvider from './Filters/IsArrayProvider';
 
 import SystemStatusController from './Controllers/SystemStatusController';
 import SystemStatusView from './Views/SystemStatusView.html!';
@@ -233,17 +232,6 @@ class ManagementBoard extends Module {
       redirectTo: 'labeling.task.configurations.list',
     });
 
-    $stateProvider.state('labeling.task-configurations.list', {
-      url: '/',
-      views: {
-        '@organisation': {
-          controller: TaskConfigurationController,
-          controllerAs: 'vm',
-          template: TaskConfigurationView,
-        },
-      },
-    });
-
     $stateProvider.state('labeling.task-configurations.upload', {
       url: '/upload',
       views: {
@@ -285,7 +273,7 @@ class ManagementBoard extends Module {
     this.module.service('systemGateway', SystemGateway);
     this.module.service('uploadGateway', UploadGateway);
 
-    this.registerDirective('titleBar', TitleBarDirective);
+    this.registerDirective('backLink', BackLinkDirective);
     this.registerDirective('tabView', TabViewDirective);
     this.registerDirective('tab', TabDirective);
     this.registerDirective('paginationTable', PaginationTableDirective);
@@ -301,6 +289,7 @@ class ManagementBoard extends Module {
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);
     this.module.filter('fileSize', FileSizeFilterProvider);
+    this.module.filter('isArray', IsArrayProvider);
   }
 }
 

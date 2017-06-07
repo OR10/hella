@@ -2,7 +2,7 @@ table.table {
   width: 100%;
 
   a {
-    color: $text-lightbg;
+    color: $color-ut-midgrey-2;
     text-decoration: underline;
   }
 
@@ -20,14 +20,14 @@ table.table {
         cursor: pointer;
 
         td {
-          background: darken($table-odd-row-background, 10%);
+          background: darken($color-ut-lightgrey-3, 10%);
 
           a {
-            color: $element-active;
+            color: $color-ut-midgrey-3;
           }
 
           .icon, .fa {
-            color: $element-active;
+            color: $color-ut-midgrey-3;
           }
 
           .icon:hover, .fa:hover {
@@ -43,17 +43,18 @@ table.table {
   thead,
   tbody,
   tfoot {
-    background-color: $body-background;
+    background-color: $color-ut-lightgrey-1;
 
     td, th {
-      background-color: $table-odd-row-background;
+      background-color: $color-ut-lightgrey-3;
       text-align: left;
     }
   }
 
   thead,
   tfoot {
-    color: $text-lightbg;
+    color: $color-ut-darkgrey-2;
+    @include font-m();
   }
 
   thead,
@@ -65,7 +66,7 @@ table.table {
 
   thead, tfoot {
     th, td {
-      background-color: $table-meta-background;
+      background-color: $color-ut-lightgrey-1;
       padding: 0.6rem 0.725rem 0.725rem;
       font-weight: bold;
     }
@@ -78,9 +79,9 @@ table.table {
   }
 
   tbody {
-    tr:nth-child(even) {
+    tr:nth-child(odd) {
       td {
-        background-color: $table-even-row-background;
+        background-color: $color-ut-lightgrey-2;
       }
     }
 
@@ -101,20 +102,20 @@ table.table {
   thead {
     tr {
       th {
-        border-bottom: 1px solid $icon-hover;
+        border-bottom: 1px solid $color-ut-darkgrey-1;
       }
     }
   }
 
   th.st-sort-descent:after {
     padding-left: .6rem;
-    color: $text-lightbg;
+    color: $color-ut-midgrey-2;
     content: "▲";
   }
 
   th.st-sort-ascent:after {
     padding-left: .3rem;
-    color: $text-lightbg;
+    color: $color-ut-midgrey-2;
     content: "▼";
   }
 }
@@ -129,7 +130,93 @@ pagination-controls {
   }
 
   button.is-active {
-    background-color: $icon-hover;
-    color: $text-lightbg;
+    background-color: $color-ut-midgrey-2;
+    color: $color-ut-lightgrey-3;
+  }
+}
+.view-list-table {
+  thead {
+    th:first-child {
+      padding-left: 0 !important;
+      text-align: left !important;
+    }
+    th {
+      background: $color-ut-white !important;
+      text-align: center !important;
+      padding: 0 !important;
+      @include font-m();
+      font-weight: lighter !important;
+      text-transform: lowercase;
+    }
+    th:last-child {
+      text-align: left !important;
+    }
+  }
+  tbody {
+    tr {
+      td:first-child {
+        padding-left: 5px;
+        text-align: left;
+      }
+      td {
+        text-align: center;
+        @include font-s();
+        padding: 14px 0 10px;
+        border-bottom: 2px solid $color-ut-lightgrey-1;
+        i {
+          font-size: 20px;
+        }
+        ul {
+          line-height: 0;
+          margin-bottom: 0;
+          li {
+            @include font-s();
+          }
+        }
+      }
+      td:last-child {
+        text-align: left;
+      }
+    }
+  }
+}
+.view-list-info-box {
+  height: 200px;
+  h3 {
+    text-align: center;
+    margin-top: 20px;
+  }
+}
+
+.formular-table {
+  margin-bottom: 2em;
+  tr {
+    border-bottom: 2px solid $color-ut-lightgrey-2;
+    td:first-child {
+      @include font-s();
+      color: $color-ut-white;
+      width: 120px;
+      padding-left: 6px !important;
+    }
+    td {
+      background: $color-ut-midgrey-1 !important;
+      padding: 13px 0 15px 11px !important;
+      input {
+        background: transparent;
+        border: none;
+        height: 20px;
+        padding: 0;
+        margin: 0;
+        @include font-s();
+      }
+      input:hover {
+        background: transparent;
+        border: none;
+      }
+      input:focus {
+        background: transparent;
+        border: none;
+      }
+    }
   }
 }

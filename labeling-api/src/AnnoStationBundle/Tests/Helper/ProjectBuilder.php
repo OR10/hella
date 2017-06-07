@@ -359,6 +359,7 @@ class ProjectBuilder
             'taskInstructionType'        => 'legacy',
             'diskUsage'                  => [],
             'campaigns'                  => [],
+            'labelingGroupId'            => null,
         ];
     }
 

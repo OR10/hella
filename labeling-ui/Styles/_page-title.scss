@@ -1,0 +1,37 @@
+.page-header {
+  display: flex;
+  flex-direction: row;
+  margin: $horizontal-block-size $vertical-block-size;
+
+  .page-header__title {
+    flex-grow: 14;
+    margin: $horizontal-block-size 0;
+  }
+
+  .page-header__custom-content {
+    flex-grow: 4;
+  }
+
+  .page-header__user-info {
+    flex-grow: 4;
+    text-align: right;
+    margin-top: $horizontal-block-size;
+
+    .page-header__user-info__line {
+      @include font-xs();
+
+      logout-button{
+        display: inline-block;
+        margin-right: 0.2em;
+      }
+
+      button {
+        background: none;
+      }
+    }
+
+    .user-name {
+      @include font-l();
+    }
+  }
+}
