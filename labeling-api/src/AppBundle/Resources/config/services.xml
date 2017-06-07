@@ -9,6 +9,7 @@
         <import resource="services/event_listeners.xml"/>
         <import resource="services/param_converters.xml"/>
         <import resource="services/helper.xml"/>
+        <import resource="services/migration.xml"/>
     </imports>
 
     <parameters>
