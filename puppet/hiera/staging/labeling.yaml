@@ -27,6 +27,15 @@ php::extensions:
   xml: {}
   zip: {}
 
+letsencrypt::email: chh@crosscan.com
+annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
+annostation_letsencrypt::domains:
+    - anno.crosscan.com
+labeling_api::app::sslCertFile: '/etc/letsencrypt/live/anno.crosscan.com/fullchain.pem'
+labeling_api::app::sslKeyFile: '/etc/letsencrypt/live/anno.crosscan.com/privkey.pem'
+labeling_api::cdn::sslCertFile: '/etc/letsencrypt/live/anno.crosscan.com/fullchain.pem'
+labeling_api::cdn::sslKeyFile: '/etc/letsencrypt/live/anno.crosscan.com/privkey.pem'
+
 tideways::php7: true
 
 rabbitmq::version: present
@@ -88,3 +97,4 @@ labeling_api::app: true
 labeling_api::run_composer_install: false
 labeling_api::tideways: true
 labeling_api::documentation_host: true
+labeling_api::letsencrypt: true
