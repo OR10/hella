@@ -102,6 +102,12 @@ class CouchDbModelSerializer {
     const documentJson = labeledThingInFrameModel.toJSON();
     this._prefixIdAndRevision(documentJson);
 
+    // Ghost flag is never stored into the database
+    delete documentJson.ghostClasses;
+    if ('ghost' in documentJson) {
+      delete documentJson.ghost;
+    }
+
     // Type annotation
     documentJson.type = CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME;
 
@@ -113,6 +119,7 @@ class CouchDbModelSerializer {
 
     return documentJson;
   }
+
   /**
    * Serialize a FrameRange Model
    *
