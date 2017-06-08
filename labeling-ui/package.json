@@ -139,6 +139,7 @@
       "babel-runtime": "npm:babel-runtime@^5.8.24",
       "clean-css": "npm:clean-css@^3.4.9",
       "core-js": "npm:core-js@^1.1.4",
+      "fast-levenshtein": "^2.0.6",
       "html": "github:systemjs/plugin-text@^0.0.2",
       "json": "github:systemjs/plugin-json@^0.1.0"
     }
