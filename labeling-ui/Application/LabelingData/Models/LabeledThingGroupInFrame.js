@@ -26,12 +26,6 @@ class LabeledThingGroupInFrame extends LabeledObject {
      * @type {LabeledThingGroup}
      */
     this.labeledThingGroup = labeledThingGroupInFrameDocument.labeledThingGroup;
-
-    /**
-     * Identifier Name for the ThingGroup
-     * @type {string}
-     */
-    this.identifierName = labeledThingGroupInFrameDocument.labeledThingGroup.type;
   }
 
   /**
