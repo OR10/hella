@@ -120,15 +120,18 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
     private function buildUrls()
     {
         $this->urls = array_map(
-            function (Model\LabelingTask $task) {
-                $database = $this->taskDatabaseCreator->getDatabaseName($task->getProjectId(), $task->getId());
+            function ($taskIdAndProjectId) {
+                $database = $this->taskDatabaseCreator->getDatabaseName(
+                    $taskIdAndProjectId['projectId'],
+                    $taskIdAndProjectId['taskId']
+                );
 
                 return [
                     'database' => $database,
                     'url'      => $this->getCouchDbSecurityUrl($database),
                 ];
             },
-            $this->labelingTaskFacade->findAll()
+            $this->labelingTaskFacade->findTaskIdAndProjectId()
         );
     }
 

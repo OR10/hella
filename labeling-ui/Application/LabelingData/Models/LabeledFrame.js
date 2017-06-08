@@ -85,6 +85,13 @@ class LabeledFrame extends LabeledObject {
       ghostClasses: clone(ghostClasses),
     });
   }
+
+  /**
+   * @return {LabeledFrame}
+   */
+  clone() {
+    return new LabeledFrame(this);
+  }
 }
 
 export default LabeledFrame;

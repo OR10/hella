@@ -69,6 +69,28 @@ class LabelingTask
     }
 
     /**
+     * @return Model\LabelingTask[]
+     */
+    public function findTaskIdAndProjectId()
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_labeling_task_by_task_id_and_project_id', 'view')
+            ->onlyDocs(false)
+            ->execute()
+            ->toArray();
+
+        return array_map(
+            function ($row) {
+                return [
+                    'taskId'    => $row['id'],
+                    'projectId' => $row['key']['0'],
+                ];
+            },
+            $result
+        );
+    }
+
+    /**
      * @param Model\Video|null $video
      * @param string           $status
      * @param int              $skip

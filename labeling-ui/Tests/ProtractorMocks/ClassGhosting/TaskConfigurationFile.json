@@ -1,0 +1,9 @@
+{
+  "request": {
+    "path": "/api/organisation/ORGANISATION-ID-1/taskConfiguration/TASKCONFIGURATIONID-TASKCONFIGURATIONID/file",
+    "method": "GET"
+  },
+  "response": {
+    "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!--\n  THIS FILE NEEDS TO BE EMBEDDED INTO `RequirementsFileXml.json` IN ORDER TO BE RECOGNIZED BY THE TESTS.\n  IT WILL **NOT** BE SOURCED ON ITS OWN\n  IT IS ONLY STORED HERE FOR EDITING AND READABILITY PURPOSES\n\n  USE THE FOLLOWING COMMAND TO CREATE THE NEEDED STRING:\n  cat RequirementsXmlFile.xml|sed -e 's@\"@\\\"@g'|sed -e ':a' -e 'N' -e '$!ba' -e 's@\n@\\n@g'\n-->\n<requirements xmlns=\"http://weblabel.hella-aglaia.com/schema/requirements\">\n  <thing id=\"thing-one\" shape=\"rectangle\" name=\"Traffic Sign\">\n    <class id=\"sign-type\" name=\"Sign type\">\n      <value id=\"u-turn\" name=\"U-Turn\" />\n      <value id=\"speed-sign\" name=\"Speed sign\" />\n    </class>\n  </thing>\n</requirements>"
+  }
+}
