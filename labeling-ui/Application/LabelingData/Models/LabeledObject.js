@@ -84,6 +84,13 @@ class LabeledObject {
 
     return this.classes;
   }
+
+  /**
+   * @return {LabeledObject}
+   */
+  clone() {
+    return new LabeledObject(this);
+  }
 }
 
 export default LabeledObject;

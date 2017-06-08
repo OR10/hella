@@ -11,6 +11,7 @@ beforeEach(function() {
       toContainNamedParamsRequest: require('./Matchers/Pouch/ContainNamedParamsRequest'),
       toContainNamedParamsRequestOnce: require('./Matchers/Pouch/ContainNamedParamsRequest'),
       toContainRequest: require('./Matchers/Pouch/ContainNamedParamsRequest'),
+      toExistInPouchDb: require('./Matchers/Pouch/ExistInPouchDb'),
     });
   } else {
     jasmine.addMatchers({

@@ -3,15 +3,16 @@ const namedParamsTest = new RegExp(/{{:[^}:]+}}/);
 // Keys that cannot be tested for the hard value in a Pouch environment
 const unstableKeys = [
   'rev',
-  '_rev'
+  '_rev',
 ];
 
 // Keys that are not stored in Pouch Documents
 const omitKeys = [
-  'ghost'
+  'ghost',
+  'ghostClasses',
 ];
 
-let lastMatch = {
+const lastMatch = {
   actual: null,
   expected: null,
   key: null,
@@ -35,17 +36,17 @@ export function matchDocuments(namedParamsRequestData, storedData) {
     keys = Object.keys(namedParamsRequestData);
   }
 
-  for (let i = 0; i < keys.length; i++) {
+  for (let index = 0; index < keys.length; index++) {
     let actualValue;
 
-    let key = keys[i];
+    const key = keys[index];
 
     if (isOmittedKey(key)) {
       continue;
     }
 
-    let expectedValue = namedParamsRequestData[key];
-    switch(key) {
+    const expectedValue = namedParamsRequestData[key];
+    switch (key) {
       case 'id':
         actualValue = storedData['_id'];
         break;
@@ -68,7 +69,7 @@ export function matchDocuments(namedParamsRequestData, storedData) {
     // console.log('Expected: ', expectedValue);
     // console.log('Actual: ', actualValue);
 
-    if (i > 0) {
+    if (index > 0) {
       lastMatch.expected = expectedValue;
       lastMatch.actual = actualValue;
       lastMatch.key = key;
@@ -88,9 +89,8 @@ export function matchDocuments(namedParamsRequestData, storedData) {
       return result;
     }
   }
-
   return result;
-};
+}
 
 export function lastMatchChecked() {
   return lastMatch;

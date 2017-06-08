@@ -26,12 +26,6 @@ class LabeledThingGroupInFrame extends LabeledObject {
      * @type {LabeledThingGroup}
      */
     this.labeledThingGroup = labeledThingGroupInFrameDocument.labeledThingGroup;
-
-    /**
-     * Identifier Name for the ThingGroup
-     * @type {string}
-     */
-    this.identifierName = labeledThingGroupInFrameDocument.labeledThingGroup.type;
   }
 
   /**
@@ -46,6 +40,13 @@ class LabeledThingGroupInFrame extends LabeledObject {
       classes: clone(classes),
       labeledThingGroupId: labeledThingGroup.id,
     });
+  }
+
+  /**
+   * @return {LabeledThingGroupInFrame}
+   */
+  clone() {
+    return new LabeledThingGroupInFrame(this);
   }
 }
 

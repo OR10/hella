@@ -1,9 +1,31 @@
-import {clone, cloneDeep} from 'lodash';
+import {cloneDeep} from 'lodash';
 
 import LabeledThingInFrame from '../Models/LabeledThingInFrame';
 
 class GhostingService {
-  constructor() {
+  /**
+   * @param {angular.$q} $q
+   * @param {PouchDbContextService} pouchDbContextService
+   * @param {PouchDbViewService} pouchDbViewService
+   */
+  constructor($q, pouchDbContextService, pouchDbViewService) {
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
+
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._pouchDbContextService = pouchDbContextService;
+
+    /**
+     * @type {PouchDbViewService}
+     * @private
+     */
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
@@ -64,24 +86,85 @@ class GhostingService {
 
   /**
    * @param {Array.<LabeledThingInFrame>} labeledThingsInFrames
+   * @return {Promise.<Array.<LabeledThingInFrame>>}
    */
   calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrames) {
-    const result = cloneDeep(labeledThingsInFrames);
-    let counter = 0;
+    const labeledThingInFrameClassesPropagationCache = new Map();
+    const labeledThingInFrameClones = labeledThingsInFrames.map(ltif => ltif.clone());
 
-    for (let globalIndex = labeledThingsInFrames.length - 1; globalIndex >= 0; globalIndex--, counter++) {
-      const currentLtif = labeledThingsInFrames[globalIndex];
-      // Check if the ltif at the current index has classes
-      if (currentLtif.ghostClasses === null && currentLtif.classes !== []) {
-        // Set the classes of the current ltif as ghost classes of the following ltifs
-        for (let localIndex = globalIndex + 1; localIndex < globalIndex + counter; localIndex++) {
-          result[localIndex].ghostClasses = clone(currentLtif.classes);
+    return this._$q.resolve()
+      .then(() => this._sortLabeledThingsInFrame(labeledThingInFrameClones))
+      .then(sortedLtifs => {
+        const result = [];
+
+        return this._serializePromiseEach(sortedLtifs, labeledThingInFrame => {
+          const labeledThingId = labeledThingInFrame.labeledThing.id;
+
+          if (labeledThingInFrame.classes.length > 0) {
+            labeledThingInFrameClassesPropagationCache.set(labeledThingId, labeledThingInFrame.classes);
+            result.push(labeledThingInFrame);
+
+            return null;
+          }
+
+          return this._$q.resolve().then(() => {
+            if (!labeledThingInFrameClassesPropagationCache.has(labeledThingId)) {
+              return this._getPreviousLabeledThingInFrameClasses(labeledThingInFrame)
+                .then(previousLabeledThingInFrameClasses => {
+                  labeledThingInFrameClassesPropagationCache.set(labeledThingId, previousLabeledThingInFrameClasses);
+                })
+                .catch(() => {
+                  labeledThingInFrameClassesPropagationCache.set(labeledThingId, null);
+                });
+            }
+          })
+            .then(() => {
+              labeledThingInFrame.ghostClasses = labeledThingInFrameClassesPropagationCache.get(labeledThingId);
+
+              result.push(labeledThingInFrame);
+            });
+        })
+          .then(() => result);
+      });
+  }
+
+  /**
+   * @param {Array} ltifList
+   * @param {Function} fn
+   * @returns {Promise}
+   * @private
+   */
+  _serializePromiseEach(ltifList, fn) {
+    const promise = this._$q.resolve();
+
+    return ltifList.reduce((previousPromise, currentLtif) => {
+      return previousPromise.then(() => fn(currentLtif));
+    }, promise);
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @private
+   */
+  _getPreviousLabeledThingInFrameClasses(labeledThingInFrame) {
+    const labeledThing = labeledThingInFrame.labeledThing;
+    const db = this._pouchDbContextService.provideContextForTaskId(labeledThing.task.id);
+    const startkey = [labeledThing.id, labeledThingInFrame.frameIndex];
+    const endkey = [labeledThing.id, 0];
+
+    return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByFrameIndexWithClasses'), {
+      startkey,
+      endkey,
+      include_docs: true,
+      limit: 1,
+      descending: true,
+    })
+      .then(result => {
+        if (result.rows.length === 0) {
+          return this._$q.reject('Found no previous ltif with classes');
         }
-        counter = 0;
-      }
-    }
-
-    return result;
+        return result.rows[0].doc.classes;
+      });
   }
 
   /**
@@ -93,8 +176,8 @@ class GhostingService {
   _createGhostLabeledThingInFrameForPartialSequence(ltif, localGhostIndex) {
     return new LabeledThingInFrame({
       id: null,
-      classes: clone(ltif.classes),
-      ghostClasses: clone(ltif.ghostClasses),
+      classes: [],
+      ghostClasses: null,
       incomplete: false,
       frameIndex: ltif.frameIndex + localGhostIndex,
       labeledThing: ltif.labeledThing,
@@ -103,6 +186,32 @@ class GhostingService {
       ghost: true,
     });
   }
+
+  /**
+   * Sorts the given array of ltifs by its frame index
+   *
+   * @param {Array.<LabeledThingInFrame>} labeledThingInFrames
+   * @return {Array.<LabeledThingInFrame>}
+   * @private
+   */
+  _sortLabeledThingsInFrame(labeledThingInFrames) {
+    return labeledThingInFrames.sort((first, second) => {
+      if (first.frameIndex < second.frameIndex) {
+        return -1;
+      }
+      if (first.frameIndex > second.frameIndex) {
+        return 1;
+      }
+
+      return 0;
+    });
+  }
 }
+
+GhostingService.$inject = [
+  '$q',
+  'pouchDbContextService',
+  'pouchDbViewService',
+];
 
 export default GhostingService;
