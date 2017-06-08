@@ -47,6 +47,13 @@ class LabeledThingGroupInFrame extends LabeledObject {
       labeledThingGroupId: labeledThingGroup.id,
     });
   }
+
+  /**
+   * @return {LabeledThingGroupInFrame}
+   */
+  clone() {
+    return new LabeledThingGroupInFrame(this);
+  }
 }
 
 export default LabeledThingGroupInFrame;

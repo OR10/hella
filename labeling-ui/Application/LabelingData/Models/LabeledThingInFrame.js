@@ -192,6 +192,13 @@ class LabeledThingInFrame extends LabeledObject {
       return incomplete;
     });
   }
+
+  /**
+   * @return {LabeledThingInFrame}
+   */
+  clone() {
+    return new LabeledThingInFrame(this);
+  }
 }
 
 export default LabeledThingInFrame;
