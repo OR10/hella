@@ -1,10 +1,12 @@
 import OuterDocumentVisitor from './JsonTemplateComparator/OuterDocumentVisitor';
 import TemplateDictionaryExtractor from './JsonTemplateComparator/TemplateDictionaryExtractor';
 import ValueComparator from './JsonTemplateComparator/ValueComparator';
+import InnerDocumentVisitor from "./JsonTemplateComparator/InnerDocumentVisitor";
 
 class JsonTemplateComparator {
   constructor() {
     this._templateExtractor = new OuterDocumentVisitor(new TemplateDictionaryExtractor());
+    this._reverseStructureValidator = new OuterDocumentVisitor(new InnerDocumentVisitor());
   }
 
   assertIsEqual(expectedTemplate, actualDocument) {
@@ -19,6 +21,7 @@ class JsonTemplateComparator {
   _compareTemplateAgainstActualWithDictionary(expectedTemplate, actualDocument, templateDictionary) {
     const valueComparator = new OuterDocumentVisitor(new ValueComparator(templateDictionary));
     valueComparator.visit(expectedTemplate, actualDocument);
+    this._reverseStructureValidator.visit(actualDocument, expectedTemplate);
   }
 }
 
