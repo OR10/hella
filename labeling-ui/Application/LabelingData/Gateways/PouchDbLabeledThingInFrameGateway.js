@@ -99,27 +99,29 @@ class PouchDbLabeledThingInFrameGateway {
     const startkey = [task.id, frameIndex + offset];
     const endkey = [task.id, frameIndex + offset + limit - 1];
     const db = this._pouchDbContextService.provideContextForTaskId(task.id);
-    const executorPromise = this._packagingExecutor.execute('labeledThingInFrame', () => {
+
+    return this._packagingExecutor.execute('labeledThingInFrame', () => {
       return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByTaskIdAndFrameIndex'), {
         startkey,
         endkey,
         include_docs: true,
       });
-    }).then(result => {
-      const rows = result.rows.filter(row => row.doc !== undefined);
-      const promises = rows.map(row => {
-        const labeledThingInFrame = row.doc;
-        this._revisionManager.extractRevision(labeledThingInFrame);
+    })
+      .then(result => {
+        const rows = result.rows.filter(row => row.doc !== undefined);
+        const promises = rows.map(row => {
+          const labeledThingInFrame = row.doc;
+          this._revisionManager.extractRevision(labeledThingInFrame);
 
-        return this._labeledThingGateway.getLabeledThing(task, labeledThingInFrame.labeledThingId)
-          .then(labeledThing => {
-            return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing);
-          });
-      });
-      return this._$q.all(promises);
-    });
+          return this._labeledThingGateway.getLabeledThing(task, labeledThingInFrame.labeledThingId)
+            .then(labeledThing => {
+              return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing);
+            });
+        });
 
-    return executorPromise;
+        return this._$q.all(promises);
+      })
+      .then(labeledThingsInFrame => this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrame));
   }
 
 
@@ -149,31 +151,34 @@ class PouchDbLabeledThingInFrameGateway {
         startkey,
         endkey,
         include_docs: true,
-      });
-    }).then(result => {
-      if (result.rows) {
-        const allLabeledThingsInFrameOfLabeledThing = [];
-        result.rows.forEach(row => {
-          if (row.doc) {
-            const labeledThingInFrame = row.doc;
-            this._revisionManager.extractRevision(labeledThingInFrame);
-            allLabeledThingsInFrameOfLabeledThing.push(this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing));
-          } else {
-            throw new Error('Row does not contain a document');
+      })
+        .then(result => {
+          if (result.rows) {
+            const allLabeledThingsInFrameOfLabeledThing = [];
+            result.rows.forEach(row => {
+              if (row.doc) {
+                const labeledThingInFrame = row.doc;
+                this._revisionManager.extractRevision(labeledThingInFrame);
+                allLabeledThingsInFrameOfLabeledThing.push(this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing));
+              } else {
+                throw new Error('Row does not contain a document');
+              }
+            });
+
+            if (allLabeledThingsInFrameOfLabeledThing.length <= 0) {
+              return [];
+            }
+
+            return this._ghostingService.calculateShapeGhostsForLabeledThingInFrames(frameIndex, offset, limit, labeledThing.frameRange, allLabeledThingsInFrameOfLabeledThing);
           }
+
+          throw new Error(`Failed loading labeled thing in frame for the given labeledThing: ${labeledThing.id}`);
+        })
+        .then(labeledThingsInFrameWithShapeGhosts => this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrameWithShapeGhosts))
+        .then(abc => {
+          console.log('frameIndex', frameIndex, labeledThing, 'result', abc);
+          return abc;
         });
-
-        if (allLabeledThingsInFrameOfLabeledThing.length <= 0) {
-          return [];
-        }
-
-        let res = this._ghostingService.calculateShapeGhostsForLabeledThingInFrames(frameIndex, offset, limit, labeledThing.frameRange, allLabeledThingsInFrameOfLabeledThing);
-        res = this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(res);
-
-        return res;
-      }
-
-      throw new Error(`Failed loading labeled thing in frame for the given labeledThing: ${labeledThing.id}`);
     });
   }
 
