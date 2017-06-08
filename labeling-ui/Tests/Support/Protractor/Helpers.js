@@ -2,6 +2,7 @@ import UrlBuilder from '../UrlBuilder';
 import featureFlags from '../../../Application/features.json';
 import PouchDb from '../PouchDb/PouchDbWrapper';
 import httpMock from 'protractor-http-mock';
+import {cloneDeep} from 'lodash';
 
 export function getMockRequestsMade(mock) {
   if (featureFlags.pouchdb) {
@@ -80,7 +81,7 @@ function bootstrapPouchDb(mocks) {
   let documents = [];
 
   mocks.forEach(mock => {
-    let things = mock.response.data.result;
+    let things = cloneDeep(mock.response.data.result);
     let labeledThing;
     let taskId;
 
