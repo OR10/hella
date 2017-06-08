@@ -365,5 +365,25 @@ describe('JsonTemplateComparator', () => {
 
       expect(() => comparator.assertIsEqual(template, value)).toThrow();
     });
+
+    it('should detect difference if additional key exists in compare target', () => {
+      const template = {
+        id: '{{:templateId}}',
+        _rev: '{{:revision}}',
+        shapes: [
+          {higherId: '{{templateId}}'},
+        ],
+      };
+      const value = {
+        id: 'Some Value',
+        _rev: '1-abcdefghi',
+        shapes: [
+          {higherId: 'Some other Value'},
+        ],
+        ghost: true,
+      };
+
+      expect(() => comparator.assertIsEqual(template, value)).toThrow();
+    });
   });
 });
