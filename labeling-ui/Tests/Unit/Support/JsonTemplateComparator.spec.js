@@ -1,7 +1,7 @@
 import {cloneDeep} from 'lodash';
 import JsonTemplateComparator from '../../Support/JsonTemplateComparator';
 
-fdescribe('JsonTemplateComparator', () => {
+describe('JsonTemplateComparator', () => {
   let comparator;
 
   beforeEach(() => {
@@ -78,7 +78,7 @@ fdescribe('JsonTemplateComparator', () => {
         'name': 'Entropy',
         'isReal': false,
         'travelSpeed': 'C',
-      }
+      };
     });
 
     it('should identify two objects as equal', () => {
@@ -86,7 +86,7 @@ fdescribe('JsonTemplateComparator', () => {
     });
 
     it('should identify two objects with different values as different', () => {
-      expect(() => comparator.assertIsEqual(firstObject, otherOb)).toThrow();
+      expect(() => comparator.assertIsEqual(firstObject, otherObject)).toThrow();
     });
 
     it('should identify two objects with different values as different and provide proper explanation', () => {
@@ -131,7 +131,7 @@ fdescribe('JsonTemplateComparator', () => {
         4,
         true,
         undefined,
-        null
+        null,
       ];
 
       otherArray = [
@@ -141,7 +141,7 @@ fdescribe('JsonTemplateComparator', () => {
         4,
         3,
         'II',
-        true
+        true,
       ];
 
       otherStructureArray = [
@@ -200,7 +200,7 @@ fdescribe('JsonTemplateComparator', () => {
         'type': 'AppBundle.Model.LabeledThingInFrame',
         'frameIndex': 0,
         'classes': [
-          'ignore-vehicle'
+          'ignore-vehicle',
         ],
         'shapes': [
           {
@@ -208,19 +208,19 @@ fdescribe('JsonTemplateComparator', () => {
             'id': 'caf42507-197c-49e2-b949-d21734a3a646',
             'topLeft': {
               'x': 100,
-              'y': 100
+              'y': 100,
             },
             'bottomRight': {
               'x': 200,
-              'y': 200
+              'y': 200,
             },
-            'labeledThingInFrameId': 'd07235d9-92df-414d-a38a-694580ac7d6e'
-          }
+            'labeledThingInFrameId': 'd07235d9-92df-414d-a38a-694580ac7d6e',
+          },
         ],
         'taskId': '5242f8bff15774fe72586e569a05ce0c',
         'projectId': '9a8d567033f93fcd8cf50c2535008766',
         'labeledThingId': '04d2f1b2-fa17-438d-abe3-7c1db43186a0',
-        'incomplete': false
+        'incomplete': false,
       };
 
       otherDocument = {
@@ -229,7 +229,7 @@ fdescribe('JsonTemplateComparator', () => {
         'type': 'AppBundle.Model.LabeledThingInFrame',
         'frameIndex': 0,
         'classes': [
-          'ignore-vehicle'
+          'ignore-vehicle',
         ],
         'shapes': [
           {
@@ -237,19 +237,19 @@ fdescribe('JsonTemplateComparator', () => {
             'id': 'caf42507-197c-49e2-b949-d21734a3a646',
             'topLeft': {
               'x': 423,
-              'y': 100
+              'y': 100,
             },
             'bottomRight': {
               'x': 900,
-              'y': 200
+              'y': 200,
             },
-            'labeledThingInFrameId': 'abcdefgh-92df-414d-a38a-694580ac7d6e'
-          }
+            'labeledThingInFrameId': 'abcdefgh-92df-414d-a38a-694580ac7d6e',
+          },
         ],
         'taskId': '5242f8bff15774fe72586e569a05ce0c',
         'projectId': '9a8d567033f93fcd8cf50c2535008766',
         'labeledThingId': '04d2f1b2-fa17-438d-abe3-7c1db43186a0',
-        'incomplete': false
+        'incomplete': false,
       };
 
       otherStructureDocument = {
@@ -258,7 +258,7 @@ fdescribe('JsonTemplateComparator', () => {
         'type': 'AppBundle.Model.LabeledThingInFrame',
         'frameIndex': 0,
         'classes': [
-          'ignore-vehicle'
+          'ignore-vehicle',
         ],
         'shapes': [
           {
@@ -266,13 +266,13 @@ fdescribe('JsonTemplateComparator', () => {
             'id': 'caf42507-197c-49e2-b949-d21734a3a646',
             'topLeft': null,
             'bottomRight': null,
-            'labeledThingInFrameId': 'd07235d9-92df-414d-a38a-694580ac7d6e'
-          }
+            'labeledThingInFrameId': 'd07235d9-92df-414d-a38a-694580ac7d6e',
+          },
         ],
         'taskId': '5242f8bff15774fe72586e569a05ce0c',
         'projectId': '9a8d567033f93fcd8cf50c2535008766',
         'labeledThingId': '04d2f1b2-fa17-438d-abe3-7c1db43186a0',
-        'incomplete': false
+        'incomplete': false,
       };
     });
 
@@ -334,14 +334,14 @@ fdescribe('JsonTemplateComparator', () => {
         _rev: '{{:revision}}',
         shapes: [
           {higherId: '{{templateId}}'},
-        ]
+        ],
       };
       const value = {
         id: 'Some Value',
         _rev: '1-abcdefghi',
         shapes: [
           {higherId: 'Some Value'},
-        ]
+        ],
       };
 
       expect(() => comparator.assertIsEqual(template, value)).not.toThrow();
@@ -353,14 +353,14 @@ fdescribe('JsonTemplateComparator', () => {
         _rev: '{{:revision}}',
         shapes: [
           {higherId: '{{templateId}}'},
-        ]
+        ],
       };
       const value = {
         id: 'Some Value',
         _rev: '1-abcdefghi',
         shapes: [
           {higherId: 'Some other Value'},
-        ]
+        ],
       };
 
       expect(() => comparator.assertIsEqual(template, value)).toThrow();

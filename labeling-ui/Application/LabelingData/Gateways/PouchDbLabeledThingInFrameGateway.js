@@ -174,11 +174,7 @@ class PouchDbLabeledThingInFrameGateway {
 
           throw new Error(`Failed loading labeled thing in frame for the given labeledThing: ${labeledThing.id}`);
         })
-        .then(labeledThingsInFrameWithShapeGhosts => this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrameWithShapeGhosts))
-        .then(abc => {
-          console.log('frameIndex', frameIndex, labeledThing, 'result', abc);
-          return abc;
-        });
+        .then(labeledThingsInFrameWithShapeGhosts => this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrameWithShapeGhosts));
     });
   }
 
