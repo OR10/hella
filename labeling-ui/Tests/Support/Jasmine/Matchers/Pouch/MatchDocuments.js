@@ -9,6 +9,7 @@ const unstableKeys = [
 // Keys that are not stored in Pouch Documents
 const omitKeys = [
   'ghost',
+  'ghostClasses',
 ];
 
 const lastMatch = {

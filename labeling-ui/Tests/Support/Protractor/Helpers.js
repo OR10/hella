@@ -119,6 +119,7 @@ function bootstrapPouchDb(mocks) {
         delete ltif.id;
         delete ltif.rev;
         delete ltif.ghost;
+        delete ltif.ghostClasses;
       });
       documents = documents.concat(things.labeledThingsInFrame);
     }
