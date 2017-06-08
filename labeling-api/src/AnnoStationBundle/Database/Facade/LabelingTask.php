@@ -83,7 +83,7 @@ class LabelingTask
             function ($row) {
                 return [
                     'taskId'    => $row['id'],
-                    'projectId' => $row['key']['1'],
+                    'projectId' => $row['key']['0'],
                 ];
             },
             $result
