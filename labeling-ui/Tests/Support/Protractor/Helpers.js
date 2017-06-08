@@ -160,7 +160,7 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   httpMock(mocks.shared.concat(mocks.specific));
 
   const builder = new UrlBuilder(testConfig);
-  (function() {
+  (function () {
     browser.get(builder.url(url));
   })();
   browser.wait(() => {
@@ -205,7 +205,7 @@ export function getTextContentFromElementFinder(elementFinder) {
  * @returns {webdriver.promise.Promise}
  */
 export function hasClassByElementFinder(elementFinder, className) {
-    return elementFinder.getAttribute('class').then(
-      classString => classString.split(' ').includes(className)
-    );
+  return elementFinder.getAttribute('class').then(
+    classString => classString.split(' ').includes(className)
+  );
 }
