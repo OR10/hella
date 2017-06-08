@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import {cloneDeep} from 'lodash';
+import {forEach, isArray, isObject} from 'lodash';
 
 class AssetHelper {
   /**
@@ -79,10 +79,10 @@ class AssetHelper {
    */
   get fixtures() {
     if (AssetHelper.FIXTURE_STRUCTURE[this._fixturePath] === undefined) {
-      AssetHelper.FIXTURE_STRUCTURE[this._fixturePath] = this._loadDirStructure(this._fixturePath, '.json');
+      AssetHelper.FIXTURE_STRUCTURE[this._fixturePath] = this._freeze(this._loadDirStructure(this._fixturePath, '.json'));
     }
     // Make sure that always a copy is returned
-    return cloneDeep(AssetHelper.FIXTURE_STRUCTURE[this._fixturePath]);
+    return AssetHelper.FIXTURE_STRUCTURE[this._fixturePath];
   }
 
   /**
@@ -90,10 +90,10 @@ class AssetHelper {
    */
   get mocks() {
     if (AssetHelper.MOCK_STRUCTURE[this._mockPath] === undefined) {
-      AssetHelper.MOCK_STRUCTURE[this._mockPath] = this._loadDirStructure(this._mockPath, '.json');
+      AssetHelper.MOCK_STRUCTURE[this._mockPath] = this._freeze(this._loadDirStructure(this._mockPath, '.json'));
     }
     // Make sure that always a copy is returned
-    return cloneDeep(AssetHelper.MOCK_STRUCTURE[this._mockPath]);
+    return AssetHelper.MOCK_STRUCTURE[this._mockPath];
   }
 
   /**
@@ -101,10 +101,25 @@ class AssetHelper {
    */
   get documents() {
     if (AssetHelper.DOCUMENT_STRUCTURE[this._documentPath] === undefined) {
-      AssetHelper.DOCUMENT_STRUCTURE[this._documentPath] = this._loadDirStructure(this._documentPath, '.json');
+      AssetHelper.DOCUMENT_STRUCTURE[this._documentPath] = this._freeze(this._loadDirStructure(this._documentPath, '.json'));
     }
     // Make sure that always a copy is returned
-    return cloneDeep(AssetHelper.DOCUMENT_STRUCTURE[this._documentPath]);
+    return AssetHelper.DOCUMENT_STRUCTURE[this._documentPath];
+  }
+
+  /**
+   * @param {Object|Array} node
+   * @return {Object}
+   * @private
+   */
+  _freeze(node) {
+    forEach(node, (childNode, key) => {
+      if (!isArray(childNode) && !isObject(childNode)) {
+        return childNode;
+      }
+      node[key] = this._freeze(childNode);
+    });
+    return Object.freeze(node);
   }
 }
 
