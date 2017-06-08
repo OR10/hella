@@ -47,13 +47,6 @@ class LabeledThingInFrame extends LabeledObject {
     this.ghost = labeledThingInFrame.ghost;
 
     /**
-     * Array of paper shapes
-     *
-     * @type {Array}
-     */
-    this.paperShapes = [];
-
-    /**
      * The ghost labels inherited from earlier labels
      *
      * @type {Array.<String>|null}

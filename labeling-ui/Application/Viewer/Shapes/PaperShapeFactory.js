@@ -158,7 +158,7 @@ class PaperShapeFactory {
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);
     }
-    labeledThingInFrame.paperShapes.push(result);
+
     return result;
   }
 
