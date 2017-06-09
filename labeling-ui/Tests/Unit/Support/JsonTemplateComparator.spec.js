@@ -386,4 +386,98 @@ describe('JsonTemplateComparator', () => {
       expect(() => comparator.assertIsEqual(template, value)).toThrow();
     });
   });
+
+  describe('inline template matching', () => {
+    using([
+      ['/entries/short-version/{{:id}}', '/entries/short-version/42'],
+      ['/entries/[special]/{{:id}}', '/entries/[special]/some-id'],
+      ['{{:id}}-with-suffix', 'some-423+id-with-suffix'],
+      ['/entries/{{:type}}/423', '/entries/some-type/423'],
+    ], (template, value) => {
+      it('should validate against values with prefix and/or suffix', () => {
+        expect(() => comparator.assertIsEqual(template, value)).not.toThrow();
+      });
+    });
+
+    it('should validate against inline templates in object structures with setter and getter', () => {
+      const template = {
+        "request": {
+          "path": "/api/labeledThingInFrame/{{:labeledThingInFrameId}}",
+        },
+        "response": {
+          "data": {
+            "result": {
+              "labeledThingInFrame": {
+                "id": "with-prefix-{{labeledThingInFrameId}}-and-suffix",
+              }
+            }
+          }
+        }
+      };
+
+      const value = {
+        "request": {
+          "path": "/api/labeledThingInFrame/FOOBAR-ID-123",
+        },
+        "response": {
+          "data": {
+            "result": {
+              "labeledThingInFrame": {
+                "id": "with-prefix-FOOBAR-ID-123-and-suffix",
+              }
+            }
+          }
+        }
+      };
+
+      expect(() => comparator.assertIsEqual(template, value)).not.toThrow();
+    });
+
+    using([
+      ['/entries/short-version/{{:id}}', '/entries/long-version/42'],
+      ['/entries/[special]/{{:id}}', '/entries/[spe*+*cial]/some-id'],
+      ['{{:id}}-with-suffix', 'some-423'],
+      ['/entries/{{:type}}/423', '/entries/some-type/423?special'],
+    ], (template, value) => {
+      it('should not accept mismatching template values with prefix and/or suffix', () => {
+        expect(() => comparator.assertIsEqual(template, value)).toThrow();
+      });
+
+      it('should provide explanation why template values with prefix and/or suffix are not matching', () => {
+        try {
+          comparator.assertIsEqual(template, value);
+        } catch (error) {
+          expect(error.message).toContain(template);
+          expect(error.message).toContain(value);
+          expect(error.message).toMatch(/ at location <root>( |$)/);
+          return;
+        }
+
+        fail('Expected validation error not thrown!');
+      });
+    });
+
+    it('should provide mismatching explanation with correct path location', () => {
+      const template = {
+        "request": {
+          "path": "/api/labeledThingInFrame/{{:labeledThingInFrameId}}",
+        }
+      };
+
+      const value = {
+        "request": {
+          "path": "/another-api/labeledThingInFrame/123-LTIF-321",
+        }
+      };
+
+      try {
+        comparator.assertIsEqual(template, value);
+      } catch (error) {
+        expect(error.message).toMatch(/ at location <root>\.request\.path( |$)/);
+        return;
+      }
+
+      fail('Expected validation error not thrown!');
+    });
+  });
 });
