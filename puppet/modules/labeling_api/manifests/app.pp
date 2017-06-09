@@ -46,12 +46,17 @@ class labeling_api::app(
     }
 
     if $::labeling_api::params::couchdb_password {
+      ensure_packages(['dnsmasq'])
       nginx::resource::location { '~ /couchdb/(.*)':
         ssl                   => $httpv2,
         ssl_only              => $httpv2,
         ensure                => present,
         vhost                 => 'labeling_api',
-        proxy                 => "http://${::labeling_api::params::couchdb_host}:${::labeling_api::params::couchdb_port}/\$1\$is_args\$args",
+        location_cfg_prepend  => {
+          resolver   => '127.0.0.1 ipv6=off',
+          'set $url' => "\"${::labeling_api::params::couchdb_host}\"",
+        },
+        proxy                 => "http://\$url:${::labeling_api::params::couchdb_port}/\$1\$is_args\$args",
         proxy_read_timeout    => '1800',
         proxy_connect_timeout => '90',
         proxy_redirect        => 'off',

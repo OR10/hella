@@ -82,6 +82,13 @@ class LabeledThing extends LabeledObject {
       taskId: task.id,
     });
   }
+
+  /**
+   * @return {LabeledThing}
+   */
+  clone() {
+    return new LabeledThing(this);
+  }
 }
 
 export default LabeledThing;

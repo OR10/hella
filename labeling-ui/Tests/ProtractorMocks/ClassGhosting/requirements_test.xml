@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  THIS FILE NEEDS TO BE EMBEDDED INTO `RequirementsFileXml.json` IN ORDER TO BE RECOGNIZED BY THE TESTS.
+  IT WILL **NOT** BE SOURCED ON ITS OWN
+  IT IS ONLY STORED HERE FOR EDITING AND READABILITY PURPOSES
+
+  USE THE FOLLOWING COMMAND TO CREATE THE NEEDED STRING:
+  cat RequirementsXmlFile.xml|sed -e 's@"@\\"@g'|sed -e ':a' -e 'N' -e '$!ba' -e 's@\n@\\n@g'
+-->
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+  <thing id="thing-one" shape="rectangle" name="Traffic Sign">
+    <class id="sign-type" name="Sign type">
+      <value id="u-turn" name="U-Turn" />
+      <value id="speed-sign" name="Speed sign" />
+    </class>
+  </thing>
+</requirements>
