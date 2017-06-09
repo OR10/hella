@@ -82,6 +82,21 @@ describe('PouchDbContextService', () => {
 
       expect(contextA === contextB).toEqual(true);
     });
+
+    it('should install live migrations on newly created context', () => {
+      const context = PouchDbContextService.provideContextForTaskId('some-task-id');
+      toBeCleanedContexts.push(context);
+
+      expect(pouchDbLiveMigrationMock.install).toHaveBeenCalledWith(context);
+    });
+
+    it('should not install live migrations on cached context again', () => {
+      const contextA = PouchDbContextService.provideContextForTaskId('same');
+      const contextB = PouchDbContextService.provideContextForTaskId('same');
+      toBeCleanedContexts.push(contextA);
+
+      expect(pouchDbLiveMigrationMock.install).toHaveBeenCalledTimes(1);
+    });
   });
 
   // @TODO: Why is method public?
