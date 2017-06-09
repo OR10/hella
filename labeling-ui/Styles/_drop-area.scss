@@ -2,11 +2,13 @@
   margin-top: 24px;
   margin-bottom: 21px;
   margin-right: 24px;
-  padding: 5em;
   border: 2px dashed $color-ut-lightgrey-2;
   text-align: center;
   overflow-x: scroll;
-  height: 239px;
+  min-height: 239px;
+  padding: 5px 20px;
+  max-height: 400px;
+  overflow-y: scroll;
 }
 
 .drop-area-active {

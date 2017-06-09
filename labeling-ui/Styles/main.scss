@@ -419,6 +419,7 @@ title-bar {
       color:#fff;
       position: fixed;
       left: 50%;
+      margin-top: 80px;
     }
     a {
       color:#fff !important;
@@ -436,8 +437,6 @@ title-bar {
     }
   }
   .upload-content-files {
-    position:relative;
-    top:-70px;
     columns: 2;
     text-align: left;
     div {
