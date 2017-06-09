@@ -42,8 +42,28 @@
                                 id="project-upload-input"
                         />
                         <div class="upload-content-files">
-                            <div ng-repeat="file in transfers">
-                                {{file.name}}
+                            <div
+                                    ng-repeat="file in transfers"
+                                    ng-init="wantDelete = false"
+                                    ng-mouseover="wantDelete = true"
+                                    ng-mouseleave="wantDelete = false"
+                            >
+                                <span
+                                    ng-style="{'color' : (!file.isUploading() && file.isComplete() && file.hasUploadError()) ? '#DB315B' : '' }"
+                                >
+                                    {{file.name}}
+                                    <i ng-hide="file.isComplete() || !wantDelete" ng-click="$event.stopPropagation();file.cancel()" class="fa fa-close"></i>
+                                    <i class="fa fa-spinner fa-pulse"
+                                        ng-style="{display: file.isUploading() ? 'inline-block' : 'none'}">
+                                    </i>
+                                    <i class="fa fa-check"
+                                       ng-if="!file.isUploading() && file.isComplete() && file.errorMessage.message == undefined">
+                                    </i>
+                                    <i class="fa fa-warning"
+                                       ng-if="!file.isUploading() && file.isComplete() && file.hasUploadError()"
+                                       tooltip="{{file.errorMessage.message}}">
+                                    </i>
+                                </span>
                             </div>
                         </div>
                     </div>

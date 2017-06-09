@@ -441,6 +441,9 @@ title-bar {
     text-align: left;
     div {
       padding: 3px;
+      i {
+        color:$color-ut-darkgrey-2;
+      }
     }
   }
 }
