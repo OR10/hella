@@ -99,7 +99,6 @@ export default class Application {
    */
   _getInitializedPouchDb() {
     PouchDB.plugin(transformPouch);
-    // @TODO: Register Live migration system.
     return PouchDB;
   }
 
