@@ -1,11 +1,20 @@
-import FoobarMigration from '../Migrations/FoobarMigration';
-
 class PouchDbLiveMigration {
-  constructor() {
-    this._migrations = [
-      // new FoobarMigration(), // See for a simple example of a migration
-    ];
+  /**
+   * @param {Array.<PouchDbMigration>} migrations
+   */
+  constructor(...migrations) {
+    /**
+     * @type {Array.<PouchDbMigration>[]}
+     * @private
+     */
+    this._migrations = migrations;
 
+    /**
+     * Number of registered migrations stored for perfomance reasons.
+     *
+     * @type {Number}
+     * @private
+     */
     this._migrationsCount = this._migrations.length;
   }
 
@@ -30,7 +39,7 @@ class PouchDbLiveMigration {
       return doc;
     }
 
-    for(let index = 0; index < this._migrationsCount; ++index) {
+    for (let index = 0; index < this._migrationsCount; ++index) {
       const migration = this._migrations[index];
       if (!migration.supportsDocument(doc)) {
         continue;
@@ -44,6 +53,7 @@ class PouchDbLiveMigration {
 }
 
 PouchDbLiveMigration.$inject = [
+  // 'foobarMigration' // See for a simple example of a migration
 ];
 
 export default PouchDbLiveMigration;
