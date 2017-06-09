@@ -9,6 +9,7 @@ describe('PouchDbContextService', () => {
   let toBeCleanedContexts;
 
   let PouchDbContextService;
+  let pouchDbLiveMigrationMock;
 
   const mockConfig = {
     Common: {
@@ -27,8 +28,11 @@ describe('PouchDbContextService', () => {
   beforeEach(() => {
     toBeCleanedContexts = [];
 
+    pouchDbLiveMigrationMock = jasmine.createSpyObj('PouchDbLiveMigration', ['install']);
+
     module($provide => {
       $provide.value('PouchDB', PouchDB);
+      $provide.value('pouchDbLiveMigration', pouchDbLiveMigrationMock);
       $provide.value('applicationConfig', mockConfig);
     });
 
