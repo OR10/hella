@@ -213,9 +213,7 @@ class UploadFormController {
   }
 
   uploadFilesFromSystem() {
-    setTimeout(() => {
-      document.getElementById('project-upload-input').click();
-    }, 0);
+    document.getElementById('project-upload-input').click();
   }
 }
 
