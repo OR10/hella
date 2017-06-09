@@ -1,4 +1,6 @@
 import InnerDocumentVisitor from './InnerDocumentVisitor';
+import TemplateString from './TemplateString';
+import {isString} from 'lodash';
 
 class TemplateDictionaryExtractor extends InnerDocumentVisitor {
   constructor() {
@@ -9,12 +11,6 @@ class TemplateDictionaryExtractor extends InnerDocumentVisitor {
      * @private
      */
     this._dictionary = new Map();
-
-    /**
-     * @type {RegExp}
-     * @private
-     */
-    this._valueSetterRegExp = /\{\{:([a-zA-Z0-9-_]+)\}\}/;
   }
 
   visitDocumentBefore(firstDocument, secondDocument, path) {
@@ -26,16 +22,21 @@ class TemplateDictionaryExtractor extends InnerDocumentVisitor {
   }
 
   visitScalar(firstScalar, secondScalar, path) {
-    const matches = this._valueSetterRegExp.exec(firstScalar);
-
-    if (matches === null) {
-      // No dictionaryIdentifier found
+    if (!isString(firstScalar)) {
       return;
     }
 
-    const [, identifier] = matches;
-    const value = secondScalar;
+    const template = new TemplateString(firstScalar);
+    if (!template.isSetter()) {
+      return;
+    }
 
+    const value = template.extractValue(secondScalar);
+    if (value === null) {
+      throw new Error(`Unable to perform template string extraction due to mismatching values: The string "${secondScalar}" could not be matched against "${firstScalar}" at location ${path}`);
+    }
+
+    const identifier = template.getIdentifier();
     this._dictionary.set(identifier, value);
   }
 }
