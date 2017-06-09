@@ -32,7 +32,8 @@ form{
   .button-area {
     margin: 0 17px;
     .button-text{
-      margin-right: 15px;font-size: 14px
+      margin-right: 15px;font-size: 14px;
+      @include font-s();
     }
   }
 }
