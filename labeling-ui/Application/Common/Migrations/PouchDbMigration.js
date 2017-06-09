@@ -13,7 +13,7 @@ class PouchDbMigration {
    * @param {Object} doc
    * @return {boolean}
    */
-  supportsDocument(doc) {
+  supportsDocument(doc) { // eslint-disable-line no-unused-vars
     throw new Error('Abstract method');
   }
 
@@ -26,7 +26,7 @@ class PouchDbMigration {
    *
    * @param {Object} doc
    */
-  migrateDocument(doc) {
+  migrateDocument(doc) { // eslint-disable-line no-unused-vars
     throw new Error('Abstract method');
   }
 }

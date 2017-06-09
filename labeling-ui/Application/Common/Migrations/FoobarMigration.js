@@ -11,7 +11,7 @@ class FoobarMigration extends PouchDbMigration {
   migrateDocument(doc) {
     doc.shapes[0].bottomRight = {
       x: 600,
-      y: 500
+      y: 500,
     };
   }
 }

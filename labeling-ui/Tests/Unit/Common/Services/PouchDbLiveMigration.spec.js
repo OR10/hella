@@ -8,7 +8,8 @@ describe('PouchDbLiveMigration', () => {
     return new PouchDbLiveMigration(...migrations);
   }
 
-  function createMigration(fn = () => {}, supportedFn = () => true) {
+  function createMigration(fn = () => {
+  }, supportedFn = () => true) {
     const migration = jasmine.createSpyObj('PouchDbMigration', ['supportsDocument', 'migrateDocument']);
 
     migration.supportsDocument.and.callFake(supportedFn);
@@ -54,8 +55,8 @@ describe('PouchDbLiveMigration', () => {
         'document': 423,
         'with': {
           'nested': 'object',
-          'and-stuff': true
-        }
+          'and-stuff': true,
+        },
       };
 
       migration = createMigration();
@@ -109,11 +110,9 @@ describe('PouchDbLiveMigration', () => {
     });
 
     it('should apply migration', () => {
-      const originalDocument = cloneDeep(document);
-
       migration.supportsDocument.and.returnValue(true);
       migration.migrateDocument.and.callFake(
-        doc => doc.addedProperty = 'foobar'
+        doc => doc.addedProperty = 'foobar',
       );
 
       const migratedDocument = migrationCallback(document);
@@ -126,16 +125,16 @@ describe('PouchDbLiveMigration', () => {
       const secondMigration = createMigration(undefined, () => false);
       const thirdMigration = createMigration(doc => delete doc.with);
 
-      const migrationService = createMigrationService(
-        [firstMigration, secondMigration, thirdMigration]
+      const complexMigrationService = createMigrationService(
+        [firstMigration, secondMigration, thirdMigration],
       );
-      migrationService.install(dbMock);
+      complexMigrationService.install(dbMock);
 
       const expectedMigratedDocument = {
-          '_id': 'foobar',
-          'some': 'cool',
-          'document': 423,
-          'firstMigration': true,
+        '_id': 'foobar',
+        'some': 'cool',
+        'document': 423,
+        'firstMigration': true,
       };
 
       const migratedDocument = migrationCallback(document);

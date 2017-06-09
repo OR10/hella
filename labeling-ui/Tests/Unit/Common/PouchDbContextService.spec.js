@@ -92,7 +92,7 @@ describe('PouchDbContextService', () => {
 
     it('should not install live migrations on cached context again', () => {
       const contextA = PouchDbContextService.provideContextForTaskId('same');
-      const contextB = PouchDbContextService.provideContextForTaskId('same');
+      PouchDbContextService.provideContextForTaskId('same');
       toBeCleanedContexts.push(contextA);
 
       expect(pouchDbLiveMigrationMock.install).toHaveBeenCalledTimes(1);

@@ -24,7 +24,7 @@ class PouchDbLiveMigration {
    */
   install(db) {
     db.transform({
-      outgoing: doc => this._transformOutgoing(doc)
+      outgoing: doc => this._transformOutgoing(doc),
     });
   }
 
