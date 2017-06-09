@@ -108,9 +108,6 @@ labeling_api::tideways: true
 labeling_api::documentation_host: true
 labeling_api::letsencrypt: true
 
-datastation::params::couchdb_user: 'admin'
-datastation::params::couchdb_password: 'mbifbeB6weHfnPy'
-
 couchdb::cors_credentials: true
 couchdb::cors_origins: '*'
 couchdb::cors_methods: 'GET, PUT, POST, HEAD, DELETE'
