@@ -1,0 +1,27 @@
+{
+  "identifierName": "thing-one",
+  "frameIndex": -1,
+  "incomplete": false,
+  "labeledThingId": "{{:labeledThingId}}",
+  "shapes": [
+    {
+      "id": "{{:shapeId}}",
+      "type": "rectangle",
+      "bottomRight": {
+        "x": 200,
+        "y": 200
+      },
+      "topLeft": {
+        "x": 100,
+        "y": 100
+      },
+      "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+    }
+  ],
+  "classes": [],
+  "_rev": "{{:revision}}",
+  "_id": "{{:labeledThingInFrameId}}",
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "projectId": "PROJECTID-PROJECTID",
+  "taskId": "TASKID-TASKID"
+}

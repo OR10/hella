@@ -51,6 +51,21 @@ class LabeledThingGroup extends LabeledObject {
       taskId: task.id,
     });
   }
+
+  /**
+   * @return {LabeledThingGroup}
+   */
+  clone() {
+    return new LabeledThingGroup({
+      id: this.id,
+      classes: this.classes,
+      incomplete: this.incomplete,
+      task: this.task,
+      groupType: this.type,
+      lineColor: this.lineColor,
+      groupIds: this.groupIds,
+    });
+  }
 }
 
 export default LabeledThingGroup;

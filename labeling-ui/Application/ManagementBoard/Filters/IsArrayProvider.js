@@ -1,9 +1,7 @@
 import angular from 'angular';
 
 function IsArrayProvider() {
-  return function(input) {
-    return angular.isArray(input);
-  };
+  return input => angular.isArray(input);
 }
 
 export default IsArrayProvider;

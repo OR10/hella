@@ -2,6 +2,7 @@ import UrlBuilder from '../UrlBuilder';
 import featureFlags from '../../../Application/features.json';
 import PouchDb from '../PouchDb/PouchDbWrapper';
 import httpMock from 'protractor-http-mock';
+import {cloneDeep} from 'lodash';
 
 export function getMockRequestsMade(mock) {
   if (featureFlags.pouchdb) {
@@ -80,7 +81,7 @@ function bootstrapPouchDb(mocks) {
   let documents = [];
 
   mocks.forEach(mock => {
-    let things = mock.response.data.result;
+    let things = cloneDeep(mock.response.data.result);
     let labeledThing;
     let taskId;
 
@@ -119,6 +120,7 @@ function bootstrapPouchDb(mocks) {
         delete ltif.id;
         delete ltif.rev;
         delete ltif.ghost;
+        delete ltif.ghostClasses;
       });
       documents = documents.concat(things.labeledThingsInFrame);
     }
@@ -160,7 +162,7 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   httpMock(mocks.shared.concat(mocks.specific));
 
   const builder = new UrlBuilder(testConfig);
-  (function() {
+  (function () {
     browser.get(builder.url(url));
   })();
   browser.wait(() => {
@@ -205,7 +207,7 @@ export function getTextContentFromElementFinder(elementFinder) {
  * @returns {webdriver.promise.Promise}
  */
 export function hasClassByElementFinder(elementFinder, className) {
-    return elementFinder.getAttribute('class').then(
-      classString => classString.split(' ').includes(className)
-    );
+  return elementFinder.getAttribute('class').then(
+    classString => classString.split(' ').includes(className)
+  );
 }

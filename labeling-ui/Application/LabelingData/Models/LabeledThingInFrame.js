@@ -47,13 +47,6 @@ class LabeledThingInFrame extends LabeledObject {
     this.ghost = labeledThingInFrame.ghost;
 
     /**
-     * Array of paper shapes
-     *
-     * @type {Array}
-     */
-    this.paperShapes = [];
-
-    /**
      * The ghost labels inherited from earlier labels
      *
      * @type {Array.<String>|null}
@@ -198,6 +191,13 @@ class LabeledThingInFrame extends LabeledObject {
       this.incomplete = incomplete;
       return incomplete;
     });
+  }
+
+  /**
+   * @return {LabeledThingInFrame}
+   */
+  clone() {
+    return new LabeledThingInFrame(this);
   }
 }
 
