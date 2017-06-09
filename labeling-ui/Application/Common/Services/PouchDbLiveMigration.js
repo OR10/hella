@@ -1,6 +1,9 @@
+import FoobarMigration from '../Migrations/FoobarMigration';
+
 class PouchDbLiveMigration {
   constructor() {
     this._migrations = [
+      // new FoobarMigration(), // See for a simple example of a migration
     ];
 
     this._migrationsCount = this._migrations.length;
