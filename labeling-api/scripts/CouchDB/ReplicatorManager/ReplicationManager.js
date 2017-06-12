@@ -58,11 +58,28 @@ function addJobToQueue(source, target) {
   queue.push(
     {
       id: md5(source + target),
+      id: getReplicationDocumentIdName(source, target),
       source: source,
       target: target
     }
   );
+  queue = removeDuplicates(queue, 'id');
   queueWorker();
+}
+
+function removeDuplicates(arr, prop) {
+  var new_arr = [];
+  var lookup = {};
+
+  for (var i in arr) {
+    lookup[arr[i][prop]] = arr[i];
+  }
+
+  for (i in lookup) {
+    new_arr.push(lookup[i]);
+  }
+
+  return new_arr;
 }
 
 function queueWorker() {
