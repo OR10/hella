@@ -8,28 +8,28 @@ if (process.argv[2] === '-h' || process.argv[2] === '--help' || process.argv.len
   process.exit(1);
 }
 
-var maxReplications = 50;
-var compactReplicationDbCycle = 500;
-var compactReplicationCounter = 0;
+let maxReplications = 50;
+let compactReplicationDbCycle = 500;
+let compactReplicationCounter = 0;
 
-var adminUrl = process.argv[2];
-var ReplicationUrl = process.argv[3];
-var sourceDbRegex = process.argv[4];
-var targetDb = process.argv[5];
+let adminUrl = process.argv[2];
+let ReplicationUrl = process.argv[3];
+let sourceDbRegex = process.argv[4];
+let targetDb = process.argv[5];
 
-var queue = [];
-var activeTasks = [];
+let queue = [];
+let activeTasks = [];
 
-var md5 = require('md5');
-var nanoAdmin = require('nano')(adminUrl);
+let md5 = require('md5');
+let nanoAdmin = require('nano')(adminUrl);
 
 listenToReplicationChanges();
 listenToDatabaseChanges();
 addOneTimeReplicationForAllDatabases();
 
 function listenToReplicationChanges() {
-  var replicatorDb = nanoAdmin.use('_replicator');
-  var feedReplicator = replicatorDb.follow({include_docs: true});
+  const replicatorDb = nanoAdmin.use('_replicator');
+  const feedReplicator = replicatorDb.follow({include_docs: true});
 
   feedReplicator.filter = function(doc, req) {
     return !doc._deleted;
@@ -38,7 +38,7 @@ function listenToReplicationChanges() {
   feedReplicator.on('change', function(change) {
     if (change.doc._replication_state === "completed") {
       destroyAndPurge(replicatorDb, change.doc._id, change.doc._rev);
-      var index = activeTasks.indexOf(change.doc._id);
+      const index = activeTasks.indexOf(change.doc._id);
       if (index !== -1) {
         activeTasks.splice(index, 1);
       }
@@ -49,11 +49,11 @@ function listenToReplicationChanges() {
 }
 
 function listenToDatabaseChanges() {
-  var db = nanoAdmin.use('_db_updates');
-  var feed = db.follow({include_docs: true, since: "now"});
+  const db = nanoAdmin.use('_db_updates');
+  const feed = db.follow({include_docs: true, since: "now"});
 
   feed.on('change', function(change) {
-    var updated_db = change.db_name;
+    const updated_db = change.db_name;
     if (updated_db.match(sourceDbRegex) !== null) {
       addJobToQueue(updated_db, targetDb);
     }
@@ -74,8 +74,8 @@ function addJobToQueue(source, target) {
 }
 
 function removeDuplicates(arr, prop) {
-  var new_arr = [];
-  var lookup = {};
+  const new_arr = [];
+  const lookup = {};
 
   for (var i in arr) {
     lookup[arr[i][prop]] = arr[i];
@@ -95,9 +95,9 @@ function queueWorker() {
     return false;
   }
 
-  var element = queue.shift();
+  const element = queue.shift();
   activeTasks.push(getReplicationDocumentIdName(element.source, element.target));
-  var replicatorDb = nanoAdmin.use('_replicator');
+  const replicatorDb = nanoAdmin.use('_replicator');
   replicatorDb.insert(
     {
       "worker_batch_size": 50,
@@ -108,7 +108,7 @@ function queueWorker() {
     getReplicationDocumentIdName(element.source, element.target),
     function(err, body) {
       if (err) {
-        var index = activeTasks.indexOf(getReplicationDocumentIdName(element.source, element.target));
+        const index = activeTasks.indexOf(getReplicationDocumentIdName(element.source, element.target));
         if (index !== -1) {
           activeTasks.splice(index, 1);
         }
