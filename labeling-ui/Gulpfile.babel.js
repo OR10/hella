@@ -327,8 +327,8 @@ gulp.task('package-javascript', () => {
   const hash = hasher.digest('hex');
 
   return gulp.src([bundlePath, `${bundlePath}.map`])
-    .pipe($$.rename(path => {
-      path.basename = path.basename.replace('bundle.', `bundle.${hash}.`);
+    .pipe($$.rename(originalPath => {
+      originalPath.basename = originalPath.basename.replace('bundle.', `bundle.${hash}.`);
     }))
   .pipe(gulp.dest(`${paths.dir.distribution}/Library`));
 });
@@ -346,7 +346,7 @@ gulp.task('package-index', () => {
 
   return gulp.src(indexPath)
     .pipe($$.htmlReplace({
-      'javascript-bundle': hashedBundlePath
+      'javascript-bundle': hashedBundlePath,
     }))
     .pipe(gulp.dest(paths.dir.distribution));
 });
