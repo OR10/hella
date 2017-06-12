@@ -53,7 +53,7 @@ class PouchDbLiveMigration {
 }
 
 PouchDbLiveMigration.$inject = [
-  // 'foobarMigration' // See for a simple example of a migration
+  // 'exampleMigration' // See ExampleMigration for a simple example of a migration
 ];
 
 export default PouchDbLiveMigration;

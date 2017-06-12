@@ -1,6 +1,6 @@
 import PouchDbMigration from './PouchDbMigration';
 
-class FoobarMigration extends PouchDbMigration {
+class ExampleMigration extends PouchDbMigration {
   supportsDocument(doc) {
     return (
       doc.type && doc.type === 'AppBundle.Model.LabeledThingInFrame' &&
@@ -16,4 +16,4 @@ class FoobarMigration extends PouchDbMigration {
   }
 }
 
-export default FoobarMigration;
+export default ExampleMigration;
