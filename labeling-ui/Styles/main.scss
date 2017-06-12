@@ -440,7 +440,7 @@ title-bar {
     columns: 2;
     text-align: left;
     position: absolute;
-    width: 100%;
+    width: calc(100% - 20px);
     div {
       padding: 3px;
       i {
