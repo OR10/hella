@@ -22,6 +22,7 @@ var nanoAdmin = require('nano')(adminUrl);
 listenToReplicationChanges();
 listenToDatabaseChanges();
 AddOneTimeReplicationForAllDatabases();
+addOneTimeReplicationForAllDatabases();
 
 function listenToReplicationChanges() {
   var replicatorDb = nanoAdmin.use('_replicator');
@@ -101,7 +102,7 @@ function queueWorker() {
 /**
  * This method add a one-time replication for all matching sources databases to the target database
  */
-function AddOneTimeReplicationForAllDatabases() {
+function addOneTimeReplicationForAllDatabases() {
   console.log('Creating a one-time replication for all matching databases now.');
   nanoAdmin.db.list(function(err, body) {
     body.forEach(function(db) {
