@@ -1,24 +1,31 @@
-var matchNamedParamsInPath = require('./ContainNamedParamsRequest/MatchNamedParamsInPath');
-var matchNamedParamsInParamsAndData = require('./ContainNamedParamsRequest/MatchNamedParamsInParamsAndData');
+import JsonTemplateComparator from '../../JsonTemplateComparator';
+import {cloneDeep} from 'lodash';
 
 module.exports = function toContainNamedParamsRequest() {
+  const comparator = new JsonTemplateComparator();
+
   function containsNamedParamsRequest(mockedRequests, namedParamsRequest) {
-    var containsRequest = false;
+    const expectedRequest = cloneDeep(namedParamsRequest);
+    if ('namedParams' in expectedRequest) {
+      delete expectedRequest.namedParams;
+    }
 
-    mockedRequests.forEach(function(mockedRequest) {
-      containsRequest = containsRequest ||
-        (
-          matchNamedParamsInPath(mockedRequest.path, namedParamsRequest.path) &&
-          matchNamedParamsInParamsAndData(mockedRequest, namedParamsRequest)
-        );
-    });
+    for(let index = 0; index < mockedRequests.length; index++) {
+      try {
+        comparator.assertIsEqual(expectedRequest, mockedRequests[index]);
+      } catch(error) {
+        continue;
+      }
 
-    return containsRequest;
+      return true;
+    }
+
+    return false;
   }
 
   return {
     compare: function compare(mockedRequests, namedParamsMock) {
-      var namedParamsRequest = namedParamsMock.request;
+      const namedParamsRequest = namedParamsMock.request;
       return {
         pass: containsNamedParamsRequest(mockedRequests, namedParamsRequest),
         message: `NamedParamsRequest is no part of mocked requests:\n ${JSON.stringify(namedParamsRequest, undefined, 2)}\nnot found in\n${JSON.stringify(mockedRequests, undefined, 2)}`,
