@@ -89,7 +89,9 @@ function removeDuplicates(arr, prop) {
 }
 
 function queueWorker() {
-  if (queue.length === 0 || activeTasks.length >= maxReplications) {
+  if (activeTasks.length >= maxReplications || queue.length === 0) {
+    console.log('active tasks: ' + activeTasks.length + '/' + maxReplications + ' | Queue length: ' + queue.length);
+
     return false;
   }
 
@@ -106,7 +108,6 @@ function queueWorker() {
     getReplicationDocumentIdName(element.source, element.target),
     function(err, body) {
       if (err) {
-        console.log(err);
         var index = activeTasks.indexOf(getReplicationDocumentIdName(element.source, element.target));
         if (index !== -1) {
           activeTasks.splice(index, 1);
