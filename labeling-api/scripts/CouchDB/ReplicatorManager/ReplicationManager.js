@@ -1,3 +1,5 @@
+"use strict";
+
 if (process.argv[2] === '-h' || process.argv[2] === '--help' || process.argv.length <= 4) {
   console.log('Usage: ReplicationManager.js [adminUrl] [replicationUrl] [sourceDbRegex] [targetDb]');
   console.log('Example:');
@@ -7,6 +9,8 @@ if (process.argv[2] === '-h' || process.argv[2] === '--help' || process.argv.len
 }
 
 var maxReplications = 50;
+var compactReplicationDbCycle = 500;
+var compactReplicationCounter = 0;
 
 var adminUrl = process.argv[2];
 var ReplicationUrl = process.argv[3];
@@ -21,16 +25,19 @@ var nanoAdmin = require('nano')(adminUrl);
 
 listenToReplicationChanges();
 listenToDatabaseChanges();
-AddOneTimeReplicationForAllDatabases();
 addOneTimeReplicationForAllDatabases();
 
 function listenToReplicationChanges() {
   var replicatorDb = nanoAdmin.use('_replicator');
   var feedReplicator = replicatorDb.follow({include_docs: true});
 
+  feedReplicator.filter = function(doc, req) {
+    return !doc._deleted;
+  }
+
   feedReplicator.on('change', function(change) {
     if (change.doc._replication_state === "completed") {
-      replicatorDb.destroy(change.doc._id, change.doc._rev);
+      destroyAndPurge(replicatorDb, change.doc._id, change.doc._rev);
       var index = activeTasks.indexOf(change.doc._id);
       if (index !== -1) {
         activeTasks.splice(index, 1);
@@ -43,7 +50,7 @@ function listenToReplicationChanges() {
 
 function listenToDatabaseChanges() {
   var db = nanoAdmin.use('_db_updates');
-  var feed = db.follow({include_docs: true});
+  var feed = db.follow({include_docs: true, since: "now"});
 
   feed.on('change', function(change) {
     var updated_db = change.db_name;
@@ -57,7 +64,6 @@ function listenToDatabaseChanges() {
 function addJobToQueue(source, target) {
   queue.push(
     {
-      id: md5(source + target),
       id: getReplicationDocumentIdName(source, target),
       source: source,
       target: target
@@ -83,37 +89,78 @@ function removeDuplicates(arr, prop) {
 }
 
 function queueWorker() {
-  if (activeTasks.length >= maxReplications) {
+  if (queue.length === 0 || activeTasks.length >= maxReplications) {
     return false;
   }
 
-  if (queue.length > 0) {
-    var element = queue.shift();
-    if (activeTasks.indexOf(md5(element.source + element.target)) === -1) {
-      activeTasks.push(md5(element.source + element.target));
-      var replicatorDb = nanoAdmin.use('_replicator');
-      replicatorDb.insert(
-        {
-          "worker_batch_size": 50,
-          "source": ReplicationUrl + element.source,
-          "target": ReplicationUrl + element.target,
-          "continuous": false
-        },
-        md5(element.source + element.target),
-        function(err, body) {
-          if (err) {
-            var index = activeTasks.indexOf(md5(element.source + element.target));
-            if (index !== -1) {
-              activeTasks.splice(index, 1);
-            }
-            queueWorker();
-          }
+  var element = queue.shift();
+  activeTasks.push(getReplicationDocumentIdName(element.source, element.target));
+  var replicatorDb = nanoAdmin.use('_replicator');
+  replicatorDb.insert(
+    {
+      "worker_batch_size": 50,
+      "source": ReplicationUrl + element.source,
+      "target": ReplicationUrl + element.target,
+      "continuous": false
+    },
+    getReplicationDocumentIdName(element.source, element.target),
+    function(err, body) {
+      if (err) {
+        console.log(err);
+        var index = activeTasks.indexOf(getReplicationDocumentIdName(element.source, element.target));
+        if (index !== -1) {
+          activeTasks.splice(index, 1);
         }
-      );
+        queueWorker();
+      }
     }
-  }
+  );
+  compactReplicationDatabase();
 
   console.log('active tasks: ' + activeTasks.length + '/' + maxReplications + ' | Queue length: ' + queue.length);
+}
+
+function compactReplicationDatabase() {
+  compactReplicationCounter += 1;
+  if (compactReplicationCounter >= compactReplicationDbCycle) {
+    console.log('Starting _replicator compaction');
+    nanoAdmin.db.compact('_replicator');
+    compactReplicationCounter = 0;
+  }
+}
+
+function destroyAndPurge(db, documentId, revision, callback) {
+  db.get(documentId, {revs_info: true}, function(err, body) {
+    if (err) {
+      return callback(err);
+    }
+
+    const revisions = body._revs_info.map(function(revInfo) {
+      return revInfo.rev
+    }).reverse();
+
+    db.destroy(documentId, revision, function(err, body) {
+      if (err) {
+        return callback(err);
+      }
+
+      revisions.push(body.rev);
+
+      let purgeBody = {};
+      purgeBody[documentId] = revisions;
+
+      nanoAdmin.request({
+                          db: db.config.db,
+                          method: 'post',
+                          path: '_purge',
+                          body: purgeBody
+                        }, callback);
+    })
+  });
+}
+
+function getReplicationDocumentIdName(source, target) {
+  return 'replication-manager-' + md5(source + target);
 }
 
 /**
@@ -124,6 +171,7 @@ function addOneTimeReplicationForAllDatabases() {
   nanoAdmin.db.list(function(err, body) {
     body.forEach(function(databaseNames) {
       if (databaseNames.match(sourceDbRegex) !== null) {
+        addJobToQueue(databaseNames, targetDb);
       }
     });
   });
