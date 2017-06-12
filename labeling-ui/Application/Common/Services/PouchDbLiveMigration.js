@@ -29,13 +29,28 @@ class PouchDbLiveMigration {
   }
 
   /**
+   * Check whether the given document is a design document or not.
+   *
+   * @param {Object} doc
+   * @returns {boolean}
+   * @private
+   */
+  _isDesignDocument(doc) {
+    return (
+      doc._id &&
+      doc._id.indexOf('_design/') === 0
+    );
+  }
+
+  /**
    * @param {Object} doc
    * @return {Object}
    * @private
    */
   _transformOutgoing(doc) {
     // Skip design documents
-    if (doc._id && doc._id.indexOf('_design/') === 0) {
+    if (this._isDesignDocument(doc)) {
+      // Skip design documents early to not iterate them through the whole migration process for performance reasons.
       return doc;
     }
 
