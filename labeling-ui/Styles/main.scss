@@ -444,6 +444,12 @@ title-bar {
       i {
         color:$color-ut-darkgrey-2;
       }
+      .fa-close:hover {
+        cursor: pointer;
+      }
     }
+  }
+  .upload-content-files:hover {
+    z-index: 9999;
   }
 }
