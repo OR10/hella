@@ -6,7 +6,7 @@ if (process.argv[2] === '-h' || process.argv[2] === '--help' || process.argv.len
   process.exit(1);
 }
 
-var maxReplications = 10;
+var maxReplications = 50;
 
 var adminUrl = process.argv[2];
 var ReplicationUrl = process.argv[3];
