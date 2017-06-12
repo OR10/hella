@@ -9,5 +9,7 @@ labeling_api::letsencrypt: true
 
 labeling_api::params::couchdb_host: 'couch-0'
 labeling_api::params::couchdb_host_external: 'video-labeling.com'
-labeling_api::params::couchdb_external_url: 'https://video-labeling.com:5984'
+labeling_api::params::couchdb_external_url: 'https://admin:cjxkiYHxCWX4UKa@video-labeling.com/couchdb/'
+labeling_api::params::couchdb_port_external: '443'
+labeling_api::params::couchdb_path_external: 'couchdb'
 labeling_api::params::create_parameter_files: true
