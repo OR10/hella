@@ -5,8 +5,9 @@ class PouchDbContextService {
   /**
    * @param {Object} configuration injected
    * @param {PouchDB} PouchDB injected
+   * @param {PouchDbLiveMigration} liveMigration
    */
-  constructor(configuration, PouchDB) {
+  constructor(configuration, PouchDB, liveMigration) {
     /**
      * @type {Object}
      */
@@ -17,6 +18,12 @@ class PouchDbContextService {
      * @private
      */
     this._PouchDB = PouchDB;
+
+    /**
+     * @type {PouchDbLiveMigration}
+     * @private
+     */
+    this._liveMigration = liveMigration;
 
     // @TODO: Check if this could be a Map instead of an object.
     /**
@@ -37,6 +44,7 @@ class PouchDbContextService {
 
     const taskDbName = this.generateStoreIdentifierForTaskId(taskId);
     const configuredContext = new this._PouchDB(taskDbName);
+    this._liveMigration.install(configuredContext);
     this._contextCache[taskId] = configuredContext;
 
     return configuredContext;
@@ -81,6 +89,10 @@ class PouchDbContextService {
   }
 }
 
-PouchDbContextService.$inject = ['applicationConfig', 'PouchDB'];
+PouchDbContextService.$inject = [
+  'applicationConfig',
+  'PouchDB',
+  'pouchDbLiveMigration',
+];
 
 export default PouchDbContextService;
