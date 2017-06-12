@@ -4,7 +4,7 @@ class PouchDbLiveMigration {
    */
   constructor(...migrations) {
     /**
-     * @type {Array.<PouchDbMigration>[]}
+     * @type {Array.<PouchDbMigration>}
      * @private
      */
     this._migrations = migrations;
