@@ -325,11 +325,10 @@ gulp.task('package-javascript', () => {
     fs.readFileSync(bundlePath)
   );
   const hash = hasher.digest('hex');
-  const hashedBundlePath = `${paths.dir.distribution}/Library/bundle.${hash}.min.js`;
 
   return gulp.src([bundlePath, `${bundlePath}.map`])
     .pipe($$.rename(path => {
-      path.basename = `${hash}.${path.basename}`;
+      path.basename = path.basename.replace('bundle.', `bundle.${hash}.`);
     }))
   .pipe(gulp.dest(`${paths.dir.distribution}/Library`));
 });
