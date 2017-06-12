@@ -439,6 +439,8 @@ title-bar {
   .upload-content-files {
     columns: 2;
     text-align: left;
+    position: absolute;
+    width: 100%;
     div {
       padding: 3px;
       i {
@@ -448,8 +450,5 @@ title-bar {
         cursor: pointer;
       }
     }
-  }
-  .upload-content-files:hover {
-    z-index: 9999;
   }
 }
