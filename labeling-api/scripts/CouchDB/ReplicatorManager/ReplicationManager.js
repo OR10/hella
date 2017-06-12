@@ -105,9 +105,8 @@ function queueWorker() {
 function addOneTimeReplicationForAllDatabases() {
   console.log('Creating a one-time replication for all matching databases now.');
   nanoAdmin.db.list(function(err, body) {
-    body.forEach(function(db) {
-      if (db.match(sourceDbRegex) !== null) {
-        addJobToQueue(db, targetDb);
+    body.forEach(function(databaseNames) {
+      if (databaseNames.match(sourceDbRegex) !== null) {
       }
     });
   });
