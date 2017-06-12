@@ -16,6 +16,7 @@ import {exec} from 'child_process';
 import chalk from 'chalk';
 import beepbeep from 'beepbeep';
 import mkdirp from 'mkdirp-promise';
+import crypto from 'crypto';
 
 import DevServer from './Support/DevServer';
 import ProtractorServer from './Tests/Support/ProtractorServer';
@@ -317,6 +318,45 @@ gulp.task('optimize', next => run(
   next
 ));
 
+gulp.task('package-javascript', () => {
+  const bundlePath = `${paths.dir.distribution}/Library/bundle.min.js`;
+  const hasher = crypto.createHash('sha256');
+  hasher.update(
+    fs.readFileSync(bundlePath)
+  );
+  const hash = hasher.digest('hex');
+  const hashedBundlePath = `${paths.dir.distribution}/Library/bundle.${hash}.min.js`;
+
+  return gulp.src([bundlePath, `${bundlePath}.map`])
+    .pipe($$.rename(path => {
+      path.basename = `${hash}.${path.basename}`;
+    }))
+  .pipe(gulp.dest(`${paths.dir.distribution}/Library`));
+});
+
+gulp.task('package-index', () => {
+  const bundlePath = `${paths.dir.distribution}/Library/bundle.min.js`;
+  const hasher = crypto.createHash('sha256');
+  hasher.update(
+    fs.readFileSync(bundlePath)
+  );
+  const hash = hasher.digest('hex');
+  const hashedBundlePath = `Library/bundle.${hash}.min.js`;
+
+  const indexPath = `${paths.dir.distribution}/index.html`;
+
+  return gulp.src(indexPath)
+    .pipe($$.htmlReplace({
+      'javascript-bundle': hashedBundlePath
+    }))
+    .pipe(gulp.dest(paths.dir.distribution));
+});
+
+gulp.task('package', next => run(
+  ['package-index', 'package-javascript'],
+  next
+));
+
 gulp.task('eslint', () => {
   return gulp.src([
     `!${paths.files.vendor}`,
@@ -511,6 +551,8 @@ gulp.task('deploy', () => {
         'index-functional-template.html',
         'index-functional-template-min.html',
         'index-dev.html',
+        'Library/bundle.min.js',
+        'Library/bundle.min.js.map',
       ],
       root: 'Distribution/',
       hostname: deploymentIp,
@@ -564,5 +606,6 @@ gulp.task('default', next => run(
   'clean',
   ['build', 'documentation'],
   'optimize',
+  'package',
   next
 ));
