@@ -149,8 +149,7 @@
         <service id="annostation.labeling_api.service.exporter.legacy_project_to_csv"
                  class="AnnoStationBundle\Service\Exporter\LegacyProjectToCsv">
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.service.depth_buffer"/>
