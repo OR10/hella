@@ -4,7 +4,7 @@ class PouchDbLiveMigration {
    */
   constructor(...migrations) {
     /**
-     * @type {Array.<PouchDbMigration>[]}
+     * @type {Array.<PouchDbMigration>}
      * @private
      */
     this._migrations = migrations;
@@ -29,13 +29,28 @@ class PouchDbLiveMigration {
   }
 
   /**
+   * Check whether the given document is a design document or not.
+   *
+   * @param {Object} doc
+   * @returns {boolean}
+   * @private
+   */
+  _isDesignDocument(doc) {
+    return (
+      doc._id &&
+      doc._id.indexOf('_design/') === 0
+    );
+  }
+
+  /**
    * @param {Object} doc
    * @return {Object}
    * @private
    */
   _transformOutgoing(doc) {
     // Skip design documents
-    if (doc._id && doc._id.indexOf('_design/') === 0) {
+    if (this._isDesignDocument(doc)) {
+      // Skip design documents early to not iterate them through the whole migration process for performance reasons.
       return doc;
     }
 
@@ -53,7 +68,7 @@ class PouchDbLiveMigration {
 }
 
 PouchDbLiveMigration.$inject = [
-  // 'foobarMigration' // See for a simple example of a migration
+  // 'exampleMigration' // See ExampleMigration for a simple example of a migration
 ];
 
 export default PouchDbLiveMigration;
