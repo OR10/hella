@@ -14,7 +14,7 @@
         "pedestrian"
       ],
       "groupIds": [
-        "E2E-TEST-GROUP-ID"
+        "{{:groupId}}"
       ],
       "lineColor": "{{:lineColor}}",
       "id": "{{:labeledThingDataId}}",

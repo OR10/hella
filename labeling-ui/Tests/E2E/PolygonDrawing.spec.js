@@ -292,6 +292,9 @@ describe('Polygon drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygon);
       })
+      .then(() => {
+        browser.sleep(500)
+      })
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -369,6 +372,9 @@ describe('Polygon drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary4);
+      })
+      .then(() => {
+        browser.sleep(500)
       })
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
