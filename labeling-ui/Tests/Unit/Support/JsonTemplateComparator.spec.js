@@ -424,6 +424,8 @@ describe('JsonTemplateComparator', () => {
       ['/entries/[special]/{{:id}}', '/entries/[special]/some-id'],
       ['{{:id}}-with-suffix', 'some-423+id-with-suffix'],
       ['/entries/{{:type}}/423', '/entries/some-type/423'],
+      ['/entries/{{:type}}/{{:id}}', '/entries/some-type/423'],
+      ['/entries/{{:type}}/{{:id}}?ofType={{type}}', '/entries/some-type/423?ofType=some-type'],
     ], (template, value) => {
       it('should validate against values with prefix and/or suffix', () => {
         expect(() => comparator.assertIsEqual(template, value)).not.toThrow();
@@ -469,11 +471,21 @@ describe('JsonTemplateComparator', () => {
       ['/entries/[special]/{{:id}}', '/entries/[spe*+*cial]/some-id'],
       ['{{:id}}-with-suffix', 'some-423'],
       ['/entries/{{:type}}/423', '/entries/some-type/423?special'],
+      ['/entries/{{:type}}/{{:id}}?not-special', '/entries/some-type/423?special'],
+      ['/entries/{{:type}}/{{:id}}?ofType={{type}}', '/entries/some-type/423?ofType=other-type'],
     ], (template, value) => {
       it('should not accept mismatching template values with prefix and/or suffix', () => {
         expect(() => comparator.assertIsEqual(template, value)).toThrow();
       });
+    });
 
+    using([
+      ['/entries/short-version/{{:id}}', '/entries/long-version/42'],
+      ['/entries/[special]/{{:id}}', '/entries/[spe*+*cial]/some-id'],
+      ['{{:id}}-with-suffix', 'some-423'],
+      ['/entries/{{:type}}/423', '/entries/some-type/423?special'],
+      ['/entries/{{:type}}/{{:id}}?not-special', '/entries/some-type/423?special'],
+    ], (template, value) => {
       it('should provide explanation why template values with prefix and/or suffix are not matching', () => {
         try {
           comparator.assertIsEqual(template, value);

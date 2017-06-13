@@ -66,12 +66,6 @@ class ValueComparator extends InnerDocumentVisitor {
       return this._assertScalarsAreMatching(expectedString, actualString, path);
     }
 
-    const identifier = template.getIdentifier();
-
-    if (!this._dictionary.has(identifier)) {
-      throw new Error(`Template identifier ${identifier} used at location ${path} not found in dictionary. Did you not define it?`);
-    }
-
     return this._assertScalarsAreMatching(
       template.expandWithDictionary(this._dictionary),
       actualString,

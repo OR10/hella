@@ -13,148 +13,194 @@ class TemplateString {
      * @type {string}
      * @private
      */
-    this._templateValuePattern = '\\{\\{(:?)([a-zA-Z0-9-_]+)\\}\\}';
+    this._templateValuePattern = '\\{\\{(:?)([a-zA-Z0-9-_]+?)\\}\\}';
 
     /**
      * @type {string}
      * @private
      */
-    this._anythingPattern = '(.*)';
+    this._anythingPattern = '(.*?)';
 
     /**
-     * @type {{isSetter: boolean, prefix: string, identifier: string|null, suffix: string}}
+     * @type {Array.<{isGetter: boolean, isSetter: boolean, value: string}>}}
      * @private
      */
-    this._templateInformation = this._getTemplateInformation(this._raw);
+    this._templateParts = this._getTemplateParts(this._raw);
   }
 
   /**
    * @returns {boolean}
    */
   isTemplate() {
-    return this._templateInformation.identifier !== null;
+    return this._templateParts.reduce((isTemplate, part) => {
+      return isTemplate || part.isSetter || part.isGetter;
+    }, false);
   }
 
   /**
    * @returns {boolean}
    */
   isGetter() {
-    return this.isTemplate() && !this._isSetter();
+    return this._templateParts.reduce((isGetter, part) => {
+      return isGetter || part.isGetter;
+    }, false);
   }
 
   /**
    * @returns {boolean}
    */
   isSetter() {
-    return this._templateInformation.isSetter;
+    return this._templateParts.reduce((isSetter, part) => {
+      return isSetter || part.isSetter;
+    }, false);
   }
 
   /**
-   * @returns {string|null}
+   * @returns {Array.<string>}}
    */
-  getIdentifier() {
-    return this._templateInformation.identifier;
+  getIdentifiers() {
+    return this._templateParts
+      .filter(part => part.isGetter || part.isSetter)
+      .map(part => part.value);
   }
 
   /**
    * @param {string} valueString
-   * @return {string|null}
+   * @return {Map.<string, string>}
    */
-  extractValue(valueString) {
-    const {prefix, suffix} = this._templateInformation;
-    const prefixPattern = this._createPatternFromString(prefix);
-    const suffixPattern = this._createPatternFromString(suffix);
+  extractDictionary(valueString) {
+    const patterns = this._templateParts.map(part => {
+      switch (true) {
+        case part.isGetter:
+        case part.isSetter:
+          return this._anythingPattern;
+        default:
+          return this._createPatternFromString(part.value);
+      }
+    });
 
     const valueExtractor = this._buildRegexpFromParts(
       '^',
-      prefixPattern,
-      this._anythingPattern,
-      suffixPattern,
+      ...patterns,
       '$',
     );
 
-    const valueMatches = valueExtractor.exec(valueString);
-
-    if (valueMatches === null) {
-      return null;
-    }
-
-    const [, value] = valueMatches;
-    return value;
-  }
-
-  /**
-   * @param {Map.<string,*>} dictionary
-   */
-  expandWithDictionary(dictionary) {
-    const {identifier} = this._templateInformation;
-    if (identifier === null) {
-      return this._raw;
-    }
-
-    if (!dictionary.has(identifier)) {
-      throw new Error(`Identifier "${identifier}" needed for template expansion not found in dictionary.`);
-    }
-
-    const identifierPattern = this._createPatternFromString(identifier);
-    const replacementExpression = this._buildRegexpFromParts(
-      '\\{\\{:?',
-      identifierPattern,
-      '\\}\\}',
-    );
-
-    return this._raw.replace(
-      replacementExpression,
-      dictionary.get(identifier),
-    );
-  }
-
-  /**
-   * Create information about the template string, like prefix, identifier and suffix
-   *
-   * @param {string} raw
-   * @returns {{isSetter: boolean, prefix: string, identifier: string|null, suffix: string}}
-   * @private
-   */
-  _getTemplateInformation(raw) {
-    const templateExtractor = this._buildRegexpFromParts(
-      '^',
-      this._anythingPattern,
-      this._templateValuePattern,
-      this._anythingPattern,
-      '$',
-    );
-
-    const matches = templateExtractor.exec(raw);
+    const matches = valueExtractor.exec(valueString);
 
     if (matches === null) {
-      return {
-        prefix: raw,
-        identifier: null,
-        suffix: '',
-        isSetter: false,
-      };
+      return new Map();
     }
 
-    const [, prefix, setterIndicator, identifier, suffix] = matches;
-    return {
-      prefix,
-      identifier,
-      suffix,
-      isSetter: setterIndicator === ':',
-    };
+    const [, ...values] = matches;
+
+    const dictionary = new Map();
+    values.forEach((value, index) => {
+      const part = this._templateParts[index];
+      if (part.isSetter) {
+        dictionary.set(part.value, value);
+      }
+    });
+
+    return dictionary;
+  }
+
+  /**
+   * @param {Map.<string,string>} dictionary
+   * @return {string}
+   */
+  expandWithDictionary(dictionary) {
+    const expandedParts = this._templateParts.map(part => {
+      switch(true) {
+        case part.isGetter:
+        case part.isSetter:
+          if (!dictionary.has(part.value)) {
+            throw new Error(`Identifier "${part.value}" needed for template expansion not found in dictionary.`);
+          }
+          return dictionary.get(part.value);
+        default:
+          return part.value;
+      }
+    });
+
+    return expandedParts.join('');
+  }
+
+  /**
+   * Create a lexed version of the template string
+   *
+   * @param {string} raw
+   * @returns {Array.<{isGetter: boolean, isSetter: boolean, value: string}>}}
+   * @private
+   */
+  _getTemplateParts(raw) {
+    const templateExtractor = new RegExp(this._templateValuePattern, 'g');
+
+    const templateExpansions = [];
+    let matches;
+    while ((matches = templateExtractor.exec(raw)) !== null) {
+      const [fullMatch, setterIndicator, identifier] = matches;
+      const index = matches.index;
+
+      templateExpansions.push({
+        isSetter: setterIndicator === ':',
+        length: fullMatch.length,
+        identifier,
+        index,
+      });
+    }
+
+    const parts = [];
+    let leftOverRaw = raw;
+    let rawIndex = 0;
+    while (leftOverRaw !== '') {
+      if (templateExpansions.length === 0) {
+        parts.push({
+          isSetter: false,
+          isGetter: false,
+          value: leftOverRaw,
+        });
+        break;
+      }
+
+      if (templateExpansions[0].index > rawIndex) {
+        const distance = templateExpansions[0].index - rawIndex;
+        parts.push({
+          isSetter: false,
+          isGetter: false,
+          value: leftOverRaw.substr(0, distance),
+        });
+        rawIndex += distance;
+        leftOverRaw = leftOverRaw.substr(distance);
+      }
+
+      const expansion = templateExpansions.shift();
+      parts.push({
+        isGetter: !expansion.isSetter,
+        isSetter: expansion.isSetter,
+        value: expansion.identifier,
+      });
+
+      rawIndex += expansion.length;
+      leftOverRaw = leftOverRaw.substr(expansion.length);
+    }
+
+    return parts;
   }
 
   /**
    * Escape a string to not include any special regexp values anymore.
+   *
+   * The string will furthermore be surrounded by a matching group.
    *
    * @param {string} str
    * @return {string}
    * @private
    */
   _createPatternFromString(str) {
-    return str
+    const escapedString = str
       .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+
+    return `(${escapedString})`;
   }
 
   /**

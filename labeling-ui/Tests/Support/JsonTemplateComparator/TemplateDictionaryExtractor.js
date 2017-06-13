@@ -31,13 +31,12 @@ class TemplateDictionaryExtractor extends InnerDocumentVisitor {
       return;
     }
 
-    const value = template.extractValue(secondScalar);
-    if (value === null) {
+    const dictionary = template.extractDictionary(secondScalar);
+    if (dictionary.size === 0) {
       throw new Error(`Unable to perform template string extraction due to mismatching values: The string "${secondScalar}" could not be matched against "${firstScalar}" at location ${path}`);
     }
 
-    const identifier = template.getIdentifier();
-    this._dictionary.set(identifier, value);
+    this._dictionary = new Map([...this._dictionary, ...dictionary]);
   }
 }
 
