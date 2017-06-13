@@ -36,17 +36,17 @@ function checkDocuments(allPouchDocuments, namedParamsMock, overallResult) {
       id: id,
     };
     return isDocumentDeleted(namedParamsRequestData, allPouchDocuments, overallResult);
-  } else {
-    namedParamsRequestData = namedParamsMock.request.data;
-    return checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult);
   }
-};
+  namedParamsRequestData = namedParamsMock.request.data;
+
+  return checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult);
+}
 
 module.exports = function toContainNamedParamsRequest() {
   return {
     compare: function (mockedRequests, namedParamsMock) {
 
-      let overallResult = {
+      const overallResult = {
         message: 'Expected document not found in Pouch DB',
       };
 

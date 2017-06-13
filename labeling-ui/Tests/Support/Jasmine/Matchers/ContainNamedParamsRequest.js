@@ -10,10 +10,10 @@ module.exports = function toContainNamedParamsRequest() {
       delete expectedRequest.namedParams;
     }
 
-    for(let index = 0; index < mockedRequests.length; index++) {
+    for (let index = 0; index < mockedRequests.length; index++) {
       try {
         comparator.assertIsEqual(expectedRequest, mockedRequests[index]);
-      } catch(error) {
+      } catch (error) {
         continue;
       }
 

@@ -34,7 +34,7 @@ export function dumpAllRequestsMade(mock) {
       strippedRequests = strippedRequests.filter(doc => doc._id.indexOf('_design') === -1);
 
       console.log( // eslint-disable-line no-console
-        `The following documents are in the Pouch. Design documents have been filtered out.\n${JSON.stringify(strippedRequests, undefined, 2)}`
+        `The following documents are in the Pouch. Design documents have been filtered out.\n${JSON.stringify(strippedRequests, undefined, 2)}`,
       );
 
       return failTest;
@@ -55,7 +55,7 @@ export function dumpAllRequestsMade(mock) {
       });
 
       console.log( // eslint-disable-line no-console
-        `The following requests were made against the backend. Not all of them may have been mocked!\n${JSON.stringify(strippedRequests, undefined, 2)}`
+        `The following requests were made against the backend. Not all of them may have been mocked!\n${JSON.stringify(strippedRequests, undefined, 2)}`,
       );
 
       // fail('Dumping all requests causes automatic test fail.');
@@ -76,7 +76,7 @@ function bootstrapPouchDb(mocks) {
     'lsr-01',
     'thing-one',
     'thing-two',
-    null
+    null,
   ];
   let documents = [];
 
@@ -97,7 +97,7 @@ function bootstrapPouchDb(mocks) {
         labeledThing.frameRange = {
           "startFrameIndex": labeledThing.frameRange.startFrameNumber,
           "endFrameIndex": labeledThing.frameRange.endFrameNumber,
-          "type": "AppBundle.Model.FrameIndexRange"
+          "type": "AppBundle.Model.FrameIndexRange",
         };
 
         delete labeledThing.rev;
@@ -134,13 +134,13 @@ const defaultTestConfig = {
   viewerHeight: 620,
 };
 
-let mocks = {
+const mocks = {
   shared: [],
-  specific: []
+  specific: [],
 };
 
 export function mock(sharedMocks) {
-  let specificMocksKeys = [];
+  const specificMocksKeys = [];
 
   mocks.shared = sharedMocks;
   mocks.specific = mocks.shared.filter((mock, key) => {
@@ -150,6 +150,7 @@ export function mock(sharedMocks) {
     if (mustBeStoredInCouch) {
       specificMocksKeys.push(key);
     }
+
     return mustBeStoredInCouch;
   });
 }
@@ -208,6 +209,6 @@ export function getTextContentFromElementFinder(elementFinder) {
  */
 export function hasClassByElementFinder(elementFinder, className) {
   return elementFinder.getAttribute('class').then(
-    classString => classString.split(' ').includes(className)
+    classString => classString.split(' ').includes(className),
   );
 }
