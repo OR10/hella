@@ -49,6 +49,37 @@ describe('JsonTemplateComparator', () => {
     });
   });
 
+  describe('float comparison', () => {
+    it('should identify two identical floats as equal', () => {
+      expect(() => comparator.assertIsEqual(1.23456789, 1.23456789)).not.toThrow();
+    });
+
+    it('should identify completely different floats as different', () => {
+      expect(() => comparator.assertIsEqual(9.87654321, 1.23456789)).toThrow();
+    });
+
+    it('should identify two floats with less than 10^-10/2 difference as identical', () => {
+      expect(() => comparator.assertIsEqual(1.123456789011, 1.123456789016)).not.toThrow();
+    });
+
+    it('should identify two floats with little more than 10^-10/2 difference as different', () => {
+      expect(() => comparator.assertIsEqual(1.12345678901, 1.12345678906)).toThrow();
+    });
+
+    it('should provide proper error message if test fails', () => {
+      try {
+        comparator.assertIsEqual(9.87654321, 1.23456789);
+      } catch (error) {
+        expect(error.message).toMatch(/8.64197532/);
+        expect(error.message).toMatch(/\b5e-11\b/);
+        expect(error.message).toMatch(/\bat location <root>( |$)/);
+        return;
+      }
+
+      fail('Expected validation error not thrown!');
+    });
+  });
+
   describe('object comparison', () => {
     let firstObject;
     let otherObject;
@@ -401,33 +432,33 @@ describe('JsonTemplateComparator', () => {
 
     it('should validate against inline templates in object structures with setter and getter', () => {
       const template = {
-        "request": {
-          "path": "/api/labeledThingInFrame/{{:labeledThingInFrameId}}",
+        'request': {
+          'path': '/api/labeledThingInFrame/{{:labeledThingInFrameId}}',
         },
-        "response": {
-          "data": {
-            "result": {
-              "labeledThingInFrame": {
-                "id": "with-prefix-{{labeledThingInFrameId}}-and-suffix",
-              }
-            }
-          }
-        }
+        'response': {
+          'data': {
+            'result': {
+              'labeledThingInFrame': {
+                'id': 'with-prefix-{{labeledThingInFrameId}}-and-suffix',
+              },
+            },
+          },
+        },
       };
 
       const value = {
-        "request": {
-          "path": "/api/labeledThingInFrame/FOOBAR-ID-123",
+        'request': {
+          'path': '/api/labeledThingInFrame/FOOBAR-ID-123',
         },
-        "response": {
-          "data": {
-            "result": {
-              "labeledThingInFrame": {
-                "id": "with-prefix-FOOBAR-ID-123-and-suffix",
-              }
-            }
-          }
-        }
+        'response': {
+          'data': {
+            'result': {
+              'labeledThingInFrame': {
+                'id': 'with-prefix-FOOBAR-ID-123-and-suffix',
+              },
+            },
+          },
+        },
       };
 
       expect(() => comparator.assertIsEqual(template, value)).not.toThrow();
@@ -459,15 +490,15 @@ describe('JsonTemplateComparator', () => {
 
     it('should provide mismatching explanation with correct path location', () => {
       const template = {
-        "request": {
-          "path": "/api/labeledThingInFrame/{{:labeledThingInFrameId}}",
-        }
+        'request': {
+          'path': '/api/labeledThingInFrame/{{:labeledThingInFrameId}}',
+        },
       };
 
       const value = {
-        "request": {
-          "path": "/another-api/labeledThingInFrame/123-LTIF-321",
-        }
+        'request': {
+          'path': '/another-api/labeledThingInFrame/123-LTIF-321',
+        },
       };
 
       try {
