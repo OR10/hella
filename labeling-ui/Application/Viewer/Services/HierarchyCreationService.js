@@ -38,6 +38,7 @@ class HierarchyCreationService {
 
     const newLabeledThing = new LabeledThing({
       task,
+      projectId: task.projectId,
       id: newLabeledThingId,
       lineColor: color,
       classes: task.predefinedClasses || [],
