@@ -374,6 +374,34 @@ class ProjectListController {
     });
   }
 
+  
+  calculateProjectProgressInDuration(project) {
+    if (project === undefined) {
+      return 0
+    }
+    const startDate = project.creationTimestamp;
+    const endDate =  project.dueTimestamp;
+    if (startDate === undefined || endDate === null) {
+      return 0;
+    }
+    const end = moment.unix(endDate);
+    const start = moment.unix(startDate);
+    const projectDuration = moment.duration(end.diff(start)).asDays();
+    const currentProgress = moment.duration(end.diff(moment())).asDays();
+    if (projectDuration > currentProgress) {
+      // project is in duration
+      const progress = Math.round(currentProgress * 100 / projectDuration);
+      console.log(progress);
+      if (progress === 100) {
+        return {left: 1 - 100 + '%', background: '#BFDB31'}
+      }
+      if (progress > 50) {
+        return {left: progress - 100 + '%', background: '#DB315B'}
+      }
+      return {left: progress - 100 + '%', background: '#BFDB31'};
+    }
+    
+  }
   /**
    * @param {string} projectId
    */

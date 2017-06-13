@@ -1,5 +1,7 @@
 table.table {
   width: 100%;
+  position: relative;
+  display: table;
 
   a {
     color: $color-ut-midgrey-2;
@@ -41,7 +43,7 @@ table.table {
   }
 
   thead,
-  tbody,
+
   tfoot {
     background-color: $color-ut-lightgrey-1;
 
@@ -81,7 +83,7 @@ table.table {
   tbody {
     tr:nth-child(odd) {
       td {
-        background-color: $color-ut-lightgrey-2;
+        //background-color: $color-ut-lightgrey-2;
       }
     }
 

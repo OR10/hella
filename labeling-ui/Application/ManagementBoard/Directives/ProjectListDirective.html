@@ -26,6 +26,10 @@
         <tr>
         <tr ng-repeat="project in vm.projects track by project.id" ng-click="project.status != 'deleted' && vm.openProject(project.id)">
             <td ng-repeat="column in vm.columns track by $index">
+                <div ng-if="$index == 0" style="position: absolute; left: -100%; margin-top: -13px; height: 43px; width: 100%; z-index: -1;"
+                     ng-style="vm.calculateProjectProgressInDuration(project)"
+                >
+                </div>
                 <i class="icon icon-medium icon-legacy-project" ng-if="column.property === 'name' && project.taskInstructionType === 'legacy'"></i>
                 <i class="icon icon-medium icon-requirements-xml-project" ng-if="column.property === 'name' && project.taskInstructionType === 'requirementsXml'"></i>
                 <i class="icon icon-medium icon-simple-xml-project" ng-if="column.property === 'name' && project.taskInstructionType === 'genericXml'"></i>
