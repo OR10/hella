@@ -11,6 +11,7 @@ define annostation_base::symfony(
   $sslCertFile = undef,
   $sslKeyFile = undef,
   $listenIp = '*',
+  $useDefaultLocation = true,
 ) {
   include ::php
   include ::nginx
@@ -43,17 +44,18 @@ define annostation_base::symfony(
     }
 
     annostation_base::nginx_vhost { $name:
-      vhostDir          => $www_root,
-      vhostPort         => $_vhostPort,
-      httpv2            => $httpv2,
-      sslCertFile       => $_sslCertFile,
-      sslKeyFile        => $_sslKeyFile,
-      indexFiles        => [$app_main_script],
-      tryFiles          => ['$uri', "/${app_main_script}\$is_args\$args"],
-      clientMaxBodySize => $client_max_body_size,
-      authBasic         => $authBasic,
-      authBasicFile     => $authBasicFile,
-      listenIp          => $listenIp,
+      vhostDir           => $www_root,
+      vhostPort          => $_vhostPort,
+      httpv2             => $httpv2,
+      sslCertFile        => $_sslCertFile,
+      sslKeyFile         => $_sslKeyFile,
+      indexFiles         => [$app_main_script],
+      tryFiles           => ['$uri', "/${app_main_script}\$is_args\$args"],
+      clientMaxBodySize  => $client_max_body_size,
+      authBasic          => $authBasic,
+      authBasicFile      => $authBasicFile,
+      listenIp           => $listenIp,
+      useDefaultLocation => $useDefaultLocation,
     }
 
     nginx::resource::location { "${name}_php":

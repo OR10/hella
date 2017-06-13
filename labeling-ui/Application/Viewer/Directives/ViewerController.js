@@ -455,7 +455,7 @@ class ViewerController {
         },
         () => {
           unauthorizedAccessModalOpen = false;
-          this._$state.go('labeling.tasks.list', {projectId: this.task.projectId});
+          this._$state.go('labeling.projects.list');
         },
         undefined,
         {

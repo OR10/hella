@@ -6,13 +6,14 @@ use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\Model\Shape;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
 
 class LegacyProjectToCsv implements Service\ProjectExporter
 {
     /**
-     * @var Facade\LabeledThingInFrame
+     * @var LabeledThingInFrame\FacadeInterface
      */
-    private $labeledThingInFrameFacade;
+    private $labeledThingInFrameFacadeFactory;
 
     /**
      * @var bool
@@ -45,11 +46,6 @@ class LegacyProjectToCsv implements Service\ProjectExporter
     private $videoFacade;
 
     /**
-     * @var Facade\LabeledThing
-     */
-    private $labeledThing;
-
-    /**
      * @var Service\DepthBuffer
      */
     private $depthBufferService;
@@ -67,22 +63,20 @@ class LegacyProjectToCsv implements Service\ProjectExporter
     /**
      * Csv constructor.
      *
-     * @param Service\GhostClassesPropagation $ghostClassesPropagationService
-     * @param Facade\LabeledThingInFrame      $labeledThingInFrameFacade
-     * @param Facade\LabeledThing             $labeledThing
-     * @param Facade\Project                  $projectFacade
-     * @param Facade\Video                    $videoFacade
-     * @param Service\DepthBuffer             $depthBufferService
-     * @param Facade\CalibrationData          $calibrationDataFacade
-     * @param Facade\Exporter                 $exporterFacade
-     * @param bool                            $headline
-     * @param string                          $delimiter
-     * @param string                          $enclosure
+     * @param Service\GhostClassesPropagation     $ghostClassesPropagationService
+     * @param LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory
+     * @param Facade\Project                      $projectFacade
+     * @param Facade\Video                        $videoFacade
+     * @param Service\DepthBuffer                 $depthBufferService
+     * @param Facade\CalibrationData              $calibrationDataFacade
+     * @param Facade\Exporter                     $exporterFacade
+     * @param bool                                $headline
+     * @param string                              $delimiter
+     * @param string                              $enclosure
      */
     public function __construct(
         Service\GhostClassesPropagation $ghostClassesPropagationService,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        Facade\LabeledThing $labeledThing,
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory,
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
         Service\DepthBuffer $depthBufferService,
@@ -92,17 +86,16 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         string $delimiter = ',',
         string $enclosure = '"'
     ) {
-        $this->ghostClassesPropagationService = $ghostClassesPropagationService;
-        $this->labeledThingInFrameFacade      = $labeledThingInFrameFacade;
-        $this->headline                       = $headline;
-        $this->delimiter                      = $delimiter;
-        $this->enclosure                      = $enclosure;
-        $this->projectFacade                  = $projectFacade;
-        $this->videoFacade                    = $videoFacade;
-        $this->labeledThing                   = $labeledThing;
-        $this->depthBufferService             = $depthBufferService;
-        $this->calibrationDataFacade          = $calibrationDataFacade;
-        $this->exporterFacade                 = $exporterFacade;
+        $this->ghostClassesPropagationService   = $ghostClassesPropagationService;
+        $this->labeledThingInFrameFacadeFactory = $labeledThingInFrameFacadeFactory;
+        $this->exporterFacade                   = $exporterFacade;
+        $this->headline                         = $headline;
+        $this->delimiter                        = $delimiter;
+        $this->enclosure                        = $enclosure;
+        $this->projectFacade                    = $projectFacade;
+        $this->videoFacade                      = $videoFacade;
+        $this->depthBufferService               = $depthBufferService;
+        $this->calibrationDataFacade            = $calibrationDataFacade;
     }
 
     /**
@@ -708,7 +701,11 @@ class LegacyProjectToCsv implements Service\ProjectExporter
      */
     private function loadLabeledThingsInFrame(Model\LabelingTask $task)
     {
-        $labeledThingsInFrames                 = $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task);
+        $labeledThingInFrameFacade             = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $task->getProjectId(),
+            $task->getId()
+        );
+        $labeledThingsInFrames                 = $labeledThingInFrameFacade->getLabeledThingsInFrame($task);
         $labeledThingsInFramesWithGhostClasses = $this->ghostClassesPropagationService->propagateGhostClasses(
             $labeledThingsInFrames
         );
@@ -766,7 +763,11 @@ class LegacyProjectToCsv implements Service\ProjectExporter
 
         /** @var Model\LabelingTask $labeledTask */
         foreach ($labeledTasks as $labeledTask) {
-            $incompleteLabeledThingInFrames = $this->labeledThingInFrameFacade->getIncompleteLabeledThingsInFrame(
+            $labeledThingInFrameFacade             = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+                $labeledTask->getProjectId(),
+                $labeledTask->getId()
+            );
+            $incompleteLabeledThingInFrames = $labeledThingInFrameFacade->getIncompleteLabeledThingsInFrame(
                 $labeledTask
             );
             if (count($incompleteLabeledThingInFrames) > 0) {

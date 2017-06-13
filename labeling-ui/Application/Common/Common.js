@@ -39,6 +39,7 @@ import SideNavigationDirective from './Directives/SideNavigationDirective';
 import UserAvatarDirective from './Directives/UserAvatarDirective';
 import PageTitleDirective from './Directives/PageTitleDirective';
 
+import PouchDbLiveMigration from './Services/PouchDbLiveMigration';
 import PouchDbContextService from './Services/PouchDbContextService';
 import PouchDbSyncManager from './Services/PouchDbSyncManager';
 import PouchDbSyncManagerMock from 'Tests/Support/PouchDb/PouchDbSyncManager';
@@ -112,6 +113,7 @@ class Common extends Module {
     this.module.service('pouchDbViewService', PouchDbViewService);
 
     // Without feature flag, as those services do not override others.
+    this.module.service('pouchDbLiveMigration', PouchDbLiveMigration);
     this.module.service('pouchDbContextService', PouchDbContextService);
     this.module.service('pouchDbViewHeater', PouchDbViewHeater);
 

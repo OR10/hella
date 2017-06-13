@@ -29,6 +29,7 @@ import OrganisationModule from './Organisation/Organisation';
 
 import Environment from './Common/Support/Environment';
 import PouchDB from 'pouchdb';
+import transformPouch from 'transform-pouch';
 
 // These imports need to be managed manually for now since jspm currently does not support
 // System.import at runtime (see https://github.com/jspm/jspm-cli/issues/778).
@@ -93,6 +94,15 @@ export default class Application {
   }
 
   /**
+   * @return {PouchDB}
+   * @private
+   */
+  _getInitializedPouchDb() {
+    PouchDB.plugin(transformPouch);
+    return PouchDB;
+  }
+
+  /**
    * Initializes the application by declaring and configuring modules
    */
   init() {
@@ -127,10 +137,11 @@ export default class Application {
       .then(() => this._getApplicationConfig())
       .then(applicationConfig => {
         this.app.constant('applicationConfig', applicationConfig);
-        this.app.constant('PouchDB', PouchDB);
 
+        const initializedPouchDB = this._getInitializedPouchDb();
+        this.app.constant('PouchDB', initializedPouchDB);
         if ((Environment.isDevelopment || Environment.isTesting) && FeatureFlags.pouchdb) {
-          window.PouchDB = PouchDB;
+          window.PouchDB = initializedPouchDB;
         }
       });
   }
