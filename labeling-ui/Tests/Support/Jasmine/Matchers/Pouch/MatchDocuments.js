@@ -26,15 +26,19 @@ function isOmittedKey(key) {
   return (omitKeys.indexOf(key) > -1);
 }
 
-export function matchDocuments(namedParamsRequestData, storedData) {
-  let result = true;
+function isFloatingPoint(value) {
+  return Number(value) === value && value % 1 !== 0;
+}
 
-  let keys;
-  if (namedParamsRequestData instanceof Array) {
-    keys = namedParamsRequestData;
-  } else {
-    keys = Object.keys(namedParamsRequestData);
-  }
+function matchFloatingPoint(expectedValue, actualValue, precision = 10) {
+  lastMatch.expected = Number(expectedValue.toPrecision(precision));
+  lastMatch.actual = Number(actualValue.toPrecision(precision));
+  return Math.abs(expectedValue - actualValue) < (Math.pow(10, -precision) / 2);
+}
+
+export function matchDocuments(namedParamsRequestData, storedData, upperLevel = true) {
+  let result = true;
+  const keys = Object.keys(namedParamsRequestData);
 
   for (let index = 0; index < keys.length; index++) {
     let actualValue;
@@ -48,7 +52,11 @@ export function matchDocuments(namedParamsRequestData, storedData) {
     const expectedValue = namedParamsRequestData[key];
     switch (key) {
       case 'id':
-        actualValue = storedData['_id'];
+        if (upperLevel) {
+          actualValue = storedData['_id'];
+        } else {
+          actualValue = storedData[key];
+        }
         break;
 
       case 'startFrameNumber':
@@ -76,11 +84,13 @@ export function matchDocuments(namedParamsRequestData, storedData) {
     }
 
     if (typeof expectedValue === 'object' && expectedValue !== null && actualValue !== undefined) {
-      result = matchDocuments(expectedValue, actualValue);
+      result = matchDocuments(expectedValue, actualValue, false);
     } else if (typeof expectedValue === 'string' && namedParamsTest.test(expectedValue)) {
       result = expectedValue.length > 0;
     } else if (isUnstableKey(key)) {
       result = expectedValue.length > 0;
+    } else if (isFloatingPoint(expectedValue)) {
+      result = matchFloatingPoint(expectedValue, actualValue);
     } else {
       result = (expectedValue === actualValue);
     }
