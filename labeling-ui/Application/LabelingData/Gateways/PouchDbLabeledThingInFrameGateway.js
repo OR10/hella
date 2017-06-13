@@ -254,31 +254,38 @@ class PouchDbLabeledThingInFrameGateway {
         'labeledThing',
         () => {
           this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
-          return dbContext.put(serializedLabeledThingInFrame);
-        })
-        .then(response => {
-          return dbContext.get(response.id);
-        })
-        .then(readDocument => {
-          this._revisionManager.extractRevision(readDocument);
-          return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
-        })
-        .then(deserializedLabeledThingInFrame => {
-          storedLabeledThingInFrame = deserializedLabeledThingInFrame;
-          storedLabeledThing = deserializedLabeledThingInFrame.labeledThing;
-          return this._packagingExecutor.execute(
-            'labeledThing',
-            () => dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
-              reduce: true,
-              keys: [storedLabeledThing.id],
-            }));
-        })
-        .then(response => {
-          const isLabeledThingIncomplete = (response.rows[0].value > 0);
-          return this._labeledThingGateway.saveLabeledThing(storedLabeledThing, isLabeledThingIncomplete);
-        })
-        .then(() => {
-          return storedLabeledThingInFrame;
+          return dbContext.put(serializedLabeledThingInFrame)
+            .then(response => {
+              return dbContext.get(response.id);
+            })
+            .then(readDocument => {
+              this._revisionManager.extractRevision(readDocument);
+
+              return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
+            })
+            .then(deserializedLabeledThingInFrame => {
+              storedLabeledThingInFrame = deserializedLabeledThingInFrame;
+              storedLabeledThing = deserializedLabeledThingInFrame.labeledThing;
+
+              return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
+                reduce: true,
+                keys: [storedLabeledThing.id],
+              });
+            })
+            .then(response => {
+              const isLabeledThingIncomplete = (response.rows[0].value > 0);
+              const serializedLabeledThing = this._couchDbModelSerializer.serialize(storedLabeledThing);
+              serializedLabeledThing.incomplete = isLabeledThingIncomplete;
+
+              this._injectRevisionOrFailSilently(serializedLabeledThing);
+
+              return dbContext.put(serializedLabeledThing)
+                .then(dbResponse => dbContext.get(dbResponse.id))
+                .then(readLabeledThingDocument => this._revisionManager.extractRevision(readLabeledThingDocument));
+            })
+            .then(() => {
+              return storedLabeledThingInFrame;
+            });
         });
     });
   }
