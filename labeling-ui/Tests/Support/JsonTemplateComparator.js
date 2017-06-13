@@ -2,6 +2,7 @@ import OuterDocumentVisitor from './JsonTemplateComparator/OuterDocumentVisitor'
 import TemplateDictionaryExtractor from './JsonTemplateComparator/TemplateDictionaryExtractor';
 import ValueComparator from './JsonTemplateComparator/ValueComparator';
 import InnerDocumentVisitor from "./JsonTemplateComparator/InnerDocumentVisitor";
+import {deterministicJsonStringify} from './DeterministicJsonStringify';
 
 import levenshtein from 'fast-levenshtein';
 
@@ -41,7 +42,10 @@ class JsonTemplateComparator {
       try {
         this.assertIsEqual(expectedTemplate, item);
       } catch (error) {
-        const levenshteinDistance = levenshtein.get(JSON.stringify(item), JSON.stringify(expectedTemplate));
+        const levenshteinDistance = levenshtein.get(
+          deterministicJsonStringify(item),
+          deterministicJsonStringify(expectedTemplate)
+        );
         if (levenshteinDistance < distance) {
           distance = levenshteinDistance;
           bestCandidate = {item, error};
