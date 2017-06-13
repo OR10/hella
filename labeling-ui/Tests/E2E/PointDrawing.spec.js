@@ -172,6 +172,9 @@ describe('Point drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.MoveOnePoint);
       })
+      .then(() => {
+        browser.sleep(500)
+      })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainRequest(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1);
@@ -232,6 +235,9 @@ describe('Point drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewPoint);
       })
+      .then(() => {
+        browser.sleep(500)
+      })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing);
@@ -272,6 +278,9 @@ describe('Point drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewMultiplePoints);
+      })
+      .then(() => {
+        browser.sleep(500)
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
