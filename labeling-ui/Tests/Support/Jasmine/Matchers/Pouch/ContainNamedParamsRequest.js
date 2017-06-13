@@ -1,15 +1,17 @@
-import {matchDocuments, lastMatchChecked} from './MatchDocuments';
+import {matchDocuments} from './MatchDocuments';
 
 function checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult) {
   if (namedParamsRequestData.labeledThing && namedParamsRequestData.labeledThingInFrame) {
     namedParamsRequestData = namedParamsRequestData.labeledThingInFrame;
   }
-  const matchingDocuments = allPouchDocuments.rows.filter(row => matchDocuments(namedParamsRequestData, row.doc));
-  const result = matchingDocuments.length > 0;
-  const lastMatchMade = lastMatchChecked();
-  overallResult.message = `0 matching documents found. Last Check made: Expected key "${lastMatchMade.key} to be "${lastMatchMade.expected}". Got "${lastMatchMade.actual}"`;
+  const collection = allPouchDocuments.rows
+    .map(row => row.doc)
+    .filter(doc => !(doc._id.indexOf('_design/') === 0));
 
-  return result;
+  const {message, pass} = matchDocuments(namedParamsRequestData, collection);
+  overallResult.message = message;
+
+  return pass;
 }
 
 function isDocumentDeleted(namedParamsRequestData, allPouchDocuments, overallResult) {
