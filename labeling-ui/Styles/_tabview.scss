@@ -28,7 +28,7 @@ tab-view {
     background: none;
     @include font-l();
     text-transform: lowercase;
-
+    padding: 0 80px 48px 0;
     &.is-active {
       color: $color-ut-darkgrey-2;
       // font-weight: bold;
@@ -50,6 +50,9 @@ tab-view {
   h2 {
     text-align: center;
   }
+}
+.tab-contents {
+  padding: 0;
 }
 .gray-tab-view {
   background: $color-ut-lightgrey-3;
