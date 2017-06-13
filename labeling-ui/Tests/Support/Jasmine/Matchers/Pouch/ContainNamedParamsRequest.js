@@ -7,7 +7,7 @@ function checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouc
   const matchingDocuments = allPouchDocuments.rows.filter(row => matchDocuments(namedParamsRequestData, row.doc));
   const result = matchingDocuments.length > 0;
   const lastMatchMade = lastMatchChecked();
-  overallResult.message = `0 matching documents found. Last Check made: Expected key "${lastMatchMade.key} to be "${lastMatchMade.expected}". Got "${lastMatchMade.actual}"`;
+  overallResult.message = `0 matching documents found. Last Check made: Expected key "${lastMatchMade.key}" to be "${lastMatchMade.expected}". Got "${lastMatchMade.actual}"`;
 
   return result;
 }
