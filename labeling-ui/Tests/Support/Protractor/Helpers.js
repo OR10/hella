@@ -146,7 +146,8 @@ export function mock(sharedMocks) {
   mocks.specific = mocks.shared.filter((mock, key) => {
     const hasLabeledThings = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThings);
     const hasLabeledThingsInFrame = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThingsInFrame);
-    const mustBeStoredInCouch = (hasLabeledThings || hasLabeledThingsInFrame);
+    const isGetRequest = mock.request.method.toUpperCase() === 'GET';
+    const mustBeStoredInCouch = ((hasLabeledThings || hasLabeledThingsInFrame) && isGetRequest);
     if (mustBeStoredInCouch) {
       specificMocksKeys.push(key);
     }
