@@ -439,7 +439,7 @@ title-bar {
   .upload-content-files {
     columns: 2;
     text-align: left;
-    position: absolute;
+    position: relative;
     width: calc(100% - 20px);
     div {
       padding: 3px;
