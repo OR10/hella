@@ -16,11 +16,41 @@ class ValueComparator extends InnerDocumentVisitor {
     let expectedScalar = firstNode;
     let actualScalar = secondNode;
 
-    if (!isString(expectedScalar) || !isString(actualScalar)) {
-      return this._assertScalarsAreMatching(expectedScalar, actualScalar, path);
+    switch (true) {
+      case isString(expectedScalar) && isString(actualScalar):
+        return this._assertStringsAreMatching(expectedScalar, actualScalar, path);
+      case this._isFloat(expectedScalar) && this._isFloat(actualScalar):
+        return this._assertFloatsAreMatching(expectedScalar, actualScalar, path);
+      default:
+        return this._assertScalarsAreMatching(expectedScalar, actualScalar, path);
+    }
+  }
+
+  /**
+   * @param {*} value
+   * @returns {boolean}
+   * @private
+   */
+  _isFloat(value) {
+    return Number(value) === value && value % 1 !== 0;
+  }
+
+  /**
+   * @param {Number} expectedValue
+   * @param {Number} actualValue
+   * @param {string} path
+   * @param {Number?} precision
+   * @private
+   */
+  _assertFloatsAreMatching(expectedValue, actualValue, path, precision = 10) {
+    const delta = Math.pow(10, -precision) / 2;
+    const difference = Math.abs(expectedValue - actualValue);
+
+    if (difference < delta) {
+      return;
     }
 
-    this._assertStringsAreMatching(expectedScalar, actualScalar, path);
+    throw new Error(`Floating point values differ by more than ${delta}: ${expectedValue} !== ${actualValue} (difference: ${difference}) at location ${path}`);
   }
 
   /**
@@ -45,7 +75,7 @@ class ValueComparator extends InnerDocumentVisitor {
     return this._assertScalarsAreMatching(
       template.expandWithDictionary(this._dictionary),
       actualString,
-      path
+      path,
     );
   }
 
