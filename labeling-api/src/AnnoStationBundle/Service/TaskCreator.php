@@ -174,7 +174,7 @@ class TaskCreator
                     || $this->isCuboidInRequirementsXml($project))
             ) {
                 throw new Missing3dVideoCalibrationData(
-                    sprintf('Calibration data not found: %s', $calibrationDataId)
+                    sprintf('Calibration data not found for Video: %s', $video->getName())
                 );
             }
 
@@ -182,7 +182,7 @@ class TaskCreator
                 $calibrationData = $this->calibrationDataFacade->findById($calibrationDataId);
                 if ($calibrationData === null) {
                     throw new Missing3dVideoCalibrationData(
-                        sprintf('Calibration data not found: %s', $calibrationDataId)
+                        sprintf('Calibration data not found for Video: %s', $video->getName())
                     );
                 }
 
