@@ -62,7 +62,7 @@ class LabeledThingInFrameForLabeledThing implements \IteratorAggregate
         usort(
             $this->labeledThingsInFrames,
             function (Model\LabeledThingInFrame $a, Model\LabeledThingInFrame $b) {
-                return strcmp($a->getFrameIndex(), $b->getFrameIndex());
+                return $a->getFrameIndex() - $b->getFrameIndex();
             }
         );
 
