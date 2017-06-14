@@ -392,15 +392,18 @@ class ProjectListController {
     const startDate = moment.unix(startTimeStamp);
     const projectDuration = moment.duration(endDate.diff(startDate)).asDays();
     const currentProgress = moment.duration(moment().diff(startDate)).asDays();
-    let colorClass = 'red-progress-color';
+
+    let colorClass = this._getBackgroundColorForProgress(null);
+
     if (projectDuration > currentProgress) {
       // project is in due date
       const progress = Math.round((currentProgress) * 100 / projectDuration);
       colorClass = this._getBackgroundColorForProgress(progress);
+
       return {progress: progress - 100 + '%', class: colorClass};
     }
     // project is out of due date
-    return {progress: 0 + '%', class: colorClass};
+    return {progress: '0%', class: colorClass};
   }
 
   /**
@@ -408,6 +411,9 @@ class ProjectListController {
    * @returns {String}
    */
   _getBackgroundColorForProgress(progress) {
+    if (progress === null) {
+      return 'red-progress-color';
+    }
     if (progress > 80) {
       return 'red-progress-color';
     }
