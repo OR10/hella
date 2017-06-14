@@ -7,5 +7,5 @@ labeling_api::app: false
 
 labeling_api::params::create_parameter_files: false
 labeling_api::params::couchdb_hosts:
-  192.168.34.25: couch-0
-  192.168.34.28: couch-1
+  couch-0: '192.168.34.25'
+  couch-1: '192.168.34.28'
