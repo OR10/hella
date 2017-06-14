@@ -163,10 +163,9 @@ class PouchDbLabeledFrameGateway {
           labeledFrameDocument.frameIndex = frameIndex;
           this._injectRevisionOrFailSilently(labeledFrameDocument);
           if (labeledFrameDocument._id === undefined || labeledFrameDocument._id === null) {
-            // The backend currently explicitly creates those ids if not present
-            // @TODO: Check why this is necessary, if it is. In may opinion the Frontend Models should already
-            //        have an id.
-            labeledFrameDocument._id = this._entityIdService.getUniqueId();
+            // This must never happen. In order to prevent duplicate FrameLabel entries, do not store anything
+            // if FrameLabel document has no id
+            throw new Error('Labeled Frame is not as it should be')
           }
 
           return db.put(labeledFrameDocument);
