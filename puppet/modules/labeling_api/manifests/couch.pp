@@ -6,6 +6,7 @@ class labeling_api::couch(
   $couchdb_user_read_only = $labeling_api::params::couchdb_user_read_only,
   $couchdb_password_read_only = $labeling_api::params::couchdb_password_read_only,
   $prepare_test_environment = $labeling_api::params::prepare_test_environment,
+  $couchdb_hosts = $labeling_api::params::couchdb_hosts,
   $max_open_files = undef,
   $max_dbs_open = 100,
   $max_http_connections = 2048,
@@ -71,6 +72,20 @@ class labeling_api::couch(
       line    => "ERL_MAX_PORTS=${max_erlang_ports}",
       match   => '^.*ERL_MAX_PORTS\s*=.*',
       notify  => Service[$::couchdb::service_name],
+    }
+  }
+
+  if $couchdb_hosts {
+    $couchdb_hosts.each |String $hostname, String $ip| {
+      host { $hostname:
+        ip => $ip,
+      }
+      if file_exists ("/etc/cloud/templates/hosts.debian.tmpl") == 1 {
+        file_line { "/etc/cloud/templates/hosts.debian.tmpl[${ip}${hostname}]":
+          path    => '/etc/cloud/templates/hosts.debian.tmpl',
+          line    => "${ip} ${hostname}",
+        }
+      }
     }
   }
 }
