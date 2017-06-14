@@ -77,8 +77,14 @@ class labeling_api::couch(
 
   if $couchdb_hosts {
     $couchdb_hosts.each |String $hostname, String $ip| {
-      host {
-        $hostname: ip => $ip;
+      host { $hostname:
+        ip => $ip,
+      }
+      if file_exists ("/etc/cloud/templates/hosts.debian.tmpl") == 1 {
+        file_line { "/etc/cloud/templates/hosts.debian.tmpl[${ip}${hostname}]":
+          path    => '/etc/cloud/templates/hosts.debian.tmpl',
+          line    => "${ip} ${hostname}",
+        }
       }
     }
   }
