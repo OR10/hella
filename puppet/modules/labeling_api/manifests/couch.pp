@@ -80,7 +80,8 @@ class labeling_api::couch(
       host { $hostname:
         ip => $ip,
       }
-      if file_exists ("/etc/cloud/templates/hosts.debian.tmpl") == 1 {
+      
+      if $::has_cloud_init {
         file_line { "/etc/cloud/templates/hosts.debian.tmpl[${ip}${hostname}]":
           path    => '/etc/cloud/templates/hosts.debian.tmpl',
           line    => "${ip} ${hostname}",
