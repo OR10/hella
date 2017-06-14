@@ -43,7 +43,6 @@ table.table {
   }
 
   thead,
-
   tfoot {
     background-color: $color-ut-lightgrey-1;
 
@@ -81,12 +80,6 @@ table.table {
   }
 
   tbody {
-    tr:nth-child(odd) {
-      td {
-        //background-color: $color-ut-lightgrey-2;
-      }
-    }
-
     th, td {
       padding: 0.6rem 0.725rem 0.725rem;
     }
@@ -218,6 +211,34 @@ pagination-controls {
       input:focus {
         background: transparent;
         border: none;
+      }
+    }
+  }
+}
+.table-background-progress {
+  position: absolute;
+  left: -100%;
+  margin-top: -13px;
+  height: 43px;
+  width: 100%;
+  z-index: -1;
+}
+.table-tr-div-background {
+  position: absolute;
+  left: 0;
+  margin-top: -13px;
+  height: 43px;
+  width: 100%;
+  z-index: -2;
+}
+.table-background-even-odd {
+  tbody {
+    td, th {
+      background-color: $color-ut-lightgrey-3;
+    }
+    tr:nth-child(even) {
+      td {
+        background-color: $color-ut-lightgrey-2;
       }
     }
   }

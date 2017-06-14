@@ -375,19 +375,19 @@ class ProjectListController {
   }
 
   
-  calculateProjectProgressInDuration(project) {
+  calculateProjectProgressFromDuration(project) {
     if (project === undefined) {
       return 0
     }
-    const startDate = project.creationTimestamp;
-    const endDate =  project.dueTimestamp;
-    if (startDate === undefined || endDate === null) {
+    const startTimeStamp = project.creationTimestamp;
+    const endTimeStamp =  project.dueTimestamp;
+    if (startTimeStamp === null || endTimeStamp === null) {
       return 0;
     }
-    const end = moment.unix(endDate);
-    const start = moment.unix(startDate);
-    const projectDuration = moment.duration(end.diff(start)).asDays();
-    const currentProgress = moment.duration(end.diff(moment())).asDays();
+    const endDate = moment.unix(endTimeStamp);
+    const startDate = moment.unix(startTimeStamp);
+    const projectDuration = moment.duration(endDate.diff(startDate)).asDays();
+    const currentProgress = moment.duration(endDate.diff(moment())).asDays();
     if (projectDuration > currentProgress) {
       // project is in duration
       const progress = Math.round(currentProgress * 100 / projectDuration);
@@ -400,7 +400,6 @@ class ProjectListController {
       }
       return {left: progress - 100 + '%', background: '#BFDB31'};
     }
-    
   }
   /**
    * @param {string} projectId
