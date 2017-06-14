@@ -24,8 +24,16 @@
         </thead>
         <tbody ng-if="vm.projects.length > 0">
         <tr>
-        <tr ng-repeat="project in vm.projects track by project.id" ng-click="project.status != 'deleted' && vm.openProject(project.id)">
+        <tr ng-repeat="project in vm.projects track by project.id" ng-init="projectIndex = $index" ng-click="project.status != 'deleted' && vm.openProject(project.id)">
             <td ng-repeat="column in vm.columns track by $index">
+                <div class="table-background-progress" ng-init="result = vm.calculateProjectProgressFromDuration(project)" ng-if="$index == 0"
+                     ng-style="{left: result.progress}" ng-class="result.class"
+                >
+                </div>
+                <div class="table-tr-div-background"
+                     ng-style="{background: projectIndex % 2 == 0 ? '#D0D6DD' : '#D7DDE4'}"
+                >
+                </div>
                 <i class="icon icon-medium icon-legacy-project" ng-if="column.property === 'name' && project.taskInstructionType === 'legacy'"></i>
                 <i class="icon icon-medium icon-requirements-xml-project" ng-if="column.property === 'name' && project.taskInstructionType === 'requirementsXml'"></i>
                 <i class="icon icon-medium icon-simple-xml-project" ng-if="column.property === 'name' && project.taskInstructionType === 'genericXml'"></i>

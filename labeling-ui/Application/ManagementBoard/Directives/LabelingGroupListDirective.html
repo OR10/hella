@@ -7,7 +7,7 @@
         <h3 ng-switch-when="true">Loading labeling groups...</h3>
         <h3 ng-switch-default>There are currently no labeling groups available.</h3>
     </div>
-    <table class="table view-list-table"
+    <table class="table table-background-even-odd view-list-table"
            ng-class="{hover: vm.loadingInProgress == false && vm.groups.length > 0}">
         <!--
              Display real information
