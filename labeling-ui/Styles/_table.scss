@@ -215,6 +215,7 @@ pagination-controls {
     }
   }
 }
+
 .table-background-progress {
   position: absolute;
   left: -100%;
@@ -223,6 +224,7 @@ pagination-controls {
   width: 100%;
   z-index: -1;
 }
+
 .table-tr-div-background {
   position: absolute;
   left: 0;
@@ -231,6 +233,7 @@ pagination-controls {
   width: 100%;
   z-index: -2;
 }
+
 .table-background-even-odd {
   tbody {
     td, th {
@@ -242,4 +245,14 @@ pagination-controls {
       }
     }
   }
+}
+
+.red-progress-color {
+  background: $color-ut-red;
+}
+.gray-progress-color{
+  background: $color-ut-lightgrey-4;
+}
+.yellow-progress-color {
+  background: $color-ut-yellow;
 }

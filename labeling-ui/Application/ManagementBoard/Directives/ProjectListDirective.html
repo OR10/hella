@@ -26,8 +26,8 @@
         <tr>
         <tr ng-repeat="project in vm.projects track by project.id" ng-init="projectIndex = $index" ng-click="project.status != 'deleted' && vm.openProject(project.id)">
             <td ng-repeat="column in vm.columns track by $index">
-                <div class="table-background-progress" ng-if="$index == 0"
-                     ng-style="vm.calculateProjectProgressFromDuration(project)"
+                <div class="table-background-progress" ng-init="result = vm.calculateProjectProgressFromDuration(project)" ng-if="$index == 0"
+                     ng-style="{left: result.progress}" ng-class="result.class"
                 >
                 </div>
                 <div class="table-tr-div-background"

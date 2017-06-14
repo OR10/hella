@@ -383,8 +383,6 @@ class ProjectListController {
     if (project === undefined) {
       return null;
     }
-    const colorUtRed = '#DB315B';
-    const colorUtYellow = '#BFDB31';
     const startTimeStamp = project.creationTimestamp;
     const endTimeStamp = project.dueTimestamp;
     if (startTimeStamp === null || endTimeStamp === null) {
@@ -393,23 +391,27 @@ class ProjectListController {
     const endDate = moment.unix(endTimeStamp);
     const startDate = moment.unix(startTimeStamp);
     const projectDuration = moment.duration(endDate.diff(startDate)).asDays();
-    const currentProgress = moment.duration(endDate.diff(moment())).asDays();
+    const currentProgress = moment.duration(moment().diff(startDate)).asDays();
+    let colorClass = 'red-progress-color';
     if (projectDuration > currentProgress) {
       // project is in due date
-      const progress = Math.round(currentProgress * 100 / projectDuration);
-      if (progress === 100) {
-        // if new project is started show a little progress
-        return {left: -99 + '%', background: colorUtYellow};
-      }
-      if (progress > 80) {
-        // if progress is more then 80% show red color in row
-        return {left: progress - 100 + '%', background: colorUtRed};
-      }
-      // progress is under 80% show green color
-      return {left: progress - 100 + '%', background: colorUtYellow};
+      const progress = Math.round((currentProgress) * 100 / projectDuration);
+      colorClass = this._getBackgroundColorForProgress(progress);
+      return {progress: progress - 100 + '%', class: colorClass};
     }
     // project is out of due date
-    return {left: 0 + '%', background: colorUtRed};
+    return {progress: 0 + '%', class: colorClass};
+  }
+
+  /**
+   * @param {Number} progress
+   * @returns {String}
+   */
+  _getBackgroundColorForProgress(progress) {
+    if (progress > 80) {
+      return 'red-progress-color';
+    }
+    return 'yellow-progress-color';
   }
 
   /**
