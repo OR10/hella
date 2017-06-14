@@ -374,33 +374,44 @@ class ProjectListController {
     });
   }
 
-  
+  /**
+   * Calculate the project progress by start date and due date
+   * @param {Object} project
+   * @returns {Object}
+   */
   calculateProjectProgressFromDuration(project) {
     if (project === undefined) {
-      return 0
+      return null;
     }
+    const colorUtRed = '#DB315B';
+    const colorUtYellow = '#BFDB31';
     const startTimeStamp = project.creationTimestamp;
-    const endTimeStamp =  project.dueTimestamp;
+    const endTimeStamp = project.dueTimestamp;
     if (startTimeStamp === null || endTimeStamp === null) {
-      return 0;
+      return null;
     }
     const endDate = moment.unix(endTimeStamp);
     const startDate = moment.unix(startTimeStamp);
     const projectDuration = moment.duration(endDate.diff(startDate)).asDays();
     const currentProgress = moment.duration(endDate.diff(moment())).asDays();
     if (projectDuration > currentProgress) {
-      // project is in duration
+      // project is in due date
       const progress = Math.round(currentProgress * 100 / projectDuration);
-      console.log(progress);
       if (progress === 100) {
-        return {left: 1 - 100 + '%', background: '#BFDB31'}
+        // if new project is started show a little progress
+        return {left: -99 + '%', background: colorUtYellow};
       }
-      if (progress > 50) {
-        return {left: progress - 100 + '%', background: '#DB315B'}
+      if (progress > 80) {
+        // if progress is more then 80% show red color in row
+        return {left: progress - 100 + '%', background: colorUtRed};
       }
-      return {left: progress - 100 + '%', background: '#BFDB31'};
+      // progress is under 80% show green color
+      return {left: progress - 100 + '%', background: colorUtYellow};
     }
+    // project is out of due date
+    return {left: 0 + '%', background: colorUtRed};
   }
+
   /**
    * @param {string} projectId
    */
