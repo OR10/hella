@@ -4,5 +4,14 @@
     ></back-link>
 </page-title>
 <div class="page-content">
-    <users-list user-permissions="vm.userPermissions" class="grid-block"></users-list>
+    <tab-view>
+        <tab header="new">
+            <user-profile user-permissions="vm.userPermissions" id="vm.userId" readonly="false"
+                          class="grid-block"></user-profile>
+        </tab>
+        <tab header="manage">
+            <users-list user-permissions="vm.userPermissions" class="grid-block"></users-list>
+        </tab>
+    </tab-view>
+
 </div>
