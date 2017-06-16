@@ -412,7 +412,7 @@ class UserProfileController {
       this.validation.password = valid = false;
     }
 
-    if (this.userOrganisations.length === 0) {
+    if (this.userPermissions.canAddUserToAnyOrganisation && this.userOrganisations.length === 0) {
       this.validation.organisations = valid = false;
     }
 
