@@ -135,6 +135,7 @@ class Init extends Base
      * @param Facade\Organisation                          $organisationFacade
      * @param AppFacade\CouchDbUsers                       $couchDbUsersFacade
      * @param AppFacade\CouchDbSecurity                    $couchDbSecurityFacade
+     * @param Service\UserRolesRebuilder                   $userRolesRebuilderService
      * @param string                                       $couchUser
      * @param string                                       $couchReadOnlyUser
      * @param bool                                         $pouchdbFeatureEnabled
