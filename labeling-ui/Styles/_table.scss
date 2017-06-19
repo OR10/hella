@@ -212,6 +212,24 @@ pagination-controls {
         background: transparent;
         border: none;
       }
+      .pull-right {
+        margin-right: 10px;
+        i {
+          font-size: 20px;
+        }
+        i:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .drop-down-cell {
+    border-bottom: 2px solid $color-ut-midgrey-1 !important;
+    td {
+      background: $color-ut-midgrey-3 !important;
+    }
+    i:hover {
+      cursor: pointer;
     }
   }
 }

@@ -102,6 +102,11 @@ class UserProfileController {
     this.currentUserService = currentUserService;
 
     /**
+     * @type {boolean}
+     */
+    this.isOrganisationExpand = false;
+
+    /**
      *
      * @type {Array}
      */
@@ -417,6 +422,14 @@ class UserProfileController {
     }
 
     return valid;
+  }
+
+  /**
+   * @param {Organisation} organisation
+   * @returns {boolean}
+   */
+  canAddOrganisationToUser(organisation) {
+    return this.userOrganisations.filter(org => org.id === organisation.id).length === 0;
   }
 }
 
