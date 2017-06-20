@@ -9,6 +9,7 @@ describe('PouchDbContextService', () => {
   let toBeCleanedContexts;
 
   let PouchDbContextService;
+  let pouchDbLiveMigrationMock;
 
   const mockConfig = {
     Common: {
@@ -27,8 +28,11 @@ describe('PouchDbContextService', () => {
   beforeEach(() => {
     toBeCleanedContexts = [];
 
+    pouchDbLiveMigrationMock = jasmine.createSpyObj('PouchDbLiveMigration', ['install']);
+
     module($provide => {
       $provide.value('PouchDB', PouchDB);
+      $provide.value('pouchDbLiveMigration', pouchDbLiveMigrationMock);
       $provide.value('applicationConfig', mockConfig);
     });
 
@@ -77,6 +81,21 @@ describe('PouchDbContextService', () => {
       toBeCleanedContexts.push(contextA);
 
       expect(contextA === contextB).toEqual(true);
+    });
+
+    it('should install live migrations on newly created context', () => {
+      const context = PouchDbContextService.provideContextForTaskId('some-task-id');
+      toBeCleanedContexts.push(context);
+
+      expect(pouchDbLiveMigrationMock.install).toHaveBeenCalledWith(context);
+    });
+
+    it('should not install live migrations on cached context again', () => {
+      const contextA = PouchDbContextService.provideContextForTaskId('same');
+      PouchDbContextService.provideContextForTaskId('same');
+      toBeCleanedContexts.push(contextA);
+
+      expect(pouchDbLiveMigrationMock.install).toHaveBeenCalledTimes(1);
     });
   });
 

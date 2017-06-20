@@ -10,6 +10,8 @@ use AppBundle\Model\Shapes;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Exporter;
 use AppBundle\Tests;
+use AnnoStationBundle\Database\Facade\LabeledThing;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
 
 class LegacyProjectToCsvTest extends Tests\KernelTestCase
 {
@@ -27,16 +29,6 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
-
-    /**
-     * @var Facade\LabeledThing
-     */
-    private $labeledThingFacade;
-
-    /**
-     * @var Facade\LabeledThingInFrame
-     */
-    private $labeledThingInFrameFacade;
 
     /**
      * @var Exporter\LegacyProjectToCsv
@@ -73,20 +65,42 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
      */
     private $organisationFacade;
 
+    /**
+     * @var LabeledThingInFrame\FacadeInterface
+     */
+    private $labeledThingInFrameFacadeFactory;
+
+    /**
+     * @var LabeledThing\FacadeInterface
+     */
+    private $labeledThingFactory;
+
+    /**
+     * @var Service\TaskDatabaseCreator
+     */
+    private $taskDatabaseCreator;
+
     protected function setUpImplementation()
     {
-        $this->videoFacade               = $this->getAnnostationService('database.facade.video');
-        $this->calibrationDataFacade     = $this->getAnnostationService('database.facade.calibration_data');
-        $this->projectFacade             = $this->getAnnostationService('database.facade.project');
-        $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
-        $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
-        $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
-        $this->exporterFacade            = $this->getAnnostationService('database.facade.exporter');
-        $this->organisationFacade        = $this->getAnnostationService('database.facade.organisation');
-        $this->exporter                  = $this->getAnnostationService('service.exporter.legacy_project_to_csv');
-        $this->calibrationFileConverter  = $this->getAnnostationService('service.calibration_file_converter');
-        $this->project                   = $this->createProject($this->createOrganisation());
-        $this->video                     = $this->createVideo($this->createOrganisation());
+        $this->videoFacade                      = $this->getAnnostationService('database.facade.video');
+        $this->calibrationDataFacade            = $this->getAnnostationService('database.facade.calibration_data');
+        $this->projectFacade                    = $this->getAnnostationService('database.facade.project');
+        $this->labelingTaskFacade               = $this->getAnnostationService('database.facade.labeling_task');
+        $this->labeledThingFactory              = $this->getAnnostationService(
+            'database.facade.factory.labeled_thing'
+        );
+        $this->labeledThingInFrameFacadeFactory = $this->getAnnostationService(
+            'database.facade.factory.labeled_thing_in_frame'
+        );
+        $this->exporterFacade                   = $this->getAnnostationService('database.facade.exporter');
+        $this->organisationFacade               = $this->getAnnostationService('database.facade.organisation');
+        $this->exporter                         = $this->getAnnostationService(
+            'service.exporter.legacy_project_to_csv'
+        );
+        $this->calibrationFileConverter         = $this->getAnnostationService('service.calibration_file_converter');
+        $this->taskDatabaseCreator              = $this->getAnnostationService('service.task_database_creator');
+        $this->project                          = $this->createProject($this->createOrganisation());
+        $this->video                            = $this->createVideo($this->createOrganisation());
     }
 
     public function pedestrianProvider()
@@ -486,7 +500,11 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
 
         $task->setLabelInstruction($labelInstruction);
 
-        return $this->labelingTaskFacade->save($task);
+        $this->labelingTaskFacade->save($task);
+
+        $this->taskDatabaseCreator->createDatabase($this->project, $task);
+
+        return $task;
     }
 
     /**
@@ -509,13 +527,22 @@ class LegacyProjectToCsvTest extends Tests\KernelTestCase
         array $shapes = [],
         bool $incomplete = false
     ) {
-        $labeledThing = $this->labeledThingFacade->save(
+        $labeledThingFacade = $this->labeledThingFactory->getFacadeByProjectIdAndTaskId(
+            $task->getProjectId(),
+            $task->getId()
+        );
+        $labeledThing       = $labeledThingFacade->save(
             Model\LabeledThing::create($task)
                 ->setFrameRange(new Model\FrameIndexRange($frameIndex, $frameIndex))
                 ->setClasses($type === null ? [] : [$type])
         );
 
-        return $this->labeledThingInFrameFacade->save(
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $task->getProjectId(),
+            $task->getId()
+        );
+
+        return $labeledThingInFrameFacade->save(
             Model\LabeledThingInFrame::create($labeledThing, $frameIndex)
                 ->setShapes(
                     array_map(
