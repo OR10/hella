@@ -14,7 +14,6 @@ class UploadFormDirective {
       uploadPath: '@',
       uploadCompletePath: '@',
       uploadCompleteMessage: '@',
-      uploadAdditionalForText: '@',
     };
 
     this.template = uploadFormTemplate;
