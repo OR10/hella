@@ -1,0 +1,5 @@
+*    * * * * <%= @symfonyUser %>               <%= @symfonyRoot %>/bin/console --env=<%= @symfonyEnvironment %> <%= @reschedulerCommand %> worker.reschedule.30s
+*    * * * * <%= @symfonyUser %> /bin/sleep 30;<%= @symfonyRoot %>/bin/console --env=<%= @symfonyEnvironment %> <%= @reschedulerCommand %> worker.reschedule.30s
+*    * * * * <%= @symfonyUser %>               <%= @symfonyRoot %>/bin/console --env=<%= @symfonyEnvironment %> <%= @reschedulerCommand %> worker.reschedule.60s
+*/5  * * * * <%= @symfonyUser %>               <%= @symfonyRoot %>/bin/console --env=<%= @symfonyEnvironment %> <%= @reschedulerCommand %> worker.reschedule.300s
+*/15 * * * * <%= @symfonyUser %>               <%= @symfonyRoot %>/bin/console --env=<%= @symfonyEnvironment %> <%= @reschedulerCommand %> worker.reschedule.900s
