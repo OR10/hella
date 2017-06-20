@@ -159,6 +159,17 @@ class PouchDbLabeledFrameGateway {
       const db = this._pouchDbContextService.provideContextForTaskId(task.id);
       return this._$q.resolve()
         .then(() => {
+          return this._getCurrentOrPreceedingLabeledFrame(db, task, frameIndex)
+        })
+        .then(labeledFrameInPouch => {
+          // Make sure a document for a frame is never stored twice. If for some reason (e.g. opening the task
+          // in a second tab and saving the meta information there) the information in the Pouch is newer than
+          // the currently stored one from the js variant, make sure that it is saved with the same id
+          if (labeledFrameInPouch.id !== labeledFrame.id) {
+            labeledFrame.id = labeledFrameInPouch.id
+          }
+        })
+        .then(() => {
           const labeledFrameDocument = this._couchDbModelSerializer.serialize(labeledFrame);
           labeledFrameDocument.frameIndex = frameIndex;
           this._injectRevisionOrFailSilently(labeledFrameDocument);
