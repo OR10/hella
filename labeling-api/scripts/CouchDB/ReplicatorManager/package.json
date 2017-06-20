@@ -4,6 +4,7 @@
   "description": "Package to listen to the CouchDB Database feed and create replications",
   "main": "ReplicationManager.js",
   "dependencies": {
-    "nano": "^6.2.0"
+    "nano": "^6.2.0",
+    "md5": "2.2.1"
   }
 }

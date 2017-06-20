@@ -1,5 +1,7 @@
 table.table {
   width: 100%;
+  position: relative;
+  display: table;
 
   a {
     color: $color-ut-midgrey-2;
@@ -41,7 +43,6 @@ table.table {
   }
 
   thead,
-  tbody,
   tfoot {
     background-color: $color-ut-lightgrey-1;
 
@@ -79,12 +80,6 @@ table.table {
   }
 
   tbody {
-    tr:nth-child(odd) {
-      td {
-        background-color: $color-ut-lightgrey-2;
-      }
-    }
-
     th, td {
       padding: 0.6rem 0.725rem 0.725rem;
     }
@@ -219,4 +214,45 @@ pagination-controls {
       }
     }
   }
+}
+
+.table-background-progress {
+  position: absolute;
+  left: -100%;
+  margin-top: -13px;
+  height: 43px;
+  width: 100%;
+  z-index: -1;
+}
+
+.table-tr-div-background {
+  position: absolute;
+  left: 0;
+  margin-top: -13px;
+  height: 43px;
+  width: 100%;
+  z-index: -2;
+}
+
+.table-background-even-odd {
+  tbody {
+    td, th {
+      background-color: $color-ut-lightgrey-3;
+    }
+    tr:nth-child(even) {
+      td {
+        background-color: $color-ut-lightgrey-2;
+      }
+    }
+  }
+}
+
+.red-progress-color {
+  background: $color-ut-red;
+}
+.gray-progress-color{
+  background: $color-ut-lightgrey-4;
+}
+.yellow-progress-color {
+  background: $color-ut-yellow;
 }

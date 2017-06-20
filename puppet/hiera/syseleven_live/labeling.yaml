@@ -1,4 +1,5 @@
 annostation_base::authorized_keys: true
+annostation_base::nodejs: true
 labeling_api::app::symfonyRoot: '/var/www/labeling-api/current'
 
 php::fpm::pools:
@@ -52,7 +53,7 @@ labeling_api::params::database_name_read_only: 'labeling_api_read_only'
 labeling_api::params::database_user: 'labeling_api'
 labeling_api::params::database_password: 'pEid4oShu'
 labeling_api::params::couchdb_user_read_only: 'labeling_api_read_only'
-labeling_api::params::couchdb_password_read_only: 'pEid4oShu'
+labeling_api::params::couchdb_password_read_only: 'theytfrcurosxc2'
 labeling_api::params::frame_cdn_type: 's3-cmd'
 labeling_api::params::frame_cdn_s3_host_base: "s3.cloud.syseleven.net"
 labeling_api::params::frame_cdn_s3_host_bucket: "%(bucket)s.s3.cloud.syseleven.net"
@@ -77,6 +78,11 @@ labeling_api::params::prepare_test_environment: true
 labeling_api::params::secret: 'lasdhflasdhflashlfal'
 labeling_api::params::user_password: '6g4hxn82PYBUbSyo1ZKG'
 labeling_api::params::create_parameter_files: true
+labeling_api::params::create_parameter_files: true
+labeling_api::params::pouchdb_feature_enabled: true
+labeling_api::params::fos_user_bundle_to_couchdb_sync_enabled: true
+labeling_api::params::couchdb_user: 'admin'
+labeling_api::params::couchdb_password: 'cjxkiYHxCWX4UKa'
 
 labeling_api::app::httpv2: true
 labeling_api::app::www_root: '/var/www/labeling-api/current/web/AnnoStation'
@@ -88,6 +94,9 @@ labeling_api::mysql::database_password: '7C2blgbS8vpU'
 labeling_api::couch::database_name: 'labeling_api'
 labeling_api::couch::database_name_read_only: 'labeling_api_read_only'
 labeling_api::couch::prepare_test_environment: true
+labeling_api::couch::max_open_files: 65535
+labeling_api::couch::max_dbs_open: 65535
+labeling_api::couch::max_erlang_ports: 40000
 
 labeling_api::worker::app_dir: '/var/www/labeling-api/current'
 labeling_api::worker::user: www-data
@@ -95,3 +104,17 @@ labeling_api::worker::user: www-data
 labeling_api::cdn::httpv2: true
 labeling_api::cdn::proxy: "https://37.123.106.226"
 labeling_api::cdn::proxy_host: "live-frame-cdn.s3.cloud.syseleven.net"
+
+couchdb::cors_credentials: true
+couchdb::cors_origins: '*'
+couchdb::cors_methods: 'GET, PUT, POST, HEAD, DELETE'
+couchdb::cors_headers: 'accept, authorization, content-type, origin, referer, x-csrf-token'
+couchdb::admin_username: "%{labeling_api::params::couchdb_user}"
+couchdb::admin_password: "%{labeling_api::params::couchdb_password}"
+couchdb::admin_salt: 'klsdagksdalsaasasafksdasahklfahklf'
+couchdb::require_valid_user: true
+couchdb::users:
+  "%{::labeling_api::params::couchdb_user}":
+    password: "%{::labeling_api::params::couchdb_password}"
+  "%{::labeling_api::params::couchdb_user_read_only}":
+    password: "%{::labeling_api::params::couchdb_password_read_only}"

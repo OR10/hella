@@ -222,6 +222,18 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             [12.034211898729, 1.0709619782734, 0]
         );
         $this->createLabeledThingInFrame($labeledThing, 5, [$cuboid5->toArray()], ['u-turn', 'spain']);
+        $cuboid11 = new Shapes\Cuboid3d(
+            '3659ecca-7c2b-440b-8dfa-38426c7969b6',
+            [11.034211898729, 1.0709619782734, 1],
+            [11.034211898729, -0.92903802172656, 1],
+            [11.034211898729, -0.92903802172656, 0],
+            [11.034211898729, 1.0709619782734, 0],
+            [12.034211898729, 1.0709619782734, 1],
+            [12.034211898729, -0.92903802172656, 1],
+            [12.034211898729, -0.92903802172656, 0],
+            [12.034211898729, 1.0709619782734, 0]
+        );
+        $this->createLabeledThingInFrame($labeledThing, 11, [$cuboid5->toArray()], ['u-turn', 'germany']);
 
         $labeledThingGroup = new Model\LabeledThingGroup($task, 1, 'sign');
         $this->labeledThingGroupFacade->save($labeledThingGroup);

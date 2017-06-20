@@ -11,8 +11,9 @@ class UploadFormController {
    * @param {ListDialog.constructor} ListDialog
    * @param {OrganisationService} organisationService
    * @param {InProgressService} inProgressService
+   * @param {angular.$timeout} $timeout
    */
-  constructor($state, uploadGateway, modalService, ListDialog, organisationService, inProgressService) {
+  constructor($state, uploadGateway, modalService, ListDialog, organisationService, inProgressService, $timeout) {
     /**
      * @type {$state}
      * @private
@@ -48,6 +49,12 @@ class UploadFormController {
      * @private
      */
     this._inProgressService = inProgressService;
+
+    /**
+     * @type {angular.$timeout}
+     * @private
+     */
+    this._$timeout = $timeout;
 
     /**
      * @type {boolean}
@@ -211,6 +218,12 @@ class UploadFormController {
     file.errorMessage = JSON.parse(message).error;
     file.hasUploadError = () => true;
   }
+
+  uploadFilesFromSystem() {
+    this._$timeout(
+        () => document.getElementById('project-upload-input').click()
+    );
+  }
 }
 
 UploadFormController.$inject = [
@@ -220,6 +233,7 @@ UploadFormController.$inject = [
   'ListDialog',
   'organisationService',
   'inProgressService',
+  '$timeout',
 ];
 
 export default UploadFormController;
