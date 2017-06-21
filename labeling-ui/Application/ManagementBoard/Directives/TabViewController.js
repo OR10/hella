@@ -2,7 +2,7 @@
  * Controller of the {@link TabViewDirective}
  */
 class TabViewController {
-  constructor() {
+  constructor($scope) {
     /**
      * List of all registered tabs
      *
@@ -11,6 +11,13 @@ class TabViewController {
      * @type {Array.<TabController>}
      */
     this.tabs = [];
+
+    $scope.$watch('vm.activeIndex', newValue => {
+      const tapToActivate = this.tabs.find(tab => tab.header === newValue);
+      if (tapToActivate !== undefined && tapToActivate !== null) {
+        this.activateTab(tapToActivate);
+      }
+    });
   }
 
   /**
@@ -40,6 +47,6 @@ class TabViewController {
   }
 }
 
-TabViewController.$inject = [];
+TabViewController.$inject = ['$scope'];
 
 export default TabViewController;

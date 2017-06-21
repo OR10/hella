@@ -64,6 +64,7 @@ class TabController {
     if (oldActive === false && this.onActivate !== undefined) {
       this.onActivate({tab: this});
     }
+    this._tabViewController.activeIndex = this.header;
   }
 
   deactivate() {
