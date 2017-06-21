@@ -10,24 +10,24 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        <div class="container">
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
-                    <div class="collapse navbar-collapse">
-                        <a class="navbar-brand">AnnoStation</a>
-                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                            <p class="navbar-text navbar-right">{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}</p>
-                            <a class="btn btn-default navbar-btn navbar-right"
-                               href="{{ path('fos_user_security_logout') }}"><i
-                                        class="glyphicon glyphicon-remove"></i> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
-                            </a>
-                            <a class="btn btn-default navbar-btn" href="/labeling"><i
-                                        class="glyphicon glyphicon-th-list"></i> Zur Taskliste gehen</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </nav>
-        </div>
+        {#<div class="container">#}
+            {#<nav class="navbar navbar-default">#}
+                {#<div class="container-fluid">#}
+                    {#<div class="collapse navbar-collapse">#}
+                        {#<a class="navbar-brand">AnnoStation</a>#}
+                        {#{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}#}
+                            {#<p class="navbar-text navbar-right">{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}</p>#}
+                            {#<a class="btn btn-default navbar-btn navbar-right"#}
+                               {#href="{{ path('fos_user_security_logout') }}"><i#}
+                                        {#class="glyphicon glyphicon-remove"></i> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}#}
+                            {#</a>#}
+                            {#<a class="btn btn-default navbar-btn" href="/labeling"><i#}
+                                        {#class="glyphicon glyphicon-th-list"></i> Zur Taskliste gehen</a>#}
+                        {#{% endif %}#}
+                    {#</div>#}
+                {#</div>#}
+            {#</nav>#}
+        {#</div>#}
 
         {% if app.request.hasPreviousSession %}
             {% for type, messages in app.session.flashbag.all() %}
