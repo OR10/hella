@@ -1,0 +1,21 @@
+#login {
+  @include formular-table();
+  @include formular-autofill($color-ut-lightgrey-3, $color-ut-midgrey-3);
+
+  tr {
+    @include formular-table-tr($color-ut-lightgrey-2);
+
+    td:first-child {
+      @include formular-table-td-first-child($color-ut-midgrey-3);
+    }
+
+    td {
+      @include formular-table-td($color-ut-lightgrey-3);
+    }
+  }
+
+  button, td.submit {
+    background: $color-ut-midgrey-2 !important;
+    color: $color-ut-white !important;
+  }
+}

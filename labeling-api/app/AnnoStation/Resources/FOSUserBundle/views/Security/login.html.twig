@@ -3,14 +3,21 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
 {% block fos_user_content %}
-<div class="page-content">
+<div class="page-content" id="login">
+    {% if error %}
+        <div class="alert alert-danger">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
     <form action="{{ path("fos_user_security_check") }}" method="post" class="form-signin">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
         {% if app.request.query.has('targetUrl') %}
             <input type="hidden" name="targetUrl" value="{{ app.request.query.get('targetUrl') }}" />
         {% endif %}
 
-        <table class="table auto-size formular-table">
+        <table class="table auto-size">
             <tr>
                 <td>Name:</td>
                 <td><input type="text" id="username" name="_username" placeholder="{{ 'security.login.username'|trans }}" value="{{ last_username }}" required="required" /></td>
@@ -20,7 +27,7 @@
                 <td><input type="password" id="password" name="_password" placeholder="{{ 'security.login.password'|trans }}" required="required" /></td>
             </tr>
             <tr>
-                <td colspan="2"><button type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button></td>
+                <td colspan="2" class="submit"><button type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button></td>
             </tr>
         </table>
     </form>
