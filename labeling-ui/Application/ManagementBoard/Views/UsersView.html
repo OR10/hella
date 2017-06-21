@@ -5,6 +5,10 @@
 </page-title>
 <div class="page-content">
     <tab-view>
+        <tab header="edit" ng-if="vm.userId != 'new'">
+            <user-profile user-permissions="vm.userPermissions" id="vm.userId" readonly="false"
+                          class="grid-block"></user-profile>
+        </tab>
         <tab header="new">
             <user-profile user-permissions="vm.userPermissions" id="vm.userId" readonly="false"
                           class="grid-block"></user-profile>
