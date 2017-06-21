@@ -19,12 +19,12 @@
 
         <table class="table auto-size">
             <tr>
-                <td>Name:</td>
-                <td><input type="text" id="username" name="_username" placeholder="{{ 'security.login.username'|trans }}" value="{{ last_username }}" required="required" /></td>
+                <td><label for="username">Name:</label></td>
+                <td><input type="text" id="username" name="_username" value="{{ last_username }}" required="required" /></td>
             </tr>
             <tr>
-                <td>Password:</td>
-                <td><input type="password" id="password" name="_password" placeholder="{{ 'security.login.password'|trans }}" required="required" /></td>
+                <td><label for="password">Password:</label></td>
+                <td><input type="password" id="password" name="_password" required="required" /></td>
             </tr>
             <tr>
                 <td colspan="2" class="submit"><button type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button></td>

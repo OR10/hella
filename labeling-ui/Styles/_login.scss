@@ -1,5 +1,6 @@
 #login {
   width: 100%;
+  height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -13,7 +14,6 @@
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  height: 100%;
 
   @include formular-autofill($color-ut-lightgrey-3, $color-ut-midgrey-3);
 
@@ -41,5 +41,11 @@
     text-align: left;
     width: 100%;
     padding: 6px !important;
+  }
+
+  label {
+    display: inline;
+    @include font-s();
+    font-weight: normal;
   }
 }
