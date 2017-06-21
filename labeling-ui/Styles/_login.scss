@@ -11,11 +11,20 @@
 
     td {
       @include formular-table-td($color-ut-lightgrey-3);
+
+    }
+
+    td.submit {
+      padding: 0 !important;
     }
   }
 
-  button, td.submit {
+  button {
     background: $color-ut-midgrey-2 !important;
-    color: $color-ut-white !important;
+    color: $color-ut-white;
+    padding: 0 !important;
+    text-align: left;
+    width: 100%;
+    padding: 6px !important;
   }
 }
