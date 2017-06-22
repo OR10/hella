@@ -143,6 +143,7 @@ class LabeledThingInFrameGateway {
                   Object.assign(
                     {},
                     response.data.result.labeledThing,
+                    {task: labeledThingInFrame.labeledThing.task}
                   ),
                 ),
               },
