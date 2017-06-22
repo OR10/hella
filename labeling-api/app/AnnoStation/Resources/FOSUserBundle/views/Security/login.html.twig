@@ -3,7 +3,7 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
 {% block fos_user_content %}
-<div class="container col-xs-offset-4 col-xs-4">
+<div class="container" id="login">
     {% if error %}
         <div class="alert alert-danger">
             <span class="glyphicon glyphicon-exclamation-sign"></span>
@@ -11,24 +11,39 @@
         </div>
     {% endif %}
 
+    <h1>AnnoStation</h1>
+    <h2>AnnoStation by Hella Aglaia</h2>
+
     <form action="{{ path("fos_user_security_check") }}" method="post" class="form-signin">
-        <h2 class="form-signin-heading">Please sign in</h2>
-
         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+        {% if app.request.query.has('targetUrl') %}
+            <input type="hidden" name="targetUrl" value="{{ app.request.query.get('targetUrl') }}" />
+        {% endif %}
 
-            <input type="text" id="username" name="_username" placeholder="{{ 'security.login.username'|trans }}" value="{{ last_username }}" required="required" class="form-control" />
-            <input type="password" id="password" name="_password" placeholder="{{ 'security.login.password'|trans }}" required="required" class="form-control" />
-            {% if app.request.query.has('targetUrl') %}
-                <input type="hidden" name="targetUrl" value="{{ app.request.query.get('targetUrl') }}" />
-            {% endif %}
-            <div class="checkbox">
-                <label for="remember_me">
-                    <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
-                    {{ 'security.login.remember_me'|trans }}
-                </label>
-            </div>
+        <table class="table auto-size">
+            <tr>
+                <td><label for="username">Name:</label></td>
+                <td><input type="text" id="username" name="_username" value="{{ last_username }}" required="required" /></td>
+            </tr>
+            <tr>
+                <td><label for="password">Password:</label></td>
+                <td><input type="password" id="password" name="_password" required="required" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="submit"><button type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button></td>
+            </tr>
+        </table>
 
-            <button type="submit" id="_submit" name="_submit" class="btn btn-lg btn-primary btn-block">{{ 'security.login.submit'|trans }}</button>
+        <script type="text/javascript">$('#username').login();</script>
+
+        {# What to do with the remember me checkbox? #}
+        {#<div class="checkbox">#}
+            {#<label for="remember_me">#}
+                {#<input type="checkbox" id="remember_me" name="_remember_me" value="on" />#}
+                {#{{ 'security.login.remember_me'|trans }}#}
+            {#</label>#}
+        {#</div>#}
+
     </form>
 </div>
 {% endblock fos_user_content %}
