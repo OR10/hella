@@ -144,7 +144,7 @@ class CouchDbModelDeserializer {
     model.ghostClasses = null;
 
     return new LabeledThingInFrame(
-      Object.assign({}, model, {labeledThing, task: labeledThing.task})
+      Object.assign({}, model, {labeledThing})
     );
   }
 
