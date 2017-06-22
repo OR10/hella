@@ -16,9 +16,15 @@ class ValueComparator extends InnerDocumentVisitor {
     let expectedScalar = firstNode;
     let actualScalar = secondNode;
 
+    if (isString(expectedScalar)) {
+      const template = new TemplateString(expectedScalar);
+
+      if (template.isTemplate()) {
+        expectedScalar = template.expandWithDictionary(this._dictionary);
+      }
+    }
+
     switch (true) {
-      case isString(expectedScalar) && isString(actualScalar):
-        return this._assertStringsAreMatching(expectedScalar, actualScalar, path);
       case this._isFloat(expectedScalar) && this._isFloat(actualScalar):
         return this._assertFloatsAreMatching(expectedScalar, actualScalar, path);
       default:
