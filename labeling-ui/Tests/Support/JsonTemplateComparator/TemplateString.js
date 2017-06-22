@@ -1,3 +1,5 @@
+import {isString} from 'lodash';
+
 class TemplateString {
   /**
    * @param {string} rawString
