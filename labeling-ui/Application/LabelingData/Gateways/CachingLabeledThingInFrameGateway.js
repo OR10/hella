@@ -259,7 +259,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
 
       return ltifGhostData.map(ghostData =>
         new LabeledThingInFrame(
-          Object.assign({}, ghostData, {labeledThing, task: labeledThing.task})
+          Object.assign({}, ghostData, {labeledThing})
         )
       );
     }
@@ -282,7 +282,7 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     // We have found all the requested ltifs. Let's build them up and return them
     return this._mapIterator(ltifDataByFrameMap.values(), ltifData =>
       new LabeledThingInFrame(
-        Object.assign({}, ltifData, {labeledThing, task: labeledThing.task})
+        Object.assign({}, ltifData, {labeledThing})
       )
     );
   }
@@ -589,7 +589,6 @@ class CachingLabeledThingInFrameGateway extends LabeledThingsInFrameGateway {
     return this._mapIterator(ltifDataMap.values(), ltifData => {
       return new LabeledThingInFrame(
         Object.assign({}, ltifData, {
-          task,
           labeledThing: new LabeledThing(
             Object.assign({}, ltDataMap.get(ltifData.labeledThingId), {task})
           ),

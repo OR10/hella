@@ -181,7 +181,6 @@ class GhostingService {
       incomplete: false,
       frameIndex: ltif.frameIndex + localGhostIndex,
       labeledThing: ltif.labeledThing,
-      task: ltif.labeledThing.task,
       identifierName: ltif.identifierName,
       shapes: cloneDeep(ltif.shapes),
       ghost: true,

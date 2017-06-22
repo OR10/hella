@@ -49,7 +49,6 @@ class HierarchyCreationService {
     });
 
     const newLabeledThingInFrame = new LabeledThingInFrame({
-      task,
       id: newLabeledThingInFrameId,
       classes: [],
       ghostClasses: null,
