@@ -77,6 +77,7 @@ class DrawingTool extends Tool {
 
     const newLabeledThingInFrame = new LabeledThingInFrame({
       id: newLabeledThingInFrameId,
+      task: this._$scope.vm.task,
       classes: [],
       ghostClasses: null,
       incomplete: true,

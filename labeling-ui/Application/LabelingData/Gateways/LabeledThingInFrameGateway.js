@@ -74,8 +74,8 @@ class LabeledThingInFrameGateway {
           const result = response.data.result;
           return result.map(
             data => new LabeledThingInFrame(
-              Object.assign({}, data, {labeledThing})
-            )
+              Object.assign({}, data, {labeledThing, task: labeledThing.task}),
+            ),
           );
         }
 
@@ -171,9 +171,7 @@ class LabeledThingInFrameGateway {
       labeledThing.task = task;
 
       return new LabeledThingInFrame(
-        Object.assign({}, data, {
-          labeledThing: new LabeledThing(labeledThing),
-        })
+        Object.assign({}, data, {labeledThing: new LabeledThing(labeledThing)}, {task}),
       );
     });
   }

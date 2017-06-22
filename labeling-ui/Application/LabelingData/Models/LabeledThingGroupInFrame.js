@@ -7,6 +7,7 @@ class LabeledThingGroupInFrame extends LabeledObject {
    */
   constructor(labeledThingGroupInFrameDocument) {
     super(labeledThingGroupInFrameDocument);
+
     /**
      * @type {string}
      */

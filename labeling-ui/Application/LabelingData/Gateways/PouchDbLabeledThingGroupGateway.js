@@ -134,7 +134,7 @@ class PouchDbLabeledThingGroupGateway {
               labeledThingGroupId,
             };
             // TODO: If the labeledThingGroupInFrame documents are no longer generated, we need to extract revision here
-            return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(dbDocument);
+            return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(dbDocument, assignedLabeledThingGroup);
           });
 
           return labeledThingGroupsInFrame;

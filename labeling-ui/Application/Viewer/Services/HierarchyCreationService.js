@@ -38,7 +38,6 @@ class HierarchyCreationService {
 
     const newLabeledThing = new LabeledThing({
       task,
-      projectId: task.projectId,
       id: newLabeledThingId,
       lineColor: color,
       classes: task.predefinedClasses || [],
@@ -50,6 +49,7 @@ class HierarchyCreationService {
     });
 
     const newLabeledThingInFrame = new LabeledThingInFrame({
+      task,
       id: newLabeledThingInFrameId,
       classes: [],
       ghostClasses: null,
@@ -84,6 +84,7 @@ class HierarchyCreationService {
     const newLabeledThingGroupInFrame = new LabeledThingGroupInFrame({
       id: this._entityIdService.getUniqueId(),
       frameIndex: creationToolActionStruct.framePosition.position,
+      task: creationToolActionStruct.task,
       classes: [],
       labeledThingGroup: newLabeledThingGroup,
     });

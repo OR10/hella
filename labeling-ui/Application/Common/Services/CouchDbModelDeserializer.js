@@ -114,13 +114,14 @@ class CouchDbModelDeserializer {
    * Deserialize a labeledThingGroupInFrame to our frontend model
    *
    * @param {object} labeledThingGroupInFrameDocument
+   * @param {LabeledThingGroup} labeledThingGroup
    * @return {LabeledThingGroup}
    */
-  deserializeLabeledThingGroupInFrame(labeledThingGroupInFrameDocument) {
+  deserializeLabeledThingGroupInFrame(labeledThingGroupInFrameDocument, labeledThingGroup) {
     const document = this._cloneDocument(labeledThingGroupInFrameDocument);
     this._removePrefixFromIdAndRevision(document);
 
-    return new LabeledThingGroupInFrame(Object.assign({}, document));
+    return new LabeledThingGroupInFrame(Object.assign({}, document, {labeledThingGroup, task: labeledThingGroup.task}));
   }
 
 
@@ -143,7 +144,7 @@ class CouchDbModelDeserializer {
     model.ghostClasses = null;
 
     return new LabeledThingInFrame(
-      Object.assign({}, model, {labeledThing})
+      Object.assign({}, model, {labeledThing, task: labeledThing.task})
     );
   }
 

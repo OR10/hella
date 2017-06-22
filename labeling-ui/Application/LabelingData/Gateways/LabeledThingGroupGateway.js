@@ -67,6 +67,7 @@ class LabeledThingGroupGateway {
           labeledThingGroupsInFrame = labeledThingGroupsInFrame.map(ltgifDocument => {
             const labeledThingGroupDocument = labeledThingGroups.find(ltg => ltg.id === ltgifDocument.labeledThingGroupId);
             ltgifDocument.labeledThingGroup = new LabeledThingGroup(Object.assign({}, labeledThingGroupDocument, {task}));
+            ltgifDocument.task = task;
 
             return new LabeledThingGroupInFrame(ltgifDocument);
           });
