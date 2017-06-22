@@ -41,14 +41,14 @@
   }
 
   button {
-    background: $color-ut-midgrey-2;
+    background: $color-ut-midgrey-3;
     color: $color-ut-white;
     text-align: left;
     width: 100%;
   }
 
-  button:disabled {
-    background: $color-ut-midgrey-3;
+  button:hover {
+    background: $color-ut-midgrey-2;
   }
 
   button:active {

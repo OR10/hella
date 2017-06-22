@@ -8,6 +8,8 @@
         {#<link href="{{ asset('bundles/app/css/annostation.css') }}" rel="stylesheet" />#}
         <link href="labeling/Styles/main.css" rel="stylesheet" />
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <script type="text/javascript" src="{{ asset('bundles/app/js/jquery-3.2.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/app/js/annostation.js') }}"></script>
     </head>
     <body>
         {#<div class="container">#}
@@ -40,7 +42,6 @@
         {% endif %}
 
         {% block body %}{% endblock %}
-
         <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}" integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
         {% block javascripts %}{% endblock %}
     </body>
