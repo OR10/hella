@@ -65,10 +65,10 @@ class TemplateString {
   }
 
   /**
-   * @param {string} valueString
+   * @param {string|number|boolean|undefined|null} valueScalar
    * @return {Map.<string, string>}
    */
-  extractDictionary(valueString) {
+  extractDictionary(valueScalar) {
     const patterns = this._templateParts.map(part => {
       switch (true) {
         case part.isGetter:
@@ -79,13 +79,23 @@ class TemplateString {
       }
     });
 
+    // Handle values that are not strings
+    if (!isString(valueScalar)) {
+      // Match is impossible if we have a non complex template string with a non string scalar
+      if (patterns.length > 1) {
+        return new Map();
+      }
+
+      return new Map([[this._templateParts[0].value, valueScalar]]);
+    }
+
     const valueExtractor = this._buildRegexpFromParts(
       '^',
       ...patterns,
       '$',
     );
 
-    const matches = valueExtractor.exec(valueString);
+    const matches = valueExtractor.exec(valueScalar);
 
     if (matches === null) {
       return new Map();
@@ -121,6 +131,11 @@ class TemplateString {
           return part.value;
       }
     });
+
+    // Ensure non string expansion is possible in non complex form.
+    if (expandedParts.length === 1) {
+      return expandedParts[0];
+    }
 
     return expandedParts.join('');
   }

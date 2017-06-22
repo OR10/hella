@@ -60,26 +60,6 @@ class ValueComparator extends InnerDocumentVisitor {
   }
 
   /**
-   * @param {string} expectedString
-   * @param {string} actualString
-   * @param {string} path
-   * @private
-   */
-  _assertStringsAreMatching(expectedString, actualString, path) {
-    const template = new TemplateString(expectedString);
-
-    if (!template.isTemplate()) {
-      return this._assertScalarsAreMatching(expectedString, actualString, path);
-    }
-
-    return this._assertScalarsAreMatching(
-      template.expandWithDictionary(this._dictionary),
-      actualString,
-      path,
-    );
-  }
-
-  /**
    * @param {string|number|boolean|null|undefined} expectedScalar
    * @param {string|number|boolean|null|undefined} actualScalar
    * @param {string} path
