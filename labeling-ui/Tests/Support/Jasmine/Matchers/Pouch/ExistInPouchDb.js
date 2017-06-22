@@ -17,7 +17,7 @@ function existInPouchDb(expectedDocument) {
       return true;
     })
     .catch(error => {
-      result.message = error;
+      result.message = error.message;
 
       return false;
     });
