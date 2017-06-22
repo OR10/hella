@@ -4,8 +4,7 @@ import JsonTemplateComparator from '../../../JsonTemplateComparator';
 const comparator = new JsonTemplateComparator();
 
 // Keys that cannot be tested for the hard value in a Pouch environment
-const unstableKeys = [
-];
+const unstableKeys = [];
 
 // Keys that are not stored in Pouch Documents
 const omitKeys = [
@@ -32,7 +31,7 @@ function getType(template, depth) {
     return 'AppBundle.Model.FrameIndexRange';
   } else if (depth === 0 && template.timeInSeconds !== undefined) {
     return 'AppBundle.Model.TaskTimer';
-  } else if(depth=== 0 && template.groupType !== undefined) {
+  } else if (depth === 0 && template.groupType !== undefined) {
     return 'AnnoStationBundle.Model.LabeledThingGroup';
   } else if (depth === 0 && template.lineColor !== undefined && template.frameRange !== undefined) {
     return 'AppBundle.Model.LabeledThing';
@@ -91,7 +90,7 @@ function preprocessTemplate(template, depth = 0) {
   }
 
   if (isArray(template)) {
-    const processedTemplate = template.map(value => preprocessTemplate(value, depth +1));
+    const processedTemplate = template.map(value => preprocessTemplate(value, depth + 1));
     return processedTemplate;
   }
 
@@ -103,7 +102,7 @@ export function matchDocuments(expectedTemplate, collection) {
   try {
     comparator.assertDocumentIsInCollection(processedExpectedTemplate, collection);
     return {message: 'Matched', pass: true};
-  } catch(error) {
+  } catch (error) {
     return {message: error.message, pass: false};
   }
 }
