@@ -72,9 +72,7 @@ class PouchDbLabeledThingGateway {
    * @param {LabeledThing} labeledThing
    * @return {AbortablePromise.<LabeledThing|Error>}
    */
-  saveLabeledThing(labeledThing, incomplete = true) {
-    labeledThing.incomplete = incomplete;
-
+  saveLabeledThing(labeledThing) {
     const task = labeledThing.task;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);
