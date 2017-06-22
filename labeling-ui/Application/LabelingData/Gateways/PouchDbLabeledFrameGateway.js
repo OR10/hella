@@ -159,14 +159,24 @@ class PouchDbLabeledFrameGateway {
       const db = this._pouchDbContextService.provideContextForTaskId(task.id);
       return this._$q.resolve()
         .then(() => {
+          return this._getCurrentOrPreceedingLabeledFrame(db, task, frameIndex);
+        })
+        .then(labeledFrameInPouch => {
+          // Make sure a document for a frame is never stored twice. If for some reason (e.g. opening the task
+          // in a second tab and saving the meta information there) the information in the Pouch is newer than
+          // the currently stored one from the js variant, make sure that it is saved with the same id
+          if (labeledFrameInPouch.id !== labeledFrame.id) {
+            labeledFrame.id = labeledFrameInPouch.id;
+          }
+        })
+        .then(() => {
           const labeledFrameDocument = this._couchDbModelSerializer.serialize(labeledFrame);
           labeledFrameDocument.frameIndex = frameIndex;
           this._injectRevisionOrFailSilently(labeledFrameDocument);
           if (labeledFrameDocument._id === undefined || labeledFrameDocument._id === null) {
-            // The backend currently explicitly creates those ids if not present
-            // @TODO: Check why this is necessary, if it is. In may opinion the Frontend Models should already
-            //        have an id.
-            labeledFrameDocument._id = this._entityIdService.getUniqueId();
+            // This must never happen. In order to prevent duplicate FrameLabel entries, do not store anything
+            // if FrameLabel document has no id
+            throw new Error('Labeled Frame is not as it should be');
           }
 
           return db.put(labeledFrameDocument);
