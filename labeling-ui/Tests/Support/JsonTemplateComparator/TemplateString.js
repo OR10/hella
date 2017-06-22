@@ -1,3 +1,5 @@
+import {isString} from 'lodash';
+
 class TemplateString {
   /**
    * @param {string} rawString
@@ -66,7 +68,7 @@ class TemplateString {
 
   /**
    * @param {string|number|boolean|undefined|null} valueScalar
-   * @return {Map.<string, string>}
+   * @return {Map.<string, string|number|boolean|undefined|null>}
    */
   extractDictionary(valueScalar) {
     const patterns = this._templateParts.map(part => {
@@ -116,7 +118,7 @@ class TemplateString {
 
   /**
    * @param {Map.<string,string>} dictionary
-   * @return {string}
+   * @return {string|number|boolean|undefined|null}
    */
   expandWithDictionary(dictionary) {
     const expandedParts = this._templateParts.map(part => {

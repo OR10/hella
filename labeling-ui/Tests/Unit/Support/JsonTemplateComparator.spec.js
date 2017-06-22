@@ -416,6 +416,50 @@ describe('JsonTemplateComparator', () => {
 
       expect(() => comparator.assertIsEqual(template, value)).toThrow();
     });
+
+    using([
+      [42],
+      [42.3],
+      [true],
+      [false],
+      [undefined],
+      [null],
+    ], expectedValue => {
+      it('should compare template setter against arbitrary scalar of type non-string', () => {
+        const setterTemplate = `{{:foobar}}`;
+        expect(() => comparator.assertIsEqual(setterTemplate, expectedValue)).not.toThrow();
+      });
+
+      it('should compare template getter against before set scalar of type non-string', () => {
+        const setterTemplate = `{{:foobar}}`;
+        const getterTemplate = `{{foobar}}`;
+        const fullTemplate = {
+          setter: setterTemplate,
+          getter: getterTemplate,
+        };
+        const actualDocument = {
+          setter: expectedValue,
+          getter: expectedValue,
+        };
+
+        expect(() => comparator.assertIsEqual(fullTemplate, actualDocument)).not.toThrow();
+      });
+
+      it('should compare template getter against before set scalar of type non-string with mismatch', () => {
+        const setterTemplate = `{{:foobar}}`;
+        const getterTemplate = `{{foobar}}`;
+        const fullTemplate = {
+          setter: setterTemplate,
+          getter: getterTemplate,
+        };
+        const actualDocument = {
+          setter: expectedValue,
+          getter: 1234567,
+        };
+
+        expect(() => comparator.assertIsEqual(fullTemplate, actualDocument)).toThrow();
+      });
+    });
   });
 
   describe('inline template matching', () => {
