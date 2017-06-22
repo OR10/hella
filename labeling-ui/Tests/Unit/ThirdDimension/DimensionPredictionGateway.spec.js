@@ -5,11 +5,17 @@ import Common from 'Application/Common/Common';
 
 import DimensionPredictionGateway from 'Application/ThirdDimension/Gateways/DimensionPredictionGateway';
 import CuboidDimensionPrediction from 'Application/ThirdDimension/Models/DimensionPrediction/Cuboid';
-import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
+
+import LabeledThingFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThing';
 
 describe('DimensionPredictionGateway', () => {
   let $httpBackend;
   let gateway;
+  let labeledThingFrontendModel;
+
+  beforeEach(() => {
+    labeledThingFrontendModel = LabeledThingFrontendModel.clone();
+  });
 
   beforeEach(() => {
     const featureFlags = {
@@ -53,13 +59,9 @@ describe('DimensionPredictionGateway', () => {
       },
     };
 
-    const labeledThing = new LabeledThing({
-      id: 'SOME-LABELED-THING-ID',
-    });
+    $httpBackend.expectGET(`/backend/api/dimensionPrediction/${labeledThingFrontendModel.id}/42`).respond(predictionResponse);
 
-    $httpBackend.expectGET('/backend/api/dimensionPrediction/SOME-LABELED-THING-ID/42').respond(predictionResponse);
-
-    gateway.predictDimensionsFor(labeledThing, 42).then(() => done());
+    gateway.predictDimensionsFor(labeledThingFrontendModel, 42).then(() => done());
 
     $httpBackend.flush();
   });
@@ -76,13 +78,9 @@ describe('DimensionPredictionGateway', () => {
       },
     };
 
-    const labeledThing = new LabeledThing({
-      id: 'SOME-LABELED-THING-ID',
-    });
+    $httpBackend.expectGET(`/backend/api/dimensionPrediction/${labeledThingFrontendModel.id}/42`).respond(predictionResponse);
 
-    $httpBackend.expectGET('/backend/api/dimensionPrediction/SOME-LABELED-THING-ID/42').respond(predictionResponse);
-
-    gateway.predictDimensionsFor(labeledThing, 42).then(prediction => {
+    gateway.predictDimensionsFor(labeledThingFrontendModel, 42).then(prediction => {
       const {width, height, depth} = prediction;
 
       expect(width).toEqual(123);
@@ -107,13 +105,9 @@ describe('DimensionPredictionGateway', () => {
       },
     };
 
-    const labeledThing = new LabeledThing({
-      id: 'SOME-LABELED-THING-ID',
-    });
+    $httpBackend.expectGET(`/backend/api/dimensionPrediction/${labeledThingFrontendModel.id}/23`).respond(predictionResponse);
 
-    $httpBackend.expectGET('/backend/api/dimensionPrediction/SOME-LABELED-THING-ID/23').respond(predictionResponse);
-
-    gateway.predictDimensionsFor(labeledThing, 23)
+    gateway.predictDimensionsFor(labeledThingFrontendModel, 23)
       .then(() => fail('Promise should not be fulfilled'))
       .catch(error => {
         expect(error.message).toBe('Unknown dimensionPrediction#type: unknown-prediction-type');
