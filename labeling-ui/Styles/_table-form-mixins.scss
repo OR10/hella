@@ -36,6 +36,7 @@
 }
 
 @mixin formular-autofill($backgroundColor, $textColor) {
+  // See https://css-tricks.com/snippets/css/change-autocomplete-styles-webkit-browsers/
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus {
