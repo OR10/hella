@@ -1,3 +1,5 @@
+$formular-table-td-padding: 13px 0 15px 11px !important;
+
 @mixin formular-table() {
   margin-bottom: 2em;
 }
@@ -8,7 +10,7 @@
 
 @mixin formular-table-td($backgroundColor) {
   background: $backgroundColor !important;
-  padding: 13px 0 15px 11px !important;
+  padding: $formular-table-td-padding;
 
   input {
     background: transparent;

@@ -24,6 +24,7 @@
 
     td:first-child {
       @include formular-table-td-first-child($color-ut-midgrey-3);
+      padding: 0 !important;
     }
 
     td {
@@ -56,9 +57,11 @@
   }
 
   label {
-    display: inline;
+    display: block;
+    width: 100%;
     @include font-s();
     font-weight: normal;
+    padding: $formular-table-td-padding;
   }
 
   h1, h2 {
