@@ -33,12 +33,12 @@ class LabeledFrameGateway {
    */
   getLabeledFrame(task, frameIndex) {
     const url = this._apiService.getApiUrl(
-      `/task/${task.id}/labeledFrame/${frameIndex}`
+      `/task/${task.id}/labeledFrame/${frameIndex}`,
     );
     return this._bufferedHttp.get(url, undefined, 'labeledFrame')
       .then(response => {
         if (response.data && response.data.result) {
-          return new LabeledFrame(response.data.result);
+          return new LabeledFrame(Object.assign({}, response.data.result, {task}));
         }
 
         throw new Error('Failed loading labeled frame');
@@ -57,7 +57,7 @@ class LabeledFrameGateway {
    */
   saveLabeledFrame(task, frameIndex, labeledFrame) {
     const url = this._apiService.getApiUrl(
-      `/task/${task.id}/labeledFrame/${frameIndex}`
+      `/task/${task.id}/labeledFrame/${frameIndex}`,
     );
 
     return this._bufferedHttp.put(url, labeledFrame, undefined, 'labeledFrame')
@@ -80,7 +80,7 @@ class LabeledFrameGateway {
    */
   deleteLabeledFrame(task, frameIndex) {
     const url = this._apiService.getApiUrl(
-      `/task/${task.id}/labeledFrame/${frameIndex}`
+      `/task/${task.id}/labeledFrame/${frameIndex}`,
     );
     return this._bufferedHttp.delete(url, undefined, 'labeledFrame')
       .then(response => {
