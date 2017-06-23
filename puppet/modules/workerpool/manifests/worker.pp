@@ -33,18 +33,18 @@ define workerpool::worker(
   $_worker.each |$workerName, $workerOptions| {
     if $workerOptions['count'] > 0 {
       supervisord::program { "workerpool-worker-${name}-${workerName}":
-        command           => "${symfonyRoot}/${symfonyConsole} ${starterCommand} ${workerOptions['arguments']}",
-        autostart         => $autostart,
-        autorestart       => true,
-        user              => $symfonyUser,
-        directory         => $symfonyRoot,
-        startsecs         => 0,
-        numprocs          => $workerOptions['count'],
-        environment       => {
-            'SYMFONY_ENV' => $symfonyEnvironment,
-            'LANG'        => 'en_US.UTF-8',
+        command         => "${symfonyRoot}/${symfonyConsole} ${starterCommand} ${workerOptions['arguments']}",
+        autostart       => $autostart,
+        autorestart     => true,
+        user            => $symfonyUser,
+        directory       => $symfonyRoot,
+        startsecs       => 0,
+        numprocs        => $workerOptions['count'],
+        environment     => {
+          'SYMFONY_ENV' => $symfonyEnvironment,
+          'LANG'        => 'en_US.UTF-8',
         },
-        notify            => Service['supervisord'],
+        notify          => Service['supervisord'],
       }
     }
   }
