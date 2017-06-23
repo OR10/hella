@@ -1,7 +1,7 @@
 // Progress bar
 .progress {
-  background-color: $color-ut-lightgrey-1;
-  height: 1rem;
+  background-color: $color-ut-lightgrey-3;
+  height: 2rem;
 
   .success {
     background-color: $color-ut-midgrey-1;
@@ -14,17 +14,17 @@
   display: block;
   width: 0;
   height: 100%;
-  background-color: $color-ut-darkgrey-1;
+  background-color: $color-ut-yellow;
 
   // Progress bar meter text
   .progress-meter-text {
     position: absolute;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(10%, -50%);
     margin: 0;
     font-size: 0.75rem;
     font-weight: bold;
-    color: $color-ut-white;
+    color: $color-ut-darkgrey-1;
     white-space: nowrap;
   }
 }
