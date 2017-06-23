@@ -45,7 +45,7 @@
             </tr>
             <tr
                 ng-if="vm.userPermissions.canAddUserToAnyOrganisation"
-                ng-style="{'border-bottom': !vm.isOrganisationExpand ? '2px solid #D7DDE4' : 'none' }"
+                ng-style="{'border-bottom': !vm.isOrganisationExpanded ? '2px solid #D7DDE4' : 'none' }"
             >
                 <td>Organisation</td>
                 <td>
@@ -61,9 +61,9 @@
                    <span class="pull-right">
                        <i
                            class="fa"
-                           ng-click="vm.isOrganisationExpand = !vm.isOrganisationExpand"
-                           ng-class="vm.isOrganisationExpand == true ? 'fa-angle-up' : 'fa-angle-down'"
-                           ng-style="{color: vm.isOrganisationExpand == true ? '#BFDB31' : ''} "
+                           ng-click="vm.clickAngle()"
+                           ng-class="vm.getIconForAngleState()"
+                           ng-style="{color: vm.isOrganisationExpanded == true ? '#BFDB31' : ''} "
                        ></i>
                    </span>
                 </td>
@@ -71,7 +71,7 @@
             <tr
                 class="drop-down-cell"
                 ng-repeat="organisation in vm.organisations"
-                ng-if="vm.isOrganisationExpand == true && vm.userPermissions.canAddUserToAnyOrganisation"
+                ng-if="vm.showDropDownTableCell()"
             >
                 <td colspan=2>
                     {{organisation.name}}

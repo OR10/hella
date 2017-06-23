@@ -3,7 +3,7 @@ class UsersController {
     this.user = user;
     this.userPermissions = userPermissions;
     this._$state = $state;
-    
+
     switch ($stateParams.userId) {
       case undefined:
         this.activeTab = 'manage';
@@ -15,9 +15,9 @@ class UsersController {
         this.activeTab = 'edit';
         this.userId = $stateParams.userId;
     }
-    
+
     this.showEditTap = !(this.userId === 'new' || this.userId === undefined);
-    
+
     $scope.$watch('vm.activeTab', (newValue, oldValue) => {
       if (newValue === oldValue) {
         return;

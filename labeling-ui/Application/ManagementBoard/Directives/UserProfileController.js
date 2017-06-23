@@ -104,7 +104,7 @@ class UserProfileController {
     /**
      * @type {boolean}
      */
-    this.isOrganisationExpand = false;
+    this.isOrganisationExpanded = false;
 
     /**
      *
@@ -429,7 +429,29 @@ class UserProfileController {
    * @returns {boolean}
    */
   canAddOrganisationToUser(organisation) {
-    return this.userOrganisations.filter(org => org.id === organisation.id).length === 0;
+    return !this.userOrganisations.find(org => org.id === organisation.id);
+  }
+
+  /**
+   * @returns {boolean|*}
+   */
+  showDropDownTableCell() {
+    return this.isOrganisationExpanded === true && this.userPermissions.canAddUserToAnyOrganisation;
+  }
+
+  /**
+   * Click the small angle up and down
+   */
+  clickAngle() {
+    this.isOrganisationExpanded = !this.isOrganisationExpanded;
+  }
+
+  /**
+   * Get the correct font icon for angle state
+   * @returns {string}
+   */
+  getIconForAngleState() {
+    return this.isOrganisationExpanded === true ? 'fa-angle-up' : 'fa-angle-down';
   }
 }
 
