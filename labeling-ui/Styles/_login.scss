@@ -1,0 +1,83 @@
+#login {
+  width: 100%;
+  height: 100%;
+  flex-flow: column;
+  // See https://philipwalton.github.io/solved-by-flexbox/demos/vertical-centering/
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  min-height: 24em;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+
+  @include formular-autofill($color-ut-lightgrey-3, $color-ut-midgrey-3);
+
+  tr {
+    @include formular-table-tr($color-ut-lightgrey-2);
+
+    td:first-child {
+      @include formular-table-td-first-child($color-ut-midgrey-3);
+      padding: 0 !important;
+    }
+
+    td {
+      @include formular-table-td($color-ut-lightgrey-3);
+
+    }
+
+    td.submit {
+      padding: 0 !important;
+    }
+  }
+
+  form {
+    margin-bottom: 60px;
+  }
+
+  button {
+    background: $color-ut-midgrey-3;
+    color: $color-ut-white;
+    text-align: left;
+    width: 100%;
+  }
+
+  button:hover {
+    background: $color-ut-midgrey-2;
+  }
+
+  button:active {
+    color: $color-ut-yellow;
+  }
+
+  label {
+    display: block;
+    width: 100%;
+    @include font-s();
+    font-weight: normal;
+    padding: $formular-table-td-padding;
+  }
+
+  h1, h2 {
+    display: block;
+    width: 410px;
+    text-align: center;
+  }
+
+  h1 {
+    color: $color-ut-midgrey-3;
+    margin-bottom: 0;
+  }
+
+  h2 {
+    @include font-xs();
+    color: $color-ut-midgrey-2;
+    margin-bottom: 60px;
+  }
+}
