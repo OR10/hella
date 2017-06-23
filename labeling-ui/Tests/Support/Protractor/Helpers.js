@@ -7,22 +7,21 @@ import {cloneDeep} from 'lodash';
 export function getMockRequestsMade(mock) {
   if (featureFlags.pouchdb) {
     return PouchDb.allDocs();
-  } else {
-    return httpMock.requestsMade().then(requests => {
-      return requests.map(request => {
-        const strippedRequest = {
-          method: request.method,
-          path: request.url,
-        };
-
-        if (request.data) {
-          strippedRequest.data = request.data;
-        }
-
-        return strippedRequest;
-      });
-    });
   }
+  return httpMock.requestsMade().then(requests => {
+    return requests.map(request => {
+      const strippedRequest = {
+        method: request.method,
+        path: request.url,
+      };
+
+      if (request.data) {
+        strippedRequest.data = request.data;
+      }
+
+      return strippedRequest;
+    });
+  });
 }
 
 export function dumpAllRequestsMade(mock) {
@@ -39,29 +38,28 @@ export function dumpAllRequestsMade(mock) {
 
       return failTest;
     });
-  } else {
-    return httpMock.allRequestsMade().then(requests => {
-      const strippedRequests = requests.map(request => {
-        const strippedRequest = {
-          method: request.method,
-          path: request.url,
-        };
-
-        if (request.data) {
-          strippedRequest.data = request.data;
-        }
-
-        return strippedRequest;
-      });
-
-      console.log( // eslint-disable-line no-console
-        `The following requests were made against the backend. Not all of them may have been mocked!\n${JSON.stringify(strippedRequests, undefined, 2)}`,
-      );
-
-      // fail('Dumping all requests causes automatic test fail.');
-      return failTest;
-    });
   }
+  return httpMock.allRequestsMade().then(requests => {
+    const strippedRequests = requests.map(request => {
+      const strippedRequest = {
+        method: request.method,
+        path: request.url,
+      };
+
+      if (request.data) {
+        strippedRequest.data = request.data;
+      }
+
+      return strippedRequest;
+    });
+
+    console.log( // eslint-disable-line no-console
+      `The following requests were made against the backend. Not all of them may have been mocked!\n${JSON.stringify(strippedRequests, undefined, 2)}`,
+    );
+
+    // fail('Dumping all requests causes automatic test fail.');
+    return failTest;
+  });
 }
 
 function waitForApplicationReady() {
@@ -81,7 +79,7 @@ function bootstrapPouchDb(mocks) {
   let documents = [];
 
   mocks.forEach(mock => {
-    let things = cloneDeep(mock.response.data.result);
+    const things = cloneDeep(mock.response.data.result);
     let labeledThing;
     let taskId;
     let projectId;
@@ -97,9 +95,9 @@ function bootstrapPouchDb(mocks) {
         labeledThing.type = 'AppBundle.Model.LabeledThing';
         labeledThing.lineColor = parseInt(labeledThing.lineColor);
         labeledThing.frameRange = {
-          "startFrameIndex": labeledThing.frameRange.startFrameNumber,
-          "endFrameIndex": labeledThing.frameRange.endFrameNumber,
-          "type": "AppBundle.Model.FrameIndexRange",
+          'startFrameIndex': labeledThing.frameRange.startFrameNumber,
+          'endFrameIndex': labeledThing.frameRange.endFrameNumber,
+          'type': 'AppBundle.Model.FrameIndexRange',
         };
 
         delete labeledThing.rev;
@@ -129,7 +127,7 @@ function bootstrapPouchDb(mocks) {
   });
 
   return PouchDb.bulkDocs(documents);
-};
+}
 
 const defaultTestConfig = {
   viewerWidth: 1024,
@@ -166,7 +164,7 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   httpMock(mocks.shared.concat(mocks.specific));
 
   const builder = new UrlBuilder(testConfig);
-  (function () {
+  (() => {
     browser.get(builder.url(url));
   })();
   browser.wait(() => {
@@ -178,9 +176,9 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   if (featureFlags.pouchdb) {
     return bootstrapPouchDb(mocks.specific)
       .then(() => waitForApplicationReady());
-  } else {
-    return waitForApplicationReady();
   }
+
+  return waitForApplicationReady();
 }
 
 export function expectAllModalsToBeClosed() {
