@@ -83,7 +83,6 @@ class HierarchyCreationService {
     const newLabeledThingGroupInFrame = new LabeledThingGroupInFrame({
       id: this._entityIdService.getUniqueId(),
       frameIndex: creationToolActionStruct.framePosition.position,
-      task: creationToolActionStruct.task,
       classes: [],
       labeledThingGroup: newLabeledThingGroup,
     });
