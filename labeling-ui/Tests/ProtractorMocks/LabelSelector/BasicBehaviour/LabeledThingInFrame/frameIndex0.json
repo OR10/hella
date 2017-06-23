@@ -36,7 +36,7 @@
             "incomplete": true,
             "labeledThingId": "LABELED-THING-ID-1",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "identifierName": null,
+            "identifierName": "legacy",
             "shapes": [
               {
                 "bottomRight": {

@@ -10,7 +10,7 @@
         "car"
       ],
       "ghostClasses": null,
-      "identifierName": null,
+      "identifierName": "legacy",
       "shapes": [
         {
           "type": "rectangle",
@@ -56,7 +56,7 @@
             "car"
           ],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",

@@ -16,7 +16,7 @@
           "frameIndex": 0,
           "classes": [],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",
@@ -42,7 +42,7 @@
           "frameIndex": 1,
           "classes": [],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",
@@ -68,7 +68,7 @@
           "frameIndex": 2,
           "classes": [],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",
@@ -94,7 +94,7 @@
           "frameIndex": 3,
           "classes": [],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",
@@ -120,7 +120,7 @@
           "frameIndex": 4,
           "classes": [],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",

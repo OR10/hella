@@ -10,7 +10,7 @@
         "truck"
       ],
       "ghostClasses": null,
-      "identifierName": null,
+      "identifierName": "legacy",
       "shapes": [
         {
           "type": "rectangle",
@@ -56,7 +56,7 @@
             "truck"
           ],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",
