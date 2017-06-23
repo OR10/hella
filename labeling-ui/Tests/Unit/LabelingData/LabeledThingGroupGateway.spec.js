@@ -114,14 +114,16 @@ describe('LabeledThingGroupGateway', () => {
   });
 
   it('should delete a labeled thing group', done => {
+    const task = createTask();
+
     const ltg = new LabeledThingGroup({
+      task,
       id: 'LTG-1',
       groupType: 'fancy-group-type',
       lineColor: 423,
       groupIds: null,
-      task: createTask(),
     });
-    const expectedUrl = `/backend/api/task/TASK-1/labeledThingGroup/${ltg.id}`;
+    const expectedUrl = `/backend/api/task/${task.id}/labeledThingGroup/${ltg.id}`;
 
     const expectedResult = {
       result: {
@@ -143,8 +145,8 @@ describe('LabeledThingGroupGateway', () => {
   });
 
   it('should create a labeled thing group with given type', done => {
-    const expectedUrl = `/backend/api/task/TASK-1/labeledThingGroup`;
     const task = createTask();
+    const expectedUrl = `/backend/api/task/${task.id}/labeledThingGroup`;
 
     const ltg = new LabeledThingGroup({
       task,
