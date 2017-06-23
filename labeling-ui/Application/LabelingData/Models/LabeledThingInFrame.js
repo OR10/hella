@@ -13,7 +13,7 @@ class LabeledThingInFrame extends LabeledObject {
   constructor(labeledThingInFrame) {
     // Extract task from labeledThing and propagate it up the chain
     super(
-      Object.assign({}, labeledThingInFrame, {task: labeledThingInFrame.labeledThing.task})
+      Object.assign({}, labeledThingInFrame, {task: labeledThingInFrame.labeledThing.task}),
     );
 
     /**
@@ -39,7 +39,7 @@ class LabeledThingInFrame extends LabeledObject {
     // @HACK: This should be properly handeled by the backend, but currently nobody seems to know, why the backend is
     //        transforming this information here.
     this.shapes = cloneDeep(labeledThingInFrame.shapes).map(
-      shape => this._fixPseudoCuboid3dShape(shape)
+      shape => this._fixPseudoCuboid3dShape(shape),
     );
 
     /**
