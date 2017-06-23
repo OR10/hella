@@ -1,7 +1,7 @@
 <div class="grid-block vertical gray-tab-view">
     <loading-mask ng-if="vm.loadingInProgress" spinner="true" backdrop="false"></loading-mask>
     <form class="grid-content user-profile">
-        <h2>{{vm.user.id != 'new' ? 'Edit user ' + vm.user.username : 'Create new User'}}</h2>
+        <h2>{{vm.createMode ? 'Create new User' : 'Edit user ' + vm.user.username  }}</h2>
         <table class="table formular-table" >
             <tr>
                 <td>Username</td>

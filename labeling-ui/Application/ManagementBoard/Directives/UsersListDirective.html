@@ -1,5 +1,10 @@
 <div class="grid-block vertical">
     <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+    <div class="view-list-info-box" ng-if="vm.users.length == 0" ng-switch="vm.loadingInProgress">
+        <h3 ng-switch-when="true">Loading Users...</h3>
+        <h3 ng-switch-default>There are currently no users in the selected organisation.</h3>
+    </div>
+
 
     <table class="table hover table-background-even-odd view-list-table "
            ng-hide="vm.loadingInProgress"
