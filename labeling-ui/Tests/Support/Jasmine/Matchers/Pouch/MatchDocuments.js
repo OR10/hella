@@ -47,7 +47,8 @@ function preprocessTemplate(template, depth = 0) {
     return template;
   }
 
-  if (isObject(template)) {
+  // The explicit !isArray check needs to be done, since an array is also an object!
+  if (isObject(template) && !isArray(template)) {
     const processedTemplate = {};
     forEach(template, (value, key) => {
       switch (true) {
