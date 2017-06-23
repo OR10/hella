@@ -77,7 +77,7 @@
                     {{organisation.name}}
                     <span
                           class="pull-right"
-                          ng-if="vm.canAddOrganisationToUser(organisation)"
+                          ng-if="vm.isUserAlreadyInOrganisation(organisation)"
                           ng-class="{error: !vm.validation.organisations}"
                           tooltip="Add user to Organisation"
                           ng-click="vm.addUserToOrganisation(organisation)"

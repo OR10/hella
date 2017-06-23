@@ -428,7 +428,7 @@ class UserProfileController {
    * @param {Organisation} organisation
    * @returns {boolean}
    */
-  canAddOrganisationToUser(organisation) {
+  isUserAlreadyInOrganisation(organisation) {
     return !this.userOrganisations.find(org => org.id === organisation.id);
   }
 
