@@ -175,7 +175,7 @@ export default class LabelSelectorController {
       }
 
       const labels = Object.values(this.choices).filter(
-        choice => choice !== null
+        choice => choice !== null,
       );
 
       if (equals(labeledObject.classes, labels)) {
@@ -279,7 +279,7 @@ export default class LabelSelectorController {
     const classList = selectedLabeledObject.extractClassList();
     const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
       this.selectedLabelStructureObject,
-      classList
+      classList,
     );
 
     // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
@@ -302,7 +302,7 @@ export default class LabelSelectorController {
       page.challenge = node.metadata.challenge;
       page.instructions = node.metadata.instructions;
       page.responses = node.children.map(
-        child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass})
+        child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass}),
       );
     });
 
@@ -317,8 +317,8 @@ export default class LabelSelectorController {
           // Remove the chosen value from the labelsObject
           selectedLabeledObject.setClasses(
             selectedLabeledObject.classes.filter(
-              label => label !== this.choices[id]
-            )
+              label => label !== this.choices[id],
+            ),
           );
         }
       });
@@ -393,7 +393,7 @@ export default class LabelSelectorController {
     return this._labeledFrameGateway.saveLabeledFrame(
       this.task,
       this.framePosition.position,
-      labeledFrame
+      labeledFrame,
     );
   }
 
@@ -410,7 +410,7 @@ export default class LabelSelectorController {
 
     return this.pages.reduce(
       (isCompleted, page) => isCompleted === true && this.choices[page.id] !== null,
-      true
+      true,
     );
   }
 
