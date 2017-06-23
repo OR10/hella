@@ -84,12 +84,14 @@ function bootstrapPouchDb(mocks) {
     let things = cloneDeep(mock.response.data.result);
     let labeledThing;
     let taskId;
+    let projectId;
 
     if (things.labeledThings) {
       const labeledThingKeys = Object.keys(things.labeledThings);
       labeledThingKeys.forEach(labeledThingKey => {
         labeledThing = things.labeledThings[labeledThingKey];
         taskId = labeledThing.taskId;
+        projectId = labeledThing.projectId;
 
         labeledThing._id = labeledThing.id;
         labeledThing.type = 'AppBundle.Model.LabeledThing';
@@ -111,7 +113,7 @@ function bootstrapPouchDb(mocks) {
       things.labeledThingsInFrame.forEach(ltif => {
         ltif._id = ltif.id;
         ltif.taskId = taskId;
-        ltif.labeledThingId = ltif.labeledThingId;
+        ltif.projectId = projectId;
         if (knownIdentifierNames.indexOf(ltif.identifierName) === -1) {
           ltif.identifierName = 'legacy';
         }
