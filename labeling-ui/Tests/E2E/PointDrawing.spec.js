@@ -43,8 +43,8 @@ describe('Point drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'LoadAndDrawOnePoint'),
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'LoadAndDrawOnePoint'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.LoadAndDrawOnePoint);
@@ -60,8 +60,8 @@ describe('Point drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'LoadAndDrawTwoPoints')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'LoadAndDrawTwoPoints')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.LoadAndDrawTwoPoints);
@@ -83,8 +83,8 @@ describe('Point drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectOnePoint')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectOnePoint')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
 
       .then(drawingStack => {
@@ -111,8 +111,8 @@ describe('Point drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectAndDeselectPoint')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectAndDeselectPoint')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.SelectAndDeselectPoint);
@@ -138,8 +138,8 @@ describe('Point drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectAnotherPoint')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectAnotherPoint')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.SelectAnotherPoint);
@@ -166,15 +166,13 @@ describe('Point drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'MoveOnePoint')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'MoveOnePoint')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.MoveOnePoint);
       })
-      .then(() => {
-        browser.sleep(500)
-      })
+      .then(() => browser.sleep(500))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainRequest(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1);
@@ -203,8 +201,8 @@ describe('Point drawing', () => {
       })
       .then(() => browser.sleep(500))
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'KeepSelectionOverFrameChange')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'KeepSelectionOverFrameChange')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.KeepSelectionOverFrameChange);
@@ -226,18 +224,16 @@ describe('Point drawing', () => {
         .mouseMove(viewer, {x: 400, y: 400}) // initial position
         .mouseUp()
         .mouseMove(viewer, {x: 1, y: 1}) // initial position
-        .perform()
+        .perform(),
       )
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewPoint')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewPoint')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewPoint);
       })
-      .then(() => {
-        browser.sleep(500)
-      })
+      .then(() => browser.sleep(500))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing);
@@ -270,18 +266,16 @@ describe('Point drawing', () => {
         .mouseMove(viewer, {x: 900, y: 50}) // initial position
         .mouseUp()
         .mouseMove(viewer, {x: 1, y: 1}) // initial position
-        .perform()
+        .perform(),
       )
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewMultiplePoints')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewMultiplePoints')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewMultiplePoints);
       })
-      .then(() => {
-        browser.sleep(500)
-      })
+      .then(() => browser.sleep(500))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing);

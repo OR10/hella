@@ -48,8 +48,8 @@ describe('Polyline drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
-         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'LoadAndDrawOnePolyline'),
-         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'LoadAndDrawOnePolyline'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.LoadAndDrawOnePolyline);
@@ -65,8 +65,8 @@ describe('Polyline drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'LoadAndDrawTwoPolylines')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'LoadAndDrawTwoPolylines')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.LoadAndDrawTwoPolylines);
@@ -88,8 +88,8 @@ describe('Polyline drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'SelectOnePolyline')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'SelectOnePolyline')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.SelectOnePolyline);
@@ -115,8 +115,8 @@ describe('Polyline drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'SelectAndDeselectPolyline')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'SelectAndDeselectPolyline')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.SelectAndDeselectPolyline);
@@ -142,8 +142,8 @@ describe('Polyline drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'SelectAnotherPolyline')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'SelectAnotherPolyline')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.SelectAnotherPolyline);
@@ -170,8 +170,8 @@ describe('Polyline drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'MoveOnePolyline')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'MoveOnePolyline')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.MoveOnePolyline);
@@ -207,11 +207,11 @@ describe('Polyline drawing', () => {
         .mouseDown()
         .mouseMove(viewer, {x: 50, y: 200}) // drag
         .mouseUp()
-        .perform()
+        .perform(),
       )
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'ResizeOnePolyline')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'ResizeOnePolyline')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.ResizeOnePolyline);
@@ -246,8 +246,8 @@ describe('Polyline drawing', () => {
       })
       .then(() => browser.sleep(500))
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'KeepSelectionOverFrameChange')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'KeepSelectionOverFrameChange')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.KeepSelectionOverFrameChange);
@@ -255,7 +255,7 @@ describe('Polyline drawing', () => {
       });
   });
 
-  it('should draw a new polyline shape', done => {
+  fit('should draw a new polyline shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -282,11 +282,11 @@ describe('Polyline drawing', () => {
         .click()
         .mouseMove(viewer, {x: 1, y: 1}) // initial position
         .click(protractor.Button.RIGHT)
-        .perform()
+        .perform(),
       )
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolyline')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolyline')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolyline);
@@ -313,11 +313,11 @@ describe('Polyline drawing', () => {
         .mouseMove(viewer, {x: 600, y: 100}) // initial position
         .mouseUp()
         .mouseMove(viewer, {x: 400, y: 400}) // initial position
-        .perform()
+        .perform(),
       )
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary1')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary1);
@@ -328,11 +328,11 @@ describe('Polyline drawing', () => {
         .mouseMove(viewer, {x: 200, y: 600}) // initial position
         .click()
         .mouseMove(viewer, {x: 400, y: 400}) // initial position
-        .perform()
+        .perform(),
       )
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary2')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary2);
@@ -345,11 +345,11 @@ describe('Polyline drawing', () => {
         .mouseMove(viewer, {x: 500, y: 200}) // initial position
         .click()
         .mouseMove(viewer, {x: 400, y: 400}) // initial position
-        .perform()
+        .perform(),
       )
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary3')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary3')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary3);
@@ -359,11 +359,11 @@ describe('Polyline drawing', () => {
         .click()
         .mouseMove(viewer, {x: 1, y: 1}) // initial position
         .click(protractor.Button.RIGHT)
-        .perform()
+        .perform(),
       )
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary4')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary4')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary4);
@@ -398,8 +398,8 @@ describe('Polyline drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewMultiplePolyline1')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewMultiplePolyline1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewMultiplePolyline1);
@@ -416,8 +416,8 @@ describe('Polyline drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewMultiplePolyline2')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewMultiplePolyline2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewMultiplePolyline2);
@@ -434,8 +434,8 @@ describe('Polyline drawing', () => {
           .perform();
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewMultiplePolyline3')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewMultiplePolyline3')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewMultiplePolyline3);
@@ -491,26 +491,26 @@ describe('Polyline handle/point limiting', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => {
-          browser.actions()
-              .mouseMove(viewer, {x: 100, y: 100}) // initial position
-              .mouseDown()
-              .mouseMove(viewer, {x: 100, y: 200}) // initial position
-              .mouseUp()
-              .mouseMove(viewer, {x: 1, y: 1}) // initial position
-              .click(protractor.Button.RIGHT)
-              .perform();
-        })
-        .then(
-            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'TooFewHandles'),
-            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.TooFewHandles);
-          // @TODO This check does not seem to work. Validate and fix!
-          expectModalToBePresent();
-          done();
-        });
+      .then(() => {
+        browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 200}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .click(protractor.Button.RIGHT)
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'TooFewHandles'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.TooFewHandles);
+        // @TODO This check does not seem to work. Validate and fix!
+        expectModalToBePresent();
+        done();
+      });
   });
   xit('should add too many handles', done => {
     mock(sharedMocks.concat([
@@ -564,8 +564,8 @@ describe('Polyline handle/point limiting', () => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame5);
       })
       .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'TooManyHandles'),
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'TooManyHandles'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.TooManyHandles);
