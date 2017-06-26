@@ -255,7 +255,7 @@ describe('Polyline drawing', () => {
       });
   });
 
-  fit('should draw a new polyline shape', done => {
+  it('should draw a new polyline shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
