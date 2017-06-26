@@ -217,7 +217,7 @@ describe('Class Ghosting', () => {
       .then(() => browser.sleep(100))
       .then(() => expectSpeedSignEntrySelected())
       .then(() => expect(createLtifFromTemplate(0, ['u-turn'])).toExistInPouchDb())
-      .then(() => expect(createLtifFromTemplate(1, ['speed-sign'])).not.toExistInPouchDb())
+      .then(() => expect(createLtifFromTemplate(1, ['speed-sign'])).toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(2, [], {x: 550, y: 350}, {x: 650, y: 450})).toExistInPouchDb())
       .then(() => done());
   });
