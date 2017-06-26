@@ -34,7 +34,7 @@ class LabeledThingInFrameGateway {
   listLabeledThingInFrame(task, frameIndex, offset = 0, limit = 1) {
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameIndex}`,
-      {offset, limit},
+      {offset, limit}
     );
 
     return this.bufferedHttp.get(url, undefined, 'labeledThing')
@@ -66,7 +66,7 @@ class LabeledThingInFrameGateway {
   getLabeledThingInFrame(task, frameIndex, labeledThing, offset = 0, limit = 1) {
     const url = this._apiService.getApiUrl(
       `/task/${task.id}/labeledThingInFrame/${frameIndex}/${labeledThing.id}`,
-      {offset, limit},
+      {offset, limit}
     );
     return this.bufferedHttp.get(url, undefined, 'labeledThing')
       .then(response => {
@@ -74,8 +74,8 @@ class LabeledThingInFrameGateway {
           const result = response.data.result;
           return result.map(
             data => new LabeledThingInFrame(
-              Object.assign({}, data, {labeledThing}),
-            ),
+              Object.assign({}, data, {labeledThing})
+            )
           );
         }
 
@@ -98,7 +98,7 @@ class LabeledThingInFrameGateway {
       {
         incompleteOnly: true,
         limit: count,
-      },
+      }
     );
 
     return this.bufferedHttp.get(url, undefined, 'labeledThing')
@@ -124,7 +124,7 @@ class LabeledThingInFrameGateway {
     }
 
     const url = this._apiService.getApiUrl(
-      `/labeledThingInFrame/${labeledThingInFrame.id}`,
+      `/labeledThingInFrame/${labeledThingInFrame.id}`
     );
 
     if (labeledThingInFrame.ghostClasses !== null && !!labeledThingInFrame.classes) {
@@ -144,10 +144,10 @@ class LabeledThingInFrameGateway {
                     {},
                     response.data.result.labeledThing,
                     {task: labeledThingInFrame.labeledThing.task}
-                  ),
+                  )
                 ),
-              },
-            ),
+              }
+            )
           );
         }
 
@@ -171,7 +171,7 @@ class LabeledThingInFrameGateway {
       labeledThing.task = task;
 
       return new LabeledThingInFrame(
-        Object.assign({}, data, {labeledThing: new LabeledThing(labeledThing)}),
+        Object.assign({}, data, {labeledThing: new LabeledThing(labeledThing)})
       );
     });
   }
