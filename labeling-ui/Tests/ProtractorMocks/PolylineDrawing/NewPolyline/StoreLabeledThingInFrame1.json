@@ -45,8 +45,7 @@
               "y": 200
             }
           ],
-          "type": "polyline",
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          "type": "polyline"
         }
       ],
       "classes": [],
@@ -115,8 +114,7 @@
                   "x": 100,
                   "y": 200
                 }
-              ],
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",

@@ -44,7 +44,6 @@
                   "y": 200
                 },
                 "id": "SHAPE-ID-1",
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
                 "topLeft": {
                   "x": 100,
                   "y": 100
@@ -58,4 +57,3 @@
     }
   }
 }
-

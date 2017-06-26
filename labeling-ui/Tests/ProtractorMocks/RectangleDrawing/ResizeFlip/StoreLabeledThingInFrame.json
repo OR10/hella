@@ -23,7 +23,6 @@
             "y": 400
           },
           "id": "SHAPE-ID-1",
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
           "type": "rectangle"
         }
       ]
@@ -64,8 +63,7 @@
               "bottomRight": {
                 "x": 500,
                 "y": 400
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-1",

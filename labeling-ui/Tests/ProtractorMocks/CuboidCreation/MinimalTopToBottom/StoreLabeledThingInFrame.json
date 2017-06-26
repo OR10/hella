@@ -53,8 +53,7 @@
               2.330680813779,
               0
             ]
-          ],
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          ]
         }
       ],
       "classes": [],
@@ -130,8 +129,7 @@
                   2.330680813779,
                   0
                 ]
-              ],
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",

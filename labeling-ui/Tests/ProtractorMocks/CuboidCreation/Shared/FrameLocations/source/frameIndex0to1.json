@@ -12,11 +12,11 @@
       "result": [
         {
           "frameIndex": 0,
-          "url": "\/fixtures\/images\/CUBOID-VIDEOID\/source\/1.png"
+          "url": "/fixtures/images/CUBOID-VIDEOID/source/1.png"
         },
         {
           "frameIndex": 1,
-          "url": "\/fixtures\/images\/CUBOID-VIDEOID\/source\/2.png"
+          "url": "/fixtures/images/CUBOID-VIDEOID/source/2.png"
         }
       ]
     }

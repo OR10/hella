@@ -13,7 +13,7 @@
         {
           "id": "SHAPE-ID-1",
           "type": "cuboid3d",
-        "vehicleCoordinates": [
+          "vehicleCoordinates": [
             [
               19.935839886659,
               2.8348183771519,
@@ -54,7 +54,7 @@
               2.8348183771519,
               0
             ]
-          ],          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+          ]
         }
       ],
       "classes": [],
@@ -131,8 +131,7 @@
                   2.843468628414,
                   0
                 ]
-              ],
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              ]
             }
           ],
           "classes": [],

@@ -142,7 +142,7 @@
             },
             "ignore-group": {
               "challenge": "Gruppengröße",
-              "response":  "Gruppe"
+              "response": "Gruppe"
             },
             "ignore-single": {
               "response": "Einzelperson"

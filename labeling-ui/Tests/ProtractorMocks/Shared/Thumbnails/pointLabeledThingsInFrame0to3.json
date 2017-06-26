@@ -12,76 +12,84 @@
     "data": {
       "result": [
         {
-            "id": "LABELED-THING-IN-FRAME-THUMBNAIL-NEW",
-            "rev": "2-abcdefghijklmno",
-            "frameIndex": 0,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "id": "SHAPE-ID-NEW",
-                "type": "point",
-                "point": {"x": 200, "y": 100},
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+          "id": "LABELED-THING-IN-FRAME-THUMBNAIL-NEW",
+          "rev": "2-abcdefghijklmno",
+          "frameIndex": 0,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "SHAPE-ID-NEW",
+              "type": "point",
+              "point": {
+                "x": 200,
+                "y": 100
               }
-            ],
-            "labeledThingId": "{{labeledThingId}}",
-            "incomplete": true,
-            "ghost": false
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": false
         },
         {
-            "id": null,
-            "rev": null,
-            "frameIndex": 1,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "id": "SHAPE-ID-NEW",
-                "type": "point",
-                "point": {"x": 200, "y": 100},
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+          "id": null,
+          "rev": null,
+          "frameIndex": 1,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "SHAPE-ID-NEW",
+              "type": "point",
+              "point": {
+                "x": 200,
+                "y": 100
               }
-            ],
-            "labeledThingId": "{{labeledThingId}}",
-            "incomplete": true,
-            "ghost": true
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": true
         },
         {
-            "id": null,
-            "rev": null,
-            "frameIndex": 2,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "id": "SHAPE-ID-NEW",
-                "type": "point",
-                "point": {"x": 200, "y": 100},
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+          "id": null,
+          "rev": null,
+          "frameIndex": 2,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "SHAPE-ID-NEW",
+              "type": "point",
+              "point": {
+                "x": 200,
+                "y": 100
               }
-            ],
-            "labeledThingId": "{{labeledThingId}}",
-            "incomplete": true,
-            "ghost": true
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": true
         },
         {
-            "id": null,
-            "rev": null,
-            "frameIndex": 3,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "id": "SHAPE-ID-NEW",
-                "type": "point",
-                "point": {"x": 200, "y": 100},
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+          "id": null,
+          "rev": null,
+          "frameIndex": 3,
+          "classes": [],
+          "ghostClasses": null,
+          "shapes": [
+            {
+              "id": "SHAPE-ID-NEW",
+              "type": "point",
+              "point": {
+                "x": 200,
+                "y": 100
               }
-            ],
-            "labeledThingId": "{{labeledThingId}}",
-            "incomplete": true,
-            "ghost": true
+            }
+          ],
+          "labeledThingId": "{{labeledThingId}}",
+          "incomplete": true,
+          "ghost": true
         }
       ]
     }

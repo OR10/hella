@@ -12,23 +12,23 @@
       "result": [
         {
           "frameIndex": 0,
-          "url": "\/fixtures\/images\/ZOOMVIDEO-ZOOMVIDEO\/source\/1.png"
+          "url": "/fixtures/images/ZOOMVIDEO-ZOOMVIDEO/source/1.png"
         },
         {
           "frameIndex": 1,
-          "url": "\/fixtures\/images\/ZOOMVIDEO-ZOOMVIDEO\/source\/2.png"
+          "url": "/fixtures/images/ZOOMVIDEO-ZOOMVIDEO/source/2.png"
         },
         {
           "frameIndex": 2,
-          "url": "\/fixtures\/images\/ZOOMVIDEO-ZOOMVIDEO\/source\/3.png"
+          "url": "/fixtures/images/ZOOMVIDEO-ZOOMVIDEO/source/3.png"
         },
         {
           "frameIndex": 3,
-          "url": "\/fixtures\/images\/ZOOMVIDEO-ZOOMVIDEO\/source\/4.png"
+          "url": "/fixtures/images/ZOOMVIDEO-ZOOMVIDEO/source/4.png"
         },
         {
           "frameIndex": 4,
-          "url": "\/fixtures\/images\/ZOOMVIDEO-ZOOMVIDEO\/source\/5.png"
+          "url": "/fixtures/images/ZOOMVIDEO-ZOOMVIDEO/source/5.png"
         }
       ]
     }

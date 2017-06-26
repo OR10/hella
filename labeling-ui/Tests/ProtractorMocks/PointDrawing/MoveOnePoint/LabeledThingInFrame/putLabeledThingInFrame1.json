@@ -12,8 +12,10 @@
       "shapes": [
         {
           "id": "SHAPE-ID-1",
-          "point": {"x": 250, "y": 200},
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+          "point": {
+            "x": 250,
+            "y": 200
+          },
           "type": "point"
         }
       ],
@@ -48,8 +50,10 @@
           "shapes": [
             {
               "id": "SHAPE-ID-1",
-              "point": {"x": 250, "y": 200},
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+              "point": {
+                "x": 250,
+                "y": 200
+              },
               "type": "point"
             }
           ],

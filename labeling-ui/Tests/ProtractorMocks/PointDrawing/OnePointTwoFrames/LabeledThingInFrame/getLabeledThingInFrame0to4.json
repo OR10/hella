@@ -23,7 +23,6 @@
                 "y": 200
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topCenter": {
                 "x": 100,
                 "y": 100
@@ -43,11 +42,13 @@
           "ghostClasses": null,
           "shapes": [
             {
-                "id": "SHAPE-ID-1",
-                "point": {"x": 250, "y": 100},
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "point"
-              }
+              "id": "SHAPE-ID-1",
+              "point": {
+                "x": 250,
+                "y": 100
+              },
+              "type": "point"
+            }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
           "incomplete": true,
@@ -61,11 +62,13 @@
           "ghostClasses": null,
           "shapes": [
             {
-                "id": "SHAPE-ID-1",
-                "point": {"x": 250, "y": 100},
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "point"
-              }
+              "id": "SHAPE-ID-1",
+              "point": {
+                "x": 250,
+                "y": 100
+              },
+              "type": "point"
+            }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
           "incomplete": true,
@@ -79,11 +82,13 @@
           "ghostClasses": null,
           "shapes": [
             {
-                "id": "SHAPE-ID-1",
-                "point": {"x": 250, "y": 100},
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "point"
-              }
+              "id": "SHAPE-ID-1",
+              "point": {
+                "x": 250,
+                "y": 100
+              },
+              "type": "point"
+            }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
           "incomplete": true,
@@ -97,11 +102,13 @@
           "ghostClasses": null,
           "shapes": [
             {
-                "id": "SHAPE-ID-1",
-                "point": {"x": 250, "y": 100},
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "point"
-              }
+              "id": "SHAPE-ID-1",
+              "point": {
+                "x": 250,
+                "y": 100
+              },
+              "type": "point"
+            }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
           "incomplete": true,
@@ -111,4 +118,3 @@
     }
   }
 }
-

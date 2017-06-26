@@ -20,8 +20,7 @@
           "topLeft": {
             "x": 100,
             "y": 100
-          },
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+          }
         }
       ],
       "classes": [
@@ -42,8 +41,7 @@
             "startFrameNumber": 1,
             "endFrameNumber": 1
           },
-          "classes": [
-          ],
+          "classes": [],
           "taskId": "TASKID-TASKID",
           "incomplete": true,
           "lineColor": "16"
@@ -69,7 +67,6 @@
                 "y": 200
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "type": "rectangle"
             }
           ],

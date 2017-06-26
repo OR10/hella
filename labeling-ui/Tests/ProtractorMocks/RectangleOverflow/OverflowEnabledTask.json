@@ -8,7 +8,12 @@
       "result": {
         "task": {
           "assignmentHistory": [
-            {"userId": "user-id-1", "assignedAt": "1470132376", "phase": "labeling", "status": "in_progress"}
+            {
+              "userId": "user-id-1",
+              "assignedAt": "1470132376",
+              "phase": "labeling",
+              "status": "in_progress"
+            }
           ],
           "id": "TASKID-TASKID",
           "rev": "3-f5f607d02b030a04c2c01dbe80957ece",

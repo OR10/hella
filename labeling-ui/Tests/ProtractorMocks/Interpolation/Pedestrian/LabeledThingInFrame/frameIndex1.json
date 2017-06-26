@@ -18,8 +18,7 @@
           "bottomCenter": {
             "x": 187.5,
             "y": 250
-          },
-          "labeledThingInFrameId": "{{ltifid}}"
+          }
         }
       ],
       "classes": [],
@@ -31,4 +30,3 @@
   },
   "response": {}
 }
-

@@ -19,8 +19,7 @@
           "topLeft": {
             "x": 100,
             "y": 100
-          },
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          }
         }
       ],
       "classes": [],
@@ -62,8 +61,7 @@
               "bottomRight": {
                 "x": 700,
                 "y": 500
-              },
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              }
             }
           ],
           "labeledThingId": "{{labeledThingId}}",
