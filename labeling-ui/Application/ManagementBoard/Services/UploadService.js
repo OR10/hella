@@ -22,7 +22,7 @@ class UploadService {
       progress += file.progress() / amountFiles;
     });
 
-    return Math.floor(progress) * 100;
+    return Math.round(progress * 100);
   }
 }
 
