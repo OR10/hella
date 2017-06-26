@@ -89,22 +89,33 @@ class PouchDbLabeledFrameGateway {
   getLabeledFrame(task, frameIndex) {
     return this._packagingExecutor.execute('labeledFrame', () => {
       const db = this._pouchDbContextService.provideContextForTaskId(task.id);
-      return this._$q.resolve()
-        .then(() => this._getCurrentOrPreceedingLabeledFrame(db, task, frameIndex))
-        .then(labeledFrame => {
-          if (labeledFrame === null) {
-            return new LabeledFrame({
-              frameIndex,
-              id: this._entityIdService.getUniqueId(),
-              incomplete: true,
-              task: task,
-              classes: [],
-            });
-          }
-
-          return labeledFrame;
-        });
+      return this._getCurrentOrPreceedingOrNewLabeledFrame(db, task, frameIndex);
     });
+  }
+
+  /**
+   * @param {PouchDB} db
+   * @param {Task} task
+   * @param {number} frameIndex
+   * @return {Promise.<Object|null>}
+   * @private
+   */
+  _getCurrentOrPreceedingOrNewLabeledFrame(db, task, frameIndex) {
+    return this._$q.resolve()
+      .then(() => this._getCurrentOrPreceedingLabeledFrame(db, task, frameIndex))
+      .then(labeledFrame => {
+        if (labeledFrame === null) {
+          return new LabeledFrame({
+            frameIndex,
+            id: this._entityIdService.getUniqueId(),
+            incomplete: true,
+            task: task,
+            classes: [],
+          });
+        }
+
+        return labeledFrame;
+      });
   }
 
   /**
@@ -159,7 +170,7 @@ class PouchDbLabeledFrameGateway {
       const db = this._pouchDbContextService.provideContextForTaskId(task.id);
       return this._$q.resolve()
         .then(() => {
-          return this._getCurrentOrPreceedingLabeledFrame(db, task, frameIndex);
+          return this._getCurrentOrPreceedingOrNewLabeledFrame(db, task, frameIndex);
         })
         .then(labeledFrameInPouch => {
           // Make sure a document for a frame is never stored twice. If for some reason (e.g. opening the task
