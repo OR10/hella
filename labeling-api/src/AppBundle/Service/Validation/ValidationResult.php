@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class ValidationResult
  *
- * @package DataStationBundle\Service\Validation
+ * @package AppBundle\Service\Validation
  */
 class ValidationResult
 {

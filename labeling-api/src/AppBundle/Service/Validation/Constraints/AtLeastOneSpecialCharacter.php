@@ -6,7 +6,7 @@ use Symfony\Component\Validator\Constraints\RegexValidator;
 
 /**
  * Class AtLeastOneSpecialCharacter
- * @package DataStationBundle\Service\Validation\Constraints
+ * @package AppBundle\Service\Validation\Constraints
  */
 class AtLeastOneSpecialCharacter extends Regex
 {

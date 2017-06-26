@@ -4,7 +4,7 @@ namespace AppBundle\Service\Validation;
 /**
  * Class ValidationService
  *
- * @package DataStationBundle\Service\Validation
+ * @package AppBundle\Service\Validation
  */
 class ValidationService
 {

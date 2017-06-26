@@ -5,7 +5,7 @@ use AppBundle\Model\User;
 
 /**
  * Class VerifyUserPassword
- * @package DataStationBundle\Service\Validation\Model
+ * @package AppBundle\Service\Validation\Model
  */
 class VerifyUserPassword
 {

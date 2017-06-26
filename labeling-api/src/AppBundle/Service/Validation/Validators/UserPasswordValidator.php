@@ -1,14 +1,14 @@
 <?php
 namespace AppBundle\Service\Validation\Validators;
 
-use DataStationBundle\Service\Validation\Model\VerifyUserPassword;
-use DataStationBundle\Service\Validation\ValidationError;
+use AppBundle\Service\Validation\Model\VerifyUserPassword;
+use AppBundle\Service\Validation\ValidationError;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class UserPasswordValidator
- * @package DataStationBundle\Service\Validation\Validators
+ * @package AppBundle\Service\Validation\Validators
  */
 class UserPasswordValidator extends AbstractValidator
 {

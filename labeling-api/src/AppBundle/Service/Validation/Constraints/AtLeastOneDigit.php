@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints\RegexValidator;
 /**
  * Class AtLeastOneDigit
  *
- * @package DataStationBundle\Service\Validation\Constraints
+ * @package AppBundle\Service\Validation\Constraints
  */
 class AtLeastOneDigit extends Regex
 {

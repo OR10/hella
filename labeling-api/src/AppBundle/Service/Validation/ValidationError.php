@@ -5,7 +5,7 @@ namespace AppBundle\Service\Validation;
 /**
  * Class ValidationError
  *
- * @package DataStationBundle\Service\Validation
+ * @package AppBundle\Service\Validation
  */
 class ValidationError
 {

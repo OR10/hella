@@ -3,18 +3,18 @@
 namespace AppBundle\Service\Validation\Validators;
 
 use AppBundle\Model\User;
-use DataStationBundle\Service\PasswordPolicyService;
-use DataStationBundle\Service\Validation\Constraints\AtLeastOneDigit;
-use DataStationBundle\Service\Validation\Constraints\AtLeastOneSpecialCharacter;
-use DataStationBundle\Service\Validation\Constraints\AtLeastOneUpperCaseCharacter;
-use DataStationBundle\Service\Validation\ValidationError;
+use AppBundle\Service\PasswordPolicyService;
+use AppBundle\Service\Validation\Constraints\AtLeastOneDigit;
+use AppBundle\Service\Validation\Constraints\AtLeastOneSpecialCharacter;
+use AppBundle\Service\Validation\Constraints\AtLeastOneUpperCaseCharacter;
+use AppBundle\Service\Validation\ValidationError;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class UserValidator
  *
- * @package DataStationBundle\Service\Validation\Validators
+ * @package AppBundle\Service\Validation\Validators
  */
 class UserValidator extends AbstractValidator
 {

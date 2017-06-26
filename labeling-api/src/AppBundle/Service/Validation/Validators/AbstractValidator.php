@@ -2,8 +2,8 @@
 
 namespace AppBundle\Service\Validation\Validators;
 
-use DataStationBundle\Service\Validation\ValidationError;
-use DataStationBundle\Service\Validation\Validator;
+use AppBundle\Service\Validation\ValidationError;
+use AppBundle\Service\Validation\Validator;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Validation;
@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Validation;
 /**
  * Class AbstractValidator
  *
- * @package DataStationBundle\Service\Validation\Validators
+ * @package AppBundle\Service\Validation\Validators
  */
 abstract class AbstractValidator implements Validator
 {
