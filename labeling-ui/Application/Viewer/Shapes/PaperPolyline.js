@@ -60,7 +60,6 @@ class PaperPolyline extends PaperPath {
       type: 'polyline',
       id: this._shapeId,
       points,
-      labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }
 }

@@ -929,7 +929,6 @@ class PaperCuboid extends PaperThingShape {
       vehicleCoordinates: this._cuboid3d.nonPredictedVertices.map(
         vertex => vertex === null ? null : [vertex.x, vertex.y, vertex.z]
       ),
-      labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }
 }

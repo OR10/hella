@@ -224,7 +224,7 @@ class PaperPoint extends PaperThingShape {
   /**
    * Convert to JSON for storage
    *
-   * @returns {{type: string, id: String, point: {x: number, y: number}, labeledThingInFrameId: *}}
+   * @returns {{type: string, id: String, point: {x: number, y: number}}}
    */
   toJSON() {
     const {x, y} = this._centerPoint;
@@ -233,7 +233,6 @@ class PaperPoint extends PaperThingShape {
       type: 'point',
       id: this._shapeId,
       point: {x, y},
-      labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }
 }
