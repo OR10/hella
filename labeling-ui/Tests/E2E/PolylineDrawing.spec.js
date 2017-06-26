@@ -284,6 +284,7 @@ describe('Polyline drawing', () => {
         .click(protractor.Button.RIGHT)
         .perform(),
       )
+      .then(() => browser.sleep(200))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolyline')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
