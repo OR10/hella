@@ -32,6 +32,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="annostation.labeling_api.database.facade.couchdb_users"/>
             <argument type="service" id="annostation.labeling_api.database.facade.couch_db_security"/>
+            <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
             <argument>%couchdb_user%</argument>
             <argument>%couchdb_user_read_only%</argument>
             <argument>%pouchdb_feature_enabled%</argument>

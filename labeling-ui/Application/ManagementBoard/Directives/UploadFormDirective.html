@@ -49,7 +49,7 @@
                                     ng-mouseleave="isMouseOver = false"
                             >
                                 <span
-                                    ng-style="{
+                                        ng-style="{
                                     'color': (!file.isUploading() && file.isComplete() && file.hasUploadError()) ? '#DB315B' : '',
                                     'background': isMouseOver ? '#7B8999' : ''  }"
                                 >
@@ -57,7 +57,7 @@
                                 </span>
                                 <i ng-hide="file.isComplete() || !isMouseOver" ng-click="$event.stopPropagation();file.cancel()" class="fa fa-close"></i>
                                 <i class="fa fa-spinner fa-pulse"
-                                    ng-style="{display: file.isUploading() ? 'inline-block' : 'none'}">
+                                   ng-style="{display: file.isUploading() ? 'inline-block' : 'none'}">
                                 </i>
                                 <i class="fa fa-check"
                                    ng-if="!file.isUploading() && file.isComplete() && file.errorMessage.message == undefined">

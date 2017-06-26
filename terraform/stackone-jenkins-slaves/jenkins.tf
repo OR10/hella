@@ -1,5 +1,5 @@
 variable "count" {
-  default = 2
+  default = 3
 }
 
 resource "openstack_compute_secgroup_v2" "jenkins-slaves" {

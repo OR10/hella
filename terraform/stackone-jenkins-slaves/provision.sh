@@ -10,7 +10,7 @@ sudo apt-get -y upgrade
 sleep 3
 sudo aptitude -y install puppet-agent git openjdk-7-jre icedtea-7-plugin python-jenkins
 
-wget http://maven.jenkins-ci.org/content/repositories/releases/org/jenkins-ci/plugins/swarm-client/2.0/swarm-client-2.0-jar-with-dependencies.jar
+wget https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/swarm-client/2.0/swarm-client-2.0-jar-with-dependencies.jar
 
 sudo \
     /opt/puppetlabs/bin/puppet apply \
