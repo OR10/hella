@@ -1,0 +1,8 @@
+{
+  "name": "migration",
+  "version": "1.0.0",
+  "description": "Quick and dirty CouchDB migration",
+  "dependencies": {
+    "nano": "^6.2.0"
+  }
+}
