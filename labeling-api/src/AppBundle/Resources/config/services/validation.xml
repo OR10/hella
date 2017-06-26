@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="annostation.labeling_api.services.validator_registry"
+                 class="AppBundle\Service\Validation\ValidatorRegistry">
+        </service>
+
+        <service id="annostation.labeling_api.service.validation" class="AppBundle\Service\Validation\ValidationService">
+            <argument type="service" id="annostation.labeling_api.services.validator_registry"/>
+        </service>
+
+        <service id="annostation.labeling_api.validator.user"
+                 class="AppBundle\Service\Validation\Validators\UserValidator">
+            <argument type="service" id="annostation.labeling_api.services.password_policy"/>
+            <argument type="service" id="translator"/>
+            <tag name="data.validator"/>
+        </service>
+
+        <service id="annostation.labeling_api.validator.user_password"
+                 class="AppBundle\Service\Validation\Validators\UserPasswordValidator">
+            <argument type="service" id="security.encoder_factory"/>
+            <argument type="service" id="translator"/>
+            <tag name="data.validator"/>
+        </service>
+
+    </services>
+</container>

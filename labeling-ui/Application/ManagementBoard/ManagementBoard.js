@@ -29,8 +29,6 @@ import UploadFormDirective from './Directives/UploadFormDirective';
 
 import UsersController from './Controllers/UsersController';
 import UsersView from './Views/UsersView.html!';
-import UsersDetailController from './Controllers/UsersDetailController';
-import UsersDetailView from './Views/UsersDetailView.html!';
 import UserGateway from './Gateways/UserGateway';
 import UsersListDirective from './Directives/UsersListDirective';
 import UserProfileDirective from './Directives/UserProfileDirective';
@@ -191,9 +189,9 @@ class ManagementBoard extends Module {
       url: '/{userId:[0-9a-f]{1,32}|new}',
       views: {
         '@organisation': {
-          controller: UsersDetailController,
+          controller: UsersController,
           controllerAs: 'vm',
-          template: UsersDetailView,
+          template: UsersView,
         },
       },
     });

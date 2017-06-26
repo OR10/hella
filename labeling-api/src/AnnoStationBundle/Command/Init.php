@@ -97,6 +97,11 @@ class Init extends Base
     private $couchDbSecurityFacade;
 
     /**
+     * @var Service\UserRolesRebuilder
+     */
+    private $userRolesRebuilderService;
+
+    /**
      * @var string
      */
     private $couchUser;
@@ -130,6 +135,7 @@ class Init extends Base
      * @param Facade\Organisation                          $organisationFacade
      * @param AppFacade\CouchDbUsers                       $couchDbUsersFacade
      * @param AppFacade\CouchDbSecurity                    $couchDbSecurityFacade
+     * @param Service\UserRolesRebuilder                   $userRolesRebuilderService
      * @param string                                       $couchUser
      * @param string                                       $couchReadOnlyUser
      * @param bool                                         $pouchdbFeatureEnabled
@@ -151,6 +157,7 @@ class Init extends Base
         Facade\Organisation $organisationFacade,
         AppFacade\CouchDbUsers $couchDbUsersFacade,
         AppBundleFacade\CouchDbSecurity $couchDbSecurityFacade,
+        Service\UserRolesRebuilder $userRolesRebuilderService,
         $couchUser,
         $couchReadOnlyUser,
         $pouchdbFeatureEnabled
@@ -173,6 +180,7 @@ class Init extends Base
         $this->organisationFacade               = $organisationFacade;
         $this->couchDbUsersFacade               = $couchDbUsersFacade;
         $this->couchDbSecurityFacade            = $couchDbSecurityFacade;
+        $this->userRolesRebuilderService        = $userRolesRebuilderService;
         $this->couchUser                        = $couchUser;
         $this->couchReadOnlyUser                = $couchReadOnlyUser;
         $this->pouchdbFeatureEnabled            = $pouchdbFeatureEnabled;
@@ -397,6 +405,8 @@ class Init extends Base
                 $user->setRoles($roleNames);
 
                 $this->userFacade->updateUser($user);
+
+                $this->userRolesRebuilderService->rebuildForUser($user);
 
                 $this->users[$user->getUsername()] = $user;
 

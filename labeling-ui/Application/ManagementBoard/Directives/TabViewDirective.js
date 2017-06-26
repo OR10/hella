@@ -6,7 +6,9 @@ import TabViewController from './TabViewController';
  */
 class TabViewDirective {
   constructor() {
-    this.scope = {};
+    this.scope = {
+      activeIndex: '=',
+    };
     this.template = tabViewTemplate;
     this.controller = TabViewController;
     this.controllerAs = 'vm';

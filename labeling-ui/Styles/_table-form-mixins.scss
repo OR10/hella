@@ -28,6 +28,15 @@ $formular-table-td-padding: 13px 0 15px 11px !important;
     background: transparent;
     border: none;
   }
+  .pull-right {
+    margin-right: 10px;
+    i {
+      font-size: 20px;
+    }
+    i:hover {
+      cursor: pointer;
+    }
+  }
 }
 
 @mixin formular-table-td-first-child($textColor) {

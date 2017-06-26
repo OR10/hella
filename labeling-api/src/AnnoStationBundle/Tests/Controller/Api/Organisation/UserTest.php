@@ -5,7 +5,9 @@ namespace AnnoStationBundle\Tests\Controller\Api\Organisation;
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Tests\Controller;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Service;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
+use AppBundle\Database\Facade as AppBundleFacade;
 use AppBundle\Model;
 use Symfony\Component\HttpFoundation;
 use FOS\UserBundle\Util;
@@ -21,6 +23,11 @@ class UserTest extends Tests\WebTestCase
      * @var Facade\Organisation
      */
     private $organisationFacade;
+
+    /**
+     * @var AppBundleFacade\CouchDbUsers
+     */
+    private $couchDbUsersFacade;
 
     public function testAddUserToOrganisationAsSuperAdmin()
     {
@@ -137,9 +144,40 @@ class UserTest extends Tests\WebTestCase
         $this->assertFalse(in_array($this->organisation->getId(), $user->getOrganisations()));
     }
 
+    public function testCouchDbAdminRolesForOrganisation()
+    {
+        $this->skipOnNonPouchDbEnviroment();
+
+        $superAdmin = $this->createSuperAdminUser($this->organisation);
+        $admin      = $this->createAdminUser($this->organisation);
+
+        $newOrganisation = $this->organisationFacade->save(
+            Tests\Helper\OrganisationBuilder::create()->build()
+        );
+
+        $this->createRequest(
+            '/api/organisation/%s/user/%s/assign',
+            [$newOrganisation->getId(), $admin->getId()]
+        )
+            ->withCredentialsFromUsername($superAdmin)
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->execute();
+
+        $actualUser = $this->couchDbUsersFacade->getUser(
+            Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX . $admin->getUsername()
+        );
+        $this->assertTrue(
+            in_array(
+                sprintf('%s%s', Service\UserRolesRebuilder::ADMIN_GROUP_PREFIX, $newOrganisation->getId()),
+                $actualUser['roles']
+            )
+        );
+    }
+
     protected function setUpImplementation()
     {
         $this->organisationFacade = $this->getAnnostationService('database.facade.organisation');
+        $this->couchDbUsersFacade = $this->getAnnostationService('database.facade.couchdb_users');
         $this->organisation       = $this->organisationFacade->save(
             Tests\Helper\OrganisationBuilder::create()->build()
         );
