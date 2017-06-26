@@ -5,29 +5,12 @@
         <title>{% block title %}HAGL AnnoStation{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
         <link href="{{ asset('bundles/app/css/bootstrap.min.css') }}" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-        <link href="{{ asset('bundles/app/css/annostation.css') }}" rel="stylesheet" />
+        <link href="labeling/Styles/main.css" rel="stylesheet" />
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <script type="text/javascript" src="{{ asset('bundles/app/js/jquery-3.2.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/app/js/annostation.js') }}"></script>
     </head>
     <body>
-        <div class="container">
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
-                    <div class="collapse navbar-collapse">
-                        <a class="navbar-brand">AnnoStation</a>
-                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                            <p class="navbar-text navbar-right">{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}</p>
-                            <a class="btn btn-default navbar-btn navbar-right"
-                               href="{{ path('fos_user_security_logout') }}"><i
-                                        class="glyphicon glyphicon-remove"></i> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
-                            </a>
-                            <a class="btn btn-default navbar-btn" href="/labeling"><i
-                                        class="glyphicon glyphicon-th-list"></i> Zur Taskliste gehen</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </nav>
-        </div>
-
         {% if app.request.hasPreviousSession %}
             {% for type, messages in app.session.flashbag.all() %}
                 {% for message in messages %}
@@ -39,7 +22,6 @@
         {% endif %}
 
         {% block body %}{% endblock %}
-
         <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}" integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
         {% block javascripts %}{% endblock %}
     </body>
