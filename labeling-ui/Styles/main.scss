@@ -1,4 +1,5 @@
 @import "colors";
+@import "table-form-mixins";
 @import "sizings";
 @import "foundation";
 @import "font-awesome";
@@ -37,6 +38,7 @@
 @import "page-layout";
 @import "tasklist";
 @import "user-profile";
+@import "login";
 
 html, body {
   // Prevent overscroll
@@ -408,4 +410,61 @@ title-bar {
   -webkit-border-radius: 5px;
   -khtml-border-radius: 5px;
   border-radius: 5px;
+}
+
+.upload-content {
+  color:#fff !important;
+  table tr td{
+    background: $color-ut-midgrey-1 !important;
+    padding: 0;
+    h6 {
+      color:#fff;
+      position: fixed;
+      left: 50%;
+      margin-top: 80px;
+    }
+    a {
+      color:#fff !important;
+      text-decoration-color: $color-ut-yellow !important;
+    }
+  };
+  .upload-content-description {
+    padding-top: 24px;
+    padding-left: 5px;
+    vertical-align: text-top;
+    width: 20%;
+    div {
+      margin-top: 15px;
+      margin-left: 68px;
+    }
+  }
+  .upload-content-files {
+    columns: 2;
+    text-align: left;
+    position: relative;
+    width: calc(100% - 20px);
+    div {
+      padding: 3px;
+      i {
+        color:$color-ut-darkgrey-2;
+      }
+      .fa-close:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
+.organisation-tag {
+  background: $color-ut-yellow;
+  border-radius: 5px;
+  padding: 5px;
+  margin-right: 5px;
+  display: inline-block;
+  margin-bottom: 2px;
+  span:hover {
+    cursor: pointer;
+  }
+  pull-right > i {
+    font-size: 20px;
+  }
 }

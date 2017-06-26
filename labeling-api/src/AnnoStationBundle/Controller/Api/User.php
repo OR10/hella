@@ -61,17 +61,22 @@ class User extends Controller\Base
      * @var Facade\Project
      */
     private $projectFacade;
+    /**
+     * @var Service\UserRolesRebuilder
+     */
+    private $userRolesRebuilderService;
 
     /**
      * Users constructor.
      *
-     * @param AppFacade\User        $userFacade
-     * @param Facade\Organisation   $organisationFacade
-     * @param Facade\LabelingGroup  $labelingGroupFacade
-     * @param Facade\Project        $projectFacade
-     * @param Storage\TokenStorage  $tokenStorage
-     * @param Service\Authorization $authorizationService
-     * @param AMQP\FacadeAMQP       $amqpFacade
+     * @param AppFacade\User             $userFacade
+     * @param Facade\Organisation        $organisationFacade
+     * @param Facade\LabelingGroup       $labelingGroupFacade
+     * @param Facade\Project             $projectFacade
+     * @param Storage\TokenStorage       $tokenStorage
+     * @param Service\Authorization      $authorizationService
+     * @param Service\UserRolesRebuilder $userRolesRebuilderService
+     * @param AMQP\FacadeAMQP            $amqpFacade
      */
     public function __construct(
         AppFacade\User $userFacade,
@@ -80,15 +85,17 @@ class User extends Controller\Base
         Facade\Project $projectFacade,
         Storage\TokenStorage $tokenStorage,
         Service\Authorization $authorizationService,
+        Service\UserRolesRebuilder $userRolesRebuilderService,
         AMQP\FacadeAMQP $amqpFacade
     ) {
-        $this->userFacade           = $userFacade;
-        $this->tokenStorage         = $tokenStorage;
-        $this->authorizationService = $authorizationService;
-        $this->organisationFacade   = $organisationFacade;
-        $this->labelingGroupFacade  = $labelingGroupFacade;
-        $this->projectFacade        = $projectFacade;
-        $this->amqpFacade           = $amqpFacade;
+        $this->userFacade                = $userFacade;
+        $this->tokenStorage              = $tokenStorage;
+        $this->authorizationService      = $authorizationService;
+        $this->organisationFacade        = $organisationFacade;
+        $this->labelingGroupFacade       = $labelingGroupFacade;
+        $this->projectFacade             = $projectFacade;
+        $this->userRolesRebuilderService = $userRolesRebuilderService;
+        $this->amqpFacade                = $amqpFacade;
     }
 
     /**
@@ -188,6 +195,8 @@ class User extends Controller\Base
             $user->addRole($role);
         }
         $this->userFacade->updateUser($user);
+        // This rebuild only affects superadmins because new users have no organisations yet
+        $this->userRolesRebuilderService->rebuildForUser($user);
 
         $organisations = [];
         if ($loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
@@ -248,6 +257,8 @@ class User extends Controller\Base
         }
 
         $this->userFacade->updateUser($user);
+        $this->userRolesRebuilderService->rebuildForUser($user);
+
         if ($user->getUsername() === $loginUser->getUsername()) {
             $this->tokenStorage->setToken(null);
 

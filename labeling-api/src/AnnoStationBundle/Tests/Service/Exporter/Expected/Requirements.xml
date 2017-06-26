@@ -51,7 +51,7 @@
           <bottom-left-back x="11" y="1" z="0"/>
         </cuboid>
       </shape>
-      <shape id="3659ecca-7c2b-440b-8dfa-38426c7969b6" start="6" end="6">
+      <shape id="3659ecca-7c2b-440b-8dfa-38426c7969b6" start="6" end="12">
         <cuboid>
           <top-left-front x="11.0342" y="1.071" z="1"/>
           <top-right-front x="11.0342" y="-0.929" z="1"/>
@@ -66,6 +66,8 @@
       <value id="u-turn" start="2" end="6"/>
       <value id="germany" start="2" end="3"/>
       <value id="spain" start="4" end="6"/>
+      <value id="u-turn" start="12" end="12"/>
+      <value id="germany" start="12" end="12"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e890246819813" start="1" end="1" line-color="1" type="fooobar" incomplete="true">
       <references>

@@ -96,7 +96,6 @@ describe('PouchDbLabeledThingGateway', () => {
   beforeEach(() => {
     // PouchDB updates the incomplete status after saving
     labeledThingPouchDbModel = angular.copy(labeledThingCouchDbModel);
-    labeledThingPouchDbModel.incomplete = true;
   });
 
   it('should receive a labeled thing by id', done => {

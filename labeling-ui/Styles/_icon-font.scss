@@ -33,6 +33,7 @@
 .icon-area-suburban-big:before,
 .icon-bookmark:before,
 .icon-check:before,
+.icon-check-circle-thin:before,
 .icon-control-backwards:before,
 .icon-control-forwards:before,
 .icon-control-next:before,
@@ -114,65 +115,66 @@
 .icon-area-suburban-big:before { content: "\f105"; }
 .icon-bookmark:before { content: "\f106"; }
 .icon-check:before { content: "\f107"; }
-.icon-control-backwards:before { content: "\f108"; }
-.icon-control-forwards:before { content: "\f109"; }
-.icon-control-next:before { content: "\f10a"; }
-.icon-control-pause:before { content: "\f10b"; }
-.icon-control-play:before { content: "\f10c"; }
-.icon-control-play-steps:before { content: "\f10d"; }
-.icon-control-previous:before { content: "\f10e"; }
-.icon-down:before { content: "\f10f"; }
-.icon-general-chat:before { content: "\f110"; }
-.icon-general-faq:before { content: "\f111"; }
-.icon-general-loggedin:before { content: "\f112"; }
-.icon-general-loggedout:before { content: "\f113"; }
-.icon-general-settings:before { content: "\f114"; }
-.icon-general-timer:before { content: "\f115"; }
-.icon-help:before { content: "\f116"; }
-.icon-left:before { content: "\f117"; }
-.icon-legacy-project:before { content: "\f118"; }
-.icon-nav-backwards:before { content: "\f13f"; }
-.icon-nav-create-project:before { content: "\f13e"; }
-.icon-nav-manage-labeling-groups:before { content: "\f140"; }
-.icon-nav-manage-users:before { content: "\f142"; }
-.icon-nav-software-suite:before { content: "\f143"; }
-.icon-next:before { content: "\f119"; }
-.icon-ok:before { content: "\f11a"; }
-.icon-precipitation-norain:before { content: "\f11b"; }
-.icon-precipitation-rain:before { content: "\f11c"; }
-.icon-previous:before { content: "\f11d"; }
-.icon-requirements-xml-project:before { content: "\f11e"; }
-.icon-right:before { content: "\f11f"; }
-.icon-selection-add:before { content: "\f120"; }
-.icon-selection-delete:before { content: "\f121"; }
-.icon-selection-end:before { content: "\f122"; }
-.icon-selection-forwards:before { content: "\f123"; }
-.icon-selection-generate:before { content: "\f124"; }
-.icon-selection-goend:before { content: "\f125"; }
-.icon-selection-gostart:before { content: "\f126"; }
-.icon-selection-off:before { content: "\f127"; }
-.icon-selection-off2:before { content: "\f128"; }
-.icon-selection-on:before { content: "\f129"; }
-.icon-selection-start:before { content: "\f12a"; }
-.icon-selection-view:before { content: "\f12b"; }
-.icon-simple-xml-project:before { content: "\f12c"; }
-.icon-tool-cuboid:before { content: "\f12d"; }
-.icon-tool-frame-shape:before { content: "\f12e"; }
-.icon-tool-group-rectangle:before { content: "\f12f"; }
-.icon-tool-pedestrian:before { content: "\f130"; }
-.icon-tool-point:before { content: "\f131"; }
-.icon-tool-polygon:before { content: "\f132"; }
-.icon-tool-polyline:before { content: "\f133"; }
-.icon-tool-rectangle:before { content: "\f134"; }
-.icon-traffic-moderate:before { content: "\f135"; }
-.icon-up:before { content: "\f136"; }
-.icon-view-brightness:before { content: "\f137"; }
-.icon-view-fullscreen:before { content: "\f138"; }
-.icon-view-zoom:before { content: "\f139"; }
-.icon-view-zoom-in:before { content: "\f13a"; }
-.icon-view-zoom-out:before { content: "\f13b"; }
-.icon-view-zoom-resize:before { content: "\f13c"; }
-.icon-weather-sunny:before { content: "\f13d"; }
+.icon-check-circle-thin:before { content: "\f108"; }
+.icon-control-backwards:before { content: "\f109"; }
+.icon-control-forwards:before { content: "\f10a"; }
+.icon-control-next:before { content: "\f10b"; }
+.icon-control-pause:before { content: "\f10c"; }
+.icon-control-play:before { content: "\f10d"; }
+.icon-control-play-steps:before { content: "\f10e"; }
+.icon-control-previous:before { content: "\f10f"; }
+.icon-down:before { content: "\f110"; }
+.icon-general-chat:before { content: "\f111"; }
+.icon-general-faq:before { content: "\f112"; }
+.icon-general-loggedin:before { content: "\f113"; }
+.icon-general-loggedout:before { content: "\f114"; }
+.icon-general-settings:before { content: "\f115"; }
+.icon-general-timer:before { content: "\f116"; }
+.icon-help:before { content: "\f117"; }
+.icon-left:before { content: "\f118"; }
+.icon-legacy-project:before { content: "\f119"; }
+.icon-nav-backwards:before { content: "\f11a"; }
+.icon-nav-create-project:before { content: "\f11b"; }
+.icon-nav-manage-labeling-groups:before { content: "\f11c"; }
+.icon-nav-manage-users:before { content: "\f11d"; }
+.icon-nav-software-suite:before { content: "\f11e"; }
+.icon-next:before { content: "\f11f"; }
+.icon-ok:before { content: "\f120"; }
+.icon-precipitation-norain:before { content: "\f121"; }
+.icon-precipitation-rain:before { content: "\f122"; }
+.icon-previous:before { content: "\f123"; }
+.icon-requirements-xml-project:before { content: "\f124"; }
+.icon-right:before { content: "\f125"; }
+.icon-selection-add:before { content: "\f126"; }
+.icon-selection-delete:before { content: "\f127"; }
+.icon-selection-end:before { content: "\f128"; }
+.icon-selection-forwards:before { content: "\f129"; }
+.icon-selection-generate:before { content: "\f12a"; }
+.icon-selection-goend:before { content: "\f12b"; }
+.icon-selection-gostart:before { content: "\f12c"; }
+.icon-selection-off:before { content: "\f12d"; }
+.icon-selection-off2:before { content: "\f12e"; }
+.icon-selection-on:before { content: "\f12f"; }
+.icon-selection-start:before { content: "\f130"; }
+.icon-selection-view:before { content: "\f131"; }
+.icon-simple-xml-project:before { content: "\f132"; }
+.icon-tool-cuboid:before { content: "\f133"; }
+.icon-tool-frame-shape:before { content: "\f134"; }
+.icon-tool-group-rectangle:before { content: "\f135"; }
+.icon-tool-pedestrian:before { content: "\f136"; }
+.icon-tool-point:before { content: "\f137"; }
+.icon-tool-polygon:before { content: "\f138"; }
+.icon-tool-polyline:before { content: "\f139"; }
+.icon-tool-rectangle:before { content: "\f13a"; }
+.icon-traffic-moderate:before { content: "\f13b"; }
+.icon-up:before { content: "\f13c"; }
+.icon-view-brightness:before { content: "\f13d"; }
+.icon-view-fullscreen:before { content: "\f13e"; }
+.icon-view-zoom:before { content: "\f13f"; }
+.icon-view-zoom-in:before { content: "\f140"; }
+.icon-view-zoom-out:before { content: "\f141"; }
+.icon-view-zoom-resize:before { content: "\f142"; }
+.icon-weather-sunny:before { content: "\f143"; }
 
 
 $font-icon-font-area-city: "\f100"; 
@@ -183,62 +185,63 @@ $font-icon-font-area-suburban: "\f104";
 $font-icon-font-area-suburban-big: "\f105"; 
 $font-icon-font-bookmark: "\f106"; 
 $font-icon-font-check: "\f107"; 
-$font-icon-font-control-backwards: "\f108"; 
-$font-icon-font-control-forwards: "\f109"; 
-$font-icon-font-control-next: "\f10a"; 
-$font-icon-font-control-pause: "\f10b"; 
-$font-icon-font-control-play: "\f10c"; 
-$font-icon-font-control-play-steps: "\f10d"; 
-$font-icon-font-control-previous: "\f10e"; 
-$font-icon-font-down: "\f10f"; 
-$font-icon-font-general-chat: "\f110"; 
-$font-icon-font-general-faq: "\f111"; 
-$font-icon-font-general-loggedin: "\f112"; 
-$font-icon-font-general-loggedout: "\f113"; 
-$font-icon-font-general-settings: "\f114"; 
-$font-icon-font-general-timer: "\f115"; 
-$font-icon-font-help: "\f116"; 
-$font-icon-font-left: "\f117"; 
-$font-icon-font-legacy-project: "\f118"; 
-$font-icon-font-nav-backwards: "\f13f"; 
-$font-icon-font-nav-create-project: "\f13e"; 
-$font-icon-font-nav-manage-labeling-groups: "\f140"; 
-$font-icon-font-nav-manage-users: "\f142"; 
-$font-icon-font-nav-software-suite: "\f143"; 
-$font-icon-font-next: "\f119"; 
-$font-icon-font-ok: "\f11a"; 
-$font-icon-font-precipitation-norain: "\f11b"; 
-$font-icon-font-precipitation-rain: "\f11c"; 
-$font-icon-font-previous: "\f11d"; 
-$font-icon-font-requirements-xml-project: "\f11e"; 
-$font-icon-font-right: "\f11f"; 
-$font-icon-font-selection-add: "\f120"; 
-$font-icon-font-selection-delete: "\f121"; 
-$font-icon-font-selection-end: "\f122"; 
-$font-icon-font-selection-forwards: "\f123"; 
-$font-icon-font-selection-generate: "\f124"; 
-$font-icon-font-selection-goend: "\f125"; 
-$font-icon-font-selection-gostart: "\f126"; 
-$font-icon-font-selection-off: "\f127"; 
-$font-icon-font-selection-off2: "\f128"; 
-$font-icon-font-selection-on: "\f129"; 
-$font-icon-font-selection-start: "\f12a"; 
-$font-icon-font-selection-view: "\f12b"; 
-$font-icon-font-simple-xml-project: "\f12c"; 
-$font-icon-font-tool-cuboid: "\f12d"; 
-$font-icon-font-tool-frame-shape: "\f12e"; 
-$font-icon-font-tool-group-rectangle: "\f12f"; 
-$font-icon-font-tool-pedestrian: "\f130"; 
-$font-icon-font-tool-point: "\f131"; 
-$font-icon-font-tool-polygon: "\f132"; 
-$font-icon-font-tool-polyline: "\f133"; 
-$font-icon-font-tool-rectangle: "\f134"; 
-$font-icon-font-traffic-moderate: "\f135"; 
-$font-icon-font-up: "\f136"; 
-$font-icon-font-view-brightness: "\f137"; 
-$font-icon-font-view-fullscreen: "\f138"; 
-$font-icon-font-view-zoom: "\f139"; 
-$font-icon-font-view-zoom-in: "\f13a"; 
-$font-icon-font-view-zoom-out: "\f13b"; 
-$font-icon-font-view-zoom-resize: "\f13c"; 
-$font-icon-font-weather-sunny: "\f13d"; 
+$font-icon-font-check-circle-thin: "\f108"; 
+$font-icon-font-control-backwards: "\f109"; 
+$font-icon-font-control-forwards: "\f10a"; 
+$font-icon-font-control-next: "\f10b"; 
+$font-icon-font-control-pause: "\f10c"; 
+$font-icon-font-control-play: "\f10d"; 
+$font-icon-font-control-play-steps: "\f10e"; 
+$font-icon-font-control-previous: "\f10f"; 
+$font-icon-font-down: "\f110"; 
+$font-icon-font-general-chat: "\f111"; 
+$font-icon-font-general-faq: "\f112"; 
+$font-icon-font-general-loggedin: "\f113"; 
+$font-icon-font-general-loggedout: "\f114"; 
+$font-icon-font-general-settings: "\f115"; 
+$font-icon-font-general-timer: "\f116"; 
+$font-icon-font-help: "\f117"; 
+$font-icon-font-left: "\f118"; 
+$font-icon-font-legacy-project: "\f119"; 
+$font-icon-font-nav-backwards: "\f11a"; 
+$font-icon-font-nav-create-project: "\f11b"; 
+$font-icon-font-nav-manage-labeling-groups: "\f11c"; 
+$font-icon-font-nav-manage-users: "\f11d"; 
+$font-icon-font-nav-software-suite: "\f11e"; 
+$font-icon-font-next: "\f11f"; 
+$font-icon-font-ok: "\f120"; 
+$font-icon-font-precipitation-norain: "\f121"; 
+$font-icon-font-precipitation-rain: "\f122"; 
+$font-icon-font-previous: "\f123"; 
+$font-icon-font-requirements-xml-project: "\f124"; 
+$font-icon-font-right: "\f125"; 
+$font-icon-font-selection-add: "\f126"; 
+$font-icon-font-selection-delete: "\f127"; 
+$font-icon-font-selection-end: "\f128"; 
+$font-icon-font-selection-forwards: "\f129"; 
+$font-icon-font-selection-generate: "\f12a"; 
+$font-icon-font-selection-goend: "\f12b"; 
+$font-icon-font-selection-gostart: "\f12c"; 
+$font-icon-font-selection-off: "\f12d"; 
+$font-icon-font-selection-off2: "\f12e"; 
+$font-icon-font-selection-on: "\f12f"; 
+$font-icon-font-selection-start: "\f130"; 
+$font-icon-font-selection-view: "\f131"; 
+$font-icon-font-simple-xml-project: "\f132"; 
+$font-icon-font-tool-cuboid: "\f133"; 
+$font-icon-font-tool-frame-shape: "\f134"; 
+$font-icon-font-tool-group-rectangle: "\f135"; 
+$font-icon-font-tool-pedestrian: "\f136"; 
+$font-icon-font-tool-point: "\f137"; 
+$font-icon-font-tool-polygon: "\f138"; 
+$font-icon-font-tool-polyline: "\f139"; 
+$font-icon-font-tool-rectangle: "\f13a"; 
+$font-icon-font-traffic-moderate: "\f13b"; 
+$font-icon-font-up: "\f13c"; 
+$font-icon-font-view-brightness: "\f13d"; 
+$font-icon-font-view-fullscreen: "\f13e"; 
+$font-icon-font-view-zoom: "\f13f"; 
+$font-icon-font-view-zoom-in: "\f140"; 
+$font-icon-font-view-zoom-out: "\f141"; 
+$font-icon-font-view-zoom-resize: "\f142"; 
+$font-icon-font-weather-sunny: "\f143"; 

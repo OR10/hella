@@ -1,11 +1,17 @@
 .drop-area {
-  margin-top: 1em;
-  padding: 5em;
-  border: 4px dashed $color-ut-lightgrey-2;
+  margin-top: 24px;
+  margin-bottom: 21px;
+  margin-right: 24px;
+  border: 2px dashed $color-ut-lightgrey-2;
   text-align: center;
+  min-height: 239px;
+  padding: 5px 20px;
+  max-height: 400px;
+  overflow-y: scroll;
+  position: relative;
 }
 
 .drop-area-active {
-  border: 4px dashed $color-ut-midgrey-3;
+  border: 2px dashed $color-ut-midgrey-3;
   background-color: $color-ut-lightgrey-4;
 }
