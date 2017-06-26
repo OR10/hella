@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class ValidatorCompilerPass implements Compiler\CompilerPassInterface
 {
 
-    public static $validatorRegistry = 'datastation.services.validator_registry';
+    public static $validatorRegistry = 'annostation.labeling_api.services.validator_registry';
 
     public static $tagName = 'data.validator';
 
