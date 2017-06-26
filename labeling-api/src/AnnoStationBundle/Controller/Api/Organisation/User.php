@@ -38,6 +38,11 @@ class User extends Controller\Base
     private $authorizationService;
 
     /**
+     * @var Service\UserRolesRebuilder
+     */
+    private $userRolesRebuilderService;
+
+    /**
      * @var Authentication\UserPermissions
      */
     private $userPermissions;
@@ -64,6 +69,7 @@ class User extends Controller\Base
      * @param Facade\Project                 $projectFacade
      * @param Facade\LabelingGroup           $labelingGroupFacade
      * @param Service\Authorization          $authorizationService
+     * @param Service\UserRolesRebuilder     $userRolesRebuilderService
      * @param Authentication\UserPermissions $userPermissions
      * @param AMQP\FacadeAMQP                $amqpFacade
      */
@@ -72,15 +78,17 @@ class User extends Controller\Base
         Facade\Project $projectFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         Service\Authorization $authorizationService,
+        Service\UserRolesRebuilder $userRolesRebuilderService,
         Authentication\UserPermissions $userPermissions,
         AMQP\FacadeAMQP $amqpFacade
     ) {
-        $this->userFacade           = $userFacade;
-        $this->authorizationService = $authorizationService;
-        $this->userPermissions      = $userPermissions;
-        $this->projectFacade        = $projectFacade;
-        $this->amqpFacade           = $amqpFacade;
-        $this->labelingGroupFacade  = $labelingGroupFacade;
+        $this->userFacade                = $userFacade;
+        $this->authorizationService      = $authorizationService;
+        $this->userRolesRebuilderService = $userRolesRebuilderService;
+        $this->userPermissions           = $userPermissions;
+        $this->projectFacade             = $projectFacade;
+        $this->amqpFacade                = $amqpFacade;
+        $this->labelingGroupFacade       = $labelingGroupFacade;
     }
 
     /**
@@ -110,6 +118,7 @@ class User extends Controller\Base
 
         $user->assignToOrganisation($organisation);
         $this->userFacade->updateUser($user);
+        $this->userRolesRebuilderService->rebuildForUser($user);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
@@ -137,6 +146,7 @@ class User extends Controller\Base
 
         $user->removeFromOrganisation($organisation);
         $this->userFacade->updateUser($user);
+        $this->userRolesRebuilderService->rebuildForUser($user);
 
         $labelingGroups = $this->labelingGroupFacade->findAllByUser($user);
 
