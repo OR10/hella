@@ -164,7 +164,7 @@ describe('Class Ghosting', () => {
       .then(() => done());
   });
 
-  it('should propagate class changes through ghost classes', done => {
+  it('should propagate class changes through ghost classes onto saved labeled thing in frame', done => {
     mock(sharedMocks.concat([]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -195,7 +195,7 @@ describe('Class Ghosting', () => {
       .then(() => done());
   });
 
-  it('should propagate class changes through ghost classes', done => {
+  it('should propagate class changes of ltif created from ghost onto saved labeled thing in frame', done => {
     mock(sharedMocks.concat([]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
