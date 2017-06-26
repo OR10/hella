@@ -151,7 +151,6 @@ class LabeledThingInFrame extends LabeledObject {
       throw new Error('Can\'t realize ghosted LabeledThingInFrame, as it is no ghost');
     }
 
-    this.shapes.forEach(shape => shape.labeledThingInFrameId = id);
     this.ghost = false;
     this.id = id;
     this.frameIndex = frameIndex;
