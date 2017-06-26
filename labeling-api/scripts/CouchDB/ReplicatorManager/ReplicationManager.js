@@ -23,9 +23,23 @@ let activeTasks = [];
 let md5 = require('md5');
 let nanoAdmin = require('nano')(adminUrl);
 
-listenToReplicationChanges();
-listenToDatabaseChanges();
-addOneTimeReplicationForAllDatabases();
+purgeAllPreviousManagedReplicationLeftOvers(function(error) {
+  if (error) {
+    console.error('ERROR: ', error);
+    return;
+  }
+
+  addOneTimeReplicationForAllDatabases(function(error) {
+    if (error) {
+      console.error('ERROR: ', error);
+      return;
+    }
+
+    listenToReplicationChanges();
+    listenToDatabaseChanges();
+    doWork();
+  });
+});
 
 function listenToReplicationChanges() {
   const replicatorDb = nanoAdmin.use('_replicator');
@@ -33,16 +47,17 @@ function listenToReplicationChanges() {
 
   feedReplicator.filter = function(doc, req) {
     return !doc._deleted;
-  }
+  };
 
   feedReplicator.on('change', function(change) {
     if (change.doc._replication_state === "completed") {
-      destroyAndPurge(replicatorDb, change.doc._id, change.doc._rev);
-      const index = activeTasks.indexOf(change.doc._id);
-      if (index !== -1) {
-        activeTasks.splice(index, 1);
-      }
-      queueWorker();
+      destroyAndPurge(replicatorDb, change.doc._id, change.doc._rev, function() {
+        const index = activeTasks.indexOf(change.doc._id);
+        if (index !== -1) {
+          activeTasks.splice(index, 1);
+        }
+        doWork();
+      });
     }
   });
   feedReplicator.follow();
@@ -61,7 +76,7 @@ function listenToDatabaseChanges() {
   feed.follow();
 }
 
-function addJobToQueue(source, target) {
+function addJobToQueue(source, target, doNotProcessChange) {
   queue.push(
     {
       id: getReplicationDocumentIdName(source, target),
@@ -70,7 +85,12 @@ function addJobToQueue(source, target) {
     }
   );
   queue = removeDuplicates(queue, 'id');
-  queueWorker();
+
+  if (doNotProcessChange === true) {
+    return;
+  }
+
+  doWork();
 }
 
 function removeDuplicates(arr, prop) {
@@ -88,6 +108,12 @@ function removeDuplicates(arr, prop) {
   return new_arr;
 }
 
+function doWork() {
+  setImmediate(function() {
+    queueWorker();
+  });
+}
+
 function queueWorker() {
   if (activeTasks.length >= maxReplications || queue.length === 0) {
     console.log('active tasks: ' + activeTasks.length + '/' + maxReplications + ' | Queue length: ' + queue.length);
@@ -98,22 +124,26 @@ function queueWorker() {
   const element = queue.shift();
   activeTasks.push(getReplicationDocumentIdName(element.source, element.target));
   const replicatorDb = nanoAdmin.use('_replicator');
+  const replicationDocument = {
+        "worker_batch_size": 50,
+        "source": ReplicationUrl + element.source,
+        "target": ReplicationUrl + element.target,
+        "continuous": false
+      };
+  const replicationId = getReplicationDocumentIdName(element.source, element.target);
+
   replicatorDb.insert(
-    {
-      "worker_batch_size": 50,
-      "source": ReplicationUrl + element.source,
-      "target": ReplicationUrl + element.target,
-      "continuous": false
-    },
-    getReplicationDocumentIdName(element.source, element.target),
+    replicationDocument,
+    replicationId,
     function(err, body) {
       if (err) {
+        console.error('ERROR inserting replication: ', err, replicationId, replicationDocument);
         const index = activeTasks.indexOf(getReplicationDocumentIdName(element.source, element.target));
         if (index !== -1) {
           activeTasks.splice(index, 1);
         }
-        queueWorker();
       }
+      doWork();
     }
   );
   compactReplicationDatabase();
@@ -147,17 +177,20 @@ function destroyAndPurge(db, documentId, revision, callback) {
 
       revisions.push(body.rev);
 
-      let purgeBody = {};
-      purgeBody[documentId] = revisions;
-
-      nanoAdmin.request({
-                          db: db.config.db,
-                          method: 'post',
-                          path: '_purge',
-                          body: purgeBody
-                        }, callback);
+      purgeDocument(db, documentId, revisions, callback);
     })
   });
+}
+
+function purgeDocument(db, documentId, revisions, next) {
+  const purgeBody = {};
+  purgeBody[documentId] = revisions;
+  nanoAdmin.request({
+    db: db.config.db,
+    method: 'post',
+    path: '_purge',
+    body: purgeBody
+  }, next);
 }
 
 function getReplicationDocumentIdName(source, target) {
@@ -167,13 +200,80 @@ function getReplicationDocumentIdName(source, target) {
 /**
  * This method add a one-time replication for all matching sources databases to the target database
  */
-function addOneTimeReplicationForAllDatabases() {
+function addOneTimeReplicationForAllDatabases(next) {
   console.log('Creating a one-time replication for all matching databases now.');
   nanoAdmin.db.list(function(err, body) {
+    if (err) {
+      return next(err);
+    }
+
     body.forEach(function(databaseNames) {
       if (databaseNames.match(sourceDbRegex) !== null) {
-        addJobToQueue(databaseNames, targetDb);
+        addJobToQueue(databaseNames, targetDb, true);
       }
     });
+
+    next();
+  });
+}
+
+function purgeAllPreviousManagedReplicationLeftOvers(next) {
+  console.log('Purging all possible left overs from previous replication runs');
+  const purgeQueue = [];
+  const db = nanoAdmin.use('_replicator');
+  nanoAdmin.db.list(function(err, body) {
+    if (err) {
+      return next(err);
+    }
+
+    body.forEach(function(databaseName) {
+      if (databaseName.match(sourceDbRegex) !== null) {
+        purgeQueue.push(getReplicationDocumentIdName(databaseName, targetDb))
+      }
+    });
+
+    function purgeNextDb() {
+      if (purgeQueue.length === 0) {
+        return next();
+      }
+      const documentId = purgeQueue.shift();
+
+      db.get(documentId, {revs: true, open_revs: 'all'}, function(err, results) {
+        if (err) {
+          return next(err);
+        }
+
+        // There should only be one or none ok result
+        const okResult = results.find(function(result) {
+          return ('ok' in result);
+        });
+
+        if (okResult === undefined) {
+          return purgeNextDb();
+        } else if (okResult.ok._deleted === true) {
+          const revisions = okResult.ok._revisions.ids.map(function(hash, index) {
+            return '' + (okResult.ok._revisions.ids.length - index) + '-' + hash;
+          });
+
+          return purgeDocument(db, documentId, revisions, function(err) {
+            if (err) {
+              return next(err);
+            }
+
+            return purgeNextDb();
+          });
+        } else {
+          return destroyAndPurge(db, documentId, okResult.ok._rev, function(err) {
+            if (err) {
+              return next(err);
+            }
+
+            return purgeNextDb();
+          });
+        }
+      });
+    }
+
+    purgeNextDb();
   });
 }
