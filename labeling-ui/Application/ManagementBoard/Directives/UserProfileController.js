@@ -102,6 +102,11 @@ class UserProfileController {
     this.currentUserService = currentUserService;
 
     /**
+     * @type {boolean}
+     */
+    this.isOrganisationExpanded = false;
+
+    /**
      *
      * @type {Array}
      */
@@ -417,6 +422,36 @@ class UserProfileController {
     }
 
     return valid;
+  }
+
+  /**
+   * @param {Organisation} organisation
+   * @returns {boolean}
+   */
+  isUserAlreadyInOrganisation(organisation) {
+    return !this.userOrganisations.find(org => org.id === organisation.id);
+  }
+
+  /**
+   * @returns {boolean|*}
+   */
+  showDropDownTableCell() {
+    return this.isOrganisationExpanded === true && this.userPermissions.canAddUserToAnyOrganisation;
+  }
+
+  /**
+   * Click the small angle up and down
+   */
+  clickAngle() {
+    this.isOrganisationExpanded = !this.isOrganisationExpanded;
+  }
+
+  /**
+   * Get the correct font icon for angle state
+   * @returns {string}
+   */
+  getIconForAngleState() {
+    return this.isOrganisationExpanded === true ? 'fa-angle-up' : 'fa-angle-down';
   }
 }
 

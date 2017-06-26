@@ -4,5 +4,18 @@
     ></back-link>
 </page-title>
 <div class="page-content">
-    <users-list user-permissions="vm.userPermissions" class="grid-block"></users-list>
+    <tab-view active-index="vm.activeTab">
+        <tab header="new" destroy-when-inactive="true">
+            <user-profile user-permissions="vm.userPermissions" id="'new'" readonly="false"
+                          class="grid-block"></user-profile>
+        </tab>
+        <tab header="manage">
+            <users-list user-permissions="vm.userPermissions" class="grid-block"></users-list>
+        </tab>
+        <tab header="edit" hide="!vm.showEditTap" destroy-when-inactive="true">
+            <user-profile user-permissions="vm.userPermissions" id="vm.userId" readonly="false"
+                          class="grid-block"></user-profile>
+        </tab>
+    </tab-view>
+
 </div>
