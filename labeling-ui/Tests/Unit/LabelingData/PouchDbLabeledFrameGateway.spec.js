@@ -289,13 +289,18 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
   });
 
-  fdescribe('Frame Labeling on a new task (TTANNO-1798)', () => {
+  describe('Frame Labeling on a new task (TTANNO-1798)', () => {
     it('can store the information if no Frame Labeling information exists yet', () => {
       couchDbModelSerializer.serialize.and.returnValue(labeledFrameCouchDbModel);
-
-      pouchDb.query.and.returnValue({
-        rows: [],
-      });
+      entityIdService.getUniqueId.and.returnValue('some-generated-uuid');
+      pouchDb.query.and.returnValue({rows: []});
+      pouchDb.put.and.callFake(
+        document => angularQ.resolve({
+          'ok': true,
+          'id': document._id,
+          'rev': '1-A6157A5EA545C99B00FF904EEF05FD9F',
+        })
+      );
 
       function throwWrapper() {
         labeledFrameGateway.saveLabeledFrame(createTask(), 42, labeledFrameFrontendModel);
@@ -347,11 +352,11 @@ describe('PouchDbLabeledFrameGateway', () => {
       expect(packagingExecutor.execute).toHaveBeenCalledWith('labeledFrame', jasmine.any(Function));
     });
 
-    it('should call the packaging executor once', () => {
+    it('should call the packaging executor twice (read before writing + write)', () => {
       labeledFrameGateway.saveLabeledFrame(createTask(), 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
-      expect(packagingExecutor.execute).toHaveBeenCalledTimes(1);
+      expect(packagingExecutor.execute).toHaveBeenCalledTimes(2);
     });
 
     it('should return the promise of the packaging executor', () => {

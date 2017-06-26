@@ -159,7 +159,7 @@ class PouchDbLabeledFrameGateway {
       const db = this._pouchDbContextService.provideContextForTaskId(task.id);
       return this._$q.resolve()
         .then(() => {
-          return this._getCurrentOrPreceedingLabeledFrame(db, task, frameIndex);
+          return this.getLabeledFrame(task, frameIndex);
         })
         .then(labeledFrameInPouch => {
           // Make sure a document for a frame is never stored twice. If for some reason (e.g. opening the task
