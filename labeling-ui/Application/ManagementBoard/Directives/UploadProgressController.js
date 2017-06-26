@@ -9,10 +9,14 @@ class UploadProgressController {
   hasFilesToUpload() {
     return this._uploadService.hasFiles();
   }
+
+  progress() {
+    return this._uploadService.progress();
+  }
 }
 
 UploadProgressController.$inject = [
-  'uploadService'
+  'uploadService',
 ];
 
 export default UploadProgressController;
