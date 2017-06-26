@@ -6,7 +6,7 @@
 <div class="page-content">
     <tab-view active-index="vm.activeTab">
         <tab header="new" destroy-when-inactive="true">
-            <organisation-edit user-permissions="vm.userPermissions" class="grid-block" id="'new'"></organisation-edit>
+            <organisation-edit user-permissions="vm.userPermissions" class="grid-block" id="vm.organisationId"></organisation-edit>
         </tab>
         <tab header="manage">
             <organisation-list user-permissions="vm.userPermissions" class="grid-block"></organisation-list>

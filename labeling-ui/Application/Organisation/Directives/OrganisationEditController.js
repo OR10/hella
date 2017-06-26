@@ -25,7 +25,7 @@ class OrganisationEditController {
     /**
      * @type {boolean}
      */
-    this.createMode = (this.id === 'new');
+    this.createMode = (this.id === 'new' || this.id === undefined);
 
     /**
      * @type {boolean}
