@@ -110,7 +110,7 @@
         </service>
 
         <service id="annostation.labeling_api.services.password_policy" class="AppBundle\Service\PasswordPolicyService">
-            <argument>%datastation.password.policy%</argument>
+            <argument>%password.policy%</argument>
         </service>
 
     </services>
