@@ -1,13 +1,18 @@
 class UploadProgressController {
-  constructor() {
-
+  /**
+   * @param {UploadService} uploadService
+   */
+  constructor(uploadService) {
+    this._uploadService = uploadService;
   }
 
   hasFilesToUpload() {
-    return false;
+    return this._uploadService.hasFiles();
   }
 }
 
-UploadProgressController.$inject = [];
+UploadProgressController.$inject = [
+  'uploadService'
+];
 
 export default UploadProgressController;

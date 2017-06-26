@@ -28,6 +28,7 @@ import UploadGateway from './Gateways/UploadGateway';
 import UploadController from './Controllers/UploadController';
 import UploadFormDirective from './Directives/UploadFormDirective';
 import UploadProgressDirective from './Directives/UploadProgressDirective';
+import UploadService from './Services/UploadService';
 
 import UsersController from './Controllers/UsersController';
 import UsersView from './Views/UsersView.html!';
@@ -272,6 +273,7 @@ class ManagementBoard extends Module {
     this.module.service('projectGateway', ProjectGateway);
     this.module.service('systemGateway', SystemGateway);
     this.module.service('uploadGateway', UploadGateway);
+    this.module.service('uploadService', UploadService);
 
     this.registerDirective('backLink', BackLinkDirective);
     this.registerDirective('tabView', TabViewDirective);
