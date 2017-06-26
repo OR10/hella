@@ -23,9 +23,11 @@ import TasksController from './Controllers/TasksController';
 import TasksView from './Views/TasksView.html!';
 import TaskListDirective from './Directives/TaskListDirective';
 import FlaggedTaskListDirective from './Directives/FlaggedTaskListDirective';
+
 import UploadGateway from './Gateways/UploadGateway';
 import UploadController from './Controllers/UploadController';
 import UploadFormDirective from './Directives/UploadFormDirective';
+import UploadProgressDirective from './Directives/UploadProgressDirective';
 
 import UsersController from './Controllers/UsersController';
 import UsersView from './Views/UsersView.html!';
@@ -283,6 +285,7 @@ class ManagementBoard extends Module {
     this.registerDirective('labelingGroupList', LabelingGroupListDirective);
     this.registerDirective('flaggedTaskList', FlaggedTaskListDirective);
     this.registerDirective('uploadForm', UploadFormDirective);
+    this.registerDirective('uploadProgress', UploadProgressDirective);
 
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);
