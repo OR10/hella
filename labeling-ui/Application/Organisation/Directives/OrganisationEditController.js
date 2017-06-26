@@ -49,7 +49,7 @@ class OrganisationEditController {
         this.selectedOrganisation = this.organisations.find(org => org.id === this.id);
         this.userInput = this.selectedOrganisation.name;
         this.userQuota = this.selectedOrganisation.userQuota;
-        this.quota = this.selectedOrganisation.quota / (1024 * 2);
+        this.quota = this.selectedOrganisation.quota / Math.pow(1024, 2);
       }
 
       this.loadingInProgress = false;
