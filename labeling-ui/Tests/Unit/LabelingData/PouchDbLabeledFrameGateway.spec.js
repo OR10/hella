@@ -352,11 +352,11 @@ describe('PouchDbLabeledFrameGateway', () => {
       expect(packagingExecutor.execute).toHaveBeenCalledWith('labeledFrame', jasmine.any(Function));
     });
 
-    it('should call the packaging executor twice (read before writing + write)', () => {
+    it('should call the packaging executor once', () => {
       labeledFrameGateway.saveLabeledFrame(createTask(), 42, labeledFrameFrontendModel);
       rootScope.$apply();
 
-      expect(packagingExecutor.execute).toHaveBeenCalledTimes(2);
+      expect(packagingExecutor.execute).toHaveBeenCalledTimes(1);
     });
 
     it('should return the promise of the packaging executor', () => {
