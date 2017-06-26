@@ -289,6 +289,24 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
   });
 
+  fdescribe('Frame Labeling on a new task (TTANNO-1798)', () => {
+    it('can store the information if no Frame Labeling information exists yet', () => {
+      couchDbModelSerializer.serialize.and.returnValue(labeledFrameCouchDbModel);
+
+      pouchDb.query.and.returnValue({
+        rows: [],
+      });
+
+      function throwWrapper() {
+        labeledFrameGateway.saveLabeledFrame(createTask(), 42, labeledFrameFrontendModel);
+        rootScope.$apply();
+      }
+
+      expect(throwWrapper).not.toThrow();
+      expect(pouchDb.put).toHaveBeenCalledWith(labeledFrameCouchDbModel);
+    });
+  });
+
   describe('saveLabeledFrame', () => {
     beforeEach(() => {
       pouchDb.put.and.callFake(
