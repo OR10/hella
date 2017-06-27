@@ -16,11 +16,10 @@ class UploadService {
 
   progress() {
     const amountFiles = this._files.length;
-    let progress = 0;
 
-    this._files.forEach(file => {
-      progress += file.progress() / amountFiles;
-    });
+    const progress = this._files.reduce((progress, file) => {
+      return progress + (file.progress() / amountFiles);
+    }, 0);
 
     return Math.round(progress * 100);
   }
