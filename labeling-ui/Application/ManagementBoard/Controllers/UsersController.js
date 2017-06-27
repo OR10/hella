@@ -1,8 +1,38 @@
+/**
+ * Route Controller for a list of users
+ */
 class UsersController {
+  /**
+   * @param {$rootScope.$scope} $scope
+   * @param {$state} $state
+   * @param {$stateParams} $stateParams
+   * @param {User} user
+   * @param {Object} userPermissions
+   */
   constructor($scope, $state, $stateParams, user, userPermissions) {
-    this.user = user;
-    this.userPermissions = userPermissions;
+    /**
+     * @type {$rootScope.$scope}
+     * @private
+     */
+    this._$scope = $scope;
+
+    /**
+     * @type {$state}
+     * @private
+     */
     this._$state = $state;
+
+    /**
+     * @type {User}
+     * @private
+     */
+    this.user = user;
+
+    /**
+     * @type {Object}
+     * @private
+     */
+    this.userPermissions = userPermissions;
 
     switch ($stateParams.userId) {
       case undefined:
@@ -16,9 +46,12 @@ class UsersController {
         this.userId = $stateParams.userId;
     }
 
+    /**
+     * @type {boolean}
+     */
     this.showEditTap = !(this.userId === 'new' || this.userId === undefined);
 
-    $scope.$watch('vm.activeTab', (newValue, oldValue) => {
+    this._$scope.$watch('vm.activeTab', (newValue, oldValue) => {
       if (newValue === oldValue) {
         return;
       }
