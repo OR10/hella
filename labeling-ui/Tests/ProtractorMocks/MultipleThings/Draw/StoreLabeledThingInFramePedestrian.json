@@ -19,8 +19,7 @@
           "bottomCenter": {
             "x": 100,
             "y": 40
-          },
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          }
         }
       ],
       "classes": [],
@@ -60,8 +59,7 @@
               "bottomCenter": {
                 "x": 100,
                 "y": 40
-              },
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              }
             }
           ],
           "labeledThingId": "{{labeledThingId}}",

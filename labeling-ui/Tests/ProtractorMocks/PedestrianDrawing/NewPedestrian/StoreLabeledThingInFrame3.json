@@ -7,7 +7,6 @@
       "identifierName": "legacy",
       "frameIndex": 0,
       "incomplete": true,
-      "identifierName": "legacy",
       "labeledThingId": "{{:labeledThingId}}",
       "shapes": [
         {
@@ -20,8 +19,7 @@
           "bottomCenter": {
             "x": 900,
             "y": 450
-          },
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          }
         }
       ],
       "classes": [],
@@ -64,8 +62,7 @@
               "topCenter": {
                 "x": 900,
                 "y": 450
-              },
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              }
             }
           ],
           "labeledThingId": "{{labeledThingId}}",

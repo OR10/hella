@@ -13,8 +13,7 @@
       "lineColor": "{{:lineColor}}",
       "id": "{{:labeledThingDataId}}",
       "taskId": "TASKID-TASKID",
-      "classes": [
-      ]
+      "classes": []
     }
   },
   "response": {
@@ -26,8 +25,7 @@
           "startFrameIndex": 0,
           "endFrameIndex": 0
         },
-        "classes": [
-        ],
+        "classes": [],
         "taskId": "TASKID-TASKID",
         "incomplete": true,
         "lineColor": "{{lineColor}}"

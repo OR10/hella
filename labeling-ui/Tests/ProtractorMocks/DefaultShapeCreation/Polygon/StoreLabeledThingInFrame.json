@@ -29,8 +29,7 @@
               "x": 512,
               "y": 260
             }
-          ],
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          ]
         }
       ],
       "classes": [],
@@ -82,8 +81,7 @@
                   "x": 512,
                   "y": 260
                 }
-              ],
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",

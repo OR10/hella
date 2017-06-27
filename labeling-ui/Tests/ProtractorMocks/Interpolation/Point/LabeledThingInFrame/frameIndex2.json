@@ -14,8 +14,7 @@
           "point": {
             "x": 400,
             "y": 300
-          },
-          "labeledThingInFrameId": "{{ltifid}}"
+          }
         }
       ],
       "classes": [],
@@ -27,4 +26,3 @@
   },
   "response": {}
 }
-

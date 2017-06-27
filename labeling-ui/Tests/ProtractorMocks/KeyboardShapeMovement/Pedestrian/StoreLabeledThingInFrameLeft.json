@@ -20,8 +20,7 @@
             "x": 200,
             "y": 400
           },
-          "id": "SHAPE-ID-1",
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+          "id": "SHAPE-ID-1"
         }
       ],
       "labeledThingId": "LABELED-THING-ID-1",
@@ -64,8 +63,7 @@
                 "x": 200,
                 "y": 400
               },
-              "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              "id": "SHAPE-ID-1"
             }
           ],
           "labeledThingId": "LABELED-THING-ID-1",

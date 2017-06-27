@@ -77,8 +77,7 @@
               "x": 400,
               "y": 100
             }
-          ],
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          ]
         }
       ],
       "classes": [],
@@ -96,8 +95,7 @@
             "startFrameNumber": 1,
             "endFrameNumber": 1
           },
-          "classes": [
-          ],
+          "classes": [],
           "taskId": "TASKID-TASKID",
           "incomplete": true,
           "lineColor": "6"
@@ -178,8 +176,7 @@
                   "x": 400,
                   "y": 100
                 }
-              ],
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",

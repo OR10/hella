@@ -28,8 +28,7 @@
               "x": 100,
               "y": 200
             }
-          ],
-          "labeledThingInFrameId": "{{ltifid}}"
+          ]
         }
       ],
       "classes": [],
@@ -42,4 +41,3 @@
   },
   "response": {}
 }
-

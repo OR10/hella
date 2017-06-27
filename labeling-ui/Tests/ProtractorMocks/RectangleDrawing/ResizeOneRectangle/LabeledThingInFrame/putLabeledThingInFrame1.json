@@ -19,7 +19,6 @@
             "y": 300
           },
           "id": "SHAPE-ID-1",
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
           "topLeft": {
             "x": 100,
             "y": 100
@@ -64,8 +63,7 @@
               "bottomRight": {
                 "x": 300,
                 "y": 300
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-1",

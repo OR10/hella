@@ -18,8 +18,7 @@
           "topLeft": {
             "x": 260,
             "y": 280
-          },
-          "labeledThingInFrameId": "{{ltifid}}"
+          }
         }
       ],
       "classes": [],
@@ -31,4 +30,3 @@
   },
   "response": {}
 }
-

@@ -195,7 +195,6 @@ class PaperPath extends PaperThingShape {
       type: 'path',
       id: this._shapeId,
       points,
-      labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }
 }

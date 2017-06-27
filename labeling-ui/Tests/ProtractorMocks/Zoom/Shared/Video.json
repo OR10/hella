@@ -29,7 +29,7 @@
           "numberOfFrames": 5,
           "raw": {
             "format": {
-              "filename": "\/var\/cache\/labeling_api\/anno_sample_videos5W6hqr",
+              "filename": "/var/cache/labeling_api/anno_sample_videos5W6hqr",
               "nb_streams": 1,
               "format_name": "avi",
               "format_long_name": "AVI (Audio Video Interleaved)",
@@ -47,7 +47,7 @@
                 "codec_name": "mpeg4",
                 "codec_long_name": "MPEG-4 part 2",
                 "codec_type": "video",
-                "codec_time_base": "1\/22",
+                "codec_time_base": "1/22",
                 "codec_tag_string": "XVID",
                 "codec_tag": "0x44495658",
                 "profile": "Advanced Simple Profile",
@@ -58,8 +58,8 @@
                 "display_aspect_ratio": "256:155",
                 "pix_fmt": "yuv420p",
                 "level": 5,
-                "avg_frame_rate": "0\/0",
-                "time_base": "1\/22",
+                "avg_frame_rate": "0/0",
+                "time_base": "1/22",
                 "start_time": "0.000000",
                 "duration": "5.000000",
                 "nb_frames": 5

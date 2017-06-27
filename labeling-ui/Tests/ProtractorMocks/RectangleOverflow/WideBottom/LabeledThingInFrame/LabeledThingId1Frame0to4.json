@@ -27,7 +27,6 @@
                 "y": 20
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topLeft": {
                 "x": 10,
                 "y": 10
@@ -53,7 +52,6 @@
                 "y": 20
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topLeft": {
                 "x": 10,
                 "y": 10
@@ -79,7 +77,6 @@
                 "y": 20
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topLeft": {
                 "x": 10,
                 "y": 10
@@ -105,7 +102,6 @@
                 "y": 20
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topLeft": {
                 "x": 10,
                 "y": 10
@@ -131,7 +127,6 @@
                 "y": 20
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topLeft": {
                 "x": 10,
                 "y": 10
@@ -144,4 +139,3 @@
     }
   }
 }
-

@@ -12,8 +12,7 @@
       "result": {
         "labeledThings": {
           "LABELED-THING-ID-1": {
-            "classes": [
-            ],
+            "classes": [],
             "frameRange": {
               "startFrameNumber": 1,
               "endFrameNumber": 1
@@ -25,8 +24,7 @@
             "taskId": "TASKID-TASKID"
           },
           "LABELED-THING-ID-2": {
-            "classes": [
-            ],
+            "classes": [],
             "frameRange": {
               "startFrameNumber": 1,
               "endFrameNumber": 1
@@ -53,12 +51,23 @@
               {
                 "id": "SHAPE-ID-1",
                 "points": [
-                  {"x": 200, "y": 100},
-                  {"x": 300, "y": 200},
-                  {"x": 200, "y": 300},
-                  {"x": 100, "y": 200}
+                  {
+                    "x": 200,
+                    "y": 100
+                  },
+                  {
+                    "x": 300,
+                    "y": 200
+                  },
+                  {
+                    "x": 200,
+                    "y": 300
+                  },
+                  {
+                    "x": 100,
+                    "y": 200
+                  }
                 ],
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
                 "type": "polygon"
               }
             ]
@@ -76,13 +85,27 @@
               {
                 "id": "SHAPE-ID-1",
                 "points": [
-                  {"x": 600, "y": 100},
-                  {"x": 700, "y": 200},
-                  {"x": 800, "y": 500},
-                  {"x": 300, "y": 500},
-                  {"x": 350, "y": 350}
+                  {
+                    "x": 600,
+                    "y": 100
+                  },
+                  {
+                    "x": 700,
+                    "y": 200
+                  },
+                  {
+                    "x": 800,
+                    "y": 500
+                  },
+                  {
+                    "x": 300,
+                    "y": 500
+                  },
+                  {
+                    "x": 350,
+                    "y": 350
+                  }
                 ],
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
                 "type": "polygon"
               }
             ]
@@ -92,4 +115,3 @@
     }
   }
 }
-

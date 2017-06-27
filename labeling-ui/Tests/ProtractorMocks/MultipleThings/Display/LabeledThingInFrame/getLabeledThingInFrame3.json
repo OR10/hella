@@ -27,8 +27,7 @@
               "bottomRight": {
                 "x": 999,
                 "y": 425
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-3"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-3",
@@ -53,8 +52,7 @@
               "bottomRight": {
                 "x": 999,
                 "y": 425
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-3"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-3",
@@ -79,8 +77,7 @@
               "bottomRight": {
                 "x": 999,
                 "y": 425
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-3"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-3",
@@ -105,8 +102,7 @@
               "bottomRight": {
                 "x": 999,
                 "y": 425
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-3"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-3",
@@ -131,8 +127,7 @@
               "bottomRight": {
                 "x": 999,
                 "y": 425
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-3"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-3",
@@ -144,4 +139,3 @@
     }
   }
 }
-

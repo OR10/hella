@@ -52,8 +52,7 @@
               4.5,
               0
             ]
-          ],
-          "labeledThingInFrameId": "{{ltifid}}"
+          ]
         }
       ],
       "classes": [],
@@ -65,4 +64,3 @@
   },
   "response": {}
 }
-

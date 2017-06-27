@@ -38,8 +38,7 @@
               -1,
               0
             ]
-          ],
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+          ]
         }
       ],
       "classes": [],
@@ -76,32 +75,31 @@
               "id": "SHAPE-ID-1",
               "type": "cuboid3d",
               "vehicleCoordinates": [
-            null,
-            null,
-            null,
-            null,
-            [
-              10,
-              -1,
-              2
-            ],
-            [
-              10,
-              1,
-              2
-            ],
-            [
-              10,
-              1,
-              0
-            ],
-            [
-              10,
-              -1,
-              0
-            ]
-          ],
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+                null,
+                null,
+                null,
+                null,
+                [
+                  10,
+                  -1,
+                  2
+                ],
+                [
+                  10,
+                  1,
+                  2
+                ],
+                [
+                  10,
+                  1,
+                  0
+                ],
+                [
+                  10,
+                  -1,
+                  0
+                ]
+              ]
             }
           ],
           "classes": [],

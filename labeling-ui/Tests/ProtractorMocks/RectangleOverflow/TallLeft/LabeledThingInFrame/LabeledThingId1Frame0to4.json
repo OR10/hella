@@ -31,7 +31,6 @@
                 "y": 610
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "type": "rectangle"
             }
           ]
@@ -57,7 +56,6 @@
                 "y": 610
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "type": "rectangle"
             }
           ]
@@ -83,7 +81,6 @@
                 "y": 610
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "type": "rectangle"
             }
           ]
@@ -109,7 +106,6 @@
                 "y": 610
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "type": "rectangle"
             }
           ]
@@ -135,7 +131,6 @@
                 "y": 610
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "type": "rectangle"
             }
           ]
@@ -144,4 +139,3 @@
     }
   }
 }
-
