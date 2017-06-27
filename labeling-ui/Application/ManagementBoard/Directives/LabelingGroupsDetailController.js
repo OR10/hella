@@ -245,7 +245,7 @@ class LabelingGroupsDetailController {
    * @param {int} labelerId
    * @returns {boolean}
    */
-  isUserAlreadyInOrganisation(labelerId) {
+  isLabelerAlreadyInLabelingGroup(labelerId) {
     return !this.groupLabelers.find(groupLabeler => groupLabeler.id === labelerId);
   }
 

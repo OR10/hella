@@ -59,7 +59,7 @@
                 <td colspan=2 ng-if="!labeler.locked">{{labeler.username}} &lt;{{labeler.email}}&gt;
                     <span
                             class="pull-right"
-                            ng-if="vm.isUserAlreadyInOrganisation(labeler.id)"
+                            ng-if="vm.isLabelerAlreadyInLabelingGroup(labeler.id)"
                             ng-class="{error: !vm.validation.organisations}"
                             tooltip="Add user to Organisation"
                             ng-click="vm.addLabeler(labeler.id)"
@@ -68,7 +68,7 @@
                     </span>
                     <span
                             class="pull-right"
-                            ng-if="!vm.isUserAlreadyInOrganisation(labeler.id)"
+                            ng-if="!vm.isLabelerAlreadyInLabelingGroup(labeler.id)"
                             tooltip="Remove {{labeler.username}} from group"
                             ng-click="vm.removeLabeler(labeler.id)"
                     >
