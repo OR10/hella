@@ -1,6 +1,6 @@
 class UploadService {
   constructor() {
-    this._files = [];
+    this.reset();
   }
 
   addFile(file) {
@@ -23,6 +23,10 @@ class UploadService {
     });
 
     return Math.round(progress * 100);
+  }
+
+  reset() {
+    this._files = [];
   }
 }
 

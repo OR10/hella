@@ -84,6 +84,8 @@ class UploadFormController {
      */
     this.currentOrganisationId = organisationService.get();
 
+    this.$flow = null;
+
     organisationService.subscribe(newOrganisation => {
       this.currentOrganisationId = newOrganisation.id;
     });
@@ -231,6 +233,11 @@ class UploadFormController {
     this._$timeout(
         () => document.getElementById('project-upload-input').click()
     );
+  }
+
+  clearFiles() {
+    this.$flow.cancel();
+    this._uploadService.reset();
   }
 }
 
