@@ -4,14 +4,16 @@ import OrganisationRouteController from './Controllers/OrganisationRouteControll
 
 import OrganisationSelectController from './Controllers/OrganisationSelectController';
 import OrganisationSelectTemplate from './Views/OrganisationSelectView.html!';
-import OrganisationListController from './Controllers/OrganisationListController';
-import OrganisationListTemplate from './Views/OrganisationListView.html!';
+import OrganisationsController from './Controllers/OrganisationsController';
+import OrganisationsTemplate from './Views/OrganisationsView.html!';
 
 import OrganisationService from './Services/OrganisationService';
 import OrganisationGateway from './Gateways/OrganisationGateway';
 import OrganisationRoutingService from './Services/OrganisationRoutingService';
 
 import OrganisationPickerDirective from './Directives/OrganisationPickerDirective';
+import OrganisationListDirective from './Directives/OrganisationListDirective';
+import OrganisationEditDirective from './Directives/OrganisationEditDirective';
 
 class OrganisationModule extends Module {
   /**
@@ -24,6 +26,8 @@ class OrganisationModule extends Module {
     this.module.service('organisationRoutingService', OrganisationRoutingService);
 
     this.registerDirective('organisationPicker', OrganisationPickerDirective);
+    this.registerDirective('organisationList', OrganisationListDirective);
+    this.registerDirective('organisationEdit', OrganisationEditDirective);
   }
 
   /**
@@ -62,9 +66,20 @@ class OrganisationModule extends Module {
       url: 'management',
       views: {
         '@labeling': {
-          controller: OrganisationListController,
+          controller: OrganisationsController,
           controllerAs: 'vm',
-          template: OrganisationListTemplate,
+          template: OrganisationsTemplate,
+        },
+      },
+    });
+
+    $stateProvider.state('labeling.organisation-management.detail', {
+      url: 'management/{organisationId:[0-9a-f]{1,32}|new}',
+      views: {
+        '@labeling': {
+          controller: OrganisationsController,
+          controllerAs: 'vm',
+          template: OrganisationsTemplate,
         },
       },
     });

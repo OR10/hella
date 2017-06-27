@@ -1,0 +1,18 @@
+<page-title title="Organisations">
+    <back-link state-link="labeling.organisation-management.selection"
+               tooltip="Back to Organisation Selection"
+    ></back-link>
+</page-title>
+<div class="page-content">
+    <tab-view active-index="vm.activeTab">
+        <tab header="new" destroy-when-inactive="true">
+            <organisation-edit user-permissions="vm.userPermissions" class="grid-block" id="vm.organisationId"></organisation-edit>
+        </tab>
+        <tab header="manage">
+            <organisation-list user-permissions="vm.userPermissions" class="grid-block"></organisation-list>
+        </tab>
+        <tab header="edit" hide="!vm.showEditTap" destroy-when-inactive="true">
+            <organisation-edit user-permissions="vm.userPermissions" class="grid-block" id="vm.organisationId"></organisation-edit>
+        </tab>
+    </tab-view>
+</div>
