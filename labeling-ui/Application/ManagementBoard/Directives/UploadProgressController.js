@@ -13,6 +13,20 @@ class UploadProgressController {
   progress() {
     return this._uploadService.progress();
   }
+
+  hasError() {
+    return this._uploadService.hasError();
+  }
+
+  progressClassName() {
+    let className = '';
+
+    if(this.hasError()) {
+      return 'error';
+    }
+
+    return className;
+  }
 }
 
 UploadProgressController.$inject = [

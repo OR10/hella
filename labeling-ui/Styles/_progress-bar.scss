@@ -16,6 +16,10 @@
   height: 100%;
   background-color: $color-ut-yellow;
 
+  &.error {
+    background-color: $color-ut-red;
+  }
+
   // Progress bar meter text
   .progress-meter-text {
     position: absolute;

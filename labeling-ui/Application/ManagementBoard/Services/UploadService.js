@@ -27,6 +27,10 @@ class UploadService {
   reset() {
     this._files = [];
   }
+
+  hasError() {
+    return this._files.findIndex(file => file.hasUploadError()) != -1;
+  }
 }
 
 export default UploadService;
