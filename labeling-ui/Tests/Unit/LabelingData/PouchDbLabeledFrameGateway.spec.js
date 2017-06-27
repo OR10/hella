@@ -67,7 +67,7 @@ describe('PouchDbLabeledFrameGateway', () => {
   );
 
   beforeEach(() => {
-    labeledFrameFrontendModel = new LabeledFrame(LabeledFrameFrontendModel.toJSON());
+    labeledFrameFrontendModel = LabeledFrameFrontendModel.clone();
     labeledFrameCouchDbModel = cloneDeep(LabeledFrameCouchDbModel);
   });
 
@@ -237,13 +237,14 @@ describe('PouchDbLabeledFrameGateway', () => {
       const newUniqueId = 'some-new-ultra-unique-id';
       const givenFrameIndex = 42;
       const givenTaskId = 'ultra-cool-task-id';
+      const givenTask = createTask(givenTaskId);
 
       const expectedLabeledFrame = new LabeledFrame({
         id: newUniqueId,
         frameIndex: givenFrameIndex,
         incomplete: true,
-        taskId: givenTaskId,
         classes: ['foo', 'bar'],
+        task: givenTask,
       });
 
       const foundDocumentInDb = {
@@ -387,7 +388,7 @@ describe('PouchDbLabeledFrameGateway', () => {
         id: undefined,
         classes: ['foo', 'bar'],
         incomplete: true,
-        taskId: 'TASK-ID',
+        task: createTask(),
         frameIndex: 42,
       });
       couchDbModelSerializer.serialize.and.returnValue(labeledFrameWithoutId);
@@ -478,7 +479,7 @@ describe('PouchDbLabeledFrameGateway', () => {
         id: 'LT-ID',
         classes: ['foo', 'bar', 'baz'],
         incomplete: false,
-        taskId: 'TASK-ID',
+        task: givenTask,
         frameIndex: 42,
       });
 

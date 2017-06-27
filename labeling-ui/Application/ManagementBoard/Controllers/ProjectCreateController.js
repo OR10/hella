@@ -195,12 +195,14 @@ class ProjectCreateController {
     ];
 
     /**
-     * @type {Array.<Object>}
      * TODO: Fill this later with real world data
+     *
+     * @type {Array.<Object>}
      */
     this.campaigns = [
       {id: 4711, name: 'Test'},
     ];
+
     /**
      * @type {string}
      */

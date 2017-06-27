@@ -28,6 +28,7 @@
         },
         "labeledThingsInFrame": [
           {
+            "identifierName": "legacy",
             "classes": [],
             "frameIndex": 0,
             "ghost": false,
