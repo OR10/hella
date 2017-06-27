@@ -1,3 +1,10 @@
+/**
+ * ManagementBoard Module
+ *
+ * This module contains all necessary modules directly involved in providing the initial application entry point.
+ *
+ * @extends Module
+ */
 import Module from 'Application/Module';
 
 import TabViewDirective from './Directives/TabViewDirective';
@@ -35,10 +42,9 @@ import UserProfileDirective from './Directives/UserProfileDirective';
 
 import LabelingGroupsController from './Controllers/LabelingGroupsController';
 import LabelingGroupsView from './Views/LabelingGroupsView.html!';
-import LabelingGroupsDetailController from './Controllers/LabelingGroupsDetailController';
-import LabelingGroupsDetailView from './Views/LabelingGroupsDetailView.html!';
 import LabelingGroupGateway from './Gateways/LabelingGroupGateway';
 import LabelingGroupListDirective from './Directives/LabelingGroupListDirective';
+import LabelingGroupsDetailDirective from './Directives/LabelingGroupsDetailDirective';
 
 import TaskConfigurationGateway from './Gateways/TaskConfigurationGateway';
 import TaskConfigurationUploadController from './Controllers/TaskConfigurationUploadController';
@@ -54,13 +60,7 @@ import SystemStatusView from './Views/SystemStatusView.html!';
 import SystemGateway from './Gateways/SystemGateway';
 
 
-/**
- * ManagementBoard Module
- *
- * This module contains all necessary modules directly involved in providing the initial application entry point.
- *
- * @extends Module
- */
+
 class ManagementBoard extends Module {
   /**
    * @inheritDoc
@@ -217,9 +217,9 @@ class ManagementBoard extends Module {
       url: '/:groupId',
       views: {
         '@organisation': {
-          controller: LabelingGroupsDetailController,
+          controller: LabelingGroupsController,
           controllerAs: 'vm',
-          template: LabelingGroupsDetailView,
+          template: LabelingGroupsView,
         },
       },
     });
@@ -281,6 +281,7 @@ class ManagementBoard extends Module {
     this.registerDirective('usersList', UsersListDirective);
     this.registerDirective('userProfile', UserProfileDirective);
     this.registerDirective('labelingGroupList', LabelingGroupListDirective);
+    this.registerDirective('labelingGroupDetail', LabelingGroupsDetailDirective);
     this.registerDirective('flaggedTaskList', FlaggedTaskListDirective);
     this.registerDirective('uploadForm', UploadFormDirective);
 

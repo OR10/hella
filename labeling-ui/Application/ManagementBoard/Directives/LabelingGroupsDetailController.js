@@ -6,14 +6,11 @@ import LabelingGroup from '../Models/LabelingGroup';
 class LabelingGroupsDetailController {
   /**
    * @param {$rootScope.$scope} $scope
-   * @param {$stateParams} $stateParams
    * @param {$state} $state
-   * @param {User} user
-   * @param {Object} userPermissions
    * @param {LabelingGroupGateway} labelingGroupGateway
    * @param {UserGateway} userGateway
    */
-  constructor($scope, $stateParams, $state, user, userPermissions, labelingGroupGateway, userGateway) {
+  constructor($scope, $state, labelingGroupGateway, userGateway) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -21,31 +18,15 @@ class LabelingGroupsDetailController {
     this._$scope = $scope;
 
     /**
-     * @type {$stateParams}
-     * @private
-     */
-    this._$stateParams = $stateParams;
-
-    /**
      * @type {$state}
      * @private
      */
     this._$state = $state;
-
-    /**
-     * @type {User}
-     */
-    this.user = user;
-
-    /**
-     * @type {Object}
-     */
-    this.userPermissions = userPermissions;
-
+ 
     /**
      * @type {boolean}
      */
-    this.createMode = ($stateParams.groupId === 'new');
+    this.createMode = (this.id === 'new' || this.id === undefined);
 
     /**
      * @type {number}
@@ -114,7 +95,11 @@ class LabelingGroupsDetailController {
      * @private
      */
     this._userGateway = userGateway;
-
+  
+    /**
+     * @type {boolean}
+     */
+    this.isUsersExpanded = false;
 
     if (!this.createMode) {
       this._loadGroup();
@@ -235,7 +220,7 @@ class LabelingGroupsDetailController {
     this._labelingGroupGateway.getLabelingGroups().then(result => {
       // Find the corresponding group in the list of all groups
       this.group = result.labelingGroups
-        .filter(group => group.id === this._$stateParams.groupId)
+        .filter(group => group.id === this.id)
         .pop();
 
       this.groupCoordinatorId = this.group.coordinators[0];
@@ -255,14 +240,41 @@ class LabelingGroupsDetailController {
       --this.loadingInProgress;
     });
   }
+  
+  /**
+   * @param {int} labelerId
+   * @returns {boolean}
+   */
+  isUserAlreadyInOrganisation(labelerId) {
+    return !this.groupLabelers.find(groupLabeler => groupLabeler.id === labelerId)
+  }
+  
+  /**
+   * @returns {boolean|*}
+   */
+  showDropDownTableCell() {
+    return this.isUsersExpanded === true
+  }
+  
+  /**
+   * Click the small angle up and down
+   */
+  clickAngle() {
+    this.isUsersExpanded = !this.isUsersExpanded;
+  }
+  
+  /**
+   * Get the correct font icon for angle state
+   * @returns {string}
+   */
+  getIconForAngleState() {
+    return this.isUsersExpanded === true ? 'fa-angle-up' : 'fa-angle-down';
+  }
 }
 
 LabelingGroupsDetailController.$inject = [
   '$scope',
-  '$stateParams',
   '$state',
-  'user',
-  'userPermissions',
   'labelingGroupGateway',
   'userGateway',
 ];

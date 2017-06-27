@@ -1,0 +1,110 @@
+<div class="grid-block vertical gray-tab-view">
+    <loading-mask ng-if="vm.loadingInProgress > 0" spinner="true"></loading-mask>
+    <form class="grid-content">
+        <h2>{{vm.createMode ? 'Create new labeling group' : 'Edit labeling group ' + vm.user.username}}</h2>
+        <table class="table formular-table">
+            <tr>
+                <td>Group Name</td>
+                <td>
+                    <input type="text"
+                           placeholder="Group name"
+                           ng-class="{error: !vm.validation.name}"
+                           ng-model="vm.groupName">
+                </td>
+            </tr>
+            <tr>
+                <td>Coordinator</td>
+                <td>
+                    <select id="coordinator" ng-model="vm.groupCoordinatorId"
+                            ng-class="{error: !vm.validation.coordinator}">
+                        <option value="" disabled selected>Choose a user</option>
+                        <option ng-repeat="coordinator in vm.possibleCoordinators track by coordinator.id"
+                                value="{{coordinator.id}}">
+                            {{coordinator.username}} &lt;{{coordinator.email}}&gt;
+                        </option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr
+                    ng-if="vm.userPermissions.canAddUserToAnyOrganisation"
+                    ng-style="{'border-bottom': !vm.isUsersExpanded ? '2px solid #D7DDE4' : 'none' }"
+            >
+                <td>Users</td>
+                <td>
+                   <span class="organisation-tag" ng-repeat="labeler in vm.groupLabelers track by labeler.id">
+                       {{labeler.username}}
+                       <span
+                               tooltip="Remove {{labeler.username}} from group"
+                               ng-click="vm.removeLabeler(labeler.id)"
+                       >
+                            <i class="fa fa-close"></i>
+                       </span>
+                   </span>
+                    <span class="pull-right">
+                       <i
+                               class="fa"
+                               ng-click="vm.clickAngle()"
+                               ng-class="vm.getIconForAngleState()"
+                               ng-style="{color: vm.isUsersExpanded == true ? '#BFDB31' : ''} "
+                       ></i>
+                   </span>
+                </td>
+            </tr>
+            <tr
+                    class="drop-down-cell"
+                    ng-repeat="labeler in vm.possibleLabelers track by labeler.id"
+                    ng-if="vm.showDropDownTableCell()"
+            >
+                <td colspan=2 ng-if="!labeler.locked">{{labeler.username}} &lt;{{labeler.email}}&gt;
+                    <span
+                            class="pull-right"
+                            ng-if="vm.isUserAlreadyInOrganisation(labeler.id)"
+                            ng-class="{error: !vm.validation.organisations}"
+                            tooltip="Add user to Organisation"
+                            ng-click="vm.addLabeler(labeler.id)"
+                    >
+                        <i class="fa fa-plus"></i>
+                    </span>
+                    <span
+                            class="pull-right"
+                            ng-if="!vm.isUserAlreadyInOrganisation(labeler.id)"
+                            tooltip="Remove {{labeler.username}} from group"
+                            ng-click="vm.removeLabeler(labeler.id)"
+                    >
+                            <i class="fa fa-close"></i>
+                       </span>
+                </td>
+                <td colspan=2 ng-if="labeler.locked">
+                    <i tooltip="This User has been deactivated.">
+                        {{labeler.username}}
+                    </i>
+                </td>
+            </tr>
+        </table>
+        <div class="grid-block" ng-show="vm.labelerSelectionMessage != null">
+            <div class="grid-content">
+                <h6>{{vm.labelerSelectionMessage}}</h6>
+            </div>
+        </div>
+        <div class="button-area">
+            <button class="pull-right"
+                    ng-click="vm.saveGroup()"
+            >
+                <span ng-if="vm.createMode">Create</span>
+                <span ng-if="!vm.createMode">Save</span>
+            </button>
+            <button class="pull-right divider"
+                    ng-click="vm.cancelEdit()"
+            >
+                Cancel
+            </button>
+            <button ng-hide="vm.createMode"
+                    class="pull-left"
+                    ng-click="vm.deleteGroup(vm.group.id)"
+            >
+                Delete
+            </button>
+        </div>
+    </form>
+</div>

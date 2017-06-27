@@ -4,8 +4,41 @@
     ></back-link>
 </page-title>
 <div class="page-content">
-    <labeling-group-list class="grid-block"
-                         user="vm.user"
-                         user-permissions="vm.userPermissions">
-    </labeling-group-list>
+    <tab-view active-index="vm.activeTab">
+        <tab
+            header="new"
+            destroy-when-inactive="true"
+        >
+            <labeling-group-detail
+                    id="vm.groupId"
+                    user="vm.user"
+                    user-permissions="vm.userPermissions"
+                    readonly="false"
+                    class="grid-block"
+            ></labeling-group-detail>
+        </tab>
+        <tab
+            header="manage"
+        >
+            <labeling-group-list
+                    class="grid-block"
+                    user="vm.user"
+                    user-permissions="vm.userPermissions"
+            ></labeling-group-list>
+        </tab>
+        <tab
+            header="edit"
+            hide="!vm.showEditTap"
+            destroy-when-inactive="true"
+        >
+            <labeling-group-detail
+                    id="vm.groupId"
+                    user="vm.user"
+                    user-permissions="vm.userPermissions"
+                    readonly="false"
+                    class="grid-block"
+            ></labeling-group-detail >
+        </tab>
+    </tab-view>
+
 </div>
