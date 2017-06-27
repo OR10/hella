@@ -29,10 +29,18 @@ class UploadProgressController {
   }
 
   progressText() {
-    let progressText = `Upload ${this.progress()}%`;
+    let progressText;
+    const uploadComplete = this._uploadService.isComplete();
 
-    if (this._uploadService.isComplete() && this.hasError()) {
+    if (uploadComplete && this.hasError()) {
       progressText = 'Errors uploading';
+    } else {
+      let progress = this.progress();
+      // Don't show 100% if the upload is not yet finished
+      if (progress === 100 && !uploadComplete) {
+        progress = 99;
+      }
+      progressText = `Upload ${progress}%`
     }
 
     return progressText;
