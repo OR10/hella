@@ -10,6 +10,7 @@
         <import resource="services/param_converters.xml"/>
         <import resource="services/helper.xml"/>
         <import resource="services/migration.xml"/>
+        <import resource="services/validation.xml"/>
     </imports>
 
     <parameters>
@@ -106,6 +107,10 @@
         <service id="annostation.labeling_api.vendor.worker_pool.job_rescheduler" class="crosscan\WorkerPool\JobRescheduler">
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp" />
             <argument type="service" id="annostation.labeling_api.service.amqp_pool_config" />
+        </service>
+
+        <service id="annostation.labeling_api.services.password_policy" class="AppBundle\Service\PasswordPolicyService">
+            <argument>%password.policy%</argument>
         </service>
 
     </services>

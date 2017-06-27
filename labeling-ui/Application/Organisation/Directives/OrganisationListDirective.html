@@ -1,11 +1,12 @@
-<loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
-<page-title title="Organisations">
-    <back-link state-link="labeling.organisation-management.selection"
-               tooltip="Back to Organisation Selection"
-    ></back-link>
-</page-title>
-<div class="page-content">
-    <table class="table table-background-even-odd view-list-table" ng-class="{'hover': vm.userPermissions.canEditOrganisation === true}">
+<div class="grid-block vertical">
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
+    <div class="view-list-info-box" ng-if="vm.organisations.length == 0" ng-switch="vm.loadingInProgress">
+        <h3 ng-switch-when="true">Loading Organisations...</h3>
+        <h3 ng-switch-default>There are currently no organisations.</h3>
+    </div>
+    <table class="table table-background-even-odd view-list-table"
+           ng-hide="vm.loadingInProgress"
+           ng-class="{'hover': vm.userPermissions.canEditOrganisation === true}">
         <thead>
         <tr>
             <th>Name</th>
@@ -18,7 +19,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="organisation in vm.organisations" ng-click="vm.updateOrganisation(organisation)">
+        <tr ng-repeat="organisation in vm.organisations" ng-click="vm.editOrganisation(organisation.id)">
             <td>
                 {{organisation.name}}
             </td>
@@ -49,6 +50,7 @@
         </tr>
         </tbody>
     </table>
+    <!--
     <div class="grid-block align-right shrink" ng-if="vm.userPermissions.canCreateOrganisation === true">
         <div class="grid-block horizontal shrink">
             <button tooltip="Create new Organisation"
@@ -58,4 +60,5 @@
             </button>
         </div>
     </div>
+    -->
 </div>
