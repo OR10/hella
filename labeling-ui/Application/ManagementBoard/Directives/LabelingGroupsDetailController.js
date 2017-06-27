@@ -22,7 +22,7 @@ class LabelingGroupsDetailController {
      * @private
      */
     this._$state = $state;
- 
+
     /**
      * @type {boolean}
      */
@@ -95,7 +95,7 @@ class LabelingGroupsDetailController {
      * @private
      */
     this._userGateway = userGateway;
-  
+
     /**
      * @type {boolean}
      */
@@ -240,29 +240,29 @@ class LabelingGroupsDetailController {
       --this.loadingInProgress;
     });
   }
-  
+
   /**
    * @param {int} labelerId
    * @returns {boolean}
    */
   isUserAlreadyInOrganisation(labelerId) {
-    return !this.groupLabelers.find(groupLabeler => groupLabeler.id === labelerId)
+    return !this.groupLabelers.find(groupLabeler => groupLabeler.id === labelerId);
   }
-  
+
   /**
    * @returns {boolean|*}
    */
   showDropDownTableCell() {
-    return this.isUsersExpanded === true
+    return this.isUsersExpanded === true;
   }
-  
+
   /**
    * Click the small angle up and down
    */
   clickAngle() {
     this.isUsersExpanded = !this.isUsersExpanded;
   }
-  
+
   /**
    * Get the correct font icon for angle state
    * @returns {string}

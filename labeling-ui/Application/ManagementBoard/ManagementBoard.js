@@ -59,8 +59,6 @@ import SystemStatusController from './Controllers/SystemStatusController';
 import SystemStatusView from './Views/SystemStatusView.html!';
 import SystemGateway from './Gateways/SystemGateway';
 
-
-
 class ManagementBoard extends Module {
   /**
    * @inheritDoc
