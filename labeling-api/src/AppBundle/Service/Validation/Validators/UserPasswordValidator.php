@@ -43,7 +43,7 @@ class UserPasswordValidator extends AbstractValidator
             return [
                 new ValidationError(
                     'currentPassword',
-                    $this->translatorInterface->trans('validator.password.confirm.invalid')
+                    $this->translatorInterface->trans('validator.password.confirm.invalid', [], 'validator')
                 ),
             ];
         }
