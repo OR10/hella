@@ -1,3 +1,5 @@
+import {isArray, isObject} from 'lodash';
+
 /**
  * JSON.stringify, which has a stable sorting of keys regardless of the objects definition order
  *
@@ -15,9 +17,9 @@ export function deterministicJsonStringify(obj) {
 function iterateArray(arr) {
   let newArr = [];
   arr.forEach(function(item, index) {
-    if (item !== null && typeof item === 'object') {
+    if (isObject(item)) {
       newArr[index] = iterateObject(item);
-    } else if (item !== null && item.constructor !== undefined && item.constructor === [].constructor) {
+    } else if (isArray(item)) {
       newArr[index] = iterateArray(item);
     } else {
       newArr[index] = item;
@@ -33,9 +35,9 @@ function iterateObject(obj) {
 
   let sortedObj = {};
   keys.forEach(function(key) {
-    if (obj[key] !== null && typeof obj[key] === 'object') {
+    if (isObject(obj[key])) {
       sortedObj[key] = iterateObject(obj[key]);
-    } else if (obj[key] !== null && obj[key].constructor !== undefined && obj[key].constructor === [].constructor) {
+    } else if (isArray(obj[key])) {
       sortedObj[key] = iterateArray(obj[key]);
     } else {
       sortedObj[key] = obj[key];
