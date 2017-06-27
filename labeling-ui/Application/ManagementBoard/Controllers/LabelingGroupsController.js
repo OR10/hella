@@ -53,7 +53,7 @@ class LabelingGroupsController {
     /**
      * @type {boolean}
      */
-    this.showEditTap = !(this.groupId === 'new' || this.groupId === undefined);
+    this.showEditTab = !(this.groupId === 'new' || this.groupId === undefined);
 
     this._$scope.$watch('vm.activeTab', (newValue, oldValue) => {
       if (newValue === oldValue) {

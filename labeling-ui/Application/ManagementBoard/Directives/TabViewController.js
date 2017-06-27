@@ -13,9 +13,9 @@ class TabViewController {
     this.tabs = [];
 
     $scope.$watch('vm.activeIndex', newValue => {
-      const tapToActivate = this.tabs.find(tab => tab.header === newValue);
-      if (tapToActivate !== undefined && tapToActivate !== null) {
-        this.activateTab(tapToActivate);
+      const tabToActivate = this.tabs.find(tab => tab.header === newValue);
+      if (tabToActivate !== undefined && tabToActivate !== null) {
+        this.activateTab(tabToActivate);
       }
     });
   }
