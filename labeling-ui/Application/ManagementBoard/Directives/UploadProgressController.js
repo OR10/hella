@@ -27,6 +27,16 @@ class UploadProgressController {
 
     return className;
   }
+
+  progressText() {
+    let progressText = `Upload ${this.progress()}%`;
+
+    if (this._uploadService.isComplete() && this.hasError()) {
+      progressText = 'Errors uploading';
+    }
+
+    return progressText;
+  }
 }
 
 UploadProgressController.$inject = [
