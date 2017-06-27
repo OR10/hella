@@ -23,7 +23,8 @@
             "incomplete": true,
             "lineColor": "6",
             "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-            "taskId": "TASKID-TASKID"
+            "taskId": "TASKID-TASKID",
+            "projectId": "PROJECTID-PROJECTID"
           }
         },
         "labeledThingsInFrame": [
@@ -61,14 +62,14 @@
             "rev": "2-b65227715b51dadd97f8521646e88a22",
             "shapes": [
               {
-                "id": "SHAPE-ID-1",
+                "id": "SHAPE-ID-2",
                 "points": [
                   {"x": 500, "y": 300},
                   {"x": 200, "y": 500},
                   {"x": 300, "y": 200},
                   {"x": 400, "y": 700}
                 ],
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-2",
                 "type": "polygon"
               }
             ]

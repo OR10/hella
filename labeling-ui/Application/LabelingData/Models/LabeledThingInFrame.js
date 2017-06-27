@@ -11,7 +11,10 @@ class LabeledThingInFrame extends LabeledObject {
    * @param {{id: string, classes: Array.<string>, ghostClasses: Array.<string>, incomplete: boolean, frameIndex: int, labeledThing: LabeledThing, shapes: Array.<Object>, ghost: boolean}} labeledThingInFrame
    */
   constructor(labeledThingInFrame) {
-    super(labeledThingInFrame);
+    // Extract task from labeledThing and propagate it up the chain
+    super(
+      Object.assign({}, labeledThingInFrame, {task: labeledThingInFrame.labeledThing.task})
+    );
 
     /**
      * Number of the frame this `LabeledThingInFrame` is defined in
@@ -148,6 +151,7 @@ class LabeledThingInFrame extends LabeledObject {
       throw new Error('Can\'t realize ghosted LabeledThingInFrame, as it is no ghost');
     }
 
+    this.shapes.forEach(shape => shape.labeledThingInFrameId = id);
     this.ghost = false;
     this.id = id;
     this.frameIndex = frameIndex;

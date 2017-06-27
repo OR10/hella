@@ -2,7 +2,7 @@
   "request": {
     "method": "PUT",
     "namedParams": true,
-    "path": "/api/task/TASKID-TASKID/labeledThing/:labeledThingId",
+    "path": "/api/task/TASKID-TASKID/labeledThing/{{:labeledThingId}}",
     "data": {
       "frameRange": {
         "startFrameNumber": 1,
@@ -12,7 +12,7 @@
       "rev": "{{:revision}}",
       "classes": [],
       "groupIds": [
-        "E2E-TEST-GROUP-ID"
+        "{{:groupId}}"
       ],
       "lineColor": "{{:lineColor}}",
       "id": "{{:labeledThingDataId}}",

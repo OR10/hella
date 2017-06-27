@@ -19,12 +19,12 @@
             "x": 200,
             "y": 200
           },
-          "labeledThingInFrameId": "{{:ltifid}}"
+          "labeledThingInFrameId": "{{ltifid}}"
         }
       ],
       "classes": [],
-      "_rev": "1-2f2582ec9aa0facea08079dfabe215f1",
-      "_id": "{{:ltifid}}",
+      "rev": "{{:revision}}",
+      "id": "{{:ltifid}}",
       "type": "AppBundle.Model.LabeledThingInFrame",
       "taskId": "TASKID-TASKID"
     }

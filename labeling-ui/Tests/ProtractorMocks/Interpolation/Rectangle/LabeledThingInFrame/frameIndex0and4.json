@@ -23,7 +23,8 @@
             "incomplete": true,
             "lineColor": "6",
             "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-            "taskId": "TASKID-TASKID"
+            "taskId": "TASKID-TASKID",
+            "projectId": "PROJECTID-PROJECTID"
           }
         },
         "labeledThingsInFrame": [
@@ -67,8 +68,8 @@
                   "x": 550,
                   "y": 570
                 },
-                "id": "SHAPE-ID-1",
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "id": "SHAPE-ID-5",
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-5",
                 "topLeft": {
                   "x": 300,
                   "y": 300

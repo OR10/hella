@@ -278,25 +278,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => done());
     });
 
-    it('should send LTIF storage request once entry is set', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
-      ]));
-
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
-        .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
-        .then(() => browser.sleep(250))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => expect(requests).toContainRequest(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck))
-        .then(() => done());
-    });
-
     it('should change entry upon click', done => {
       mock(sharedMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,

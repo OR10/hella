@@ -3,6 +3,7 @@
     "method": "PUT",
     "path": "/api/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-1",
     "data": {
+      "identifierName": "legacy",
       "frameIndex": 0,
       "incomplete": true,
       "rev": "2-b65227715b51dadd97f8521646e88a22",
@@ -79,6 +80,7 @@
           "lineColor": "6"
         },
         "labeledThingInFrame": {
+          "identifierName": "legacy",
           "frameIndex": 0,
           "incomplete": true,
           "rev": "2-b65227715b51dadd97f8521646e88a22",

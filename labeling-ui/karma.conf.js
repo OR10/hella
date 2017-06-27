@@ -50,6 +50,7 @@ module.exports = function (config) {
       {pattern: 'Tests/Support/Jasmine/Matchers/**/*.js', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/PouchDb/**/*', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/AnnoStationUnitTestModule.js', included: false, served: true, watched: true},
+      {pattern: 'Tests/Support/DeterministicJsonStringify.js', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/JsonTemplateComparator.js', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/JsonTemplateComparator/**/*.js', included: false, served: true, watched: true},
       //'.workaround/jquery.js',

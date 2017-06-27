@@ -11,6 +11,7 @@
     "data": {
       "result": [
         {
+          "identifierName": "legacy",
           "classes": [],
           "frameIndex": 0,
           "ghost": false,
@@ -36,6 +37,7 @@
           ]
         },
         {
+          "identifierName": "legacy",
           "classes": [],
           "frameIndex": 1,
           "ghost": true,
@@ -61,6 +63,7 @@
           ]
         },
         {
+          "identifierName": "legacy",
           "classes": [],
           "frameIndex": 2,
           "ghost": true,
@@ -86,6 +89,7 @@
           ]
         },
         {
+          "identifierName": "legacy",
           "classes": [],
           "frameIndex": 3,
           "ghost": true,
@@ -111,6 +115,7 @@
           ]
         },
         {
+          "identifierName": "legacy",
           "classes": [],
           "frameIndex": 4,
           "ghost": true,

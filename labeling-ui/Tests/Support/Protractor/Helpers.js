@@ -7,22 +7,21 @@ import {cloneDeep} from 'lodash';
 export function getMockRequestsMade(mock) {
   if (featureFlags.pouchdb) {
     return PouchDb.allDocs();
-  } else {
-    return httpMock.requestsMade().then(requests => {
-      return requests.map(request => {
-        const strippedRequest = {
-          method: request.method,
-          path: request.url,
-        };
-
-        if (request.data) {
-          strippedRequest.data = request.data;
-        }
-
-        return strippedRequest;
-      });
-    });
   }
+  return httpMock.requestsMade().then(requests => {
+    return requests.map(request => {
+      const strippedRequest = {
+        method: request.method,
+        path: request.url,
+      };
+
+      if (request.data) {
+        strippedRequest.data = request.data;
+      }
+
+      return strippedRequest;
+    });
+  });
 }
 
 export function dumpAllRequestsMade(mock) {
@@ -34,34 +33,33 @@ export function dumpAllRequestsMade(mock) {
       strippedRequests = strippedRequests.filter(doc => doc._id.indexOf('_design') === -1);
 
       console.log( // eslint-disable-line no-console
-        `The following documents are in the Pouch. Design documents have been filtered out.\n${JSON.stringify(strippedRequests, undefined, 2)}`
+        `The following documents are in the Pouch. Design documents have been filtered out.\n${JSON.stringify(strippedRequests, undefined, 2)}`,
       );
 
-      return failTest;
-    });
-  } else {
-    return httpMock.allRequestsMade().then(requests => {
-      const strippedRequests = requests.map(request => {
-        const strippedRequest = {
-          method: request.method,
-          path: request.url,
-        };
-
-        if (request.data) {
-          strippedRequest.data = request.data;
-        }
-
-        return strippedRequest;
-      });
-
-      console.log( // eslint-disable-line no-console
-        `The following requests were made against the backend. Not all of them may have been mocked!\n${JSON.stringify(strippedRequests, undefined, 2)}`
-      );
-
-      // fail('Dumping all requests causes automatic test fail.');
       return failTest;
     });
   }
+  return httpMock.allRequestsMade().then(requests => {
+    const strippedRequests = requests.map(request => {
+      const strippedRequest = {
+        method: request.method,
+        path: request.url,
+      };
+
+      if (request.data) {
+        strippedRequest.data = request.data;
+      }
+
+      return strippedRequest;
+    });
+
+    console.log( // eslint-disable-line no-console
+      `The following requests were made against the backend. Not all of them may have been mocked!\n${JSON.stringify(strippedRequests, undefined, 2)}`,
+    );
+
+    // fail('Dumping all requests causes automatic test fail.');
+    return failTest;
+  });
 }
 
 function waitForApplicationReady() {
@@ -76,28 +74,30 @@ function bootstrapPouchDb(mocks) {
     'lsr-01',
     'thing-one',
     'thing-two',
-    null
+    null,
   ];
   let documents = [];
 
   mocks.forEach(mock => {
-    let things = cloneDeep(mock.response.data.result);
+    const things = cloneDeep(mock.response.data.result);
     let labeledThing;
     let taskId;
+    let projectId;
 
     if (things.labeledThings) {
       const labeledThingKeys = Object.keys(things.labeledThings);
       labeledThingKeys.forEach(labeledThingKey => {
         labeledThing = things.labeledThings[labeledThingKey];
         taskId = labeledThing.taskId;
+        projectId = labeledThing.projectId;
 
         labeledThing._id = labeledThing.id;
         labeledThing.type = 'AppBundle.Model.LabeledThing';
         labeledThing.lineColor = parseInt(labeledThing.lineColor);
         labeledThing.frameRange = {
-          "startFrameIndex": labeledThing.frameRange.startFrameNumber,
-          "endFrameIndex": labeledThing.frameRange.endFrameNumber,
-          "type": "AppBundle.Model.FrameIndexRange"
+          'startFrameIndex': labeledThing.frameRange.startFrameNumber,
+          'endFrameIndex': labeledThing.frameRange.endFrameNumber,
+          'type': 'AppBundle.Model.FrameIndexRange',
         };
 
         delete labeledThing.rev;
@@ -111,7 +111,7 @@ function bootstrapPouchDb(mocks) {
       things.labeledThingsInFrame.forEach(ltif => {
         ltif._id = ltif.id;
         ltif.taskId = taskId;
-        ltif.labeledThingId = ltif.labeledThingId;
+        ltif.projectId = projectId;
         if (knownIdentifierNames.indexOf(ltif.identifierName) === -1) {
           ltif.identifierName = 'legacy';
         }
@@ -127,29 +127,31 @@ function bootstrapPouchDb(mocks) {
   });
 
   return PouchDb.bulkDocs(documents);
-};
+}
 
 const defaultTestConfig = {
   viewerWidth: 1024,
   viewerHeight: 620,
 };
 
-let mocks = {
+const mocks = {
   shared: [],
-  specific: []
+  specific: [],
 };
 
 export function mock(sharedMocks) {
-  let specificMocksKeys = [];
+  const specificMocksKeys = [];
 
   mocks.shared = sharedMocks;
   mocks.specific = mocks.shared.filter((mock, key) => {
     const hasLabeledThings = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThings);
     const hasLabeledThingsInFrame = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThingsInFrame);
-    const mustBeStoredInCouch = (hasLabeledThings || hasLabeledThingsInFrame);
+    const isGetRequest = mock.request.method.toUpperCase() === 'GET';
+    const mustBeStoredInCouch = ((hasLabeledThings || hasLabeledThingsInFrame) && isGetRequest);
     if (mustBeStoredInCouch) {
       specificMocksKeys.push(key);
     }
+
     return mustBeStoredInCouch;
   });
 }
@@ -162,7 +164,7 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   httpMock(mocks.shared.concat(mocks.specific));
 
   const builder = new UrlBuilder(testConfig);
-  (function () {
+  (() => {
     browser.get(builder.url(url));
   })();
   browser.wait(() => {
@@ -174,9 +176,9 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   if (featureFlags.pouchdb) {
     return bootstrapPouchDb(mocks.specific)
       .then(() => waitForApplicationReady());
-  } else {
-    return waitForApplicationReady();
   }
+
+  return waitForApplicationReady();
 }
 
 export function expectAllModalsToBeClosed() {
@@ -208,6 +210,6 @@ export function getTextContentFromElementFinder(elementFinder) {
  */
 export function hasClassByElementFinder(elementFinder, className) {
   return elementFinder.getAttribute('class').then(
-    classString => classString.split(' ').includes(className)
+    classString => classString.split(' ').includes(className),
   );
 }

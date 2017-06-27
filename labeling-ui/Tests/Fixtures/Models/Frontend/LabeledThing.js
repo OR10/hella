@@ -12,7 +12,7 @@ export default new LabeledThing({
   "classes": ['foo', 'bar', 'baz'],
   "incomplete": false,
   "taskId": "9a8d567033f93fcd8cf50c2535027049",
-  "projectId": "9a8d567033f93fcd8cf50c2535008766",
+  "projectId": "5242f8bff15774fe72586e569a0469e0",
   "lineColor": "8",
   "task": taskFixture
 });

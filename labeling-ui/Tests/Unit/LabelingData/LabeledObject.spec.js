@@ -1,6 +1,13 @@
 import LabeledObject from 'Application/LabelingData/Models/LabeledObject';
 
+import Task from 'Application/Task/Model/Task';
+import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
+
 describe('LabeledObject', () => {
+  function createTask(id = 'TASK-ID') {
+    return new Task(Object.assign({}, TaskFrontendModel.toJSON(), {id}));
+  }
+
   beforeEach(() => {
   });
 
@@ -9,11 +16,13 @@ describe('LabeledObject', () => {
      id: '123',
      classes: ['foo', 'bar'],
      incomplete: true,
+     task: createTask(),
    }],
    [{
      id: 'abc',
      classes: ['baz', 'bar'],
      incomplete: false,
+     task: createTask(),
    }],
   ], labeledObjectData => {
     it('should take a labeledObject POJO for initialization', () => {
@@ -30,6 +39,7 @@ describe('LabeledObject', () => {
       id: '123',
       classes: ['foo', 'bar'],
       incomplete: true,
+      task: createTask(),
     });
 
     labeledObject.setClasses(['blib', 'blub', 'blib']);
@@ -42,6 +52,7 @@ describe('LabeledObject', () => {
       id: '123',
       classes: ['foo', 'bar'],
       incomplete: true,
+      task: createTask(),
     });
 
     labeledObject.addClass('baz');

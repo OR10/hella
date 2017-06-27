@@ -162,7 +162,7 @@ describe('Multiple Things', () => {
         .mouseUp()
         .perform()
       )
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(400))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {

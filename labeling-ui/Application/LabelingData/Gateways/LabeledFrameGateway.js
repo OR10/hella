@@ -38,7 +38,7 @@ class LabeledFrameGateway {
     return this._bufferedHttp.get(url, undefined, 'labeledFrame')
       .then(response => {
         if (response.data && response.data.result) {
-          return new LabeledFrame(response.data.result);
+          return new LabeledFrame(Object.assign({}, response.data.result, {task}));
         }
 
         throw new Error('Failed loading labeled frame');
@@ -63,7 +63,7 @@ class LabeledFrameGateway {
     return this._bufferedHttp.put(url, labeledFrame, undefined, 'labeledFrame')
       .then(response => {
         if (response.data && response.data.result) {
-          return new LabeledFrame(response.data.result);
+          return new LabeledFrame(Object.assign({}, response.data.result, {task}));
         }
 
         throw new Error('Failed updating labeled frame');
