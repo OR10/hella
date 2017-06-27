@@ -50,8 +50,8 @@
                             >
                                 <span
                                         ng-style="{
-                                    'color': (!file.isUploading() && file.isComplete() && file.hasUploadError()) ? '#DB315B' : '',
                                     'background': isMouseOver ? '#7B8999' : ''  }"
+                                        ng-class="vm.fileColorClass(file)"
                                 >
                                     {{file.name}}
                                 </span>

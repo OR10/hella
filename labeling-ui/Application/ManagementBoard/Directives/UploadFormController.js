@@ -229,6 +229,18 @@ class UploadFormController {
     file.hasUploadError = () => true;
   }
 
+  fileColorClass(file) {
+    let fileColorClass = '';
+
+    if (!file.isUploading() && file.isComplete() && file.hasUploadError()) {
+      fileColorClass = 'upload-error';
+    } else if (file.isComplete()) {
+      fileColorClass = 'upload-success';
+    }
+
+    return fileColorClass;
+  }
+
   uploadFilesFromSystem() {
     this._$timeout(
         () => document.getElementById('project-upload-input').click()
