@@ -1,6 +1,6 @@
 import UploadService from 'Application/ManagementBoard/Services/UploadService';
 
-fdescribe('UploadService test suite', () => {
+describe('UploadService test suite', () => {
   /**
    * @type {UploadService}
    */
@@ -88,6 +88,82 @@ fdescribe('UploadService test suite', () => {
       const actual = uploadService.hasError();
 
       expect(actual).toBe(false);
+    });
+  });
+
+  describe('isComplete()', () => {
+    it('returns true by default', () => {
+      const actual = uploadService.isComplete();
+
+      expect(actual).toBe(true);
+    });
+
+    it('returns true if all files are complete', () => {
+      uploadService.addFile({ isComplete: () => true });
+      uploadService.addFile({ isComplete: () => true });
+      uploadService.addFile({ isComplete: () => true });
+      uploadService.addFile({ isComplete: () => true });
+
+      const actual = uploadService.isComplete();
+
+      expect(actual).toBe(true);
+    });
+
+    it('returns false if only one file is complete', () => {
+      uploadService.addFile({ isComplete: () => false });
+      uploadService.addFile({ isComplete: () => false });
+      uploadService.addFile({ isComplete: () => true });
+      uploadService.addFile({ isComplete: () => false });
+
+      const actual = uploadService.isComplete();
+
+      expect(actual).toBe(false);
+    });
+
+    it('returns false if all files are incomplete', () => {
+      uploadService.addFile({ isComplete: () => false });
+      uploadService.addFile({ isComplete: () => false });
+      uploadService.addFile({ isComplete: () => false });
+      uploadService.addFile({ isComplete: () => false });
+
+      const actual = uploadService.isComplete();
+
+      expect(actual).toBe(false);
+    });
+  });
+
+  describe('progress', () => {
+    it('returns 0 by defaukt', () => {
+      const actual = uploadService.progress();
+
+      expect(actual).toEqual(0);
+    });
+
+    it('returns the progress of one file if there is only one', () => {
+      uploadService.addFile({ progress: () => 0.89 });
+
+      const actual = uploadService.progress();
+
+      expect(actual).toEqual(89);
+    });
+
+    it('returns the progress of two files', () => {
+      uploadService.addFile({ progress: () => 0.60 });
+      uploadService.addFile({ progress: () => 0.40 });
+
+      const actual = uploadService.progress();
+
+      expect(actual).toEqual(50);
+    });
+
+    it('rounds the result', () => {
+      uploadService.addFile({ progress: () => 0.62 });
+      uploadService.addFile({ progress: () => 0.40 });
+      uploadService.addFile({ progress: () => 0.38 });
+
+      const actual = uploadService.progress();
+
+      expect(actual).toEqual(47); // without rounding the result would be 46.66666
     });
   });
 });
