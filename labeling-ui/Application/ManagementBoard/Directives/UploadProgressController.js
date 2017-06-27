@@ -21,8 +21,8 @@ class UploadProgressController {
   progressClassName() {
     let className = '';
 
-    if(this.hasError()) {
-      return 'error';
+    if (this.hasError()) {
+      className = 'error';
     }
 
     return className;
@@ -40,7 +40,7 @@ class UploadProgressController {
       if (progress === 100 && !uploadComplete) {
         progress = 99;
       }
-      progressText = `Upload ${progress}%`
+      progressText = `Upload ${progress}%`;
     }
 
     return progressText;

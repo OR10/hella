@@ -4,7 +4,7 @@ class UploadService {
   }
 
   addFile(file) {
-    const alreadyAdded = this._files.findIndex(element => element === file) != -1;
+    const alreadyAdded = this._files.findIndex(element => element === file) !== -1;
     if (!alreadyAdded) {
       this._files.push(file);
     }
@@ -17,11 +17,11 @@ class UploadService {
   progress() {
     const amountFiles = this._files.length;
 
-    const progress = this._files.reduce((progress, file) => {
+    const overallProgress = this._files.reduce((progress, file) => {
       return progress + (file.progress() / amountFiles);
     }, 0);
 
-    return Math.round(progress * 100);
+    return Math.round(overallProgress * 100);
   }
 
   reset() {
@@ -29,7 +29,7 @@ class UploadService {
   }
 
   hasError() {
-    return this._files.findIndex(file => file.hasUploadError()) != -1;
+    return this._files.findIndex(file => file.hasUploadError()) !== -1;
   }
 
   isComplete() {
