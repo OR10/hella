@@ -2,7 +2,9 @@
     <div class="page-header__title">
         <h1><ng-transclude></ng-transclude>{{ vm.title }}</h1>
     </div>
-    <div class="page-header__custom-content"></div>
+    <div class="page-header__custom-content" id="page-header__custom-content">
+        <upload-progress></upload-progress>
+    </div>
     <div class="page-header__user-info">
         <div class="page-header__user-info__line user-name">
             <logout-button></logout-button>
