@@ -7,6 +7,12 @@ imports:
 
 parameters:
   redirectAfterLogin: /labeling
+  password.policy:
+    AtLeastOneSpecialCharacter: true
+    AtLeastOneDigit: true
+    Length:
+      min: 5
+      max: 500
 
 doctrine_couch_db: &doctrine_couch_db
     odm:

@@ -2,6 +2,7 @@ h1 {
     text-align: left;
     border-bottom: 1px solid $color-ut-yellow;
     @include font-xl();
+    margin: 0;
 }
 
 .text-center h1 {

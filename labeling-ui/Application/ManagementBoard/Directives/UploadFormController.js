@@ -12,8 +12,9 @@ class UploadFormController {
    * @param {OrganisationService} organisationService
    * @param {InProgressService} inProgressService
    * @param {angular.$timeout} $timeout
+   * @param {UploadService} uploadService
    */
-  constructor($state, uploadGateway, modalService, ListDialog, organisationService, inProgressService, $timeout) {
+  constructor($state, uploadGateway, modalService, ListDialog, organisationService, inProgressService, $timeout, uploadService) {
     /**
      * @type {$state}
      * @private
@@ -57,6 +58,12 @@ class UploadFormController {
     this._$timeout = $timeout;
 
     /**
+     * @type {UploadService}
+     * @private
+     */
+    this._uploadService = uploadService;
+
+    /**
      * @type {boolean}
      */
     this.uploadInProgress = false;
@@ -76,6 +83,8 @@ class UploadFormController {
      * @type {string}
      */
     this.currentOrganisationId = organisationService.get();
+
+    this.$flow = null;
 
     organisationService.subscribe(newOrganisation => {
       this.currentOrganisationId = newOrganisation.id;
@@ -208,6 +217,7 @@ class UploadFormController {
 
   fileAdded(file) {
     file.hasUploadError = () => false;
+    this._uploadService.addFile(file);
   }
 
   filesAdded(files) {
@@ -219,10 +229,27 @@ class UploadFormController {
     file.hasUploadError = () => true;
   }
 
+  fileColorClass(file) {
+    let fileColorClass = '';
+
+    if (!file.isUploading() && file.isComplete() && file.hasUploadError()) {
+      fileColorClass = 'upload-error';
+    } else if (file.isComplete()) {
+      fileColorClass = 'upload-success';
+    }
+
+    return fileColorClass;
+  }
+
   uploadFilesFromSystem() {
     this._$timeout(
         () => document.getElementById('project-upload-input').click()
     );
+  }
+
+  clearFiles() {
+    this.$flow.cancel();
+    this._uploadService.reset();
   }
 }
 
@@ -234,6 +261,7 @@ UploadFormController.$inject = [
   'organisationService',
   'inProgressService',
   '$timeout',
+  'uploadService',
 ];
 
 export default UploadFormController;
