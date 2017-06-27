@@ -12,23 +12,23 @@
       "result": [
         {
           "frameIndex": 0,
-          "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/thumbnail\/1.jpg"
+          "url": "/fixtures/images/VIDEOID-VIDEOID/thumbnail/1.jpg"
         },
         {
           "frameIndex": 1,
-          "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/thumbnail\/2.jpg"
+          "url": "/fixtures/images/VIDEOID-VIDEOID/thumbnail/2.jpg"
         },
         {
           "frameIndex": 2,
-          "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/thumbnail\/3.jpg"
+          "url": "/fixtures/images/VIDEOID-VIDEOID/thumbnail/3.jpg"
         },
         {
           "frameIndex": 3,
-          "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/thumbnail\/4.jpg"
+          "url": "/fixtures/images/VIDEOID-VIDEOID/thumbnail/4.jpg"
         },
         {
           "frameIndex": 4,
-          "url": "\/fixtures\/images\/VIDEOID-VIDEOID\/thumbnail\/5.jpg"
+          "url": "/fixtures/images/VIDEOID-VIDEOID/thumbnail/5.jpg"
         }
       ]
     }

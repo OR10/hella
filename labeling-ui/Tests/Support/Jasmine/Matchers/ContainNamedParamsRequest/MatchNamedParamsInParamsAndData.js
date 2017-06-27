@@ -1,4 +1,4 @@
-var deterministicJsonStringify = require('./DeterministicJsonStringify');
+var deterministicJsonStringify = require('../../../DeterministicJsonStringify');
 
 module.exports = function matchNamedParamsInParamsAndData(availableRequest, expectedRequest) {
   var expectedParamsRegExp = null;

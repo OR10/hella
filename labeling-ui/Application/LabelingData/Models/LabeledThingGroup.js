@@ -10,11 +10,6 @@ class LabeledThingGroup extends LabeledObject {
     super(labeledThingGroupDocument);
 
     /**
-     * @type {Task}
-     */
-    this._task = labeledThingGroupDocument.task;
-
-    /**
      * @type {string}
      */
     this.type = labeledThingGroupDocument.groupType;
@@ -31,24 +26,16 @@ class LabeledThingGroup extends LabeledObject {
   }
 
   /**
-   * @return {Task}
-   */
-  get task() {
-    return this._task;
-  }
-
-  /**
    * Convert this model into a datastructure suitable for backend storage
    *
    * @return {Object}
    */
   toJSON() {
-    const {type, task, lineColor, groupIds} = this;
+    const {type, lineColor, groupIds} = this;
     return Object.assign(super.toJSON(), {
       groupType: type,
       lineColor: lineColor,
       groupIds: clone(groupIds),
-      taskId: task.id,
     });
   }
 
@@ -61,6 +48,7 @@ class LabeledThingGroup extends LabeledObject {
       classes: this.classes,
       incomplete: this.incomplete,
       task: this.task,
+      // Remapping of type => groupType
       groupType: this.type,
       lineColor: this.lineColor,
       groupIds: this.groupIds,

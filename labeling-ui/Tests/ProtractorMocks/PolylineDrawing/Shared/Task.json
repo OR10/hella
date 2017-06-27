@@ -28,11 +28,11 @@
             "cuboid": {
               "minimalHeight": 15
             },
-            "polygon":{
+            "polygon": {
               "minHandles": 3,
               "maxHandles": 15
             },
-            "polyline":{
+            "polyline": {
               "minHandles": 3,
               "maxHandles": 15
             }

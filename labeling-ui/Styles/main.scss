@@ -452,6 +452,14 @@ title-bar {
         cursor: pointer;
       }
     }
+
+    .upload-error {
+      color: $color-ut-red;
+    }
+
+    .upload-success {
+      color: $color-ut-yellow;
+    }
   }
 }
 .organisation-tag {

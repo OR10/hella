@@ -13,7 +13,6 @@
         {
           "id": "SHAPE-ID-1",
           "type": "polygon",
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
           "points": [
             {
               "x": 200,
@@ -66,12 +65,23 @@
             {
               "id": "SHAPE-ID-1",
               "points": [
-                {"x": 200, "y": 100},
-                {"x": 300, "y": 200},
-                {"x": 200, "y": 400},
-                {"x": 50, "y": 200}
+                {
+                  "x": 200,
+                  "y": 100
+                },
+                {
+                  "x": 300,
+                  "y": 200
+                },
+                {
+                  "x": 200,
+                  "y": 400
+                },
+                {
+                  "x": 50,
+                  "y": 200
+                }
               ],
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "type": "polygon"
             }
           ],

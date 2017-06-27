@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/labeledThingInFrame/:labeledThingInFrameId",
+    "path": "/api/labeledThingInFrame/{{:labeledThingInFrameId}}",
     "namedParams": true,
     "method": "PUT",
     "data": {
@@ -25,8 +25,7 @@
               "x": 150,
               "y": 150
             }
-          ],
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          ]
         }
       ],
       "classes": [],
@@ -44,8 +43,7 @@
             "startFrameNumber": 1,
             "endFrameNumber": 1
           },
-          "classes": [
-          ],
+          "classes": [],
           "taskId": "TASKID-TASKID",
           "incomplete": true,
           "lineColor": "6"
@@ -74,8 +72,7 @@
                   "x": 150,
                   "y": 150
                 }
-              ],
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",

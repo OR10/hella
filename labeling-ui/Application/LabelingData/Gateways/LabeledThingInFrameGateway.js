@@ -171,9 +171,7 @@ class LabeledThingInFrameGateway {
       labeledThing.task = task;
 
       return new LabeledThingInFrame(
-        Object.assign({}, data, {
-          labeledThing: new LabeledThing(labeledThing),
-        })
+        Object.assign({}, data, {labeledThing: new LabeledThing(labeledThing)})
       );
     });
   }

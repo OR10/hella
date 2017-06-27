@@ -18,18 +18,17 @@
           "ghostClasses": null,
           "shapes": [
             {
-          "bottomCenter": {
-            "x": 100,
-            "y": 100
-          },
-          "id": "SHAPE-ID-1",
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-          "topCenter": {
-            "x": 100,
-            "y": 50
-          },
-          "type": "pedestrian"
-        }
+              "bottomCenter": {
+                "x": 100,
+                "y": 100
+              },
+              "id": "SHAPE-ID-1",
+              "topCenter": {
+                "x": 100,
+                "y": 50
+              },
+              "type": "pedestrian"
+            }
           ],
           "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
           "incomplete": true,
@@ -43,18 +42,17 @@
           "ghostClasses": null,
           "shapes": [
             {
-          "bottomCenter": {
-            "x": 100,
-            "y": 100
-          },
-          "id": "SHAPE-ID-1",
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-          "topCenter": {
-            "x": 100,
-            "y": 50
-          },
-          "type": "pedestrian"
-        }
+              "bottomCenter": {
+                "x": 100,
+                "y": 100
+              },
+              "id": "SHAPE-ID-1",
+              "topCenter": {
+                "x": 100,
+                "y": 50
+              },
+              "type": "pedestrian"
+            }
           ],
           "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
           "incomplete": true,
@@ -68,18 +66,17 @@
           "ghostClasses": null,
           "shapes": [
             {
-          "bottomCenter": {
-            "x": 100,
-            "y": 100
-          },
-          "id": "SHAPE-ID-1",
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-          "topCenter": {
-            "x": 100,
-            "y": 50
-          },
-          "type": "pedestrian"
-        }
+              "bottomCenter": {
+                "x": 100,
+                "y": 100
+              },
+              "id": "SHAPE-ID-1",
+              "topCenter": {
+                "x": 100,
+                "y": 50
+              },
+              "type": "pedestrian"
+            }
           ],
           "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
           "incomplete": true,
@@ -93,18 +90,17 @@
           "ghostClasses": null,
           "shapes": [
             {
-          "bottomCenter": {
-            "x": 100,
-            "y": 100
-          },
-          "id": "SHAPE-ID-1",
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-          "topCenter": {
-            "x": 100,
-            "y": 50
-          },
-          "type": "pedestrian"
-        }
+              "bottomCenter": {
+                "x": 100,
+                "y": 100
+              },
+              "id": "SHAPE-ID-1",
+              "topCenter": {
+                "x": 100,
+                "y": 50
+              },
+              "type": "pedestrian"
+            }
           ],
           "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
           "incomplete": true,
@@ -118,18 +114,17 @@
           "ghostClasses": null,
           "shapes": [
             {
-          "bottomCenter": {
-            "x": 100,
-            "y": 100
-          },
-          "id": "SHAPE-ID-1",
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-          "topCenter": {
-            "x": 100,
-            "y": 50
-          },
-          "type": "pedestrian"
-        }
+              "bottomCenter": {
+                "x": 100,
+                "y": 100
+              },
+              "id": "SHAPE-ID-1",
+              "topCenter": {
+                "x": 100,
+                "y": 50
+              },
+              "type": "pedestrian"
+            }
           ],
           "labeledThingId": "4e7c767d-ae1f-405a-8fa9-4b8a23d31b6c",
           "incomplete": true,

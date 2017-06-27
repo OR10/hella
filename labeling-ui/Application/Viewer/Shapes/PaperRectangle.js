@@ -298,7 +298,6 @@ class PaperRectangle extends PaperThingShape {
         x: Math.round(this._bottomRight.x),
         y: Math.round(this._bottomRight.y),
       },
-      labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }
 }

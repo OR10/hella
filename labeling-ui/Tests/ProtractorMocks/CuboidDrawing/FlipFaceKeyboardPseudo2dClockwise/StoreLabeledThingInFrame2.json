@@ -3,6 +3,7 @@
     "method": "PUT",
     "path": "/api/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-1",
     "data": {
+      "identifierName": "legacy",
       "frameIndex": 0,
       "incomplete": true,
       "rev": "2-b65227715b51dadd97f8521646e88a22",
@@ -37,8 +38,7 @@
               -1,
               0
             ]
-          ],
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+          ]
         }
       ],
       "classes": [],
@@ -64,6 +64,7 @@
           "lineColor": "6"
         },
         "labeledThingInFrame": {
+          "identifierName": "legacy",
           "frameIndex": 0,
           "incomplete": true,
           "rev": "2-b65227715b51dadd97f8521646e88a22",
@@ -74,32 +75,31 @@
               "id": "SHAPE-ID-1",
               "type": "cuboid3d",
               "vehicleCoordinates": [
-            null,
-            null,
-            null,
-            null,
-            [
-              10,
-              -1,
-              2
-            ],
-            [
-              10,
-              1,
-              2
-            ],
-            [
-              10,
-              1,
-              0
-            ],
-            [
-              10,
-              -1,
-              0
-            ]
-          ],
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+                null,
+                null,
+                null,
+                null,
+                [
+                  10,
+                  -1,
+                  2
+                ],
+                [
+                  10,
+                  1,
+                  2
+                ],
+                [
+                  10,
+                  1,
+                  0
+                ],
+                [
+                  10,
+                  -1,
+                  0
+                ]
+              ]
             }
           ],
           "classes": [],

@@ -1,3 +1,10 @@
+/**
+ * ManagementBoard Module
+ *
+ * This module contains all necessary modules directly involved in providing the initial application entry point.
+ *
+ * @extends Module
+ */
 import Module from 'Application/Module';
 
 import TabViewDirective from './Directives/TabViewDirective';
@@ -23,9 +30,12 @@ import TasksController from './Controllers/TasksController';
 import TasksView from './Views/TasksView.html!';
 import TaskListDirective from './Directives/TaskListDirective';
 import FlaggedTaskListDirective from './Directives/FlaggedTaskListDirective';
+
 import UploadGateway from './Gateways/UploadGateway';
 import UploadController from './Controllers/UploadController';
 import UploadFormDirective from './Directives/UploadFormDirective';
+import UploadProgressDirective from './Directives/UploadProgressDirective';
+import UploadService from './Services/UploadService';
 
 import UsersController from './Controllers/UsersController';
 import UsersView from './Views/UsersView.html!';
@@ -35,10 +45,9 @@ import UserProfileDirective from './Directives/UserProfileDirective';
 
 import LabelingGroupsController from './Controllers/LabelingGroupsController';
 import LabelingGroupsView from './Views/LabelingGroupsView.html!';
-import LabelingGroupsDetailController from './Controllers/LabelingGroupsDetailController';
-import LabelingGroupsDetailView from './Views/LabelingGroupsDetailView.html!';
 import LabelingGroupGateway from './Gateways/LabelingGroupGateway';
 import LabelingGroupListDirective from './Directives/LabelingGroupListDirective';
+import LabelingGroupsDetailDirective from './Directives/LabelingGroupsDetailDirective';
 
 import TaskConfigurationGateway from './Gateways/TaskConfigurationGateway';
 import TaskConfigurationUploadController from './Controllers/TaskConfigurationUploadController';
@@ -53,14 +62,6 @@ import SystemStatusController from './Controllers/SystemStatusController';
 import SystemStatusView from './Views/SystemStatusView.html!';
 import SystemGateway from './Gateways/SystemGateway';
 
-
-/**
- * ManagementBoard Module
- *
- * This module contains all necessary modules directly involved in providing the initial application entry point.
- *
- * @extends Module
- */
 class ManagementBoard extends Module {
   /**
    * @inheritDoc
@@ -217,9 +218,9 @@ class ManagementBoard extends Module {
       url: '/:groupId',
       views: {
         '@organisation': {
-          controller: LabelingGroupsDetailController,
+          controller: LabelingGroupsController,
           controllerAs: 'vm',
-          template: LabelingGroupsDetailView,
+          template: LabelingGroupsView,
         },
       },
     });
@@ -270,6 +271,7 @@ class ManagementBoard extends Module {
     this.module.service('projectGateway', ProjectGateway);
     this.module.service('systemGateway', SystemGateway);
     this.module.service('uploadGateway', UploadGateway);
+    this.module.service('uploadService', UploadService);
 
     this.registerDirective('backLink', BackLinkDirective);
     this.registerDirective('tabView', TabViewDirective);
@@ -281,8 +283,10 @@ class ManagementBoard extends Module {
     this.registerDirective('usersList', UsersListDirective);
     this.registerDirective('userProfile', UserProfileDirective);
     this.registerDirective('labelingGroupList', LabelingGroupListDirective);
+    this.registerDirective('labelingGroupDetail', LabelingGroupsDetailDirective);
     this.registerDirective('flaggedTaskList', FlaggedTaskListDirective);
     this.registerDirective('uploadForm', UploadFormDirective);
+    this.registerDirective('uploadProgress', UploadProgressDirective);
 
     this.module.filter('singleRole', SingleRoleFilterProvider);
     this.module.filter('readableRole', ReadableRoleFilterProvider);

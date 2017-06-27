@@ -11,6 +11,7 @@
     "data": {
       "result": [
         {
+          "identifierName": "legacy",
           "classes": [],
           "frameIndex": 0,
           "ghost": false,
@@ -26,7 +27,6 @@
                 "y": 20
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topLeft": {
                 "x": 10,
                 "y": 10
@@ -36,6 +36,7 @@
           ]
         },
         {
+          "identifierName": "legacy",
           "classes": [],
           "frameIndex": 1,
           "ghost": true,
@@ -51,7 +52,6 @@
                 "y": 20
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topLeft": {
                 "x": 10,
                 "y": 10
@@ -61,6 +61,7 @@
           ]
         },
         {
+          "identifierName": "legacy",
           "classes": [],
           "frameIndex": 2,
           "ghost": true,
@@ -76,7 +77,6 @@
                 "y": 20
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topLeft": {
                 "x": 10,
                 "y": 10
@@ -86,6 +86,7 @@
           ]
         },
         {
+          "identifierName": "legacy",
           "classes": [],
           "frameIndex": 3,
           "ghost": true,
@@ -101,7 +102,6 @@
                 "y": 20
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topLeft": {
                 "x": 10,
                 "y": 10
@@ -111,6 +111,7 @@
           ]
         },
         {
+          "identifierName": "legacy",
           "classes": [],
           "frameIndex": 4,
           "ghost": true,
@@ -126,7 +127,6 @@
                 "y": 20
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topLeft": {
                 "x": 10,
                 "y": 10
@@ -139,4 +139,3 @@
     }
   }
 }
-

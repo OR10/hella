@@ -22,8 +22,7 @@
           "bottomRight": {
             "x": 400,
             "y": 400
-          },
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-2"
+          }
         }
       ],
       "labeledThingId": "LABELED-THING-ID-2",
@@ -41,8 +40,7 @@
             "startFrameNumber": 1,
             "endFrameNumber": 1
           },
-          "classes": [
-          ],
+          "classes": [],
           "taskId": "TASKID-TASKID",
           "incomplete": true,
           "lineColor": "16"
@@ -67,8 +65,7 @@
               "bottomRight": {
                 "x": 400,
                 "y": 400
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-2"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-2",

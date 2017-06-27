@@ -50,7 +50,7 @@ describe('Polygon drawing', () => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'LoadAndDrawOnePolygon'),
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.LoadAndDrawOnePolygon);
@@ -67,7 +67,7 @@ describe('Polygon drawing', () => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'LoadAndDrawTwoPolygons')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.LoadAndDrawTwoPolygons);
@@ -90,7 +90,7 @@ describe('Polygon drawing', () => {
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'SelectOnePolygon')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.SelectOnePolygon);
@@ -117,7 +117,7 @@ describe('Polygon drawing', () => {
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'SelectAndDeselectPolygon')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.SelectAndDeselectPolygon);
@@ -144,7 +144,7 @@ describe('Polygon drawing', () => {
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'SelectAnotherPolygon')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.SelectAnotherPolygon);
@@ -172,7 +172,7 @@ describe('Polygon drawing', () => {
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'MoveOnePolygon')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.MoveOnePolygon);
@@ -198,21 +198,21 @@ describe('Polygon drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
-          .mouseMove(viewer, {x: 200, y: 200}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 200, y: 300}) // bottom drag handle
-          .mouseDown()
-          .mouseMove(viewer, {x: 200, y: 400}) // drag
-          .mouseUp()
-          .mouseMove(viewer, {x: 100, y: 200}) // left drag handle
-          .mouseDown()
-          .mouseMove(viewer, {x: 50, y: 200}) // drag
-          .mouseUp()
-          .perform()
+        .mouseMove(viewer, {x: 200, y: 200}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 200, y: 300}) // bottom drag handle
+        .mouseDown()
+        .mouseMove(viewer, {x: 200, y: 400}) // drag
+        .mouseUp()
+        .mouseMove(viewer, {x: 100, y: 200}) // left drag handle
+        .mouseDown()
+        .mouseMove(viewer, {x: 50, y: 200}) // drag
+        .mouseUp()
+        .perform(),
       )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'ResizeOnePolygon')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.ResizeOnePolygon);
@@ -248,7 +248,7 @@ describe('Polygon drawing', () => {
       .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'KeepSelectionOverFrameChange')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.KeepSelectionOverFrameChange);
@@ -265,33 +265,34 @@ describe('Polygon drawing', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
-          .mouseMove(viewer, {x: 100, y: 100}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 600, y: 100}) // initial position
-          .mouseUp()
-          .mouseMove(viewer, {x: 600, y: 600}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 200, y: 600}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 200, y: 400}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 500, y: 400}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 500, y: 200}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 100, y: 200}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 1, y: 1}) // initial position
-          .click(protractor.Button.RIGHT)
-          .perform()
+        .mouseMove(viewer, {x: 100, y: 100}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 600, y: 100}) // initial position
+        .mouseUp()
+        .mouseMove(viewer, {x: 600, y: 600}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 200, y: 600}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 200, y: 400}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 500, y: 400}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 500, y: 200}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 100, y: 200}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 1, y: 1}) // initial position
+        .click(protractor.Button.RIGHT)
+        .perform(),
       )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygon')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygon);
       })
+      .then(() => browser.sleep(500))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -310,66 +311,67 @@ describe('Polygon drawing', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => browser.actions()
-          .mouseMove(viewer, {x: 100, y: 100}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 600, y: 100}) // initial position
-          .mouseUp()
-          .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform()
+        .mouseMove(viewer, {x: 100, y: 100}) // initial position
+        .mouseDown()
+        .mouseMove(viewer, {x: 600, y: 100}) // initial position
+        .mouseUp()
+        .mouseMove(viewer, {x: 400, y: 400}) // initial position
+        .perform(),
       )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary1')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary1);
       })
       .then(() => browser.actions()
-          .mouseMove(viewer, {x: 600, y: 600}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 200, y: 600}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform()
+        .mouseMove(viewer, {x: 600, y: 600}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 200, y: 600}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 400, y: 400}) // initial position
+        .perform(),
       )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary2')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary2);
       })
       .then(() => browser.actions()
-          .mouseMove(viewer, {x: 200, y: 400}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 500, y: 400}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 500, y: 200}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform()
+        .mouseMove(viewer, {x: 200, y: 400}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 500, y: 400}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 500, y: 200}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 400, y: 400}) // initial position
+        .perform(),
       )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary3')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary3);
       })
       .then(() => browser.actions()
-          .mouseMove(viewer, {x: 100, y: 200}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 1, y: 1}) // initial position
-          .click(protractor.Button.RIGHT)
-          .perform()
+        .mouseMove(viewer, {x: 100, y: 200}) // initial position
+        .click()
+        .mouseMove(viewer, {x: 1, y: 1}) // initial position
+        .click(protractor.Button.RIGHT)
+        .perform(),
       )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary4')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary4);
       })
+      .then(() => browser.sleep(500))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -404,7 +406,7 @@ describe('Polygon drawing', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewMultiplePolygon1')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewMultiplePolygon1);
@@ -422,7 +424,7 @@ describe('Polygon drawing', () => {
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewMultiplePolygon2')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewMultiplePolygon2);
@@ -440,7 +442,7 @@ describe('Polygon drawing', () => {
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewMultiplePolygon3')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewMultiplePolygon3);
@@ -510,7 +512,7 @@ describe('Polygon handle/point limiting', () => {
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'TooFewHandles'),
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.TooFewHandles);
@@ -573,7 +575,7 @@ describe('Polygon handle/point limiting', () => {
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'TooManyHandles'),
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.TooManyHandles);

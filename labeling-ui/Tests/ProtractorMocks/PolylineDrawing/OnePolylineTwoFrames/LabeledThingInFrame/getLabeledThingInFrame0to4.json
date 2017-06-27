@@ -23,7 +23,6 @@
                 "y": 200
               },
               "id": "SHAPE-ID-1",
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
               "topCenter": {
                 "x": 100,
                 "y": 100
@@ -43,16 +42,27 @@
           "ghostClasses": null,
           "shapes": [
             {
-                "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 250, "y": 100},
-                  {"x": 350, "y": 200},
-                  {"x": 250, "y": 300},
-                  {"x": 150, "y": 200}
-                ],
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
-              }
+              "id": "SHAPE-ID-1",
+              "points": [
+                {
+                  "x": 250,
+                  "y": 100
+                },
+                {
+                  "x": 350,
+                  "y": 200
+                },
+                {
+                  "x": 250,
+                  "y": 300
+                },
+                {
+                  "x": 150,
+                  "y": 200
+                }
+              ],
+              "type": "polyline"
+            }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
           "incomplete": true,
@@ -66,16 +76,27 @@
           "ghostClasses": null,
           "shapes": [
             {
-                "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 250, "y": 100},
-                  {"x": 350, "y": 200},
-                  {"x": 250, "y": 300},
-                  {"x": 150, "y": 200}
-                ],
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
-              }
+              "id": "SHAPE-ID-1",
+              "points": [
+                {
+                  "x": 250,
+                  "y": 100
+                },
+                {
+                  "x": 350,
+                  "y": 200
+                },
+                {
+                  "x": 250,
+                  "y": 300
+                },
+                {
+                  "x": 150,
+                  "y": 200
+                }
+              ],
+              "type": "polyline"
+            }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
           "incomplete": true,
@@ -89,16 +110,27 @@
           "ghostClasses": null,
           "shapes": [
             {
-                "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 250, "y": 100},
-                  {"x": 350, "y": 200},
-                  {"x": 250, "y": 300},
-                  {"x": 150, "y": 200}
-                ],
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
-              }
+              "id": "SHAPE-ID-1",
+              "points": [
+                {
+                  "x": 250,
+                  "y": 100
+                },
+                {
+                  "x": 350,
+                  "y": 200
+                },
+                {
+                  "x": 250,
+                  "y": 300
+                },
+                {
+                  "x": 150,
+                  "y": 200
+                }
+              ],
+              "type": "polyline"
+            }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
           "incomplete": true,
@@ -112,16 +144,27 @@
           "ghostClasses": null,
           "shapes": [
             {
-                "id": "SHAPE-ID-1",
-                "points": [
-                  {"x": 250, "y": 100},
-                  {"x": 350, "y": 200},
-                  {"x": 250, "y": 300},
-                  {"x": 150, "y": 200}
-                ],
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
-                "type": "polyline"
-              }
+              "id": "SHAPE-ID-1",
+              "points": [
+                {
+                  "x": 250,
+                  "y": 100
+                },
+                {
+                  "x": 350,
+                  "y": 200
+                },
+                {
+                  "x": 250,
+                  "y": 300
+                },
+                {
+                  "x": 150,
+                  "y": 200
+                }
+              ],
+              "type": "polyline"
+            }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
           "incomplete": true,
@@ -131,4 +174,3 @@
     }
   }
 }
-

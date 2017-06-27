@@ -55,7 +55,7 @@ describe('Group Creation', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateNoGroup')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateNoGroup);
@@ -87,7 +87,7 @@ describe('Group Creation', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
@@ -119,7 +119,7 @@ describe('Group Creation', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoRectangles')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoRectangles);
@@ -151,7 +151,7 @@ describe('Group Creation', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoRectangles')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoPoints);

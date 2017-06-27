@@ -1,4 +1,6 @@
 import InnerDocumentVisitor from './InnerDocumentVisitor';
+import TemplateString from './TemplateString';
+import {isString} from 'lodash';
 
 class ValueComparator extends InnerDocumentVisitor {
   constructor(dictionary) {
@@ -8,30 +10,62 @@ class ValueComparator extends InnerDocumentVisitor {
      * @private
      */
     this._dictionary = dictionary;
-
-    /**
-     * @type {RegExp}
-     * @private
-     */
-    this._dictionaryKeyRegExp = /\{\{:?([a-zA-Z0-9-_]+)\}\}/;
   }
 
   visitScalar(firstNode, secondNode, path) {
     let expectedScalar = firstNode;
     let actualScalar = secondNode;
 
-    const matches = this._dictionaryKeyRegExp.exec(expectedScalar);
+    if (isString(expectedScalar)) {
+      const template = new TemplateString(expectedScalar);
 
-    if (matches !== null) {
-      const [, identifier] = matches;
-
-      if (!this._dictionary.has(identifier)) {
-        throw new Error(`Template identifier ${identifier} not found in template dictionary at location ${path}. Did you not define it?`);
+      if (template.isTemplate()) {
+        expectedScalar = template.expandWithDictionary(this._dictionary);
       }
-
-      expectedScalar = this._dictionary.get(identifier);
     }
 
+    switch (true) {
+      case this._isFloat(expectedScalar) && this._isFloat(actualScalar):
+        return this._assertFloatsAreMatching(expectedScalar, actualScalar, path);
+      default:
+        return this._assertScalarsAreMatching(expectedScalar, actualScalar, path);
+    }
+  }
+
+  /**
+   * @param {*} value
+   * @returns {boolean}
+   * @private
+   */
+  _isFloat(value) {
+    return Number(value) === value && value % 1 !== 0;
+  }
+
+  /**
+   * @param {Number} expectedValue
+   * @param {Number} actualValue
+   * @param {string} path
+   * @param {Number?} precision
+   * @private
+   */
+  _assertFloatsAreMatching(expectedValue, actualValue, path, precision = 10) {
+    const delta = Math.pow(10, -precision) / 2;
+    const difference = Math.abs(expectedValue - actualValue);
+
+    if (difference < delta) {
+      return;
+    }
+
+    throw new Error(`Floating point values differ by more than ${delta}: ${expectedValue} !== ${actualValue} (difference: ${difference}) at location ${path}`);
+  }
+
+  /**
+   * @param {string|number|boolean|null|undefined} expectedScalar
+   * @param {string|number|boolean|null|undefined} actualScalar
+   * @param {string} path
+   * @private
+   */
+  _assertScalarsAreMatching(expectedScalar, actualScalar, path) {
     if (expectedScalar === actualScalar) {
       return;
     }

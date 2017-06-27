@@ -3,6 +3,8 @@
     "method": "POST",
     "path": "/api/task/TASKID-TASKID/labeledThingGroup",
     "data": {
+      "id": "{{:labeledThingGroupId}}",
+      "groupIds": [],
       "groupType": "extension-sign-group",
       "lineColor": "2"
     }

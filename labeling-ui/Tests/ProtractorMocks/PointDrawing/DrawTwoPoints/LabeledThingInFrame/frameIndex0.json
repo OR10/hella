@@ -12,8 +12,7 @@
       "result": {
         "labeledThings": {
           "LABELED-THING-ID-1": {
-            "classes": [
-            ],
+            "classes": [],
             "frameRange": {
               "startFrameNumber": 1,
               "endFrameNumber": 1
@@ -25,8 +24,7 @@
             "taskId": "TASKID-TASKID"
           },
           "LABELED-THING-ID-2": {
-            "classes": [
-            ],
+            "classes": [],
             "frameRange": {
               "startFrameNumber": 1,
               "endFrameNumber": 1
@@ -52,8 +50,10 @@
             "shapes": [
               {
                 "id": "SHAPE-ID-1",
-                "point": {"x": 200, "y": 100},
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "point": {
+                  "x": 200,
+                  "y": 100
+                },
                 "type": "point"
               }
             ]
@@ -71,8 +71,10 @@
             "shapes": [
               {
                 "id": "SHAPE-ID-1",
-                "point": {"x": 600, "y": 100},
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "point": {
+                  "x": 600,
+                  "y": 100
+                },
                 "type": "point"
               }
             ]
@@ -82,4 +84,3 @@
     }
   }
 }
-

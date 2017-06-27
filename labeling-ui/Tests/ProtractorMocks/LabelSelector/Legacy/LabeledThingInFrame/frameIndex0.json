@@ -36,7 +36,7 @@
             "incomplete": true,
             "labeledThingId": "LABELED-THING-ID-1",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "identifierName": null,
+            "identifierName": "legacy",
             "shapes": [
               {
                 "bottomRight": {
@@ -44,7 +44,6 @@
                   "y": 200
                 },
                 "id": "SHAPE-ID-1",
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
                 "topLeft": {
                   "x": 100,
                   "y": 100
@@ -58,4 +57,3 @@
     }
   }
 }
-

@@ -65,9 +65,7 @@
             "id": "LABELED-THING-IN-FRAME-ID-1",
             "rev": "1-bdde389e428006d1413c2950c79604c4",
             "frameIndex": 0,
-            "classes": [
-
-            ],
+            "classes": [],
             "ghostClasses": null,
             "shapes": [
               {
@@ -80,8 +78,7 @@
                 "bottomCenter": {
                   "x": 354,
                   "y": 453
-                },
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+                }
               }
             ],
             "labeledThingId": "LABELED-THING-ID-1",
@@ -93,9 +90,7 @@
             "id": "LABELED-THING-IN-FRAME-ID-2",
             "rev": "1-39f4e422c9be2167851ded5d0a1c9288",
             "frameIndex": 0,
-            "classes": [
-
-            ],
+            "classes": [],
             "ghostClasses": null,
             "shapes": [
               {
@@ -108,8 +103,7 @@
                 "bottomRight": {
                   "x": 204,
                   "y": 428
-                },
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-2"
+                }
               }
             ],
             "labeledThingId": "LABELED-THING-ID-2",
@@ -121,9 +115,7 @@
             "id": "LABELED-THING-IN-FRAME-ID-3",
             "rev": "1-77e712ef7b8c14d88713db04416d460e",
             "frameIndex": 0,
-            "classes": [
-
-            ],
+            "classes": [],
             "ghostClasses": null,
             "shapes": [
               {
@@ -136,8 +128,7 @@
                 "bottomRight": {
                   "x": 999,
                   "y": 425
-                },
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-3"
+                }
               }
             ],
             "labeledThingId": "LABELED-THING-ID-3",
@@ -149,9 +140,7 @@
             "id": "LABELED-THING-IN-FRAME-ID-4",
             "rev": "1-3d594b9ace310cff33de98c4c8a4afbb",
             "frameIndex": 0,
-            "classes": [
-
-            ],
+            "classes": [],
             "ghostClasses": null,
             "shapes": [
               {
@@ -198,8 +187,7 @@
                     -0.56988184602795,
                     0
                   ]
-                ],
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-4"
+                ]
               }
             ],
             "labeledThingId": "LABELED-THING-ID-4",
@@ -212,4 +200,3 @@
     }
   }
 }
-

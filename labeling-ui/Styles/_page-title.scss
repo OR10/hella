@@ -2,20 +2,21 @@
   display: flex;
   flex-direction: row;
   margin: $horizontal-block-size $vertical-block-size;
+  align-items: flex-end;
 
   .page-header__title {
-    flex-grow: 14;
-    margin: $horizontal-block-size 0;
+    flex-grow: 10;
   }
 
   .page-header__custom-content {
-    flex-grow: 4;
+    flex-grow: 8;
+    justify-content: center;
+    margin: 0 $vertical-block-size;
   }
 
   .page-header__user-info {
     flex-grow: 4;
     text-align: right;
-    margin-top: $horizontal-block-size;
 
     .page-header__user-info__line {
       @include font-xs();

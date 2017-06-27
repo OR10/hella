@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/labeledThingInFrame/:labeledThingInFrameId",
+    "path": "/api/labeledThingInFrame/{{:labeledThingInFrameId}}",
     "namedParams": true,
     "method": "PUT",
     "data": {
@@ -11,9 +11,11 @@
       "shapes": [
         {
           "id": "{{:shapeId}}",
-          "point": { "x": 900, "y": 450 },
-          "type": "point",
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          "point": {
+            "x": 900,
+            "y": 450
+          },
+          "type": "point"
         }
       ],
       "classes": [],
@@ -49,8 +51,10 @@
             {
               "id": "{{shapeId}}",
               "type": "point",
-              "point": { "x": 900, "y": 450 },
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              "point": {
+                "x": 900,
+                "y": 450
+              }
             }
           ],
           "labeledThingId": "{{labeledThingId}}",
