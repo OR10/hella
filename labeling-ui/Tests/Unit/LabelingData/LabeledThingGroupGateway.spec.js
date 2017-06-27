@@ -9,9 +9,16 @@ import LabeledThingGroupGateway from 'Application/LabelingData/Gateways/LabeledT
 import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup';
 import LabeledThingGroupInFrame from 'Application/LabelingData/Models/LabeledThingGroupInFrame';
 
+import Task from 'Application/Task/Model/Task';
+import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
+
 describe('LabeledThingGroupGateway', () => {
   let $httpBackend;
   let gateway;
+
+  function createTask(id = 'TASK-ID') {
+    return new Task(Object.assign({}, TaskFrontendModel.toJSON(), {id}));
+  }
 
   beforeEach(() => {
     const featureFlags = {
@@ -53,7 +60,7 @@ describe('LabeledThingGroupGateway', () => {
   });
 
   it('should receive labeled thing groups in frame by frame index', done => {
-    const task = {id: 'someTaskId234'};
+    const task = createTask('someTaskId234');
     const frameIndex = '123';
     const expectedUrl = `/backend/api/task/${task.id}/labeledThingGroupInFrame/frame/${frameIndex}`;
 
@@ -107,16 +114,16 @@ describe('LabeledThingGroupGateway', () => {
   });
 
   it('should delete a labeled thing group', done => {
+    const task = createTask();
+
     const ltg = new LabeledThingGroup({
+      task,
       id: 'LTG-1',
       groupType: 'fancy-group-type',
       lineColor: 423,
       groupIds: null,
-      task: {
-        id: 'TASK-1',
-      },
     });
-    const expectedUrl = `/backend/api/task/TASK-1/labeledThingGroup/${ltg.id}`;
+    const expectedUrl = `/backend/api/task/${task.id}/labeledThingGroup/${ltg.id}`;
 
     const expectedResult = {
       result: {
@@ -138,10 +145,8 @@ describe('LabeledThingGroupGateway', () => {
   });
 
   it('should create a labeled thing group with given type', done => {
-    const expectedUrl = `/backend/api/task/TASK-1/labeledThingGroup`;
-    const task = {
-      id: 'TASK-1',
-    };
+    const task = createTask();
+    const expectedUrl = `/backend/api/task/${task.id}/labeledThingGroup`;
 
     const ltg = new LabeledThingGroup({
       task,

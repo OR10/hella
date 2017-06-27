@@ -37,7 +37,8 @@
             "incomplete": true,
             "lineColor": "6",
             "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-            "taskId": "TASKID-TASKID"
+            "taskId": "TASKID-TASKID",
+            "projectId": "PROJECTID-PROJECTID"
           }
         },
         "labeledThingsInFrame": [
@@ -82,7 +83,7 @@
                   "y": 570
                 },
                 "id": "SHAPE-ID-1",
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-5",
                 "topLeft": {
                   "x": 300,
                   "y": 300
@@ -132,7 +133,7 @@
                   "y": 770
                 },
                 "id": "SHAPE-ID-1",
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
+                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-22",
                 "topLeft": {
                   "x": 500,
                   "y": 500

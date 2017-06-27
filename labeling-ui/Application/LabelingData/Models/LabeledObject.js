@@ -5,7 +5,7 @@ import {clone} from 'lodash';
  */
 class LabeledObject {
   /**
-   * @param {{id: string, classes: *, incomplete: boolean}} labeledObject
+   * @param {{id: string, classes: *, incomplete: boolean, task: Task}} labeledObject
    */
   constructor(labeledObject) {
     // Required properties
@@ -15,6 +15,22 @@ class LabeledObject {
      * @type {string}
      */
     this.id = labeledObject.id;
+
+    /**
+     * {@link Task} associated with this `labeledObject`
+     *
+     * @type {Task}
+     * @private
+     */
+    this._task = labeledObject.task;
+
+    /**
+     * Id of the project associated with this `LabeledObject`
+     *
+     * @type {string}
+     * @private
+     */
+    this._projectId = labeledObject.task.projectId;
 
     /**
      * The labels assigned to this `labeledObject`
@@ -32,6 +48,24 @@ class LabeledObject {
      * @type {boolean}
      */
     this.incomplete = labeledObject.incomplete;
+  }
+
+  /**
+   * {@link Task} associated with this `LabeledObject`
+   *
+   * @returns {Task}
+   */
+  get task() {
+    return this._task;
+  }
+
+  /**
+   * Id of the project associated with this `LabeledObject`
+   *
+   * @returns {string}
+   */
+  get projectId() {
+    return this._projectId;
   }
 
   /**
@@ -63,10 +97,12 @@ class LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {id, classes, incomplete} = this;
+    const {id, task, projectId, classes, incomplete} = this;
     return {
       id,
       incomplete,
+      projectId,
+      taskId: task.id,
       classes: clone(classes),
     };
   }

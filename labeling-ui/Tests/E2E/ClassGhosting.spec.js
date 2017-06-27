@@ -164,7 +164,7 @@ describe('Class Ghosting', () => {
       .then(() => done());
   });
 
-  it('should propagate class changes through ghost classes', done => {
+  it('should propagate class changes through ghost classes onto saved labeled thing in frame', done => {
     mock(sharedMocks.concat([]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -195,7 +195,7 @@ describe('Class Ghosting', () => {
       .then(() => done());
   });
 
-  it('should propagate class changes through ghost classes', done => {
+  it('should propagate class changes of ltif created from ghost onto saved labeled thing in frame', done => {
     mock(sharedMocks.concat([]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -217,7 +217,7 @@ describe('Class Ghosting', () => {
       .then(() => browser.sleep(100))
       .then(() => expectSpeedSignEntrySelected())
       .then(() => expect(createLtifFromTemplate(0, ['u-turn'])).toExistInPouchDb())
-      .then(() => expect(createLtifFromTemplate(1, ['speed-sign'])).not.toExistInPouchDb())
+      .then(() => expect(createLtifFromTemplate(1, ['speed-sign'])).toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(2, [], {x: 550, y: 350}, {x: 650, y: 450})).toExistInPouchDb())
       .then(() => done());
   });

@@ -81,6 +81,7 @@ System.config({
     "css": "github:systemjs/plugin-css@0.1.32",
     "css-element-queries": "npm:css-element-queries@0.3.2",
     "event-emitter": "github:Olical/EventEmitter@4.3.0",
+    "fast-levenshtein": "npm:fast-levenshtein@2.0.6",
     "flowjs": "github:flowjs/flow.js@2.11.2",
     "font-awesome": "npm:font-awesome@4.7.0",
     "foundation-apps": "npm:foundation-apps@1.2.0",

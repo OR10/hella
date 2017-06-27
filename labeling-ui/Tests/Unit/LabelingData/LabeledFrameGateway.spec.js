@@ -7,15 +7,16 @@ import LabeledFrameGateway from 'Application/LabelingData/Gateways/LabeledFrameG
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import Task from 'Application/Task/Model/Task';
 
+import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
+
 describe('LabeledFrameGateway', () => {
   let $httpBackend;
   let gateway;
 
-  function createTask(id) {
-    return new Task({
-      id,
-    });
+  function createTask(id = 'TASK-ID') {
+    return new Task(Object.assign({}, TaskFrontendModel.toJSON(), {id}));
   }
+
 
   beforeEach(() => {
     const featureFlags = {
@@ -53,7 +54,7 @@ describe('LabeledFrameGateway', () => {
     const task = createTask(taskId);
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${taskId}/labeledFrame/${frameNumber}`;
-    const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c']});
+    const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c'], task});
     const expectedResult = {result: labeledFrame};
 
     $httpBackend
@@ -74,7 +75,7 @@ describe('LabeledFrameGateway', () => {
     const task = createTask(taskId);
     const frameNumber = 2;
     const expectedUrl = `/backend/api/task/${taskId}/labeledFrame/${frameNumber}`;
-    const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c'], task: {id: 'TASKID-TASKID'}});
+    const labeledFrame = new LabeledFrame({id: 'abc', rev: 'bcd', classes: ['a', 'b', 'c'], task});
     const expectedResult = {result: labeledFrame};
 
     $httpBackend

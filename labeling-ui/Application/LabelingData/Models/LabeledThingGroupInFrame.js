@@ -3,29 +3,33 @@ import LabeledObject from './LabeledObject';
 
 class LabeledThingGroupInFrame extends LabeledObject {
   /**
-   * @param {Object} labeledThingGroupInFrameDocument
+   * @param {Object} labeledThingGroupInFrame
    */
-  constructor(labeledThingGroupInFrameDocument) {
-    super(labeledThingGroupInFrameDocument);
+  constructor(labeledThingGroupInFrame) {
+    // Extract task from labeledThingGroup and propagate it up the chain
+    super(
+      Object.assign({}, labeledThingGroupInFrame, {task: labeledThingGroupInFrame.labeledThingGroup.task})
+    );
+
     /**
      * @type {string}
      */
-    this.id = labeledThingGroupInFrameDocument.id;
+    this.id = labeledThingGroupInFrame.id;
 
     /**
      * @type {int}
      */
-    this.frameIndex = labeledThingGroupInFrameDocument.frameIndex;
+    this.frameIndex = labeledThingGroupInFrame.frameIndex;
 
     /**
      * @type {Array.<string>}
      */
-    this.classes = clone(labeledThingGroupInFrameDocument.classes);
+    this.classes = clone(labeledThingGroupInFrame.classes);
 
     /**
      * @type {LabeledThingGroup}
      */
-    this.labeledThingGroup = labeledThingGroupInFrameDocument.labeledThingGroup;
+    this.labeledThingGroup = labeledThingGroupInFrame.labeledThingGroup;
   }
 
   /**
