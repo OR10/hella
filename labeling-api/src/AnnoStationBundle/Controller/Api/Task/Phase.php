@@ -6,6 +6,8 @@ use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Service\Authentication;
+use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -28,19 +30,42 @@ class Phase extends Controller\Base
     private $labelingTaskFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
+
+    /**
+     * @var Service\Authorization
+     */
+    private $authorizationService;
+
+    /**
      * Phase constructor.
      *
-     * @param Facade\LabelingTask $labelingTaskFacade
+     * @param Facade\LabelingTask            $labelingTaskFacade
+     * @param Facade\Project                 $projectFacade
+     * @param Authentication\UserPermissions $userPermissions
+     * @param Service\Authorization          $authorizationService
      */
-    public function __construct(Facade\LabelingTask $labelingTaskFacade)
-    {
-        $this->labelingTaskFacade = $labelingTaskFacade;
+    public function __construct(
+        Facade\LabelingTask $labelingTaskFacade,
+        Facade\Project $projectFacade,
+        Authentication\UserPermissions $userPermissions,
+        Service\Authorization $authorizationService
+    ) {
+        $this->labelingTaskFacade   = $labelingTaskFacade;
+        $this->projectFacade        = $projectFacade;
+        $this->userPermissions      = $userPermissions;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
      * @Rest\Put("/{task}/phase")
-     *
-     * @Security("has_role('ROLE_LABEL_COORDINATOR')")
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
@@ -49,6 +74,13 @@ class Phase extends Controller\Base
      */
     public function updateTaskPhaseAction(HttpFoundation\Request $request, Model\LabelingTask $task)
     {
+        $project = $this->projectFacade->find($task->getProjectId());
+        $this->authorizationService->denyIfProjectIsNotWritable($project);
+
+        if (!$this->userPermissions->hasPermission('canMoveTaskInOtherPhase')) {
+            throw new Exception\BadRequestHttpException('You are not allowed to move tasks');
+        }
+
         $newPhase      = $request->request->get('phase');
         $currentStatus = $task->getStatus($task->getCurrentPhase());
 
