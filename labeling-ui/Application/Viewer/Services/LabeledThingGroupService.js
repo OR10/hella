@@ -3,7 +3,11 @@ import PaperShape from '../../Viewer/Shapes/PaperShape';
 
 class LabeledThingGroupService {
   constructor() {
-
+    /**
+     * @type {number}
+     * @private
+     */
+    this._rectanglePadding = 5;
   }
 
   /**
@@ -45,6 +49,11 @@ class LabeledThingGroupService {
         maxY = bound.y + bound.height;
       }
     });
+
+    minX -= this._rectanglePadding;
+    minY -= this._rectanglePadding;
+    maxX += this._rectanglePadding;
+    maxY += this._rectanglePadding;
 
     return {
       x: minX,

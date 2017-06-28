@@ -165,13 +165,16 @@ class PaperShapeFactory {
   createPaperGroupShape(labeledThingGroupInFrame, shapesInBound) {
     const colorId = parseInt(labeledThingGroupInFrame.labeledThingGroup.lineColor, 10);
     const color = this._entityColorService.getColorById(colorId);
-    const bounds = this._labeledThingGroupService.getBoundsForShapes(shapesInBound);
 
-    const paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, bounds, color);
+    let paperGroup;
+    shapesInBound.forEach(shape => {
+      const bounds = this._labeledThingGroupService.getBoundsForShapes([shape]);
+      paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, bounds, color);
 
-    // Place this group shape behind all other shapes
-    paperGroup.sendToBack();
-    paperGroup.setSize(bounds.point, bounds.width, bounds.height);
+      // Place this group shape behind all other shapes
+      paperGroup.sendToBack();
+      paperGroup.setSize(bounds.point, bounds.width, bounds.height);
+    });
 
     return paperGroup;
   }
