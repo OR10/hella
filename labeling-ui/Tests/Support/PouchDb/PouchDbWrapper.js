@@ -5,13 +5,12 @@ class PouchDbWrapper {
 
 PouchDbWrapper.DATABASE_NAME = `TASKID-TASKID-${configuration.storage.local.databaseName}`;
 
-
 PouchDbWrapper.allDocs = () => {
   return browser.executeAsyncScript((databaseName, callback) => {
     const db = new PouchDB(databaseName);
 
     return db.allDocs({include_docs: true}).then(result => {
-      callback(result);
+      db.close().then(() => callback(result));
     });
   }, PouchDbWrapper.DATABASE_NAME);
 };
@@ -21,7 +20,7 @@ PouchDbWrapper.bulkDocs = documents => {
     const db = new PouchDB(databaseName);
 
     return db.bulkDocs(documents).then(result => {
-      callback(result);
+      db.close().then(() => callback(result));
     });
   }, PouchDbWrapper.DATABASE_NAME, documents);
 };
