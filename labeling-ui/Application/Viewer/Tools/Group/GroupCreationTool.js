@@ -118,6 +118,9 @@ class GroupCreationTool extends CreationTool {
           color
         );
 
+        // Resize to add necessary padding
+        paperGroup.setSize(shapesBound);
+
         // Place this group shape behind all other shapes
         paperGroup.sendToBack();
       });

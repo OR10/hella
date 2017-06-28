@@ -170,6 +170,9 @@ class PaperShapeFactory {
     const bounds = this._labeledThingGroupService.getBoundsForShapes(shapesInBound);
     const paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, bounds, color);
 
+    // Resize to add necessary padding
+    paperGroup.setSize(bounds);
+
     // Place this group shape behind all other shapes
     paperGroup.sendToBack();
 
