@@ -2,10 +2,10 @@
 
 namespace AnnoStationBundle\Tests\Controller\Api\Task;
 
-use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
+use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Tests;
-use AnnoStationBundle\Tests\Controller;
 use Symfony\Component\HttpFoundation;
 use AnnoStationBundle\Tests\Helper;
 
@@ -28,13 +28,30 @@ class PhaseTest extends Tests\WebTestCase
      */
     private $labelingTaskFacade;
 
-    public function testMoveLabelingInProgressTaskToRevisionTodoPhase()
+    /**
+     * @var AnnoStationBundleModel\Organisation
+     */
+    private $organisation;
+
+    /**
+     * @var Facade\Organisation
+     */
+    private $organisationFacade;
+
+    /**
+     * @var Facade\LabelingGroup
+     */
+    private $labelingGroupFacade;
+
+    public function testTryMoveLabelingInProgressTaskToRevisionTodoPhase()
     {
-        $task = $this->createLabelingTask();
+        $labelCoordinator = $this->createLabelCoordinatorUser($this->organisation);
+        $task = $this->createLabelingTask($labelCoordinator);
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
         $this->labelingTaskFacade->save($task);
 
         $response = $this->createRequest(self::ROUTE, [$task->getId()])
+            ->withCredentialsFromUsername($labelCoordinator)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(['phase' => Model\LabelingTask::PHASE_REVISION])
             ->execute()
@@ -43,15 +60,45 @@ class PhaseTest extends Tests\WebTestCase
         $this->assertEquals(412, $response->getStatusCode());
     }
 
+    public function testTryToMoveRevisionTaskToLabelingPhaseAsLabeler()
+    {
+        $labelCoordinator = $this->createLabelCoordinatorUser($this->organisation);
+        $labeler = $this->createLabelerUser($this->organisation);
+
+        $labelingGroup = $this->labelingGroupFacade->save(
+            Helper\LabelingGroupBuilder::create($this->organisation)
+                ->withCoordinators([$labelCoordinator])
+                ->withUsers([$labeler])
+                ->build()
+        );
+
+        $task = $this->createLabelingTask($labelCoordinator, $labelingGroup);
+        $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_TODO);
+        $task->addAssignmentHistory(Model\LabelingTask::PHASE_REVISION, $labeler);
+        $this->labelingTaskFacade->save($task);
+
+        $response = $this->createRequest(self::ROUTE, [$task->getId()])
+            ->withCredentialsFromUsername($labeler)
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->setJsonBody(['phase' => Model\LabelingTask::PHASE_LABELING])
+            ->execute()
+            ->getResponse();
+
+        $this->assertEquals(403, $response->getStatusCode());
+    }
+
     public function testMoveRevisionDoneTaskToLabelingTodoPhase()
     {
-        $task = $this->createLabelingTask();
+        $labelCoordinator = $this->createLabelCoordinatorUser($this->organisation);
+
+        $task = $this->createLabelingTask($labelCoordinator);
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
         $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
         $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_DONE);
         $this->labelingTaskFacade->save($task);
 
         $this->createRequest(self::ROUTE, [$task->getId()])
+            ->withCredentialsFromUsername($labelCoordinator)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(['phase' => Model\LabelingTask::PHASE_LABELING])
             ->execute()
@@ -76,12 +123,15 @@ class PhaseTest extends Tests\WebTestCase
 
     public function testMoveTodoReviewTaskToAllDone()
     {
-        $task = $this->createLabelingTask();
+        $labelCoordinator = $this->createLabelCoordinatorUser($this->organisation);
+
+        $task = $this->createLabelingTask($labelCoordinator);
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
         $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
         $this->labelingTaskFacade->save($task);
 
         $this->createRequest(self::ROUTE, [$task->getId()])
+            ->withCredentialsFromUsername($labelCoordinator)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(['phase' => Model\LabelingTask::STATUS_ALL_PHASES_DONE])
             ->execute()
@@ -92,15 +142,19 @@ class PhaseTest extends Tests\WebTestCase
         $this->assertTrue($actualTask->isAllPhasesDone());
     }
 
-    private function createLabelingTask()
+    private function createLabelingTask(Model\User $labelCoordinator = null, Model\LabelingGroup $labelingGroup = null)
     {
-        $organisation = Helper\OrganisationBuilder::create()->build();
+        $project = Helper\ProjectBuilder::create($this->organisation);
+        if ($labelCoordinator !== null) {
+            $project->withAddedCoordinatorAssignment($labelCoordinator);
+        }
+        if ($labelingGroup !== null) {
+            $project->withLabelGroup($labelingGroup);
+        }
+        $project = $this->projectFacade->save($project->build());
 
-        $project = $this->projectFacade->save(
-            Helper\ProjectBuilder::create($organisation)->build()
-        );
         $video   = $this->videoFacade->save(
-            Helper\VideoBuilder::create($organisation)->build()
+            Helper\VideoBuilder::create($this->organisation)->build()
         );
         $task    = $this->labelingTaskFacade->save(
             Helper\LabelingTaskBuilder::create($project, $video)->build()
@@ -111,14 +165,13 @@ class PhaseTest extends Tests\WebTestCase
 
     protected function setUpImplementation()
     {
-        $this->videoFacade        = $this->getAnnostationService('database.facade.video');
-        $this->projectFacade      = $this->getAnnostationService('database.facade.project');
-        $this->labelingTaskFacade = $this->getAnnostationService('database.facade.labeling_task');
+        $this->videoFacade         = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade       = $this->getAnnostationService('database.facade.project');
+        $this->labelingTaskFacade  = $this->getAnnostationService('database.facade.labeling_task');
+        $this->labelingGroupFacade = $this->getAnnostationService('database.facade.labeling_group');
+        $this->organisationFacade  = $this->getAnnostationService('database.facade.organisation');
+        $this->organisation        = $this->organisationFacade->save(Helper\OrganisationBuilder::create()->build());
 
         $userManipulator = $this->getService('fos_user.util.user_manipulator');
-
-        $user = $userManipulator
-            ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $user->addRole(Model\User::ROLE_LABEL_COORDINATOR);
     }
 }
