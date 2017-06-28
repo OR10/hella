@@ -27,15 +27,18 @@ class LabeledThingGroupService {
    * Return the combined bound for the given shapes
    *
    * @param shapes
-   * @return {{x: *, y: *, width: number, height: number, point: Point}}
+   * @return {Array.<{x: *, y: *, width: number, height: number, point: Point}>}
    */
   getBoundsForShapes(shapes) {
-    const bounds = shapes.map(shape => shape.bounds);
-    let minX;
-    let minY;
-    let maxX;
-    let maxY;
-    bounds.forEach(bound => {
+    const shapeBounds = shapes.map(shape => shape.bounds);
+    let groupShapeBounds = [];
+
+    shapeBounds.forEach(bound => {
+      let minX;
+      let minY;
+      let maxX;
+      let maxY;
+
       if (minX === undefined || bound.x < minX) {
         minX = bound.x;
       }
@@ -48,20 +51,22 @@ class LabeledThingGroupService {
       if (maxY === undefined || bound.y + bound.height > maxY) {
         maxY = bound.y + bound.height;
       }
+
+      minX -= this._rectanglePadding;
+      minY -= this._rectanglePadding;
+      maxX += this._rectanglePadding;
+      maxY += this._rectanglePadding;
+
+      groupShapeBounds.push({
+        x: minX,
+        y: minY,
+        width: maxX - minX,
+        height: maxY - minY,
+        point: new paper.Point(minX, minY),
+      });
     });
 
-    minX -= this._rectanglePadding;
-    minY -= this._rectanglePadding;
-    maxX += this._rectanglePadding;
-    maxY += this._rectanglePadding;
-
-    return {
-      x: minX,
-      y: minY,
-      width: maxX - minX,
-      height: maxY - minY,
-      point: new paper.Point(minX, minY),
-    };
+    return groupShapeBounds;
   }
 
   /**

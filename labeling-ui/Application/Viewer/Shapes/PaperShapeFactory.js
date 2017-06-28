@@ -1,6 +1,7 @@
 import paper from 'paper';
 import PaperRectangle from './PaperRectangle';
 import PaperGroupRectangle from './PaperGroupRectangle';
+import PaperGroupRectangleMulti from './PaperGroupRectangleMulti';
 import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from './PaperPolygon';
@@ -56,10 +57,10 @@ class PaperShapeFactory {
    * @private
    */
   _createGroupRectangle(labeledThingGroupInFrame, bounds, color) {
-    const topLeft = new paper.Point(bounds.x, bounds.y);
-    const bottomRight = new paper.Point(bounds.x + bounds.width, bounds.y + bounds.height);
+    // const topLeft = new paper.Point(bounds.x, bounds.y);
+    // const bottomRight = new paper.Point(bounds.x + bounds.width, bounds.y + bounds.height);
 
-    return new PaperGroupRectangle(labeledThingGroupInFrame, labeledThingGroupInFrame.id, topLeft, bottomRight, color);
+    return new PaperGroupRectangleMulti(labeledThingGroupInFrame, labeledThingGroupInFrame.id, bounds, color);
   }
 
   /**
@@ -166,15 +167,12 @@ class PaperShapeFactory {
     const colorId = parseInt(labeledThingGroupInFrame.labeledThingGroup.lineColor, 10);
     const color = this._entityColorService.getColorById(colorId);
 
-    let paperGroup;
-    shapesInBound.forEach(shape => {
-      const bounds = this._labeledThingGroupService.getBoundsForShapes([shape]);
-      paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, bounds, color);
+    const bounds = this._labeledThingGroupService.getBoundsForShapes(shapesInBound);
+    const paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, bounds, color);
 
-      // Place this group shape behind all other shapes
-      paperGroup.sendToBack();
-      paperGroup.setSize(bounds.point, bounds.width, bounds.height);
-    });
+    // Place this group shape behind all other shapes
+    paperGroup.sendToBack();
+    // paperGroup.setSize(bounds.point, bounds.width, bounds.height);
 
     return paperGroup;
   }
