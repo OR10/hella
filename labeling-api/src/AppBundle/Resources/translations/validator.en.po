@@ -1,0 +1,12 @@
+
+msgid "validator.password.confirm.invalid"
+msgstr "The current password is invalid"
+
+msgid "validator.digit.required"
+msgstr "This value should contain at least one digit."
+
+msgid "validator.specialchar.required"
+msgstr "This value should contain at least one special character."
+
+msgid "validator.uppercase.required"
+msgstr "This value should contain at least one uppercase character."

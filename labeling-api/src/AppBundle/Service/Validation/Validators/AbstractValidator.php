@@ -33,7 +33,7 @@ abstract class AbstractValidator implements Validator
             $errors = Validation::createValidator()->validate($value, $constraint);
             if (!empty($errors)) {
                 foreach ($errors as $error) {
-                    $result[] = new ValidationError($field, $translatorInterface->trans($error->getMessage()));
+                    $result[] = new ValidationError($field, $translatorInterface->trans($error->getMessage(), [], 'validator'));
                 }
             }
         }
