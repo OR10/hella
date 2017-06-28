@@ -32,14 +32,16 @@ class CustomExceptionTest extends Tests\WebTestCase
             ->execute();
 
         $expectedResponseBody = [
-            'error' => [
-                'type'    => 'BadRequestHttpException',
-                'code'    => HttpFoundation\Response::HTTP_BAD_REQUEST,
-                'message' => 'Failed to save the new password. The current password is not correct',
+            'result' => [
+                'error' => [
+                    [
+                        'field'   => 'password',
+                        'message' => 'Failed to save the new password. The current password is not correct',
+                    ],
+                ],
             ],
         ];
 
-        $this->assertEquals(HttpFoundation\Response::HTTP_BAD_REQUEST, $requestWrapper->getResponse()->getStatusCode());
         $this->assertEquals($expectedResponseBody, $this->getRelevantJsonBody($requestWrapper));
     }
 

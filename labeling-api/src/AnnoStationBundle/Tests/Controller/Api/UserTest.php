@@ -350,7 +350,7 @@ class UserTest extends Tests\WebTestCase
                 [
                     'username'        => $username,
                     'email'           => 'superadmin@example.org',
-                    'password'        => '1234',
+                    'password'        => 'password@1',
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_SUPER_ADMIN],
