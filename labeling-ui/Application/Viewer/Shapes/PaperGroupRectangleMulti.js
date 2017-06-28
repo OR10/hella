@@ -118,17 +118,12 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   }
 
   toJSON() {
+    const childrenJson = this.children.map(child => child.toJSON());
+
     return {
-      type: 'group-rectangle',
+      type: 'group-rectangle-multi',
       id: this._shapeId,
-      topLeft: {
-        x: Math.round(this._topLeft.x),
-        y: Math.round(this._topLeft.y),
-      },
-      bottomRight: {
-        x: Math.round(this._bottomRight.x),
-        y: Math.round(this._bottomRight.y),
-      },
+      children: childrenJson,
       labeledThingGroupId: this.labeledThingGroup.id,
     };
   }
