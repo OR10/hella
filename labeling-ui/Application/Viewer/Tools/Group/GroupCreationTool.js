@@ -104,12 +104,7 @@ class GroupCreationTool extends CreationTool {
       }
 
       const shapesBound = this._labeledThingGroupService.getBoundsForShapes(shapes);
-      const {width, height} = shapesBound;
-      const {point: topLeft} = shapesBound;
-      const bottomRight = new paper.Point(topLeft.x + width, topLeft.y + height);
-      const colorIdString = this._entityColorService.getColorId();
-      const colorId = parseInt(colorIdString, 10);
-      const color = this._entityColorService.getColorById(colorId);
+      const {color, colorIdString} = this._getColor();
 
       const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);
       labeledThingGroupInFrame.labeledThingGroup.lineColor = colorIdString;
@@ -132,6 +127,21 @@ class GroupCreationTool extends CreationTool {
       .catch(reason => this._reject(reason));
 
     return promise;
+  }
+
+  /**
+   * @returns {{color: {primary: string, secondary: string}, colorIdString: String}}
+   * @private
+   */
+  _getColor() {
+    const colorIdString = this._entityColorService.getColorId();
+    const colorId = parseInt(colorIdString, 10);
+    const color = this._entityColorService.getColorById(colorId);
+
+    return {
+      color,
+      colorIdString,
+    };
   }
 
   invokeDefaultShapeCreation() {
