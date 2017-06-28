@@ -283,7 +283,7 @@ class PaperPedestrian extends PaperThingShape {
   /**
    * Convert to JSON for storage
    *
-   * @returns {{type: string, id: String, topCenter: {x: number, y: number}, bottomCenter: {x: number, y: number}, labeledThingInFrameId: *}}
+   * @returns {{type: string, id: String, topCenter: {x: number, y: number}, bottomCenter: {x: number, y: number}}}
    */
   toJSON() {
     const {topCenter, bottomCenter} = this.getCenterPoints();
@@ -299,7 +299,6 @@ class PaperPedestrian extends PaperThingShape {
         x: Math.round(bottomCenter.x),
         y: Math.round(bottomCenter.y),
       },
-      labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }
 

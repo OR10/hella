@@ -28,8 +28,7 @@
               "bottomRight": {
                 "x": 400,
                 "y": 400
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-2"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-2",
@@ -57,8 +56,7 @@
               "bottomRight": {
                 "x": 400,
                 "y": 400
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-2"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-2",
@@ -83,8 +81,7 @@
               "bottomRight": {
                 "x": 400,
                 "y": 400
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-2"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-2",
@@ -109,8 +106,7 @@
               "bottomRight": {
                 "x": 400,
                 "y": 400
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-2"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-2",
@@ -135,8 +131,7 @@
               "bottomRight": {
                 "x": 400,
                 "y": 400
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-2"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-2",
@@ -147,4 +142,3 @@
     }
   }
 }
-

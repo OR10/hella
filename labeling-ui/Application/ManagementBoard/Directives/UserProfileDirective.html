@@ -1,7 +1,8 @@
-<div class="grid-block vertical">
+<div class="grid-block vertical gray-tab-view">
     <loading-mask ng-if="vm.loadingInProgress" spinner="true" backdrop="false"></loading-mask>
-    <form class="user-profile">
-        <table class="table formular-table">
+    <form class="grid-content user-profile">
+        <h2>{{vm.createMode ? 'Create new User' : 'Edit user ' + vm.user.username}}</h2>
+        <table class="table formular-table" >
             <tr>
                 <td>Username</td>
                 <td>
@@ -42,41 +43,50 @@
                            ng-model="vm.newPasswordValidation" ng-class="{error: !vm.validation.password}">
                 </td>
             </tr>
-        </table>
-        <table class="table view-list-table" ng-if="vm.userPermissions.canAddUserToAnyOrganisation">
-            <thead>
-            <tr>
-                <th>Organisation</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="userOrganisation in vm.userOrganisations">
-                <td>{{userOrganisation.name}}</td>
-                <td class="action-cell">
-                    <button tooltip="Remove user {{vm.user.username}} from organisation"
-                            ng-click="vm.removeUserFromOrganisation(userOrganisation)">
-                        <i class="fa fa-close"></i>
-                    </button>
+            <tr
+                ng-if="vm.userPermissions.canAddUserToAnyOrganisation"
+                ng-style="{'border-bottom': !vm.isOrganisationExpanded ? '2px solid #D7DDE4' : 'none' }"
+            >
+                <td>Organisation</td>
+                <td>
+                   <span class="organisation-tag" ng-repeat="userOrganisation in vm.userOrganisations">
+                       {{userOrganisation.name}}
+                       <span
+                            tooltip="Remove user {{vm.user.username}} from organisation"
+                            ng-click="vm.removeUserFromOrganisation(userOrganisation)"
+                       >
+                            <i class="fa fa-close"></i>
+                       </span>
+                   </span>
+                   <span class="pull-right">
+                       <i
+                           class="fa"
+                           ng-click="vm.clickAngle()"
+                           ng-class="vm.getIconForAngleState()"
+                           ng-style="{color: vm.isOrganisationExpanded == true ? '#BFDB31' : ''} "
+                       ></i>
+                   </span>
                 </td>
             </tr>
-            </tbody>
+            <tr
+                class="drop-down-cell"
+                ng-repeat="organisation in vm.organisations"
+                ng-if="vm.showDropDownTableCell()"
+            >
+                <td colspan=2>
+                    {{organisation.name}}
+                    <span
+                          class="pull-right"
+                          ng-if="vm.isUserAlreadyInOrganisation(organisation)"
+                          ng-class="{error: !vm.validation.organisations}"
+                          tooltip="Add user to Organisation"
+                          ng-click="vm.addUserToOrganisation(organisation)"
+                    >
+                        <i class="fa fa-plus"></i>
+                    </span>
+                </td>
+            </tr>
         </table>
-        <div class="grid-block horizontal" ng-if="vm.userPermissions.canAddUserToAnyOrganisation">
-            <div class="grid-content">
-                <select id="newLabeler"
-                        ng-model="vm.organisationToAdd"
-                        ng-options="organisation.name for organisation in vm.organisations"
-                        ng-class="{error: !vm.validation.organisations}">
-                </select>
-            </div>
-            <div class="grid-content shrink">
-                <button tooltip="Add user to Organisation"
-                        ng-click="vm.addUserToOrganisation(vm.organisationToAdd)">
-                    <i class="fa fa-plus"></i>
-                </button>
-            </div>
-        </div>
         <div class="button-area">
             <button class="pull-right"
                     ng-click="vm.saveChanges()"

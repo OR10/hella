@@ -2,7 +2,7 @@
   "request": {
     "method": "GET",
     "namedParams": true,
-    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/:frame/:labeledThingId",
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/{{:frame}}/{{:labeledThingId}}",
     "queryString": {
       "limit": "5",
       "offset": "0"
@@ -42,8 +42,7 @@
                   "x": 270,
                   "y": 269
                 }
-              ],
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",
@@ -81,8 +80,7 @@
                   "x": 270,
                   "y": 269
                 }
-              ],
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",
@@ -120,8 +118,7 @@
                   "x": 270,
                   "y": 269
                 }
-              ],
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",
@@ -159,8 +156,7 @@
                   "x": 270,
                   "y": 269
                 }
-              ],
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",
@@ -198,8 +194,7 @@
                   "x": 270,
                   "y": 269
                 }
-              ],
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-NEW"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",

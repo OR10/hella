@@ -1,11 +1,13 @@
 <?php
 
-namespace AnnoStationBundle\Tests\Controller\Api;
+namespace AnnoStationBundle\Tests\Controller\Api\Api;
 
 use AnnoStationBundle\Tests;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Service;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
+use AppBundle\Database\Facade  as AppBundleFacade;
 use Symfony\Component\HttpFoundation;
 
 class UserTest extends Tests\WebTestCase
@@ -15,9 +17,15 @@ class UserTest extends Tests\WebTestCase
      */
     private $organisationFacade;
 
+    /**
+     * @var AppBundleFacade\CouchDbUsers
+     */
+    private $couchDbUsersFacade;
+
     protected function setUpImplementation()
     {
         $this->organisationFacade = $this->getAnnostationService('database.facade.organisation');
+        $this->couchDbUsersFacade = $this->getAnnostationService('database.facade.couchdb_users');
     }
 
     public function testGetUsersListAsSuperAdmin()
@@ -326,6 +334,35 @@ class UserTest extends Tests\WebTestCase
             ->execute();
 
         $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
+    }
+
+    public function testSuperAdminCouchDbRoles()
+    {
+        $this->skipOnNonPouchDbEnviroment();
+
+        $superAdmin   = $this->createSuperAdminUser();
+
+        $username = 'super_admin_2';
+        $requestWrapper = $this->createRequest('/api/user')
+            ->withCredentialsFromUsername($superAdmin)
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->setJsonBody(
+                [
+                    'username'        => $username,
+                    'email'           => 'superadmin@example.org',
+                    'password'        => '1234',
+                    'enabled'         => 'true',
+                    'locked'          => 'false',
+                    'roles'           => [Model\User::ROLE_SUPER_ADMIN],
+                ]
+            )
+            ->execute();
+
+        $actualUser = $this->couchDbUsersFacade->getUser(
+            Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX . $username
+        );
+
+        $this->assertTrue(in_array(Service\UserRolesRebuilder::SUPER_ADMIN_GROUP, $actualUser['roles']));
     }
 
     private function createUsersForOrganisation(AnnoStationBundleModel\Organisation $organisation)

@@ -3,9 +3,16 @@ imports:
   - resource: parameters.yml
   - resource: services.yml
   - resource: security.yml
+  - resource: customer.yml
 
 parameters:
   redirectAfterLogin: /labeling
+  password.policy:
+    AtLeastOneSpecialCharacter: true
+    AtLeastOneDigit: true
+    Length:
+      min: 5
+      max: 500
 
 doctrine_couch_db: &doctrine_couch_db
     odm:
@@ -48,3 +55,8 @@ hagl_worker_pool:
    logger: annostation.labeling_api.vendor.logger
    config: annostation.labeling_api.service.amqp_pool_config
    facade: annostation.labeling_api.vendor.worker_pool.amqp
+
+twig:
+  globals:
+    fallback.title: AnnoStation
+    customer: %customer%

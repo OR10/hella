@@ -67,7 +67,7 @@ describe('PouchDbLabeledFrameGateway', () => {
   );
 
   beforeEach(() => {
-    labeledFrameFrontendModel = new LabeledFrame(LabeledFrameFrontendModel.toJSON());
+    labeledFrameFrontendModel = LabeledFrameFrontendModel.clone();
     labeledFrameCouchDbModel = cloneDeep(LabeledFrameCouchDbModel);
   });
 
@@ -237,13 +237,14 @@ describe('PouchDbLabeledFrameGateway', () => {
       const newUniqueId = 'some-new-ultra-unique-id';
       const givenFrameIndex = 42;
       const givenTaskId = 'ultra-cool-task-id';
+      const givenTask = createTask(givenTaskId);
 
       const expectedLabeledFrame = new LabeledFrame({
         id: newUniqueId,
         frameIndex: givenFrameIndex,
         incomplete: true,
-        taskId: givenTaskId,
         classes: ['foo', 'bar'],
+        task: givenTask,
       });
 
       const foundDocumentInDb = {
@@ -289,6 +290,29 @@ describe('PouchDbLabeledFrameGateway', () => {
     });
   });
 
+  describe('Frame Labeling on a new task (TTANNO-1798)', () => {
+    it('can store the information if no Frame Labeling information exists yet', () => {
+      couchDbModelSerializer.serialize.and.returnValue(labeledFrameCouchDbModel);
+      entityIdService.getUniqueId.and.returnValue('some-generated-uuid');
+      pouchDb.query.and.returnValue({rows: []});
+      pouchDb.put.and.callFake(
+        document => angularQ.resolve({
+          'ok': true,
+          'id': document._id,
+          'rev': '1-A6157A5EA545C99B00FF904EEF05FD9F',
+        })
+      );
+
+      function throwWrapper() {
+        labeledFrameGateway.saveLabeledFrame(createTask(), 42, labeledFrameFrontendModel);
+        rootScope.$apply();
+      }
+
+      expect(throwWrapper).not.toThrow();
+      expect(pouchDb.put).toHaveBeenCalledWith(labeledFrameCouchDbModel);
+    });
+  });
+
   describe('saveLabeledFrame', () => {
     beforeEach(() => {
       pouchDb.put.and.callFake(
@@ -306,6 +330,20 @@ describe('PouchDbLabeledFrameGateway', () => {
 
     beforeEach(() => {
       couchDbModelSerializer.serialize.and.returnValue(labeledFrameCouchDbModel);
+    });
+
+    beforeEach(() => {
+      pouchDb.query.and.returnValue({
+        rows: [{
+          doc: labeledFrameCouchDbModel,
+        }],
+      });
+    });
+
+    beforeEach(() => {
+      couchDbModelDeserializer.deserializeLabeledFrame.and.returnValue(
+        labeledFrameFrontendModel
+      );
     });
 
     it('should use the packaging executor with the labeledFrame queue', () => {
@@ -345,24 +383,22 @@ describe('PouchDbLabeledFrameGateway', () => {
       expect(couchDbModelSerializer.serialize).toHaveBeenCalledWith(labeledFrameFrontendModel);
     });
 
-    it('should set the id before storage if it is not explicitly provided', () => {
-      entityIdService.getUniqueId.and.returnValue('UNIQUE-ID');
-
+    it('should throw error if for some reason storing will be done without an ID', () => {
       const labeledFrameWithoutId = new LabeledFrame({
         id: undefined,
         classes: ['foo', 'bar'],
         incomplete: true,
-        taskId: 'TASK-ID',
+        task: createTask(),
         frameIndex: 42,
       });
       couchDbModelSerializer.serialize.and.returnValue(labeledFrameWithoutId);
 
-      labeledFrameGateway.saveLabeledFrame(createTask('TASK-ID'), labeledFrameFrontendModel);
-      rootScope.$apply();
+      function throwWrapper() {
+        labeledFrameGateway.saveLabeledFrame(createTask('TASK-ID'), 42, labeledFrameFrontendModel);
+        rootScope.$apply();
+      }
 
-      expect(entityIdService.getUniqueId).toHaveBeenCalled();
-      const storedDocument = pouchDb.put.calls.argsFor(0)[0];
-      expect(storedDocument._id).toEqual('UNIQUE-ID');
+      expect(throwWrapper).toThrowError('Labeled Frame is not as it should be');
     });
 
     it('should store the serialized document', () => {
@@ -388,12 +424,16 @@ describe('PouchDbLabeledFrameGateway', () => {
       expect(revisionManager.extractRevision).toHaveBeenCalledWith(putResponse);
     });
 
-    it('should store new frameIndex', () => {
+    it('should store new frameIndex and id', () => {
+      const newUniqueId = 'some-generated-uuid';
+      entityIdService.getUniqueId.and.returnValue(newUniqueId);
+      couchDbModelSerializer.serialize.and.returnValue(labeledFrameCouchDbModel);
       labeledFrameGateway.saveLabeledFrame(createTask('TASK-ID'), 423, labeledFrameFrontendModel);
       rootScope.$apply();
 
       const storedDocument = pouchDb.put.calls.argsFor(0)[0];
       expect(storedDocument.frameIndex).toEqual(423);
+      expect(storedDocument._id).toEqual(newUniqueId);
     });
 
     it('should update and store labeledFrame', done => {
@@ -439,7 +479,7 @@ describe('PouchDbLabeledFrameGateway', () => {
         id: 'LT-ID',
         classes: ['foo', 'bar', 'baz'],
         incomplete: false,
-        taskId: 'TASK-ID',
+        task: givenTask,
         frameIndex: 42,
       });
 

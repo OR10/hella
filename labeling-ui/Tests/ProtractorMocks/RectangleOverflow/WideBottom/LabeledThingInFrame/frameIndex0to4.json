@@ -28,6 +28,7 @@
         },
         "labeledThingsInFrame": [
           {
+            "identifierName": "legacy",
             "classes": [],
             "frameIndex": 0,
             "ghost": false,
@@ -43,7 +44,6 @@
                   "y": 20
                 },
                 "id": "SHAPE-ID-1",
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
                 "topLeft": {
                   "x": 10,
                   "y": 10
@@ -57,4 +57,3 @@
     }
   }
 }
-

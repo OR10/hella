@@ -185,7 +185,7 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
 
-        return browser.sleep(200);
+        return browser.sleep(800);
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'WideBottomNoOverflow')
@@ -219,7 +219,7 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
 
-        return browser.sleep(200);
+        return browser.sleep(800);
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'WideTopNoOverflow')
@@ -253,7 +253,7 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
 
-        return browser.sleep(200);
+        return browser.sleep(800);
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TallLeftNoOverflow')
@@ -287,7 +287,7 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
 
-        return browser.sleep(200);
+        return browser.sleep(800);
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TallRightNoOverflow')

@@ -1,0 +1,58 @@
+$formular-table-td-padding: 13px 0 15px 11px !important;
+
+@mixin formular-table() {
+  margin-bottom: 2em;
+}
+
+@mixin formular-table-tr($borderBottomColor) {
+  border-bottom: 2px solid $borderBottomColor;
+}
+
+@mixin formular-table-td($backgroundColor) {
+  background: $backgroundColor !important;
+  padding: $formular-table-td-padding;
+
+  input {
+    background: transparent;
+    border: none;
+    height: 20px;
+    padding: 0;
+    margin: 0;
+    @include font-s();
+  }
+  input:hover {
+    background: transparent;
+    border: none;
+  }
+  input:focus {
+    background: transparent;
+    border: none;
+  }
+  .pull-right {
+    margin-right: 10px;
+    i {
+      font-size: 20px;
+    }
+    i:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+@mixin formular-table-td-first-child($textColor) {
+  @include font-s();
+  color: $textColor;
+  width: 120px;
+  padding-left: 6px !important;
+}
+
+@mixin formular-autofill($backgroundColor, $textColor) {
+  // See https://css-tricks.com/snippets/css/change-autocomplete-styles-webkit-browsers/
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px $backgroundColor inset;
+    color: $textColor;
+    -webkit-text-fill-color: $textColor;
+  }
+}

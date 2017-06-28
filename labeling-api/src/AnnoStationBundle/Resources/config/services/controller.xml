@@ -124,6 +124,9 @@
         <service id="annostation.labeling_api.controller.api.task.phase"
                  class="AnnoStationBundle\Controller\Api\Task\Phase">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
         <service
@@ -160,6 +163,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
         </service>
@@ -180,6 +184,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
         </service>
 

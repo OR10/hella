@@ -89,7 +89,6 @@
                   "y": 210
                 },
                 "id": "SHAPE-ID-1",
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1",
                 "type": "rectangle"
               }
             ]
@@ -114,7 +113,6 @@
                   "y": 210
                 },
                 "id": "SHAPE-ID-2",
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-2",
                 "type": "rectangle"
               }
             ]
@@ -139,7 +137,6 @@
                   "y": 520
                 },
                 "id": "SHAPE-ID-3",
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-3",
                 "type": "rectangle"
               }
             ]
@@ -164,7 +161,6 @@
                   "y": 520
                 },
                 "id": "SHAPE-ID-4",
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-4",
                 "type": "rectangle"
               }
             ]
@@ -174,4 +170,3 @@
     }
   }
 }
-

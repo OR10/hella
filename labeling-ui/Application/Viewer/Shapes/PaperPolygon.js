@@ -61,7 +61,6 @@ class PaperPolygon extends PaperPath {
       type: 'polygon',
       id: this._shapeId,
       points,
-      labeledThingInFrameId: this.labeledThingInFrame.id,
     };
   }
 }

@@ -133,6 +133,7 @@ describe('Interpolation Polygon Tests', () => {
       .then(() => {
         interpolateButton.click();
       })
+      .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()

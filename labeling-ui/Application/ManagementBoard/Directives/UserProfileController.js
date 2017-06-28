@@ -94,12 +94,17 @@ class UserProfileController {
     /**
      * @type {boolean}
      */
-    this.createMode = (this.id === 'new');
+    this.createMode = (this.id === 'new' || this.id === undefined);
 
     /**
      * @type {CurrentUserService}
      */
     this.currentUserService = currentUserService;
+
+    /**
+     * @type {boolean}
+     */
+    this.isOrganisationExpanded = false;
 
     /**
      *
@@ -412,11 +417,41 @@ class UserProfileController {
       this.validation.password = valid = false;
     }
 
-    if (this.userOrganisations.length === 0) {
+    if (this.userPermissions.canAddUserToAnyOrganisation && this.userOrganisations.length === 0) {
       this.validation.organisations = valid = false;
     }
 
     return valid;
+  }
+
+  /**
+   * @param {Organisation} organisation
+   * @returns {boolean}
+   */
+  isUserAlreadyInOrganisation(organisation) {
+    return !this.userOrganisations.find(org => org.id === organisation.id);
+  }
+
+  /**
+   * @returns {boolean|*}
+   */
+  showDropDownTableCell() {
+    return this.isOrganisationExpanded === true && this.userPermissions.canAddUserToAnyOrganisation;
+  }
+
+  /**
+   * Click the small angle up and down
+   */
+  clickAngle() {
+    this.isOrganisationExpanded = !this.isOrganisationExpanded;
+  }
+
+  /**
+   * Get the correct font icon for angle state
+   * @returns {string}
+   */
+  getIconForAngleState() {
+    return this.isOrganisationExpanded === true ? 'fa-angle-up' : 'fa-angle-down';
   }
 }
 

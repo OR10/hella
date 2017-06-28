@@ -1,12 +1,12 @@
 {
   "request": {
-    "path": "/api/labeledThingInFrame/:labeledThingInFrameId",
+    "path": "/api/labeledThingInFrame/{{:labeledThingInFrameId}}",
     "namedParams": true,
     "method": "PUT",
     "data": {
+      "identifierName": "legacy",
       "frameIndex": 0,
       "incomplete": true,
-      "identifierName": "legacy",
       "labeledThingId": "{{:labeledThingId}}",
       "shapes": [
         {
@@ -19,8 +19,7 @@
           "bottomCenter": {
             "x": 900,
             "y": 450
-          },
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          }
         }
       ],
       "classes": [],
@@ -46,6 +45,7 @@
           "lineColor": "6"
         },
         "labeledThingInFrame": {
+          "identifierName": "legacy",
           "id": "{{labeledThingInFrameId}}",
           "rev": "2-b65227715b51dadd97f8521646e88a22",
           "frameIndex": 0,
@@ -62,8 +62,7 @@
               "topCenter": {
                 "x": 900,
                 "y": 450
-              },
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              }
             }
           ],
           "labeledThingId": "{{labeledThingId}}",

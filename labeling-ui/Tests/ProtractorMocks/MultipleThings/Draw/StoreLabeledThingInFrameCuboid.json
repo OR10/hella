@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/labeledThingInFrame/:labeledThingInFrameId",
+    "path": "/api/labeledThingInFrame/{{:labeledThingInFrameId}}",
     "namedParams": true,
     "method": "PUT",
     "data": {
@@ -53,8 +53,7 @@
               2.8679560676587,
               0
             ]
-          ],
-          "labeledThingInFrameId": "{{:labeledThingInFrameShapeId}}"
+          ]
         }
       ],
       "classes": [],
@@ -130,8 +129,7 @@
                   2.8708123061909,
                   0
                 ]
-              ],
-              "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+              ]
             }
           ],
           "labeledThingId": "{{labeledThingId}}",

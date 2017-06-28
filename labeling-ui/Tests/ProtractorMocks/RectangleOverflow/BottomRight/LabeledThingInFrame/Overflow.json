@@ -3,6 +3,7 @@
     "path": "/api/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-1",
     "method": "PUT",
     "data": {
+      "identifierName": "legacy",
       "id": "LABELED-THING-IN-FRAME-ID-1",
       "rev": "2-b65227715b51dadd97f8521646e88a22",
       "frameIndex": 0,
@@ -19,8 +20,7 @@
           "bottomRight": {
             "x": 1074,
             "y": 670
-          },
-          "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+          }
         }
       ],
       "labeledThingId": "LABELED-THING-ID-1",
@@ -62,8 +62,7 @@
               "bottomRight": {
                 "x": 1074,
                 "y": 670
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-1",

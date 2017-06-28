@@ -111,10 +111,8 @@ class CouchDbModelSerializer {
     // Type annotation
     documentJson.type = CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME;
 
-    // Nested FrameRange
+    // Add meta data
     documentJson.labeledThingId = labeledThingInFrameModel._labeledThing.id;
-    documentJson.taskId = labeledThingInFrameModel.labeledThing.task.id;
-    documentJson.projectId = labeledThingInFrameModel.labeledThing.task.projectId;
     documentJson.classes = JSON.parse(JSON.stringify(labeledThingInFrameModel.classes));
 
     return documentJson;

@@ -14,8 +14,7 @@
       "topLeft": {
         "x": 100,
         "y": 100
-      },
-      "labeledThingInFrameId": "{{labeledThingInFrameId}}"
+      }
     }
   ],
   "classes": [],

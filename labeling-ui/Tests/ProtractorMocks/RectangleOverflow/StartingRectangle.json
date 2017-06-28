@@ -28,6 +28,7 @@
         },
         "labeledThingsInFrame": [
           {
+            "identifierName": "legacy",
             "id": "LABELED-THING-IN-FRAME-ID-1",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
             "frameNumber": 1,
@@ -44,8 +45,7 @@
                 "bottomRight": {
                   "x": 200,
                   "y": 200
-                },
-                "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+                }
               }
             ],
             "labeledThingId": "LABELED-THING-ID-1",
@@ -57,4 +57,3 @@
     }
   }
 }
-

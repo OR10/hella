@@ -30,8 +30,7 @@
               "bottomRight": {
                 "x": 200,
                 "y": 200
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
@@ -42,4 +41,3 @@
     }
   }
 }
-

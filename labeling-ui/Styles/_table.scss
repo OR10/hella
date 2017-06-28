@@ -184,34 +184,27 @@ pagination-controls {
 }
 
 .formular-table {
-  margin-bottom: 2em;
+  @include formular-table();
+  @include formular-autofill($color-ut-midgrey-1, $color-ut-midgrey-3);
+
   tr {
-    border-bottom: 2px solid $color-ut-lightgrey-2;
+    @include formular-table-tr($color-ut-lightgrey-2);
+
     td:first-child {
-      @include font-s();
-      color: $color-ut-white;
-      width: 120px;
-      padding-left: 6px !important;
+      @include formular-table-td-first-child($color-ut-white);
     }
+
     td {
-      background: $color-ut-midgrey-1 !important;
-      padding: 13px 0 15px 11px !important;
-      input {
-        background: transparent;
-        border: none;
-        height: 20px;
-        padding: 0;
-        margin: 0;
-        @include font-s();
-      }
-      input:hover {
-        background: transparent;
-        border: none;
-      }
-      input:focus {
-        background: transparent;
-        border: none;
-      }
+      @include formular-table-td($color-ut-midgrey-1);
+    }
+  }
+  .drop-down-cell {
+    border-bottom: 2px solid $color-ut-midgrey-1 !important;
+    td {
+      background: $color-ut-midgrey-3 !important;
+    }
+    i:hover {
+      cursor: pointer;
     }
   }
 }

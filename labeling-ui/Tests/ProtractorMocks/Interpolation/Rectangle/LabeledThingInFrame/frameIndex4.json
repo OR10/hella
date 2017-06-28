@@ -9,7 +9,7 @@
       "labeledThingId": "LABELED-THING-ID-1",
       "shapes": [
         {
-          "id": "SHAPE-ID-1",
+          "id": "{{:shapeid}}",
           "type": "rectangle",
           "bottomRight": {
             "x": 550,
@@ -18,13 +18,12 @@
           "topLeft": {
             "x": 300,
             "y": 300
-          },
-          "labeledThingInFrameId": "{{:ltifid}}"
+          }
         }
       ],
       "classes": [],
-      "_rev": "1-2f2582ec9aa0facea08079dfabe215f1",
-      "_id": "{{:ltifid}}",
+      "rev": "{{:revision}}",
+      "id": "{{:ltifid}}",
       "type": "AppBundle.Model.LabeledThingInFrame",
       "ghostClasses": null,
       "taskId": "TASKID-TASKID"
@@ -32,4 +31,3 @@
   },
   "response": {}
 }
-

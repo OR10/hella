@@ -16,7 +16,7 @@
           "frameIndex": 0,
           "classes": [],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",
@@ -28,8 +28,7 @@
               "bottomRight": {
                 "x": 200,
                 "y": 200
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
@@ -42,7 +41,7 @@
           "frameIndex": 1,
           "classes": [],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",
@@ -54,8 +53,7 @@
               "bottomRight": {
                 "x": 210,
                 "y": 200
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
@@ -68,7 +66,7 @@
           "frameIndex": 2,
           "classes": [],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",
@@ -80,8 +78,7 @@
               "bottomRight": {
                 "x": 210,
                 "y": 200
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
@@ -94,7 +91,7 @@
           "frameIndex": 3,
           "classes": [],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",
@@ -106,8 +103,7 @@
               "bottomRight": {
                 "x": 210,
                 "y": 200
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
@@ -120,7 +116,7 @@
           "frameIndex": 4,
           "classes": [],
           "ghostClasses": null,
-          "identifierName": null,
+          "identifierName": "legacy",
           "shapes": [
             {
               "type": "rectangle",
@@ -132,8 +128,7 @@
               "bottomRight": {
                 "x": 210,
                 "y": 200
-              },
-              "labeledThingInFrameId": "LABELED-THING-IN-FRAME-ID-1"
+              }
             }
           ],
           "labeledThingId": "LABELED-THING-ID-1",
@@ -144,4 +139,3 @@
     }
   }
 }
-

@@ -1,0 +1,63 @@
+<div class="grid-block vertical gray-tab-view">
+    <loading-mask ng-if="vm.loadingInProgress" spinner="true" backdrop="false"></loading-mask>
+    <form class="grid-content user-profile">
+        <h2>{{vm.createMode ? 'Create new Organisation' : 'Edit organisation ' + vm.selectedOrganisation.name}}</h2>
+        <table class="table formular-table">
+            <tr>
+                <td>Name</td>
+                <td>
+                    <input type="text" ng-model="vm.userInput" placeholder="Organisation name"
+                           ng-class="{error: vm.userInput.length && vm.userInput.length > vm.maxLength}">
+                </td>
+                <td>
+                    <span>{{vm.userInput.length || 0}}/{{vm.maxLength}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Video/Image Quota</td>
+                <td>
+                    <input type="text" ng-model="vm.quota">
+                </td>
+                <td>
+                    <select ng-model="vm.unit">
+                        <option value="mb">MB</option>
+                        <option value="gb">GB</option>
+                        <option value="tb">TB</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>User Quota</td>
+                <td>
+                    <input type="text" ng-model="vm.userQuota">
+                </td>
+                <td></td>
+            </tr>
+        </table>
+        <div class="button-area">
+            <button class="pull-right"
+                    ng-click="(vm.userInput && vm.userInput.length < vm.maxLength && vm.userInput.length > 1) && vm.saveChanges()"
+            >
+                <span ng-if="vm.createMode">Create</span>
+                <span ng-if="!vm.createMode">Save</span>
+            </button>
+            <button class="pull-right divider"
+                    ng-click="vm.cancelEdit()"
+            >
+                Cancel
+            </button>
+            <!--
+            <button ng-hide="vm.createMode"
+                    ng-if="vm.userPermissions.canDeleteOrganisation"
+                    class="pull-left"
+                    ng-click="vm.deleteOrganisation(vm.selectedOrganisation)"
+            >
+                Delete
+            </button>
+            -->
+        </div>
+    </form>
+</div>
+
+
+

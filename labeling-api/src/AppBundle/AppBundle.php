@@ -14,5 +14,6 @@ class AppBundle extends Bundle
 
         $container->addCompilerPass(new DependencyInjection\InterpolationAlgorithmCompilerPass());
         $container->addCompilerPass(new DependencyInjection\CouchDbHttpSocketConnectionOptionsPass());
+        $container->addCompilerPass(new DependencyInjection\ValidatorCompilerPass());
     }
 }

@@ -134,7 +134,7 @@ class PouchDbLabeledThingGroupGateway {
               labeledThingGroupId,
             };
             // TODO: If the labeledThingGroupInFrame documents are no longer generated, we need to extract revision here
-            return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(dbDocument);
+            return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(dbDocument, assignedLabeledThingGroup);
           });
 
           return labeledThingGroupsInFrame;
@@ -215,7 +215,7 @@ class PouchDbLabeledThingGroupGateway {
         const promises = [];
 
         modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing, labeledThing.incomplete));
+          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
         });
 
         return this._abortablePromiseFactory(this._$q.all(promises));
@@ -243,7 +243,7 @@ class PouchDbLabeledThingGroupGateway {
         const promises = [];
 
         modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing, labeledThing.incomplete));
+          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
         });
 
         return this._abortablePromiseFactory(this._$q.all(promises));

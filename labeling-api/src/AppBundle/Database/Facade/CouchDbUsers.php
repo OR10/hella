@@ -69,23 +69,37 @@ class CouchDbUsers
      */
     public function deleteUser($username)
     {
+        $user = $this->getUser($username);
+        if ($user) {
+            $this->guzzleClient->request(
+                'DELETE',
+                $this->generateCouchDbUrl($username),
+                [
+                    'headers' => [
+                        'If-Match' => $user['_rev'],
+                    ],
+                ]
+            );
+        }
+    }
+
+    /**
+     * @param $username
+     *
+     * @return bool|mixed
+     */
+    public function getUser($username)
+    {
         $resource = $this->guzzleClient->request(
             'GET',
             $this->generateCouchDbUrl($username),
             ['http_errors' => false]
         );
         if ($resource->getStatusCode() === 200) {
-            $couchDbUser = json_decode($resource->getBody()->getContents(), true);
-            $this->guzzleClient->request(
-                'DELETE',
-                $this->generateCouchDbUrl($username),
-                [
-                    'headers' => [
-                        'If-Match' => $couchDbUser['_rev'],
-                    ],
-                ]
-            );
+            return json_decode($resource->getBody()->getContents(), true);
         }
+
+        return false;
     }
 
     /**
@@ -95,14 +109,9 @@ class CouchDbUsers
      */
     public function updateUser($username, $password, $roles = [])
     {
-            $resource = $this->guzzleClient->request(
-            'GET',
-            $this->generateCouchDbUrl($username),
-            ['http_errors' => false]
-        );
-        if ($resource->getStatusCode() === 200) {
-            $couchDbUser = json_decode($resource->getBody()->getContents(), true);
-            $this->createOrUpdateCouchDbUserDocument($username, $password, $roles, $couchDbUser['_rev']);
+        $user = $this->getUser($username);
+        if ($user) {
+            $this->createOrUpdateCouchDbUserDocument($username, $password, $roles, $user['_rev']);
         } else {
             $this->createOrUpdateCouchDbUserDocument($username, $password, $roles);
         }

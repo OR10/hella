@@ -2,7 +2,7 @@
  * Controller of the {@link TabViewDirective}
  */
 class TabViewController {
-  constructor() {
+  constructor($scope) {
     /**
      * List of all registered tabs
      *
@@ -11,6 +11,13 @@ class TabViewController {
      * @type {Array.<TabController>}
      */
     this.tabs = [];
+
+    $scope.$watch('vm.activeIndex', newValue => {
+      const tabToActivate = this.tabs.find(tab => tab.header === newValue);
+      if (tabToActivate !== undefined && tabToActivate !== null) {
+        this.activateTab(tabToActivate);
+      }
+    });
   }
 
   /**
@@ -23,8 +30,8 @@ class TabViewController {
   registerTab(tab) {
     this.tabs.push(tab);
 
-    // Automatically activate first tab
-    if (this.tabs.length === 1) {
+    // Automatically activate first tab and when activeIndex is not set
+    if (this.tabs.length === 1 && this.activeIndex === undefined) {
       tab.activate();
     }
   }
@@ -40,6 +47,6 @@ class TabViewController {
   }
 }
 
-TabViewController.$inject = [];
+TabViewController.$inject = ['$scope'];
 
 export default TabViewController;

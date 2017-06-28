@@ -9,6 +9,9 @@ import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup
 
 import PouchDbLabeledThingGroupGateway from 'Application/LabelingData/Gateways/PouchDbLabeledThingGroupGateway';
 
+import Task from 'Application/Task/Model/Task';
+import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
+
 describe('PouchDbLabeledThingGroupGateway', () => {
   /**
    * @param {PouchDbLabeledThingGroupGateway}
@@ -24,6 +27,10 @@ describe('PouchDbLabeledThingGroupGateway', () => {
   let labeledThingGroupResponse;
   let queryResponse;
   let couchDbModelDeserializer;
+
+  function createTask(id = 'TASK-ID') {
+    return new Task(Object.assign({}, TaskFrontendModel.toJSON(), {id}));
+  }
 
   beforeEach(() => {
     const featureFlags = {
@@ -114,7 +121,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
   });
 
   it('should load labeled thing groups and group in frames for frame index', () => {
-    const task = {id: 'TASK-ID'};
+    const task = createTask();
     const frameIndex = 0;
 
     groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
@@ -129,11 +136,11 @@ describe('PouchDbLabeledThingGroupGateway', () => {
   });
 
   it('should delete a labeled thing group', () => {
-    const task = {id: 'TASK-ID'};
+    const task = createTask();
 
     const labeledThingGroup = new LabeledThingGroup({
-      id: 'LABELED-THING-GROUP-ID',
       task,
+      id: 'LABELED-THING-GROUP-ID',
       groupType: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
@@ -149,7 +156,8 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       type: 'AnnoStationBundle.Model.LabeledThingGroup',
       classes: [],
       incomplete: true,
-      taskId: 'TASK-ID',
+      taskId: task.id,
+      projectId: task.projectId,
     };
 
     groupGateway.deleteLabeledThingGroup(labeledThingGroup);
@@ -163,11 +171,11 @@ describe('PouchDbLabeledThingGroupGateway', () => {
   it('should create a labeled thing group', () => {
     spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroup').and.callThrough();
 
-    const task = {id: 'TASK-ID'};
+    const task = createTask();
 
     const labeledThingGroup = new LabeledThingGroup({
-      id: 'LABELED-THING-GROUP-ID',
       task,
+      id: 'LABELED-THING-GROUP-ID',
       groupType: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
@@ -183,7 +191,8 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       type: 'AnnoStationBundle.Model.LabeledThingGroup',
       classes: [],
       incomplete: true,
-      taskId: 'TASK-ID',
+      taskId: task.id,
+      projectId: task.projectId,
     };
 
     groupGateway.createLabeledThingGroup(task, labeledThingGroup);
@@ -196,7 +205,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
   });
 
   it('should assign labeled things to a labeled thing group', () => {
-    const task = {id: 'TASK-ID'};
+    const task = createTask();
 
     const labeledThingGroup = new LabeledThingGroup({
       id: 'LABELED-THING-GROUP-ID',
@@ -215,8 +224,6 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       groupIds: [],
       classes: ['foo', 'bar', 'baz'],
       incomplete: false,
-      taskId: 'TASK-ID',
-      projectId: 'PROJECT-ID',
       lineColor: 8,
       task,
     });
@@ -241,11 +248,11 @@ describe('PouchDbLabeledThingGroupGateway', () => {
     $rootScope.$apply();
 
     expect(thingGateway.saveLabeledThing)
-      .toHaveBeenCalledWith(labeledThingCalled, labeledThing.incomplete);
+      .toHaveBeenCalledWith(labeledThingCalled);
   });
 
   it('should unassign labeled things from a labeled thing group', () => {
-    const task = {id: 'TASK-ID'};
+    const task = createTask();
 
     const labeledThingGroup = new LabeledThingGroup({
       id: 'LABELED-THING-GROUP-ID',
@@ -264,8 +271,6 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       groupIds: ['LABELED-THING-GROUP-ID'],
       classes: ['foo', 'bar', 'baz'],
       incomplete: false,
-      taskId: 'TASK-ID',
-      projectId: 'PROJECT-ID',
       lineColor: 8,
       task,
     });
@@ -279,8 +284,6 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       groupIds: [],
       classes: ['foo', 'bar', 'baz'],
       incomplete: false,
-      taskId: 'TASK-ID',
-      projectId: 'PROJECT-ID',
       lineColor: 8,
       task,
     });
@@ -290,6 +293,6 @@ describe('PouchDbLabeledThingGroupGateway', () => {
     $rootScope.$apply();
 
     expect(thingGateway.saveLabeledThing)
-      .toHaveBeenCalledWith(labeledThingCalled, labeledThing.incomplete);
+      .toHaveBeenCalledWith(labeledThingCalled);
   });
 });

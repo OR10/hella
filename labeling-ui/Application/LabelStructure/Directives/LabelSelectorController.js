@@ -269,6 +269,13 @@ export default class LabelSelectorController {
     if (selectedLabeledObject === null) {
       return;
     }
+    if (!this.labelStructure) {
+      return;
+    }
+    if (!this.selectedLabelStructureObject) {
+      return;
+    }
+
     const classList = selectedLabeledObject.extractClassList();
     const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
       this.selectedLabelStructureObject,
