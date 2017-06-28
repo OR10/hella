@@ -369,6 +369,7 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary4);
       })
+      .then(() => browser.sleep(300))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing);

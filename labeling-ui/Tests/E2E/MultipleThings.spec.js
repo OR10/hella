@@ -162,7 +162,7 @@ describe('Multiple Things', () => {
         .mouseUp()
         .perform()
       )
-      .then(() => browser.sleep(400))
+      .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -180,7 +180,7 @@ describe('Multiple Things', () => {
         .mouseUp()
         .perform()
       )
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -202,7 +202,7 @@ describe('Multiple Things', () => {
         .click()
         .perform()
       )
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {

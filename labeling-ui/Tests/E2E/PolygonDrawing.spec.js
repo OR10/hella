@@ -447,6 +447,7 @@ describe('Polygon drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewMultiplePolygon3);
       })
+      .then(() => browser.sleep(800))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing);

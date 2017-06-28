@@ -233,7 +233,7 @@ describe('Point drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewPoint);
       })
-      .then(() => browser.sleep(500))
+      .then(() => browser.sleep(800))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing);
