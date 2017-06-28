@@ -114,10 +114,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
    * @returns {Point}
    */
   get position() {
-    return new paper.Point(
-      (this._topLeft.x + this._bottomRight.x) / 2,
-      (this._topLeft.y + this._bottomRight.y) / 2
-    );
+    throw new Error('Cannot determine position of multiple rectangles');
   }
 
   toJSON() {

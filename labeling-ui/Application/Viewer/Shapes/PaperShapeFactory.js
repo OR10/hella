@@ -1,6 +1,5 @@
 import paper from 'paper';
 import PaperRectangle from './PaperRectangle';
-import PaperGroupRectangle from './PaperGroupRectangle';
 import PaperGroupRectangleMulti from './PaperGroupRectangleMulti';
 import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
@@ -53,7 +52,7 @@ class PaperShapeFactory {
    * @param {LabeledThingInFrame} labeledThingGroupInFrame
    * @param {Object} bounds
    * @param {{primary: string, secondary: string}} color
-   * @returns {PaperGroupRectangle}
+   * @returns {PaperGroupRectangleMulti}
    * @private
    */
   _createGroupRectangle(labeledThingGroupInFrame, bounds, color) {
