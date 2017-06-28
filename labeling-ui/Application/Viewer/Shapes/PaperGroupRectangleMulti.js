@@ -86,14 +86,13 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   }
 
   /**
-   * @param {paper.Point} point
-   * @param {number} width
-   * @param {number} height
+   * @param {Array} allBounds
    */
-  setSize(point, width, height) {
-    this.children.forEach(child => {
-      child.setSize(point, width, height);
+  setSize(allBounds) {
+    allBounds.forEach((bounds, index) => {
+      this.children[index].setSize(bounds.point, bounds.width, bounds.height);
     });
+
   }
 
   resize() {

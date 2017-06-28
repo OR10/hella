@@ -7,7 +7,7 @@ class LabeledThingGroupService {
      * @type {number}
      * @private
      */
-    this._rectanglePadding = 5;
+    this._rectanglePadding = 10;
   }
 
   /**

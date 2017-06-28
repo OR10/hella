@@ -1,6 +1,7 @@
 import paper from 'paper';
 import CreationTool from '../CreationTool';
 import PaperGroupRectangle from '../../Shapes/PaperGroupRectangle';
+import PaperGroupRectangleMulti from '../../Shapes/PaperGroupRectangleMulti';
 
 class GroupCreationTool extends CreationTool {
   /**
@@ -115,16 +116,12 @@ class GroupCreationTool extends CreationTool {
 
       let paperGroup;
       this._context.withScope(() => {
-        paperGroup = new PaperGroupRectangle(
+        paperGroup = new PaperGroupRectangleMulti(
           labeledThingGroupInFrame,
           paperShape.id,
-          topLeft,
-          bottomRight,
+          shapesBound,
           color
         );
-
-        // Resize to add necessary padding
-        paperGroup.setSize(topLeft, width, height);
 
         // Place this group shape behind all other shapes
         paperGroup.sendToBack();
