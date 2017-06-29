@@ -55,11 +55,6 @@ class LabelingTasks
      */
     private $taskDatabaseCreatorService;
 
-    /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
-
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         LabeledFrames $labeledFramesDeleter,
@@ -69,8 +64,7 @@ class LabelingTasks
         LabeledThingGroup $labeledThingGroup,
         Video $videoDeleter,
         AMQP\FacadeAMQP $amqpFacade,
-        Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $pouchdbFeatureEnabled
+        Service\TaskDatabaseCreator $taskDatabaseCreatorService
     ) {
         $this->labelingTaskFacade             = $labelingTaskFacade;
         $this->labeledFramesDeleter           = $labeledFramesDeleter;
@@ -80,7 +74,6 @@ class LabelingTasks
         $this->labeledThingGroup              = $labeledThingGroup;
         $this->videoDeleter                   = $videoDeleter;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
-        $this->pouchdbFeatureEnabled          = $pouchdbFeatureEnabled;
         $this->amqpFacade                     = $amqpFacade;
     }
 
@@ -99,15 +92,13 @@ class LabelingTasks
             $this->videoDeleter->delete($task);
             $this->labelingTaskFacade->delete($task);
 
-            if ($this->pouchdbFeatureEnabled) {
-                $database = $this->taskDatabaseCreatorService->getDatabaseName(
-                    $task->getProjectId(),
-                    $task->getId()
-                );
+            $database = $this->taskDatabaseCreatorService->getDatabaseName(
+                $task->getProjectId(),
+                $task->getId()
+            );
 
-                $job = new Jobs\DatabaseDeleter($database);
-                $this->amqpFacade->addJob($job);
-            }
+            $job = new Jobs\DatabaseDeleter($database);
+            $this->amqpFacade->addJob($job);
         }
     }
 }

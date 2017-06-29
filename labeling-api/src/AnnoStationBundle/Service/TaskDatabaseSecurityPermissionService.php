@@ -38,11 +38,6 @@ class TaskDatabaseSecurityPermissionService
     private $labelingGroupFacade;
 
     /**
-     * @var bool
-     */
-    private $pouchDbFeatureEnabled;
-
-    /**
      * @var Facade\LabelingTask
      */
     private $labelingTaskFacade;
@@ -59,7 +54,6 @@ class TaskDatabaseSecurityPermissionService
         Facade\LabelingGroup $labelingGroupFacade,
         AppBundleFacade\User $userFacade,
         AppBundleFacade\CouchDbSecurity $couchDbSecurity,
-        $pouchDbFeatureEnabled,
         $replicationUser
     ) {
         $this->couchDbSecurity       = $couchDbSecurity;
@@ -67,7 +61,6 @@ class TaskDatabaseSecurityPermissionService
         $this->organisationFacade    = $organisationFacade;
         $this->userFacade            = $userFacade;
         $this->labelingGroupFacade   = $labelingGroupFacade;
-        $this->pouchDbFeatureEnabled = $pouchDbFeatureEnabled;
         $this->labelingTaskFacade    = $labelingTaskFacade;
         $this->replicationUser       = $replicationUser;
     }
@@ -89,10 +82,6 @@ class TaskDatabaseSecurityPermissionService
      */
     public function updateForTask(Model\LabelingTask $labelingTask)
     {
-        if (!$this->pouchDbFeatureEnabled) {
-            return;
-        }
-
         $project      = $this->projectFacade->find($labelingTask->getProjectId());
         $organisation = $this->organisationFacade->find($project->getOrganisationId());
 

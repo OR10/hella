@@ -146,8 +146,6 @@ class UserTest extends Tests\WebTestCase
 
     public function testCouchDbAdminRolesForOrganisation()
     {
-        $this->skipOnNonPouchDbEnviroment();
-
         $superAdmin = $this->createSuperAdminUser($this->organisation);
         $admin      = $this->createAdminUser($this->organisation);
 
