@@ -399,7 +399,9 @@ class ProjectListController {
       // project is in due date
       const progress = Math.round((currentProgress) * 100 / projectDuration);
       colorClass = this._getBackgroundColorForProgress(progress);
-
+      if (progress === 0) {
+        return {progress: '-99%', class: colorClass};
+      }
       return {progress: progress - 100 + '%', class: colorClass};
     }
     // project is out of due date
