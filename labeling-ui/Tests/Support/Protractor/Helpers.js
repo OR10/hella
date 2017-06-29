@@ -6,7 +6,7 @@ import {cloneDeep} from 'lodash';
 
 export function getMockRequestsMade(mock) {
   if (featureFlags.pouchdb) {
-    return PouchDb.allDocs();
+    return browser.sleep(300).then(() => PouchDb.allDocs());
   }
   return httpMock.requestsMade().then(requests => {
     return requests.map(request => {

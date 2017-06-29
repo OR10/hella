@@ -11,7 +11,7 @@ afterEach(done => {
   expect(protractorPromise).toBe('ok');
 
   if (features.pouchdb) {
-    PouchDb.destroy().then(done);
+    PouchDb.destroy().then(() => done());
   } else {
     done();
   }
