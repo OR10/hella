@@ -10,7 +10,7 @@ variable "flavors" {
   type = "map"
   default = {
     "app-0.labeltool" = "m1.small"
-    "couchdb-0.labeltool" = "m1.small"
+    "couchdb-0.labeltool" = "m1.medium"
     "couchdb-1.labeltool" = "m1.tiny"
   }
 }
