@@ -72,16 +72,6 @@
 
 + message: `Export started` (string)
 
-## Interpolation Type
-
-+ type: `linear` (string) - The type of the interpolation.
-
-## Interpolation Status
-
-+ id: `e47f4bdfd22883b196ce45a8c980ab68` (string) - The id of the status document.
-+ type: `AppBundle.Model.Interpolation.Status` (string) - The type of the status document.
-+ status: `success` (string) - The current status.
-
 ## Task Timer
 
 + time: `123456789` (number) - The time (in seconds) a user spend on a certain task.
