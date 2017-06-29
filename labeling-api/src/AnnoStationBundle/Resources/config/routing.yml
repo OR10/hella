@@ -26,16 +26,6 @@ api_project_export:
     type: rest
     name_prefix: app_api_organisation_project_export_
 
-api_task_labeled_thing_in_frame:
-    resource: "annostation.labeling_api.controller.api.task.labeled_thing_in_frame"
-    type: rest
-    name_prefix: app_api_task_labeled_thing_in_frame_
-
-api_task_labeled_thing:
-    resource: "annostation.labeling_api.controller.api.task.labeled_thing"
-    type: rest
-    name_prefix: app_api_task_labeled_thing_
-
 api_task_interpolate:
     resource: "annostation.labeling_api.controller.api.task.interpolate"
     type: rest
@@ -65,11 +55,6 @@ api_task_phase:
     resource: "annostation.labeling_api.controller.api.task.phase"
     type: rest
     name_prefix: app_api_task_phase
-
-api_labeled_thing_in_frame:
-    resource: "annostation.labeling_api.controller.api.labeled_thing_in_frame"
-    type: rest
-    name_prefix: app_api_labeled_thing_in_frame_
 
 api_video:
     resource: "annostation.labeling_api.controller.api.video"
