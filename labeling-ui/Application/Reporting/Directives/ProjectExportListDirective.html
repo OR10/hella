@@ -9,12 +9,15 @@
     <tbody>
     <tr ng-show="vm.exports.length" ng-repeat="export in vm.exports track by export.id">
         <td ng-switch="export.status">
-            <a ng-switch-when="done" ng-href="{{vm.downloadUrl(export.projectId, export.id)}}">
-                <i class="fa fa-download"></i>
-            </a>
+            <div ng-switch-when="done">
+                <a ng-href="{{vm.downloadUrl(export.projectId, export.id)}}"><i class="fa fa-download"></i></a>
+                <a ng-if="export.warningMessage != null" ng-click="vm.showWarningModal(export.warningMessage)"
+                   tooltip="Some warnings occurred!" class="fa fa-exclamation-circle"></a>
+            </div>
             <a ng-switch-when="error">
                 <i ng-if="export.errorMessage != null" class="fa fa-warning"
-                   tooltip="{{export.errorMessage}}"></i>
+                   ng-click="vm.showErrorModal(export.errorMessage)"
+                   tooltip="Some errors occurred!"></i>
                 <i ng-if="export.errorMessage == null" class="fa fa-warning"
                    tooltip="Failed to generate export"></i>
             </a>
