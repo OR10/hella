@@ -112,22 +112,6 @@ when the associated labeled things are not required.
 + Response 200 (application/json)
     + Attributes (object)
 
-## Interpolate labeled things in frame [/api/task/{taskId}/interpolate/{labeledThingId}]
-
-+ Parameters
-    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
-    + labeledThingId: `36047d429d50548893be41c6880632fd` (string, required) - The id of the labeled-thing-entity.
-
-### Start interpolation [POST]
-
-+ Request (application/json)
-    + Attributes
-        + type: `linear` (string, required) - The type of interpolation that should be performed.
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (Interpolation Status)
-
 ## Get the task structures [/api/task/{id}/labelStructure]
 
 + Parameters
