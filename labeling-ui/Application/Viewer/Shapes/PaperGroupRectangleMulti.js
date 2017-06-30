@@ -12,7 +12,8 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   constructor(labeledThingGroupInFrame, shapeId, bounds, color) {
     super(labeledThingGroupInFrame, shapeId, color);
 
-    this._bounds = bounds;
+    // Do not name it _bounds as this name is already used internally by paperjs
+    this._allShapeBounds = bounds;
 
     this._drawShapes();
   }
@@ -20,7 +21,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   _drawShapes() {
     this.removeChildren();
 
-    this._bounds.forEach(bounds => {
+    this._allShapeBounds.forEach(bounds => {
       const topLeft = new paper.Point(bounds.x, bounds.y);
       const bottomRight = new paper.Point(bounds.x + bounds.width, bounds.y + bounds.height);
       const groupShape = new PaperGroupRectangle(this._labeledThingGroupInFrame, this._labeledThingGroupInFrame.id, topLeft, bottomRight, this._color);
@@ -29,7 +30,44 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   }
 
   get bounds() {
+    let topLeftX;
+    let topLeftY;
+    let bottomRightX;
+    let bottomRightY;
 
+    this._allShapeBounds.forEach(bounds => {
+      if (bounds.x < topLeftX || topLeftX === undefined) {
+        topLeftX = bounds.x;
+      }
+
+      if (bounds.y < topLeftY || topLeftY === undefined) {
+        topLeftY = bounds.y;
+      }
+
+      const shapeBottomRightX = (bounds.x + bounds.width);
+      const shapeBottomRightY = (bounds.y + bounds.height);
+
+      if (shapeBottomRightX > bottomRightX || bottomRightX === undefined) {
+        bottomRightX = shapeBottomRightX;
+      }
+
+      if (shapeBottomRightY > bottomRightY || bottomRightY === undefined) {
+        bottomRightY = shapeBottomRightY;
+      }
+    });
+
+    const width = bottomRightX - topLeftX;
+    const height = bottomRightY - topLeftY;
+
+    return {
+      x: topLeftX,
+      y: topLeftY,
+      width: width,
+      height: height
+    };
+
+
+    return this._allShapeBounds;
   }
 
   /**
