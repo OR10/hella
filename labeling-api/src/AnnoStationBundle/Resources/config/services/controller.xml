@@ -87,14 +87,6 @@
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
-        <service id="annostation.labeling_api.controller.api.task.timer"
-                 class="AnnoStationBundle\Controller\Api\Task\Timer">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
-            <argument type="service" id="security.token_storage"/>
-            <argument type="service" id="annostation.labeling_api.service.authorization"/>
-        </service>
-
         <service id="annostation.labeling_api.controller.api.task.status"
                  class="AnnoStationBundle\Controller\Api\Task\Status">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>

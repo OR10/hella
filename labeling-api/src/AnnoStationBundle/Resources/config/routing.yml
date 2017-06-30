@@ -41,11 +41,6 @@ api_task_interpolate:
     type: rest
     name_prefix: app_api_task_interpolate_
 
-api_task_timer:
-    resource: "annostation.labeling_api.controller.api.task.timer"
-    type: rest
-    name_prefix: app_api_task_timer_
-
 api_task_status:
     resource: "annostation.labeling_api.controller.api.task.status"
     type: rest

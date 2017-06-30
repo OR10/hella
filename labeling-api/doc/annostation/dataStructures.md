@@ -82,10 +82,6 @@
 + type: `AppBundle.Model.Interpolation.Status` (string) - The type of the status document.
 + status: `success` (string) - The current status.
 
-## Task Timer
-
-+ time: `123456789` (number) - The time (in seconds) a user spend on a certain task.
-
 ## CurrentUser
 
 + id: `1` (number) - The id of the current user.
