@@ -73,30 +73,30 @@ abstract class Importer
     /**
      * @var LabeledThingInFrame\FacadeInterface
      */
-    private $labeledThingInFrameFacadeFactory;
+    private $labeledThingInFrameFacade;
 
     /**
      * @var LabeledThing\FacadeInterface
      */
-    private $labeledThingFacadeFactory;
+    private $labeledThingFacade;
 
     public function __construct(
         Service\TaskIncomplete $taskIncompleteService,
-        LabeledThing\FacadeInterface $labeledThingFacadeFactory,
-        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory
+        LabeledThing\FacadeInterface $labeledThingFacade,
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacade
     ) {
-        $this->taskIncompleteService            = $taskIncompleteService;
-        $this->labeledThingFacadeFactory        = $labeledThingFacadeFactory;
-        $this->labeledThingInFrameFacadeFactory = $labeledThingInFrameFacadeFactory;
+        $this->taskIncompleteService     = $taskIncompleteService;
+        $this->labeledThingFacade        = $labeledThingFacade;
+        $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
     }
 
     public function import(LabelImporter\Parser $parser, Model\LabelingTask $labelingTask)
     {
-        $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+        $labeledThingFacade = $this->labeledThingFacade->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );
-        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFacade->getFacadeByProjectIdAndTaskId(
             $labelingTask->getProjectId(),
             $labelingTask->getId()
         );

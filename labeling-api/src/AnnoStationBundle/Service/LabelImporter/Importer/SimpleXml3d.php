@@ -12,10 +12,10 @@ class SimpleXml3d extends LabelImporter\Importer
 {
     public function __construct(
         Service\TaskIncomplete $taskIncompleteService,
-        LabeledThing\FacadeInterface $labeledThingFacadeFactory,
-        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory
+        LabeledThing\FacadeInterface $labeledThingFacade,
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacade
     ) {
-        parent::__construct($taskIncompleteService, $labeledThingFacadeFactory, $labeledThingInFrameFacadeFactory);
+        parent::__construct($taskIncompleteService, $labeledThingFacade, $labeledThingInFrameFacade);
         $this->entityProvider            = new EntityProvider\Mapper(
             [
                 'fields' => [
