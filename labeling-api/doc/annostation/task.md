@@ -112,46 +112,6 @@ when the associated labeled things are not required.
 + Response 200 (application/json)
     + Attributes (object)
 
-## Interpolate labeled things in frame [/api/task/{taskId}/interpolate/{labeledThingId}]
-
-+ Parameters
-    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
-    + labeledThingId: `36047d429d50548893be41c6880632fd` (string, required) - The id of the labeled-thing-entity.
-
-### Start interpolation [POST]
-
-+ Request (application/json)
-    + Attributes
-        + type: `linear` (string, required) - The type of interpolation that should be performed.
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (Interpolation Status)
-
-## Timer [/api/task/{taskId}/timer/{userId}]
-
-+ Parameters
-    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
-    + userId: `3` (number, required) - The id of the user-entity.
-
-### Read timer value of a user [GET]
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (Task Timer)
-
-### Set timer value for a user [PUT]
-
-+ Request (application/json)
-    + Attributes (Task Timer)
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (Task Timer)
-
-+ Response 403 (application/json)
-    + Attributes (object)
-
 ## Get the task structures [/api/task/{id}/labelStructure]
 
 + Parameters
