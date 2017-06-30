@@ -14,7 +14,6 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
 
     // Do not name it _bounds as this name is already used internally by paperjs
     this._allShapeBounds = bounds;
-
     this._drawShapes();
   }
 

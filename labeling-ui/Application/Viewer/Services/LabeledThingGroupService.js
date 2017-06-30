@@ -1,5 +1,6 @@
 import paper from 'paper';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
+import PaperGroupRectangleMulti from '../../Viewer/Shapes/PaperGroupRectangleMulti';
 
 class LabeledThingGroupService {
   constructor() {
@@ -17,10 +18,12 @@ class LabeledThingGroupService {
    * @param {{x,y,width,height,point}} bounds
    */
   getShapesWithinBounds(context, bounds) {
-    return context.scope.project.getItems({
+    const shapes = context.scope.project.getItems({
       inside: bounds,
       class: PaperShape,
     });
+
+    return shapes.filter(shape => (!(shape instanceof PaperGroupRectangleMulti)));
   }
 
   /**
