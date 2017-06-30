@@ -112,30 +112,6 @@ when the associated labeled things are not required.
 + Response 200 (application/json)
     + Attributes (object)
 
-## Timer [/api/task/{taskId}/timer/{userId}]
-
-+ Parameters
-    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
-    + userId: `3` (number, required) - The id of the user-entity.
-
-### Read timer value of a user [GET]
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (Task Timer)
-
-### Set timer value for a user [PUT]
-
-+ Request (application/json)
-    + Attributes (Task Timer)
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (Task Timer)
-
-+ Response 403 (application/json)
-    + Attributes (object)
-
 ## Get the task structures [/api/task/{id}/labelStructure]
 
 + Parameters
