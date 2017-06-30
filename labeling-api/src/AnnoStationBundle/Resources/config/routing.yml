@@ -26,16 +26,6 @@ api_project_export:
     type: rest
     name_prefix: app_api_organisation_project_export_
 
-api_task_interpolate:
-    resource: "annostation.labeling_api.controller.api.task.interpolate"
-    type: rest
-    name_prefix: app_api_task_interpolate_
-
-api_task_timer:
-    resource: "annostation.labeling_api.controller.api.task.timer"
-    type: rest
-    name_prefix: app_api_task_timer_
-
 api_task_status:
     resource: "annostation.labeling_api.controller.api.task.status"
     type: rest
@@ -130,16 +120,6 @@ api_system:
     resource: "annostation.labeling_api.controller.api.system"
     type: rest
     name_prefix: app_api_system
-
-dimension_prediction:
-    resource: "annostation.labeling_api.controller.dimension_prediction"
-    type: rest
-    name_prefix: app_dimension_prediction_
-
-labeled_thing_group:
-    resource: "annostation.labeling_api.controller.api.task.labeled_thing_group"
-    type: rest
-    name_prefix: app_labeled_thing_group_
 
 project_importer:
     resource: "annostation.labeling_api.controller.api.organisation.project_importer"
