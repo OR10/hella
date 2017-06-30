@@ -275,10 +275,6 @@
             <argument>%kernel.debug%</argument>
         </service>
 
-        <service id="annostation.labeling_api.controller.dimension_prediction"
-                 class="AnnoStationBundle\Controller\Api\DimensionPrediction">
-        </service>
-
         <service id="annostation.labeling_api.controller.api.ui_log" class="AnnoStationBundle\Controller\Api\UiLog">
             <argument type="service" id="annostation.labeling_api.ui_logger"/>
         </service>
