@@ -9,7 +9,6 @@
         <import resource="services/commands.xml"/>
         <import resource="services/database_facades.xml"/>
         <import resource="services/helper.xml"/>
-        <import resource="services/interpolation_algorithms.xml"/>
         <import resource="services/job_instructions.xml"/>
         <import resource="services/voters.xml"/>
         <import resource="services/monitoring.xml"/>
@@ -225,11 +224,6 @@
         <service id="annostation.labeling_api.service.task_read_only_decider" class="AnnoStationBundle\Service\TaskReadOnlyDecider">
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias" />
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
-        </service>
-
-        <service id="annostation.labeling_api.service.interpolation" class="AnnoStationBundle\Service\Interpolation">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.status" />
         </service>
 
         <service id="annostation.labeling_api.service.authentication.user_permissions"

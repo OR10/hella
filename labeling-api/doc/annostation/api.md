@@ -19,7 +19,6 @@ broken a 400 status code should be returned.
 <!-- include(task.md) -->
 <!-- include(labeledThingInFrame.md) -->
 <!-- include(labeledThing.md) -->
-<!-- include(status.md) -->
 <!-- include(currentUser.md) -->
 <!-- include(user.md) -->
 <!-- include(project.md) -->
