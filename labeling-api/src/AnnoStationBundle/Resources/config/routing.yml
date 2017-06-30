@@ -151,11 +151,6 @@ dimension_prediction:
     type: rest
     name_prefix: app_dimension_prediction_
 
-labeled_thing_group:
-    resource: "annostation.labeling_api.controller.api.task.labeled_thing_group"
-    type: rest
-    name_prefix: app_labeled_thing_group_
-
 project_importer:
     resource: "annostation.labeling_api.controller.api.organisation.project_importer"
     type: rest
