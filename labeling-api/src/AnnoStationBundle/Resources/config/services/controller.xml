@@ -280,10 +280,6 @@
             <argument>%rabbitmq_password%</argument>
         </service>
 
-        <service id="annostation.labeling_api.controller.api.task.labeled_thing_group" class="AnnoStationBundle\Controller\Api\Task\LabeledThingGroup">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
-        </service>
-
         <service id="annostation.labeling_api.controller.api.organisation.project_importer" class="AnnoStationBundle\Controller\Api\Organisation\ProjectImporter">
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.project_importer.import"/>
