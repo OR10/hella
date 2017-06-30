@@ -36,7 +36,7 @@ function processDbQueue() {
         return;
       }
 
-      if (document.identifierName !== undefined) {
+      if (document.identifierName !== undefined && document.identifierName !== null) {
         return;
       }
 
