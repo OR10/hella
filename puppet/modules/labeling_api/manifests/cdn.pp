@@ -7,6 +7,7 @@ class labeling_api::cdn(
   $proxy = $labeling_api::params::frame_cdn_s3_base_url,
   $proxy_host = undef,
 
+  $hostnames = $labeling_api::params::frame_cdn_hostnames,
   $vhost_port = $labeling_api::params::frame_cdn_port,
 
   $allowed_origin = $labeling_api::params::frame_cdn_allowed_origin,
@@ -58,6 +59,7 @@ class labeling_api::cdn(
           locationRawPrepend => $_locationRawPrepend,
           addHeader          => $_addHeader,
           vhostCfgAppend     => $_vhostCfgAppend,
+          serverNames        => $hostnames,
         }
       }
       's3': {
@@ -78,6 +80,7 @@ class labeling_api::cdn(
           locationRawPrepend => $_locationRawPrepend,
           addHeader          => $_addHeader,
           vhostCfgAppend     => $_vhostCfgAppend,
+          serverNames        => $hostnames,
         }
       }
       's3-cmd': {
@@ -98,6 +101,7 @@ class labeling_api::cdn(
           locationRawPrepend => $_locationRawPrepend,
           addHeader          => $_addHeader,
           vhostCfgAppend     => $_vhostCfgAppend,
+          serverNames        => $hostnames,
         }
       }
       default: {

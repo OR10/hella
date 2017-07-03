@@ -3,6 +3,7 @@ define annostation_base::symfony(
   $configure_nginx = false,
   $app_main_script = 'app.php',
   $client_max_body_size = '512M',
+  $hostnames = undef,
   $port = 80,
   $httpv2 = false,
   $not_found_redirect = '=404',
@@ -43,6 +44,12 @@ define annostation_base::symfony(
       $_sslKeyFile = "/etc/nginx/${name}-ssl-certificate.key"
     }
 
+    if $hostnames {
+        $_hostnames = $hostnames
+    } else {
+        $_hostnames = [$name]
+    }
+
     annostation_base::nginx_vhost { $name:
       vhostDir           => $www_root,
       vhostPort          => $_vhostPort,
@@ -56,6 +63,7 @@ define annostation_base::symfony(
       authBasicFile      => $authBasicFile,
       listenIp           => $listenIp,
       useDefaultLocation => $useDefaultLocation,
+      serverNames        => $hostnames,
     }
 
     nginx::resource::location { "${name}_php":

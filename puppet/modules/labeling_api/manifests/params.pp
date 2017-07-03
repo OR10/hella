@@ -90,6 +90,7 @@ class labeling_api::params(
   $frame_cdn_port           = 80,
   $frame_cdn_allowed_origin = undef,
   $frame_cdn_expires        = '30d',
+  $frame_cdn_hostnames      = undef,
 
   $user_password = undef,
 
