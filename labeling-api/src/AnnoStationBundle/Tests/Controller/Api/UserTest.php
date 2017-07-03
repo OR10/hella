@@ -338,8 +338,6 @@ class UserTest extends Tests\WebTestCase
 
     public function testSuperAdminCouchDbRoles()
     {
-        $this->skipOnNonPouchDbEnviroment();
-
         $superAdmin   = $this->createSuperAdminUser();
 
         $username = 'super_admin_2';

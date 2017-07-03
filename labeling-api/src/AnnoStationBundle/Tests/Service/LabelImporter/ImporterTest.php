@@ -3,6 +3,8 @@
 namespace AnnoStationBundle\Tests\Service\LabelImporter;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
+use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Model\Shapes;
 use AnnoStationBundle\Service\LabelImporter\Importer;
@@ -34,14 +36,9 @@ class LabelImporterTest extends Tests\KernelTestCase
     private $labelingTaskFacade;
 
     /**
-     * @var Facade\LabeledThing
+     * @var LabeledThingInFrame\FacadeInterface
      */
-    private $labeledThingFacade;
-
-    /**
-     * @var Facade\LabeledThingInFrame
-     */
-    private $labeledThingInFrameFacade;
+    private $labeledThingInFrameFacadeFactory;
 
     /**
      * @var Importer\SimpleXml2d
@@ -52,6 +49,11 @@ class LabelImporterTest extends Tests\KernelTestCase
      * @var Importer\SimpleXml3d
      */
     private $importer3d;
+
+    /**
+     * @var Service\TaskDatabaseCreator
+     */
+    private $taskDatabaseCreatorService;
 
     public function provider()
     {
@@ -268,8 +270,6 @@ class LabelImporterTest extends Tests\KernelTestCase
      */
     public function testRectanglesImport($configuration, $expected)
     {
-        $this->skipOnPouchDbEnviroment();
-
         $xml = file_get_contents($configuration['taskConfigurationFile']);
 
         $organisation = Helper\OrganisationBuilder::create()->build();
@@ -285,6 +285,7 @@ class LabelImporterTest extends Tests\KernelTestCase
                 ->withDrawingTool($configuration['drawingTool'])
                 ->build()
         );
+        $this->taskDatabaseCreatorService->createDatabase($project, $task);
 
         $parser = new Parser\Csv(
             new DataSource\File(
@@ -305,6 +306,11 @@ class LabelImporterTest extends Tests\KernelTestCase
                 break;
         }
 
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $task->getProjectId(),
+            $task->getId()
+        );
+
         $labeledThingsInFrames = array_map(
             function (Model\LabeledThingInFrame $labeledThingInFrame) {
                 return [
@@ -320,7 +326,7 @@ class LabelImporterTest extends Tests\KernelTestCase
                     ),
                 ];
             },
-            $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task)
+            $labeledThingInFrameFacade->getLabeledThingsInFrame($task)
         );
 
         $this->assertEquals($expected, $labeledThingsInFrames);
@@ -328,13 +334,15 @@ class LabelImporterTest extends Tests\KernelTestCase
 
     public function setUpImplementation()
     {
-        $this->videoFacade               = $this->getAnnostationService('database.facade.video');
-        $this->projectFacade             = $this->getAnnostationService('database.facade.project');
-        $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
-        $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
-        $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
-        $this->taskConfigurationFacade   = $this->getAnnostationService('database.facade.task_configuration');
-        $this->importer2d                = $this->getAnnostationService('service.label_importer.simple_xml_2d');
-        $this->importer3d                = $this->getAnnostationService('service.label_importer.simple_xml_3d');
+        $this->videoFacade                      = $this->getAnnostationService('database.facade.video');
+        $this->projectFacade                    = $this->getAnnostationService('database.facade.project');
+        $this->labelingTaskFacade               = $this->getAnnostationService('database.facade.labeling_task');
+        $this->labeledThingInFrameFacadeFactory = $this->getAnnostationService(
+            'database.facade.factory.labeled_thing_in_frame'
+        );
+        $this->taskConfigurationFacade          = $this->getAnnostationService('database.facade.task_configuration');
+        $this->importer2d                       = $this->getAnnostationService('service.label_importer.simple_xml_2d');
+        $this->importer3d                       = $this->getAnnostationService('service.label_importer.simple_xml_3d');
+        $this->taskDatabaseCreatorService       = $this->getAnnostationService('service.task_database_creator');
     }
 }

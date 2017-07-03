@@ -112,11 +112,6 @@ class Init extends Base
     private $couchReadOnlyUser;
 
     /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
-
-    /**
      * Init constructor.
      *
      * @param CouchDB\CouchDBClient                        $couchClient
@@ -138,7 +133,6 @@ class Init extends Base
      * @param Service\UserRolesRebuilder                   $userRolesRebuilderService
      * @param string                                       $couchUser
      * @param string                                       $couchReadOnlyUser
-     * @param bool                                         $pouchdbFeatureEnabled
      */
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
@@ -159,8 +153,7 @@ class Init extends Base
         AppBundleFacade\CouchDbSecurity $couchDbSecurityFacade,
         Service\UserRolesRebuilder $userRolesRebuilderService,
         $couchUser,
-        $couchReadOnlyUser,
-        $pouchdbFeatureEnabled
+        $couchReadOnlyUser
     ) {
         parent::__construct();
 
@@ -183,7 +176,6 @@ class Init extends Base
         $this->userRolesRebuilderService        = $userRolesRebuilderService;
         $this->couchUser                        = $couchUser;
         $this->couchReadOnlyUser                = $couchReadOnlyUser;
-        $this->pouchdbFeatureEnabled            = $pouchdbFeatureEnabled;
     }
 
     protected function configure()
@@ -339,9 +331,6 @@ class Init extends Base
 
     private function createSecurityDocument($database)
     {
-        if (!$this->pouchdbFeatureEnabled) {
-            return;
-        }
         $this->couchDbSecurityFacade->updateSecurity(
             $database,
             [$this->couchUser, $this->couchReadOnlyUser]
