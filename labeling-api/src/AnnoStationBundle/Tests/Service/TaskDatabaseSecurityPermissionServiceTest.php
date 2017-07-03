@@ -74,8 +74,6 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
     public function testSuperAdminPermissions()
     {
-        $this->isPouchDbEnabled();
-
         $user = $this->createUser('superadmin');
         $user->addRole(Model\User::ROLE_SUPER_ADMIN);
         $this->userFacade->saveUser($user);
@@ -87,8 +85,6 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
     public function testAdminPermissions()
     {
-        $this->isPouchDbEnabled();
-
         $user = $this->createUser('admin');
         $user->addRole(Model\User::ROLE_ADMIN);
         $this->userFacade->saveUser($user);
@@ -107,8 +103,6 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
     public function testClientPermissions()
     {
-        $this->isPouchDbEnabled();
-
         $user = $this->createUser('client');
         $user->addRole(Model\User::ROLE_CLIENT);
         $this->userFacade->saveUser($user);
@@ -120,8 +114,6 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
     public function testObserverPermissions()
     {
-        $this->isPouchDbEnabled();
-
         $user = $this->createUser('observer');
         $user->addRole(Model\User::ROLE_OBSERVER);
         $this->userFacade->saveUser($user);
@@ -133,8 +125,6 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
     public function testLabelCoordinatorPermissions()
     {
-        $this->isPouchDbEnabled();
-
         $user = $this->createUser('label_coordinator');
         $user->addRole(Model\User::ROLE_LABEL_COORDINATOR);
         $this->userFacade->saveUser($user);
@@ -156,8 +146,6 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
 
     public function testLabelerPermissions()
     {
-        $this->isPouchDbEnabled();
-
         $user = $this->createUser('labeler');
         $user->addRole(Model\User::ROLE_LABELER);
         $this->userFacade->saveUser($user);
@@ -244,13 +232,6 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
             [],
             [$this->organisation->getId()]
         );
-    }
-
-    private function isPouchDbEnabled()
-    {
-        if (!$this->getContainer()->getParameter('pouchdb_feature_enabled')){
-            $this->markTestSkipped('PouchDB not enabled');
-        }
     }
 
     public function setUpImplementation()
