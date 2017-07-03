@@ -22,12 +22,7 @@ parameters:
 
     fos_user_bundle_to_couchdb_sync_enabled: <%= @fos_user_bundle_to_couchdb_sync_enabled %>
 
-    pouchdb_feature_enabled: <%= @pouchdb_feature_enabled %>
-    <% if @pouchdb_feature_enabled %>
     facade_factory_type: taskDatabase
-    <% else %>
-    facade_factory_type: defaultDatabase
-    <% end %>
 
     mailer_transport: <%= @mailer_transport %>
     mailer_host: <%= @mailer_host %>

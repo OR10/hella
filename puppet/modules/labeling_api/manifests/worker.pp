@@ -38,19 +38,17 @@ class labeling_api::worker(
     notify => Exec['restart supervisord'],
   }
 
-  if $labeling_api::params::pouchdb_feature_enabled {
-    supervisord::program { 'annostation-couchdb-replication-labeling-api-to-task-databases':
-      command => "node ${app_dir}/scripts/CouchDB/ReplicatorManager/ReplicationManager.js 'http://${labeling_api::params::couchdb_user}:${labeling_api::params::couchdb_password}@${labeling_api::params::couchdb_host}:${labeling_api::params::couchdb_port}/' 'http://${labeling_api::params::couchdb_user_read_only}:${labeling_api::params::couchdb_password_read_only}@${labeling_api::params::couchdb_host}:${labeling_api::params::couchdb_port}/' '(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)' '${labeling_api::params::database_name_read_only}'",
-      autostart => $autostart,
-      autorestart => true,
-      user => $user,
-      directory => $app_dir,
-      startsecs => 0,
-      numprocs => 1,
-      environment => {
-          'SYMFONY_ENV' => $symfony_environment,
-      },
-      notify => Exec['restart supervisord'],
-    }
+  supervisord::program { 'annostation-couchdb-replication-labeling-api-to-task-databases':
+    command => "node ${app_dir}/scripts/CouchDB/ReplicatorManager/ReplicationManager.js 'http://${labeling_api::params::couchdb_user}:${labeling_api::params::couchdb_password}@${labeling_api::params::couchdb_host}:${labeling_api::params::couchdb_port}/' 'http://${labeling_api::params::couchdb_user_read_only}:${labeling_api::params::couchdb_password_read_only}@${labeling_api::params::couchdb_host}:${labeling_api::params::couchdb_port}/' '(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)' '${labeling_api::params::database_name_read_only}'",
+    autostart => $autostart,
+    autorestart => true,
+    user => $user,
+    directory => $app_dir,
+    startsecs => 0,
+    numprocs => 1,
+    environment => {
+        'SYMFONY_ENV' => $symfony_environment,
+    },
+    notify => Exec['restart supervisord'],
   }
 }

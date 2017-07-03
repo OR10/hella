@@ -79,7 +79,6 @@ labeling_api::params::secret: 'lasdhflasdhflashlfal'
 labeling_api::params::user_password: '6g4hxn82PYBUbSyo1ZKG'
 labeling_api::params::create_parameter_files: true
 labeling_api::params::create_parameter_files: true
-labeling_api::params::pouchdb_feature_enabled: true
 labeling_api::params::fos_user_bundle_to_couchdb_sync_enabled: true
 labeling_api::params::couchdb_user: 'admin'
 labeling_api::params::couchdb_password: 'cjxkiYHxCWX4UKa'
