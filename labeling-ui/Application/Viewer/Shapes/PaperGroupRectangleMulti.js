@@ -26,6 +26,15 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
       const groupShape = new PaperGroupRectangle(this._labeledThingGroupInFrame, this._labeledThingGroupInFrame.id, topLeft, bottomRight, this._color);
       this.addChild(groupShape);
     });
+
+    this._drawDebugShape();
+  }
+
+  _drawDebugShape() {
+    const topLeft = new paper.Point(this.bounds.x, this.bounds.y);
+    const bottomRight = new paper.Point(this.bounds.x + this.bounds.width, this.bounds.y + this.bounds.height);
+    const groupShape = new PaperGroupRectangle(this._labeledThingGroupInFrame, this._labeledThingGroupInFrame.id, topLeft, bottomRight, this._color);
+    this.addChild(groupShape);
   }
 
   get bounds() {
