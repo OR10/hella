@@ -4310,6 +4310,13 @@ proper-lockfile@^1.0.2:
     graceful-fs "^4.1.2"
     retry "^0.10.0"
 
+protractor-console@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/protractor-console/-/protractor-console-2.0.1.tgz#4697d3ce9c999f53018e0576a3d0cf3322b282a7"
+  dependencies:
+    chalk "^1.1.0"
+    lodash "^3.10.0"
+
 "protractor-http-mock@git+ssh://git@github.crosscan.com/crosscan/protractor-http-mock.git":
   version "0.9.2"
   resolved "git+ssh://git@github.crosscan.com/crosscan/protractor-http-mock.git#9a832ac0966f3675998f851f2cb5a97e8ff243f6"
