@@ -3,13 +3,7 @@ import PaperShape from '../../Viewer/Shapes/PaperShape';
 import PaperGroupRectangleMulti from '../../Viewer/Shapes/PaperGroupRectangleMulti';
 
 class LabeledThingGroupService {
-  constructor() {
-    /**
-     * @type {number}
-     * @private
-     */
-    this._rectanglePadding = 5;
-  }
+  constructor() {}
 
   /**
    * Retuns all shapes that are within the bounds of the given bound
@@ -54,11 +48,6 @@ class LabeledThingGroupService {
       if (maxY === undefined || bound.y + bound.height > maxY) {
         maxY = bound.y + bound.height;
       }
-
-      minX -= this._rectanglePadding;
-      minY -= this._rectanglePadding;
-      maxX += this._rectanglePadding;
-      maxY += this._rectanglePadding;
 
       groupShapeBounds.push({
         x: minX,
