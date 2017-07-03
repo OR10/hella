@@ -29,8 +29,6 @@ class labeling_api::params(
 
   $fos_user_bundle_to_couchdb_sync_enabled = false,
 
-  $pouchdb_feature_enabled = false,
-
   $mailer_transport = 'smtp',
   $mailer_host = '127.0.0.1',
   $mailer_user = 'null',
