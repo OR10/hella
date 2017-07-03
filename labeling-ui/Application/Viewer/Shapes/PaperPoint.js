@@ -3,6 +3,9 @@ import paper from 'paper';
 import PaperShape from './PaperShape';
 import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
+// Only needed, when using debug rectangle
+// import PaperRectangle from './PaperRectangle';
+
 /**
  * @extends PaperPath
  */
@@ -29,6 +32,7 @@ class PaperPoint extends PaperThingShape {
     this._centerPoint = centerPoint;
 
     this._drawShape();
+    // this._drawDebugRectangle(labeledThingInFrame, shapeId, color);
   }
 
   /**
@@ -49,6 +53,23 @@ class PaperPoint extends PaperThingShape {
       const handles = this._createHandles();
       this.addChildren(handles);
     }
+  }
+
+  /**
+   * Draws a debug rectangle that shows the bounding box used for various geographical
+   * matching functions
+   *
+   * @param labeledThingInFrame
+   * @param shapeId
+   * @param color
+   * @private
+   */
+  _drawDebugRectangle(labeledThingInFrame, shapeId, color) {
+    const pointBounds = this.bounds;
+    const topLeft = new paper.Point(pointBounds.x, pointBounds.y);
+    const bottomRight = new paper.Point(pointBounds.x + pointBounds.height, pointBounds.y + pointBounds.width);
+    const rect = new PaperRectangle(labeledThingInFrame, shapeId, topLeft, bottomRight, color);
+    this.addChildren(rect);
   }
 
   /**
@@ -246,7 +267,7 @@ PaperPoint.getClass = () => {
 
 PaperPoint.CONTROL_SIZE = 10;
 PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE = 2;
-PaperPoint.RADIUS = (PaperPoint.CONTROL_SIZE / 2) + PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE;
+PaperPoint.RADIUS = PaperPoint.CONTROL_SIZE;
 PaperPoint.DIAMETER = PaperPoint.RADIUS * 2;
 
 export default PaperPoint;
