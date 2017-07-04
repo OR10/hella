@@ -123,14 +123,9 @@ export default class ExtendedBrowser {
           msg('custom bootstrap'),
         ].concat(bootstrapArgs);
 
-        console.log(bootstrapScript.toString(), bootstrapArgs);
-
        return Promise.all(moduleScriptPromises)
-          .then(() => console.log('module scripts executed'))
           .then(() => self._browser.executeAsyncScript_.apply(self._browser, bootstrapExecutionArray))
-          .then(() => console.log('custom bootstrap executed'))
           .then(() => self.executeScriptWithDescription('angular.resumeBootstrap(arguments[0]);', msg('resume bootstrap'), moduleNames))
-          .then(() => console.log('resume bootstrap executed'))
           .catch(deferred.reject);
       }
       else {
