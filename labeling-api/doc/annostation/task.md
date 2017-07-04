@@ -112,46 +112,6 @@ when the associated labeled things are not required.
 + Response 200 (application/json)
     + Attributes (object)
 
-## Interpolate labeled things in frame [/api/task/{taskId}/interpolate/{labeledThingId}]
-
-+ Parameters
-    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
-    + labeledThingId: `36047d429d50548893be41c6880632fd` (string, required) - The id of the labeled-thing-entity.
-
-### Start interpolation [POST]
-
-+ Request (application/json)
-    + Attributes
-        + type: `linear` (string, required) - The type of interpolation that should be performed.
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (Interpolation Status)
-
-## Timer [/api/task/{taskId}/timer/{userId}]
-
-+ Parameters
-    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
-    + userId: `3` (number, required) - The id of the user-entity.
-
-### Read timer value of a user [GET]
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (Task Timer)
-
-### Set timer value for a user [PUT]
-
-+ Request (application/json)
-    + Attributes (Task Timer)
-
-+ Response 200 (application/json)
-    + Attributes
-        + result (Task Timer)
-
-+ Response 403 (application/json)
-    + Attributes (object)
-
 ## Get the task structures [/api/task/{id}/labelStructure]
 
 + Parameters
@@ -214,6 +174,17 @@ Remove any assignment and set status to todo
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
 
 ### Set Status to reopen [POST]
+
++ Response 200 (application/json)
+
+## Set Status to in_progress [/api/task/{taskId}/status/in_progress]
+
+Remove any assignment and set status to in_progress
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Set Status to in_progress [POST]
 
 + Response 200 (application/json)
 
@@ -284,3 +255,14 @@ Change the phase for the task
         + result
             + taskId: `05c1a74d8eda4a16a355519c0f003504` (string)
             + databaseName: `taskdb-project-303e4737cb1ea602d0dfea44ce00b37f-task-303e4737cb1ea602d0dfea44ce02c5e3` (string)
+                        
+## Get the TaskCount for a Project [/api/taskCount/{projectId}]
+
++ Parameters
+    + projectIdId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the project-entity.
+
+### Get the TaskCount for a Project [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result (TaskCount)

@@ -142,7 +142,7 @@ class TaskListController {
         {
           title: 'Task is read-only',
           headline: 'This task is already assigned to someone else or you are not allowed to edit this task.',
-          message: 'You are only allowed to open it in real only mode',
+          message: 'You are only allowed to open it in read only mode',
           confirmButtonText: 'Open read only',
         }, () => this._gotoTask(taskId, this.taskPhase)
       );

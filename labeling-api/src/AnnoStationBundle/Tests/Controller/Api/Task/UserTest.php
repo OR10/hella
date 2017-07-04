@@ -89,10 +89,6 @@ class UserTest extends Tests\WebTestCase
 
     private function compareAssignedUserToCouchDbSecurityDocument(Model\LabelingTask $task, $user)
     {
-        if (!$this->getContainer()->getParameter('pouchdb_feature_enabled')){
-            $this->markTestSkipped('PouchDB not enabled');
-        }
-
         $resource = $this->guzzleClient->request(
             'GET',
             sprintf(

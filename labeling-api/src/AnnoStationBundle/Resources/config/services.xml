@@ -9,7 +9,6 @@
         <import resource="services/commands.xml"/>
         <import resource="services/database_facades.xml"/>
         <import resource="services/helper.xml"/>
-        <import resource="services/interpolation_algorithms.xml"/>
         <import resource="services/job_instructions.xml"/>
         <import resource="services/voters.xml"/>
         <import resource="services/monitoring.xml"/>
@@ -77,7 +76,6 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <argument type="service" id="annostation.services.couch_db_replicator_service"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_validate_doc_update_document_service"/>
-            <argument>%pouchdb_feature_enabled%</argument>
         </service>
 
         <service id="annostation.labeling_api.service.task_creator" class="AnnoStationBundle\Service\TaskCreator">
@@ -124,7 +122,6 @@
         </service>
         <service id="annostation.labeling_api.service.xml_validator.schema.requirements_xml_label_config"
                  class="AnnoStationBundle\Service\XmlValidator\Schema\RequirementsXmlLabelConfig">
-            <argument>%pouchdb_feature_enabled%</argument>
         </service>
         <service id="annostation.labeling_api.service.xml_validator.schema.requirements_xml_import"
                  class="AnnoStationBundle\Service\XmlValidator\Schema\RequirementsXmlImport">
@@ -227,11 +224,6 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
         </service>
 
-        <service id="annostation.labeling_api.service.interpolation" class="AnnoStationBundle\Service\Interpolation">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
-            <argument type="service" id="annostation.labeling_api.database.facade.status" />
-        </service>
-
         <service id="annostation.labeling_api.service.authentication.user_permissions"
                  class="AnnoStationBundle\Service\Authentication\UserPermissions">
             <argument type="service" id="security.token_storage"/>
@@ -270,15 +262,15 @@
         <service id="annostation.labeling_api.service.label_importer.simple_xml_2d"
                  class="AnnoStationBundle\Service\LabelImporter\Importer\SimpleXml2d">
             <argument type="service" id="annostation.labeling_api.service.task_incomplete"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
         </service>
 
         <service id="annostation.labeling_api.service.label_importer.simple_xml_3d"
                  class="AnnoStationBundle\Service\LabelImporter\Importer\SimpleXml3d">
             <argument type="service" id="annostation.labeling_api.service.task_incomplete"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
         </service>
 
         <service id="annostation.labeling_api.service.label_importer.simple_xml"
@@ -349,7 +341,6 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user"/>
             <argument type="service" id="annostation.labeling_api.database.facade.couch_db_security"/>
-            <argument>%pouchdb_feature_enabled%</argument>
             <argument>%couchdb_user_read_only%</argument>
         </service>
 
@@ -368,6 +359,30 @@
                  class="AnnoStationBundle\Service\LabeledFrameEndCalculationService">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_frame"/>
+        </service>
+
+        <service id="annostation.labeling_api.monitoring.check.security_document_existence_in_task_databases"
+                 class="AnnoStationBundle\Service\Monitoring\Check\SecurityDocumentExistenceInTaskDatabases">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument type="service" id="guzzle.client"/>
+            <argument>%couchdb_user%</argument>
+            <argument>%couchdb_password%</argument>
+            <argument>%couchdb_host%</argument>
+            <argument>%couchdb_port%</argument>
+            <tag name="liip_monitor.check" alias="security_document_existence_in_task_databases" group="default"/>
+        </service>
+
+        <service id="annostation.labeling_api.monitoring.check.validate_doc_update_document_existence_in_task_databases"
+                 class="AnnoStationBundle\Service\Monitoring\Check\ValidateDocUpdateDocumentExistenceInTaskDatabases">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument type="service" id="guzzle.client"/>
+            <argument>%couchdb_user%</argument>
+            <argument>%couchdb_password%</argument>
+            <argument>%couchdb_host%</argument>
+            <argument>%couchdb_port%</argument>
+            <tag name="liip_monitor.check" alias="validate_doc_update_document_existence_in_task_databases" group="default"/>
         </service>
     </services>
 </container>

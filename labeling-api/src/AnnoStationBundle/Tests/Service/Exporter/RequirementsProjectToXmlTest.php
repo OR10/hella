@@ -23,11 +23,6 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
     private $exporterFacade;
 
     /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
-
-    /**
      * @var Service\DatabaseDocumentManagerFactory
      */
     private $databaseDocumentManagerFactory;
@@ -123,10 +118,9 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
     private function createLabeledFrames(AppBundleModel\LabelingTask $task)
     {
-        if ($this->pouchdbFeatureEnabled) {
-            $databaseDocumentManager = $this->getDocumentManagerForTask($task);
-            $this->labeledFrameFacade = new Facade\LabeledFrame($databaseDocumentManager);
-        }
+        $databaseDocumentManager = $this->getDocumentManagerForTask($task);
+        $this->labeledFrameFacade = new Facade\LabeledFrame($databaseDocumentManager);
+
         $labeledFrame = Tests\Helper\LabeledFrameBuilder::create($task, 0)
             ->withClasses(['sun', 'summer'])
             ->build();
@@ -151,12 +145,10 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
     private function createCuboids(AppBundleModel\LabelingTask $task)
     {
-        if ($this->pouchdbFeatureEnabled) {
-            $databaseDocumentManager         = $this->getDocumentManagerForTask($task);
-            $this->labeledThingGroupFacade   = new Facade\LabeledThingGroup($databaseDocumentManager);
-            $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
-            $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
-        }
+        $databaseDocumentManager         = $this->getDocumentManagerForTask($task);
+        $this->labeledThingGroupFacade   = new Facade\LabeledThingGroup($databaseDocumentManager);
+        $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
+        $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
 
         $labeledThing = $this->createLabeledThing($task);
         $labeledThing->setOriginalId('e363906c1c4a5a5bd01e8902467d1426');
@@ -312,7 +304,6 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             'service.exporter.requirements_project_to_xml'
         );
         $this->exporterFacade                 = $this->getAnnostationService('database.facade.exporter');
-        $this->pouchdbFeatureEnabled          = $this->getContainer()->getParameter('pouchdb_feature_enabled');
         $this->databaseDocumentManagerFactory = $this->getService(
             'annostation.services.database_document_manager_factory'
         );
