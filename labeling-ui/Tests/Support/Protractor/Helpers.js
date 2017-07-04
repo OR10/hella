@@ -3,6 +3,8 @@ import featureFlags from '../../../Application/features.json';
 import PouchDb from '../PouchDb/PouchDbWrapper';
 import httpMock from 'protractor-http-mock';
 import {cloneDeep} from 'lodash';
+import ExtendedBrowser from './ExtendedBrowser';
+
 
 export function getMockRequestsMade(mock) {
   if (featureFlags.pouchdb) {
@@ -68,7 +70,7 @@ function waitForApplicationReady() {
   });
 }
 
-function bootstrapPouchDb(mocks) {
+function getPouchDbCustomBootstrap(mocks) {
   const knownIdentifierNames = [
     'sign',
     'lsr-01',
@@ -126,8 +128,17 @@ function bootstrapPouchDb(mocks) {
     }
   });
 
-  return PouchDb.bulkDocs(documents);
+  return [(documents, databaseName, next) => {
+      // In Browser context!
+      const db = new PouchDB(databaseName);
+
+      db.bulkDocs(documents).then(result => {
+        next(result);
+      });
+  }, documents, PouchDb.DATABASE_NAME];
 }
+
+
 
 const defaultTestConfig = {
   viewerWidth: 1024,
@@ -162,23 +173,17 @@ mock.teardown = () => {
 
 export function initApplication(url, testConfig = defaultTestConfig) {
   httpMock(mocks.shared.concat(mocks.specific));
-
   const builder = new UrlBuilder(testConfig);
-  (() => {
-    browser.get(builder.url(url));
-  })();
-  browser.wait(() => {
-    return browser.executeScript('return !!window.angular');
-  }, 10000);
 
-  // For some strange reason simply returning Promise.resolve() in storeMocksInPouch if Pouch is not active
-  // does not work.
   if (featureFlags.pouchdb) {
-    return bootstrapPouchDb(mocks.specific)
+    const customBootstrap = getPouchDbCustomBootstrap(mocks.specific);
+    const extendedBrowser = new ExtendedBrowser(browser);
+    return extendedBrowser.getWithCustomBootstrap.apply(extendedBrowser, [builder.url(url), undefined].concat(customBootstrap))
       .then(() => waitForApplicationReady());
   }
 
-  return waitForApplicationReady();
+  return browser.get(builder.url(url))
+    .then(() => waitForApplicationReady());
 }
 
 export function expectAllModalsToBeClosed() {
