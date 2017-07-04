@@ -2,7 +2,7 @@ import url from 'url';
 import selenium_webdriver from 'selenium-webdriver';
 import clientSideScripts from 'protractor/built/clientsidescripts';
 
-import {Command, Name as CommandName} from  'selenium-webdriver/lib/command';
+import {Command, Name as CommandName} from 'selenium-webdriver/lib/command';
 
 const DEFER_LABEL = 'NG_DEFER_BOOTSTRAP!';
 
@@ -14,7 +14,7 @@ export default class ExtendedBrowser {
     this._browser = browser;
   }
 
- executeScriptWithDescription(script, description) {
+  executeScriptWithDescription(script, description) {
     var scriptArgs = [];
     for (var _i = 2; _i < arguments.length; _i++) {
       scriptArgs[_i - 2] = arguments[_i];
@@ -33,11 +33,10 @@ export default class ExtendedBrowser {
    * @param {string} destination Destination URL.
    * @param {number=} timeout Number of milliseconds to wait for Angular to
    *     start.
-   * @param {Function} customBootstrap
+   * @param {[Function, ...*]} customBootstrap
    */
   getWithCustomBootstrap(destination, timeout, customBootstrap) {
     const self = this;
-    const customBootstrapArgs = Array.prototype.slice.call(arguments, 3);
     if (timeout === void 0) {
       timeout = self._browser.getPageTimeout;
     }
@@ -92,29 +91,47 @@ export default class ExtendedBrowser {
       }, function (err) {
         throw new Error('Error while running testForAngular: ' + err.message);
       })
-      .then(loadMocks, deferred.reject);
+      .then(loadMocks, deferred.reject)
+      .then(self._browser.plugins_.onPageStable())
+      .then(() => deferred.fulfill(), deferred.reject);
 
     function loadMocks(angularVersion) {
       if (angularVersion === 1) {
         // At this point, Angular will pause for us until angular.resumeBootstrap is called.
         var moduleNames = [];
+        var moduleScriptPromises = [];
         var _loop_1 = function (name_1, script, args) {
           moduleNames.push(name_1);
           var executeScriptArgs = [script, msg('add mock module ' + name_1)].concat(args);
-          self.executeScriptWithDescription.apply(self, executeScriptArgs)
-            .then(null, function (err) {
-              throw new Error('Error while running module script ' + name_1 + ': ' + err.message);
-            })
-            .then(null, deferred.reject);
+          moduleScriptPromises.push(
+            self.executeScriptWithDescription.apply(self, executeScriptArgs)
+              .then(null, function (err) {
+                throw new Error('Error while running module script ' + name_1 + ': ' + err.message);
+              })
+          );
         };
         for (var _i = 0, _a = self._browser.mockModules_; _i < _a.length; _i++) {
           var _b = _a[_i], name_1 = _b.name, script = _b.script, args = _b.args;
           _loop_1(name_1, script, args);
         }
-        self._browser.executeAsyncScript_.apply(self._browser, [customBootstrap, msg('custom bootstrap')].concat(customBootstrapArgs))
-          .then(null, deferred.reject);
-        self.executeScriptWithDescription('angular.resumeBootstrap(arguments[0]);', msg('resume bootstrap'), moduleNames)
-          .then(null, deferred.reject);
+
+        var bootstrapScript = customBootstrap[0];
+        var bootstrapArgs = customBootstrap.slice(1);
+
+        var bootstrapExecutionArray = [
+          bootstrapScript,
+          msg('custom bootstrap'),
+        ].concat(bootstrapArgs);
+
+        console.log(bootstrapScript.toString(), bootstrapArgs);
+
+       return Promise.all(moduleScriptPromises)
+          .then(() => console.log('module scripts executed'))
+          .then(() => self._browser.executeAsyncScript_.apply(self._browser, bootstrapExecutionArray))
+          .then(() => console.log('custom bootstrap executed'))
+          .then(() => self.executeScriptWithDescription('angular.resumeBootstrap(arguments[0]);', msg('resume bootstrap'), moduleNames))
+          .then(() => console.log('resume bootstrap executed'))
+          .catch(deferred.reject);
       }
       else {
         // TODO: support mock modules in Angular2. For now, error if someone
@@ -126,11 +143,6 @@ export default class ExtendedBrowser {
       }
     }
 
-    self._browser.driver.controlFlow().execute(function () {
-      return self._browser.plugins_.onPageStable().then(function () {
-        deferred.fulfill();
-      }, deferred.reject);
-    });
     return deferred.promise;
   };
 }

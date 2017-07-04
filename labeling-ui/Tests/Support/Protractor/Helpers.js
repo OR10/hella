@@ -128,16 +128,19 @@ function getPouchDbCustomBootstrap(mocks) {
     }
   });
 
-  return [(documents, databaseName, next) => {
+  return [
+    function (documents, databaseName, next) {
       // In Browser context!
       const db = new PouchDB(databaseName);
 
-      db.bulkDocs(documents).then(result => {
-        next(result);
+      db.bulkDocs(documents).then(function (result) {
+        next();
       });
-  }, documents, PouchDb.DATABASE_NAME];
+    },
+    documents,
+    PouchDb.DATABASE_NAME
+  ];
 }
-
 
 
 const defaultTestConfig = {
@@ -178,7 +181,7 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   if (featureFlags.pouchdb) {
     const customBootstrap = getPouchDbCustomBootstrap(mocks.specific);
     const extendedBrowser = new ExtendedBrowser(browser);
-    return extendedBrowser.getWithCustomBootstrap.apply(extendedBrowser, [builder.url(url), undefined].concat(customBootstrap))
+    return extendedBrowser.getWithCustomBootstrap(builder.url(url), undefined, customBootstrap)
       .then(() => waitForApplicationReady());
   }
 
