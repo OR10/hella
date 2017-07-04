@@ -6,28 +6,29 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   /**
    * @param {LabeledThingGroupInFrame} labeledThingGroupInFrame
    * @param {string} shapeId
-   * @param {Array} bounds
+   * @param {Array} shapes
    * @param {{primary: string, secondary: string}} color
    */
-  constructor(labeledThingGroupInFrame, shapeId, bounds, color) {
+  constructor(labeledThingGroupInFrame, shapeId, shapes, color) {
     super(labeledThingGroupInFrame, shapeId, color);
 
     // Do not name it _bounds as this name is already used internally by paperjs
-    this._allShapeBounds = bounds;
+    this._allShapes = shapes.filter(shape => !(shape instanceof PaperGroupRectangle));
     this._drawShapes();
   }
 
   _drawShapes() {
     this.removeChildren();
 
-    this._allShapeBounds.forEach(bounds => {
+    this._allShapes.forEach(shape => {
+      let bounds = shape.bounds;
       const topLeft = new paper.Point(bounds.x, bounds.y);
       const bottomRight = new paper.Point(bounds.x + bounds.width, bounds.y + bounds.height);
       const groupShape = new PaperGroupRectangle(this._labeledThingGroupInFrame, this._labeledThingGroupInFrame.id, topLeft, bottomRight, this._color);
       this.addChild(groupShape);
     });
 
-    this._drawDebugShape();
+    // this._drawDebugShape();
   }
 
   _drawDebugShape() {
@@ -43,7 +44,8 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
     let bottomRightX;
     let bottomRightY;
 
-    this._allShapeBounds.forEach(bounds => {
+    this._allShapes.forEach(shape => {
+      let bounds = shape.bounds;
       if (bounds.x < topLeftX || topLeftX === undefined) {
         topLeftX = bounds.x;
       }
@@ -73,9 +75,6 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
       width: width,
       height: height
     };
-
-
-    return this._allShapeBounds;
   }
 
   /**
@@ -131,6 +130,30 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
     return 'pointer';
   }
 
+
+  /**
+   * Add padding to all group shapes of this group
+   *
+   * @param padding
+   */
+  addPadding(padding = 5) {
+    this._allShapes.forEach((shape, index) => {
+      let groupPosition = shape.groupIds.indexOf(this.groupId) + 1;
+      if (groupPosition === 0) {
+        groupPosition = shape.groupIds.length + 1;
+      }
+      const currentGroupPadding = padding * groupPosition;
+
+      let bounds = shape.bounds;
+      bounds.x -= currentGroupPadding;
+      bounds.y -= currentGroupPadding;
+      bounds.width += currentGroupPadding * 2;
+      bounds.height += currentGroupPadding * 2;
+
+      this.children[index].setSize(new paper.Point(bounds.x, bounds.y), bounds.width, bounds.height, 0);
+    });
+  }
+
   /**
    * @param {Array} allBounds
    */
@@ -138,7 +161,6 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
     allBounds.forEach((bounds, index) => {
       this.children[index].setSize(bounds.point, bounds.width, bounds.height);
     });
-
   }
 
   resize() {

@@ -156,6 +156,15 @@ class PaperGroupRectangle extends PaperGroupShape {
     this._drawShape();
   }
 
+  /**
+   * Add Padding to the group shape
+   * @param {number} padding
+   */
+  addPadding(padding = 5) {
+    const {point, width, height} = this.bounds;
+    this.setSize(point, width, height, padding);
+  }
+
   resize() {
     // Do nothing
   }

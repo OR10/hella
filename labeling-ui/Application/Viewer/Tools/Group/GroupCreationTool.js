@@ -103,7 +103,6 @@ class GroupCreationTool extends CreationTool {
         return;
       }
 
-      const shapesBound = this._labeledThingGroupService.getBoundsForShapes(shapes);
       const {color, colorIdString} = this._getColor();
 
       const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);
@@ -114,12 +113,12 @@ class GroupCreationTool extends CreationTool {
         paperGroup = new PaperGroupRectangleMulti(
           labeledThingGroupInFrame,
           paperShape.id,
-          shapesBound,
+          shapes,
           color
         );
 
-        // Resize to add necessary padding
-        paperGroup.setSize(shapesBound);
+        // Add necessary padding
+        paperGroup.addPadding();
 
         // Place this group shape behind all other shapes
         paperGroup.sendToBack();

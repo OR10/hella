@@ -165,12 +165,10 @@ class PaperShapeFactory {
   createPaperGroupShape(labeledThingGroupInFrame, shapesInBound) {
     const colorId = parseInt(labeledThingGroupInFrame.labeledThingGroup.lineColor, 10);
     const color = this._entityColorService.getColorById(colorId);
+    const paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, shapesInBound, color);
 
-    const bounds = this._labeledThingGroupService.getBoundsForShapes(shapesInBound);
-    const paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, bounds, color);
-
-    // Resize to add necessary padding
-    paperGroup.setSize(bounds);
+    // Add necessary padding
+    paperGroup.addPadding();
 
     // Place this group shape behind all other shapes
     paperGroup.sendToBack();
