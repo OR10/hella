@@ -152,6 +152,12 @@ export default class Application {
   bootstrap(element) {
     Promise.resolve()
       .then(() => this.init())
+      .then(() => {
+        // In testing mode additional bootstrapping is allowed, before the app is started.
+        if (window.__testingBootstrap !== undefined) {
+          return window.__testingBootstrap;
+        }
+      })
       .then(() => angular.bootstrap(element, [this.moduleName], {strictDi: true}));
   }
 
