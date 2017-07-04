@@ -7,7 +7,7 @@ import ExtendedBrowser from './ExtendedBrowser';
 
 export function getMockRequestsMade(mock) {
   if (featureFlags.pouchdb) {
-    return browser.sleep(300).then(() => PouchDb.allDocs());
+    return browser.sleep(1000).then(() => PouchDb.allDocs());
   }
   return httpMock.requestsMade().then(requests => {
     return requests.map(request => {
