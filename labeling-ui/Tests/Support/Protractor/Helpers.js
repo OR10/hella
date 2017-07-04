@@ -141,7 +141,6 @@ function getPouchDbCustomBootstrap(mocks) {
   ];
 }
 
-
 const defaultTestConfig = {
   viewerWidth: 1024,
   viewerHeight: 620,
