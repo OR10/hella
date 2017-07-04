@@ -34,5 +34,17 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
     const group = new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
     const groupRectangles = group.children;
     expect(groupRectangles.length).toEqual(2);
+
+    const firstGroupShapeBounds = groupRectangles[0].bounds;
+    expect(firstGroupShapeBounds.x).toEqual(firstShape.bounds.x);
+    expect(firstGroupShapeBounds.y).toEqual(firstShape.bounds.y);
+    expect(firstGroupShapeBounds.width).toEqual(firstShape.bounds.width);
+    expect(firstGroupShapeBounds.height).toEqual(firstShape.bounds.height);
+
+    const secondGroupShapeBounds = groupRectangles[1].bounds;
+    expect(secondGroupShapeBounds.x).toEqual(secondShape.bounds.x);
+    expect(secondGroupShapeBounds.y).toEqual(secondShape.bounds.y);
+    expect(secondGroupShapeBounds.width).toEqual(secondShape.bounds.width);
+    expect(secondGroupShapeBounds.height).toEqual(secondShape.bounds.height);
   });
 });
