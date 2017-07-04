@@ -58,18 +58,4 @@ class WebTestCase extends KernelTestCase
             'PHP_AUTH_PW'   => $password === null ? self::PASSWORD : $password,
         ];
     }
-
-    protected function skipOnPouchDbEnviroment()
-    {
-        if ($this->getContainer()->getParameter('pouchdb_feature_enabled')){
-            $this->markTestSkipped('This test is not for the PouchDB environment!');
-        }
-    }
-
-    protected function skipOnNonPouchDbEnviroment()
-    {
-        if (!$this->getContainer()->getParameter('pouchdb_feature_enabled')){
-            $this->markTestSkipped('This test is only for the PouchDB environment!');
-        }
-    }
 }

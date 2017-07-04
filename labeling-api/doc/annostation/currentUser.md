@@ -48,3 +48,13 @@ Get user permissions
             + canViewReopenButton: `true` (boolean)
             + unassignPermission: `true` (boolean)
             + canViewProjectButton: `true` (boolean)
+
+## Get users organisations [/api/currentUser/organisations]
+
+### Get users organisations [GET]
+
+Get all assigned organisations to this user
+
++ Response 200 (application/json)
+    + Attributes
+        + result (array[Organisation])

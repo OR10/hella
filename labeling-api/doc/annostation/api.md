@@ -17,17 +17,12 @@ broken a 400 status code should be returned.
 <!-- include(dataStructures.md) -->
 <!-- include(video.md) -->
 <!-- include(task.md) -->
-<!-- include(labeledThingInFrame.md) -->
-<!-- include(labeledThing.md) -->
-<!-- include(status.md) -->
 <!-- include(currentUser.md) -->
 <!-- include(user.md) -->
 <!-- include(project.md) -->
-<!-- include(dimensionPrediction.md) -->
 <!-- include(labelingGroup.md) -->
 <!-- include(taskConfiguration.md) -->
 <!-- include(system.md) -->
-<!-- include(labeledThingGroup.md) -->
 <!-- include(organisation.md) -->
 <!-- include(projectImporter.md) -->
 <!-- include(campaign.md) -->

@@ -72,20 +72,6 @@
 
 + message: `Export started` (string)
 
-## Interpolation Type
-
-+ type: `linear` (string) - The type of the interpolation.
-
-## Interpolation Status
-
-+ id: `e47f4bdfd22883b196ce45a8c980ab68` (string) - The id of the status document.
-+ type: `AppBundle.Model.Interpolation.Status` (string) - The type of the status document.
-+ status: `success` (string) - The current status.
-
-## Task Timer
-
-+ time: `123456789` (number) - The time (in seconds) a user spend on a certain task.
-
 ## CurrentUser
 
 + id: `1` (number) - The id of the current user.
@@ -127,13 +113,6 @@
 + projectId: `16b00780792d045c496513f01f006f09` (string) - project id
 + filename: `csv.zip` (string) - export filename
 + taskIds: `583c0838ea5f72671b1b21605c3d6b47` (array[string]) - included task ids for this export
-
-# DimensionPrediction
-+ type: `cuboid` (string) - type of the prediction
-+ prediction:
-    + width: `1` (number) - width of the object
-    + height: `1` (number) - width of the object
-    + depth: `1` (number) - width of the object
     
 # LabelingGroup
 + id: `36047d429d50548893be41c6880632fd` (string) - Labeling Group ID
@@ -204,3 +183,30 @@
 + rev: `1-36047d429d50548893be41c6880632gg` (string) - The Revision of the Campaign
 + name: `Some Campaign` (string) - Campaign Name
 + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string) - ID of the Organisation
+
+# TaskCount
++ preprocessing:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ labeling:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ review:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ revision:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ all_phases_done: `0`
