@@ -177,6 +177,17 @@ Remove any assignment and set status to todo
 
 + Response 200 (application/json)
 
+## Set Status to in_progress [/api/task/{taskId}/status/in_progress]
+
+Remove any assignment and set status to in_progress
+
++ Parameters
+    + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
+
+### Set Status to in_progress [POST]
+
++ Response 200 (application/json)
+
 ## Get sum of Tasks by status [/api/projectCount]
 
 ### Sum of Tasks [GET]
@@ -244,3 +255,14 @@ Change the phase for the task
         + result
             + taskId: `05c1a74d8eda4a16a355519c0f003504` (string)
             + databaseName: `taskdb-project-303e4737cb1ea602d0dfea44ce00b37f-task-303e4737cb1ea602d0dfea44ce02c5e3` (string)
+                        
+## Get the TaskCount for a Project [/api/taskCount/{projectId}]
+
++ Parameters
+    + projectIdId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the project-entity.
+
+### Get the TaskCount for a Project [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + result (TaskCount)

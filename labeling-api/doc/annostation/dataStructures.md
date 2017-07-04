@@ -183,3 +183,30 @@
 + rev: `1-36047d429d50548893be41c6880632gg` (string) - The Revision of the Campaign
 + name: `Some Campaign` (string) - Campaign Name
 + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string) - ID of the Organisation
+
+# TaskCount
++ preprocessing:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ labeling:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ review:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ revision:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ all_phases_done: `0`

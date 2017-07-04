@@ -129,6 +129,32 @@
     + Attributes
         + result true
 
+## Mark a project as deleted [/api/organisation/{organisationId}/project/{projectId}/status/deleted]
+
++ Parameters
+    + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+
+### Mark Project as deleted [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + success: `true` (boolean)
+
+## Delete a project [/api/organisation/{organisationId}/project/{projectId}/delete]
+
++ Parameters
+    + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+
+### Delete a project [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + success: `true` (boolean) 
+
 ## Create a new Report [/api/organisation/{organisationId}/project/{projectId}/report]
 
 + Parameters
@@ -173,7 +199,20 @@
     + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
     + assignedLabelCoordinatorId: `a87f77b135c47576bbde8bca9eac2204` (string, required) - The id of the coordinator user.
 
-### Assign Project to Coordinator [GET]
+### Assign Project to Coordinator [POST]
+
++ Response 200 (application/json)
+    + Attributes
+        + result Project
+
+## Change the LabelGroup assignment [/api/organisation/{organisationId}/project/{projectId}/assignLabelGroup]
+
++ Parameters
+    + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
+    + projectId: `e47f4bdfd22883b196ce45a8c980ab68` (string, required) - The id of the project.
+    + labelGroupId: `a87f77b135c47576bbde8bca9eac2204` (string, required) - The id of the LabelGroup.
+
+### Change the LabelGroup assignment [POST]
 
 + Response 200 (application/json)
     + Attributes
