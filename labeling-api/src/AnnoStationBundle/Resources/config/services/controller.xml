@@ -169,11 +169,6 @@
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
-        <service
-                id="annostation.labeling_api.controller.api.test"
-                class="AnnoStationBundle\Controller\Api\Test">
-        </service>
-
         <service id="annostation.labeling_api.controller.api.status" class="AnnoStationBundle\Controller\Api\Status">
             <argument type="service" id="annostation.labeling_api.database.facade.status"/>
         </service>
