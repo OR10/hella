@@ -26,4 +26,13 @@
     >
         <i class="icon icon-tool-{{group.shape}}"></i>
     </button>
+    <h1><i class="fa fa-th-large"></i></h1>
+    <button ng-repeat="tool in vm.additionalTools"
+            class="tool-button tool-additional-tools tool-{{$index}} tool-{{tool.shape}}"
+            ng-class="{'active': tool.id === vm.selectedLabelStructureObject.id}"
+            ng-click="vm.setCurrentLabelStructureObject(tool)"
+            tooltip="{{tool.name}}"
+    >
+        <i class="icon icon-tool-{{tool.shape}}"></i>
+    </button>
 </div>
