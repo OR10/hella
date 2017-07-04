@@ -28,7 +28,7 @@ class LabeledThingGroupService {
    */
   getBoundsForShapes(shapes) {
     const shapeBounds = shapes.map(shape => shape.bounds);
-    let groupShapeBounds = [];
+    const groupShapeBounds = [];
 
     shapeBounds.forEach(bound => {
       let minX;

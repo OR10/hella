@@ -3,8 +3,7 @@ import paper from 'paper';
 import PaperShape from './PaperShape';
 import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
-// Only needed, when using debug rectangle
-// import PaperRectangle from './PaperRectangle';
+import PaperRectangle from './PaperRectangle';
 
 /**
  * @extends PaperPath

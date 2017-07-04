@@ -1,6 +1,4 @@
-import paper from 'paper';
 import CreationTool from '../CreationTool';
-import PaperGroupRectangle from '../../Shapes/PaperGroupRectangle';
 import PaperGroupRectangleMulti from '../../Shapes/PaperGroupRectangleMulti';
 
 class GroupCreationTool extends CreationTool {

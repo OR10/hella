@@ -21,7 +21,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
     this.removeChildren();
 
     this._allShapes.forEach(shape => {
-      let bounds = shape.bounds;
+      const bounds = shape.bounds;
       const topLeft = new paper.Point(bounds.x, bounds.y);
       const bottomRight = new paper.Point(bounds.x + bounds.width, bounds.y + bounds.height);
       const groupShape = new PaperGroupRectangle(this._labeledThingGroupInFrame, this._labeledThingGroupInFrame.id, topLeft, bottomRight, this._color);
@@ -45,7 +45,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
     let bottomRightY;
 
     this._allShapes.forEach(shape => {
-      let bounds = shape.bounds;
+      const bounds = shape.bounds;
       if (bounds.x < topLeftX || topLeftX === undefined) {
         topLeftX = bounds.x;
       }
@@ -73,7 +73,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
       x: topLeftX,
       y: topLeftY,
       width: width,
-      height: height
+      height: height,
     };
   }
 

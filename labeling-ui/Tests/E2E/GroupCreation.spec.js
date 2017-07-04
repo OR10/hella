@@ -4,7 +4,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Group Creation', () => {
+describe('Group Creation', () => {
   let assets;
   let sharedMocks;
   let viewer;
