@@ -5,7 +5,6 @@ import httpMock from 'protractor-http-mock';
 import {cloneDeep} from 'lodash';
 import ExtendedBrowser from './ExtendedBrowser';
 
-
 export function getMockRequestsMade(mock) {
   if (featureFlags.pouchdb) {
     return browser.sleep(300).then(() => PouchDb.allDocs());
