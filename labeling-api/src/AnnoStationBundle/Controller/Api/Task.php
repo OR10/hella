@@ -104,16 +104,21 @@ class Task extends Controller\Base
         $limit      = $request->query->has('limit') ? $request->query->getInt('limit') : null;
         $taskPhase  = $request->query->get('phase');
         $taskStatus = $request->query->get('taskStatus');
+        $projectId  = $request->query->get('project');
         /** @var Model\User $user */
-        $user       = $this->tokenStorage->getToken()->getUser();
+        $user = $this->tokenStorage->getToken()->getUser();
 
-        $project = null;
-        if ($request->query->has('project')) {
-            $project = $this->projectFacade->find($request->query->get('project'));
+        if ($projectId === null) {
+            throw new Exception\BadRequestHttpException('Please provide a project ID');
+        }
 
-            if (!$project->isAccessibleBy($user)) {
-                throw new Exception\BadRequestHttpException('You are not allowed to access this project!');
-            }
+        $project = $this->projectFacade->find($projectId);
+        if ($project === null) {
+            throw new Exception\BadRequestHttpException(sprintf('There is no project with the id "%s"', $projectId));
+        }
+
+        if (!$project->isAccessibleBy($user)) {
+            throw new Exception\BadRequestHttpException('You are not allowed to access this project!');
         }
 
         if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
