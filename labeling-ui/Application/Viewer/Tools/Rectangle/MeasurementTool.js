@@ -1,4 +1,3 @@
-import paper from 'paper';
 import PaperTool from '../PaperTool';
 import PaperMeasurementRectangle from '../../Shapes/PaperMeasurementRectangle';
 import Handle from '../../Shapes/Handles/Handle';
