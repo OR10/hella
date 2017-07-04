@@ -143,14 +143,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
         groupPosition = shape.groupIds.length + 1;
       }
       const currentGroupPadding = padding * groupPosition;
-
-      let bounds = shape.bounds;
-      bounds.x -= currentGroupPadding;
-      bounds.y -= currentGroupPadding;
-      bounds.width += currentGroupPadding * 2;
-      bounds.height += currentGroupPadding * 2;
-
-      this.children[index].setSize(new paper.Point(bounds.x, bounds.y), bounds.width, bounds.height, 0);
+      this.children[index].addPadding(currentGroupPadding);
     });
   }
 
