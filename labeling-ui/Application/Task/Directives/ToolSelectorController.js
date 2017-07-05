@@ -7,6 +7,16 @@ import PaperFrame from '../../Viewer/Shapes/PaperFrame';
  */
 class ToolSelectorController {
   constructor() {
+    /**
+     * @type {Array.<Object>}
+     */
+    this.additionalTools = [
+      {
+        id: 'measurement-rectangle',
+        name: 'Rectangle Measurement',
+        shape: 'measurement-rectangle',
+      },
+    ];
   }
 
   /**

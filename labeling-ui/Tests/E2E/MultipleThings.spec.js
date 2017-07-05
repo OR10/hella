@@ -129,10 +129,10 @@ describe('Multiple Things', () => {
   });
 
   it('it should draw multiple different things', done => {
-    const toolButton0 = element(by.css('button.tool-button.tool-0'));
-    const toolButton1 = element(by.css('button.tool-button.tool-1'));
-    const toolButton2 = element(by.css('button.tool-button.tool-2'));
-    const toolButton3 = element(by.css('button.tool-button.tool-3'));
+    const toolButton0 = element(by.css('button.tool-button.tool-thing.tool-0'));
+    const toolButton1 = element(by.css('button.tool-button.tool-thing.tool-1'));
+    const toolButton2 = element(by.css('button.tool-button.tool-thing.tool-2'));
+    const toolButton3 = element(by.css('button.tool-button.tool-thing.tool-3'));
     mock(sharedMocks.concat([
       assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0to4,

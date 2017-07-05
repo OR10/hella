@@ -83,6 +83,7 @@
     "path": "^0.12.7",
     "powerline-statusbar": "^1.0.4",
     "protractor": "^4.0.0",
+    "protractor-console": "2.0.1",
     "protractor-http-mock": "git+ssh://git@github.crosscan.com/crosscan/protractor-http-mock.git",
     "proxy-middleware": "^0.14.0",
     "request-promise": "^2.0.1",
