@@ -206,8 +206,75 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
     });
 
     describe('addPadding', () => {
-      it('adds padding to every child', () => {
+      const paddingTestGroupId = 'padding-test';
 
+      beforeEach(() => {
+        labeledThingGroupInFrame.labeledThingGroup = {
+          id: paddingTestGroupId
+        };
+
+        firstShape.groupIds = [];
+        secondShape.groupIds = [];
+
+        spyOn(firstChild, 'addPadding');
+        spyOn(secondChild, 'addPadding');
+      });
+
+      it('adds a padding of 5 to every child', () => {
+        group.addPadding();
+
+        expect(firstChild.addPadding).toHaveBeenCalledWith(5);
+        expect(secondChild.addPadding).toHaveBeenCalledWith(5);
+      });
+
+      it('adds a padding of 10 to every child', () => {
+        const padding = 10;
+
+        group.addPadding(padding);
+
+        expect(firstChild.addPadding).toHaveBeenCalledWith(padding);
+        expect(secondChild.addPadding).toHaveBeenCalledWith(padding);
+      });
+
+      it('adds a padding of 10 if shape already has another group', () => {
+        firstShape.groupIds = ['other-group'];
+
+        group.addPadding();
+
+        expect(firstChild.addPadding).toHaveBeenCalledWith(10);
+        expect(secondChild.addPadding).toHaveBeenCalledWith(5);
+      });
+
+      it('adds the padding corresponding to the group ids position in the shapes groups (one shape)', () => {
+        secondShape.groupIds = [
+          'first-group',
+          'second-group',
+          'third-group',
+          paddingTestGroupId,
+        ];
+
+        group.addPadding();
+
+        expect(firstChild.addPadding).toHaveBeenCalledWith(5);
+        expect(secondChild.addPadding).toHaveBeenCalledWith(20);
+      });
+
+      it('adds the padding corresponding to the group ids position in the shapes groups (two shape)', () => {
+        firstShape.groupIds = [
+          'first-group',
+          paddingTestGroupId,
+        ];
+
+        secondShape.groupIds = [
+          'first-group',
+          'second-group',
+          paddingTestGroupId,
+        ];
+
+        group.addPadding();
+
+        expect(firstChild.addPadding).toHaveBeenCalledWith(10);
+        expect(secondChild.addPadding).toHaveBeenCalledWith(15);
       });
     });
   });
