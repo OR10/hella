@@ -44,7 +44,8 @@
 + createdAt: `2017-05-16T12:15:01+0200` (string) - Task creation date
 + video: (Video)
 + project: (Project)
-+ users: Array(User)
++ users: (array)
+    - (User)
 
 ## FrameLocation
 
