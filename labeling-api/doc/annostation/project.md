@@ -44,13 +44,16 @@
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
-    + name: `Some Project` (string) - Project name
-    + review: `true` (boolean) - Review process?
-    + frameSkip: `22` (number) - Number of frame skips
-    + startFrameNumber: `22` (number) - Start frame number
-    + splitEach: `0` (number) - Split task every x sec
 
 ### Create Project [POST]
+
++ Request (application/json)
+    + Attributes
+        + name: `Some Project` (string) - Project name
+        + review: `true` (boolean) - Review process?
+        + frameSkip: `22` (number) - Number of frame skips
+        + startFrameNumber: `22` (number) - Start frame number
+        + splitEach: `0` (number) - Split task every x sec
 
 + Response 200 (application/json)
     + Attributes
@@ -167,7 +170,7 @@
     + Attributes
         + result array(Report)
 
-## Get all Report for Project [/api/organisation/{organisationId}/project/{projectId}/report]
+## Get all Reports for Project [/api/organisation/{organisationId}/project/{projectId}/report]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.

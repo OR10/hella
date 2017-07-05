@@ -7,9 +7,6 @@
     
 ### Own Task Configurations [GET]
 
-+ Parameters
-    + type: `simpleXml` (string, optional) - Limit the result to a type.
-
 + Response 200 (application/json)
     + Attributes
         + result

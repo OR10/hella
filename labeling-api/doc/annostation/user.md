@@ -13,6 +13,9 @@
 
 ### Add a new user [POST]
 
++ Request (application/json)
+    + Attributes (User)
+
 + Response 200 (application/json)
     + Attributes
         + result
@@ -37,6 +40,9 @@
 
 ### Edit a user [PUT]
 
++ Request (application/json)
+    + Attributes (User)
+    
 + Response 200 (application/json)
     + Attributes
         + result
