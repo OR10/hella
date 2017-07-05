@@ -24,8 +24,12 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
     };
   });
 
-  function createMultiRectangle(shapes) {
+  function createMultiRectangle(shapes = createDefaultShapesArray()) {
     return new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
+  }
+
+  function createDefaultShapesArray() {
+    return [firstShape, secondShape];
   }
 
   function setupPaperJs() {
@@ -45,8 +49,7 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
     let shapes;
     let group;
     beforeEach(() => {
-      shapes = [firstShape, secondShape];
-      group = createMultiRectangle(shapes);
+      group = createMultiRectangle();
     });
 
     it('creates a group for every shape upon instantation', () => {
@@ -103,8 +106,7 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
     let secondChild;
 
     beforeEach(() => {
-      const shapes = [firstShape, secondShape];
-      group = createMultiRectangle(shapes);
+      group = createMultiRectangle();
       firstChild = group.children[0];
       secondChild = group.children[1];
     });
@@ -134,5 +136,91 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
         expect(secondChild.deselect).toHaveBeenCalledTimes(1);
       });
     });
+
+    describe('moveTo()', () => {
+      it('moves every child', () => {
+
+        spyOn(firstChild, 'moveTo');
+        spyOn(secondChild, 'moveTo');
+
+        group.moveTo();
+
+        expect(firstChild.moveTo).toHaveBeenCalledTimes(1);
+        expect(secondChild.moveTo).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('resize()', () => {
+      it('resizes every child', () => {
+
+        spyOn(firstChild, 'resize');
+        spyOn(secondChild, 'resize');
+
+        group.resize();
+
+        expect(firstChild.resize).toHaveBeenCalledTimes(1);
+        expect(secondChild.resize).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('fixOrientation()', () => {
+      it('fixes orientation every child', () => {
+
+        spyOn(firstChild, 'fixOrientation');
+        spyOn(secondChild, 'fixOrientation');
+
+        group.fixOrientation();
+
+        expect(firstChild.fixOrientation).toHaveBeenCalledTimes(1);
+        expect(secondChild.fixOrientation).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('setSize()', () => {
+      it('sets the size for every child', () => {
+
+      });
+    });
+
+    describe('addPadding', () => {
+      it('adds padding to every child', () => {
+
+      });
+    });
   });
+
+  describe('getClass', () => {
+    it('returns "group-rectangle"', () => {
+      const group = createMultiRectangle();
+      const className = group.getClass();
+      expect(className).toEqual('group-rectangle');
+    });
+  });
+
+  describe('getToolActionIdentifier', () => {
+    it('returns "move"', () => {
+      const group = createMultiRectangle();
+      const toolActionIdentifier = group.getToolActionIdentifier();
+      expect(toolActionIdentifier).toEqual('move');
+    });
+  });
+
+  describe('getCursor', () => {
+    it('returns "pointer"', () => {
+      const group = createMultiRectangle();
+      const cursor = group.getCursor();
+      expect(cursor).toEqual('pointer');
+    });
+  });
+
+  describe('position', () => {
+    it('throws an error since the position of multi group cannnot be determined', () => {
+      const group = createMultiRectangle();
+      function throwWrapper() {
+        const position = group.position;
+      }
+      expect(throwWrapper).toThrowError('Cannot determine position of multiple rectangles')
+    });
+  });
+
 });
