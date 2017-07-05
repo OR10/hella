@@ -2,7 +2,7 @@ import paper from 'paper';
 import PaperGroupRectangleMulti from 'Application/Viewer/Shapes/PaperGroupRectangleMulti';
 import PaperGroupRectangle from 'Application/Viewer/Shapes/PaperGroupRectangle';
 
-fdescribe('PaperGroupRectangleMulti Test Suite', () => {
+describe('PaperGroupRectangleMulti Test Suite', () => {
   let firstShape;
   let secondShape;
   let labeledThingGroupInFrame;
@@ -18,20 +18,20 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
       bounds: {x: 2, y: 2, width: 20, height: 20},
     };
     labeledThingGroupInFrame = {
-      id: 'foobar-heinz'
+      id: 'foobar-heinz',
     };
     color = {
       primary: 'first-color',
-      secondary: 'second-color'
+      secondary: 'second-color',
     };
   });
 
-  function createMultiRectangle(shapes = createDefaultShapesArray()) {
-    return new PaperGroupRectangleMulti(labeledThingGroupInFrame, shapeId, shapes, color);
-  }
-
   function createDefaultShapesArray() {
     return [firstShape, secondShape];
+  }
+
+  function createMultiRectangle(shapes = createDefaultShapesArray()) {
+    return new PaperGroupRectangleMulti(labeledThingGroupInFrame, shapeId, shapes, color);
   }
 
   function setupPaperJs() {
@@ -95,7 +95,7 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
         x: 1,
         y: 1,
         width: 299,
-        height: 251
+        height: 251,
       };
 
       expect(group.bounds).toEqual(expectedBounds);
@@ -115,7 +115,6 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
 
     describe('select()', () => {
       it('selects every child', () => {
-
         spyOn(firstChild, 'select');
         spyOn(secondChild, 'select');
 
@@ -128,7 +127,6 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
 
     describe('deselect()', () => {
       it('deselects every child', () => {
-
         spyOn(firstChild, 'deselect');
         spyOn(secondChild, 'deselect');
 
@@ -141,7 +139,6 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
 
     describe('moveTo()', () => {
       it('moves every child', () => {
-
         spyOn(firstChild, 'moveTo');
         spyOn(secondChild, 'moveTo');
 
@@ -154,7 +151,6 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
 
     describe('resize()', () => {
       it('resizes every child', () => {
-
         spyOn(firstChild, 'resize');
         spyOn(secondChild, 'resize');
 
@@ -167,7 +163,6 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
 
     describe('fixOrientation()', () => {
       it('fixes orientation every child', () => {
-
         spyOn(firstChild, 'fixOrientation');
         spyOn(secondChild, 'fixOrientation');
 
@@ -212,7 +207,7 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
 
       beforeEach(() => {
         labeledThingGroupInFrame.labeledThingGroup = {
-          id: paddingTestGroupId
+          id: paddingTestGroupId,
         };
 
         firstShape.groupIds = [];
@@ -285,7 +280,7 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
 
       beforeEach(() => {
         labeledThingGroupInFrame.labeledThingGroup = {
-          id: toJsonGroupId
+          id: toJsonGroupId,
         };
       });
 
@@ -347,9 +342,10 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
     it('throws an error since the position of multi group cannnot be determined', () => {
       const group = createMultiRectangle();
       function throwWrapper() {
-        const position = group.position;
+        // use group.position in any way, so that eslint is happy ^^
+        expect(group.position).toBe(4);
       }
-      expect(throwWrapper).toThrowError('Cannot determine position of multiple rectangles')
+      expect(throwWrapper).toThrowError('Cannot determine position of multiple rectangles');
     });
   });
 });
