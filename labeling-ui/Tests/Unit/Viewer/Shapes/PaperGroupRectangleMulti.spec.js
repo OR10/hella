@@ -178,7 +178,30 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
 
     describe('setSize()', () => {
       it('sets the size for every child', () => {
+        const boundsOne = {point: {}, width: 1, height: 1};
+        const boundsTwo = {point: {}, width: 1, height: 1};
+        const allBounds = [boundsOne, boundsTwo];
+        spyOn(firstChild, 'setSize');
+        spyOn(secondChild, 'setSize');
 
+        group.setSize(allBounds);
+
+        expect(firstChild.setSize).toHaveBeenCalledWith(boundsOne.point, boundsOne.width, boundsOne.height);
+        expect(secondChild.setSize).toHaveBeenCalledWith(boundsTwo.point, boundsTwo.width, boundsTwo.height);
+      });
+
+      it('throws an error if more bounds are passed than children exist', () => {
+        const boundsOne = {point: {}, width: 1, height: 1};
+        const boundsTwo = {point: {}, width: 1, height: 1};
+        const boundsThree = {point: {}, width: 1, height: 1};
+        const allBounds = [boundsOne, boundsTwo, boundsThree];
+
+        function throwWrapper() {
+          group.setSize(allBounds);
+        }
+
+        const typeError = new TypeError('Cannot read property \'setSize\' of undefined');
+        expect(throwWrapper).toThrow(typeError);
       });
     });
 
