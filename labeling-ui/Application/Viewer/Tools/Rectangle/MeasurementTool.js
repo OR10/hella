@@ -99,7 +99,6 @@ class MeasurementTool extends PaperTool {
         this._entityIdService.getUniqueId(),
         from,
         from,
-        // TODO: Change this maybe?
         this._entityColorService.getColorById(1),
       );
       this._creationHandle = this._getScaleAnchor(from);

@@ -31,7 +31,7 @@ class PaperMeasurementRectangle extends PaperShape {
   }
 
   /**
-   * @returns {{width: number, height: number}}
+   * @return {{width: number, height: number, x: int, y: int, point: Point}}
    */
   get bounds() {
     return {
@@ -291,6 +291,7 @@ class PaperMeasurementRectangle extends PaperShape {
   /**
    * @param {Point} fixPoint
    * @param {Point} point
+   * @return {{xDirection: number, yDirection: number}}
    * @private
    */
   _calculateResizeDirecitons(fixPoint, point) {
