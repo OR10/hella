@@ -73,4 +73,23 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
       expect(group.children.length).toEqual(2);
     });
   });
+
+  describe('bounds', () => {
+    it('returns a rectangle containing all shapes', () => {
+      const thirdShape = {
+        bounds: {x: 200, y: 2, width: 100, height: 250},
+      };
+      const shapes = [firstShape, secondShape, thirdShape];
+      const group = new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
+
+      const expectedBounds = {
+        x: 1,
+        y: 1,
+        width: 299,
+        height: 251
+      };
+
+      expect(group.bounds).toEqual(expectedBounds);
+    });
+  });
 });
