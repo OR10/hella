@@ -1,7 +1,29 @@
 import paper from 'paper';
 import PaperGroupRectangleMulti from 'Application/Viewer/Shapes/PaperGroupRectangleMulti';
+import PaperGroupRectangle from 'Application/Viewer/Shapes/PaperGroupRectangle';
 
 fdescribe('PaperGroupRectangleMulti Test Suite', () => {
+  let firstShape;
+  let secondShape;
+  let labeledThingGroupInFrame;
+  let color;
+
+  beforeEach(() => {
+    firstShape = {
+      bounds: {x: 1, y: 1, width: 10, height: 10},
+    };
+    secondShape = {
+      bounds: {x: 2, y: 2, width: 20, height: 20},
+    };
+    labeledThingGroupInFrame = {
+      id: 'foobar-heinz'
+    };
+    color = {
+      primary: 'first-color',
+      secondary: 'second-color'
+    };
+  });
+
   function setupPaperJs() {
     const canvas = document.createElement('canvas');
     paper.setup(canvas);
@@ -15,36 +37,40 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
     expect(group).toEqual(jasmine.any(PaperGroupRectangleMulti));
   });
 
-  it('creates a group for every shape upon instantation', () => {
-    const firstShape = {
-      bounds: {x: 1, y: 1, width: 10, height: 10},
-    };
-    const secondShape = {
-      bounds: {x: 2, y: 2, width: 20, height: 20},
-    };
-    const labeledThingGroupInFrame = {
-      id: 'foobar-heinz'
-    };
-    const color = {
-      primary: 'first-color',
-      secondary: 'second-color'
-    };
+  describe('subgroup creation', () => {
+    let shapes;
+    let group;
+    beforeEach(() => {
+      shapes = [firstShape, secondShape];
+      group = new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
+    });
 
-    const shapes = [firstShape, secondShape];
-    const group = new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
-    const groupRectangles = group.children;
-    expect(groupRectangles.length).toEqual(2);
+    it('creates a group for every shape upon instantation', () => {
+      expect(group.children.length).toEqual(2);
+    });
 
-    const firstGroupShapeBounds = groupRectangles[0].bounds;
-    expect(firstGroupShapeBounds.x).toEqual(firstShape.bounds.x);
-    expect(firstGroupShapeBounds.y).toEqual(firstShape.bounds.y);
-    expect(firstGroupShapeBounds.width).toEqual(firstShape.bounds.width);
-    expect(firstGroupShapeBounds.height).toEqual(firstShape.bounds.height);
+    it('sets the correct values for the first group', () => {
+      const firstGroupShapeBounds = group.children[0].bounds;
+      expect(firstGroupShapeBounds.x).toEqual(firstShape.bounds.x);
+      expect(firstGroupShapeBounds.y).toEqual(firstShape.bounds.y);
+      expect(firstGroupShapeBounds.width).toEqual(firstShape.bounds.width);
+      expect(firstGroupShapeBounds.height).toEqual(firstShape.bounds.height);
+    });
 
-    const secondGroupShapeBounds = groupRectangles[1].bounds;
-    expect(secondGroupShapeBounds.x).toEqual(secondShape.bounds.x);
-    expect(secondGroupShapeBounds.y).toEqual(secondShape.bounds.y);
-    expect(secondGroupShapeBounds.width).toEqual(secondShape.bounds.width);
-    expect(secondGroupShapeBounds.height).toEqual(secondShape.bounds.height);
+    it('sets the correct values for the second group', () => {
+      const secondGroupShapeBounds = group.children[1].bounds;
+      expect(secondGroupShapeBounds.x).toEqual(secondShape.bounds.x);
+      expect(secondGroupShapeBounds.y).toEqual(secondShape.bounds.y);
+      expect(secondGroupShapeBounds.width).toEqual(secondShape.bounds.width);
+      expect(secondGroupShapeBounds.height).toEqual(secondShape.bounds.height);
+    });
+
+    it('ignores PaperGroupRectangles passed into the constructor', () => {
+      const thirdShape = new PaperGroupRectangle(labeledThingGroupInFrame, null, null, null, color);
+      shapes = [firstShape, secondShape, thirdShape];
+      group = new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
+
+      expect(group.children.length).toEqual(2);
+    });
   });
 });
