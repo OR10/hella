@@ -185,7 +185,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
       type: 'group-rectangle-multi',
       id: this._shapeId,
       children: childrenJson,
-      labeledThingGroupId: this.labeledThingGroup.id,
+      labeledThingGroupId: this.groupId,
     };
   }
 }
