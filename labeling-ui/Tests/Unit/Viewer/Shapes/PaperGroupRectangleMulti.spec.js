@@ -8,6 +8,8 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
   let labeledThingGroupInFrame;
   let color;
 
+  const shapeId = 'multi-shape-id';
+
   beforeEach(() => {
     firstShape = {
       bounds: {x: 1, y: 1, width: 10, height: 10},
@@ -25,7 +27,7 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
   });
 
   function createMultiRectangle(shapes = createDefaultShapesArray()) {
-    return new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
+    return new PaperGroupRectangleMulti(labeledThingGroupInFrame, shapeId, shapes, color);
   }
 
   function createDefaultShapesArray() {
@@ -277,6 +279,44 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
         expect(secondChild.addPadding).toHaveBeenCalledWith(15);
       });
     });
+
+    describe('toJSON', () => {
+      const toJsonGroupId = 'to-json';
+
+      beforeEach(() => {
+        labeledThingGroupInFrame.labeledThingGroup = {
+          id: toJsonGroupId
+        };
+      });
+
+      it('calls the toJSON method of every child', () => {
+        spyOn(firstChild, 'toJSON');
+        spyOn(secondChild, 'toJSON');
+
+        group.toJSON();
+
+        expect(firstChild.toJSON).toHaveBeenCalledTimes(1);
+        expect(secondChild.toJSON).toHaveBeenCalledTimes(1);
+      });
+
+      it('returns the correct json object', () => {
+        const firstChildJson = {first: 'child'};
+        const secondChildJson = {second: 'child'};
+        spyOn(firstChild, 'toJSON').and.returnValue(firstChildJson);
+        spyOn(secondChild, 'toJSON').and.returnValue(secondChildJson);
+
+        const expectedJsonObject = {
+          type: 'group-rectangle-multi',
+          id: shapeId,
+          children: [firstChildJson, secondChildJson],
+          labeledThingGroupId: toJsonGroupId,
+        };
+
+        const jsonObject = group.toJSON();
+
+        expect(jsonObject).toEqual(expectedJsonObject);
+      });
+    });
   });
 
   describe('getClass', () => {
@@ -312,5 +352,4 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
       expect(throwWrapper).toThrowError('Cannot determine position of multiple rectangles')
     });
   });
-
 });
