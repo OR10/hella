@@ -55,8 +55,6 @@ class UserRolesRebuilderTest extends Tests\KernelTestCase
 
     public function testUserWithNoLabelingGroup()
     {
-        $this->isPouchDbEnabled();
-
         $user = $this->userFacade->createUser('foobar', 'mail@foo.bar', '1234');
         $this->UserRolesRebuilderService->rebuildForUser($user);
 
@@ -65,8 +63,6 @@ class UserRolesRebuilderTest extends Tests\KernelTestCase
 
     public function testUserWithLabelingGroup()
     {
-        $this->isPouchDbEnabled();
-
         $user = $this->userFacade->createUser('foobar', 'mail@foo.bar', '1234');
 
         $labelingGroup = Helper\LabelingGroupBuilder::create($this->organisation)->withUsers([$user->getId()])->build();
@@ -82,8 +78,6 @@ class UserRolesRebuilderTest extends Tests\KernelTestCase
 
     public function testRemoveUserFromLabelingGroup()
     {
-        $this->isPouchDbEnabled();
-
         $user = $this->userFacade->createUser('foobar', 'mail@foo.bar', '1234');
 
         $labelingGroup = Helper\LabelingGroupBuilder::create($this->organisation)->withUsers([$user->getId()])->build();
@@ -119,12 +113,5 @@ class UserRolesRebuilderTest extends Tests\KernelTestCase
         );
 
         return json_decode($resource->getBody()->getContents(), true)['roles'];
-    }
-
-    private function isPouchDbEnabled()
-    {
-        if (!$this->getContainer()->getParameter('pouchdb_feature_enabled')) {
-            $this->markTestSkipped('PouchDB not enabled');
-        }
     }
 }

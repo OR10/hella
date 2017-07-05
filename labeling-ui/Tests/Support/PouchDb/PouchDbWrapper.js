@@ -5,12 +5,14 @@ class PouchDbWrapper {
 
 PouchDbWrapper.DATABASE_NAME = `TASKID-TASKID-${configuration.storage.local.databaseName}`;
 
-
 PouchDbWrapper.allDocs = () => {
   return browser.executeAsyncScript((databaseName, callback) => {
-    const db = new PouchDB(databaseName);
+    if (window.__e2e_test_pouchdb_instance === undefined) {
+      window.__e2e_test_pouchdb_instance = new PouchDB(databaseName);
+    }
+    const db = window.__e2e_test_pouchdb_instance;
 
-    return db.allDocs({include_docs: true}).then(result => {
+    db.allDocs({include_docs: true}).then(result => {
       callback(result);
     });
   }, PouchDbWrapper.DATABASE_NAME);
@@ -18,9 +20,12 @@ PouchDbWrapper.allDocs = () => {
 
 PouchDbWrapper.bulkDocs = documents => {
   return browser.executeAsyncScript((databaseName, documents, callback) => {
-    const db = new PouchDB(databaseName);
+    if (window.__e2e_test_pouchdb_instance === undefined) {
+      window.__e2e_test_pouchdb_instance = new PouchDB(databaseName);
+    }
+    const db = window.__e2e_test_pouchdb_instance;
 
-    return db.bulkDocs(documents).then(result => {
+    db.bulkDocs(documents).then(result => {
       callback(result);
     });
   }, PouchDbWrapper.DATABASE_NAME, documents);
@@ -28,9 +33,13 @@ PouchDbWrapper.bulkDocs = documents => {
 
 PouchDbWrapper.destroy = () => {
   return browser.executeAsyncScript((databaseName, callback) => {
-    const db = new PouchDB(databaseName);
+    if (window.__e2e_test_pouchdb_instance === undefined) {
+      window.__e2e_test_pouchdb_instance = new PouchDB(databaseName);
+    }
+    const db = window.__e2e_test_pouchdb_instance;
 
-    return db.destroy().then(result => {
+    db.destroy().then(result => {
+      window.__e2e_test_pouchdb_instance = undefined;
       callback(result);
     });
   }, PouchDbWrapper.DATABASE_NAME);
