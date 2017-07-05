@@ -122,7 +122,7 @@ class PaperMeasurementRectangle extends PaperShape {
       justification: 'center',
       shadowColor: new paper.Color(0, 0, 0),
       shadowBlur: 2,
-      shadowOffset: new paper.Point(2, 2)
+      shadowOffset: new paper.Point(2, 2),
     };
     const measurements = [];
 
