@@ -258,7 +258,7 @@ function purgeAllPreviousManagedReplicationLeftOvers(next) {
 
     body.forEach(function(databaseName) {
       if (databaseName.match(sourceDbRegex) !== null) {
-        purgeQueue.push(getReplicationDocumentIdName(databaseName, targetDb))
+        purgeQueue.push(getReplicationDocumentIdName(sourceBaseUrl + databaseName, targetBaseUrl + targetDb))
       }
     });
 
