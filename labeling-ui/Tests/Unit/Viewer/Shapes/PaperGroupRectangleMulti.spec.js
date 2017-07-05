@@ -24,6 +24,10 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
     };
   });
 
+  function createMultiRectangle(shapes) {
+    return new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
+  }
+
   function setupPaperJs() {
     const canvas = document.createElement('canvas');
     paper.setup(canvas);
@@ -42,7 +46,7 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
     let group;
     beforeEach(() => {
       shapes = [firstShape, secondShape];
-      group = new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
+      group = createMultiRectangle(shapes);
     });
 
     it('creates a group for every shape upon instantation', () => {
@@ -80,7 +84,7 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
         bounds: {x: 200, y: 2, width: 100, height: 250},
       };
       const shapes = [firstShape, secondShape, thirdShape];
-      const group = new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
+      const group = createMultiRectangle(shapes);
 
       const expectedBounds = {
         x: 1,
@@ -90,6 +94,45 @@ fdescribe('PaperGroupRectangleMulti Test Suite', () => {
       };
 
       expect(group.bounds).toEqual(expectedBounds);
+    });
+  });
+
+  describe('multiple subgroup operations', () => {
+    let group;
+    let firstChild;
+    let secondChild;
+
+    beforeEach(() => {
+      const shapes = [firstShape, secondShape];
+      group = createMultiRectangle(shapes);
+      firstChild = group.children[0];
+      secondChild = group.children[1];
+    });
+
+    describe('select()', () => {
+      it('selects every child', () => {
+
+        spyOn(firstChild, 'select');
+        spyOn(secondChild, 'select');
+
+        group.select();
+
+        expect(firstChild.select).toHaveBeenCalledTimes(1);
+        expect(secondChild.select).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('deselect()', () => {
+      it('deselects every child', () => {
+
+        spyOn(firstChild, 'deselect');
+        spyOn(secondChild, 'deselect');
+
+        group.deselect();
+
+        expect(firstChild.deselect).toHaveBeenCalledTimes(1);
+        expect(secondChild.deselect).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });
