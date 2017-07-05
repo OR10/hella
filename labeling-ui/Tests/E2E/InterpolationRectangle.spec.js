@@ -191,7 +191,7 @@ describe('Interpolation Rectangle Tests', () => {
       });
   });
 
-  fit('should draw and interpolate a new rectangle', done => {
+  it('should draw and interpolate a new rectangle', done => {
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
