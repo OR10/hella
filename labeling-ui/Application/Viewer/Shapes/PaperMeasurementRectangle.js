@@ -95,7 +95,7 @@ class PaperMeasurementRectangle extends PaperShape {
         info.name,
         '#ffffff',
         this._handleSize,
-        info.point,
+        info.point
       )
     );
   }
