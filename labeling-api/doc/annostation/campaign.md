@@ -1,5 +1,7 @@
 # Group Campaign
 
+Projects can have several relations to campaigns. 
+
 ## Campaign [/api/organisation/{organisationId}/campaign]
 
 + Parameters
@@ -20,7 +22,10 @@ This route returns all campaigns for a given organisation
    
 ### Save a Campaigns for this Organisation [POST]
 
-This route save a campaign for a given organisation
+Save a campaign for a given organisation. You don't need to provide an id or _rev.
+
++ Request (application/json)
+    + Attributes (Campaign)
 
 + Response 200 (application/json)
     + Attributes
