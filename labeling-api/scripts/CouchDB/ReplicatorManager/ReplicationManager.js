@@ -1,10 +1,27 @@
 "use strict";
 
-if (process.argv[2] === '-h' || process.argv[2] === '--help' || process.argv.length <= 4) {
+const commandLineArgs = require('command-line-args');
+
+const optionDefinitions = [
+  { name: 'adminUrl', type: String },
+  { name: 'sourceBaseUrl', type: String },
+  { name: 'targetBaseUrl', type: String},
+  { name: 'hotStandByUrl', type: String},
+  { name: 'sourceDbRegex', type: String },
+  { name: 'targetDb', type: String }
+];
+
+const options = commandLineArgs(optionDefinitions);
+
+if (typeof options['adminUrl'] === 'undefined' ||
+  typeof options['sourceBaseUrl'] === 'undefined' ||
+  typeof options['targetBaseUrl'] === 'undefined' ||
+  typeof options['sourceDbRegex'] === 'undefined' ||
+  typeof options['targetDb'] === 'undefined') {
   console.log('Usage: ReplicationManager.js [adminUrl] [replicationUrl] [sourceDbRegex] [targetDb]');
   console.log('Example:');
   console.log(
-    'node ReplicationManager.js "http://admin:bar@192.168.222.20:5984/" "http://foo:bar@192.168.222.20:5984/" "(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)" "labeling_api_read_only"');
+    'node /vagrant/scripts/CouchDB/ReplicatorManager/ReplicationManager.js --adminUrl "http://admin:bar@127.0.0.1:5984/" --sourceBaseUrl "http://labeling_api_read_only:pEid4oShu@127.0.0.1:5984/" --targetBaseUrl "http://labeling_api_read_only:pEid4oShu@127.0.0.1:5984/"  --sourceDbRegex "(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)" --targetDb "labeling_api_read_only" [--hotStandByUrl "http://admin:bar@127.0.0.1:5989/]');
   process.exit(1);
 }
 
@@ -12,10 +29,12 @@ let maxReplications = 50;
 let compactReplicationDbCycle = 500;
 let compactReplicationCounter = 0;
 
-let adminUrl = process.argv[2];
-let ReplicationUrl = process.argv[3];
-let sourceDbRegex = process.argv[4];
-let targetDb = process.argv[5];
+let adminUrl = options['adminUrl'];
+let sourceBaseUrl = options['sourceBaseUrl'];
+let targetBaseUrl = options['targetBaseUrl'];
+let sourceDbRegex = options['sourceDbRegex'];
+let targetDb = options['targetDb'];
+let hotStandByUrl = options['hotStandByUrl'];
 
 let queue = [];
 let activeTasks = [];
@@ -70,18 +89,23 @@ function listenToDatabaseChanges() {
   feed.on('change', function(change) {
     const updated_db = change.db_name;
     if (updated_db.match(sourceDbRegex) !== null) {
-      addJobToQueue(updated_db, targetDb);
+      const sourceUrl = sourceBaseUrl + updated_db;
+      const targetUrl = targetBaseUrl + targetDb;
+      addJobToQueue(sourceUrl, targetUrl);
+      if (typeof hotStandByUrl !== 'undefined') {
+        addJobToQueue(sourceUrl, hotStandByUrl + updated_db);
+      }
     }
   });
   feed.follow();
 }
 
-function addJobToQueue(source, target, doNotProcessChange) {
+function addJobToQueue(sourceUrl, targetUrl, doNotProcessChange) {
   queue.push(
     {
-      id: getReplicationDocumentIdName(source, target),
-      source: source,
-      target: target
+      id: getReplicationDocumentIdName(sourceUrl, targetUrl),
+      sourceUrl: sourceUrl,
+      targetUrl: targetUrl
     }
   );
   queue = removeDuplicates(queue, 'id');
@@ -122,15 +146,16 @@ function queueWorker() {
   }
 
   const element = queue.shift();
-  activeTasks.push(getReplicationDocumentIdName(element.source, element.target));
+  activeTasks.push(getReplicationDocumentIdName(element.sourceUrl, element.targetUrl));
   const replicatorDb = nanoAdmin.use('_replicator');
   const replicationDocument = {
         "worker_batch_size": 50,
-        "source": ReplicationUrl + element.source,
-        "target": ReplicationUrl + element.target,
-        "continuous": false
+        "source": element.sourceUrl,
+        "target": element.targetUrl,
+        "continuous": false,
+        "create_target": true
       };
-  const replicationId = getReplicationDocumentIdName(element.source, element.target);
+  const replicationId = getReplicationDocumentIdName(element.sourceUrl, element.targetUrl);
 
   replicatorDb.insert(
     replicationDocument,
@@ -138,7 +163,7 @@ function queueWorker() {
     function(err, body) {
       if (err) {
         console.error('ERROR inserting replication: ', err, replicationId, replicationDocument);
-        const index = activeTasks.indexOf(getReplicationDocumentIdName(element.source, element.target));
+        const index = activeTasks.indexOf(getReplicationDocumentIdName(element.sourceUrl, element.targetUrl));
         if (index !== -1) {
           activeTasks.splice(index, 1);
         }
@@ -209,7 +234,12 @@ function addOneTimeReplicationForAllDatabases(next) {
 
     body.forEach(function(databaseNames) {
       if (databaseNames.match(sourceDbRegex) !== null) {
-        addJobToQueue(databaseNames, targetDb, true);
+        const sourceUrl = sourceBaseUrl + databaseNames;
+        const targetUrl = targetBaseUrl + targetDb;
+        addJobToQueue(sourceUrl, targetUrl);
+        if (typeof hotStandByUrl !== 'undefined') {
+          addJobToQueue(sourceUrl, hotStandByUrl + databaseNames);
+        }
       }
     });
 
