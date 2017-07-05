@@ -273,9 +273,7 @@ class ReportTest extends Tests\KernelTestCase
 
     public function setUpImplementation()
     {
-
-        $pouchdbFeatureEnabled = $this->getContainer()->getParameter('pouchdb_feature_enabled');
-        $databaseNameReadOnly  = $this->getContainer()->getParameter('database_name_read_only');
+        $databaseNameReadOnly = $this->getContainer()->getParameter('database_name_read_only');
 
         $this->videoFacade               = $this->getAnnostationService('database.facade.video');
         $this->projectFacade             = $this->getAnnostationService('database.facade.project');
@@ -285,17 +283,15 @@ class ReportTest extends Tests\KernelTestCase
         $this->reportFacade              = $this->getAnnostationService('database.facade.report');
         $this->reportService             = $this->getAnnostationService('service.report');
 
-        if ($pouchdbFeatureEnabled) {
-            $databaseDocumentManagerFactory  = $this->getService(
-                'annostation.services.database_document_manager_factory'
-            );
-            $databaseDocumentManager         = $databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-                $databaseNameReadOnly
-            );
-            $this->projectFacade             = new Facade\Project($databaseDocumentManager);
-            $this->labelingTaskFacade        = new Facade\LabelingTask($databaseDocumentManager);
-            $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
-            $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
-        }
+        $databaseDocumentManagerFactory  = $this->getService(
+            'annostation.services.database_document_manager_factory'
+        );
+        $databaseDocumentManager         = $databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+            $databaseNameReadOnly
+        );
+        $this->projectFacade             = new Facade\Project($databaseDocumentManager);
+        $this->labelingTaskFacade        = new Facade\LabelingTask($databaseDocumentManager);
+        $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
+        $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
     }
 }

@@ -6,6 +6,9 @@ use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\LabelImporter;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\LabeledThing;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
+
 
 abstract class Importer
 {
@@ -63,32 +66,41 @@ abstract class Importer
     private $taskIncompleteService;
 
     /**
-     * @var Facade\LabeledThingInFrame
-     */
-    private $labeledThingInFrameFacade;
-
-    /**
-     * @var Facade\LabeledThing
-     */
-    private $labeledThingFacade;
-
-    /**
      * @var array
      */
     private $labeledThingCache = [];
 
+    /**
+     * @var LabeledThingInFrame\FacadeInterface
+     */
+    private $labeledThingInFrameFacade;
+
+    /**
+     * @var LabeledThing\FacadeInterface
+     */
+    private $labeledThingFacade;
+
     public function __construct(
         Service\TaskIncomplete $taskIncompleteService,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        Facade\LabeledThing $labeledThingFacade
+        LabeledThing\FacadeInterface $labeledThingFacade,
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacade
     ) {
-        $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
-        $this->labeledThingFacade        = $labeledThingFacade;
         $this->taskIncompleteService     = $taskIncompleteService;
+        $this->labeledThingFacade        = $labeledThingFacade;
+        $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
     }
 
     public function import(LabelImporter\Parser $parser, Model\LabelingTask $labelingTask)
     {
+        $labeledThingFacade = $this->labeledThingFacade->getFacadeByProjectIdAndTaskId(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFacade->getFacadeByProjectIdAndTaskId(
+            $labelingTask->getProjectId(),
+            $labelingTask->getId()
+        );
+
         $entities = $this->entityProvider->getEntities($parser);
 
         $drawingTool        = $labelingTask->getDrawingTool();
@@ -125,7 +137,7 @@ abstract class Importer
                 $this->taskIncompleteService->isLabeledThingIncomplete($labeledThing)
             );
 
-            $this->labeledThingFacade->save($labeledThing);
+            $labeledThingFacade->save($labeledThing);
             $this->labeledThingCache[$entity[self::ID]] = $labeledThing;
             $labeledThingInFrame                                          = new Model\LabeledThingInFrame(
                 $labeledThing,
@@ -138,7 +150,7 @@ abstract class Importer
                 $this->taskIncompleteService->isLabeledThingInFrameIncomplete($labeledThingInFrame)
             );
 
-            $this->labeledThingInFrameFacade->save($labeledThingInFrame);
+            $labeledThingInFrameFacade->save($labeledThingInFrame);
         }
     }
 

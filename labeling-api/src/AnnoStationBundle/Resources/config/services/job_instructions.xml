@@ -15,13 +15,6 @@
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
 
-        <service id="annostation.labeling_api.worker.job_instruction.interpolation" class="AnnoStationBundle\Worker\JobInstruction\Interpolation">
-            <argument type="service" id="annostation.labeling_api.service.interpolation" />
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
-            <argument type="service" id="annostation.labeling_api.database.facade.status" />
-            <tag name="hagl.workerpool.job_instruction"/>
-        </service>
-
         <service id="annostation.labeling_api.worker.job_instruction.report" class="AnnoStationBundle\Worker\JobInstruction\Report">
             <argument type="service" id="annostation.labeling_api.service.report" />
             <argument type="service" id="annostation.labeling_api.database.facade.report" />
