@@ -1,6 +1,6 @@
 import ImagePool from '../../../Application/Frame/Services/ImagePool';
 
-fdescribe('ImagePool', () => {
+describe('ImagePool', () => {
   let imagePool;
 
   function createImagePool(options = undefined) {
