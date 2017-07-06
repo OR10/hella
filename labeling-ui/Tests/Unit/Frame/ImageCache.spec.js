@@ -1,6 +1,6 @@
 import ImageCache from '../../../Application/Frame/Services/ImageCache';
 
-fdescribe('ImageCache', () => {
+describe('ImageCache', () => {
   function createImageCache() {
     return new ImageCache();
   }
