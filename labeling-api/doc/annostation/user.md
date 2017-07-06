@@ -13,6 +13,9 @@
 
 ### Add a new user [POST]
 
++ Request (application/json)
+    + Attributes (User)
+
 + Response 200 (application/json)
     + Attributes
         + result
@@ -37,6 +40,9 @@
 
 ### Edit a user [PUT]
 
++ Request (application/json)
+    + Attributes (User)
+    
 + Response 200 (application/json)
     + Attributes
         + result
@@ -77,3 +83,15 @@
 + Response 200 (application/json)
     + Attributes
         + success: `true` (boolean)
+
+## Get all user for organisation [/api/organisation/{organisationId}/users]
+
++ Parameters
+    + organisationId: `05c1a74d8eda4a16a355519c0f002ee6` (string, required) - The id of the Organisation.
+
+### Get all user for organisation [DELETE]
+
++ Response 200 (application/json)
+    + Attributes
+        + result
+            + user (array[User])

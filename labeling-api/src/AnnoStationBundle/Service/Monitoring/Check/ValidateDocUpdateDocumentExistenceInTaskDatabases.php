@@ -51,11 +51,6 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
     private $couchPort;
 
     /**
-     * @var bool
-     */
-    private $pouchdbFeatureEnabled;
-
-    /**
      * @var array
      */
     private $urls;
@@ -82,8 +77,7 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
         $couchAuthUser,
         $couchAuthPassword,
         $couchHost,
-        $couchPort,
-        $pouchdbFeatureEnabled
+        $couchPort
     ) {
         $this->labelingTaskFacade    = $labelingTaskFacade;
         $this->taskDatabaseCreator   = $taskDatabaseCreator;
@@ -92,7 +86,6 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
         $this->couchAuthPassword     = $couchAuthPassword;
         $this->couchHost             = $couchHost;
         $this->couchPort             = $couchPort;
-        $this->pouchdbFeatureEnabled = $pouchdbFeatureEnabled;
     }
 
     /**
@@ -102,10 +95,6 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
      */
     public function check()
     {
-        if (!$this->pouchdbFeatureEnabled) {
-            return new Result\Skip('PouchDB not enabled');
-        }
-
         if ($this->hasInvalidValidateFunctions()) {
             return $this->getInvalidValidateFunctionFailureResponseForMissingDatabases();
         }

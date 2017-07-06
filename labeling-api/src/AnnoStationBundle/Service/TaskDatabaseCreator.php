@@ -33,27 +33,19 @@ class TaskDatabaseCreator
     private $databaseValidateDocUpdateDocumentService;
 
     /**
-     * @var bool
-     */
-    private $pouchDbFeatureEnabled;
-
-    /**
      * LabelingTask constructor.
      *
      * @param CouchDB\DocumentManager                      $documentManager
      * @param Service\CouchDbReplicatorService             $couchDbReplicatorService
      * @param TaskDatabaseValidateDocUpdateDocumentService $databaseValidateDocUpdateDocumentService
-     * @param bool                                         $pouchDbFeatureEnabled
      */
     public function __construct(
         CouchDB\DocumentManager $documentManager,
         Service\CouchDbReplicatorService $couchDbReplicatorService,
-        AnnoStationBundleService\TaskDatabaseValidateDocUpdateDocumentService $databaseValidateDocUpdateDocumentService,
-        bool $pouchDbFeatureEnabled
+        AnnoStationBundleService\TaskDatabaseValidateDocUpdateDocumentService $databaseValidateDocUpdateDocumentService
     ) {
         $this->documentManager                          = $documentManager;
         $this->couchDbReplicatorService                 = $couchDbReplicatorService;
-        $this->pouchDbFeatureEnabled                    = $pouchDbFeatureEnabled;
         $this->databaseValidateDocUpdateDocumentService = $databaseValidateDocUpdateDocumentService;
     }
 
@@ -80,12 +72,10 @@ class TaskDatabaseCreator
      */
     public function createDatabase(Model\Project $project, Model\LabelingTask $task)
     {
-        if ($this->pouchDbFeatureEnabled) {
-            $databaseName    = $this->getDatabaseName($project->getId(), $task->getId());
-            $documentManager = $this->documentManager->getCouchDBClient()->createDatabase($databaseName);
-            $this->databaseValidateDocUpdateDocumentService->updateForDatabase($databaseName);
+        $databaseName    = $this->getDatabaseName($project->getId(), $task->getId());
+        $documentManager = $this->documentManager->getCouchDBClient()->createDatabase($databaseName);
+        $this->databaseValidateDocUpdateDocumentService->updateForDatabase($databaseName);
 
-            return $documentManager;
-        }
+        return $documentManager;
     }
 }

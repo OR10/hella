@@ -7,9 +7,6 @@
     
 ### Own Task Configurations [GET]
 
-+ Parameters
-    + type: `simpleXml` (string, optional) - Limit the result to a type.
-
 + Response 200 (application/json)
     + Attributes
         + result
@@ -59,3 +56,15 @@
 ### Get a task configuration [GET]
 
 + Response 200 (application/xml)
+
+## Save a new req. xml [/api/organisation/{organisationId}/taskConfiguration/requirements]
+
++ Parameters
+    + file: `1e8662640b31b28050a9ab5eafa8371e` (binary, required) - XML Requirements File
+    + name: `Pedestrians Config` (string, required) - Name of the requirements file.
+
+### Save a new req. XML file [POST]
+
++ Response 200 (application/xml)
+    + Attributes
+        + result (TaskConfiguration)

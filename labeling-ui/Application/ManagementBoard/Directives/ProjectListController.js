@@ -1,5 +1,6 @@
 import moment from 'moment';
 import BytesFormatter from '../../Common/Helpers/BytesFormatter';
+import angular from 'angular';
 
 /**
  * Controller of the {@link ProjectListDirective}
@@ -92,6 +93,14 @@ class ProjectListController {
     // Reload upon request
     this._$scope.$on('project-list:reload-requested', () => {
       this.updatePage(this._currentPage, this._currentItemsPerPage);
+    });
+
+    // Listen to window resize event to redraw table progress
+    angular.element(window).on('resize', () => {
+      this.projects.forEach((item, index) => {
+        this.calculateTableRowHeight(index);
+        $scope.$apply();
+      });
     });
   }
 
@@ -399,11 +408,27 @@ class ProjectListController {
       // project is in due date
       const progress = Math.round((currentProgress) * 100 / projectDuration);
       colorClass = this._getBackgroundColorForProgress(progress);
-
+      if (progress === 0) {
+        return {progress: '-99%', class: colorClass};
+      }
       return {progress: progress - 100 + '%', class: colorClass};
     }
     // project is out of due date
     return {progress: '0%', class: colorClass};
+  }
+
+  /**
+   * Returns the height of complete row because it will dynamically rendered.
+   * @param {int} index
+   * @returns {String}
+   */
+  calculateTableRowHeight(index) {
+    const trs = angular.element(document.querySelectorAll('.view-list-table tbody tr'));
+    if (trs.length !== 0) {
+      const tr = trs[index + 1];
+      return tr.clientHeight + 'px';
+    }
+    return '0px';
   }
 
   /**
