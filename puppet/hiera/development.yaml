@@ -1,2 +1,3 @@
 annostation_base::github_tokens: true
 annostation_base::github_tokens::user: 'vagrant'
+annostation_base::nodejs::nvmUser: 'vagrant'
