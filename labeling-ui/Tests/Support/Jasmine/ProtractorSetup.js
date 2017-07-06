@@ -11,8 +11,12 @@ afterEach(done => {
   expect(protractorPromise).toBe('ok');
 
   if (features.pouchdb) {
-    PouchDb.destroy().then(() => done());
+    PouchDb.removeAllDocs().then(() => done());
   } else {
     done();
   }
+});
+
+afterAll(done => {
+  PouchDb.destroy().then(() => done());
 });
