@@ -100,8 +100,8 @@ class ProjectListController {
       this.projects.forEach((item, index) => {
         this.calculateTableRowHeight(index);
         $scope.$apply();
-      })
-    })
+      });
+    });
   }
 
   updatePage(page, itemsPerPage) {
@@ -422,7 +422,7 @@ class ProjectListController {
    * @param {int} index
    * @returns {String}
    */
-  calculateTableRowHeight(index){
+  calculateTableRowHeight(index) {
     const trs = angular.element(document.querySelectorAll('.view-list-table tbody tr'));
     if (trs.length !== 0) {
       const tr = trs[index + 1];

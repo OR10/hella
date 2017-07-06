@@ -95,8 +95,8 @@ class PaperMeasurementRectangle extends PaperShape {
         info.name,
         '#ffffff',
         this._handleSize,
-        info.point,
-      ),
+        info.point
+      )
     );
   }
 
@@ -107,11 +107,11 @@ class PaperMeasurementRectangle extends PaperShape {
 
     const topLeft = new paper.Point(
       Math.min(oldTopLeft.x, oldBottomRight.x),
-      Math.min(oldTopLeft.y, oldBottomRight.y),
+      Math.min(oldTopLeft.y, oldBottomRight.y)
     );
     const bottomRight = new paper.Point(
       Math.max(oldTopLeft.x, oldBottomRight.x),
-      Math.max(oldTopLeft.y, oldBottomRight.y),
+      Math.max(oldTopLeft.y, oldBottomRight.y)
     );
 
     const margin = 6;
@@ -139,8 +139,8 @@ class PaperMeasurementRectangle extends PaperShape {
           point: leftPoint,
           content: `${Math.abs(this.bounds.height)} px`,
           rotation: -90,
-        }),
-      ),
+        })
+      )
     );
     measurements.push(
       new paper.PointText(
@@ -148,24 +148,24 @@ class PaperMeasurementRectangle extends PaperShape {
           point: rightPoint,
           content: `${Math.abs(this.bounds.height)} px`,
           rotation: -90,
-        }),
-      ),
+        })
+      )
     );
     measurements.push(
       new paper.PointText(
         Object.assign({}, defaults, {
           point: topPoint,
           content: `${Math.abs(this.bounds.width)} px`,
-        }),
-      ),
+        })
+      )
     );
     measurements.push(
       new paper.PointText(
         Object.assign({}, defaults, {
           point: bottomPoint,
           content: `${Math.abs(this.bounds.width)} px`,
-        }),
-      ),
+        })
+      )
     );
 
     return measurements;
@@ -267,7 +267,7 @@ class PaperMeasurementRectangle extends PaperShape {
 
     return new paper.Point(
       fixPoint.x + xDirection * newSize.width,
-      fixPoint.y + yDirection * newSize.height,
+      fixPoint.y + yDirection * newSize.height
     );
   }
 
@@ -307,7 +307,7 @@ class PaperMeasurementRectangle extends PaperShape {
   get position() {
     return new paper.Point(
       (this._topLeft.x + this._bottomRight.x) / 2,
-      (this._topLeft.y + this._bottomRight.y) / 2,
+      (this._topLeft.y + this._bottomRight.y) / 2
     );
   }
 }
