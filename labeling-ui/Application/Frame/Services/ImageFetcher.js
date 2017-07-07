@@ -62,17 +62,16 @@ class ImageFetcher {
       if (fetchIndex === -1) {
         throw new Error(`Can't remove non existent entry from activeFetches`);
       }
-
       activeFetches.splice(fetchIndex, 1);
     };
 
     const fetchNextInLine = index => {
-      if (activeFetches.length > chunkSize) {
+      if (activeFetches.length >= chunkSize) {
         return;
       }
 
-      if (fetchQueue.lenqth === 0 && activeFetches.length === 0) {
-        fetchMultipleDeferred.resolve(completedFetches);
+      if (fetchQueue.length === 0 && activeFetches.length === 0) {
+        fetchMultipleDeferred.resolve(this._$q.all(completedFetches));
         return;
       }
 
@@ -92,10 +91,8 @@ class ImageFetcher {
           removeFromActive(currentFetch);
           setTimeout(() => fetchNextInLine(processedIndex), 1);
         })
-        .catch(() => {
-          completedFetches[index] = currentFetch;
-          removeFromActive(currentFetch);
-          setTimeout(() => fetchNextInLine(processedIndex), 1);
+        .catch(error => {
+          fetchMultipleDeferred.reject(error);
         });
 
       // Recursively fill activeFetches to the limit.
