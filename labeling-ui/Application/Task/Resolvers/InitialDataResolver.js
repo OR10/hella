@@ -25,7 +25,7 @@ export default [
       const imageTypes = imageTypePreferences
         // Remove all types not available for this task
         .map(typeList => typeList.filter(
-          typeCandidate => task.requiredImageTypes.contains(typeCandidate)
+          typeCandidate => task.requiredImageTypes.includes(typeCandidate)
         ))
         // Cleanup empty typelists
         .filter(typeList => typeList.length > 0)
