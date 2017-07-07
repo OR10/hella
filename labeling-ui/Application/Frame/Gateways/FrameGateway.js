@@ -56,6 +56,28 @@ class FrameGateway {
         .then(image => this._imageCache.addImage(image))
     );
   }
+
+  /**
+   * Initiate a preloading of the given list of locations
+   *
+   * The corresponding images will be loaded and stored inside the cache for faster retrieval afterwards
+   *
+   * The returned promise is resolved once all images have been loaded and cached. The resolve value is an array of loaded
+   * images. Images which had already been stored in the cache before hand are not part of this array. Therefore the
+   * returned images do not strictly correlate to the given url list!
+   *
+   * @param {Array.<FrameLocation>} locations
+   * @return {Promise.<Array.<HTMLImageElement>>}
+   */
+  preloadImages(locations) {
+    // Only images not in the cache are requested
+    const urls = locations.map(location => location.url);
+    const nonCachedUrls = urls.filter(url => !this._imageCache.hasImageForUrl(url));
+
+    return this._$q.resolve()
+      .then(() => this._imageFetcher.fetchMultiple(nonCachedUrls))
+      .then(images => this._imageCache.addImages(images));
+  }
 }
 
 FrameGateway.$inject = [

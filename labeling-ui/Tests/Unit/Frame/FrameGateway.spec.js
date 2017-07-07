@@ -9,7 +9,7 @@ fdescribe('FrameGateway', () => {
   let imageFetcherMock;
   let imageCacheMock;
 
-  function createFrameLocation(url = 'http://example.com/frame/23.png',frameIndex = 23, id = 'abc', type = 'source') {
+  function createFrameLocation(url = 'http://example.com/frame/23.png', frameIndex = 23, id = 'abc', type = 'source') {
     return {
       id,
       type,
@@ -151,6 +151,141 @@ fdescribe('FrameGateway', () => {
       expect(resolveSpy).toHaveBeenCalledWith(imageMock);
       expect(imageCacheMock.hasImageForUrl).toHaveBeenCalledWith(location.url);
       expect(imageCacheMock.getImageForUrl).toHaveBeenCalledWith(location.url);
+    });
+  });
+
+  describe('Image Preloading', () => {
+    let imageFetcherResultDefer;
+
+    beforeEach(() => {
+      imageFetcherResultDefer = angularQ.defer();
+      imageFetcherMock.fetchMultiple.and.returnValue(imageFetcherResultDefer.promise);
+    });
+
+    it('should use ImageFetcher#fetchMultiple to request images', () => {
+      const location = createFrameLocation();
+      const gateway = createFrameGateway();
+
+      gateway.preloadImages([location]);
+
+      rootScope.$apply();
+
+      expect(imageFetcherMock.fetchMultiple).toHaveBeenCalled();
+    });
+
+    it('should supply given urls to fetchMultiple', () => {
+      const firstLocation = createFrameLocation('http://example.com/foo.png');
+      const secondLocation = createFrameLocation('http://example.com/bar.png');
+      const gateway = createFrameGateway();
+
+      gateway.preloadImages([firstLocation, secondLocation]);
+
+      rootScope.$apply();
+
+      expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith([firstLocation.url, secondLocation.url]);
+    });
+
+    it('should add loaded images to cache', () => {
+      const firstUrl = 'http://example.com/foo.png';
+      const secondUrl = 'http://example.com/bar.png';
+      const firstLocation = createFrameLocation(firstUrl);
+      const secondLocation = createFrameLocation(secondUrl);
+      const gateway = createFrameGateway();
+
+      const firstImage = {src: firstUrl};
+      const secondImage = {src: secondUrl};
+
+      gateway.preloadImages([firstLocation, secondLocation]);
+
+      imageFetcherResultDefer.resolve([firstImage, secondImage]);
+
+      rootScope.$apply();
+
+      expect(imageCacheMock.addImages).toHaveBeenCalledWith([firstImage, secondImage]);
+    });
+
+    it('should reject if fetching fails', () => {
+      const location = createFrameLocation();
+      const gateway = createFrameGateway();
+
+      const imagesPromise = gateway.preloadImages([location]);
+      const rejectSpy = jasmine.createSpy('reject image preload');
+      imagesPromise.catch(rejectSpy);
+
+      rootScope.$apply();
+
+      const error = 'some really nasty error';
+      imageFetcherResultDefer.reject(error);
+
+      rootScope.$apply();
+
+      expect(rejectSpy).toHaveBeenCalledWith(error);
+    });
+
+    it('should resolve with loaded images if load goes through', () => {
+      const firstUrl = 'http://example.com/foo.png';
+      const secondUrl = 'http://example.com/bar.png';
+      const firstLocation = createFrameLocation(firstUrl);
+      const secondLocation = createFrameLocation(secondUrl);
+      const gateway = createFrameGateway();
+
+      const firstImage = {src: firstUrl};
+      const secondImage = {src: secondUrl};
+
+      const imagesPromise = gateway.preloadImages([firstLocation, secondLocation]);
+      const resolveSpy = jasmine.createSpy('resolve image preload');
+      imagesPromise.then(resolveSpy);
+
+      rootScope.$apply();
+
+      imageFetcherResultDefer.resolve([firstImage, secondImage]);
+
+      rootScope.$apply();
+
+      expect(resolveSpy).toHaveBeenCalledWith([firstImage, secondImage]);
+    });
+
+    it('should only request images not inside the cache already', () => {
+      const firstUrl = 'http://example.com/foo.png';
+      const secondUrl = 'http://example.com/bar.png';
+      const firstLocation = createFrameLocation(firstUrl);
+      const secondLocation = createFrameLocation(secondUrl);
+      const gateway = createFrameGateway();
+
+      // Pretend second image is in cache
+      imageCacheMock.hasImageForUrl.and.callFake(url => url === secondUrl);
+
+      gateway.preloadImages([firstLocation, secondLocation]);
+
+      rootScope.$apply();
+
+      expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith([firstUrl]);
+    });
+
+    it('should only resolve with images not inside the cache already', () => {
+      const firstUrl = 'http://example.com/foo.png';
+      const secondUrl = 'http://example.com/bar.png';
+      const firstLocation = createFrameLocation(firstUrl);
+      const secondLocation = createFrameLocation(secondUrl);
+      const gateway = createFrameGateway();
+
+      const firstImage = {src: firstUrl};
+      const secondImage = {src: secondUrl};
+
+      // Pretend second image is in cache
+      imageCacheMock.hasImageForUrl.and.callFake(url => url === secondUrl);
+
+      const imagesPromise = gateway.preloadImages([firstLocation, secondLocation]);
+      const resolveSpy = jasmine.createSpy('resolve image preload');
+      imagesPromise.then(resolveSpy);
+
+      rootScope.$apply();
+
+      imageFetcherResultDefer.resolve([firstImage]);
+
+      rootScope.$apply();
+
+      expect(resolveSpy).toHaveBeenCalledWith([firstImage]);
     });
   });
 });
