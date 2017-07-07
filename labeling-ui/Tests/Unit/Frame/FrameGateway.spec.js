@@ -2,7 +2,7 @@ import {inject} from 'angular-mocks';
 
 import FrameGateway from 'Application/Frame/Gateways/FrameGateway';
 
-fdescribe('FrameGateway', () => {
+describe('FrameGateway', () => {
   let angularQ;
   let rootScope;
   let abortablePromiseFactoryMock;
