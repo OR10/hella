@@ -38,9 +38,6 @@ class TaskController {
               frameIndexService,
               lockService,
               labelStructureService) {
-    // Ensure the FrameIndexService knows the currently active Task
-    frameIndexService.setTask(initialData.task);
-
     /**
      * @type {FrameIndexService}
      * @private
