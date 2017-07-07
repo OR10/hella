@@ -96,7 +96,7 @@ class ImageFetcher {
         });
 
       // Recursively fill activeFetches to the limit.
-      fetchNextInLine(processedIndex);
+      setTimeout(() => fetchNextInLine(processedIndex), 1);
     };
 
     fetchNextInLine(processedIndex);
