@@ -1,17 +1,17 @@
 const commandLineArgs = require('command-line-args');
-let {Replicator} = require('./Jobs/Replicator');
-const {Worker} = require('./Worker');
-const {Utils} = require('./Utils');
+const { Replicator } = require('./Jobs/Replicator');
+const { Worker } = require('./Worker');
+const { Utils } = require('./Utils');
 
 class ReplicationManager {
   constructor() {
     const optionDefinitions = [
-      {name: 'adminUrl', type: String},
-      {name: 'sourceBaseUrl', type: String},
-      {name: 'targetBaseUrl', type: String},
-      {name: 'hotStandByUrl', type: String},
-      {name: 'sourceDbRegex', type: String},
-      {name: 'targetDb', type: String},
+      { name: 'adminUrl', type: String },
+      { name: 'sourceBaseUrl', type: String },
+      { name: 'targetBaseUrl', type: String },
+      { name: 'hotStandByUrl', type: String },
+      { name: 'sourceDbRegex', type: String },
+      { name: 'targetDb', type: String },
     ];
 
     const options = commandLineArgs(optionDefinitions);
@@ -21,11 +21,13 @@ class ReplicationManager {
       options.targetBaseUrl === undefined ||
       options.sourceDbRegex === undefined ||
       options.targetDb === undefined) {
-      // eslint-disable-next-line
+      /* eslint-disable no-console */
       console.log('Usage: ReplicationManager.js [adminUrl] [replicationUrl] [sourceDbRegex] [targetDb]');
       console.log('Example:');
       console.log(
         'node /vagrant/scripts/CouchDB/ReplicatorManager/ReplicationManager.js --adminUrl "http://admin:bar@127.0.0.1:5984/" --sourceBaseUrl "http://labeling_api_read_only:pEid4oShu@127.0.0.1:5984/" --targetBaseUrl "http://labeling_api_read_only:pEid4oShu@127.0.0.1:5984/"  --sourceDbRegex "(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)" --targetDb "labeling_api_read_only" [--hotStandByUrl "http://admin:bar@127.0.0.1:5989/]');
+      /* eslint-enable no-console */
+
       process.exit(1);
     }
 
@@ -36,9 +38,13 @@ class ReplicationManager {
     this.sourceDbRegex = options.sourceDbRegex;
     this.targetDb = options.targetDb;
     this.hotStandByUrl = options.hotStandByUrl;
+    /* eslint-disable global-require */
     this.nanoAdmin = require('nano')(this.adminUrl);
+    /* eslint-enable global-require */
     this.worker = new Worker(this.nanoAdmin);
+  }
 
+  run() {
     this.purgeAllPreviousManagedReplicationLeftOvers().then(() => {
       this.addOneTimeReplicationForAllDatabases();
       this.listenToDatabaseChanges();
@@ -46,11 +52,12 @@ class ReplicationManager {
   }
 
   listenToDatabaseChanges() {
+    // eslint-disable-next-line no-console
     console.log('Listen to the changes feed now.');
     const db = this.nanoAdmin.use('_db_updates');
-    const feed = db.follow({include_docs: true, since: 'now'});
+    const feed = db.follow({ include_docs: true, since: 'now' });
 
-    feed.on('change', (change) => {
+    feed.on('change', change => {
       const updatedDb = change.db_name;
       if (updatedDb.match(this.sourceDbRegex) !== null) {
         this._addWorkerJob(updatedDb, this.targetDb);
@@ -60,6 +67,7 @@ class ReplicationManager {
   }
 
   addOneTimeReplicationForAllDatabases() {
+    // eslint-disable-next-line no-console
     console.log('Creating a one-time replications for all matching databases now.');
     this.nanoAdmin.db.list((err, body) => {
       if (err) {
@@ -71,10 +79,13 @@ class ReplicationManager {
           this._addWorkerJob(databaseNames, this.targetDb);
         }
       });
+
+      return true;
     });
   }
 
   purgeAllPreviousManagedReplicationLeftOvers() {
+    // eslint-disable-next-line no-console
     console.log('Purging all possible left overs from previous replication runs');
     return new Promise((resolve, reject) => {
       this.nanoAdmin.db.list((err, body) => {
@@ -88,6 +99,8 @@ class ReplicationManager {
           }
         });
         resolve();
+
+        return true;
       });
     });
   }
@@ -102,17 +115,23 @@ class ReplicationManager {
     if (this.hotStandByUrl !== undefined) {
       const sourceUrl = this.sourceBaseUrl + sourceDatabase;
       const targetUrl = this.hotStandByUrl + sourceDatabase;
-      Utils.purgeCouchDbReplicationDocument(this.nanoAdmin, Utils.getReplicationDocumentIdName(sourceUrl, targetUrl));
+      Utils.purgeCouchDbReplicationDocument(
+        this.nanoAdmin,
+        Utils.getReplicationDocumentIdName(sourceUrl, targetUrl),
+      );
     }
     const sourceUrl = this.sourceBaseUrl + sourceDatabase;
     const targetUrl = this.hotStandByUrl + targetDatabase;
-    Utils.purgeCouchDbReplicationDocument(this.nanoAdmin, Utils.getReplicationDocumentIdName(sourceUrl, targetUrl));
+    Utils.purgeCouchDbReplicationDocument(
+      this.nanoAdmin,
+      Utils.getReplicationDocumentIdName(sourceUrl, targetUrl),
+    );
   }
 
   /**
    * Add the replication job(s) to the worker
-   * @param sourceDatabase
-   * @param targetDatabase
+   * @param {string} sourceDatabase
+   * @param {string} targetDatabase
    * @private
    */
   _addWorkerJob(sourceDatabase, targetDatabase) {
@@ -129,4 +148,5 @@ class ReplicationManager {
   }
 }
 
-new ReplicationManager();
+const ReplicationManagerStarter = new ReplicationManager();
+ReplicationManagerStarter.run();

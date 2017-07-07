@@ -1,4 +1,4 @@
-const {Utils} = require('./Utils');
+const { Utils } = require('./Utils');
 
 class Worker {
   constructor(nanoAdmin) {
@@ -18,30 +18,21 @@ class Worker {
    */
   addJob(job) {
     this.queue.push(job);
-    this.queue = this.removeDuplicates(this.queue, 'id');
+    this.queue = Worker._removeDuplicatesBy(x => x.id, this.queue);
 
     this.doWork();
   }
 
-  /**
-   *
-   * @param arr
-   * @param prop
-   * @returns {Array}
-   */
-  removeDuplicates(arr, prop) {
-    const newArray = [];
-    const lookup = {};
-
-    for (var i in arr) {
-      lookup[arr[i][prop]] = arr[i];
-    }
-
-    for (i in lookup) {
-      newArray.push(lookup[i]);
-    }
-
-    return newArray;
+  static _removeDuplicatesBy(keyFn, array) {
+    const mySet = new Set();
+    return array.filter(x => {
+      const key = keyFn(x);
+      const isNew = !mySet.has(key);
+      if (isNew) {
+        mySet.add(key);
+      }
+      return isNew;
+    });
   }
 
   /**
@@ -66,9 +57,7 @@ class Worker {
 
     const element = this.queue.shift();
 
-    const isElementInActiveTasks = this.activeTasks.find((task) => {
-      return task === element.id;
-    });
+    const isElementInActiveTasks = this.activeTasks.find(task => task === element.id);
 
 
     if (isElementInActiveTasks !== undefined) {
@@ -80,6 +69,7 @@ class Worker {
     this.activeTasks.push(element.id);
     element.run()
       .catch(error => {
+        // eslint-disable-next-line no-console
         console.log(`Failed adding replication: ${error}`);
         const index = this.activeTasks.indexOf(element.id);
         if (index !== -1) {
@@ -90,6 +80,8 @@ class Worker {
     this.doWork();
     this.compactReplicationDatabase();
     this._printQueueStatus();
+
+    return true;
   }
 
   compactReplicationDatabase() {
@@ -105,29 +97,35 @@ class Worker {
    */
   listenToReplicationChanges() {
     const replicatorDb = this.nanoAdmin.use('_replicator');
-    const feedReplicator = replicatorDb.follow({include_docs: true});
+    const feedReplicator = replicatorDb.follow({ include_docs: true });
 
-    feedReplicator.filter = function(doc) {
+    feedReplicator.filter = function (doc) {
       return !doc._deleted;
     };
 
     feedReplicator.on('change', change => {
       if (change.doc._replication_state === 'completed') {
-        Utils.destroyAndPurgeDocument(this.nanoAdmin, replicatorDb, change.doc._id, change.doc._rev, () => {
-          const index = this.activeTasks.indexOf(change.doc._id);
-          if (index !== -1) {
-            this.activeTasks.splice(index, 1);
-          }
-          this._printQueueStatus();
-          this.doWork();
-        });
+        Utils.destroyAndPurgeDocument(
+          this.nanoAdmin,
+          replicatorDb,
+          change.doc._id,
+          change.doc._rev,
+          () => {
+            const index = this.activeTasks.indexOf(change.doc._id);
+            if (index !== -1) {
+              this.activeTasks.splice(index, 1);
+            }
+            this._printQueueStatus();
+            this.doWork();
+          });
       }
     });
     feedReplicator.follow();
   }
 
   _printQueueStatus() {
-    console.log('Active tasks: ' + this.activeTasks.length + '/' + this.maxSimultaneousJobs + ' | Queue length: ' + this.queue.length);
+    // eslint-disable-next-line no-console
+    console.log(`Active tasks: ${this.activeTasks.length}/${this.maxSimultaneousJobs} | Queue length: ${this.queue.length}`);
   }
 }
 
