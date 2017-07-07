@@ -33,9 +33,10 @@ class ImageCache {
 
   /**
    * @param {Array.<Image>} images
+   * @return {Array.<Image>}
    */
   addImages(images) {
-    images.forEach(image => this.addImage(image));
+    return images.map(image => this.addImage(image));
   }
 
   hasImageForUrl(url) {
