@@ -33,6 +33,15 @@ describe('ImageCache', () => {
     expect(cache.hasImageForUrl(url)).toBeTruthy();
   });
 
+  it('should return stored image when addImage is called', () => {
+    const cache = createImageCache();
+    const url = 'http://example.com/wurstbrot.png';
+    const image = createImage(url);
+
+    const returnValue = cache.addImage(image);
+    expect(returnValue).toBe(image);
+  });
+
   it('should store multiple image in cache with separate calls', () => {
     const cache = createImageCache();
 
@@ -69,6 +78,22 @@ describe('ImageCache', () => {
     expect(cache.hasImageForUrl(urlOne)).toBeTruthy();
     expect(cache.hasImageForUrl(urlTwo)).toBeTruthy();
     expect(cache.hasImageForUrl(urlThree)).toBeTruthy();
+  });
+
+  it('should return added images when addImages is called', () => {
+    const cache = createImageCache();
+
+    const urlOne = 'http://example.com/wurstbrot.png';
+    const urlTwo = 'http://example.com/bernd-das-brot.png';
+    const urlThree = 'http://example.com/kaese-brot.png';
+
+    const imageOne = createImage(urlOne);
+    const imageTwo = createImage(urlTwo);
+    const imageThree = createImage(urlThree);
+
+    const returnValue = cache.addImages([imageOne, imageTwo, imageThree]);
+
+    expect(returnValue).toEqual([imageOne, imageTwo, imageThree]);
   });
 
   it('should report not added image as not cached', () => {
