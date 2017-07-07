@@ -7,6 +7,7 @@ import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
 import PaperPolyline from '../../Viewer/Shapes/PaperPolyline';
 import PaperFrame from '../../Viewer/Shapes/PaperFrame';
+import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
 import hitResolver from '../Support/HitResolver';
 
 import FrameCreationTool from './FrameCreationTool';
@@ -212,6 +213,8 @@ class MultiTool extends PaperTool {
         return this._toolService.getTool(this._context, PaperGroupRectangle.getClass());
       case 'frame-shape':
         return this._toolService.getTool(this._context, PaperFrame.getClass());
+      case 'measurement-rectangle':
+        return this._toolService.getTool(this._context, PaperMeasurementRectangle.getClass());
       default:
         throw new Error(`Cannot create tool of unknown type: ${requirementsShape}.`);
     }

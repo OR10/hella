@@ -5,6 +5,7 @@
   "main": "ReplicationManager.js",
   "dependencies": {
     "nano": "^6.2.0",
-    "md5": "2.2.1"
+    "md5": "2.2.1",
+    "command-line-args": "^4.0.6"
   }
 }

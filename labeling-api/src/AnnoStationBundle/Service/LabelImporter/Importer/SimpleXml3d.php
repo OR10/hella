@@ -5,15 +5,17 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\LabelImporter;
 use AnnoStationBundle\Service\LabelImporter\EntityProvider;
+use AnnoStationBundle\Database\Facade\LabeledThing;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
 
 class SimpleXml3d extends LabelImporter\Importer
 {
     public function __construct(
         Service\TaskIncomplete $taskIncompleteService,
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade,
-        Facade\LabeledThing $labeledThingFacade
+        LabeledThing\FacadeInterface $labeledThingFacade,
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacade
     ) {
-        parent::__construct($taskIncompleteService, $labeledThingInFrameFacade, $labeledThingFacade);
+        parent::__construct($taskIncompleteService, $labeledThingFacade, $labeledThingInFrameFacade);
         $this->entityProvider            = new EntityProvider\Mapper(
             [
                 'fields' => [

@@ -204,14 +204,23 @@ describe('Interpolation Rectangle Tests', () => {
           .perform();
       })
       .then(() => {
+        browser.sleep(500);
+      })
+      .then(() => {
         browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
           .perform();
       })
       .then(() => {
+        browser.sleep(500);
+      })
+      .then(() => {
         nextFrameButton.click();
         nextFrameButton.click();
+        browser.sleep(500);
+      })
+      .then(() => {
         browser.sleep(500);
       })
       .then(() => {
