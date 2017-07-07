@@ -1,4 +1,6 @@
-class annostation_base::nodejs() {
+class annostation_base::nodejs(
+  $nvmUser,
+) {
   apt::key { 'yarn':
     id     => '72ECF46A56B4AD39C907BBB71646B01B86E50310',
     source => 'https://dl.yarnpkg.com/debian/pubkey.gpg',
@@ -15,7 +17,10 @@ class annostation_base::nodejs() {
     require => Apt::Source['yarn'],
   }
 
-  class { 'nodejs':
+  class { 'nvm':
+    install_node        => '8',
+    manage_dependencies => false,
+    user                => $nvmUser,
   }
 
   $packages = [
@@ -38,7 +43,7 @@ class annostation_base::nodejs() {
   ], {
     provider => 'npm',
     require => [
-      Package['npm'],
+      Class['nvm'],
       Package[$packages],
     ]
   })
