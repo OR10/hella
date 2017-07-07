@@ -1,0 +1,29 @@
+{
+  "extends": "airbnb/base",
+  "rules": {
+    "indent": [
+      2,
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "no-console": [2],
+    "arrow-parens": [
+      2,
+      "as-needed"
+    ],
+    "id-length": [
+      2,
+      {
+        "exceptions": [
+          "x",
+          "y",
+          "z",
+          "_",
+          "$"
+        ]
+      }
+    ]
+  }
+}
