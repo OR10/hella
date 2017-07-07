@@ -7,8 +7,10 @@ class FrameGateway {
   /**
    * @param {angular.$q} $q
    * @param {AbortablePromiseFactory} abortable
+   * @param {ImageFetcher} imageFetcher
+   * @param {ImageCache} imageCache
    */
-  constructor($q, abortable) {
+  constructor($q, abortable, imageFetcher, imageCache) {
     /**
      * @type {angular.$q}
      * @private
@@ -20,6 +22,18 @@ class FrameGateway {
      * @private
      */
     this._abortable = abortable;
+
+    /**
+     * @type {ImageFetcher}
+     * @private
+     */
+    this._imageFetcher = imageFetcher;
+
+    /**
+     * @type {ImageCache}
+     * @private
+     */
+    this._imageCache = imageCache;
   }
 
   /**
@@ -29,19 +43,26 @@ class FrameGateway {
    * @returns {AbortablePromise.<HTMLImageElement>}
    */
   getImage(location) {
-    return this._abortable(this._$q((resolve, reject) => {
-      const image = new Image();
-      image.addEventListener('load', () => resolve(image));
-      image.addEventListener('error', error => reject(error));
-      image.crossOrigin = 'Anonymous';
-      image.src = location.url;
-    }));
+    if (this._imageCache.hasImageForUrl(location.url)) {
+      return this._abortable(
+        this._$q.resolve(
+          this._imageCache.getImageForUrl(location.url)
+        )
+      );
+    }
+
+    return this._abortable(
+      this._imageFetcher.fetch(location.url)
+        .then(image => this._imageCache.addImage(image))
+    );
   }
 }
 
 FrameGateway.$inject = [
   '$q',
   'abortablePromiseFactory',
+  'imageFetcher',
+  'imageCache',
 ];
 
 export default FrameGateway;

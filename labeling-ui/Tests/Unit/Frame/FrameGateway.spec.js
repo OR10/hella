@@ -1,101 +1,156 @@
-import 'jquery';
-import angular from 'angular';
-import {module, inject} from 'angular-mocks';
+import {inject} from 'angular-mocks';
 
-import Common from 'Application/Common/Common';
 import FrameGateway from 'Application/Frame/Gateways/FrameGateway';
 
-describe('FrameGateway', () => {
-  let gateway;
-  let createImageMock;
-  let frameLocation;
-  let $rootScope;
+fdescribe('FrameGateway', () => {
+  let angularQ;
+  let rootScope;
+  let abortablePromiseFactoryMock;
+  let imageFetcherMock;
+  let imageCacheMock;
+
+  function createFrameLocation(url = 'http://example.com/frame/23.png',frameIndex = 23, id = 'abc', type = 'source') {
+    return {
+      id,
+      type,
+      frameIndex,
+      url
+    };
+  }
+
+  function createImageCacheMock() {
+    const imageCache = jasmine.createSpyObj('ImageCache', ['clear', 'addImage', 'addImages', 'hasImageForUrl', 'getImageForUrl']);
+    imageCache.addImage.and.callFake(input => input);
+    imageCache.addImages.and.callFake(input => input);
+    return imageCache;
+  }
+
+  function createImageFetcherMock() {
+    return jasmine.createSpyObj('ImageFetcher', ['fetch', 'fetchMultiple']);
+  }
+
+  function createAbortablePromiseFactoryMock() {
+    const mock = jasmine.createSpy('abortablePromiseFactory');
+    mock.and.callFake(input => input);
+    return mock;
+  }
+
+  function createFrameGateway() {
+    return new FrameGateway(
+      angularQ,
+      abortablePromiseFactoryMock,
+      imageFetcherMock,
+      imageCacheMock,
+    );
+  }
+
+  beforeEach(inject(($q, $rootScope) => {
+    angularQ = $q;
+    rootScope = $rootScope;
+  }));
 
   beforeEach(() => {
-    const featureFlags = {
-      pouchdb: false,
-    };
+    abortablePromiseFactoryMock = createAbortablePromiseFactoryMock();
+    imageFetcherMock = createImageFetcherMock();
+    imageCacheMock = createImageCacheMock();
+  });
 
-    const commonModule = new Common();
-    commonModule.registerWithAngular(angular, featureFlags);
-    module('AnnoStation.Common');
+  it('should be able to instantiate', () => {
+    const gateway = createFrameGateway();
+    expect(gateway).toEqual(jasmine.any(FrameGateway));
+  });
 
-    module($provide => {
-      $provide.value('applicationConfig', {
-        Common: {
-          apiPrefix: '/api',
-          backendPrefix: '/backend',
-        },
-      });
+  describe('getImage', () => {
+    let imageFetcherResultDefer;
+
+    beforeEach(() => {
+      imageFetcherResultDefer = angularQ.defer();
+      imageFetcherMock.fetch.and.returnValue(imageFetcherResultDefer.promise);
     });
 
-    inject($injector => {
-      frameLocation = {id: 'abc', type: 'source', frameIndex: 23, url: 'http://example.com/frame/23.png'};
+    it('should delegate image loading request to image fetcher', () => {
+      const location = createFrameLocation();
+      const gateway = createFrameGateway();
 
-      createImageMock = (error = false) => {
-        const OriginalImage = Image;
-        const retVal = {
-          restore() {
-            window.Image = OriginalImage;
-          },
-          instance: null,
-        };
+      gateway.getImage(location);
 
-        class ImageMockImpl {
-          constructor() {
-            this.__srcSpy = jasmine.createSpy();
-            this.addEventListener = jasmine.createSpy().and.callFake((name, fn) => {
-              if (name === 'load' && error !== true) {
-                fn();
-              } else if (name === 'error' && error === true) {
-                fn('error!!1elf!!');
-              }
-            });
-            retVal.instance = this;
-          }
+      rootScope.$apply();
 
-          set src(value) {
-            this.__srcSpy(value);
-          }
-        }
-
-        window.Image = ImageMockImpl;
-        return retVal;
-      };
-
-      gateway = $injector.instantiate(FrameGateway);
-      $rootScope = $injector.get('$rootScope');
+      expect(imageFetcherMock.fetch).toHaveBeenCalled();
     });
-  });
 
-  it('should be able to instantiate without non injected arguments', () => {
-    expect(gateway instanceof FrameGateway).toEqual(true);
-  });
+    it('should return abortable promise', () => {
+      const location = createFrameLocation();
+      const gateway = createFrameGateway();
 
-  it('should request the url from the given location and return the image once loaded', done => {
-    const mock = createImageMock(false);
-    gateway.getImage(frameLocation)
-      .then(image => {
-        expect(image.__srcSpy).toHaveBeenCalled();
-        expect(image.__srcSpy).toHaveBeenCalledWith(frameLocation.url);
-        done();
-      });
+      const abortablePromiseMock = {};
+      abortablePromiseFactoryMock.and.returnValue(abortablePromiseMock);
 
-    $rootScope.$digest();
+      const returnValue = gateway.getImage(location);
 
-    mock.restore();
-  });
+      rootScope.$apply();
 
-  it('should reject in case an image loading error occurs', done => {
-    const mock = createImageMock(true);
-    gateway.getImage(frameLocation)
-      .catch(error => {
-        expect(error).toEqual('error!!1elf!!');
-        done();
-      });
+      expect(abortablePromiseFactoryMock).toHaveBeenCalled();
+      expect(returnValue).toBe(abortablePromiseMock);
+    });
 
-    $rootScope.$digest();
+    it('resolve with returned image from fetcher', () => {
+      const location = createFrameLocation();
+      const gateway = createFrameGateway();
 
-    mock.restore();
+      const returnValue = gateway.getImage(location);
+      const resolveSpy = jasmine.createSpy('image loaded');
+      returnValue.then(resolveSpy);
+
+      const imageMock = {src: 'http://example.com/some-image-mock.png'};
+      imageFetcherResultDefer.resolve(imageMock);
+
+      rootScope.$apply();
+
+      expect(resolveSpy).toHaveBeenCalledWith(imageMock);
+    });
+
+    it('should request url from location', () => {
+      const location = createFrameLocation();
+      const gateway = createFrameGateway();
+
+      gateway.getImage(location);
+
+      expect(imageFetcherMock.fetch).toHaveBeenCalledWith(location.url);
+    });
+
+    it('should store fetched image in cache', () => {
+      const location = createFrameLocation();
+      const gateway = createFrameGateway();
+
+      gateway.getImage(location);
+
+      const imageMock = {src: 'http://example.com/some-image-mock.png'};
+      imageFetcherResultDefer.resolve(imageMock);
+
+      rootScope.$apply();
+
+      expect(imageCacheMock.addImage).toHaveBeenCalledWith(imageMock);
+    });
+
+    it('should provide image from cache if present', () => {
+      const location = createFrameLocation();
+      const gateway = createFrameGateway();
+
+      const imageMock = {src: 'http://example.com/some-image-mock.png'};
+
+      imageCacheMock.hasImageForUrl.and.returnValue(true);
+      imageCacheMock.getImageForUrl.and.returnValue(imageMock);
+
+      const returnValue = gateway.getImage(location);
+      const resolveSpy = jasmine.createSpy('image loaded');
+      returnValue.then(resolveSpy);
+
+      rootScope.$apply();
+
+      expect(resolveSpy).toHaveBeenCalledWith(imageMock);
+      expect(imageCacheMock.hasImageForUrl).toHaveBeenCalledWith(location.url);
+      expect(imageCacheMock.getImageForUrl).toHaveBeenCalledWith(location.url);
+    });
   });
 });
