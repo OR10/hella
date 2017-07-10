@@ -4,7 +4,8 @@
   "description": "Package to listen to the CouchDB Database feed and create replications",
   "main": "ReplicationManager.js",
   "scripts": {
-    "start": "node ./ReplicationManager.js",
+    "start": "node ./Application/ReplicationManager.js",
+    "test": "./node_modules/.bin/jasmine",
     "eslint": "./node_modules/.bin/eslint ./"
   },
   "dependencies": {
@@ -15,6 +16,7 @@
   "devDependencies": {
     "eslint": "^4.1.1",
     "eslint-config-airbnb": "^15.0.2",
-    "eslint-plugin-import": "^2.6.1"
+    "eslint-plugin-import": "^2.6.1",
+    "jasmine": "^2.6.0"
   }
 }
