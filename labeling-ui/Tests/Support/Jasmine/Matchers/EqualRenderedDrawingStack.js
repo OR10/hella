@@ -1,4 +1,5 @@
-var CanteenStackRenderer = require('./CanteenStackRenderer.es5').default;
+// var CanteenStackRenderer = require('./CanteenStackRenderer.es5').default;
+import CanteenStackRenderer from 'CanteenStackRenderer.es5';
 
 var renderer = new CanteenStackRenderer('black');
 
