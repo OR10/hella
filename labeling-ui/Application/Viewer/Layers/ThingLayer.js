@@ -515,7 +515,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     const {viewport, video, task, selectedPaperShape, readOnly} = this._$scope.vm;
 
-    // @TODO: move with other drawint tool options to labelStructureThing
+    // @TODO: move with other drawing tool options to labelStructureThing
     // @TODO: Should be handled using a proper ToolOptionStruct in the future.
     //        This is just a workaround to use the old `Task` based config options until
     //        a refactoring has been done!
