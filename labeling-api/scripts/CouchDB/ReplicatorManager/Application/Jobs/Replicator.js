@@ -1,9 +1,9 @@
-const { Utils } = require('../Utils');
+const { getReplicationDocumentIdName } = require('../Utils');
 
 class Replicator {
   constructor(nanoAdmin, sourceUrl, targetUrl) {
     this.nanoAdmin = nanoAdmin;
-    this.id = Utils.getReplicationDocumentIdName(sourceUrl, targetUrl);
+    this.id = getReplicationDocumentIdName(sourceUrl, targetUrl);
     this.sourceUrl = sourceUrl;
     this.targetUrl = targetUrl;
   }

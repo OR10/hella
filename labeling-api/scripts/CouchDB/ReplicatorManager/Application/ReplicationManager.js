@@ -1,7 +1,7 @@
 const { CommandLineArgs } = require('./CommandLineArgs');
 const { Replicator } = require('./Jobs/Replicator');
 const { WorkerQueue } = require('./WorkerQueue');
-const { Utils } = require('./Utils');
+const { purgeCouchDbReplicationDocument, getReplicationDocumentIdName } = require('./Utils');
 
 class ReplicationManager {
   constructor() {
@@ -104,18 +104,18 @@ class ReplicationManager {
       const sourceUrl = this.sourceBaseUrl + sourceDatabase;
       const targetUrl = this.hotStandByUrl + sourceDatabase;
       purgePromises.push(
-        Utils.purgeCouchDbReplicationDocument(
+        purgeCouchDbReplicationDocument(
           this.nanoAdmin,
-          Utils.getReplicationDocumentIdName(sourceUrl, targetUrl),
+          getReplicationDocumentIdName(sourceUrl, targetUrl),
         ),
       );
     }
     const sourceUrl = this.sourceBaseUrl + sourceDatabase;
     const targetUrl = this.targetBaseUrl + targetDatabase;
     purgePromises.push(
-      Utils.purgeCouchDbReplicationDocument(
+      purgeCouchDbReplicationDocument(
         this.nanoAdmin,
-        Utils.getReplicationDocumentIdName(sourceUrl, targetUrl),
+        getReplicationDocumentIdName(sourceUrl, targetUrl),
       ),
     );
 

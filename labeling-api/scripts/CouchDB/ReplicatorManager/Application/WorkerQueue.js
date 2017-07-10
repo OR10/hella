@@ -1,4 +1,4 @@
-const { Utils } = require('./Utils');
+const { compactReplicationDatabase, destroyAndPurgeDocument } = require('./Utils');
 
 class WorkerQueue {
   constructor(nanoAdmin, maxSimultaneousJobs = 50, compactReplicationDbCycle = 500) {
@@ -87,7 +87,7 @@ class WorkerQueue {
   compactReplicationDatabase() {
     this.compactReplicationCounter += 1;
     if (this.compactReplicationCounter >= this.compactReplicationDbCycle) {
-      Utils.compactReplicationDatabase(this.nanoAdmin);
+      compactReplicationDatabase(this.nanoAdmin);
       this.compactReplicationCounter = 0;
     }
   }
@@ -105,7 +105,7 @@ class WorkerQueue {
 
     feedReplicator.on('change', change => {
       if (change.doc._replication_state === 'completed') {
-        Utils.destroyAndPurgeDocument(
+        destroyAndPurgeDocument(
           this.nanoAdmin,
           replicatorDb,
           change.doc._id,
