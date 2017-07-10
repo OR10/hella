@@ -56,7 +56,18 @@ PORT="12345" gulp serve
 ```
 
 ### E2E-Tests
-Running the E2E tests requires Chromium. Use version `53.0.2785.0`.
+Running the E2E tests requires Chromium. Use version `61.0.3154.0`.
+
+Download here:
+
+|OS |32 Bit|64 Bit|
+|---|------|------|
+|Win|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Win/485205/chrome-win32.zip)|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/485198/chrome-win32.zip)|
+|Mac|[Download]()|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Mac/485205/chrome-mac.zip)|
+
+
+Download 32 Bit Version Windows: 
+
 
 ### Unit Tests: MacOS
 In order to run the unit tests under MacOS you need to increase the amount of max. open files:
