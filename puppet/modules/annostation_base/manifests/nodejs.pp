@@ -17,11 +17,16 @@ class annostation_base::nodejs(
     require => Apt::Source['yarn'],
   }
 
+  class { 'nodejs':
+  }
+
   class { 'nvm':
     install_node        => '8',
     manage_dependencies => false,
     user                => $nvmUser,
   }
+
+  Package['git'] -> Class['nvm::install']
 
   $packages = [
     'libcairo2-dev',
@@ -43,7 +48,7 @@ class annostation_base::nodejs(
   ], {
     provider => 'npm',
     require => [
-      Class['nvm'],
+      Package['npm'],
       Package[$packages],
     ]
   })
