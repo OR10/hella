@@ -1,6 +1,12 @@
 class UserPasswordController {
 
-  constructor(user, userGateway) {
+  constructor(user, userGateway, modalService) {
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
+
     this.user = user;
     this.userGateway = userGateway;
     this.oldUserPassword = '';
@@ -18,12 +24,27 @@ class UserPasswordController {
     this.message = '';
     this.loadingInProgress = true;
 
-    this.userGateway.setCurrentUserPassword(this.oldUserPassword, this.newUserPassword).then(result => {
-      if (!result) {
-        this.message = 'There was an error updating your password!';
-      }
+    this.userGateway.setCurrentUserPassword(this.oldUserPassword, this.newUserPassword).then(() => {
+      this.message = 'New password is saved';
       this.oldUserPassword = '';
       this.newUserPassword = '';
+      this.loadingInProgress = false;
+    }).catch(error => {
+      this._modalService.info(
+        {
+          title: 'Failed updating your password',
+          headline: 'Errors occurred updating the password.',
+          message: error.message.split('\\n'),
+          confirmButtonText: 'Understood',
+        },
+        undefined,
+        undefined,
+        {
+          abortable: false,
+          warning: true,
+        }
+      );
+      this.message = '';
       this.loadingInProgress = false;
     });
   }
@@ -32,6 +53,7 @@ class UserPasswordController {
 UserPasswordController.$inject = [
   'user',
   'userGateway',
+  'modalService',
 ];
 
 export default UserPasswordController;

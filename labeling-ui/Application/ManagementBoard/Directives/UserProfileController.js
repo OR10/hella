@@ -243,17 +243,52 @@ class UserProfileController {
           this.user = user;
 
           return this._assignUserToOrganisations(user);
-        })
-        .then(() => {
+        }).then(() => {
           this.loadingInProgress = false;
           this._$state.go('labeling.users.list');
-        });
+        }).catch(
+        error => {
+          this._modalService.info(
+            {
+              title: 'Failed updating user',
+              headline: 'Errors occurred updating the user.',
+              message: error.message.split('\\n'),
+              confirmButtonText: 'Understood',
+            },
+            undefined,
+            undefined,
+            {
+              abortable: false,
+              warning: true,
+            }
+          );
+          this.loadingInProgress = false;
+        }
+      );
     } else {
       this._userGateway.updateUser(this.user).then(
         () => {
           this.loadingInProgress = false;
           this._$state.go('labeling.users.list');
-        });
+        }).catch(
+        error => {
+          this._modalService.info(
+            {
+              title: 'Failed updating user',
+              headline: 'Errors occurred updating the user.',
+              message: error.message.split('\\n'),
+              confirmButtonText: 'Understood',
+            },
+            undefined,
+            undefined,
+            {
+              abortable: false,
+              warning: true,
+            }
+          );
+          this.loadingInProgress = false;
+        }
+      );
     }
   }
 
