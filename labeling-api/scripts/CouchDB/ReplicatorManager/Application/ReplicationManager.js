@@ -4,7 +4,7 @@ const { Worker } = require('./Worker');
 const { Utils } = require('./Utils');
 
 class ReplicationManager {
-  constructor() {
+  run() {
     const options = CommandLineArgs.parse();
     this.adminUrl = options.adminUrl;
     this.sourceBaseUrl = options.sourceBaseUrl;
@@ -16,9 +16,7 @@ class ReplicationManager {
     this.nanoAdmin = require('nano')(this.adminUrl);
     /* eslint-enable global-require */
     this.worker = new Worker(this.nanoAdmin);
-  }
 
-  run() {
     this.purgeAllPreviousManagedReplicationLeftOvers().then(() => {
       this.addOneTimeReplicationForAllDatabases();
       this.worker.listenToReplicationChanges();
