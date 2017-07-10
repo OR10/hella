@@ -1,4 +1,4 @@
-const { compactReplicationDatabase, destroyAndPurgeDocument } = require('./Utils');
+const { compactReplicationDatabase } = require('./Utils');
 
 class WorkerQueue {
   constructor(nanoAdmin, maxSimultaneousJobs = 50, compactReplicationDbCycle = 500) {
@@ -64,22 +64,27 @@ class WorkerQueue {
       return false;
     }
 
-    this.activeTasks.push(element.id);
+    this.activeTasks.push(element);
     element.run()
+      .then(() => {
+        const index = this.activeTasks.findIndex(task => task.id === element.id);
+        if (index !== -1) {
+          this.activeTasks.splice(index, 1);
+        }
+        this._printQueueStatus();
+        this.compactReplicationDatabase();
+        this.doWork();
+      })
       .catch(error => {
         // eslint-disable-next-line no-console
         console.log(`Failed adding replication: ${error}`);
-        const index = this.activeTasks.indexOf(element.id);
+        const index = this.activeTasks.findIndex(task => task.id === element.id);
         if (index !== -1) {
           this.activeTasks.splice(index, 1);
         }
         this._printQueueStatus();
         this.doWork();
       });
-
-    this.doWork();
-    this.compactReplicationDatabase();
-    this._printQueueStatus();
 
     return true;
   }
@@ -104,21 +109,9 @@ class WorkerQueue {
     };
 
     feedReplicator.on('change', change => {
-      if (change.doc._replication_state === 'completed') {
-        destroyAndPurgeDocument(
-          this.nanoAdmin,
-          replicatorDb,
-          change.doc._id,
-          change.doc._rev,
-        ).then(() => {
-          const index = this.activeTasks.indexOf(change.doc._id);
-          if (index !== -1) {
-            this.activeTasks.splice(index, 1);
-          }
-          this._printQueueStatus();
-          this.doWork();
-        });
-      }
+      this.activeTasks.forEach(task => {
+        task.onChangeOccurred(change);
+      });
     });
     feedReplicator.follow();
   }
