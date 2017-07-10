@@ -1,6 +1,7 @@
 const { CommandLineArgs } = require('./CommandLineArgs');
 const { Replicator } = require('./Jobs/Replicator');
 const { WorkerQueue } = require('./WorkerQueue');
+const nano = require('nano');
 const { purgeCouchDbReplicationDocument, getReplicationDocumentIdName } = require('./Utils');
 
 class ReplicationManager {
@@ -16,7 +17,6 @@ class ReplicationManager {
     this.sourceDbRegex = options.sourceDbRegex;
     this.targetDb = options.targetDb;
     this.hotStandByUrl = options.hotStandByUrl;
-    const nano = require('nano');
     this.nanoAdmin = nano(this.adminUrl);
     /* eslint-enable global-require */
     this.workerQueue = new WorkerQueue(this.nanoAdmin);
@@ -76,6 +76,8 @@ class ReplicationManager {
           }
         });
         this._prugeNextPurgeQueue(resolve);
+
+        return true;
       });
     });
   }
@@ -90,6 +92,8 @@ class ReplicationManager {
     this._purgeCouchDbReplicationDocument(databaseName, this.targetDb).then(() => {
       this._prugeNextPurgeQueue(resolve);
     });
+
+    return true;
   }
 
   /**

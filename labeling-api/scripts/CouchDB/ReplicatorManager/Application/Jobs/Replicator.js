@@ -7,7 +7,7 @@ class Replicator {
     this.sourceUrl = sourceUrl;
     this.targetUrl = targetUrl;
 
-    this.resolve;
+    this.resolve = undefined;
   }
 
   run() {
@@ -48,7 +48,9 @@ class Replicator {
         change.doc._id,
         change.doc._rev,
       ).then(() => {
-        this.resolve();
+        if (this.resolve !== undefined) {
+          this.resolve();
+        }
       });
     }
   }

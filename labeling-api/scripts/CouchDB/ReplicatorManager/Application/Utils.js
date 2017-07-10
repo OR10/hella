@@ -23,7 +23,7 @@ function _purgeDocument(nanoAdmin, db, documentId, revisions) {
 
 function destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
   return new Promise((resolve, reject) => {
-    db.get(documentId, {revs_info: true}, (err, body) => {
+    db.get(documentId, { revs_info: true }, (err, body) => {
       if (err) {
         reject(err);
       }
@@ -50,7 +50,7 @@ function destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
 function purgeCouchDbReplicationDocument(nanoAdmin, documentId) {
   const db = nanoAdmin.use('_replicator');
   return new Promise((resolve, reject) => {
-    db.get(documentId, {revs: true, open_revs: 'all'}, (err, results) => {
+    db.get(documentId, { revs: true, open_revs: 'all' }, (err, results) => {
       if (err) {
         return reject(err);
       }
