@@ -1,6 +1,6 @@
 const { CommandLineArgs } = require('./CommandLineArgs');
 const { Replicator } = require('./Jobs/Replicator');
-const { Worker } = require('./Worker');
+const { WorkerQueue } = require('./WorkerQueue');
 const { Utils } = require('./Utils');
 
 class ReplicationManager {
@@ -15,11 +15,11 @@ class ReplicationManager {
     const nano = require('nano');
     this.nanoAdmin = nano(this.adminUrl);
     /* eslint-enable global-require */
-    this.worker = new Worker(this.nanoAdmin);
+    this.workerQueue = new WorkerQueue(this.nanoAdmin);
 
     this.purgeAllPreviousManagedReplicationLeftOvers().then(() => {
       this.addOneTimeReplicationForAllDatabases();
-      this.worker.listenToReplicationChanges();
+      this.workerQueue.listenToReplicationChanges();
       this.listenToDatabaseChanges();
     });
   }
@@ -125,12 +125,12 @@ class ReplicationManager {
       const sourceUrl = this.sourceBaseUrl + sourceDatabase;
       const targetUrl = this.hotStandByUrl + sourceDatabase;
       const job = new Replicator(this.nanoAdmin, sourceUrl, targetUrl);
-      this.worker.addJob(job);
+      this.workerQueue.addJob(job);
     }
     const sourceUrl = this.sourceBaseUrl + sourceDatabase;
     const targetUrl = this.targetBaseUrl + targetDatabase;
     const job = new Replicator(this.nanoAdmin, sourceUrl, targetUrl);
-    this.worker.addJob(job);
+    this.workerQueue.addJob(job);
   }
 }
 

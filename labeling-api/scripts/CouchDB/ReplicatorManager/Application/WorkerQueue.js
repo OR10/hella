@@ -1,6 +1,6 @@
 const { Utils } = require('./Utils');
 
-class Worker {
+class WorkerQueue {
   constructor(nanoAdmin) {
     this.maxSimultaneousJobs = 50;
     this.compactReplicationDbCycle = 500;
@@ -16,7 +16,7 @@ class Worker {
    */
   addJob(job) {
     this.queue.push(job);
-    this.queue = Worker._removeDuplicatesBy(x => x.id, this.queue);
+    this.queue = WorkerQueue._removeDuplicatesBy(x => x.id, this.queue);
 
     this.doWork();
   }
@@ -129,4 +129,4 @@ class Worker {
   }
 }
 
-exports.Worker = Worker;
+exports.WorkerQueue = WorkerQueue;
