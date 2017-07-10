@@ -1,9 +1,9 @@
 const { Utils } = require('./Utils');
 
 class WorkerQueue {
-  constructor(nanoAdmin) {
-    this.maxSimultaneousJobs = 50;
-    this.compactReplicationDbCycle = 500;
+  constructor(nanoAdmin, maxSimultaneousJobs = 50, compactReplicationDbCycle = 500) {
+    this.maxSimultaneousJobs = maxSimultaneousJobs;
+    this.compactReplicationDbCycle = compactReplicationDbCycle;
     this.compactReplicationCounter = 0;
     this.queue = [];
     this.activeTasks = [];
