@@ -8,8 +8,6 @@ class Worker {
     this.queue = [];
     this.activeTasks = [];
     this.nanoAdmin = nanoAdmin;
-
-    this.listenToReplicationChanges();
   }
 
   /**
@@ -75,6 +73,8 @@ class Worker {
         if (index !== -1) {
           this.activeTasks.splice(index, 1);
         }
+        this._printQueueStatus();
+        this.doWork();
       });
 
     this.doWork();
@@ -110,14 +110,14 @@ class Worker {
           replicatorDb,
           change.doc._id,
           change.doc._rev,
-          () => {
-            const index = this.activeTasks.indexOf(change.doc._id);
-            if (index !== -1) {
-              this.activeTasks.splice(index, 1);
-            }
-            this._printQueueStatus();
-            this.doWork();
-          });
+        ).then(() => {
+          const index = this.activeTasks.indexOf(change.doc._id);
+          if (index !== -1) {
+            this.activeTasks.splice(index, 1);
+          }
+          this._printQueueStatus();
+          this.doWork();
+        });
       }
     });
     feedReplicator.follow();

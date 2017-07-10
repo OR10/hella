@@ -1,77 +1,90 @@
 const md5 = require('md5');
 
 class Utils {
-  static destroyAndPurgeDocument(nanoAdmin, db, documentId, revision, callback) {
-    db.get(documentId, { revs_info: true }, (err, body) => {
-      if (err) {
-        return callback(err);
-      }
-
-      const revisions = body._revs_info.map(revInfo => revInfo.rev).reverse();
-
-      db.destroy(documentId, revision, destroyError => {
-        if (destroyError) {
-          return callback(destroyError);
+  static destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
+    return new Promise((resolve, reject) => {
+      db.get(documentId, { revs_info: true }, (err, body) => {
+        if (err) {
+          reject(err);
         }
 
-        revisions.push(body.rev);
+        const revisions = body._revs_info.map(revInfo => revInfo.rev).reverse();
 
-        Utils._purgeDocument(nanoAdmin, db, documentId, revisions, callback);
+        db.destroy(documentId, revision, destroyError => {
+          if (destroyError) {
+            reject(destroyError);
+          }
 
-        return true;
+          revisions.push(body._rev);
+
+          Utils._purgeDocument(nanoAdmin, db, documentId, revisions).then(() => {
+            resolve();
+          }).catch(error => {
+            reject(error);
+          });
+        });
       });
-
-      return true;
     });
   }
 
   static purgeCouchDbReplicationDocument(nanoAdmin, documentId) {
     const db = nanoAdmin.use('_replicator');
-    db.get(documentId, { revs: true, open_revs: 'all' }, (err, results) => {
-      if (err) {
-        return err;
-      }
+    return new Promise((resolve, reject) => {
+      db.get(documentId, { revs: true, open_revs: 'all' }, (err, results) => {
+        if (err) {
+          return reject(err);
+        }
 
-      // There should only be one or none ok result
-      const okResult = results.find(result => ('ok' in result));
+        // There should only be one or none ok result
+        const okResult = results.find(result => ('ok' in result));
 
-      if (okResult === undefined) {
-        return false;
-      } else if (okResult.ok._deleted === true) {
-        const revisions = okResult.ok._revisions.ids.map((hash, index) => `${okResult.ok._revisions.ids.length - index}-${hash}`);
-
-        return Utils._purgeDocument(nanoAdmin, db, documentId, revisions, purgeDocumentError => {
-          if (purgeDocumentError) {
-            return purgeDocumentError;
-          }
-
+        if (okResult === undefined) {
+          resolve();
           return true;
-        });
-      }
-      return Utils.destroyAndPurgeDocument(
-        nanoAdmin,
-        db,
-        documentId,
-        okResult.ok._rev,
-        destroyAndPurgeDocumentError => {
-          if (destroyAndPurgeDocumentError) {
-            return destroyAndPurgeDocumentError;
-          }
-
-          return true;
-        });
+        } else if (okResult.ok._deleted === true) {
+          const revisions = okResult.ok._revisions.ids.map((hash, index) => `${okResult.ok._revisions.ids.length - index}-${hash}`);
+          return Utils._purgeDocument(nanoAdmin, db, documentId, revisions).then(() => {
+            resolve();
+          }).catch(error => {
+            reject(error);
+          });
+        // eslint-disable-next-line no-else-return
+        } else {
+          return Utils.destroyAndPurgeDocument(
+            nanoAdmin,
+            db,
+            documentId,
+            okResult.ok._rev,
+          ).then(() => {
+            resolve();
+          }).catch(destroyAndPurgeError => {
+            // eslint-disable-next-line no-console
+            console.log(destroyAndPurgeError);
+          });
+        }
+      });
     });
   }
 
-  static _purgeDocument(nanoAdmin, db, documentId, revisions, next) {
+  static _purgeDocument(nanoAdmin, db, documentId, revisions) {
     const purgeBody = {};
     purgeBody[documentId] = revisions;
-    nanoAdmin.request({
-      db: db.config.db,
-      method: 'post',
-      path: '_purge',
-      body: purgeBody,
-    }, next);
+    return new Promise((resolve, reject) => {
+      nanoAdmin.request({
+        db: db.config.db,
+        method: 'post',
+        path: '_purge',
+        body: purgeBody,
+      }, err => {
+        if (err) {
+          reject(err);
+          return err;
+        }
+
+        resolve();
+        return true;
+      });
+    });
   }
 
   /**

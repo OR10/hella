@@ -25,9 +25,12 @@ class Replicator {
         err => {
           if (err) {
             reject(err);
+
+            return false;
           }
 
           resolve();
+          return true;
         },
       );
     });

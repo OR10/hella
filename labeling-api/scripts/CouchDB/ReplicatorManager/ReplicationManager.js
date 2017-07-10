@@ -47,6 +47,7 @@ class ReplicationManager {
   run() {
     this.purgeAllPreviousManagedReplicationLeftOvers().then(() => {
       this.addOneTimeReplicationForAllDatabases();
+      this.worker.listenToReplicationChanges();
       this.listenToDatabaseChanges();
     });
   }
@@ -87,6 +88,7 @@ class ReplicationManager {
   purgeAllPreviousManagedReplicationLeftOvers() {
     // eslint-disable-next-line no-console
     console.log('Purging all possible left overs from previous replication runs');
+    const documentsToPurge = [];
     return new Promise((resolve, reject) => {
       this.nanoAdmin.db.list((err, body) => {
         if (err) {
@@ -95,10 +97,15 @@ class ReplicationManager {
 
         body.forEach(databaseName => {
           if (databaseName.match(this.sourceDbRegex) !== null) {
-            this._purgeCouchDbReplicationDocument(databaseName, this.targetDb);
+            documentsToPurge.push(
+              this._purgeCouchDbReplicationDocument(databaseName, this.targetDb),
+            );
           }
         });
-        resolve();
+
+        Promise.all(documentsToPurge).then(() => {
+          resolve();
+        });
 
         return true;
       });
@@ -112,20 +119,27 @@ class ReplicationManager {
    * @private
    */
   _purgeCouchDbReplicationDocument(sourceDatabase, targetDatabase) {
+    const documentsToPurge = [];
     if (this.hotStandByUrl !== undefined) {
       const sourceUrl = this.sourceBaseUrl + sourceDatabase;
       const targetUrl = this.hotStandByUrl + sourceDatabase;
-      Utils.purgeCouchDbReplicationDocument(
-        this.nanoAdmin,
-        Utils.getReplicationDocumentIdName(sourceUrl, targetUrl),
+      documentsToPurge.push(
+        Utils.purgeCouchDbReplicationDocument(
+          this.nanoAdmin,
+          Utils.getReplicationDocumentIdName(sourceUrl, targetUrl),
+        ),
       );
     }
     const sourceUrl = this.sourceBaseUrl + sourceDatabase;
-    const targetUrl = this.hotStandByUrl + targetDatabase;
-    Utils.purgeCouchDbReplicationDocument(
-      this.nanoAdmin,
-      Utils.getReplicationDocumentIdName(sourceUrl, targetUrl),
+    const targetUrl = this.targetBaseUrl + targetDatabase;
+    documentsToPurge.push(
+      Utils.purgeCouchDbReplicationDocument(
+        this.nanoAdmin,
+        Utils.getReplicationDocumentIdName(sourceUrl, targetUrl),
+      ),
     );
+
+    return Promise.all(documentsToPurge);
   }
 
   /**
