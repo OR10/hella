@@ -33,22 +33,15 @@ export default [
         .map(typeList => typeList[0]);
 
       const frameIndexLimits = frameIndexService.getFrameIndexLimits();
-      const totalFrameCount = frameIndexLimits.upperLimit - frameIndexLimits.lowerLimit + 1;
       return $q.all(
-        imageTypes.map(imageType => frameLocationGateway.getFrameLocations(task.id, imageType, 0, totalFrameCount))
+        imageTypes.map(imageType => frameLocationGateway.getFrameLocations(task.id, imageType, 0, frameIndexLimits.upperLimit + 1))
       ).then(frameLocationsForAllTypes => [].concat(...frameLocationsForAllTypes));
-    };
-
-    const filterFrameLocationsByActiveFrames = (task, locations) => {
-      const activeFrames = new Set(task.frameNumberMapping);
-      return locations.filter(location => activeFrames.has(location.frameIndex));
     };
 
     const preloadImages = locations => frameGateway.preloadImages(locations);
 
     const loadFilterAndPreloadFrameImages = task => $q.resolve()
       .then(() => loadFrameLocations(task))
-      .then(locations => filterFrameLocationsByActiveFrames(task, locations))
       .then(preloadImages);
 
     return $q.resolve()
