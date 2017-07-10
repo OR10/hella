@@ -12,8 +12,8 @@ class ReplicationManager {
     this.sourceDbRegex = options.sourceDbRegex;
     this.targetDb = options.targetDb;
     this.hotStandByUrl = options.hotStandByUrl;
-    /* eslint-disable global-require */
-    this.nanoAdmin = require('nano')(this.adminUrl);
+    const nano = require('nano');
+    this.nanoAdmin = nano(this.adminUrl);
     /* eslint-enable global-require */
     this.worker = new Worker(this.nanoAdmin);
 
