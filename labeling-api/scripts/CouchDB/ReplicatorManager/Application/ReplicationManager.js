@@ -4,6 +4,10 @@ const { WorkerQueue } = require('./WorkerQueue');
 const { Utils } = require('./Utils');
 
 class ReplicationManager {
+  constructor() {
+    this.purgeQueue = [];
+  }
+
   run() {
     const options = CommandLineArgs.parse();
     this.adminUrl = options.adminUrl;
@@ -60,7 +64,6 @@ class ReplicationManager {
   purgeAllPreviousManagedReplicationLeftOvers() {
     // eslint-disable-next-line no-console
     console.log('Purging all possible left overs from previous replication runs');
-    const purgePromises = [];
     return new Promise((resolve, reject) => {
       this.nanoAdmin.db.list((err, body) => {
         if (err) {
@@ -69,18 +72,23 @@ class ReplicationManager {
 
         body.forEach(databaseName => {
           if (databaseName.match(this.sourceDbRegex) !== null) {
-            purgePromises.push(
-              this._purgeCouchDbReplicationDocument(databaseName, this.targetDb),
-            );
+            this.purgeQueue.push(databaseName);
           }
         });
-
-        Promise.all(purgePromises).then(() => {
-          resolve();
-        });
-
-        return true;
+        this._prugeNextPurgeQueue(resolve);
       });
+    });
+  }
+
+  _prugeNextPurgeQueue(resolve) {
+    if (this.purgeQueue.length === 0) {
+      resolve();
+      return true;
+    }
+
+    const databaseName = this.purgeQueue.shift();
+    this._purgeCouchDbReplicationDocument(databaseName, this.targetDb).then(() => {
+      this._prugeNextPurgeQueue(resolve);
     });
   }
 
