@@ -85,7 +85,7 @@ describe('Intial Task Data Resolver', () => {
     });
 
     frameLocationGatewayMock.getFrameLocations.and.callFake((taskId, type) => {
-      switch(type) {
+      switch (type) {
         case 'sourceJpg':
           return angularQ.resolve(frameLocationsSourceJpg);
         case 'thumbnail':
@@ -185,7 +185,7 @@ describe('Intial Task Data Resolver', () => {
     const frameLocationsSourceJpgDeferred = angularQ.defer();
     const frameLocationsThumbnailDeferred = angularQ.defer();
     frameLocationGatewayMock.getFrameLocations.and.callFake((taskId, type) => {
-      switch(type) {
+      switch (type) {
         case 'sourceJpg':
           return frameLocationsSourceJpgDeferred;
         case 'thumbnail':

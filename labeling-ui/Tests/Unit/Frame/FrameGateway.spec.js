@@ -14,7 +14,7 @@ describe('FrameGateway', () => {
       id,
       type,
       frameIndex,
-      url
+      url,
     };
   }
 
@@ -270,7 +270,6 @@ describe('FrameGateway', () => {
       const gateway = createFrameGateway();
 
       const firstImage = {src: firstUrl};
-      const secondImage = {src: secondUrl};
 
       // Pretend second image is in cache
       imageCacheMock.hasImageForUrl.and.callFake(url => url === secondUrl);

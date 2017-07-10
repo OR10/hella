@@ -49,7 +49,7 @@ export default [
       .then(([project, task]) => {
         resolverResult.task = task;
         frameIndexService.setTask(task);
-        return $q.all([loadVideo(task), replicateTaskData(project, task), loadFilterAndPreloadFrameImages(task)])
+        return $q.all([loadVideo(task), replicateTaskData(project, task), loadFilterAndPreloadFrameImages(task)]);
       })
       .then(([video]) => {
         resolverResult.video = video;

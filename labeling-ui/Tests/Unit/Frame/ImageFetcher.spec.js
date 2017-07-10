@@ -1,3 +1,4 @@
+import {inject} from 'angular-mocks';
 import ImageFetcher from '../../../Application/Frame/Services/ImageFetcher';
 
 describe('ImageFetcher', () => {
@@ -120,7 +121,7 @@ describe('ImageFetcher', () => {
     let urls;
 
     function applyAsync() {
-      Array.from(new Array(APPLY_REPETITION).keys()).forEach(index => {
+      Array.from(new Array(APPLY_REPETITION).keys()).forEach(() => {
         rootScope.$apply();
         jasmine.clock().tick(100);
       });
@@ -128,7 +129,7 @@ describe('ImageFetcher', () => {
 
     function loadAllImages() {
       // Images may be loaded in chunks of 1 therefore we need to loop over all images in cycles.
-      Array.from(new Array(IMAGE_COUNT).keys()).forEach(index => {
+      Array.from(new Array(IMAGE_COUNT).keys()).forEach(() => {
         registeredEvents.forEach(imageEvents => imageEvents.load && imageEvents.load());
         applyAsync();
       });
@@ -230,7 +231,7 @@ describe('ImageFetcher', () => {
 
       expect(rejectSpy).not.toHaveBeenCalled();
 
-      const error = "Some uncool error!";
+      const error = 'Some uncool error!';
       registeredEvents[2].error(error);
 
       applyAsync();
@@ -238,10 +239,11 @@ describe('ImageFetcher', () => {
       expect(rejectSpy).toHaveBeenCalledWith(error);
     });
 
+    /* eslint-disable jasmine/missing-expect */
     it('should load a maximum of "chunkSize" images in parallel', () => {
       const imageFetcher = createImageFetcher();
 
-      const imagesPromise = imageFetcher.fetchMultiple(urls, 4);
+      imageFetcher.fetchMultiple(urls, 4);
 
       applyAsync();
 
@@ -262,6 +264,7 @@ describe('ImageFetcher', () => {
       applyAsync();
       expectTheFollowingImagesToHaveBeenTriggered([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     });
+    /* eslint-enable jasmine/missing-expect */
 
     it('should provide loaded images in the same order as the given urls regardless of load order', () => {
       const imageFetcher = createImageFetcher();

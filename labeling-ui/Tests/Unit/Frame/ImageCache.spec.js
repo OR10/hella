@@ -187,6 +187,6 @@ describe('ImageCache', () => {
       expect(cache.hasImageForUrl(urlOne)).toBeTruthy();
       expect(cache.hasImageForUrl(urlTwo)).toBeTruthy();
       expect(cache.getImageForUrl(urlOne)).toBe(imageTwo);
-    })
+    });
   });
 });
