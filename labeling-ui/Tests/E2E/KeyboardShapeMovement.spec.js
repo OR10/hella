@@ -439,9 +439,15 @@ describe('Keyboard Shape Movement', () => {
             .perform();
         })
         .then(() => {
+          browser.sleep(500);
+        })
+        .then(() => {
           browser.actions()
             .sendKeys(protractor.Key.ARROW_UP)
             .perform();
+        })
+        .then(() => {
+          browser.sleep(500);
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidUp')

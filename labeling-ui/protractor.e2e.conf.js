@@ -60,6 +60,11 @@ exports.config = {
     defaultTimeoutInterval: 60000,
   },
 
+  plugins: [{
+    package: 'protractor-console',
+    logLevels: ['severe', 'warning', 'info', 'debug'],
+  }],
+
   specs: ['Tests/E2E/**/*.spec.js'],
 };
 
@@ -76,11 +81,6 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
     'browserName': 'chrome',
     'chromeOptions': {
       'binary': '/Applications/Chromium.app/Contents/MacOS/Chromium',
-    },
-    'loggingPrefs': {
-      'driver': 'INFO',
-      'server': 'OFF',
-      'browser': 'ALL',
     },
   };
 }

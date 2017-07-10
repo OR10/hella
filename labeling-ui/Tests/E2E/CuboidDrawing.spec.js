@@ -1245,6 +1245,9 @@ describe('Cuboid Drawing', () => {
             .sendKeys('i')
             .perform()
           )
+          .then(() => {
+            return browser.sleep(500);
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise1')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1262,6 +1265,9 @@ describe('Cuboid Drawing', () => {
             .sendKeys('i')
             .perform()
           )
+          .then(() => {
+            return browser.sleep(500);
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise2')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1279,6 +1285,9 @@ describe('Cuboid Drawing', () => {
             .sendKeys('i')
             .perform()
           )
+          .then(() => {
+            return browser.sleep(500);
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise3')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1296,6 +1305,9 @@ describe('Cuboid Drawing', () => {
             .sendKeys('i')
             .perform()
           )
+          .then(() => {
+            return browser.sleep(500);
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise4')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
