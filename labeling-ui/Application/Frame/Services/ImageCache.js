@@ -39,11 +39,23 @@ class ImageCache {
     return images.map(image => this.addImage(image));
   }
 
+  /**
+   * @param {string} url
+   * @returns {boolean}
+   */
   hasImageForUrl(url) {
     const normalizedUrl = this._normalizeUrl(url);
     return this._cache.has(normalizedUrl);
   }
 
+  /**
+   * Return the cached image for the given url.
+   *
+   * Throws an exception if the image ist not cached for the given url.
+   *
+   * @param {string} url
+   * @returns {Image}
+   */
   getImageForUrl(url) {
     const normalizedUrl = this._normalizeUrl(url);
 
