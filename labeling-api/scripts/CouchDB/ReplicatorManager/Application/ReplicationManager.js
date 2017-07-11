@@ -2,11 +2,14 @@ const { CommandLineArgs } = require('./CommandLineArgs');
 const { Replicator } = require('./Jobs/Replicator');
 const { WorkerQueue } = require('./WorkerQueue');
 const nano = require('nano');
+const { Logger } = require('./Logger');
+
 const { purgeCouchDbReplicationDocument, getReplicationDocumentIdName } = require('./Utils');
 
 class ReplicationManager {
-  constructor() {
+  constructor(logger) {
     this.purgeQueue = [];
+    this.logger = logger;
   }
 
   run() {
@@ -19,7 +22,7 @@ class ReplicationManager {
     this.hotStandByUrl = options.hotStandByUrl;
     this.nanoAdmin = nano(this.adminUrl);
     /* eslint-enable global-require */
-    this.workerQueue = new WorkerQueue(this.nanoAdmin);
+    this.workerQueue = new WorkerQueue(this.nanoAdmin, this.logger);
 
     this.purgeAllPreviousManagedReplicationLeftOvers().then(() => {
       this.addOneTimeReplicationForAllDatabases();
@@ -29,8 +32,7 @@ class ReplicationManager {
   }
 
   listenToDatabaseChanges() {
-    // eslint-disable-next-line no-console
-    console.log('Listen to the changes feed now.');
+    this.logger.logString('Listen to the changes feed now.');
     const db = this.nanoAdmin.use('_db_updates');
     const feed = db.follow({ include_docs: true, since: 'now' });
 
@@ -44,8 +46,7 @@ class ReplicationManager {
   }
 
   addOneTimeReplicationForAllDatabases() {
-    // eslint-disable-next-line no-console
-    console.log('Creating a one-time replications for all matching databases now.');
+    this.logger.logString('Creating a one-time replications for all matching databases now.');
     this.nanoAdmin.db.list((err, body) => {
       if (err) {
         return err;
@@ -62,8 +63,7 @@ class ReplicationManager {
   }
 
   purgeAllPreviousManagedReplicationLeftOvers() {
-    // eslint-disable-next-line no-console
-    console.log('Purging all possible left overs from previous replication runs');
+    this.logger.logString('Purging all possible left overs from previous replication runs');
     return new Promise((resolve, reject) => {
       this.nanoAdmin.db.list((err, body) => {
         if (err) {
@@ -111,6 +111,7 @@ class ReplicationManager {
         purgeCouchDbReplicationDocument(
           this.nanoAdmin,
           getReplicationDocumentIdName(sourceUrl, targetUrl),
+          this.logger
         ),
       );
     }
@@ -120,6 +121,7 @@ class ReplicationManager {
       purgeCouchDbReplicationDocument(
         this.nanoAdmin,
         getReplicationDocumentIdName(sourceUrl, targetUrl),
+        this.logger,
       ),
     );
 
@@ -146,5 +148,5 @@ class ReplicationManager {
   }
 }
 
-const ReplicationManagerStarter = new ReplicationManager();
+const ReplicationManagerStarter = new ReplicationManager(new Logger());
 ReplicationManagerStarter.run();

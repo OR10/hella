@@ -47,7 +47,7 @@ function destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
   });
 }
 
-function purgeCouchDbReplicationDocument(nanoAdmin, documentId) {
+function purgeCouchDbReplicationDocument(nanoAdmin, documentId, logger) {
   const db = nanoAdmin.use('_replicator');
   return new Promise((resolve, reject) => {
     db.get(documentId, { revs: true, open_revs: 'all' }, (err, results) => {
@@ -78,8 +78,7 @@ function purgeCouchDbReplicationDocument(nanoAdmin, documentId) {
         ).then(() => {
           resolve();
         }).catch(destroyAndPurgeError => {
-          // eslint-disable-next-line no-console
-          console.log(destroyAndPurgeError);
+          logger.logString(destroyAndPurgeError);
         });
       }
     });
@@ -96,9 +95,8 @@ function getReplicationDocumentIdName(source, target) {
   return `replication-manager-${md5(source + target)}`;
 }
 
-function compactReplicationDatabase(nanoAdmin) {
-  // eslint-disable-next-line no-console
-  console.log('Starting _replicator compaction');
+function compactReplicationDatabase(nanoAdmin, logger) {
+  logger.logString('Starting _replicator compaction');
   nanoAdmin.db.compact('_replicator');
 }
 
