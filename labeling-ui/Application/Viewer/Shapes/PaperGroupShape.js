@@ -36,6 +36,15 @@ class PaperGroupShape extends PaperShape {
   get labeledThingGroupInFrame() {
     return this._labeledThingGroupInFrame;
   }
+
+  /**
+   * Get the Groups Group ID
+   *
+   * @returns {string}
+   */
+  get groupId() {
+    return this.labeledThingGroupInFrame.labeledThingGroup.id;
+  }
 }
 
 export default PaperGroupShape;
