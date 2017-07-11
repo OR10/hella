@@ -78,5 +78,8 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
       'server': 'OFF',
       'browser': 'ALL',
     },
+    'chromeOptions': {
+      'binary': '/Applications/Chromium.app/Contents/MacOS/Chromium',
+    },
   };
 }
