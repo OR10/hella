@@ -1,6 +1,5 @@
-import paper from 'paper';
 import CreationTool from '../CreationTool';
-import PaperGroupRectangle from '../../Shapes/PaperGroupRectangle';
+import PaperGroupRectangleMulti from '../../Shapes/PaperGroupRectangleMulti';
 
 class GroupCreationTool extends CreationTool {
   /**
@@ -102,29 +101,22 @@ class GroupCreationTool extends CreationTool {
         return;
       }
 
-      const shapesBound = this._labeledThingGroupService.getBoundsForShapes(shapes);
-      const {width, height} = shapesBound;
-      const {point: topLeft} = shapesBound;
-      const bottomRight = new paper.Point(topLeft.x + width, topLeft.y + height);
-      const colorIdString = this._entityColorService.getColorId();
-      const colorId = parseInt(colorIdString, 10);
-      const color = this._entityColorService.getColorById(colorId);
+      const {color, colorIdString} = this._getColor();
 
       const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);
       labeledThingGroupInFrame.labeledThingGroup.lineColor = colorIdString;
 
       let paperGroup;
       this._context.withScope(() => {
-        paperGroup = new PaperGroupRectangle(
+        paperGroup = new PaperGroupRectangleMulti(
           labeledThingGroupInFrame,
           paperShape.id,
-          topLeft,
-          bottomRight,
+          shapes,
           color
         );
 
-        // Resize to add necessary padding
-        paperGroup.setSize(topLeft, width, height);
+        // Add necessary padding
+        paperGroup.addPadding();
 
         // Place this group shape behind all other shapes
         paperGroup.sendToBack();
@@ -135,6 +127,21 @@ class GroupCreationTool extends CreationTool {
       .catch(reason => this._reject(reason));
 
     return promise;
+  }
+
+  /**
+   * @returns {{color: {primary: string, secondary: string}, colorIdString: String}}
+   * @private
+   */
+  _getColor() {
+    const colorIdString = this._entityColorService.getColorId();
+    const colorId = parseInt(colorIdString, 10);
+    const color = this._entityColorService.getColorById(colorId);
+
+    return {
+      color,
+      colorIdString,
+    };
   }
 
   invokeDefaultShapeCreation() {

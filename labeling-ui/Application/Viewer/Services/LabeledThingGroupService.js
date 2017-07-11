@@ -1,10 +1,9 @@
 import paper from 'paper';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
+import PaperGroupRectangleMulti from '../../Viewer/Shapes/PaperGroupRectangleMulti';
 
 class LabeledThingGroupService {
-  constructor() {
-
-  }
+  constructor() {}
 
   /**
    * Retuns all shapes that are within the bounds of the given bound
@@ -13,25 +12,30 @@ class LabeledThingGroupService {
    * @param {{x,y,width,height,point}} bounds
    */
   getShapesWithinBounds(context, bounds) {
-    return context.scope.project.getItems({
+    const shapes = context.scope.project.getItems({
       inside: bounds,
       class: PaperShape,
     });
+
+    return shapes.filter(shape => (!(shape instanceof PaperGroupRectangleMulti)));
   }
 
   /**
    * Return the combined bound for the given shapes
    *
    * @param shapes
-   * @return {{x: *, y: *, width: number, height: number, point: Point}}
+   * @return {Array.<{x: *, y: *, width: number, height: number, point: Point}>}
    */
   getBoundsForShapes(shapes) {
-    const bounds = shapes.map(shape => shape.bounds);
-    let minX;
-    let minY;
-    let maxX;
-    let maxY;
-    bounds.forEach(bound => {
+    const shapeBounds = shapes.map(shape => shape.bounds);
+    const groupShapeBounds = [];
+
+    shapeBounds.forEach(bound => {
+      let minX;
+      let minY;
+      let maxX;
+      let maxY;
+
       if (minX === undefined || bound.x < minX) {
         minX = bound.x;
       }
@@ -44,15 +48,17 @@ class LabeledThingGroupService {
       if (maxY === undefined || bound.y + bound.height > maxY) {
         maxY = bound.y + bound.height;
       }
+
+      groupShapeBounds.push({
+        x: minX,
+        y: minY,
+        width: maxX - minX,
+        height: maxY - minY,
+        point: new paper.Point(minX, minY),
+      });
     });
 
-    return {
-      x: minX,
-      y: minY,
-      width: maxX - minX,
-      height: maxY - minY,
-      point: new paper.Point(minX, minY),
-    };
+    return groupShapeBounds;
   }
 
   /**

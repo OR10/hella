@@ -20,6 +20,7 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
    * @param {ApplicationLoadingMaskService} applicationLoadingMaskService
+   * @param {ImageCache} imageCache
    */
   constructor($timeout,
               $scope,
@@ -36,7 +37,8 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
               featureFlags,
               pouchDbSyncManager,
               pouchDbContextService,
-              applicationLoadingMaskService) {
+              applicationLoadingMaskService,
+              imageCache) {
     super(
       $timeout,
       $scope,
@@ -76,18 +78,28 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
      * @private
      */
     this._labeledFrameGateway = labeledFrameGateway;
+
+    /**
+     * @type {ImageCache}
+     * @private
+     */
+    this._imageCache = imageCache;
   }
 
   /**
-   * Push all outstanding changes to the backend
+   * Handle all tasks needed to be completed before leaving the task
    *
    * @returns {Promise.<Event>}
    * @private
    */
-  _pushChangesToBackend() {
+  _beforeTaskLeave() {
     const context = this._pouchDbContextService.provideContextForTaskId(this.task.id);
     this._pouchDbSyncManager.stopReplicationsForContext(context);
-    return this._pouchDbSyncManager.pushUpdatesForContext(context);
+
+    return this._$q.all([
+      this._pouchDbSyncManager.pushUpdatesForContext(context),
+      this._imageCache.clear(),
+    ]);
   }
 
   /**
@@ -125,7 +137,7 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
     this._applicationState.viewer.work();
 
     return this._$q.resolve()
-      .then(() => this._pushChangesToBackend())
+      .then(() => this._beforeTaskLeave())
       .then(() => {
         return this._getComposedIncompleteCount(this.task);
       })
@@ -210,7 +222,7 @@ class PouchDbViewerTitleBarController extends ViewerTitleBarController {
     // @TODO: What if someone uses the browser back button?
     this._applicationLoadingMaskService.startLoading('Saving task data...');
     this._$q.resolve()
-      .then(() => this._pushChangesToBackend())
+      .then(() => this._beforeTaskLeave())
       .then(() => {
         this._$state.go('labeling.tasks.list', {project: this.task.projectId});
         this._applicationLoadingMaskService.finishLoading();
@@ -222,6 +234,7 @@ PouchDbViewerTitleBarController.$inject = ViewerTitleBarController.$inject.conca
   'pouchDbSyncManager',
   'pouchDbContextService',
   'applicationLoadingMaskService',
+  'imageCache',
 ]);
 
 export default PouchDbViewerTitleBarController;
