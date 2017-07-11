@@ -45,6 +45,7 @@ class annostation_base::nodejs(
     'gulp',
 	'protagonist',
     'aglio',
+    'bower',
   ], {
     provider => 'npm',
     require => [
