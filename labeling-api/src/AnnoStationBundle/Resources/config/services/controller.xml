@@ -136,6 +136,7 @@
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
+            <argument type="service" id="annostation.labeling_api.service.validation"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
         </service>
 
@@ -169,11 +170,6 @@
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
-        <service
-                id="annostation.labeling_api.controller.api.test"
-                class="AnnoStationBundle\Controller\Api\Test">
-        </service>
-
         <service id="annostation.labeling_api.controller.api.status" class="AnnoStationBundle\Controller\Api\Status">
             <argument type="service" id="annostation.labeling_api.database.facade.status"/>
         </service>
@@ -184,6 +180,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+            <argument type="service" id="annostation.labeling_api.service.validation"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.project_count"
