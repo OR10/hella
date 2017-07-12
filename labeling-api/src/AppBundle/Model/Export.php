@@ -52,6 +52,12 @@ class Export
      * @var string
      * @CouchDB\Field(type="string")
      */
+    private $warningMessage;
+
+    /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
     private $errorMessage;
 
     /**
@@ -162,5 +168,13 @@ class Export
     public function getUserId()
     {
         return $this->userId;
+    }
+
+    /**
+     * @param string $warningMessage
+     */
+    public function setWarningMessage(string $warningMessage)
+    {
+        $this->warningMessage = $warningMessage;
     }
 }

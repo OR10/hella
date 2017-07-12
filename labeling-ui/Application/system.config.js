@@ -102,6 +102,7 @@ System.config({
     "text": "github:systemjs/plugin-text@0.0.9",
     "three-math": "npm:three-math@0.69.0",
     "transform-pouch": "npm:transform-pouch@1.1.3",
+    "urijs": "npm:urijs@1.18.10",
     "uuid": "npm:uuid@2.0.1",
     "v-accordion": "npm:v-accordion@1.4.1",
     "github:angular-ui/ui-router@0.2.15": {
@@ -354,7 +355,7 @@ System.config({
       "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
     "npm:buffer@5.0.6": {
-      "base64-js": "npm:base64-js@1.2.0",
+      "base64-js": "npm:base64-js@1.2.1",
       "ieee754": "npm:ieee754@1.1.8"
     },
     "npm:cipher-base@1.0.3": {
@@ -1059,6 +1060,9 @@ System.config({
       "esmangle-evaluator": "npm:esmangle-evaluator@1.0.1",
       "recast": "npm:recast@0.10.43",
       "through2": "npm:through2@0.6.5"
+    },
+    "npm:urijs@1.18.10": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:url@0.10.3": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",

@@ -1239,10 +1239,10 @@ class ViewerController {
       const thingShapesInGroup = this.paperThingShapes.filter(
         thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupShape.labeledThingGroupInFrame.labeledThingGroup.id) !== -1
       );
-      const {point, width, height} = this._labeledThingGroupService.getBoundsForShapes(thingShapesInGroup);
+      const bounds = this._labeledThingGroupService.getBoundsForShapes(thingShapesInGroup);
 
       this._thingLayerContext.withScope(scope => {
-        groupShape.setSize(point, width, height);
+        groupShape.setSize(bounds);
         scope.view.update();
       });
     });
