@@ -123,9 +123,6 @@ class GroupCreationTool extends CreationTool {
           color
         );
 
-        // Add necessary padding
-        paperGroup.addPadding();
-
         // Place this group shape behind all other shapes
         paperGroup.sendToBack();
       });

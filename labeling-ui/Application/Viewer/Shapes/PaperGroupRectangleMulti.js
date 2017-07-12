@@ -183,27 +183,10 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   }
 
   /**
-   * @param {Array} allBounds
+   * Update all children belonging to this shape
    */
-  setSize(allBounds) {
-    allBounds.forEach((bounds, index) => {
-      this.children[index].setSize(bounds.point, bounds.width, bounds.height);
-    });
-  }
-
-  resize() {
-    this.children.forEach(child => {
-      child.resize();
-    });
-  }
-
-  /**
-   * Fix the points of the shape to represent the right coordinates
-   */
-  fixOrientation() {
-    this.children.forEach(child => {
-      child.fixOrientation();
-    });
+  update() {
+    this._drawShapes();
   }
 
   /**
