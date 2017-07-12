@@ -160,7 +160,8 @@ class CanvasInstructionLogManager {
     fs.writeFileSync(targetPath, data);
 
     // Throw an error here, to fail every test, which generates a fixture.
-    throw new Error(`Fixture regenerated and stored: ${targetPath}`);
+    // throw new Error(`Fixture regenerated and stored: ${targetPath}`);
+    expect('').toEqual(`Fixture regenerated and stored: ${targetPath}`);
   }
 }
 
