@@ -1,8 +1,8 @@
 require('babel-core/register');
 
 // We don't have SystemJS available here so we can't use 'import'
-const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter');
-const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/ResembleDiffReporter');
+const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter').default;
+const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/ResembleDiffReporter').default;
 const JasmineSpecReporter = require('jasmine-spec-reporter');
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
 const path = require('path');
