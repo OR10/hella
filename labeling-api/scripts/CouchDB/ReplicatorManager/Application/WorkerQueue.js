@@ -73,7 +73,7 @@ class WorkerQueue {
           this.activeTasks.splice(index, 1);
         }
         this._printQueueStatus();
-        this.compactReplicationDatabase();
+        this.compactReplicationDatabaseIfNecessary();
         this.doWork();
       })
       .catch(error => {
@@ -89,7 +89,7 @@ class WorkerQueue {
     return true;
   }
 
-  compactReplicationDatabase() {
+  compactReplicationDatabaseIfNecessary() {
     this.compactReplicationCounter += 1;
     if (this.compactReplicationCounter >= this.compactReplicationDbCycle) {
       compactReplicationDatabase(this.nanoAdmin, this.logger);

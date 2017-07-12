@@ -7,7 +7,8 @@ class Replicator {
     this.sourceUrl = sourceUrl;
     this.targetUrl = targetUrl;
 
-    this.resolve = undefined;
+    this._resolve = undefined;
+    this._reject = undefined;
   }
 
   run() {
@@ -21,7 +22,8 @@ class Replicator {
     };
 
     this.promise = new Promise((resolve, reject) => {
-      this.resolve = resolve;
+      this._resolve = resolve;
+      this._reject = reject;
       replicatorDb.insert(
         replicationDocument,
         this.id,
@@ -48,9 +50,11 @@ class Replicator {
         change.doc._id,
         change.doc._rev,
       ).then(() => {
-        if (this.resolve !== undefined) {
-          this.resolve();
+        if (this._resolve !== undefined) {
+          this._resolve();
         }
+      }).catch(err => {
+        this._reject(err);
       });
     }
   }

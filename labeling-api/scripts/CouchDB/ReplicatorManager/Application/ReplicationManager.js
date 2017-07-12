@@ -19,11 +19,15 @@ class ReplicationManager {
     this.targetDb = this.options.targetDb;
     this.hotStandByUrl = this.options.hotStandByUrl;
 
-    this.purgeAllPreviousManagedReplicationLeftOvers().then(() => {
-      this.addOneTimeReplicationForAllDatabases();
-      this.workerQueue.listenToReplicationChanges();
-      this.listenToDatabaseChanges();
-    });
+    Promise.resolve()
+      .then(() => this.purgeAllPreviousManagedReplicationLeftOvers())
+      .then(() => this.addOneTimeReplicationForAllDatabases())
+      .then(() => this.workerQueue.listenToReplicationChanges())
+      .then(() => this.listenToDatabaseChanges())
+      .catch(error => {
+        this.logger.logString('Startup failed: ' + error);
+        process.exit(1);
+      });
   }
 
   listenToDatabaseChanges() {
@@ -42,18 +46,22 @@ class ReplicationManager {
 
   addOneTimeReplicationForAllDatabases() {
     this.logger.logString('Creating a one-time replications for all matching databases now.');
-    this.nanoAdmin.db.list((err, body) => {
-      if (err) {
-        return err;
-      }
+    return new Promise((resolve, reject) => {
+      this.nanoAdmin.db.list((err, body) => {
+        if (err) {
+          reject(err);
 
-      body.forEach(databaseNames => {
-        if (databaseNames.match(this.sourceDbRegex) !== null) {
-          this._addWorkerJob(databaseNames, this.targetDb);
+          return;
         }
-      });
 
-      return true;
+        body.forEach(databaseNames => {
+          if (databaseNames.match(this.sourceDbRegex) !== null) {
+            this._addWorkerJob(databaseNames, this.targetDb);
+          }
+        });
+
+        resolve();
+      });
     });
   }
 

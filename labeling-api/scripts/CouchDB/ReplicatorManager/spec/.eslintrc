@@ -2,7 +2,6 @@
   "plugins": ["jasmine"],
   "env": {
     "jasmine": true,
-    "protractor": true
   },
   "rules": {
     "jasmine/named-spy": 0,
