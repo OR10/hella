@@ -44,9 +44,9 @@ describe('ReplicationManager Test', () => {
   it('should purging old replications return a promise', () => {
     const replicationManager = createReplicationManager();
     expect(
-      replicationManager.purgeAllPreviousManagedReplicationLeftOvers()
+      replicationManager.purgeAllPreviousManagedReplicationLeftOvers(),
     ).toEqual(
-      jasmine.any(Promise)
+      jasmine.any(Promise),
     );
   });
 

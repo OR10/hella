@@ -51,7 +51,7 @@ describe('WorkerQueue Job', () => {
     const workerQueue = createWorkerQueue();
     spyOn(workerQueue, 'doWork').and.returnValue(undefined);
 
-    for (let count = 1; count <= 70; count++) {
+    for (let count = 1; count <= 70; count += count) {
       const job = createReplicationJob(count, count);
       workerQueue.addJob(job);
       workerQueue.queueWorker();
