@@ -7,14 +7,12 @@ beforeEach(() => {
 });
 
 afterEach(done => {
-  protractorPromise.fulfill('ok');
-  expect(protractorPromise).toBe('ok');
-
-  if (features.pouchdb) {
+  protractorPromise.promise.then(result => {
+    expect(result).toBe('ok');
     PouchDb.removeAllDocs().then(() => done());
-  } else {
-    done();
-  }
+  });
+
+  protractorPromise.fulfill('ok');
 });
 
 afterAll(done => {
