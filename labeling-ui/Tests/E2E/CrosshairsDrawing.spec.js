@@ -42,7 +42,7 @@ describe('Mouse Crosshair', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200})
           .perform();
       })
@@ -132,11 +132,13 @@ describe('Mouse Crosshair', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .click(crosshairsToggleButton)
           .mouseMove(viewer, {x: 200, y: 200})
           .perform();
-        browser.actions()
+      })
+      .then(() => {
+        return browser.actions()
           .mouseMove(viewer, {x: 100, y: -50})
           .perform();
       })

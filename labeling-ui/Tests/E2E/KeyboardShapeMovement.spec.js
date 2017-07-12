@@ -52,13 +52,13 @@ describe('Keyboard Shape Movement', () => {
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseMove(viewer, {x: 150, y: 150}) // select shape
             .click()
             .perform();
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_UP)
             .perform();
         })
@@ -76,7 +76,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameUp);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_RIGHT)
             .perform();
         })
@@ -94,7 +94,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameRight);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_DOWN)
             .perform();
         })
@@ -112,7 +112,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameDown);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_LEFT)
             .perform();
         })
@@ -142,13 +142,13 @@ describe('Keyboard Shape Movement', () => {
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseMove(viewer, {x: 150, y: 150}) // select shape
             .click()
             .perform();
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.SHIFT)
             .perform();
         })
@@ -166,7 +166,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.SHIFT)
             .perform();
         })
@@ -184,7 +184,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.SHIFT)
             .perform();
         })
@@ -202,7 +202,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftDown);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.SHIFT)
             .perform();
         })
@@ -243,13 +243,13 @@ describe('Keyboard Shape Movement', () => {
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseMove(viewer, {x: 190, y: 250}) // select shape
             .click()
             .perform();
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_UP)
             .perform();
         })
@@ -267,7 +267,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_RIGHT)
             .perform();
         })
@@ -285,7 +285,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_DOWN)
             .perform();
         })
@@ -303,7 +303,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameDown);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_LEFT)
             .perform();
         })
@@ -333,13 +333,13 @@ describe('Keyboard Shape Movement', () => {
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseMove(viewer, {x: 190, y: 250}) // select shape
             .click()
             .perform();
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.SHIFT)
             .perform();
         })
@@ -357,7 +357,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.SHIFT)
             .perform();
         })
@@ -375,7 +375,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.SHIFT)
             .perform();
         })
@@ -393,7 +393,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftDown);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.SHIFT)
             .perform();
         })
@@ -433,7 +433,7 @@ describe('Keyboard Shape Movement', () => {
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseMove(viewer, {x: 521, y: 336}) // select shape
             .click()
             .perform();
@@ -442,7 +442,7 @@ describe('Keyboard Shape Movement', () => {
           browser.sleep(500);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_UP)
             .perform();
         })
@@ -463,7 +463,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_RIGHT)
             .perform();
         })
@@ -481,7 +481,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_DOWN)
             .perform();
         })
@@ -499,7 +499,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameDown);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.ARROW_LEFT)
             .perform();
         })
@@ -529,13 +529,13 @@ describe('Keyboard Shape Movement', () => {
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseMove(viewer, {x: 521, y: 336}) // select shape
             .click()
             .perform();
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.SHIFT)
             .perform();
         })
@@ -553,7 +553,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.SHIFT)
             .perform();
         })
@@ -571,7 +571,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.SHIFT)
             .perform();
         })
@@ -589,7 +589,7 @@ describe('Keyboard Shape Movement', () => {
           expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftDown);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.SHIFT)
             .perform();
         })

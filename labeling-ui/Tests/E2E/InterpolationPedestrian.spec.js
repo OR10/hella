@@ -53,7 +53,7 @@ describe('Interpolation Pedestrian Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // Rectangle in first frame
           .click()
           .perform();
@@ -121,7 +121,7 @@ describe('Interpolation Pedestrian Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // Rectangle in first frame
           .click()
           .perform();

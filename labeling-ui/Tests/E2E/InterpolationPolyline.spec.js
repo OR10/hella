@@ -53,7 +53,7 @@ describe('Interpolation Polyline Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // Polyline in first frame
           .click()
           .perform();
@@ -121,7 +121,7 @@ describe('Interpolation Polyline Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // Polyline in first frame
           .click()
           .perform();

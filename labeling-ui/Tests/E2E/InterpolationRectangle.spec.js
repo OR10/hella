@@ -54,7 +54,7 @@ describe('Interpolation Rectangle Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
           .perform();
@@ -124,7 +124,7 @@ describe('Interpolation Rectangle Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
           .perform();
@@ -207,7 +207,7 @@ describe('Interpolation Rectangle Tests', () => {
         browser.sleep(500);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
           .perform();
@@ -224,7 +224,7 @@ describe('Interpolation Rectangle Tests', () => {
         browser.sleep(500);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150})
           .mouseDown()
           .mouseMove(viewer, {x: 310, y: 330}) // drag

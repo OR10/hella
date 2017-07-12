@@ -51,11 +51,13 @@ describe('Cuboid creation', () => {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .mouseMove(viewer, {x: 405, y: 372}) // initial position
             .mouseDown()
             .mouseMove(viewer, {x: 405, y: 525}) // drag
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboid1')
@@ -64,10 +66,12 @@ describe('Cuboid creation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboid1);
         })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .mouseUp()
             .mouseMove(viewer, {x: 673, y: 525}) // width
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboid2')
@@ -76,9 +80,11 @@ describe('Cuboid creation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboid2);
         })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .click()
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboid3')
@@ -87,10 +93,12 @@ describe('Cuboid creation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboid3);
         })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .mouseMove(viewer, {x: 673, y: 486}) // depth
             .click()
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboid4')
@@ -173,11 +181,13 @@ describe('Cuboid creation', () => {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .mouseMove(viewer, {x: 405, y: 372}) // initial position
             .mouseDown()
             .mouseMove(viewer, {x: 405, y: 525}) // drag
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom1')
@@ -186,10 +196,12 @@ describe('Cuboid creation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.Pseudo3dTopToBottom1);
         })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .mouseUp()
             .mouseMove(viewer, {x: 673, y: 525}) // width
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom2')
@@ -198,9 +210,11 @@ describe('Cuboid creation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.Pseudo3dTopToBottom2);
         })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .click()
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom3')
@@ -209,9 +223,11 @@ describe('Cuboid creation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.Pseudo3dTopToBottom3);
         })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .sendKeys('x')
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom4')
@@ -241,11 +257,13 @@ describe('Cuboid creation', () => {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .mouseMove(viewer, {x: 405, y: 525}) // initial
             .mouseDown()
             .mouseMove(viewer, {x: 405, y: 372}) // drag
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dBottomToTop1')
@@ -254,10 +272,12 @@ describe('Cuboid creation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.Pseudo3dBottomToTop1);
         })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .mouseUp()
             .mouseMove(viewer, {x: 673, y: 525}) // width
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dBottomToTop2')
@@ -266,9 +286,11 @@ describe('Cuboid creation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.Pseudo3dBottomToTop2);
         })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .click()
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dBottomToTop3')
@@ -277,9 +299,11 @@ describe('Cuboid creation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.Pseudo3dBottomToTop3);
         })
-        .then(() => browser.actions()
+        .then(() => {
+          return browser.actions()
             .sendKeys('x')
             .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dBottomToTop4')
@@ -312,7 +336,7 @@ describe('Cuboid creation', () => {
         viewerHeight: 620,
       })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseMove(viewer, {x: 405, y: 372}) // initial position
             .mouseDown()
             .mouseMove(viewer, {x: 405, y: 380}) // drag
@@ -326,7 +350,7 @@ describe('Cuboid creation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.MinimalTopToBottom1);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseUp()
             .mouseMove(viewer, {x: 673, y: 402}) // width
             .click()
@@ -363,7 +387,7 @@ describe('Cuboid creation', () => {
         viewerHeight: 620,
       })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseMove(viewer, {x: 405, y: 372}) // initial position
             .mouseDown()
             .mouseMove(viewer, {x: 405, y: 362}) // drag
@@ -377,7 +401,7 @@ describe('Cuboid creation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.MinimalBottomToTop1);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseUp()
             .mouseMove(viewer, {x: 673, y: 372}) // width
             .click()

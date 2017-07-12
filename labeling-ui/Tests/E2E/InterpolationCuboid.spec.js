@@ -53,7 +53,7 @@ describe('Interpolation Cuboid Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 85, y: 357}) // Cuboid in first frame
           .click()
           .perform();
@@ -121,7 +121,7 @@ describe('Interpolation Cuboid Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 85, y: 357}) // Cuboid in first frame
           .click()
           .perform();

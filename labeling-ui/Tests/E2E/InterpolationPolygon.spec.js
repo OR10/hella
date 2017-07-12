@@ -53,7 +53,7 @@ describe('Interpolation Polygon Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
           .click()
           .perform();
@@ -121,7 +121,7 @@ describe('Interpolation Polygon Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
           .click()
           .perform();

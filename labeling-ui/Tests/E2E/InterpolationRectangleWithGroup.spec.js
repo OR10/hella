@@ -68,7 +68,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .perform();
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // RectangleWithGroup in first frame
           .click()
           .perform();
@@ -147,7 +147,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .perform();
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // RectangleWithGroup in first frame
           .click()
           .perform();
@@ -230,7 +230,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .perform();
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // First RectangleWithGroup in first frame
           .click()
           .perform();
@@ -239,7 +239,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         interpolateButton.click();
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 350, y: 150}) // Second RectangleWithGroup in first frame
           .click()
           .perform();

@@ -74,6 +74,7 @@ describe('Metalabeling', () => {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
+        .then(() => browser.sleep(500))
         .then(() => incompleteBadge.getText())
         // Two incomplete shapes + One incomplete/not existent frame
         .then(incompleteCount => expect(incompleteCount).toEqual('3'))
