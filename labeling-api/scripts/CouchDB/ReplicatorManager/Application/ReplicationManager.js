@@ -106,7 +106,7 @@ class ReplicationManager {
         purgeCouchDbReplicationDocument(
           this.nanoAdmin,
           getReplicationDocumentIdName(sourceUrl, targetUrl),
-          this.logger
+          this.logger,
         ),
       );
     }

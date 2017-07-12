@@ -1,4 +1,4 @@
-const {Replicator} = require('../Application/Jobs/Replicator');
+const { Replicator } = require('../Application/Jobs/Replicator');
 
 describe('Replicator Job', () => {
   let nanoAdminMock;

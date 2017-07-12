@@ -1,4 +1,4 @@
-const {WorkerQueue} = require('../Application/WorkerQueue');
+const { WorkerQueue } = require('../Application/WorkerQueue');
 const { Replicator } = require('../Application/Jobs/Replicator');
 
 describe('WorkerQueue Job', () => {
@@ -60,10 +60,10 @@ describe('WorkerQueue Job', () => {
     expect(workerQueue.queue.length).toEqual(20);
   });
 
-  it('should complete a worker job', (done) => {
+  it('should complete a worker job', done => {
     const workerQueue = createWorkerQueue();
     const job = createReplicationJob();
-    const promise = new Promise((resolve) => {
+    const promise = new Promise(resolve => {
       resolve();
     });
     spyOn(workerQueue, 'doWork').and.returnValue(undefined);

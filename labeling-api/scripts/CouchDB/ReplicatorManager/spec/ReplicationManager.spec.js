@@ -1,5 +1,4 @@
-const {ReplicationManager} = require('../Application/ReplicationManager');
-const {WorkerQueue} = require('../Application/WorkerQueue');
+const { ReplicationManager } = require('../Application/ReplicationManager');
 
 describe('ReplicationManager Test', () => {
   let nanoAdminMock;
@@ -34,7 +33,7 @@ describe('ReplicationManager Test', () => {
         }),
       },
       use: jasmine.createSpy().and.returnValue(replicatorDbMock),
-    }
+    };
   });
 
   it('should instantiate', () => {
@@ -44,12 +43,16 @@ describe('ReplicationManager Test', () => {
 
   it('should purging old replications return a promise', () => {
     const replicationManager = createReplicationManager();
-    expect(replicationManager.purgeAllPreviousManagedReplicationLeftOvers()).toEqual(jasmine.any(Promise));
+    expect(
+      replicationManager.purgeAllPreviousManagedReplicationLeftOvers()
+    ).toEqual(
+      jasmine.any(Promise)
+    );
   });
 
-  it('should trigger startup', (done) => {
+  it('should trigger startup', done => {
     const replicationManager = createReplicationManager();
-    const promise =new Promise(resolve => {
+    const promise = new Promise(resolve => {
       resolve();
     });
     spyOn(replicationManager, 'purgeAllPreviousManagedReplicationLeftOvers').and.returnValue(promise);
