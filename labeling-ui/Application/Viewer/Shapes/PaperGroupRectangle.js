@@ -1,6 +1,7 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
 import PaperGroupShape from './PaperGroupShape';
+import PaperGroupRectangleMulti from './PaperGroupRectangleMulti';
 
 
 /**
@@ -136,7 +137,7 @@ class PaperGroupRectangle extends PaperGroupShape {
    * Add Padding to the group shape
    * @param {number} padding
    */
-  addPadding(padding = 5) {
+  addPadding(padding = PaperGroupRectangleMulti.PADDING) {
     const {point, width, height} = this.bounds;
     this.setSize(point, width, height, padding);
   }
