@@ -11,8 +11,9 @@ class GroupCreationTool extends CreationTool {
    * @param {EntityColorService} entityColorService
    * @param {ToolService} toolService
    * @param {LabeledThingGroupService} labeledThingGroupService
+   * @param {GroupShapeNameService} groupShapeNameService
    */
-  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService) {
+  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService, groupShapeNameService) {
     super(drawingContext, $scope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -38,6 +39,12 @@ class GroupCreationTool extends CreationTool {
      * @private
      */
     this._rectangleCreationTool = this._toolService.getTool(drawingContext, 'rectangle');
+
+    /**
+     * @type {GroupShapeNameService}
+     * @private
+     */
+    this._groupShapeNameService = groupShapeNameService;
   }
 
   /**
@@ -209,6 +216,7 @@ GroupCreationTool.$inject = [
   'entityColorService',
   'toolService',
   'labeledThingGroupService',
+  'groupShapeNameService',
 ];
 
 export default GroupCreationTool;
