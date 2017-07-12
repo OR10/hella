@@ -20,68 +20,106 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
     this._groupShapeNameService = groupShapeNameService;
 
     // Do not name it _bounds as this name is already used internally by paperjs
-    this._allShapes = shapes.filter(shape => !(shape instanceof PaperGroupRectangle));
+    this._allThingShapes = shapes.filter(shape => !(shape instanceof PaperGroupRectangle));
     this._drawShapes();
   }
 
   _drawShapes() {
     this.removeChildren();
 
-    this._allShapes.forEach(shape => {
-      const bounds = shape.bounds;
+    const groupRectangles = this._createGroupRectangles();
+    this.addChildren(groupRectangles);
+
+    const groupNames = this._createGroupNames();
+    this.addChildren(groupNames);
+  }
+
+  /**
+   * Generates all group rectangles
+   *
+   * @return {Array.<PaperGroupRectangle>}
+   * @private
+   */
+  _createGroupRectangles() {
+    const groupRectangles = [];
+
+    this._allThingShapes.forEach(thingShape => {
+      const bounds = thingShape.bounds;
       const topLeft = new paper.Point(bounds.x, bounds.y);
       const bottomRight = new paper.Point(bounds.x + bounds.width, bounds.y + bounds.height);
       const groupShape = new PaperGroupRectangle(this._labeledThingGroupInFrame, this._labeledThingGroupInFrame.id, topLeft, bottomRight, this._color);
-      this.addChild(groupShape);
+
+      groupRectangles.push(groupShape);
     });
 
-    // this._drawDebugShape();
+    return groupRectangles;
   }
 
-  _drawDebugShape() {
-    const topLeft = new paper.Point(this.bounds.x, this.bounds.y);
-    const bottomRight = new paper.Point(this.bounds.x + this.bounds.width, this.bounds.y + this.bounds.height);
-    const groupShape = new PaperGroupRectangle(this._labeledThingGroupInFrame, this._labeledThingGroupInFrame.id, topLeft, bottomRight, this._color);
-    this.addChild(groupShape);
-  }
+  /**
+   * Creates the group name tags for all thing shapes
+   *
+   * @return {paper.PointText}
+   * @private
+   */
+  _createGroupNames() {
+    const fontSize = 12;
+    const groupNameWidth = 18;
+    const padding = PaperGroupRectangleMulti.PADDING;
 
-  get bounds() {
-    let topLeftX;
-    let topLeftY;
-    let bottomRightX;
-    let bottomRightY;
+    const paperGroupNames = [];
 
-    this._allShapes.forEach(shape => {
-      const bounds = shape.bounds;
-      if (bounds.x < topLeftX || topLeftX === undefined) {
-        topLeftX = bounds.x;
-      }
+    this._allThingShapes.forEach(thingShape => {
+      const groupCount = thingShape.groupIds.length;
+      const groupPosition = groupCount - thingShape.groupIds.indexOf(this.groupId) - 1;
+      const groupPadding = (groupCount * padding);
+      const groupNameText = this._groupShapeNameService.getNameById(this.groupId);
 
-      if (bounds.y < topLeftY || topLeftY === undefined) {
-        topLeftY = bounds.y;
-      }
+      // top left position
+      const topLeftCornerThingShapeX = thingShape.bounds.x;
+      const topLeftBasePointX = topLeftCornerThingShapeX - groupPadding;
+      const topLeftTextStartPointX = topLeftBasePointX + (groupPosition * groupNameWidth);
 
-      const shapeBottomRightX = (bounds.x + bounds.width);
-      const shapeBottomRightY = (bounds.y + bounds.height);
+      const topLeftCornerThingShapeY = thingShape.bounds.y;
+      const topLeftBasePointY = topLeftCornerThingShapeY - groupPadding;
+      const topLeftTextStartPointY = topLeftBasePointY - padding;
 
-      if (shapeBottomRightX > bottomRightX || bottomRightX === undefined) {
-        bottomRightX = shapeBottomRightX;
-      }
+      const topGroupName = new paper.PointText({
+        fontSize,
+        fontFamily: '"Lucida Console", Monaco, monospace',
+        point: new paper.Point(topLeftTextStartPointX, topLeftTextStartPointY),
+        fillColor: this._color.primary,
+        shadowColor: new paper.Color(0, 0, 0),
+        shadowBlur: 2,
+        justification: 'left',
+        shadowOffset: new paper.Point(2, 2),
+        content: groupNameText,
+      });
+      paperGroupNames.push(topGroupName);
 
-      if (shapeBottomRightY > bottomRightY || bottomRightY === undefined) {
-        bottomRightY = shapeBottomRightY;
-      }
+      // bottom right position
+      const bottomRightCornerThingShapeX = thingShape.bounds.x + thingShape.bounds.width;
+      const bottomRightBasePointX = bottomRightCornerThingShapeX + groupPadding;
+      const bottomRightTextStartPointX = bottomRightBasePointX - ((groupCount - 1 - groupPosition) * groupNameWidth);
+
+      const bottomRightCornerThingShapeY = thingShape.bounds.y + thingShape.bounds.height;
+      const bottomRightBasePointY = bottomRightCornerThingShapeY + groupPadding;
+      const bottomRightTextStartPointY = bottomRightBasePointY + padding + fontSize;
+
+      const bottomGroupName = new paper.PointText({
+        fontSize,
+        fontFamily: '"Lucida Console", Monaco, monospace',
+        point: new paper.Point(bottomRightTextStartPointX, bottomRightTextStartPointY),
+        fillColor: this._color.primary,
+        shadowColor: new paper.Color(0, 0, 0),
+        shadowBlur: 2,
+        justification: 'right',
+        shadowOffset: new paper.Point(2, 2),
+        content: groupNameText,
+      });
+      paperGroupNames.push(bottomGroupName);
     });
 
-    const width = bottomRightX - topLeftX;
-    const height = bottomRightY - topLeftY;
-
-    return {
-      x: topLeftX,
-      y: topLeftY,
-      width: width,
-      height: height,
-    };
+    return paperGroupNames;
   }
 
   /**
@@ -90,7 +128,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
    * @param {Boolean} drawHandles
    */
   select() {
-    this.children.forEach(child => {
+    this.children.filter(shape => shape instanceof PaperGroupRectangle).forEach(child => {
       child.select();
     });
   }
@@ -99,7 +137,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
    * Deselect the shape
    */
   deselect() {
-    this.children.forEach(child => {
+    this.children.filter(shape => shape instanceof PaperGroupRectangle).forEach(child => {
       child.deselect();
     });
   }
@@ -120,15 +158,6 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   }
 
   /**
-   * @param {Point} point
-   */
-  moveTo() {
-    this.children.forEach(child => {
-      child.moveTo();
-    });
-  }
-
-  /**
    * @param {Handle|null} handle
    * @param {boolean} mouseDown
    * @returns {string}
@@ -137,20 +166,19 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
     return 'pointer';
   }
 
-
   /**
    * Add padding to all group shapes of this group
    *
    * @param padding
    */
-  addPadding(padding = 5) {
-    this._allShapes.forEach((shape, index) => {
-      let groupPosition = shape.groupIds.indexOf(this.groupId) + 1;
-      if (groupPosition === 0) {
-        groupPosition = shape.groupIds.length + 1;
-      }
+  addPadding(padding = PaperGroupRectangleMulti.PADDING) {
+    this._allThingShapes.forEach((shape, index) => {
+      const groupPosition = shape.groupIds.indexOf(this.groupId) + 1;
       const currentGroupPadding = padding * groupPosition;
-      this.children[index].addPadding(currentGroupPadding);
+      const child = this.children[index];
+      if (child instanceof PaperGroupRectangle) {
+        child.addPadding(currentGroupPadding);
+      }
     });
   }
 
@@ -196,5 +224,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
     };
   }
 }
+
+PaperGroupRectangleMulti.PADDING = 5;
 
 export default PaperGroupRectangleMulti;
