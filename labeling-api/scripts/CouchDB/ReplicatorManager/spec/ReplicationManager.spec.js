@@ -47,17 +47,21 @@ describe('ReplicationManager Test', () => {
     expect(replicationManager.purgeAllPreviousManagedReplicationLeftOvers()).toEqual(jasmine.any(Promise));
   });
 
-  it('should trigger purging the previous replication documents', () => {
+  it('should trigger startup', (done) => {
     const replicationManager = createReplicationManager();
-    spyOn(replicationManager, 'purgeAllPreviousManagedReplicationLeftOvers').and.returnValue(
-      new Promise(resolve => {
-        resolve();
-      })
-    );
+    const promise =new Promise(resolve => {
+      resolve();
+    });
+    spyOn(replicationManager, 'purgeAllPreviousManagedReplicationLeftOvers').and.returnValue(promise);
     spyOn(replicationManager, 'addOneTimeReplicationForAllDatabases');
     spyOn(replicationManager, 'listenToDatabaseChanges');
     replicationManager.run();
 
     expect(replicationManager.purgeAllPreviousManagedReplicationLeftOvers).toHaveBeenCalled();
+    promise.then(() => {
+      expect(replicationManager.addOneTimeReplicationForAllDatabases).toHaveBeenCalled();
+      expect(replicationManager.listenToDatabaseChanges).toHaveBeenCalled();
+      done();
+    });
   });
 });
