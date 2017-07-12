@@ -1242,7 +1242,7 @@ class ViewerController {
       const bounds = this._labeledThingGroupService.getBoundsForShapes(thingShapesInGroup);
 
       this._thingLayerContext.withScope(scope => {
-        groupShape.setSize(bounds);
+        groupShape.update();
         scope.view.update();
       });
     });
