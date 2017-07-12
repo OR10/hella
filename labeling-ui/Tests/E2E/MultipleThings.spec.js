@@ -153,9 +153,8 @@ describe('Multiple Things', () => {
       .then(() => {
         return browser.actions()
           .click(toolButton0) // Rect drawing
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(200))
       .then(() => {
         return browser.actions()
@@ -163,9 +162,8 @@ describe('Multiple Things', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 20, y: 20})
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
@@ -175,9 +173,8 @@ describe('Multiple Things', () => {
       .then(() => {
         return browser.actions()
           .click(toolButton1) // Pedestrian drawing
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(200))
       .then(() => {
         return browser.actions()
@@ -185,9 +182,8 @@ describe('Multiple Things', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 100, y: 40})
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
@@ -197,9 +193,8 @@ describe('Multiple Things', () => {
       .then(() => {
         return browser.actions()
           .click(toolButton2) // Cuboid drawing
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(200))
       .then(() => {
         return browser.actions()
@@ -211,9 +206,8 @@ describe('Multiple Things', () => {
           .click()
           .mouseMove(viewer, {x: 75, y: 525})
           .click()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
@@ -223,9 +217,8 @@ describe('Multiple Things', () => {
       .then(() => {
         return browser.actions()
           .click(toolButton3) // Rect drawing
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(200))
       .then(() => {
         return browser.actions()
@@ -233,9 +226,8 @@ describe('Multiple Things', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 850, y: 550})
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))

@@ -212,9 +212,8 @@ describe('Polyline drawing', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 50, y: 200}) // drag
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'ResizeOnePolyline')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -289,9 +288,8 @@ describe('Polyline drawing', () => {
           .click()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
           .click(protractor.Button.RIGHT)
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(200))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolyline')
@@ -323,9 +321,8 @@ describe('Polyline drawing', () => {
           .mouseMove(viewer, {x: 600, y: 100}) // initial position
           .mouseUp()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -340,9 +337,8 @@ describe('Polyline drawing', () => {
           .mouseMove(viewer, {x: 200, y: 600}) // initial position
           .click()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -359,9 +355,8 @@ describe('Polyline drawing', () => {
           .mouseMove(viewer, {x: 500, y: 200}) // initial position
           .click()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -375,9 +370,8 @@ describe('Polyline drawing', () => {
           .click()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
           .click(protractor.Button.RIGHT)
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),

@@ -56,9 +56,8 @@ describe('Cuboid creation', () => {
             .mouseMove(viewer, {x: 405, y: 372}) // initial position
             .mouseDown()
             .mouseMove(viewer, {x: 405, y: 525}) // drag
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboid1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -70,9 +69,8 @@ describe('Cuboid creation', () => {
           return browser.actions()
             .mouseUp()
             .mouseMove(viewer, {x: 673, y: 525}) // width
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboid2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -83,9 +81,8 @@ describe('Cuboid creation', () => {
         .then(() => {
           return browser.actions()
             .click()
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboid3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -97,9 +94,8 @@ describe('Cuboid creation', () => {
           return browser.actions()
             .mouseMove(viewer, {x: 673, y: 486}) // depth
             .click()
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboid4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -186,9 +182,8 @@ describe('Cuboid creation', () => {
             .mouseMove(viewer, {x: 405, y: 372}) // initial position
             .mouseDown()
             .mouseMove(viewer, {x: 405, y: 525}) // drag
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -200,9 +195,8 @@ describe('Cuboid creation', () => {
           return browser.actions()
             .mouseUp()
             .mouseMove(viewer, {x: 673, y: 525}) // width
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -213,9 +207,8 @@ describe('Cuboid creation', () => {
         .then(() => {
           return browser.actions()
             .click()
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -226,9 +219,8 @@ describe('Cuboid creation', () => {
         .then(() => {
           return browser.actions()
             .sendKeys('x')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -262,9 +254,8 @@ describe('Cuboid creation', () => {
             .mouseMove(viewer, {x: 405, y: 525}) // initial
             .mouseDown()
             .mouseMove(viewer, {x: 405, y: 372}) // drag
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dBottomToTop1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -276,9 +267,8 @@ describe('Cuboid creation', () => {
           return browser.actions()
             .mouseUp()
             .mouseMove(viewer, {x: 673, y: 525}) // width
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dBottomToTop2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -289,9 +279,8 @@ describe('Cuboid creation', () => {
         .then(() => {
           return browser.actions()
             .click()
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dBottomToTop3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -302,9 +291,8 @@ describe('Cuboid creation', () => {
         .then(() => {
           return browser.actions()
             .sendKeys('x')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dBottomToTop4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()

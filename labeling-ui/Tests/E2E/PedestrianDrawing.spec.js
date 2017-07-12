@@ -199,9 +199,8 @@ describe('Pedestrian drawing', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 100, y: 300}) // drag
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'ResizeOnePedestrian')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -236,9 +235,8 @@ describe('Pedestrian drawing', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 100, y: 50}) // drag
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'ScaleOverFixedHandle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -332,9 +330,8 @@ describe('Pedestrian drawing', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 300, y: 350}) // initial position
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrianMinimalHeight')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -397,9 +394,8 @@ describe('Pedestrian drawing', () => {
         return browser.actions()
           .mouseMove(viewer, {x: 300, y: 300}) // initial position
           .mouseDown()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrianIntermediary1')
@@ -411,9 +407,8 @@ describe('Pedestrian drawing', () => {
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 300, y: 400}) // intermediary position
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrianIntermediary2')
@@ -426,9 +421,8 @@ describe('Pedestrian drawing', () => {
         return browser.actions()
           .mouseMove(viewer, {x: 300, y: 500}) // final position
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'NewPedestrianIntermediary3')

@@ -215,9 +215,8 @@ describe('ReadOnly Mode', () => {
         .then(() => {
           return browser.actions()
             .click(toolButton0) // Rect drawing
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(() => browser.sleep(200))
         .then(() => {
           return browser.actions()

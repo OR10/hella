@@ -355,9 +355,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 564, y: 402}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChange')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -390,9 +389,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 564, y: 448}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeMinimal')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -425,9 +423,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 564, y: 600}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeNonNegative')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -458,9 +455,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -496,9 +492,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -534,9 +529,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -574,9 +568,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -616,9 +609,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 235, y: 560}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementLeft')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -651,9 +643,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 1000, y: 560}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementRight')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -684,9 +675,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 691, y: 348}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementHorizonLimit')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -706,9 +696,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 691, y: 100}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
@@ -732,9 +721,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 690, y: 350}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementMinimalHeightLimit')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -754,9 +742,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 690, y: 319}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
@@ -781,9 +768,8 @@ describe('Cuboid Drawing', () => {
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
               .click()
               .sendKeys('o')
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardLeft')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -813,9 +799,8 @@ describe('Cuboid Drawing', () => {
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
               .click()
               .sendKeys('p')
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardRight')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -847,9 +832,8 @@ describe('Cuboid Drawing', () => {
               .sendKeys(protractor.Key.SHIFT)
               .sendKeys('o')
               .sendKeys(protractor.Key.SHIFT)
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardShiftLeft')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -881,9 +865,8 @@ describe('Cuboid Drawing', () => {
               .sendKeys(protractor.Key.SHIFT)
               .sendKeys('p')
               .sendKeys(protractor.Key.SHIFT)
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardShiftRight')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -918,9 +901,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 400, y: 500}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChange')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -951,9 +933,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -989,9 +970,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1027,9 +1007,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1067,9 +1046,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1109,9 +1087,8 @@ describe('Cuboid Drawing', () => {
               .mouseDown()
               .mouseMove(viewer, {x: 568, y: 331}) // drag
               .mouseUp()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChange')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1142,9 +1119,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1180,9 +1156,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1218,9 +1193,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1256,9 +1230,8 @@ describe('Cuboid Drawing', () => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1298,9 +1271,8 @@ describe('Cuboid Drawing', () => {
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
               .click()
               .sendKeys('i')
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             return browser.sleep(500);
           })
@@ -1320,9 +1292,8 @@ describe('Cuboid Drawing', () => {
           .then(() => {
             return browser.actions()
               .sendKeys('i')
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             return browser.sleep(500);
           })
@@ -1342,9 +1313,8 @@ describe('Cuboid Drawing', () => {
           .then(() => {
             return browser.actions()
               .sendKeys('i')
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             return browser.sleep(500);
           })
@@ -1364,9 +1334,8 @@ describe('Cuboid Drawing', () => {
           .then(() => {
             return browser.actions()
               .sendKeys('i')
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => {
             return browser.sleep(500);
           })
@@ -1492,9 +1461,8 @@ describe('Cuboid Drawing', () => {
             .click()
             .sendKeys('o')
             .sendKeys('o')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dDepth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1512,9 +1480,8 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .sendKeys('p')
             .sendKeys('p')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dDepth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1547,9 +1514,8 @@ describe('Cuboid Drawing', () => {
             .sendKeys('p')
             .sendKeys('p')
             .sendKeys('p')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dDepth180')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1567,9 +1533,8 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .sendKeys('o')
             .sendKeys('o')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dDepth180')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1601,9 +1566,8 @@ describe('Cuboid Drawing', () => {
             .click()
             .sendKeys('p')
             .sendKeys('p')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dWidth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1621,9 +1585,8 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .sendKeys('o')
             .sendKeys('o')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dWidth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1656,9 +1619,8 @@ describe('Cuboid Drawing', () => {
             .sendKeys('p')
             .sendKeys('p')
             .sendKeys('p')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dWidth180')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1676,9 +1638,8 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .sendKeys('o')
             .sendKeys('o')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dWidth180')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1711,9 +1672,8 @@ describe('Cuboid Drawing', () => {
             .mouseDown()
             .mouseMove(viewer, {x: 622, y: 158}) // drag
             .mouseUp()
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dHeightHandle')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1746,9 +1706,8 @@ describe('Cuboid Drawing', () => {
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
             .sendKeys('i')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1765,9 +1724,8 @@ describe('Cuboid Drawing', () => {
         .then(() => {
           return browser.actions()
             .sendKeys('i')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1784,9 +1742,8 @@ describe('Cuboid Drawing', () => {
         .then(() => {
           return browser.actions()
             .sendKeys('i')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1803,9 +1760,8 @@ describe('Cuboid Drawing', () => {
         .then(() => {
           return browser.actions()
             .sendKeys('i')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1838,9 +1794,8 @@ describe('Cuboid Drawing', () => {
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
             .sendKeys('u')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1857,9 +1812,8 @@ describe('Cuboid Drawing', () => {
         .then(() => {
           return browser.actions()
             .sendKeys('u')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1876,9 +1830,8 @@ describe('Cuboid Drawing', () => {
         .then(() => {
           return browser.actions()
             .sendKeys('u')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1895,9 +1848,8 @@ describe('Cuboid Drawing', () => {
         .then(() => {
           return browser.actions()
             .sendKeys('u')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()

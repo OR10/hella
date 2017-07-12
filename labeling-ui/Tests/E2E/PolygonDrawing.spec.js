@@ -213,9 +213,8 @@ describe('Polygon drawing', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 50, y: 200}) // drag
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'ResizeOnePolygon')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -290,9 +289,8 @@ describe('Polygon drawing', () => {
           .click()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
           .click(protractor.Button.RIGHT)
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygon')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -325,9 +323,8 @@ describe('Polygon drawing', () => {
           .mouseMove(viewer, {x: 600, y: 100}) // initial position
           .mouseUp()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -342,9 +339,8 @@ describe('Polygon drawing', () => {
           .mouseMove(viewer, {x: 200, y: 600}) // initial position
           .click()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -361,9 +357,8 @@ describe('Polygon drawing', () => {
           .mouseMove(viewer, {x: 500, y: 200}) // initial position
           .click()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -377,9 +372,8 @@ describe('Polygon drawing', () => {
           .click()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
           .click(protractor.Button.RIGHT)
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),

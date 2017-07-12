@@ -229,9 +229,8 @@ describe('Point drawing', () => {
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
           .mouseUp()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewPoint')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -273,9 +272,8 @@ describe('Point drawing', () => {
           .mouseMove(viewer, {x: 900, y: 50}) // initial position
           .mouseUp()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewMultiplePoints')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),

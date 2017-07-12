@@ -55,9 +55,8 @@ describe('Zoom', () => {
             .sendKeys('+')
             .sendKeys('+')
             .sendKeys('+')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'EmptyCenterKeyboard')
           () => canvasInstructionLogManager.getBackgroundCanvasImage()
@@ -85,9 +84,8 @@ describe('Zoom', () => {
             .sendKeys('+')
             .sendKeys('+')
             .sendKeys('+')
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 500, y: 500})
@@ -96,9 +94,8 @@ describe('Zoom', () => {
             .mouseMove(viewer, {x: 100, y: 100})
             .mouseUp()
             .sendKeys(protractor.Key.SHIFT)
-            .perform()
-          }
-        )
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'PannedEmptyKeyboard')
           () => canvasInstructionLogManager.getBackgroundCanvasImage()
@@ -187,9 +184,8 @@ describe('Zoom', () => {
             return browser.actions()
               .mouseMove(viewer, {x: selectX + 50, y: selectY + 50})
               .click()
-              .perform()
-            }
-          )
+              .perform();
+          })
           .then(() => interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('Zoom', fixtureName)

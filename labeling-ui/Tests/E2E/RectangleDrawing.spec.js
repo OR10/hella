@@ -263,9 +263,8 @@ describe('Rectangle drawing', () => {
         return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .click()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(500))
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
@@ -329,9 +328,8 @@ describe('Rectangle drawing', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 450, y: 350}) // initial position
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -363,9 +361,8 @@ describe('Rectangle drawing', () => {
           .mouseDown()
           .mouseMove(viewer, {x: 300, y: 350}) // initial position
           .mouseUp()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -394,9 +391,8 @@ describe('Rectangle drawing', () => {
         return browser.actions()
           .mouseMove(viewer, {x: 300, y: 300}) // initial position
           .mouseDown()
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleIntermediary1')
@@ -408,9 +404,8 @@ describe('Rectangle drawing', () => {
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 500, y: 400}) // intermediary position
-          .perform()
-        }
-      )
+          .perform();
+      })
       .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleIntermediary2')
