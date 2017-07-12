@@ -212,9 +212,11 @@ describe('ReadOnly Mode', () => {
     it('should not be possible to be created', done => {
       mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .click(toolButton0) // Rect drawing
-          .perform()
+        .then(() => {
+          return browser.actions()
+            .click(toolButton0) // Rect drawing
+            .perform()
+          }
         )
         .then(() => browser.sleep(200))
         .then(() => {

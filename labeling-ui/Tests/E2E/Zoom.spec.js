@@ -48,13 +48,15 @@ describe('Zoom', () => {
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .sendKeys('+')
-          .sendKeys('+')
-          .sendKeys('+')
-          .sendKeys('+')
-          .sendKeys('+')
-          .perform()
+        .then(() => {
+          return browser.actions()
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'EmptyCenterKeyboard')
@@ -76,22 +78,26 @@ describe('Zoom', () => {
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .sendKeys('+')
-          .sendKeys('+')
-          .sendKeys('+')
-          .sendKeys('+')
-          .sendKeys('+')
-          .perform()
+        .then(() => {
+          return browser.actions()
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .sendKeys('+')
+            .perform()
+          }
         )
-        .then(() => browser.actions()
-          .mouseMove(viewer, {x: 500, y: 500})
-          .sendKeys(protractor.Key.SHIFT)
-          .mouseDown()
-          .mouseMove(viewer, {x: 100, y: 100})
-          .mouseUp()
-          .sendKeys(protractor.Key.SHIFT)
-          .perform()
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 500, y: 500})
+            .sendKeys(protractor.Key.SHIFT)
+            .mouseDown()
+            .mouseMove(viewer, {x: 100, y: 100})
+            .mouseUp()
+            .sendKeys(protractor.Key.SHIFT)
+            .perform()
+          }
         )
         .then(
           // () => canvasInstructionLogManager.getBackgroundCanvasImage('Zoom', 'PannedEmptyKeyboard')
@@ -177,11 +183,12 @@ describe('Zoom', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(
-            () => browser.actions()
+          .then(() => {
+            return browser.actions()
               .mouseMove(viewer, {x: selectX + 50, y: selectY + 50})
               .click()
               .perform()
+            }
           )
           .then(() => interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20))
           .then(

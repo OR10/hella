@@ -44,12 +44,14 @@ describe('Rectangle viewer overflow', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 190, y: 190}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 2, y: 2}) // drag
-        .mouseUp()
-        .perform()
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 190, y: 190}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 2, y: 2}) // drag
+          .mouseUp()
+          .perform()
+        }
       )
       .then(() => browser.sleep(1000))
       .then(
@@ -77,12 +79,14 @@ describe('Rectangle viewer overflow', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 110, y: 110}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 1023, y: 619}) // drag
-        .mouseUp()
-        .perform()
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 1023, y: 619}) // drag
+          .mouseUp()
+          .perform()
+        }
       )
       .then(() => browser.sleep(1000))
       .then(
@@ -110,12 +114,14 @@ describe('Rectangle viewer overflow', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 190, y: 190}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 2, y: 2}) // drag
-        .mouseUp()
-        .perform()
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 190, y: 190}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 2, y: 2}) // drag
+          .mouseUp()
+          .perform()
+        }
       )
       .then(() => browser.sleep(1000))
       .then(
@@ -144,7 +150,7 @@ describe('Rectangle viewer overflow', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 1023, y: 619}) // drag
@@ -178,7 +184,7 @@ describe('Rectangle viewer overflow', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 50, y: 15}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 50, y: 605}) // drag
@@ -212,7 +218,7 @@ describe('Rectangle viewer overflow', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 50, y: 605})
           .mouseDown()
           .mouseMove(viewer, {x: 50, y: 15})
@@ -246,7 +252,7 @@ describe('Rectangle viewer overflow', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 15, y: 50})
           .mouseDown()
           .mouseMove(viewer, {x: 1015, y: 50})
@@ -280,7 +286,7 @@ describe('Rectangle viewer overflow', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 1015, y: 50})
           .mouseDown()
           .mouseMove(viewer, {x: 15, y: 50})

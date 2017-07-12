@@ -76,7 +76,7 @@ describe('Rectangle drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .click()
           .perform();
@@ -99,11 +99,13 @@ describe('Rectangle drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .click()
           .perform();
-        browser.actions()
+      })
+      .then(() => {
+        return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1})
           .click()
           .perform();
@@ -126,11 +128,13 @@ describe('Rectangle drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .click()
           .perform();
-        browser.actions()
+      })
+      .then(() => {
+        return browser.actions()
           .mouseMove(viewer, {x: 300, y: 150}) // initial position
           .click()
           .perform();
@@ -154,7 +158,7 @@ describe('Rectangle drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 110, y: 130}) // drag
@@ -189,7 +193,7 @@ describe('Rectangle drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .click()
           .mouseMove(viewer, {x: 200, y: 200}) // bottom right drag handle
@@ -223,7 +227,7 @@ describe('Rectangle drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 600, y: 500}) // initial position
           .click()
           .mouseMove(viewer, {x: 700, y: 600}) // bottom right drag handle
@@ -255,10 +259,12 @@ describe('Rectangle drawing', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 110, y: 110}) // initial position
-        .click()
-        .perform()
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
+          .click()
+          .perform()
+        }
       )
       .then(() => browser.sleep(500))
       .then(() => {
@@ -285,7 +291,7 @@ describe('Rectangle drawing', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 300, y: 300}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 700, y: 500}) // initial position
@@ -317,12 +323,14 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 300, y: 300}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 450, y: 350}) // initial position
-        .mouseUp()
-        .perform()
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 300, y: 300}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 450, y: 350}) // initial position
+          .mouseUp()
+          .perform()
+        }
       )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
@@ -349,12 +357,14 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 450, y: 400}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 300, y: 350}) // initial position
-        .mouseUp()
-        .perform()
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 450, y: 400}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 300, y: 350}) // initial position
+          .mouseUp()
+          .perform()
+        }
       )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
@@ -380,10 +390,12 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 300, y: 300}) // initial position
-        .mouseDown()
-        .perform()
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 300, y: 300}) // initial position
+          .mouseDown()
+          .perform()
+        }
       )
       .then(() => browser.sleep(500))
       .then(
@@ -393,9 +405,11 @@ describe('Rectangle drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary1);
       })
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 500, y: 400}) // intermediary position
-        .perform()
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 500, y: 400}) // intermediary position
+          .perform()
+        }
       )
       .then(() => browser.sleep(500))
       .then(
@@ -406,7 +420,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary2);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 700, y: 500}) // final position
           .mouseUp()
           .perform();
@@ -438,7 +452,7 @@ describe('Rectangle drawing', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 100, y: 300}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 400, y: 500}) // initial position
@@ -480,7 +494,7 @@ describe('Rectangle drawing', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 500, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 100, y: 500}) // initial position
@@ -512,7 +526,7 @@ describe('Rectangle drawing', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 100, y: 500}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 500, y: 100}) // initial position
