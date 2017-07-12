@@ -65,7 +65,7 @@ class PaperGroupRectangle extends PaperGroupShape {
       strokeWidth: 4,
       dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
       strokeScaling: false,
-      fillColor: new paper.Color(0, 0, 0, 0.2),
+      fillColor: new paper.Color(0, 0, 0, 0),
       from: this._topLeft,
       to: this._bottomRight,
     });
