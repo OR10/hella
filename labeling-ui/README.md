@@ -8,7 +8,7 @@ Everything concerning the Client-Side rendering of the UI, as well as it's serve
 
 The following software is required to build/run the project:
 
-- [nodejs](https://nodejs.org) version 8.x (current: 8.1.3) (`nvm install 8.1.3`)
+- [nodejs](https://nodejs.org) version 8.x (current: 8.1.4) (`nvm install 8.1.4`)
 - [gulp](http://gulpjs.com/) (`npm install -g gulp`)
 - [yarn] (https://yarnpkg.com/lang/en/)
 
@@ -63,10 +63,8 @@ Download here:
 |OS |32 Bit|64 Bit|
 |---|------|------|
 |Win|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Win/485205/chrome-win32.zip)|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/485198/chrome-win32.zip)|
-|Mac|[Download]()|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Mac/485205/chrome-mac.zip)|
-
-
-Download 32 Bit Version Windows: 
+|Mac|-|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Mac/485205/chrome-mac.zip)|
+ 
 
 
 ### Unit Tests: MacOS
