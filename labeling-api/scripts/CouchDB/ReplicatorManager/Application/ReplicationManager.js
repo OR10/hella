@@ -1,28 +1,23 @@
-const { CommandLineArgs } = require('./CommandLineArgs');
 const { Replicator } = require('./Jobs/Replicator');
-const { WorkerQueue } = require('./WorkerQueue');
-const nano = require('nano');
-const { Logger } = require('./Logger');
 
 const { purgeCouchDbReplicationDocument, getReplicationDocumentIdName } = require('./Utils');
 
 class ReplicationManager {
-  constructor(logger) {
-    this.purgeQueue = [];
+  constructor(logger, nanoAdmin, workerQueue, options) {
     this.logger = logger;
+    this.nanoAdmin = nanoAdmin;
+    this.workerQueue = workerQueue;
+    this.options = options;
+    this.purgeQueue = [];
   }
 
   run() {
-    const options = CommandLineArgs.parse();
-    this.adminUrl = options.adminUrl;
-    this.sourceBaseUrl = options.sourceBaseUrl;
-    this.targetBaseUrl = options.targetBaseUrl;
-    this.sourceDbRegex = options.sourceDbRegex;
-    this.targetDb = options.targetDb;
-    this.hotStandByUrl = options.hotStandByUrl;
-    this.nanoAdmin = nano(this.adminUrl);
-    /* eslint-enable global-require */
-    this.workerQueue = new WorkerQueue(this.nanoAdmin, this.logger);
+    this.adminUrl = this.options.adminUrl;
+    this.sourceBaseUrl = this.options.sourceBaseUrl;
+    this.targetBaseUrl = this.options.targetBaseUrl;
+    this.sourceDbRegex = this.options.sourceDbRegex;
+    this.targetDb = this.options.targetDb;
+    this.hotStandByUrl = this.options.hotStandByUrl;
 
     this.purgeAllPreviousManagedReplicationLeftOvers().then(() => {
       this.addOneTimeReplicationForAllDatabases();
@@ -148,5 +143,4 @@ class ReplicationManager {
   }
 }
 
-const ReplicationManagerStarter = new ReplicationManager(new Logger());
-ReplicationManagerStarter.run();
+exports.ReplicationManager = ReplicationManager;

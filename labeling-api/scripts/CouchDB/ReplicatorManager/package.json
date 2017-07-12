@@ -4,7 +4,7 @@
   "description": "Package to listen to the CouchDB Database feed and create replications",
   "main": "ReplicationManager.js",
   "scripts": {
-    "start": "node ./Application/ReplicationManager.js",
+    "start": "node ./Application/Index.js",
     "test": "./node_modules/.bin/jasmine",
     "eslint": "./node_modules/.bin/eslint ./"
   },
