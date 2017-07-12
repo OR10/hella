@@ -4,13 +4,20 @@ import PaperGroupRectangle from './PaperGroupRectangle';
 
 class PaperGroupRectangleMulti extends PaperGroupShape {
   /**
+   * @param {GroupShapeNameService} groupShapeNameService
    * @param {LabeledThingGroupInFrame} labeledThingGroupInFrame
    * @param {string} shapeId
    * @param {Array} shapes
    * @param {{primary: string, secondary: string}} color
    */
-  constructor(labeledThingGroupInFrame, shapeId, shapes, color) {
+  constructor(groupShapeNameService, labeledThingGroupInFrame, shapeId, shapes, color) {
     super(labeledThingGroupInFrame, shapeId, color);
+
+    /**
+     * @type {GroupShapeNameService}
+     * @private
+     */
+    this._groupShapeNameService = groupShapeNameService;
 
     // Do not name it _bounds as this name is already used internally by paperjs
     this._allShapes = shapes.filter(shape => !(shape instanceof PaperGroupRectangle));
