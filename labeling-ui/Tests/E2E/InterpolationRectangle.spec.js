@@ -203,26 +203,17 @@ describe('Interpolation Rectangle Tests', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => {
-        browser.sleep(500);
-      })
+      .then(() => browser.sleep(500))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
           .perform();
       })
-      .then(() => {
-        browser.sleep(500);
-      })
-      .then(() => {
-        nextFrameButton.click();
-        nextFrameButton.click();
-        browser.sleep(500);
-      })
-      .then(() => {
-        browser.sleep(500);
-      })
+      .then(() => browser.sleep(500))
+      .then(() => nextFrameButton.click())
+      .then(() => nextFrameButton.click())
+      .then(() => browser.sleep(500))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150})
@@ -232,12 +223,8 @@ describe('Interpolation Rectangle Tests', () => {
           .click()
           .perform();
       })
-      .then(() => {
-        browser.sleep(500);
-      })
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => browser.sleep(500))
+      .then(() => interpolateButton.click())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'DrawFrame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
