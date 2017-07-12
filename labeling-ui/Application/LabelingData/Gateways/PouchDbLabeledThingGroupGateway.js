@@ -1,3 +1,5 @@
+import {uniq} from 'lodash';
+
 /**
  * Gateway for CRUD operation on {@link LabeledThingGroup}s in a PouchDb
  */
@@ -101,21 +103,22 @@ class PouchDbLabeledThingGroupGateway {
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute('labeledThingGroup', () => {
-      return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupInFrameByTaskIdAndFrameIndex'), {
+      return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupOnFrameByTaskIdAndFrameIndex'), {
         key: [taskId, frameIndex],
       })
         .then(response => response.rows.map(row => row.value))
         .then(labeledThingGroupIds => {
+          // TODO: Move to pouchdb reduce function
           // Filter duplicate labeledThingGroupIds
-          const filteredLabeledThingGroupIds = labeledThingGroupIds.filter((value, index, array) => array.indexOf(value) === index);
+          const uniqueLabeledThingGroupIds = uniq(labeledThingGroupIds);
           const promises = [];
 
-          filteredLabeledThingGroupIds.forEach(labeledThingGroupId => {
+          uniqueLabeledThingGroupIds.forEach(labeledThingGroupId => {
             promises.push(dbContext.get(labeledThingGroupId));
           });
 
-          // TODO: Not sure if it is ok to pass filtered ids!? Needs to be checked!
-          return this._$q.all([this._$q.resolve(labeledThingGroupIds), this._$q.all(promises)]);
+          // return this._$q.all([this._$q.resolve(uniqueLabeledThingGroupIds), this._$q.all(promises)]);
+          return this._$q.all([uniqueLabeledThingGroupIds, this._$q.all(promises)]);
         })
         .then(([labeledThingGroupIds, labeledThingGroupDocuments]) => {
           const labeledThingGroups = labeledThingGroupDocuments.map(labeledThingGroupDocument => {
