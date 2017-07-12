@@ -1,7 +1,6 @@
 import paper from 'paper';
 import PaperShape from './PaperShape';
 import PaperGroupShape from './PaperGroupShape';
-import RectangleHandle from './Handles/Rectangle';
 
 
 /**
@@ -33,7 +32,7 @@ class PaperGroupRectangle extends PaperGroupShape {
   }
 
   /**
-   * @returns {{width: number, height: number}}
+   * @return {{width: number, height: number, x: int, y: int, point: Point}}
    */
   get bounds() {
     return {
@@ -46,7 +45,6 @@ class PaperGroupRectangle extends PaperGroupShape {
   }
 
   /**
-   * @param {Boolean} drawHandles
    * @private
    */
   _drawShape() {
@@ -71,28 +69,6 @@ class PaperGroupRectangle extends PaperGroupShape {
       from: this._topLeft,
       to: this._bottomRight,
     });
-  }
-
-  /**
-   * @returns {Array.<RectangleHandle>}
-   * @private
-   */
-  _createHandles() {
-    const handleInfo = [
-      {name: 'top-left', point: this._topLeft},
-      {name: 'top-right', point: new paper.Point(this._bottomRight.x, this._topLeft.y)},
-      {name: 'bottom-right', point: this._bottomRight},
-      {name: 'bottom-left', point: new paper.Point(this._topLeft.x, this._bottomRight.y)},
-    ];
-
-    return handleInfo.map(
-      info => new RectangleHandle(
-        info.name,
-        '#ffffff',
-        this._handleSize,
-        info.point
-      )
-    );
   }
 
   /**
@@ -167,52 +143,6 @@ class PaperGroupRectangle extends PaperGroupShape {
 
   resize() {
     // Do nothing
-  }
-
-  /**
-   * @param {Point} fixPoint
-   * @param {Point} point
-   * @param {{width, height}} minSize
-   * @returns {Point}
-   * @private
-   */
-  _enforceMinSize(fixPoint, point, minSize) {
-    const newSize = this._calculateSize(fixPoint, point, minSize);
-    const {xDirection, yDirection} = this._calculateResizeDirecitons(fixPoint, point);
-
-    return new paper.Point(
-      fixPoint.x + xDirection * newSize.width,
-      fixPoint.y + yDirection * newSize.height
-    );
-  }
-
-  /**
-   * @param {Point} fixPoint
-   * @param {Point} point
-   * @param {{width, height}} minSize
-   * @private
-   *
-   * @return {Size}
-   */
-  _calculateSize(fixPoint, point, minSize) {
-    const xDistance = Math.abs(fixPoint.x - point.x);
-    const yDistance = Math.abs(fixPoint.y - point.y);
-    const width = xDistance > minSize.width ? xDistance : minSize.width;
-    const height = yDistance > minSize.height ? yDistance : minSize.height;
-
-    return new paper.Size(width, height);
-  }
-
-  /**
-   * @param {Point} fixPoint
-   * @param {Point} point
-   * @private
-   */
-  _calculateResizeDirecitons(fixPoint, point) {
-    const xDirection = Math.abs(fixPoint.x - point.x) > fixPoint.x - point.x ? 1 : -1;
-    const yDirection = Math.abs(fixPoint.y - point.y) > fixPoint.y - point.y ? 1 : -1;
-
-    return {xDirection, yDirection};
   }
 
   /**
