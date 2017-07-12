@@ -4,7 +4,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Rectangle viewer overflow', () => {
+describe('Rectangle viewer overflow', () => {
   let assets;
   let sharedMocks;
   let viewer;
