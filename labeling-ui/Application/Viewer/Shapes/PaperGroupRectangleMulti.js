@@ -30,6 +30,8 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
     const groupRectangles = this._createGroupRectangles();
     this.addChildren(groupRectangles);
 
+    this._addPadding();
+
     const groupNames = this._createGroupNames();
     this.addChildren(groupNames);
   }
@@ -171,7 +173,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
    *
    * @param padding
    */
-  addPadding(padding = PaperGroupRectangleMulti.PADDING) {
+  _addPadding(padding = PaperGroupRectangleMulti.PADDING) {
     this._allThingShapes.forEach((shape, index) => {
       const groupPosition = shape.groupIds.indexOf(this.groupId) + 1;
       const currentGroupPadding = padding * groupPosition;
