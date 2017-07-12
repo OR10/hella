@@ -61,7 +61,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
@@ -106,7 +106,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
@@ -151,7 +151,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
@@ -196,7 +196,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
@@ -241,7 +241,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
@@ -287,7 +287,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(

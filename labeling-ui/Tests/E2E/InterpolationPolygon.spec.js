@@ -58,9 +58,7 @@ describe('Interpolation Polygon Tests', () => {
           .click()
           .perform();
       })
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => interpolateButton.click())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -126,13 +124,9 @@ describe('Interpolation Polygon Tests', () => {
           .click()
           .perform();
       })
-      .then(() => {
-        goEndButton.click();
-      })
+      .then(() => goEndButton.click())
       .then(() => browser.sleep(500))
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => interpolateButton.click())
       .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame4')

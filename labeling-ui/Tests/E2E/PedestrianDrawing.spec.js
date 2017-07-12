@@ -272,7 +272,7 @@ describe('Pedestrian drawing', () => {
       .then(() => browser.sleep(500))
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
-        nextFrameButton.click();
+        return nextFrameButton.click();
       })
       .then(() => browser.sleep(1000))
       .then(

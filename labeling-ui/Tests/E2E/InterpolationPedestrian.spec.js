@@ -58,9 +58,7 @@ describe('Interpolation Pedestrian Tests', () => {
           .click()
           .perform();
       })
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => interpolateButton.click())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -126,13 +124,9 @@ describe('Interpolation Pedestrian Tests', () => {
           .click()
           .perform();
       })
-      .then(() => {
-        goEndButton.click();
-      })
+      .then(() => goEndButton.click())
       .then(() => browser.sleep(500))
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => interpolateButton.click())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()

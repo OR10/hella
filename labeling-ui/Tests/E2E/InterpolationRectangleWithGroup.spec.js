@@ -56,9 +56,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        groupButton.click();
-      })
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 80, y: 80}) // initial position
@@ -73,9 +71,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .click()
           .perform();
       })
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => interpolateButton.click())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -135,9 +131,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        groupButton.click();
-      })
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 80, y: 80}) // initial position
@@ -152,13 +146,9 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .click()
           .perform();
       })
-      .then(() => {
-        goEndButton.click();
-      })
+      .then(() => goEndButton.click())
       .then(() => browser.sleep(500))
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => interpolateButton.click())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -218,9 +208,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
     mock(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        groupButton.click();
-      })
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 80, y: 80}) // initial position
@@ -235,18 +223,14 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .click()
           .perform();
       })
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => interpolateButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 350, y: 150}) // Second RectangleWithGroup in first frame
           .click()
           .perform();
       })
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => interpolateButton.click())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame0BothInterpolated')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
