@@ -116,6 +116,7 @@ class GroupCreationTool extends CreationTool {
       let paperGroup;
       this._context.withScope(() => {
         paperGroup = new PaperGroupRectangleMulti(
+          this._groupShapeNameService,
           labeledThingGroupInFrame,
           paperShape.id,
           shapes,

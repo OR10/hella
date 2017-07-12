@@ -57,16 +57,13 @@ class PaperShapeFactory {
 
   /**
    * @param {LabeledThingInFrame} labeledThingGroupInFrame
-   * @param {Object} bounds
+   * @param {Object} shapesInBound
    * @param {{primary: string, secondary: string}} color
    * @returns {PaperGroupRectangleMulti}
    * @private
    */
-  _createGroupRectangle(labeledThingGroupInFrame, bounds, color) {
-    // const topLeft = new paper.Point(bounds.x, bounds.y);
-    // const bottomRight = new paper.Point(bounds.x + bounds.width, bounds.y + bounds.height);
-
-    return new PaperGroupRectangleMulti(labeledThingGroupInFrame, labeledThingGroupInFrame.id, bounds, color);
+  _createGroupRectangle(labeledThingGroupInFrame, shapesInBound, color) {
+    return new PaperGroupRectangleMulti(this._groupShapeNameService, labeledThingGroupInFrame, labeledThingGroupInFrame.id, shapesInBound, color);
   }
 
   /**
