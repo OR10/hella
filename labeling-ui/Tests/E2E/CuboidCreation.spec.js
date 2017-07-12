@@ -121,7 +121,7 @@ describe('Cuboid creation', () => {
         viewerHeight: 620,
       })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseMove(viewer, {x: 405, y: 525}) // initial
             .mouseDown()
             .mouseMove(viewer, {x: 405, y: 372}) // drag
@@ -135,7 +135,7 @@ describe('Cuboid creation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboidBottomToTop1);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseUp()
             .mouseMove(viewer, {x: 673, y: 525}) // width
             .click()
