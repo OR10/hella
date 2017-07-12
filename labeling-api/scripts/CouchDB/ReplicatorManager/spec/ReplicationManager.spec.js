@@ -60,6 +60,7 @@ describe('ReplicationManager Test', () => {
     expect(replicationManager.purgeAllPreviousManagedReplicationLeftOvers).toHaveBeenCalled();
     promise.then(() => {
       expect(replicationManager.addOneTimeReplicationForAllDatabases).toHaveBeenCalled();
+      expect(workerQueueMock.listenToReplicationChanges).toHaveBeenCalled();
       expect(replicationManager.listenToDatabaseChanges).toHaveBeenCalled();
       done();
     });
