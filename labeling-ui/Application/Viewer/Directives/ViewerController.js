@@ -1236,11 +1236,6 @@ class ViewerController {
    */
   _updateAllGroupDimensions() {
     this.paperGroupShapes.forEach(groupShape => {
-      const thingShapesInGroup = this.paperThingShapes.filter(
-        thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupShape.labeledThingGroupInFrame.labeledThingGroup.id) !== -1
-      );
-      const bounds = this._labeledThingGroupService.getBoundsForShapes(thingShapesInGroup);
-
       this._thingLayerContext.withScope(scope => {
         groupShape.update();
         scope.view.update();
