@@ -9,6 +9,7 @@ class WorkerQueue {
     this.compactReplicationCounter = 0;
     this.queue = [];
     this.activeTasks = [];
+    this.lastQueueStatus = {};
   }
 
   /**
@@ -18,6 +19,7 @@ class WorkerQueue {
   addJob(job) {
     this.queue.push(job);
     this.queue = WorkerQueue._removeDuplicatesBy(x => x.id, this.queue);
+    this._printQueueStatus();
 
     this.doWork();
   }
@@ -48,16 +50,14 @@ class WorkerQueue {
    * @returns {boolean}
    */
   queueWorker() {
+    this._printQueueStatus();
     if (this.activeTasks.length >= this.maxSimultaneousJobs || this.queue.length === 0) {
-      this._printQueueStatus();
-
       return false;
     }
 
     const element = this.queue.shift();
 
     const isElementInActiveTasks = this.activeTasks.find(task => task === element.id);
-
 
     if (isElementInActiveTasks !== undefined) {
       this.queue.push(element);
@@ -117,7 +117,11 @@ class WorkerQueue {
   }
 
   _printQueueStatus() {
-    this.logger.logString(`Active tasks: ${this.activeTasks.length}/${this.maxSimultaneousJobs} | Queue length: ${this.queue.length}`);
+    if (this.lastQueueStatus.activeTasksLength !== this.activeTasks.length || this.lastQueueStatus.queueLength !== this.queue.length) {
+      this.logger.logString(`Active tasks: ${this.activeTasks.length}/${this.maxSimultaneousJobs} | Queue length: ${this.queue.length}`);
+    }
+    this.lastQueueStatus.activeTasksLength = this.activeTasks.length;
+    this.lastQueueStatus.queueLength = this.queue.length;
   }
 }
 
