@@ -1,7 +1,7 @@
 /**
  * Gateway for CRUD operation on {@link LabeledThingGroup}s in a PouchDb
  */
-class PouchDbLabeledThingGroupGateway {
+class LabeledThingGroupGateway {
   /**
    * @param {angular.$q} $q
    * @param {PouchDbContextService} pouchDbContextService
@@ -265,7 +265,7 @@ class PouchDbLabeledThingGroupGateway {
   }
 }
 
-PouchDbLabeledThingGroupGateway.$inject = [
+LabeledThingGroupGateway.$inject = [
   '$q',
   'pouchDbContextService',
   'packagingExecutor',
@@ -278,4 +278,4 @@ PouchDbLabeledThingGroupGateway.$inject = [
   'pouchDbViewService',
 ];
 
-export default PouchDbLabeledThingGroupGateway;
+export default LabeledThingGroupGateway;

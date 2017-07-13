@@ -7,14 +7,14 @@ import Common from 'Application/Common/Common';
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup';
 
-import PouchDbLabeledThingGroupGateway from 'Application/LabelingData/Gateways/PouchDbLabeledThingGroupGateway';
+import LabeledThingGroupGateway from 'Application/LabelingData/Gateways/LabeledThingGroupGateway';
 
 import Task from 'Application/Task/Model/Task';
 import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
 
-describe('PouchDbLabeledThingGroupGateway', () => {
+describe('LabeledThingGroupGateway', () => {
   /**
-   * @param {PouchDbLabeledThingGroupGateway}
+   * @param {LabeledThingGroupGateway}
    */
   let groupGateway;
   /**
@@ -114,7 +114,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
       $q = $injector.get('$q');
       $rootScope = $injector.get('$rootScope');
       couchDbModelDeserializer = $injector.get('couchDbModelDeserializer');
-      groupGateway = $injector.instantiate(PouchDbLabeledThingGroupGateway);
+      groupGateway = $injector.instantiate(LabeledThingGroupGateway);
     });
   });
 
