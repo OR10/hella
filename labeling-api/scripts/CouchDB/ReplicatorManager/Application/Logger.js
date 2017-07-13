@@ -1,7 +1,8 @@
 class Logger {
   logString(string) {
+    this.string = string;
     // eslint-disable-next-line no-console
-    console.log(string);
+    console.log(this.string);
   }
 }
 

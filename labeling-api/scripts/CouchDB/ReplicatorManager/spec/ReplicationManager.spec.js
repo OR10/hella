@@ -8,11 +8,11 @@ describe('ReplicationManager Test', () => {
 
   function getOptions() {
     return {
-      'adminUrl': 'http://admin:bar@127.0.0.1:5984/',
-      'sourceBaseUrl': 'http://admin:bar@127.0.0.1:5984/',
-      'targetBaseUrl': 'http://admin:bar@127.0.0.1:5984/',
-      'sourceDbRegex': '(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)',
-      'targetDb': 'labeling_api_read_only',
+      adminUrl: 'http://admin:bar@127.0.0.1:5984/',
+      sourceBaseUrl: 'http://admin:bar@127.0.0.1:5984/',
+      targetBaseUrl: 'http://admin:bar@127.0.0.1:5984/',
+      sourceDbRegex: '(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)',
+      targetDb: 'labeling_api_read_only',
     };
   }
 
@@ -26,10 +26,10 @@ describe('ReplicationManager Test', () => {
     workerQueueMock = jasmine.createSpyObj('WorkerQueue', ['listenToReplicationChanges']);
 
     nanoAdminMock = {
-      'db': {
+      db: {
         list: jasmine.createSpy().and.returnValue({
-          'err': undefined,
-          'body': ['taskdb-project-52f18aa62197594438469fe88001ca0d-task-52f18aa62197594438469fe8800e5ae2'],
+          err: undefined,
+          body: ['taskdb-project-52f18aa62197594438469fe88001ca0d-task-52f18aa62197594438469fe8800e5ae2'],
         }),
       },
       use: jasmine.createSpy().and.returnValue(replicatorDbMock),

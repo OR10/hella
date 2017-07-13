@@ -117,7 +117,8 @@ class WorkerQueue {
   }
 
   _printQueueStatus() {
-    if (this.lastQueueStatus.activeTasksLength !== this.activeTasks.length || this.lastQueueStatus.queueLength !== this.queue.length) {
+    if (this.lastQueueStatus.activeTasksLength !== this.activeTasks.length ||
+      this.lastQueueStatus.queueLength !== this.queue.length) {
       this.logger.logString(`Active tasks: ${this.activeTasks.length}/${this.maxSimultaneousJobs} | Queue length: ${this.queue.length}`);
     }
     this.lastQueueStatus.activeTasksLength = this.activeTasks.length;

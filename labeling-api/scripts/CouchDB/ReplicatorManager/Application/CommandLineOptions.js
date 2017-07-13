@@ -4,19 +4,19 @@ class CommandLineOptions {
   constructor(processArgv) {
     this.processArgv = processArgv;
     this.optionDefinitions = [
-      {name: 'adminUrl', type: String},
-      {name: 'sourceBaseUrl', type: String},
-      {name: 'targetBaseUrl', type: String},
-      {name: 'hotStandByUrl', type: String},
-      {name: 'sourceDbRegex', type: String},
-      {name: 'targetDb', type: String},
+      { name: 'adminUrl', type: String },
+      { name: 'sourceBaseUrl', type: String },
+      { name: 'targetBaseUrl', type: String },
+      { name: 'hotStandByUrl', type: String },
+      { name: 'sourceDbRegex', type: String },
+      { name: 'targetDb', type: String },
     ];
 
     this._init();
   }
 
   _init() {
-    const options = commandLineArgs(this.optionDefinitions, {argv: this.processArgv});
+    const options = commandLineArgs(this.optionDefinitions, { argv: this.processArgv });
     this.adminUrl = options.adminUrl;
     this.sourceBaseUrl = options.sourceBaseUrl;
     this.targetBaseUrl = options.targetBaseUrl;

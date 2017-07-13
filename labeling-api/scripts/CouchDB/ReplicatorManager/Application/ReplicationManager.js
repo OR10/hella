@@ -25,7 +25,7 @@ class ReplicationManager {
       .then(() => this.workerQueue.listenToReplicationChanges())
       .then(() => this.listenToDatabaseChanges())
       .catch(error => {
-        this.logger.logString('Startup failed: ' + error);
+        this.logger.logString(`Startup failed: ${error}`);
         process.exit(1);
       });
   }
