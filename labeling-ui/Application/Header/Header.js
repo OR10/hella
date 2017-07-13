@@ -6,7 +6,6 @@ import TimerDirective from './Directives/TimerDirective';
 import BadgeDirective from './Directives/BadgeDirective';
 import UserNameDirective from './Directives/UserNameDirective';
 import LogoutButtonDirective from './Directives/LogoutButtonDirective';
-import TimerGateway from './Gateways/TimerGateway';
 import PouchDbTimerGateway from './Gateways/PouchDbTimerGateway';
 import LiveSyncIndicatorDirective from './Directives/LiveSyncIndicatorDirective';
 
@@ -25,13 +24,12 @@ class Header extends Module {
     this.module = angular.module('AnnoStation.Header', []);
 
     this.module.service('liveSyncIndicatorService', LiveSyncIndicatorService);
+    this.module.service('timerGateway', PouchDbTimerGateway);
 
     if (featureFlags.pouchdb === true) {
-      this.module.service('timerGateway', PouchDbTimerGateway);
       this.registerDirective('viewerTitleBar', PouchDbViewerTitleBarDirective);
     } else {
       this.registerDirective('viewerTitleBar', ViewerTitleBarDirective);
-      this.module.service('timerGateway', TimerGateway);
     }
 
     this.registerDirective('timer', TimerDirective);
