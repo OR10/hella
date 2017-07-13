@@ -1,5 +1,5 @@
 import {inject} from 'angular-mocks';
-import PouchDbLabeledFrameGateway from 'Application/LabelingData/Gateways/PouchDbLabeledFrameGateway';
+import LabeledFrameGateway from 'Application/LabelingData/Gateways/LabeledFrameGateway';
 
 import {cloneDeep} from 'lodash';
 
@@ -9,7 +9,7 @@ import LabeledFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledFrame
 import LabeledFrameFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledFrame';
 import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
 
-describe('PouchDbLabeledFrameGateway', () => {
+describe('LabeledFrameGateway', () => {
   let rootScope;
   let angularQ;
   let packagingExecutor;
@@ -25,7 +25,7 @@ describe('PouchDbLabeledFrameGateway', () => {
   let labeledFrameCouchDbModel;
 
   /**
-   * @type {PouchDbLabeledFrameGateway}
+   * @type {LabeledFrameGateway}
    */
   let labeledFrameGateway;
 
@@ -54,7 +54,7 @@ describe('PouchDbLabeledFrameGateway', () => {
   beforeEach(inject($q => angularQ = $q));
 
   beforeEach(
-    () => labeledFrameGateway = new PouchDbLabeledFrameGateway(
+    () => labeledFrameGateway = new LabeledFrameGateway(
       angularQ,
       packagingExecutor,
       pouchDbContextService,
@@ -72,7 +72,7 @@ describe('PouchDbLabeledFrameGateway', () => {
   });
 
   it('should be able to instantiate', () => {
-    expect(labeledFrameGateway).toEqual(jasmine.any(PouchDbLabeledFrameGateway));
+    expect(labeledFrameGateway).toEqual(jasmine.any(LabeledFrameGateway));
   });
 
   describe('getLabeledFrame', () => {

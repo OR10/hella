@@ -11,7 +11,7 @@ import GhostingService from './Services/GhostingService';
 import PouchDbLabeledThingGateway from './Gateways/PouchDbLabeledThingGateway';
 import PouchDbLabeledThingInFrameGateway from './Gateways/PouchDbLabeledThingInFrameGateway';
 import PouchDbLabeledThingGroupGateway from './Gateways/PouchDbLabeledThingGroupGateway';
-import PouchDbLabeledFrameGateway from './Gateways/PouchDbLabeledFrameGateway';
+import LabeledFrameGateway from './Gateways/LabeledFrameGateway';
 import FrontendInterpolation from './Interpolations/FrontendInterpolation';
 import LinearRectangleInterpolationEasing from './Interpolations/Easing/LinearRectangleInterpolationEasing';
 import LinearPedestrianInterpolationEasing from './Interpolations/Easing/LinearPedestrianInterpolationEasing';
@@ -36,7 +36,7 @@ class LabelingData extends Module {
     this.module.service('labeledThingInFrameGateway', PouchDbLabeledThingInFrameGateway);
     this.module.service('labeledThingGateway', PouchDbLabeledThingGateway);
     this.module.service('labeledThingGroupGateway', PouchDbLabeledThingGroupGateway);
-    this.module.service('labeledFrameGateway', PouchDbLabeledFrameGateway);
+    this.module.service('labeledFrameGateway', LabeledFrameGateway);
 
     this.module.service('interpolationType', FrontendInterpolation);
     this.module.service('linearRectangleInterpolationEasing', LinearRectangleInterpolationEasing);

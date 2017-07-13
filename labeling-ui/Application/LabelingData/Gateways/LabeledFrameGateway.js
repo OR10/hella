@@ -3,7 +3,7 @@ import LabeledFrame from '../Models/LabeledFrame';
 /**
  * Gateway for saving and retrieving {@link LabeledFrame}s from pouchdb
  */
-class PouchDbLabeledFrameGateway {
+class LabeledFrameGateway {
   /**
    * @param {$q} $q
    * @param {PackagingExecutor} packagingExecutor
@@ -360,7 +360,7 @@ class PouchDbLabeledFrameGateway {
   }
 }
 
-PouchDbLabeledFrameGateway.$inject = [
+LabeledFrameGateway.$inject = [
   '$q',
   'packagingExecutor',
   'pouchDbContextService',
@@ -373,4 +373,4 @@ PouchDbLabeledFrameGateway.$inject = [
   'abortablePromiseFactory',
 ];
 
-export default PouchDbLabeledFrameGateway;
+export default LabeledFrameGateway;
