@@ -24,11 +24,8 @@ describe('CouchDbModelSerializer', () => {
   let serializer;
 
   beforeEach(() => {
-    const featureFlags = {
-      pouchdb: true,
-    };
     const commonModule = new Common();
-    commonModule.registerWithAngular(angular, featureFlags);
+    commonModule.registerWithAngular(angular, {});
     module('AnnoStation.Common');
 
     inject($injector => {

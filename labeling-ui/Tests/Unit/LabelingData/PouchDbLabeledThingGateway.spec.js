@@ -1,6 +1,6 @@
 import 'jquery';
 import angular from 'angular';
-import {module, inject} from 'angular-mocks';
+import {inject, module} from 'angular-mocks';
 
 import Common from 'Application/Common/Common';
 import LabelingData from 'Application/LabelingData/LabelingData';
@@ -47,9 +47,7 @@ describe('PouchDbLabeledThingGateway', () => {
   let labeledThingPouchDbModel;
 
   beforeEach(done => {
-    const featureFlags = {
-      pouchdb: true,
-    };
+    const featureFlags = {};
 
     Promise.resolve()
       .then(() => {

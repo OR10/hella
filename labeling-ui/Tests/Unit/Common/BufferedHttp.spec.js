@@ -14,12 +14,8 @@ describe('BufferedHttp', () => {
   let $q;
 
   beforeEach(() => {
-    const featureFlags = {
-      pouchdb: false,
-    };
-
     const commonModule = new Common();
-    commonModule.registerWithAngular(angular, featureFlags);
+    commonModule.registerWithAngular(angular, {});
     module('AnnoStation.Common');
 
     revisionManager = {

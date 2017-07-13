@@ -1,6 +1,6 @@
 import 'jquery';
 import angular from 'angular';
-import {module, inject} from 'angular-mocks';
+import {inject, module} from 'angular-mocks';
 
 import Common from 'Application/Common/Common';
 
@@ -33,9 +33,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
   }
 
   beforeEach(() => {
-    const featureFlags = {
-      pouchdb: true,
-    };
+    const featureFlags = {};
 
     queryResponse = {
       'total_rows': 6,
