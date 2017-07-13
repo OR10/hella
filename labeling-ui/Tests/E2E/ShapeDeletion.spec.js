@@ -52,7 +52,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.RectangleBefore);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110})
           .click()
           .perform();
@@ -61,7 +61,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
@@ -97,7 +97,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.PedestrianBefore);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110})
           .click()
           .perform();
@@ -106,7 +106,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
@@ -142,7 +142,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.PolygonBefore);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200})
           .click()
           .perform();
@@ -151,7 +151,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
@@ -187,7 +187,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.PolylineBefore);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200})
           .click()
           .perform();
@@ -196,7 +196,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
@@ -232,7 +232,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.PointBefore);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100})
           .click()
           .perform();
@@ -241,7 +241,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
@@ -278,7 +278,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.CuboidBefore);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 560, y: 360})
           .click()
           .perform();
@@ -287,7 +287,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => browser.sleep(300))
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
-        confirmButton.click();
+        return confirmButton.click();
       })
       .then(() => browser.sleep(600))
       .then(
