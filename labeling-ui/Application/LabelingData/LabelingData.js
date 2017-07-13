@@ -9,7 +9,7 @@ import CacheService from './Services/CacheService';
 import GhostingService from './Services/GhostingService';
 
 import LabeledThingGateway from './Gateways/LabeledThingGateway';
-import PouchDbLabeledThingInFrameGateway from './Gateways/PouchDbLabeledThingInFrameGateway';
+import LabeledThingInFrameGateway from './Gateways/LabeledThingInFrameGateway';
 import LabeledThingGroupGateway from './Gateways/LabeledThingGroupGateway';
 import LabeledFrameGateway from './Gateways/LabeledFrameGateway';
 import FrontendInterpolation from './Interpolations/FrontendInterpolation';
@@ -33,7 +33,7 @@ class LabelingData extends Module {
 
     this.module.service('ghostingService', GhostingService);
 
-    this.module.service('labeledThingInFrameGateway', PouchDbLabeledThingInFrameGateway);
+    this.module.service('labeledThingInFrameGateway', LabeledThingInFrameGateway);
     this.module.service('labeledThingGateway', LabeledThingGateway);
     this.module.service('labeledThingGroupGateway', LabeledThingGroupGateway);
     this.module.service('labeledFrameGateway', LabeledFrameGateway);

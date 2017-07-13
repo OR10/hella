@@ -1,7 +1,7 @@
 /**
  * Gateway for CRUD operation on {@link LabeledThing}s in a PouchDb
  */
-class PouchDbLabeledThingInFrameGateway {
+class LabeledThingInFrameGateway {
   /**
    * @param {$q} $q
    * @param {PouchDbContextService} pouchDbContextService
@@ -306,7 +306,7 @@ class PouchDbLabeledThingInFrameGateway {
 
 }
 
-PouchDbLabeledThingInFrameGateway.$inject = [
+LabeledThingInFrameGateway.$inject = [
   '$q',
   'pouchDbContextService',
   'revisionManager',
@@ -319,4 +319,4 @@ PouchDbLabeledThingInFrameGateway.$inject = [
   'labelStructureService',
 ];
 
-export default PouchDbLabeledThingInFrameGateway;
+export default LabeledThingInFrameGateway;
