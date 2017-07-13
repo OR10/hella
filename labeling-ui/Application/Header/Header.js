@@ -18,7 +18,7 @@ class Header extends Module {
   /**
    * @inheritDoc
    */
-  registerWithAngular(angular, featureFlags) {
+  registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Header', []);
 
     this.module.service('liveSyncIndicatorService', LiveSyncIndicatorService);

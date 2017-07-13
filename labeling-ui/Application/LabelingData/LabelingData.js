@@ -24,7 +24,7 @@ class LabelingData extends Module {
   /**
    * @inheritDoc
    */
-  registerWithAngular(angular, featureFlags) {
+  registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.LabelingData', []);
 
     this.module.service('interpolationService', InterpolationService);
