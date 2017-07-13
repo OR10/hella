@@ -226,7 +226,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow1);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -246,7 +246,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow2);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -266,7 +266,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow3);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -286,7 +286,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow4);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -306,7 +306,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow5);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -326,7 +326,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow6);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -1379,7 +1379,7 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise1);
-            browser.sleep(1000);
+            return browser.sleep(1000);
           })
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
@@ -1397,7 +1397,7 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise2);
-            browser.sleep(1000);
+            return browser.sleep(1000);
           })
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
@@ -1415,7 +1415,7 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise3);
-            browser.sleep(1000);
+            return browser.sleep(1000);
           })
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
@@ -1433,7 +1433,7 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise4);
-            browser.sleep(1000);
+            return browser.sleep(1000);
           })
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))

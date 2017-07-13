@@ -153,7 +153,7 @@ describe('Cuboid creation', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboidBottomToTop2);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -352,7 +352,7 @@ describe('Cuboid creation', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.MinimalTopToBottom2);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -403,7 +403,7 @@ describe('Cuboid creation', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.MinimalBottomToTop2);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))

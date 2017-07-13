@@ -173,7 +173,7 @@ describe('Pedestrian drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.MoveOnePedestrian);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -305,7 +305,7 @@ describe('Pedestrian drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrian);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -371,7 +371,7 @@ describe('Pedestrian drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrianMinimalHeight);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
@@ -473,7 +473,7 @@ describe('Pedestrian drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewMultiplePedestrian);
-        browser.sleep(1000);
+        return browser.sleep(1000);
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {

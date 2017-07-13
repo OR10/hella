@@ -68,7 +68,7 @@ describe('Multiple Things', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings1);
-        browser.sleep(200);
+        return browser.sleep(200);
       })
       .then(() => {
         return browser.actions()
@@ -82,7 +82,7 @@ describe('Multiple Things', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings2);
-        browser.sleep(200);
+        return browser.sleep(200);
       })
       .then(() => {
         return browser.actions()
@@ -96,7 +96,7 @@ describe('Multiple Things', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings3);
-        browser.sleep(200);
+        return browser.sleep(200);
       })
       .then(() => {
         return browser.actions()
@@ -110,7 +110,7 @@ describe('Multiple Things', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings4);
-        browser.sleep(200);
+        return browser.sleep(200);
       })
       .then(() => {
         return browser.actions()
