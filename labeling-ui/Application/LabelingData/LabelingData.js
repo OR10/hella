@@ -6,7 +6,6 @@
 import Module from '../Module';
 import InterpolationService from './Services/InterpolationService';
 import CacheService from './Services/CacheService';
-import CacheHeaterService from './Services/CacheHeaterService';
 import GhostingService from './Services/GhostingService';
 
 import PouchDbLabeledThingGateway from './Gateways/PouchDbLabeledThingGateway';
@@ -31,7 +30,6 @@ class LabelingData extends Module {
     this.module.service('interpolationService', InterpolationService);
 
     this.module.service('cacheService', CacheService);
-    this.module.service('cacheHeaterService', CacheHeaterService);
 
     this.module.service('ghostingService', GhostingService);
 
