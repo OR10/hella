@@ -1,7 +1,7 @@
 /**
  * Gateway for retrieving timer data
  */
-class PouchDbTimerGateway {
+class TimerGateway {
   /**
    * @param {PouchDbContextService} pouchDbContextService
    * @param {PackagingExecutor} packagingExecutor
@@ -157,11 +157,11 @@ class PouchDbTimerGateway {
   }
 }
 
-PouchDbTimerGateway.$inject = [
+TimerGateway.$inject = [
   'pouchDbContextService',
   'packagingExecutor',
   'pouchDbViewService',
   '$q',
 ];
 
-export default PouchDbTimerGateway;
+export default TimerGateway;
