@@ -44,13 +44,14 @@ describe('Rectangle viewer overflow', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 190, y: 190}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 2, y: 2}) // drag
-        .mouseUp()
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 190, y: 190}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 2, y: 2}) // drag
+          .mouseUp()
+          .perform();
+      })
       .then(() => browser.sleep(1000))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TopLeftOverflow')
@@ -77,13 +78,14 @@ describe('Rectangle viewer overflow', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 110, y: 110}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 1023, y: 619}) // drag
-        .mouseUp()
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 1023, y: 619}) // drag
+          .mouseUp()
+          .perform();
+      })
       .then(() => browser.sleep(1000))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'BottomRightOverflow')
@@ -110,13 +112,14 @@ describe('Rectangle viewer overflow', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 190, y: 190}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 2, y: 2}) // drag
-        .mouseUp()
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 190, y: 190}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 2, y: 2}) // drag
+          .mouseUp()
+          .perform();
+      })
       .then(() => browser.sleep(1000))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TopLeftNoOverflow')
@@ -144,14 +147,12 @@ describe('Rectangle viewer overflow', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 110, y: 110}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 1023, y: 619}) // drag
           .mouseUp()
           .perform();
-
-        browser.sleep(1000);
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'BottomRightNoOverflow')
@@ -178,14 +179,12 @@ describe('Rectangle viewer overflow', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 50, y: 15}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 50, y: 605}) // drag
           .mouseUp()
           .perform();
-
-        return browser.sleep(800);
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'WideBottomNoOverflow')
@@ -212,14 +211,12 @@ describe('Rectangle viewer overflow', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 50, y: 605})
           .mouseDown()
           .mouseMove(viewer, {x: 50, y: 15})
           .mouseUp()
           .perform();
-
-        return browser.sleep(800);
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'WideTopNoOverflow')
@@ -246,14 +243,12 @@ describe('Rectangle viewer overflow', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 15, y: 50})
           .mouseDown()
           .mouseMove(viewer, {x: 1015, y: 50})
           .mouseUp()
           .perform();
-
-        return browser.sleep(800);
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TallLeftNoOverflow')
@@ -280,14 +275,12 @@ describe('Rectangle viewer overflow', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 1015, y: 50})
           .mouseDown()
           .mouseMove(viewer, {x: 15, y: 50})
           .mouseUp()
           .perform();
-
-        return browser.sleep(800);
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TallRightNoOverflow')

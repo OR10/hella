@@ -74,6 +74,9 @@ describe('Metalabeling', () => {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
+        // For some reason, when having a lot of tests beforehand, getText returns an empty string. Do a click before that
+        // and then read the text. This seems to fix it
+        .then(() => metaLabelingButton.click())
         .then(() => incompleteBadge.getText())
         // Two incomplete shapes + One incomplete/not existent frame
         .then(incompleteCount => expect(incompleteCount).toEqual('3'))

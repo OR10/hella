@@ -101,10 +101,10 @@ describe('ReadOnly Mode', () => {
             .sendKeys(protractor.Key.ARROW_DOWN)
             .sendKeys(protractor.Key.ARROW_LEFT)
             .sendKeys(protractor.Key.ARROW_RIGHT)
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.SHIFT)
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.SHIFT)
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.SHIFT)
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.NULL)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL)
             .perform();
         })
         .then(() => browser.sleep(200))
@@ -212,10 +212,11 @@ describe('ReadOnly Mode', () => {
     it('should not be possible to be created', done => {
       mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .click(toolButton0) // Rect drawing
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .click(toolButton0) // Rect drawing
+            .perform();
+        })
         .then(() => browser.sleep(200))
         .then(() => {
           return browser.actions()
