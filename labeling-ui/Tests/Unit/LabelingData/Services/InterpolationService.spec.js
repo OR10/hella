@@ -1,24 +1,19 @@
 import {inject} from 'angular-mocks';
 import InterpolationService from 'Application/LabelingData/Services/InterpolationService';
 
-describe('Interpolation with PouchDB Spec', () => {
-  const featureFlag = {pouchdb: false};
+describe('Interpolation with PouchDB', () => {
   let interpolationService;
   let firstInterpolation;
   let interpolations;
 
-  let cacheMock;
   let pouchDbContextServiceMock;
   let pouchDBSyncManagerMock;
-  let cacheHeaterMock;
 
   function createInterpolationService() {
-    interpolationService = new InterpolationService(null, null, cacheMock, cacheHeaterMock, featureFlag, pouchDBSyncManagerMock, pouchDbContextServiceMock, interpolations);
+    interpolationService = new InterpolationService(null, null,pouchDBSyncManagerMock, pouchDbContextServiceMock, interpolations);
   }
 
   beforeEach(() => {
-    cacheMock = jasmine.createSpyObj('cache', ['container']);
-
     firstInterpolation = jasmine.createSpyObj('firstInterpolation', ['execute']);
     firstInterpolation.execute.and.returnValue({then: () => {}});
 
@@ -37,66 +32,16 @@ describe('Interpolation with PouchDB Spec', () => {
 
     let rootScope;
     let angularQ;
-    let cacheContainerMock;
 
     beforeEach(inject(($rootScope, $q) => {
       rootScope = $rootScope;
       angularQ = $q;
-
-      cacheContainerMock = jasmine.createSpyObj('container', ['invalidate', 'get']);
-      cacheMock.container.and.returnValue(cacheContainerMock);
     }));
-
-    it('invalidates the caches', () => {
-      createInterpolationService();
-
-      interpolationService.interpolate(null, labeledThing, frameRange);
-      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.${labeledThing.id}`);
-      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.complete`);
-      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.endFrameIndex}.${labeledThing.id}`);
-      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.endFrameIndex}.complete`);
-    });
-
-    it('does not invalidates the caches for non-ghosts', () => {
-      const cacheData = [{id: '1'}, {id: '2'}];
-      cacheContainerMock.get.and.returnValue(cacheData);
-
-      createInterpolationService();
-
-      interpolationService.interpolate(null, labeledThing, frameRange);
-      expect(cacheContainerMock.invalidate).not.toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.1`);
-      expect(cacheContainerMock.invalidate).not.toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.2`);
-    });
-
-    it('invalidates the caches for non-ghosts', () => {
-      const cacheData = [{id: '1', labeledThingId: labeledThing.id}, {id: '2', labeledThingId: labeledThing.id}];
-      cacheContainerMock.get.and.returnValue(cacheData);
-
-      createInterpolationService();
-
-      interpolationService.interpolate(null, labeledThing, frameRange);
-      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.1`);
-      expect(cacheContainerMock.invalidate).toHaveBeenCalledWith(`${labeledThing.task.id}.${frameRange.startFrameIndex}.2`);
-    });
-
-    it('calls the cache heater correctly without pouchDB', () => {
-      firstInterpolation.endFrameIndex = 19;
-      firstInterpolation.execute.and.returnValue(angularQ.resolve());
-      cacheHeaterMock = jasmine.createSpyObj('cacheHeaterMock', ['heatFrames']);
-
-      createInterpolationService();
-      interpolationService.interpolate(task, labeledThing, frameRange);
-      rootScope.$apply();
-
-      expect(cacheHeaterMock.heatFrames).toHaveBeenCalledWith(task, frameRange.startFrameIndex, firstInterpolation.endFrameIndex);
-      expect(cacheHeaterMock.heatFrames).toHaveBeenCalledTimes(1);
-    });
 
     describe('pouchDB interpolation', () => {
       let pouchDbMock;
 
       beforeEach(() => {
-        featureFlag.pouchdb = true;
         pouchDbMock = {};
 
         pouchDbContextServiceMock = jasmine.createSpyObj('pouchDbContextService', ['provideContextForTaskId']);
@@ -112,8 +57,6 @@ describe('Interpolation with PouchDB Spec', () => {
         pouchDBSyncManagerMock.pushUpdatesForContext.and.returnValue(angularQ.resolve());
         pouchDBSyncManagerMock.pullUpdatesForContext.and.returnValue(angularQ.resolve());
         pouchDBSyncManagerMock.startDuplexLiveReplication.and.returnValue(angularQ.resolve());
-
-        cacheHeaterMock = jasmine.createSpyObj('cacheHeaterMock', ['heatFrames']);
 
         firstInterpolation.execute.and.returnValue(angularQ.resolve());
       });
@@ -134,17 +77,6 @@ describe('Interpolation with PouchDB Spec', () => {
         expect(pouchDBSyncManagerMock.pushUpdatesForContext).toHaveBeenCalledWith(pouchDbMock);
         expect(pouchDBSyncManagerMock.pullUpdatesForContext).toHaveBeenCalledWith(pouchDbMock);
         expect(pouchDBSyncManagerMock.startDuplexLiveReplication).toHaveBeenCalledWith(pouchDbMock);
-      });
-
-      it('calls the cache heater correctly', () => {
-        firstInterpolation.endFrameIndex = 19;
-
-        createInterpolationService();
-        interpolationService.interpolate(task, labeledThing, frameRange);
-        rootScope.$apply();
-
-        expect(cacheHeaterMock.heatFrames).toHaveBeenCalledWith(task, frameRange.startFrameIndex, firstInterpolation.endFrameIndex);
-        expect(cacheHeaterMock.heatFrames).toHaveBeenCalledTimes(1);
       });
     });
   });
