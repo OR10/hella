@@ -1,0 +1,17 @@
+{
+  "plugins": ["jasmine"],
+  "env": {
+    "jasmine": true,
+  },
+  "rules": {
+    "jasmine/named-spy": 0,
+    "jasmine/no-focused-tests": 2,
+    "jasmine/no-disabled-tests": 1,
+    "jasmine/no-suite-dupes": [1, "block"],
+    "jasmine/no-spec-dupes": [0, "block"],
+    "jasmine/missing-expect": [1, "expect()"],
+    "jasmine/no-suite-callback-args": 2,
+    "jasmine/valid-expect": 1,
+    "jasmine/no-assign-spyon": 0
+  }
+}
