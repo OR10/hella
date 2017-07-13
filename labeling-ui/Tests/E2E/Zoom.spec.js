@@ -93,7 +93,7 @@ describe('Zoom', () => {
             .mouseDown()
             .mouseMove(viewer, {x: 100, y: 100})
             .mouseUp()
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(

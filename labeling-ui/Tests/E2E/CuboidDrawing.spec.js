@@ -217,7 +217,7 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -237,7 +237,7 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -257,7 +257,7 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -277,7 +277,7 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -297,7 +297,7 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -317,7 +317,7 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -516,7 +516,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should add to height of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '88888888888888888888888888888888888888', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '88888888888888888888888888888888888888', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -555,7 +555,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should substract from height of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '22222', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '22222', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -831,7 +831,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .sendKeys(protractor.Key.SHIFT)
               .sendKeys('o')
-              .sendKeys(protractor.Key.SHIFT)
+              .sendKeys(protractor.Key.NULL)
               .perform();
           })
           .then(
@@ -864,7 +864,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .sendKeys(protractor.Key.SHIFT)
               .sendKeys('p')
-              .sendKeys(protractor.Key.SHIFT)
+              .sendKeys(protractor.Key.NULL)
               .perform();
           })
           .then(
@@ -994,7 +994,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should add to width of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '44444444444444444444', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '44444444444444444444', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -1033,7 +1033,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should substract from width of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '66666', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '66666', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -1180,7 +1180,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should add to depth of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '99', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '99', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -1217,7 +1217,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should substract from depth of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '33', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '33', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,

@@ -149,7 +149,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -167,7 +167,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -185,7 +185,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -203,7 +203,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -340,7 +340,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -358,7 +358,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -376,7 +376,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -394,7 +394,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -536,7 +536,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -554,7 +554,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -572,7 +572,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -590,7 +590,7 @@ describe('Keyboard Shape Movement', () => {
         })
         .then(() => {
           return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL)
             .perform();
         })
         .then(
