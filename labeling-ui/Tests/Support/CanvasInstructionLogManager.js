@@ -118,7 +118,8 @@ class CanvasInstructionLogManager {
    * @returns {Promise<{width: number, height: number, operations: Array}>}
    */
   getAnnotationCanvasLogs(testName = null, fixtureName = null) {
-    return this._getCanvasLogs('annotation-layer', testName, fixtureName);
+    const canvasLogs = this._getCanvasLogs('annotation-layer', testName, fixtureName);
+    return Promise.resolve(canvasLogs);
   }
 
   /**

@@ -6,23 +6,9 @@ import {cloneDeep} from 'lodash';
 import ExtendedBrowser from './ExtendedBrowser';
 
 export function getMockRequestsMade(mock) {
-  if (featureFlags.pouchdb) {
-    return browser.sleep(500).then(() => PouchDb.allDocs());
-  }
-  return httpMock.requestsMade().then(requests => {
-    return requests.map(request => {
-      const strippedRequest = {
-        method: request.method,
-        path: request.url,
-      };
-
-      if (request.data) {
-        strippedRequest.data = request.data;
-      }
-
-      return strippedRequest;
-    });
-  });
+  return Promise.resolve()
+    .then(() => browser.sleep(500))
+    .then(() => PouchDb.allDocs());
 }
 
 export function dumpAllRequestsMade(mock) {
