@@ -7,17 +7,17 @@ import LabelingData from 'Application/LabelingData/LabelingData';
 
 import PouchDbHelper from 'Tests/Support/PouchDb/PouchDbHelper';
 
-import PouchDbLabeledThingGateway from 'Application/LabelingData/Gateways/PouchDbLabeledThingGateway';
+import LabeledThingGateway from 'Application/LabelingData/Gateways/LabeledThingGateway';
 
 import labeledThingCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThing';
 import labeledThingFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThing';
 import taskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
 
-describe('PouchDbLabeledThingGateway', () => {
+describe('LabeledThingGateway', () => {
   let $rootScope;
 
   /**
-   * @type {PouchDbLabeledThingGateway}
+   * @type {LabeledThingGateway}
    */
   let gateway;
 
@@ -82,7 +82,7 @@ describe('PouchDbLabeledThingGateway', () => {
       .then(() => {
         inject($injector => {
           $rootScope = $injector.get('$rootScope');
-          gateway = $injector.instantiate(PouchDbLabeledThingGateway);
+          gateway = $injector.instantiate(LabeledThingGateway);
           revisionManager = $injector.get('revisionManager');
           couchDbModelSerializer = $injector.get('couchDbModelSerializer');
           couchDbModelDeserializer = $injector.get('couchDbModelDeserializer');

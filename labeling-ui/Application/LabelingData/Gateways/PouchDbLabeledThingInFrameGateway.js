@@ -61,7 +61,7 @@ class PouchDbLabeledThingInFrameGateway {
     this._couchDbModelDeserializer = couchDbModelDeserializer;
 
     /**
-     * @type {PouchDbLabeledThingGateway}
+     * @type {LabeledThingGateway}
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;

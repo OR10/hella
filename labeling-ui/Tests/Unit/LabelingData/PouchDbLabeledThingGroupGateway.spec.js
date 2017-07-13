@@ -18,7 +18,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
    */
   let groupGateway;
   /**
-   * @param {PouchDbLabeledThingGateway}
+   * @param {LabeledThingGateway}
    */
   let thingGateway;
   let pouchDbContext;
@@ -69,7 +69,7 @@ describe('PouchDbLabeledThingGroupGateway', () => {
     module('AnnoStation.Common');
 
     pouchDbContext = jasmine.createSpyObj('pouchDbContext', ['query', 'get', 'remove', 'put']);
-    thingGateway = jasmine.createSpyObj('pouchDbLabeledThingGateway', ['saveLabeledThing']);
+    thingGateway = jasmine.createSpyObj('LabeledThingGateway', ['saveLabeledThing']);
 
     pouchDbContext.query.and.callFake(() => {
       const deferred = $q.defer();

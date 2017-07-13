@@ -10,7 +10,7 @@ class PouchDbLabeledThingGroupGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    * @param {AbortablePromiseFactory} abortablePromiseFactory
-   * @param {PouchDbLabeledThingGateway} labeledThingGateway
+   * @param {LabeledThingGateway} labeledThingGateway
    * @param {EntityIdService} entityIdService
    * @param {PouchDbViewService} pouchDbViewService
    */
@@ -73,7 +73,7 @@ class PouchDbLabeledThingGroupGateway {
     this._abortablePromiseFactory = abortablePromiseFactory;
 
     /**
-     * @type {PouchDbLabeledThingGateway}
+     * @type {LabeledThingGateway}
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
