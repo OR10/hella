@@ -5,10 +5,6 @@ import featureFlags from '../../Application/features.json';
 import {cloneDeep} from 'lodash';
 
 describe('Class Ghosting', () => {
-  if (!featureFlags.pouchdb) {
-    pending('These tests only work with activated Pouch');
-  }
-
   let assets;
   let sharedMocks;
   let viewer;
