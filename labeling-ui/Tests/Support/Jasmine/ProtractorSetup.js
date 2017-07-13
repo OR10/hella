@@ -9,12 +9,13 @@ beforeEach(() => {
 afterEach(done => {
   protractorPromise.promise.then(result => {
     expect(result).toBe('ok');
-    PouchDb.removeAllDocs().then(() => done());
+    // PouchDb.removeAllDocs().then(() => done());
+    PouchDb.destroy().then(() => done());
   });
 
   protractorPromise.fulfill('ok');
 });
 
-afterAll(done => {
-  PouchDb.destroy().then(() => done());
-});
+// afterAll(done => {
+//   PouchDb.destroy().then(() => done());
+// });
