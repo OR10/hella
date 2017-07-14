@@ -40,7 +40,7 @@ class PouchDbTimerGateway {
    * @return {Promise}
    */
   createTimerDocument(project, task, user) {
-    if(task.readOnly){
+    if (task.readOnly) {
       return null;
     }
 
