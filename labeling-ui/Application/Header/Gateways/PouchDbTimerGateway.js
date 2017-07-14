@@ -40,6 +40,10 @@ class PouchDbTimerGateway {
    * @return {Promise}
    */
   createTimerDocument(project, task, user) {
+    if (task.readOnly) {
+      return null;
+    }
+
     const queueIdentifier = 'timer';
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
