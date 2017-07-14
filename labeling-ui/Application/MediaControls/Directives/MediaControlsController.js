@@ -339,6 +339,20 @@ class MediaControlsController {
     this.playbackSpeedFactor = 1;
   }
 
+  playButtonVisible() {
+    if (!this.playing && (this.selectedPaperShape === null || !this.selectedPaperShape.playInFrameRange())) {
+      return true;
+    }
+    return false;
+  }
+
+  playButtonForFrame() {
+    if (!this.playing && this.selectedPaperShape !== null && this.selectedPaperShape.playInFrameRange()) {
+      return true;
+    }
+    return false;
+  }
+
   handlePause() {
     this.playing = false;
   }
