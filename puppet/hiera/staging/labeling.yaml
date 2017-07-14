@@ -28,6 +28,10 @@ php::extensions:
   xml: {}
   zip: {}
 
+annostation_base::nodejs::nvmUser: 'www-data'
+annostation_base::nodejs::nvmHomeDir: '/var/www'
+annostation_base::nodejs::nvmDir: '/var/www/.nvm'
+
 letsencrypt::email: chh@crosscan.com
 annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
 annostation_letsencrypt::domains:

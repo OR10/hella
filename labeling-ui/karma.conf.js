@@ -93,7 +93,7 @@ module.exports = function (config) {
     babelPreprocessor: {
       options: {
         sourceMap: 'inline',
-        modules: 'system'
+        plugins: ["transform-es2015-modules-systemjs"]
       }
     },
 
@@ -108,7 +108,7 @@ module.exports = function (config) {
       babel_umd: {
         base: 'babel',
         options: {
-          modules: 'umd'
+          plugins: ["transform-es2015-modules-umd"]
         }
       }
     },

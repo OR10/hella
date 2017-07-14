@@ -161,9 +161,7 @@ describe('ModalDialog', () => {
       }))
       // Wait for the modal "animation"
       .then(() => browser.sleep(500))
-      .then(() => {
-        element(by.css('.modal-button-confirm')).click();
-      })
+      .then(() => element(by.css('.modal-button-confirm')).click())
       // Wait for the modal "animation"
       .then(() => browser.sleep(500))
       .then(() => element(by.css('.modal.is-active')).isPresent()).then(result => expect(result).toBeFalsy())
@@ -642,10 +640,8 @@ describe('ModalDialog', () => {
           }))
           // Wait for the modal "animation"
           .then(() => browser.sleep(500))
-          .then(() => {
-            element(by.css('.modal-select > option:nth-child(3)')).click();
-            element(by.css('.modal-button-confirm')).click();
-          })
+          .then(() => element(by.css('.modal-select > option:nth-child(3)')).click())
+          .then(() => element(by.css('.modal-button-confirm')).click())
           // Wait for the modal "animation"
           .then(() => browser.sleep(500))
           .then(() => {
