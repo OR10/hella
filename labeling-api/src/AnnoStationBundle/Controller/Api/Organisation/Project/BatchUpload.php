@@ -192,7 +192,14 @@ class BatchUpload extends Controller\Base
                     sprintf('Calibration data already exists in project: %s', $flowRequest->getFileName())
                 );
             }
-        } else {
+        } elseif ($this->isImageFile($flowRequest->getFileName())) {
+            if ($project->hasVideo($flowRequest->getFileName())) {
+                throw new HttpKernel\Exception\ConflictHttpException(
+                    sprintf('Image already exists in project (either as video or image file): %s', $flowRequest->getFileName())
+                );
+            }
+        }
+        else {
             throw new HttpKernel\Exception\BadRequestHttpException(
                 sprintf('Invalid file: %s', $flowRequest->getFileName())
             );
@@ -212,6 +219,15 @@ class BatchUpload extends Controller\Base
                         basename($targetPath),
                         $targetPath,
                         false
+                    );
+                } elseif ($this->isImageFile($flowRequest->getFileName())) {
+                    // Image compression is determined by their input image type
+                    // PNG -> lossless, jpeg -> compressed.
+                    $this->videoImporter->importImage(
+                        $organisation,
+                        $project,
+                        basename($targetPath),
+                        $targetPath
                     );
                 } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
                     $this->videoImporter->importCalibrationData($organisation, $project, $targetPath);
@@ -317,6 +333,16 @@ class BatchUpload extends Controller\Base
     private function isCalibrationFile(string $filename)
     {
         return in_array(pathinfo($filename, PATHINFO_EXTENSION), ['csv']);
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return bool
+     */
+    private function isImageFile(string $filename)
+    {
+        return in_array(pathinfo($filename, PATHINFO_EXTENSION), ['jpg', 'png']);
     }
 
     /**
