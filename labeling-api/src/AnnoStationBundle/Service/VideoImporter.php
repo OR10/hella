@@ -2,12 +2,12 @@
 
 namespace AnnoStationBundle\Service;
 
-use AppBundle\Model;
-use AnnoStationBundle\Model as AnnoStationBundleModel;
-use AppBundle\Model\Video\ImageType;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Worker\Jobs;
+use AppBundle\Model;
+use AppBundle\Model\Video\ImageType;
 use crosscan\WorkerPool;
 use Doctrine\ODM\CouchDB;
 
@@ -64,16 +64,16 @@ class VideoImporter
     private $taskConfigurationFacade;
 
     /**
-     * @param Facade\Project                            $projectFacade
-     * @param Facade\Video                              $videoFacade
-     * @param Facade\CalibrationData                    $calibrationDataFacade
-     * @param Facade\LabelingTask                       $labelingTaskFacade
-     * @param Video\MetaDataReader                      $metaDataReader
-     * @param Service\Video\VideoFrameSplitter          $frameCdnSplitter
-     * @param LabelStructure                            $labelStructureService
-     * @param WorkerPool\Facade                         $facadeAMQP
-     * @param CalibrationFileConverter                  $calibrationFileConverter
-     * @param Facade\TaskConfiguration                  $taskConfigurationFacade
+     * @param Facade\Project                   $projectFacade
+     * @param Facade\Video                     $videoFacade
+     * @param Facade\CalibrationData           $calibrationDataFacade
+     * @param Facade\LabelingTask              $labelingTaskFacade
+     * @param Video\MetaDataReader             $metaDataReader
+     * @param Service\Video\VideoFrameSplitter $frameCdnSplitter
+     * @param LabelStructure                   $labelStructureService
+     * @param WorkerPool\Facade                $facadeAMQP
+     * @param CalibrationFileConverter         $calibrationFileConverter
+     * @param Facade\TaskConfiguration         $taskConfigurationFacade
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -109,8 +109,13 @@ class VideoImporter
      * @return Model\Video
      * @throws CouchDB\UpdateConflictException
      */
-    public function importVideo(AnnoStationBundleModel\Organisation $organisation, Model\Project $project, string $videoName, string $videoFilePath, bool $lossless)
-    {
+    public function importVideo(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        string $videoName,
+        string $videoFilePath,
+        bool $lossless
+    ) {
         $imageTypes = $this->getImageTypes($lossless);
         $video      = new Model\Video($organisation, $videoName);
 
@@ -163,8 +168,7 @@ class VideoImporter
         AnnoStationBundleModel\Organisation $organisation,
         Model\Project $project,
         string $calibrationFilePath
-    )
-    {
+    ) {
         $calibrationName = basename($calibrationFilePath);
 
         $this->calibrationFileConverter->setCalibrationData($calibrationFilePath);
@@ -208,8 +212,10 @@ class VideoImporter
      * @param bool                                $isObjectLabeling
      * @param bool                                $isMetaLabeling
      * @param array                               $labelInstructions
-     * @param bool                                $lossless    Wether or not the UI should use lossless compressed images.
-     * @param int                                 $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
+     * @param bool                                $lossless    Wether or not the UI should use lossless compressed
+     *                                                         images.
+     * @param int                                 $splitLength Create tasks for each $splitLength time of the video (in
+     *                                                         seconds, 0 = no split).
      * @param int|null                            $minimalVisibleShapeOverflow
      * @param array                               $drawingToolOptions
      * @param int                                 $frameSkip
