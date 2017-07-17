@@ -1,27 +1,40 @@
-import LabeledThingGroup from '../Models/LabeledThingGroup';
-import LabeledThingGroupInFrame from '../Models/LabeledThingGroupInFrame';
-
+/**
+ * Gateway for CRUD operation on {@link LabeledThingGroup}s in a PouchDb
+ */
 class LabeledThingGroupGateway {
   /**
-   * @param {$q} $q
-   * @param {ApiService} apiService
+   * @param {angular.$q} $q
+   * @param {PouchDbContextService} pouchDbContextService
+   * @param {PackagingExecutor} packagingExecutor
+   * @param {CouchDbModelSerializer} couchDbModelSerializer
+   * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
-   * @param {BufferedHttp} bufferedHttp
-   * @param {LabeledThingGateway} labeledThingGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
+   * @param {LabeledThingGateway} labeledThingGateway
+   * @param {EntityIdService} entityIdService
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, apiService, revisionManager, bufferedHttp, labeledThingGateway, abortablePromiseFactory) {
+  constructor($q,
+              pouchDbContextService,
+              packagingExecutor,
+              couchDbModelSerializer,
+              couchDbModelDeserializer,
+              revisionManager,
+              abortablePromiseFactory,
+              labeledThingGateway,
+              entityIdService,
+              pouchDbViewService) {
     /**
-     * @type {$q}
+     * @type {angular.$q}
      * @private
      */
     this._$q = $q;
 
     /**
-     * @type {ApiService}
+     * @type {PouchDbContextService}
      * @private
      */
-    this._apiService = apiService;
+    this._pouchDbContextService = pouchDbContextService;
 
     /**
      * @type {RevisionManager}
@@ -30,10 +43,34 @@ class LabeledThingGroupGateway {
     this._revisionManager = revisionManager;
 
     /**
-     * @type {BufferedHttp}
+     * @type {PackagingExecutor}
      * @private
      */
-    this._bufferedHttp = bufferedHttp;
+    this._packagingExecutor = packagingExecutor;
+
+    /**
+     * @type {CouchDbModelSerializer}
+     * @private
+     */
+    this._couchDbModelSerializer = couchDbModelSerializer;
+
+    /**
+     * @type {CouchDbModelDeserializer}
+     * @private
+     */
+    this._couchDbModelDeserializer = couchDbModelDeserializer;
+
+    /**
+     * @type {RevisionManager}
+     * @private
+     */
+    this._revisionManager = revisionManager;
+
+    /**
+     * @type {AbortablePromiseFactory}
+     * @private
+     */
+    this._abortablePromiseFactory = abortablePromiseFactory;
 
     /**
      * @type {LabeledThingGateway}
@@ -42,10 +79,12 @@ class LabeledThingGroupGateway {
     this._labeledThingGateway = labeledThingGateway;
 
     /**
-     * @type {AbortablePromiseFactory}
+     * @type {EntityIdService}
      * @private
      */
-    this._abortablePromisFactory = abortablePromiseFactory;
+    this._entityIdService = entityIdService;
+
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
@@ -56,26 +95,51 @@ class LabeledThingGroupGateway {
    * @return {AbortablePromise}
    */
   getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroupInFrame/frame/${frameIndex}`);
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return this._bufferedHttp.get(url, undefined, 'LabeledThingGroup')
-      .then(response => {
-        if (response.data && response.data.result) {
-          const {labeledThingGroups} = response.data.result;
-          let {labeledThingGroupsInFrame} = response.data.result;
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupInFrameByTaskIdAndFrameIndex'), {
+        key: [taskId, frameIndex],
+      })
+        .then(response => response.rows.map(row => row.value))
+        .then(labeledThingGroupIds => {
+          // Filter duplicate labeledThingGroupIds
+          const filteredLabeledThingGroupIds = labeledThingGroupIds.filter((value, index, array) => array.indexOf(value) === index);
+          const promises = [];
 
-          labeledThingGroupsInFrame = labeledThingGroupsInFrame.map(ltgifDocument => {
-            const labeledThingGroupDocument = labeledThingGroups.find(ltg => ltg.id === ltgifDocument.labeledThingGroupId);
-            ltgifDocument.labeledThingGroup = new LabeledThingGroup(Object.assign({}, labeledThingGroupDocument, {task}));
+          filteredLabeledThingGroupIds.forEach(labeledThingGroupId => {
+            promises.push(dbContext.get(labeledThingGroupId));
+          });
 
-            return new LabeledThingGroupInFrame(ltgifDocument);
+          // TODO: Not sure if it is ok to pass filtered ids!? Needs to be checked!
+          return this._$q.all([this._$q.resolve(labeledThingGroupIds), this._$q.all(promises)]);
+        })
+        .then(([labeledThingGroupIds, labeledThingGroupDocuments]) => {
+          const labeledThingGroups = labeledThingGroupDocuments.map(labeledThingGroupDocument => {
+            this._revisionManager.extractRevision(labeledThingGroupDocument);
+            return this._couchDbModelDeserializer.deserializeLabeledThingGroup(labeledThingGroupDocument, task);
+          });
+
+          const labeledThingGroupsInFrame = labeledThingGroupIds.map(labeledThingGroupId => {
+            const assignedLabeledThingGroup = labeledThingGroups.find(labeledThingGroup => labeledThingGroup.id === labeledThingGroupId);
+
+            const dbDocument = {
+              id: this._entityIdService.getUniqueId(),
+              classes: [],
+              labeledThingGroup: assignedLabeledThingGroup,
+              frameIndex,
+              labeledThingGroupId,
+            };
+            // TODO: If the labeledThingGroupInFrame documents are no longer generated, we need to extract revision here
+            return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(dbDocument, assignedLabeledThingGroup);
           });
 
           return labeledThingGroupsInFrame;
-        }
-
-        throw new Error('Received malformed response when requesting labeled thing groups in frame.');
-      });
+        });
+    });
   }
 
   /**
@@ -86,16 +150,20 @@ class LabeledThingGroupGateway {
    */
   deleteLabeledThingGroup(labeledThingGroup) {
     const task = labeledThingGroup.task;
-    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup/${labeledThingGroup.id}`);
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+    const labeledThingGroupDocument = this._couchDbModelSerializer.serialize(labeledThingGroup);
 
-    return this._bufferedHttp.delete(url, undefined, 'LabeledThingGroup')
-      .then(response => {
-        if (response.data && response.data.result && response.data.result.success === true) {
-          return true;
-        }
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      this._injectRevisionOrFailSilently(labeledThingGroupDocument);
 
-        throw new Error('Received malformed response when deleting labeled thing group.');
-      });
+      return dbContext.remove(labeledThingGroupDocument)
+        .then(result => result.ok === true)
+        .catch(() => {
+          throw new Error('Received malformed response when deleting labeled thing group.');
+        });
+    });
   }
 
   /**
@@ -106,21 +174,24 @@ class LabeledThingGroupGateway {
    * @return {AbortablePromise}
    */
   createLabeledThingGroup(task, labeledThingGroup) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingGroup`);
-    const {type, lineColor} = labeledThingGroup;
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+    const serializedLabeledThingGroup = this._couchDbModelSerializer.serialize(labeledThingGroup);
 
-    const body = {
-      lineColor,
-      groupType: type,
-    };
-
-    return this._bufferedHttp.post(url, body, undefined, 'labeledThingGroup')
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute(
+      'labeledThingGroup',
+      () => {
+        this._injectRevisionOrFailSilently(serializedLabeledThingGroup);
+        return dbContext.put(serializedLabeledThingGroup);
+      })
       .then(response => {
-        if (response.data && response.data.result) {
-          return new LabeledThingGroup(Object.assign({}, response.data.result, {task}));
-        }
-
-        throw new Error(`Received malformed response when creating labeled thing group of type "${type}"`);
+        return dbContext.get(response.id);
+      })
+      .then(readDocument => {
+        this._revisionManager.extractRevision(readDocument);
+        return this._couchDbModelDeserializer.deserializeLabeledThingGroup(readDocument, task);
       });
   }
 
@@ -138,13 +209,17 @@ class LabeledThingGroupGateway {
       return labeledThing;
     });
 
-    const promises = [];
+    return this._packagingExecutor.execute(
+      'labeledThingGroup',
+      () => {
+        const promises = [];
 
-    modifiedLabeledThings.forEach(labeledThing => {
-      promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
-    });
+        modifiedLabeledThings.forEach(labeledThing => {
+          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
+        });
 
-    return this._abortablePromisFactory(this._$q.all(promises));
+        return this._abortablePromiseFactory(this._$q.all(promises));
+      });
   }
 
   /**
@@ -162,23 +237,45 @@ class LabeledThingGroupGateway {
       return labeledThing;
     });
 
-    const promises = [];
+    return this._packagingExecutor.execute(
+      'labeledThingGroup',
+      () => {
+        const promises = [];
 
-    modifiedLabeledThings.forEach(labeledThing => {
-      promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
-    });
+        modifiedLabeledThings.forEach(labeledThing => {
+          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
+        });
 
-    return this._abortablePromisFactory(this._$q.all(promises));
+        return this._abortablePromiseFactory(this._$q.all(promises));
+      });
+  }
+
+  /**
+   * Inject a revision into the document or fail silently and ignore the error.
+   *
+   * @param {object} document
+   * @private
+   */
+  _injectRevisionOrFailSilently(document) {
+    try {
+      this._revisionManager.injectRevision(document);
+    } catch (error) {
+      // Simply ignore
+    }
   }
 }
 
 LabeledThingGroupGateway.$inject = [
   '$q',
-  'ApiService',
+  'pouchDbContextService',
+  'packagingExecutor',
+  'couchDbModelSerializer',
+  'couchDbModelDeserializer',
   'revisionManager',
-  'bufferedHttp',
-  'labeledThingGateway',
   'abortablePromiseFactory',
+  'labeledThingGateway',
+  'entityIdService',
+  'pouchDbViewService',
 ];
 
 export default LabeledThingGroupGateway;

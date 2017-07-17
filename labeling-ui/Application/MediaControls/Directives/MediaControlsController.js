@@ -27,7 +27,6 @@ class MediaControlsController {
    * @param {ModalService} modalService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
-   * @param featureFlags
    */
   constructor($scope,
               $rootScope,
@@ -41,8 +40,7 @@ class MediaControlsController {
               applicationState,
               modalService,
               keyboardShortcutService,
-              viewerMouseCursorService,
-              featureFlags) {
+              viewerMouseCursorService) {
     /**
      * @type {angular.$rootScope}
      */
@@ -118,8 +116,6 @@ class MediaControlsController {
      * @private
      */
     this._viewerMouseCursorService = viewerMouseCursorService;
-
-    this.featureFlags = featureFlags;
 
     /**
      * @type {string}
@@ -514,7 +510,6 @@ MediaControlsController.$inject = [
   'modalService',
   'keyboardShortcutService',
   'viewerMouseCursorService',
-  'featureFlags',
 ];
 
 export default MediaControlsController;

@@ -8,7 +8,6 @@ import Viewport from '../Models/Viewport';
 import paper from 'paper';
 import Environment from '../../Common/Support/Environment';
 
-import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
 
@@ -43,7 +42,6 @@ class ViewerController {
    * @param {FrameGateway} frameGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGroupGateway} labeledThingGroupGateway
-   * @param {CacheHeaterService} cacheHeater
    * @param {EntityIdService} entityIdService
    * @param {PaperShapeFactory} paperShapeFactory
    * @param {Object} applicationConfig
@@ -78,7 +76,6 @@ class ViewerController {
               frameGateway,
               labeledThingInFrameGateway,
               labeledThingGroupGateway,
-              cacheHeater,
               entityIdService,
               paperShapeFactory,
               applicationConfig,
@@ -188,12 +185,6 @@ class ViewerController {
      * @private
      */
     this._labeledThingGroupGateway = labeledThingGroupGateway;
-
-    /**
-     * @type {CacheHeaterService}
-     * @private
-     */
-    this._cacheHeater = cacheHeater;
 
     /**
      * @type {LabeledThingGateway}
@@ -573,24 +564,6 @@ class ViewerController {
       }
     );
 
-    $rootScope.$on('shape:add:after', (event, newShape) => {
-      if (newShape && newShape instanceof PaperThingShape) {
-        this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
-      }
-    });
-
-    $scope.$watch('vm.selectedPaperShape', newShape => {
-      if (newShape && newShape instanceof PaperThingShape) {
-        this._cacheHeater.heatLabeledThingInFrame(newShape.labeledThingInFrame);
-      }
-
-      // TODO: This needs to be done to update group Dimensions on ghost removal
-      //       but if this is present, the initial drawing of groups is broken
-      // this._$timeout(() => {
-      //   this._updateAllGroupDimensions();
-      // }, 0);
-    });
-
     $scope.$watchGroup(
       [
         'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex',
@@ -678,11 +651,6 @@ class ViewerController {
         this.selectedPaperShape = new PaperFrame(labeledFrame);
       });
     });
-
-    // Initial prefetching of all frames
-    if (this.task.taskType === 'object-labeling') {
-      setTimeout(() => this._cacheHeater.heatFrames(this.task), 1000);
-    }
 
     this.framePosition.beforeFrameChangeAlways('disableViewer', () => {
       this._applicationState.startFrameChange();
@@ -1566,7 +1534,6 @@ ViewerController.$inject = [
   'frameGateway',
   'labeledThingInFrameGateway',
   'labeledThingGroupGateway',
-  'cacheHeaterService',
   'entityIdService',
   'paperShapeFactory',
   'applicationConfig',

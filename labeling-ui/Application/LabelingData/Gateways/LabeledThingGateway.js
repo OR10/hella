@@ -1,20 +1,35 @@
-import LabeledThing from '../Models/LabeledThing';
-
 /**
- * Gateway for CRUD operation on {@link LabeledThing}s
+ * Gateway for CRUD operation on {@link LabeledThing}s in a PouchDb
  */
 class LabeledThingGateway {
   /**
-   * @param {ApiService} apiService
+   * @param {angular.$q} $q
+   * @param {PouchDbContextService} pouchDbContextService
+   * @param {PackagingExecutor} packagingExecutor
+   * @param {CouchDbModelSerializer} couchDbModelSerializer
+   * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
-   * @param {BufferedHttp} bufferedHttp
+   * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor(apiService, revisionManager, bufferedHttp) {
+  constructor(
+    $q,
+    pouchDbContextService,
+    packagingExecutor,
+    couchDbModelSerializer,
+    couchDbModelDeserializer,
+    revisionManager,
+    pouchDbViewService) {
     /**
-     * @type {BufferedHttp}
+     * @type {angular.$q}
      * @private
      */
-    this._bufferedHttp = bufferedHttp;
+    this._$q = $q;
+
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._pouchDbContextService = pouchDbContextService;
 
     /**
      * @type {RevisionManager}
@@ -23,93 +38,205 @@ class LabeledThingGateway {
     this._revisionManager = revisionManager;
 
     /**
-     * @type {ApiService}
+     * @type {PackagingExecutor}
      * @private
      */
-    this._apiService = apiService;
+    this._packagingExecutor = packagingExecutor;
+
+    /**
+     * @type {CouchDbModelSerializer}
+     * @private
+     */
+    this._couchDbModelSerializer = couchDbModelSerializer;
+
+    /**
+     * @type {CouchDbModelDeserializer}
+     * @private
+     */
+    this._couchDbModelDeserializer = couchDbModelDeserializer;
+
+    /**
+     * @type {RevisionManager}
+     * @private
+     */
+    this._revisionManager = revisionManager;
+
+    /**
+     * @type {PouchDbViewService}
+     * @private
+     */
+    this._pouchDbViewService = pouchDbViewService;
   }
 
   /**
    * @param {LabeledThing} labeledThing
-   * @returns {AbortablePromise.<LabeledThing|Error>}
+   * @return {AbortablePromise.<LabeledThing|Error>}
    */
   saveLabeledThing(labeledThing) {
-    const url = this._apiService.getApiUrl(`/task/${labeledThing.task.id}/labeledThing/${labeledThing.id}`);
+    const task = labeledThing.task;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+    const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);
+    let readLabeledThing = null;
 
-    return this._bufferedHttp.put(url, labeledThing, undefined, 'labeledThing')
-      .then(response => {
-        if (response.data && response.data.result) {
-          return new LabeledThing(Object.assign({}, response.data.result, {task: labeledThing.task}));
-        }
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute('labeledThing', () => {
+      this._injectRevisionOrFailSilently(serializedLabeledThing);
+      return dbContext.put(serializedLabeledThing)
+        .then(dbResponse => {
+          return dbContext.get(dbResponse.id);
+        })
+        .then(readLabeledThingDocument => {
+          this._revisionManager.extractRevision(readLabeledThingDocument);
+          readLabeledThing = this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThingDocument, task);
+        })
+        .then(() => {
+          return this._getAssociatedLabeledThingsInFrames(task, readLabeledThing);
+        })
+        .then(documents => {
+          return documents.rows.filter(document => {
+            return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
+            document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
+          });
+        })
+        .then(toBeDeletedDocuments => {
+          // Mark filtered documents as deleted
+          const docs = toBeDeletedDocuments.map(document => {
+            const doc = document.doc;
+            doc._deleted = true;
+            return doc;
+          });
 
-        throw new Error('Received malformed response when creating labeled thing.');
-      });
+          // Bulk update as deleted marked documents
+          return dbContext.bulkDocs(docs);
+        })
+        .then(() => {
+          return readLabeledThing;
+        });
+    });
+  }
+
+  /**
+   * Inject a revision into the document or fail silently and ignore the error.
+   *
+   * @param {object} document
+   * @private
+   */
+  _injectRevisionOrFailSilently(document) {
+    try {
+      this._revisionManager.injectRevision(document);
+    } catch (error) {
+      // Simply ignore
+    }
   }
 
   /**
    * @param {Task} task
    * @param {string} labeledThingId
-   * @returns {AbortablePromise.<LabeledThing|Error>}
+   * @return {AbortablePromise.<LabeledThing|Error>}
    */
   getLabeledThing(task, labeledThingId) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThing/${labeledThingId}`);
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return this._bufferedHttp.get(url, undefined, 'labeledThing')
-      .then(response => {
-        if (response.data && response.data.result) {
-          return new LabeledThing(Object.assign({}, response.data.result, {task}));
-        }
-
-        throw new Error('Received malformed response when requesting labeled thing.');
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    const synchronizedDbPromize = this._packagingExecutor.execute('labeledThing', () => {
+      return dbContext.get(labeledThingId);
+    })
+      .then(dbDocument => {
+        this._revisionManager.extractRevision(dbDocument);
+        return this._couchDbModelDeserializer.deserializeLabeledThing(dbDocument, task);
       });
+    return synchronizedDbPromize;
   }
 
   /**
    * Delete a {@link LabeledThing} and all its descending {@link LabeledThingInFrame} objects
    *
    * @param {LabeledThing} labeledThing
-   * @returns {AbortablePromise}
+   * @return {AbortablePromise}
    */
   deleteLabeledThing(labeledThing) {
-    const url = this._apiService.getApiUrl(
-      `/task/${labeledThing.task.id}/labeledThing/${labeledThing.id}`,
-      {
-        rev: this._revisionManager.getRevision(labeledThing.id),
-      }
-    );
+    const task = labeledThing.task;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+    const labeledThingDocument = this._couchDbModelSerializer.serialize(labeledThing);
 
-    return this._bufferedHttp.delete(url, undefined, 'labeledThing')
-      .then(response => {
-        if (response.data && response.data.result && response.data.result.success === true) {
-          return true;
-        }
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    const synchronizedPromise = this._packagingExecutor.execute('labeledThing', () => {
+      this._injectRevisionOrFailSilently(labeledThingDocument);
 
-        throw new Error('Received malformed response when deleting labeled thing.');
+      const ltPromise = dbContext.remove(labeledThingDocument);
+
+      const ltifPromise = this._getAssociatedLabeledThingsInFrames(task, labeledThing).then(documents => {
+        // Mark found documents as deleted
+        const docs = documents.rows.map(document => {
+          const doc = document.doc;
+          doc._deleted = true;
+          return doc;
+        });
+
+        // Bulk update as deleted marked documents
+        return dbContext.bulkDocs(docs);
       });
+
+      // Return promise of the deletion of lt and associated ltifs
+      return this._$q.all(ltPromise, ltifPromise);
+    });
+
+    // @TODO: is the return value (couchdb-document) correct for the implemented interface here?
+    return synchronizedPromise;
   }
 
   /**
-   * @param {string} task
-   * @returns {AbortablePromise.<LabeledThing|Error>}
+   * @param {Task} task
+   * @return {AbortablePromise.<{count: int}|Error>}
    */
   getIncompleteLabeledThingCount(task) {
-    const url = this._apiService.getApiUrl(`/task/${task.id}/labeledThingsIncompleteCount`);
+    /**
+     * @TODO: To fully work with local pouchdb replicate the incomplete flag needs to be updated during storage
+     *        of LabeledThingsInFrame correctly.
+     */
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute(
+      'labeledThing',
+      () => db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingIncomplete'), {
+        include_docs: false,
+        key: [task.id, true],
+      })
+    ).then(response => {
+      return {
+        count: response.rows.length,
+      };
+    });
+  }
 
-    return this._bufferedHttp.get(url, undefined, 'task')
-      .then(response => {
-        if (response.data && response.data.result) {
-          return response.data.result;
-        }
+  /**
+   * @param {Task} task
+   * @param {LabeledThing} labeledThing
+   * @private
+   */
+  _getAssociatedLabeledThingsInFrames(task, labeledThing) {
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-        throw new Error('Received malformed response when requesting incomplete labeled thing count.');
-      });
+    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
+      include_docs: true,
+      startkey: [labeledThing.id, 0],
+      endkey: [labeledThing.id, {}],
+    });
   }
 }
 
 LabeledThingGateway.$inject = [
-  'ApiService',
+  '$q',
+  'pouchDbContextService',
+  'packagingExecutor',
+  'couchDbModelSerializer',
+  'couchDbModelDeserializer',
   'revisionManager',
-  'bufferedHttp',
+  'pouchDbViewService',
 ];
 
 export default LabeledThingGateway;

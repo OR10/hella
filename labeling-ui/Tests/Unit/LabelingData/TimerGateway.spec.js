@@ -1,8 +1,8 @@
-import PouchDbTimerGateway from 'Application/Header/Gateways/PouchDbTimerGateway';
+import TimerGateway from 'Application/Header/Gateways/TimerGateway';
 import angular from 'angular';
 import {inject} from 'angular-mocks';
 
-describe('PouchDbTimerGateway', () => {
+describe('TimerGateway', () => {
   /**
    * @type {PouchDbContextService}
    */
@@ -24,7 +24,7 @@ describe('PouchDbTimerGateway', () => {
   let rootScope;
 
   /**
-   * @type {PouchDbTimerGateway}
+   * @type {TimerGateway}
    */
   let gateway;
 
@@ -82,7 +82,7 @@ describe('PouchDbTimerGateway', () => {
     });
     const pouchDbViewServiceMock = jasmine.createSpyObj('PouchDbViewService', ['getDesignDocumentViewName']);
 
-    gateway = new PouchDbTimerGateway(
+    gateway = new TimerGateway(
       pouchDbContextServiceMock,
       packagingExecutorMock,
       pouchDbViewServiceMock,
@@ -91,7 +91,7 @@ describe('PouchDbTimerGateway', () => {
   });
 
   it('can be instantiated', () => {
-    expect(gateway).toEqual(jasmine.any(PouchDbTimerGateway));
+    expect(gateway).toEqual(jasmine.any(TimerGateway));
   });
 
   describe('createTimerDocument()', () => {

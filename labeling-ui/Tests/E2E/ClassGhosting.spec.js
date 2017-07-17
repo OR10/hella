@@ -1,14 +1,9 @@
 import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
-import featureFlags from '../../Application/features.json';
 import {cloneDeep} from 'lodash';
 
 describe('Class Ghosting', () => {
-  if (!featureFlags.pouchdb) {
-    pending('These tests only work with activated Pouch');
-  }
-
   let assets;
   let sharedMocks;
   let viewer;

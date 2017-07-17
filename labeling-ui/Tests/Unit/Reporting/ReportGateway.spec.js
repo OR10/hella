@@ -10,9 +10,7 @@ describe('ReportGateway', () => {
   let gateway;
 
   beforeEach(() => {
-    const featureFlags = {
-      pouchdb: false,
-    };
+    const featureFlags = {};
 
     const commonModule = new Common();
     commonModule.registerWithAngular(angular, featureFlags);

@@ -1,6 +1,6 @@
 import 'jquery';
 import angular from 'angular';
-import {module, inject} from 'angular-mocks';
+import {inject, module} from 'angular-mocks';
 
 import Common from 'Application/Common/Common';
 import RevisionManager from 'Application/Common/Services/RevisionManager';
@@ -12,9 +12,7 @@ describe('RevisionManager', () => {
   let revisionManager;
 
   beforeEach(() => {
-    const featureFlags = {
-      pouchdb: false,
-    };
+    const featureFlags = {};
 
     const commonModule = new Common();
     commonModule.registerWithAngular(angular, featureFlags);
