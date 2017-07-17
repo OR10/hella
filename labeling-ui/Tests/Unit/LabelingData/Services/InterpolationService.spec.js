@@ -10,7 +10,7 @@ describe('Interpolation with PouchDB', () => {
   let pouchDBSyncManagerMock;
 
   function createInterpolationService() {
-    interpolationService = new InterpolationService(null, null,pouchDBSyncManagerMock, pouchDbContextServiceMock, interpolations);
+    interpolationService = new InterpolationService(null, null, pouchDBSyncManagerMock, pouchDbContextServiceMock, interpolations);
   }
 
   beforeEach(() => {

@@ -8,7 +8,6 @@ import Viewport from '../Models/Viewport';
 import paper from 'paper';
 import Environment from '../../Common/Support/Environment';
 
-import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
 
