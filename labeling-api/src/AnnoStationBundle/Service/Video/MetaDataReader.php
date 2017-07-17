@@ -43,13 +43,22 @@ class MetaDataReader
 
         $videoStreamData = $this->getFirstVideoStream($json);
 
-        $metaData->raw            = $json;
-        $metaData->format         = $this->getArrayKey($json['format'], 'format_name');
-        $metaData->sizeInBytes    = $this->getArrayKey($json['format'], 'size');
-        $metaData->width          = $this->getArrayKey($videoStreamData, 'width');
-        $metaData->height         = $this->getArrayKey($videoStreamData, 'height');
-        $metaData->duration       = $this->getArrayKey($videoStreamData, 'duration');
-        $metaData->numberOfFrames = $this->getArrayKey($videoStreamData, 'nb_frames');
+        $metaData->raw         = $json;
+        $metaData->format      = $this->getArrayKey($json['format'], 'format_name');
+        $metaData->width       = $this->getArrayKey($videoStreamData, 'width');
+        $metaData->height      = $this->getArrayKey($videoStreamData, 'height');
+        $metaData->duration    = $this->getArrayKey($videoStreamData, 'duration');
+
+        // Single images do not always provide a filesize in the `ffprobe` result.
+        // Therefore we simple query the filesystem directly.
+        $metaData->sizeInBytes = filesize($filename);
+
+        // Single frame formats (like images) do not have a frame count set.
+        try {
+            $metaData->numberOfFrames = $this->getArrayKey($videoStreamData, 'nb_frames');
+        } catch(Exception\MetaDataReader $e) {
+            $metaData->numberOfFrames = 1;
+        }
 
         $metaData->fps = (int) $metaData->numberOfFrames / $metaData->duration;
 
