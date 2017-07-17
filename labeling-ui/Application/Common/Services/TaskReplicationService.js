@@ -69,10 +69,13 @@ class TaskReplicationService {
 
   replicateTaskDataToLocalMachine(project, task) {
     this._replicationStateService.setIsReplicating(true);
-    const createTimerFn = this._createUserTaskTimerIfMissing.bind(this, project, task);
 
     return this._checkoutTaskFromRemote(task)
-      .then(createTimerFn)
+      .then(() => {
+        if (!task.readOnly) {
+          return this._createUserTaskTimerIfMissing(project, task);
+        }
+      })
       .then(() => this._replicationStateService.setIsReplicating(false));
   }
 

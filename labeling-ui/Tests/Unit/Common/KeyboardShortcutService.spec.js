@@ -11,9 +11,7 @@ describe('KeyboardShortcutService', () => {
   let registeredHotkeys;
 
   beforeEach(() => {
-    const featureFlags = {
-      pouchdb: false,
-    };
+    const featureFlags = {};
 
     const commonModule = new Common();
     commonModule.registerWithAngular(angular, featureFlags);
