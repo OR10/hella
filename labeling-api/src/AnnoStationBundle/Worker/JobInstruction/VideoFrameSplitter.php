@@ -106,7 +106,7 @@ class VideoFrameSplitter extends JobInstruction
             }
 
             $frameSizesInBytes = $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
-            $imageSizes = $this->videoFrameSplitter->getImageSizes();
+            $imageSizes        = $this->videoFrameSplitter->getImageSizes();
 
             $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1], $frameSizesInBytes);
 
@@ -118,7 +118,7 @@ class VideoFrameSplitter extends JobInstruction
                 $task->setStatusIfAllImagesAreConverted($video);
                 $this->labelingTaskFacade->save($task);
             }
-            foreach(array_unique($projectIds) as $projectId) {
+            foreach (array_unique($projectIds) as $projectId) {
                 $project = $this->projectFacade->find($projectId);
                 $this->updateProject($project, $project->getDiskUsageInBytes() + array_sum($frameSizesInBytes));
             }
