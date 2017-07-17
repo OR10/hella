@@ -28,11 +28,15 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
     this.removeChildren();
 
     const groupRectangles = this._createGroupRectangles();
-    this.addChildren(groupRectangles);
+    this._addPadding(groupRectangles);
 
-    this._addPadding();
+    if (this._isSelected) {
+      groupRectangles.forEach(rectangle => rectangle.select());
+    }
 
     const groupNames = this._createGroupNames();
+
+    this.addChildren(groupRectangles);
     this.addChildren(groupNames);
   }
 
@@ -130,6 +134,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
    * @param {Boolean} drawHandles
    */
   select() {
+    this._isSelected = true;
     this.children.filter(shape => shape instanceof PaperGroupRectangle).forEach(child => {
       child.select();
     });
@@ -139,6 +144,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
    * Deselect the shape
    */
   deselect() {
+    this._isSelected = false;
     this.children.filter(shape => shape instanceof PaperGroupRectangle).forEach(child => {
       child.deselect();
     });
@@ -171,16 +177,16 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   /**
    * Add padding to all group shapes of this group
    *
-   * @param padding
+   * @param {Array.<PaperGroupRectangle>}groupRectangles
+   * @param {number} padding
+   * @private
    */
-  _addPadding(padding = PaperGroupRectangleMulti.PADDING) {
+  _addPadding(groupRectangles, padding = PaperGroupRectangleMulti.PADDING) {
     this._allThingShapes.forEach((shape, index) => {
       const groupPosition = shape.groupIds.indexOf(this.groupId) + 1;
       const currentGroupPadding = padding * groupPosition;
-      const child = this.children[index];
-      if (child instanceof PaperGroupRectangle) {
-        child.addPadding(currentGroupPadding);
-      }
+      const child = groupRectangles[index];
+      child.addPadding(currentGroupPadding);
     });
   }
 

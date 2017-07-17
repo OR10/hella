@@ -673,7 +673,7 @@ class ViewerController {
 
     // TODO: look for a better position for this kind of handling?!
     // Handle the change from thing to meta labeling here.
-    this._$rootScope.$on('label-structure-type:change', (event, labeledFrame) =>{
+    this._$rootScope.$on('label-structure-type:change', (event, labeledFrame) => {
       this._thingLayerContext.withScope(() => {
         this.selectedPaperShape = new PaperFrame(labeledFrame);
       });
@@ -811,7 +811,10 @@ class ViewerController {
       this._debouncedOnThingUpdate.debounce(shape, frameIndex);
     });
 
-    this.thingLayer.on('group:create', shape => this._onGroupCreate(shape));
+    this.thingLayer.on('group:create', shape => {
+      this._onGroupCreate(shape);
+      this._updateAllGroupDimensions();
+    });
 
     this._layerManager.addLayer('annotations', this.thingLayer);
 
@@ -1330,6 +1333,7 @@ class ViewerController {
         );
       })
       .then(() => {
+        this._updateAllGroupDimensions();
         this._$rootScope.$emit('shape:add:after', paperGroupShape);
       });
 
