@@ -1,5 +1,7 @@
 class annostation_base::nodejs(
   $nvmUser,
+  $nvmHomeDir = undef,
+  $nvmDir = undef,
 ) {
   apt::key { 'yarn':
     id     => '72ECF46A56B4AD39C907BBB71646B01B86E50310',
@@ -24,6 +26,8 @@ class annostation_base::nodejs(
     install_node        => '8',
     manage_dependencies => false,
     user                => $nvmUser,
+    home                => $nvmHomeDir,
+    nvm_dir             => $nvmDir,
   }
 
   Package['git'] -> Class['nvm::install']
