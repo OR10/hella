@@ -89,7 +89,6 @@ class VideoFrameSplitter extends JobInstruction
      */
     protected function runJob(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
     {
-        $tmpFile = tempnam($this->cacheDir, 'source_video');
 
         try {
             /** @var Model\Video $video */
@@ -100,9 +99,7 @@ class VideoFrameSplitter extends JobInstruction
                 throw new \RuntimeException("Video '{$job->videoId}' could not be found");
             }
 
-            if ($tmpFile === false) {
-                throw new \RuntimeException('Error creating temporary file for video data');
-            }
+            $tmpFile = $this->createTemporaryFileForVideo($video);
 
             if (file_put_contents($tmpFile, $this->videoCdnService->getVideo($video)) === false) {
                 throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
@@ -177,6 +174,36 @@ class VideoFrameSplitter extends JobInstruction
             );
             $this->labelingTaskFacade->save($task);
         }
+    }
+
+    /**
+     * Create a temporary file and return its filepath for the given video
+     *
+     * The temporary file will have the same file extension as the original video.
+     *
+     * @param Model\Video $video
+     *
+     * @return string
+     */
+    private function createTemporaryFileForVideo(Model\Video $video)
+    {
+        $videoFileExtension = \pathinfo($video->getName(), PATHINFO_EXTENSION);
+
+        $tmpFile = null;
+        do {
+            $tmpFile = $this->cacheDir
+                . '/'
+                . 'source_video_'
+                . \hash('sha256', \openssl_random_pseudo_bytes(256 / 8))
+                . '.'
+                . $videoFileExtension;
+        } while (\file_exists($tmpFile));
+
+        if (\touch($tmpFile) === false) {
+            throw new \RuntimeException('Error creating temporary file for video data');
+        };
+
+        return $tmpFile;
     }
 
     /**
