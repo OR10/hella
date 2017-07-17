@@ -2,18 +2,18 @@
 
 namespace AnnoStationBundle\Worker\JobInstruction;
 
+use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\Video as VideoService;
+use AnnoStationBundle\Worker\Jobs;
+use AppBundle\Model;
+use AppBundle\Model\Video\ImageType;
 use crosscan\Logger;
 use crosscan\WorkerPool;
 use crosscan\WorkerPool\Job;
-use AnnoStationBundle\Service\Video as VideoService;
-use AnnoStationBundle\Worker\Jobs;
-use AnnoStationBundle\Database\Facade;
-use AppBundle\Model;
+use Doctrine\ODM\CouchDB;
 use Hagl\WorkerPoolBundle\JobInstruction;
 use League\Flysystem;
-use Doctrine\ODM\CouchDB;
-use AppBundle\Model\Video\ImageType;
-use AnnoStationBundle\Service;
 
 class VideoFrameSplitter extends JobInstruction
 {
