@@ -81,9 +81,8 @@ class Common extends Module {
    * Register this {@link Module} with the angular service container system
    *
    * @param {angular} angular
-   * @param {object} featureFlags
    */
-  registerWithAngular(angular, featureFlags) { // eslint-disable-line no-unused-vars
+  registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.Common', [
       'foundation.common',
       'foundation.modal',
@@ -111,7 +110,6 @@ class Common extends Module {
     this.module.service('inProgressService', InProgressService);
     this.module.service('pouchDbViewService', PouchDbViewService);
 
-    // Without feature flag, as those services do not override others.
     this.module.service('pouchDbLiveMigration', PouchDbLiveMigration);
     this.module.service('pouchDbContextService', PouchDbContextService);
     this.module.service('pouchDbViewHeater', PouchDbViewHeater);

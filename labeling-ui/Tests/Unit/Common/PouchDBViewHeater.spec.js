@@ -1,6 +1,6 @@
 import 'jquery';
 import angular from 'angular';
-import {module, inject} from 'angular-mocks';
+import {inject, module} from 'angular-mocks';
 
 import Common from 'Application/Common/Common';
 import PouchDbViewHeaterService from 'Application/Common/Services/PouchDbViewHeater';
@@ -63,9 +63,7 @@ describe('PouchDbViewHeater', () => {
       ],
     };
 
-    const featureFlags = {
-      pouchdb: true,
-    };
+    const featureFlags = {};
 
     const commonModule = new Common();
     commonModule.registerWithAngular(angular, featureFlags);
@@ -97,14 +95,14 @@ describe('PouchDbViewHeater', () => {
     expect(pouchDbViewHeater).toBeDefined();
   });
 
-  it('should heat a single view', ()=> {
+  it('should heat a single view', () => {
     const viewName = 'viewName123';
     pouchDbViewHeater.heatView(pouchDbContext, viewName);
 
     expect(pouchDbContext.query).toHaveBeenCalledWith(viewName, expectedSingleDocumentConfig);
   });
 
-  it('should heat a multiple views', ()=> {
+  it('should heat a multiple views', () => {
     const viewNames = ['viewName1', 'viewName2', 'viewName3'];
     pouchDbViewHeater.heatViews(pouchDbContext, viewNames);
 
@@ -113,14 +111,14 @@ describe('PouchDbViewHeater', () => {
     expect(pouchDbContext.query).toHaveBeenCalledWith(viewNames[2], expectedSingleDocumentConfig);
   });
 
-  it('should heat all views of a specific design document', ()=> {
+  it('should heat all views of a specific design document', () => {
     pouchDbViewHeater.heatAllViewsForDesignDocument(pouchDbContext, allDesignDocsResponse.rows[1].doc);
 
     expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc2/view1', expectedSingleDocumentConfig);
     expect(pouchDbContext.query).toHaveBeenCalledWith('ddoc2/view2', expectedSingleDocumentConfig);
   });
 
-  it('should heat all views', ()=> {
+  it('should heat all views', () => {
     pouchDbViewHeater.heatAllViews(pouchDbContext);
 
     expect(pouchDbContext.allDocs).toHaveBeenCalledWith({

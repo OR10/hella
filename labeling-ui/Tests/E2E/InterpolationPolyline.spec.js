@@ -1,15 +1,10 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
-import featureFlags from '../../Application/features.json';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Interpolation Polyline Tests', () => {
-  if (!featureFlags.pouchdb) {
-    pending('These tests only work with activated Pouch');
-  }
-
   let assets;
   let sharedMocks;
   let viewer;

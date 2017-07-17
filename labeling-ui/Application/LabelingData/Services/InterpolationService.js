@@ -5,14 +5,11 @@ class InterpolationService {
   /**
    * @param {$q} $q
    * @param {LabeledThingGateway} labeledThingGateway
-   * @param {CacheService} cache
-   * @param {CacheHeaterService} cacheHeater
-   * @param {Object} featureFlags
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
    * @param {Interpolation} interpolationType
    */
-  constructor($q, labeledThingGateway, cache, cacheHeater, featureFlags, pouchDbSyncManager, pouchDbContextService, interpolationType) {
+  constructor($q, labeledThingGateway, pouchDbSyncManager, pouchDbContextService, interpolationType) {
     /**
      * @type {$q}
      * @private
@@ -25,31 +22,6 @@ class InterpolationService {
      */
     this._labeledThingGateway = labeledThingGateway;
 
-    /**
-     * @type {DataContainer}
-     * @private
-     */
-    this._ltifCache = cache.container('labeledThingsInFrame-by-frame');
-
-    /**
-     * @type {DataContainer}
-     * @private
-     */
-    this._ltifGhostCache = cache.container('ghosted-labeledThingsInFrame-by-id');
-
-    /**
-     * @type {DataContainer}
-     * @private
-     */
-    this._ltCache = cache.container('labeledThing-by-id');
-
-    /**
-     * @type {CacheHeaterService}
-     * @private
-     */
-    this._cacheHeater = cacheHeater;
-
-    this.featureFlags = featureFlags;
     /**
      * @type {PouchDbSyncManager}
      * @private
@@ -94,72 +66,26 @@ class InterpolationService {
       interpolationFrameRange = labeledThing.frameRange;
     }
 
-    this._invalidateCaches(labeledThing, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex);
-
-    if (this.featureFlags.pouchdb === true) {
-      const pouchDBContext = this._pouchDbContextService.provideContextForTaskId(task.id);
-      return this._pouchDbSyncManager.stopReplicationsForContext(pouchDBContext)
-        .then(() => {
-          return this._pouchDbSyncManager.pushUpdatesForContext(pouchDBContext);
-        })
-        .then(() => {
-          return this._interpolation.execute(task, labeledThing, interpolationFrameRange);
-        })
-        .then(() => {
-          return this._pouchDbSyncManager.pullUpdatesForContext(pouchDBContext);
-        })
-        .then(() => {
-          this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex + 1);
-          return this._pouchDbSyncManager.startDuplexLiveReplication(pouchDBContext);
-        });
-    }
-    return this._interpolation
-      .execute(task, labeledThing, interpolationFrameRange)
-      .then(result => {
-        this._cacheHeater.heatFrames(task, interpolationFrameRange.startFrameIndex, interpolationFrameRange.endFrameIndex + 1);
-        return result;
+    const pouchDBContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+    return this._pouchDbSyncManager.stopReplicationsForContext(pouchDBContext)
+      .then(() => {
+        return this._pouchDbSyncManager.pushUpdatesForContext(pouchDBContext);
+      })
+      .then(() => {
+        return this._interpolation.execute(task, labeledThing, interpolationFrameRange);
+      })
+      .then(() => {
+        return this._pouchDbSyncManager.pullUpdatesForContext(pouchDBContext);
+      })
+      .then(() => {
+        return this._pouchDbSyncManager.startDuplexLiveReplication(pouchDBContext);
       });
-  }
-
-  /**
-   * Invalidate every cached ltif associated with a certain lt within the given frame range
-   *
-   * @param {LabeledThing} labeledThing
-   * @param {number} start
-   * @param {number} end
-   * @private
-   */
-  _invalidateCaches(labeledThing, start, end) {
-    const {task} = labeledThing;
-    for (let frameIndex = start; frameIndex <= end; frameIndex++) {
-      // Invalidate ghosts
-      this._ltifGhostCache.invalidate(`${task.id}.${frameIndex}.${labeledThing.id}`);
-
-      // Invalidate non-ghosts
-      const ltifFrameMap = this._ltifCache.get(`${task.id}.${frameIndex}`);
-
-      // Invalidate all complete pages within the interpolation range
-      this._ltifCache.invalidate(`${task.id}.${frameIndex}.complete`);
-
-      if (ltifFrameMap !== undefined) {
-        ltifFrameMap.forEach(ltifData => { // eslint-disable-line no-loop-func
-          if (ltifData.labeledThingId !== labeledThing.id) {
-            return;
-          }
-
-          this._ltifCache.invalidate(`${task.id}.${frameIndex}.${ltifData.id}`);
-        });
-      }
-    }
   }
 }
 
 InterpolationService.$inject = [
   '$q',
   'labeledThingGateway',
-  'cacheService',
-  'cacheHeaterService',
-  'featureFlags',
   'pouchDbSyncManager',
   'pouchDbContextService',
   'interpolationType',
