@@ -2,12 +2,11 @@
 
 namespace AnnoStationBundle\Service\Video;
 
-use Symfony\Component\Process\Process;
-use AppBundle\Model\Video\ImageType;
 use AnnoStationBundle\Service;
-use AnnoStationBundle\Service as AnnoStationService;
 use AppBundle\Model;
+use AppBundle\Model\Video\ImageType;
 use League\Flysystem;
+use Symfony\Component\Process\Process;
 
 class VideoFrameSplitter
 {
@@ -44,9 +43,9 @@ class VideoFrameSplitter
     /**
      * FrameCdnSplitter constructor.
      *
-     * @param Service\FrameCdn $frameCdn
-     * @param string                      $ffmpegExecutable
-     * @param Flysystem\Filesystem        $fileSystem
+     * @param Service\FrameCdn     $frameCdn
+     * @param string               $ffmpegExecutable
+     * @param Flysystem\Filesystem $fileSystem
      */
     public function __construct(
         Service\FrameCdn $frameCdn,
@@ -67,7 +66,7 @@ class VideoFrameSplitter
      */
     public function splitVideoInFrames(Model\Video $video, $sourceFileFilename, ImageType\Base $type)
     {
-        $tempDir         = $this->getTempDirectory($type);
+        $tempDir = $this->getTempDirectory($type);
 
         try {
             $prefixedTempDir = $this->fileSystem->getAdapter()->applyPathPrefix($tempDir);
@@ -98,13 +97,13 @@ class VideoFrameSplitter
                 $this->imageSizes[(int) $file['basename']] = getimagesizefromstring(
                     $this->fileSystem->read($file['path'])
                 );
-                $cdnPath = $this->frameCdn->save(
+                $cdnPath                                   = $this->frameCdn->save(
                     $video,
                     $type,
                     (int) $file['basename'],
                     $this->fileSystem->read($file['path'])
                 );
-                $frameSizesInBytes[$cdnPath] = $this->fileSystem->getSize($file['path']);
+                $frameSizesInBytes[$cdnPath]               = $this->fileSystem->getSize($file['path']);
             }
             $this->frameCdn->commit();
 
