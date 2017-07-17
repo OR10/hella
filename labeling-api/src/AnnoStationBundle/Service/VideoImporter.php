@@ -159,6 +159,35 @@ class VideoImporter
     /**
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
+     * @param string                              $imageName
+     * @param string                              $imageFilePath
+     *
+     * @return Model\Video
+     * @throws CouchDB\UpdateConflictException
+     */
+    public function importImage(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        string $imageName,
+        string $imageFilePath
+    ) {
+        // Compression state is determined by the given image type for now
+        $imageFileExtension = pathinfo($imageFilePath, PATHINFO_EXTENSION);
+        $lossless           = \strcasecmp($imageFileExtension, 'png') === 0;
+
+        // Images may be mostly treated like videos, als ffmpeg can handle image input as well :)
+        return $this->importVideo(
+            $organisation,
+            $project,
+            $imageName,
+            $imageFilePath,
+            $lossless
+        );
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
      * @param string                              $calibrationFilePath
      *
      * @return Model\CalibrationData
