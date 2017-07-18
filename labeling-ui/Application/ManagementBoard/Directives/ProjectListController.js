@@ -624,6 +624,18 @@ class ProjectListController {
       return augmentedObject;
     });
   }
+  
+  /**
+   * If you want to add videos to a project only the user which creates the project can do this. So with this method you
+   * you can check if the current logged in user is also the project creator
+   *
+   * @param {Object} project
+   * @returns {boolean}
+   */
+  projectOwnerIsCurrentUser(project) {
+    const currentUserId = this.user.id;
+    return currentUserId === project.userId;
+  }
 }
 
 ProjectListController.$inject = [

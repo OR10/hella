@@ -53,7 +53,7 @@
 
             <td class="action-cell" ng-click="$event.stopPropagation()">
                 <button tooltip="Upload Videos"
-                        ng-if="vm.userPermissions.canUploadNewVideo && project.status == 'todo'"
+                        ng-if="vm.userPermissions.canUploadNewVideo && project.status == 'todo' && vm.projectOwnerIsCurrentUser(project)"
                         ng-click="vm.goToUploadPage(project.id)"
                 >
                     <i class="fa fa-cloud-upload"></i>
