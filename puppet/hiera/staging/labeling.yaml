@@ -36,10 +36,11 @@ letsencrypt::email: chh@crosscan.com
 annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
 annostation_letsencrypt::domains:
     - anno.crosscan.com
+    - anno-cdn.crosscan.com
 labeling_api::app::sslCertFile: '/etc/letsencrypt/live/anno.crosscan.com/fullchain.pem'
 labeling_api::app::sslKeyFile: '/etc/letsencrypt/live/anno.crosscan.com/privkey.pem'
-labeling_api::cdn::sslCertFile: '/etc/letsencrypt/live/anno.crosscan.com/fullchain.pem'
-labeling_api::cdn::sslKeyFile: '/etc/letsencrypt/live/anno.crosscan.com/privkey.pem'
+labeling_api::cdn::sslCertFile: '/etc/letsencrypt/live/anno-cdn.crosscan.com/fullchain.pem'
+labeling_api::cdn::sslKeyFile: '/etc/letsencrypt/live/anno-cdn.crosscan.com/privkey.pem'
 
 tideways::php7: true
 
@@ -65,10 +66,12 @@ labeling_api::params::couchdb_port_external: '443'
 labeling_api::params::couchdb_path_external: 'couchdb'
 labeling_api::params::frame_cdn_dir: '/var/www/frame_cdn'
 labeling_api::params::video_cdn_dir: '/var/www/video_cdn'
-labeling_api::params::frame_cdn_port: 81
-labeling_api::params::frame_cdn_base_url: 'https://anno.crosscan.com:81'
+labeling_api::params::frame_cdn_port: 443
+labeling_api::params::frame_cdn_base_url: 'https://anno-cdn.crosscan.com'
 labeling_api::params::frame_cdn_allowed_origin: 'https://anno.crosscan.com'
 labeling_api::params::frame_cdn_expires: '1d'
+labeling_api::params::frame_cdn_hostnames:
+  - anno-cdn.crosscan.com
 labeling_api::params::prepare_test_environment: true
 labeling_api::params::secret: 'saddassadasd'
 labeling_api::params::user_password: 'xoADo2iMO1okZJIvaQKX'
@@ -78,8 +81,11 @@ labeling_api::params::fos_user_bundle_to_couchdb_sync_enabled: true
 labeling_api::params::couchdb_user: 'admin'
 labeling_api::params::couchdb_password: 'mbifbeB6weHfnPy'
 
+
 labeling_api::app::httpv2: true
 labeling_api::app::www_root: '/var/www/labeling-api/current/web/AnnoStation'
+labeling_api::app::hostnames:
+  - anno.crosscan.com
 
 labeling_api::mysql::database_name: 'labeling_api'
 labeling_api::mysql::database_user: 'labeling_api'
