@@ -51,6 +51,13 @@ class PaperFrame extends PaperShape {
   }
 
   /**
+   * @returns {boolean}
+   */
+  playInFrameRange() {
+    return false;
+  }
+
+  /**
    * @return {Object}
    */
   toJSON() {
