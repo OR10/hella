@@ -20,8 +20,32 @@
 ## Task
 
 + id: `05c1a74d8eda4a16a355519c0f002ee6` (string) - The id of the task.
-+ userId: `3` (number) - The id of the assigned user.
-+ frameRange: (FrameRange)
++ descriptionTitle: `Identify the person` (string) - Title of the Task
++ descriptionText: `How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?` (string) - Task description
++ requiredImageTypes: `sourceJpg` (array) - List of the required images types
++ status:
+    + preprocessing: `done` (string) - status of the preprocessing type
+    + labeling: `in_progress` (string) - status of the labeling type
++ taskType: `object-labeling` (string) - Task type
++ drawingToolOptions:
+    + pedestrian:
+        + minimalHeight: `22`(number) - The minimal pedestrian height
+    + cuboid:
+        + minimalHeight: `15`(number) - The minimal cuboid height
+    + polygon:
+        + minHandles: `3`(number) - Min number of handles
+        + maxHandles: `15`(number) - Max number of handles
++ labelInstruction: `miscellaneous` (string) - label instruction type
++ frameNumberMapping: `3` (array) - The frameNumberMapping
++ metaData:
+    + frameRange: (FrameRange)
+    + frameSkip: `1` (number) - Number of frames to skip
+    + startFrameNumber: `22` (number) - Start framenumber
++ createdAt: `2017-05-16T12:15:01+0200` (string) - Task creation date
++ video: (Video)
++ project: (Project)
++ users: (array)
+    - (User)
 
 ## FrameLocation
 
@@ -80,6 +104,7 @@
 
 ## User
  + id: `1` (number) - The id of the current user.
+ + _rev: `1-36047d429d50548893be41c6880632fd` (number) - Document revision.
  + username: `user` (string) - The username of the current user.
  + email: `user@example.com` (string) - The email address of the current user.
  + enabled: `true` (boolean) - User enabled or not
@@ -117,8 +142,8 @@
 # LabelingGroup
 + id: `36047d429d50548893be41c6880632fd` (string) - Labeling Group ID
 + rev: `1-36047d429d50548893be41c6880632fd` (string) - The Revision of the Labeling Group
-+ coordinators: `[]` (array) - Array of the coordinator IDs
-+ labelers: `[]` (array) - Array of the labelers IDs
++ coordinators: `672b8a8a6b3103f25318a5c4be00a325` (array) - Array of the coordinator IDs
++ labelers: `43367aa94690546d066c6e25b26de099` (array) - Array of the labelers IDs
 + users: (array[User])
 
 # Report
@@ -183,3 +208,30 @@
 + rev: `1-36047d429d50548893be41c6880632gg` (string) - The Revision of the Campaign
 + name: `Some Campaign` (string) - Campaign Name
 + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string) - ID of the Organisation
+
+# TaskCount
++ preprocessing:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ labeling:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ review:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ revision:
+    + todo: `0`
+    + in_progress: `0`
+    + done: `0`
+    + waiting_for_precondition: `0`
+    + failed: `0`
++ all_phases_done: `0`

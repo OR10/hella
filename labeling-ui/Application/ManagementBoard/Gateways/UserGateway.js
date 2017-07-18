@@ -121,8 +121,16 @@ class UserGateway {
     const url = this._apiService.getApiUrl(`/user`);
     return this._bufferedHttp.post(url, user, undefined, 'user')
       .then(response => {
-        if (!response.data || !response.data.result || !response.data.result.user) {
-          throw new Error(`Failed creating user ${user.id}`);
+        if ((!response.data || !response.data.result || !response.data.result.user) && !response.data.result.error) {
+          throw new Error(`Failed updating user:\n${user.id}`);
+        }
+
+        if (response.data.result.error) {
+          let errors = '';
+          response.data.result.error.forEach(function(error) {
+            errors += error.field + ': ' + error.message + '\n';
+          });
+          throw new Error(errors);
         }
 
         return new User(response.data.result.user);
@@ -140,8 +148,16 @@ class UserGateway {
     const url = this._apiService.getApiUrl(`/user/${user.id}`);
     return this._bufferedHttp.put(url, user, undefined, 'user')
       .then(response => {
-        if (!response.data || !response.data.result || !response.data.result.user) {
-          throw new Error(`Failed updating user ${user.id}`);
+        if ((!response.data || !response.data.result || !response.data.result.user) && !response.data.result.error) {
+          throw new Error(`Failed updating user:\n${user.id}`);
+        }
+
+        if (response.data.result.error) {
+          let errors = '';
+          response.data.result.error.forEach(function(error) {
+            errors += error.field + ': ' + error.message + '\n';
+          });
+          throw new Error(errors);
         }
 
         return new User(response.data.result.user);
@@ -181,13 +197,19 @@ class UserGateway {
     };
     return this._bufferedHttp.put(url, data, undefined, 'user')
       .then(response => {
-        if (!response.data || !response.data.result || !response.data.result.success) {
+        if ((!response.data || !response.data.result || !response.data.result.success) && !response.data.result.error) {
           throw new Error(`Failed setting password`);
         }
 
+        if (response.data.result.error) {
+          let errors = '';
+          response.data.result.error.forEach(function(error) {
+            errors += error.field + ': ' + error.message + '\n';
+          });
+          throw new Error(errors);
+        }
+
         return response.data.result.success;
-      }).catch(() => {
-        return false;
       });
   }
 

@@ -150,7 +150,7 @@ describe('Group Creation', () => {
       })
       // .then(() => dumpAllRequestsMade(mock))
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoRectangles')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoPoints')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
@@ -159,6 +159,102 @@ describe('Group Creation', () => {
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint);
+        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+        done();
+      });
+  });
+
+  it('creates two groups with four different shapes', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0,
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0to4,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
+    ]));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 660, y: 500}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 263, y: 50}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 670, y: 290}) // drag
+          .mouseUp()
+          .perform();
+      })
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateTwoGroupsWithFourShapes')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateTwoGroupsWithFourShapes);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint);
+        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+        done();
+      });
+  });
+
+  it('creates three groups with four different shapes', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0,
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0to4,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
+    ]));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 660, y: 500}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 263, y: 50}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 670, y: 290}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 260, y: 500}) // drag
+          .mouseUp()
+          .perform();
+      })
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateThreeGroupsWithFourShapes')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateThreeGroupsWithFourShapes);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint);
         expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
         done();
       });

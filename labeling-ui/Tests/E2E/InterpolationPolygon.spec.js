@@ -1,15 +1,10 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
-import featureFlags from '../../Application/features.json';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Interpolation Polygon Tests', () => {
-  if (!featureFlags.pouchdb) {
-    pending('These tests only work with activated Pouch');
-  }
-
   let assets;
   let sharedMocks;
   let viewer;
@@ -53,14 +48,12 @@ describe('Interpolation Polygon Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
           .click()
           .perform();
       })
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => interpolateButton.click())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -121,18 +114,14 @@ describe('Interpolation Polygon Tests', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
           .click()
           .perform();
       })
-      .then(() => {
-        goEndButton.click();
-      })
+      .then(() => goEndButton.click())
       .then(() => browser.sleep(500))
-      .then(() => {
-        interpolateButton.click();
-      })
+      .then(() => interpolateButton.click())
       .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame4')

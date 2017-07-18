@@ -77,7 +77,7 @@ describe('Point drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
           .perform();
@@ -101,11 +101,13 @@ describe('Point drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
           .perform();
-        browser.actions()
+      })
+      .then(() => {
+        return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1})
           .click()
           .perform();
@@ -128,11 +130,13 @@ describe('Point drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
           .perform();
-        browser.actions()
+      })
+      .then(() => {
+        return browser.actions()
           .mouseMove(viewer, {x: 600, y: 100}) // initial position
           .click()
           .perform();
@@ -156,7 +160,7 @@ describe('Point drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 250, y: 200}) // initial position
@@ -189,7 +193,7 @@ describe('Point drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
           .perform();
@@ -197,7 +201,7 @@ describe('Point drawing', () => {
       .then(() => browser.sleep(500))
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
-        nextFrameButton.click();
+        return nextFrameButton.click();
       })
       .then(() => browser.sleep(500))
       .then(
@@ -218,14 +222,15 @@ describe('Point drawing', () => {
       assets.mocks.PointDrawing.NewPoint.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 100, y: 100}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 400, y: 400}) // initial position
-        .mouseUp()
-        .mouseMove(viewer, {x: 1, y: 1}) // initial position
-        .perform(),
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewPoint')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -252,22 +257,23 @@ describe('Point drawing', () => {
       assets.mocks.PointDrawing.NewPoint.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 100, y: 100}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 400, y: 400}) // initial position
-        .mouseUp()
-        .mouseMove(viewer, {x: 900, y: 400}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 900, y: 450}) // initial position
-        .mouseUp()
-        .mouseMove(viewer, {x: 900, y: 200}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 900, y: 50}) // initial position
-        .mouseUp()
-        .mouseMove(viewer, {x: 1, y: 1}) // initial position
-        .perform(),
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 900, y: 400}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 900, y: 450}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 900, y: 200}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 900, y: 50}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewMultiplePoints')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),

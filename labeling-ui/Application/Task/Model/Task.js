@@ -164,6 +164,14 @@ class Task {
   }
 
   /**
+   * Clone the current Task model
+   * @return {Task}
+   */
+  clone() {
+    return new Task(this.toJSON(), this._users);
+  }
+
+  /**
    * @param {string} phase
    * @returns {Object}
    */

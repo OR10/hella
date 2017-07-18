@@ -149,13 +149,20 @@ class PaperGroupRectangle extends PaperGroupShape {
    * @param {number} width
    * @param {number} height
    */
-  setSize(point, width, height) {
-    const padding = 5;
-
+  setSize(point, width, height, padding = 5) {
     this._topLeft = new paper.Point(point.x - padding, point.y - padding);
     this._bottomRight = new paper.Point(this._topLeft.x + width + (2 * padding), this._topLeft.y + height + (2 * padding));
 
     this._drawShape();
+  }
+
+  /**
+   * Add Padding to the group shape
+   * @param {number} padding
+   */
+  addPadding(padding = 5) {
+    const {point, width, height} = this.bounds;
+    this.setSize(point, width, height, padding);
   }
 
   resize() {

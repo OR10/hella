@@ -13,9 +13,7 @@ describe('TaskGateway', () => {
   let gateway;
 
   beforeEach(() => {
-    const featureFlags = {
-      pouchdb: true,
-    };
+    const featureFlags = {};
 
     const commonModule = new Common();
     commonModule.registerWithAngular(angular, featureFlags);

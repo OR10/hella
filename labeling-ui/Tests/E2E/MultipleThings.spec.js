@@ -68,10 +68,10 @@ describe('Multiple Things', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings1);
-        browser.sleep(200);
+        return browser.sleep(200);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 150, y: 350})
           .click()
           .perform();
@@ -82,10 +82,10 @@ describe('Multiple Things', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings2);
-        browser.sleep(200);
+        return browser.sleep(200);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 350, y: 350})
           .click()
           .perform();
@@ -96,10 +96,10 @@ describe('Multiple Things', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings3);
-        browser.sleep(200);
+        return browser.sleep(200);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 700, y: 350})
           .click()
           .perform();
@@ -110,10 +110,10 @@ describe('Multiple Things', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings4);
-        browser.sleep(200);
+        return browser.sleep(200);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 950, y: 350})
           .click()
           .perform();
@@ -129,10 +129,10 @@ describe('Multiple Things', () => {
   });
 
   it('it should draw multiple different things', done => {
-    const toolButton0 = element(by.css('button.tool-button.tool-0'));
-    const toolButton1 = element(by.css('button.tool-button.tool-1'));
-    const toolButton2 = element(by.css('button.tool-button.tool-2'));
-    const toolButton3 = element(by.css('button.tool-button.tool-3'));
+    const toolButton0 = element(by.css('button.tool-button.tool-thing.tool-0'));
+    const toolButton1 = element(by.css('button.tool-button.tool-thing.tool-1'));
+    const toolButton2 = element(by.css('button.tool-button.tool-thing.tool-2'));
+    const toolButton3 = element(by.css('button.tool-button.tool-thing.tool-3'));
     mock(sharedMocks.concat([
       assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0to4,
@@ -150,76 +150,84 @@ describe('Multiple Things', () => {
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'SelectMultipleDifferentThings1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
-      .then(() => browser.actions()
-        .click(toolButton0) // Rect drawing
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .click(toolButton0) // Rect drawing
+          .perform();
+      })
       .then(() => browser.sleep(200))
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 10, y: 10})
-        .mouseDown()
-        .mouseMove(viewer, {x: 20, y: 20})
-        .mouseUp()
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 10, y: 10})
+          .mouseDown()
+          .mouseMove(viewer, {x: 20, y: 20})
+          .mouseUp()
+          .perform();
+      })
       .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect1);
       })
-      .then(() => browser.actions()
-        .click(toolButton1) // Pedestrian drawing
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .click(toolButton1) // Pedestrian drawing
+          .perform();
+      })
       .then(() => browser.sleep(200))
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 100, y: 10})
-        .mouseDown()
-        .mouseMove(viewer, {x: 100, y: 40})
-        .mouseUp()
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 10})
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 40})
+          .mouseUp()
+          .perform();
+      })
       .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFramePedestrian);
       })
-      .then(() => browser.actions()
-        .click(toolButton2) // Cuboid drawing
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .click(toolButton2) // Cuboid drawing
+          .perform();
+      })
       .then(() => browser.sleep(200))
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 100, y: 500})
-        .mouseDown()
-        .mouseMove(viewer, {x: 100, y: 550})
-        .mouseUp()
-        .mouseMove(viewer, {x: 125, y: 525})
-        .click()
-        .mouseMove(viewer, {x: 75, y: 525})
-        .click()
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 500})
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 550})
+          .mouseUp()
+          .mouseMove(viewer, {x: 125, y: 525})
+          .click()
+          .mouseMove(viewer, {x: 75, y: 525})
+          .click()
+          .perform();
+      })
       .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid);
       })
-      .then(() => browser.actions()
-        .click(toolButton3) // Rect drawing
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .click(toolButton3) // Rect drawing
+          .perform();
+      })
       .then(() => browser.sleep(200))
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 800, y: 500})
-        .mouseDown()
-        .mouseMove(viewer, {x: 850, y: 550})
-        .mouseUp()
-        .perform()
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 800, y: 500})
+          .mouseDown()
+          .mouseMove(viewer, {x: 850, y: 550})
+          .mouseUp()
+          .perform();
+      })
       .then(() => browser.sleep(800))
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))

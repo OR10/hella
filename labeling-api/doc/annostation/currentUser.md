@@ -4,7 +4,7 @@
 
 ### Get the current user profile [GET]
 
-This routes returns the current user profile data
+Get the current logged in users profile
 
 + Response 200 (application/json)
     + Attributes
@@ -14,20 +14,23 @@ This routes returns the current user profile data
 
 ### Current user Profile Picture [GET]
 
-Current user Profile Picture
+Get the current logged in users profile picture
 
 + Response 200 (image/\*)
-
     The returned data may be any image type.
-
     + Attributes
 
 ## Change own password [/api/currentUser/password]
 
 ### Change own password [PUT]
 
-Change own Password
+Change the password of the current logged in user
 
++ Request (application/json)
+    + Attributes
+        + oldPassword: `myOldFoobar` (string)
+        + newPassword: `myNewFoobar` (string)
+    
 + Response 200 (application/json)
     + Attributes
         + result
@@ -37,7 +40,7 @@ Change own Password
 
 ### Get user permissions [GET]
 
-Get user permissions
+Get the current logged in users permission list.
 
 + Response 200 (application/json)
     + Attributes
@@ -48,3 +51,13 @@ Get user permissions
             + canViewReopenButton: `true` (boolean)
             + unassignPermission: `true` (boolean)
             + canViewProjectButton: `true` (boolean)
+
+## Get users organisations [/api/currentUser/organisations]
+
+### Get users organisations [GET]
+
+Get all assigned organisations for the current logged in user
+
++ Response 200 (application/json)
+    + Attributes
+        + result (array[Organisation])

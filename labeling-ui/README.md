@@ -8,7 +8,7 @@ Everything concerning the Client-Side rendering of the UI, as well as it's serve
 
 The following software is required to build/run the project:
 
-- [nodejs](https://nodejs.org) version 4.x
+- [nodejs](https://nodejs.org) version 8.x (current: 8.1.4) (`nvm install 8.1.4`)
 - [gulp](http://gulpjs.com/) (`npm install -g gulp`)
 - [yarn] (https://yarnpkg.com/lang/en/)
 
@@ -27,7 +27,7 @@ The following software is required to build/run the project:
 To initially setup the development environment, simply call `yarn`:
 
 ```shell
-$ yarn
+yarn
 ```
 
 If you got a problem with compiling the `node-canvas` dependency at this point, make sure you
@@ -35,7 +35,7 @@ have got the XCode Commandline Tools installed. You can do so easily by issuing 
 command:
 
 ```
-$ xcode-select --install
+xcode-select --install
 ```
 
 
@@ -56,7 +56,16 @@ PORT="12345" gulp serve
 ```
 
 ### E2E-Tests
-Running the E2E tests requires Chromium. Use version `53.0.2785.0`.
+Running the E2E tests requires Chromium. Use version `61.0.3154.0`.
+
+Download here:
+
+|OS |32 Bit|64 Bit|
+|---|------|------|
+|Win|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Win/485205/chrome-win32.zip)|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/485198/chrome-win32.zip)|
+|Mac|-|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Mac/485205/chrome-mac.zip)|
+ 
+
 
 ### Unit Tests: MacOS
 In order to run the unit tests under MacOS you need to increase the amount of max. open files:

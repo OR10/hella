@@ -1,7 +1,7 @@
 /**
  * Controller of the {@link TaskListDirective}
  */
-class TaskListController {
+class FlaggedTaskListController {
   /**
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
@@ -136,11 +136,11 @@ class TaskListController {
   }
 }
 
-TaskListController.$inject = [
+FlaggedTaskListController.$inject = [
   '$scope',
   '$state',
   'taskGateway',
   'modalService',
 ];
 
-export default TaskListController;
+export default FlaggedTaskListController;

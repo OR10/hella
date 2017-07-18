@@ -547,7 +547,7 @@ class RequirementsLabelStructure extends LabelStructure {
     clonedClassJson.metadata.value = null;
 
     for (const valueJson of clonedClassJson.children) {
-      if (classList.includes(valueJson.name)) {
+      if (classList !== undefined && classList.includes(valueJson.name)) {
         clonedClassJson.metadata.value = valueJson.name;
         return clonedClassJson;
       }

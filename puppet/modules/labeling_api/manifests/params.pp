@@ -26,6 +26,10 @@ class labeling_api::params(
   $couchdb_user_read_only = 'root',
   $couchdb_password_read_only = 'null',
   $couchdb_external_url = 'http://127.0.0.1:5984',
+  $couchdb_standby_host = undef,
+  $couchdb_standby_port = undef,
+  $couchdb_standby_user = undef,
+  $couchdb_standby_password = undef,
 
   $fos_user_bundle_to_couchdb_sync_enabled = false,
 
@@ -90,6 +94,7 @@ class labeling_api::params(
   $frame_cdn_port           = 80,
   $frame_cdn_allowed_origin = undef,
   $frame_cdn_expires        = '30d',
+  $frame_cdn_hostnames      = undef,
 
   $user_password = undef,
 
