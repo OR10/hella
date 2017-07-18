@@ -340,13 +340,25 @@ class Import
                 )
             );
         }
-        $video           = $this->videoImporter->importVideo(
-            $organisation,
-            $project,
-            $filename,
-            $videoSourcePath,
-            false
-        );
+
+        // Decide between importing an image or a video
+        if ($this->isVideoASingleFrameImage($filename)) {
+            $video = $this->videoImporter->importImage(
+                $organisation,
+                $project,
+                $filename,
+                $videoSourcePath
+            );
+        } else {
+            $video = $this->videoImporter->importVideo(
+                $organisation,
+                $project,
+                $filename,
+                $videoSourcePath,
+                false
+            );
+        }
+
         $video->setOriginalId($videoDomElement->getAttribute('id'));
 
         if (is_file($calibrationFilePath)) {
@@ -357,5 +369,20 @@ class Import
         }
 
         return $video;
+    }
+
+    /**
+     * Check if a filename represents a video or a single frame image
+     *
+     * @param string $filename
+     *
+     * @return bool
+     */
+    private function isVideoASingleFrameImage(string $filename): bool
+    {
+        $fileExtension   = pathinfo($filename, PATHINFO_EXTENSION);
+        $imageExtensions = ["png", "jpg", "jpeg"];
+
+        return in_array($fileExtension, $imageExtensions);
     }
 }
