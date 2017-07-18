@@ -1309,8 +1309,12 @@ class ViewerController {
     this.bookmarkedFrameIndex = this.framePosition.position;
   }
 
+  _isPaperShapeSelectedAndHasValidStartFrameIndex() {
+    return this.selectedPaperShape && this.selectedPaperShape.playInFrameRange() && this.playbackSpeedFactor === 1;
+  }
+
   _calculatePlaybackStartPosition() {
-    if (this.selectedPaperShape && this.playbackSpeedFactor === 1) {
+    if (this._isPaperShapeSelectedAndHasValidStartFrameIndex()) {
       return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex;
     }
 
@@ -1318,7 +1322,7 @@ class ViewerController {
   }
 
   _calculatePlaybackEndPosition() {
-    if (this.selectedPaperShape && this.playbackSpeedFactor === 1) {
+    if (this._isPaperShapeSelectedAndHasValidStartFrameIndex()) {
       const limitingProperty = this.playbackDirection === 'forwards' ? 'endFrameIndex' : 'startFrameIndex';
       return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange[limitingProperty];
     }
