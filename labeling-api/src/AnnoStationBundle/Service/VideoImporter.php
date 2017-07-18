@@ -170,7 +170,7 @@ class VideoImporter
         Model\Project $project,
         string $imageName,
         string $imageFilePath
-    ) {
+    ): Model\Video {
         // Compression state is determined by the given image type for now
         $imageFileExtension = pathinfo($imageFilePath, PATHINFO_EXTENSION);
         $lossless           = \strcasecmp($imageFileExtension, 'png') === 0;

@@ -140,7 +140,7 @@ class VideoFrameSplitter
      *
      * @return string
      */
-    private function getTempDirectory(ImageType\Base $type)
+    private function getTempDirectory(ImageType\Base $type): string
     {
 
         $tempDir = sprintf('%s_%s_%s', 'video', $type->getName(), uniqid());

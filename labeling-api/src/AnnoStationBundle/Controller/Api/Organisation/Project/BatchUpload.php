@@ -340,7 +340,7 @@ class BatchUpload extends Controller\Base
      *
      * @return bool
      */
-    private function isImageFile(string $filename)
+    private function isImageFile(string $filename): bool
     {
         return in_array(pathinfo($filename, PATHINFO_EXTENSION), ['jpg', 'png']);
     }
