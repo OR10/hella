@@ -254,7 +254,9 @@ class LegacyProjectToCsv implements Service\ProjectExporter
 
             $export->addAttachment($filename, $zipContent, 'application/zip');
             $export->setStatus(Model\Export::EXPORT_STATUS_DONE);
-            $export->setWarningMessage(implode("\n", $warnings));
+            if (!empty($warnings)) {
+                $export->setWarningMessage(implode("\n", $warnings));
+            }
             $this->exporterFacade->save($export);
 
             return $export;
