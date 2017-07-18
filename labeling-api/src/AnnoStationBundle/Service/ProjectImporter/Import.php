@@ -1,13 +1,13 @@
 <?php
 namespace AnnoStationBundle\Service\ProjectImporter;
 
-use AppBundle\Model;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
-use AnnoStationBundle\Service\ProjectImporter\Facade;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\ProjectImporter\Facade;
 use AnnoStationBundle\Worker\Jobs;
-use crosscan\WorkerPool\AMQP;
+use AppBundle\Model;
 use crosscan\WorkerPool;
+use crosscan\WorkerPool\AMQP;
 
 class Import
 {
