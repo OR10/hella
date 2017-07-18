@@ -14,8 +14,9 @@ class ProjectListController {
    * @param {ModalService} modalService
    * @param {InputDialog} InputDialog
    * @param {SelectionDialog} SelectionDialog
+   * @param {UserGateway} userGateway
    */
-  constructor($scope, $state, projectGateway, labelingGroupGateway, modalService, InputDialog, SelectionDialog) {
+  constructor($scope, $state, projectGateway, labelingGroupGateway, modalService, InputDialog, SelectionDialog, userGateway) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -57,6 +58,12 @@ class ProjectListController {
      * @private
      */
     this._SelectionDialog = SelectionDialog;
+
+    /**
+     * @type {UserGateway}
+     * @private
+     */
+    this._userGateway = userGateway;
 
     /**
      * @type {Array}
@@ -131,8 +138,12 @@ class ProjectListController {
           }
           return project;
         });
-        this.projects = this._createViewData(response.result);
-        this.columns = this._buildColumns(this.projects[0]);
+
+        this._userGateway.getUsers().then(users => {
+          this._users = users;
+          this.projects = this._createViewData(response.result);
+          this.columns = this._buildColumns(this.projects[0]);
+        });
 
         this.loadingInProgress = false;
       });
@@ -609,6 +620,17 @@ class ProjectListController {
         return filter.format(project.diskUsage.total);
       },
       'frameCount': project => project.totalFrames !== undefined ? project.totalFrames : null,
+      'projectOwnerIsCurrentUser': project => { return this._projectOwnerIsCurrentUser(project); },
+      'projectOwner': project => {
+        if (this._projectOwnerIsCurrentUser(project)) {
+          return this.user.username;
+        }
+        const creator = this._users.find(user => user.id === project.userId);
+        if (creator === undefined) {
+          return 'superadmin';
+        }
+        return creator.username;
+      },
     };
 
     return projects.map(project => {
@@ -624,15 +646,16 @@ class ProjectListController {
       return augmentedObject;
     });
   }
-  
+
   /**
    * If you want to add videos to a project only the user which creates the project can do this. So with this method you
    * you can check if the current logged in user is also the project creator
    *
    * @param {Object} project
    * @returns {boolean}
+   * @private
    */
-  projectOwnerIsCurrentUser(project) {
+  _projectOwnerIsCurrentUser(project) {
     const currentUserId = this.user.id;
     return currentUserId === project.userId;
   }
@@ -646,6 +669,7 @@ ProjectListController.$inject = [
   'modalService',
   'InputDialog',
   'SelectionDialog',
+  'userGateway',
 ];
 
 export default ProjectListController;
