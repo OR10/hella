@@ -82,7 +82,7 @@ describe('Polyline drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
           .click()
           .perform();
@@ -105,11 +105,13 @@ describe('Polyline drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
           .click()
           .perform();
-        browser.actions()
+      })
+      .then(() => {
+        return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1})
           .click()
           .perform();
@@ -132,11 +134,13 @@ describe('Polyline drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
           .click()
           .perform();
-        browser.actions()
+      })
+      .then(() => {
+        return browser.actions()
           .mouseMove(viewer, {x: 600, y: 200}) // initial position
           .click()
           .perform();
@@ -160,7 +164,7 @@ describe('Polyline drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 250, y: 200}) // initial position
@@ -196,19 +200,20 @@ describe('Polyline drawing', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 200, y: 200}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 200, y: 300}) // bottom drag handle
-        .mouseDown()
-        .mouseMove(viewer, {x: 200, y: 400}) // drag
-        .mouseUp()
-        .mouseMove(viewer, {x: 100, y: 200}) // left drag handle
-        .mouseDown()
-        .mouseMove(viewer, {x: 50, y: 200}) // drag
-        .mouseUp()
-        .perform(),
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 200, y: 300}) // bottom drag handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 200, y: 400}) // drag
+          .mouseUp()
+          .mouseMove(viewer, {x: 100, y: 200}) // left drag handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 50, y: 200}) // drag
+          .mouseUp()
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'ResizeOnePolyline')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -234,7 +239,7 @@ describe('Polyline drawing', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200}) // initial position
           .click()
           .perform();
@@ -242,7 +247,7 @@ describe('Polyline drawing', () => {
       .then(() => browser.sleep(500))
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
-        nextFrameButton.click();
+        return nextFrameButton.click();
       })
       .then(() => browser.sleep(500))
       .then(
@@ -263,27 +268,28 @@ describe('Polyline drawing', () => {
       assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 100, y: 100}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 600, y: 100}) // initial position
-        .mouseUp()
-        .mouseMove(viewer, {x: 600, y: 600}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 200, y: 600}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 200, y: 400}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 500, y: 400}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 500, y: 200}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 100, y: 200}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 1, y: 1}) // initial position
-        .click(protractor.Button.RIGHT)
-        .perform(),
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 600, y: 100}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 600, y: 600}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 200, y: 600}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 200, y: 400}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 500, y: 400}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 500, y: 200}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 100, y: 200}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .click(protractor.Button.RIGHT)
+          .perform();
+      })
       .then(() => browser.sleep(200))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolyline')
@@ -308,14 +314,15 @@ describe('Polyline drawing', () => {
       assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 100, y: 100}) // initial position
-        .mouseDown()
-        .mouseMove(viewer, {x: 600, y: 100}) // initial position
-        .mouseUp()
-        .mouseMove(viewer, {x: 400, y: 400}) // initial position
-        .perform(),
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 600, y: 100}) // initial position
+          .mouseUp()
+          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -323,14 +330,15 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary1);
       })
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 600, y: 600}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 200, y: 600}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 400, y: 400}) // initial position
-        .perform(),
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 600, y: 600}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 200, y: 600}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -338,16 +346,17 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary2);
       })
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 200, y: 400}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 500, y: 400}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 500, y: 200}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 400, y: 400}) // initial position
-        .perform(),
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 400}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 500, y: 400}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 500, y: 200}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -355,13 +364,14 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary3);
       })
-      .then(() => browser.actions()
-        .mouseMove(viewer, {x: 100, y: 200}) // initial position
-        .click()
-        .mouseMove(viewer, {x: 1, y: 1}) // initial position
-        .click(protractor.Button.RIGHT)
-        .perform(),
-      )
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 200}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .click(protractor.Button.RIGHT)
+          .perform();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -389,7 +399,7 @@ describe('Polyline drawing', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 100, y: 200}) // initial position
@@ -407,7 +417,7 @@ describe('Polyline drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewMultiplePolyline1);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 300, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 300, y: 200}) // initial position
@@ -425,7 +435,7 @@ describe('Polyline drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewMultiplePolyline2);
       })
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 600, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 600, y: 200}) // initial position
@@ -494,7 +504,7 @@ describe('Polyline handle/point limiting', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 100, y: 200}) // initial position
@@ -524,7 +534,7 @@ describe('Polyline handle/point limiting', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
-        browser.actions()
+        return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 100, y: 200}) // initial position

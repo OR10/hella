@@ -15,9 +15,8 @@ function removeOverride() {
 }
 
 window.using = (dataset, testDefinitionFn) => {
-  dataset.forEach(args => {
-    //const suffix = ` (with ${args.join(', ')})`;
-    const suffix = '';
+  dataset.forEach((args, index) => {
+    const suffix = ` (with dataset ${index})`;
 
     function overrideIt(description, fn) {
       originalIt(`${description}${suffix}`, fn);

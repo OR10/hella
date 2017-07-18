@@ -10,6 +10,7 @@ use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
 use AppBundle\View;
+use AppBundle\Service\Validation;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
@@ -48,6 +49,10 @@ class CurrentUser extends Controller\Base
      * @var AnnoStationBundleFacade\Organisation
      */
     private $organisation;
+    /**
+     * @var Validation\ValidationService
+     */
+    private $validationService;
 
     /**
      * CurrentUser constructor.
@@ -57,19 +62,22 @@ class CurrentUser extends Controller\Base
      * @param Facade\User                          $userFacade
      * @param AnnoStationBundleFacade\Organisation $organisation
      * @param Authentication\UserPermissions       $currentUserPermissions
+     * @param Validation\ValidationService         $validationService
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
         Encoder\EncoderFactory $encoderFactory,
         Facade\User $userFacade,
         AnnoStationBundleFacade\Organisation $organisation,
-        Authentication\UserPermissions $currentUserPermissions
+        Authentication\UserPermissions $currentUserPermissions,
+        Validation\ValidationService $validationService
     ) {
         $this->tokenStorage           = $tokenStorage;
         $this->userFacade             = $userFacade;
         $this->encoderFactory         = $encoderFactory;
         $this->currentUserPermissions = $currentUserPermissions;
         $this->organisation           = $organisation;
+        $this->validationService      = $validationService;
     }
 
     /**
@@ -125,7 +133,7 @@ class CurrentUser extends Controller\Base
      *
      * @param HttpFoundation\Request $request
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function editUserPasswordAction(HttpFoundation\Request $request)
     {
@@ -137,16 +145,38 @@ class CurrentUser extends Controller\Base
 
         $encoder = $this->encoderFactory->getEncoder($user);
 
-        if ($encoder->isPasswordValid($user->getPassword(), $oldPassword, $user->getSalt())) {
-            $user->setPlainPassword($newPassword);
-            $this->userFacade->updateUser($user);
-
-            return View\View::create()->setData(['result' => ['success' => true]]);
+        if (!$encoder->isPasswordValid($user->getPassword(), $oldPassword, $user->getSalt())) {
+            return View\View::create()->setData(
+                [
+                    'result' =>
+                        [
+                            'error' => [
+                                [
+                                    'field'   => 'password',
+                                    'message' => 'Failed to save the new password. The current password is not correct',
+                                ],
+                            ],
+                        ],
+                ]
+            );
         }
 
-        throw new Exception\BadRequestHttpException(
-            'Failed to save the new password. The current password is not correct'
-        );
+        $user->setPlainPassword($newPassword);
+        $validationResult = $this->validationService->validate($user);
+        if ($validationResult->hasErrors()) {
+            return View\View::create()->setData(
+                [
+                    'result' =>
+                        [
+                            'error' => $validationResult->getErrors(),
+                        ],
+                ]
+            );
+        }
+
+        $this->userFacade->updateUser($user);
+
+        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 
     /**

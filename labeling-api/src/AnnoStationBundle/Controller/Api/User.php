@@ -10,7 +10,10 @@ use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Worker\Jobs;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
+use AppBundle\Service\Validation\ValidationError;
 use AppBundle\View;
+use AppBundle\Service\Validation\Model\VerifyUserPassword;
+use AppBundle\Service\Validation;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\RedirectView;
 use Symfony\Component\HttpFoundation;
@@ -61,6 +64,12 @@ class User extends Controller\Base
      * @var Facade\Project
      */
     private $projectFacade;
+
+    /**
+     * @var Validation\ValidationService
+     */
+    private $validationService;
+
     /**
      * @var Service\UserRolesRebuilder
      */
@@ -69,14 +78,15 @@ class User extends Controller\Base
     /**
      * Users constructor.
      *
-     * @param AppFacade\User             $userFacade
-     * @param Facade\Organisation        $organisationFacade
-     * @param Facade\LabelingGroup       $labelingGroupFacade
-     * @param Facade\Project             $projectFacade
-     * @param Storage\TokenStorage       $tokenStorage
-     * @param Service\Authorization      $authorizationService
-     * @param Service\UserRolesRebuilder $userRolesRebuilderService
-     * @param AMQP\FacadeAMQP            $amqpFacade
+     * @param AppFacade\User               $userFacade
+     * @param Facade\Organisation          $organisationFacade
+     * @param Facade\LabelingGroup         $labelingGroupFacade
+     * @param Facade\Project               $projectFacade
+     * @param Storage\TokenStorage         $tokenStorage
+     * @param Service\Authorization        $authorizationService
+     * @param Service\UserRolesRebuilder   $userRolesRebuilderService
+     * @param Validation\ValidationService $validationService
+     * @param AMQP\FacadeAMQP              $amqpFacade
      */
     public function __construct(
         AppFacade\User $userFacade,
@@ -86,6 +96,7 @@ class User extends Controller\Base
         Storage\TokenStorage $tokenStorage,
         Service\Authorization $authorizationService,
         Service\UserRolesRebuilder $userRolesRebuilderService,
+        Validation\ValidationService $validationService,
         AMQP\FacadeAMQP $amqpFacade
     ) {
         $this->userFacade                = $userFacade;
@@ -95,6 +106,7 @@ class User extends Controller\Base
         $this->labelingGroupFacade       = $labelingGroupFacade;
         $this->projectFacade             = $projectFacade;
         $this->userRolesRebuilderService = $userRolesRebuilderService;
+        $this->validationService         = $validationService;
         $this->amqpFacade                = $amqpFacade;
     }
 
@@ -181,6 +193,23 @@ class User extends Controller\Base
             throw new Exception\AccessDeniedHttpException('You are not allowed to add this user to this organisations');
         }
 
+        $user = new Model\User();
+
+        $user->setEmail($request->request->get('email'));
+        $user->setPlainPassword($request->request->get('password'));
+
+        $validationResult = $this->validationService->validate($user);
+        if ($validationResult->hasErrors()) {
+            return View\View::create()->setData(
+                [
+                    'result' =>
+                        [
+                            'error' => $validationResult->getErrors(),
+                        ],
+                ]
+            );
+        }
+
 
         $roles = $request->request->get('roles', array());
         $user = $this->userFacade->createUser(
@@ -241,6 +270,18 @@ class User extends Controller\Base
 
         if ($request->request->has('password')) {
             $user->setPlainPassword($request->request->get('password'));
+
+            $validationResult = $this->validationService->validate($user);
+            if ($validationResult->hasErrors()) {
+                return View\View::create()->setData(
+                    [
+                        'result' =>
+                            [
+                                'error' => $validationResult->getErrors(),
+                            ],
+                    ]
+                );
+            }
         }
         $this->removeAllUserRoles($user);
         foreach ($roles as $role) {

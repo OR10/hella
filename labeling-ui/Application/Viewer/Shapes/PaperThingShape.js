@@ -29,6 +29,19 @@ class PaperThingShape extends PaperShape {
   get labeledThingInFrame() {
     return this._labeledThingInFrame;
   }
+
+  /**
+   * Get the associated groupIds
+   *
+   * @returns {Array.<string>}
+   */
+  get groupIds() {
+    let groupIds = this.labeledThingInFrame.labeledThing.groupIds;
+    if (groupIds === undefined) {
+      groupIds = [];
+    }
+    return groupIds;
+  }
 }
 
 export default PaperThingShape;

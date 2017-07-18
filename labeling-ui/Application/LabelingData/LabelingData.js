@@ -4,23 +4,16 @@
  * @extends Module
  */
 import Module from '../Module';
-import CacheHeatingLabeledThingInFrameGateway from './Gateways/CacheHeatingLabeledThingInFrameGateway';
-import CachingLabeledThingInFrameGateway from './Gateways/CachingLabeledThingInFrameGateway';
-import LabeledThingGroupGateway from './Gateways/LabeledThingGroupGateway';
-import LabeledFrameGateway from './Gateways/LabeledFrameGateway';
-import CacheHeatingLabeledThingGateway from './Gateways/CacheHeatingLabeledThingGateway';
 import InterpolationService from './Services/InterpolationService';
-import LinearBackendInterpolation from './Interpolations/LinearBackendInterpolation';
 import CacheService from './Services/CacheService';
-import CacheHeaterService from './Services/CacheHeaterService';
 import GhostingService from './Services/GhostingService';
 
-import PouchDbLabeledThingGateway from './Gateways/PouchDbLabeledThingGateway';
-import PouchDbLabeledThingInFrameGateway from './Gateways/PouchDbLabeledThingInFrameGateway';
-import PouchDbLabeledThingGroupGateway from './Gateways/PouchDbLabeledThingGroupGateway';
-import PouchDbLabeledFrameGateway from './Gateways/PouchDbLabeledFrameGateway';
-import LinearRectangleInterpolationEasing from './Interpolations/Easing/LinearRectangleInterpolationEasing';
+import LabeledThingGateway from './Gateways/LabeledThingGateway';
+import LabeledThingInFrameGateway from './Gateways/LabeledThingInFrameGateway';
+import LabeledThingGroupGateway from './Gateways/LabeledThingGroupGateway';
+import LabeledFrameGateway from './Gateways/LabeledFrameGateway';
 import FrontendInterpolation from './Interpolations/FrontendInterpolation';
+import LinearRectangleInterpolationEasing from './Interpolations/Easing/LinearRectangleInterpolationEasing';
 import LinearPedestrianInterpolationEasing from './Interpolations/Easing/LinearPedestrianInterpolationEasing';
 import LinearPolyInterpolationEasing from './Interpolations/Easing/LinearPolyInterpolationEasing';
 import LinearPointInterpolationEasing from './Interpolations/Easing/LinearPointInterpolationEasing';
@@ -31,36 +24,26 @@ class LabelingData extends Module {
   /**
    * @inheritDoc
    */
-  registerWithAngular(angular, featureFlags) {
+  registerWithAngular(angular) {
     this.module = angular.module('AnnoStation.LabelingData', []);
 
-    this.module.service('labeledThingInFrameGateway', CacheHeatingLabeledThingInFrameGateway);
-    this.module.service('cachingLabeledThingInFrameGateway', CachingLabeledThingInFrameGateway);
-    this.module.service('labeledFrameGateway', LabeledFrameGateway);
-    this.module.service('labeledThingGateway', CacheHeatingLabeledThingGateway);
-    this.module.service('labeledThingGroupGateway', LabeledThingGroupGateway);
-
     this.module.service('interpolationService', InterpolationService);
-    this.module.service('interpolationType', LinearBackendInterpolation);
 
     this.module.service('cacheService', CacheService);
-    this.module.service('cacheHeaterService', CacheHeaterService);
 
     this.module.service('ghostingService', GhostingService);
 
-    if (featureFlags.pouchdb === true) {
-      this.module.service('labeledThingInFrameGateway', PouchDbLabeledThingInFrameGateway);
-      this.module.service('labeledThingGateway', PouchDbLabeledThingGateway);
-      this.module.service('labeledThingGroupGateway', PouchDbLabeledThingGroupGateway);
-      this.module.service('labeledFrameGateway', PouchDbLabeledFrameGateway);
+    this.module.service('labeledThingInFrameGateway', LabeledThingInFrameGateway);
+    this.module.service('labeledThingGateway', LabeledThingGateway);
+    this.module.service('labeledThingGroupGateway', LabeledThingGroupGateway);
+    this.module.service('labeledFrameGateway', LabeledFrameGateway);
 
-      this.module.service('interpolationType', FrontendInterpolation);
-      this.module.service('linearRectangleInterpolationEasing', LinearRectangleInterpolationEasing);
-      this.module.service('linearPedestrianInterpolationEasing', LinearPedestrianInterpolationEasing);
-      this.module.service('linearPolyInterpolationEasing', LinearPolyInterpolationEasing);
-      this.module.service('linearPointInterpolationEasing', LinearPointInterpolationEasing);
-      this.module.service('linearCuboidInterpolationEasing', LinearCuboidInterpolationEasing);
-    }
+    this.module.service('interpolationType', FrontendInterpolation);
+    this.module.service('linearRectangleInterpolationEasing', LinearRectangleInterpolationEasing);
+    this.module.service('linearPedestrianInterpolationEasing', LinearPedestrianInterpolationEasing);
+    this.module.service('linearPolyInterpolationEasing', LinearPolyInterpolationEasing);
+    this.module.service('linearPointInterpolationEasing', LinearPointInterpolationEasing);
+    this.module.service('linearCuboidInterpolationEasing', LinearCuboidInterpolationEasing);
   }
 }
 

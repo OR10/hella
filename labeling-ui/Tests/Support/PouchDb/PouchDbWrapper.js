@@ -45,5 +45,25 @@ PouchDbWrapper.destroy = () => {
   }, PouchDbWrapper.DATABASE_NAME);
 };
 
+PouchDbWrapper.removeAllDocs = () => {
+  return browser.executeAsyncScript((databaseName, callback) => {
+    if (window.__e2e_test_pouchdb_instance === undefined) {
+      window.__e2e_test_pouchdb_instance = new PouchDB(databaseName);
+    }
+    const db = window.__e2e_test_pouchdb_instance;
+
+    db.allDocs({include_docs: true}).then(allDocs => {
+      return allDocs.rows.map(row => {
+        return {_id: row.id, _rev: row.doc._rev, _deleted: true};
+      });
+    }).then(deleteDocs => {
+      return db.bulkDocs(deleteDocs);
+    }).then(result => {
+      window.__e2e_test_pouchdb_instance = undefined;
+      callback(result);
+    });
+  }, PouchDbWrapper.DATABASE_NAME);
+};
+
 
 export default PouchDbWrapper;

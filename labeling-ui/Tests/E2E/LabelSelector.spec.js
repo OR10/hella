@@ -636,13 +636,13 @@ describe('LabelSelector (right sidebar)', () => {
         viewerHeight: 620,
       })
         .then(() => clickRectangleOne())
-        .then(browser.sleep(250))
+        .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(rectangleLabelTitleTexts))
         .then(() => clickPedestrian())
         .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(pedestrianLabelTitleTexts))
         .then(() => clickRectangleOne())
-        .then(browser.sleep(250))
+        .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(rectangleLabelTitleTexts))
         .then(() => clickPedestrian())
         .then(() => browser.sleep(250))
@@ -651,7 +651,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('keeps the label selector values when selecting a different tool', done => {
-      const toolButton0 = element(by.css('button.tool-button.tool-0'));
+      const toolButton0 = element(by.css('button.tool-button.tool-thing.tool-0'));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,

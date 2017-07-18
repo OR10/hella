@@ -149,6 +149,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.service.depth_buffer"/>
             <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
             <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>

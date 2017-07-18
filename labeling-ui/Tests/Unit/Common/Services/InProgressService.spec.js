@@ -1,5 +1,5 @@
 import angular from 'angular';
-import {module, inject} from 'angular-mocks';
+import {inject, module} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 
 import InProgressService from 'Application/Common/Services/InProgressService';
@@ -11,9 +11,7 @@ describe('InProgressService test suite', () => {
   let modalServiceMock;
 
   beforeEach(() => {
-    const featureFlags = {
-      pouchdb: false,
-    };
+    const featureFlags = {};
 
     const commonModule = new Common();
     commonModule.registerWithAngular(angular, featureFlags);
@@ -137,7 +135,7 @@ describe('InProgressService test suite', () => {
     });
 
     describe('$stateChangeStart', () => {
-      const to = { redirectTo: ''};
+      const to = {redirectTo: ''};
       let stateMock;
 
       // In order for the following tests to work, we need the inProgressService that

@@ -16,8 +16,6 @@ class FacadeFactory
         $readOnlyDatabase
     ) {
         switch ($type) {
-            case 'defaultDatabase':
-                return new DefaultDatabase($labeledFrameFacade);
             case 'taskDatabase':
                 return new TaskDatabase(
                     $labeledFrameFacade,

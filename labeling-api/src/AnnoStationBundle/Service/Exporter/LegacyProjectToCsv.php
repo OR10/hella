@@ -46,6 +46,11 @@ class LegacyProjectToCsv implements Service\ProjectExporter
     private $videoFacade;
 
     /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
+
+    /**
      * @var Service\DepthBuffer
      */
     private $depthBufferService;
@@ -67,6 +72,7 @@ class LegacyProjectToCsv implements Service\ProjectExporter
      * @param LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory
      * @param Facade\Project                      $projectFacade
      * @param Facade\Video                        $videoFacade
+     * @param Facade\LabelingTask                 $labelingTaskFacade
      * @param Service\DepthBuffer                 $depthBufferService
      * @param Facade\CalibrationData              $calibrationDataFacade
      * @param Facade\Exporter                     $exporterFacade
@@ -79,6 +85,7 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory,
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
+        Facade\LabelingTask $labelingTaskFacade,
         Service\DepthBuffer $depthBufferService,
         Facade\CalibrationData $calibrationDataFacade,
         Facade\Exporter $exporterFacade,
@@ -94,6 +101,7 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         $this->enclosure                        = $enclosure;
         $this->projectFacade                    = $projectFacade;
         $this->videoFacade                      = $videoFacade;
+        $this->labelingTaskFacade               = $labelingTaskFacade;
         $this->depthBufferService               = $depthBufferService;
         $this->calibrationDataFacade            = $calibrationDataFacade;
     }
@@ -156,12 +164,45 @@ class LegacyProjectToCsv implements Service\ProjectExporter
                 },
             ];
 
-            $zipData = [];
+            $zipData  = [];
+            $warnings = [];
+            $errors   = [];
             foreach ($taskGroups as $groupName => $groupInstructions) {
                 $tasks = $this->getLabeledTasksForProject(
                     $project,
                     $this->getRequiredGroupInstructions($project, $groupInstructions)
                 );
+
+                $incompleteLabeledThingInFrames = $this->getIncompleteLabeledThingInFramesForTasks($tasks);
+                foreach ($incompleteLabeledThingInFrames as $labeledThingInFrame) {
+                    $labeledTask        = $this->labelingTaskFacade->find($labeledThingInFrame->getTaskId());
+                    $video              = $this->videoFacade->find($labeledTask->getVideoId());
+                    $frameNumberMapping = $labeledTask->getFrameNumberMapping();
+                    $frames             = array_map(
+                        function (Model\LabeledThingInFrame $labeledThingInFrame) use ($frameNumberMapping) {
+                            return $frameNumberMapping[$labeledThingInFrame->getFrameIndex()];
+                        },
+                        $incompleteLabeledThingInFrames
+                    );
+                    $errors[]           = sprintf(
+                        'Incomplete labeled shapes in frames "%s" in Task "%s" of type "%s"',
+                        implode(', ', array_unique($frames)),
+                        $video->getName(),
+                        $labeledTask->getLabelInstruction()
+                    );
+                }
+                if (count($incompleteLabeledThingInFrames) > 0) {
+                    continue;
+                }
+
+                foreach ($this->getTasksNotInDonePhaseForTaskInstructions($project, $groupInstructions) as $task) {
+                    $video = $this->videoFacade->find($task->getVideoId());
+                    $warnings[] = sprintf(
+                        'Task "%s" of type "%s" is not in Done Phase!',
+                        $video->getName(),
+                        $task->getLabelInstruction()
+                    );
+                }
 
                 $data = [];
                 foreach ($tasks as $task) {
@@ -199,21 +240,24 @@ class LegacyProjectToCsv implements Service\ProjectExporter
                 }
             }
 
+            if (count($errors) > 0) {
+                $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
+                $export->setErrorMessage(implode("\n", $errors));
+                $this->exporterFacade->save($export);
+
+                throw new Exception\TaskIncomplete(implode("\n", $errors));
+            }
+
             $zipContent = $this->compressData($zipData);
             $date       = new \DateTime('now', new \DateTimeZone('UTC'));
             $filename   = sprintf('export_%s.zip', $date->format('Y-m-d-H-i-s'));
 
             $export->addAttachment($filename, $zipContent, 'application/zip');
             $export->setStatus(Model\Export::EXPORT_STATUS_DONE);
+            $export->setWarningMessage(implode("\n", $warnings));
             $this->exporterFacade->save($export);
 
             return $export;
-        } catch (Exception\TaskIncomplete $incompleteException) {
-            $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
-            $export->setErrorMessage($incompleteException->getMessage());
-            $this->exporterFacade->save($export);
-
-            throw $incompleteException;
         } catch (\Exception $exception) {
             $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
             $this->exporterFacade->save($export);
@@ -713,6 +757,35 @@ class LegacyProjectToCsv implements Service\ProjectExporter
         return $labeledThingsInFramesWithGhostClasses;
     }
 
+    private function getTasksNotInDonePhaseForTaskInstructions(Model\Project $project, array $requiredTasksInstructions)
+    {
+        $tasks = $this->projectFacade->getTasksByProject($project);
+
+        $taskInstructions = array_map(
+            function (Model\LabelingTask $task) {
+                return $task->getLabelInstruction();
+            },
+            $tasks
+        );
+
+        if (count(array_intersect($taskInstructions, $requiredTasksInstructions)) === 0) {
+            return [];
+        }
+
+        $labeledTasks = array_filter(
+            $tasks,
+            function (Model\LabelingTask $task) use ($requiredTasksInstructions) {
+                if (in_array($task->getLabelInstruction(), $requiredTasksInstructions)) {
+                    return $task->getStatus(Model\LabelingTask::PHASE_LABELING) !== Model\LabelingTask::STATUS_DONE;
+                }
+
+                return false;
+            }
+        );
+
+        return $labeledTasks;
+    }
+
     /**
      * @param Model\Project $project
      * @param array         $requiredTasksInstructions
@@ -761,33 +834,31 @@ class LegacyProjectToCsv implements Service\ProjectExporter
             return [];
         }
 
-        /** @var Model\LabelingTask $labeledTask */
+        return $labeledTasks;
+    }
+
+    /**
+     * @param array $labeledTasks
+     *
+     * @return Model\LabeledThingInFrame[]
+     */
+    private function getIncompleteLabeledThingInFramesForTasks(array $labeledTasks)
+    {
+        $incompleteLabeledThingInFrames = [];
         foreach ($labeledTasks as $labeledTask) {
-            $labeledThingInFrameFacade             = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $labeledThingInFrameFacade      = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
                 $labeledTask->getProjectId(),
                 $labeledTask->getId()
             );
-            $incompleteLabeledThingInFrames = $labeledThingInFrameFacade->getIncompleteLabeledThingsInFrame(
-                $labeledTask
+            $incompleteLabeledThingInFrames = array_merge(
+                $labeledThingInFrameFacade->getIncompleteLabeledThingsInFrame(
+                    $labeledTask
+                ),
+                $incompleteLabeledThingInFrames
             );
-            if (count($incompleteLabeledThingInFrames) > 0) {
-                $video = $this->videoFacade->find($labeledTask->getVideoId());
-                $frameNumberMapping = $labeledTask->getFrameNumberMapping();
-                $frames = array_map(function(Model\LabeledThingInFrame $labeledThingInFrame) use ($frameNumberMapping) {
-                    return $frameNumberMapping[$labeledThingInFrame->getFrameIndex()];
-                }, $incompleteLabeledThingInFrames);
-                throw new Exception\TaskIncomplete(
-                    sprintf(
-                        'Incomplete shapes in frames (%s) in Video "%s" (%s)',
-                        implode(', ', $frames),
-                        $video->getName(),
-                        $labeledTask->getLabelInstruction()
-                    )
-                );
-            }
         }
 
-        return $labeledTasks;
+        return $incompleteLabeledThingInFrames;
     }
 
     /**

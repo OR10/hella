@@ -398,6 +398,7 @@ gulp.task('test-unit-continuous', () => {
   const karmaServer = new KarmaServer({
     singleRun: false,
     autoWatch: true,
+    reporters: ['jasmine-diff', 'mocha'],
     configFile: path.join(__dirname, '/karma.conf.js'),
   });
 

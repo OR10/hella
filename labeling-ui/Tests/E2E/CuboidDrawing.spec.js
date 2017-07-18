@@ -208,16 +208,16 @@ describe('Cuboid Drawing', () => {
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .mouseMove(viewer, {x: 596, y: 496})
             .click()
             .perform();
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -226,7 +226,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow1);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -234,10 +234,10 @@ describe('Cuboid Drawing', () => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -246,7 +246,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow2);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -254,10 +254,10 @@ describe('Cuboid Drawing', () => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -266,7 +266,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow3);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -274,10 +274,10 @@ describe('Cuboid Drawing', () => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -286,7 +286,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow4);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -294,10 +294,10 @@ describe('Cuboid Drawing', () => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -306,7 +306,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow5);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -314,10 +314,10 @@ describe('Cuboid Drawing', () => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5);
         })
         .then(() => {
-          browser.actions()
+          return browser.actions()
             .sendKeys(protractor.Key.SHIFT)
             .sendKeys('pppppp')
-            .sendKeys(protractor.Key.SHIFT)
+            .sendKeys(protractor.Key.NULL)
             .perform();
         })
         .then(
@@ -326,7 +326,7 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow6);
-          browser.sleep(1000);
+          return browser.sleep(1000);
         })
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
@@ -347,15 +347,16 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .mouseMove(viewer, {x: 564, y: 222}) // height handle
-            .mouseDown()
-            .mouseMove(viewer, {x: 564, y: 402}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .mouseMove(viewer, {x: 564, y: 222}) // height handle
+              .mouseDown()
+              .mouseMove(viewer, {x: 564, y: 402}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChange')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -380,15 +381,16 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .mouseMove(viewer, {x: 564, y: 222}) // height handle
-            .mouseDown()
-            .mouseMove(viewer, {x: 564, y: 448}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .mouseMove(viewer, {x: 564, y: 222}) // height handle
+              .mouseDown()
+              .mouseMove(viewer, {x: 564, y: 448}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeMinimal')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -413,15 +415,16 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .mouseMove(viewer, {x: 564, y: 222}) // height handle
-            .mouseDown()
-            .mouseMove(viewer, {x: 564, y: 600}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .mouseMove(viewer, {x: 564, y: 222}) // height handle
+              .mouseDown()
+              .mouseMove(viewer, {x: 564, y: 600}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeNonNegative')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -448,11 +451,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -484,11 +488,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -511,7 +516,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should add to height of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '88888888888888888888888888888888888888', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '88888888888888888888888888888888888888', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -520,11 +525,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -549,7 +555,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should substract from height of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '22222', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '22222', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -558,11 +564,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -594,15 +601,16 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .mouseMove(viewer, {x: 622, y: 390}) // move handle
-            .mouseDown()
-            .mouseMove(viewer, {x: 235, y: 560}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .mouseMove(viewer, {x: 622, y: 390}) // move handle
+              .mouseDown()
+              .mouseMove(viewer, {x: 235, y: 560}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementLeft')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -627,15 +635,16 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .mouseMove(viewer, {x: 622, y: 390}) // move handle
-            .mouseDown()
-            .mouseMove(viewer, {x: 1000, y: 560}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .mouseMove(viewer, {x: 622, y: 390}) // move handle
+              .mouseDown()
+              .mouseMove(viewer, {x: 1000, y: 560}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementRight')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -660,13 +669,14 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 565, y: 469}) // initial position
-            .mouseDown()
-            .mouseMove(viewer, {x: 691, y: 348}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 565, y: 469}) // initial position
+              .mouseDown()
+              .mouseMove(viewer, {x: 691, y: 348}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementHorizonLimit')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -680,13 +690,14 @@ describe('Cuboid Drawing', () => {
           .then(requests => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame);
           })
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 691, y: 348}) // drag
-            .mouseDown()
-            .mouseMove(viewer, {x: 691, y: 100}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 691, y: 348}) // drag
+              .mouseDown()
+              .mouseMove(viewer, {x: 691, y: 100}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
@@ -704,13 +715,14 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 565, y: 469}) // initial position
-            .mouseDown()
-            .mouseMove(viewer, {x: 690, y: 350}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 565, y: 469}) // initial position
+              .mouseDown()
+              .mouseMove(viewer, {x: 690, y: 350}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementMinimalHeightLimit')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -724,13 +736,14 @@ describe('Cuboid Drawing', () => {
           .then(requests => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame);
           })
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 690, y: 350}) // drag
-            .mouseDown()
-            .mouseMove(viewer, {x: 690, y: 319}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 690, y: 350}) // drag
+              .mouseDown()
+              .mouseMove(viewer, {x: 690, y: 319}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
@@ -750,12 +763,13 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .sendKeys('o')
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .sendKeys('o')
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardLeft')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -780,12 +794,13 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .sendKeys('p')
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .sendKeys('p')
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardRight')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -810,14 +825,15 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .sendKeys(protractor.Key.SHIFT)
-            .sendKeys('o')
-            .sendKeys(protractor.Key.SHIFT)
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .sendKeys(protractor.Key.SHIFT)
+              .sendKeys('o')
+              .sendKeys(protractor.Key.NULL)
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardShiftLeft')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -842,14 +858,15 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .sendKeys(protractor.Key.SHIFT)
-            .sendKeys('p')
-            .sendKeys(protractor.Key.SHIFT)
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .sendKeys(protractor.Key.SHIFT)
+              .sendKeys('p')
+              .sendKeys(protractor.Key.NULL)
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardShiftRight')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -876,15 +893,16 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .mouseMove(viewer, {x: 507, y: 390}) // width handle
-            .mouseDown()
-            .mouseMove(viewer, {x: 400, y: 500}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .mouseMove(viewer, {x: 507, y: 390}) // width handle
+              .mouseDown()
+              .mouseMove(viewer, {x: 400, y: 500}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChange')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -911,11 +929,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -947,11 +966,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -974,7 +994,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should add to width of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '44444444444444444444', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '44444444444444444444', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -983,11 +1003,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1012,7 +1033,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should substract from width of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '66666', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '66666', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -1021,11 +1042,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1057,15 +1079,16 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .mouseMove(viewer, {x: 613, y: 376}) // depth handle
-            .mouseDown()
-            .mouseMove(viewer, {x: 568, y: 331}) // drag
-            .mouseUp()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .mouseMove(viewer, {x: 613, y: 376}) // depth handle
+              .mouseDown()
+              .mouseMove(viewer, {x: 568, y: 331}) // drag
+              .mouseUp()
+              .perform();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChange')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1092,11 +1115,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1128,11 +1152,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1155,7 +1180,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should add to depth of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '99', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '99', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -1164,11 +1189,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1191,7 +1217,7 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should substract from depth of loaded cuboid by keyboard in fast mode', done => {
-        const keySequences = [protractor.Key.SHIFT, '33', protractor.Key.SHIFT];
+        const keySequences = [protractor.Key.SHIFT, '33', protractor.Key.NULL];
 
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
@@ -1200,11 +1226,12 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
-            .click()
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
+              .click()
+              .perform();
+          })
           .then(() => {
             const actions = browser.actions();
             keySequences.forEach(keySequence => actions.sendKeys(keySequence));
@@ -1239,12 +1266,16 @@ describe('Cuboid Drawing', () => {
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-          .then(() => browser.actions()
-            .mouseMove(viewer, {x: 563, y: 353}) // initial position
-            .click()
-            .sendKeys('i')
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, {x: 563, y: 353}) // initial position
+              .click()
+              .sendKeys('i')
+              .perform();
+          })
+          .then(() => {
+            return browser.sleep(500);
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise1')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1258,10 +1289,14 @@ describe('Cuboid Drawing', () => {
           .then(requests => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame1);
           })
-          .then(() => browser.actions()
-            .sendKeys('i')
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .sendKeys('i')
+              .perform();
+          })
+          .then(() => {
+            return browser.sleep(500);
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise2')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1275,10 +1310,14 @@ describe('Cuboid Drawing', () => {
           .then(requests => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame2);
           })
-          .then(() => browser.actions()
-            .sendKeys('i')
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .sendKeys('i')
+              .perform();
+          })
+          .then(() => {
+            return browser.sleep(500);
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise3')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1292,10 +1331,14 @@ describe('Cuboid Drawing', () => {
           .then(requests => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame3);
           })
-          .then(() => browser.actions()
-            .sendKeys('i')
-            .perform()
-          )
+          .then(() => {
+            return browser.actions()
+              .sendKeys('i')
+              .perform();
+          })
+          .then(() => {
+            return browser.sleep(500);
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise4')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1324,7 +1367,7 @@ describe('Cuboid Drawing', () => {
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
-            browser.actions()
+            return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
               .click()
               .sendKeys('u')
@@ -1336,7 +1379,7 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise1);
-            browser.sleep(1000);
+            return browser.sleep(1000);
           })
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
@@ -1344,7 +1387,7 @@ describe('Cuboid Drawing', () => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame1);
           })
           .then(() => {
-            browser.actions()
+            return browser.actions()
               .sendKeys('u')
               .perform();
           })
@@ -1354,7 +1397,7 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise2);
-            browser.sleep(1000);
+            return browser.sleep(1000);
           })
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
@@ -1362,7 +1405,7 @@ describe('Cuboid Drawing', () => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame2);
           })
           .then(() => {
-            browser.actions()
+            return browser.actions()
               .sendKeys('u')
               .perform();
           })
@@ -1372,7 +1415,7 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise3);
-            browser.sleep(1000);
+            return browser.sleep(1000);
           })
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
@@ -1380,7 +1423,7 @@ describe('Cuboid Drawing', () => {
             expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame3);
           })
           .then(() => {
-            browser.actions()
+            return browser.actions()
               .sendKeys('u')
               .perform();
           })
@@ -1390,7 +1433,7 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise4);
-            browser.sleep(1000);
+            return browser.sleep(1000);
           })
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
@@ -1412,13 +1455,14 @@ describe('Cuboid Drawing', () => {
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .mouseMove(viewer, {x: 563, y: 353}) // initial position
-          .click()
-          .sendKeys('o')
-          .sendKeys('o')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 563, y: 353}) // initial position
+            .click()
+            .sendKeys('o')
+            .sendKeys('o')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dDepth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1432,11 +1476,12 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFramePseudo3d);
         })
-        .then(() => browser.actions()
-          .sendKeys('p')
-          .sendKeys('p')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .sendKeys('p')
+            .sendKeys('p')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dDepth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1462,14 +1507,15 @@ describe('Cuboid Drawing', () => {
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .mouseMove(viewer, {x: 563, y: 353}) // initial position
-          .click()
-          .sendKeys('p')
-          .sendKeys('p')
-          .sendKeys('p')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 563, y: 353}) // initial position
+            .click()
+            .sendKeys('p')
+            .sendKeys('p')
+            .sendKeys('p')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dDepth180')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1483,11 +1529,12 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFramePseudo3d);
         })
-        .then(() => browser.actions()
-          .sendKeys('o')
-          .sendKeys('o')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .sendKeys('o')
+            .sendKeys('o')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dDepth180')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1513,13 +1560,14 @@ describe('Cuboid Drawing', () => {
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .mouseMove(viewer, {x: 563, y: 353}) // initial position
-          .click()
-          .sendKeys('p')
-          .sendKeys('p')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 563, y: 353}) // initial position
+            .click()
+            .sendKeys('p')
+            .sendKeys('p')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dWidth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1533,11 +1581,12 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFramePseudo3d);
         })
-        .then(() => browser.actions()
-          .sendKeys('o')
-          .sendKeys('o')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .sendKeys('o')
+            .sendKeys('o')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dWidth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1563,14 +1612,15 @@ describe('Cuboid Drawing', () => {
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .mouseMove(viewer, {x: 563, y: 353}) // initial position
-          .click()
-          .sendKeys('p')
-          .sendKeys('p')
-          .sendKeys('p')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 563, y: 353}) // initial position
+            .click()
+            .sendKeys('p')
+            .sendKeys('p')
+            .sendKeys('p')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dWidth180')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1584,11 +1634,12 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFramePseudo3d);
         })
-        .then(() => browser.actions()
-          .sendKeys('o')
-          .sendKeys('o')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .sendKeys('o')
+            .sendKeys('o')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dWidth180')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1613,15 +1664,16 @@ describe('Cuboid Drawing', () => {
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .mouseMove(viewer, {x: 563, y: 353}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 622, y: 328}) // height handle
-          .mouseDown()
-          .mouseMove(viewer, {x: 622, y: 158}) // drag
-          .mouseUp()
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 563, y: 353}) // initial position
+            .click()
+            .mouseMove(viewer, {x: 622, y: 328}) // height handle
+            .mouseDown()
+            .mouseMove(viewer, {x: 622, y: 158}) // drag
+            .mouseUp()
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dHeightHandle')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1649,12 +1701,13 @@ describe('Cuboid Drawing', () => {
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .mouseMove(viewer, {x: 563, y: 353}) // initial position
-          .click()
-          .sendKeys('i')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 563, y: 353}) // initial position
+            .click()
+            .sendKeys('i')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1668,10 +1721,11 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame1);
         })
-        .then(() => browser.actions()
-          .sendKeys('i')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .sendKeys('i')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1685,10 +1739,11 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame2);
         })
-        .then(() => browser.actions()
-          .sendKeys('i')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .sendKeys('i')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1702,10 +1757,11 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame3);
         })
-        .then(() => browser.actions()
-          .sendKeys('i')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .sendKeys('i')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1733,12 +1789,13 @@ describe('Cuboid Drawing', () => {
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => browser.actions()
-          .mouseMove(viewer, {x: 563, y: 353}) // initial position
-          .click()
-          .sendKeys('u')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 563, y: 353}) // initial position
+            .click()
+            .sendKeys('u')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1752,10 +1809,11 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1);
         })
-        .then(() => browser.actions()
-          .sendKeys('u')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .sendKeys('u')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1769,10 +1827,11 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2);
         })
-        .then(() => browser.actions()
-          .sendKeys('u')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .sendKeys('u')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1786,10 +1845,11 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3);
         })
-        .then(() => browser.actions()
-          .sendKeys('u')
-          .perform()
-        )
+        .then(() => {
+          return browser.actions()
+            .sendKeys('u')
+            .perform();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()

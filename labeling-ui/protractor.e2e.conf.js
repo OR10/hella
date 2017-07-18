@@ -1,8 +1,8 @@
 require('babel-core/register');
 
 // We don't have SystemJS available here so we can't use 'import'
-const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter');
-const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/ResembleDiffReporter');
+const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter').default;
+const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/ResembleDiffReporter').default;
 const JasmineSpecReporter = require('jasmine-spec-reporter');
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
 const path = require('path');
@@ -60,6 +60,11 @@ exports.config = {
     defaultTimeoutInterval: 60000,
   },
 
+  plugins: [{
+    package: 'protractor-console',
+    logLevels: ['severe', 'warning', 'info', 'debug'],
+  }],
+
   specs: ['Tests/E2E/**/*.spec.js'],
 };
 
@@ -76,11 +81,6 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
     'browserName': 'chrome',
     'chromeOptions': {
       'binary': '/Applications/Chromium.app/Contents/MacOS/Chromium',
-    },
-    'loggingPrefs': {
-      'driver': 'INFO',
-      'server': 'OFF',
-      'browser': 'ALL',
     },
   };
 }

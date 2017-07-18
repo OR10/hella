@@ -1,6 +1,6 @@
 import 'jquery';
 import angular from 'angular';
-import {module, inject} from 'angular-mocks';
+import {inject, module} from 'angular-mocks';
 
 import Common from 'Application/Common/Common';
 import ConfigurableAssemblyFactory from 'Application/Common/Services/PackagingExecutor/ConfigurableAssemblyFactory';
@@ -28,9 +28,7 @@ describe('PackagingExecutor', () => {
     let mockedAssemblyStrategy;
 
     beforeEach(() => {
-      const featureFlags = {
-        pouchdb: false,
-      };
+      const featureFlags = {};
 
       const commonModule = new Common();
       commonModule.registerWithAngular(angular, featureFlags);
@@ -184,9 +182,7 @@ describe('PackagingExecutor', () => {
     let mockedAssemblyStrategy;
 
     beforeEach(() => {
-      const featureFlags = {
-        pouchdb: false,
-      };
+      const featureFlags = {};
 
       const commonModule = new Common();
       commonModule.registerWithAngular(angular, featureFlags);
@@ -287,9 +283,7 @@ describe('PackagingExecutor', () => {
     let packagingExecutor;
 
     beforeEach(() => {
-      const featureFlags = {
-        pouchdb: false,
-      };
+      const featureFlags = {};
 
       const commonModule = new Common();
       commonModule.registerWithAngular(angular, featureFlags);

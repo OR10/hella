@@ -1,5 +1,5 @@
 import angular from 'angular';
-import {module, inject} from 'angular-mocks';
+import {inject, module} from 'angular-mocks';
 import Common from 'Application/Common/Common';
 import LabelingData from 'Application/LabelingData/LabelingData';
 
@@ -23,9 +23,7 @@ describe('CachingFrameLocationGateway', () => {
       {frameIndex: 1, url: 'http://example.com/2'},
     ]));
 
-    const featureFlags = {
-      pouchdb: true,
-    };
+    const featureFlags = {};
 
     const commonModule = new Common();
     commonModule.registerWithAngular(angular, featureFlags);

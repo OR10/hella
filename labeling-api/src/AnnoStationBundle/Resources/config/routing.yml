@@ -76,11 +76,6 @@ api_project:
     type: rest
     name_prefix: app_api_organisation_project_
 
-api_test:
-    resource: "annostation.labeling_api.controller.api.test"
-    type: rest
-    name_prefix: app_api_test_
-
 api_status:
     resource: "annostation.labeling_api.controller.api.status"
     type: rest
