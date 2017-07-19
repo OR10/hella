@@ -6,6 +6,7 @@ class labeling_api::app(
   $labeling_ui_dir = '/var/www/labeling-ui',
   $client_max_body_size = '512M',
   $is_vagrant_vm = false,
+  $hostnames = undef,
   $port = 80,
   $httpv2 = false,
   $sslCertFile = undef,
@@ -27,6 +28,12 @@ class labeling_api::app(
     $_symfonyUser = $symfonyUser
   }
 
+  if $hostnames {
+      $_hostnames = $hostnames
+  } else {
+      $_hostnames = undef
+  }
+
   ::annostation_base::symfony { 'labeling_api':
     www_root => $www_root,
     configure_nginx => $configure_nginx,
@@ -38,6 +45,7 @@ class labeling_api::app(
     sslKeyFile => $sslKeyFile,
     not_found_redirect => '/labeling/index.html',
     listenIp => $listenIp,
+    hostnames => $_hostnames,
   }
 
   if $configure_nginx {

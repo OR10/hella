@@ -132,6 +132,13 @@ class PaperShape extends paper.Group {
   }
 
   /**
+   * @returns {boolean}
+   */
+  playInFrameRange() {
+    return true;
+  }
+
+  /**
    * @abstract
    * @method PaperShape#toJSON
    */
