@@ -36,6 +36,7 @@
         </table>
         <div class="button-area">
             <button class="pull-right"
+                    disabled="{{vm.userPermissions.canCreateOrganisation !== true || vm.userPermissions.canEditOrganisation !== true}}"
                     ng-click="(vm.userInput && vm.userInput.length < vm.maxLength && vm.userInput.length > 1) && vm.saveChanges()"
             >
                 <span ng-if="vm.createMode">Create</span>

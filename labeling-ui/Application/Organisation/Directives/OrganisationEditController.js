@@ -60,8 +60,8 @@ class OrganisationEditController {
    * Update the organisation name and persist organisation in the backend
    */
   saveChanges() {
-    if (this.userPermissions.canEditOrganisation !== true) {
-      return;
+    if (this.userPermissions.canCreateOrganisation !== true || this.userPermissions.canEditOrganisation !== true) {
+      return
     }
 
     this.loadingInProgress = true;
