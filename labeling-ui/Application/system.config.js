@@ -96,7 +96,7 @@ System.config({
     "moment": "npm:moment@2.14.1",
     "ng-flow": "github:flowjs/ng-flow@2.7.4",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
-    "pouchdb": "github:pouchdb/pouchdb@6.0.7",
+    "pouchdb": "github:pouchdb/pouchdb@6.3.4",
     "raf": "npm:raf@3.1.0",
     "splitjs": "github:nathancahill/Split.js@1.0.6",
     "text": "github:systemjs/plugin-text@0.0.9",
