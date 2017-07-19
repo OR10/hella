@@ -61,7 +61,7 @@ class OrganisationEditController {
    */
   saveChanges() {
     if (this.userPermissions.canCreateOrganisation !== true || this.userPermissions.canEditOrganisation !== true) {
-      return
+      return;
     }
 
     this.loadingInProgress = true;

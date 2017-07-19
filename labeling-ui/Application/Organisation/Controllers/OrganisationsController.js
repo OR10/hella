@@ -15,6 +15,11 @@ class OrganisationsController {
         this.organisationId = $stateParams.organisationId;
     }
 
+    if (!this.displayEditAndNewTab()) {
+      this.activeTab = 'manage';
+      this.organisationId = undefined;
+    }
+
     this.showEditTap = !(this.organisationId === 'new' || this.organisationId === undefined);
     $scope.$watch('vm.activeTab', (newValue, oldValue) => {
       if (newValue === oldValue) {
@@ -29,6 +34,13 @@ class OrganisationsController {
           this._$state.go('labeling.organisation-management.list');
       }
     });
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  displayEditAndNewTab() {
+    return this.userPermissions.canCreateOrganisation === true || this.userPermissions.canEditOrganisation === true;
   }
 }
 
