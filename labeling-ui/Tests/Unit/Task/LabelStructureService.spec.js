@@ -50,9 +50,7 @@ describe('LabelStructureService', () => {
       ]
     );
 
-    const featureFlags = {
-      pouchdb: false,
-    };
+    const featureFlags = {};
 
     const commonModule = new CommonModule();
     commonModule.registerWithAngular(angular, featureFlags);

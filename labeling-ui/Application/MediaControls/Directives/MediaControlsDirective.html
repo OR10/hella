@@ -70,16 +70,16 @@
         </div>
         <div class="grid-content noscroll">
             <button ng-click="vm.handlePlay()"
-                    ng-if="!vm.playing && vm.selectedPaperShape !== null"
-                    tooltip="Play within frame range of active shape"
-            >
-                <i class="icon icon-control-play-steps"></i>
-            </button>
-            <button ng-click="vm.handlePlay()"
-                    ng-if="!vm.playing && vm.selectedPaperShape === null"
+                    ng-if="vm.playButtonVisible()"
                     tooltip="Play video"
             >
                 <i class="icon icon-control-play"></i>
+            </button>
+            <button ng-click="vm.handlePlay()"
+                    ng-if="vm.playButtonForFrame()"
+                    tooltip="Play within frame range of active shape"
+            >
+                <i class="icon icon-control-play-steps"></i>
             </button>
             <button ng-click="vm.handlePause()"
                     ng-if="vm.playing"

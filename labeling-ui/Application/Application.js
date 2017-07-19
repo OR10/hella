@@ -140,7 +140,7 @@ export default class Application {
 
         const initializedPouchDB = this._getInitializedPouchDb();
         this.app.constant('PouchDB', initializedPouchDB);
-        if ((Environment.isDevelopment || Environment.isTesting) && FeatureFlags.pouchdb) {
+        if (Environment.isDevelopment || Environment.isTesting) {
           window.PouchDB = initializedPouchDB;
         }
       });

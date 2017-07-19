@@ -1,5 +1,4 @@
 import UrlBuilder from '../UrlBuilder';
-import featureFlags from '../../../Application/features.json';
 import PouchDb from '../PouchDb/PouchDbWrapper';
 import httpMock from 'protractor-http-mock';
 import {cloneDeep} from 'lodash';
@@ -14,37 +13,14 @@ export function getMockRequestsMade(mock) {
 export function dumpAllRequestsMade(mock) {
   const failTest = Promise.reject(new Error('Dumping all requests causes automatic test fail.'));
 
-  if (featureFlags.pouchdb) {
-    return PouchDb.allDocs().then(docs => {
-      let strippedRequests = docs.rows.map(row => row.doc);
-      strippedRequests = strippedRequests.filter(doc => doc._id.indexOf('_design') === -1);
-
-      console.log( // eslint-disable-line no-console
-        `The following documents are in the Pouch. Design documents have been filtered out.\n${JSON.stringify(strippedRequests, undefined, 2)}`,
-      );
-
-      return failTest;
-    });
-  }
-  return httpMock.allRequestsMade().then(requests => {
-    const strippedRequests = requests.map(request => {
-      const strippedRequest = {
-        method: request.method,
-        path: request.url,
-      };
-
-      if (request.data) {
-        strippedRequest.data = request.data;
-      }
-
-      return strippedRequest;
-    });
+  return PouchDb.allDocs().then(docs => {
+    let strippedRequests = docs.rows.map(row => row.doc);
+    strippedRequests = strippedRequests.filter(doc => doc._id.indexOf('_design') === -1);
 
     console.log( // eslint-disable-line no-console
-      `The following requests were made against the backend. Not all of them may have been mocked!\n${JSON.stringify(strippedRequests, undefined, 2)}`,
+      `The following documents are in the Pouch. Design documents have been filtered out.\n${JSON.stringify(strippedRequests, undefined, 2)}`,
     );
 
-    // fail('Dumping all requests causes automatic test fail.');
     return failTest;
   });
 }
@@ -162,14 +138,9 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   httpMock(mocks.shared.concat(mocks.specific));
   const builder = new UrlBuilder(testConfig);
 
-  if (featureFlags.pouchdb) {
-    const customBootstrap = getPouchDbCustomBootstrap(mocks.specific);
-    const extendedBrowser = new ExtendedBrowser(browser);
-    return extendedBrowser.getWithCustomBootstrap(builder.url(url), undefined, customBootstrap)
-      .then(() => waitForApplicationReady());
-  }
-
-  return browser.get(builder.url(url))
+  const customBootstrap = getPouchDbCustomBootstrap(mocks.specific);
+  const extendedBrowser = new ExtendedBrowser(browser);
+  return extendedBrowser.getWithCustomBootstrap(builder.url(url), undefined, customBootstrap)
     .then(() => waitForApplicationReady());
 }
 

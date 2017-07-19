@@ -3,7 +3,6 @@
  */
 class TaskListController {
   /**
-   * @param {object} featureFlags
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
    * @param {angular.$q} $q
@@ -13,13 +12,7 @@ class TaskListController {
    * @param {SelectionDialog} SelectionDialog
    * @param {ReplicationStateService} replicationStateService
    */
-  constructor(featureFlags, $scope, $state, $q, loggerService, taskGateway, modalService, SelectionDialog, replicationStateService) {
-    /**
-     * @type {Object}
-     * @private
-     */
-    this._featureFlags = featureFlags;
-
+  constructor($scope, $state, $q, loggerService, taskGateway, modalService, SelectionDialog, replicationStateService) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -155,9 +148,7 @@ class TaskListController {
   }
 
   _gotoTask(taskId, phase) {
-    if (this._featureFlags.pouchdb === true) {
-      this._replicationStateService.setIsReplicating(true);
-    }
+    this._replicationStateService.setIsReplicating(true);
     return this._$state.go('labeling.tasks.detail', {taskId, phase});
   }
 
@@ -284,7 +275,6 @@ class TaskListController {
 }
 
 TaskListController.$inject = [
-  'featureFlags',
   '$scope',
   '$state',
   '$q',
