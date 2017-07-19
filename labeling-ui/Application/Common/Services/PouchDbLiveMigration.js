@@ -23,9 +23,9 @@ class PouchDbLiveMigration {
    * @param {PouchDB} db
    */
   install(db) {
-    db.transform({
-      outgoing: doc => this._transformOutgoing(doc),
-    });
+    // db.transform({
+    //   outgoing: doc => this._transformOutgoing(doc),
+    // });
   }
 
   /**
