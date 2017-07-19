@@ -194,6 +194,13 @@ class TaskCreator
 
             if ($video->getMetaData()->format === 'image2' && $video->getMetaData()->numberOfFrames === 1) {
                 $frameMappingChunks = [[1]];
+                $frameRange = new Model\FrameNumberRange(1, 1);
+
+                $metadata = [
+                    'frameRange'       => $frameRange,
+                    'frameSkip'        => 1,
+                    'startFrameNumber' => 1,
+                ];
             } else {
                 $videoFrameMapping = [];
                 if ($video->getMetaData()->numberOfFrames >= ($startFrameNumber + $frameSkip)) {
@@ -208,9 +215,7 @@ class TaskCreator
                         round($framesPerVideoChunk / $frameSkip)
                     );
                 }
-            }
 
-            foreach ($frameMappingChunks as $frameNumberMapping) {
                 $frameRange = new Model\FrameNumberRange(1, $video->getMetaData()->numberOfFrames);
 
                 $metadata = [
@@ -218,7 +223,9 @@ class TaskCreator
                     'frameSkip'        => $frameSkip,
                     'startFrameNumber' => $startFrameNumber,
                 ];
+            }
 
+            foreach ($frameMappingChunks as $frameNumberMapping) {
                 foreach ($project->getLegacyTaskInstructions() as $legacyTaskInstruction) {
                     $predefinedClasses = [];
                     if ($legacyTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
