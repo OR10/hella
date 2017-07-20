@@ -1,13 +1,13 @@
 <?php
 namespace AnnoStationBundle\Service\ProjectImporter;
 
-use AppBundle\Model;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
-use AnnoStationBundle\Service\ProjectImporter\Facade;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\ProjectImporter\Facade;
 use AnnoStationBundle\Worker\Jobs;
-use crosscan\WorkerPool\AMQP;
+use AppBundle\Model;
 use crosscan\WorkerPool;
+use crosscan\WorkerPool\AMQP;
 
 class Import
 {
@@ -141,7 +141,7 @@ class Import
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
 
         if ($this->requirementsXml === null) {
-            $requirementsXml = $this->createRequirementsXml($xpath, $xmlImportFilePath, $organisation, $user);
+            $requirementsXml       = $this->createRequirementsXml($xpath, $xmlImportFilePath, $organisation, $user);
             $this->requirementsXml = $requirementsXml;
         } else {
             $requirementsXml = $this->requirementsXml;
@@ -179,9 +179,9 @@ class Import
         /** @var Model\LabelingTask $task */
         foreach ($tasks as $task) {
             $taskFrameNumberMapping = $task->getFrameNumberMapping();
-            $start      = min($taskFrameNumberMapping);
-            $end        = max($taskFrameNumberMapping);
-            $frameRange = range($start, $end);
+            $start                  = min($taskFrameNumberMapping);
+            $end                    = max($taskFrameNumberMapping);
+            $frameRange             = range($start, $end);
             foreach ($frameRange as $frame) {
                 $taskFrameMapping[$frame] = $task->getId();
             }
@@ -198,8 +198,12 @@ class Import
      *
      * @return Model\Project
      */
-    private function createProject(\DOMXPath $xpath, AnnoStationBundleModel\Organisation $organisation, $user, Model\TaskConfiguration\RequirementsXml $requirementsXml)
-    {
+    private function createProject(
+        \DOMXPath $xpath,
+        AnnoStationBundleModel\Organisation $organisation,
+        $user,
+        Model\TaskConfiguration\RequirementsXml $requirementsXml
+    ) {
 
         $projectElement = $xpath->query('/x:export/x:metadata/x:project');
 
@@ -244,7 +248,11 @@ class Import
     ) {
         $requirementsElement = $xpath->query('/x:export/x:metadata/x:requirements');
 
-        $filePath = sprintf('%s/%s', dirname($xmlImportFilePath), $requirementsElement->item(0)->getAttribute('filename'));
+        $filePath = sprintf(
+            '%s/%s',
+            dirname($xmlImportFilePath),
+            $requirementsElement->item(0)->getAttribute('filename')
+        );
 
         $expectedHash = hash('sha256', file_get_contents($filePath));
         $actualHash   = $xpath->query('x:sha256', $requirementsElement->item(0))->item(0)->nodeValue;
@@ -332,13 +340,25 @@ class Import
                 )
             );
         }
-        $video           = $this->videoImporter->importVideo(
-            $organisation,
-            $project,
-            $filename,
-            $videoSourcePath,
-            false
-        );
+
+        // Decide between importing an image or a video
+        if ($this->isVideoASingleFrameImage($filename)) {
+            $video = $this->videoImporter->importImage(
+                $organisation,
+                $project,
+                $filename,
+                $videoSourcePath
+            );
+        } else {
+            $video = $this->videoImporter->importVideo(
+                $organisation,
+                $project,
+                $filename,
+                $videoSourcePath,
+                false
+            );
+        }
+
         $video->setOriginalId($videoDomElement->getAttribute('id'));
 
         if (is_file($calibrationFilePath)) {
@@ -349,5 +369,20 @@ class Import
         }
 
         return $video;
+    }
+
+    /**
+     * Check if a filename represents a video or a single frame image
+     *
+     * @param string $filename
+     *
+     * @return bool
+     */
+    private function isVideoASingleFrameImage(string $filename): bool
+    {
+        $fileExtension   = pathinfo($filename, PATHINFO_EXTENSION);
+        $imageExtensions = ["png", "jpg", "jpeg"];
+
+        return in_array($fileExtension, $imageExtensions);
     }
 }

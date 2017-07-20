@@ -2,12 +2,12 @@
 
 namespace AnnoStationBundle\Service;
 
-use AppBundle\Model;
-use AnnoStationBundle\Model as AnnoStationBundleModel;
-use AppBundle\Model\Video\ImageType;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Worker\Jobs;
+use AppBundle\Model;
+use AppBundle\Model\Video\ImageType;
 use crosscan\WorkerPool;
 use Doctrine\ODM\CouchDB;
 
@@ -64,16 +64,16 @@ class VideoImporter
     private $taskConfigurationFacade;
 
     /**
-     * @param Facade\Project                            $projectFacade
-     * @param Facade\Video                              $videoFacade
-     * @param Facade\CalibrationData                    $calibrationDataFacade
-     * @param Facade\LabelingTask                       $labelingTaskFacade
-     * @param Video\MetaDataReader                      $metaDataReader
-     * @param Service\Video\VideoFrameSplitter          $frameCdnSplitter
-     * @param LabelStructure                            $labelStructureService
-     * @param WorkerPool\Facade                         $facadeAMQP
-     * @param CalibrationFileConverter                  $calibrationFileConverter
-     * @param Facade\TaskConfiguration                  $taskConfigurationFacade
+     * @param Facade\Project                   $projectFacade
+     * @param Facade\Video                     $videoFacade
+     * @param Facade\CalibrationData           $calibrationDataFacade
+     * @param Facade\LabelingTask              $labelingTaskFacade
+     * @param Video\MetaDataReader             $metaDataReader
+     * @param Service\Video\VideoFrameSplitter $frameCdnSplitter
+     * @param LabelStructure                   $labelStructureService
+     * @param WorkerPool\Facade                $facadeAMQP
+     * @param CalibrationFileConverter         $calibrationFileConverter
+     * @param Facade\TaskConfiguration         $taskConfigurationFacade
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -109,8 +109,13 @@ class VideoImporter
      * @return Model\Video
      * @throws CouchDB\UpdateConflictException
      */
-    public function importVideo(AnnoStationBundleModel\Organisation $organisation, Model\Project $project, string $videoName, string $videoFilePath, bool $lossless)
-    {
+    public function importVideo(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        string $videoName,
+        string $videoFilePath,
+        bool $lossless
+    ) {
         $imageTypes = $this->getImageTypes($lossless);
         $video      = new Model\Video($organisation, $videoName);
 
@@ -154,6 +159,35 @@ class VideoImporter
     /**
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
+     * @param string                              $imageName
+     * @param string                              $imageFilePath
+     *
+     * @return Model\Video
+     * @throws CouchDB\UpdateConflictException
+     */
+    public function importImage(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        string $imageName,
+        string $imageFilePath
+    ) {
+        // Compression state is determined by the given image type for now
+        $imageFileExtension = pathinfo($imageFilePath, PATHINFO_EXTENSION);
+        $lossless           = \strcasecmp($imageFileExtension, 'png') === 0;
+
+        // Images may be mostly treated like videos, als ffmpeg can handle image input as well :)
+        return $this->importVideo(
+            $organisation,
+            $project,
+            $imageName,
+            $imageFilePath,
+            $lossless
+        );
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
      * @param string                              $calibrationFilePath
      *
      * @return Model\CalibrationData
@@ -163,8 +197,7 @@ class VideoImporter
         AnnoStationBundleModel\Organisation $organisation,
         Model\Project $project,
         string $calibrationFilePath
-    )
-    {
+    ) {
         $calibrationName = basename($calibrationFilePath);
 
         $this->calibrationFileConverter->setCalibrationData($calibrationFilePath);
@@ -197,322 +230,6 @@ class VideoImporter
         }
 
         return $calibration;
-    }
-
-    /**
-     * @param AnnoStationBundleModel\Organisation $organisation
-     * @param string                              $name        The name for the video (usually the basename).
-     * @param string                              $projectName
-     * @param string                              $path        The filesystem path to the video file.
-     * @param string                              $calibrationFile
-     * @param bool                                $isObjectLabeling
-     * @param bool                                $isMetaLabeling
-     * @param array                               $labelInstructions
-     * @param bool                                $lossless    Wether or not the UI should use lossless compressed images.
-     * @param int                                 $splitLength Create tasks for each $splitLength time of the video (in seconds, 0 = no split).
-     * @param int|null                            $minimalVisibleShapeOverflow
-     * @param array                               $drawingToolOptions
-     * @param int                                 $frameSkip
-     * @param int                                 $startFrame
-     * @param bool                                $review
-     * @param bool                                $revision
-     * @param Model\User                          $user
-     * @param bool                                $legacyExport
-     *
-     * @return Model\LabelingTask[]
-     * @throws \Exception
-     */
-    public function import(
-        AnnoStationBundleModel\Organisation $organisation,
-        $name,
-        $projectName,
-        $path,
-        $calibrationFile,
-        $isObjectLabeling,
-        $isMetaLabeling,
-        $labelInstructions,
-        $lossless = false,
-        $splitLength = 0,
-        $minimalVisibleShapeOverflow = null,
-        $drawingToolOptions = array(),
-        $frameSkip = 1,
-        $startFrame = 1,
-        $review = false,
-        $revision = false,
-        Model\User $user = null,
-        $legacyExport = false
-    ) {
-        $video = new Model\Video($organisation, $name);
-        $video->setMetaData($this->metaDataReader->readMetaData($path));
-        if ($calibrationFile !== null) {
-            $this->calibrationFileConverter->setCalibrationData($calibrationFile);
-            $calibrationData = new Model\CalibrationData($organisation, $name);
-            $calibrationData->setRawCalibration($this->calibrationFileConverter->getRawData());
-            $calibrationData->setCameraMatrix($this->calibrationFileConverter->getCameraMatrix());
-            $calibrationData->setRotationMatrix($this->calibrationFileConverter->getRotationMatrix());
-            $calibrationData->setTranslation($this->calibrationFileConverter->getTranslation());
-            $calibrationData->setDistortionCoefficients($this->calibrationFileConverter->getDistortionCoefficients());
-
-            $this->calibrationDataFacade->save($calibrationData);
-            $video->setCalibrationId($calibrationData->getId());
-        }
-        $this->videoFacade->save($video, $path);
-
-        $project = $this->projectFacade->findByName($projectName);
-        if ($project === null) {
-            $labelingValidationProcesses = [];
-            if ($review) {
-                $labelingValidationProcesses[] = 'review';
-            }
-            if ($revision) {
-                $labelingValidationProcesses[] = 'revision';
-            }
-            $project = new Model\Project(
-                $projectName,
-                $organisation,
-                null,
-                null,
-                null,
-                $labelingValidationProcesses,
-                $frameSkip,
-                $startFrame,
-                $splitLength
-            );
-            if ($legacyExport) {
-                $project->setAvailableExports(['legacy']);
-                foreach ($labelInstructions as $labelInstruction) {
-                    $project->addLegacyTaskInstruction(
-                        $labelInstruction['instruction'],
-                        $labelInstruction['drawingTool']
-                    );
-                }
-            } else {
-                $project->setAvailableExports(['genericXml']);
-                foreach ($labelInstructions as $labelInstruction) {
-                    $project->addGenericXmlTaskInstruction(
-                        $labelInstruction['instruction'],
-                        $labelInstruction['taskConfiguration']
-                    );
-                }
-            }
-            $this->projectFacade->save($project);
-        }
-
-        $imageTypes = $this->getImageTypes($lossless);
-
-        foreach ($imageTypes as $imageTypeName) {
-            $video->setImageType($imageTypeName, 'converted', false);
-            $this->videoFacade->update();
-            $job = new Jobs\VideoFrameSplitter(
-                $video->getId(),
-                $video->getSourceVideoPath(),
-                ImageType\Base::create($imageTypeName)
-            );
-
-            $amqpFacade = $this->facadeAMQP;
-            $amqpFacade->addJob($job, $amqpFacade::LOW_PRIO);
-        }
-
-        $framesPerVideoChunk = $video->getMetaData()->numberOfFrames;
-        if ($splitLength > 0) {
-            $framesPerVideoChunk = min($framesPerVideoChunk, round($splitLength * $video->getMetaData()->fps));
-        }
-
-        $tasks = [];
-
-        $videoFrameMapping = range(
-            (int) $startFrame,
-            (int) $video->getMetaData()->numberOfFrames,
-            $frameSkip
-        );
-
-        $frameMappingChunks = [];
-        while (count($videoFrameMapping) > 0) {
-            $frameMappingChunks[] = array_splice($videoFrameMapping, 0, round($framesPerVideoChunk / $frameSkip));
-        }
-
-        foreach ($frameMappingChunks as $frameNumberMapping) {
-            $frameRange = new Model\FrameNumberRange(
-                1,
-                $video->getMetaData()->numberOfFrames
-            );
-            $metadata   = array(
-                'frameRange'       => $frameRange,
-                'frameSkip'        => $frameSkip,
-                'startFrameNumber' => $startFrame,
-            );
-
-            if ($isMetaLabeling) {
-                $tasks[] = $this->addTask(
-                    $video,
-                    $project,
-                    $frameNumberMapping,
-                    Model\LabelingTask::TYPE_META_LABELING,
-                    null,
-                    [],
-                    $imageTypes,
-                    null,
-                    null,
-                    $drawingToolOptions,
-                    $metadata,
-                    $review,
-                    $revision,
-                    null
-                );
-            }
-
-            if ($isObjectLabeling) {
-                foreach ($labelInstructions as $labelInstruction) {
-                    if ($labelInstruction['taskConfiguration'] !== null) {
-                        $taskConfiguration = $this->taskConfigurationFacade->find(
-                            $labelInstruction['taskConfiguration']
-                        );
-                        if ($taskConfiguration === null) {
-                            throw new \Exception(
-                                'No Task Configuration found for ' . $labelInstruction['taskConfiguration']
-                            );
-                        }
-                        if ($user === null || $user->getId() !== $taskConfiguration->getUserId()) {
-                            throw new \Exception('This User is not allowed to use this Task Configuration.');
-                        }
-                    }
-                    $predefinedClasses = [];
-                    if ($labelInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
-                        $predefinedClasses = ['parked-car'];
-                    }
-                    $tasks[] = $this->addTask(
-                        $video,
-                        $project,
-                        $frameNumberMapping,
-                        Model\LabelingTask::TYPE_OBJECT_LABELING,
-                        $labelInstruction['drawingTool'],
-                        $predefinedClasses,
-                        $imageTypes,
-                        $labelInstruction['instruction'],
-                        $minimalVisibleShapeOverflow,
-                        $drawingToolOptions,
-                        $metadata,
-                        $review,
-                        $revision,
-                        $labelInstruction['taskConfiguration']
-                    );
-                }
-            }
-        }
-
-        return $tasks;
-    }
-
-    /**
-     * Add a LabelingTask
-     *
-     * @param Model\Video      $video
-     * @param Model\Project    $project
-     * @param                  $frameNumberMapping
-     * @param string           $taskType
-     * @param string|null      $drawingTool
-     * @param string[]         $predefinedClasses
-     * @param                  $imageTypes
-     * @param                  $instruction
-     * @param int|null         $minimalVisibleShapeOverflow
-     * @param                  $drawingToolOptions
-     * @param                  $metadata
-     * @param                  $review
-     * @param                  $revision
-     * @param                  $taskConfigurationId
-     *
-     * @return Model\LabelingTask
-     */
-    private function addTask(
-        Model\Video $video,
-        Model\Project $project,
-        $frameNumberMapping,
-        $taskType,
-        $drawingTool,
-        $predefinedClasses,
-        $imageTypes,
-        $instruction,
-        $minimalVisibleShapeOverflow,
-        $drawingToolOptions,
-        $metadata,
-        $review,
-        $revision,
-        $taskConfigurationId
-    ) {
-        switch ($instruction) {
-            case Model\LabelingTask::INSTRUCTION_LANE:
-            case Model\LabelingTask::INSTRUCTION_PARKED_CARS:
-                $hideAttributeSelector = true;
-                break;
-            default:
-                $hideAttributeSelector = false;
-        }
-
-        if ($taskConfigurationId === null) {
-            $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction(
-                $taskType,
-                $instruction
-            );
-            $labelStructureUi = $this->labelStructureService->getLabelStructureUiForTypeAndInstruction(
-                $taskType,
-                $instruction
-            );
-        } else {
-            $taskConfiguration     = $this->taskConfigurationFacade->find($taskConfigurationId);
-            $taskConfigurationJson = $taskConfiguration->getJson();
-            $labelStructure        = $taskConfigurationJson['labelStructure'];
-            $labelStructureUi      = $taskConfigurationJson['labelStructureUi'];
-            // Replacing the drawingTool with the given drawingTool from the task configuration
-            $drawingTool = $taskConfigurationJson['drawingTool'];
-        }
-
-        $labelingTask = new Model\LabelingTask(
-            $video,
-            $project,
-            $frameNumberMapping,
-            $taskType,
-            $drawingTool,
-            $predefinedClasses,
-            $imageTypes,
-            null,
-            $hideAttributeSelector,
-            $taskConfigurationId
-        );
-
-        $labelingTask->setDescriptionTitle('Identify the person');
-        $labelingTask->setDescriptionText(
-            'How is the view on the person? ' .
-            'Which side does one see from the person and from which side is the person entering the screen?'
-        );
-
-        $labelingTask->setLabelStructure(
-            $labelStructure
-        );
-        $labelingTask->setLabelStructureUi(
-            $labelStructureUi
-        );
-        $labelingTask->setLabelInstruction($instruction);
-
-        $labelingTask->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);
-        $labelingTask->setDrawingToolOptions($drawingToolOptions);
-        $labelingTask->setMetaData($metadata);
-
-        if ($review) {
-            $labelingTask->setStatus(
-                Model\LabelingTask::PHASE_REVIEW,
-                Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
-            );
-        }
-        if ($revision) {
-            $labelingTask->setStatus(
-                Model\LabelingTask::PHASE_REVISION,
-                Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
-            );
-        }
-
-        $this->labelingTaskFacade->save($labelingTask);
-
-        return $labelingTask;
     }
 
     /**

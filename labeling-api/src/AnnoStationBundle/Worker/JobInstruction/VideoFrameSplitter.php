@@ -2,18 +2,18 @@
 
 namespace AnnoStationBundle\Worker\JobInstruction;
 
+use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\Video as VideoService;
+use AnnoStationBundle\Worker\Jobs;
+use AppBundle\Model;
+use AppBundle\Model\Video\ImageType;
 use crosscan\Logger;
 use crosscan\WorkerPool;
 use crosscan\WorkerPool\Job;
-use AnnoStationBundle\Service\Video as VideoService;
-use AnnoStationBundle\Worker\Jobs;
-use AnnoStationBundle\Database\Facade;
-use AppBundle\Model;
+use Doctrine\ODM\CouchDB;
 use Hagl\WorkerPoolBundle\JobInstruction;
 use League\Flysystem;
-use Doctrine\ODM\CouchDB;
-use AppBundle\Model\Video\ImageType;
-use AnnoStationBundle\Service;
 
 class VideoFrameSplitter extends JobInstruction
 {
@@ -89,7 +89,6 @@ class VideoFrameSplitter extends JobInstruction
      */
     protected function runJob(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
     {
-        $tmpFile = tempnam($this->cacheDir, 'source_video');
 
         try {
             /** @var Model\Video $video */
@@ -100,16 +99,14 @@ class VideoFrameSplitter extends JobInstruction
                 throw new \RuntimeException("Video '{$job->videoId}' could not be found");
             }
 
-            if ($tmpFile === false) {
-                throw new \RuntimeException('Error creating temporary file for video data');
-            }
+            $tmpFile = $this->createTemporaryFileForVideo($video);
 
             if (file_put_contents($tmpFile, $this->videoCdnService->getVideo($video)) === false) {
                 throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
             }
 
             $frameSizesInBytes = $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
-            $imageSizes = $this->videoFrameSplitter->getImageSizes();
+            $imageSizes        = $this->videoFrameSplitter->getImageSizes();
 
             $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1], $frameSizesInBytes);
 
@@ -121,7 +118,7 @@ class VideoFrameSplitter extends JobInstruction
                 $task->setStatusIfAllImagesAreConverted($video);
                 $this->labelingTaskFacade->save($task);
             }
-            foreach(array_unique($projectIds) as $projectId) {
+            foreach (array_unique($projectIds) as $projectId) {
                 $project = $this->projectFacade->find($projectId);
                 $this->updateProject($project, $project->getDiskUsageInBytes() + array_sum($frameSizesInBytes));
             }
@@ -177,6 +174,36 @@ class VideoFrameSplitter extends JobInstruction
             );
             $this->labelingTaskFacade->save($task);
         }
+    }
+
+    /**
+     * Create a temporary file and return its filepath for the given video
+     *
+     * The temporary file will have the same file extension as the original video.
+     *
+     * @param Model\Video $video
+     *
+     * @return string
+     */
+    private function createTemporaryFileForVideo(Model\Video $video)
+    {
+        $videoFileExtension = \pathinfo($video->getName(), PATHINFO_EXTENSION);
+
+        $tmpFile = null;
+        do {
+            $tmpFile = $this->cacheDir
+                . '/'
+                . 'source_video_'
+                . \hash('sha256', \openssl_random_pseudo_bytes(256 / 8))
+                . '.'
+                . $videoFileExtension;
+        } while (\file_exists($tmpFile));
+
+        if (\touch($tmpFile) === false) {
+            throw new \RuntimeException('Error creating temporary file for video data');
+        };
+
+        return $tmpFile;
     }
 
     /**
