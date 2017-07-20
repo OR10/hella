@@ -117,19 +117,6 @@
             <tag name="console.command"/>
         </service>
 
-        <service id="annostation.labeling_api.command.migrations.add_default_organisation"
-                 class="AnnoStationBundle\Command\Migrations\AddDefaultOrganisation">
-            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
-            <tag name="console.command"/>
-        </service>
-
         <service id="annostation.labeling_api.command.migrations.task_documents_to_task_database"
                  class="AnnoStationBundle\Command\Migrations\TaskDocumentsToTaskDatabase">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
