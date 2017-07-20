@@ -36,6 +36,7 @@
         },
         {
           "id": "LABELED-THING-IN-FRAME-ID-1",
+          "identifierName": "sign",
           "rev": "2-b65227715b51dadd97f8521646e88a22",
           "frameIndex": 1,
           "classes": [],
@@ -70,6 +71,7 @@
         },
         {
           "id": null,
+          "identifierName": "sign",
           "rev": null,
           "frameIndex": 2,
           "classes": [],
@@ -104,6 +106,7 @@
         },
         {
           "id": null,
+          "identifierName": "sign",
           "rev": null,
           "frameIndex": 3,
           "classes": [],
@@ -138,6 +141,7 @@
         },
         {
           "id": null,
+          "identifierName": "sign",
           "rev": null,
           "frameIndex": 4,
           "classes": [],
