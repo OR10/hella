@@ -147,12 +147,6 @@ class TaskCreator
             $calibrationData     = null;
             $imageTypes          = array_keys($video->getImageTypes());
             $framesPerVideoChunk = $video->getMetaData()->numberOfFrames;
-            $videoFrameMapping   = [];
-            if ($video->getMetaData()->numberOfFrames >= ($startFrameNumber + $frameSkip)) {
-                $videoFrameMapping = range($startFrameNumber, $video->getMetaData()->numberOfFrames, $frameSkip);
-            } elseif ($video->getMetaData()->numberOfFrames >= $startFrameNumber) {
-                $videoFrameMapping = [$startFrameNumber];
-            }
             $frameMappingChunks  = [];
 
             $legacyDrawingTools     = array_map(
@@ -198,11 +192,30 @@ class TaskCreator
                 $framesPerVideoChunk = min($framesPerVideoChunk, round($splitLength * $video->getMetaData()->fps));
             }
 
-            while (count($videoFrameMapping) > 0) {
-                $frameMappingChunks[] = array_splice($videoFrameMapping, 0, round($framesPerVideoChunk / $frameSkip));
-            }
+            if ($video->getMetaData()->format === 'image2' && $video->getMetaData()->numberOfFrames === 1) {
+                $frameMappingChunks = [[1]];
+                $frameRange = new Model\FrameNumberRange(1, 1);
 
-            foreach ($frameMappingChunks as $frameNumberMapping) {
+                $metadata = [
+                    'frameRange'       => $frameRange,
+                    'frameSkip'        => 1,
+                    'startFrameNumber' => 1,
+                ];
+            } else {
+                $videoFrameMapping = [];
+                if ($video->getMetaData()->numberOfFrames >= ($startFrameNumber + $frameSkip)) {
+                    $videoFrameMapping = range($startFrameNumber, $video->getMetaData()->numberOfFrames, $frameSkip);
+                } elseif ($video->getMetaData()->numberOfFrames >= $startFrameNumber) {
+                    $videoFrameMapping = [$startFrameNumber];
+                }
+                while (count($videoFrameMapping) > 0) {
+                    $frameMappingChunks[] = array_splice(
+                        $videoFrameMapping,
+                        0,
+                        round($framesPerVideoChunk / $frameSkip)
+                    );
+                }
+
                 $frameRange = new Model\FrameNumberRange(1, $video->getMetaData()->numberOfFrames);
 
                 $metadata = [
@@ -210,7 +223,9 @@ class TaskCreator
                     'frameSkip'        => $frameSkip,
                     'startFrameNumber' => $startFrameNumber,
                 ];
+            }
 
+            foreach ($frameMappingChunks as $frameNumberMapping) {
                 foreach ($project->getLegacyTaskInstructions() as $legacyTaskInstruction) {
                     $predefinedClasses = [];
                     if ($legacyTaskInstruction['instruction'] === Model\LabelingTask::INSTRUCTION_PARKED_CARS) {
