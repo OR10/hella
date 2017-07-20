@@ -76,11 +76,6 @@
             <argument type="service" id="annostation.labeling_api.service.label_importer.simple_xml"/>
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.labeling_task_remove_predefined_classes"
-                 class="AnnoStationBundle\Command\LabelingTaskRemovePredefinedClasses">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <tag name="console.command"/>
-        </service>
         <service id="annostation.labeling_api.command.add_default_project_user_id"
                  class="AnnoStationBundle\Command\AddDefaultProjectUserId">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
