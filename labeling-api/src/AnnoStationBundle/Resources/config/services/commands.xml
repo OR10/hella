@@ -83,12 +83,6 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.migrations.add_prefix_to_username_and_email"
-                 class="AnnoStationBundle\Command\Migrations\AddPrefixToUsernameAndEmail"
-        >
-            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
-            <tag name="console.command"/>
-        </service>
         <service id="annostation.labeling_api.command.migrations.set_missing_project_ids_to_labeled_thing_in_frames"
                  class="AnnoStationBundle\Command\Migrations\SetMissingProjectIdsToLabeledThingInFrames">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
