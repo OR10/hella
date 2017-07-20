@@ -62,12 +62,6 @@
                  class="AnnoStationBundle\Command\CreateLabelStructure">
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.video_calibration_to_calibration_doc"
-                 class="AnnoStationBundle\Command\VideoCalibrationToCalibrationDoc">
-            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
-            <tag name="console.command"/>
-        </service>
         <service id="annostation.labeling_api.command.import_labeling_csv_file"
                  class="AnnoStationBundle\Command\ImportLabelingCsvFile">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
