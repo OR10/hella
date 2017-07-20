@@ -39,6 +39,9 @@ class OrganisationListController {
    * @param {String} id
    */
   editOrganisation(id) {
+    if (this.userPermissions.canEditOrganisation !== true) {
+      return;
+    }
     this._$state.go('labeling.organisation-management.detail', {organisationId: id});
   }
 }
