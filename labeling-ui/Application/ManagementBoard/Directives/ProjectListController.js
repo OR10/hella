@@ -97,6 +97,11 @@ class ProjectListController {
      */
     this._currentItemsPerPage = 0;
 
+    /**
+     * @type {{}}
+     */
+    this.projectCreators = {};
+
     // Reload upon request
     this._$scope.$on('project-list:reload-requested', () => {
       this.updatePage(this._currentPage, this._currentItemsPerPage);
@@ -139,11 +144,8 @@ class ProjectListController {
           return project;
         });
 
-        this._userGateway.getUsers().then(users => {
-          this._users = users;
-          this.projects = this._createViewData(response.result);
-          this.columns = this._buildColumns(this.projects[0]);
-        });
+        this.projects = this._createViewData(response.result);
+        this.columns = this._buildColumns(this.projects[0]);
 
         this.loadingInProgress = false;
       });
@@ -166,7 +168,18 @@ class ProjectListController {
   exportProject(projectId) {
     this._$state.go('labeling.reporting.export', {projectId});
   }
-
+  
+  /**
+   * @param {string} id
+   */
+  getUsernameForId(id) {
+    if (this.projectCreators[id] === undefined) {
+      this._userGateway.getUser(id).then(user => {
+        this.projectCreators[id] = user;
+      });
+    }
+  }
+  
   /**
    * @param {string} projectId
    * @param {string} projectName
@@ -621,7 +634,7 @@ class ProjectListController {
       },
       'frameCount': project => project.totalFrames !== undefined ? project.totalFrames : null,
       'projectOwnerIsCurrentUser': project => { return this._projectOwnerIsCurrentUser(project); },
-      'projectOwner': project => {
+      /*'projectOwner': project => {
         if (this._projectOwnerIsCurrentUser(project)) {
           return this.user.username;
         }
@@ -631,6 +644,7 @@ class ProjectListController {
         }
         return creator.username;
       },
+      */
     };
 
     return projects.map(project => {

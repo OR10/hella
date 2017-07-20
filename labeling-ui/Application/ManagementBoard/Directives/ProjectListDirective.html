@@ -51,8 +51,8 @@
                    class="fa fa-warning" tooltip="Failed to create {{project.taskFailedCount}} tasks."></i>
             </td>
 
-            <td class="action-cell" ng-click="$event.stopPropagation()">
-                <button tooltip="{{project.projectOwnerIsCurrentUser ? 'Upload Videos' : 'Only ' + project.projectOwner + ' can upload videos'}}"
+            <td class="action-cell" ng-click="$event.stopPropagation()" ng-init="vm.getUsernameForId(project.userId)">
+                <button tooltip="{{project.projectOwnerIsCurrentUser ? 'Upload Videos' : 'Only ' + vm.projectCreators[project.userId].username + ' can upload videos'}}"
                         ng-if="vm.userPermissions.canUploadNewVideo && project.status == 'todo'"
                         ng-click="project.projectOwnerIsCurrentUser && vm.goToUploadPage(project.id)"
                         ng-class="!project.projectOwnerIsCurrentUser ? 'disabled': ''"
