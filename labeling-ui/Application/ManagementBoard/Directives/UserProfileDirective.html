@@ -48,7 +48,7 @@
                 ng-style="{'border-bottom': !vm.isOrganisationExpanded ? '2px solid #D7DDE4' : 'none' }"
             >
                 <td>Organisation</td>
-                <td>
+                <td ng-click="vm.clickAngle()">
                    <span class="organisation-tag" ng-repeat="userOrganisation in vm.userOrganisations">
                        {{userOrganisation.name}}
                        <span
@@ -61,7 +61,6 @@
                    <span class="pull-right">
                        <i
                            class="fa"
-                           ng-click="vm.clickAngle()"
                            ng-class="vm.getIconForAngleState()"
                            ng-style="{color: vm.isOrganisationExpanded == true ? '#BFDB31' : ''} "
                        ></i>
