@@ -63,12 +63,6 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.migrations.convert_preporcessing_phase"
-                 class="AnnoStationBundle\Command\Migrations\ConvertPreporcessingPhase"
-        >
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <tag name="console.command"/>
-        </service>
         <service id="annostation.labeling_api.command.redeliver_failed_processed_videos"
                  class="AnnoStationBundle\Command\RedeliverFailedProcessedVideos"
         >
