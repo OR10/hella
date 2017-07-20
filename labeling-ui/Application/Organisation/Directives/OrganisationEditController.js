@@ -60,21 +60,19 @@ class OrganisationEditController {
    * Update the organisation name and persist organisation in the backend
    */
   saveChanges() {
-    if (this.userPermissions.canCreateOrganisation !== true || this.userPermissions.canEditOrganisation !== true) {
-      return;
-    }
-
     this.loadingInProgress = true;
 
-    if (this.createMode) {
+    if (this.createMode && this.userPermissions.canCreateOrganisation === true) {
       this._createNewOrganisation();
-    } else {
+    } else if (this.userPermissions.canEditOrganisation === true) {
       this.selectedOrganisation.name = this.userInput;
       this.selectedOrganisation.quota = this._calculateBytes(this.quota, this.unit);
       this.selectedOrganisation.userQuota = this.userQuota;
 
       this._organisationGateway.updateOrganisation(this.selectedOrganisation)
           .then(() => this._goToOrganisationList());
+    } else {
+      this.loadingInProgress = false;
     }
   }
 
