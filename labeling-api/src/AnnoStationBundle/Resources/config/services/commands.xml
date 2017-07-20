@@ -62,13 +62,6 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.migrations.redeliver_unconverted_videos"
-                 class="AnnoStationBundle\Command\Migrations\RedeliverUnconvertedVideos"
-        >
-            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
-            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
-            <tag name="console.command"/>
-        </service>
         <service id="annostation.labeling_api.command.remove_labeling_tasks"
                  class="AnnoStationBundle\Command\RemoveLabelingTasks">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
