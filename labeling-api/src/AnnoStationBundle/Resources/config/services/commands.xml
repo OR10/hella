@@ -37,16 +37,7 @@
             <argument>%couchdb_user_read_only%</argument>
             <tag name="console.command"/>
         </service>
-        
-        <service id="annostation.labeling_api.command.import_labeling_csv_file"
-                 class="AnnoStationBundle\Command\ImportLabelingCsvFile">
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.service.label_structure"/>
-            <argument type="service" id="annostation.labeling_api.service.label_importer.csv"/>
-            <tag name="console.command"/>
-        </service>
+
         <service id="annostation.labeling_api.command.project.cleanup_batch_upload_directory"
                  class="AnnoStationBundle\Command\Project\CleanupBatchUploadDirectory">
             <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
