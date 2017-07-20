@@ -57,11 +57,6 @@
             <argument type="service" id="annostation.labeling_api.service.label_importer.csv"/>
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.import_label_data_file"
-                 class="AnnoStationBundle\Command\ImportLabelData">
-            <argument type="service" id="annostation.labeling_api.service.label_importer.simple_xml"/>
-            <tag name="console.command"/>
-        </service>
         <service id="annostation.labeling_api.command.add_default_project_user_id"
                  class="AnnoStationBundle\Command\AddDefaultProjectUserId">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
