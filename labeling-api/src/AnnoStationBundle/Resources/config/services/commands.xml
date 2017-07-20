@@ -85,11 +85,6 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.migrations.deleted_flag_to_status_history"
-                 class="AnnoStationBundle\Command\Migrations\DeletedFlagToStatusHistory">
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <tag name="console.command"/>
-        </service>
         <service id="annostation.labeling_api.command.remove_labeling_tasks"
                  class="AnnoStationBundle\Command\RemoveLabelingTasks">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
