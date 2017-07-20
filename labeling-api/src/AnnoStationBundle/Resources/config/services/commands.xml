@@ -45,13 +45,13 @@
         </service>
 
         <service id="annostation.labeling_api.command.warmup_couchdb_views"
-                 class="AnnoStationBundle\Command\WarmUpCouchDbViews">
+                 class="AnnoStationBundle\Command\CouchDb\WarmUpCouchDbViews">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <tag name="console.command"/>
         </service>
 
         <service id="annostation.labeling_api.command.couch_db_view_maintainer"
-                 class="AnnoStationBundle\Command\CouchDbViewMaintainer">
+                 class="AnnoStationBundle\Command\CouchDb\CouchDbViewMaintainer">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <tag name="console.command"/>
         </service>

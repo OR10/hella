@@ -1,9 +1,10 @@
 <?php
 
-namespace AnnoStationBundle\Command;
+namespace AnnoStationBundle\Command\CouchDb;
 
 use Doctrine\ODM\CouchDB;
 use Symfony\Component\Console;
+use AnnoStationBundle\Command;
 
 /**
  * Simple console command that can be used during deployment to warm up newly defined couchdb views.
@@ -15,7 +16,7 @@ use Symfony\Component\Console;
  * WARNING: However, we still can't just replace an existing view because it may be still in use during this warm up
  *          which has to be executed after updating the design documents.
  */
-class WarmUpCouchDbViews extends Base
+class WarmUpCouchDbViews extends Command\Base
 {
     /**
      * @var CouchDB\DocumentManager

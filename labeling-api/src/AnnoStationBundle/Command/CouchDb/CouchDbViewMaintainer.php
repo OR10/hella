@@ -1,12 +1,13 @@
 <?php
 
-namespace AnnoStationBundle\Command;
+namespace AnnoStationBundle\Command\CouchDb;
 
 use Doctrine\ODM\CouchDB;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input;
+use AnnoStationBundle\Command;
 
-class CouchDbViewMaintainer extends Base
+class CouchDbViewMaintainer extends Command\Base
 {
     /**
      * @var CouchDB\DocumentManager
