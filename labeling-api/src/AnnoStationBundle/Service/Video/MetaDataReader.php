@@ -25,13 +25,13 @@ class MetaDataReader
     /**
      * Read and set the meta data for the given video.
      *
-     * @param $filename
+     * @param string $filename
      *
      * @return Model\Video\MetaData
      *
      * @throws Exception\MetaDataReader
      */
-    public function readMetaData($filename)
+    public function readMetaData(string $filename): Model\Video\MetaData
     {
         $json = json_decode($this->runCommand($this->getCommand($filename)), true);
 
@@ -43,13 +43,22 @@ class MetaDataReader
 
         $videoStreamData = $this->getFirstVideoStream($json);
 
-        $metaData->raw            = $json;
-        $metaData->format         = $this->getArrayKey($json['format'], 'format_name');
-        $metaData->sizeInBytes    = $this->getArrayKey($json['format'], 'size');
-        $metaData->width          = $this->getArrayKey($videoStreamData, 'width');
-        $metaData->height         = $this->getArrayKey($videoStreamData, 'height');
-        $metaData->duration       = $this->getArrayKey($videoStreamData, 'duration');
-        $metaData->numberOfFrames = $this->getArrayKey($videoStreamData, 'nb_frames');
+        $metaData->raw         = $json;
+        $metaData->format      = $this->getArrayKey($json['format'], 'format_name');
+        $metaData->width       = $this->getArrayKey($videoStreamData, 'width');
+        $metaData->height      = $this->getArrayKey($videoStreamData, 'height');
+        $metaData->duration    = $this->getArrayKey($videoStreamData, 'duration');
+
+        // Single images do not always provide a filesize in the `ffprobe` result.
+        // Therefore we simple query the filesystem directly.
+        $metaData->sizeInBytes = filesize($filename);
+
+        // Single frame formats (like images) do not have a frame count set.
+        try {
+            $metaData->numberOfFrames = $this->getArrayKey($videoStreamData, 'nb_frames');
+        } catch(Exception\MetaDataReader $e) {
+            $metaData->numberOfFrames = 1;
+        }
 
         $metaData->fps = (int) $metaData->numberOfFrames / $metaData->duration;
 
@@ -58,8 +67,10 @@ class MetaDataReader
 
     /**
      * @param string $commandline
+     *
+     * @return string
      */
-    protected function runCommand($commandline)
+    protected function runCommand(string $commandline): string
     {
         $process = new Process\Process($commandline);
         $process->setTimeout(10);
@@ -70,13 +81,21 @@ class MetaDataReader
 
     /**
      * @param string $sourceFileFilename
+     *
+     * @return string
      */
-    private function getCommand($sourceFileFilename)
+    private function getCommand(string $sourceFileFilename): string
     {
         return sprintf(self::COMMANDLINE, $this->ffprobeExecutable, $sourceFileFilename);
     }
 
-    private function getFirstVideoStream(array $json)
+    /**
+     * @param array $json
+     *
+     * @return array
+     * @throws Exception\MetaDataReader
+     */
+    private function getFirstVideoStream(array $json): array
     {
         foreach ($json['streams'] as $stream) {
             if ($stream['codec_type'] === 'video') {
@@ -87,7 +106,14 @@ class MetaDataReader
         throw new Exception\MetaDataReader('no video stream found');
     }
 
-    private function getArrayKey(array $array, $key)
+    /**
+     * @param array  $array
+     * @param string $key
+     *
+     * @return mixed
+     * @throws Exception\MetaDataReader
+     */
+    private function getArrayKey(array $array, string $key)
     {
         if (isset($array[$key])) {
             return $array[$key];

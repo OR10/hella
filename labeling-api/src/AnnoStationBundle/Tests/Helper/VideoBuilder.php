@@ -33,6 +33,11 @@ class VideoBuilder
     private $organisation;
 
     /**
+     * @var string
+     */
+    private $format = 'avi';
+
+    /**
      * Declare private constructor to enforce usage of fluent interface.
      *
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -77,11 +82,27 @@ class VideoBuilder
     }
 
     /**
+     * @param string $format
+     *
+     * @return $this
+     */
+    public function withFormat(string $format)
+    {
+        $this->format = $format;
+
+        return $this;
+    }
+
+    /**
      * @param int $numberOfFrames
+     *
+     * @return $this
      */
     public function withNumberOfFrames(int $numberOfFrames)
     {
         $this->numberOfFrames = $numberOfFrames;
+
+        return $this;
     }
 
     /**
@@ -109,6 +130,7 @@ class VideoBuilder
 
         $metadata = new Model\Video\MetaData();
         $metadata->numberOfFrames = $this->numberOfFrames;
+        $metadata->format         = $this->format;
 
         $video->setMetaData($metadata);
 
