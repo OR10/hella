@@ -44,13 +44,6 @@
             <argument type="service" id="annostation.labeling_api.service.task_creator"/>
             <tag name="console.command"/>
         </service>
-        <service id="annostation.labeling_api.command.import_videos_command" class="AnnoStationBundle\Command\ImportVideos">
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
-            <argument type="service" id="annostation.labeling_api.service.task_creator"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
-            <tag name="console.command"/>
-        </service>
 
         <service id="annostation.labeling_api.command.project_to_project_task_mover"
                  class="AnnoStationBundle\Command\ProjectToProjectTaskMover">
