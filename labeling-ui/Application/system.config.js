@@ -97,11 +97,12 @@ System.config({
     "ng-flow": "github:flowjs/ng-flow@2.7.4",
     "paper": "github:jdworschak/paper.js@0.9.24-mouseevent-patch",
     "pouchdb": "github:pouchdb/pouchdb@6.3.4",
+    "pouchdb-wrappers": "github:jakobwesthoff/pouchdb-wrappers@taskqueue-race",
     "raf": "npm:raf@3.1.0",
     "splitjs": "github:nathancahill/Split.js@1.0.6",
     "text": "github:systemjs/plugin-text@0.0.9",
     "three-math": "npm:three-math@0.69.0",
-    "transform-pouch": "npm:transform-pouch@1.1.3",
+    "transform-pouch": "github:jakobwesthoff/transform-pouch@pouchdb-6.3.4-compatibility",
     "urijs": "npm:urijs@1.18.10",
     "uuid": "npm:uuid@2.0.1",
     "v-accordion": "npm:v-accordion@1.4.1",
@@ -123,6 +124,22 @@ System.config({
     "github:flowjs/ng-flow@2.7.4": {
       "angular": "github:angular/bower-angular@1.4.8",
       "flow.js": "github:flowjs/flow.js@2.11.2"
+    },
+    "github:jakobwesthoff/pouchdb-wrappers@taskqueue-race": {
+      "promise-nodify": "npm:promise-nodify@1.0.2"
+    },
+    "github:jakobwesthoff/transform-pouch@pouchdb-6.3.4-compatibility": {
+      "argsarray": "npm:argsarray@0.0.1",
+      "es3ify": "npm:es3ify@0.2.2",
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "immediate": "npm:immediate@3.0.6",
+      "inherits": "npm:inherits@2.0.1",
+      "lie": "npm:lie@3.0.4",
+      "pouchdb-extend": "npm:pouchdb-extend@0.1.2",
+      "pouchdb-promise": "npm:pouchdb-promise@6.3.4",
+      "pouchdb-wrappers": "github:jakobwesthoff/pouchdb-wrappers@taskqueue-race",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "querystring": "github:jspm/nodelibs-querystring@0.1.0"
     },
     "github:jdworschak/paper.js@0.9.24-mouseevent-patch": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
@@ -769,6 +786,10 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "unreachable-branch-transform": "npm:unreachable-branch-transform@0.3.0"
     },
+    "npm:lie@3.1.1": {
+      "immediate": "npm:immediate@3.0.6",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:miller-rabin@4.0.0": {
       "bn.js": "npm:bn.js@4.11.6",
       "brorand": "npm:brorand@1.1.0"
@@ -852,11 +873,8 @@ System.config({
     "npm:performance-now@0.2.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:pouchdb-promise@5.4.3": {
-      "lie": "npm:lie@3.0.4"
-    },
-    "npm:pouchdb-wrappers@1.3.6": {
-      "promise-nodify": "npm:promise-nodify@1.0.2"
+    "npm:pouchdb-promise@6.3.4": {
+      "lie": "npm:lie@3.1.1"
     },
     "npm:process@0.11.10": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
@@ -1029,17 +1047,6 @@ System.config({
       "systemjs-json": "github:systemjs/plugin-json@0.1.2",
       "url": "github:jspm/nodelibs-url@0.1.0",
       "util": "github:jspm/nodelibs-util@0.1.0"
-    },
-    "npm:transform-pouch@1.1.3": {
-      "argsarray": "npm:argsarray@0.0.1",
-      "es3ify": "npm:es3ify@0.2.2",
-      "immediate": "npm:immediate@3.0.6",
-      "inherits": "npm:inherits@2.0.1",
-      "lie": "npm:lie@3.0.4",
-      "pouchdb-extend": "npm:pouchdb-extend@0.1.2",
-      "pouchdb-promise": "npm:pouchdb-promise@5.4.3",
-      "pouchdb-wrappers": "npm:pouchdb-wrappers@1.3.6",
-      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:tunnel-agent@0.4.1": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
