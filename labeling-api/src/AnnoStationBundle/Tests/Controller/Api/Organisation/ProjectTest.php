@@ -538,7 +538,8 @@ class ProjectTest extends Tests\WebTestCase
 
     public function testGetProjectsForClientReturnsOwnProjects()
     {
-        $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation);
+        $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
+            ->withProjectOwnedByUserId($this->client->getId());
 
         $project = $this->projectFacade->save(
             $projectBuilder->withProjectOwnedByUserId($this->client->getId())->build()
@@ -555,11 +556,11 @@ class ProjectTest extends Tests\WebTestCase
                     $projectBuilder
                         ->withId($project->getId())
                         ->withCreationDate(date_create()->setTimestamp($project->getCreationDate()))
+                        ->withProjectOwnedByUserId($this->client->getId())
                         ->buildArray(),
                 ]
             )
             ->build();
-
         $this->assertEquals($expectedResponseBody, $responseBody);
     }
 
