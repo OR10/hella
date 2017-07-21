@@ -100,10 +100,12 @@ describe('Metalabeling', () => {
       })
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(150))
-        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(['Sign type']))
+        .then(() => labelSelectorHelper.getTitleTexts())
+        .then(titleTexts => expect(titleTexts).toEqual(['Sign type']))
         .then(() => metaLabelingButton.click())
         .then(() => browser.sleep(150))
-        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(['Time']))
+        .then(() => labelSelectorHelper.getTitleTexts())
+        .then(titleTexts => expect(titleTexts).toEqual(['Time']))
         .then(() => done());
     });
   });

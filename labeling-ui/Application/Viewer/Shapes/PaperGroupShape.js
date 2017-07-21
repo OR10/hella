@@ -21,6 +21,12 @@ class PaperGroupShape extends PaperShape {
   }
 
   /**
+   * Is called when the linked shape is modified to redraw all necessary group parts
+   */
+  update() {
+  }
+
+  /**
    * @return {boolean}
    */
   canBeInterpolated() {

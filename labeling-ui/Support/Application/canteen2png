@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-require('babel/register');
+require('babel-register');
 
 const fs = require('fs');
 const program = require('commander');
-const CanteenStackRenderer = require('../CanteenStackRenderer');
+const CanteenStackRenderer = require('../CanteenStackRenderer').default;
 
 program
-  .version('1.0.0')
+  .version('1.0.1')
   .option('-b, --background', 'Background applied before rendering [rgb(0,0,0)]')
   .arguments('<canteen.json> <outputfile>')
   .action(function main(canteenJson, output) {

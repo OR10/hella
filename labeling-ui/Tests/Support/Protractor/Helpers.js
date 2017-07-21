@@ -32,13 +32,6 @@ function waitForApplicationReady() {
 }
 
 function getPouchDbCustomBootstrap(mocks) {
-  const knownIdentifierNames = [
-    'sign',
-    'lsr-01',
-    'thing-one',
-    'thing-two',
-    null,
-  ];
   let documents = [];
 
   mocks.forEach(mock => {
@@ -75,9 +68,6 @@ function getPouchDbCustomBootstrap(mocks) {
         ltif._id = ltif.id;
         ltif.taskId = taskId;
         ltif.projectId = projectId;
-        if (knownIdentifierNames.indexOf(ltif.identifierName) === -1) {
-          ltif.identifierName = 'legacy';
-        }
         ltif.type = 'AppBundle.Model.LabeledThingInFrame';
 
         delete ltif.id;
