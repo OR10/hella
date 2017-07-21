@@ -83,16 +83,10 @@ fdescribe('UploadFormController test suite', () => {
     let $flow;
 
     beforeEach(() => {
-      jasmine.clock().install();
-
       $flow = {
         files: [],
       };
       controller.$flow = $flow;
-    });
-
-    afterEach(() => {
-      jasmine.clock().uninstall();
     });
 
     it('removes the upload progress bar if upload was fine', () => {
@@ -103,7 +97,6 @@ fdescribe('UploadFormController test suite', () => {
       controller.uploadComplete();
       rootScope.$apply();
 
-      jasmine.clock().tick(60000);
       timeout.flush();
       expect(uploadService.reset).toHaveBeenCalledTimes(1);
     });
