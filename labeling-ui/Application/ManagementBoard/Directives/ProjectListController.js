@@ -98,9 +98,9 @@ class ProjectListController {
     this._currentItemsPerPage = 0;
 
     /**
-     * @type {{}}
+     * @type {Object}
      */
-    this.projectCreators = {};
+    this.projectCreators = new Map();
 
     // Reload upon request
     this._$scope.$on('project-list:reload-requested', () => {
@@ -168,18 +168,18 @@ class ProjectListController {
   exportProject(projectId) {
     this._$state.go('labeling.reporting.export', {projectId});
   }
-  
+
   /**
    * @param {string} id
    */
   getUsernameForId(id) {
-    if (this.projectCreators[id] === undefined) {
+    if (this.projectCreators.has(id) === false) {
       this._userGateway.getUser(id).then(user => {
-        this.projectCreators[id] = user;
+        this.projectCreators.set(id, user);
       });
     }
   }
-  
+
   /**
    * @param {string} projectId
    * @param {string} projectName
@@ -634,17 +634,6 @@ class ProjectListController {
       },
       'frameCount': project => project.totalFrames !== undefined ? project.totalFrames : null,
       'projectOwnerIsCurrentUser': project => { return this._projectOwnerIsCurrentUser(project); },
-      /*'projectOwner': project => {
-        if (this._projectOwnerIsCurrentUser(project)) {
-          return this.user.username;
-        }
-        const creator = this._users.find(user => user.id === project.userId);
-        if (creator === undefined) {
-          return 'superadmin';
-        }
-        return creator.username;
-      },
-      */
     };
 
     return projects.map(project => {
@@ -667,7 +656,6 @@ class ProjectListController {
    *
    * @param {Object} project
    * @returns {boolean}
-   * @private
    */
   _projectOwnerIsCurrentUser(project) {
     const currentUserId = this.user.id;
