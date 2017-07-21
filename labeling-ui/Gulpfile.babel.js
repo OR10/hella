@@ -394,6 +394,8 @@ gulp.task('test-unit', next => {
   karmaServer.start();
 });
 
+gulp.task('test-unit-live', ['test-unit-continuous']);
+
 gulp.task('test-unit-continuous', () => {
   const karmaServer = new KarmaServer({
     singleRun: false,
