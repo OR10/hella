@@ -22,13 +22,11 @@ class PouchDbLiveMigration {
    * Install available migrations with the `transform-pouch` plugin for processing on the given pouchdb instance
    * @param {PouchDB} db
    */
-  // install(db) {
+  install(db) {
     // db.transform({
     //   outgoing: doc => this._transformOutgoing(doc),
     // });
-  // }
-
-  install() {}
+  }
 
   /**
    * Check whether the given document is a design document or not.
