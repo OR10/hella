@@ -1,7 +1,7 @@
 import {cloneDeep} from 'lodash';
 import PouchDbLiveMigration from 'Application/Common/Services/PouchDbLiveMigration';
 
-xdescribe('PouchDbLiveMigration', () => {
+describe('PouchDbLiveMigration', () => {
   let dbMock;
 
   function createMigrationService(migrations = []) {
