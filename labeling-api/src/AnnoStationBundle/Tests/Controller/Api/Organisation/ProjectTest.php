@@ -178,7 +178,7 @@ class ProjectTest extends Tests\WebTestCase
         $data = array_map(
             function ($project) {
                 unset($project['id']);
-
+                unset($project['userId']);
                 return $project;
             },
             $request->getJsonResponseBody()['result']
