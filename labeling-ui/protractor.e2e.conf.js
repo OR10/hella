@@ -81,6 +81,7 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
     'browserName': 'chrome',
     'chromeOptions': {
       'binary': '/Applications/Chromium.app/Contents/MacOS/Chromium',
+      'args': [ "--headless", "--window-size=1920,1080" ],
     },
   };
 }

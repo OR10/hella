@@ -84,6 +84,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
@@ -116,6 +117,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoRectangles')
@@ -148,6 +150,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoPoints')
@@ -191,6 +194,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateTwoGroupsWithFourShapes')
@@ -243,6 +247,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateThreeGroupsWithFourShapes')
