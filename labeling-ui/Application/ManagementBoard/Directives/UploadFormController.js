@@ -104,6 +104,7 @@ class UploadFormController {
           } else {
             this._showCompletedModal(result.missing3dVideoCalibrationData);
           }
+          this._removeFilesAndHideProgressBarAfter();
         }
       )
       .catch(
@@ -111,6 +112,7 @@ class UploadFormController {
           this.uploadInProgress = false;
           this._inProgressService.end();
           this._showCompletedWithErrorsModal([]);
+          this._removeFilesAndHideProgressBarAfter();
         }
       );
   }
@@ -140,24 +142,17 @@ class UploadFormController {
           }
         )
       );
-
-      return;
+    } else {
+      this._showErrorsModal('Some errors occurred during your upload. Please check the file list for errors and act accordingly.');
     }
-    this._modalService.info(
-      {
-        title: 'Upload completed with errors',
-        headline: 'Your upload is complete, but errors occured.',
-        message: 'Some errors occurred during your upload. Please check the file list for errors and act accordingly.',
-        confirmButtonText: 'Understood',
-      },
-      undefined,
-      undefined,
-      {
-        abortable: false,
-        warning: true,
+  }
+
+  _removeFilesAndHideProgressBarAfter(timeout=60000) {
+    this._$timeout(() =>  {
+      if (!this.uploadInProgress) {
+        this._uploadService.reset();
       }
-    );
-    this._showErrorsModal('Some errors occurred during your upload. Please check the file list for errors and act accordingly.');
+    }, timeout)
   }
 
   _showErrorsModal(message) {
