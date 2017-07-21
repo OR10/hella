@@ -9,6 +9,7 @@ class ProjectListController {
   /**
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
+   * @param {angular.$q} $q
    * @param {ProjectGateway} projectGateway
    * @param {LabelingGroupGateway} labelingGroupGateway
    * @param {ModalService} modalService
@@ -16,7 +17,7 @@ class ProjectListController {
    * @param {SelectionDialog} SelectionDialog
    * @param {UserGateway} userGateway
    */
-  constructor($scope, $state, projectGateway, labelingGroupGateway, modalService, InputDialog, SelectionDialog, userGateway) {
+  constructor($scope, $state, $q, projectGateway, labelingGroupGateway, modalService, InputDialog, SelectionDialog, userGateway) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -28,6 +29,12 @@ class ProjectListController {
      * @private
      */
     this._$state = $state;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
 
     /**
      * @type {ProjectGateway}
@@ -146,8 +153,9 @@ class ProjectListController {
 
         this.projects = this._createViewData(response.result);
         this.columns = this._buildColumns(this.projects[0]);
-
-        this.loadingInProgress = false;
+        this._getProjectCreatorsForAllProjects().then(() => {
+          this.loadingInProgress = false;
+        });
       });
   }
 
@@ -167,17 +175,6 @@ class ProjectListController {
    */
   exportProject(projectId) {
     this._$state.go('labeling.reporting.export', {projectId});
-  }
-
-  /**
-   * @param {string} id
-   */
-  getUsernameForId(id) {
-    if (this.projectCreators.has(id) === false) {
-      this._userGateway.getUser(id).then(user => {
-        this.projectCreators.set(id, user);
-      });
-    }
   }
 
   /**
@@ -656,16 +653,37 @@ class ProjectListController {
    *
    * @param {Object} project
    * @returns {boolean}
+   * @private
    */
   _projectOwnerIsCurrentUser(project) {
     const currentUserId = this.user.id;
     return currentUserId === project.userId;
+  }
+
+  /**
+   * Load the users that create the project to show his username in tooltip
+   *
+   * returns {AbortablePromise<Array>}
+   * @private
+   */
+  _getProjectCreatorsForAllProjects() {
+    const promises = [];
+    this.projects.forEach(project => {
+      if (this.projectCreators.has(project.userId) === false) {
+        const promise = this._userGateway.getUser(project.userId).then(user => {
+          this.projectCreators.set(project.userId, user);
+        });
+        promises.push(promise);
+      }
+    });
+    return this._$q.all(promises);
   }
 }
 
 ProjectListController.$inject = [
   '$scope',
   '$state',
+  '$q',
   'projectGateway',
   'labelingGroupGateway',
   'modalService',
