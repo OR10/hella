@@ -56,8 +56,8 @@ fdescribe('UploadFormController test suite', () => {
     const ListDialog = () => {};
     uploadGateway = jasmine.createSpyObj('uploadGateway', ['getApiUrl', 'markUploadAsFinished']);
     organisationService = jasmine.createSpyObj('organisationService', ['get', 'subscribe']);
-    inProgressService = jasmine.createSpyObj('inProgressService', ['end']);
-    uploadService = jasmine.createSpyObj('uploadService', ['reset']);
+    inProgressService = jasmine.createSpyObj('inProgressService', ['start', 'end']);
+    uploadService = jasmine.createSpyObj('uploadService', ['reset', 'addFile']);
     modalService = jasmine.createSpyObj('modalService', ['info', 'show']);
 
     controller = new UploadFormController(
@@ -187,6 +187,27 @@ fdescribe('UploadFormController test suite', () => {
       timeout.flush();
 
       expect(uploadService.reset).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('uploadStarted()', () => {
+    it('sets uploadInProgress to true', () => {
+      expect(controller.uploadInProgress).toBe(false);
+      controller.uploadStarted();
+      expect(controller.uploadInProgress).toBe(true);
+    });
+
+    it('triggers the inProgressService', () => {
+      controller.uploadStarted();
+      expect(inProgressService.start).toHaveBeenCalled();
+    });
+  });
+
+  describe('fileAdded', () => {
+    it('adds the hasUploadError function, which returns false', () => {
+      const file = {};
+      controller.fileAdded(file);
+      expect(file.hasUploadError).toEqual(jasmine.any(Function));
     });
   });
 });
