@@ -53,17 +53,18 @@ fdescribe('UploadFormController test suite', () => {
   }));
 
   beforeEach(() => {
+    const ListDialog = () => {};
     uploadGateway = jasmine.createSpyObj('uploadGateway', ['getApiUrl', 'markUploadAsFinished']);
     organisationService = jasmine.createSpyObj('organisationService', ['get', 'subscribe']);
     inProgressService = jasmine.createSpyObj('inProgressService', ['end']);
     uploadService = jasmine.createSpyObj('uploadService', ['reset']);
-    modalService = jasmine.createSpyObj('modalService', ['info']);
+    modalService = jasmine.createSpyObj('modalService', ['info', 'show']);
 
     controller = new UploadFormController(
       null,                 // $state
       uploadGateway,
       modalService,
-      null,                 // ListDialog
+      ListDialog,
       organisationService,
       inProgressService,
       timeout,
@@ -130,6 +131,51 @@ fdescribe('UploadFormController test suite', () => {
       rootScope.$apply();
       timeout.flush();
 
+      expect(uploadService.reset).toHaveBeenCalledTimes(1);
+    });
+
+    it('removes the progress bar if the result has an error', () => {
+      const promiseWithResultError = promise.resolve({
+        missing3dVideoCalibrationData: [],
+        error: {
+          message: 'Oh look, something shiny',
+        },
+      });
+      uploadGateway.markUploadAsFinished.and.returnValue(promiseWithResultError);
+
+      controller.uploadComplete();
+      rootScope.$apply();
+      timeout.flush();
+
+      const modalParams = {
+        title: 'Upload completed with errors',
+        headline: jasmine.any(String),
+        message: jasmine.any(Array),
+        confirmButtonText: 'Understood'
+      };
+      expect(modalService.info).toHaveBeenCalledWith(
+        modalParams,
+        undefined,
+        undefined,
+        jasmine.any(Object)
+      );
+      expect(uploadService.reset).toHaveBeenCalledTimes(1);
+    });
+
+    fit('removes the progress bar if at least one of the files had an error', () => {
+      const completeFile = { hasUploadError: () => false };
+      const incompleteFile = { hasUploadError: () => true };
+      const files = [completeFile, incompleteFile];
+      $flow.files = files;
+      uploadGateway.markUploadAsFinished.and.returnValue(promise.resolve({
+        missing3dVideoCalibrationData: files
+      }));
+
+      controller.uploadComplete();
+      rootScope.$apply();
+      timeout.flush();
+
+      expect(modalService.show).toHaveBeenCalled();
       expect(uploadService.reset).toHaveBeenCalledTimes(1);
     });
   });
