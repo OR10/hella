@@ -3,7 +3,7 @@ import PaperGroupRectangleMulti from 'Application/Viewer/Shapes/PaperGroupRectan
 import PaperGroupRectangle from 'Application/Viewer/Shapes/PaperGroupRectangle';
 import PaperShapeGroupNameService from 'Application/Viewer/Services/GroupShapeNameService';
 
-describe('PaperGroupRectangleMulti Test Suite', () => {
+describe('PaperGroupRectangleMulti', () => {
   let firstShape;
   let secondShape;
   let labeledThingGroupInFrame;
