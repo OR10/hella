@@ -44,6 +44,7 @@
               }
             ],
             "labeledThingId": "LABELED-THING-ID-1",
+            "identifierName": "lsr-01",
             "incomplete": true,
             "ghost": false
           }

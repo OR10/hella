@@ -19,8 +19,9 @@ class PaperShapeFactory {
   /**
    * @param {EntityColorService} entityColorService
    * @param {LabeledThingGroupService} labeledThingGroupService
+   * @param {GroupShapeNameService} groupShapeNameService
    */
-  constructor(entityColorService, labeledThingGroupService) {
+  constructor(entityColorService, labeledThingGroupService, groupShapeNameService) {
     /**
      * @type {EntityColorService}
      * @private
@@ -32,6 +33,12 @@ class PaperShapeFactory {
      * @private
      */
     this._labeledThingGroupService = labeledThingGroupService;
+
+    /**
+     * @type {GroupShapeNameService}
+     * @private
+     */
+    this._groupShapeNameService = groupShapeNameService;
   }
 
   /**
@@ -50,16 +57,13 @@ class PaperShapeFactory {
 
   /**
    * @param {LabeledThingInFrame} labeledThingGroupInFrame
-   * @param {Object} bounds
+   * @param {Object} shapesInBound
    * @param {{primary: string, secondary: string}} color
    * @returns {PaperGroupRectangleMulti}
    * @private
    */
-  _createGroupRectangle(labeledThingGroupInFrame, bounds, color) {
-    // const topLeft = new paper.Point(bounds.x, bounds.y);
-    // const bottomRight = new paper.Point(bounds.x + bounds.width, bounds.y + bounds.height);
-
-    return new PaperGroupRectangleMulti(labeledThingGroupInFrame, labeledThingGroupInFrame.id, bounds, color);
+  _createGroupRectangle(labeledThingGroupInFrame, shapesInBound, color) {
+    return new PaperGroupRectangleMulti(this._groupShapeNameService, labeledThingGroupInFrame, labeledThingGroupInFrame.id, shapesInBound, color);
   }
 
   /**
@@ -162,13 +166,10 @@ class PaperShapeFactory {
     return result;
   }
 
-  createPaperGroupShape(labeledThingGroupInFrame, shapesInBound) {
+  createPaperGroupShape(labeledThingGroupInFrame, shapesInGroup) {
     const colorId = parseInt(labeledThingGroupInFrame.labeledThingGroup.lineColor, 10);
     const color = this._entityColorService.getColorById(colorId);
-    const paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, shapesInBound, color);
-
-    // Add necessary padding
-    paperGroup.addPadding();
+    const paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, shapesInGroup, color);
 
     // Place this group shape behind all other shapes
     paperGroup.sendToBack();
@@ -180,6 +181,7 @@ class PaperShapeFactory {
 PaperShapeFactory.$inject = [
   'entityColorService',
   'labeledThingGroupService',
+  'groupShapeNameService',
 ];
 
 export default PaperShapeFactory;

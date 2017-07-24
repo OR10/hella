@@ -15,7 +15,7 @@ class ImageDiffReporter {
   constructor(options) {
     this._options = this._initOptions(options);
 
-    this._currentSuite = null;
+    this._suiteStack = [];
   }
 
   /**
@@ -36,7 +36,11 @@ class ImageDiffReporter {
   }
 
   suiteStarted(suite) {
-    this._currentSuite = suite;
+    this._suiteStack.push(suite);
+  }
+
+  suiteDone(suite) {
+    this._suiteStack.pop();
   }
 
   _diffImageData(lhs, rhs) {
@@ -71,7 +75,10 @@ class ImageDiffReporter {
       return;
     }
 
-    const imageBasePath = `${this._options.outputDir}/${this._options.browserIdentifier}/${this._currentSuite.description}/${spec.description}`;
+    const allSuiteNames = this._suiteStack.map(suite => suite.description);
+    const fullSuiteName = allSuiteNames.join(' ');
+
+    const imageBasePath = `${this._options.outputDir}/${this._options.browserIdentifier}/${fullSuiteName}/${spec.description}`;
 
     if (spec.failedExpectations.length === 0) {
       this._storeScreenShot(imageBasePath);

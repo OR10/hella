@@ -207,7 +207,7 @@ describe('ReadOnly Mode', () => {
       ]);
     });
 
-    beforeEach(() => toolButton0 = element(by.css('button.tool-button.tool-0')));
+    beforeEach(() => toolButton0 = element(by.css('button.tool-button.tool-thing.tool-0')));
 
     it('should not be possible to be created', done => {
       mock(sharedMocks);

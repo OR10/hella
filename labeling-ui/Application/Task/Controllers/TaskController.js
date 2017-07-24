@@ -265,7 +265,10 @@ class TaskController {
 
             switch (true) {
               case newShape instanceof PaperThingShape:
-                thingIdentifier = newShape.labeledThingInFrame.identifierName !== null ? newShape.labeledThingInFrame.identifierName : 'legacy';
+                if (!newShape.labeledThingInFrame.identifierName || newShape.labeledThingInFrame.identifierName === null) {
+                  throw new Error('Identifier needs to be set and can not be null');
+                }
+                thingIdentifier = newShape.labeledThingInFrame.identifierName;
                 labelStructureObject = labelStructure.getThingById(thingIdentifier);
                 break;
               case newShape instanceof PaperGroupShape:

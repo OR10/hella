@@ -3,7 +3,7 @@ import {uniq} from 'lodash';
 /**
  * Gateway for CRUD operation on {@link LabeledThingGroup}s in a PouchDb
  */
-class LabeledThingGroupGateway {
+class PouchDbLabeledThingGroupGateway {
   /**
    * @param {angular.$q} $q
    * @param {PouchDbContextService} pouchDbContextService
@@ -12,7 +12,7 @@ class LabeledThingGroupGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    * @param {AbortablePromiseFactory} abortablePromiseFactory
-   * @param {LabeledThingGateway} labeledThingGateway
+   * @param {PouchDbLabeledThingGateway} labeledThingGateway
    * @param {EntityIdService} entityIdService
    * @param {PouchDbViewService} pouchDbViewService
    */
@@ -75,7 +75,7 @@ class LabeledThingGroupGateway {
     this._abortablePromiseFactory = abortablePromiseFactory;
 
     /**
-     * @type {LabeledThingGateway}
+     * @type {PouchDbLabeledThingGateway}
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
@@ -117,6 +117,7 @@ class LabeledThingGroupGateway {
             promises.push(dbContext.get(labeledThingGroupId));
           });
 
+          // return this._$q.all([this._$q.resolve(uniqueLabeledThingGroupIds), this._$q.all(promises)]);
           return this._$q.all([uniqueLabeledThingGroupIds, this._$q.all(promises)]);
         })
         .then(([labeledThingGroupIds, labeledThingGroupDocuments]) => {
@@ -267,7 +268,7 @@ class LabeledThingGroupGateway {
   }
 }
 
-LabeledThingGroupGateway.$inject = [
+PouchDbLabeledThingGroupGateway.$inject = [
   '$q',
   'pouchDbContextService',
   'packagingExecutor',
@@ -280,4 +281,4 @@ LabeledThingGroupGateway.$inject = [
   'pouchDbViewService',
 ];
 
-export default LabeledThingGroupGateway;
+export default PouchDbLabeledThingGroupGateway;
