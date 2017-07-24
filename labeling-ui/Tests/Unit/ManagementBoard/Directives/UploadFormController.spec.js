@@ -217,4 +217,34 @@ fdescribe('UploadFormController test suite', () => {
       expect(uploadService.addFile).toHaveBeenCalledWith(file);
     });
   });
+
+  describe('filesAdded', () => {
+    it('adds the hasUploadError function, which returns false, to every file', () => {
+      const fileOne = {id: 1};
+      const fileTwo = {id: 2};
+      const fileThree = {id: 3};
+
+      controller.filesAdded([fileOne, fileTwo, fileThree]);
+
+      expect(fileOne.hasUploadError).toEqual(jasmine.any(Function));
+      expect(fileTwo.hasUploadError).toEqual(jasmine.any(Function));
+      expect(fileThree.hasUploadError).toEqual(jasmine.any(Function));
+
+      expect(fileOne.hasUploadError()).toBe(false);
+      expect(fileTwo.hasUploadError()).toBe(false);
+      expect(fileThree.hasUploadError()).toBe(false);
+    });
+
+    it('passes every file to the upload service', () => {
+      const fileOne = {id: 1};
+      const fileTwo = {id: 2};
+      const fileThree = {id: 3};
+
+      controller.filesAdded([fileOne, fileTwo, fileThree]);
+
+      expect(uploadService.addFile).toHaveBeenCalledWith(fileOne);
+      expect(uploadService.addFile).toHaveBeenCalledWith(fileTwo);
+      expect(uploadService.addFile).toHaveBeenCalledWith(fileThree);
+    });
+  });
 });
