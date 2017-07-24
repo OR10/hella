@@ -42,5 +42,4 @@ class ValidationService
 
         return $result;
     }
-
 }

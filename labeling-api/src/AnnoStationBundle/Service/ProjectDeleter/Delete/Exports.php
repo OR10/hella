@@ -23,7 +23,7 @@ class Exports
     public function delete(Model\Project $project)
     {
         $exports = $this->exporterFacade->findAllByProject($project);
-        foreach($exports as $export) {
+        foreach ($exports as $export) {
             $this->exporterFacade->delete($export);
         }
     }

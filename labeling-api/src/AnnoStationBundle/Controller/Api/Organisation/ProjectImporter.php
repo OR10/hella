@@ -184,7 +184,7 @@ class ProjectImporter extends Controller\Base
             foreach (glob(sprintf('%s%s*.xml', $uploadCacheDirectory, DIRECTORY_SEPARATOR)) as $filePath) {
                 $tasks = array_merge($this->projectImporter->importXml($filePath, $organisation, $user), $tasks);
             }
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             return new View\View(
                 [
                     'result' => [

@@ -56,7 +56,7 @@ class MetaDataReader
         // Single frame formats (like images) do not have a frame count set.
         try {
             $metaData->numberOfFrames = $this->getArrayKey($videoStreamData, 'nb_frames');
-        } catch(Exception\MetaDataReader $e) {
+        } catch (Exception\MetaDataReader $e) {
             $metaData->numberOfFrames = 1;
         }
 

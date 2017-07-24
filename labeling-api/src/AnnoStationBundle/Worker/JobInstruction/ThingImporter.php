@@ -215,7 +215,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
 
             if ($this->isLabeledThingInFrameElementAlreadyImported($task, $thingElement)) {
                 $labeledThing = $this->labeledThingFacade->getLabeledThingForImportedLineNo($task, $thingElement->getLineNo());
-            }else{
+            } else {
                 $groups = $xpath->query('./x:references/x:group', $thingElement);
 
                 $labeledThing = new Model\LabeledThing($task, $thingElement->getAttribute('line-color'));

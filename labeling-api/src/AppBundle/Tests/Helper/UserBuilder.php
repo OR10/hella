@@ -186,7 +186,7 @@ class UserBuilder
         $user->setEmail($this->email);
         $user->setEnabled(true);
 
-        foreach($this->organisations as $organisation) {
+        foreach ($this->organisations as $organisation) {
             $user->assignToOrganisation($organisation);
         }
 

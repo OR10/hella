@@ -26,5 +26,4 @@ class TaskDatabaseSecurityRebuilder extends WorkerPool\Job
     {
         return $this->taskId;
     }
-
 }

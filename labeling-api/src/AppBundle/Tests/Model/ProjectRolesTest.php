@@ -47,5 +47,4 @@ class ProjectRolesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals([], $projectRoles->getRemovedRoles());
     }
-
 }

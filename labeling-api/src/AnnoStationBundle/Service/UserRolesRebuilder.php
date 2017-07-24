@@ -66,11 +66,11 @@ class UserRolesRebuilder
         );
 
         if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
-            foreach($user->getOrganisations() as $organisationId) {
+            foreach ($user->getOrganisations() as $organisationId) {
                 $organisation = $this->organisationFacade->find($organisationId);
                 $assignedProjects = $this->projectFacade->findAllForCoordinator($organisation, $user)->toArray();
                 /** @var Model\Project $assignedProject */
-                foreach($assignedProjects as $assignedProject) {
+                foreach ($assignedProjects as $assignedProject) {
                     $roles[] = sprintf(
                         '%s%s-%s',
                         UserRolesRebuilder::COORDINATORS_PREFIX,
