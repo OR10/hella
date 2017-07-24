@@ -174,6 +174,7 @@ describe('PaperGroupRectangleMulti', () => {
   });
 
   it('should throw if a movement of the shape is issued', () => {
+    const group = createMultiRectangle();
     expect(() => group.moveTo()).toThrow();
   });
 
