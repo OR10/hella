@@ -2,7 +2,7 @@ import UploadFormController from 'Application/ManagementBoard/Directives/UploadF
 import ListDialog from 'Tests/Support/Mocks/ListDialog';
 
 
-fdescribe('UploadFormController test suite', () => {
+describe('UploadFormController test suite', () => {
   /**
    * @type {UploadFormController}
    */
