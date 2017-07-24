@@ -82,6 +82,10 @@ fdescribe('UploadFormController test suite', () => {
   describe('Removing upload progress bar (TTANNO-1818)', () => {
     let $flow;
 
+    const result = {
+      missing3dVideoCalibrationData: [],
+    };
+
     beforeEach(() => {
       $flow = {
         files: [],
@@ -90,14 +94,42 @@ fdescribe('UploadFormController test suite', () => {
     });
 
     it('removes the upload progress bar if upload was fine', () => {
-      const result = {
-        missing3dVideoCalibrationData: [],
-      };
       uploadGateway.markUploadAsFinished.and.returnValue(promise.resolve(result));
       controller.uploadComplete();
       rootScope.$apply();
 
       timeout.flush();
+      expect(uploadService.reset).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not remove the upload progress bar if timeout is not reached', () => {
+      uploadGateway.markUploadAsFinished.and.returnValue(promise.resolve(result));
+      controller.uploadComplete();
+      rootScope.$apply();
+
+      expect(uploadService.reset).not.toHaveBeenCalled();
+    });
+
+    it('does not remove the upload progress bar if a second upload has been started in the meantime', () => {
+      uploadGateway.markUploadAsFinished.and.returnValue(promise.resolve(result));
+
+      controller.uploadComplete();
+      rootScope.$apply();
+      controller.uploadInProgress = true;
+      timeout.flush();
+
+      expect(uploadService.reset).not.toHaveBeenCalled();
+    });
+
+    it('removes the upload progress bar after another timeout if a second upload has been started in the meantime and is then completed', () => {
+      uploadGateway.markUploadAsFinished.and.callFake(() => promise.resolve(result));
+
+      controller.uploadComplete();
+      controller.uploadInProgress = true;
+      controller.uploadComplete();
+      rootScope.$apply();
+      timeout.flush();
+
       expect(uploadService.reset).toHaveBeenCalledTimes(1);
     });
   });
