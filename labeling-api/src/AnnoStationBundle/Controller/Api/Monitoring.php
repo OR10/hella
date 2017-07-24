@@ -4,11 +4,13 @@ namespace AnnoStationBundle\Controller\Api;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use AnnoStationBundle\Controller;
+use AnnoStationBundle\Service\Authentication;
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Database\Facade;
 use AppBundle\Helper\Monitoring as MonitoringHelper;
 use AppBundle\View;
 use Symfony\Component\HttpKernel\Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @Rest\Prefix("/api/monitoring")
@@ -23,9 +25,15 @@ class Monitoring extends Controller\Base
      */
     private $monitoringFacade;
 
-    public function __construct(Facade\Monitoring $monitoringFacade)
+    /**
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
+
+    public function __construct(Facade\Monitoring $monitoringFacade, Authentication\UserPermissions $userPermissions)
     {
         $this->monitoringFacade = $monitoringFacade;
+        $this->userPermissions  = $userPermissions;
     }
 
     /**
@@ -35,6 +43,10 @@ class Monitoring extends Controller\Base
      */
     public function lastMonitoringCheckResultAction()
     {
+        if (!$this->userPermissions->hasPermission('canViewLatestMonitoringRun')) {
+            throw new Exception\AccessDeniedHttpException();
+        }
+
         $result = $this->monitoringFacade->getLatestCheckResult();
 
         if ($result === null) {
