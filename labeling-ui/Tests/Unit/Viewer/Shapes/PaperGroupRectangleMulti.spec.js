@@ -14,7 +14,7 @@ describe('PaperGroupRectangleMulti', () => {
 
   beforeEach(() => {
     firstShape = {
-      bounds: {x: 10, y: 10, width: 10, height: 10},
+      bounds: {x: 100, y: 100, width: 10, height: 10},
       groupIds: [
         'GROUPID-1',
       ],
