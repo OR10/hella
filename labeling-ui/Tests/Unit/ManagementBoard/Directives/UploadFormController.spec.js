@@ -269,4 +269,56 @@ fdescribe('UploadFormController test suite', () => {
       expect(file.hasUploadError()).toBe(true);
     });
   });
+
+  describe('fileColorClass()', () => {
+    let file;
+
+    beforeEach(() => {
+      file = jasmine.createSpyObj('file', ['isUploading', 'isComplete', 'hasUploadError']);
+    });
+
+    it('returns an empty string by default', () => {
+      const color = controller.fileColorClass(file);
+
+      expect(color).toEqual('');
+    });
+
+    it('returns upload-success if upload is complete', () => {
+      file.isComplete.and.returnValue(true);
+
+      const color = controller.fileColorClass(file);
+
+      expect(color).toEqual('upload-success');
+    });
+
+    it('returns upload-error if file is complete but has an upload error', () => {
+      file.isUploading.and.returnValue(false);
+      file.isComplete.and.returnValue(true);
+      file.hasUploadError.and.returnValue(true);
+
+      const color = controller.fileColorClass(file);
+
+      expect(color).toEqual('upload-error');
+    });
+
+    it('returns an empty string if uploading and complete (should not exist) but no errors', () => {
+      file.isUploading.and.returnValue(true);
+      file.isComplete.and.returnValue(true);
+      file.hasUploadError.and.returnValue(false);
+
+      const color = controller.fileColorClass(file);
+
+      expect(color).toEqual('');
+    });
+
+    it('returns upload-success if not uploading, complete and no errors', () => {
+      file.isUploading.and.returnValue(false);
+      file.isComplete.and.returnValue(true);
+      file.hasUploadError.and.returnValue(false);
+
+      const color = controller.fileColorClass(file);
+
+      expect(color).toEqual('upload-success');
+    });
+  });
 });

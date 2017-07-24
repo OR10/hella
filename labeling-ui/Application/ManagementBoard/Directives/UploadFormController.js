@@ -229,7 +229,7 @@ class UploadFormController {
 
     if (!file.isUploading() && file.isComplete() && file.hasUploadError()) {
       fileColorClass = 'upload-error';
-    } else if (file.isComplete()) {
+    } else if (!file.isUploading() && file.isComplete()) {
       fileColorClass = 'upload-success';
     }
 
