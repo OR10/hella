@@ -147,12 +147,12 @@ class UploadFormController {
     }
   }
 
-  _removeFilesAndHideProgressBarAfter(timeout=60000) {
-    this._$timeout(() =>  {
+  _removeFilesAndHideProgressBarAfter(timeout = 60000) {
+    this._$timeout(() => {
       if (!this.uploadInProgress) {
         this._uploadService.reset();
       }
-    }, timeout)
+    }, timeout);
   }
 
   _showErrorsModal(message) {

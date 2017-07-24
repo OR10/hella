@@ -58,7 +58,7 @@ describe('UploadFormController test suite', () => {
    */
   let $flow;
 
-  beforeEach(inject(($q, $rootScope, $timeout) => {
+  beforeEach(inject(($q, $rootScope, $timeout) => { // eslint-disable-line no-undef
     promise = $q;
     rootScope = $rootScope;
     timeout = $timeout;
@@ -69,7 +69,6 @@ describe('UploadFormController test suite', () => {
   }));
 
   beforeEach(() => {
-
     uploadGateway = jasmine.createSpyObj('uploadGateway', ['getApiUrl', 'markUploadAsFinished']);
     organisationService = jasmine.createSpyObj('organisationService', ['get', 'subscribe']);
     inProgressService = jasmine.createSpyObj('inProgressService', ['start', 'end']);
@@ -104,7 +103,6 @@ describe('UploadFormController test suite', () => {
   });
 
   describe('Removing upload progress bar (TTANNO-1818)', () => {
-
     it('removes the upload progress bar if upload was fine', () => {
       uploadGateway.markUploadAsFinished.and.returnValue(promise.resolve(promiseResult));
       controller.uploadComplete();
@@ -167,7 +165,7 @@ describe('UploadFormController test suite', () => {
       const files = [completeFile, incompleteFile];
       $flow.files = files;
       uploadGateway.markUploadAsFinished.and.returnValue(promise.resolve({
-        missing3dVideoCalibrationData: files
+        missing3dVideoCalibrationData: files,
       }));
 
       controller.uploadComplete();
@@ -210,7 +208,7 @@ describe('UploadFormController test suite', () => {
     });
 
     it('shows a modal if markUploadAsFinished had an error', () => {
-      const promiseResult = {
+      promiseResult = {
         missing3dVideoCalibrationData: [],
         error: {
           message: 'PANIK',
@@ -223,7 +221,7 @@ describe('UploadFormController test suite', () => {
         title: 'Upload completed with errors',
         headline: jasmine.any(String),
         message: jasmine.any(Array),
-        confirmButtonText: 'Understood'
+        confirmButtonText: 'Understood',
       };
 
       controller.uploadComplete();
@@ -243,7 +241,7 @@ describe('UploadFormController test suite', () => {
       const files = [completeFile, incompleteFile];
       $flow.files = files;
       uploadGateway.markUploadAsFinished.and.returnValue(promise.resolve({
-        missing3dVideoCalibrationData: files
+        missing3dVideoCalibrationData: files,
       }));
 
       controller.uploadComplete();
@@ -261,7 +259,7 @@ describe('UploadFormController test suite', () => {
       const files = [completeFile, incompleteFile];
       $flow.files = files;
       uploadGateway.markUploadAsFinished.and.returnValue(promise.resolve({
-        missing3dVideoCalibrationData: []
+        missing3dVideoCalibrationData: [],
       }));
 
       controller.uploadComplete();
@@ -272,7 +270,7 @@ describe('UploadFormController test suite', () => {
         title: 'Upload completed with errors',
         headline: jasmine.any(String),
         message: jasmine.any(Array),
-        confirmButtonText: 'Understood'
+        confirmButtonText: 'Understood',
       };
 
       expect(modalService.info).toHaveBeenCalledWith(
@@ -304,7 +302,7 @@ describe('UploadFormController test suite', () => {
       const files = ['one', 'two', 'three'];
 
       uploadGateway.markUploadAsFinished.and.returnValue(promise.resolve({
-        missing3dVideoCalibrationData: files
+        missing3dVideoCalibrationData: files,
       }));
 
       controller.uploadComplete();
