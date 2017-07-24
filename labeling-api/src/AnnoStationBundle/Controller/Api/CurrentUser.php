@@ -205,7 +205,7 @@ class CurrentUser extends Controller\Base
 
         if ($this->currentUserPermissions->hasPermission('canListAllOrganisations')) {
             $organisations = $this->organisation->findAll();
-        }else{
+        } else {
             $organisations = $this->organisation->findByIds($user->getOrganisations());
         }
 

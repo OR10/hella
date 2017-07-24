@@ -73,7 +73,8 @@ class MetaDataReaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideCommandOutput
      */
-    public function testMetadataIsExtractedCorrectly($ffprobeOutput, $expectedMetadata) {
+    public function testMetadataIsExtractedCorrectly($ffprobeOutput, $expectedMetadata)
+    {
         $reader = $this->createMetaDataReader('avprobe');
         $reader->runCommandStubbedResult = $ffprobeOutput;
 

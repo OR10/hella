@@ -227,7 +227,7 @@ class LegacyProjectToCsv implements Service\ProjectExporter
 
                     if (!isset($zipData[$filename])) {
                         $zipData[$filename] = $this->getCsv($videoData);
-                    }else{
+                    } else {
                         $filename = sprintf(
                             'export_%s_%s_%s_duplicate_%s.csv',
                             str_replace(' ', '_', $project->getName()),

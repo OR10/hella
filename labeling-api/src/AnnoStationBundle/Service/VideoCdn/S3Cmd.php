@@ -6,7 +6,6 @@ use AnnoStationBundle\Service;
 use AppBundle\Model;
 use crosscan\Logger\Facade\LoggerFacade;
 
-
 class S3Cmd extends Service\VideoCdn
 {
     /**
@@ -84,7 +83,6 @@ class S3Cmd extends Service\VideoCdn
                 sprintf(
                     'Failed to delete video directory %s from video-cdn',
                     $video->getId()
-
                 ),
                 \cscntLogPayload::SEVERITY_WARNING
             );

@@ -72,7 +72,7 @@ class LabeledFrame
         if ($frameIndex === null) {
             $result->setStartKey([$labelingTask->getId(), null])
                 ->setEndKey([$labelingTask->getId(), []]);
-        }else{
+        } else {
             $result->setKey([$labelingTask->getId(), $frameIndex]);
         }
 

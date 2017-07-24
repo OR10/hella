@@ -157,7 +157,11 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
         return new Pool(
             $this->guzzleClient, $this->requestIterator($urls), [
                 'concurrency' => 32,
-                'fulfilled'   => function (GuzzleHttp\Psr7\Response $response, $index) use (&$missingSecurityDocuments
+                'fulfilled'   => function (
+                    GuzzleHttp\Psr7\Response $response,
+                    $index
+                ) use (
+                    &$missingSecurityDocuments
                 ) {
                     if (!$this->isSecurityDocumentResponseValid($response)) {
                         $this->missingSecurityDocuments[]  = $this->urls[$index];
