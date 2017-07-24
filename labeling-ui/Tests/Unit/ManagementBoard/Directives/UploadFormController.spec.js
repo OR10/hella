@@ -247,4 +247,26 @@ fdescribe('UploadFormController test suite', () => {
       expect(uploadService.addFile).toHaveBeenCalledWith(fileThree);
     });
   });
+
+  describe('fileError', () => {
+    const message = { error: 'O NOES! Something terrible has happened' };
+    const messageAsJsonString = JSON.stringify(message);
+
+    it('adds the provided error message', () => {
+      const file = {};
+
+      controller.fileError(file, messageAsJsonString);
+
+      expect(file.errorMessage).toEqual(message.error);
+    });
+
+    it('adds the hasUploadError function which returns true', () => {
+      const file = {};
+
+      controller.fileError(file, messageAsJsonString);
+
+      expect(file.hasUploadError).toEqual(jasmine.any(Function));
+      expect(file.hasUploadError()).toBe(true);
+    });
+  });
 });
