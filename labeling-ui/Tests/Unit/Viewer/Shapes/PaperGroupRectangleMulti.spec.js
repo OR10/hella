@@ -1,29 +1,41 @@
 import paper from 'paper';
 import PaperGroupRectangleMulti from 'Application/Viewer/Shapes/PaperGroupRectangleMulti';
 import PaperGroupRectangle from 'Application/Viewer/Shapes/PaperGroupRectangle';
+import PaperShapeGroupNameService from 'Application/Viewer/Services/GroupShapeNameService';
 
 describe('PaperGroupRectangleMulti Test Suite', () => {
   let firstShape;
   let secondShape;
   let labeledThingGroupInFrame;
   let color;
+  let paperShapeGroupNameService;
 
   const shapeId = 'multi-shape-id';
 
   beforeEach(() => {
     firstShape = {
-      bounds: {x: 1, y: 1, width: 10, height: 10},
+      bounds: {x: 10, y: 10, width: 10, height: 10},
+      groupIds: [
+        'GROUPID-1',
+      ],
     };
     secondShape = {
-      bounds: {x: 2, y: 2, width: 20, height: 20},
+      bounds: {x: 40, y: 40, width: 40, height: 40},
+      groupIds: [
+        'GROUPID-1',
+      ],
     };
     labeledThingGroupInFrame = {
       id: 'foobar-heinz',
+      labeledThingGroup: {
+        id: 'GROUPID-1',
+      },
     };
     color = {
       primary: 'first-color',
       secondary: 'second-color',
     };
+    paperShapeGroupNameService = new PaperShapeGroupNameService();
   });
 
   function createDefaultShapesArray() {
@@ -31,7 +43,7 @@ describe('PaperGroupRectangleMulti Test Suite', () => {
   }
 
   function createMultiRectangle(shapes = createDefaultShapesArray()) {
-    return new PaperGroupRectangleMulti(labeledThingGroupInFrame, shapeId, shapes, color);
+    return new PaperGroupRectangleMulti(paperShapeGroupNameService, labeledThingGroupInFrame, shapeId, shapes, color);
   }
 
   function setupPaperJs() {
@@ -43,7 +55,7 @@ describe('PaperGroupRectangleMulti Test Suite', () => {
 
   it('can be created', () => {
     const shapes = [];
-    const group = new PaperGroupRectangleMulti(null, null, shapes, null);
+    const group = new PaperGroupRectangleMulti(paperShapeGroupNameService, null, null, shapes, null);
     expect(group).toEqual(jasmine.any(PaperGroupRectangleMulti));
   });
 
@@ -55,31 +67,31 @@ describe('PaperGroupRectangleMulti Test Suite', () => {
     });
 
     it('creates a group for every shape upon instantation', () => {
-      expect(group.children.length).toEqual(2);
+      // two groups, four names = 6
+      expect(group.children.length).toEqual(6);
     });
 
     it('sets the correct values for the first group', () => {
       const firstGroupShapeBounds = group.children[0].bounds;
-      expect(firstGroupShapeBounds.x).toEqual(firstShape.bounds.x);
-      expect(firstGroupShapeBounds.y).toEqual(firstShape.bounds.y);
-      expect(firstGroupShapeBounds.width).toEqual(firstShape.bounds.width);
-      expect(firstGroupShapeBounds.height).toEqual(firstShape.bounds.height);
+      expect(firstGroupShapeBounds.x).toEqual(firstShape.bounds.x - PaperGroupRectangleMulti.PADDING);
+      expect(firstGroupShapeBounds.y).toEqual(firstShape.bounds.y - PaperGroupRectangleMulti.PADDING);
+      expect(firstGroupShapeBounds.width).toEqual(firstShape.bounds.width + (2 * PaperGroupRectangleMulti.PADDING));
+      expect(firstGroupShapeBounds.height).toEqual(firstShape.bounds.height + (2 * PaperGroupRectangleMulti.PADDING));
     });
 
     it('sets the correct values for the second group', () => {
       const secondGroupShapeBounds = group.children[1].bounds;
-      expect(secondGroupShapeBounds.x).toEqual(secondShape.bounds.x);
-      expect(secondGroupShapeBounds.y).toEqual(secondShape.bounds.y);
-      expect(secondGroupShapeBounds.width).toEqual(secondShape.bounds.width);
-      expect(secondGroupShapeBounds.height).toEqual(secondShape.bounds.height);
+      expect(secondGroupShapeBounds.x).toEqual(secondShape.bounds.x - PaperGroupRectangleMulti.PADDING);
+      expect(secondGroupShapeBounds.y).toEqual(secondShape.bounds.y - PaperGroupRectangleMulti.PADDING);
+      expect(secondGroupShapeBounds.width).toEqual(secondShape.bounds.width + (2 * PaperGroupRectangleMulti.PADDING));
+      expect(secondGroupShapeBounds.height).toEqual(secondShape.bounds.height + (2 * PaperGroupRectangleMulti.PADDING));
     });
 
     it('ignores PaperGroupRectangles passed into the constructor', () => {
       const thirdShape = new PaperGroupRectangle(labeledThingGroupInFrame, null, null, null, color);
       shapes = [firstShape, secondShape, thirdShape];
-      group = new PaperGroupRectangleMulti(labeledThingGroupInFrame, null, shapes, color);
+      group = new PaperGroupRectangleMulti(paperShapeGroupNameService, labeledThingGroupInFrame, null, shapes, color);
 
-      expect(group.children.length).toEqual(2);
     });
   });
 
@@ -99,16 +111,19 @@ describe('PaperGroupRectangleMulti Test Suite', () => {
       };
 
       expect(group.bounds).toEqual(expectedBounds);
+      expect(group.children.length).toEqual(6);
     });
   });
 
   describe('multiple subgroup operations', () => {
     let group;
+    let things;
     let firstChild;
     let secondChild;
 
     beforeEach(() => {
-      group = createMultiRectangle();
+      things = createDefaultShapesArray();
+      group = createMultiRectangle(things);
       firstChild = group.children[0];
       secondChild = group.children[1];
     });
@@ -122,21 +137,6 @@ describe('PaperGroupRectangleMulti Test Suite', () => {
 
         expect(firstChild.select).toHaveBeenCalledTimes(1);
         expect(secondChild.select).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('deselect()', () => {
-      it('deselects every child', () => {
-        spyOn(firstChild, 'deselect');
-        spyOn(secondChild, 'deselect');
-
-        group.deselect();
-
-        expect(firstChild.deselect).toHaveBeenCalledTimes(1);
-        expect(secondChild.deselect).toHaveBeenCalledTimes(1);
-      });
-    });
-
     describe('moveTo()', () => {
       it('moves every child', () => {
         spyOn(firstChild, 'moveTo');
@@ -202,6 +202,21 @@ describe('PaperGroupRectangleMulti Test Suite', () => {
       });
     });
 
+      });
+    });
+
+    describe('deselect()', () => {
+      it('deselects every child', () => {
+        spyOn(firstChild, 'deselect');
+        spyOn(secondChild, 'deselect');
+
+        group.deselect();
+
+        expect(firstChild.deselect).toHaveBeenCalledTimes(1);
+        expect(secondChild.deselect).toHaveBeenCalledTimes(1);
+      });
+    });
+
     describe('addPadding', () => {
       const paddingTestGroupId = 'padding-test';
 
@@ -213,33 +228,24 @@ describe('PaperGroupRectangleMulti Test Suite', () => {
         firstShape.groupIds = [];
         secondShape.groupIds = [];
 
-        spyOn(firstChild, 'addPadding');
-        spyOn(secondChild, 'addPadding');
+        spyOn(things[0], 'addPadding');
+        spyOn(things[1], 'addPadding');
       });
 
       it('adds a padding of 5 to every child', () => {
-        group.addPadding();
+        group.update();
 
-        expect(firstChild.addPadding).toHaveBeenCalledWith(5);
-        expect(secondChild.addPadding).toHaveBeenCalledWith(5);
-      });
-
-      it('adds a padding of 10 to every child', () => {
-        const padding = 10;
-
-        group.addPadding(padding);
-
-        expect(firstChild.addPadding).toHaveBeenCalledWith(padding);
-        expect(secondChild.addPadding).toHaveBeenCalledWith(padding);
+        expect(things[0].addPadding).toHaveBeenCalledWith(5);
+        expect(things[1].addPadding).toHaveBeenCalledWith(5);
       });
 
       it('adds a padding of 10 if shape already has another group', () => {
         firstShape.groupIds = ['other-group'];
 
-        group.addPadding();
+        group.update();
 
-        expect(firstChild.addPadding).toHaveBeenCalledWith(10);
-        expect(secondChild.addPadding).toHaveBeenCalledWith(5);
+        expect(things[0].addPadding).toHaveBeenCalledWith(10);
+        expect(things[1].addPadding).toHaveBeenCalledWith(5);
       });
 
       it('adds the padding corresponding to the group ids position in the shapes groups (one shape)', () => {
@@ -250,10 +256,10 @@ describe('PaperGroupRectangleMulti Test Suite', () => {
           paddingTestGroupId,
         ];
 
-        group.addPadding();
+        group.update();
 
-        expect(firstChild.addPadding).toHaveBeenCalledWith(5);
-        expect(secondChild.addPadding).toHaveBeenCalledWith(20);
+        expect(things[0].addPadding).toHaveBeenCalledWith(5);
+        expect(things[1].addPadding).toHaveBeenCalledWith(20);
       });
 
       it('adds the padding corresponding to the group ids position in the shapes groups (two shape)', () => {
