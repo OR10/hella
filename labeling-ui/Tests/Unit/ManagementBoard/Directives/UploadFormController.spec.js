@@ -208,6 +208,13 @@ fdescribe('UploadFormController test suite', () => {
       const file = {};
       controller.fileAdded(file);
       expect(file.hasUploadError).toEqual(jasmine.any(Function));
+      expect(file.hasUploadError()).toBe(false);
+    });
+
+    it('passes the file to the uploadService', () => {
+      const file = {};
+      controller.fileAdded(file);
+      expect(uploadService.addFile).toHaveBeenCalledWith(file);
     });
   });
 });
