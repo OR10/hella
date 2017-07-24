@@ -162,7 +162,7 @@ fdescribe('UploadFormController test suite', () => {
       expect(uploadService.reset).toHaveBeenCalledTimes(1);
     });
 
-    fit('removes the progress bar if at least one of the files had an error', () => {
+    it('removes the progress bar if at least one of the files had an error', () => {
       const completeFile = { hasUploadError: () => false };
       const incompleteFile = { hasUploadError: () => true };
       const files = [completeFile, incompleteFile];
@@ -176,6 +176,16 @@ fdescribe('UploadFormController test suite', () => {
       timeout.flush();
 
       expect(modalService.show).toHaveBeenCalled();
+      expect(uploadService.reset).toHaveBeenCalledTimes(1);
+    });
+
+    it('removes the progress bar if mark upload as finished was rejected', () => {
+      uploadGateway.markUploadAsFinished.and.returnValue(promise.reject());
+
+      controller.uploadComplete();
+      rootScope.$apply();
+      timeout.flush();
+
       expect(uploadService.reset).toHaveBeenCalledTimes(1);
     });
   });
