@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Database\Facade;
 
 use AppBundle\Model;
@@ -10,24 +11,32 @@ use Doctrine\ODM\CouchDB;
 class Monitoring
 {
     /**
-     * @var CouchDB\DocumentManager
+     * @var CouchDB\DocumentManager|null
      */
-    private $databaseDocumentManager;
+    private $databaseDocumentManager = null;
 
-    public function __construct(Service\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory)
-    {
-        $this->databaseDocumentManager = $databaseDocumentManagerFactory->getDocumentManagerForDatabase(
-            'monitoring'
-        );
+    public function __construct(
+        Service\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
+        $monitoringDatabaseName
+    ) {
+        if ($monitoringDatabaseName !== null) {
+            $this->databaseDocumentManager = $databaseDocumentManagerFactory->getDocumentManagerForDatabase(
+                $monitoringDatabaseName
+            );
+        }
     }
 
     /**
      * @param Model\MonitoringCheckResults $monitoringCheckResults
      *
-     * @return Model\MonitoringCheckResults
+     * @return Model\MonitoringCheckResults|null
      */
     public function save(Model\MonitoringCheckResults $monitoringCheckResults)
     {
+        if ($this->databaseDocumentManager === null) {
+            return null;
+        }
+
         $this->databaseDocumentManager->persist($monitoringCheckResults);
         $this->databaseDocumentManager->flush();
 
@@ -39,6 +48,10 @@ class Monitoring
      */
     public function getLatestCheckResult()
     {
+        if ($this->databaseDocumentManager === null) {
+            return null;
+        }
+
         $result = $this->databaseDocumentManager
             ->createQuery('annostation_monitoring_check_results', 'view')
             ->onlyDocs(true)
