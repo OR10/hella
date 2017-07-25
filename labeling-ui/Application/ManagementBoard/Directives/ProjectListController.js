@@ -690,6 +690,10 @@ class ProjectListController {
     if (project.projectOwnerIsCurrentUser === true) {
       return 'Upload Videos';
     }
+    if (this.projectCreators.get(project.userId) === undefined) {
+      return 'You are not allowed to upload videos';
+    }
+
     return 'Only ' + this.projectCreators.get(project.userId).username + ' can upload videos';
   }
 
