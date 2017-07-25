@@ -49,7 +49,7 @@ class Video extends ExportXml\Element
 
         if ($this->video->getOriginalId() === null) {
             $video->setAttribute('id', $this->video->getId());
-        }else{
+        } else {
             $video->setAttribute('id', $this->video->getOriginalId());
         }
         $video->setAttribute('filename', $this->video->getName());

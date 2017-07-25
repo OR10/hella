@@ -44,7 +44,7 @@ describe('PouchDbViewService specs', () => {
         map: jasmine.any(Function),
       };
 
-      const view = service.getViewFunctions('labeledThingGroupInFrameByTaskIdAndFrameIndex');
+      const view = service.getViewFunctions('labeledThingGroupOnFrameByTaskIdAndFrameIndex');
 
       expect(view).toEqual(expected);
     });
@@ -61,9 +61,9 @@ describe('PouchDbViewService specs', () => {
 
     it('return pouchdb usable view name viewIdentifier exists', () => {
       // if the design document and viewname are identical pouchdb allows the shorthand of only specifying one!
-      const expected = 'labeledThingGroupInFrameByTaskIdAndFrameIndex';
+      const expected = 'labeledThingGroupOnFrameByTaskIdAndFrameIndex';
 
-      const view = service.getDesignDocumentViewName('labeledThingGroupInFrameByTaskIdAndFrameIndex');
+      const view = service.getDesignDocumentViewName('labeledThingGroupOnFrameByTaskIdAndFrameIndex');
       expect(view).toEqual(expected);
     });
   });
@@ -155,9 +155,9 @@ describe('PouchDbViewService specs', () => {
     it('should update design documents which already exist', () => {
       // One document does already exist.
       const existingRevision = '123-abcdefghijklmnopqrstuvwxyz';
-      const existingId = '_design/labeledThingGroupInFrameByTaskIdAndFrameIndex';
+      const existingId = '_design/labeledThingGroupOnFrameByTaskIdAndFrameIndex';
       pouchDbContext.get.and.callFake(documentId => {
-        if (documentId === '_design/labeledThingGroupInFrameByTaskIdAndFrameIndex') {
+        if (documentId === '_design/labeledThingGroupOnFrameByTaskIdAndFrameIndex') {
           return angularQ.resolve({
             _id: existingId,
             _rev: existingRevision,

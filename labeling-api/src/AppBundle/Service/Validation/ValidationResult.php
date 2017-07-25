@@ -52,5 +52,4 @@ class ValidationResult
             Response::HTTP_BAD_REQUEST
         );
     }
-
 }

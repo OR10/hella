@@ -59,7 +59,7 @@ class Thing extends ExportXml\Element
 
         if ($this->labeledThing->getOriginalId() === null) {
             $thing->setAttribute('id', $this->labeledThing->getId());
-        }else{
+        } else {
             $thing->setAttribute('id', $this->labeledThing->getOriginalId());
         }
 

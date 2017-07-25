@@ -150,7 +150,6 @@ class S3Cmd extends Service\FrameCdn
                             $frameIndex,
                             $imageType->getName(),
                             $video->getId()
-
                         ),
                         \cscntLogPayload::SEVERITY_WARNING
                     );
@@ -169,7 +168,6 @@ class S3Cmd extends Service\FrameCdn
                         'Failed to delete ImageType directory %s for video %s from frame-cdn',
                         $imageType->getName(),
                         $video->getId()
-
                     ),
                     \cscntLogPayload::SEVERITY_WARNING
                 );
@@ -184,9 +182,8 @@ class S3Cmd extends Service\FrameCdn
         } catch (\Exception $exception) {
             $this->loggerFacade->logString(
                 sprintf(
-                    'Failed to delete video directory %s from frame-cdn' ,
+                    'Failed to delete video directory %s from frame-cdn',
                     $video->getId()
-
                 ),
                 \cscntLogPayload::SEVERITY_WARNING
             );

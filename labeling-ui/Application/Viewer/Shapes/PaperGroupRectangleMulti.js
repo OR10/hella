@@ -205,7 +205,9 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   }
 
   toJSON() {
-    const childrenJson = this.children.map(child => child.toJSON());
+    const childrenJson = this.children
+      .filter(child => child instanceof PaperGroupRectangle)
+      .map(child => child.toJSON());
 
     return {
       type: 'group-rectangle-multi',

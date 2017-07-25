@@ -184,7 +184,7 @@ class TaskDocumentsToTaskDatabase extends WorkerPoolBundle\JobInstruction
         $project = $this->getProjectForTask($task);
         try {
             $this->taskDatabaseCreator->createDatabase($project, $task);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             //database is already there
         }
 

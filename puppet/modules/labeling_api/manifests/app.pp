@@ -106,4 +106,10 @@ class labeling_api::app(
     content => template('labeling_api/cronjob/couchdb_maintenance.erb'),
     mode    => '644',
   }
+
+  file { '/etc/cron.d/monitoring':
+    ensure  => present,
+    content => template('labeling_api/cronjob/monitoring.erb'),
+    mode    => '644',
+  }
 }

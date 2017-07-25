@@ -72,7 +72,7 @@ class TaskDatabaseSecurityPermissionService
     {
         $labelingTasks = $this->labelingTaskFacade->findAllByProject($project, true);
 
-        foreach($labelingTasks as $labelingTask) {
+        foreach ($labelingTasks as $labelingTask) {
             $this->updateForTask($labelingTask);
         }
     }

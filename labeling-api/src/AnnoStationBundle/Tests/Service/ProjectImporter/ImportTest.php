@@ -12,7 +12,6 @@ use AppBundle\Tests;
 use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 
-
 class ImportTest extends Tests\KernelTestCase
 {
     /**
@@ -51,7 +50,7 @@ class ImportTest extends Tests\KernelTestCase
                         $jobs['ThingImporter'][] = $job;
 
                         return true;
-                    }elseif ($job instanceof Jobs\VideoFrameSplitter) {
+                    } elseif ($job instanceof Jobs\VideoFrameSplitter) {
                         $jobs['VideoFrameSplitter'][] = $job;
 
                         return true;
