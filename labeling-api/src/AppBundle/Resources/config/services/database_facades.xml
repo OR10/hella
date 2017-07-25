@@ -33,5 +33,9 @@
             <argument>%couchdb_host%</argument>
             <argument>%couchdb_port%</argument>
         </service>
+
+        <service id="annostation.labeling_api.database.facade.monitoring" class="AppBundle\Database\Facade\Monitoring">
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+        </service>
     </services>
 </container>
