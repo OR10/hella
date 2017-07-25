@@ -220,10 +220,13 @@ class ProjectListController {
   }
 
   /**
-   * @param {string} projectId
+   * @param {Object} project
    */
-  goToUploadPage(projectId) {
-    this._$state.go('labeling.upload', {projectId});
+  goToUploadPage(project) {
+    const projectId = project.id;
+    if (project.projectOwnerIsCurrentUser === true) {
+      this._$state.go('labeling.upload', {projectId});
+    }
   }
 
   /**
@@ -677,6 +680,28 @@ class ProjectListController {
       }
     });
     return this._$q.all(promises);
+  }
+
+  /**
+   * @param {Object} project
+   * @returns {string}
+   */
+  getTooltipForUploadVideos(project) {
+    if (project.projectOwnerIsCurrentUser === true) {
+      return 'Upload Videos';
+    }
+    return 'Only ' + this.projectCreators.get(project.userId).username + ' can upload videos';
+  }
+
+  /**
+   * @param {Object} project
+   * @returns {string}
+   */
+  isUploadTooltipDisabled(project) {
+    if (project.projectOwnerIsCurrentUser === false) {
+      return 'disabled';
+    }
+    return '';
   }
 }
 

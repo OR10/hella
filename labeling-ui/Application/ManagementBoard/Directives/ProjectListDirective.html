@@ -52,10 +52,10 @@
             </td>
 
             <td class="action-cell" ng-click="$event.stopPropagation()" ng-init="vm.getUsernameForId(project.userId)">
-                <button tooltip="{{project.projectOwnerIsCurrentUser ? 'Upload Videos' : 'Only ' + vm.projectCreators.get(project.userId).username + ' can upload videos'}}"
+                <button tooltip="{{vm.getTooltipForUploadVideos(project)}}"
                         ng-if="vm.userPermissions.canUploadNewVideo && project.status == 'todo'"
-                        ng-click="project.projectOwnerIsCurrentUser && vm.goToUploadPage(project.id)"
-                        ng-class="!project.projectOwnerIsCurrentUser ? 'disabled': ''"
+                        ng-click="vm.goToUploadPage(project.id)"
+                        ng-class="vm.isUploadTooltipDisabled(project)"
                 >
                     <i class="fa fa-cloud-upload"></i>
                 </button>
