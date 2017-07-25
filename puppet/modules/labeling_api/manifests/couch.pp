@@ -3,6 +3,7 @@ class labeling_api::couch(
   $database_port = $labeling_api::params::couchdb_port,
   $database_name = $labeling_api::params::database_name,
   $database_name_read_only = $labeling_api::params::database_name_read_only,
+  $couchdb_monitoring_database_name = $labeling_api::params::couchdb_monitoring_database_name,
   $couchdb_user_read_only = $labeling_api::params::couchdb_user_read_only,
   $couchdb_password_read_only = $labeling_api::params::couchdb_password_read_only,
   $prepare_test_environment = $labeling_api::params::prepare_test_environment,
@@ -30,6 +31,13 @@ class labeling_api::couch(
   ::couchdb::database { $database_name_read_only:
     admins  => $database_admins,
     members => $database_members,
+  }
+
+  if $couchdb_monitoring_database_name {
+    ::couchdb::database { $couchdb_monitoring_database_name:
+       admins  => $database_admins,
+       members => $database_members,
+    }
   }
 
   ::couchdb::replication { "${database_name} -> ${database_name_read_only}":

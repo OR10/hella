@@ -36,6 +36,7 @@
 
         <service id="annostation.labeling_api.database.facade.monitoring" class="AppBundle\Database\Facade\Monitoring">
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument>%couchdb_monitoring_database_name%</argument>
         </service>
     </services>
 </container>
