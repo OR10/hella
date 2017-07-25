@@ -291,9 +291,9 @@ class Project extends Controller\Base
                 $responseProject['dueTimestamp']               = $project->getDueDate();
                 if (!empty($project->getGenericXmlTaskInstructions())) {
                     $responseProject['taskInstructionType'] = 'genericXml';
-                }elseif (!empty($project->getRequirementsXmlTaskInstructions())) {
+                } elseif (!empty($project->getRequirementsXmlTaskInstructions())) {
                     $responseProject['taskInstructionType'] = 'requirementsXml';
-                }else{
+                } else {
                     $responseProject['taskInstructionType'] = 'legacy';
                 }
             }

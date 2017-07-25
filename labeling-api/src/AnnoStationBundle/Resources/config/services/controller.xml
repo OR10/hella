@@ -265,5 +265,11 @@
             <argument>%couchdb_port_external%</argument>
             <argument>%couchdb_path_external%</argument>
         </service>
+
+        <service id="annostation.labeling_api.controller.api.monitoring"
+                 class="AnnoStationBundle\Controller\Api\Monitoring">
+            <argument type="service" id="annostation.labeling_api.database.facade.monitoring"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+        </service>
     </services>
 </container>

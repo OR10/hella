@@ -65,6 +65,6 @@ AppBundle\Model\Video::__set_state(array(
                     'converted' => false,
                 ),
         ),
-    'calibrationId' => NULL,
-    'originalId' => NULL,
+    'calibrationId' => null,
+    'originalId' => null,
 ))

@@ -51,7 +51,6 @@ class TaskDatabaseCreatorTest extends Tests\WebTestCase
             $couchDocumentManagerMock,
             $couchReplicatorMock,
             $taskDatabaseValidateDocUpdateDocumentServiceMock
-
         );
         $this->assertInstanceOf(TaskDatabaseCreator::class, $creator);
     }

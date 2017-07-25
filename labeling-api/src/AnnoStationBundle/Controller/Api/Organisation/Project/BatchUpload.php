@@ -198,8 +198,7 @@ class BatchUpload extends Controller\Base
                     sprintf('Image already exists in project (either as video or image file): %s', $flowRequest->getFileName())
                 );
             }
-        }
-        else {
+        } else {
             throw new HttpKernel\Exception\BadRequestHttpException(
                 sprintf('Invalid file: %s', $flowRequest->getFileName())
             );

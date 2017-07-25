@@ -127,7 +127,7 @@ describe('LabeledThingGroupGateway', () => {
     $rootScope.$apply();
 
     expect(pouchDbContext.query)
-      .toHaveBeenCalledWith('labeledThingGroupInFrameByTaskIdAndFrameIndex', {
+      .toHaveBeenCalledWith('labeledThingGroupOnFrameByTaskIdAndFrameIndex', {
         key: [task.id, frameIndex],
       });
     expect(pouchDbContext.get).toHaveBeenCalledWith(labeledThingGroupResponse._id);

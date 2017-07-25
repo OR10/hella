@@ -29,6 +29,7 @@
         "labeledThingsInFrame": [
           {
             "id": "LABELED-THING-IN-FRAME-ID-1",
+            "identifierName": "legacy",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
             "FrameIndex": 0,
             "classes": [],

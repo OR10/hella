@@ -77,6 +77,7 @@
             "frameIndex": 0,
             "ghost": false,
             "ghostClasses": null,
+            "identifierName": "sign",
             "id": "LABELED-THING-IN-FRAME-ID-2",
             "incomplete": true,
             "labeledThingId": "LABELED-THING-ID-2",

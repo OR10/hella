@@ -421,7 +421,7 @@ gulp.task('copy-canteen', () => {
 
 gulp.task('webdriver-update', webdriverUpdate);
 
-gulp.task('test-e2e-run', ['webdriver-update', 'copy-canteen'], next => {
+gulp.task('test-e2e-run', ['webdriver-update', 'copy-canteen', 'clean-e2e-logs'], next => {
   runProtractor(
     {
       configFile: 'protractor.e2e.conf.js',
@@ -436,7 +436,7 @@ gulp.task('test-e2e-run', ['webdriver-update', 'copy-canteen'], next => {
   );
 });
 
-gulp.task('test-e2e-non-minified-run', ['webdriver-update', 'copy-canteen'], next => {
+gulp.task('test-e2e-non-minified-run', ['webdriver-update', 'copy-canteen', 'clean-e2e-logs'], next => {
   runProtractor(
     {
       configFile: 'protractor.e2e.conf.js',

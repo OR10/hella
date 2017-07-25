@@ -134,5 +134,4 @@ class Role
         $this->documentManager->remove($removedRole);
         $this->documentManager->flush();
     }
-
 }

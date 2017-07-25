@@ -21,34 +21,32 @@ class CanvasInstructionLogManager {
    * @private
    */
   _getCanvasLogs(canvasClass, testName, fixtureName) {
-    this._browser.waitForAngular();
+    return Promise.resolve()
+      .then(() => this._browser.waitForAngular())
+      .then(() => this._browser.executeAsyncScript((canvasClass, done) => { // eslint-disable-line no-shadow
+        const canvasList = document.getElementsByClassName(canvasClass);
+        if (canvasList.length === 0) {
+          return null;
+        }
+        const canvas = canvasList[0];
 
-    return this._browser.executeScript((canvasClass) => { // eslint-disable-line no-shadow
-      const canvasList = document.getElementsByClassName(canvasClass);
-      if (canvasList.length === 0) {
-        return null;
-      }
-      const canvas = canvasList[0];
+        const ctx = canvas.getContext('2d');
 
-      const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
 
-      const width = canvas.width;
-      const height = canvas.height;
-
-      return {
-        width,
-        height,
-        operations: ctx.json({
-          decimalPoints: 8,
-        }),
-      };
-    }, canvasClass)
-      .then((obj) => {
+        done({
+          width,
+          height,
+          operations: ctx.stack({
+            decimalPoints: 8,
+          }),
+        });
+      }, canvasClass))
+      .then(obj => {
         if (obj === null) {
           throw new Error(`Unable to retrieve canvas logs of ${canvasClass}`);
         }
-
-        obj.operations = JSON.parse(obj.operations);
 
         if (testName !== null && fixtureName !== null) {
           this._createFixture(testName, fixtureName, obj);
@@ -89,10 +87,10 @@ class CanvasInstructionLogManager {
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
       let encodedData = '';
-      for(let i = 0; i < imageData.data.byteLength; i++) {
+      for (let i = 0; i < imageData.data.byteLength; i++) {
         encodedData += String.fromCharCode(imageData.data[i]);
       }
-      
+
       return {
         width,
         height,

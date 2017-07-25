@@ -8,7 +8,7 @@ use AppBundle\Service as AppBundleService;
 
 class FacadeFactory
 {
-    static public function get(
+    public static function get(
         string $type,
         Facade\LabeledFrame $labeledFrameFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,

@@ -207,7 +207,7 @@ PouchDbViewService.VIEWS = {
       }
     },
   },
-  'labeledThingGroupInFrameByTaskIdAndFrameIndex': {
+  'labeledThingGroupOnFrameByTaskIdAndFrameIndex': {
     map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.LabeledThing' && doc.groupIds) {
         doc.groupIds.forEach(
