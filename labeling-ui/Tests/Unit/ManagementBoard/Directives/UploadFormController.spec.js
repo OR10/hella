@@ -1,5 +1,5 @@
 import UploadFormController from 'Application/ManagementBoard/Directives/UploadFormController';
-import ListDialog from 'Tests/Support/Mocks/ListDialog';
+import ListDialog from 'Tests/Mocks/ListDialog';
 
 
 describe('UploadFormController test suite', () => {
