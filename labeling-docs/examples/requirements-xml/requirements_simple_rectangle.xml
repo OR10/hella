@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+	<metadata>
+		<export-postfix>_crosscan</export-postfix>
+	</metadata>
+    <thing id="time-range-sign" shape="rectangle" name="Time Range Sign">
+        <class id="speed" name="Speed">
+            <value id="10" name="10"/>
+            <value id="20" name="20"/>
+            <value id="30" name="30"/>
+            <value id="40" name="40"/>
+            <value id="50" name="50"/>
+        </class>
+    </thing>
+</requirements>
