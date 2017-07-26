@@ -160,7 +160,11 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
         $pool = new Pool(
             $this->guzzleClient, $this->requestIterator($urls), [
                 'concurrency' => 32,
-                'fulfilled'   => function (GuzzleHttp\Psr7\Response $response, $index) use (&$invalidValidateFunctions
+                'fulfilled'   => function (
+                    GuzzleHttp\Psr7\Response $response,
+                    $index
+                ) use (
+                    &$invalidValidateFunctions
                 ) {
                     if (!$this->isValidateDocUpdateDocumentResponseValid($response)) {
                         $this->invalidValidateFunctions[] = $this->urls[$index];

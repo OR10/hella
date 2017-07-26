@@ -197,6 +197,6 @@ class UserWithCouchDbSyncTest extends Tests\WebTestCase
         $this->userFacade   = $this->getAnnostationService(
             'database.facade.user_with_couch_db_sync'
         );
-        $this->guzzleClient = $this->getService('guzzle.client');;
+        $this->guzzleClient = $this->getService('guzzle.client');
     }
 }

@@ -72,7 +72,8 @@ class ReplicationTest extends Tests\WebTestCase
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
     }
 
-    public function testGetReplicationForTaskWithHttpsProtocol() {
+    public function testGetReplicationForTaskWithHttpsProtocol()
+    {
         $databaseName        = sprintf('taskdb-project-%s-task-%s', $this->project->getId(), $this->task->getId());
         $externalCouchDbHost = 'foobar';
         $externalCouchDbPort = '443';
@@ -137,18 +138,21 @@ class ReplicationTest extends Tests\WebTestCase
             ->getMock();
     }
 
-    private function getTokenMock() {
+    private function getTokenMock()
+    {
         return $this->getMockBuilder(TokenInterface::class)
             ->getMock();
     }
 
-    private function getUserMock() {
+    private function getUserMock()
+    {
         return $this->getMockBuilder(\stdClass::class)
             ->setMethods(['getUsername', 'getCouchDbPassword'])
             ->getMock();
     }
 
-    private function getRequestMock() {
+    private function getRequestMock()
+    {
         return $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
             ->getMock();

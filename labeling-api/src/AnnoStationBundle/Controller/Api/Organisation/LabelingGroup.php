@@ -417,7 +417,7 @@ class LabelingGroup extends Controller\Base
 
         $this->labelingGroupFacade->delete($labelingGroup);
 
-        foreach($projects as $project) {
+        foreach ($projects as $project) {
             $project->setLabelingGroupId(null);
             $this->projectFacade->save($project);
         }

@@ -516,8 +516,6 @@ class MultiTool extends PaperTool {
 
     return this._activePaperTool.invokeDefaultShapeCreation(struct);
   }
-
-
 }
 
 /**

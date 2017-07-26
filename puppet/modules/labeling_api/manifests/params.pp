@@ -31,6 +31,8 @@ class labeling_api::params(
   $couchdb_standby_user = undef,
   $couchdb_standby_password = undef,
 
+  $couchdb_monitoring_database_name = undef,
+
   $fos_user_bundle_to_couchdb_sync_enabled = false,
 
   $mailer_transport = 'smtp',

@@ -20,7 +20,7 @@ class TaskExports
     public function delete(Model\LabelingTask $labelingTask)
     {
         $exports = $this->taskExportFacade->findAllByTask($labelingTask);
-        foreach($exports as $export) {
+        foreach ($exports as $export) {
             $this->taskExportFacade->delete($export);
         }
     }

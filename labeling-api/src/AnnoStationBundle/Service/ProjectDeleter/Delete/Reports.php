@@ -23,7 +23,7 @@ class Reports
     public function delete(Model\Project $project)
     {
         $reports = $this->reportFacade->findAllByProject($project);
-        foreach($reports as $report) {
+        foreach ($reports as $report) {
             $this->reportFacade->delete($report);
         }
     }

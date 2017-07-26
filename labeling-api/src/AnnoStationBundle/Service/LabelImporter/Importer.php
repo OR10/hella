@@ -9,7 +9,6 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Database\Facade\LabeledThing;
 use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
 
-
 abstract class Importer
 {
     const ID           = 'id';

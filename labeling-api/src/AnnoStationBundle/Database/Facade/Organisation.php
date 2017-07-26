@@ -43,7 +43,7 @@ class Organisation
             ->setKeys($ids)
             ->onlyDocs(true);
 
-        return $query->execute()->toArray();;
+        return $query->execute()->toArray();
     }
 
     /**
