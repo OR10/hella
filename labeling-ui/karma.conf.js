@@ -47,6 +47,7 @@ module.exports = function (config) {
         served: true,
       },
       'Tests/Support/Jasmine/DataProvider.js',
+      {pattern: 'Tests//Mocks/**/*.js', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/Jasmine/Matchers/**/*.js', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/PouchDb/**/*', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/AnnoStationUnitTestModule.js', included: false, served: true, watched: true},

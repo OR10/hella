@@ -71,8 +71,11 @@ function runProtractor(protractorConfig, protractorServerConfig, testFiles, next
   const augmentedProtractorConfig = Object.assign({}, protractorConfig);
 
   if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
-    augmentedProtractorConfig.args.push('--baseUrl', 'http://' + (process.env.EXTERNAL_IP_ADDRESS || ip.address()) + ':52343');
     augmentedProtractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
+  }
+
+  if (typeof process.env.EXTERNAL_IP_ADDRESS !== 'undefined') {
+    augmentedProtractorConfig.args.push('--baseUrl', 'http://' + (process.env.EXTERNAL_IP_ADDRESS || ip.address()) + ':52343');
   } else {
     augmentedProtractorConfig.args.push('--baseUrl', 'http://localhost:52343');
   }
@@ -393,6 +396,8 @@ gulp.task('test-unit', next => {
 
   karmaServer.start();
 });
+
+gulp.task('test-unit-live', ['test-unit-continuous']);
 
 gulp.task('test-unit-continuous', () => {
   const karmaServer = new KarmaServer({

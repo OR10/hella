@@ -1236,7 +1236,8 @@ class ViewerController {
       .then(storedLabeledThing => {
         return this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame, storedLabeledThing.task.id);
       })
-      .catch(() => {
+      .catch(error => {
+        console.error(error); // eslint-disable-line no-console
         this._modalService.info(
           {
             title: 'Error',
