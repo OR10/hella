@@ -82,7 +82,13 @@ class LabeledThingGateway {
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute('labeledThing', () => {
       this._injectRevisionOrFailSilently(serializedLabeledThing);
-      return dbContext.put(serializedLabeledThing)
+      return this._$q.resolve()
+        .then(() => this._isLabeledThingIncomplete(dbContext, labeledThing))
+        .then(isIncomplete => {
+          serializedLabeledThing.incomplete = isIncomplete;
+          console.warn(serializedLabeledThing);
+          return dbContext.put(serializedLabeledThing);
+        })
         .then(dbResponse => {
           return dbContext.get(dbResponse.id);
         })
@@ -113,6 +119,22 @@ class LabeledThingGateway {
         .then(() => {
           return readLabeledThing;
         });
+    });
+  }
+
+  _isLabeledThingIncomplete(dbContext, labeledThing) {
+    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
+      group: true,
+      group_level: 1,
+      startkey: [labeledThing.id, labeledThing.frameRange.startFrameIndex],
+      endkey: [labeledThing.id, labeledThing.frameRange.endFrameIndex],
+    }).then(response => {
+      if (response.rows.length === 0) {
+        // New LabeledThings has no LabeledThingsInFrames.
+        return true;
+      }
+
+      return (response.rows[0].value > 0);
     });
   }
 
