@@ -106,6 +106,11 @@ class ProjectBuilder
     private $splitEach = 0;
 
     /**
+     * @var array
+     */
+    private $additionalFrameNumberMappings = [];
+
+    /**
      * Declare a private constructor to enforce usage of fluent interface.
      *
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -336,6 +341,18 @@ class ProjectBuilder
     }
 
     /**
+     * @param $additionalFrameNumberMappings
+     *
+     * @return $this
+     */
+    public function withAdditionalFrameNumberMappings($additionalFrameNumberMappings)
+    {
+        $this->additionalFrameNumberMappings = $additionalFrameNumberMappings;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function buildArray()
@@ -381,6 +398,10 @@ class ProjectBuilder
             $this->startFrameNumber,
             $this->splitEach
         );
+
+        foreach($this->additionalFrameNumberMappings as $additionalFrameNumberMapping) {
+            $project->addAdditionalFrameNumberMapping($additionalFrameNumberMapping);
+        }
 
         if ($this->owningUserId !== null) {
             $project->setUserId($this->owningUserId);

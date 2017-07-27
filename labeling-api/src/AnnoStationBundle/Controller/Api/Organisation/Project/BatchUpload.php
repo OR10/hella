@@ -186,6 +186,12 @@ class BatchUpload extends Controller\Base
                     sprintf('Video already exists in project: %s', $flowRequest->getFileName())
                 );
             }
+        } elseif ($this->isAdditionalFrameNumberMappingFile($flowRequest->getFileName())) {
+            if ($project->hasAdditionalFrameNumberMapping($flowRequest->getFileName())) {
+                throw new HttpKernel\Exception\ConflictHttpException(
+                    sprintf('FrameMapping data already exists in project: %s', $flowRequest->getFileName())
+                );
+            }
         } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
             if ($project->hasCalibrationData($flowRequest->getFileName())) {
                 throw new HttpKernel\Exception\ConflictHttpException(
@@ -226,6 +232,12 @@ class BatchUpload extends Controller\Base
                         $organisation,
                         $project,
                         basename($targetPath),
+                        $targetPath
+                    );
+                } elseif ($this->isAdditionalFrameNumberMappingFile($flowRequest->getFileName())) {
+                    $this->videoImporter->importAdditionalFrameNumberMapping(
+                        $organisation,
+                        $project,
                         $targetPath
                     );
                 } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
@@ -332,6 +344,18 @@ class BatchUpload extends Controller\Base
     private function isCalibrationFile(string $filename)
     {
         return in_array(pathinfo($filename, PATHINFO_EXTENSION), ['csv']);
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return bool
+     */
+    private function isAdditionalFrameNumberMappingFile(string $filename)
+    {
+        preg_match('/\.(frame-index\.csv)$/', $filename, $matches);
+
+        return !empty($matches);
     }
 
     /**

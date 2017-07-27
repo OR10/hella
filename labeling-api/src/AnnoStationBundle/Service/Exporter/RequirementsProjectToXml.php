@@ -77,6 +77,11 @@ class RequirementsProjectToXml
     private $labelingTaskFacadeFactory;
 
     /**
+     * @var Facade\AdditionalFrameNumberMapping
+     */
+    private $additionalFrameNumberMappingFacade;
+
+    /**
      * RequirementsProjectToXml constructor.
      *
      * @param Facade\Exporter                           $exporterFacade
@@ -84,6 +89,7 @@ class RequirementsProjectToXml
      * @param Facade\Video                              $videoFacade
      * @param LabelingTask                              $labelingTaskFacade
      * @param Facade\TaskConfiguration                  $taskConfiguration
+     * @param Facade\AdditionalFrameNumberMapping       $additionalFrameNumberMappingFacade
      * @param Service\GhostClassesPropagation           $ghostClassesPropagation
      * @param AppBundleFacade\User                      $userFacade
      * @param Facade\LabelingGroup                      $labelingGroupFacade
@@ -98,6 +104,7 @@ class RequirementsProjectToXml
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Facade\TaskConfiguration $taskConfiguration,
+        Facade\AdditionalFrameNumberMapping $additionalFrameNumberMappingFacade,
         Service\GhostClassesPropagation $ghostClassesPropagation,
         AppBundleFacade\User $userFacade,
         Facade\LabelingGroup $labelingGroupFacade,
@@ -118,6 +125,7 @@ class RequirementsProjectToXml
         $this->labelingTaskFacadeFactory         = $labelingTaskFacadeFactory;
         $this->labeledThingFacadeFactory         = $labeledThingFacadeFactory;
         $this->labeledThingGroupFacadeFactory    = $labeledThingGroupFacadeFactory;
+        $this->additionalFrameNumberMappingFacade = $additionalFrameNumberMappingFacade;
     }
 
     /**
@@ -144,6 +152,15 @@ class RequirementsProjectToXml
 
                     $taskConfigurations[$task->getTaskConfigurationId()] = $xmlConfiguration;
                 }
+                $additionalFrameNumberMapping = null;
+                if ($project->getAdditionalFrameNumberMappingIdForVideo($video) !== null) {
+                    $additionalFrameNumberMapping                          = $this->additionalFrameNumberMappingFacade->findById(
+                        $project->getAdditionalFrameNumberMappingIdForVideo($video)
+                    );
+                    $zipData[$additionalFrameNumberMapping->getFileName(
+                    )]                                                     = $additionalFrameNumberMapping->getAttachment(
+                    );
+                }
 
                 $xml      = new ExportXml\Xml(self::XML_NAMESPACE);
                 $metadata = new ExportXml\Element\Metadata(
@@ -152,7 +169,8 @@ class RequirementsProjectToXml
                     $export,
                     $this->labelingGroupFacade,
                     $taskConfigurations,
-                    self::XML_NAMESPACE
+                    self::XML_NAMESPACE,
+                    $additionalFrameNumberMapping
                 );
                 $xml->appendChild($metadata->getElement($xml->getDocument()));
                 $xmlVideo = new ExportXml\Element\Video($video, self::XML_NAMESPACE);

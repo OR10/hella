@@ -31,9 +31,12 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
     {
         $clientUser           = $this->createClientUser();
         $date                 = new \DateTime('2017-01-20 16:00:00', new \DateTimeZone('UTC'));
+        $organisation         = $this->createOrganisation();
         $xmlTaskConfiguration = file_get_contents(__DIR__ . '/TaskConfiguration/Requirements.xml');
-        $project              = $this->createProject('project-id-1', $this->createOrganisation(), $clientUser, $date);
-        $video                = $this->createVideo($this->createOrganisation(), 'video-id-1');
+        $project              = $this->createProject('project-id-1', $organisation, $clientUser, $date);
+        $project->addAdditionalFrameNumberMapping($this->createAdditionalFrameNumberMapping($organisation));
+        $this->projectFacade->save($project);
+        $video                = $this->createVideo($this->createOrganisation(), 'labeling-video');
         $video->setOriginalId('e363906c1c4a5a5bd01e8902467d4b0e');
         $this->videoFacade->save($video);
         $task                 = $this->createTask(
@@ -64,7 +67,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $attachments = $export->getAttachments();
 
         $content = $this->removeIdValues(
-            $this->getContentFromZip(reset($attachments)->getRawData(), 'video-id-1.xml')
+            $this->getContentFromZip(reset($attachments)->getRawData(), 'labeling-video.xml')
         );
 
         $this->assertEquals(file_get_contents(__DIR__ . '/Expected/Requirements.xml'), $content);
@@ -85,6 +88,8 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $exportId->item(0)->setAttribute('id', '');
         $requirementsId = $xpath->query('/x:export/x:metadata/x:requirements[@id]');
         $requirementsId->item(0)->setAttribute('id', '');
+        $additionalFrameNumberMappingId = $xpath->query('/x:export/x:metadata/x:additional-frame-number-mapping[@id]');
+        $additionalFrameNumberMappingId->item(0)->setAttribute('id', '');
         $groupIds = $xpath->query('/x:export/x:video/x:group[@id]');
         foreach ($groupIds as $groupId) {
             $groupId->setAttribute('id', '');
@@ -296,6 +301,22 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         unlink(sys_get_temp_dir() . '/' . $filename);
 
         return $content;
+    }
+
+    private function createAdditionalFrameNumberMapping(Model\Organisation $organisation)
+    {
+        /** @var Facade\AdditionalFrameNumberMapping $additionalFrameNumberMappingFacade */
+        $additionalFrameNumberMappingFacade = $this->getAnnostationService(
+            'database.facade.additional_frame_number_mapping'
+        );
+        $additionalFrameNumberMapping       = new Model\AdditionalFrameNumberMapping($organisation);
+        $additionalFrameNumberMapping->addAttachment(
+            'labeling-video.frame-index.csv',
+            __DIR__ . '/../VideoImporterFixtures/labeling-video.frame-index.csv',
+            mime_content_type(__DIR__ . '/../VideoImporterFixtures/labeling-video.frame-index.csv')
+        );
+
+        return $additionalFrameNumberMappingFacade->save($additionalFrameNumberMapping);
     }
 
     protected function setUpImplementation()

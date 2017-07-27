@@ -22,8 +22,11 @@
     <requirements id="" name="testconfig" filename="testconfig.xml">
       <sha256>970a7d3447f981dd86a5201477d36492f4707556dbd2d1063688824f9fe0f3ef</sha256>
     </requirements>
+    <additional-frame-number-mapping id="" filename="labeling-video.frame-index.csv">
+      <sha256>de09314803a2df18e9938edf9b3cda72a47eccf6f46c9ca9dad5d01f9509de4f</sha256>
+    </additional-frame-number-mapping>
   </metadata>
-  <video id="e363906c1c4a5a5bd01e8902467d4b0e" filename="video-id-1">
+  <video id="e363906c1c4a5a5bd01e8902467d4b0e" filename="labeling-video">
     <frame-labeling incomplete="true">
       <references>
         <task id=""/>
