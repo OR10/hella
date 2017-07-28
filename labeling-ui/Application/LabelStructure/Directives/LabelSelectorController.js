@@ -141,7 +141,7 @@ export default class LabelSelectorController {
      * @type {Object}
      */
     this.accordionControl = {};
-  
+
     /**
      * @type {Object}
      */
@@ -221,19 +221,26 @@ export default class LabelSelectorController {
         this.labelingInstructions = this.pages[newPageIndex].instructions;
       }
     });
-    
-    $scope.$watch('vm.viewStyle', newStyle => {
+
+    $scope.$watch('vm.viewStyle', (newStyle, oldStyle) => {
+      if (newStyle === oldStyle) {
+        return;
+      }
       if (newStyle === 'selectedOnly') {
-        
         this.selectedOnlyAccordionControl.expandAll();
       }
-      
-    })
+    });
   }
 
-  test(page, response) {
+  /**
+   * @param {Object} page
+   * @param {Object} response
+   * @returns {boolean}
+   */
+  hideWhenItemIsNotSelected(page, response) {
     return this.choices[page.id] !== response.id;
   }
+
   /**
    * Sets active page to null and updates pages an choices
    *
