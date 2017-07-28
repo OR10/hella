@@ -141,6 +141,11 @@ export default class LabelSelectorController {
      * @type {Object}
      */
     this.accordionControl = {};
+  
+    /**
+     * @type {Object}
+     */
+    this.selectedOnlyAccordionControl = {};
 
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
       if (newSelectedPaperShape === null) {
@@ -216,8 +221,19 @@ export default class LabelSelectorController {
         this.labelingInstructions = this.pages[newPageIndex].instructions;
       }
     });
+    
+    $scope.$watch('vm.viewStyle', newStyle => {
+      if (newStyle === 'selectedOnly') {
+        
+        this.selectedOnlyAccordionControl.expandAll();
+      }
+      
+    })
   }
 
+  test(page, response) {
+    return this.choices[page.id] !== response.id;
+  }
   /**
    * Sets active page to null and updates pages an choices
    *
