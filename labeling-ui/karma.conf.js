@@ -137,7 +137,7 @@ module.exports = function (config) {
     };
 
     newConfig.hostname = process.env.EXTERNAL_IP_ADDRESS || ip.address();
-    newConfig.browsers = ['FF42'];
+    newConfig.browsers = ['PhantomJS'];
     newConfig.customLaunchers = {
       'Safari': {
         base: 'WebDriver',
@@ -160,12 +160,12 @@ module.exports = function (config) {
         version: '11',
         name: 'Karma'
       },
-      'FF42': {
+      'FF54': {
         base: 'WebDriver',
         config: webdriverConfig,
         browserName: 'firefox',
         platform: 'LINUX',
-        // version: '42',
+        version: '54',
         name: 'Karma'
       }
     };
@@ -173,7 +173,7 @@ module.exports = function (config) {
     console.log('Expecting tests to be accessible under ' + newConfig.hostname); // my ip address
   } else {
     // NORMAL MODE
-    newConfig.browsers = ['Chrome'];
+    newConfig.browsers = ['Chrome', 'PhantomJS'];
   }
 
   config.set(newConfig);
