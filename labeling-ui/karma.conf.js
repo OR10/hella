@@ -173,7 +173,7 @@ module.exports = function (config) {
     console.log('Expecting tests to be accessible under ' + newConfig.hostname); // my ip address
   } else {
     // NORMAL MODE
-    newConfig.browsers = ['Chrome', 'PhantomJS'];
+    newConfig.browsers = ['Chrome'];
   }
 
   config.set(newConfig);
