@@ -377,6 +377,7 @@ class ProjectBuilder
             'diskUsage'                  => [],
             'campaigns'                  => [],
             'labelingGroupId'            => null,
+            'userId'                     => $this->owningUserId,
         ];
     }
 
