@@ -46,6 +46,18 @@ class ProjectListResponseBuilder
     }
 
     /**
+     * @param array $users
+     *
+     * @return $this
+     */
+    public function withUsers(array $users)
+    {
+        $this->users = $users;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function build()

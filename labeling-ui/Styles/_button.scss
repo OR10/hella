@@ -20,10 +20,12 @@ button {
   }
 
   &.disabled i {
-    color: darken($color-ut-midgrey-1, 30%);
+    cursor: not-allowed;
+    pointer-events:  all !important;
+    color: darken($color-ut-lightgrey-2, 30%) !important;
 
     &:hover{
-      color: darken($color-ut-midgrey-1, 30%) !important;
+      color: darken($color-ut-lightgrey-2, 30%) !important;
     }
   }
 
@@ -39,4 +41,3 @@ button {
     color: $color-ut-midgrey-2;
   }
 }
-
