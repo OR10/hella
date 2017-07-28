@@ -142,7 +142,7 @@
       "transform-pouch": "github:jakobwesthoff/transform-pouch@pouchdb-6.3.4-compatibility",
       "urijs": "npm:urijs@^1.18.10",
       "uuid": "npm:uuid@^2.0.1",
-      "v-accordion": "npm:v-accordion@^1.4.1"
+      "v-accordion": "npm:v-accordion@^1.6.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
