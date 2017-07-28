@@ -137,7 +137,7 @@ module.exports = function (config) {
     };
 
     newConfig.hostname = process.env.EXTERNAL_IP_ADDRESS || ip.address();
-    newConfig.browsers = ['Chrome'];
+    newConfig.browsers = ['FF42'];
     newConfig.customLaunchers = {
       'Safari': {
         base: 'WebDriver',
@@ -160,11 +160,11 @@ module.exports = function (config) {
         version: '11',
         name: 'Karma'
       },
-      'FF36': {
+      'FF42': {
         base: 'WebDriver',
         config: webdriverConfig,
         browserName: 'firefox',
-        version: '36',
+        version: '42',
         name: 'Karma'
       }
     };
