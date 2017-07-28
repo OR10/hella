@@ -590,7 +590,7 @@ class ThumbnailReelController {
           // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
           if (frameIndex > oldStartFrameIndex) {
             this._updateLabeledThingInFrames(this.selectedPaperShape);
-            this._$scope.$root.$emit('shape:delete:after');
+            this._$scope.$root.$emit('framerange:change:after');
           }
         });
       }
@@ -622,7 +622,7 @@ class ThumbnailReelController {
           // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
           if (frameIndex < oldEndFrameIndex) {
             this._updateLabeledThingInFrames(this.selectedPaperShape);
-            this._$scope.$root.$emit('shape:delete:after');
+            this._$scope.$root.$emit('framerange:change:after');
           }
         });
       }
