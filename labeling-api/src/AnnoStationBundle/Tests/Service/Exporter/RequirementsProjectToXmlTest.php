@@ -312,7 +312,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $additionalFrameNumberMapping       = new Model\AdditionalFrameNumberMapping($organisation);
         $additionalFrameNumberMapping->addAttachment(
             'labeling-video.frame-index.csv',
-            __DIR__ . '/../VideoImporterFixtures/labeling-video.frame-index.csv',
+            file_get_contents(__DIR__ . '/../VideoImporterFixtures/labeling-video.frame-index.csv'),
             mime_content_type(__DIR__ . '/../VideoImporterFixtures/labeling-video.frame-index.csv')
         );
 
