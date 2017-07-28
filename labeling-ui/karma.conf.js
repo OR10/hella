@@ -150,8 +150,7 @@ module.exports = function (config) {
         base: 'WebDriver',
         config: webdriverConfig,
         browserName: 'chrome',
-        // flags: ['--no-sandbox', '--start-maximized'],
-        platform: 'LINUX',
+        platform: 'WINDOWS',
         name: 'Karma'
       },
       'IE11': {
