@@ -9,13 +9,15 @@ class ProjectListController {
   /**
    * @param {$rootScope.$scope} $scope
    * @param {$state} $state
+   * @param {angular.$q} $q
    * @param {ProjectGateway} projectGateway
    * @param {LabelingGroupGateway} labelingGroupGateway
    * @param {ModalService} modalService
    * @param {InputDialog} InputDialog
    * @param {SelectionDialog} SelectionDialog
+   * @param {UserGateway} userGateway
    */
-  constructor($scope, $state, projectGateway, labelingGroupGateway, modalService, InputDialog, SelectionDialog) {
+  constructor($scope, $state, $q, projectGateway, labelingGroupGateway, modalService, InputDialog, SelectionDialog, userGateway) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -27,6 +29,12 @@ class ProjectListController {
      * @private
      */
     this._$state = $state;
+
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
 
     /**
      * @type {ProjectGateway}
@@ -59,6 +67,12 @@ class ProjectListController {
     this._SelectionDialog = SelectionDialog;
 
     /**
+     * @type {UserGateway}
+     * @private
+     */
+    this._userGateway = userGateway;
+
+    /**
      * @type {Array}
      */
     this.projects = [];
@@ -89,6 +103,11 @@ class ProjectListController {
      * @private
      */
     this._currentItemsPerPage = 0;
+
+    /**
+     * @type {Object}
+     */
+    this.projectCreators = new Map();
 
     // Reload upon request
     this._$scope.$on('project-list:reload-requested', () => {
@@ -131,10 +150,12 @@ class ProjectListController {
           }
           return project;
         });
+
         this.projects = this._createViewData(response.result);
         this.columns = this._buildColumns(this.projects[0]);
-
-        this.loadingInProgress = false;
+        this._getProjectCreatorsForAllProjects().then(() => {
+          this.loadingInProgress = false;
+        });
       });
   }
 
@@ -199,10 +220,13 @@ class ProjectListController {
   }
 
   /**
-   * @param {string} projectId
+   * @param {Object} project
    */
-  goToUploadPage(projectId) {
-    this._$state.go('labeling.upload', {projectId});
+  goToUploadPage(project) {
+    const projectId = project.id;
+    if (project.projectOwnerIsCurrentUser === true) {
+      this._$state.go('labeling.upload', {projectId});
+    }
   }
 
   /**
@@ -609,6 +633,7 @@ class ProjectListController {
         return filter.format(project.diskUsage.total);
       },
       'frameCount': project => project.totalFrames !== undefined ? project.totalFrames : null,
+      'projectOwnerIsCurrentUser': project => { return this._projectOwnerIsCurrentUser(project); },
     };
 
     return projects.map(project => {
@@ -624,16 +649,76 @@ class ProjectListController {
       return augmentedObject;
     });
   }
+
+  /**
+   * If you want to add videos to a project only the user which creates the project can do this. So with this method you
+   * you can check if the current logged in user is also the project creator
+   *
+   * @param {Object} project
+   * @returns {boolean}
+   * @private
+   */
+  _projectOwnerIsCurrentUser(project) {
+    const currentUserId = this.user.id;
+    return currentUserId === project.userId;
+  }
+
+  /**
+   * Load the users that create the project to show his username in tooltip
+   *
+   * returns {AbortablePromise<Array>}
+   * @private
+   */
+  _getProjectCreatorsForAllProjects() {
+    const promises = [];
+    this.projects.forEach(project => {
+      if (this.projectCreators.has(project.userId) === false) {
+        const promise = this._userGateway.getUser(project.userId).then(user => {
+          this.projectCreators.set(project.userId, user);
+        });
+        promises.push(promise);
+      }
+    });
+    return this._$q.all(promises);
+  }
+
+  /**
+   * @param {Object} project
+   * @returns {string}
+   */
+  getTooltipForUploadVideos(project) {
+    if (project.projectOwnerIsCurrentUser === true) {
+      return 'Upload Videos';
+    }
+    if (this.projectCreators.get(project.userId) === undefined) {
+      return 'You are not allowed to upload videos';
+    }
+
+    return 'Only ' + this.projectCreators.get(project.userId).username + ' can upload videos';
+  }
+
+  /**
+   * @param {Object} project
+   * @returns {string}
+   */
+  isUploadTooltipDisabled(project) {
+    if (project.projectOwnerIsCurrentUser === false) {
+      return 'disabled';
+    }
+    return '';
+  }
 }
 
 ProjectListController.$inject = [
   '$scope',
   '$state',
+  '$q',
   'projectGateway',
   'labelingGroupGateway',
   'modalService',
   'InputDialog',
   'SelectionDialog',
+  'userGateway',
 ];
 
 export default ProjectListController;
