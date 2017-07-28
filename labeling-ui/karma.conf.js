@@ -164,7 +164,8 @@ module.exports = function (config) {
         base: 'WebDriver',
         config: webdriverConfig,
         browserName: 'firefox',
-        version: '42',
+        platform: 'LINUX',
+        // version: '42',
         name: 'Karma'
       }
     };
