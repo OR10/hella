@@ -15,6 +15,7 @@ use AnnoStationBundle\Helper\ExportXml;
 class RequirementsProjectToXml
 {
     const XML_NAMESPACE = 'http://weblabel.hella-aglaia.com/schema/export';
+    const REQUIREMENTS_XML_PREFIX = 'labelconfiguration';
 
     /**
      * @var Facade\Exporter
@@ -255,7 +256,13 @@ class RequirementsProjectToXml
 
             /** @var Model\TaskConfiguration $taskConfiguration */
             foreach ($taskConfigurations as $taskConfiguration) {
-                $zipData[$taskConfiguration->getFilename()] = $taskConfiguration->getRawData();
+                $filename           = sprintf(
+                    '%s.%s.%s',
+                    basename($taskConfiguration->getFilename(), '.xml'),
+                    self::REQUIREMENTS_XML_PREFIX,
+                    'xml'
+                );
+                $zipData[$filename] = $taskConfiguration->getRawData();
             }
 
             $zipContent = $this->compressData($zipData);

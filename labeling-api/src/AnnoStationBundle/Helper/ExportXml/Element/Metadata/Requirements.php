@@ -2,6 +2,7 @@
 namespace AnnoStationBundle\Helper\ExportXml\Element\Metadata;
 
 use AnnoStationBundle\Helper\ExportXml;
+use AnnoStationBundle\Service\Exporter\RequirementsProjectToXml;
 use AppBundle\Model;
 
 class Requirements extends ExportXml\Element
@@ -28,7 +29,13 @@ class Requirements extends ExportXml\Element
 
         $requirements->setAttribute('id', $this->taskConfiguration->getId());
         $requirements->setAttribute('name', $this->taskConfiguration->getName());
-        $requirements->setAttribute('filename', $this->taskConfiguration->getFilename());
+        $filename           = sprintf(
+            '%s.%s.%s',
+            basename($this->taskConfiguration->getFilename(), '.xml'),
+            RequirementsProjectToXml::REQUIREMENTS_XML_PREFIX,
+            'xml'
+        );
+        $requirements->setAttribute('filename', $filename);
 
         $sha256 = $document->createElementNS(
             $this->namespace,
