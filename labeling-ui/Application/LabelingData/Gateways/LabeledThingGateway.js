@@ -86,7 +86,6 @@ class LabeledThingGateway {
         .then(() => this._isLabeledThingIncomplete(dbContext, labeledThing))
         .then(isIncomplete => {
           serializedLabeledThing.incomplete = isIncomplete;
-          console.warn(serializedLabeledThing);
           return dbContext.put(serializedLabeledThing);
         })
         .then(dbResponse => {
