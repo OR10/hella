@@ -31,31 +31,22 @@ class ThumbnailReelControllerTestable extends ThumbnailReelController {
       lockService,
       frameIndexService,
       labeledThingGroupService);
-    this.task = {};
   }
 }
 
-ThumbnailReelControllerTestable.prototype.task = null;
+ThumbnailReelControllerTestable.prototype.task = {};
 
 fdescribe('ThumbnailReelController tests', () => {
+  let scope;
+  let rootScope;
+  let window;
+  let animationFrameService;
+  let frameIndexService;
+  let frameLocationGateway;
+  let applicationState;
 
-  beforeEach(() => {
-    ThumbnailReelController.prototype.task = {};
-  });
-
-  it('can be created', () => {
-    const scope = jasmine.createSpyObj('$scope', ['$on', '$watch']);
-    const rootScope = jasmine.createSpyObj('$rootScope', ['$on']);
-    const window = jasmine.createSpyObj('$window', ['addEventListener']);
-    const animationFrameService = jasmine.createSpyObj('animationFrameService', ['debounce']);
-    const frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameIndexLimits']);
-    const frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
-    const applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
-
-    animationFrameService.debounce.and.returnValue(() => {});
-    frameIndexService.getFrameIndexLimits.and.returnValue({upperLimit: 0, lowerLimit: 0});
-
-    const directive = new ThumbnailReelController(
+  function createController() {
+    return new ThumbnailReelControllerTestable(
       scope,
       rootScope,
       window,
@@ -71,6 +62,27 @@ fdescribe('ThumbnailReelController tests', () => {
       frameIndexService,      // frameIndexService
       null                    // labeledThingGroupService
     );
+  }
+
+  beforeEach(() => {
+    scope = jasmine.createSpyObj('$scope', ['$on', '$watch']);
+    rootScope = jasmine.createSpyObj('$rootScope', ['$on']);
+    window = jasmine.createSpyObj('$window', ['addEventListener']);
+    animationFrameService = jasmine.createSpyObj('animationFrameService', ['debounce']);
+    frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameIndexLimits']);
+    frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
+    applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
+
+    animationFrameService.debounce.and.returnValue(() => {});
+    frameIndexService.getFrameIndexLimits.and.returnValue({upperLimit: 0, lowerLimit: 0});
+  });
+
+  it('can be created', () => {
+    const directive = createController();
     expect(directive).toEqual(jasmine.any(ThumbnailReelController));
+  });
+
+  describe('handleDrop()', () => {
+
   });
 });
