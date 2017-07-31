@@ -1,4 +1,5 @@
-import PaperTool from '../PaperTool';
+import paper from 'paper';
+import CreationTool from '../CreationTool';
 import PaperMeasurementRectangle from '../../Shapes/PaperMeasurementRectangle';
 import Handle from '../../Shapes/Handles/Handle';
 import NotModifiedError from '../Errors/NotModifiedError';
@@ -9,7 +10,7 @@ import NotModifiedError from '../Errors/NotModifiedError';
  * @extends DrawingTool
  * @implements ToolEvents
  */
-class MeasurementTool extends PaperTool {
+class MeasurementRectangleDrawingTool extends CreationTool {
   /**
    * @param {DrawingContext} drawingContext
    * @param {$rootScope.Scope} $rootScope
@@ -20,7 +21,7 @@ class MeasurementTool extends PaperTool {
    * @param {EntityColorService} entityColorService
    */
   constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService) {
-    super(drawingContext, $rootScope, $q, loggerService);
+    super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
 
     /**
      * @type {EntityIdService}
@@ -77,8 +78,15 @@ class MeasurementTool extends PaperTool {
    * @param {paper.Event} event
    */
   onMouseUp() {
-    this.remove();
-    this._reject(new NotModifiedError('Shape only exists during drag'));
+    if (this._rect === null) {
+      this._reject(new NotModifiedError('No Rectangle was created/dragged.'));
+      return;
+    }
+
+    // Fix bottom-right and top-left orientation
+    this._rect.fixOrientation();
+
+    this._complete(this._rect);
   }
 
   /**
@@ -90,20 +98,58 @@ class MeasurementTool extends PaperTool {
     this._startPosition = null;
     this._creationHandle = null;
 
-    return super._invoke(toolActionStruct);
+    return super.invokeShapeCreation(toolActionStruct);
   }
 
+  /**
+   * @param {paper.Point} from
+   * @param {paper.Point} to
+   * @private
+   */
   _startShape(from, to) {
     this._context.withScope(() => {
       this._rect = new PaperMeasurementRectangle(
         this._entityIdService.getUniqueId(),
         from,
         from,
-        this._entityColorService.getColorById(1)
+        this._entityColorService.getColorById(1) // Use same color for every shape
       );
       this._creationHandle = this._getScaleAnchor(from);
       this._rect.resize(this._creationHandle, to, {width: 1, height: this._getMinimalHeight()});
     });
+  }
+
+  /**
+   * @param {CreationToolActionStruct} toolActionStruct
+   * @return {Promise.<PaperShape>}
+   */
+  invokeDefaultShapeCreation(toolActionStruct) {
+    super.invokeDefaultShapeCreation(toolActionStruct);
+    const {video} = toolActionStruct;
+
+    const width = 100;
+    const height = 100;
+    const rectangleDivider = 2;
+    const from = new paper.Point(
+      (video.metaData.width / rectangleDivider) - (width / rectangleDivider),
+      (video.metaData.height / rectangleDivider) - (height / rectangleDivider)
+    );
+    const to = new paper.Point(
+      (video.metaData.width / rectangleDivider) + (width / rectangleDivider),
+      (video.metaData.height / rectangleDivider) + (height / rectangleDivider)
+    );
+
+    let rect;
+    this._context.withScope(() => {
+      rect = new PaperMeasurementRectangle(
+        this._entityIdService.getUniqueId(),
+        from,
+        to,
+        this._entityColorService.getColorById(1)
+      );
+    });
+
+    return this._complete(rect);
   }
 
   /**
@@ -136,6 +182,11 @@ class MeasurementTool extends PaperTool {
     return minimalHeight && minimalHeight > 0 ? minimalHeight : 1;
   }
 
+  /**
+   * @param {paper.Point} point
+   * @return {Handle}
+   * @private
+   */
   _getScaleAnchor(point) {
     if (point.x > this._startPosition.x && point.y > this._startPosition.y) {
       return new Handle('bottom-right', point);
@@ -163,8 +214,8 @@ class MeasurementTool extends PaperTool {
  * @abstract
  * @static
  */
-MeasurementTool.getToolName = () => {
-  return 'MeasurementTool';
+MeasurementRectangleDrawingTool.getToolName = () => {
+  return 'MeasurementRectangleDrawingTool';
 };
 
 /**
@@ -180,7 +231,7 @@ MeasurementTool.getToolName = () => {
  * @abstract
  * @static
  */
-MeasurementTool.isShapeClassSupported = shapeClass => {
+MeasurementRectangleDrawingTool.isShapeClassSupported = shapeClass => {
   return [
     'measurement-rectangle',
   ].includes(shapeClass);
@@ -199,13 +250,13 @@ MeasurementTool.isShapeClassSupported = shapeClass => {
  * @abstract
  * @static
  */
-MeasurementTool.isActionIdentifierSupported = actionIdentifier => {
+MeasurementRectangleDrawingTool.isActionIdentifierSupported = actionIdentifier => {
   return [
     'creation',
   ].includes(actionIdentifier);
 };
 
-MeasurementTool.$inject = [
+MeasurementRectangleDrawingTool.$inject = [
   'drawingContext',
   '$rootScope',
   '$q',
@@ -215,4 +266,4 @@ MeasurementTool.$inject = [
   'entityColorService',
 ];
 
-export default MeasurementTool;
+export default MeasurementRectangleDrawingTool;
