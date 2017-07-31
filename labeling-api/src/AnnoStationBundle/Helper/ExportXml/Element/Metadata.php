@@ -3,6 +3,7 @@ namespace AnnoStationBundle\Helper\ExportXml\Element;
 
 use AnnoStationBundle\Helper\ExportXml;
 use AnnoStationBundle\Helper\ExportXml\Element;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\Database\Facade as AppBundleFacade;
 use AnnoStationBundle\Database\Facade;
@@ -30,14 +31,19 @@ class Metadata extends ExportXml\Element
     private $labelingGroupFacade;
 
     /**
-     * @var
+     * @var array
      */
     private $taskConfigurations;
 
     /**
-     * @var
+     * @var string
      */
     private $namespace;
+
+    /**
+     * @var AnnoStationBundleModel\AdditionalFrameNumberMapping
+     */
+    private $additionalFrameNumberMapping;
 
     public function __construct(
         AppBundleFacade\User $userFacade,
@@ -45,14 +51,16 @@ class Metadata extends ExportXml\Element
         Model\Export $export,
         Facade\LabelingGroup $labelingGroupFacade,
         $taskConfigurations,
-        $namespace
+        $namespace,
+        AnnoStationBundleModel\AdditionalFrameNumberMapping $additionalFrameNumberMapping = null
     ) {
-        $this->userFacade          = $userFacade;
-        $this->project             = $project;
-        $this->export              = $export;
-        $this->labelingGroupFacade = $labelingGroupFacade;
-        $this->taskConfigurations  = $taskConfigurations;
-        $this->namespace           = $namespace;
+        $this->userFacade                   = $userFacade;
+        $this->project                      = $project;
+        $this->export                       = $export;
+        $this->labelingGroupFacade          = $labelingGroupFacade;
+        $this->taskConfigurations           = $taskConfigurations;
+        $this->namespace                    = $namespace;
+        $this->additionalFrameNumberMapping = $additionalFrameNumberMapping;
     }
 
     public function getElement(\DOMDocument $document)
@@ -84,6 +92,13 @@ class Metadata extends ExportXml\Element
         foreach ($this->taskConfigurations as $taskConfiguration) {
             $requirements = new Element\Metadata\Requirements($taskConfiguration, $this->namespace);
             $metadata->appendChild($requirements->getElement($document));
+        }
+
+        if ($this->additionalFrameNumberMapping !== null) {
+            $additionalFrameNumberMapping = new Element\Metadata\AdditionalFrameNumberMapping(
+                $this->additionalFrameNumberMapping, $this->namespace
+            );
+            $metadata->appendChild($additionalFrameNumberMapping->getElement($document));
         }
 
         /*
