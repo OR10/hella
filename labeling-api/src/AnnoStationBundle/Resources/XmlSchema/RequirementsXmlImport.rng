@@ -20,6 +20,9 @@
                 <ref name="AnnoStation"/>
                 <ref name="Requirements"/>
                 <optional>
+                    <ref name="AdditionalFrameNumberMapping"/>
+                </optional>
+                <optional>
                     <ref name="Workflow"/>
                 </optional>
                 <ref name="Project"/>
@@ -46,6 +49,13 @@
     <define name="Requirements">
         <element name="e:requirements">
             <ref name="NameAndIdAttributes"/>
+            <attribute name="filename"/>
+            <ref name="Checksums"/>
+        </element>
+    </define>
+    <define name="AdditionalFrameNumberMapping">
+        <element name="e:additional-frame-number-mapping">
+            <attribute name="id"/>
             <attribute name="filename"/>
             <ref name="Checksums"/>
         </element>

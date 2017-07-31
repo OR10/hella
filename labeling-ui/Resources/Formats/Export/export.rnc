@@ -19,6 +19,7 @@ grammar {
   Metadata = element e:metadata {
     AnnoStation &
     Requirements &
+    AdditionalFrameNumberMapping? &
     Workflow? &
     Project &
     Export &
@@ -33,6 +34,12 @@ grammar {
 
   Requirements = element e:requirements {
     NameAndIdAttributes,
+    attribute filename {text},
+    Checksums
+  }
+
+  AdditionalFrameNumberMapping = element e:additional-frame-number-mapping {
+    attribute id {text},
     attribute filename {text},
     Checksums
   }
