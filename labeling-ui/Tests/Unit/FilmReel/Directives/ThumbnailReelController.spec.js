@@ -96,22 +96,18 @@ fdescribe('ThumbnailReelController tests', () => {
     expect(reel).toEqual(jasmine.any(ThumbnailReelController));
   });
 
-  fdescribe('handleDrop()', () => {
-    it('sends the framerange:change:after event if the framerange of a LT narrowed', () => {
+  describe('handleDrop()', () => {
+    const index = 0;
+
+    function setupReel(reel) {
       const frameIndex = 2;
       const oldStartFrameIndex = 1;
+      const oldEndFrameIndex = 4;
       const currentFrameIndex = 0;
 
-      const reel = createController();
-      const index = 0;
-      const dragObject = {
-        draggable: {
-          hasClass: () => true
-        },
-      };
       const frameRange = {
         startFrameIndex: oldStartFrameIndex,
-        endFrameIndex: 4,
+        endFrameIndex: oldEndFrameIndex,
       };
       const selectedPaperShape = {
         labeledThingInFrame: {
@@ -120,13 +116,34 @@ fdescribe('ThumbnailReelController tests', () => {
           },
         },
       };
+
       reel.selectedPaperShape = selectedPaperShape;
-      reel.thumbnails = [ {},  { location: { frameIndex: frameIndex } } ];
+      reel.thumbnails = [
+        { location: { frameIndex: frameIndex } },
+        { location: { frameIndex: frameIndex } },
+      ];
       reel.framePosition = {position: currentFrameIndex};
 
       labeledThingGateway.saveLabeledThing.and.returnValue(promise.resolve());
       const frameLocationGatewayPromise = new AbortablePromise(promise, promise.resolve([]), promise.defer());
       frameLocationGateway.getFrameLocations.and.returnValue(frameLocationGatewayPromise);
+    }
+
+    it('sends the framerange:change:after event if the framerange of a LT narrowed and start-bracket class is set', () => {
+      const dragObject = { draggable: { hasClass: () => true } };
+      const reel = createController();
+      setupReel(reel);
+
+      reel.handleDrop({}, dragObject, index);
+      scope.$apply();
+
+      expect(rootScope.$emit).toHaveBeenCalledWith('framerange:change:after');
+    });
+
+    it('sends the framerange:change:after event if the framerange of a LT narrowed but start-bracket class is not set', () => {
+      const dragObject = { draggable: { hasClass: () => false } };
+      const reel = createController();
+      setupReel(reel);
 
       reel.handleDrop({}, dragObject, index);
       scope.$apply();
