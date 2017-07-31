@@ -49,6 +49,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.additional_frame_number_mapping"/>
             <argument type="service" id="annostation.labeling_api.service.video.meta_data_reader"/>
             <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter"/>
             <argument type="service" id="annostation.labeling_api.service.label_structure"/>
@@ -82,6 +83,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
             <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.additional_frame_number_mapping"/>
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.service.label_structure"/>
             <argument type="service" id="annostation.labeling_api.service.couch_db_update_conflict_retry"/>
@@ -178,6 +180,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.additional_frame_number_mapping"/>
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>

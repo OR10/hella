@@ -76,6 +76,9 @@ class UserPermissions
         'canDeleteUserFromOrganisation'          => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_ADMIN,                                                                                                                                                ],
         'canListAllUsers'                        => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
 
+        //Monitoring
+        'canViewLatestMonitoringRun'             => [Model\User::ROLE_SUPER_ADMIN                                                                                                                                                                         ],
+
     ];
     // @formatter:on
     // @codingStandardsIgnoreEnd

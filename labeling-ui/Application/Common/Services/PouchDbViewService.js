@@ -160,7 +160,7 @@ PouchDbViewService.VIEWS = {
   'labeledThingInFrameByLabeledThingIdAndIncomplete': {
     map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
-        emit(doc.labeledThingId, 0 + doc.incomplete); // eslint-disable-line no-undef
+        emit([doc.labeledThingId, doc.frameIndex], 0 + doc.incomplete); // eslint-disable-line no-undef
       }
     },
     reduce: '_sum',

@@ -47,6 +47,7 @@ module.exports = function (config) {
         served: true,
       },
       'Tests/Support/Jasmine/DataProvider.js',
+      {pattern: 'Tests//Mocks/**/*.js', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/Jasmine/Matchers/**/*.js', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/PouchDb/**/*', included: false, served: true, watched: true},
       {pattern: 'Tests/Support/AnnoStationUnitTestModule.js', included: false, served: true, watched: true},
@@ -136,7 +137,7 @@ module.exports = function (config) {
     };
 
     newConfig.hostname = process.env.EXTERNAL_IP_ADDRESS || ip.address();
-    newConfig.browsers = ['Chrome'];
+    newConfig.browsers = ['PhantomJS'];
     newConfig.customLaunchers = {
       'Safari': {
         base: 'WebDriver',
@@ -159,11 +160,12 @@ module.exports = function (config) {
         version: '11',
         name: 'Karma'
       },
-      'FF36': {
+      'FF54': {
         base: 'WebDriver',
         config: webdriverConfig,
         browserName: 'firefox',
-        version: '36',
+        platform: 'LINUX',
+        version: '54',
         name: 'Karma'
       }
     };

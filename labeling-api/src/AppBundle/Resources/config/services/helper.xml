@@ -6,5 +6,11 @@
         <service id="annostation.labeling_api.helper.decoder.json" class="AppBundle\Helper\Decoder\Json">
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
         </service>
+
+        <service id="annostation.labeling_api.helper.monitoring.couch_db_reporter"
+                 class="AppBundle\Helper\Monitoring\CouchDbReporter">
+            <argument type="service" id="annostation.labeling_api.database.facade.monitoring"/>
+            <tag name="liip_monitor.additional_reporter" alias="annostation.labeling_api.helper.monitoring.couch_db_reporter"/>
+        </service>
     </services>
 </container>

@@ -268,8 +268,10 @@ class LabeledThingInFrameGateway {
               storedLabeledThing = deserializedLabeledThingInFrame.labeledThing;
 
               return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
-                reduce: true,
-                keys: [storedLabeledThing.id],
+                group: true,
+                group_level: 1,
+                startkey: [storedLabeledThing.id, storedLabeledThing.frameRange.startFrameIndex],
+                endkey: [storedLabeledThing.id, storedLabeledThing.frameRange.endFrameIndex],
               });
             })
             .then(response => {

@@ -24,7 +24,7 @@ describe('MediaControlsController test suite', () => {
       function throwWrapper() {
         controller.playButtonVisible();
       }
-      expect(throwWrapper).toThrow(new TypeError('Cannot read property \'playInFrameRange\' of undefined'));
+      expect(throwWrapper).toThrowError();
     });
 
     it('it returns true if not playing and no paperShape is selected', () => {
@@ -85,7 +85,7 @@ describe('MediaControlsController test suite', () => {
       function throwWrapper() {
         controller.playButtonForFrame();
       }
-      expect(throwWrapper).toThrow(new TypeError('Cannot read property \'playInFrameRange\' of undefined'));
+      expect(throwWrapper).toThrowError();
     });
 
     it('it returns false if not playing and no paperShape is selected', () => {

@@ -50,6 +50,7 @@ resource "openstack_compute_instance_v2" "jenkins-slave" {
 
   image_name = "trusty-annostation-2"
 
+  flavor_id = "80be2c5a-1916-490c-9308-66548154ddb3"
   flavor_name = "anno.ci-slave"
   key_pair = "chh"
   user_data = "${template_file.user_data.rendered}"

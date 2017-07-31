@@ -9,7 +9,7 @@ import fs from 'fs';
 import jspm, {Builder} from 'jspm';
 import sassJspm from 'sass-jspm-importer';
 import run from 'run-sequence';
-import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor'; // eslint-disable-line camelcase
+import {webdriver_update_specific as webdriverUpdate, protractor} from 'gulp-protractor'; // eslint-disable-line camelcase
 import ip from 'ip';
 import chokidar from 'chokidar';
 import {exec} from 'child_process';
@@ -71,8 +71,11 @@ function runProtractor(protractorConfig, protractorServerConfig, testFiles, next
   const augmentedProtractorConfig = Object.assign({}, protractorConfig);
 
   if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
-    augmentedProtractorConfig.args.push('--baseUrl', 'http://' + (process.env.EXTERNAL_IP_ADDRESS || ip.address()) + ':52343');
     augmentedProtractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
+  }
+
+  if (typeof process.env.EXTERNAL_IP_ADDRESS !== 'undefined') {
+    augmentedProtractorConfig.args.push('--baseUrl', 'http://' + (process.env.EXTERNAL_IP_ADDRESS || ip.address()) + ':52343');
   } else {
     augmentedProtractorConfig.args.push('--baseUrl', 'http://localhost:52343');
   }
@@ -394,6 +397,8 @@ gulp.task('test-unit', next => {
   karmaServer.start();
 });
 
+gulp.task('test-unit-live', ['test-unit-continuous']);
+
 gulp.task('test-unit-continuous', () => {
   const karmaServer = new KarmaServer({
     singleRun: false,
@@ -416,7 +421,11 @@ gulp.task('copy-canteen', () => {
   });
 });
 
-gulp.task('webdriver-update', webdriverUpdate);
+gulp.task('webdriver-update', () => {
+  webdriverUpdate({
+    webdriverManagerArgs: ['----versions.chrome=2.30'],
+  });
+});
 
 gulp.task('test-e2e-run', ['webdriver-update', 'copy-canteen', 'clean-e2e-logs'], next => {
   runProtractor(

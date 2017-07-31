@@ -544,7 +544,7 @@ class ViewerController {
       this._debouncedOnThingUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
-    $rootScope.$on('shape:delete:after', () => {
+    $rootScope.$on('framerange:change:after', () => {
       this._debouncedOnThingUpdate.triggerImmediately()
         .then(() => this._handleFrameChange(this._currentFrameIndex));
     });
@@ -1236,7 +1236,8 @@ class ViewerController {
       .then(storedLabeledThing => {
         return this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame, storedLabeledThing.task.id);
       })
-      .catch(() => {
+      .catch(error => {
+        console.error(error); // eslint-disable-line no-console
         this._modalService.info(
           {
             title: 'Error',

@@ -247,6 +247,7 @@ class Project extends Controller\Base
 
             $responseProject               = array(
                 'id'                 => $project->getId(),
+                'userId'             => $project->getUserId(),
                 'name'               => $project->getName(),
                 'status'             => $project->getStatus(),
                 'labelingGroupId'    => $project->getLabelingGroupId(),
