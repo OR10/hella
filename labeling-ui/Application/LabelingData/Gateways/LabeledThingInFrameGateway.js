@@ -270,7 +270,8 @@ class LabeledThingInFrameGateway {
               return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
                 group: true,
                 group_level: 1,
-                keys: [storedLabeledThing.id],
+                startkey: [storedLabeledThing.id, storedLabeledThing.frameRange.startFrameIndex],
+                endkey: [storedLabeledThing.id, storedLabeledThing.frameRange.endFrameIndex],
               });
             })
             .then(response => {

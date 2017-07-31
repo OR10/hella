@@ -314,6 +314,9 @@ class ViewerTitleBarController {
     this._$rootScope.$on('shape:class-update:after', () => {
       this.refreshIncompleteCount();
     });
+    this._$rootScope.$on('framerange:change:after', () => {
+      this.refreshIncompleteCount();
+    });
     this._$rootScope.$on('shape:delete:after', () => {
       this.refreshIncompleteCount();
     });
