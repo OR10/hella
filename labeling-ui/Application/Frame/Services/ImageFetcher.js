@@ -86,9 +86,10 @@ class ImageFetcher {
       activeFetches.push(currentFetch);
 
       currentFetch
-        .then(() => {
+        .then(completedImage => {
           completedFetches[index] = currentFetch;
           removeFromActive(currentFetch);
+          fetchMultipleDeferred.notify(completedImage);
           setTimeout(() => fetchNextInLine(processedIndex), 1);
         })
         .catch(error => {
