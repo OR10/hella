@@ -32,7 +32,7 @@ class Requirements extends ExportXml\Element
         $filename           = sprintf(
             '%s.%s.%s',
             basename($this->taskConfiguration->getFilename(), '.xml'),
-            RequirementsProjectToXml::REQUIREMENTS_XML_PREFIX,
+            RequirementsProjectToXml::REQUIREMENTS_XML_POSTFIX,
             'xml'
         );
         $requirements->setAttribute('filename', $filename);
