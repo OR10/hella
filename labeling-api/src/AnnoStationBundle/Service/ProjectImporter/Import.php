@@ -301,7 +301,7 @@ class Import
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param \DOMXPath                           $xpath
      * @param \DOMElement                         $videoDomElement
-     * @param                                     $project
+     * @param Model\Project                       $project
      * @param                                     $xmlImportFilePath
      *
      * @return Model\Video
@@ -311,13 +311,18 @@ class Import
         AnnoStationBundleModel\Organisation $organisation,
         \DOMXPath $xpath,
         \DOMElement $videoDomElement,
-        $project,
+        Model\Project $project,
         $xmlImportFilePath
     ) {
-        $filename            = $videoDomElement->getAttribute('filename');
-        $videoSourcePath     = sprintf('%s/%s', dirname($xmlImportFilePath), $filename);
-        $fileInfo            = pathinfo($videoSourcePath);
-        $calibrationFilePath = sprintf('%s/%s.csv', dirname($xmlImportFilePath), $fileInfo['filename']);
+        $filename                         = $videoDomElement->getAttribute('filename');
+        $videoSourcePath                  = sprintf('%s/%s', dirname($xmlImportFilePath), $filename);
+        $fileInfo                         = pathinfo($videoSourcePath);
+        $calibrationFilePath              = sprintf('%s/%s.csv', dirname($xmlImportFilePath), $fileInfo['filename']);
+        $additionalFrameNumberMappingPath = sprintf(
+            '%s/%s.frame-index.csv',
+            dirname($xmlImportFilePath),
+            $fileInfo['filename']
+        );
 
         $numberOfCuboids = $xpath->query('./x:thing/x:shape/x:cuboid', $videoDomElement)->length;
 
@@ -366,6 +371,14 @@ class Import
                 $this->videoImporter->importCalibrationData($organisation, $project, $calibrationFilePath)
             );
             $this->videoFacade->save($video);
+        }
+
+        if (is_file($additionalFrameNumberMappingPath)) {
+            $this->videoImporter->importAdditionalFrameNumberMapping(
+                $organisation,
+                $project,
+                $additionalFrameNumberMappingPath
+            );
         }
 
         return $video;

@@ -70,12 +70,15 @@ class VideoImporterTest extends Tests\KernelTestCase
 
     private function createVideoImporterService(array $mockedMethods = []): Service\VideoImporter
     {
-        $calibrationDataFacade    = $this->getAnnostationService('database.facade.calibration_data');
-        $metaDataReader           = $this->getAnnostationService('service.video.meta_data_reader');
-        $videoFrameSplitter       = $this->getAnnostationService('service.video.video_frame_splitter');
-        $labelStructureService    = $this->getAnnostationService('service.label_structure');
+        $calibrationDataFacade = $this->getAnnostationService('database.facade.calibration_data');
+        $additionalFrameNumberMappingFacade = $this->getAnnostationService(
+            'database.facade.additional_frame_number_mapping'
+        );
+        $metaDataReader = $this->getAnnostationService('service.video.meta_data_reader');
+        $videoFrameSplitter = $this->getAnnostationService('service.video.video_frame_splitter');
+        $labelStructureService = $this->getAnnostationService('service.label_structure');
         $calibrationFileConverter = $this->getAnnostationService('service.calibration_file_converter');
-        $taskConfigurationFacade  = $this->getAnnostationService('database.facade.task_configuration');
+        $taskConfigurationFacade = $this->getAnnostationService('database.facade.task_configuration');
 
         $videoImporterMock = $this->getMockBuilder(Service\VideoImporter::class)
             ->enableProxyingToOriginalMethods()
@@ -85,6 +88,7 @@ class VideoImporterTest extends Tests\KernelTestCase
                     $this->videoFacade,
                     $calibrationDataFacade,
                     $this->labelingTaskFacade,
+                    $additionalFrameNumberMappingFacade,
                     $metaDataReader,
                     $videoFrameSplitter,
                     $labelStructureService,
@@ -403,6 +407,46 @@ class VideoImporterTest extends Tests\KernelTestCase
         );
     }
 
+    public function testImportVideoWithAdditionalFrameNumberMappingProjectAssociation()
+    {
+        $organisation = Helper\OrganisationBuilder::create()->build();
+        $project      = Helper\ProjectBuilder::create($organisation)->build();
+
+        $additionalWithFrameNumberMappingPath = $this->getAdditionalFrameNumberMappingPath();
+
+        $videoImporterService             = $this->createVideoImporterService();
+        $additionalWithFrameNumberMapping = $videoImporterService->importAdditionalFrameNumberMapping(
+            $organisation,
+            $project,
+            $additionalWithFrameNumberMappingPath
+        );
+
+        $this->assertEquals(
+            ['labeling-video' => $additionalWithFrameNumberMapping->getId()],
+            $project->getAdditionalFrameNumberMappings()
+        );
+    }
+
+    public function testImportVideoWithAdditionalFrameNumberMappingMappings()
+    {
+        $organisation = Helper\OrganisationBuilder::create()->build();
+        $project      = Helper\ProjectBuilder::create($organisation)->build();
+
+        $additionalWithFrameNumberMappingPath = $this->getAdditionalFrameNumberMappingPath();
+
+        $videoImporterService             = $this->createVideoImporterService();
+        $additionalWithFrameNumberMapping = $videoImporterService->importAdditionalFrameNumberMapping(
+            $organisation,
+            $project,
+            $additionalWithFrameNumberMappingPath
+        );
+
+        $this->assertEquals(
+            [1, 2, 5],
+            $additionalWithFrameNumberMapping->getFrameNumberMapping()
+        );
+    }
+
     private function getTestVideoPath()
     {
         return __DIR__ . '/VideoImporterFixtures/labeling-video.avi';
@@ -416,5 +460,10 @@ class VideoImporterTest extends Tests\KernelTestCase
     private function getCompressedTestImagePath()
     {
         return __DIR__ . '/VideoImporterFixtures/4k-image.jpg';
+    }
+
+    private function getAdditionalFrameNumberMappingPath()
+    {
+        return __DIR__ . '/VideoImporterFixtures/labeling-video.frame-index.csv';
     }
 }
