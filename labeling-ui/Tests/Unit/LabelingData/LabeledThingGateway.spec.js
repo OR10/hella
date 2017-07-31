@@ -131,6 +131,10 @@ describe('LabeledThingGateway', () => {
   });
 
   it('should save a new labeled thing', done => {
+    // By default now a LT without any LTIF is incomplete (TTANNO-1924)
+    labeledThingFrontendModel.incomplete = true;
+    labeledThingPouchDbModel.incomplete = true;
+
     const db = pouchDbHelper.database;
     Promise.resolve()
       .then(() => {
@@ -164,6 +168,8 @@ describe('LabeledThingGateway', () => {
           endFrameIndex: 100,
         },
         lineColor: '42',
+        // By default now a LT without any LTIF is incomplete (TTANNO-1924)
+        incomplete: true,
       });
     const changedLabeledThingFrontendModel = couchDbModelDeserializer.deserializeLabeledThing(
       changedLabeledThingCouchDbModel,
