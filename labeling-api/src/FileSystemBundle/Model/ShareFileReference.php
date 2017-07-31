@@ -3,14 +3,11 @@
 namespace FileSystemBundle\Model;
 
 use AppBundle\Service\UuidGenerator;
-use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 
 /**
  * A reference to a file or directory on a share.
  *
  * @package FileSystemBundle\Model
- *
- * @CouchDB\EmbeddedDocument
  */
 class ShareFileReference implements FileReference
 {
@@ -18,29 +15,21 @@ class ShareFileReference implements FileReference
 
     /**
      * @var string
-     *
-     * @CouchDB\Field(type="string")
      */
     private $shareId;
 
     /**
      * @var string
-     *
-     * @CouchDB\Field(type="string")
      */
     private $path;
 
     /**
      * @var string
-     *
-     * @CouchDB\Field(type="string")
      */
     private $size;
 
     /**
      * @var int
-     *
-     * @CouchDB\Field(type="integer")
      */
     private $version;
 

@@ -2,4 +2,16 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <services>
+        <service id="filesystem.services.share_registry"
+                 class="FileSystemBundle\Service\ShareRegistry">
+            <argument>%shares%</argument>
+        </service>
+
+        <service id="filesystem.services.file_reference_filesystem"
+                 class="FileSystemBundle\Service\FileReferenceFilesystem">
+            <argument type="service" id="oneup_flysystem.share_filesystem"/>
+            <argument type="service" id="filesystem.services.share_registry"/>
+        </service>
+    </services>
 </container>
