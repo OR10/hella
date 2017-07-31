@@ -19,7 +19,7 @@
       <creation-date>2017-01-20T16:00:00+00:00</creation-date>
       <created-by-user username="client" email="client@client.com"/>
     </export>
-    <requirements id="" name="testconfig" filename="testconfig.xml">
+    <requirements id="" name="testconfig" filename="testconfig.labelconfiguration.xml">
       <sha256>970a7d3447f981dd86a5201477d36492f4707556dbd2d1063688824f9fe0f3ef</sha256>
     </requirements>
   </metadata>
