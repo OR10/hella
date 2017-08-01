@@ -39,7 +39,7 @@ ThumbnailReelControllerTestable.prototype.task = {
   requiredImageTypes: ['thumbnail'],
 };
 
-fdescribe('ThumbnailReelController tests', () => {
+describe('ThumbnailReelController tests', () => {
   let scope;
   let rootScope;
   let window;
