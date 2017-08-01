@@ -72,6 +72,51 @@ fdescribe('Measurement Rectangle', () => {
       .then(() => done());
   });
 
+  it('should draw one measurement rectangle and keep it on frame change', done => {
+    mock(sharedMocks.concat([]));
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+    const nextFrameButton = element(by.css('.next-frame-button'));
+    const previousFrameButton = element(by.css('.previous-frame-button'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
+      })
+      .then(() => nextFrameButton.click())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrame2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange2);
+      })
+      .then(() => previousFrameButton.click())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
+      })
+      .then(() => {
+        done();
+      })
+  });
+
   it('should draw multiple measurement rectangles', done => {
     mock(sharedMocks.concat([]));
 
