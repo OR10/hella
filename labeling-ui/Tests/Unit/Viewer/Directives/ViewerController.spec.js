@@ -24,6 +24,17 @@ describe('ViewerController tests', () => {
   let rootScope;
   let scope;
   let debouncerService;
+  let frameIndexService;
+  let frameLocationGateway;
+  let drawingContextService;
+  let animationFrameService;
+  let window;
+  let keyboardShortcutService;
+  let pouchDbSyncManager;
+  let applicationState;
+  let viewerMouseCursorService;
+  let element;
+
 
   beforeEach(inject($rootScope => {
     rootScope = $rootScope;
@@ -34,9 +45,9 @@ describe('ViewerController tests', () => {
     debouncerService = jasmine.createSpyObj('debouncerService', ['multiplexDebounce']);
   });
 
-  function createController() {
-    const viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['on']);
-    const element = {
+  beforeEach(() => {
+    viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['on']);
+    element = {
       0: {},
       find: () => {
         return {
@@ -47,24 +58,26 @@ describe('ViewerController tests', () => {
         };
       },
     };
-    const frameIndexLimits = {upperLimit: 0, lowerLimit: 1};
-    const frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameIndexLimits']);
-    const frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
-    const drawingContextService = jasmine.createSpyObj('drawingContextService', ['createContext']);
-    const animationFrameService = jasmine.createSpyObj('animationFrameService', ['debounce']);
-    const window = jasmine.createSpyObj('$window', ['addEventListener']);
+    frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameIndexLimits']);
+    frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
+    drawingContextService = jasmine.createSpyObj('drawingContextService', ['createContext']);
+    animationFrameService = jasmine.createSpyObj('animationFrameService', ['debounce']);
+    window = jasmine.createSpyObj('$window', ['addEventListener']);
     window.document = jasmine.createSpyObj('window.document', ['addEventListener']);
-    const keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey']);
-    const pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on']);
-    const applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
+    keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey']);
+    pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on']);
+    applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
+  });
 
+  beforeEach(() => {
+    const frameIndexLimits = {upperLimit: 0, lowerLimit: 1};
     frameIndexService.getFrameIndexLimits.and.returnValue(frameIndexLimits);
-    const context = {
-      setup: () => {},
-      withScope: () => {},
-    };
-    drawingContextService.createContext.and.returnValue(context);
 
+    const context = { setup: () => {}, withScope: () => {}};
+    drawingContextService.createContext.and.returnValue(context);
+  });
+
+  function createController() {
     return new ViewerControllerTestable(
       scope,
       rootScope,
