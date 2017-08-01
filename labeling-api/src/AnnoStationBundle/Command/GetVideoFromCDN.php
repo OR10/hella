@@ -63,7 +63,7 @@ class GetVideoFromCDN extends Base
         }
 
         $outputPath = $input->getOption('output');
-        if (file_put_contents($outputPath, $this->videoCdnService->getVideo()) === false) {
+        if (file_put_contents($outputPath, $this->videoCdnService->getVideo($video)) === false) {
             throw new \RuntimeException("Error writing video data to temporary file '{$outputPath}'");
         }
     }
