@@ -2,6 +2,7 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
 import PaperFrame from '../../Viewer/Shapes/PaperFrame';
+import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
 
 /**
  * Controller of the {@link ThumbnailReelDirective}
@@ -552,6 +553,7 @@ class ThumbnailReelController {
         frameRange = this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
         break;
       case this.selectedPaperShape instanceof PaperFrame:
+      case this.selectedPaperShape instanceof PaperMeasurementRectangle:
         frameRange = {
           startFrameIndex: 0,
           endFrameIndex: this.task.frameNumberMapping.length - 1,
