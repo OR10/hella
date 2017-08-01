@@ -35,7 +35,6 @@ describe('ViewerController tests', () => {
   let viewerMouseCursorService;
   let element;
 
-
   beforeEach(inject($rootScope => {
     rootScope = $rootScope;
     scope = $rootScope.$new();
@@ -47,17 +46,7 @@ describe('ViewerController tests', () => {
 
   beforeEach(() => {
     viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['on']);
-    element = {
-      0: {},
-      find: () => {
-        return {
-          0: {
-            addEventListener: () => {},
-          },
-          on: () => {},
-        };
-      },
-    };
+    element = jasmine.createSpyObj('element', ['find']);
     frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameIndexLimits']);
     frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
     drawingContextService = jasmine.createSpyObj('drawingContextService', ['createContext']);
@@ -70,6 +59,14 @@ describe('ViewerController tests', () => {
   });
 
   beforeEach(() => {
+    element[0] = {};
+    element.find.and.returnValue({
+      0: {
+        addEventListener: () => {},
+      },
+      on: () => {},
+    });
+
     const frameIndexLimits = {upperLimit: 0, lowerLimit: 1};
     frameIndexService.getFrameIndexLimits.and.returnValue(frameIndexLimits);
 
