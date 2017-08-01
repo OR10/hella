@@ -13,6 +13,7 @@ import NotModifiedError from '../Tools/Errors/NotModifiedError';
 import PaperShape from '../Shapes/PaperShape';
 import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
+import PaperMeasurementRectangle from '../Shapes/PaperMeasurementRectangle';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -554,6 +555,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
               this._$scope.vm.selectedPaperShape = paperShape;
               this.emit('group:create', paperShape);
               break;
+            case paperShape instanceof PaperMeasurementRectangle:
+              this._$scope.vm.paperAdditionalShapes.push(paperShape);
+              this._$scope.vm.selectedPaperShape = paperShape;
+              this.emit('additional-shape:create', paperShape);
+              break;
             default:
               throw new Error(`Can not handle shape creation of type: ${paperShape}`);
           }
@@ -566,6 +572,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
               break;
             case paperShape instanceof PaperGroupShape:
               this.emit('group:update', paperShape);
+              break;
+            case paperShape instanceof PaperMeasurementRectangle:
+              // Do nothing here
               break;
             default:
               throw new Error(`Can not handle shape update of type: ${paperShape}`);
