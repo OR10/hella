@@ -1,6 +1,7 @@
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
 import PaperFrame from '../../Viewer/Shapes/PaperFrame';
+import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
 
 /**
  * Controller of the {@link PopupPanelDirective}
@@ -34,7 +35,7 @@ class ToolSelectorController {
    * Get the selected Paper Shape Thing, which could either be a LabeledThingInFrame or
    * a LabeledThingInFrameGroup
    *
-   * @returns {LabeledThingInFrame|LabeledThingGroupInFrame}
+   * @returns {LabeledThingInFrame|LabeledThingGroupInFrame|Object}
    * @private
    */
   _getLabeledObjectFromSelectedPaperShape() {
@@ -45,6 +46,10 @@ class ToolSelectorController {
         return this.selectedPaperShape.labeledThingGroupInFrame;
       case this.selectedPaperShape instanceof PaperFrame:
         return this.selectedPaperShape.labeledFrame;
+      case this.selectedPaperShape instanceof PaperMeasurementRectangle:
+        return {
+          'identifier-name': 'measurement-rectangle',
+        };
       default:
         throw new Error(`Unknown type of selected paper shape`);
     }
