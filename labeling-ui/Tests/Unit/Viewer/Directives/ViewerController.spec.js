@@ -107,7 +107,7 @@ describe('ViewerController tests', () => {
   });
 
   describe('Events', () => {
-    it('framerange:change:after', () => {
+    it('framerange:change:after (TTANNO-1923)', () => {
       const debouncedThingOnUpdate = jasmine.createSpyObj('debouncedThingOnUpdate', ['triggerImmediately']);
       debouncedThingOnUpdate.triggerImmediately.and.returnValue({ then: () => {} });
 
