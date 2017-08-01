@@ -229,11 +229,11 @@ fdescribe('Measurement Rectangle', () => {
           .perform();
       })
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleEmpty')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleMultipleMouseMovementsNotSelected')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleEmpty);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleMultipleMouseMovementsNotSelected);
       })
       .then(() => done());
   });
