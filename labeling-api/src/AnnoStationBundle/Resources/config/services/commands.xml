@@ -135,6 +135,13 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.job_rescheduler"/>
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.get_video_from_cdn"
+                 class="AnnoStationBundle\Command\GetVideoFromCDN">
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.service.video_cdn.selected-alias"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
 
