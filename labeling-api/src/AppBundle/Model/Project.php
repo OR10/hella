@@ -107,6 +107,15 @@ class Project
     private $calibrations = [];
 
     /**
+     * Map basename($additionalFrameNumberMappings->getFileName()) => $additionalFrameNumberMappings->getId()
+     *
+     * @var string[]
+     *
+     * @CouchDB\Field(type="mixed")
+     */
+    private $additionalFrameNumberMappings = [];
+
+    /**
      * @CouchDB\Field(type="string")
      */
     private $userId;
@@ -623,6 +632,62 @@ class Project
     private function getVideoKey(string $videoName)
     {
         return basename($videoName, '.' . pathinfo($videoName, PATHINFO_EXTENSION));
+    }
+
+    /**
+     * @param string $additionalFrameNumberMappingName
+     *
+     * @return bool
+     */
+    public function hasAdditionalFrameNumberMapping(string $additionalFrameNumberMappingName)
+    {
+        $videoKey = $this->getVideoKey($additionalFrameNumberMappingName);
+
+        return is_array($this->additionalFrameNumberMappings) && array_key_exists(
+                $videoKey,
+                $this->additionalFrameNumberMappings
+            );
+    }
+
+    /**
+     * @param AnnoStationBundleModel\AdditionalFrameNumberMapping $additionalFrameNumberMapping
+     */
+    public function addAdditionalFrameNumberMapping(
+        AnnoStationBundleModel\AdditionalFrameNumberMapping $additionalFrameNumberMapping
+    ) {
+        $name = basename($additionalFrameNumberMapping->getFileName(), '.frame-index.csv');
+        if ($this->hasAdditionalFrameNumberMapping($name)) {
+            throw new \InvalidArgumentException(
+                sprintf('AdditionalFrameNumberMapping data already exists: %s', $name)
+            );
+        }
+
+        if ($additionalFrameNumberMapping->getId() === null) {
+            throw new \LogicException('Trying to reference a not yet persisted frame number mapping file');
+        }
+
+        $videoKey = $this->getVideoKey($name);
+        $this->additionalFrameNumberMappings[$videoKey] = $additionalFrameNumberMapping->getId();
+    }
+
+    /**
+     * @param Video $video
+     *
+     * @return string|null
+     */
+    public function getAdditionalFrameNumberMappingIdForVideo(Video $video)
+    {
+        $key = $this->getVideoKey($video->getName());
+
+        return isset($this->additionalFrameNumberMappings[$key]) ? $this->additionalFrameNumberMappings[$key] : null;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAdditionalFrameNumberMappings()
+    {
+        return $this->additionalFrameNumberMappings;
     }
 
     /**

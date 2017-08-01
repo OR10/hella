@@ -551,7 +551,7 @@ class ViewerController {
       this._debouncedOnThingUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
-    $rootScope.$on('shape:delete:after', () => {
+    $rootScope.$on('framerange:change:after', () => {
       this._debouncedOnThingUpdate.triggerImmediately()
         .then(() => this._handleFrameChange(this._currentFrameIndex));
     });
