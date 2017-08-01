@@ -1,6 +1,6 @@
 import ViewerTitleBarController from 'Application/Header/Directives/ViewerTitleBarController';
 
-fdescribe('ViewerTitleBarController tests', () => {
+describe('ViewerTitleBarController tests', () => {
   let rootScope;
   let scope;
   let frameIndexService;
@@ -10,10 +10,10 @@ fdescribe('ViewerTitleBarController tests', () => {
     scope = $rootScope.$new();
   }));
 
-  it('can be created', () => {
+  function createController() {
     frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameNumberLimits']);
 
-    const controller = new ViewerTitleBarController(
+    return new ViewerTitleBarController(
       null, // $timeout
       scope, // $scope
       rootScope, // $rootScope
@@ -31,6 +31,23 @@ fdescribe('ViewerTitleBarController tests', () => {
       null, // applicationLoadingMaskService
       null, // imageCache
     );
+  }
+
+  it('can be created', () => {
+    const controller = createController();
     expect(controller).toEqual(jasmine.any(ViewerTitleBarController));
+  });
+
+  describe('Events', () => {
+    describe('framerange:change:after (TTANNO-1923)', () => {
+      it('refreshes the incomplete count', () => {
+        const controller = createController();
+        spyOn(controller, 'refreshIncompleteCount');
+
+        rootScope.$emit('framerange:change:after');
+
+        expect(controller.refreshIncompleteCount).toHaveBeenCalled();
+      });
+    });
   });
 });
