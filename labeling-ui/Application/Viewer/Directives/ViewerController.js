@@ -370,6 +370,13 @@ class ViewerController {
     this.paperGroupShapes = [];
 
     /**
+     * A structure holding all additional paper shapes that are not part of the other types
+     *
+     * @type {Array}
+     */
+    this.paperAdditionalShapes = [];
+
+    /**
      * @type {Object}
      * @private
      */
