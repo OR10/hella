@@ -1,3 +1,4 @@
+import {inject} from 'angular-mocks';
 import ViewerController from 'Application/Viewer/Directives/ViewerController';
 
 // Extend the original class, because there are variables that are implictly set by angular which are already
@@ -24,7 +25,7 @@ describe('ViewerController tests', () => {
   let scope;
   let debouncerService;
 
-  beforeEach(inject(($rootScope) => {
+  beforeEach(inject($rootScope => {
     rootScope = $rootScope;
     scope = $rootScope.$new();
   }));
@@ -40,11 +41,11 @@ describe('ViewerController tests', () => {
       find: () => {
         return {
           0: {
-            addEventListener: () => {}
+            addEventListener: () => {},
           },
           on: () => {},
-        }
-      }
+        };
+      },
     };
     const frameIndexLimits = {upperLimit: 0, lowerLimit: 1};
     const frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameIndexLimits']);
@@ -112,8 +113,7 @@ describe('ViewerController tests', () => {
       debouncedThingOnUpdate.triggerImmediately.and.returnValue({ then: () => {} });
 
       debouncerService.multiplexDebounce.and.returnValue(debouncedThingOnUpdate);
-      const controller = createController();
-
+      createController();
       rootScope.$emit('framerange:change:after');
 
       expect(debouncedThingOnUpdate.triggerImmediately).toHaveBeenCalled();

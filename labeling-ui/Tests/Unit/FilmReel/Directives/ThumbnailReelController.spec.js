@@ -1,3 +1,4 @@
+import {inject} from 'angular-mocks';
 import ThumbnailReelController from 'Application/FilmReel/Directives/ThumbnailReelController';
 import AbortablePromise from 'Application/Common/Support/AbortablePromise';
 
@@ -112,7 +113,7 @@ describe('ThumbnailReelController tests', () => {
       const selectedPaperShape = {
         labeledThingInFrame: {
           labeledThing: {
-            frameRange: frameRange
+            frameRange: frameRange,
           },
         },
       };

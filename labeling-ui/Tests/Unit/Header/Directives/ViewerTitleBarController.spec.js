@@ -1,3 +1,4 @@
+import {inject} from 'angular-mocks';
 import ViewerTitleBarController from 'Application/Header/Directives/ViewerTitleBarController';
 
 describe('ViewerTitleBarController tests', () => {
@@ -5,7 +6,7 @@ describe('ViewerTitleBarController tests', () => {
   let scope;
   let frameIndexService;
 
-  beforeEach(inject(($rootScope) => {
+  beforeEach(inject($rootScope => {
     rootScope = $rootScope;
     scope = $rootScope.$new();
   }));
