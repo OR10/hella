@@ -138,6 +138,10 @@ class ImagePreloader {
 
     let completedImages = locations.length - nonCachedUrls.length;
 
+    if (nonCachedUrls.length === 0) {
+      return this._$q.resolve([]);
+    }
+
     this._emit('preload:started', {
       locationsInChunk: locations,
       imageCountInChunk: locations.length,
