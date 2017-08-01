@@ -10,6 +10,7 @@ import Environment from '../../Common/Support/Environment';
 
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
+import PaperMeasurementRectangle from "../Shapes/PaperMeasurementRectangle";
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -1081,6 +1082,10 @@ class ViewerController {
     }
 
     if (this.selectedPaperShape instanceof PaperFrame) {
+      return Promise.resolve(null);
+    }
+
+    if (this.selectedPaperShape instanceof PaperMeasurementRectangle) {
       return Promise.resolve(null);
     }
 
