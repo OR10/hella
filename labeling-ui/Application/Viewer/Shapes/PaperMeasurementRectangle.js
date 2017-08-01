@@ -199,6 +199,17 @@ class PaperMeasurementRectangle extends PaperShape {
   }
 
   /**
+   * @param {Point} point
+   */
+  moveTo(point) {
+    const width = this._bottomRight.x - this._topLeft.x;
+    const height = this._bottomRight.y - this._topLeft.y;
+    this._topLeft = new paper.Point(point.x - (width / 2), point.y - (height / 2));
+    this._bottomRight = new paper.Point(point.x + (width / 2), point.y + (height / 2));
+    this._drawShape();
+  }
+
+  /**
    * @param {Handle|null} handle
    * @param {boolean} mouseDown
    * @returns {string}
@@ -255,6 +266,24 @@ class PaperMeasurementRectangle extends PaperShape {
   }
 
   /**
+   * Select the shape
+   *
+   * @param {Boolean} drawHandles
+   */
+  select(drawHandles = true) {
+    this._isSelected = true;
+    this._drawShape(drawHandles);
+  }
+
+  /**
+   * Deselect the shape
+   */
+  deselect() {
+    this._isSelected = false;
+    this._drawShape();
+  }
+
+  /**
    * @param {Point} fixPoint
    * @param {Point} point
    * @param {{width, height}} minSize
@@ -302,6 +331,25 @@ class PaperMeasurementRectangle extends PaperShape {
   }
 
   /**
+   * Fix the points of the shape to represent the right coordinates
+   */
+  fixOrientation() {
+    const oldTopLeft = this._topLeft;
+    const oldBottomRight = this._bottomRight;
+
+    this._topLeft = new paper.Point(
+      Math.min(oldTopLeft.x, oldBottomRight.x),
+      Math.min(oldTopLeft.y, oldBottomRight.y)
+    );
+    this._bottomRight = new paper.Point(
+      Math.max(oldTopLeft.x, oldBottomRight.x),
+      Math.max(oldTopLeft.y, oldBottomRight.y)
+    );
+    this._drawShape();
+  }
+
+
+  /**
    * @returns {Point}
    */
   get position() {
@@ -309,6 +357,21 @@ class PaperMeasurementRectangle extends PaperShape {
       (this._topLeft.x + this._bottomRight.x) / 2,
       (this._topLeft.y + this._bottomRight.y) / 2
     );
+  }
+
+  toJSON() {
+    return {
+      type: 'measurement-rectangle',
+      id: this._shapeId,
+      topLeft: {
+        x: Math.round(this._topLeft.x),
+        y: Math.round(this._topLeft.y),
+      },
+      bottomRight: {
+        x: Math.round(this._bottomRight.x),
+        y: Math.round(this._bottomRight.y),
+      },
+    };
   }
 }
 
