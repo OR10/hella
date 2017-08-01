@@ -1,6 +1,7 @@
 import 'jquery';
 import angular from 'angular';
 import {inject, module} from 'angular-mocks';
+import {clone} from 'lodash';
 
 import Common from 'Application/Common/Common';
 import LabelingData from 'Application/LabelingData/LabelingData';
@@ -132,19 +133,21 @@ describe('LabeledThingGateway', () => {
 
   it('should save a new labeled thing', done => {
     // By default now a LT without any LTIF is incomplete (TTANNO-1924)
-    labeledThingFrontendModel.incomplete = true;
-    labeledThingPouchDbModel.incomplete = true;
+    const incompleteLabeledThingFrontendModel = clone(labeledThingFrontendModel);
+    const incompleteLabeledThingPouchDbModel = clone(labeledThingPouchDbModel);
+    incompleteLabeledThingFrontendModel.incomplete = true;
+    incompleteLabeledThingPouchDbModel.incomplete = true;
 
     const db = pouchDbHelper.database;
     Promise.resolve()
       .then(() => {
         return pouchDbHelper.waitForPouchDb(
           $rootScope,
-          gateway.saveLabeledThing(labeledThingFrontendModel)
+          gateway.saveLabeledThing(incompleteLabeledThingFrontendModel)
         );
       })
       .then(storedLabeledThing => {
-        expect(storedLabeledThing).toEqual(labeledThingFrontendModel);
+        expect(storedLabeledThing).toEqual(incompleteLabeledThingFrontendModel);
       })
       .then(() => {
         // Check if document is really stored correctly in the db.
@@ -152,7 +155,7 @@ describe('LabeledThingGateway', () => {
       })
       .then(loadedLabeledThingDocument => {
         delete loadedLabeledThingDocument._rev;
-        expect(loadedLabeledThingDocument).toEqual(labeledThingPouchDbModel);
+        expect(loadedLabeledThingDocument).toEqual(incompleteLabeledThingPouchDbModel);
       })
       .then(() => done());
   });
