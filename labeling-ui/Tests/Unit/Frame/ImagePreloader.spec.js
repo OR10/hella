@@ -5,7 +5,7 @@ import thumbnailFrameLocationsFixture from '../../Fixtures/Models/Frontend/Frame
 import taskFixture from '../../Fixtures/Models/Frontend/Task';
 import ImagePreloader from '../../../Application/Frame/Services/ImagePreloader';
 
-fdescribe('ImagePreloader', () => {
+describe('ImagePreloader', () => {
   let angularQ;
   let rootScope;
 
@@ -82,7 +82,7 @@ fdescribe('ImagePreloader', () => {
       expect(returnValue.then).toEqual(jasmine.any(Function));
     });
 
-    it('should request frame locations for task specified source image type',  () => {
+    it('should request frame locations for task specified source image type', () => {
       const preloader = createImagePreloader();
       preloader.preloadImages(task);
 
@@ -91,7 +91,7 @@ fdescribe('ImagePreloader', () => {
       expect(frameLocationGatewayMock.getFrameLocations).toHaveBeenCalledWith(task.id, 'sourceJpg', 0, 592);
     });
 
-    it('should request frame locations for task specified thumbnail image type',  () => {
+    it('should request frame locations for task specified thumbnail image type', () => {
       const preloader = createImagePreloader();
       preloader.preloadImages(task);
 
@@ -112,6 +112,264 @@ fdescribe('ImagePreloader', () => {
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
         [...sourceJpgUrls, ...thumbnailUrls]
       );
+    });
+
+    it('should write images to cache once loaded', () => {
+      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
+      const thumbnailUrls = thumbnailLocations.map(location => location.url);
+
+      const images = [].concat(
+        sourceJpgUrls.map(url => ({src: url})),
+        thumbnailUrls.map(url => ({src: url}))
+      );
+
+      imageFetcherMock.fetchMultiple.and.returnValue(angularQ.resolve(images));
+
+      const preloader = createImagePreloader();
+      preloader.preloadImages(task);
+
+      rootScope.$apply();
+
+      expect(imageCacheMock.addImages).toHaveBeenCalledWith(images);
+    });
+
+    it('should resolve with images provided by fetchMultiple', () => {
+      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
+      const thumbnailUrls = thumbnailLocations.map(location => location.url);
+
+      const images = [].concat(
+        sourceJpgUrls.map(url => ({src: url})),
+        thumbnailUrls.map(url => ({src: url}))
+      );
+
+      imageFetcherMock.fetchMultiple.and.returnValue(angularQ.resolve(images));
+
+      const preloader = createImagePreloader();
+      const returnValue = preloader.preloadImages(task);
+      const returnValueSpy = jasmine.createSpy('preloadImages resolve');
+      returnValue.then(returnValueSpy);
+
+      rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalledWith(images);
+    });
+
+    it('should reject if fetchMultiple fails', () => {
+      const error = 'Some really nasty error';
+      imageFetcherMock.fetchMultiple.and.returnValue(angularQ.reject(error));
+
+      const preloader = createImagePreloader();
+      const returnValue = preloader.preloadImages(task);
+      const returnValueSpy = jasmine.createSpy('preloadImages reject');
+      returnValue.catch(returnValueSpy);
+
+      rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalledWith(error);
+    });
+
+    it('should not fetch images, which are already in the cache', () => {
+      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
+      const thumbnailUrls = thumbnailLocations.map(location => location.url);
+
+      // All images above 44 are in the cache!
+      imageCacheMock.hasImageForUrl.and.callFake(url => {
+        const imageNumber = parseInt(/([0-9]+)\.jpg$/.exec(url)[1]);
+        return (imageNumber > 44);
+      });
+
+      const preloader = createImagePreloader();
+      preloader.preloadImages(task);
+
+      rootScope.$apply();
+
+      expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
+        [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]]
+      );
+    });
+
+    it('should fetch only images up to the given limit', () => {
+      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
+      const thumbnailUrls = thumbnailLocations.map(location => location.url);
+
+      const preloader = createImagePreloader();
+      preloader.preloadImages(task, 2);
+
+      rootScope.$apply();
+
+      expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
+        [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]]
+      );
+    });
+
+    it('should resume fetching, where it stopped if limit is given', () => {
+      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
+      const thumbnailUrls = thumbnailLocations.map(location => location.url);
+
+      const preloader = createImagePreloader();
+      preloader.preloadImages(task, 2);
+
+      rootScope.$apply();
+
+      expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
+        [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]]
+      );
+
+      preloader.preloadImages(task, 2);
+
+      rootScope.$apply();
+
+      expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
+        [sourceJpgUrls[2], sourceJpgUrls[3], thumbnailUrls[2], thumbnailUrls[3]]
+      );
+    });
+
+    it('should do nothing if all images have already been fetched', () => {
+      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
+      const thumbnailUrls = thumbnailLocations.map(location => location.url);
+
+      const preloader = createImagePreloader();
+      preloader.preloadImages(task);
+
+      rootScope.$apply();
+
+      preloader.preloadImages(task, 10);
+
+      rootScope.$apply();
+
+      expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledTimes(1);
+    });
+
+  });
+
+  describe('Events', () => {
+    it('should allow multiple event registrations', () => {
+      const preloadStartedSpyOne = jasmine.createSpy('preload:started event 1');
+      const preloadStartedSpyTwo = jasmine.createSpy('preload:started event 2');
+
+      const preloader = createImagePreloader();
+      preloader.on('preload:started', preloadStartedSpyOne);
+      preloader.on('preload:started', preloadStartedSpyTwo);
+      preloader.preloadImages(task);
+
+      rootScope.$apply();
+
+      expect(preloadStartedSpyOne).toHaveBeenCalledTimes(1);
+      expect(preloadStartedSpyTwo).toHaveBeenCalledTimes(1);
+    });
+
+    it('should allow deregistration with given handle', () => {
+      const preloadStartedSpyOne = jasmine.createSpy('preload:started event 1');
+      const preloadStartedSpyTwo = jasmine.createSpy('preload:started event 2');
+
+      const preloader = createImagePreloader();
+      const eventHandle = preloader.on('preload:started', preloadStartedSpyOne);
+      preloader.on('preload:started', preloadStartedSpyTwo);
+      preloader.removeListener(eventHandle);
+      preloader.preloadImages(task);
+
+      rootScope.$apply();
+
+      expect(preloadStartedSpyOne).not.toHaveBeenCalled();
+      expect(preloadStartedSpyTwo).toHaveBeenCalledTimes(1);
+    });
+
+    it('should report via event for started preload', () => {
+      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
+      const thumbnailUrls = thumbnailLocations.map(location => location.url);
+
+      const preloadStartedSpy = jasmine.createSpy('preload:started event');
+
+      const preloader = createImagePreloader();
+      preloader.on('preload:started', preloadStartedSpy);
+      preloader.preloadImages(task);
+
+      rootScope.$apply();
+
+      expect(preloadStartedSpy).toHaveBeenCalledTimes(1);
+      expect(preloadStartedSpy).toHaveBeenCalledWith({
+        locationsInChunk: [...sourceJpgLocations, ...thumbnailLocations],
+        imageCountInChunk: sourceJpgLocations.length + thumbnailLocations.length
+      });
+    });
+
+    it('should report via event for finished preload', () => {
+      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
+      const thumbnailUrls = thumbnailLocations.map(location => location.url);
+
+      const images = [].concat(
+        sourceJpgUrls.map(url => ({src: url})),
+        thumbnailUrls.map(url => ({src: url}))
+      );
+
+      imageFetcherMock.fetchMultiple.and.returnValue(angularQ.resolve(images));
+
+      const preloadFinishedSpy = jasmine.createSpy('preload:finished event');
+
+      const preloader = createImagePreloader();
+      preloader.on('preload:finished', preloadFinishedSpy);
+      preloader.preloadImages(task);
+
+      rootScope.$apply();
+
+      expect(preloadFinishedSpy).toHaveBeenCalledTimes(1);
+      expect(preloadFinishedSpy).toHaveBeenCalledWith({
+        locationsInChunk: [...sourceJpgLocations, ...thumbnailLocations],
+        imageCountInChunk: sourceJpgLocations.length + thumbnailLocations.length,
+        images,
+      });
+    });
+
+    it('should report progress via event for each image', () => {
+      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
+      const thumbnailUrls = thumbnailLocations.map(location => location.url);
+
+      const expectedLocations = [sourceJpgLocations[0], sourceJpgLocations[1], thumbnailLocations[0], thumbnailLocations[1]];
+      const images = [{src: sourceJpgUrls[0]}, {src: sourceJpgUrls[1]}, {src: thumbnailUrls[0]}, {src: thumbnailUrls[1]}];
+
+      const fetchMultipleDeferred = angularQ.defer();
+
+      imageFetcherMock.fetchMultiple.and.returnValue(fetchMultipleDeferred.promise);
+
+      const imageLoadedSpy = jasmine.createSpy('image:loaded event');
+
+      const preloader = createImagePreloader();
+      preloader.on('image:loaded', imageLoadedSpy);
+      preloader.preloadImages(task, 2);
+
+      rootScope.$apply();
+
+      images.forEach(
+        image => fetchMultipleDeferred.notify(image)
+      );
+
+      rootScope.$apply();
+
+      expect(imageLoadedSpy).toHaveBeenCalledTimes(4);
+      expect(imageLoadedSpy).toHaveBeenCalledWith({
+        image: images[0],
+        locationsInChunk: expectedLocations,
+        imageCountInChunk: 4,
+        imageCountInChunkCompleted: 1,
+      });
+      expect(imageLoadedSpy).toHaveBeenCalledWith({
+        image: images[1],
+        locationsInChunk: expectedLocations,
+        imageCountInChunk: 4,
+        imageCountInChunkCompleted: 2,
+      });
+      expect(imageLoadedSpy).toHaveBeenCalledWith({
+        image: images[2],
+        locationsInChunk: expectedLocations,
+        imageCountInChunk: 4,
+        imageCountInChunkCompleted: 3,
+      });
+      expect(imageLoadedSpy).toHaveBeenCalledWith({
+        image: images[3],
+        locationsInChunk: expectedLocations,
+        imageCountInChunk: 4,
+        imageCountInChunkCompleted: 4,
+      });
     });
   });
 });
