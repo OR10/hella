@@ -1,5 +1,7 @@
 import ViewerController from 'Application/Viewer/Directives/ViewerController';
 
+// Extend the original class, because there are variables that are implictly set by angular which are already
+// used in the constructor (task e.g.)
 class ViewerControllerTestable extends ViewerController {
 
 }
@@ -17,18 +19,22 @@ ViewerControllerTestable.prototype.framePosition = {
   afterFrameChangeOnce: () => {},
 };
 
-fdescribe('ViewerController tests', () => {
+describe('ViewerController tests', () => {
   let rootScope;
   let scope;
+  let debouncerService;
 
   beforeEach(inject(($rootScope) => {
     rootScope = $rootScope;
     scope = $rootScope.$new();
   }));
 
-  it('can be created', () => {
+  beforeEach(() => {
+    debouncerService = jasmine.createSpyObj('debouncerService', ['multiplexDebounce']);
+  });
+
+  function createController() {
     const viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['on']);
-    const debouncerService = jasmine.createSpyObj('debouncerService', ['multiplexDebounce']);
     const element = {
       0: {},
       find: () => {
@@ -58,7 +64,7 @@ fdescribe('ViewerController tests', () => {
     };
     drawingContextService.createContext.and.returnValue(context);
 
-    const controller = new ViewerControllerTestable(
+    return new ViewerControllerTestable(
       scope,
       rootScope,
       element,
@@ -93,6 +99,24 @@ fdescribe('ViewerController tests', () => {
       null, // inProgressService,
       pouchDbSyncManager
     );
+  }
+
+  it('can be created', () => {
+    const controller = createController();
     expect(controller).toEqual(jasmine.any(ViewerController));
+  });
+
+  describe('Events', () => {
+    it('framerange:change:after', () => {
+      const debouncedThingOnUpdate = jasmine.createSpyObj('debouncedThingOnUpdate', ['triggerImmediately']);
+      debouncedThingOnUpdate.triggerImmediately.and.returnValue({ then: () => {} });
+
+      debouncerService.multiplexDebounce.and.returnValue(debouncedThingOnUpdate);
+      const controller = createController();
+
+      rootScope.$emit('framerange:change:after');
+
+      expect(debouncedThingOnUpdate.triggerImmediately).toHaveBeenCalled();
+    });
   });
 });
