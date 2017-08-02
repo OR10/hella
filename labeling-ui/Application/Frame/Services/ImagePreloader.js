@@ -66,8 +66,9 @@ class ImagePreloader {
    *
    * @param {Task} task
    * @param {Number|undefined} maximumToPreload
+   * @param {number|undefined} maxParallelRequests
    */
-  preloadImages(task, maximumToPreload = undefined) {
+  preloadImages(task, maximumToPreload = undefined, maxParallelRequests = undefined) {
     let locationsByType;
     let currentPosition;
 
@@ -78,7 +79,7 @@ class ImagePreloader {
       .then(() => this._getLocationsToPreload(locationsByType, currentPosition, maximumToPreload))
       .then(({locationsToPreload, newPosition}) => {
         this._positions.set(task, newPosition);
-        return this._preloadImagesByLocation(locationsToPreload);
+        return this._preloadImagesByLocation(locationsToPreload, maxParallelRequests);
       });
   }
 
@@ -129,9 +130,10 @@ class ImagePreloader {
    * returned images do not strictly correlate to the given url list!
    *
    * @param {Array.<FrameLocation>} locations
+   * @param {number|undefined} maxParallelRequests
    * @return {Promise.<Array.<HTMLImageElement>>}
    */
-  _preloadImagesByLocation(locations) {
+  _preloadImagesByLocation(locations, maxParallelRequests) {
     // Only images not in the cache are requested
     const urls = locations.map(location => location.url);
     const nonCachedUrls = urls.filter(url => !this._imageCache.hasImageForUrl(url));
@@ -148,7 +150,7 @@ class ImagePreloader {
     });
 
     return this._$q.resolve()
-      .then(() => this._imageFetcher.fetchMultiple(nonCachedUrls))
+      .then(() => this._imageFetcher.fetchMultiple(nonCachedUrls, maxParallelRequests))
       .then(
         images => this._imageCache.addImages(images),
         undefined,

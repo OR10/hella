@@ -110,7 +110,23 @@ describe('ImagePreloader', () => {
       rootScope.$apply();
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
-        [...sourceJpgUrls, ...thumbnailUrls]
+        [...sourceJpgUrls, ...thumbnailUrls],
+        undefined
+      );
+    });
+
+    it('should propagate chunkSize to fetchMultiple if given', () => {
+      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
+      const thumbnailUrls = thumbnailLocations.map(location => location.url);
+
+      const preloader = createImagePreloader();
+      preloader.preloadImages(task, undefined, 42);
+
+      rootScope.$apply();
+
+      expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
+        [...sourceJpgUrls, ...thumbnailUrls],
+        42
       );
     });
 
@@ -184,7 +200,8 @@ describe('ImagePreloader', () => {
       rootScope.$apply();
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
-        [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]]
+        [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]],
+        undefined
       );
     });
 
@@ -198,7 +215,8 @@ describe('ImagePreloader', () => {
       rootScope.$apply();
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
-        [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]]
+        [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]],
+        undefined
       );
     });
 
@@ -212,7 +230,8 @@ describe('ImagePreloader', () => {
       rootScope.$apply();
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
-        [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]]
+        [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]],
+        undefined
       );
 
       preloader.preloadImages(task, 2);
@@ -220,7 +239,8 @@ describe('ImagePreloader', () => {
       rootScope.$apply();
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
-        [sourceJpgUrls[2], sourceJpgUrls[3], thumbnailUrls[2], thumbnailUrls[3]]
+        [sourceJpgUrls[2], sourceJpgUrls[3], thumbnailUrls[2], thumbnailUrls[3]],
+        undefined
       );
     });
 
