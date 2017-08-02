@@ -154,7 +154,7 @@ class User extends Controller\Base
         /** @var Model\User $loginUser */
         $loginUser = $this->tokenStorage->getToken()->getUser();
 
-        if (!$loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN) &&
+        if (!$user->hasRole(Model\User::ROLE_SUPER_ADMIN) && !$loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN) &&
             count(array_intersect($user->getOrganisations(), $loginUser->getOrganisations())) === 0) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to get this user');
         }
