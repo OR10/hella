@@ -157,5 +157,9 @@
             <argument>%database_name_read_only%</argument>
         </service>
 
+        <service id="annostation.labeling_api.database.facade.additional_frame_number_mapping" class="AnnoStationBundle\Database\Facade\AdditionalFrameNumberMapping">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
     </services>
 </container>

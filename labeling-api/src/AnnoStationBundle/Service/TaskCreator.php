@@ -59,11 +59,17 @@ class TaskCreator
     private $databaseSecurityPermissionService;
 
     /**
+     * @var Facade\AdditionalFrameNumberMapping
+     */
+    private $additionalFrameNumberMappingFacade;
+
+    /**
      * TaskCreator constructor.
      *
      * @param Facade\LabelingTask                   $taskFacade
      * @param Facade\TaskConfiguration              $taskConfigurationFacade
      * @param Facade\CalibrationData                $calibrationDataFacade
+     * @param Facade\AdditionalFrameNumberMapping   $additionalFrameNumberMappingFacade
      * @param Facade\Video                          $videoFacade
      * @param LabelStructure                        $labelStructureService
      * @param CouchDbUpdateConflictRetry            $couchDbUpdateConflictRetryService
@@ -75,6 +81,7 @@ class TaskCreator
         Facade\LabelingTask $taskFacade,
         Facade\TaskConfiguration $taskConfigurationFacade,
         Facade\CalibrationData $calibrationDataFacade,
+        Facade\AdditionalFrameNumberMapping $additionalFrameNumberMappingFacade,
         Facade\Video $videoFacade,
         Service\LabelStructure $labelStructureService,
         Service\CouchDbUpdateConflictRetry $couchDbUpdateConflictRetryService,
@@ -82,15 +89,16 @@ class TaskCreator
         Service\TaskDatabaseCreator $taskDatabaseCreator,
         Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
     ) {
-        $this->taskFacade                        = $taskFacade;
-        $this->calibrationDataFacade             = $calibrationDataFacade;
-        $this->taskConfigurationFacade           = $taskConfigurationFacade;
-        $this->labelStructureService             = $labelStructureService;
-        $this->loggerFacade                      = new LoggerFacade($logger, self::class);
-        $this->videoFacade                       = $videoFacade;
-        $this->couchDbUpdateConflictRetryService = $couchDbUpdateConflictRetryService;
-        $this->taskDatabaseCreator               = $taskDatabaseCreator;
-        $this->databaseSecurityPermissionService = $databaseSecurityPermissionService;
+        $this->taskFacade                         = $taskFacade;
+        $this->calibrationDataFacade              = $calibrationDataFacade;
+        $this->additionalFrameNumberMappingFacade = $additionalFrameNumberMappingFacade;
+        $this->taskConfigurationFacade            = $taskConfigurationFacade;
+        $this->labelStructureService              = $labelStructureService;
+        $this->loggerFacade                       = new LoggerFacade($logger, self::class);
+        $this->videoFacade                        = $videoFacade;
+        $this->couchDbUpdateConflictRetryService  = $couchDbUpdateConflictRetryService;
+        $this->taskDatabaseCreator                = $taskDatabaseCreator;
+        $this->databaseSecurityPermissionService  = $databaseSecurityPermissionService;
     }
 
     /**
@@ -139,15 +147,16 @@ class TaskCreator
                 ],
             ];
 
-            $taskVideoSettings   = $project->getTaskVideoSettings();
-            $splitLength         = (int) $taskVideoSettings['splitEach'];
-            $frameSkip           = (int) $taskVideoSettings['frameSkip'];
-            $startFrameNumber    = (int) $taskVideoSettings['startFrameNumber'];
-            $calibrationDataId   = $project->getCalibrationDataIdForVideo($video);
-            $calibrationData     = null;
-            $imageTypes          = array_keys($video->getImageTypes());
-            $framesPerVideoChunk = $video->getMetaData()->numberOfFrames;
-            $frameMappingChunks  = [];
+            $taskVideoSettings              = $project->getTaskVideoSettings();
+            $splitLength                    = (int) $taskVideoSettings['splitEach'];
+            $frameSkip                      = (int) $taskVideoSettings['frameSkip'];
+            $startFrameNumber               = (int) $taskVideoSettings['startFrameNumber'];
+            $calibrationDataId              = $project->getCalibrationDataIdForVideo($video);
+            $additionalFrameNumberMappingId = $project->getAdditionalFrameNumberMappingIdForVideo($video);
+            $calibrationData                = null;
+            $imageTypes                     = array_keys($video->getImageTypes());
+            $framesPerVideoChunk            = $video->getMetaData()->numberOfFrames;
+            $frameMappingChunks             = [];
 
             $legacyDrawingTools     = array_map(
                 function ($instruction) {
@@ -208,12 +217,28 @@ class TaskCreator
                 } elseif ($video->getMetaData()->numberOfFrames >= $startFrameNumber) {
                     $videoFrameMapping = [$startFrameNumber];
                 }
-                while (count($videoFrameMapping) > 0) {
-                    $frameMappingChunks[] = array_splice(
-                        $videoFrameMapping,
-                        0,
-                        round($framesPerVideoChunk / $frameSkip)
+
+                if ($additionalFrameNumberMappingId !== null) {
+                    $additionalFrameNumberMapping = $this->additionalFrameNumberMappingFacade->findById(
+                        $additionalFrameNumberMappingId
                     );
+                    $videoFrameMapping            = array_unique(
+                        array_merge($videoFrameMapping, $additionalFrameNumberMapping->getFrameNumberMapping())
+                    );
+                    asort($videoFrameMapping);
+                    $videoFrameMapping = array_values($videoFrameMapping);
+                }
+
+                if ($splitLength > 0) {
+                    while (count($videoFrameMapping) > 0) {
+                        $frameMappingChunks[] = array_splice(
+                            $videoFrameMapping,
+                            0,
+                            round($framesPerVideoChunk / $frameSkip)
+                        );
+                    }
+                } else {
+                    $frameMappingChunks[] = $videoFrameMapping;
                 }
 
                 $frameRange = new Model\FrameNumberRange(1, $video->getMetaData()->numberOfFrames);
