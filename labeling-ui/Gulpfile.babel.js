@@ -9,7 +9,7 @@ import fs from 'fs';
 import jspm, {Builder} from 'jspm';
 import sassJspm from 'sass-jspm-importer';
 import run from 'run-sequence';
-import {webdriver_update as webdriverUpdate, protractor} from 'gulp-protractor'; // eslint-disable-line camelcase
+import {webdriver_update_specific as webdriverUpdate, protractor} from 'gulp-protractor'; // eslint-disable-line camelcase
 import ip from 'ip';
 import chokidar from 'chokidar';
 import {exec} from 'child_process';
@@ -421,7 +421,9 @@ gulp.task('copy-canteen', () => {
   });
 });
 
-gulp.task('webdriver-update', webdriverUpdate);
+gulp.task('webdriver-update', webdriverUpdate({
+  webdriverManagerArgs: ['--versions.chrome=2.30'],
+}));
 
 gulp.task('test-e2e-run', ['webdriver-update', 'copy-canteen', 'clean-e2e-logs'], next => {
   runProtractor(

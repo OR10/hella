@@ -64,22 +64,29 @@ class VideoImporter
     private $taskConfigurationFacade;
 
     /**
-     * @param Facade\Project                   $projectFacade
-     * @param Facade\Video                     $videoFacade
-     * @param Facade\CalibrationData           $calibrationDataFacade
-     * @param Facade\LabelingTask              $labelingTaskFacade
-     * @param Video\MetaDataReader             $metaDataReader
-     * @param Service\Video\VideoFrameSplitter $frameCdnSplitter
-     * @param LabelStructure                   $labelStructureService
-     * @param WorkerPool\Facade                $facadeAMQP
-     * @param CalibrationFileConverter         $calibrationFileConverter
-     * @param Facade\TaskConfiguration         $taskConfigurationFacade
+     * @var Facade\AdditionalFrameNumberMapping
+     */
+    private $additionalFrameNumberMappingFacade;
+
+    /**
+     * @param Facade\Project                      $projectFacade
+     * @param Facade\Video                        $videoFacade
+     * @param Facade\CalibrationData              $calibrationDataFacade
+     * @param Facade\LabelingTask                 $labelingTaskFacade
+     * @param Facade\AdditionalFrameNumberMapping $additionalFrameNumberMappingFacade
+     * @param Video\MetaDataReader                $metaDataReader
+     * @param Service\Video\VideoFrameSplitter    $frameCdnSplitter
+     * @param LabelStructure                      $labelStructureService
+     * @param WorkerPool\Facade                   $facadeAMQP
+     * @param CalibrationFileConverter            $calibrationFileConverter
+     * @param Facade\TaskConfiguration            $taskConfigurationFacade
      */
     public function __construct(
         Facade\Project $projectFacade,
         Facade\Video $videoFacade,
         Facade\CalibrationData $calibrationDataFacade,
         Facade\LabelingTask $labelingTaskFacade,
+        Facade\AdditionalFrameNumberMapping $additionalFrameNumberMappingFacade,
         Service\Video\MetaDataReader $metaDataReader,
         Service\Video\VideoFrameSplitter $frameCdnSplitter,
         Service\LabelStructure $labelStructureService,
@@ -87,16 +94,17 @@ class VideoImporter
         Service\CalibrationFileConverter $calibrationFileConverter,
         Facade\TaskConfiguration $taskConfigurationFacade
     ) {
-        $this->projectFacade            = $projectFacade;
-        $this->videoFacade              = $videoFacade;
-        $this->calibrationDataFacade    = $calibrationDataFacade;
-        $this->metaDataReader           = $metaDataReader;
-        $this->frameCdnSplitter         = $frameCdnSplitter;
-        $this->labelingTaskFacade       = $labelingTaskFacade;
-        $this->labelStructureService    = $labelStructureService;
-        $this->facadeAMQP               = $facadeAMQP;
-        $this->calibrationFileConverter = $calibrationFileConverter;
-        $this->taskConfigurationFacade  = $taskConfigurationFacade;
+        $this->projectFacade                      = $projectFacade;
+        $this->videoFacade                        = $videoFacade;
+        $this->calibrationDataFacade              = $calibrationDataFacade;
+        $this->metaDataReader                     = $metaDataReader;
+        $this->frameCdnSplitter                   = $frameCdnSplitter;
+        $this->labelingTaskFacade                 = $labelingTaskFacade;
+        $this->labelStructureService              = $labelStructureService;
+        $this->facadeAMQP                         = $facadeAMQP;
+        $this->calibrationFileConverter           = $calibrationFileConverter;
+        $this->taskConfigurationFacade            = $taskConfigurationFacade;
+        $this->additionalFrameNumberMappingFacade = $additionalFrameNumberMappingFacade;
     }
 
     /**
@@ -230,6 +238,61 @@ class VideoImporter
         }
 
         return $calibration;
+    }
+
+    public function importAdditionalFrameNumberMapping(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        string $additionalFrameNumberMappingFilePath
+    ) {
+        $additionalFrameNumberMapping = new AnnoStationBundleModel\AdditionalFrameNumberMapping(
+            $organisation
+        );
+
+        $additionalFrameNumberMapping->setFrameNumberMapping(
+            $this->getAdditionalFrameNumberMappingData($additionalFrameNumberMappingFilePath)
+        );
+        $additionalFrameNumberMapping->addAttachment(
+            basename($additionalFrameNumberMappingFilePath),
+            file_get_contents($additionalFrameNumberMappingFilePath),
+            mime_content_type($additionalFrameNumberMappingFilePath)
+        );
+        $this->additionalFrameNumberMappingFacade->save($additionalFrameNumberMapping);
+
+        $conflictException = null;
+        for ($retries = 0; $retries < 5; ++$retries) {
+            $conflictException = null;
+            try {
+                $project->addAdditionalFrameNumberMapping($additionalFrameNumberMapping);
+                $this->projectFacade->save($project);
+                break;
+            } catch (CouchDB\UpdateConflictException $exception) {
+                $conflictException = $exception;
+                $this->projectFacade->reload($project);
+            }
+        }
+
+        if ($conflictException !== null) {
+            throw $conflictException;
+        }
+
+        return $additionalFrameNumberMapping;
+    }
+
+    private function getAdditionalFrameNumberMappingData($filePath)
+    {
+        $data = array();
+        foreach (preg_split("(\r\n|\r|\n)", file_get_contents($filePath), -1, PREG_SPLIT_NO_EMPTY) as $line) {
+            if (empty($line)) {
+                continue;
+            }
+            $lineData = str_getcsv($line, ';', '');
+            if ($lineData[1] === 'true') {
+                $data[] = (int) $lineData[0];
+            }
+        }
+
+        return $data;
     }
 
     /**
