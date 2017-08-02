@@ -17,15 +17,18 @@ describe('ViewerController tests', () => {
   let element;
   let frameLocation;
   let imagePreloader;
+  let task;
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
   class ViewerControllerTestable extends ViewerController {}
 
   beforeEach(() => {
-    ViewerControllerTestable.prototype.task = {
+    task = {
       requiredImageTypes: ['source'],
     };
+
+    ViewerControllerTestable.prototype.task = task;
 
     ViewerControllerTestable.prototype.video = {
       metaData: {},
@@ -164,6 +167,20 @@ describe('ViewerController tests', () => {
       expect(frameLocation.afterFrameChangeOnce).toHaveBeenCalled();
       imagePreloaderReadyCallback();
       expect(imagePreloader.preloadImages).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call the ImagePreloader with chunksize of 1', () => {
+      let imagePreloaderReadyCallback;
+      frameLocation.afterFrameChangeOnce.and.callFake((name, callback) => {
+        if (name === 'resumeImagePreloading') {
+          imagePreloaderReadyCallback = callback;
+        }
+      });
+
+      const controller = createController();
+      imagePreloaderReadyCallback();
+
+      expect(imagePreloader.preloadImages).toHaveBeenCalledWith(task, undefined, 1);
     });
   });
 });

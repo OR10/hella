@@ -662,7 +662,8 @@ class ViewerController {
 
     this.framePosition.afterFrameChangeOnce('resumeImagePreloading', () => {
       // Kick off preloading of all remaining images
-      imagePreloader.preloadImages(this.task);
+      // As it is a background operation limit the chunk size to 1 image at a time
+      imagePreloader.preloadImages(this.task, undefined, 1);
     });
 
     /* *****************************************************************
