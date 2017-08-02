@@ -1,6 +1,6 @@
 # Group Task
 
-## List all tasks [/api/task{?offset,limit,taskStatus,project}]
+## List all tasks [/api/v1/task{?offset,limit,taskStatus,project}]
 
 ### Get a list of all tasks [GET]
 
@@ -15,7 +15,7 @@
         + result
             + array (Task)
 
-## Get a specific task [/api/task/{id}]
+## Get a specific task [/api/v1/task/{id}]
 
 + Parameters
     + id: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
@@ -26,7 +26,7 @@
     + Attributes
         + result (Task)
 
-## Get frame locations of a task [/api/task/{taskId}/frameLocations/{type}{?offset,limit}]
+## Get frame locations of a task [/api/v1/task/{taskId}/frameLocations/{type}{?offset,limit}]
 
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f002ee6` (string, required) - The id of the task-entity.
@@ -40,7 +40,7 @@
     + Attributes
         + result (array[FrameLocation])
 
-## Get the task structures [/api/task/{id}/labelStructure]
+## Get the task structures [/api/v1/task/{id}/labelStructure]
 
 + Parameters
     + id: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
@@ -51,7 +51,7 @@
     + Attributes
         + result (Label Structure)
 
-## Assign a user to a LabelingTask [/api/task/{taskId}/user/{userId}/assign]
+## Assign a user to a LabelingTask [/api/v1/task/{taskId}/user/{userId}/assign]
 
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
@@ -65,7 +65,7 @@
 
 + Response 200 (application/json)
 
-## Set Status to done [/api/task/{taskId}/status/done]
+## Set Status to done [/api/v1/task/{taskId}/status/done]
 
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
@@ -74,7 +74,7 @@
 
 + Response 200 (application/json)
 
-## Set Status to todo [/api/task/{taskId}/status/todo]
+## Set Status to todo [/api/v1/task/{taskId}/status/todo]
 
 + Parameters
     + taskId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the task-entity.
@@ -83,7 +83,7 @@
 
 + Response 200 (application/json)
 
-## Set Status to begin [/api/task/{taskId}/status/begin]
+## Set Status to begin [/api/v1/task/{taskId}/status/begin]
 
 Set the task status to in_progress and assign the current user to this task
 
@@ -94,7 +94,7 @@ Set the task status to in_progress and assign the current user to this task
 
 + Response 200 (application/json)
 
-## Set Status to reopen [/api/task/{taskId}/status/reopen]
+## Set Status to reopen [/api/v1/task/{taskId}/status/reopen]
 
 Remove any assignment and set status to todo
 
@@ -105,7 +105,7 @@ Remove any assignment and set status to todo
 
 + Response 200 (application/json)
 
-## Set Status to in_progress [/api/task/{taskId}/status/in_progress]
+## Set Status to in_progress [/api/v1/task/{taskId}/status/in_progress]
 
 Remove any assignment and set status to in_progress
 
@@ -116,7 +116,7 @@ Remove any assignment and set status to in_progress
 
 + Response 200 (application/json)
 
-## Get sum of Tasks by status [/api/projectCount]
+## Get sum of Tasks by status [/api/v1/projectCount]
 
 ### Sum of Tasks [GET]
 
@@ -127,7 +127,7 @@ Remove any assignment and set status to in_progress
             + preprocessing: `30` (number) - Number of preprocessing jobs
             + todo: `40` (number) - Number of todo jobs
 
-## Set attention flag to true [/api/task/{taskId}/attention/enable]
+## Set attention flag to true [/api/v1/task/{taskId}/attention/enable]
 
 Set attention flag to true
 
@@ -141,7 +141,7 @@ Set attention flag to true
         + result
             + success: `true` (boolean)
             
-## Set attention flag to false [/api/task/{taskId}/attention/disable]
+## Set attention flag to false [/api/v1/task/{taskId}/attention/disable]
 
 Set attention flag to false
 
@@ -155,7 +155,7 @@ Set attention flag to false
         + result
             + success: `true` (boolean)
 
-## Change the Task Phase [/api/task/{taskId}/phase]
+## Change the Task Phase [/api/v1/task/{taskId}/phase]
 
 Change the phase for the task
 
@@ -169,7 +169,7 @@ Change the phase for the task
         + result
             + success: `true` (boolean)
             
-## Get the Task Replication DB [/api/task/{taskId}/replication]
+## Get the Task Replication DB [/api/v1/task/{taskId}/replication]
 
 Change the phase for the task
 
@@ -184,7 +184,7 @@ Change the phase for the task
             + taskId: `05c1a74d8eda4a16a355519c0f003504` (string)
             + databaseName: `taskdb-project-303e4737cb1ea602d0dfea44ce00b37f-task-303e4737cb1ea602d0dfea44ce02c5e3` (string)
                         
-## Get the TaskCount for a Project [/api/taskCount/{projectId}]
+## Get the TaskCount for a Project [/api/v1/taskCount/{projectId}]
 
 + Parameters
     + projectIdId: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the project-entity.
