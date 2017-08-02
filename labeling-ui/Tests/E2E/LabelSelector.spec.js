@@ -1251,6 +1251,35 @@ describe('LabelSelector (right sidebar)', () => {
     });
   });
 
+  describe('View-Styles display', () => {
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.LabelSelector.RequirementsXml.Task,
+        assets.mocks.LabelSelector.RequirementsXml.TaskConfiguration,
+        assets.mocks.LabelSelector.References.RequirementsXmlFile,
+        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
+        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0to4,
+      ]);
+    });
+    it('should shown only checked attributes', done => {
+      mock(sharedMocks.concat([]));
+      const showSelectedOnlyButton = element(by.css('.view-style-selected-only'));
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => clickRectangleOne())
+        .then(() => browser.sleep(250))
+        .then(() => browser.actions().mouseMove(showSelectedOnlyButton).click().perform())
+        .then(() => browser.sleep(500))
+        .then(() => {
+          expect(labelSelectorHelper.getNumberOfPanes()).toBe(1);
+        })
+        .then(() => done());
+    });
+  });
+
   afterEach(() => {
     expectAllModalsToBeClosed();
     mock.teardown();
