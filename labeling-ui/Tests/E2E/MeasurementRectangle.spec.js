@@ -4,7 +4,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Measurement Rectangle', () => {
+describe('Measurement Rectangle', () => {
   let assets;
   let sharedMocks;
   let viewer;
