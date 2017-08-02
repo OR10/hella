@@ -152,11 +152,20 @@ class ImagePreloader {
     return this._$q.resolve()
       .then(() => this._imageFetcher.fetchMultiple(nonCachedUrls, maxParallelRequests))
       .then(
-        images => this._imageCache.addImages(images),
+        images => {
+          this._emit('preload:finished', {
+            locationsInChunk: locations,
+            imageCountInChunk: locations.length,
+            images
+          });
+
+          return images;
+        },
         undefined,
         // progress/notify callback
         image => {
           completedImages += 1;
+          this._imageCache.addImage(image);
           this._emit('image:loaded', {
             image,
             locationsInChunk: locations,
@@ -164,16 +173,7 @@ class ImagePreloader {
             imageCountInChunkCompleted: completedImages
           });
         }
-      )
-      .then(images => {
-        this._emit('preload:finished', {
-          locationsInChunk: locations,
-          imageCountInChunk: locations.length,
-          images
-        });
-
-        return images;
-      });
+      );
   }
 
   /**

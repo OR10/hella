@@ -25,7 +25,7 @@ describe('ImagePreloader', () => {
 
   beforeEach(() => {
     imageFetcherMock = jasmine.createSpyObj('ImageFetcher', ['fetch', 'fetchMultiple']);
-    imageCacheMock = jasmine.createSpyObj('ImageCache', ['hasImageForUrl', 'addImages']);
+    imageCacheMock = jasmine.createSpyObj('ImageCache', ['hasImageForUrl', 'addImages', 'addImage']);
     frameLocationGatewayMock = jasmine.createSpyObj('FrameLocationGateway', ['getFrameLocations']);
     frameIndexServiceMock = jasmine.createSpyObj('FrameIndexService', ['getFrameIndexLimits']);
   });
@@ -42,6 +42,7 @@ describe('ImagePreloader', () => {
 
     imageCacheMock.hasImageForUrl.and.returnValue(false);
     imageCacheMock.addImages.and.callFake(images => images);
+    imageCacheMock.addImage.and.callFake(image => image);
 
     frameLocationGatewayMock.getFrameLocations.and.callFake((taskId, imageType) => {
       switch (imageType) {
@@ -139,15 +140,25 @@ describe('ImagePreloader', () => {
         thumbnailUrls.map(url => ({src: url}))
       );
 
-      imageFetcherMock.fetchMultiple.and.returnValue(angularQ.resolve(images));
+      const fetchMultipleDeferred = angularQ.defer();
+      imageFetcherMock.fetchMultiple.and.returnValue(fetchMultipleDeferred.promise);
 
       const preloader = createImagePreloader();
       preloader.preloadImages(task);
 
       rootScope.$apply();
 
-      expect(imageCacheMock.addImages).toHaveBeenCalledWith(images);
+      images.forEach(
+        image => fetchMultipleDeferred.notify(image)
+      );
+
+      rootScope.$apply();
+
+      images.forEach(
+        image => expect(imageCacheMock.addImage).toHaveBeenCalledWith(image)
+      );
     });
+
 
     it('should resolve with images provided by fetchMultiple', () => {
       const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
