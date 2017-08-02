@@ -25,7 +25,7 @@ class OrganisationGateway {
    * @return {AbortablePromise<Array.<Organisation>|Error>}
    */
   getOrganisations() {
-    const url = this._apiService.getApiUrl('/organisation');
+    const url = this._apiService.getApiUrl('/v1/organisation');
     return this._bufferedHttp.get(url, undefined, 'organisation')
       .then(response => {
         if (response.data && response.data.result) {
@@ -44,7 +44,7 @@ class OrganisationGateway {
    * @return {AbortablePromise<Organisation|Error>}
    */
   updateOrganisation(organisation) {
-    const url = this._apiService.getApiUrl(`/organisation/${organisation.id}`);
+    const url = this._apiService.getApiUrl(`/v1/organisation/${organisation.id}`);
 
     return this._bufferedHttp.put(url, organisation.toJSON(), undefined, 'organisation')
       .then(response => {
@@ -65,7 +65,7 @@ class OrganisationGateway {
    * @return {AbortablePromise<Organisation>}
    */
   createOrganisation(organisationName, organisationQuota = 2147483648, organisationUserQuota = 0) {
-    const url = this._apiService.getApiUrl(`/organisation`);
+    const url = this._apiService.getApiUrl(`/v1/organisation`);
     const organisation = {
       name: organisationName,
       quota: organisationQuota,
@@ -88,7 +88,7 @@ class OrganisationGateway {
    * @return {AbortablePromise}
    */
   removeUserFromOrganisation(user, organisation) {
-    const url = this._apiService.getApiUrl(`/organisation/${organisation.id}/user/${user.id}/unassign`);
+    const url = this._apiService.getApiUrl(`/v1/organisation/${organisation.id}/user/${user.id}/unassign`);
 
     return this._bufferedHttp.delete(url, undefined, 'user')
       .then(response => {
@@ -106,7 +106,7 @@ class OrganisationGateway {
    * @return {AbortablePromise}
    */
   addUserToOrganisation(user, organisation) {
-    const url = this._apiService.getApiUrl(`/organisation/${organisation.id}/user/${user.id}/assign`);
+    const url = this._apiService.getApiUrl(`/v1/organisation/${organisation.id}/user/${user.id}/assign`);
 
     return this._bufferedHttp.put(url, undefined, undefined, 'user')
       .then(response => {

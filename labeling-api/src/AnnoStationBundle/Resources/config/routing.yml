@@ -3,7 +3,7 @@ default:
     type: annotation
 
 api_project_batch_upload:
-    resource: "AnnoStationBundle\Controller\Api\Organisation\\Project\BatchUpload"
+    resource: 'AnnoStationBundle\Controller\Api\v1\Organisation\Project\BatchUpload'
     type: annotation
 
 api_project_status:

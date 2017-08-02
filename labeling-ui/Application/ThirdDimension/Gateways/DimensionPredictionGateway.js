@@ -46,7 +46,7 @@ class DimensionPredictionGateway {
     return this._bufferedHttp({
       method: 'GET',
       url: this._apiService.getApiUrl(
-        `/dimensionPrediction/${labeledThingId}/${frameIndex}`
+        `/v1/dimensionPrediction/${labeledThingId}/${frameIndex}`
       ),
     }, 'dimensionPrediction')
       .then(response => {

@@ -215,8 +215,8 @@
         </tab>
         <tab header="Import from files">
             <upload-form
-                    upload-path="/organisation/{{vm.currentOrganisationId}}/projectImport/{{vm.getUuid()}}"
-                    upload-complete-path="/organisation/{{vm.currentOrganisationId}}/projectImport/{{vm.getUuid()}}/complete"
+                    upload-path="/v1/organisation/{{vm.currentOrganisationId}}/projectImport/{{vm.getUuid()}}"
+                    upload-complete-path="/v1/organisation/{{vm.currentOrganisationId}}/projectImport/{{vm.getUuid()}}/complete"
                     upload-complete-message="Your upload is complete and the task creation process has started. This may take a while. You can check the progress of the job creation for your project in the ToDo Tab. Do you want to go to the project list to view this project?"
             ></upload-form>
         </tab>

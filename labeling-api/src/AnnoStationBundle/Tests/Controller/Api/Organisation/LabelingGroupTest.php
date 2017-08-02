@@ -12,7 +12,7 @@ use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 class LabelingGroupTest extends Tests\WebTestCase
 {
-    const ROUTE = '/api/organisation/%s/labelingGroup';
+    const ROUTE = '/api/v1/organisation/%s/labelingGroup';
 
     /**
      * @var Facade\LabelingGroup

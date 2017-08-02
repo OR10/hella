@@ -16,7 +16,7 @@ class TaskConfigurationTest extends Tests\WebTestCase
     public function testInvalidDuplicateId()
     {
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/taskConfiguration/requirements',
+            '/api/v1/organisation/%s/taskConfiguration/requirements',
             [$this->organisation->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)

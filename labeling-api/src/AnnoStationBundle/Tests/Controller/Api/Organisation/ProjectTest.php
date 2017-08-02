@@ -12,7 +12,7 @@ use AnnoStationBundle\Model as AnnoStationBundleModel;
 
 class ProjectTest extends Tests\WebTestCase
 {
-    const ROUTE = '/api/organisation/%s/project';
+    const ROUTE = '/api/v1/organisation/%s/project';
 
     /**
      * @var Facade\Project
@@ -277,7 +277,11 @@ class ProjectTest extends Tests\WebTestCase
     private function prepareProjectsByStatusRequest(AnnoStationBundleModel\Organisation $organisation, string $status)
     {
         return $this->createRequest(
-            sprintf('/api/organisation/%s/project?projectStatus=%s', $organisation->getId(), $status)
+            sprintf('/api/v1/organisation/%s/project', $organisation->getId()),
+            [],
+            null,
+            null,
+            ['projectStatus' => $status]
         );
     }
 
@@ -296,7 +300,7 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertEquals($this->labelCoordinator->getId(), $project->getCoordinatorAssignmentHistory()[0]['userId']);
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/project/%s/status/accept',
+            '/api/v1/organisation/%s/project/%s/status/accept',
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
@@ -320,7 +324,7 @@ class ProjectTest extends Tests\WebTestCase
         );
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/project/%s/status/done',
+            '/api/v1/organisation/%s/project/%s/status/done',
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
@@ -340,7 +344,7 @@ class ProjectTest extends Tests\WebTestCase
         );
 
         $response = $this->createRequest(
-            '/api/organisation/%s/project/%s/assign',
+            '/api/v1/organisation/%s/project/%s/assign',
             [$this->organisation->getId(), $project->getId()]
         )
             ->setJsonBody(
@@ -574,7 +578,7 @@ class ProjectTest extends Tests\WebTestCase
         $project = $this->projectFacade->save($projectBuilder);
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/project/%s/status/deleted',
+            '/api/v1/organisation/%s/project/%s/status/deleted',
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
@@ -602,7 +606,7 @@ class ProjectTest extends Tests\WebTestCase
         $project = $this->projectFacade->save($projectBuilder);
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/project/%s/assignLabelGroup',
+            '/api/v1/organisation/%s/project/%s/assignLabelGroup',
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)

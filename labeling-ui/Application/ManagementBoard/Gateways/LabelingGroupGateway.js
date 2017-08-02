@@ -38,7 +38,7 @@ class LabelingGroupGateway {
    */
   getLabelingGroups() {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup`);
+    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/labelingGroup`);
 
     return this._bufferedHttp.get(url, undefined, 'labelingGroups')
       .then(response => {
@@ -64,7 +64,7 @@ class LabelingGroupGateway {
    */
   getMyLabelingGroups() {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/user/groups`);
+    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/labelingGroup/user/groups`);
 
     return this._bufferedHttp.get(url, undefined, 'labelingGroups')
       .then(response => {
@@ -83,7 +83,7 @@ class LabelingGroupGateway {
    */
   getLabelCoordinators() {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/user/coordinators`);
+    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/labelingGroup/user/coordinators`);
 
     return this._bufferedHttp.get(url, undefined, 'labelingGroups')
       .then(response => {
@@ -103,7 +103,7 @@ class LabelingGroupGateway {
    */
   createLabelingGroup(group) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup`);
+    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/labelingGroup`);
     return this._bufferedHttp.post(url, group, undefined, 'labelingGroups')
       .then(response => {
         if (response.data && response.data.result) {
@@ -122,7 +122,7 @@ class LabelingGroupGateway {
    */
   updateLabelingGroup(group) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/${group.id}`);
+    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/labelingGroup/${group.id}`);
     return this._bufferedHttp.put(url, group, undefined, 'labelingGroups')
       .then(response => {
         if (response.data && response.data.result) {
@@ -141,7 +141,7 @@ class LabelingGroupGateway {
    */
   deleteLabelingGroup(groupId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/${groupId}`);
+    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/labelingGroup/${groupId}`);
     return this._bufferedHttp.delete(url, undefined, 'labelingGroups')
       .then(response => {
         if (response.data && response.data.result) {

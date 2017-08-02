@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/TASKID-TASKID/frameLocations/thumbnail",
+    "path": "/api/v1/task/TASKID-TASKID/frameLocations/thumbnail",
     "queryString": {
       "limit": "1",
       "offset": "0"

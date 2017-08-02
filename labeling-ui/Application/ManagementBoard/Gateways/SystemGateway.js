@@ -26,7 +26,7 @@ class SystemGateway {
    * @return {AbortablePromise<User|Error>}
    */
   getQueueStatus() {
-    const url = this._apiService.getApiUrl('/system/queues');
+    const url = this._apiService.getApiUrl('/v1/system/queues');
     return this._bufferedHttp.get(url, undefined, 'system')
       .then(response => {
         if (response.data && response.data.result) {

@@ -37,7 +37,7 @@ class UserGateway {
    * @return {AbortablePromise<User|Error>}
    */
   getCurrentUser() {
-    const url = this._apiService.getApiUrl('/currentUser/profile');
+    const url = this._apiService.getApiUrl('/v1/currentUser/profile');
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (response.data && response.data.result) {
@@ -55,7 +55,7 @@ class UserGateway {
    */
   getUsers() {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/users`);
+    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/users`);
 
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
@@ -73,7 +73,7 @@ class UserGateway {
    * @return {AbortablePromise}
    */
   getUserOfAllOrganisations() {
-    const url = this._apiService.getApiUrl(`/user`);
+    const url = this._apiService.getApiUrl(`/v1/user`);
 
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
@@ -93,7 +93,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   getUser(id) {
-    const url = this._apiService.getApiUrl(`/user/${id}`);
+    const url = this._apiService.getApiUrl(`/v1/user/${id}`);
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.user) {
@@ -118,7 +118,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   createUser(user) {
-    const url = this._apiService.getApiUrl(`/user`);
+    const url = this._apiService.getApiUrl(`/v1/user`);
     return this._bufferedHttp.post(url, user, undefined, 'user')
       .then(response => {
         if ((!response.data || !response.data.result || !response.data.result.user) && !response.data.result.error) {
@@ -145,7 +145,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   updateUser(user) {
-    const url = this._apiService.getApiUrl(`/user/${user.id}`);
+    const url = this._apiService.getApiUrl(`/v1/user/${user.id}`);
     return this._bufferedHttp.put(url, user, undefined, 'user')
       .then(response => {
         if ((!response.data || !response.data.result || !response.data.result.user) && !response.data.result.error) {
@@ -172,7 +172,7 @@ class UserGateway {
    * @return {AbortablePromise.<User>}
    */
   deleteUser(id) {
-    const url = this._apiService.getApiUrl(`/user/${id}`);
+    const url = this._apiService.getApiUrl(`/v1/user/${id}`);
     return this._bufferedHttp.delete(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !response.data.result.success) {
@@ -190,7 +190,7 @@ class UserGateway {
    * @returns {AbortablePromise}
    */
   setCurrentUserPassword(oldPassword, newPassword) {
-    const url = this._apiService.getApiUrl(`/currentUser/password`);
+    const url = this._apiService.getApiUrl(`/v1/currentUser/password`);
     const data = {
       oldPassword: oldPassword,
       newPassword: newPassword,
@@ -219,7 +219,7 @@ class UserGateway {
    * @returns {AbortablePromise}
    */
   getCurrentUserPermissions() {
-    const url = this._apiService.getApiUrl(`/currentUser/permissions`);
+    const url = this._apiService.getApiUrl(`/v1/currentUser/permissions`);
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result) {
@@ -236,7 +236,7 @@ class UserGateway {
    * @returns {AbortablePromise.<Array.<Organisation>>}
    */
   getCurrentUserOrganisations() {
-    const url = this._apiService.getApiUrl(`/currentUser/organisations`);
+    const url = this._apiService.getApiUrl(`/v1/currentUser/organisations`);
     return this._bufferedHttp.get(url, undefined, 'user')
       .then(response => {
         if (!response.data || !response.data.result || !Array.isArray(response.data.result)) {

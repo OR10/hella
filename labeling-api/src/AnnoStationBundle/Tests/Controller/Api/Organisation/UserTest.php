@@ -39,7 +39,7 @@ class UserTest extends Tests\WebTestCase
         );
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/user/%s/assign',
+            '/api/v1/organisation/%s/user/%s/assign',
             [$newOrganisation->getId(), $user->getId()]
         )
             ->withCredentialsFromUsername($superAdmin)
@@ -68,7 +68,7 @@ class UserTest extends Tests\WebTestCase
         $user2 = $this->createLabelerUser($newOrganisation);
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/user/%s/assign',
+            '/api/v1/organisation/%s/user/%s/assign',
             [$newOrganisation->getId(), $user->getId()]
         )
             ->withCredentialsFromUsername($superAdmin)
@@ -88,7 +88,7 @@ class UserTest extends Tests\WebTestCase
         );
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/user/%s/assign',
+            '/api/v1/organisation/%s/user/%s/assign',
             [$newOrganisation->getId(), $user->getId()]
         )
             ->withCredentialsFromUsername($admin)
@@ -106,7 +106,7 @@ class UserTest extends Tests\WebTestCase
         $superAdmin = $this->createSuperAdminUser($this->organisation);
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/user/%s/unassign',
+            '/api/v1/organisation/%s/user/%s/unassign',
             [$this->organisation->getId(), $user->getId()]
         )
             ->withCredentialsFromUsername($superAdmin)
@@ -129,7 +129,7 @@ class UserTest extends Tests\WebTestCase
         $admin = $this->createAdminUser($this->organisation);
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/user/%s/unassign',
+            '/api/v1/organisation/%s/user/%s/unassign',
             [$this->organisation->getId(), $user->getId()]
         )
             ->withCredentialsFromUsername($admin)
@@ -154,7 +154,7 @@ class UserTest extends Tests\WebTestCase
         );
 
         $this->createRequest(
-            '/api/organisation/%s/user/%s/assign',
+            '/api/v1/organisation/%s/user/%s/assign',
             [$newOrganisation->getId(), $admin->getId()]
         )
             ->withCredentialsFromUsername($superAdmin)

@@ -13,7 +13,7 @@ use GuzzleHttp;
 
 class UserTest extends Tests\WebTestCase
 {
-    const ROUTE = '/api/task/%s/user/%s/assign';
+    const ROUTE = '/api/v1/task/%s/user/%s/assign';
 
     /**
      * @var Facade\Video

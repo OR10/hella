@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/currentUser/organisations",
+    "path": "/api/v1/currentUser/organisations",
     "method": "GET"
   },
   "response": {

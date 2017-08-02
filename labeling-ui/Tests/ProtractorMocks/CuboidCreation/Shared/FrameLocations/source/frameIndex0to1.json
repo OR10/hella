@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/TASKID-TASKID/frameLocations/source",
+    "path": "/api/v1/task/TASKID-TASKID/frameLocations/source",
     "queryString": {
       "limit": "2",
       "offset": "0"

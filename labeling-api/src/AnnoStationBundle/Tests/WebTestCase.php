@@ -34,13 +34,27 @@ class WebTestCase extends KernelTestCase
      * @param array  $parameters
      * @param null   $username
      * @param null   $password
+     * @param array  $queryParameters
      *
      * @return RequestWrapper
      */
-    protected function createRequest(string $path, array $parameters = [], $username = null, $password = null)
-    {
-        return RequestWrapper::create($this->createClient([]), vsprintf($path, $parameters))
+    protected function createRequest(
+        string $path,
+        array $parameters = [],
+        $username = null,
+        $password = null,
+        array $queryParameters = []
+    ) {
+        $requestWrapper = RequestWrapper::create($this->createClient([]), vsprintf($path, $parameters))
             ->setServerParameters($this->getDefaultServerParameters($username, $password));
+
+        preg_match('/\/api\/v(\d+)\//', $path, $versionHits);
+        if (isset($versionHits[1])) {
+            $queryParameters['version'] = 'v' . $versionHits[1];
+        }
+        $requestWrapper->setQueryParameters($queryParameters);
+
+        return $requestWrapper;
     }
 
     /**

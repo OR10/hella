@@ -54,7 +54,7 @@ class ProjectExportListController {
     const organisationId = this._organisationService.get();
 
     return this._apiService.getApiUrl(
-      `/organisation/${organisationId}/project/${taskId}/export/${exportId}`
+      `/v1/organisation/${organisationId}/project/${taskId}/export/${exportId}`
     );
   }
 

@@ -43,7 +43,7 @@ class StatusGateway {
    */
   getStatus(job) {
     const url = this._apiService.getApiUrl(
-      `/status/${job.type}/${job.id}`
+      `/v1/status/${job.type}/${job.id}`
     );
     return this._bufferedHttp.get(url, undefined, 'status')
       .then(response => {
