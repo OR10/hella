@@ -56,6 +56,8 @@ class ImagePreloadIndicatorController {
 
     // Only visible if not all images are loaded yet.
     this.visible = (event.imageCountInChunkCompleted !== event.imageCountInChunk);
+
+    this.tooltip = `Preloading Images: ${this.percentageComplete}% completed.`;
   }
 }
 
