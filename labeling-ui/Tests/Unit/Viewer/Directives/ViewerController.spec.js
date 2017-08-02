@@ -1,25 +1,6 @@
 import {inject} from 'angular-mocks';
 import ViewerController from 'Application/Viewer/Directives/ViewerController';
 
-// Extend the original class, because there are variables that are implictly set by angular which are already
-// used in the constructor (task e.g.)
-class ViewerControllerTestable extends ViewerController {
-
-}
-ViewerControllerTestable.prototype.task = {
-  requiredImageTypes: ['source'],
-};
-
-ViewerControllerTestable.prototype.video = {
-  metaData: {},
-};
-
-ViewerControllerTestable.prototype.framePosition = {
-  beforeFrameChangeAlways: () => {},
-  afterFrameChangeAlways: () => {},
-  afterFrameChangeOnce: () => {},
-};
-
 describe('ViewerController tests', () => {
   let rootScope;
   let scope;
@@ -34,6 +15,33 @@ describe('ViewerController tests', () => {
   let applicationState;
   let viewerMouseCursorService;
   let element;
+  let frameLocation;
+
+  // Extend the original class, because there are variables that are implictly set by angular which are already
+  // used in the constructor (task e.g.)
+  class ViewerControllerTestable extends ViewerController {}
+
+  beforeEach(() => {
+    ViewerControllerTestable.prototype.task = {
+      requiredImageTypes: ['source'],
+    };
+
+    ViewerControllerTestable.prototype.video = {
+      metaData: {},
+    };
+
+    frameLocation = jasmine.createSpyObj(
+      'FramePosition',
+      [
+        'beforeFrameChangeAlways',
+        'afterFrameChangeAlways',
+        'beforeFrameChangeOnce',
+        'afterFrameChangeOnce'
+      ]
+    );
+
+    ViewerControllerTestable.prototype.framePosition = frameLocation;
+  });
 
   beforeEach(inject($rootScope => {
     rootScope = $rootScope;
@@ -62,15 +70,21 @@ describe('ViewerController tests', () => {
     element[0] = {};
     element.find.and.returnValue({
       0: {
-        addEventListener: () => {},
+        addEventListener: () => {
+        },
       },
-      on: () => {},
+      on: () => {
+      },
     });
 
     const frameIndexLimits = {upperLimit: 0, lowerLimit: 1};
     frameIndexService.getFrameIndexLimits.and.returnValue(frameIndexLimits);
 
-    const context = { setup: () => {}, withScope: () => {}};
+    const context = {
+      setup: () => {
+      }, withScope: () => {
+      }
+    };
     drawingContextService.createContext.and.returnValue(context);
   });
 
@@ -120,7 +134,10 @@ describe('ViewerController tests', () => {
   describe('Events', () => {
     it('framerange:change:after (TTANNO-1923)', () => {
       const debouncedThingOnUpdate = jasmine.createSpyObj('debouncedThingOnUpdate', ['triggerImmediately']);
-      debouncedThingOnUpdate.triggerImmediately.and.returnValue({ then: () => {} });
+      debouncedThingOnUpdate.triggerImmediately.and.returnValue({
+        then: () => {
+        }
+      });
 
       debouncerService.multiplexDebounce.and.returnValue(debouncedThingOnUpdate);
       createController();
