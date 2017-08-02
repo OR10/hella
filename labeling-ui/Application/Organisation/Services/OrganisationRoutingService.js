@@ -44,6 +44,11 @@ class OrganisationRoutingService {
       return;
     }
 
+    if (organisationId === 'new' && to.name === 'labeling.organisation-management.detail') {
+      this._logger.log('organisation:routing', `Don't override current 'organisationId' while not create a new one`);
+      return;
+    }
+
     if (organisationId !== '') {
       // Organisation is part of route
       this._organisationService.set(organisationId);
