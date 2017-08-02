@@ -98,7 +98,8 @@ class ViewerController {
               viewerMouseCursorService,
               labeledThingGroupService,
               inProgressService,
-              pouchDbSyncManager) {
+              pouchDbSyncManager,
+              imagePreloader) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -657,6 +658,11 @@ class ViewerController {
     });
     this.framePosition.afterFrameChangeAlways('disableViewer', () => {
       this._applicationState.endFrameChange();
+    });
+
+    this.framePosition.afterFrameChangeOnce('resumeImagePreloading', () => {
+      // Kick off preloading of all remaining images
+      imagePreloader.preloadImages(this.task);
     });
 
     /* *****************************************************************
@@ -1557,6 +1563,7 @@ ViewerController.$inject = [
   'labeledThingGroupService',
   'inProgressService',
   'pouchDbSyncManager',
+  'imagePreloader',
 ];
 
 export default ViewerController;
