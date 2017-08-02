@@ -211,6 +211,83 @@ fdescribe('Measurement Rectangle', () => {
       .then(() => done());
   });
 
+  it('should draw multiple measurement rectangles and keep them on frame change', done => {
+    mock(sharedMocks.concat([]));
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+    const nextFrameButton = element(by.css('.next-frame-button'));
+    const previousFrameButton = element(by.css('.previous-frame-button'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 800, y: 200})
+          .mouseDown()
+          .mouseMove(viewer, {x: 900, y: 600})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 600})
+          .mouseDown()
+          .mouseMove(viewer, {x: 600, y: 500})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 900, y: 500})
+          .mouseDown()
+          .mouseMove(viewer, {x: 800, y: 600})
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange1);
+      })
+      .then(() => nextFrameButton.click())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange2);
+      })
+      .then(() => nextFrameButton.click())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange3')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange3);
+      })
+      .then(() => previousFrameButton.click())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange2);
+      })
+      .then(() => {
+        done();
+      })
+  });
+
   it('should draw one measurement rectangle with multiple mouse movements', done => {
     mock(sharedMocks.concat([]));
 
