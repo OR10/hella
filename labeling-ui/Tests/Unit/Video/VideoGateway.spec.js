@@ -52,7 +52,7 @@ describe('VideoGateway', () => {
       }],
     };
 
-    $httpBackend.expectGET('/backend/api/video').respond(videoResponse);
+    $httpBackend.expectGET('/backend/api/v1/video').respond(videoResponse);
 
     gateway.getVideos().then(videos => {
       expect(videos).toEqual(videoResponse.result);
@@ -72,7 +72,7 @@ describe('VideoGateway', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/video/16b00780792d045c496513f01f006f09').respond(videoResponse);
+    $httpBackend.expectGET('/backend/api/v1/video/16b00780792d045c496513f01f006f09').respond(videoResponse);
 
     gateway.getVideo('16b00780792d045c496513f01f006f09').then(response => {
       expect(response).toEqual(videoResponse.result);

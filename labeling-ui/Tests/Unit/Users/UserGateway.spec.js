@@ -48,7 +48,7 @@ describe('UserGateway', () => {
       result: {id: 'me', email: 'foo@bar.baz'},
     };
 
-    $httpBackend.expectGET('/backend/api/currentUser/profile').respond(userResponse);
+    $httpBackend.expectGET('/backend/api/v1/currentUser/profile').respond(userResponse);
 
     gateway.getCurrentUser().then(user => {
       expect(user).toEqual(new User(userResponse.result));
@@ -68,7 +68,7 @@ describe('UserGateway', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/organisation/ORGANISATION-ID/users').respond(usersResponse);
+    $httpBackend.expectGET('/backend/api/v1/organisation/ORGANISATION-ID/users').respond(usersResponse);
 
     gateway.getUsers().then(users => {
       expect(users).toEqual(usersResponse.result.users.map(user => new User(user)));
@@ -88,7 +88,7 @@ describe('UserGateway', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/user').respond(usersResponse);
+    $httpBackend.expectGET('/backend/api/v1/user').respond(usersResponse);
 
     gateway.getUserOfAllOrganisations().then(users => {
       expect(users).toEqual(usersResponse.result.users.map(user => new User(user)));
@@ -124,7 +124,7 @@ describe('UserGateway', () => {
       })],
     });
 
-    $httpBackend.expectGET('/backend/api/user/USER_ID').respond(userResponse);
+    $httpBackend.expectGET('/backend/api/v1/user/USER_ID').respond(userResponse);
 
     gateway.getUser('USER_ID').then(user => {
       expect(user).toEqual(expectedUser);
@@ -142,7 +142,7 @@ describe('UserGateway', () => {
       },
     };
 
-    $httpBackend.expectPOST('/backend/api/user').respond(userResponse);
+    $httpBackend.expectPOST('/backend/api/v1/user').respond(userResponse);
 
     gateway.createUser(user).then(result => {
       expect(result).toEqual(new User(userResponse.result.user));
@@ -160,7 +160,7 @@ describe('UserGateway', () => {
       },
     };
 
-    $httpBackend.expectPUT('/backend/api/user/23').respond(userResponse);
+    $httpBackend.expectPUT('/backend/api/v1/user/23').respond(userResponse);
 
     gateway.updateUser(updatedUser).then(result => {
       expect(result).toEqual(new User(userResponse.result.user));
@@ -178,7 +178,7 @@ describe('UserGateway', () => {
       },
     };
 
-    $httpBackend.expectPUT('/backend/api/user/23').respond(userResponse);
+    $httpBackend.expectPUT('/backend/api/v1/user/23').respond(userResponse);
 
     gateway.updateUser(user).then(result => {
       expect(result).toEqual(new User(userResponse.result.user));
@@ -196,7 +196,7 @@ describe('UserGateway', () => {
       },
     };
 
-    $httpBackend.expectDELETE('/backend/api/user/23').respond(userResponse);
+    $httpBackend.expectDELETE('/backend/api/v1/user/23').respond(userResponse);
 
     gateway.deleteUser(userId).then(result => {
       expect(result).toEqual(userResponse.result.success);
@@ -215,7 +215,7 @@ describe('UserGateway', () => {
       },
     };
 
-    $httpBackend.expectPUT('/backend/api/currentUser/password').respond(userResponse);
+    $httpBackend.expectPUT('/backend/api/v1/currentUser/password').respond(userResponse);
 
     gateway.setCurrentUserPassword(oldPassword, newPassword).then(result => {
       expect(result).toEqual(userResponse.result.success);
@@ -234,7 +234,7 @@ describe('UserGateway', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/currentUser/permissions').respond(userResponse);
+    $httpBackend.expectGET('/backend/api/v1/currentUser/permissions').respond(userResponse);
 
     gateway.getCurrentUserPermissions().then(result => {
       expect(result).toEqual(userResponse.result);

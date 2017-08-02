@@ -68,7 +68,7 @@ describe('LabelStructureGateway', () => {
       },
     };
 
-    $httpBackend.expectGET(`/backend/api/task/${taskId}/labelStructure`).respond(tasksResponse);
+    $httpBackend.expectGET(`/backend/api/v1/task/${taskId}/labelStructure`).respond(tasksResponse);
 
     gateway.getLabelStructureData(taskId).then(structureData => {
       expect(structureData).toEqual(tasksResponse.result);

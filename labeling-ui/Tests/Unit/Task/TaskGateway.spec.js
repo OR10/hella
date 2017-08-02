@@ -67,7 +67,7 @@ describe('TaskGateway', () => {
       totalRows: 5,
     };
 
-    $httpBackend.expectGET(`/backend/api/task?phase=${phase}&project=${projectId}&taskStatus=${status}`).respond(response);
+    $httpBackend.expectGET(`/backend/api/v1/task?phase=${phase}&project=${projectId}&taskStatus=${status}`).respond(response);
 
     gateway.getTasksForProjectWithPhaseAndStatus(projectId, phase, status).then(result => {
       expect(result.totalRows).toEqual(5);
@@ -99,7 +99,7 @@ describe('TaskGateway', () => {
     };
 
     $httpBackend.expectGET(
-      `/backend/api/task?limit=${limit}&offset=${offset}&phase=${phase}&project=${projectId}&taskStatus=${status}`
+      `/backend/api/v1/task?limit=${limit}&offset=${offset}&phase=${phase}&project=${projectId}&taskStatus=${status}`
     ).respond(response);
 
     gateway.getTasksForProjectWithPhaseAndStatus(projectId, phase, status, limit, offset).then(result => {
@@ -124,7 +124,7 @@ describe('TaskGateway', () => {
       totalRows: 2,
     };
 
-    $httpBackend.expectGET(`/backend/api/organisation/ORGANISATION-ID/project/${projectId}/attentionTasks`).respond(response);
+    $httpBackend.expectGET(`/backend/api/v1/organisation/ORGANISATION-ID/project/${projectId}/attentionTasks`).respond(response);
 
     gateway.getFlaggedTasks(projectId).then(result => {
       expect(result.totalRows).toEqual(2);
@@ -148,7 +148,7 @@ describe('TaskGateway', () => {
       totalRows: 2,
     };
 
-    $httpBackend.expectGET(`/backend/api/organisation/ORGANISATION-ID/project/${projectId}/attentionTasks?limit=2&offset=23`).respond(response);
+    $httpBackend.expectGET(`/backend/api/v1/organisation/ORGANISATION-ID/project/${projectId}/attentionTasks?limit=2&offset=23`).respond(response);
 
     gateway.getFlaggedTasks(projectId, 2, 23).then(result => {
       expect(result.totalRows).toEqual(2);
@@ -182,7 +182,7 @@ describe('TaskGateway', () => {
     };
 
     $httpBackend.expectGET(
-      `/backend/api/task?phase=${phase}&project=${projectId}&taskStatus=${status}`
+      `/backend/api/v1/task?phase=${phase}&project=${projectId}&taskStatus=${status}`
     ).respond(response);
 
     gateway.getTasksForProjectWithPhaseAndStatus(projectId, phase, status).then(result => {
@@ -207,7 +207,7 @@ describe('TaskGateway', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/task/task-id-1').respond(response);
+    $httpBackend.expectGET('/backend/api/v1/task/task-id-1').respond(response);
 
     gateway.getTask('task-id-1').then(task => {
       expect(task).toEqual(new Task(response.result.task, response.result.users));
@@ -227,7 +227,7 @@ describe('TaskGateway', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/task/task-id-1').respond(response);
+    $httpBackend.expectGET('/backend/api/v1/task/task-id-1').respond(response);
 
     gateway.getTask('task-id-1').then(task => {
       expect(task).toEqual(
@@ -244,7 +244,7 @@ describe('TaskGateway', () => {
       result: {success: true},
     };
 
-    $httpBackend.expectPOST('/backend/api/task/123asdf/status/done').respond(markResponse);
+    $httpBackend.expectPOST('/backend/api/v1/task/123asdf/status/done').respond(markResponse);
 
     gateway.markTaskAsDone('123asdf').then(result => {
       expect(result).toEqual(markResponse.result);
@@ -259,7 +259,7 @@ describe('TaskGateway', () => {
       result: {success: true},
     };
 
-    $httpBackend.expectPOST('/backend/api/task/123asdf/status/todo').respond(markResponse);
+    $httpBackend.expectPOST('/backend/api/v1/task/123asdf/status/todo').respond(markResponse);
 
     gateway.markTaskAsTodo('123asdf').then(result => {
       expect(result).toEqual(markResponse.result);
@@ -274,7 +274,7 @@ describe('TaskGateway', () => {
       result: {success: true},
     };
 
-    $httpBackend.expectPOST('/backend/api/task/123asdf/status/in_progress').respond(markResponse);
+    $httpBackend.expectPOST('/backend/api/v1/task/123asdf/status/in_progress').respond(markResponse);
 
     gateway.markTaskAsInProgress('123asdf').then(result => {
       expect(result).toEqual(markResponse.result);
@@ -289,7 +289,7 @@ describe('TaskGateway', () => {
       result: {success: true},
     };
 
-    $httpBackend.expectPOST('/backend/api/task/123asdf/status/begin').respond(markResponse);
+    $httpBackend.expectPOST('/backend/api/v1/task/123asdf/status/begin').respond(markResponse);
 
     gateway.assignAndMarkAsInProgress('123asdf').then(result => {
       expect(result).toEqual(markResponse.result);
@@ -304,7 +304,7 @@ describe('TaskGateway', () => {
       result: {success: true},
     };
 
-    $httpBackend.expectPUT('/backend/api/task/taskId123/user/userId123/assign').respond(markResponse);
+    $httpBackend.expectPUT('/backend/api/v1/task/taskId123/user/userId123/assign').respond(markResponse);
 
     gateway.assignUserToTask({id: 'taskId123'}, {id: 'userId123'}).then(result => {
       expect(result).toEqual(markResponse.result);
@@ -325,7 +325,7 @@ describe('TaskGateway', () => {
       },
     };
 
-    $httpBackend.expectGET('/backend/api/taskCount/projectId123').respond(response);
+    $httpBackend.expectGET('/backend/api/v1/taskCount/projectId123').respond(response);
 
     gateway.getTaskCount('projectId123').then(result => {
       expect(result).toEqual(response.result);
@@ -345,7 +345,7 @@ describe('TaskGateway', () => {
         result: {success: true},
       };
 
-      $httpBackend.expectPOST('/backend/api/task/123asdf/status/reopen', {phase}).respond(markResponse);
+      $httpBackend.expectPOST('/backend/api/v1/task/123asdf/status/reopen', {phase}).respond(markResponse);
 
       gateway.reopenTask('123asdf', phase).then(result => {
         expect(result).toEqual(markResponse.result);
@@ -361,7 +361,7 @@ describe('TaskGateway', () => {
       result: {success: true},
     };
 
-    $httpBackend.expectDELETE('/backend/api/task/123asdf/user/09876543/assign').respond(markResponse);
+    $httpBackend.expectDELETE('/backend/api/v1/task/123asdf/user/09876543/assign').respond(markResponse);
 
     gateway.unassignUserFromTask('123asdf', '09876543').then(result => {
       expect(result).toEqual(markResponse.result);
@@ -378,7 +378,7 @@ describe('TaskGateway', () => {
       },
     };
 
-    $httpBackend.expectPOST('/backend/api/task/TASK_ID/attention/enable').respond(response);
+    $httpBackend.expectPOST('/backend/api/v1/task/TASK_ID/attention/enable').respond(response);
 
     gateway.flagTask('TASK_ID').then(result => {
       expect(result).toEqual(response.result);
@@ -395,7 +395,7 @@ describe('TaskGateway', () => {
       },
     };
 
-    $httpBackend.expectPOST('/backend/api/task/TASK_ID/attention/disable').respond(response);
+    $httpBackend.expectPOST('/backend/api/v1/task/TASK_ID/attention/disable').respond(response);
 
     gateway.unflagTask('TASK_ID').then(result => {
       expect(result).toEqual(response.result);
@@ -412,7 +412,7 @@ describe('TaskGateway', () => {
       },
     };
 
-    $httpBackend.expectPUT('/backend/api/task/TASK_ID/phase', {phase: 'review'}).respond(response);
+    $httpBackend.expectPUT('/backend/api/v1/task/TASK_ID/phase', {phase: 'review'}).respond(response);
 
     gateway.moveTaskToPhase('TASK_ID', 'review').then(result => {
       expect(result).toEqual(response.result);
@@ -438,7 +438,7 @@ describe('TaskGateway', () => {
 
     const expectedTaskReplicationInformation = new TaskReplicationInformation(taskReplicationInformationObject);
 
-    $httpBackend.expectGET(`/backend/api/task/${taskId}/replication`).respond(response);
+    $httpBackend.expectGET(`/backend/api/v1/task/${taskId}/replication`).respond(response);
 
     gateway.getTaskReplicationInformationForTaskId(taskId)
       .then(actualTaskReplicationInformation => {
