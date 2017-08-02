@@ -573,7 +573,7 @@ class ProjectListController {
     const propertyToColumnMap = {
       'name': 'name',
       'dueTimestampFormatted': 'deadline',
-      'videosCount': 'videos',
+      'videosCount': 'media',
       'taskCount': 'jobs',
       'frameCount': 'frames',
       'taskInProgressCount': 'process',
