@@ -137,7 +137,7 @@ module.exports = function (config) {
     };
 
     newConfig.hostname = process.env.EXTERNAL_IP_ADDRESS || ip.address();
-    newConfig.browsers = ['PhantomJS'];
+    newConfig.browsers = ['Chrome'];
     newConfig.customLaunchers = {
       'Safari': {
         base: 'WebDriver',

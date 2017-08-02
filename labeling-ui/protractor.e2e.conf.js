@@ -73,7 +73,7 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
   exports.config.multiCapabilities = [
     {
       'browserName': 'chrome',
-      'platform': 'WINDOWS',
+      'platform': 'LINUX',
     },
   ];
 } else {
