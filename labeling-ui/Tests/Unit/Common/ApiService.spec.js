@@ -27,13 +27,13 @@ describe('ApiService', () => {
 
   describe('getApiUrl', () => {
     it('should provide url based on configuration', () => {
-      const service = getApiService({backendPrefix: '/backend', apiPrefix: '/api'});
+      const service = getApiService({backendPrefix: '/backend', apiPrefix: '/api/v1/'});
       const apiUrl = service.getApiUrl('/');
       expect(apiUrl).toEqual('/backend/api/v1/');
     });
 
     it('should handle unneeded slashes correctly', () => {
-      const service = getApiService({backendPrefix: '/backend/', apiPrefix: '/api/'});
+      const service = getApiService({backendPrefix: '/backend/', apiPrefix: '/api/v1/'});
       const apiUrl = service.getApiUrl('/');
       expect(apiUrl).toEqual('/backend/api/v1/');
     });
