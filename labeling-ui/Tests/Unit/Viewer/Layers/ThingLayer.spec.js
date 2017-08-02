@@ -5,8 +5,8 @@ import PanAndZoomPaperLayer from 'Application/Viewer/Layers/PanAndZoomPaperLayer
 import ToolAbortedError from 'Application/Viewer/Tools/Errors/ToolAbortedError';
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
+import PaperMeasurementRectangle from 'Application/Viewer/Shapes/PaperMeasurementRectangle';
 import paper from 'paper';
-import PaperMeasurementRectangle from "../../../../Application/Viewer/Shapes/PaperMeasurementRectangle";
 
 describe('ThingLayer test suite', () => {
   let injector;

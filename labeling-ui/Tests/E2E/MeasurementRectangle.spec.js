@@ -114,7 +114,7 @@ describe('Measurement Rectangle', () => {
       })
       .then(() => {
         done();
-      })
+      });
   });
 
   it('should draw one measurement rectangle and delete it on shape delete button click', done => {
@@ -156,7 +156,7 @@ describe('Measurement Rectangle', () => {
       })
       .then(() => {
         done();
-      })
+      });
   });
 
   it('should draw one measurement rectangle and delete it on delete key', done => {
@@ -201,7 +201,7 @@ describe('Measurement Rectangle', () => {
       })
       .then(() => {
         done();
-      })
+      });
   });
 
   it('should draw multiple measurement rectangles', done => {
@@ -372,7 +372,7 @@ describe('Measurement Rectangle', () => {
       })
       .then(() => {
         done();
-      })
+      });
   });
 
   it('should draw one measurement rectangle with multiple mouse movements', done => {
