@@ -252,10 +252,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
         case shape instanceof PaperGroupShape:
           this._deleteGroupShape(shape);
           break;
+        case shape instanceof PaperMeasurementRectangle:
+          this._deleteMeasurementShape(shape);
+          break;
         default:
           throw new Error('Cannot delete shape of unknown type');
       }
     });
+  }
+
+  _deleteMeasurementShape(shape) {
+    shape.remove();
+    this._$scope.vm.selectedPaperShape = null;
   }
 
   /**

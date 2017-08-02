@@ -117,6 +117,93 @@ fdescribe('Measurement Rectangle', () => {
       })
   });
 
+  it('should draw one measurement rectangle and delete it on shape delete button click', done => {
+    mock(sharedMocks.concat([]));
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+    const deleteShapeButton = element(by.css('#delete-shape-button'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
+      })
+      .then(() => deleteShapeButton.click())
+      .then(() => browser.sleep(300))
+      .then(() => {
+        const confirmButton = element(by.css('#modal-confirm-button'));
+        return confirmButton.click();
+      })
+      .then(() => browser.sleep(600))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleEmpty')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleEmpty);
+      })
+      .then(() => {
+        done();
+      })
+  });
+
+  it('should draw one measurement rectangle and delete it on delete key', done => {
+    mock(sharedMocks.concat([]));
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
+      })
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.DELETE)
+          .perform();
+      })
+      .then(() => browser.sleep(300))
+      .then(() => {
+        const confirmButton = element(by.css('#modal-confirm-button'));
+        return confirmButton.click();
+      })
+      .then(() => browser.sleep(600))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleEmpty')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleEmpty);
+      })
+      .then(() => {
+        done();
+      })
+  });
+
   it('should draw multiple measurement rectangles', done => {
     mock(sharedMocks.concat([]));
 
