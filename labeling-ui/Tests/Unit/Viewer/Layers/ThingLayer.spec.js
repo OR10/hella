@@ -6,6 +6,7 @@ import ToolAbortedError from 'Application/Viewer/Tools/Errors/ToolAbortedError';
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
 import paper from 'paper';
+import PaperMeasurementRectangle from "../../../../Application/Viewer/Shapes/PaperMeasurementRectangle";
 
 describe('ThingLayer test suite', () => {
   let injector;
@@ -145,6 +146,26 @@ describe('ThingLayer test suite', () => {
     thing.dispatchDOMEvent(event);
 
     expect(paperScope.view.update).toHaveBeenCalled();
+  });
+
+  describe('on action:delete:shape', () => {
+    it('deletes a PaperMeasurementRectangle', () => {
+      setupPaperJs();
+      createThingLayerInstance();
+      const topLeft = {x: 1, y: 1};
+      const bottomRight = {x: 200, y: 200};
+      const color = {primary: 'yellow', secondary: 'black'};
+      const measurementRectangle = new PaperMeasurementRectangle('foobar', topLeft, bottomRight, color);
+      spyOn(measurementRectangle, 'remove');
+      angularScope.vm.selectedPaperShape = measurementRectangle;
+
+      rootScope.$emit('action:delete-shape', measurementRectangle);
+
+      expect(measurementRectangle.remove).toHaveBeenCalled();
+      // Don't use toBeNull as there is some kind of circular dependency in .bounds
+      // which would cause the test to die if selectedPaperShape was not null
+      expect(angularScope.vm.selectedPaperShape === null).toBe(true);
+    });
   });
 
   // xdescribe('vm.paperGroupShapes watcher', () => {

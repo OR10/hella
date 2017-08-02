@@ -261,6 +261,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
   }
 
+  /**
+   * @param {PaperMeasurementRectangle} shape
+   * @private
+   */
   _deleteMeasurementShape(shape) {
     shape.remove();
     this._$scope.vm.selectedPaperShape = null;
