@@ -16,6 +16,7 @@ describe('ViewerController tests', () => {
   let viewerMouseCursorService;
   let element;
   let frameLocation;
+  let imagePreloader;
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
@@ -64,6 +65,7 @@ describe('ViewerController tests', () => {
     keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey']);
     pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
+    imagePreloader = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
   });
 
   beforeEach(() => {
@@ -122,7 +124,8 @@ describe('ViewerController tests', () => {
       viewerMouseCursorService,
       null, // labeledThingGroupService,
       null, // inProgressService,
-      pouchDbSyncManager
+      pouchDbSyncManager,
+      imagePreloader
     );
   }
 
@@ -144,6 +147,23 @@ describe('ViewerController tests', () => {
       rootScope.$emit('framerange:change:after');
 
       expect(debouncedThingOnUpdate.triggerImmediately).toHaveBeenCalled();
+    });
+  });
+
+  describe('ImagePreloading', () => {
+    it('should call the ImagePreloader once after the viewer is ready', () => {
+      let imagePreloaderReadyCallback;
+      frameLocation.afterFrameChangeOnce.and.callFake((name, callback) => {
+        if (name === 'resumeImagePreloading') {
+          imagePreloaderReadyCallback = callback;
+        }
+      });
+
+      const controller = createController();
+
+      expect(frameLocation.afterFrameChangeOnce).toHaveBeenCalled();
+      imagePreloaderReadyCallback();
+      expect(imagePreloader.preloadImages).toHaveBeenCalledTimes(1);
     });
   });
 });
