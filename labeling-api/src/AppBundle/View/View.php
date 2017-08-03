@@ -59,7 +59,7 @@ class View
      *
      * @return View
      */
-    public static function createRedirect($url, $statusCode = Codes::HTTP_FOUND, array $headers = array())
+    public static function createRedirect($url, $statusCode = Response::HTTP_FOUND, array $headers = array())
     {
         $view = static::create(null, $statusCode, $headers);
         $view->setLocation($url);
