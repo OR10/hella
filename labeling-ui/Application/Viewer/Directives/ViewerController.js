@@ -10,7 +10,6 @@ import Environment from '../../Common/Support/Environment';
 
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
-import PaperMeasurementRectangle from '../Shapes/PaperMeasurementRectangle';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 
 /**

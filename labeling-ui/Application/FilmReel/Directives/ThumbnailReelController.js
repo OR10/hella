@@ -547,7 +547,6 @@ class ThumbnailReelController {
     switch (true) {
       case this.selectedPaperShape instanceof PaperThingShape:
         return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-        break;
       case this.selectedPaperShape instanceof PaperGroupShape:
         return this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
       case this.selectedPaperShape instanceof PaperFrame:

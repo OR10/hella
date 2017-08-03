@@ -13,7 +13,6 @@ import NotModifiedError from '../Tools/Errors/NotModifiedError';
 import PaperShape from '../Shapes/PaperShape';
 import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
-import PaperMeasurementRectangle from '../Shapes/PaperMeasurementRectangle';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 
 /**
@@ -296,7 +295,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         .then(() => {
           selectedLabeledThing.groupIds.forEach(groupId => {
             const relatedThingShapes = viewModel.paperThingShapes.filter(thingShape =>
-            thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
+              thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
             const shapeGroup = viewModel.paperGroupShapes.find(
               paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
 
