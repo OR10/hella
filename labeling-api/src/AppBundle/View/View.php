@@ -3,7 +3,6 @@
 namespace AppBundle\View;
 
 use FOS\RestBundle\Context;
-use FOS\RestBundle\Util\Codes;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -81,7 +80,7 @@ class View
     public static function createRouteRedirect(
         $route,
         array $parameters = array(),
-        $statusCode = Codes::HTTP_FOUND,
+        $statusCode = Response::HTTP_FOUND,
         array $headers = array()
     ) {
         $view = static::create(null, $statusCode, $headers);
