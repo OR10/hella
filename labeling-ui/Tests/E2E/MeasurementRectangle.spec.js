@@ -467,6 +467,50 @@ describe('Measurement Rectangle', () => {
       .then(() => done());
   });
 
+  it('should draw multiple measurement rectangles and not save them to the database', done => {
+    mock(sharedMocks.concat([]));
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 800, y: 200})
+          .mouseDown()
+          .mouseMove(viewer, {x: 900, y: 600})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 600})
+          .mouseDown()
+          .mouseMove(viewer, {x: 600, y: 500})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 900, y: 500})
+          .mouseDown()
+          .mouseMove(viewer, {x: 800, y: 600})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => expect('AppBundle.Model.LabeledThingInFrame').not.toHaveMatchingTypeDocumentsInDb())
+      .then(() => expect('AppBundle.Model.LabeledThing').not.toHaveMatchingTypeDocumentsInDb())
+      .then(() => done());
+  });
+
   afterEach(() => {
     expectAllModalsToBeClosed();
     mock.teardown();
