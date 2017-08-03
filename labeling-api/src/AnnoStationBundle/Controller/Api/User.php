@@ -303,7 +303,7 @@ class User extends Controller\Base
         if ($user->getUsername() === $loginUser->getUsername()) {
             $this->tokenStorage->setToken(null);
 
-            return RedirectView::create('fos_user_security_logout');
+            return View\View::createRedirect('fos_user_security_logout');
         }
 
         $organisations = [];
