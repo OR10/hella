@@ -84,7 +84,7 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
     },
   };
 
-  if (typeof process.env.NO_HEADLESS === 'undefined') {
+  if (process.env.HEADLESS === 'true') {
     exports.config.capabilities.chromeOptions.args = [ "--headless", "--window-size=1920,1080" ];
   }
 }

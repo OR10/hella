@@ -65,20 +65,20 @@ Download here:
 |Win|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Win/485205/chrome-win32.zip)|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/485198/chrome-win32.zip)|
 |Mac|-|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Mac/485205/chrome-mac.zip)|
  
- Running the tests (with build):
- ```
- gulp test-e2e
- ```
+#### Running the tests (with build):
+```
+gulp test-e2e
+```
 
-Running the tests (without build):
- ```
- gulp test-e2e-run
- ```
+#### Running the tests (without build):
+```
+gulp test-e2e-run
+```
  
- Running the tests (non-headless-mode):
-  ```
-  NO_HEADLESS=true gulp test-e2e-run
-  ```
+#### Running the tests (headless-mode):
+```
+HEADLESS=true gulp test-e2e-run
+```
 
 ### Unit Tests: MacOS
 In order to run the unit tests under MacOS you need to increase the amount of max. open files:
