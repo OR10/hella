@@ -568,7 +568,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
               this.emit('group:create', paperShape);
               break;
             case paperShape instanceof PaperMeasurementRectangle:
-              this._$scope.vm.paperAdditionalShapes.push(paperShape);
+              this._$scope.vm.paperVirtualShapes.push(paperShape);
               this._$scope.vm.selectedPaperShape = paperShape;
               this.emit('additional-shape:create', paperShape);
               break;

@@ -375,7 +375,7 @@ class ViewerController {
      *
      * @type {Array}
      */
-    this.paperAdditionalShapes = [];
+    this.paperVirtualShapes = [];
 
     /**
      * @type {Object}
