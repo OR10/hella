@@ -12,6 +12,13 @@ class ShapeSelectionService {
    * @param {PaperThingShape} shape
    */
   toggleShape(shape) {
+    const firstShape = this.getSelectedShape();
+
+    // If the user tries to add a shape that is not the same, ignore
+    if (firstShape !== undefined && shape.constructor.name !== firstShape.constructor.name) {
+      return;
+    }
+
     if (this._shapes.has(shape.id)) {
       shape.deselect();
       this._shapes.delete(shape.id);

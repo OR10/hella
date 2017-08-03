@@ -1,6 +1,30 @@
 import ShapeSelectionService from 'Application/Viewer/Services/ShapeSelectionService';
 
+class MockShape {
+  constructor(id) {
+    this.id = id
+  }
+  select() {}
+  deselect() {}
+}
+class Rectangle extends MockShape {}
+class Cuboid extends MockShape {}
+
 fdescribe('ShapeSelectionService tests', () => {
+  function createRectangle(id = 'some-rectangle-id') {
+    const rectangle = new Rectangle(id);
+    spyOn(rectangle, 'select');
+    spyOn(rectangle, 'deselect');
+    return rectangle;
+  }
+
+  function createCuboid(id = 'some-cuboid-id') {
+    const cuboid = new Cuboid(id);
+    spyOn(cuboid, 'select');
+    spyOn(cuboid, 'deselect');
+    return cuboid;
+  }
+
   it('can be created', () => {
     const service = new ShapeSelectionService();
     expect(service).toEqual(jasmine.any(ShapeSelectionService));
@@ -9,8 +33,7 @@ fdescribe('ShapeSelectionService tests', () => {
   describe('toggleShape', () => {
     it('adds a shape', () => {
       const service = new ShapeSelectionService();
-      const shape = jasmine.createSpyObj('PaperShape', ['select']);
-      shape.id = 'some-id';
+      const shape = createRectangle();
 
       service.toggleShape(shape);
 
@@ -20,8 +43,7 @@ fdescribe('ShapeSelectionService tests', () => {
 
     it('removes a shape', () => {
       const service = new ShapeSelectionService();
-      const shape = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shape.id = 'some-id';
+      const shape = createCuboid();
 
       service.toggleShape(shape);
       service.toggleShape(shape);
@@ -33,10 +55,8 @@ fdescribe('ShapeSelectionService tests', () => {
 
     it('adds two shapes', () => {
       const service = new ShapeSelectionService();
-      const shapeOne = jasmine.createSpyObj('PaperShape', ['select']);
-      shapeOne.id = 'some-id-1';
-      const shapeTwo = jasmine.createSpyObj('PaperShape', ['select']);
-      shapeTwo.id = 'some-id-2';
+      const shapeOne = createCuboid('some-id-1');
+      const shapeTwo = createCuboid('some-id-2');
 
       service.toggleShape(shapeOne);
       service.toggleShape(shapeTwo);
@@ -48,10 +68,8 @@ fdescribe('ShapeSelectionService tests', () => {
 
     it('selects all the shapes when adding a new shape', () => {
       const service = new ShapeSelectionService();
-      const shapeOne = jasmine.createSpyObj('PaperShape', ['select']);
-      shapeOne.id = 'some-id-1';
-      const shapeTwo = jasmine.createSpyObj('PaperShape', ['select']);
-      shapeTwo.id = 'some-id-2';
+      const shapeOne = createRectangle('some-id-1');
+      const shapeTwo = createRectangle('some-id-2');
 
       service.toggleShape(shapeOne);
       service.toggleShape(shapeTwo);
@@ -61,12 +79,9 @@ fdescribe('ShapeSelectionService tests', () => {
 
     it('adds three shapes and removes one shape', () => {
       const service = new ShapeSelectionService();
-      const shapeOne = jasmine.createSpyObj('PaperShape', ['select']);
-      shapeOne.id = 'some-id-1';
-      const shapeTwo = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeTwo.id = 'some-id-2';
-      const shapeThree = jasmine.createSpyObj('PaperShape', ['select']);
-      shapeThree.id = 'some-id-3';
+      const shapeOne = createRectangle('some-id-1');
+      const shapeTwo = createRectangle('some-id-2');
+      const shapeThree = createRectangle('some-id-3');
 
       service.toggleShape(shapeOne);
       service.toggleShape(shapeTwo);
@@ -78,6 +93,20 @@ fdescribe('ShapeSelectionService tests', () => {
       expect(shapeTwo.deselect).toHaveBeenCalled();
       expect(shapeThree.select).toHaveBeenCalled();
       expect(service.count()).toEqual(2);
+    });
+
+    it('only allows shapes of the same type', () => {
+      const service = new ShapeSelectionService();
+      const cuboid = createCuboid();
+      const rectangle = createRectangle();
+
+      service.toggleShape(cuboid);
+      service.toggleShape(rectangle);
+      const count = service.count();
+      const selectedShape = service.getSelectedShape();
+
+      expect(selectedShape).toBe(cuboid);
+      expect(count).toEqual(1);
     });
   });
 
@@ -94,16 +123,13 @@ fdescribe('ShapeSelectionService tests', () => {
   describe('clear', () => {
     it('removes all the shapes and deselects them', () => {
       const service = new ShapeSelectionService();
-      const shapeOne = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeOne.id = 'some-id-1';
-      const shapeTwo = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeTwo.id = 'some-id-2';
-      const shapeThree = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeThree.id = 'some-id-3';
+      const shapeOne = createCuboid('some-id-1');
+      const shapeTwo = createCuboid('some-id-2');
+      const shapeThree = createCuboid('some-id-3');
 
       service.toggleShape(shapeOne);
       service.toggleShape(shapeTwo);
-      service.toggleShape(shapeThree)
+      service.toggleShape(shapeThree);
 
       service.clear();
       const count = service.count();
@@ -118,14 +144,10 @@ fdescribe('ShapeSelectionService tests', () => {
   describe('setSelectedShape', () => {
     it('removes all previous shapes and only sets this one', () => {
       const service = new ShapeSelectionService();
-      const shapeOne = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeOne.id = 'some-id-1';
-      const shapeTwo = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeTwo.id = 'some-id-2';
-      const shapeThree = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeThree.id = 'some-id-3';
-      const shapeFour = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeFour.id = 'some-id-3';
+      const shapeOne = createRectangle('some-id-1');
+      const shapeTwo = createRectangle('some-id-2');
+      const shapeThree = createRectangle('some-id-3');
+      const shapeFour = createRectangle('some-id-4');
 
       service.toggleShape(shapeOne);
       service.toggleShape(shapeTwo);
@@ -144,8 +166,7 @@ fdescribe('ShapeSelectionService tests', () => {
   describe('getSelectedShape', () => {
     it('returns the shape set via setSelectedShape', () => {
       const service = new ShapeSelectionService();
-      const shape = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shape.id = 'some-id-1';
+      const shape = createRectangle();
 
       service.setSelectedShape(shape);
       const selectedShape = service.getSelectedShape();
@@ -155,12 +176,9 @@ fdescribe('ShapeSelectionService tests', () => {
 
     it('returns the first shape set via toggleShaoe', () => {
       const service = new ShapeSelectionService();
-      const shapeOne = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeOne.id = 'some-id-1';
-      const shapeTwo = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeTwo.id = 'some-id-2';
-      const shapeThree = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
-      shapeThree.id = 'some-id-3';
+      const shapeOne = createCuboid('some-id-1');
+      const shapeTwo = createCuboid('some-id-2');
+      const shapeThree = createCuboid('some-id-3');
 
       service.toggleShape(shapeOne);
       service.toggleShape(shapeTwo);
