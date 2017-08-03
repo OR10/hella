@@ -141,7 +141,6 @@ class User extends Controller\Base
      * Get a single user
      *
      * @Rest\Get("/{user}")
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param Model\User                          $user
      *
