@@ -1,4 +1,4 @@
-import ShapeSelectionService from 'Application/Viewer/Services/ShapeSelectionService';
+import ShapeSelectionService from 'Application/Common/Services/ShapeSelectionService';
 
 class MockShape {
   constructor(id) {
@@ -10,7 +10,7 @@ class MockShape {
 class Rectangle extends MockShape {}
 class Cuboid extends MockShape {}
 
-fdescribe('ShapeSelectionService tests', () => {
+describe('ShapeSelectionService tests', () => {
   function createRectangle(id = 'some-rectangle-id') {
     const rectangle = new Rectangle(id);
     spyOn(rectangle, 'select');

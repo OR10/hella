@@ -37,6 +37,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {ModalService} modalService
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingGroupGateway} labeledThingGroupGateway
+   * @param {ShapeSelectionService} shapeSelectionService
    */
   constructor(width,
               height,
@@ -53,7 +54,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
               applicationState,
               modalService,
               labeledThingGateway,
-              labeledThingGroupGateway) {
+              labeledThingGroupGateway,
+              shapeSelectionService) {
     super(width, height, $scope, drawingContext);
 
     /**
@@ -166,6 +168,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._labeledThingGroupGateway = labeledThingGroupGateway;
 
+    /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
+
     $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
       const oldSet = new Set(oldPaperGroupShapes);
       const newSet = new Set(newPaperGroupShapes);
@@ -216,6 +224,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       if (newShape) {
         this._context.withScope(() => {
           newShape.select(!this._$scope.vm.readOnly);
+          this._shapeSelectionService.setSelectedShape(newShape);
         });
       } else {
         // If shape is deselected in hidden LabeledThingInFrame mode switch it off
