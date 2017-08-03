@@ -2,6 +2,7 @@ import {inject} from 'angular-mocks';
 import ViewerController from 'Application/Viewer/Directives/ViewerController';
 
 describe('ViewerController tests', () => {
+  let angularQ;
   let rootScope;
   let scope;
   let debouncerService;
@@ -21,7 +22,8 @@ describe('ViewerController tests', () => {
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
-  class ViewerControllerTestable extends ViewerController {}
+  class ViewerControllerTestable extends ViewerController {
+  }
 
   beforeEach(() => {
     task = {
@@ -40,14 +42,15 @@ describe('ViewerController tests', () => {
         'beforeFrameChangeAlways',
         'afterFrameChangeAlways',
         'beforeFrameChangeOnce',
-        'afterFrameChangeOnce'
+        'afterFrameChangeOnce',
       ]
     );
 
     ViewerControllerTestable.prototype.framePosition = frameLocation;
   });
 
-  beforeEach(inject($rootScope => {
+  beforeEach(inject(($q, $rootScope) => {
+    angularQ = $q;
     rootScope = $rootScope;
     scope = $rootScope.$new();
   }));
@@ -85,11 +88,7 @@ describe('ViewerController tests', () => {
     const frameIndexLimits = {upperLimit: 0, lowerLimit: 1};
     frameIndexService.getFrameIndexLimits.and.returnValue(frameIndexLimits);
 
-    const context = {
-      setup: () => {
-      }, withScope: () => {
-      }
-    };
+    const context = jasmine.createSpyObj('PaperContext', ['setup', 'withScope']);
     drawingContextService.createContext.and.returnValue(context);
   });
 
@@ -140,10 +139,7 @@ describe('ViewerController tests', () => {
   describe('Events', () => {
     it('framerange:change:after (TTANNO-1923)', () => {
       const debouncedThingOnUpdate = jasmine.createSpyObj('debouncedThingOnUpdate', ['triggerImmediately']);
-      debouncedThingOnUpdate.triggerImmediately.and.returnValue({
-        then: () => {
-        }
-      });
+      debouncedThingOnUpdate.triggerImmediately.and.returnValue(angularQ());
 
       debouncerService.multiplexDebounce.and.returnValue(debouncedThingOnUpdate);
       createController();
@@ -162,7 +158,7 @@ describe('ViewerController tests', () => {
         }
       });
 
-      const controller = createController();
+      createController();
 
       expect(frameLocation.afterFrameChangeOnce).toHaveBeenCalled();
       imagePreloaderReadyCallback();
@@ -177,7 +173,7 @@ describe('ViewerController tests', () => {
         }
       });
 
-      const controller = createController();
+      createController();
       imagePreloaderReadyCallback();
 
       expect(imagePreloader.preloadImages).toHaveBeenCalledWith(task, undefined, 1);

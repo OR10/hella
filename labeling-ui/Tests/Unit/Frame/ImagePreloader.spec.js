@@ -159,7 +159,6 @@ describe('ImagePreloader', () => {
       );
     });
 
-
     it('should resolve with images provided by fetchMultiple', () => {
       const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
       const thumbnailUrls = thumbnailLocations.map(location => location.url);
@@ -201,7 +200,7 @@ describe('ImagePreloader', () => {
 
       // All images above 44 are in the cache!
       imageCacheMock.hasImageForUrl.and.callFake(url => {
-        const imageNumber = parseInt(/([0-9]+)\.jpg$/.exec(url)[1]);
+        const imageNumber = parseInt(/([0-9]+)\.jpg$/.exec(url)[1], 10);
         return (imageNumber > 44);
       });
 
@@ -256,9 +255,6 @@ describe('ImagePreloader', () => {
     });
 
     it('should do nothing if all images have already been fetched', () => {
-      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
-      const thumbnailUrls = thumbnailLocations.map(location => location.url);
-
       const preloader = createImagePreloader();
       preloader.preloadImages(task);
 
@@ -270,7 +266,6 @@ describe('ImagePreloader', () => {
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledTimes(1);
     });
-
   });
 
   describe('Events', () => {
@@ -306,9 +301,6 @@ describe('ImagePreloader', () => {
     });
 
     it('should report via event for started preload', () => {
-      const sourceJpgUrls = sourceJpgLocations.map(location => location.url);
-      const thumbnailUrls = thumbnailLocations.map(location => location.url);
-
       const preloadStartedSpy = jasmine.createSpy('preload:started event');
 
       const preloader = createImagePreloader();
@@ -320,7 +312,7 @@ describe('ImagePreloader', () => {
       expect(preloadStartedSpy).toHaveBeenCalledTimes(1);
       expect(preloadStartedSpy).toHaveBeenCalledWith({
         locationsInChunk: [...sourceJpgLocations, ...thumbnailLocations],
-        imageCountInChunk: sourceJpgLocations.length + thumbnailLocations.length
+        imageCountInChunk: sourceJpgLocations.length + thumbnailLocations.length,
       });
     });
 

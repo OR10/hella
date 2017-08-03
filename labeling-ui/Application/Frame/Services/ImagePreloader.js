@@ -156,7 +156,7 @@ class ImagePreloader {
           this._emit('preload:finished', {
             locationsInChunk: locations,
             imageCountInChunk: locations.length,
-            images
+            images,
           });
 
           return images;
@@ -170,7 +170,7 @@ class ImagePreloader {
             image,
             locationsInChunk: locations,
             imageCountInChunk: locations.length,
-            imageCountInChunkCompleted: completedImages
+            imageCountInChunkCompleted: completedImages,
           });
         }
       );
@@ -228,7 +228,7 @@ class ImagePreloader {
   _getLocationsToPreload(locationsByType, currentPosition, maximumToPreload) {
     let newPosition;
     if (maximumToPreload === undefined) {
-      newPosition = locationsByType[0].length
+      newPosition = locationsByType[0].length;
     } else {
       newPosition = Math.min(locationsByType[0].length, currentPosition + maximumToPreload);
     }

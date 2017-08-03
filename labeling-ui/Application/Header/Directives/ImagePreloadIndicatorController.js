@@ -51,7 +51,7 @@ class ImagePreloadIndicatorController {
    */
   _handleImageLoaded(event) {
     this.percentageComplete = Math.round(
-      (event.imageCountInChunkCompleted/event.imageCountInChunk) * 100
+      (event.imageCountInChunkCompleted / event.imageCountInChunk) * 100
     );
 
     // Only visible if not all images are loaded yet.
