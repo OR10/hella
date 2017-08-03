@@ -82,7 +82,7 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testGetSingleUserAsAdminInOtherOrganisation()
+    public function testGetSingleLabelUserAsAdminInOtherOrganisation()
     {
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
@@ -95,6 +95,21 @@ class UserTest extends Tests\WebTestCase
             ->execute();
 
         $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
+    }
+
+    public function testGetSingleSuperAdminUserAsAdminInOtherOrganisation()
+    {
+        $organisation = $this->organisationFacade->save(
+            new AnnoStationBundleModel\Organisation('Test')
+        );
+        $admin        = $this->createAdminUser();
+        $superAdmin   = $this->createSuperAdminUser($organisation);
+
+        $requestWrapper = $this->createRequest('/api/user/%s', [$superAdmin->getId()])
+            ->withCredentialsFromUsername($admin)
+            ->execute();
+
+        $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
     public function testAddUserAsSuperAdmin()

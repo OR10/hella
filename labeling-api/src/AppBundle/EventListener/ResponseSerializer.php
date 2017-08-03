@@ -119,7 +119,7 @@ class ResponseSerializer
             $restBundleView->setRouteParameters($routeParameters);
         }
         if ($serializationContext !== null) {
-            $restBundleView->setSerializationContext($serializationContext);
+            $restBundleView->setContext($serializationContext);
         }
 
         return $restBundleView;
