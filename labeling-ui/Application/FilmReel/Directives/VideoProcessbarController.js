@@ -1,7 +1,7 @@
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
 import PaperFrame from '../../Viewer/Shapes/PaperFrame';
-import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
+import PaperVirtualShape from '../../Viewer/Shapes/PaperVirtualShape';
 
 
 /**
@@ -54,22 +54,20 @@ class VideoProcessbarController {
         return;
       }
 
-      let frameRange;
       switch (true) {
         case this.selectedPaperShape instanceof PaperThingShape:
-          frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-          break;
+          const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
+          this.rangeWidth = this.frameSize * (frameRange.endFrameIndex - frameRange.startFrameIndex + 1);
+          this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameIndex - frameIndexLimits.lowerLimit);
+          return;
         case this.selectedPaperShape instanceof PaperGroupShape:
         case this.selectedPaperShape instanceof PaperFrame:
-        case this.selectedPaperShape instanceof PaperMeasurementRectangle:
+        case this.selectedPaperShape instanceof PaperVirtualShape:
           this.rangeWidth = 0;
           return;
         default:
           throw new Error('Cannot get frame range of unknown shape type');
       }
-
-      this.rangeWidth = this.frameSize * (frameRange.endFrameIndex - frameRange.startFrameIndex + 1);
-      this.rangeStart = this.videoStart + this.frameSize * (frameRange.startFrameIndex - frameIndexLimits.lowerLimit);
     });
   }
 }

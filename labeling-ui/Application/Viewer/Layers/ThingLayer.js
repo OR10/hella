@@ -14,6 +14,7 @@ import PaperShape from '../Shapes/PaperShape';
 import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperMeasurementRectangle from '../Shapes/PaperMeasurementRectangle';
+import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -252,8 +253,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
         case shape instanceof PaperGroupShape:
           this._deleteGroupShape(shape);
           break;
-        case shape instanceof PaperMeasurementRectangle:
-          this._deleteMeasurementShape(shape);
+        case shape instanceof PaperVirtualShape:
+          this._deleteVirtualShape(shape);
           break;
         default:
           throw new Error('Cannot delete shape of unknown type');
@@ -262,10 +263,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   /**
-   * @param {PaperMeasurementRectangle} shape
+   * @param {PaperVirtualShape} shape
    * @private
    */
-  _deleteMeasurementShape(shape) {
+  _deleteVirtualShape(shape) {
     shape.remove();
     this._$scope.vm.selectedPaperShape = null;
   }
@@ -567,10 +568,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
               this._$scope.vm.selectedPaperShape = paperShape;
               this.emit('group:create', paperShape);
               break;
-            case paperShape instanceof PaperMeasurementRectangle:
+            case paperShape instanceof PaperVirtualShape:
               this._$scope.vm.paperVirtualShapes.push(paperShape);
               this._$scope.vm.selectedPaperShape = paperShape;
-              this.emit('additional-shape:create', paperShape);
+              this.emit('virtual-shape:create', paperShape);
               break;
             default:
               throw new Error(`Can not handle shape creation of type: ${paperShape}`);
@@ -585,8 +586,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
             case paperShape instanceof PaperGroupShape:
               this.emit('group:update', paperShape);
               break;
-            case paperShape instanceof PaperMeasurementRectangle:
-              // Do nothing here
+            case paperShape instanceof PaperVirtualShape:
+              this.emit('virtual-shape:update', paperShape);
               break;
             default:
               throw new Error(`Can not handle shape update of type: ${paperShape}`);

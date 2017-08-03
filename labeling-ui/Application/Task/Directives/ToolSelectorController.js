@@ -1,7 +1,7 @@
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
 import PaperFrame from '../../Viewer/Shapes/PaperFrame';
-import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
+import PaperVirtualShape from '../../Viewer/Shapes/PaperVirtualShape';
 
 /**
  * Controller of the {@link PopupPanelDirective}
@@ -46,10 +46,8 @@ class ToolSelectorController {
         return this.selectedPaperShape.labeledThingGroupInFrame;
       case this.selectedPaperShape instanceof PaperFrame:
         return this.selectedPaperShape.labeledFrame;
-      case this.selectedPaperShape instanceof PaperMeasurementRectangle:
-        return {
-          'identifier-name': 'measurement-rectangle',
-        };
+      case this.selectedPaperShape instanceof PaperVirtualShape:
+        return this.selectedPaperShape.virtualLabeledThingInFrame;
       default:
         throw new Error(`Unknown type of selected paper shape`);
     }
