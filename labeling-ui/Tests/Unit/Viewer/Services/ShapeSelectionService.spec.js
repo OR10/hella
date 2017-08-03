@@ -46,6 +46,19 @@ fdescribe('ShapeSelectionService tests', () => {
       expect(service.count()).toEqual(2);
     });
 
+    it('selects all the shapes when adding a new shape', () => {
+      const service = new ShapeSelectionService();
+      const shapeOne = jasmine.createSpyObj('PaperShape', ['select']);
+      shapeOne.id = 'some-id-1';
+      const shapeTwo = jasmine.createSpyObj('PaperShape', ['select']);
+      shapeTwo.id = 'some-id-2';
+
+      service.toggleShape(shapeOne);
+      service.toggleShape(shapeTwo);
+
+      expect(shapeOne.select).toHaveBeenCalledTimes(2);
+    });
+
     it('adds three shapes and removes one shape', () => {
       const service = new ShapeSelectionService();
       const shapeOne = jasmine.createSpyObj('PaperShape', ['select']);
@@ -99,6 +112,62 @@ fdescribe('ShapeSelectionService tests', () => {
       expect(shapeTwo.deselect).toHaveBeenCalled();
       expect(shapeThree.deselect).toHaveBeenCalled();
       expect(count).toEqual(0);
+    });
+  });
+
+  describe('setSelectedShape', () => {
+    it('removes all previous shapes and only sets this one', () => {
+      const service = new ShapeSelectionService();
+      const shapeOne = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
+      shapeOne.id = 'some-id-1';
+      const shapeTwo = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
+      shapeTwo.id = 'some-id-2';
+      const shapeThree = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
+      shapeThree.id = 'some-id-3';
+      const shapeFour = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
+      shapeFour.id = 'some-id-3';
+
+      service.toggleShape(shapeOne);
+      service.toggleShape(shapeTwo);
+      service.toggleShape(shapeThree);
+      service.setSelectedShape(shapeFour);
+      const count = service.count();
+
+      expect(shapeOne.deselect).toHaveBeenCalled();
+      expect(shapeTwo.deselect).toHaveBeenCalled();
+      expect(shapeThree.deselect).toHaveBeenCalled();
+      expect(shapeFour.select).toHaveBeenCalled();
+      expect(count).toEqual(1);
+    });
+  });
+
+  describe('getSelectedShape', () => {
+    it('returns the shape set via setSelectedShape', () => {
+      const service = new ShapeSelectionService();
+      const shape = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
+      shape.id = 'some-id-1';
+
+      service.setSelectedShape(shape);
+      const selectedShape = service.getSelectedShape();
+
+      expect(selectedShape).toBe(shape);
+    });
+
+    it('returns the first shape set via toggleShaoe', () => {
+      const service = new ShapeSelectionService();
+      const shapeOne = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
+      shapeOne.id = 'some-id-1';
+      const shapeTwo = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
+      shapeTwo.id = 'some-id-2';
+      const shapeThree = jasmine.createSpyObj('PaperShape', ['select', 'deselect']);
+      shapeThree.id = 'some-id-3';
+
+      service.toggleShape(shapeOne);
+      service.toggleShape(shapeTwo);
+      service.toggleShape(shapeThree);
+      const selectedShape = service.getSelectedShape();
+
+      expect(selectedShape).toBe(shapeOne);
     });
   });
 });

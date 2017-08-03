@@ -21,12 +21,18 @@ class ShapeSelectionService {
     }
   }
 
+  /**
+   * @private
+   */
   _selectAllShapes() {
     this._shapes.forEach(shape => {
       shape.select();
     });
   }
 
+  /**
+   * @private
+   */
   _deselectAllShapes() {
     this._shapes.forEach(shape => {
       shape.deselect();
@@ -38,8 +44,26 @@ class ShapeSelectionService {
     this._shapes.clear();
   }
 
+  /**
+   * @returns {number}
+   */
   count() {
     return this._shapes.size;
+  }
+
+  /**
+   * @param {PaperThingShape} shape
+   */
+  setSelectedShape(shape) {
+    this.clear();
+    this.toggleShape(shape);
+  }
+
+  /**
+   * @returns {PaperThingShape}
+   */
+  getSelectedShape() {
+    return this._shapes.values().next().value;
   }
 }
 
