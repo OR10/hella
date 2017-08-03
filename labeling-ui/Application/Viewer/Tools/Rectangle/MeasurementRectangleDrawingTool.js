@@ -107,8 +107,11 @@ class MeasurementRectangleDrawingTool extends CreationTool {
    * @private
    */
   _startShape(from, to) {
+    const {task} = this._toolActionStruct;
+
     this._context.withScope(() => {
       this._rect = new PaperMeasurementRectangle(
+        task,
         this._entityIdService.getUniqueId(),
         from,
         from,
@@ -125,7 +128,7 @@ class MeasurementRectangleDrawingTool extends CreationTool {
    */
   invokeDefaultShapeCreation(toolActionStruct) {
     super.invokeDefaultShapeCreation(toolActionStruct);
-    const {video} = toolActionStruct;
+    const {video, task} = toolActionStruct;
 
     const width = 100;
     const height = 100;
@@ -142,6 +145,7 @@ class MeasurementRectangleDrawingTool extends CreationTool {
     let rect;
     this._context.withScope(() => {
       rect = new PaperMeasurementRectangle(
+        task,
         this._entityIdService.getUniqueId(),
         from,
         to,

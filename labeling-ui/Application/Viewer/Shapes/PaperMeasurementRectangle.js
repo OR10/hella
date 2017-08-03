@@ -1,20 +1,20 @@
 import paper from 'paper';
-import PaperShape from './PaperShape';
 import RectangleHandle from './Handles/Rectangle';
+import PaperVirtualShape from './PaperVirtualShape';
+import VirtualLabeledThingInFrame from '../../LabelingData/Models/VirtualLabeledThingInFrame';
+import uuid from 'uuid';
 
-
-/**
- * @extends PaperThingShape
- */
-class PaperMeasurementRectangle extends PaperShape {
+class PaperMeasurementRectangle extends PaperVirtualShape {
   /**
+   * @param {Task} task
    * @param {string} shapeId
    * @param {Point} topLeft
    * @param {Point} bottomRight
    * @param {{primary: string, secondary: string}} color
    */
-  constructor(shapeId, topLeft, bottomRight, color) {
+  constructor(task, shapeId, topLeft, bottomRight, color) {
     super(shapeId, color);
+
     /**
      * @type {Point}
      * @private
@@ -26,6 +26,16 @@ class PaperMeasurementRectangle extends PaperShape {
      * @private
      */
     this._bottomRight = bottomRight;
+
+    /**
+     * @type {VirtualLabeledThingInFrame}
+     * @private
+     */
+    this._virtualLabeledThingInFrame = new VirtualLabeledThingInFrame({
+      id: uuid.v4(),
+      identifierName: 'measurement-rectangle',
+      task,
+    });
 
     this._drawShape();
   }
@@ -70,7 +80,7 @@ class PaperMeasurementRectangle extends PaperShape {
       strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
-      dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
+      dashArray: this._isSelected ? PaperVirtualShape.DASH : PaperVirtualShape.LINE,
       strokeScaling: false,
       fillColor: new paper.Color(0, 0, 0, 0),
       from: this._topLeft,
