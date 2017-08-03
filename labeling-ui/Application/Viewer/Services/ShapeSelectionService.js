@@ -17,14 +17,24 @@ class ShapeSelectionService {
       this._shapes.delete(shape.id);
     } else {
       this._shapes.set(shape.id, shape);
-      shape.select();
+      this._selectAllShapes();
     }
   }
 
-  clear() {
+  _selectAllShapes() {
+    this._shapes.forEach(shape => {
+      shape.select();
+    });
+  }
+
+  _deselectAllShapes() {
     this._shapes.forEach(shape => {
       shape.deselect();
     });
+  }
+
+  clear() {
+    this._deselectAllShapes();
     this._shapes.clear();
   }
 
