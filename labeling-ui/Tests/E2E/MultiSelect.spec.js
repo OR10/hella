@@ -41,56 +41,49 @@ fdescribe('MultiSelect', () => {
     mock.teardown();
   });
 
-  function drawFirstRectangle() {
-    return browser.actions()
-      .mouseMove(viewer, {x: 100, y: 100}) // initial position
-      .mouseDown()
-      .mouseMove(viewer, {x: 200, y: 200}) // initial position
-      .mouseUp()
-      .perform();
-  }
+  const firstRectangle = {
+    topLeft: {x: 100, y: 100},
+    bottomRight: {x: 200, y: 200},
+  };
 
-  function drawSecondRectangle() {
-    return browser.actions()
-      .mouseMove(viewer, {x: 250, y: 250}) // initial position
-      .mouseDown()
-      .mouseMove(viewer, {x: 350, y: 450}) // initial position
-      .mouseUp()
-      .perform();
-  }
+  const secondRectangle = {
+    topLeft: {x: 250, y: 250},
+    bottomRight: {x: 350, y: 450},
+  };
 
-  function drawThirdRectangle() {
-    return browser.actions()
-      .mouseMove(viewer, {x: 150, y: 500}) // initial position
-      .mouseDown()
-      .mouseMove(viewer, {x: 350, y: 570}) // initial position
-      .mouseUp()
-      .perform();
-  }
+  const thirdRectangle = {
+    topLeft: {x: 150, y: 500},
+    bottomRight: {x: 350, y: 570},
+  };
 
-  function drawFourthRectangle() {
+  const fourthRectangle = {
+    topLeft: {x: 400, y: 400},
+    bottomRight: {x: 700, y: 500},
+  };
+
+  function drawRectangle(rectangle) {
     return browser.actions()
-      .mouseMove(viewer, {x: 400, y: 400}) // initial position
+      .mouseMove(viewer, rectangle.topLeft) // initial position
       .mouseDown()
-      .mouseMove(viewer, {x: 700, y: 500}) // initial position
+      .mouseMove(viewer, rectangle.bottomRight) // initial position
       .mouseUp()
       .perform();
   }
 
   it('should draw four and then additionally select the first three rectangles', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(drawFirstRectangle)
-      .then(drawSecondRectangle)
-      .then(drawThirdRectangle)
-      .then(drawFourthRectangle)
+      .then(() => drawRectangle(firstRectangle))
+      .then(() => drawRectangle(secondRectangle))
+      .then(() => drawRectangle(thirdRectangle))
+      .then(() => drawRectangle(fourthRectangle))
       .then(() => {
         return browser.actions()
           .sendKeys(protractor.Key.CONTROL)
-          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseMove(viewer, firstRectangle.topLeft)
           .click()
-          .mouseMove(viewer, {x: 250, y: 250})
+          .mouseMove(viewer, secondRectangle.topLeft)
           .click()
-          .mouseMove(viewer, {x: 150, y: 500})
+          .mouseMove(viewer, thirdRectangle.topLeft)
           .click()
           .sendKeys(protractor.Key.NULL)
           .perform();
