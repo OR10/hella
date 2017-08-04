@@ -15,7 +15,7 @@ class ShapeSelectionService {
     const firstShape = this.getSelectedShape();
 
     // If the user tries to add a shape that is not the same, ignore
-    if (firstShape !== undefined && shape.constructor.name !== firstShape.constructor.name) {
+    if (firstShape !== undefined && shape.constructor !== firstShape.constructor) {
       return;
     }
 
