@@ -70,6 +70,13 @@ fdescribe('MultiSelect', () => {
       .perform();
   }
 
+  function deselectAfterDrawing() {
+    return browser.actions()
+      .mouseMove(viewer, {x: 1, y: 1})
+      .click()
+      .perform();
+  }
+
   it('should draw four and then additionally select the first three rectangles', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => drawRectangle(firstRectangle))
@@ -106,17 +113,41 @@ fdescribe('MultiSelect', () => {
       .then(() => drawRectangle(secondRectangle))
       .then(() => drawRectangle(thirdRectangle))
       .then(() => drawRectangle(fourthRectangle))
-      .then(() => {
-        return browser.actions()
-          .mouseMove(viewer, {x: 1, y: 1})
-          .click()
-          .perform();
-      })
+      .then(deselectAfterDrawing)
       .then(() => {
         return browser.actions()
           .sendKeys(protractor.Key.CONTROL)
           .mouseMove(viewer, thirdRectangle.topLeft)
           .click()
+          .mouseMove(viewer, secondRectangle.topLeft)
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'TwoSelectedShapes')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.TwoSelectedShapes);
+      })
+      .then(() => {
+        done();
+      });
+  });
+
+  it('should draw four, deselect and then select one with normal click and a second rectangle with ctrl+click', done => {
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => drawRectangle(firstRectangle))
+      .then(() => drawRectangle(secondRectangle))
+      .then(() => drawRectangle(thirdRectangle))
+      .then(() => drawRectangle(fourthRectangle))
+      .then(deselectAfterDrawing)
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, thirdRectangle.topLeft)
+          .click()
+          .sendKeys(protractor.Key.CONTROL)
           .mouseMove(viewer, secondRectangle.topLeft)
           .click()
           .sendKeys(protractor.Key.NULL)
