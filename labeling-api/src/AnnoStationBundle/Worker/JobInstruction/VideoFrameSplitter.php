@@ -108,7 +108,13 @@ class VideoFrameSplitter extends JobInstruction
             $frameSizesInBytes = $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
             $imageSizes        = $this->videoFrameSplitter->getImageSizes();
 
-            $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1], $frameSizesInBytes);
+            $this->updateDocument(
+                $video,
+                $job->imageType,
+                $imageSizes[1][0],
+                $imageSizes[1][1],
+                array_sum($frameSizesInBytes)
+            );
 
             $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
 
@@ -234,7 +240,7 @@ class VideoFrameSplitter extends JobInstruction
             $video->setImageType($imageTypeName, 'failed', false);
             $video->setImageType($imageTypeName, 'width', $width);
             $video->setImageType($imageTypeName, 'height', $height);
-            $video->setImageSizesForType($imageTypeName, $frameSizesInBytes);
+            $video->setAccumulatedSizeInBytesForType($imageTypeName, $frameSizesInBytes);
             $this->videoFacade->update();
         } catch (CouchDB\UpdateConflictException $updateConflictException) {
             if ($retryCount > $maxRetries) {
