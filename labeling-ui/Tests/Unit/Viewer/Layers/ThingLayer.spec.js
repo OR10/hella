@@ -26,6 +26,7 @@ describe('ThingLayer test suite', () => {
   let modalService;
   let labeledThingGateway;
   let labeledThingGroupGateway;
+  let shapeSelectionService;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -40,6 +41,9 @@ describe('ThingLayer test suite', () => {
 
     labeledFrameGateway = jasmine.createSpyObj('labeledFrameGateway', ['getLabeledFrame', 'saveLabeledFrame', 'deleteLabeledFrame']);
     $provide.service('labeledFrameGateway', () => labeledFrameGateway);
+
+    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['setSelectedShape']);
+    $provide.service('shapeSelectionService', () => shapeSelectionService);
 
     paperScope = jasmine.createSpy('paperScope');
     paperScope.view = jasmine.createSpyObj('scope.view', ['update']);
@@ -75,7 +79,8 @@ describe('ThingLayer test suite', () => {
     const framePosition = jasmine.createSpyObj('framePosition', ['beforeFrameChangeAlways', 'afterFrameChangeAlways']);
 
     return new ThingLayer(0, 0, angularScope, injector, drawingContext, toolService, null, loggerService, timeoutService,
-        framePosition, viewerMouseCursorService, null, applicationState, modalService, labeledThingGateway, labeledThingGroupGateway);
+        framePosition, viewerMouseCursorService, null, applicationState, modalService, labeledThingGateway,
+        labeledThingGroupGateway, shapeSelectionService);
   }
 
   function setupPaperJs() {
