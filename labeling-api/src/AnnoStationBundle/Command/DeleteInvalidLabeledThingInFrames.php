@@ -10,6 +10,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use AnnoStationBundle\Database\Facade\LabeledThing;
 use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
+use Doctrine\ODM\CouchDB;
 
 class DeleteInvalidLabeledThingInFrames extends Base
 {
@@ -28,16 +29,23 @@ class DeleteInvalidLabeledThingInFrames extends Base
      */
     private $labeledThingInFrameFacadeFactory;
 
+    /**
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         LabeledThing\FacadeInterface $labeledThingFacadeFactory,
-        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory,
+        CouchDB\DocumentManager $documentManager
 
     ) {
         parent::__construct();
         $this->labelingTaskFacade               = $labelingTaskFacade;
         $this->labeledThingInFrameFacadeFactory = $labeledThingInFrameFacadeFactory;
         $this->labeledThingFacadeFactory        = $labeledThingFacadeFactory;
+        $this->documentManager                  = $documentManager;
     }
 
     protected function configure()
@@ -83,6 +91,7 @@ class DeleteInvalidLabeledThingInFrames extends Base
             $deletedDocs += count($invalidLabeledThingsInFrames);
             $progressBar->setMessage($deletedDocs, 'deletedDocs');
             $progressBar->advance();
+            $this->documentManager->detach($task);
         }
     }
 
@@ -108,6 +117,9 @@ class DeleteInvalidLabeledThingInFrames extends Base
             $labeledThing = $labeledThingFacade->find($labeledThingsInFrame->getLabeledThingId());
             if ($labeledThing === null) {
                 $invalidLabeledThingInFrames[] = $labeledThingsInFrame;
+            }else{
+                $this->documentManager->detach($labeledThingsInFrame);
+                $this->documentManager->detach($labeledThing);
             }
         }
 
