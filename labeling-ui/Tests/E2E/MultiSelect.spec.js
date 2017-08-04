@@ -99,4 +99,38 @@ fdescribe('MultiSelect', () => {
         done();
       });
   });
+
+  it('should draw four, deselet and then select two of the rectangles with ctrl+click', done => {
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => drawRectangle(firstRectangle))
+      .then(() => drawRectangle(secondRectangle))
+      .then(() => drawRectangle(thirdRectangle))
+      .then(() => drawRectangle(fourthRectangle))
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1})
+          .click()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, thirdRectangle.topLeft)
+          .click()
+          .mouseMove(viewer, secondRectangle.topLeft)
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'TwoSelectedShapes')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.TwoSelectedShapes);
+      })
+      .then(() => {
+        done();
+      });
+  });
 });
