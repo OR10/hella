@@ -1,6 +1,7 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
+import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
@@ -209,5 +210,45 @@ fdescribe('MultiSelect', () => {
       .then(() => {
         done();
       });
+  });
+
+  it('should remove the label selector once more than one rectangle is selected', done => {
+    const labelSelector = element(by.css('label-selector'));
+    const labelSelectorHelper = new LabelSelectorHelper(labelSelector);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => drawRectangle(firstRectangle))
+      .then(() => drawRectangle(secondRectangle))
+      .then(() => drawRectangle(thirdRectangle))
+      .then(() => drawRectangle(fourthRectangle))
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, thirdRectangle.topLeft)
+          .click()
+      })
+      .then(() => expect(labelSelectorHelper.getNumberOfVisiblePanes()).toBe(4))
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, firstRectangle.topLeft)
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(() => browser.sleep(1000))
+      .then(() => expect(labelSelectorHelper.getNumberOfVisiblePanes()).toBe(0))
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, firstRectangle.topLeft)
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(() => browser.sleep(250))
+      .then(() => expect(labelSelectorHelper.getNumberOfVisiblePanes()).toBe(4))
+      .then(() => {
+        done();
+      })
   });
 });
