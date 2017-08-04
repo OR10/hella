@@ -1,8 +1,8 @@
 <div class="grid-block label-selector vertical">
-    <div ng-if="!vm.selectedPaperShape"
+    <div ng-if="!vm.show()"
          class="grid-block label-selector-placeholder align-center">
     </div>
-    <div ng-show="vm.selectedPaperShape"
+    <div ng-show="vm.show()"
             class="grid-block label-selector-title">
         <div class="grid-content noscroll">Categories</div>
         <div class="grid-content shrink view-style">
@@ -34,7 +34,7 @@
     <!--Start accordion View-->
     <v-accordion class="accordion"
                  multiple="vm.multiSelection"
-                 ng-show="vm.viewStyle === 'list' && vm.selectedPaperShape"
+                 ng-show="vm.viewStyle === 'list' && vm.show()"
                  control="vm.accordionControl"
     >
         <v-pane id="{{page.id}}" ng-repeat="page in vm.pages track by page.id">
@@ -83,7 +83,7 @@
     <!--End accordion View-->
 
     <!--Start icon view-->
-    <div class="grid-block vertical " ng-if="vm.selectedPaperShape" ng-show="vm.viewStyle === 'icon'">
+    <div class="grid-block vertical " ng-if="vm.show()" ng-show="vm.viewStyle === 'icon'">
         <div class="grid-block label-selector-controlls">
             <div class="grid-content control-left shrink noscroll">
                 <button ng-click="vm.previousPage()"><i class="icon icon-left"></i></button>

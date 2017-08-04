@@ -226,6 +226,9 @@ export default class LabelSelectorController {
     });
   }
 
+  /**
+   * @returns {boolean}
+   */
   show() {
     const hasPaperShape = (this.selectedPaperShape !== undefined && this.selectedPaperShape !== null);
     const hasAtMostOneSelectedShape = (this._shapeSelectionService.count() <= 1);
