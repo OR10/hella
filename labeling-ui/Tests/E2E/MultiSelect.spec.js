@@ -34,6 +34,8 @@ fdescribe('MultiSelect', () => {
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
+    mock(sharedMocks);
+
     viewer = element(by.css('.layer-container'));
   });
 
@@ -93,8 +95,6 @@ fdescribe('MultiSelect', () => {
   }
 
   it('should draw four and then additionally select the first three rectangles', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => drawRectangle(firstShape))
       .then(() => drawRectangle(secondShape))
@@ -125,8 +125,6 @@ fdescribe('MultiSelect', () => {
   });
 
   it('should draw four, deselect and then select two of the rectangles with ctrl+click', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => drawRectangle(firstShape))
       .then(() => drawRectangle(secondShape))
@@ -156,8 +154,6 @@ fdescribe('MultiSelect', () => {
   });
 
   it('should draw four, deselect and then select one with normal click and a second rectangle with ctrl+click', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => drawRectangle(firstShape))
       .then(() => drawRectangle(secondShape))
@@ -187,8 +183,6 @@ fdescribe('MultiSelect', () => {
   });
 
   it('should should select and deselect with ctrl+click', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => drawRectangle(firstShape))
       .then(() => drawRectangle(secondShape))
@@ -235,8 +229,6 @@ fdescribe('MultiSelect', () => {
   });
 
   it('should remove the label selector once more than one rectangle is selected', done => {
-    mock(sharedMocks);
-
     const labelSelector = element(by.css('label-selector'));
     const labelSelectorHelper = new LabelSelectorHelper(labelSelector);
 
@@ -277,8 +269,6 @@ fdescribe('MultiSelect', () => {
   });
 
   it('should only select shapes of the same type', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => drawPedestrian(firstShape))
       .then(() => drawRectangle(secondShape))
