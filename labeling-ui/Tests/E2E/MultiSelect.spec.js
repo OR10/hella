@@ -107,7 +107,7 @@ fdescribe('MultiSelect', () => {
       });
   });
 
-  it('should draw four, deselet and then select two of the rectangles with ctrl+click', done => {
+  it('should draw four, deselect and then select two of the rectangles with ctrl+click', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => drawRectangle(firstRectangle))
       .then(() => drawRectangle(secondRectangle))
@@ -149,6 +149,52 @@ fdescribe('MultiSelect', () => {
           .click()
           .sendKeys(protractor.Key.CONTROL)
           .mouseMove(viewer, secondRectangle.topLeft)
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'TwoSelectedShapes')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.TwoSelectedShapes);
+      })
+      .then(() => {
+        done();
+      });
+  });
+
+  it('should should select and deselect with ctrl+click', done => {
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => drawRectangle(firstRectangle))
+      .then(() => drawRectangle(secondRectangle))
+      .then(() => drawRectangle(thirdRectangle))
+      .then(() => drawRectangle(fourthRectangle))
+      .then(deselectAfterDrawing)
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, thirdRectangle.topLeft)
+          .click()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, firstRectangle.topLeft)
+          .click()
+          .mouseMove(viewer, secondRectangle.topLeft)
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'ThreeSelectedShapes')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.ThreeSelectedShapes);
+      })
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, firstRectangle.topLeft)
           .click()
           .sendKeys(protractor.Key.NULL)
           .perform();
