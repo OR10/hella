@@ -135,7 +135,7 @@ class VideoImporter
             $conflictException = null;
             try {
                 $project->addVideo($video);
-                $videoSize = $video->getMetaData()->sizeInBytes;
+                $videoSize = $video->getMetaData()->accumulatedSizeInBytes;
                 $project->setDiskUsageInBytes($project->getDiskUsageInBytes() + $videoSize);
                 $this->projectFacade->save($project);
                 break;
