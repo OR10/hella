@@ -17,7 +17,7 @@ describe('LabelSelectorController tests', () => {
    */
   let shapeSelectionService;
 
-  beforeEach(inject(($rootScope) => {
+  beforeEach(inject($rootScope => {
     rootScope = $rootScope;
     scope = $rootScope.$new();
   }));

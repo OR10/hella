@@ -5,7 +5,7 @@ import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('MultiSelect', () => {
+describe('MultiSelect', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -241,6 +241,7 @@ fdescribe('MultiSelect', () => {
         return browser.actions()
           .mouseMove(viewer, thirdShape.topLeft)
           .click()
+          .perform();
       })
       .then(() => expect(labelSelectorHelper.getNumberOfVisiblePanes()).toBe(1))
       .then(() => {
@@ -265,7 +266,7 @@ fdescribe('MultiSelect', () => {
       .then(() => expect(labelSelectorHelper.getNumberOfVisiblePanes()).toBe(1))
       .then(() => {
         done();
-      })
+      });
   });
 
   it('should only select shapes of the same type', done => {

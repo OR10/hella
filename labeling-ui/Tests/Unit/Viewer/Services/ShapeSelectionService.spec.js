@@ -2,7 +2,7 @@ import ShapeSelectionService from 'Application/Common/Services/ShapeSelectionSer
 
 class MockShape {
   constructor(id) {
-    this.id = id
+    this.id = id;
   }
   select() {}
   deselect() {}
