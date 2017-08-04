@@ -226,12 +226,10 @@ export default class LabelSelectorController {
     });
   }
 
-  /**
-   * @returns {boolean}
-   */
   show() {
-    const hasOnlyOneShapeSelected = (this._shapeSelectionService.count() === 1);
-    return hasOnlyOneShapeSelected;
+    const hasPaperShape = (this.selectedPaperShape !== undefined && this.selectedPaperShape !== null);
+    const hasAtMostOneSelectedShape = (this._shapeSelectionService.count() <= 1);
+    return hasPaperShape && hasAtMostOneSelectedShape;
   }
 
   /**
