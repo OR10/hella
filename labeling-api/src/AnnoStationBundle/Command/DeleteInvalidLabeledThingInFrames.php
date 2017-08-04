@@ -92,6 +92,7 @@ class DeleteInvalidLabeledThingInFrames extends Base
             $progressBar->setMessage($deletedDocs, 'deletedDocs');
             $progressBar->advance();
             $this->documentManager->detach($task);
+            $this->documentManager->clear();
         }
     }
 
