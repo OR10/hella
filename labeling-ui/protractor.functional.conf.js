@@ -6,7 +6,7 @@ const ResembleDiffReporter = require('./Tests/Support/Jasmine/Reporters/Resemble
 const JasmineSpecReporter = require('jasmine-spec-reporter');
 const ViewportHelper = require('./Tests/Support/Protractor/ViewportHelper');
 const path = require('path');
-const seleniumServerJar = require("selenium-standalone-jar");
+const seleniumServerJar = require('selenium-standalone-jar');
 
 exports.config = {
   framework: 'jasmine2',
@@ -55,7 +55,8 @@ exports.config = {
   },
   jasmineNodeOpts: {
     // Disable standard 'dot' output
-    print: () => {},
+    print: () => {
+    },
     defaultTimeoutInterval: 60000,
   },
 
@@ -82,4 +83,8 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
       'binary': '/Applications/Chromium.app/Contents/MacOS/Chromium',
     },
   };
+
+  if (process.env.HEADLESS === 'true') {
+    exports.config.capabilities.chromeOptions.args = ['--headless', '--window-size=1920,1080'];
+  }
 }

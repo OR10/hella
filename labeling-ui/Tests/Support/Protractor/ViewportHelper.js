@@ -88,6 +88,11 @@ class ViewportHelper {
    * @returns {!promise.Promise.<{width: Integer, height: Integer}>}
    */
   getScreenResolution() {
+    if (process.env.HEADLESS === 'true') {
+      // In headless mode the reported value is not correct. Therefore fallback to fullhd
+      return Promise.resolve({width: 1920, height: 1080});
+    }
+
     return browser.executeScript(() => {
       const width = window.screen.availWidth;
       const height = window.screen.availHeight;
@@ -109,10 +114,10 @@ class ViewportHelper {
    */
   _tryToMatchWindowToViewport(desiredWidth, desiredHeight, retryCount = 0) {
     return Promise.all([
-        this.getViewportSize(),
-        this.getWindowSize(),
-        this.getScreenResolution(),
-      ])
+      this.getViewportSize(),
+      this.getWindowSize(),
+      this.getScreenResolution(),
+    ])
       .then(([viewportSize, windowSize, screenResolution]) => {
         const sizeDifference = {
           width: windowSize.width - viewportSize.width,
