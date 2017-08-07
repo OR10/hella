@@ -121,7 +121,7 @@ class Video
     }
 
     /**
-     * @return Video\MetaData
+     * @return MetaData
      */
     public function getMetaData()
     {
@@ -131,7 +131,8 @@ class Video
             foreach ($properties as $property) {
                 $metaData->$property = $this->metaData[$property];
             }
-            $this->metaData = $metaData;
+
+            return $metaData;
         }
 
         return $this->metaData;
