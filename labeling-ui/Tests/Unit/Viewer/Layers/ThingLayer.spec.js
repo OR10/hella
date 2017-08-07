@@ -189,8 +189,30 @@ describe('ThingLayer', () => {
   // xdescribe('vm.hideLabeledThingsInFrame watcher', () => {
   // });
   //
-  // xdescribe('vm.selectedPaperShape watcher', () => {
-  // });
+  describe('vm.selectedPaperShape watcher', () => {
+    let watcherFunction;
+
+    beforeEach(() => {
+      spyOn(angularScope, '$watch').and.callFake((watches, callback) => {
+        if (watches === 'vm.selectedPaperShape') {
+          watcherFunction = callback;
+        }
+      });
+    });
+
+    it('calls setSelectedShape on the shapeSelectionService', () => {
+      createThingLayerInstance();
+      const shape = jasmine.createSpyObj('shape', ['select']);
+      const project = jasmine.createSpyObj('project', ['getItems']);
+      project.getItems.and.returnValue([]);
+      const view = jasmine.createSpyObj('view', ['update']);
+      drawingContext.withScope.and.callFake(callback => callback({project, view}));
+
+      watcherFunction(shape, null);
+
+      expect(shapeSelectionService.setSelectedShape).toHaveBeenCalledWith(shape);
+    });
+  });
   //
   // xdescribe('#dispatchDOMEvent', () => {
   // });
