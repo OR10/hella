@@ -10,6 +10,7 @@ import Environment from '../../Common/Support/Environment';
 
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
+import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -376,6 +377,13 @@ class ViewerController {
      * @type {Array.<PaperGroupShape|null>}
      */
     this.paperGroupShapes = [];
+
+    /**
+     * A structure holding all additional paper shapes that are not part of the other types
+     *
+     * @type {Array}
+     */
+    this.paperVirtualShapes = [];
 
     /**
      * @type {Object}
@@ -1085,6 +1093,10 @@ class ViewerController {
     }
 
     if (this.selectedPaperShape instanceof PaperFrame) {
+      return Promise.resolve(null);
+    }
+
+    if (this.selectedPaperShape instanceof PaperVirtualShape) {
       return Promise.resolve(null);
     }
 

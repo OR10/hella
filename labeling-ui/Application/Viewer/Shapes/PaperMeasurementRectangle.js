@@ -1,20 +1,20 @@
 import paper from 'paper';
-import PaperShape from './PaperShape';
 import RectangleHandle from './Handles/Rectangle';
+import PaperVirtualShape from './PaperVirtualShape';
+import VirtualLabeledThingInFrame from '../../LabelingData/Models/VirtualLabeledThingInFrame';
+import uuid from 'uuid';
 
-
-/**
- * @extends PaperThingShape
- */
-class PaperMeasurementRectangle extends PaperShape {
+class PaperMeasurementRectangle extends PaperVirtualShape {
   /**
+   * @param {Task} task
    * @param {string} shapeId
    * @param {Point} topLeft
    * @param {Point} bottomRight
    * @param {{primary: string, secondary: string}} color
    */
-  constructor(shapeId, topLeft, bottomRight, color) {
+  constructor(task, shapeId, topLeft, bottomRight, color) {
     super(shapeId, color);
+
     /**
      * @type {Point}
      * @private
@@ -26,6 +26,16 @@ class PaperMeasurementRectangle extends PaperShape {
      * @private
      */
     this._bottomRight = bottomRight;
+
+    /**
+     * @type {VirtualLabeledThingInFrame}
+     * @private
+     */
+    this._virtualLabeledThingInFrame = new VirtualLabeledThingInFrame({
+      id: uuid.v4(),
+      identifierName: 'measurement-rectangle',
+      task,
+    });
 
     this._drawShape();
   }
@@ -70,7 +80,7 @@ class PaperMeasurementRectangle extends PaperShape {
       strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
-      dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
+      dashArray: this._isSelected ? PaperVirtualShape.DASH : PaperVirtualShape.LINE,
       strokeScaling: false,
       fillColor: new paper.Color(0, 0, 0, 0),
       from: this._topLeft,
@@ -199,6 +209,17 @@ class PaperMeasurementRectangle extends PaperShape {
   }
 
   /**
+   * @param {Point} point
+   */
+  moveTo(point) {
+    const width = this._bottomRight.x - this._topLeft.x;
+    const height = this._bottomRight.y - this._topLeft.y;
+    this._topLeft = new paper.Point(point.x - (width / 2), point.y - (height / 2));
+    this._bottomRight = new paper.Point(point.x + (width / 2), point.y + (height / 2));
+    this._drawShape();
+  }
+
+  /**
    * @param {Handle|null} handle
    * @param {boolean} mouseDown
    * @returns {string}
@@ -255,6 +276,24 @@ class PaperMeasurementRectangle extends PaperShape {
   }
 
   /**
+   * Select the shape
+   *
+   * @param {Boolean} drawHandles
+   */
+  select(drawHandles = true) {
+    this._isSelected = true;
+    this._drawShape(drawHandles);
+  }
+
+  /**
+   * Deselect the shape
+   */
+  deselect() {
+    this._isSelected = false;
+    this._drawShape();
+  }
+
+  /**
    * @param {Point} fixPoint
    * @param {Point} point
    * @param {{width, height}} minSize
@@ -302,6 +341,25 @@ class PaperMeasurementRectangle extends PaperShape {
   }
 
   /**
+   * Fix the points of the shape to represent the right coordinates
+   */
+  fixOrientation() {
+    const oldTopLeft = this._topLeft;
+    const oldBottomRight = this._bottomRight;
+
+    this._topLeft = new paper.Point(
+      Math.min(oldTopLeft.x, oldBottomRight.x),
+      Math.min(oldTopLeft.y, oldBottomRight.y)
+    );
+    this._bottomRight = new paper.Point(
+      Math.max(oldTopLeft.x, oldBottomRight.x),
+      Math.max(oldTopLeft.y, oldBottomRight.y)
+    );
+    this._drawShape();
+  }
+
+
+  /**
    * @returns {Point}
    */
   get position() {
@@ -309,6 +367,21 @@ class PaperMeasurementRectangle extends PaperShape {
       (this._topLeft.x + this._bottomRight.x) / 2,
       (this._topLeft.y + this._bottomRight.y) / 2
     );
+  }
+
+  toJSON() {
+    return {
+      type: 'measurement-rectangle',
+      id: this._shapeId,
+      topLeft: {
+        x: Math.round(this._topLeft.x),
+        y: Math.round(this._topLeft.y),
+      },
+      bottomRight: {
+        x: Math.round(this._bottomRight.x),
+        y: Math.round(this._bottomRight.y),
+      },
+    };
   }
 }
 

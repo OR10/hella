@@ -5,9 +5,11 @@ import PanAndZoomPaperLayer from 'Application/Viewer/Layers/PanAndZoomPaperLayer
 import ToolAbortedError from 'Application/Viewer/Tools/Errors/ToolAbortedError';
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
+import PaperMeasurementRectangle from 'Application/Viewer/Shapes/PaperMeasurementRectangle';
 import paper from 'paper';
+import TaskFixture from '../../../Fixtures/Models/Frontend/Task';
 
-describe('ThingLayer test suite', () => {
+describe('ThingLayer', () => {
   let injector;
   let angularScope;
   let paperScope;
@@ -72,15 +74,15 @@ describe('ThingLayer test suite', () => {
     rootScope = $rootScope;
 
     angularScope = $rootScope.$new();
-    angularScope.vm = { task: task };
+    angularScope.vm = {task: task};
   }));
 
   function createThingLayerInstance() {
     const framePosition = jasmine.createSpyObj('framePosition', ['beforeFrameChangeAlways', 'afterFrameChangeAlways']);
 
     return new ThingLayer(0, 0, angularScope, injector, drawingContext, toolService, null, loggerService, timeoutService,
-        framePosition, viewerMouseCursorService, null, applicationState, modalService, labeledThingGateway,
-        labeledThingGroupGateway, shapeSelectionService);
+      framePosition, viewerMouseCursorService, null, applicationState, modalService, labeledThingGateway,
+      labeledThingGroupGateway, shapeSelectionService);
   }
 
   function setupPaperJs() {
@@ -150,6 +152,32 @@ describe('ThingLayer test suite', () => {
     thing.dispatchDOMEvent(event);
 
     expect(paperScope.view.update).toHaveBeenCalled();
+  });
+
+  describe('on action:delete:shape', () => {
+    let taskFixture;
+
+    beforeEach(() => {
+      taskFixture = TaskFixture.clone();
+    });
+
+    it('deletes a PaperMeasurementRectangle', () => {
+      setupPaperJs();
+      createThingLayerInstance();
+      const topLeft = {x: 1, y: 1};
+      const bottomRight = {x: 200, y: 200};
+      const color = {primary: 'yellow', secondary: 'black'};
+      const measurementRectangle = new PaperMeasurementRectangle(taskFixture, 'foobar', topLeft, bottomRight, color);
+      spyOn(measurementRectangle, 'remove');
+      angularScope.vm.selectedPaperShape = measurementRectangle;
+
+      rootScope.$emit('action:delete-shape', measurementRectangle);
+
+      expect(measurementRectangle.remove).toHaveBeenCalled();
+      // Don't use toBeNull as there is some kind of circular dependency in .bounds
+      // which would cause the test to die if selectedPaperShape was not null
+      expect(angularScope.vm.selectedPaperShape === null).toBe(true);
+    });
   });
 
   // xdescribe('vm.paperGroupShapes watcher', () => {
@@ -248,7 +276,10 @@ describe('ThingLayer test suite', () => {
         };
 
         const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort']);
-        keyboardTool.invokeKeyboardShortcuts.and.returnValue({then: () => {}});
+        keyboardTool.invokeKeyboardShortcuts.and.returnValue({
+          then: () => {
+          }
+        });
         toolService.getTool.and.returnValue(keyboardTool);
       });
 
@@ -292,7 +323,10 @@ describe('ThingLayer test suite', () => {
           invokePromiseMock = jasmine.createSpyObj('invoke promise return', ['then']);
           invokePromiseMock.then.and.callFake(then => {
             then(invokeThenParams);
-            return { catch: () => {} };
+            return {
+              catch: () => {
+              }
+            };
           });
           spyOn(thing._multiTool, 'invoke').and.returnValue(invokePromiseMock);
         });
@@ -370,7 +404,10 @@ describe('ThingLayer test suite', () => {
               paperShape: paperShape,
             };
             callback(callbackParams);
-            return { catch: () => {} };
+            return {
+              catch: () => {
+              }
+            };
           });
 
           spyOn(thing._multiTool, 'invoke').and.returnValue(invokePromiseMock);
@@ -400,7 +437,10 @@ describe('ThingLayer test suite', () => {
               paperShape: paperShape,
             };
             callback(callbackParams);
-            return { catch: () => {} };
+            return {
+              catch: () => {
+              }
+            };
           });
 
           spyOn(thing._multiTool, 'invoke').and.returnValue(invokePromiseMock);
