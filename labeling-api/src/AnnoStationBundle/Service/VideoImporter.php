@@ -49,6 +49,11 @@ class VideoImporter
     private $labelStructureService;
 
     /**
+     * @var CouchDbUpdateConflictRetry
+     */
+    private $couchDbUpdateConflictRetryService;
+
+    /**
      * @var WorkerPool\Facade
      */
     private $facadeAMQP;
@@ -77,6 +82,7 @@ class VideoImporter
      * @param Video\MetaDataReader                $metaDataReader
      * @param Service\Video\VideoFrameSplitter    $frameCdnSplitter
      * @param LabelStructure                      $labelStructureService
+     * @param CouchDbUpdateConflictRetry          $couchDbUpdateConflictRetryService
      * @param WorkerPool\Facade                   $facadeAMQP
      * @param CalibrationFileConverter            $calibrationFileConverter
      * @param Facade\TaskConfiguration            $taskConfigurationFacade
@@ -90,6 +96,7 @@ class VideoImporter
         Service\Video\MetaDataReader $metaDataReader,
         Service\Video\VideoFrameSplitter $frameCdnSplitter,
         Service\LabelStructure $labelStructureService,
+        Service\CouchDbUpdateConflictRetry $couchDbUpdateConflictRetryService,
         WorkerPool\Facade $facadeAMQP,
         Service\CalibrationFileConverter $calibrationFileConverter,
         Facade\TaskConfiguration $taskConfigurationFacade
@@ -101,6 +108,7 @@ class VideoImporter
         $this->frameCdnSplitter                   = $frameCdnSplitter;
         $this->labelingTaskFacade                 = $labelingTaskFacade;
         $this->labelStructureService              = $labelStructureService;
+        $this->couchDbUpdateConflictRetryService  = $couchDbUpdateConflictRetryService;
         $this->facadeAMQP                         = $facadeAMQP;
         $this->calibrationFileConverter           = $calibrationFileConverter;
         $this->taskConfigurationFacade            = $taskConfigurationFacade;
@@ -130,28 +138,20 @@ class VideoImporter
         $video->setMetaData($this->metaDataReader->readMetaData($videoFilePath));
         $this->videoFacade->save($video, $videoFilePath);
 
-        $conflictException = null;
-        for ($retries = 0; $retries < 5; ++$retries) {
-            $conflictException = null;
-            try {
+        $this->couchDbUpdateConflictRetryService->save(
+            $project,
+            function (Model\Project $project) use ($video) {
                 $project->addVideo($video);
-                $videoSize = $video->getMetaData()->accumulatedSizeInBytes;
-                $project->setDiskUsageInBytes($project->getDiskUsageInBytes() + $videoSize);
-                $this->projectFacade->save($project);
-                break;
-            } catch (CouchDB\UpdateConflictException $exception) {
-                $conflictException = $exception;
-                $this->projectFacade->reload($project);
+                $project->setDiskUsageInBytes($project->getDiskUsageInBytes() + $video->getMetaData()->sizeInBytes);
             }
-        }
-
-        if ($conflictException !== null) {
-            throw $conflictException;
-        }
+        );
 
         foreach ($imageTypes as $imageTypeName) {
             $video->setImageType($imageTypeName, 'converted', false);
             $this->videoFacade->update();
+        }
+
+        foreach ($imageTypes as $imageTypeName) {
             $job = new Jobs\VideoFrameSplitter(
                 $video->getId(),
                 $video->getSourceVideoPath(),
@@ -220,22 +220,12 @@ class VideoImporter
 
         $this->calibrationDataFacade->save($calibration);
 
-        $conflictException = null;
-        for ($retries = 0; $retries < 5; ++$retries) {
-            $conflictException = null;
-            try {
+        $this->couchDbUpdateConflictRetryService->save(
+            $project,
+            function (Model\Project $project) use ($calibration) {
                 $project->addCalibrationData($calibration);
-                $this->projectFacade->save($project);
-                break;
-            } catch (CouchDB\UpdateConflictException $exception) {
-                $conflictException = $exception;
-                $this->projectFacade->reload($project);
             }
-        }
-
-        if ($conflictException !== null) {
-            throw $conflictException;
-        }
+        );
 
         return $calibration;
     }
@@ -259,22 +249,12 @@ class VideoImporter
         );
         $this->additionalFrameNumberMappingFacade->save($additionalFrameNumberMapping);
 
-        $conflictException = null;
-        for ($retries = 0; $retries < 5; ++$retries) {
-            $conflictException = null;
-            try {
+        $this->couchDbUpdateConflictRetryService->save(
+            $project,
+            function (Model\Project $project) use ($additionalFrameNumberMapping) {
                 $project->addAdditionalFrameNumberMapping($additionalFrameNumberMapping);
-                $this->projectFacade->save($project);
-                break;
-            } catch (CouchDB\UpdateConflictException $exception) {
-                $conflictException = $exception;
-                $this->projectFacade->reload($project);
             }
-        }
-
-        if ($conflictException !== null) {
-            throw $conflictException;
-        }
+        );
 
         return $additionalFrameNumberMapping;
     }

@@ -77,11 +77,19 @@ class WorkerQueue {
         this.doWork();
       })
       .catch(error => {
-        this.logger.logString(`Failed adding replication: ${error}`);
         const index = this.activeTasks.findIndex(task => task.id === element.id);
         if (index !== -1) {
           this.activeTasks.splice(index, 1);
         }
+
+        if (element.hasReachedMaximumRetries()) {
+          this.logger.logString(`Replication failed (Maximum retries reached ${element.retryCount}. Not Queueing again): ${error}`);
+        } else {
+          this.logger.logString(`Replication failed (Requeued. Tried already ${element.retryCount} times): ${error}`);
+          element.incrementRetryCount();
+          this.addJob(element);
+        }
+        
         this._printQueueStatus();
         this.doWork();
       });
