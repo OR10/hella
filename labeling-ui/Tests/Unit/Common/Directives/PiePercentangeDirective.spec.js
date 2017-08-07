@@ -5,7 +5,7 @@ import annoStationUnitTestModuleCreator from 'Tests/Support/AnnoStationUnitTestM
 
 const AnnoStationUnitTestModule = annoStationUnitTestModuleCreator(ApplicationModule);
 
-fdescribe('PiePercentageDirective', () => {
+describe('PiePercentageDirective', () => {
   let compile;
   let rootScope;
   let scope;
