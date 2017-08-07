@@ -109,6 +109,7 @@ RectangleScaleTool.getToolName = () => {
 RectangleScaleTool.isShapeClassSupported = shapeClass => {
   return [
     'rectangle',
+    'measurement-rectangle',
   ].includes(shapeClass);
 };
 

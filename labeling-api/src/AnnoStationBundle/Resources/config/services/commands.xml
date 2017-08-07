@@ -142,6 +142,15 @@
             <argument type="service" id="annostation.labeling_api.service.video_cdn.selected-alias"/>
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.delete_invalid_labeled_thing_in_frames"
+                 class="AnnoStationBundle\Command\DeleteInvalidLabeledThingInFrames">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
 
