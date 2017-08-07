@@ -26,7 +26,7 @@ class CouchDbUpdateConflictRetry
      * @return mixed
      * @throws CouchDB\UpdateConflictException
      */
-    public function save($doc, $callable, $retries = 5)
+    public function save($doc, $callable, $retries = 20)
     {
         $conflictException = null;
 
@@ -39,11 +39,12 @@ class CouchDbUpdateConflictRetry
 
                 return $doc;
             } catch (CouchDB\UpdateConflictException $exception) {
-                $conflictException = $exception;
                 $this->documentManager->refresh($doc);
+                $conflictException = $exception;
             }
 
             --$retries;
+            usleep(mt_rand(20000, 50000));
         }
 
         throw $conflictException;

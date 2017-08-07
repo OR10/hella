@@ -11,6 +11,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <argument type="service" id="oneup_flysystem.cache_filesystem" />
             <argument type="service" id="annostation.labeling_api.service.video_cdn.selected-alias" />
+            <argument type="service" id="annostation.labeling_api.service.couch_db_update_conflict_retry"/>
             <argument>%cache_dir%</argument>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
