@@ -8,6 +8,9 @@ class ShapeSelectionService {
   }
 
   /**
+   * Toggle a shape, meaning:
+   *  If the shape is new and not selected: select it
+   *  If the shape is already selected: deselect it
    *
    * @param {PaperThingShape} shape
    */
@@ -59,10 +62,14 @@ class ShapeSelectionService {
   }
 
   /**
+   * Set one single selected shape, purging all previously selected shapes
+   *
    * @param {PaperThingShape} shape
    */
   setSelectedShape(shape) {
+    // First: Purge all previously selected shapes
     this.clear();
+    // Since there are now no more selected shapes left, we can simply toggle the new shape, which will select it
     this.toggleShape(shape);
   }
 
