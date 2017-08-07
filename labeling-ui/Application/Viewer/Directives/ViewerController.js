@@ -10,6 +10,7 @@ import Environment from '../../Common/Support/Environment';
 
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
+import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -65,6 +66,7 @@ class ViewerController {
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {InProgressService} inProgressService
    * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {ShapeSelectionService} shapeSelectionService
    */
   constructor($scope,
               $rootScope,
@@ -98,7 +100,8 @@ class ViewerController {
               viewerMouseCursorService,
               labeledThingGroupService,
               inProgressService,
-              pouchDbSyncManager) {
+              pouchDbSyncManager,
+              shapeSelectionService) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -301,6 +304,12 @@ class ViewerController {
     this._pouchDbSyncManager = pouchDbSyncManager;
 
     /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
+
+    /**
      * @type {LayerManager}
      * @private
      */
@@ -368,6 +377,13 @@ class ViewerController {
      * @type {Array.<PaperGroupShape|null>}
      */
     this.paperGroupShapes = [];
+
+    /**
+     * A structure holding all additional paper shapes that are not part of the other types
+     *
+     * @type {Array}
+     */
+    this.paperVirtualShapes = [];
 
     /**
      * @type {Object}
@@ -765,7 +781,8 @@ class ViewerController {
       this._applicationState,
       this._modalService,
       this._labeledThingGateway,
-      this._labeledThingGroupGateway
+      this._labeledThingGroupGateway,
+      this._shapeSelectionService
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1076,6 +1093,10 @@ class ViewerController {
     }
 
     if (this.selectedPaperShape instanceof PaperFrame) {
+      return Promise.resolve(null);
+    }
+
+    if (this.selectedPaperShape instanceof PaperVirtualShape) {
       return Promise.resolve(null);
     }
 
@@ -1559,6 +1580,7 @@ ViewerController.$inject = [
   'labeledThingGroupService',
   'inProgressService',
   'pouchDbSyncManager',
+  'shapeSelectionService',
 ];
 
 export default ViewerController;

@@ -2,6 +2,7 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
 import PaperFrame from '../../Viewer/Shapes/PaperFrame';
+import PaperVirtualShape from '../../Viewer/Shapes/PaperVirtualShape';
 
 /**
  * Controller of the {@link ThumbnailReelDirective}
@@ -543,25 +544,20 @@ class ThumbnailReelController {
    * @private
    */
   _getFrameRange() {
-    let frameRange;
     switch (true) {
       case this.selectedPaperShape instanceof PaperThingShape:
-        frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-        break;
+        return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
       case this.selectedPaperShape instanceof PaperGroupShape:
-        frameRange = this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
-        break;
+        return this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
       case this.selectedPaperShape instanceof PaperFrame:
-        frameRange = {
+      case this.selectedPaperShape instanceof PaperVirtualShape:
+        return {
           startFrameIndex: 0,
           endFrameIndex: this.task.frameNumberMapping.length - 1,
         };
-        break;
       default:
         throw new Error('Cannot get frame range of unknown shape type');
     }
-
-    return frameRange;
   }
 
   /**
