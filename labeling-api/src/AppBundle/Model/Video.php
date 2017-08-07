@@ -206,6 +206,15 @@ class Video
     }
 
     /**
+     * @param $type
+     * @param $accumulatedSizeInBytes
+     */
+    public function setAccumulatedSizeInBytesForType($type, $accumulatedSizeInBytes)
+    {
+        $this->imageTypes[$type]['accumulatedSizeInBytes'] = $accumulatedSizeInBytes;
+    }
+
+    /**
      * @param $calibrationId
      */
     public function setCalibrationId($calibrationId)
