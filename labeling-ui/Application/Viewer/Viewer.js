@@ -9,7 +9,6 @@ import ViewerMouseCursorService from './Services/ViewerMouseCursorService';
 import LabeledThingGroupService from './Services/LabeledThingGroupService';
 import HierarchyCreationService from './Services/HierarchyCreationService';
 import GroupShapeNameService from './Services/GroupShapeNameService';
-
 import DrawingContextServiceProvider from './Providers/DrawingContextServiceProvider';
 
 import 'jquery-mousewheel';

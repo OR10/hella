@@ -66,6 +66,7 @@ class ViewerController {
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {InProgressService} inProgressService
    * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {ShapeSelectionService} shapeSelectionService
    */
   constructor($scope,
               $rootScope,
@@ -99,7 +100,8 @@ class ViewerController {
               viewerMouseCursorService,
               labeledThingGroupService,
               inProgressService,
-              pouchDbSyncManager) {
+              pouchDbSyncManager,
+              shapeSelectionService) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -300,6 +302,12 @@ class ViewerController {
      * @private
      */
     this._pouchDbSyncManager = pouchDbSyncManager;
+
+    /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
 
     /**
      * @type {LayerManager}
@@ -773,7 +781,8 @@ class ViewerController {
       this._applicationState,
       this._modalService,
       this._labeledThingGateway,
-      this._labeledThingGroupGateway
+      this._labeledThingGroupGateway,
+      this._shapeSelectionService
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1571,6 +1580,7 @@ ViewerController.$inject = [
   'labeledThingGroupService',
   'inProgressService',
   'pouchDbSyncManager',
+  'shapeSelectionService',
 ];
 
 export default ViewerController;
