@@ -138,6 +138,7 @@ RectangleMoveTool.getToolName = () => {
 RectangleMoveTool.isShapeClassSupported = shapeClass => {
   return [
     'rectangle',
+    'measurement-rectangle',
   ].includes(shapeClass);
 };
 

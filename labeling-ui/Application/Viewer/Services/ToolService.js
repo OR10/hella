@@ -22,7 +22,7 @@ import PointDrawingTool from '../Tools/Point/PointDrawingTool';
 import PointMoveTool from '../Tools/Point/PointMoveTool';
 import PointKeyboardTool from '../Tools/Point/PointKeyboardTool';
 import FrameCreationTool from '../Tools/FrameCreationTool';
-import RectangleMeasurementTool from '../Tools/Rectangle/MeasurementTool';
+import RectangleMeasurementDrawingTool from '../Tools/Rectangle/MeasurementRectangleDrawingTool';
 
 class ToolService {
   /**
@@ -89,7 +89,7 @@ class ToolService {
       PointDrawingTool,
       PointMoveTool,
       PointKeyboardTool,
-      RectangleMeasurementTool,
+      RectangleMeasurementDrawingTool,
       FrameCreationTool,
     ];
     // Attention: NoOperationPaperTool has to be the last Tool in this._classes

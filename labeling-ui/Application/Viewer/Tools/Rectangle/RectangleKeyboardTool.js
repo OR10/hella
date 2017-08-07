@@ -129,6 +129,7 @@ RectangleKeyboardTool.getToolName = () => {
 RectangleKeyboardTool.isShapeClassSupported = shapeClass => {
   return [
     'rectangle',
+    'measurement-rectangle',
   ].includes(shapeClass);
 };
 

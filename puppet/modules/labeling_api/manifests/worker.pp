@@ -59,6 +59,7 @@ class labeling_api::worker(
     directory => "${app_dir}/scripts/CouchDB/ReplicatorManager/",
     startsecs => 0,
     numprocs => 1,
+    stopasgroup => true,
     environment => {
         'SYMFONY_ENV' => $symfony_environment,
         'USER' => $user,
