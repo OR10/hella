@@ -1,5 +1,5 @@
 import MultiTool from 'Application/Viewer/Tools/MultiTool';
-import PaperShape from "Application/Viewer/Shapes/PaperShape";
+import PaperShape from 'Application/Viewer/Shapes/PaperShape';
 import paper from 'paper';
 
 describe('MultiTool tests', () => {

@@ -300,7 +300,7 @@ describe('ThingLayer', () => {
         const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort']);
         keyboardTool.invokeKeyboardShortcuts.and.returnValue({
           then: () => {
-          }
+          },
         });
         toolService.getTool.and.returnValue(keyboardTool);
       });
@@ -347,7 +347,7 @@ describe('ThingLayer', () => {
             then(invokeThenParams);
             return {
               catch: () => {
-              }
+              },
             };
           });
           spyOn(thing._multiTool, 'invoke').and.returnValue(invokePromiseMock);
@@ -428,7 +428,7 @@ describe('ThingLayer', () => {
             callback(callbackParams);
             return {
               catch: () => {
-              }
+              },
             };
           });
 
@@ -461,7 +461,7 @@ describe('ThingLayer', () => {
             callback(callbackParams);
             return {
               catch: () => {
-              }
+              },
             };
           });
 
