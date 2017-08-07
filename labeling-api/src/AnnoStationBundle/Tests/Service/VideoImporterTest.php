@@ -79,6 +79,7 @@ class VideoImporterTest extends Tests\KernelTestCase
         $labelStructureService = $this->getAnnostationService('service.label_structure');
         $calibrationFileConverter = $this->getAnnostationService('service.calibration_file_converter');
         $taskConfigurationFacade = $this->getAnnostationService('database.facade.task_configuration');
+        $couchDbUpdateConflictRetryService = $this->getAnnostationService('service.couch_db_update_conflict_retry');
 
         $videoImporterMock = $this->getMockBuilder(Service\VideoImporter::class)
             ->enableProxyingToOriginalMethods()
@@ -92,6 +93,7 @@ class VideoImporterTest extends Tests\KernelTestCase
                     $metaDataReader,
                     $videoFrameSplitter,
                     $labelStructureService,
+                    $couchDbUpdateConflictRetryService,
                     $this->workerPoolFacade,
                     $calibrationFileConverter,
                     $taskConfigurationFacade,
