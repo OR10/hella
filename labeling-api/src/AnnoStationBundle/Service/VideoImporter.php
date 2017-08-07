@@ -149,6 +149,9 @@ class VideoImporter
         foreach ($imageTypes as $imageTypeName) {
             $video->setImageType($imageTypeName, 'converted', false);
             $this->videoFacade->update();
+        }
+
+        foreach ($imageTypes as $imageTypeName) {
             $job = new Jobs\VideoFrameSplitter(
                 $video->getId(),
                 $video->getSourceVideoPath(),
