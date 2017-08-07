@@ -37,11 +37,6 @@ class MetaData
     /**
      * @var integer
      */
-    public $accumulatedSizeInBytes;
-
-    /**
-     * @var integer
-     */
     public $numberOfFrames;
 
     /**
