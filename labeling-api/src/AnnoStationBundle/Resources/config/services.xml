@@ -53,6 +53,7 @@
             <argument type="service" id="annostation.labeling_api.service.video.meta_data_reader"/>
             <argument type="service" id="annostation.labeling_api.service.video.video_frame_splitter"/>
             <argument type="service" id="annostation.labeling_api.service.label_structure"/>
+            <argument type="service" id="annostation.labeling_api.service.couch_db_update_conflict_retry"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.service.calibration_file_converter"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>

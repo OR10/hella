@@ -875,18 +875,18 @@ class Project
     }
 
     /**
-     * @return string
+     * @return integer
      */
     public function getDiskUsageInBytes()
     {
-        return $this->diskUsageInBytes;
+        return (int) $this->diskUsageInBytes;
     }
 
     /**
-     * @param string $diskUsageInBytes
+     * @param integer $diskUsageInBytes
      */
-    public function setDiskUsageInBytes($diskUsageInBytes)
+    public function setDiskUsageInBytes(int $diskUsageInBytes)
     {
-        $this->diskUsageInBytes = $diskUsageInBytes;
+        $this->diskUsageInBytes = (string) $diskUsageInBytes;
     }
 }
