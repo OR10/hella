@@ -28,6 +28,17 @@
             <label for="view-style-list-view">
                 <i class="fa fa-list"></i>
             </label>
+
+            <input id="view-style-selected-only"
+                   class="list-view"
+                   type="radio"
+                   name="view-style"
+                   value="selectedOnly"
+                   ng-model="vm.viewStyle"
+            />
+            <label for="view-style-selected-only">
+                <i class="fa fa-check-square"></i>
+            </label>
         </div>
     </div>
 
@@ -77,10 +88,63 @@
                     </li>
                 </ul>
             </v-pane-content>
-        </v-pane>
 
+        </v-pane>
     </v-accordion>
     <!--End accordion View-->
+
+    <!--Start accordion View-->
+    <v-accordion multiple="true"
+                 id="accordionControl"
+                 class="accordion"
+                 ng-show="vm.viewStyle === 'selectedOnly' && vm.show()"
+                 control="vm.selectedOnlyAccordionControl"
+    >
+        <v-pane id="{{page.id}}" ng-repeat="page in vm.pages track by page.id">
+            <v-pane-header>
+                <div class="grid-block noscroll">
+                    <div class="title">
+                        {{page.challenge}}
+                    </div>
+                    <div class="icons">
+                        <i ng-show="vm.choices[page.id]"
+                           class="icon icon-check active">
+                        </i>
+                        <i ng-show="$pane.isExpanded()"
+                           class="icon icon-down">
+                        </i>
+                        <i ng-hide="$pane.isExpanded()"
+                           class="icon icon-left">
+                        </i>
+                    </div>
+                </div>
+            </v-pane-header>
+            <v-pane-content>
+                <ul class="grid-block vertical">
+                    <li class="grid-block shrink"
+                        ng-repeat="response in page.responses track by response.id"
+                        ng-hide="vm.hideWhenItemIsNotSelected(page, response)"
+                    >
+                        <input id="accordionControl{{page.id}}-{{$index}}"
+                               type="radio"
+                               name="accordionControlName{{page.id}}"
+                               value="{{response.id}}"
+                               ng-model="vm.choices[page.id]"
+                               ng-readonly="true"
+                               ng-disabled="true"
+                        />
+                        <label class="grid-block"
+                               for="accordionControl{{page.id}}-{{$index}}">
+                            <i class="grid-content shrink icon icon-small no-hover {{response.iconClass}} noscroll"></i>
+                            <span class="grid-content response">{{response.response}}</span>
+                        </label>
+                    </li>
+                </ul>
+            </v-pane-content>
+        </v-pane>
+    </v-accordion>
+    <!--End accordion View-->
+
 
     <!--Start icon view-->
     <div class="grid-block vertical " ng-if="vm.show()" ng-show="vm.viewStyle === 'icon'">
