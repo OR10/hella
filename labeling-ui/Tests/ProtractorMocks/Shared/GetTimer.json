@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/v1/task/TASKID-TASKID/timer/user-id-1",
+    "path": "/api/task/TASKID-TASKID/timer/user-id-1",
     "method": "GET"
   },
   "response": {

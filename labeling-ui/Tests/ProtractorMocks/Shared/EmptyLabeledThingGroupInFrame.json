@@ -2,7 +2,7 @@
   "request": {
     "method": "GET",
     "namedParams": true,
-    "path": "/api/v1/task/{{:taskId}}/labeledThingGroupInFrame/frame/{{:frame}}"
+    "path": "/api/task/{{:taskId}}/labeledThingGroupInFrame/frame/{{:frame}}"
   },
   "response": {
     "data": {
