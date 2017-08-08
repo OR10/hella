@@ -4,7 +4,7 @@ import {module, inject} from 'angular-mocks';
 
 import ApiService from 'Application/Common/Services/ApiService';
 
-fdescribe('ApiService', () => {
+describe('ApiService', () => {
   let getApiService;
 
   beforeEach(() => {
