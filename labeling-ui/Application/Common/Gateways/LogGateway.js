@@ -29,7 +29,7 @@ class LogGateway {
    */
   logMessage(message) {
     const url = this._apiService.getApiUrl(
-      `/v1/uiLog`
+      `/uiLog`
     );
     return this._bufferedHttp.post(url, {log: [message]}, undefined, 'log')
       .then(response => {

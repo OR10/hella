@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/v1/task/TASKID-TASKID",
+    "path": "/api/task/TASKID-TASKID",
     "method": "GET"
   },
   "response": {

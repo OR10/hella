@@ -37,7 +37,7 @@ class FrameLocationGateway {
     return this._bufferedHttp({
       method: 'GET',
       url: this._apiService.getApiUrl(
-        `/v1/task/${taskId}/frameLocations/${type}`,
+        `/task/${taskId}/frameLocations/${type}`,
         {offset, limit}
       ),
     }, 'frameLocations')

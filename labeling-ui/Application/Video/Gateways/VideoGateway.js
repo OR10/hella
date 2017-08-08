@@ -30,7 +30,7 @@ class VideoGateway {
    */
   getVideo(id) {
     const url = this._apiService.getApiUrl(
-      `/v1/video/${id}`
+      `/video/${id}`
     );
     return this._bufferedHttp.get(url, undefined, 'video')
       .then(response => {
@@ -49,7 +49,7 @@ class VideoGateway {
    */
   getVideos() {
     const url = this._apiService.getApiUrl(
-      `/v1/video`
+      `/video`
     );
     return this._bufferedHttp.get(url, undefined, 'video')
       .then(response => {

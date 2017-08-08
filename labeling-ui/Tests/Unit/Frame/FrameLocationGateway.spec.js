@@ -20,6 +20,7 @@ describe('FrameLocationGateway', () => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
+          apiVersion: 'v1',
           backendPrefix: '/backend',
         },
       });
