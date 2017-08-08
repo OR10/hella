@@ -9,7 +9,7 @@ class CustomExceptionTest extends Tests\WebTestCase
 {
     public function testNotFoundHttpException()
     {
-        $requestWrapper = $this->createRequest('/api/foobar')
+        $requestWrapper = $this->createRequest('/api/v1/foobar')
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->execute();
 
@@ -17,7 +17,7 @@ class CustomExceptionTest extends Tests\WebTestCase
             'error' => [
                 'type'    => 'NotFoundHttpException',
                 'code'    => HttpFoundation\Response::HTTP_NOT_FOUND,
-                'message' => 'No route found for "DELETE /api/foobar"',
+                'message' => 'No route found for "DELETE /api/v1/foobar"',
             ],
         ];
 
@@ -27,7 +27,7 @@ class CustomExceptionTest extends Tests\WebTestCase
 
     public function testBadRequestHttpException()
     {
-        $requestWrapper = $this->createRequest('/api/currentUser/password')
+        $requestWrapper = $this->createRequest('/api/v1/currentUser/password')
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->execute();
 

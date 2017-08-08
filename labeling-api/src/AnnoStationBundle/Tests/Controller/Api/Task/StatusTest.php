@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation;
 
 class StatusTest extends Tests\WebTestCase
 {
-    const ROUTE = '/api/task/%s/status/%s';
+    const ROUTE = '/api/v1/task/%s/status/%s';
 
     /**
      * @var Facade\Video
@@ -78,7 +78,7 @@ class StatusTest extends Tests\WebTestCase
     {
         $this->task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
 
-        $response = $this->createRequest('/api/task/%s/status/begin', [$this->task->getId()])
+        $response = $this->createRequest('/api/v1/task/%s/status/begin', [$this->task->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute()
             ->getResponse();

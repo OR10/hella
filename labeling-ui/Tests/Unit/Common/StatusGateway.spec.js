@@ -22,6 +22,7 @@ describe('StatusGateway', () => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
+          apiVersion: 'v1',
           backendPrefix: '/backend',
         },
       });
@@ -47,7 +48,7 @@ describe('StatusGateway', () => {
 
 
   it('should get status for job', done => {
-    const expectedUrl = `/backend/api/status/${job.type}/${job.id}`;
+    const expectedUrl = `/backend/api/v1/status/${job.type}/${job.id}`;
     const status = {status: 'success'};
     const expectedResult = {result: status};
 
@@ -65,7 +66,7 @@ describe('StatusGateway', () => {
   });
 
   it('should get status for errored jobs without failing', done => {
-    const expectedUrl = `/backend/api/status/${job.type}/${job.id}`;
+    const expectedUrl = `/backend/api/v1/status/${job.type}/${job.id}`;
     const status = {status: 'error'};
     const expectedResult = {result: status};
 
@@ -83,7 +84,7 @@ describe('StatusGateway', () => {
   });
 
   it('should poll for jobs while not finished', done => {
-    const expectedUrl = `/backend/api/status/${job.type}/${job.id}`;
+    const expectedUrl = `/backend/api/v1/status/${job.type}/${job.id}`;
     const statusInProgress = {status: 'running'};
     const statusFinished = {status: 'success'};
     const resultInProgress = {result: statusInProgress};
@@ -114,7 +115,7 @@ describe('StatusGateway', () => {
   });
 
   it('should rejected failed jobs while polling', done => {
-    const expectedUrl = `/backend/api/status/${job.type}/${job.id}`;
+    const expectedUrl = `/backend/api/v1/status/${job.type}/${job.id}`;
     const statusInProgress = {status: 'running'};
     const statusError = {status: 'error'};
     const resultInProgress = {result: statusInProgress};
@@ -145,7 +146,7 @@ describe('StatusGateway', () => {
   });
 
   it('should only wait specified maxWait while polling for jobs to be finished', done => { // eslint-disable-line jasmine/missing-expect
-    const expectedUrl = `/backend/api/status/${job.type}/${job.id}`;
+    const expectedUrl = `/backend/api/v1/status/${job.type}/${job.id}`;
     const statusInProgress = {status: 'running'};
     const resultInProgress = {result: statusInProgress};
 
@@ -173,7 +174,7 @@ describe('StatusGateway', () => {
   });
 
   it('should adhere to given interval', done => {
-    const expectedUrl = `/backend/api/status/${job.type}/${job.id}`;
+    const expectedUrl = `/backend/api/v1/status/${job.type}/${job.id}`;
     const statusInProgress = {status: 'running'};
     const statusFinished = {status: 'success'};
     const resultInProgress = {result: statusInProgress};

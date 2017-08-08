@@ -27,7 +27,7 @@ class SystemTest extends Tests\WebTestCase
             ->method('request')
             ->willReturn($guzzleResponseMock);
 
-        $system = new Api\System($userPermissionMock, $guzzleMock, '', '', '', '');
+        $system = new Api\v1\System($userPermissionMock, $guzzleMock, '', '', '', '');
 
         $request = $system->queuedMessagesAction();
 
@@ -48,7 +48,7 @@ class SystemTest extends Tests\WebTestCase
 
         $guzzleMock = $this->getGuzzleClientMock();
 
-        $system = new Api\System($userPermissionMock, $guzzleMock, '', '', '', '');
+        $system = new Api\v1\System($userPermissionMock, $guzzleMock, '', '', '', '');
 
         $system->queuedMessagesAction();
     }

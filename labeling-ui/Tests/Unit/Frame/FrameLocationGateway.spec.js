@@ -20,6 +20,7 @@ describe('FrameLocationGateway', () => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
+          apiVersion: 'v1',
           backendPrefix: '/backend',
         },
       });
@@ -41,7 +42,7 @@ describe('FrameLocationGateway', () => {
   it('should by default request offset 0 with 1 frame', done => { // eslint-disable-line jasmine/missing-expect
     const taskId = 'someTaskId423';
     const type = 'source';
-    const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
+    const path = `/backend/api/v1/task/${taskId}/frameLocations/${type}`;
     const expectedQuery = $httpParamSerializer({offset: 0, limit: 1});
     const expectedUrl = `${path}?${expectedQuery}`;
 
@@ -71,7 +72,7 @@ describe('FrameLocationGateway', () => {
       taskId = 'someTaskId423';
       type = 'source';
 
-      const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
+      const path = `/backend/api/v1/task/${taskId}/frameLocations/${type}`;
       const expectedQuery = $httpParamSerializer({offset: expectedOffset, limit: expectedLimit});
 
       expectedUrl = `${path}?${expectedQuery}`;
@@ -119,7 +120,7 @@ describe('FrameLocationGateway', () => {
 
     beforeEach(() => {
       taskId = 'someTaskId423';
-      const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
+      const path = `/backend/api/v1/task/${taskId}/frameLocations/${type}`;
       const expectedQuery = $httpParamSerializer({offset: 0, limit: 1});
       expectedUrl = `${path}?${expectedQuery}`;
     });
@@ -146,7 +147,7 @@ describe('FrameLocationGateway', () => {
 
     beforeEach(() => {
       type = 'source';
-      const path = `/backend/api/task/${taskId}/frameLocations/${type}`;
+      const path = `/backend/api/v1/task/${taskId}/frameLocations/${type}`;
       const expectedQuery = $httpParamSerializer({offset: 0, limit: 1});
       expectedUrl = `${path}?${expectedQuery}`;
     });

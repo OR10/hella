@@ -18,9 +18,11 @@ class ApiService {
    * @param {Object} query
    * @returns {string}
    */
-  getApiUrl(path, query = {}) {
-    const {Common: {backendPrefix, apiPrefix}} = this.configuration;
-    const location = `${backendPrefix}/${apiPrefix}/${path}`.replace(/\/\/+/g, '/');
+  getApiUrl(path, query = {}, version = null) {
+    const {Common: {backendPrefix, apiVersion, apiPrefix}} = this.configuration;
+    const usedApiVersion = (version === null) ? apiVersion : version;
+
+    const location = `${backendPrefix}/${apiPrefix}/${usedApiVersion}/${path}`.replace(/\/\/+/g, '/');
     const encodedQuery = this.$httpParamSerializer(query);
 
     if (encodedQuery !== '') {

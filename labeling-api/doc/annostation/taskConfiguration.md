@@ -1,6 +1,6 @@
 # Group Task Configuration
 
-## List all task configurations for the current user [/api/organisation/{organisationId}/taskConfiguration]
+## List all task configurations for the current user [/api/v1/organisation/{organisationId}/taskConfiguration]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -14,7 +14,7 @@
                 + id: `02b531ffe2c35ee965e4b339a61c7ad2` - Id of this task configuration
                 + name: `Foobar` - name of this task configuration
 
-## Create new Task Configuration [/api/organisation/{organisationId}/taskConfiguration]
+## Create new Task Configuration [/api/v1/organisation/{organisationId}/taskConfiguration]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -29,7 +29,7 @@
 + Response 200 (application/json)
     + Attributes (TaskConfiguration)
     
-## Get a task configuration [/api/organisation/{organisationId}/taskConfiguration/{id}]
+## Get a task configuration [/api/v1/organisation/{organisationId}/taskConfiguration/{id}]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -47,7 +47,7 @@
                 + userId: `file.xml` - owner user id
                 + type: `requirements` - Configuration type requirements/simple
                     
-## Get a task configuration [/api/organisation/{organisationId}/taskConfiguration/{id}/file]
+## Get a task configuration [/api/v1/organisation/{organisationId}/taskConfiguration/{id}/file]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -57,7 +57,7 @@
 
 + Response 200 (application/xml)
 
-## Save a new req. xml [/api/organisation/{organisationId}/taskConfiguration/requirements]
+## Save a new req. xml [/api/v1/organisation/{organisationId}/taskConfiguration/requirements]
 
 + Parameters
     + file: `1e8662640b31b28050a9ab5eafa8371e` (binary, required) - XML Requirements File

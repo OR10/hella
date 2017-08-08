@@ -18,7 +18,7 @@ class MonitoringTest extends Tests\WebTestCase
 
         $monitoringFacade->save(new Model\MonitoringCheckResults(Monitoring\CouchDbReporter::STATUS_OK));
 
-        $requestWrapper = $this->createRequest('/api/monitoring')
+        $requestWrapper = $this->createRequest('/api/v1/monitoring')
             ->withCredentialsFromUsername($this->createSuperAdminUser())
             ->execute();
 
@@ -38,7 +38,7 @@ class MonitoringTest extends Tests\WebTestCase
 
         $monitoringFacade->save(new Model\MonitoringCheckResults(Monitoring\CouchDbReporter::STATUS_CRITICAL));
 
-        $requestWrapper = $this->createRequest('/api/monitoring')
+        $requestWrapper = $this->createRequest('/api/v1/monitoring')
             ->withCredentialsFromUsername($this->createSuperAdminUser())
             ->execute();
 
@@ -53,7 +53,7 @@ class MonitoringTest extends Tests\WebTestCase
     {
         $this->couchdbClient->deleteDatabase('monitoring');
         $this->couchdbClient->createDatabase('monitoring');
-        $requestWrapper = $this->createRequest('/api/monitoring')
+        $requestWrapper = $this->createRequest('/api/v1/monitoring')
             ->withCredentialsFromUsername($this->createAdminUser())
             ->execute();
 

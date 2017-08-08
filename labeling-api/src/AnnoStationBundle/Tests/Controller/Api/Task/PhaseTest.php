@@ -11,7 +11,7 @@ use AnnoStationBundle\Tests\Helper;
 
 class PhaseTest extends Tests\WebTestCase
 {
-    const ROUTE = '/api/task/%s/phase';
+    const ROUTE = '/api/v1/task/%s/phase';
 
     /**
      * @var Facade\Video

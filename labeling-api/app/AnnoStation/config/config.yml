@@ -60,3 +60,7 @@ twig:
   globals:
     fallback.title: AnnoStation
     customer: %customer%
+
+fos_rest:
+    versioning:
+        enabled: true

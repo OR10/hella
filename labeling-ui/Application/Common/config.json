@@ -1,6 +1,7 @@
 {
   "backendPrefix": "/",
   "apiPrefix": "/api",
+  "apiVersion": "v1",
   "monitorPrefix": "/monitor",
   "frontendPrefix": "/",
   "appPrefix": "/labeling",

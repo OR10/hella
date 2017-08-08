@@ -2,7 +2,7 @@
 
 A Labeling-Group is a Group of Labelers and one LabelCoordinator. A LabelGroup can have several project assignments.
 
-## Get a Labeling Group List [/api/organisation/{organisationId}/labelingGroup]
+## Get a Labeling Group List [/api/v1/organisation/{organisationId}/labelingGroup]
 
 Get all labeling-groups for an organisation
 
@@ -18,7 +18,7 @@ Get all labeling-groups for an organisation
             + labelingGroups array(LabelingGroup)
             + users array(User)
         
-## Get a Labeling Group [/api/organisation/{organisationId}/labelingGroup/{labelingGroupId}]
+## Get a Labeling Group [/api/v1/organisation/{organisationId}/labelingGroup/{labelingGroupId}]
 
 Get a single LabelGroup
 
@@ -34,7 +34,7 @@ Get a single LabelGroup
             + labelingGroups (LabelingGroup)
             + users array(User)
 
-## Add a new Labeling Group [/api/organisation/{organisationId}/labelingGroup]
+## Add a new Labeling Group [/api/v1/organisation/{organisationId}/labelingGroup]
 
 Add a new LabelingGroup to an organisation
 
@@ -55,7 +55,7 @@ Add a new LabelingGroup to an organisation
             + labelingGroups (LabelingGroup)
             + users array(User)
 
-## Update a Labeling Group [/api/organisation/{organisationId}/labelingGroup/{labelingGroupId}]
+## Update a Labeling Group [/api/v1/organisation/{organisationId}/labelingGroup/{labelingGroupId}]
 
 Update a LabelingGroup
 
@@ -79,7 +79,7 @@ Update a LabelingGroup
             + labelingGroups (LabelingGroup)
             + users array(User)
 
-## Delete a Labeling Group [/api/organisation/{organisationId}/labelingGroup/{labelingGroupId}]
+## Delete a Labeling Group [/api/v1/organisation/{organisationId}/labelingGroup/{labelingGroupId}]
 
 Delete a LabelingGroup
 
@@ -93,7 +93,7 @@ Delete a LabelingGroup
     + Attributes
         + result: true
         
-## My Labeling Group [/api/organisation/{organisationId}/labelingGroup/user/groups]
+## My Labeling Group [/api/v1/organisation/{organisationId}/labelingGroup/user/groups]
 
 Get all LabelingGroups of the current logged in User
 
@@ -106,7 +106,7 @@ Get all LabelingGroups of the current logged in User
     + Attributes
         + result array(LabelingGroup)
 
-## Get all Coordinators [/api/organisation/{organisationId}/labelingGroup/user/coordinators]
+## Get all Coordinators [/api/v1/organisation/{organisationId}/labelingGroup/user/coordinators]
 
 Get all LabelCoordinator for a LabelGroup
 

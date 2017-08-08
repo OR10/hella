@@ -1,6 +1,6 @@
 # Group Users
 
-## List all users [/api/user]
+## List all users [/api/v1/user]
 
 ### Get a list of all users [GET]
 
@@ -9,7 +9,7 @@
         + result
             + user (array[User])
 
-## Add a new user [/api/user]
+## Add a new user [/api/v1/user]
 
 ### Add a new user [POST]
 
@@ -21,7 +21,7 @@
         + result
             + user (User)
 
-## Get a specific user [/api/user/{id}]
+## Get a specific user [/api/v1/user/{id}]
 
 + Parameters
     + id: `1` (string, required) - The id of the user-entity.
@@ -33,7 +33,7 @@
         + result
             + user (User)
 
-## Edit a specific user [/api/user/{id}]
+## Edit a specific user [/api/v1/user/{id}]
 
 + Parameters
     + id: `1` (string, required) - The id of the user-entity.
@@ -48,7 +48,7 @@
         + result
             + success: `true` (boolean)
 
-## Delete a specific user [/api/user/{id}]
+## Delete a specific user [/api/v1/user/{id}]
 
 + Parameters
     + id: `1` (string, required) - The id of the user-entity.
@@ -60,7 +60,7 @@
         + result
             + success: `true` (boolean)
                         
-## Assign a user to an organisation [/api/organisation/{organisationId}/user/{userId}/assign]
+## Assign a user to an organisation [/api/v1/organisation/{organisationId}/user/{userId}/assign]
 
 + Parameters
     + organisationId: `05c1a74d8eda4a16a355519c0f002ee6` (string, required) - The id of the Organisation.
@@ -72,7 +72,7 @@
     + Attributes
         + success: `true` (boolean)   
                              
-## Unassign a user from an organisation [/api/organisation/{organisationId}/user/{userId}/unassign]
+## Unassign a user from an organisation [/api/v1/organisation/{organisationId}/user/{userId}/unassign]
 
 + Parameters
     + organisationId: `05c1a74d8eda4a16a355519c0f002ee6` (string, required) - The id of the Organisation.
@@ -84,7 +84,7 @@
     + Attributes
         + success: `true` (boolean)
 
-## Get all user for organisation [/api/organisation/{organisationId}/users]
+## Get all user for organisation [/api/v1/organisation/{organisationId}/users]
 
 + Parameters
     + organisationId: `05c1a74d8eda4a16a355519c0f002ee6` (string, required) - The id of the Organisation.
