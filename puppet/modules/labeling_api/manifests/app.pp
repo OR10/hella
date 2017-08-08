@@ -46,6 +46,7 @@ class labeling_api::app(
     not_found_redirect => '/labeling/index.html',
     listenIp => $listenIp,
     hostnames => $_hostnames,
+    useVersioning => true,
   }
 
   if $configure_nginx {

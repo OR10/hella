@@ -13,6 +13,7 @@ define annostation_base::symfony(
   $sslKeyFile = undef,
   $listenIp = '*',
   $useDefaultLocation = true,
+  $useVersioning = false,
 ) {
   include ::php
   include ::nginx
@@ -80,29 +81,31 @@ define annostation_base::symfony(
       location_cfg_append => $_phpLocationCfgAppend,
     }
 
-    nginx::resource::location { "${name}_api":
-      location            => '/api',
-      ssl                 => $httpv2,
-      ssl_only            => $httpv2,
-      ensure              => present,
-      www_root            => $www_root,
-      vhost               => $name,
-      index_files         => [$app_main_script],
-      try_files           => ['$uri', "@rewrite"],
-      fastcgi             => '127.0.0.1:9000',
-      fastcgi_param       => $_phpFastCgiParams,
-      location_cfg_append => $_phpLocationCfgAppend,
-    }
+    if $useVersioning {
+      nginx::resource::location { "${name}_api":
+        location            => '/api',
+        ssl                 => $httpv2,
+        ssl_only            => $httpv2,
+        ensure              => present,
+        www_root            => $www_root,
+        vhost               => $name,
+        index_files         => [$app_main_script],
+        try_files           => ['$uri', "@rewrite"],
+        fastcgi             => '127.0.0.1:9000',
+        fastcgi_param       => $_phpFastCgiParams,
+        location_cfg_append => $_phpLocationCfgAppend,
+      }
 
-    nginx::resource::location { "${name}_rewrite":
-      ensure              => present,
-      ssl                 => $httpv2,
-      ssl_only            => $httpv2,
-      vhost               => $name,
-      www_root            => $www_root,
-      location => '@rewrite',
-      location_cfg_append  => {
-        'rewrite' => "/api/v(\d+)/ /${app_main_script}?version=v\$1&$args last"
+      nginx::resource::location { "${name}_rewrite":
+        ensure              => present,
+        ssl                 => $httpv2,
+        ssl_only            => $httpv2,
+        vhost               => $name,
+        www_root            => $www_root,
+        location => '@rewrite',
+        location_cfg_append  => {
+          'rewrite' => "/api/v(\d+)/ /${app_main_script}?version=v\$1&$args last"
+        }
       }
     }
   }
