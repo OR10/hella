@@ -44,6 +44,10 @@ class ReplicationManager {
         this._addWorkerJob(updatedDb, this.targetDb);
       }
     });
+    feed.on('error', er => {
+      this.logger.logString('_listenToDatabaseChanges');
+      throw er;
+    });
     feed.follow();
   }
 
