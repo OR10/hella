@@ -116,10 +116,10 @@ end
 task :restart_supervisord do
   on roles(:worker) do
     if (ENV['RESTART_REPLICATION_MANAGER'] == "true")
-        execute "sudo service supervisord restart annostation-couchdb-replication-labeling-api-to-task-databases"
+        execute "sudo supervisorctl restart annostation-couchdb-replication-labeling-api-to-task-databases"
     end
     if (ENV['RESTART_WORKER_POOL'] == "true")
-        execute "sudo service supervisord restart annostation-worker-pool:*"
+        execute "sudo supervisorctl restart annostation-worker-pool:*"
     end
   end
 end
