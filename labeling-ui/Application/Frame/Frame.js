@@ -4,6 +4,7 @@ import CachingFrameLocationGateway from './Gateways/CachingFrameLocationGateway'
 import ImageFactory from './Services/ImageFactory';
 import ImageFetcher from './Services/ImageFetcher';
 import ImageCache from './Services/ImageCache';
+import ImagePreloader from './Services/ImagePreloader';
 
 /**
  * Frame Module
@@ -23,6 +24,7 @@ class Frame extends Module {
     this.module.service('imageCache', ImageCache);
     this.module.service('imageFetcher', ImageFetcher);
     this.module.service('imageFactory', ImageFactory);
+    this.module.service('imagePreloader', ImagePreloader);
     this.module.service('frameGateway', FrameGateway);
     this.module.service('frameLocationGateway', CachingFrameLocationGateway);
   }

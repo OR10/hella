@@ -7,6 +7,12 @@ class Replicator {
     this.sourceUrl = sourceUrl;
     this.targetUrl = targetUrl;
 
+    /**
+     * @type {number}
+     * @private
+     */
+    this._retryCount = 0;
+
     this._resolve = undefined;
     this._reject = undefined;
   }
@@ -57,6 +63,27 @@ class Replicator {
         this._reject(err);
       });
     }
+  }
+
+  /**
+   * @returns {number}
+   */
+  get retryCount() {
+    return this._retryCount;
+  }
+
+  /**
+   * @returns {void}
+   */
+  incrementRetryCount() {
+    this._retryCount += 1;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  hasReachedMaximumRetries() {
+    return this._retryCount > 5;
   }
 }
 

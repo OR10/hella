@@ -143,7 +143,6 @@ class User extends Controller\Base
      * Get a single user
      *
      * @Rest\Get("/{user}")
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param Model\User                          $user
      *
@@ -305,7 +304,7 @@ class User extends Controller\Base
         if ($user->getUsername() === $loginUser->getUsername()) {
             $this->tokenStorage->setToken(null);
 
-            return RedirectView::create('fos_user_security_logout');
+            return View\View::createRedirect('fos_user_security_logout');
         }
 
         $organisations = [];

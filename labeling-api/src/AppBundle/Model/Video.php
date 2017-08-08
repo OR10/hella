@@ -121,7 +121,7 @@ class Video
     }
 
     /**
-     * @return Video\MetaData
+     * @return MetaData
      */
     public function getMetaData()
     {
@@ -131,7 +131,8 @@ class Video
             foreach ($properties as $property) {
                 $metaData->$property = $this->metaData[$property];
             }
-            $this->metaData = $metaData;
+
+            return $metaData;
         }
 
         return $this->metaData;
@@ -202,6 +203,15 @@ class Video
     public function setImageSizesForType($type, $frameSizesInBytes)
     {
         $this->imageTypes[$type]['sizeInBytes'] = $frameSizesInBytes;
+    }
+
+    /**
+     * @param $type
+     * @param $accumulatedSizeInBytes
+     */
+    public function setAccumulatedSizeInBytesForType($type, $accumulatedSizeInBytes)
+    {
+        $this->imageTypes[$type]['accumulatedSizeInBytes'] = $accumulatedSizeInBytes;
     }
 
     /**

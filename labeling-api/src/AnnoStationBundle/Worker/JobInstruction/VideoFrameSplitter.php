@@ -48,6 +48,11 @@ class VideoFrameSplitter extends JobInstruction
     private $videoCdnService;
 
     /**
+     * @var Service\CouchDbUpdateConflictRetry
+     */
+    private $couchDbUpdateConflictRetryService;
+
+    /**
      * @var Facade\Project
      */
     private $projectFacade;
@@ -55,13 +60,14 @@ class VideoFrameSplitter extends JobInstruction
     /**
      * Video constructor.
      *
-     * @param VideoService\VideoFrameSplitter $videoFrameSplitter
-     * @param Facade\Video                    $videoFacade
-     * @param Facade\LabelingTask             $labelingTaskFacade
-     * @param Facade\Project                  $projectFacade
-     * @param Flysystem\Filesystem            $fileSystem
-     * @param Service\VideoCdn                $videoCdnService
-     * @param string                          $cacheDir
+     * @param VideoService\VideoFrameSplitter    $videoFrameSplitter
+     * @param Facade\Video                       $videoFacade
+     * @param Facade\LabelingTask                $labelingTaskFacade
+     * @param Facade\Project                     $projectFacade
+     * @param Flysystem\Filesystem               $fileSystem
+     * @param Service\VideoCdn                   $videoCdnService
+     * @param Service\CouchDbUpdateConflictRetry $couchDbUpdateConflictRetryService
+     * @param string                             $cacheDir
      */
     public function __construct(
         VideoService\VideoFrameSplitter $videoFrameSplitter,
@@ -70,15 +76,17 @@ class VideoFrameSplitter extends JobInstruction
         Facade\Project $projectFacade,
         Flysystem\Filesystem $fileSystem,
         Service\VideoCdn $videoCdnService,
+        Service\CouchDbUpdateConflictRetry $couchDbUpdateConflictRetryService,
         $cacheDir
     ) {
-        $this->videoFrameSplitter = $videoFrameSplitter;
-        $this->videoFacade        = $videoFacade;
-        $this->labelingTaskFacade = $labelingTaskFacade;
-        $this->projectFacade      = $projectFacade;
-        $this->fileSystem         = $fileSystem;
-        $this->cacheDir           = $cacheDir;
-        $this->videoCdnService    = $videoCdnService;
+        $this->videoFrameSplitter                = $videoFrameSplitter;
+        $this->videoFacade                       = $videoFacade;
+        $this->labelingTaskFacade                = $labelingTaskFacade;
+        $this->projectFacade                     = $projectFacade;
+        $this->fileSystem                        = $fileSystem;
+        $this->cacheDir                          = $cacheDir;
+        $this->videoCdnService                   = $videoCdnService;
+        $this->couchDbUpdateConflictRetryService = $couchDbUpdateConflictRetryService;
     }
 
     /**
@@ -108,15 +116,26 @@ class VideoFrameSplitter extends JobInstruction
             $frameSizesInBytes = $this->videoFrameSplitter->splitVideoInFrames($video, $tmpFile, $job->imageType);
             $imageSizes        = $this->videoFrameSplitter->getImageSizes();
 
-            $this->updateDocument($video, $job->imageType, $imageSizes[1][0], $imageSizes[1][1], $frameSizesInBytes);
+            $this->updateDocument(
+                $video,
+                $job->imageType,
+                $imageSizes[1][0],
+                $imageSizes[1][1],
+                array_sum($frameSizesInBytes)
+            );
 
             $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
 
             $projectIds = [];
             foreach ($tasks as $task) {
                 $projectIds[] = $task->getProjectId();
-                $task->setStatusIfAllImagesAreConverted($video);
-                $this->labelingTaskFacade->save($task);
+                $this->videoFacade->refresh($video);
+                $this->couchDbUpdateConflictRetryService->save(
+                    $task,
+                    function (Model\LabelingTask $task) use ($video) {
+                        $task->setStatusIfAllImagesAreConverted($video);
+                    }
+                );
             }
             foreach (array_unique($projectIds) as $projectId) {
                 $project = $this->projectFacade->find($projectId);
@@ -234,7 +253,7 @@ class VideoFrameSplitter extends JobInstruction
             $video->setImageType($imageTypeName, 'failed', false);
             $video->setImageType($imageTypeName, 'width', $width);
             $video->setImageType($imageTypeName, 'height', $height);
-            $video->setImageSizesForType($imageTypeName, $frameSizesInBytes);
+            $video->setAccumulatedSizeInBytesForType($imageTypeName, $frameSizesInBytes);
             $this->videoFacade->update();
         } catch (CouchDB\UpdateConflictException $updateConflictException) {
             if ($retryCount > $maxRetries) {
