@@ -36,6 +36,9 @@ class ReplicationManager {
     const feed = db.follow({ include_docs: true, since: 'now' });
 
     feed.on('change', change => {
+      if (change.type === 'ddoc_updated') {
+        return;
+      }
       const updatedDb = change.db_name;
       if (updatedDb.match(this.sourceDbRegex) !== null) {
         this._addWorkerJob(updatedDb, this.targetDb);
