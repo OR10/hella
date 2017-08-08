@@ -2,7 +2,7 @@
   "request": {
     "method": "GET",
     "namedParams": true,
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/{{:frame}}/{{:labeledThingId}}",
+    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/{{:frame}}/{{:labeledThingId}}",
     "queryString": {
       "limit": "2",
       "offset": "0"

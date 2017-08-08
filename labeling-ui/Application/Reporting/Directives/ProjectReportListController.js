@@ -107,7 +107,7 @@ class ProjectReportListController {
   showJSON(projectId, reportId) {
     const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(
-      `/v1/organisation/${organisationId}/project/${projectId}/report/${reportId}.json`
+      `/organisation/${organisationId}/project/${projectId}/report/${reportId}.json`
     );
     this._$window.open(url);
   }

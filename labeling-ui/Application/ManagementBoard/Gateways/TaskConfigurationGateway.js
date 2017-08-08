@@ -43,7 +43,7 @@ class TaskConfigurationGateway {
    */
   uploadRequirementsConfiguration(name, file) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/taskConfiguration/requirements`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration/requirements`);
 
     return this._uploadConfiguration(url, name, file);
   }
@@ -98,7 +98,7 @@ class TaskConfigurationGateway {
    */
   getRequirementsXmlConfigurations() {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/taskConfiguration?type=requirementsXml`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration?type=requirementsXml`);
 
     return this._bufferedHttp.get(url, undefined, 'task-configuration').then(response => {
       if (response.data && response.data.result) {

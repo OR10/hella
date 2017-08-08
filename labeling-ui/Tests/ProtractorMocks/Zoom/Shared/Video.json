@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/v1/video/ZOOMVIDEO-ZOOMVIDEO",
+    "path": "/api/video/ZOOMVIDEO-ZOOMVIDEO",
     "method": "GET"
   },
   "response": {

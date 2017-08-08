@@ -32,7 +32,7 @@ class ProjectGateway {
    */
   getProject(projectId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}`);
 
     return this._bufferedHttp.get(url, undefined, 'project')
       .then(response => response.data.result);
@@ -59,7 +59,7 @@ class ProjectGateway {
 
     const organisationId = this._organisationService.get();
 
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project`, params);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project`, params);
 
     return this._bufferedHttp.get(url, undefined, 'project')
       .then(response => response.data);
@@ -70,7 +70,7 @@ class ProjectGateway {
    */
   getProjectCount() {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/projectCount`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/projectCount`);
 
     return this._bufferedHttp.get(url, undefined, 'projectcount')
       .then(response => response.data.result);
@@ -81,7 +81,7 @@ class ProjectGateway {
    */
   getExports(projectId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/export`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/export`);
 
     return this._bufferedHttp.get(url, undefined, 'export')
       .then(response => response.data.result);
@@ -97,7 +97,7 @@ class ProjectGateway {
    */
   startExport(projectId, exportType = 'csv') {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/export/${exportType}`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/export/${exportType}`);
 
     return this._bufferedHttp.post(url, {}, undefined, 'export')
       .then(response => {
@@ -116,7 +116,7 @@ class ProjectGateway {
    */
   acceptProject(projectId, groupId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/status/accept`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/status/accept`);
     return this._bufferedHttp.post(url, {assignedGroupId: groupId}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
@@ -134,7 +134,7 @@ class ProjectGateway {
    */
   changeLabelGroupAssignment(projectId, groupId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/assignLabelGroup`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/assignLabelGroup`);
     return this._bufferedHttp.post(url, {labelGroupId: groupId}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
@@ -152,7 +152,7 @@ class ProjectGateway {
    */
   assignCoordinator(projectId, labelCoordinatorId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/assign`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/assign`);
     return this._bufferedHttp.post(url, {assignedLabelCoordinatorId: labelCoordinatorId}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
@@ -169,7 +169,7 @@ class ProjectGateway {
    */
   closeProject(projectId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/status/done`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/status/done`);
     return this._bufferedHttp.post(url, undefined, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
@@ -186,7 +186,7 @@ class ProjectGateway {
    */
   setProjectStatusToDeleted(projectId, message) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/status/deleted`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/status/deleted`);
     return this._bufferedHttp.post(url, {message}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result && response.data.result.success === true) {
@@ -203,7 +203,7 @@ class ProjectGateway {
    */
   deleteProject(projectId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/delete`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/delete`);
     return this._bufferedHttp.post(url, {}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result && response.data.result.success === true) {
@@ -220,7 +220,7 @@ class ProjectGateway {
    */
   createProject(data) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project`);
     return this._bufferedHttp.post(url, data, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
