@@ -74,7 +74,7 @@ class TaskGateway {
       params.offset = offset;
     }
 
-    const url = this._apiService.getApiUrl('/v1/task', params);
+    const url = this._apiService.getApiUrl('/task', params);
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
@@ -105,7 +105,7 @@ class TaskGateway {
    * @return {AbortablePromise.<Task|Error>}
    */
   getTask(id) {
-    const url = this._apiService.getApiUrl(`/v1/task/${id}`);
+    const url = this._apiService.getApiUrl(`/task/${id}`);
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result && response.data.result.task && response.data.result.users) {
@@ -136,7 +136,7 @@ class TaskGateway {
    * @return {AbortablePromise.<Object|Error>}
    */
   getTaskCount(projectId) {
-    const url = this._apiService.getApiUrl(`/v1/taskCount/${projectId}`);
+    const url = this._apiService.getApiUrl(`/taskCount/${projectId}`);
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
@@ -152,7 +152,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   markTaskAsDone(taskId) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/status/done`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/done`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
@@ -168,7 +168,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   markTaskAsTodo(taskId) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/status/todo`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/todo`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
@@ -184,7 +184,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   markTaskAsInProgress(taskId) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/status/in_progress`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/in_progress`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
@@ -201,7 +201,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   reopenTask(taskId, phase) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/status/reopen`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/reopen`);
     return this._bufferedHttp.post(url, {phase}, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
@@ -217,7 +217,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   assignAndMarkAsInProgress(taskId) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/status/begin`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/status/begin`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result) {
@@ -234,7 +234,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   assignUserToTask(task, user) {
-    const url = this._apiService.getApiUrl(`/v1/task/${task.id}/user/${user.id}/assign`);
+    const url = this._apiService.getApiUrl(`/task/${task.id}/user/${user.id}/assign`);
 
     return this._bufferedHttp.put(url, undefined, undefined, 'task')
       .then(response => {
@@ -252,7 +252,7 @@ class TaskGateway {
    * @returns {AbortablePromise}
    */
   unassignUserFromTask(taskId, userId) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/user/${userId}/assign`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/user/${userId}/assign`);
 
     return this._bufferedHttp.delete(url, undefined, 'task')
       .then(response => {
@@ -281,7 +281,7 @@ class TaskGateway {
     }
 
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/attentionTasks`, params);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/attentionTasks`, params);
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {
@@ -309,7 +309,7 @@ class TaskGateway {
    * @return {*}
    */
   flagTask(taskId) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/attention/enable`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/attention/enable`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result && response.data.result.success === true) {
@@ -325,7 +325,7 @@ class TaskGateway {
    * @return {*}
    */
   unflagTask(taskId) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/attention/disable`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/attention/disable`);
     return this._bufferedHttp.post(url, undefined, undefined, 'task')
       .then(response => {
         if (response.data && response.data.result && response.data.result.success === true) {
@@ -337,7 +337,7 @@ class TaskGateway {
   }
 
   moveTaskToPhase(taskId, phase) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/phase`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/phase`);
 
     return this._bufferedHttp.put(url, {phase}, undefined, 'task')
       .then(response => {
@@ -356,7 +356,7 @@ class TaskGateway {
    * @return {Promise.<TaskReplicationInformation>}
    */
   getTaskReplicationInformationForTaskId(taskId) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/replication`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/replication`);
 
     return this._bufferedHttp.get(url, undefined, 'task')
       .then(response => {

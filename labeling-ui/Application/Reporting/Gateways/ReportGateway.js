@@ -34,7 +34,7 @@ class ReportGateway {
    */
   startReport(projectId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/report`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/report`);
     return this._bufferedHttp.post(url, undefined, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {
@@ -52,7 +52,7 @@ class ReportGateway {
    */
   getReports(projectId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/report`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/report`);
     return this._bufferedHttp.get(url, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {
@@ -70,7 +70,7 @@ class ReportGateway {
    */
   getReport(projectId, reportId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/project/${projectId}/report/${reportId}`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/report/${reportId}`);
     return this._bufferedHttp.get(url, undefined, 'report')
       .then(response => {
         if (response.data && response.data.result) {

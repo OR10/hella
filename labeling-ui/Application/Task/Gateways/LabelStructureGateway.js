@@ -34,7 +34,7 @@ class LabelStructureGateway {
    */
   getTaskStructureData(taskConfigurationId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/taskConfiguration/${taskConfigurationId}`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration/${taskConfigurationId}`);
     return this._bufferedHttp.get(url, undefined, 'label-structure')
       .then(response => {
         if (response.data && response.data.result) {
@@ -52,7 +52,7 @@ class LabelStructureGateway {
    */
   getRequirementsFile(taskConfigurationId) {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/v1/organisation/${organisationId}/taskConfiguration/${taskConfigurationId}/file`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration/${taskConfigurationId}/file`);
     return this._bufferedHttp.get(url, undefined, 'label-structure')
       .then(response => {
         if (response) {
@@ -71,7 +71,7 @@ class LabelStructureGateway {
    * @return {AbortablePromise.<Task|Error>}
    */
   getLabelStructureData(taskId) {
-    const url = this._apiService.getApiUrl(`/v1/task/${taskId}/labelStructure`);
+    const url = this._apiService.getApiUrl(`/task/${taskId}/labelStructure`);
     return this._bufferedHttp.get(url, undefined, 'label-structure')
       .then(response => {
         if (response.data && response.data.result) {
