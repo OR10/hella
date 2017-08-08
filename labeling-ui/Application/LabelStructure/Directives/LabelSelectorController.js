@@ -145,10 +145,16 @@ export default class LabelSelectorController {
     this.accordionControl = {};
 
     /**
+     * @type {Object}
+     */
+    this.selectedOnlyAccordionControl = {};
+
+    /**
      * @type {ShapeSelectionService}
      * @private
      */
     this._shapeSelectionService = shapeSelectionService;
+
 
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
       if (newSelectedPaperShape === null) {
@@ -224,6 +230,24 @@ export default class LabelSelectorController {
         this.labelingInstructions = this.pages[newPageIndex].instructions;
       }
     });
+
+    $scope.$watch('vm.viewStyle', (newStyle, oldStyle) => {
+      if (newStyle === oldStyle) {
+        return;
+      }
+      if (newStyle === 'selectedOnly') {
+        this.selectedOnlyAccordionControl.expandAll();
+      }
+    });
+  }
+
+  /**
+   * @param {Object} page
+   * @param {Object} response
+   * @returns {boolean}
+   */
+  hideWhenItemIsNotSelected(page, response) {
+    return this.choices[page.id] !== response.id;
   }
 
   /**

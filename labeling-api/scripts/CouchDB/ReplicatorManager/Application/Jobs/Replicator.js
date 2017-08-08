@@ -48,20 +48,29 @@ class Replicator {
   }
 
   onChangeOccurred(change) {
+    if (this._resolve === undefined || this._reject === undefined) {
+      return;
+    }
     const replicatorDb = this.nanoAdmin.use('_replicator');
-    if (change.doc._id === this.id && change.doc._replication_state === 'completed') {
-      destroyAndPurgeDocument(
-        this.nanoAdmin,
-        replicatorDb,
-        change.doc._id,
-        change.doc._rev,
-      ).then(() => {
-        if (this._resolve !== undefined) {
-          this._resolve();
-        }
-      }).catch(err => {
-        this._reject(err);
-      });
+    if (change.doc._id === this.id) {
+      if (change.doc._replication_state === 'completed' || change.doc._replication_state === 'error') {
+        destroyAndPurgeDocument(
+          this.nanoAdmin,
+          replicatorDb,
+          change.doc._id,
+          change.doc._rev,
+        )
+          .then(() => {
+            if (change.doc._replication_state === 'completed') {
+              this._resolve();
+            } else {
+              this._reject('Replication rejected');
+            }
+          })
+          .catch(err => {
+            this._reject(err);
+          });
+      }
     }
   }
 

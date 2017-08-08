@@ -21,6 +21,15 @@ function _purgeDocument(nanoAdmin, db, documentId, revisions) {
   });
 }
 
+/**
+ * Destroy and purge the replication document
+ *
+ * @param nanoAdmin
+ * @param db
+ * @param documentId
+ * @param revision
+ * @returns {Promise}
+ */
 function destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
   return new Promise((resolve, reject) => {
     db.get(documentId, { revs_info: true }, (err, body) => {
