@@ -4,11 +4,15 @@ import {module, inject} from 'angular-mocks';
 
 import ApiService from 'Application/Common/Services/ApiService';
 
-describe('ApiService', () => {
+fdescribe('ApiService', () => {
   let getApiService;
 
   beforeEach(() => {
     getApiService = (configuration = {}) => {
+      if (configuration.apiVersion === undefined) {
+        configuration.apiVersion = 'v42';
+      }
+
       let service;
       module($provide => {
         $provide.value('applicationConfig', {Common: configuration});
@@ -27,15 +31,15 @@ describe('ApiService', () => {
 
   describe('getApiUrl', () => {
     it('should provide url based on configuration', () => {
-      const service = getApiService({backendPrefix: '/backend', apiPrefix: '/api/v1/'});
+      const service = getApiService({backendPrefix: '/backend', apiPrefix: '/api/'});
       const apiUrl = service.getApiUrl('/');
-      expect(apiUrl).toEqual('/backend/api/v1/');
+      expect(apiUrl).toEqual('/backend/api/v42/');
     });
 
     it('should handle unneeded slashes correctly', () => {
-      const service = getApiService({backendPrefix: '/backend/', apiPrefix: '/api/v1/'});
+      const service = getApiService({backendPrefix: '/backend/', apiPrefix: '/api/'});
       const apiUrl = service.getApiUrl('/');
-      expect(apiUrl).toEqual('/backend/api/v1/');
+      expect(apiUrl).toEqual('/backend/api/v42/');
     });
 
     using([
@@ -47,7 +51,7 @@ describe('ApiService', () => {
       it('should work with two empty prefixes', () => {
         const service = getApiService({backendPrefix, apiPrefix});
         const apiUrl = service.getApiUrl('/');
-        expect(apiUrl).toEqual('/');
+        expect(apiUrl).toEqual('/v42/');
       });
     });
 
@@ -58,7 +62,7 @@ describe('ApiService', () => {
       it('should work with empty apiPrefix', () => {
         const service = getApiService({backendPrefix, apiPrefix});
         const apiUrl = service.getApiUrl('/');
-        expect(apiUrl).toEqual('/api/');
+        expect(apiUrl).toEqual('/api/v42/');
       });
     });
 
@@ -69,26 +73,26 @@ describe('ApiService', () => {
       it('should work with empty apiPrefix', () => {
         const service = getApiService({backendPrefix, apiPrefix});
         const apiUrl = service.getApiUrl('/');
-        expect(apiUrl).toEqual('/backend/');
+        expect(apiUrl).toEqual('/backend/v42/');
       });
     });
 
     it('should append given path', () => {
       const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
       const apiUrl = service.getApiUrl('/some/path/I/specified');
-      expect(apiUrl).toEqual('/some/path/I/specified');
+      expect(apiUrl).toEqual('/v42/some/path/I/specified');
     });
 
     it('should encode and append given query string', () => {
       const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
       const apiUrl = service.getApiUrl('/', {param: 'value'});
-      expect(apiUrl).toEqual('/?param=value');
+      expect(apiUrl).toEqual('/v42/?param=value');
     });
 
     it('should properly handle empty query object', () => {
       const service = getApiService({backendPrefix: '/', apiPrefix: '/'});
       const apiUrl = service.getApiUrl('/', {});
-      expect(apiUrl).toEqual('/');
+      expect(apiUrl).toEqual('/v42/');
     });
 
     it('should always create a deterministic order of query paramaters', () => {

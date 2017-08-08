@@ -19,8 +19,8 @@ class ApiService {
    * @returns {string}
    */
   getApiUrl(path, query = {}) {
-    const {Common: {backendPrefix, apiPrefix}} = this.configuration;
-    const location = `${backendPrefix}/${apiPrefix}/${path}`.replace(/\/\/+/g, '/');
+    const {Common: {backendPrefix, apiVersion, apiPrefix}} = this.configuration;
+    const location = `${backendPrefix}/${apiPrefix}/${apiVersion}/${path}`.replace(/\/\/+/g, '/');
     const encodedQuery = this.$httpParamSerializer(query);
 
     if (encodedQuery !== '') {
