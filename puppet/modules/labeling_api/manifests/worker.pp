@@ -18,6 +18,7 @@ class labeling_api::worker(
     directory           => $app_dir,
     startsecs           => 0,
     numprocs            => $numberOfLowNormalWorkers,
+    stopasgroup         => true,
     program_environment => {
         'SYMFONY_ENV'   => $symfony_environment,
     },
@@ -32,6 +33,7 @@ class labeling_api::worker(
     directory           => $app_dir,
     startsecs           => 0,
     numprocs            => $numberOfHighNormalWorkers,
+    stopasgroup         => true,
     program_environment => {
         'SYMFONY_ENV'   => $symfony_environment,
     },
