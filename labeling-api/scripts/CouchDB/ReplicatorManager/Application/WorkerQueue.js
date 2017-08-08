@@ -57,9 +57,9 @@ class WorkerQueue {
 
     const element = this.queue.shift();
 
-    const isElementInActiveTasks = this.activeTasks.find(task => task === element.id);
+    const isElementInActiveTasks = this.activeTasks.findIndex(task => task.id === element.id) !== -1;
 
-    if (isElementInActiveTasks !== undefined) {
+    if (isElementInActiveTasks) {
       this.queue.push(element);
 
       return false;
