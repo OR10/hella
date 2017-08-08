@@ -87,7 +87,7 @@ class CurrentUser extends Controller\Base
      *
      * @return View\View
      */
-    public function profileAction(HttpFoundation\Request $request)
+    public function profileAction()
     {
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();

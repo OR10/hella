@@ -120,7 +120,7 @@ class UserTest extends Tests\WebTestCase
         $admin        = $this->createLabelerUser();
         $superAdmin   = $this->createSuperAdminUser($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$superAdmin->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$superAdmin->getId()])
             ->withCredentialsFromUsername($admin)
             ->execute();
 
