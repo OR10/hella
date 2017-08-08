@@ -19,6 +19,7 @@ use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
+ * @Version("v1")
  * @Rest\Prefix("/api/{version}/organisation")
  * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.project.export")
  *

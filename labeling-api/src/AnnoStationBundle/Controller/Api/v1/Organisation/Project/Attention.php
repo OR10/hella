@@ -19,6 +19,7 @@ use Symfony\Component\HttpKernel\Exception;
 use AnnoStationBundle\Response;
 
 /**
+ * @Version("v1")
  * @Rest\Prefix("/api/{version}/organisation")
  * @Rest\Route(service="annostation.labeling_api.controller.api.organisation.project.attention")
  *

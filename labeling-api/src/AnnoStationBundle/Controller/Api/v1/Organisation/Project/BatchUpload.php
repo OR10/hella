@@ -20,6 +20,7 @@ use Symfony\Component\HttpKernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
+ * @Version("v1")
  * @Rest\Route("/api/{version}/organisation", service="annostation.labeling_api.controller.api.organisation.project.batch_upload")
  *
  * @CloseSession
