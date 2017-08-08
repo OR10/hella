@@ -28,7 +28,9 @@ class Point extends Model\Shape
         if (!isset($shape['id']) || !isset($shape['point']) || !isset($shape['point']['x']) ||
             !isset($shape['point']['y'])
         ) {
-            throw new \RuntimeException('Invalid point shape');
+            throw new \RuntimeException(
+                sprintf('Point shape with id "%s" is invalid', isset($shape['id']) ? $shape['id'] : '')
+            );
         }
 
         return new Point($shape['id'], $shape['point']);

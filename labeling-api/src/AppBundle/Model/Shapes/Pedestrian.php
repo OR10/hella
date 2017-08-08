@@ -49,7 +49,9 @@ class Pedestrian extends Model\Shape
             || !isset($shape['bottomCenter']['x'])
             || !isset($shape['bottomCenter']['y'])
         ) {
-            throw new \RuntimeException('Invalid pedestrian shape');
+            throw new \RuntimeException(
+                sprintf('Pedestrian shape with id "%s" is invalid', isset($shape['id']) ? $shape['id'] : '')
+            );
         }
 
         return new Pedestrian(

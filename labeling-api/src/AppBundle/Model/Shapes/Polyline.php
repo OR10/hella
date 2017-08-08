@@ -12,7 +12,9 @@ class Polyline extends Polygon
     public static function createFromArray(array $shape)
     {
         if (!isset($shape['id']) || !isset($shape['points']) || !is_array($shape['points'])) {
-            throw new \RuntimeException('Invalid polygon shape');
+            throw new \RuntimeException(
+                sprintf('Polyline shape with id "%s" is invalid', isset($shape['id']) ? $shape['id'] : '')
+            );
         }
 
         return new Polyline($shape['id'], $shape['points']);
