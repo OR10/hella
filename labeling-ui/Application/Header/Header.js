@@ -8,6 +8,7 @@ import TimerGateway from './Gateways/TimerGateway';
 import LiveSyncIndicatorDirective from './Directives/LiveSyncIndicatorDirective';
 import LiveSyncIndicatorService from './Services/LiveSyncIndicatorService';
 import ViewerTitleBarDirective from './Directives/ViewerTitleBarDirective';
+import ImagePreloadIndicatorDirective from './Directives/ImagePreloadIndicatorDirective';
 
 /**
  * Module containing all functionality related to the header bar
@@ -31,6 +32,7 @@ class Header extends Module {
     this.registerDirective('userName', UserNameDirective);
     this.registerDirective('logoutButton', LogoutButtonDirective);
     this.registerDirective('liveSyncIndicator', LiveSyncIndicatorDirective);
+    this.registerDirective('imagePreloadIndicator', ImagePreloadIndicatorDirective);
   }
 }
 
