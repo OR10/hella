@@ -33,8 +33,9 @@ class MultiTool extends PaperTool {
    * @param {ToolService} toolService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
    * @param {LabeledFrameGateway} labeledFrameGateway
+   * @param {ShapeSelectionService} shapeSelectionService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, toolService, viewerMouseCursorService, labeledFrameGateway) {
+  constructor(drawingContext, $rootScope, $q, loggerService, toolService, viewerMouseCursorService, labeledFrameGateway, shapeSelectionService) {
     super(drawingContext, $rootScope, $q, loggerService);
 
     /**
@@ -86,6 +87,12 @@ class MultiTool extends PaperTool {
      * @private
      */
     this._labeledFrameGateway = labeledFrameGateway;
+
+    /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
   }
 
   /**
@@ -225,9 +232,15 @@ class MultiTool extends PaperTool {
    * @private
    */
   onMouseDown(event) {
+    let multiSelect = false;
+
     // Shift is only used for zoom panning
     if (event.event.shiftKey) {
       return;
+    }
+
+    if (event.event.ctrlKey) {
+      multiSelect = true;
     }
 
     const point = event.point;
@@ -255,6 +268,7 @@ class MultiTool extends PaperTool {
             return;
           }
 
+          this._shapeSelectionService.clear();
           this._complete({actionIdentifier: 'selection', paperShape: null});
           return;
         }
@@ -273,7 +287,12 @@ class MultiTool extends PaperTool {
 
       // If selected paperShape changed select the new one
       if (this._toolActionStruct.selectedPaperShape !== hitShape) {
-        this._complete({actionIdentifier: 'selection', paperShape: hitShape});
+        if (multiSelect) {
+          this._shapeSelectionService.toggleShape(hitShape);
+        } else {
+          this._shapeSelectionService.setSelectedShape(hitShape);
+          this._complete({actionIdentifier: 'selection', paperShape: hitShape});
+        }
         return;
       }
 
@@ -579,6 +598,7 @@ MultiTool.$inject = [
   'toolService',
   'viewerMouseCursorService',
   'labeledFrameGateway',
+  'shapeSelectionService',
 ];
 
 export default MultiTool;

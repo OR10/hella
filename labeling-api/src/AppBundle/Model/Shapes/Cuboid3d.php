@@ -92,7 +92,9 @@ class Cuboid3d extends Model\Shape
         if (!isset($shape['id'])
             || !isset($shape['vehicleCoordinates'])
         ) {
-            throw new \RuntimeException('Invalid cuboid3d shape');
+            throw new \RuntimeException(
+                sprintf('Cuboid3d shape with id "%s" is invalid', isset($shape['id']) ? $shape['id'] : '')
+            );
         }
 
         return new Cuboid3d(

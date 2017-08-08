@@ -1,26 +1,8 @@
 import {inject} from 'angular-mocks';
 import ViewerController from 'Application/Viewer/Directives/ViewerController';
 
-// Extend the original class, because there are variables that are implictly set by angular which are already
-// used in the constructor (task e.g.)
-class ViewerControllerTestable extends ViewerController {
-
-}
-ViewerControllerTestable.prototype.task = {
-  requiredImageTypes: ['source'],
-};
-
-ViewerControllerTestable.prototype.video = {
-  metaData: {},
-};
-
-ViewerControllerTestable.prototype.framePosition = {
-  beforeFrameChangeAlways: () => {},
-  afterFrameChangeAlways: () => {},
-  afterFrameChangeOnce: () => {},
-};
-
 describe('ViewerController tests', () => {
+  let angularQ;
   let rootScope;
   let scope;
   let debouncerService;
@@ -34,8 +16,41 @@ describe('ViewerController tests', () => {
   let applicationState;
   let viewerMouseCursorService;
   let element;
+  let frameLocation;
+  let imagePreloader;
+  let task;
 
-  beforeEach(inject($rootScope => {
+  // Extend the original class, because there are variables that are implictly set by angular which are already
+  // used in the constructor (task e.g.)
+  class ViewerControllerTestable extends ViewerController {
+  }
+
+  beforeEach(() => {
+    task = {
+      requiredImageTypes: ['source'],
+    };
+
+    ViewerControllerTestable.prototype.task = task;
+
+    ViewerControllerTestable.prototype.video = {
+      metaData: {},
+    };
+
+    frameLocation = jasmine.createSpyObj(
+      'FramePosition',
+      [
+        'beforeFrameChangeAlways',
+        'afterFrameChangeAlways',
+        'beforeFrameChangeOnce',
+        'afterFrameChangeOnce',
+      ]
+    );
+
+    ViewerControllerTestable.prototype.framePosition = frameLocation;
+  });
+
+  beforeEach(inject(($q, $rootScope) => {
+    angularQ = $q;
     rootScope = $rootScope;
     scope = $rootScope.$new();
   }));
@@ -56,21 +71,24 @@ describe('ViewerController tests', () => {
     keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey']);
     pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
+    imagePreloader = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
   });
 
   beforeEach(() => {
     element[0] = {};
     element.find.and.returnValue({
       0: {
-        addEventListener: () => {},
+        addEventListener: () => {
+        },
       },
-      on: () => {},
+      on: () => {
+      },
     });
 
     const frameIndexLimits = {upperLimit: 0, lowerLimit: 1};
     frameIndexService.getFrameIndexLimits.and.returnValue(frameIndexLimits);
 
-    const context = { setup: () => {}, withScope: () => {}};
+    const context = jasmine.createSpyObj('PaperContext', ['setup', 'withScope']);
     drawingContextService.createContext.and.returnValue(context);
   });
 
@@ -108,7 +126,8 @@ describe('ViewerController tests', () => {
       viewerMouseCursorService,
       null, // labeledThingGroupService,
       null, // inProgressService,
-      pouchDbSyncManager
+      pouchDbSyncManager,
+      imagePreloader
     );
   }
 
@@ -120,13 +139,44 @@ describe('ViewerController tests', () => {
   describe('Events', () => {
     it('framerange:change:after (TTANNO-1923)', () => {
       const debouncedThingOnUpdate = jasmine.createSpyObj('debouncedThingOnUpdate', ['triggerImmediately']);
-      debouncedThingOnUpdate.triggerImmediately.and.returnValue({ then: () => {} });
+      debouncedThingOnUpdate.triggerImmediately.and.returnValue(angularQ());
 
       debouncerService.multiplexDebounce.and.returnValue(debouncedThingOnUpdate);
       createController();
       rootScope.$emit('framerange:change:after');
 
       expect(debouncedThingOnUpdate.triggerImmediately).toHaveBeenCalled();
+    });
+  });
+
+  describe('ImagePreloading', () => {
+    it('should call the ImagePreloader once after the viewer is ready', () => {
+      let imagePreloaderReadyCallback;
+      frameLocation.afterFrameChangeOnce.and.callFake((name, callback) => {
+        if (name === 'resumeImagePreloading') {
+          imagePreloaderReadyCallback = callback;
+        }
+      });
+
+      createController();
+
+      expect(frameLocation.afterFrameChangeOnce).toHaveBeenCalled();
+      imagePreloaderReadyCallback();
+      expect(imagePreloader.preloadImages).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call the ImagePreloader with chunksize of 1', () => {
+      let imagePreloaderReadyCallback;
+      frameLocation.afterFrameChangeOnce.and.callFake((name, callback) => {
+        if (name === 'resumeImagePreloading') {
+          imagePreloaderReadyCallback = callback;
+        }
+      });
+
+      createController();
+      imagePreloaderReadyCallback();
+
+      expect(imagePreloader.preloadImages).toHaveBeenCalledWith(task, undefined, 1);
     });
   });
 });

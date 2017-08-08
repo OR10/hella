@@ -112,6 +112,21 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
+    public function testGetSingleSuperAdminUserAsLabelerInOtherOrganisation()
+    {
+        $organisation = $this->organisationFacade->save(
+            new AnnoStationBundleModel\Organisation('Test')
+        );
+        $admin        = $this->createLabelerUser();
+        $superAdmin   = $this->createSuperAdminUser($organisation);
+
+        $requestWrapper = $this->createRequest('/api/user/%s', [$superAdmin->getId()])
+            ->withCredentialsFromUsername($admin)
+            ->execute();
+
+        $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
+    }
+
     public function testAddUserAsSuperAdmin()
     {
         $organisation = $this->organisationFacade->save(

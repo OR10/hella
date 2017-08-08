@@ -239,6 +239,32 @@ describe('ImageFetcher', () => {
       expect(rejectSpy).toHaveBeenCalledWith(error);
     });
 
+    it('should notify about progress once each image is loaded', () => {
+      const imageFetcher = createImageFetcher();
+
+      const imagesPromise = imageFetcher.fetchMultiple(urls);
+      const notifySpy = jasmine.createSpy('fetch progress');
+      imagesPromise.then(undefined, undefined, notifySpy);
+
+      applyAsync();
+
+      expect(notifySpy).not.toHaveBeenCalled();
+
+      registeredEvents[1].load();
+
+      applyAsync();
+
+      expect(notifySpy).toHaveBeenCalledTimes(1);
+      expect(notifySpy).toHaveBeenCalledWith(images[1]);
+
+      registeredEvents[0].load();
+
+      applyAsync();
+
+      expect(notifySpy).toHaveBeenCalledTimes(2);
+      expect(notifySpy).toHaveBeenCalledWith(images[0]);
+    });
+
     /* eslint-disable jasmine/missing-expect */
     it('should load a maximum of "chunkSize" images in parallel', () => {
       const imageFetcher = createImageFetcher();

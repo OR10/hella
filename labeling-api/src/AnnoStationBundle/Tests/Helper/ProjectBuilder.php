@@ -374,7 +374,7 @@ class ProjectBuilder
             'taskFailedCount'            => 0,
             'coordinator'                => $this->getLatestAssignedCoordinatorUserId(),
             'taskInstructionType'        => 'legacy',
-            'diskUsage'                  => [],
+            'diskUsage'                  => ['total' => 0],
             'campaigns'                  => [],
             'labelingGroupId'            => null,
             'userId'                     => $this->owningUserId,
