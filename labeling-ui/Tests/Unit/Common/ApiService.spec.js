@@ -101,6 +101,12 @@ fdescribe('ApiService', () => {
       const secondApiUrl = service.getApiUrl('/', {bar: 'bar', foo: 'foo'});
       expect(firstApiUrl).toEqual(secondApiUrl);
     });
+
+    it('accepts a version parameter', () => {
+      const service = getApiService({backendPrefix: '/', apiPrefix: '/api'});
+      const apiUrl = service.getApiUrl('/', {}, 'v1337');
+      expect(apiUrl).toEqual('/api/v1337/');
+    });
   });
 
   describe('getFrontendUrl', () => {
