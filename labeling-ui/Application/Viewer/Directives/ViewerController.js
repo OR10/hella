@@ -66,6 +66,7 @@ class ViewerController {
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {InProgressService} inProgressService
    * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {ShapeSelectionService} shapeSelectionService
    */
   constructor($scope,
               $rootScope,
@@ -99,7 +100,9 @@ class ViewerController {
               viewerMouseCursorService,
               labeledThingGroupService,
               inProgressService,
-              pouchDbSyncManager) {
+              pouchDbSyncManager,
+              imagePreloader,
+              shapeSelectionService) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -300,6 +303,12 @@ class ViewerController {
      * @private
      */
     this._pouchDbSyncManager = pouchDbSyncManager;
+
+    /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
 
     /**
      * @type {LayerManager}
@@ -667,6 +676,12 @@ class ViewerController {
       this._applicationState.endFrameChange();
     });
 
+    this.framePosition.afterFrameChangeOnce('resumeImagePreloading', () => {
+      // Kick off preloading of all remaining images
+      // As it is a background operation limit the chunk size to 1 image at a time
+      imagePreloader.preloadImages(this.task, undefined, 1);
+    });
+
     /* *****************************************************************
      * START: Only executable in e2e tests
      * *****************************************************************/
@@ -773,7 +788,8 @@ class ViewerController {
       this._applicationState,
       this._modalService,
       this._labeledThingGateway,
-      this._labeledThingGroupGateway
+      this._labeledThingGroupGateway,
+      this._shapeSelectionService
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1571,6 +1587,8 @@ ViewerController.$inject = [
   'labeledThingGroupService',
   'inProgressService',
   'pouchDbSyncManager',
+  'imagePreloader',
+  'shapeSelectionService',
 ];
 
 export default ViewerController;

@@ -46,7 +46,9 @@ class Ellipse extends Model\Shape
             || !isset($shape['size']['width'])
             || !isset($shape['size']['height'])
         ) {
-            throw new \RuntimeException('Invalid ellipse shape');
+            throw new \RuntimeException(
+                sprintf('Ellipse shape with id "%s" is invalid', isset($shape['id']) ? $shape['id'] : '')
+            );
         }
 
         return new Ellipse(

@@ -28,6 +28,7 @@ describe('ThingLayer', () => {
   let modalService;
   let labeledThingGateway;
   let labeledThingGroupGateway;
+  let shapeSelectionService;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -42,6 +43,9 @@ describe('ThingLayer', () => {
 
     labeledFrameGateway = jasmine.createSpyObj('labeledFrameGateway', ['getLabeledFrame', 'saveLabeledFrame', 'deleteLabeledFrame']);
     $provide.service('labeledFrameGateway', () => labeledFrameGateway);
+
+    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['setSelectedShape']);
+    $provide.service('shapeSelectionService', () => shapeSelectionService);
 
     paperScope = jasmine.createSpy('paperScope');
     paperScope.view = jasmine.createSpyObj('scope.view', ['update']);
@@ -77,7 +81,8 @@ describe('ThingLayer', () => {
     const framePosition = jasmine.createSpyObj('framePosition', ['beforeFrameChangeAlways', 'afterFrameChangeAlways']);
 
     return new ThingLayer(0, 0, angularScope, injector, drawingContext, toolService, null, loggerService, timeoutService,
-      framePosition, viewerMouseCursorService, null, applicationState, modalService, labeledThingGateway, labeledThingGroupGateway);
+      framePosition, viewerMouseCursorService, null, applicationState, modalService, labeledThingGateway,
+      labeledThingGroupGateway, shapeSelectionService);
   }
 
   function setupPaperJs() {
@@ -184,8 +189,30 @@ describe('ThingLayer', () => {
   // xdescribe('vm.hideLabeledThingsInFrame watcher', () => {
   // });
   //
-  // xdescribe('vm.selectedPaperShape watcher', () => {
-  // });
+  describe('vm.selectedPaperShape watcher', () => {
+    let watcherFunction;
+
+    beforeEach(() => {
+      spyOn(angularScope, '$watch').and.callFake((watches, callback) => {
+        if (watches === 'vm.selectedPaperShape') {
+          watcherFunction = callback;
+        }
+      });
+    });
+
+    it('calls setSelectedShape on the shapeSelectionService', () => {
+      createThingLayerInstance();
+      const shape = jasmine.createSpyObj('shape', ['select']);
+      const project = jasmine.createSpyObj('project', ['getItems']);
+      project.getItems.and.returnValue([]);
+      const view = jasmine.createSpyObj('view', ['update']);
+      drawingContext.withScope.and.callFake(callback => callback({project, view}));
+
+      watcherFunction(shape, null);
+
+      expect(shapeSelectionService.setSelectedShape).toHaveBeenCalledWith(shape);
+    });
+  });
   //
   // xdescribe('#dispatchDOMEvent', () => {
   // });
@@ -273,7 +300,7 @@ describe('ThingLayer', () => {
         const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort']);
         keyboardTool.invokeKeyboardShortcuts.and.returnValue({
           then: () => {
-          }
+          },
         });
         toolService.getTool.and.returnValue(keyboardTool);
       });
@@ -320,7 +347,7 @@ describe('ThingLayer', () => {
             then(invokeThenParams);
             return {
               catch: () => {
-              }
+              },
             };
           });
           spyOn(thing._multiTool, 'invoke').and.returnValue(invokePromiseMock);
@@ -401,7 +428,7 @@ describe('ThingLayer', () => {
             callback(callbackParams);
             return {
               catch: () => {
-              }
+              },
             };
           });
 
@@ -434,7 +461,7 @@ describe('ThingLayer', () => {
             callback(callbackParams);
             return {
               catch: () => {
-              }
+              },
             };
           });
 

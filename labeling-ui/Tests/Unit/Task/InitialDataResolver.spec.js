@@ -4,26 +4,21 @@ import initialTaskDataResolver from '../../../Application/Task/Resolvers/Initial
 import taskFixture from '../../Fixtures/Models/Frontend/Task';
 import projectFixture from '../../Fixtures/Models/Frontend/Project';
 import videoFixture from '../../Fixtures/Models/Frontend/Video';
-import frameLocationsSourceJpgFixture from '../../Fixtures/Models/Frontend/FrameLocationsSourceJpg';
-import frameLocationsThumbnailFixture from '../../Fixtures/Models/Frontend/FrameLocationsThumbnail';
 
-describe('Intial Task Data Resolver', () => {
+describe('Initial Task Data Resolver', () => {
   let angularQ;
   let rootScope;
   let stateParamsMock;
   let taskGatewayMock;
   let projectGatewayMock;
   let videoGatewayMock;
-  let frameLocationGatewayMock;
-  let frameGatewayMock;
+  let imagePreloaderMock;
   let taskReplicationServiceMock;
   let organisationServiceMock;
   let frameIndexServiceMock;
   let task;
   let project;
   let video;
-  let frameLocationsSourceJpg;
-  let frameLocationsThumbnail;
 
   function callInitialTaskDataResolver() {
     const callableFn = initialTaskDataResolver[initialTaskDataResolver.length - 1];
@@ -34,8 +29,7 @@ describe('Intial Task Data Resolver', () => {
       taskGatewayMock,
       projectGatewayMock,
       videoGatewayMock,
-      frameLocationGatewayMock,
-      frameGatewayMock,
+      imagePreloaderMock,
       taskReplicationServiceMock,
       organisationServiceMock,
       frameIndexServiceMock
@@ -51,8 +45,6 @@ describe('Intial Task Data Resolver', () => {
     task = taskFixture.clone();
     project = cloneDeep(projectFixture);
     video = cloneDeep(videoFixture);
-    frameLocationsSourceJpg = cloneDeep(frameLocationsSourceJpgFixture);
-    frameLocationsThumbnail = cloneDeep(frameLocationsThumbnailFixture);
   });
 
   beforeEach(() => {
@@ -65,8 +57,7 @@ describe('Intial Task Data Resolver', () => {
     taskGatewayMock = jasmine.createSpyObj('TaskGateway', ['getTask']);
     projectGatewayMock = jasmine.createSpyObj('ProjectGateway', ['getProject']);
     videoGatewayMock = jasmine.createSpyObj('VideoGateway', ['getVideo']);
-    frameLocationGatewayMock = jasmine.createSpyObj('FrameLocationGateway', ['getFrameLocations']);
-    frameGatewayMock = jasmine.createSpyObj('FrameGateway', ['preloadImages']);
+    imagePreloaderMock = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
     taskReplicationServiceMock = jasmine.createSpyObj('TaskReplicationService', ['replicateTaskDataToLocalMachine']);
     organisationServiceMock = jasmine.createSpyObj('OrganisationService', ['set']);
     frameIndexServiceMock = jasmine.createSpyObj('FrameIndexService', ['setTask', 'getFrameIndexLimits']);
@@ -76,24 +67,8 @@ describe('Intial Task Data Resolver', () => {
     taskGatewayMock.getTask.and.returnValue(angularQ.resolve(task));
     projectGatewayMock.getProject.and.returnValue(angularQ.resolve(project));
     videoGatewayMock.getVideo.and.returnValue(angularQ.resolve(video));
+    imagePreloaderMock.preloadImages.and.returnValue(angularQ.resolve([]));
     taskReplicationServiceMock.replicateTaskDataToLocalMachine.and.returnValue(angularQ.resolve());
-    frameGatewayMock.preloadImages.and.returnValue(angularQ.resolve());
-
-    frameIndexServiceMock.getFrameIndexLimits.and.returnValue({
-      lowerLimit: 0,
-      upperLimit: 591,
-    });
-
-    frameLocationGatewayMock.getFrameLocations.and.callFake((taskId, type) => {
-      switch (type) {
-        case 'sourceJpg':
-          return angularQ.resolve(frameLocationsSourceJpg);
-        case 'thumbnail':
-          return angularQ.resolve(frameLocationsThumbnail);
-        default:
-          throw new Error(`Unknown image type ${type}`);
-      }
-    });
   });
 
   it('should be callable', () => {
@@ -143,31 +118,10 @@ describe('Intial Task Data Resolver', () => {
     expect(taskReplicationServiceMock.replicateTaskDataToLocalMachine).toHaveBeenCalledWith(project, task);
   });
 
-  it('should request normal and thumbnail image type frame locations', () => {
+  it('should trigger preload of the first 50 images', () => {
     callInitialTaskDataResolver();
     rootScope.$apply();
-    expect(frameLocationGatewayMock.getFrameLocations).toHaveBeenCalledTimes(2);
-
-    const frameLocationCallOne = frameLocationGatewayMock.getFrameLocations.calls.argsFor(0);
-    const frameLocationCallTwo = frameLocationGatewayMock.getFrameLocations.calls.argsFor(1);
-
-    expect(frameLocationCallOne).toEqual([task.id, 'sourceJpg', 0, 592]);
-    expect(frameLocationCallTwo).toEqual([task.id, 'thumbnail', 0, 592]);
-  });
-
-  it('should call preloadImages only once', () => {
-    callInitialTaskDataResolver();
-    rootScope.$apply();
-    expect(frameGatewayMock.preloadImages).toHaveBeenCalledTimes(1);
-  });
-
-  it('should call preload for all locations provided by the frameLocationGateway', () => {
-    callInitialTaskDataResolver();
-    rootScope.$apply();
-    expect(frameGatewayMock.preloadImages).toHaveBeenCalledWith([
-      ...frameLocationsSourceJpg,
-      ...frameLocationsThumbnail,
-    ]);
+    expect(imagePreloaderMock.preloadImages).toHaveBeenCalledWith(task, 50);
   });
 
   it('should not resolve final promise, before all requested promises are resolved', () => {
@@ -175,25 +129,12 @@ describe('Intial Task Data Resolver', () => {
     taskGatewayMock.getTask.and.returnValue(taskGatewayDeferred.promise);
     const projectGatewayDeferred = angularQ.defer();
     projectGatewayMock.getProject.and.returnValue(projectGatewayDeferred.promise);
+    const imagePreloaderDeferred = angularQ.defer();
+    imagePreloaderMock.preloadImages.and.returnValue(imagePreloaderDeferred.promise);
     const videoGatewayDeferred = angularQ.defer();
     videoGatewayMock.getVideo.and.returnValue(videoGatewayDeferred.promise);
     const taskReplicationDeferred = angularQ.defer();
     taskReplicationServiceMock.replicateTaskDataToLocalMachine.and.returnValue(taskReplicationDeferred.promise);
-    const frameGatewayDeferred = angularQ.defer();
-    frameGatewayMock.preloadImages.and.returnValue(frameGatewayDeferred.promise);
-
-    const frameLocationsSourceJpgDeferred = angularQ.defer();
-    const frameLocationsThumbnailDeferred = angularQ.defer();
-    frameLocationGatewayMock.getFrameLocations.and.callFake((taskId, type) => {
-      switch (type) {
-        case 'sourceJpg':
-          return frameLocationsSourceJpgDeferred;
-        case 'thumbnail':
-          return frameLocationsThumbnailDeferred;
-        default:
-          throw new Error(`Unknown image type ${type}`);
-      }
-    });
 
     const returnValue = callInitialTaskDataResolver();
     const resolveSpy = jasmine.createSpy('intialTaskResolver resolve');
@@ -218,16 +159,9 @@ describe('Intial Task Data Resolver', () => {
     rootScope.$apply();
     expect(resolveSpy).not.toHaveBeenCalled();
 
-    frameLocationsSourceJpgDeferred.resolve(frameLocationsSourceJpg);
+    imagePreloaderDeferred.resolve([]);
     rootScope.$apply();
-    expect(resolveSpy).not.toHaveBeenCalled();
 
-    frameLocationsThumbnailDeferred.resolve(frameLocationsThumbnailDeferred);
-    rootScope.$apply();
-    expect(resolveSpy).not.toHaveBeenCalled();
-
-    frameGatewayDeferred.resolve();
-    rootScope.$apply();
     expect(resolveSpy).toHaveBeenCalled();
   });
 });
