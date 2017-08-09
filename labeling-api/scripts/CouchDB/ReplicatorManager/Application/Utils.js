@@ -35,6 +35,7 @@ function destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
     db.get(documentId, { revs_info: true }, (err, body) => {
       if (err) {
         reject(err);
+        return;
       }
 
       const revisions = body._revs_info.map(revInfo => revInfo.rev).reverse();
@@ -42,6 +43,7 @@ function destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
       db.destroy(documentId, revision, destroyError => {
         if (destroyError) {
           reject(destroyError);
+          return;
         }
 
         revisions.push(body._rev);
