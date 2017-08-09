@@ -327,7 +327,9 @@ class LabelSelectorHelper {
    * @private
    */
   _getAccordionFinder() {
-    return this._labelSelector.element(by.css('v-accordion'));
+    const accordions = this._labelSelector.all(by.css('v-accordion'));
+    const displayed = accordions.filter(acc => acc.isDisplayed());
+    return displayed.get(0);
   }
 
   /**

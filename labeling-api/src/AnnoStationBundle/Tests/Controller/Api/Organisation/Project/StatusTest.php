@@ -54,7 +54,7 @@ class StatusTest extends Tests\WebTestCase
         $this->labelCoordinator->assignToOrganisation($this->organisation);
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/project/%s/status/accept',
+            '/api/v1/organisation/%s/project/%s/status/accept',
             [$this->organisation->getId(), $project->getId()]
         )
             ->withCredentialsFromUsername($this->labelCoordinator)
@@ -77,7 +77,7 @@ class StatusTest extends Tests\WebTestCase
         $project      = $this->createProject($this->organisation);
 
         $requestWrapper = $this->createRequest(
-            '/api/organisation/%s/project/%s/status/done',
+            '/api/v1/organisation/%s/project/%s/status/done',
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
@@ -94,7 +94,7 @@ class StatusTest extends Tests\WebTestCase
         $this->createTask($this->organisation, $project);
 
         $response = $this->createRequest(
-            '/api/organisation/%s/project/%s/status/done',
+            '/api/v1/organisation/%s/project/%s/status/done',
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)

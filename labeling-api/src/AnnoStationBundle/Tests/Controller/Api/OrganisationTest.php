@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class OrganisationTest extends Tests\WebTestCase
 {
-    const ROUTE = '/api/organisation';
+    const ROUTE = '/api/v1/organisation';
 
     /**
      * @var Facade\Organisation
@@ -50,7 +50,7 @@ class OrganisationTest extends Tests\WebTestCase
         $this->createOrganisation('Test 3');
         $this->createOrganisation('Test 4');
 
-        $requestWrapper = $this->createRequest('/api/organisation')
+        $requestWrapper = $this->createRequest('/api/v1/organisation')
             ->withCredentialsFromUsername($this->superAdmin)
             ->execute();
 
@@ -68,7 +68,7 @@ class OrganisationTest extends Tests\WebTestCase
         $this->createOrganisation('Test 1');
         $this->createOrganisation('Test 2');
 
-        $requestWrapper = $this->createRequest('/api/organisation')
+        $requestWrapper = $this->createRequest('/api/v1/organisation')
             ->withCredentialsFromUsername($this->admin)
             ->execute();
 
@@ -84,7 +84,7 @@ class OrganisationTest extends Tests\WebTestCase
 
     public function testGetOrganisationsAsLabeler()
     {
-        $requestWrapper = $this->createRequest('/api/organisation')
+        $requestWrapper = $this->createRequest('/api/v1/organisation')
             ->withCredentialsFromUsername($this->labeler)
             ->execute();
 
@@ -93,7 +93,7 @@ class OrganisationTest extends Tests\WebTestCase
 
     public function testCreateOrganisation()
     {
-        $requestWrapper = $this->createRequest('/api/organisation')
+        $requestWrapper = $this->createRequest('/api/v1/organisation')
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->superAdmin)
             ->setJsonBody(
@@ -109,7 +109,7 @@ class OrganisationTest extends Tests\WebTestCase
 
     public function testCreateOrganisationAsNonSuperAdmin()
     {
-        $requestWrapper = $this->createRequest('/api/organisation')
+        $requestWrapper = $this->createRequest('/api/v1/organisation')
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->withCredentialsFromUsername($this->admin)
             ->setJsonBody(
@@ -125,7 +125,7 @@ class OrganisationTest extends Tests\WebTestCase
     public function testUpdateOrganisation()
     {
         $organisation   = $this->createOrganisation();
-        $requestWrapper = $this->createRequest('/api/organisation/%s', [$organisation->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/organisation/%s', [$organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->withCredentialsFromUsername($this->superAdmin)
             ->setJsonBody(
@@ -143,7 +143,7 @@ class OrganisationTest extends Tests\WebTestCase
     public function testUpdateOrganisationAsNonSuperAdmin()
     {
         $organisation   = $this->createOrganisation();
-        $requestWrapper = $this->createRequest('/api/organisation/%s', [$organisation->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/organisation/%s', [$organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->withCredentialsFromUsername($this->admin)
             ->setJsonBody(
@@ -160,7 +160,7 @@ class OrganisationTest extends Tests\WebTestCase
     public function testDeleteOrganisation()
     {
         $organisation   = $this->createOrganisation();
-        $requestWrapper = $this->createRequest('/api/organisation/%s', [$organisation->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/organisation/%s', [$organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->withCredentialsFromUsername($this->superAdmin)
             ->execute();
@@ -171,7 +171,7 @@ class OrganisationTest extends Tests\WebTestCase
     public function testDeleteOrganisationAsNonSuperAdmin()
     {
         $organisation   = $this->createOrganisation();
-        $requestWrapper = $this->createRequest('/api/organisation/%s', [$organisation->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/organisation/%s', [$organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->withCredentialsFromUsername($this->admin)
             ->execute();

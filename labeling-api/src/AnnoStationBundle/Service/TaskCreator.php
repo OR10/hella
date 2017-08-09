@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Service;
 
-use AnnoStationBundle\Controller\Api\Organisation\Project\Exception\Missing3dVideoCalibrationData;
+use AnnoStationBundle\Controller\Api\v1\Organisation\Project\Exception\Missing3dVideoCalibrationData;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AnnoStationBundle\Service;

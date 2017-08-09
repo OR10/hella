@@ -57,9 +57,9 @@ class WorkerQueue {
 
     const element = this.queue.shift();
 
-    const isElementInActiveTasks = this.activeTasks.find(task => task === element.id);
+    const isElementInActiveTasks = this.activeTasks.findIndex(task => task.id === element.id) !== -1;
 
-    if (isElementInActiveTasks !== undefined) {
+    if (isElementInActiveTasks) {
       this.queue.push(element);
 
       return false;
@@ -70,7 +70,10 @@ class WorkerQueue {
       .then(() => {
         const index = this.activeTasks.findIndex(task => task.id === element.id);
         if (index !== -1) {
+          this.logger.logString(`Removed task "${element.id}" from active tasks queue`);
           this.activeTasks.splice(index, 1);
+        } else {
+          this.logger.logString(`FAILED to removed task "${element.id}" from active tasks queue`);
         }
         this._printQueueStatus();
         this.compactReplicationDatabaseIfNecessary();
@@ -79,7 +82,10 @@ class WorkerQueue {
       .catch(error => {
         const index = this.activeTasks.findIndex(task => task.id === element.id);
         if (index !== -1) {
+          this.logger.logString(`(Catch) Removed task "${element.id}" from active tasks queue`);
           this.activeTasks.splice(index, 1);
+        } else {
+          this.logger.logString(`(Catch) FAILED to removed task "${element.id}" from active tasks queue`);
         }
 
         if (element.hasReachedMaximumRetries()) {
@@ -120,6 +126,10 @@ class WorkerQueue {
       this.activeTasks.forEach(task => {
         task.onChangeOccurred(change);
       });
+    });
+    feedReplicator.on('error', er => {
+      this.logger.logString('_listenToReplicationChanges');
+      throw er;
     });
     feedReplicator.follow();
   }

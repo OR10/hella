@@ -34,7 +34,7 @@ class UserTest extends Tests\WebTestCase
         $organisation = $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test'));
         $this->createUsersForOrganisation($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user')
+        $requestWrapper = $this->createRequest('/api/v1/user')
             ->withCredentialsFromUsername($superAdmin)
             ->execute();
 
@@ -47,7 +47,7 @@ class UserTest extends Tests\WebTestCase
         $organisation = $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test'));
         $this->createUsersForOrganisation($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user')
+        $requestWrapper = $this->createRequest('/api/v1/user')
             ->withCredentialsFromUsername($admin)
             ->execute();
 
@@ -60,7 +60,7 @@ class UserTest extends Tests\WebTestCase
         $organisation = $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test'));
         $labeler      = $this->createLabelerUser($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$labeler->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
             ->withCredentialsFromUsername($superAdmin)
             ->execute();
 
@@ -75,7 +75,7 @@ class UserTest extends Tests\WebTestCase
         $admin        = $this->createAdminUser($organisation);
         $labeler      = $this->createLabelerUser($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$labeler->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
             ->withCredentialsFromUsername($admin)
             ->execute();
 
@@ -90,7 +90,7 @@ class UserTest extends Tests\WebTestCase
         $admin        = $this->createAdminUser();
         $labeler      = $this->createLabelerUser($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$labeler->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
             ->withCredentialsFromUsername($admin)
             ->execute();
 
@@ -105,7 +105,7 @@ class UserTest extends Tests\WebTestCase
         $admin        = $this->createAdminUser();
         $superAdmin   = $this->createSuperAdminUser($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$superAdmin->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$superAdmin->getId()])
             ->withCredentialsFromUsername($admin)
             ->execute();
 
@@ -120,7 +120,7 @@ class UserTest extends Tests\WebTestCase
         $admin        = $this->createLabelerUser();
         $superAdmin   = $this->createSuperAdminUser($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$superAdmin->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$superAdmin->getId()])
             ->withCredentialsFromUsername($admin)
             ->execute();
 
@@ -134,7 +134,7 @@ class UserTest extends Tests\WebTestCase
         );
         $superAdmin   = $this->createSuperAdminUser();
 
-        $requestWrapper = $this->createRequest('/api/user')
+        $requestWrapper = $this->createRequest('/api/v1/user')
             ->withCredentialsFromUsername($superAdmin)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
@@ -160,7 +160,7 @@ class UserTest extends Tests\WebTestCase
         );
         $admin        = $this->createAdminUser($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user')
+        $requestWrapper = $this->createRequest('/api/v1/user')
             ->withCredentialsFromUsername($admin)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
@@ -186,7 +186,7 @@ class UserTest extends Tests\WebTestCase
         );
         $admin        = $this->createAdminUser();
 
-        $requestWrapper = $this->createRequest('/api/user')
+        $requestWrapper = $this->createRequest('/api/v1/user')
             ->withCredentialsFromUsername($admin)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
@@ -213,7 +213,7 @@ class UserTest extends Tests\WebTestCase
         $superAdmin   = $this->createSuperAdminUser();
         $labeler      = $this->createLabelerUser();
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$labeler->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
             ->withCredentialsFromUsername($superAdmin)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
@@ -240,7 +240,7 @@ class UserTest extends Tests\WebTestCase
         $admin        = $this->createAdminUser($organisation);
         $labeler      = $this->createLabelerUser($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$labeler->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
             ->withCredentialsFromUsername($admin)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
@@ -270,7 +270,7 @@ class UserTest extends Tests\WebTestCase
         $admin           = $this->createAdminUser($organisation);
         $labeler         = $this->createLabelerUser($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$labeler->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
             ->withCredentialsFromUsername($admin)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
@@ -297,7 +297,7 @@ class UserTest extends Tests\WebTestCase
         $admin        = $this->createAdminUser($organisation);
         $labeler      = $this->createLabelerUser();
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$labeler->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
             ->withCredentialsFromUsername($admin)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
@@ -324,7 +324,7 @@ class UserTest extends Tests\WebTestCase
         $superAdmin   = $this->createSuperAdminUser();
         $labeler      = $this->createLabelerUser();
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$labeler->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
             ->withCredentialsFromUsername($superAdmin)
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->execute();
@@ -342,7 +342,7 @@ class UserTest extends Tests\WebTestCase
         $admin        = $this->createAdminUser($organisation);
         $labeler      = $this->createLabelerUser($organisation);
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$labeler->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
             ->withCredentialsFromUsername($admin)
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->execute();
@@ -358,7 +358,7 @@ class UserTest extends Tests\WebTestCase
         $admin        = $this->createAdminUser($organisation);
         $labeler      = $this->createLabelerUser();
 
-        $requestWrapper = $this->createRequest('/api/user/%s', [$labeler->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
             ->withCredentialsFromUsername($admin)
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->execute();
@@ -371,7 +371,7 @@ class UserTest extends Tests\WebTestCase
         $superAdmin   = $this->createSuperAdminUser();
 
         $username = 'super_admin_2';
-        $requestWrapper = $this->createRequest('/api/user')
+        $requestWrapper = $this->createRequest('/api/v1/user')
             ->withCredentialsFromUsername($superAdmin)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(

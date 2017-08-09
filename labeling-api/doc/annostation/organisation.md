@@ -1,6 +1,6 @@
 # Group Organisations
 
-## Get an Organisations List [/api/organisation]
+## Get an Organisations List [/api/v1/organisation]
 
 Get a list of all organisations
 
@@ -10,7 +10,7 @@ Get a list of all organisations
     + Attributes
         + result array(Organisation)
 
-## Add a new organisation [/api/organisation]
+## Add a new organisation [/api/v1/organisation]
 
 Add a new organisation
 
@@ -26,7 +26,7 @@ Add a new organisation
     + Attributes
         + result (Organisation)
 
-## Update an organisation [/api/organisation/{organisationId}]
+## Update an organisation [/api/v1/organisation/{organisationId}]
 
 Change an organisation
 
@@ -45,7 +45,7 @@ Change an organisation
     + Attributes
         + result (Organisation)
 
-## Delete an organisation [/api/organisation/{organisationId}]
+## Delete an organisation [/api/v1/organisation/{organisationId}]
 
 Delete a organisation
 

@@ -37,7 +37,7 @@ class AttentionTest extends Tests\WebTestCase
     public function testListAttentionTasks()
     {
         $response = $this->createRequest(
-            '/api/organisation/%s/project/%s/attentionTasks',
+            '/api/v1/organisation/%s/project/%s/attentionTasks',
             [$this->organisation->getId(), $this->project->getId()],
             'label_coordinator',
             'label_coordinator'

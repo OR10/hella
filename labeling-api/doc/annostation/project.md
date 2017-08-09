@@ -1,6 +1,6 @@
 # Group Projects
 
-## Get a a single project [/api/organisation/{organisationId}/project/{projectId}]
+## Get a a single project [/api/v1/organisation/{organisationId}/project/{projectId}]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -12,7 +12,7 @@
     + Attributes
         + result Project
         
-## Delete a Project [/api/organisation/{organisationId}/project/{projectId}]
+## Delete a Project [/api/v1/organisation/{organisationId}/project/{projectId}]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -25,7 +25,7 @@
         + result
             + success: `true` (boolean) 
 
-## Get a list of all projects [/api/organisation/{organisationId}/project?limit={limit}&offset={offset}]
+## Get a list of all projects [/api/v1/organisation/{organisationId}/project?limit={limit}&offset={offset}]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -40,7 +40,7 @@
         + totalRows: `5` (number) - Total Number of documents in the database
         + result array(Project)
 
-## Create a new Project [/api/organisation/{organisationId}/project]
+## Create a new Project [/api/v1/organisation/{organisationId}/project]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -59,7 +59,7 @@
     + Attributes
         + result (Project)
 
-## Get a list of all finished exports for this project [/api/organisation/{organisationId}/project/{projectId}/export]
+## Get a list of all finished exports for this project [/api/v1/organisation/{organisationId}/project/{projectId}/export]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -71,7 +71,7 @@
     + Attributes
         + result array(ProjectExport)
 
-## Download an export [/api/organisation/{organisationId}/project/{projectId}/export/{projectExportId}]
+## Download an export [/api/v1/organisation/{organisationId}/project/{projectId}/export/{projectExportId}]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -82,7 +82,7 @@
 
 + Response 200
 
-## Start a new export job for this project [/api/organisation/{organisationId}/project/{projectId}/export/csv]
+## Start a new export job for this project [/api/v1/organisation/{organisationId}/project/{projectId}/export/csv]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -94,7 +94,7 @@
     + Attributes
         + message: `Export started`
 
-## Get sum of projects by status [/api/organisation/{organisationId}/projectCount]
+## Get sum of projects by status [/api/v1/organisation/{organisationId}/projectCount]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -108,7 +108,7 @@
             + `in_progress`: `30` (number) - Number of in_progress jobs
             + todo: `40` (number) - Number of todo jobs
 
-## Set Projects State to in progress [/api/organisation/{organisationId}/project/{projectId}/status/accept]
+## Set Projects State to in progress [/api/v1/organisation/{organisationId}/project/{projectId}/status/accept]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -120,7 +120,7 @@
     + Attributes
         + result true
 
-## Set Projects State to done [/api/organisation/{organisationId}/project/{projectId}/status/done]
+## Set Projects State to done [/api/v1/organisation/{organisationId}/project/{projectId}/status/done]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -132,7 +132,7 @@
     + Attributes
         + result true
 
-## Mark a project as deleted [/api/organisation/{organisationId}/project/{projectId}/status/deleted]
+## Mark a project as deleted [/api/v1/organisation/{organisationId}/project/{projectId}/status/deleted]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -145,7 +145,7 @@
         + result
             + success: `true` (boolean)
 
-## Delete a project [/api/organisation/{organisationId}/project/{projectId}/delete]
+## Delete a project [/api/v1/organisation/{organisationId}/project/{projectId}/delete]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -158,7 +158,7 @@
         + result
             + success: `true` (boolean) 
 
-## Create a new Report [/api/organisation/{organisationId}/project/{projectId}/report]
+## Create a new Report [/api/v1/organisation/{organisationId}/project/{projectId}/report]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -170,7 +170,7 @@
     + Attributes
         + result array(Report)
 
-## Get all Reports for Project [/api/organisation/{organisationId}/project/{projectId}/report]
+## Get all Reports for Project [/api/v1/organisation/{organisationId}/project/{projectId}/report]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -182,7 +182,7 @@
     + Attributes
         + result array(Report)
 
-## Get Report by Report ID [/api/organisation/{organisationId}/project/{projectId}/report/{reportId}]
+## Get Report by Report ID [/api/v1/organisation/{organisationId}/project/{projectId}/report/{reportId}]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -195,7 +195,7 @@
     + Attributes
         + result array(Report)
 
-## Assign project to label coordinator [/api/organisation/{organisationId}/project/{projectId}/assign]
+## Assign project to label coordinator [/api/v1/organisation/{organisationId}/project/{projectId}/assign]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -208,7 +208,7 @@
     + Attributes
         + result Project
 
-## Change the LabelGroup assignment [/api/organisation/{organisationId}/project/{projectId}/assignLabelGroup]
+## Change the LabelGroup assignment [/api/v1/organisation/{organisationId}/project/{projectId}/assignLabelGroup]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -221,7 +221,7 @@
     + Attributes
         + result Project
 
-## Batch upload chunk [POST /api/organisation/{organisationId}/project/batchUpload/{projectId}]
+## Batch upload chunk [POST /api/v1/organisation/{organisationId}/project/batchUpload/{projectId}]
 
 This route provides an api endpoint to upload file chunks for the flow library.
 The POST body is not documented here, please have a look at https://github.com/flowjs/flow-php-server.
@@ -238,7 +238,7 @@ The POST body is not documented here, please have a look at https://github.com/f
 
 + Response 500 (application/json)
 
-## Batch upload complete [POST /api/organisation/{organisationId}/project/batchUpload/{projectId}/complete]
+## Batch upload complete [POST /api/v1/organisation/{organisationId}/project/batchUpload/{projectId}/complete]
 
 This route creates the tasks for all uploaded videos of the given project once all chunks were uploaded completely.
 
@@ -251,7 +251,7 @@ This route creates the tasks for all uploaded videos of the given project once a
         + result
             + taskIds (array)
             
-## Get all Task with attention Flagging [/api/organisation/{organisationId}/project/{projectId}/attentionTasks]
+## Get all Task with attention Flagging [/api/v1/organisation/{organisationId}/project/{projectId}/attentionTasks]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.

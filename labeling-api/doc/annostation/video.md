@@ -1,6 +1,6 @@
 # Group Video
 
-## Video by id [/api/video/{id}]
+## Video by id [/api/v1/video/{id}]
 
 + Parameters
     + id: `05c1a74d8eda4a16a355519c0f003504` (string, required) - The id of the video-entity.
