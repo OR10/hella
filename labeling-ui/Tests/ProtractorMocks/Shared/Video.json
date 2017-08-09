@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/video/VIDEOID-VIDEOID",
+    "path": "/api/v1/video/VIDEOID-VIDEOID",
     "method": "GET"
   },
   "response": {
