@@ -151,7 +151,8 @@ module.exports = function (config) {
         config: webdriverConfig,
         browserName: 'chrome',
         platform: 'LINUX',
-        name: 'Karma'
+        name: 'Karma',
+        flags: ['--no-sandbox']
       },
       'IE11': {
         base: 'WebDriver',
