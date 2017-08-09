@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/TASKID-TASKID/labeledThingInFrame/0",
+    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
     "method": "GET",
     "queryString": {
       "limit": "1",

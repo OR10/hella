@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/task/TASKID-TASKID/frameLocations/sourceJpg",
+    "path": "/api/v1/task/TASKID-TASKID/frameLocations/sourceJpg",
     "queryString": {
       "limit": "5",
       "offset": "0"

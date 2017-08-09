@@ -1,6 +1,6 @@
 {
   "request": {
-    "path": "/api/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-2",
+    "path": "/api/v1/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-2",
     "method": "PUT",
     "data": {
       "id": "LABELED-THING-IN-FRAME-ID-2",
