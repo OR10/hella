@@ -70,10 +70,10 @@ class WorkerQueue {
       .then(() => {
         const index = this.activeTasks.findIndex(task => task.id === element.id);
         if (index !== -1) {
-          this.logger.logString(`Removed task "${task.id}" from active tasks queue`);
+          this.logger.logString(`Removed task "${element.id}" from active tasks queue`);
           this.activeTasks.splice(index, 1);
         } else {
-          this.logger.logString(`FAILED to removed task "${task.id}" from active tasks queue`);
+          this.logger.logString(`FAILED to removed task "${element.id}" from active tasks queue`);
         }
         this._printQueueStatus();
         this.compactReplicationDatabaseIfNecessary();
@@ -82,10 +82,10 @@ class WorkerQueue {
       .catch(error => {
         const index = this.activeTasks.findIndex(task => task.id === element.id);
         if (index !== -1) {
-          this.logger.logString(`(Catch) Removed task "${task.id}" from active tasks queue`);
+          this.logger.logString(`(Catch) Removed task "${element.id}" from active tasks queue`);
           this.activeTasks.splice(index, 1);
         } else {
-          this.logger.logString(`(Catch) FAILED to removed task "${task.id}" from active tasks queue`);
+          this.logger.logString(`(Catch) FAILED to removed task "${element.id}" from active tasks queue`);
         }
 
         if (element.hasReachedMaximumRetries()) {
