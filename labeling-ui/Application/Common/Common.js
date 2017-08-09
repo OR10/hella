@@ -38,6 +38,7 @@ import PouchDbViewService from './Services/PouchDbViewService';
 import SideNavigationDirective from './Directives/SideNavigationDirective';
 import UserAvatarDirective from './Directives/UserAvatarDirective';
 import PageTitleDirective from './Directives/PageTitleDirective';
+import PiePercentageDirective from './Directives/PiePercentageDirective';
 
 import PouchDbLiveMigration from './Services/PouchDbLiveMigration';
 import PouchDbContextService from './Services/PouchDbContextService';
@@ -154,6 +155,7 @@ class Common extends Module {
     this.registerDirective('sideNavigation', SideNavigationDirective);
     this.registerDirective('userAvatar', UserAvatarDirective);
     this.registerDirective('pageTitle', PageTitleDirective);
+    this.registerDirective('piePercentage', PiePercentageDirective);
 
     this.module.config(
       ['$compileProvider', '$httpProvider', 'hotkeysProvider', 'loggerServiceProvider',
