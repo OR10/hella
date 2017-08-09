@@ -74,6 +74,9 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
     {
       'browserName': 'chrome',
       'platform': 'LINUX',
+      'chromeOptions': {
+        'args': ['--no-sandbox']
+      }
     },
   ];
 } else {
