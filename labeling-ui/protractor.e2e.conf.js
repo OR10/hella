@@ -73,9 +73,9 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
   exports.config.multiCapabilities = [
     {
       'browserName': 'chrome',
-      'platform': 'LINUX',
+      'platform': 'WINDOWS',
       'chromeOptions': {
-        'args': ['--no-sandbox']
+        'args': ['--no-sandbox' ]
       }
     },
   ];
@@ -88,6 +88,6 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
   };
 
   if (process.env.HEADLESS === 'true') {
-    exports.config.capabilities.chromeOptions.args = [ "--headless", "--window-size=1920,1080" ];
+    exports.config.capabilities.chromeOptions.args = [ '--headless', '--window-size=1920,1080' ];
   }
 }
