@@ -686,15 +686,15 @@ class ProjectListController {
    * @param {Object} project
    * @returns {string}
    */
-  getTooltipForUploadVideos(project) {
+  getTooltipForUploadMedia(project) {
     if (project.projectOwnerIsCurrentUser === true) {
-      return 'Upload Videos';
+      return 'Upload Media';
     }
     if (this.projectCreators.get(project.userId) === undefined) {
-      return 'You are not allowed to upload videos';
+      return 'You are not allowed to upload media';
     }
 
-    return 'Only ' + this.projectCreators.get(project.userId).username + ' can upload videos';
+    return 'Only ' + this.projectCreators.get(project.userId).username + ' can upload media';
   }
 
   /**
