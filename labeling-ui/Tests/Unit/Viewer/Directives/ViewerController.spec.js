@@ -139,7 +139,7 @@ describe('ViewerController tests', () => {
   describe('Events', () => {
     it('framerange:change:after (TTANNO-1923)', () => {
       const debouncedThingOnUpdate = jasmine.createSpyObj('debouncedThingOnUpdate', ['triggerImmediately']);
-      debouncedThingOnUpdate.triggerImmediately.and.returnValue(angularQ());
+      debouncedThingOnUpdate.triggerImmediately.and.returnValue(angularQ.resolve());
 
       debouncerService.multiplexDebounce.and.returnValue(debouncedThingOnUpdate);
       createController();
