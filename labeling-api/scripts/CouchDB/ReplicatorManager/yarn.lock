@@ -1528,6 +1528,16 @@ progress@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.0.tgz#8a1be366bf8fc23db2bd23f10c6fe920b4389d1f"
 
+promise-mock@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/promise-mock/-/promise-mock-1.1.1.tgz#5e1b307ab3f593a3383381eeb45a21c535bbb934"
+  dependencies:
+    promise-polyfill "*"
+
+promise-polyfill@*:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/promise-polyfill/-/promise-polyfill-6.0.2.tgz#d9c86d3dc4dc2df9016e88946defd69b49b41162"
+
 punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"

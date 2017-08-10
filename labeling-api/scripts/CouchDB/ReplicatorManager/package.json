@@ -21,6 +21,7 @@
     "eslint-config-airbnb": "^15.0.2",
     "eslint-plugin-import": "^2.6.1",
     "eslint-plugin-jasmine": "^2.7.1",
-    "jasmine": "^2.6.0"
+    "jasmine": "^2.6.0",
+    "promise-mock": "^1.1.1"
   }
 }
