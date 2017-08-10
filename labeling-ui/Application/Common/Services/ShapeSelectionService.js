@@ -32,6 +32,17 @@ class ShapeSelectionService {
   }
 
   /**
+   * Explicitly removes a shape from the selection
+   *
+   * @param {PaperThingShape} shape
+   * @returns {boolean}
+   */
+  removeShape(shape) {
+    shape.deselect();
+    this._shapes.delete(shape.id);
+  }
+
+  /**
    * @private
    */
   _selectAllShapes() {
