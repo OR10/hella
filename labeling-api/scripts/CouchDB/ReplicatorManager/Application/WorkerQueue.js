@@ -1,12 +1,36 @@
 const { compactReplicationDatabase } = require('./Utils');
 
 class WorkerQueue {
-  constructor(nanoAdmin, logger, maxSimultaneousJobs = 50, compactReplicationDbCycle = 500) {
+  /**
+   * @param nanoAdmin
+   * @param logger
+   * @param {CompactionService} compactionService
+   * @param maxSimultaneousJobs
+   * @param compactReplicationDbCycle
+   */
+  constructor(nanoAdmin, logger, compactionService, maxSimultaneousJobs = 50, compactReplicationDbCycle = 500) {
     this.nanoAdmin = nanoAdmin;
     this.logger = logger;
+
+    /**
+     * @type {CompactionService}
+     * @private
+     */
+    this._compactionService = compactionService;
+
     this.maxSimultaneousJobs = maxSimultaneousJobs;
-    this.compactReplicationDbCycle = compactReplicationDbCycle;
-    this.compactReplicationCounter = 0;
+    this._compactReplicationDbCycle = compactReplicationDbCycle;
+    this._compactReplicationCounter = 0;
+
+    /**
+     * Flag set if a compaction should be triggered. This indicates, that no more jobs are added to the activequeue
+     * for the time being, until the replication has been triggered and executed.
+     *
+     * @type {boolean}
+     * @private
+     */
+    this._compactionRequested = false;
+
     this.queue = [];
     this.activeTasks = [];
     this.lastQueueStatus = {};
@@ -19,7 +43,6 @@ class WorkerQueue {
   addJob(job) {
     this.queue.push(job);
     this.queue = WorkerQueue._removeDuplicatesBy(x => x.id, this.queue);
-    this._printQueueStatus();
 
     this.doWork();
   }
@@ -41,6 +64,7 @@ class WorkerQueue {
    */
   doWork() {
     setImmediate(() => {
+      this._printQueueStatus();
       this.queueWorker();
     });
   }
@@ -50,7 +74,38 @@ class WorkerQueue {
    * @returns {boolean}
    */
   queueWorker() {
-    this._printQueueStatus();
+    // Never do work, while compaction is in progress
+    if (this._compactionService.isCompactionInProgress()) {
+      return;
+    }
+
+    if (this._compactionRequested === true) {
+      if (this.activeTasks.length > 0) {
+        // Do not add further active tasks while waiting for compaction to be run.
+        return;
+      } else {
+        // Trigger compaction once the active tasks queue is empty
+        this.logger.logString('Compacting _replicator database...');
+        this._compactionService.compactDb()
+          .then(() => {
+            this.logger.logString('Compaction of _replicator database completed.');
+            this._compactionRequested = false;
+            this._resetReplicationCounter();
+            // Restart working after compaction is finished.
+            this.doWork();
+          })
+          .catch(error => {
+            this.logger.logString(`Compaction failed: ${error}. Resuming normal operations...`);
+            this._compactionRequested = false;
+            this._resetReplicationCounter();
+            // Restart working after compaction is finished.
+            this.doWork();
+          });
+        // Wait for compaction to finish, before doing anything else
+        return;
+      }
+    }
+
     if (this.activeTasks.length >= this.maxSimultaneousJobs || this.queue.length === 0) {
       return false;
     }
@@ -70,50 +125,52 @@ class WorkerQueue {
       .then(() => {
         const index = this.activeTasks.findIndex(task => task.id === element.id);
         if (index !== -1) {
-          this.logger.logString(`Removed task "${element.id}" from active tasks queue`);
           this.activeTasks.splice(index, 1);
         } else {
           this.logger.logString(`FAILED to removed task "${element.id}" from active tasks queue`);
         }
-        this._printQueueStatus();
-        this.compactReplicationDatabaseIfNecessary();
+
+        this._compactionRequested = this._isDatabaseReplicationNecessary();
+        this._incrementReplicationCounter();
+
         this.doWork();
       })
       .catch(error => {
         const index = this.activeTasks.findIndex(task => task.id === element.id);
         if (index !== -1) {
-          this.logger.logString(`(Catch) Removed task "${element.id}" from active tasks queue`);
           this.activeTasks.splice(index, 1);
         } else {
-          this.logger.logString(`(Catch) FAILED to removed task "${element.id}" from active tasks queue`);
+          this.logger.logString(`FAILED to removed task "${element.id}" from active tasks queue`);
         }
 
         if (element.hasReachedMaximumRetries()) {
           this.logger.logString(`Replication failed (Maximum retries reached ${element.retryCount}. Not Queueing again): ${error}`);
         } else {
-          this.logger.logString(`Replication failed (Requeued. Tried already ${element.retryCount} times): ${error}`);
           element.incrementRetryCount();
+          this.logger.logString(`Replication failed (Requeued. Tried already ${element.retryCount} times): ${error}`);
           this.addJob(element);
         }
         
-        this._printQueueStatus();
         this.doWork();
       });
 
+    // Enqueue items until the active queue is full.
+    this.queueWorker();
     return true;
   }
 
-  compactReplicationDatabaseIfNecessary() {
-    this.compactReplicationCounter += 1;
-    if (this.compactReplicationCounter >= this.compactReplicationDbCycle) {
-      compactReplicationDatabase(this.nanoAdmin, this.logger);
-      this.compactReplicationCounter = 0;
-    }
+  _isDatabaseReplicationNecessary() {
+    return (this._compactReplicationCounter >= this._compactReplicationDbCycle);
   }
 
-  /**
-   *
-   */
+  _incrementReplicationCounter() {
+    this._compactReplicationCounter++;
+  }
+
+  _resetReplicationCounter() {
+    this._compactReplicationCounter = 0;
+  }
+
   listenToReplicationChanges() {
     const replicatorDb = this.nanoAdmin.use('_replicator');
     const feedReplicator = replicatorDb.follow({ include_docs: true });
