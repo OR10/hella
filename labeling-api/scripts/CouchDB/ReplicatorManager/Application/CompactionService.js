@@ -42,7 +42,7 @@ class CompactionService {
    * @returns {boolean}
    */
   isCompactionInProgress() {
-
+    return this._compactionInProgress;
   }
 
   /**
