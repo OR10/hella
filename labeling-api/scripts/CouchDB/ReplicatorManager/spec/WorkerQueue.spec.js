@@ -1,13 +1,14 @@
 const { WorkerQueue } = require('../Application/WorkerQueue');
 const { Replicator } = require('../Application/Jobs/Replicator');
 
-describe('WorkerQueue Job', () => {
+describe('WorkerQueue', () => {
   let nanoAdminMock;
   let replicatorDbMock;
   let loggerMock;
+  let compactionServiceMock;
 
   function createWorkerQueue() {
-    return new WorkerQueue(nanoAdminMock, loggerMock);
+    return new WorkerQueue(nanoAdminMock, loggerMock, compactionServiceMock, 50, 500);
   }
 
   function createReplicationJob(sourceUrl = '', targetUrl = '') {
@@ -18,6 +19,9 @@ describe('WorkerQueue Job', () => {
     nanoAdminMock = jasmine.createSpyObj('nanoAdmin', ['use']);
     replicatorDbMock = jasmine.createSpyObj('replicatorDb', ['insert']);
     loggerMock = jasmine.createSpyObj('Logger', ['logString']);
+    compactionServiceMock = jasmine.createSpyObj('CompactionService', ['compactDb', 'isCompactionInProgress']);
+    compactionServiceMock.isCompactionInProgress.and.returnValue(false);
+    compactionServiceMock.compactDb.and.returnValue(Promise.resolve());
 
     nanoAdminMock.use.and.returnValue(replicatorDbMock);
   });
@@ -49,13 +53,15 @@ describe('WorkerQueue Job', () => {
 
   it('should work with queues and active tasks', () => {
     const workerQueue = createWorkerQueue();
-    spyOn(workerQueue, 'doWork').and.returnValue(undefined);
+    // Eliminate setImmediate
+    spyOn(workerQueue, 'doWork')
+      .and.callFake(() => workerQueue.queueWorker());
 
-    for (let count = 1; count <= 70; count += count) {
+    for (let count = 1; count <= 70; count++) {
       const job = createReplicationJob(count, count);
       workerQueue.addJob(job);
-      workerQueue.queueWorker();
     }
+
     expect(workerQueue.activeTasks.length).toEqual(50);
     expect(workerQueue.queue.length).toEqual(20);
   });
