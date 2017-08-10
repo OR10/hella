@@ -73,7 +73,7 @@ class CompactionService {
   _waitForCompactionToFinish(delay = 1000) {
     return new Promise((resolve, reject) => {
       const doCheck = () => {
-        return this._checkCompactionAndSleepCycle()
+        return this._checkCompactionAndSleepCycle(delay)
           .then(finished => {
             if (finished === true) {
               resolve();

@@ -1,10 +1,12 @@
+const PromiseMock = require('promise-mock');
 const { ReplicationManager } = require('../Application/ReplicationManager');
 
-describe('ReplicationManager Test', () => {
+describe('ReplicationManager', () => {
   let nanoAdminMock;
   let replicatorDbMock;
   let loggerMock;
   let workerQueueMock;
+  let compactionServiceMock;
 
   function getOptions() {
     return {
@@ -17,8 +19,17 @@ describe('ReplicationManager Test', () => {
   }
 
   function createReplicationManager() {
-    return new ReplicationManager(loggerMock, nanoAdminMock, workerQueueMock, getOptions());
+    return new ReplicationManager(
+      loggerMock,
+      nanoAdminMock,
+      workerQueueMock,
+      getOptions()
+    );
   }
+
+  beforeEach(() => {
+    PromiseMock.install();
+  });
 
   beforeEach(() => {
     replicatorDbMock = jasmine.createSpyObj('replicatorDb', ['insert']);
@@ -50,22 +61,29 @@ describe('ReplicationManager Test', () => {
     );
   });
 
-  it('should trigger startup', done => {
+  it('should trigger startup', () => {
     const replicationManager = createReplicationManager();
-    const promise = new Promise(resolve => {
-      resolve();
-    });
-    spyOn(replicationManager, 'purgeAllPreviousManagedReplicationLeftOvers').and.returnValue(promise);
-    spyOn(replicationManager, 'addOneTimeReplicationForAllDatabases');
-    spyOn(replicationManager, 'listenToDatabaseChanges');
+    workerQueueMock.listenToReplicationChanges
+      .and.returnValue(Promise.resolve());
+
+    spyOn(replicationManager, 'purgeAllPreviousManagedReplicationLeftOvers')
+      .and.returnValue(Promise.resolve());
+    spyOn(replicationManager, 'addOneTimeReplicationForAllDatabases')
+      .and.returnValue(Promise.resolve());
+    spyOn(replicationManager, 'listenToDatabaseChanges')
+      .and.returnValue(Promise.resolve());
+
     replicationManager.run();
 
+    Promise.runAll();
+
     expect(replicationManager.purgeAllPreviousManagedReplicationLeftOvers).toHaveBeenCalled();
-    promise.then(() => {
-      expect(replicationManager.addOneTimeReplicationForAllDatabases).toHaveBeenCalled();
-      expect(workerQueueMock.listenToReplicationChanges).toHaveBeenCalled();
-      expect(replicationManager.listenToDatabaseChanges).toHaveBeenCalled();
-      done();
-    });
+    expect(replicationManager.addOneTimeReplicationForAllDatabases).toHaveBeenCalled();
+    expect(workerQueueMock.listenToReplicationChanges).toHaveBeenCalled();
+    expect(replicationManager.listenToDatabaseChanges).toHaveBeenCalled();
+  });
+
+  afterEach(() => {
+    PromiseMock.uninstall();
   });
 });
