@@ -52,7 +52,7 @@
             </td>
 
             <td class="action-cell" ng-click="$event.stopPropagation()" ng-init="vm.getUsernameForId(project.userId)">
-                <button tooltip="{{vm.getTooltipForUploadVideos(project)}}"
+                <button tooltip="{{vm.getTooltipForUploadMedia(project)}}"
                         ng-if="vm.userPermissions.canUploadNewVideo && project.status == 'todo'"
                         ng-click="vm.goToUploadPage(project)"
                         ng-class="vm.isUploadTooltipDisabled(project)"

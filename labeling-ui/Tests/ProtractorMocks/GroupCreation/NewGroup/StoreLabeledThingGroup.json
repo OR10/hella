@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "path": "/api/task/TASKID-TASKID/labeledThingGroup",
+    "path": "/api/v1/task/TASKID-TASKID/labeledThingGroup",
     "data": {
       "id": "{{:labeledThingGroupId}}",
       "groupIds": [],
