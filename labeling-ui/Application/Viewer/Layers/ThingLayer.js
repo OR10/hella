@@ -14,6 +14,8 @@ import PaperShape from '../Shapes/PaperShape';
 import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
+import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
+import PaperGroupRectangleMulti from '../Shapes/PaperGroupRectangleMulti'
 
 /**
  * A Layer used to draw Things within the viewer
@@ -39,6 +41,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {ToolSelectorListenerService} toolSelectorListenerService
+   * @param {HierarchyCreationService} hierarchyCreationService
    */
   constructor(width,
               height,
@@ -56,7 +60,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
               modalService,
               labeledThingGateway,
               labeledThingGroupGateway,
-              shapeSelectionService) {
+              shapeSelectionService,
+              toolSelectorListenerService,
+              hierarchyCreationService) {
     super(width, height, $scope, drawingContext);
 
     /**
@@ -174,6 +180,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._shapeSelectionService = shapeSelectionService;
+
+    /**
+     * @type {ToolSelectorListenerService}
+     * @private
+     */
+    this._toolSelectorListenerService = toolSelectorListenerService;
+
+    /**
+     * @type {HierarchyCreationService}
+     * @private
+     */
+    this._hierarchyCreationService = hierarchyCreationService;
 
     $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
       const oldSet = new Set(oldPaperGroupShapes);
@@ -576,6 +594,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
             case paperShape instanceof PaperGroupShape:
               this._$scope.vm.paperGroupShapes.push(paperShape);
               this._$scope.vm.selectedPaperShape = paperShape;
+              console.log(paperShape);
               this.emit('group:create', paperShape);
               break;
             case paperShape instanceof PaperVirtualShape:

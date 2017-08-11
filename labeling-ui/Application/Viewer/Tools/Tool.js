@@ -56,6 +56,7 @@ export default class Tool extends EventEmitter {
    * Activate this tool
    */
   activate() {
+    console.log('foobar');
     this._context.withScope(() => {
       this._tool.activate();
     });

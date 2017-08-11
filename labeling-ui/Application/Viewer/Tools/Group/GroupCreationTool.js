@@ -1,5 +1,6 @@
 import CreationTool from '../CreationTool';
 import PaperGroupRectangleMulti from '../../Shapes/PaperGroupRectangleMulti';
+import MultiToolActionStruct from '../ToolActionStructs/MultiToolActionStruct';
 
 class GroupCreationTool extends CreationTool {
   /**
@@ -68,8 +69,43 @@ class GroupCreationTool extends CreationTool {
     this._toolSelectorListenerService = toolSelectorListenerService;
 
     const toolActivationCallback =  (shape, labelStructureObject) => {
-      console.log(shape);
+      //
+      // const multiToolOptions = {
+      //   initialDragDistance: 1,
+      //   minDragDistance: 1,
+      //   hitTestTolerance: 8,
+      // };
+      //
+      // const defaultOptions = {
+      //   initialDragDistance: 8,
+      //   minDragDistance: 1,
+      //   minimalHeight: 1,
+      // };
+      //
+      // const toolActionStruct = new MultiToolActionStruct(
+      //   multiToolOptions,
+      //   viewport,
+      //   defaultOptions,
+      //   readOnly,
+      //   video,
+      //   task,
+      //   {}, // framePosition
+      //   labelStructureObject.id,
+      //   shape,
+      //   null
+      // );
+
+      // const bar = new LabeledThingGroupInFrame();
+      // const foo = new PaperGroupShape();
+
+      // if (this._shapeSelectionService.count() > 0) {
+      //   const shapes = this._shapeSelectionService.getAllShapes();
+      //   const groupId = this._entityIdService.getUniqueId();
+      //   this._createPaperGroup(groupId, toolActionStruct, shapes);
+      //   // this._complete(paperGroup);
+      // }
     };
+
     this._toolSelectorListenerService.addListener(toolActivationCallback, PaperGroupRectangleMulti.getClass(), true);
   }
 
@@ -78,16 +114,9 @@ class GroupCreationTool extends CreationTool {
    * @param {ToolActionStruct} toolActionStruct
    */
   activate(toolActionStruct) {
-    console.log('activate');
     super.activate(toolActionStruct);
 
-    if (this._shapeSelectionService.count() > 0) {
-      const shapes = this._shapeSelectionService.getAllShapes();
-      console.log(shapes);
-    //   const groupId = this._entityIdService.getUniqueId();
-    //   const paperGroup = this._createPaperGroup(groupId, toolActionStruct, shapes);
-    //   this._complete(paperGroup);
-    }
+
   }
 
   /**
@@ -139,6 +168,7 @@ class GroupCreationTool extends CreationTool {
     const promise = super.invokeShapeCreation(toolActionStruct);
 
     this._rectangleCreationTool.invokeShapeCreation(toolActionStruct).then(paperShape => {
+      console.log(paperShape);
       paperShape.remove();
       const shapes = this._labeledThingGroupService.getShapesWithinBounds(this._context, paperShape.bounds);
 
