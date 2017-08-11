@@ -90,6 +90,15 @@ class ShapeSelectionService {
   getSelectedShape() {
     return this._shapes.values().next().value;
   }
+
+  /**
+   * Return all selected shapes
+   *
+   * @returns {Array}
+   */
+  getAllShapes() {
+    return Array.from(this._shapes.values());
+  }
 }
 
 export default ShapeSelectionService;
