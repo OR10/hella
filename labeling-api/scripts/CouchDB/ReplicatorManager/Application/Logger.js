@@ -1,8 +1,8 @@
 class Logger {
-  logString(string) {
-    this.string = string;
+  logString(message) {
+    const now = new Date();
     // eslint-disable-next-line no-console
-    console.log(this.string);
+    console.log(`[${now.toISOString()}] ${message}`);
   }
 }
 
