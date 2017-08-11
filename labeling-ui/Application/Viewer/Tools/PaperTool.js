@@ -198,6 +198,20 @@ class PaperTool extends Tool {
   }
 
   /**
+   * Override the activate method from Tool
+   * By default, tools don't do anything when activating
+   *
+   * If you want to implement some actions for PaperTools upon activation/invokation, this is the place
+   * Override in child
+   *
+   * @param {ToolActionStruct} toolActionStruct
+   *
+   */
+  activate(toolActionStruct) { // eslint-disable-line no-unused-vars
+
+  }
+
+  /**
    * Invoke the tool to start its workflow.
    * The returning promise is resolved after the
    * tool workflow is finished.

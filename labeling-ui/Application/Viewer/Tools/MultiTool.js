@@ -122,6 +122,7 @@ class MultiTool extends PaperTool {
         });
     }
     const promise = this._invoke(toolActionStruct);
+    this._activatePaperTool(tool);
 
     if (toolActionStruct.readOnly !== true && selectedPaperShape !== null) {
       const keyboardTool = this._toolService.getTool(this._context, requirementsShape, 'keyboard');
@@ -131,6 +132,25 @@ class MultiTool extends PaperTool {
     }
 
     return promise;
+  }
+
+  /**
+   *
+   * @param {PaperTool} tool
+   * @private
+   */
+  _activatePaperTool(tool) {
+    const {viewport, video, task, framePosition, requirementsThingOrGroupId, delegatedOptions} = this._toolActionStruct;
+    const struct = new CreationToolActionStruct(
+      delegatedOptions,
+      viewport,
+      video,
+      task,
+      framePosition,
+      requirementsThingOrGroupId
+    );
+
+    tool.activate(struct);
   }
 
   /**

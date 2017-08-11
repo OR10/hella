@@ -57,6 +57,7 @@ import AssemblyJobFactory from './Services/PackagingExecutor/AssemblyJobFactory'
 import ReplicationStateService from './Services/ReplicationStateService';
 import TaskReplicationService from './Services/TaskReplicationService';
 import ShapeSelectionService from './Services/ShapeSelectionService';
+import ToolSelectorListenerService from './Services/ToolSelectorListenerService';
 
 import modalDialogProvider from './Services/ModalDialogs/ModalDialog';
 import infoDialogProvider from './Services/ModalDialogs/InfoDialog';
@@ -133,6 +134,7 @@ class Common extends Module {
     this.module.service('replicationStateService', ReplicationStateService);
     this.module.service('taskReplicationService', TaskReplicationService);
     this.module.service('shapeSelectionService', ShapeSelectionService);
+    this.module.service('toolSelectorListenerService', ToolSelectorListenerService);
 
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
