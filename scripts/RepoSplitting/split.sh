@@ -26,6 +26,17 @@ showUsageIfNecessary() {
   fi
 }
 
+relativeToAbsolute() {
+  local relative="${1}"
+  (
+    if [ "${relative%/*}" != "${relative}" ]; then
+      cd ${relative%/*}
+    fi
+
+    echo $PWD/${relative##*/}
+  )
+}
+
 prepare() {
   local source="${1}"
   local target="${2}"
@@ -114,12 +125,17 @@ filterRepository() {
 
 main() {
   local historyStorage="$(mktemp)"
+  local absoluteSourceRepo="$(relativeToAbsolute "${SOURCE_REPO}")"
+  local absoluteTargetRepo="$(relativeToAbsolute "${TARGET_REPO}")"
+  local absoluteHistoryExcludes="$(relativeToAbsolute "${HISTORY_EXCLUDES}")"
+  local absoluteIncludes="$(relativeToAbsolute "${INCLUDES}")"
+  local absoluteExcludes="$(relativeToAbsolute "${EXCLUDES}")"
 
-  prepare "${SOURCE_REPO}" "${TARGET_REPO}"
-  saveHistoryExcludes "${TARGET_REPO}" "${HISTORY_EXCLUDES}" "${historyStorage}"
-  filterRepository "${TARGET_REPO}" "${INCLUDES}" "${EXCLUDES}" "${HISTORY_EXCLUDES}"
-  restoreHistoryExcludes "${TARGET_REPO}" "${historyStorage}"
-  commitHistoryStorage "${TARGET_REPO}"
+  prepare "${absoluteSourceRepo}" "${absoluteTargetRepo}"
+  saveHistoryExcludes "${absoluteTargetRepo}" "${absoluteHistoryExcludes}" "${historyStorage}"
+  filterRepository "${absoluteTargetRepo}" "${absoluteIncludes}" "${absoluteExcludes}" "${absoluteHistoryExcludes}"
+  restoreHistoryExcludes "${absoluteTargetRepo}" "${historyStorage}"
+  commitHistoryStorage "${absoluteTargetRepo}"
   log "Everything done! Have a 🍻!"
 }
 
