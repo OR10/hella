@@ -113,7 +113,8 @@ filterRepository() {
 
 
   pushd "${repository}" >/dev/null
-  log "Removing everything but the includes from ${includes}"
+  log "Removing everything, which should not longer be there according to excludes, includes and history-excludes."
+  log "This will take a long (hours) time. Grab a coffee and something to eat ;)"
   git checkout master
   git filter-branch --prune-empty --tree-filter "\
     git ls-files|rg -f \"${includes}\" -v|xargs -d '\n' -n 32 -- rm -rf;\
