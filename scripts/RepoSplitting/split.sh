@@ -124,6 +124,15 @@ filterRepository() {
   popd >/dev/null
 }
 
+removeBackupRefs() {
+  local repository="${1}"
+  pushd "${repository}" >/dev/null
+  log "Removing backup refs (refs/original)"
+  git for-each-ref --format="%(refname)" refs/original/ | xargs -n 1 git update-ref -d
+
+  popd >/dev/null
+}
+
 main() {
   local historyStorage="$(mktemp)"
   local absoluteSourceRepo="$(relativeToAbsolute "${SOURCE_REPO}")"
@@ -135,6 +144,7 @@ main() {
   prepare "${absoluteSourceRepo}" "${absoluteTargetRepo}"
   saveHistoryExcludes "${absoluteTargetRepo}" "${absoluteHistoryExcludes}" "${historyStorage}"
   filterRepository "${absoluteTargetRepo}" "${absoluteIncludes}" "${absoluteExcludes}" "${absoluteHistoryExcludes}"
+  removeBackupRefs "${absoluteTargetRepo}"
   restoreHistoryExcludes "${absoluteTargetRepo}" "${historyStorage}"
   commitHistoryStorage "${absoluteTargetRepo}"
   log "Everything done! Have a 🍻!"
