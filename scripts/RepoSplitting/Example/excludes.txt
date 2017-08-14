@@ -1,0 +1,6 @@
+Directory1/foo bar.txt
+Directory3/cool-file-1.txt
+Directory3/cool-file-2.txt
+Directory3/cool-file-3.txt
+Directory3/cool-file-4.txt
+Directory7/some-file.txt

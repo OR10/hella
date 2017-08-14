@@ -1,0 +1,5 @@
+Directory1/
+Directory3/
+Directory7/
+Directory9/
+Directory2/some-file.txt
