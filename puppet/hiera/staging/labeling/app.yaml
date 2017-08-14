@@ -17,9 +17,9 @@ labeling_api::params::couchdb_path_external: 'couchdb'
 tideways::php7: true
 
 php::cli::settings:
-  tideways/tideways.api_key: 5E8BP2ucZXkMhXVs
+  tideways/tideways.api_key: 123456789abcd
   tideways/tideways.framework: symfony2
 
 php::fpm::settings:
-  tideways/tideways.api_key: 5E8BP2ucZXkMhXVs
+  tideways/tideways.api_key: 123456789abcd
   tideways/tideways.framework: symfony2

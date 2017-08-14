@@ -12,11 +12,11 @@ php::fpm::settings:
   PHP/post_max_size: 512M
   PHP/default_socket_timeout: 900
   PHP/max_execution_time: 900
-  tideways/tideways.api_key: 5E8BP2ucZXkMhXVs
+  tideways/tideways.api_key: 123456789abcd
   tideways/tideways.framework: symfony2
 
 php::cli::settings:
-  tideways/tideways.api_key: 5E8BP2ucZXkMhXVs
+  tideways/tideways.api_key: 123456789abcd
   tideways/tideways.framework: symfony2
 
 php::extensions:
