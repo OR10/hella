@@ -8,6 +8,7 @@ TARGET_REPO="${2}"
 INCLUDES="${3}"
 EXCLUDES="${4}"
 HISTORY_EXCLUDES="${5}"
+COMMIT_MESSAGE_FILTERS="${6}"
 
 log() {
   local message="${@}"
@@ -20,8 +21,8 @@ error() {
 }
 
 showUsageIfNecessary() {
-  if [ "$#" -lt 5 ]; then
-    echo "${0} <source-repository> <target-directory> <includes-file> <excludes-file> <history-excludes-file>"
+  if [ "$#" -lt 6 ]; then
+    echo "${0} <source-repository> <target-directory> <includes-file> <excludes-file> <history-excludes-file> <commit-message-blacklist>"
     exit 1
   fi
 }
@@ -124,6 +125,33 @@ filterRepository() {
   popd >/dev/null
 }
 
+filterCommitMessages() {
+  local repository="${1}"
+  local commitMessageFilters="${2}"
+
+  pushd "${repository}" >/dev/null
+  log "Filtering commit messages to not include blacklist words"
+  git checkout master
+  git filter-branch --msg-filter "\
+    gawk 'FNR==NR{
+     blacklist[\$0]
+     next
+    }
+    {
+    for(i=1;i<=NF;i++){
+      for(candidate in blacklist) {
+        if (tolower(\$i) ~ \"[^a-zA-Z0-9_-]*\" candidate \"[^a-zA-Z0-9_-]*\"){
+          replacement=gensub(\"([^a-zA-Z0-9_-]*)\" candidate \"([^a-zA-Z0-9_-]*)\", \"\\\\1****\\\\2\", \"g\", tolower(\$i))
+          \$i=replacement
+          break
+        }
+      }
+    }
+  }1' \"${commitMessageFilters}\" -"
+
+  popd >/dev/null
+}
+
 removeBackupRefs() {
   local repository="${1}"
   pushd "${repository}" >/dev/null
@@ -140,10 +168,13 @@ main() {
   local absoluteHistoryExcludes="$(relativeToAbsolute "${HISTORY_EXCLUDES}")"
   local absoluteIncludes="$(relativeToAbsolute "${INCLUDES}")"
   local absoluteExcludes="$(relativeToAbsolute "${EXCLUDES}")"
+  local absoluteCommitMessageFilters="$(relativeToAbsolute "${COMMIT_MESSAGE_FILTERS}")"
 
   prepare "${absoluteSourceRepo}" "${absoluteTargetRepo}"
   saveHistoryExcludes "${absoluteTargetRepo}" "${absoluteHistoryExcludes}" "${historyStorage}"
   filterRepository "${absoluteTargetRepo}" "${absoluteIncludes}" "${absoluteExcludes}" "${absoluteHistoryExcludes}"
+  removeBackupRefs "${absoluteTargetRepo}"
+  filterCommitMessages "${absoluteTargetRepo}" "${absoluteCommitMessageFilters}"
   removeBackupRefs "${absoluteTargetRepo}"
   restoreHistoryExcludes "${absoluteTargetRepo}" "${historyStorage}"
   commitHistoryStorage "${absoluteTargetRepo}"
