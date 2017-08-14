@@ -1,7 +1,6 @@
 imports:
   - resource: liip_monitor.yml
   - resource: parameters.yml
-  - resource: services.yml
   - resource: security.yml
   - resource: customer.yml
 
