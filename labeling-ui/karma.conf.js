@@ -137,7 +137,7 @@ module.exports = function (config) {
     };
 
     newConfig.hostname = process.env.EXTERNAL_IP_ADDRESS || ip.address();
-    newConfig.browsers = ['PhantomJS'];
+    newConfig.browsers = ['Chrome'];
     newConfig.customLaunchers = {
       'Safari': {
         base: 'WebDriver',
@@ -151,7 +151,8 @@ module.exports = function (config) {
         config: webdriverConfig,
         browserName: 'chrome',
         platform: 'LINUX',
-        name: 'Karma'
+        name: 'Karma',
+        flags: ['--no-sandbox']
       },
       'IE11': {
         base: 'WebDriver',

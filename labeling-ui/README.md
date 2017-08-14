@@ -65,7 +65,20 @@ Download here:
 |Win|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Win/485205/chrome-win32.zip)|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/485198/chrome-win32.zip)|
 |Mac|-|[Download](https://storage.googleapis.com/chromium-browser-snapshots/Mac/485205/chrome-mac.zip)|
  
+#### Running the tests (with build):
+```
+gulp test-e2e
+```
 
+#### Running the tests (without build):
+```
+gulp test-e2e-run
+```
+ 
+#### Running the tests (headless-mode):
+```
+HEADLESS=true gulp test-e2e-run
+```
 
 ### Unit Tests: MacOS
 In order to run the unit tests under MacOS you need to increase the amount of max. open files:
@@ -106,17 +119,25 @@ The **fontcustom** tool requires Ruby 1.9.2+ and FontForge with Python scripting
 
 ##### macOS
 
+```
+brew tap bramstein/webfonttools
+brew update
+brew install woff2
+
 brew install fontforge --with-python
 brew install eot-utils
 gem install fontcustom
+```
 
 ##### Linux
 
-sudo apt-get install fontforge
+```
+sudo apt-get install zlib1g-dev fontforge
 wget http://people.mozilla.com/~jkew/woff/woff-code-latest.zip
 unzip woff-code-latest.zip -d sfnt2woff && cd sfnt2woff && make && sudo mv sfnt2woff /usr/local/bin/
+git clone --recursive https://github.com/google/woff2.git && cd woff2 && make clean all && sudo mv woff2_compress /usr/local/bin/ && sudo mv woff2_decompress /usr/local/bin/
 gem install fontcustom
-
+```
 
 ### Livereload
 

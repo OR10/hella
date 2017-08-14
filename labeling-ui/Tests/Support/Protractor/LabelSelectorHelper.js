@@ -80,10 +80,19 @@ class LabelSelectorHelper {
   /**
    * Get the number currently available panes.
    *
-   * @returns {webdriver.promise.Promise.<int>}
+   * @returns {wdpromise.Promise<number>}
    */
   getNumberOfPanes() {
     return this._getPanesFinderArray().count();
+  }
+
+  /**
+   * Get the number of currently visible panes
+   *
+   * @returns {wdpromise.Promise<number>}
+   */
+  getNumberOfVisiblePanes() {
+    return this._getVisiblePanesFinderArray().count();
   }
 
   /**
@@ -318,7 +327,9 @@ class LabelSelectorHelper {
    * @private
    */
   _getAccordionFinder() {
-    return this._labelSelector.element(by.css('v-accordion'));
+    const accordions = this._labelSelector.all(by.css('v-accordion'));
+    const displayed = accordions.filter(acc => acc.isDisplayed());
+    return displayed.get(0);
   }
 
   /**
@@ -328,6 +339,15 @@ class LabelSelectorHelper {
   _getPanesFinderArray() {
     const accordion = this._getAccordionFinder();
     return accordion.all(by.css('v-pane'));
+  }
+
+  /**
+   * @returns {ElementArrayFinder}
+   * @private
+   */
+  _getVisiblePanesFinderArray() {
+    const panes = this._getPanesFinderArray();
+    return panes.filter(pane => pane.isDisplayed());
   }
 
   /**

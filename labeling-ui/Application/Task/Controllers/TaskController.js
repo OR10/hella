@@ -8,6 +8,7 @@ import ContrastFilter from '../../Common/Filters/ContrastFilter';
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
 import PaperFrame from '../../Viewer/Shapes/PaperFrame';
+import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
 
 class TaskController {
   /**
@@ -277,6 +278,13 @@ class TaskController {
                 break;
               case newShape instanceof PaperFrame:
                 labelStructureObject = labelStructure.getRequirementFrameById('__meta-labeling-frame-identifier__');
+                break;
+              case newShape instanceof PaperMeasurementRectangle:
+                labelStructureObject = {
+                  id: 'measurement-rectangle',
+                  name: 'Rectangle Measurement',
+                  shape: 'measurement-rectangle',
+                };
                 break;
               default:
                 throw new Error('Cannot read identifier name of unknown shape!');

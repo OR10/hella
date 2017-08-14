@@ -1,6 +1,6 @@
 # Group ProjectImporter
 
-## Upload chunk [/api/organisation/{organisationId}/projectImport/{uploadId}]
+## Upload chunk [/api/v1/organisation/{organisationId}/projectImport/{uploadId}]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -12,7 +12,7 @@
     + Attributes
         + result: array() 
         
-## Flag upload as complete [/api/organisation/{organisationId}/projectImport/{uploadId}/complete]
+## Flag upload as complete [/api/v1/organisation/{organisationId}/projectImport/{uploadId}/complete]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.

@@ -25,7 +25,7 @@ class AttentionTest extends Tests\WebTestCase
 
     public function testEnableAttentionAsLabeler()
     {
-        $response = $this->createRequest('/api/task/%s/attention/enable', [$this->task->getId()], 'labeler', 'labeler')
+        $response = $this->createRequest('/api/v1/task/%s/attention/enable', [$this->task->getId()], 'labeler', 'labeler')
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute()
             ->getResponse();
@@ -36,7 +36,7 @@ class AttentionTest extends Tests\WebTestCase
     public function testEnableAttentionAsCoordinator()
     {
         $response = $this->createRequest(
-            '/api/task/%s/attention/enable',
+            '/api/v1/task/%s/attention/enable',
             [$this->task->getId()],
             'label_coordinator',
             'label_coordinator'
@@ -55,7 +55,7 @@ class AttentionTest extends Tests\WebTestCase
     public function testDisableAttentionAsCoordinator()
     {
         $response = $this->createRequest(
-            '/api/task/%s/attention/disable',
+            '/api/v1/task/%s/attention/disable',
             [$this->task->getId()],
             'label_coordinator',
             'label_coordinator'
@@ -74,7 +74,7 @@ class AttentionTest extends Tests\WebTestCase
     public function testEnableAttentionAsAnotherLabeler()
     {
         $response = $this->createRequest(
-            '/api/task/%s/attention/enable',
+            '/api/v1/task/%s/attention/enable',
             [$this->task->getId()],
             'label_coordinator_2',
             'label_coordinator_2'
@@ -89,7 +89,7 @@ class AttentionTest extends Tests\WebTestCase
     public function testEnableAttentionAsAnotherCoordinator()
     {
         $response = $this->createRequest(
-            '/api/task/%s/attention/enable',
+            '/api/v1/task/%s/attention/enable',
             [$this->task->getId()],
             'labeler_2',
             'labeler_2'

@@ -30,7 +30,7 @@ class MetaData
     public $duration;
 
     /**
-     * @var integer
+     * @var array
      */
     public $sizeInBytes;
 

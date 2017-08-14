@@ -1,4 +1,5 @@
 const { getReplicationDocumentIdName, destroyAndPurgeDocument } = require('../Utils');
+const uuid = require('uuid');
 
 class Replicator {
   constructor(nanoAdmin, sourceUrl, targetUrl) {
@@ -25,6 +26,11 @@ class Replicator {
       target: this.targetUrl,
       continuous: false,
       create_target: true,
+      // Working against a couchdb bug, which disallows the reinsertion of a before deleted document with the exact
+      // same content. This should most likely not happen anyways, as we purge documents after they are not needed
+      // anymore, but there might be circumstances, where the couchdb does not allow us to purge. This random uuid
+      // ensures no replications are stalled for ever.
+      random_replication_id_to_work_against_couchdb_bug: uuid.v4(),
     };
 
     this.promise = new Promise((resolve, reject) => {
@@ -48,20 +54,29 @@ class Replicator {
   }
 
   onChangeOccurred(change) {
+    if (this._resolve === undefined || this._reject === undefined) {
+      return;
+    }
     const replicatorDb = this.nanoAdmin.use('_replicator');
-    if (change.doc._id === this.id && change.doc._replication_state === 'completed') {
-      destroyAndPurgeDocument(
-        this.nanoAdmin,
-        replicatorDb,
-        change.doc._id,
-        change.doc._rev,
-      ).then(() => {
-        if (this._resolve !== undefined) {
-          this._resolve();
-        }
-      }).catch(err => {
-        this._reject(err);
-      });
+    if (change.doc._id === this.id) {
+      if (change.doc._replication_state === 'completed' || change.doc._replication_state === 'error') {
+        destroyAndPurgeDocument(
+          this.nanoAdmin,
+          replicatorDb,
+          change.doc._id,
+          change.doc._rev,
+        )
+          .then(() => {
+            if (change.doc._replication_state === 'completed') {
+              this._resolve();
+            } else {
+              this._reject('Replication rejected');
+            }
+          })
+          .catch(err => {
+            this._reject(err);
+          });
+      }
     }
   }
 

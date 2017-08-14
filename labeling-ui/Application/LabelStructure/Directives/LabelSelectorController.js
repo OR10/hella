@@ -30,6 +30,7 @@ export default class LabelSelectorController {
    * @param {ModalService} modalService
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
+   * @param {ShapeSelectionService} shapeSelectionService
    */
   constructor($scope,
               $rootScope,
@@ -42,7 +43,8 @@ export default class LabelSelectorController {
               entityIdService,
               modalService,
               applicationState,
-              taskGateway) {
+              taskGateway,
+              shapeSelectionService) {
     /**
      * Pages displayed by the wizzards
      * @type {Array|null}
@@ -142,6 +144,18 @@ export default class LabelSelectorController {
      */
     this.accordionControl = {};
 
+    /**
+     * @type {Object}
+     */
+    this.selectedOnlyAccordionControl = {};
+
+    /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
+
+
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
       if (newSelectedPaperShape === null) {
         return this._clearLabelSelector();
@@ -216,6 +230,33 @@ export default class LabelSelectorController {
         this.labelingInstructions = this.pages[newPageIndex].instructions;
       }
     });
+
+    $scope.$watch('vm.viewStyle', (newStyle, oldStyle) => {
+      if (newStyle === oldStyle) {
+        return;
+      }
+      if (newStyle === 'selectedOnly') {
+        this.selectedOnlyAccordionControl.expandAll();
+      }
+    });
+  }
+
+  /**
+   * @param {Object} page
+   * @param {Object} response
+   * @returns {boolean}
+   */
+  hideWhenItemIsNotSelected(page, response) {
+    return this.choices[page.id] !== response.id;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  show() {
+    const hasPaperShape = (this.selectedPaperShape !== undefined && this.selectedPaperShape !== null);
+    const hasAtMostOneSelectedShape = (this._shapeSelectionService.count() <= 1);
+    return hasPaperShape && hasAtMostOneSelectedShape;
   }
 
   /**
@@ -499,4 +540,5 @@ LabelSelectorController.$inject = [
   'modalService',
   'applicationState',
   'taskGateway',
+  'shapeSelectionService',
 ];

@@ -38,6 +38,7 @@ import PouchDbViewService from './Services/PouchDbViewService';
 import SideNavigationDirective from './Directives/SideNavigationDirective';
 import UserAvatarDirective from './Directives/UserAvatarDirective';
 import PageTitleDirective from './Directives/PageTitleDirective';
+import PiePercentageDirective from './Directives/PiePercentageDirective';
 
 import PouchDbLiveMigration from './Services/PouchDbLiveMigration';
 import PouchDbContextService from './Services/PouchDbContextService';
@@ -55,6 +56,7 @@ import SimpleAssemblyStrategy from './Services/PackagingExecutor/SimpleAssemblyS
 import AssemblyJobFactory from './Services/PackagingExecutor/AssemblyJobFactory';
 import ReplicationStateService from './Services/ReplicationStateService';
 import TaskReplicationService from './Services/TaskReplicationService';
+import ShapeSelectionService from './Services/ShapeSelectionService';
 
 import modalDialogProvider from './Services/ModalDialogs/ModalDialog';
 import infoDialogProvider from './Services/ModalDialogs/InfoDialog';
@@ -130,6 +132,7 @@ class Common extends Module {
     this.module.service('assemblyJobFactory', AssemblyJobFactory);
     this.module.service('replicationStateService', ReplicationStateService);
     this.module.service('taskReplicationService', TaskReplicationService);
+    this.module.service('shapeSelectionService', ShapeSelectionService);
 
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
@@ -152,6 +155,7 @@ class Common extends Module {
     this.registerDirective('sideNavigation', SideNavigationDirective);
     this.registerDirective('userAvatar', UserAvatarDirective);
     this.registerDirective('pageTitle', PageTitleDirective);
+    this.registerDirective('piePercentage', PiePercentageDirective);
 
     this.module.config(
       ['$compileProvider', '$httpProvider', 'hotkeysProvider', 'loggerServiceProvider',

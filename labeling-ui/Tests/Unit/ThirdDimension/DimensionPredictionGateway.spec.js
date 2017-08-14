@@ -28,6 +28,7 @@ describe('DimensionPredictionGateway', () => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
+          apiVersion: 'v1',
           backendPrefix: '/backend',
         },
       });
@@ -57,7 +58,7 @@ describe('DimensionPredictionGateway', () => {
       },
     };
 
-    $httpBackend.expectGET(`/backend/api/dimensionPrediction/${labeledThingFrontendModel.id}/42`).respond(predictionResponse);
+    $httpBackend.expectGET(`/backend/api/v1/dimensionPrediction/${labeledThingFrontendModel.id}/42`).respond(predictionResponse);
 
     gateway.predictDimensionsFor(labeledThingFrontendModel, 42).then(() => done());
 
@@ -76,7 +77,7 @@ describe('DimensionPredictionGateway', () => {
       },
     };
 
-    $httpBackend.expectGET(`/backend/api/dimensionPrediction/${labeledThingFrontendModel.id}/42`).respond(predictionResponse);
+    $httpBackend.expectGET(`/backend/api/v1/dimensionPrediction/${labeledThingFrontendModel.id}/42`).respond(predictionResponse);
 
     gateway.predictDimensionsFor(labeledThingFrontendModel, 42).then(prediction => {
       const {width, height, depth} = prediction;
@@ -103,7 +104,7 @@ describe('DimensionPredictionGateway', () => {
       },
     };
 
-    $httpBackend.expectGET(`/backend/api/dimensionPrediction/${labeledThingFrontendModel.id}/23`).respond(predictionResponse);
+    $httpBackend.expectGET(`/backend/api/v1/dimensionPrediction/${labeledThingFrontendModel.id}/23`).respond(predictionResponse);
 
     gateway.predictDimensionsFor(labeledThingFrontendModel, 23)
       .then(() => fail('Promise should not be fulfilled'))

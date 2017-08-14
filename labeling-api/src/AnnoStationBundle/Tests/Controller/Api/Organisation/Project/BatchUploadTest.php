@@ -13,8 +13,8 @@ use Symfony\Component\HttpFoundation;
 
 class BatchUploadTest extends Tests\WebTestCase
 {
-    const UPLOAD_CHUNK_ROUTE = '/api/organisation/%s/project/batchUpload/%s';
-    const UPLOAD_COMPLETE_ROUTE = '/api/organisation/%s/project/batchUpload/%s/complete';
+    const UPLOAD_CHUNK_ROUTE = '/api/v1/organisation/%s/project/batchUpload/%s';
+    const UPLOAD_COMPLETE_ROUTE = '/api/v1/organisation/%s/project/batchUpload/%s/complete';
 
     /**
      * @var Database\Facade\Project

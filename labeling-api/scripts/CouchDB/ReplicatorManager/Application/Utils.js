@@ -21,11 +21,21 @@ function _purgeDocument(nanoAdmin, db, documentId, revisions) {
   });
 }
 
+/**
+ * Destroy and purge the replication document
+ *
+ * @param nanoAdmin
+ * @param db
+ * @param documentId
+ * @param revision
+ * @returns {Promise}
+ */
 function destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
   return new Promise((resolve, reject) => {
     db.get(documentId, { revs_info: true }, (err, body) => {
       if (err) {
         reject(err);
+        return;
       }
 
       const revisions = body._revs_info.map(revInfo => revInfo.rev).reverse();
@@ -33,6 +43,7 @@ function destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
       db.destroy(documentId, revision, destroyError => {
         if (destroyError) {
           reject(destroyError);
+          return;
         }
 
         revisions.push(body._rev);
@@ -95,12 +106,6 @@ function getReplicationDocumentIdName(source, target) {
   return `replication-manager-${md5(source + target)}`;
 }
 
-function compactReplicationDatabase(nanoAdmin, logger) {
-  logger.logString('Starting _replicator compaction');
-  nanoAdmin.db.compact('_replicator');
-}
-
 exports.destroyAndPurgeDocument = destroyAndPurgeDocument;
 exports.purgeCouchDbReplicationDocument = purgeCouchDbReplicationDocument;
 exports.getReplicationDocumentIdName = getReplicationDocumentIdName;
-exports.compactReplicationDatabase = compactReplicationDatabase;

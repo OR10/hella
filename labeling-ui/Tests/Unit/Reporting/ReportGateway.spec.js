@@ -20,6 +20,7 @@ describe('ReportGateway', () => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
+          apiVersion: 'v1',
           backendPrefix: '/backend',
         },
       });
@@ -50,7 +51,7 @@ describe('ReportGateway', () => {
       ],
     };
 
-    $httpBackend.expectGET(`/backend/api/organisation/ORGANISATION-ID/project/${projectId}/report`).respond(tasksResponse);
+    $httpBackend.expectGET(`/backend/api/v1/organisation/ORGANISATION-ID/project/${projectId}/report`).respond(tasksResponse);
 
     gateway.getReports(projectId).then(tasks => {
       expect(tasks).toEqual(tasksResponse.result);
@@ -67,7 +68,7 @@ describe('ReportGateway', () => {
       result: {foo: 'bar'},
     };
 
-    $httpBackend.expectGET(`/backend/api/organisation/ORGANISATION-ID/project/${projectId}/report/${reportId}`).respond(tasksResponse);
+    $httpBackend.expectGET(`/backend/api/v1/organisation/ORGANISATION-ID/project/${projectId}/report/${reportId}`).respond(tasksResponse);
 
     gateway.getReport(projectId, reportId).then(tasks => {
       expect(tasks).toEqual(tasksResponse.result);
@@ -83,7 +84,7 @@ describe('ReportGateway', () => {
       result: {succes: true},
     };
 
-    $httpBackend.expectPOST(`/backend/api/organisation/ORGANISATION-ID/project/${projectId}/report`).respond(tasksResponse);
+    $httpBackend.expectPOST(`/backend/api/v1/organisation/ORGANISATION-ID/project/${projectId}/report`).respond(tasksResponse);
 
     gateway.startReport(projectId).then(tasks => {
       expect(tasks).toEqual(tasksResponse.result);

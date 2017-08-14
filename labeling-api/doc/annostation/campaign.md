@@ -2,7 +2,7 @@
 
 Projects can have several relations to campaigns. 
 
-## Campaign [/api/organisation/{organisationId}/campaign]
+## Campaign [/api/v1/organisation/{organisationId}/campaign]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.
@@ -15,7 +15,7 @@ This route returns all campaigns for a given organisation
     + Attributes
         + result array(Campaign)
    
-## Campaign [/api/organisation/{organisationId}/campaign]
+## Campaign [/api/v1/organisation/{organisationId}/campaign]
 
 + Parameters
     + organisationId: `1e8662640b31b28050a9ab5eafa8371e` (string, required) - Id of the organisation.

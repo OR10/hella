@@ -21,6 +21,7 @@ describe('OrganisationGateway', () => {
       $provide.value('applicationConfig', {
         Common: {
           apiPrefix: '/api',
+          apiVersion: 'v1',
           backendPrefix: '/backend',
         },
       });
@@ -51,7 +52,7 @@ describe('OrganisationGateway', () => {
       ],
     };
 
-    $httpBackend.expectGET('/backend/api/organisation').respond(organisationResponse);
+    $httpBackend.expectGET('/backend/api/v1/organisation').respond(organisationResponse);
 
     gateway.getOrganisations().then(organisations => {
       expect(organisations).toEqual(organisationResponse.result.map(doc => new Organisation(doc)));
@@ -80,7 +81,7 @@ describe('OrganisationGateway', () => {
       },
     };
 
-    $httpBackend.expectPOST('/backend/api/organisation').respond(organisationResponse);
+    $httpBackend.expectPOST('/backend/api/v1/organisation').respond(organisationResponse);
 
     gateway.createOrganisation(name, quota).then(result => {
       expect(result).toEqual(new Organisation(organisationResponse.result));
@@ -107,7 +108,7 @@ describe('OrganisationGateway', () => {
     };
     const updatedOrganisation = new Organisation(organisationResponse.result);
 
-    $httpBackend.expectPUT('/backend/api/organisation/organisation-id').respond(organisationResponse);
+    $httpBackend.expectPUT('/backend/api/v1/organisation/organisation-id').respond(organisationResponse);
 
     gateway.updateOrganisation(updatedOrganisation).then(result => {
       expect(result).toEqual(new Organisation(organisationResponse.result));
@@ -128,7 +129,7 @@ describe('OrganisationGateway', () => {
     };
 
 
-    $httpBackend.expectDELETE(`/backend/api/organisation/${organisation.id}/user/${user.id}/unassign`).respond(organisationResponse);
+    $httpBackend.expectDELETE(`/backend/api/v1/organisation/${organisation.id}/user/${user.id}/unassign`).respond(organisationResponse);
 
     gateway.removeUserFromOrganisation(user, organisation).then(result => {
       expect(result).toEqual(organisationResponse.result.success);
@@ -149,7 +150,7 @@ describe('OrganisationGateway', () => {
     };
 
 
-    $httpBackend.expectPUT(`/backend/api/organisation/${organisation.id}/user/${user.id}/assign`).respond(organisationResponse);
+    $httpBackend.expectPUT(`/backend/api/v1/organisation/${organisation.id}/user/${user.id}/assign`).respond(organisationResponse);
 
     gateway.addUserToOrganisation(user, organisation).then(result => {
       expect(result).toEqual(organisationResponse.result.success);

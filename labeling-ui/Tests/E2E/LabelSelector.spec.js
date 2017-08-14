@@ -1251,6 +1251,81 @@ describe('LabelSelector (right sidebar)', () => {
     });
   });
 
+  describe('View-Styles display', () => {
+    const listViewButton = element(by.css('label[for="view-style-list-view"]'));
+    const selectedOnlyButton = element(by.css('label[for="view-style-selected-only"]'));
+
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.LabelSelector.RequirementsXml.Task,
+        assets.mocks.LabelSelector.RequirementsXml.TaskConfiguration,
+        assets.mocks.LabelSelector.References.RequirementsXmlFile,
+        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
+      ]);
+    });
+    it('should shown only checked attributes', done => {
+      mock(sharedMocks.concat([]));
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => clickRectangleOne())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
+        .then(() => selectedOnlyButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => {
+          expect(labelSelectorHelper.getNumberOfPanes()).toBe(4);
+          expect(labelSelectorHelper.getAllOpenStates()).toEqual({
+            'Class A': true,
+            'Class B': true,
+            'Class D': true,
+            'Lamp Color': true,
+          });
+          expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Class A')).toEqual({
+            'Value B': true,
+            'Value A': false,
+          });
+        })
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B'))
+        .then(element => expect(element.isDisplayed()).toBe(true))
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value A'))
+        .then(element => expect(element.isDisplayed()).toBe(false))
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class B', 'Value C'))
+        .then(element => expect(element.isDisplayed()).toBe(false))
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class B', 'Value F'))
+        .then(element => expect(element.isDisplayed()).toBe(false))
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class D', 'Value G'))
+        .then(element => expect(element.isDisplayed()).toBe(false))
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class D', 'Value H'))
+        .then(element => expect(element.isDisplayed()).toBe(false))
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class D', 'Value I'))
+        .then(element => expect(element.isDisplayed()).toBe(false))
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Lamp Color', 'White'))
+        .then(element => expect(element.isDisplayed()).toBe(false))
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Lamp Color', 'Orange'))
+        .then(element => expect(element.isDisplayed()).toBe(false))
+        .then(() => done());
+    });
+
+    it('should show attribute list view style', done => {
+      mock(sharedMocks.concat([]));
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => clickRectangleOne())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
+        .then(() => selectedOnlyButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => listViewButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B'))
+        .then(element => expect(element.isDisplayed()).toBe(true))
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value A'))
+        .then(element => expect(element.isDisplayed()).toBe(true))
+        .then(() => done());
+    });
+  });
+
   afterEach(() => {
     expectAllModalsToBeClosed();
     mock.teardown();

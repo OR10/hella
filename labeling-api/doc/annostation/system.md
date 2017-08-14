@@ -1,6 +1,6 @@
 # Group System
 
-## Get the Number of queues RabbitMQ messages [/api/system/queues]
+## Get the Number of queues RabbitMQ messages [/api/v1/system/queues]
 
 ### RabbitMQ Queue [GET]
 

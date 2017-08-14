@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Tests\Controller\Api\Task;
 
-use AnnoStationBundle\Controller\Api\Task\Replication;
+use AnnoStationBundle\Controller\Api\v1\Task\Replication;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
@@ -35,7 +35,7 @@ class ReplicationTest extends Tests\WebTestCase
 
     public function testGetReplicationForTask()
     {
-        $response = $this->createRequest('/api/task/%s/replication', [$this->task->getId()])
+        $response = $this->createRequest('/api/v1/task/%s/replication', [$this->task->getId()])
             ->withCredentialsFromUsername($this->admin)
             ->execute()
             ->getResponse();

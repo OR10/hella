@@ -62,13 +62,146 @@ describe('Measurement Rectangle', () => {
           .perform();
       })
       .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleNotSelected')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        // Make sure the measurement rectangle stays
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleNotSelected);
+      })
+      .then(() => done());
+  });
+
+  it('should draw one measurement rectangle and keep it on frame change', done => {
+    mock(sharedMocks.concat([]));
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+    const nextFrameButton = element(by.css('.next-frame-button'));
+    const previousFrameButton = element(by.css('.previous-frame-button'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
+      })
+      .then(() => nextFrameButton.click())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrame2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange2);
+      })
+      .then(() => previousFrameButton.click())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
+      })
+      .then(() => {
+        done();
+      });
+  });
+
+  it('should draw one measurement rectangle and delete it on shape delete button click', done => {
+    mock(sharedMocks.concat([]));
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+    const deleteShapeButton = element(by.css('#delete-shape-button'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
+      })
+      .then(() => deleteShapeButton.click())
+      .then(() => browser.sleep(300))
+      .then(() => {
+        const confirmButton = element(by.css('#modal-confirm-button'));
+        return confirmButton.click();
+      })
+      .then(() => browser.sleep(600))
+      .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleEmpty')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleEmpty);
       })
-      .then(() => done());
+      .then(() => {
+        done();
+      });
+  });
+
+  it('should draw one measurement rectangle and delete it on delete key', done => {
+    mock(sharedMocks.concat([]));
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
+      })
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.DELETE)
+          .perform();
+      })
+      .then(() => browser.sleep(300))
+      .then(() => {
+        const confirmButton = element(by.css('#modal-confirm-button'));
+        return confirmButton.click();
+      })
+      .then(() => browser.sleep(600))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleEmpty')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleEmpty);
+      })
+      .then(() => {
+        done();
+      });
   });
 
   it('should draw multiple measurement rectangles', done => {
@@ -155,13 +288,91 @@ describe('Measurement Rectangle', () => {
           .perform();
       })
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleEmpty')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesNotSelected')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleEmpty);
+        // Make sure the measurement rectangles stay
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesNotSelected);
       })
       .then(() => done());
+  });
+
+  it('should draw multiple measurement rectangles and keep them on frame change', done => {
+    mock(sharedMocks.concat([]));
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+    const nextFrameButton = element(by.css('.next-frame-button'));
+    const previousFrameButton = element(by.css('.previous-frame-button'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 800, y: 200})
+          .mouseDown()
+          .mouseMove(viewer, {x: 900, y: 600})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 600})
+          .mouseDown()
+          .mouseMove(viewer, {x: 600, y: 500})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 900, y: 500})
+          .mouseDown()
+          .mouseMove(viewer, {x: 800, y: 600})
+          .mouseUp()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange1')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange1);
+      })
+      .then(() => nextFrameButton.click())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange2);
+      })
+      .then(() => nextFrameButton.click())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange3')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange3);
+      })
+      .then(() => previousFrameButton.click())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange2);
+      })
+      .then(() => {
+        done();
+      });
   });
 
   it('should draw one measurement rectangle with multiple mouse movements', done => {
@@ -227,11 +438,11 @@ describe('Measurement Rectangle', () => {
           .perform();
       })
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleEmpty')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleMultipleMouseMovementsNotSelected')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleEmpty);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleMultipleMouseMovementsNotSelected);
       })
       .then(() => done());
   });
@@ -248,6 +459,50 @@ describe('Measurement Rectangle', () => {
           .mouseMove(viewer, {x: 100, y: 100})
           .mouseDown()
           .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => expect('AppBundle.Model.LabeledThingInFrame').not.toHaveMatchingTypeDocumentsInDb())
+      .then(() => expect('AppBundle.Model.LabeledThing').not.toHaveMatchingTypeDocumentsInDb())
+      .then(() => done());
+  });
+
+  it('should draw multiple measurement rectangles and not save them to the database', done => {
+    mock(sharedMocks.concat([]));
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 800, y: 200})
+          .mouseDown()
+          .mouseMove(viewer, {x: 900, y: 600})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 600})
+          .mouseDown()
+          .mouseMove(viewer, {x: 600, y: 500})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 900, y: 500})
+          .mouseDown()
+          .mouseMove(viewer, {x: 800, y: 600})
           .mouseUp()
           .perform();
       })

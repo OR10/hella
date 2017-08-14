@@ -28,7 +28,7 @@ class CampaignTest extends Tests\WebTestCase
         $this->campaignFacade->save(new AnnoStationBundleModel\Campaign($this->organisation, 'Test-2'));
         $this->campaignFacade->save(new AnnoStationBundleModel\Campaign($this->organisation, 'Test-3'));
 
-        $requestWrapper = $this->createRequest('/api/organisation/%s/campaign', [$this->organisation->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/organisation/%s/campaign', [$this->organisation->getId()])
             ->execute();
 
         $response = array_map(
@@ -53,7 +53,7 @@ class CampaignTest extends Tests\WebTestCase
 
     public function testAddCampaign()
     {
-        $requestWrapper = $this->createRequest('/api/organisation/%s/campaign', [$this->organisation->getId()])
+        $requestWrapper = $this->createRequest('/api/v1/organisation/%s/campaign', [$this->organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
                 [
