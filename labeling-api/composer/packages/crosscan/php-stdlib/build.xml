@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     This build file is copyright of crosscan GmbH. All rights reserved.
+-->
+<project name="crosscan Utils" default="verify" basedir=".">
+
+    <!--
+        Import project specific settings.
+    -->
+    <property file="${basedir}/build.properties" />
+
+    <!--
+        Import the build-commons framework.
+    -->
+    <import file="setup/src/main/xml/base.xml" />
+
+    <!--
+        Runs the phpab cli tool against the project source code.
+    -->
+    <target name="-phpab:phpab"
+            depends="-phpab:install-or-upgrade,
+                     -phpab:before~hook,
+                     -phpab:run,
+                     -phpab:after~hook" />
+
+    <!-- Ensures phpab is installed and up to date -->
+    <target name="-phpab:install-or-upgrade"
+            depends="composer:dependencies-install-or-update">
+    </target>
+
+    <!--
+        This target runs phpab against the project's source code and generates
+        the requested autoload file.
+    -->
+    <target name="-phpab:run-src"
+            depends="availability:php-srcdir-is-available"
+            if="availability:php-srcdir-is-available">
+        <exec executable="${composer.vendor.bindir}/phpab"
+              failonerror="true"
+              taskname="phpab" >
+            <arg value="--output" />
+            <arg value="${phpab.output.src}" />
+            <arg value="${commons.srcdir.php}" />
+        </exec>
+    </target>
+
+    <!--
+        This target runs phpab against the project's test code and generates
+        the requested autoload file.
+    -->
+    <target name="-phpab:run-test"
+            depends="availability:php-testdir-is-available"
+            if="availability:php-testdir-is-available">
+        <exec executable="${composer.vendor.bindir}/phpab"
+              failonerror="true"
+              taskname="phpab" >
+            <arg value="--output" />
+            <arg value="${phpab.output.test}" />
+            <arg value="${commons.testdir.php}" />
+        </exec>
+    </target>
+
+
+    <target name="-phpunit:install-or-upgrade"
+            depends="composer:dependencies-install-or-update">
+    </target>
+
+    <target name="-phpunit:run-testsuite"
+            if="-phpunit:out-testsuite-present"
+            depends="-phpunit:is-testsuite-present">
+
+        <condition property="phpunit.include.path" value="" else="--include-path '${in.phpunit.include.path}'">
+            <equals arg1="${in.phpunit.include.path}" arg2="$${in.phpunit.include.path}" trim="true" />
+        </condition>
+
+        <condition property="phpunit.group" value="" else="--group '${in.phpunit.group}'">
+            <equals arg1="${in.phpunit.group}" arg2="$${in.phpunit.group}" trim="true" />
+        </condition>
+
+        <condition property="phpunit.clover" value="" else="--coverage-clover '${commons:logsdir}/clover.xml'">
+            <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
+        </condition>
+
+        <condition property="phpunit.html" value="" else="--coverage-html '${commons:builddir}/coverage'">
+            <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
+        </condition>
+
+        <condition property="phpunit.conf.file" value="${basedir}/phpunit.xml">
+            <available file="${basedir}/phpunit.xml" />
+        </condition>
+
+        <condition property="phpunit.conf.file" value="${commons.testdir.php}/phpunit.xml">
+            <available file="${commons.testdir.php}/phpunit.xml" />
+        </condition>
+
+        <condition property="phpunit.conf.file" value="${basedir}/phpunit.xml.dist">
+            <available file="${basedir}/phpunit.xml.dist" />
+        </condition>
+
+        <condition property="phpunit.conf.file" value="${commons.testdir.php}/phpunit.xml.dist">
+            <available file="${commons.testdir.php}/phpunit.xml.dist" />
+        </condition>
+
+        <condition property="phpunit.conf" value="--configuration '${phpunit.conf.file}'" else="">
+            <available file="${phpunit.conf.file}" />
+        </condition>
+
+        <exec executable="${composer.vendor.bindir}/phpunit"
+              failonerror="true"
+              dir="${commons.testdir.php}">
+
+            <arg value="--log-junit" />
+            <arg value="${commons:logsdir}/junit.xml" />
+            <arg line="${phpunit.include.path}" />
+            <arg line="${phpunit.group}" />
+            <arg line="${phpunit.html}" />
+            <arg line="${phpunit.clover}" />
+            <arg line="${phpunit.conf}" />
+            <arg value="${phpunit.testsuite.class}" />
+            <arg value="${commons.testdir.php}/${phpunit.testsuite.file}" />
+        </exec>
+
+        <copy todir="${commons:builddir}/coverage">
+            <fileset dir="${commons:logsdir}">
+                <include name="clover.xml" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="-phplint:install-or-upgrade"
+            depends="composer:dependencies-install-or-update">
+    </target>
+
+    <target name="phplint" depends="-phplint:install-or-upgrade" description="Check syntax errors in php files. The fast way.">
+        <exec executable="${composer.vendor.bindir}/parallel-lint" failonerror="true">
+            <arg line="${commons.srcdir.php}" />
+        </exec>
+    </target>
+
+    <target name="-phpcpd:install-or-upgrade"
+            depends="composer:dependencies-install-or-update">
+    </target>
+
+    <target name="-phpcpd:run">
+        <exec executable="${composer.vendor.bindir}/phpcpd" failonerror="${phpcpd.fail.on.violation}">
+            <arg value="--log-pmd" />
+            <arg value="${commons:logsdir}/cpd.xml" />
+            <arg value="${commons.srcdir.php}" />
+        </exec>
+    </target>
+
+    <target name="-phploc:install-or-upgrade"
+            depends="composer:dependencies-install-or-update">
+    </target>
+
+    <target name="-phploc:run">
+        <exec executable="${composer.vendor.bindir}/phploc" failonerror="${phploc.fail.on.violation}">
+            <arg value="--log-xml" />
+            <arg value="${commons:logsdir}/phploc.xml" />
+            <arg value="--log-csv" />
+            <arg value="${commons:logsdir}/phploc.csv" />
+            <arg value="${commons.srcdir.php}" />
+        </exec>
+    </target>
+
+    <target name="-phpcb:install-or-upgrade"
+            depends="composer:dependencies-install-or-update">
+    </target>
+
+    <target name="-phpcb:run">
+        <exec executable="${composer.vendor.bindir}/phpcb" failonerror="true">
+            <arg value="-l" />
+            <arg value="${commons:logsdir}" />
+            <arg value="-o" />
+            <arg value="${commons:builddir}/phpcb" />
+            <arg value="-s" />
+            <arg value="${commons.srcdir.php}" />
+        </exec>
+    </target>
+
+    <target name="-codesniffer:install-or-upgrade"
+            depends="composer:dependencies-install-or-update">
+    </target>
+
+    <target name="-codesniffer:run"
+            depends="-codesniffer:install-or-upgrade">
+
+        <tempfile property="-codesniffer:run-report-file"
+                  destdir="${commons:tmpdir}"
+                  deleteonexit="true" />
+
+        <exec executable="${composer.vendor.bindir}/phpcs" resultproperty="-codesniffer:run-exit-code">
+            <arg value="--standard=${codesniffer.standard}" />
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${commons:logsdir}/checkstyle.xml" />
+            <arg value="--report-full=${-codesniffer:run-report-file}" />
+            <arg value="${commons.srcdir.php}" />
+        </exec>
+
+        <loadfile property="-codesniffer:run-report-output" srcFile="${-codesniffer:run-report-file}" />
+        <fail message="CodeSniffer failed&#10;&#10;${-codesniffer:run-report-output}&#10;BUILD FAILED">
+            <condition>
+                <and>
+                    <istrue value="${codesniffer.fail.on.violation}" />
+                    <not>
+                        <equals arg1="0" arg2="${-codesniffer:run-exit-code}" />
+                    </not>
+                </and>
+            </condition>
+        </fail>
+    </target>
+</project>

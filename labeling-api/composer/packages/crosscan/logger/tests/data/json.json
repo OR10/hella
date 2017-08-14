@@ -1,0 +1,23 @@
+{
+    "foo": {
+        "baz": "bar",
+        "blub": 42,
+        "yeah": [1,2,3,4,5]
+    },
+    "bar": {
+        "baz": "bar",
+        "blub": 42,
+        "yeah": [1,2,3,4,5]
+    },
+    "baz": {
+        "baz": "bar",
+        "blub": 42,
+        "yeah": [1,2,3,4,5]
+    },
+    "blub": {
+        "baz": "bar",
+        "blub": 42,
+        "yeah": [1,2,3,4,5]
+    },
+    "yeah!": "yippie!"
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="crosscan WorkerPool" default="verify" basedir=".">
+    <!--
+        Import the build-commons framework.
+    -->
+    <import file="${basedir}/ant/main.xml" />
+
+    <!--
+       Enable used modules
+   -->
+    <import file="${basedir}/ant/modules/composer.xml" />
+    <import file="${basedir}/ant/modules/phpunit.xml" />
+    <import file="${basedir}/ant/modules/pdepend.xml" />
+    <import file="${basedir}/ant/modules/phpcpd.xml" />
+    <import file="${basedir}/ant/modules/phpmd.xml" />
+    <import file="${basedir}/ant/modules/checkstyle.xml" />
+
+    <!-- Dummy target mapping this project's default target to the build-commons' test target -->
+    <target name="verify" depends="test" />
+</project>

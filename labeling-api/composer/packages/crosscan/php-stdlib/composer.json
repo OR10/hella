@@ -1,0 +1,43 @@
+{
+    "name": "crosscan/php-stdlib",
+    "type": "library",
+    "description": "crosscan php standard library",
+    "keywords": ["stdlib", "utils"],
+    "homepage": "http://github.crosscan.com/crosscan/php-stdlib",
+    "require": {
+        "php": ">=5.4.0",
+        "phake/phake" : "dev-master",
+        "hco/phar-installer-plugin": "^0.1.3"
+    },
+    "require-dev": {
+        "toolphar/phpcs": "2.0.0RC1",
+        "sebastian/phpcpd": "*",
+        "phploc/phploc": "*",
+        "toolphar/phpab": "1.14.2",
+        "phpunit/phpunit": "3.7.*",
+        "mayflower/php-codebrowser": "~1.1",
+        "jakub-onderka/php-parallel-lint": "dev-master"
+    },
+    "suggest": {
+        "doctrine/orm": "The Symfony testcase in combination with the MysqlHelper needs Doctrine and the Doctrine-bundle",
+        "doctrine/doctrine-bundle": "The Symfony testcase in combination with the MysqlHelper needs Doctrine and the Doctrine-bundle",
+        "jms/serializer": "The XmlSerializerVisitor depends on jms-serializer and provides the ability to strip CDATA tags if possible. There is also a naming strategy for JMS in this package.",
+        "mschirmacher/php-amqplib": "dev-master",
+        "qafoolabs/profiler": "Needed if you want to use the Qafoo-Profiler"
+    },
+    "autoload": {
+        "psr-0": {
+            "crosscan": "source"
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://toolphar.org/"
+        }
+    ],
+    "config": {
+        "secure-http": false
+    },
+    "minimum-stability": "dev"
+}

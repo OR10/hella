@@ -1,0 +1,8 @@
+<phpunit backupGlobals="false"
+         bootstrap="tests/bootstrap.php">
+<filter>
+  <whitelist processUncoveredFilesFromWhitelist="true">
+    <directory suffix=".php">source/</directory>
+  </whitelist>
+</filter>
+</phpunit>
