@@ -112,17 +112,25 @@ filterRepository() {
   local excludes="${3}"
   local historyExcludes="${4}"
 
+  local preprocessedIncludes="$(prepareFileListForRgFiltering "${includes}")"
+  local preprocessedExcludes="$(prepareFileListForRgFiltering "${excludes}")"
+  local preprocessedHistoryExcludes="$(prepareFileListForRgFiltering "${historyExcludes}")"
 
   pushd "${repository}" >/dev/null
   log "Removing everything, which should not longer be there according to excludes, includes and history-excludes."
   log "This will take a long (hours) time. Grab a coffee and something to eat ;)"
   git checkout master
   git filter-branch --prune-empty --tree-filter "\
-    git ls-files|rg -f \"${includes}\" -v|xargs -d '\n' -n 32 -- rm -rf;\
-    git ls-files|rg -f \"${excludes}\"|xargs -d '\n' -n 32 -- rm -rf;\
-    git ls-files|rg -f \"${historyExcludes}\"|xargs -d '\n' -n 32 -- rm -rf;"
+    git ls-files|rg -f \"${preprocessedIncludes}\" -v|xargs -d '\n' -n 32 -- rm -rf;\
+    git ls-files|rg -f \"${preprocessedExcludes}\"|xargs -d '\n' -n 32 -- rm -rf;\
+    git ls-files|rg -f \"${preprocessedHistoryExcludes}\"|xargs -d '\n' -n 32 -- rm -rf;"
 
   popd >/dev/null
+
+  # Cleanup temp files
+  rm "${preprocessedIncludes}"
+  rm "${preprocessedExcludes}"
+  rm "${preprocessedHistoryExcludes}"
 }
 
 filterCommitMessages() {
@@ -161,6 +169,15 @@ removeBackupRefs() {
   popd >/dev/null
 }
 
+prepareFileListForRgFiltering() {
+  local inputList="${1}"
+
+  local outputList="$(mktemp)"
+
+  # Prepend a ^ character to every line
+  cat "${inputList}"|sed -e 's@^@^@' >"${outputList}"
+}
+
 main() {
   local historyStorage="$(mktemp)"
   local absoluteSourceRepo="$(relativeToAbsolute "${SOURCE_REPO}")"
@@ -169,6 +186,7 @@ main() {
   local absoluteIncludes="$(relativeToAbsolute "${INCLUDES}")"
   local absoluteExcludes="$(relativeToAbsolute "${EXCLUDES}")"
   local absoluteCommitMessageFilters="$(relativeToAbsolute "${COMMIT_MESSAGE_FILTERS}")"
+
 
   prepare "${absoluteSourceRepo}" "${absoluteTargetRepo}"
   saveHistoryExcludes "${absoluteTargetRepo}" "${absoluteHistoryExcludes}" "${historyStorage}"
