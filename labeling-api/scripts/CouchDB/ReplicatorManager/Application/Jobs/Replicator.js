@@ -26,11 +26,6 @@ class Replicator {
       target: this.targetUrl,
       continuous: false,
       create_target: true,
-      // Working against a couchdb bug, which disallows the reinsertion of a before deleted document with the exact
-      // same content. This should most likely not happen anyways, as we purge documents after they are not needed
-      // anymore, but there might be circumstances, where the couchdb does not allow us to purge. This random uuid
-      // ensures no replications are stalled for ever.
-      random_replication_id_to_work_against_couchdb_bug: uuid.v4(),
     };
 
     this.promise = new Promise((resolve, reject) => {
