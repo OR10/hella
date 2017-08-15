@@ -29,4 +29,17 @@ For macOS it is available within homebrew:
 brew install rg
 ```
 
-For linux please consult the package manager of your distribution 
+For linux please consult the package manager of your distribution
+
+### GNU awk
+
+The GNU version of `awk` (`gawk`) is needed for this script to run properly.
+
+Install via homebrew for macOS:
+
+`brew install gawk`
+
+If you are using linux you will need to alias `awk` to `gawk`, as it is not available under this name
+in most distributions:
+
+`alias gawk=awk`
