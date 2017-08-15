@@ -1,5 +1,6 @@
 const { WorkerQueue } = require('../Application/WorkerQueue');
 const { Replicator } = require('../Application/Jobs/Replicator');
+const md5 = require('md5');
 
 describe('WorkerQueue', () => {
   let nanoAdminMock;
@@ -11,8 +12,8 @@ describe('WorkerQueue', () => {
     return new WorkerQueue(nanoAdminMock, loggerMock, compactionServiceMock, 50, 500);
   }
 
-  function createReplicationJob(sourceUrl = '', targetUrl = '') {
-    return new Replicator(nanoAdminMock, sourceUrl, targetUrl);
+  function createReplicationJob(sourceBaseUrl = 'http://example.com', sourceDatabase = 'some-database', targetUrl = 'http://some-other.couch:5984/foobar-db') {
+    return new Replicator(nanoAdminMock, sourceBaseUrl, sourceDatabase, targetUrl);
   }
 
   beforeEach(() => {
@@ -40,6 +41,25 @@ describe('WorkerQueue', () => {
     expect(workerQueue.queue.length).toEqual(1);
   });
 
+  it('should delete jobs by id', () => {
+    const workerQueue = createWorkerQueue();
+    spyOn(workerQueue, 'doWork').and.returnValue(undefined);
+
+    const firstJob = createReplicationJob('http://some.couch', 'source-one', 'target-one');
+    const secondJob = createReplicationJob('http://some.couch', 'source-two', 'target-two');
+    const thirdJob = createReplicationJob('http://some.couch', 'source-three', 'target-three');
+
+    workerQueue.addJob(firstJob);
+    workerQueue.addJob(secondJob);
+    workerQueue.addJob(thirdJob);
+
+    const idOfSecondJob = `replication-manager-${md5('http://some.couch/source-twotarget-two')}`;
+    workerQueue.removeJob(idOfSecondJob);
+
+    expect(workerQueue.queue.length).toEqual(2);
+    expect(workerQueue.queue).toEqual([firstJob, thirdJob]);
+  });
+
   it('should add duplicate job to worker queue', () => {
     const workerQueue = createWorkerQueue();
     spyOn(workerQueue, 'doWork').and.returnValue(undefined);
@@ -58,7 +78,7 @@ describe('WorkerQueue', () => {
       .and.callFake(() => workerQueue.queueWorker());
 
     for (let count = 1; count <= 70; count++) {
-      const job = createReplicationJob(count, count);
+      const job = createReplicationJob('http://some.couch', count, count);
       workerQueue.addJob(job);
     }
 

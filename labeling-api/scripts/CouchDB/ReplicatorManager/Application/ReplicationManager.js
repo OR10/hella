@@ -1,6 +1,6 @@
-const { Replicator } = require('./Jobs/Replicator');
+const {Replicator} = require('./Jobs/Replicator');
 
-const { purgeCouchDbReplicationDocument, getReplicationDocumentIdName } = require('./Utils');
+const {purgeCouchDbReplicationDocument, getReplicationDocumentIdName} = require('./Utils');
 
 class ReplicationManager {
   constructor(logger, nanoAdmin, workerQueue, options) {
@@ -33,15 +33,26 @@ class ReplicationManager {
   listenToDatabaseChanges() {
     this.logger.logString('Listen to the changes feed now.');
     const db = this.nanoAdmin.use('_db_updates');
-    const feed = db.follow({ include_docs: true, since: 'now' });
+    const feed = db.follow({include_docs: true, since: 'now'});
 
     feed.on('change', change => {
-      if (change.type === 'ddoc_updated') {
+      if (change.type === undefined || change.db_name === undefined) {
         return;
       }
+
       const updatedDb = change.db_name;
-      if (updatedDb.match(this.sourceDbRegex) !== null) {
-        this._addWorkerJob(updatedDb, this.targetDb);
+
+      switch (change.type) {
+        case 'updated':
+          if (updatedDb.match(this.sourceDbRegex) !== null) {
+            this._addWorkerJob(updatedDb, this.targetDb);
+          }
+          break;
+        case 'deleted':
+          this._removeWorkerJob(updatedDb, this.targetDb);
+          break;
+        default:
+          this.logger.logString(`Ignored _changes item for type ${change.type}`);
       }
     });
     feed.on('error', er => {
@@ -146,15 +157,26 @@ class ReplicationManager {
    */
   _addWorkerJob(sourceDatabase, targetDatabase) {
     if (this.hotStandByUrl !== undefined) {
+      const targetUrl = this.hotStandByUrl + sourceDatabase;
+      const job = new Replicator(this.nanoAdmin, this.sourceBaseUrl, sourceDatabase, targetUrl);
+      this.workerQueue.addJob(job);
+    }
+    const targetUrl = this.targetBaseUrl + targetDatabase;
+    const job = new Replicator(this.nanoAdmin, this.sourceBaseUrl, sourceDatabase, targetUrl);
+    this.workerQueue.addJob(job);
+  }
+
+  _removeWorkerJob(sourceDatabase, targetDatabase) {
+    if (this.hotStandByUrl !== undefined) {
       const sourceUrl = this.sourceBaseUrl + sourceDatabase;
       const targetUrl = this.hotStandByUrl + sourceDatabase;
-      const job = new Replicator(this.nanoAdmin, sourceUrl, targetUrl);
-      this.workerQueue.addJob(job);
+      const id = getReplicationDocumentIdName(sourceUrl, targetUrl);
+      this.workerQueue.removeJob(id);
     }
     const sourceUrl = this.sourceBaseUrl + sourceDatabase;
     const targetUrl = this.targetBaseUrl + targetDatabase;
-    const job = new Replicator(this.nanoAdmin, sourceUrl, targetUrl);
-    this.workerQueue.addJob(job);
+    const id = getReplicationDocumentIdName(sourceUrl, targetUrl);
+    this.workerQueue.removeJob(id);
   }
 }
 
