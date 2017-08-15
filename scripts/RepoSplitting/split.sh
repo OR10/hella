@@ -104,8 +104,6 @@ commitHistoryStorage() {
   popd >/dev/null
 }
 
-
-
 filterRepository() {
   local repository="${1}"
   local includes="${2}"
@@ -176,6 +174,8 @@ prepareFileListForRgFiltering() {
 
   # Prepend a ^ character to every line
   cat "${inputList}"|sed -e 's@^@^@' >"${outputList}"
+
+  echo "${outputList}"
 }
 
 main() {
