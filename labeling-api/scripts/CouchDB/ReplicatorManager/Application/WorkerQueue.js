@@ -37,7 +37,6 @@ class WorkerQueue {
   }
 
   /**
-   *
    * @param job
    */
   addJob(job) {
@@ -79,9 +78,6 @@ class WorkerQueue {
     return true;
   }
 
-  /**
-   *
-   */
   doWork() {
     setImmediate(() => {
       this._printQueueStatus();
@@ -90,7 +86,6 @@ class WorkerQueue {
   }
 
   /**
-   *
    * @returns {boolean}
    */
   queueWorker() {

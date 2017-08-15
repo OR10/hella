@@ -1,4 +1,4 @@
-const { getReplicationDocumentIdName, destroyAndPurgeDocument } = require('../Utils');
+const {getReplicationDocumentIdName, destroyAndPurgeDocument} = require('../Utils');
 const uuid = require('uuid');
 
 class Replicator {
