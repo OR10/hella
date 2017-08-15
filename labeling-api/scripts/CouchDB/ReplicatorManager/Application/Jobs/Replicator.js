@@ -2,11 +2,42 @@ const {getReplicationDocumentIdName, destroyAndPurgeDocument} = require('../Util
 const uuid = require('uuid');
 
 class Replicator {
-  constructor(nanoAdmin, sourceUrl, targetUrl) {
+  /**
+   * @param {nano} nanoAdmin
+   * @param {string} sourceBaseUrl
+   * @param {string} sourceDatabase
+   * @param {string} targetUrl
+   */
+  constructor(nanoAdmin, sourceBaseUrl, sourceDatabase, targetUrl) {
+    /**
+     * @type {nano}
+     */
     this.nanoAdmin = nanoAdmin;
-    this.id = getReplicationDocumentIdName(sourceUrl, targetUrl);
-    this.sourceUrl = sourceUrl;
+
+    /**
+     * @type {string}
+     */
+    this.sourceBaseUrl = sourceBaseUrl.replace(/\/*$/g, '');
+
+    /**
+     * @type {string}
+     */
+    this.sourceDatabase = sourceDatabase;
+
+    /**
+     * @type {string}
+     */
+    this.sourceUrl = `${this.sourceBaseUrl}/${this.sourceDatabase}`;
+
+    /**
+     * @type {string}
+     */
     this.targetUrl = targetUrl;
+
+    /**
+     * @type {string}
+     */
+    this.id = getReplicationDocumentIdName(this.sourceUrl, this.targetUrl);
 
     /**
      * @type {number}

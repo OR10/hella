@@ -157,14 +157,12 @@ class ReplicationManager {
    */
   _addWorkerJob(sourceDatabase, targetDatabase) {
     if (this.hotStandByUrl !== undefined) {
-      const sourceUrl = this.sourceBaseUrl + sourceDatabase;
       const targetUrl = this.hotStandByUrl + sourceDatabase;
-      const job = new Replicator(this.nanoAdmin, sourceUrl, targetUrl);
+      const job = new Replicator(this.nanoAdmin, this.sourceBaseUrl, sourceDatabase, targetUrl);
       this.workerQueue.addJob(job);
     }
-    const sourceUrl = this.sourceBaseUrl + sourceDatabase;
     const targetUrl = this.targetBaseUrl + targetDatabase;
-    const job = new Replicator(this.nanoAdmin, sourceUrl, targetUrl);
+    const job = new Replicator(this.nanoAdmin, this.sourceBaseUrl, sourceDatabase, targetUrl);
     this.workerQueue.addJob(job);
   }
 
