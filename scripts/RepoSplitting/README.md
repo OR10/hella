@@ -43,3 +43,22 @@ If you are using linux you will need to alias `awk` to `gawk`, as it is not avai
 in most distributions:
 
 `alias gawk=awk`
+
+## Example run
+
+The script is provided with example data.
+
+Extract the source repository into the current folder using the following command:
+
+```
+tar xvzf source-repo.tar.gz
+```
+
+**Warning:** Be careful not to check in the extracted repository into the AnnoStation repository.
+Git repositories inside of git repositories are not a good idea (Inception anyone?).
+
+The script may then be run with the following example command:
+
+```
+./split.sh source-repo ./target-repo ./includes.txt ./excludes.txt ./history-excludes.txt ./commit-message-blacklist.txt
+```
