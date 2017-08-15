@@ -60,6 +60,26 @@ class WorkerQueue {
   }
 
   /**
+   * Remove a queued entry by its id
+   *
+   * The id can be calculated using the {@link getReplicationDocumentIdName} function
+   *
+   * The return value indicates if the item to remove was found or not.
+   *
+   * @param {string} id
+   * @returns {boolean}
+   */
+  removeJob(id) {
+    const jobIndexToRemove = this.queue.findIndex(candidate => candidate.id === id);
+    if (jobIndexToRemove === -1) {
+      return false;
+    }
+
+    this.queue.splice(jobIndexToRemove, 1);
+    return true;
+  }
+
+  /**
    *
    */
   doWork() {
