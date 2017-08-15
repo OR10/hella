@@ -99,7 +99,7 @@ commitHistoryStorage() {
   git checkout master
 
   git ls-files --others -z|xargs -0 -n 32 -- git add
-  git ci -m "Restored files without history after repository split"
+  git commit -m "Restored files without history after repository split"
 
   popd >/dev/null
 }
