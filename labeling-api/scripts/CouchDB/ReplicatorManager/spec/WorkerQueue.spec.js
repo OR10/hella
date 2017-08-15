@@ -1,5 +1,6 @@
 const { WorkerQueue } = require('../Application/WorkerQueue');
 const { Replicator } = require('../Application/Jobs/Replicator');
+const md5 = require('md5');
 
 describe('WorkerQueue', () => {
   let nanoAdminMock;
@@ -38,6 +39,25 @@ describe('WorkerQueue', () => {
 
     workerQueue.addJob(job);
     expect(workerQueue.queue.length).toEqual(1);
+  });
+
+  it('should delete jobs by id', () => {
+    const workerQueue = createWorkerQueue();
+    spyOn(workerQueue, 'doWork').and.returnValue(undefined);
+
+    const firstJob = createReplicationJob('source-one', 'target-one');
+    const secondJob = createReplicationJob('source-two', 'target-two');
+    const thirdJob = createReplicationJob('source-three', 'target-three');
+
+    workerQueue.addJob(firstJob);
+    workerQueue.addJob(secondJob);
+    workerQueue.addJob(thirdJob);
+
+    const idOfSecondJob = `replication-manager-${md5('source-twotarget-two')}`;
+    workerQueue.removeJob(idOfSecondJob);
+
+    expect(workerQueue.queue.length).toEqual(2);
+    expect(workerQueue.queue).toEqual([firstJob, thirdJob]);
   });
 
   it('should add duplicate job to worker queue', () => {
