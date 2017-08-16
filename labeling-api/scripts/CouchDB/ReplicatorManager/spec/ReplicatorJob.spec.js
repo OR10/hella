@@ -6,13 +6,14 @@ describe('Replicator Job', () => {
   let nanoAdminMock;
   let replicatorDbMock;
   let loggerMock;
+  let purgeServiceMock;
 
   function createReplicator(
     sourceBaseUrl = 'http://example.com',
     sourceDatabase = 'some-database',
     targetUrl = 'http://some-other.couch:5984/foobar-db'
   ) {
-    return new Replicator(loggerMock, nanoAdminMock, sourceBaseUrl, sourceDatabase, targetUrl);
+    return new Replicator(loggerMock, nanoAdminMock, purgeServiceMock, sourceBaseUrl, sourceDatabase, targetUrl);
   }
 
   beforeEach(() => {
@@ -21,6 +22,9 @@ describe('Replicator Job', () => {
 
   beforeEach(() => {
     loggerMock = jasmine.createSpyObj('Logger', ['logString']);
+
+    purgeServiceMock = jasmine.createSpyObj('PurgeService', ['purgeDocument']);
+    purgeServiceMock.purgeDocument.and.returnValue(Promise.resolve());
 
     nanoAdminMock = jasmine.createSpyObj('nanoAdmin', ['use']);
     nanoAdminMock.db = jasmine.createSpyObj('nanoAdmin.db', ['get']);

@@ -1,15 +1,16 @@
-const {getReplicationDocumentIdName, purgeCouchDbReplicationDocument} = require('../Utils');
+const {getReplicationDocumentIdName} = require('../Utils');
 const uuid = require('uuid');
 
 class Replicator {
   /**
    * @param {Logger} logger
    * @param {nano} nanoAdmin
+   * @param {PurgeService} purgeService
    * @param {string} sourceBaseUrl
    * @param {string} sourceDatabase
    * @param {string} targetUrl
    */
-  constructor(logger, nanoAdmin, sourceBaseUrl, sourceDatabase, targetUrl) {
+  constructor(logger, nanoAdmin, purgeService, sourceBaseUrl, sourceDatabase, targetUrl) {
     /**
      * @type {Logger}
      * @private
@@ -20,6 +21,12 @@ class Replicator {
      * @type {nano}
      */
     this.nanoAdmin = nanoAdmin;
+
+    /**
+     * @type {PurgeService}
+     * @private
+     */
+    this._purgeService = purgeService;
 
     /**
      * @type {string}
@@ -132,10 +139,9 @@ class Replicator {
     }
     if (change.doc._id === this.id) {
       if (change.doc._replication_state === 'completed' || change.doc._replication_state === 'error') {
-        purgeCouchDbReplicationDocument(
-          this.nanoAdmin,
-          change.doc._id,
-          this._logger
+        this._purgeService.purgeDocument(
+          '_replicator',
+          change.doc._id
         )
           .then(() => {
             if (change.doc._replication_state === 'completed') {
