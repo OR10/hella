@@ -82,7 +82,13 @@ class ReprocessVideos extends Base
             $this->addJobsForVideo($output, $video);
         }
 
-        $output->writeln("Project {$projectId} and {count($videos)} number of videos.");
+        $output->writeln(
+            sprintf(
+                'Project %s and %s number of videos.',
+                $projectId,
+                count($videos)
+            )
+        );
     }
 
     private function getProjectById(Output\OutputInterface $output, string $id): Model\Project
