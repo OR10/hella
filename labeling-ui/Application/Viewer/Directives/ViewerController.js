@@ -361,12 +361,15 @@ class ViewerController {
         };
         const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
 
-        this._thingLayerContext.withScope(scope => {
+        this._thingLayerContext.withScope(() => {
           const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
           this._storeGroup(group, shapes);
-          group.remove();
+          group.sendToBack();
+          this.paperGroupShapes = this.paperGroupShapes.concat([group]);
+          this._shapeSelectionService.clear();
+          this.selectedPaperShape = group;
+          group.select();
         });
-        // this._extractAndStorePaperGroupShapes([labeledThingInGroupFrame]);
       }
     }
     this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
