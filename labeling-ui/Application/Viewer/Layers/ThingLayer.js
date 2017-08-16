@@ -14,8 +14,6 @@ import PaperShape from '../Shapes/PaperShape';
 import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
-import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
-import PaperGroupRectangleMulti from '../Shapes/PaperGroupRectangleMulti'
 
 /**
  * A Layer used to draw Things within the viewer
@@ -594,7 +592,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
             case paperShape instanceof PaperGroupShape:
               this._$scope.vm.paperGroupShapes.push(paperShape);
               this._$scope.vm.selectedPaperShape = paperShape;
-              console.log(paperShape);
               this.emit('group:create', paperShape);
               break;
             case paperShape instanceof PaperVirtualShape:

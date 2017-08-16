@@ -1,6 +1,6 @@
 import ToolSelectorListenerService from 'Application/Common/Services/ToolSelectorListenerService';
 
-fdescribe('ToolSelectorListenerService tests', () => {
+describe('ToolSelectorListenerService tests', () => {
   it('can be created', () => {
     const service = new ToolSelectorListenerService();
     expect(service).toEqual(jasmine.any(ToolSelectorListenerService));

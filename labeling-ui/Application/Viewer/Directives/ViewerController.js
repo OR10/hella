@@ -12,7 +12,7 @@ import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
-import GroupToolActionStruct from '../Tools/ToolActionStructs/GroupToolActionStruct'
+import GroupToolActionStruct from '../Tools/ToolActionStructs/GroupToolActionStruct';
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -368,7 +368,7 @@ class ViewerController {
           group.select();
         });
       }
-    }
+    };
     this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
 
     this._viewerMouseCursorService.on('cursor:updated', cursor => {

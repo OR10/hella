@@ -61,42 +61,6 @@ class LabeledThingGroupService {
     return groupShapeBounds;
   }
 
-  getBoundingBoxForShapes(shapes) {
-    let boundingBoxTopLeft = {x: -1, y: -1};
-    let boundingBoxBottomRight = {x: -1, y: -1};
-
-    shapes.forEach((shape, index) => {
-      const shapeBounds = shape.bounds;
-      const shapeTopLeft = {x: shapeBounds.x, y: shapeBounds.y};
-      const shapeBottomRight = {x: shapeBounds.x + shapeBounds.width, y: shapeBounds.y + shapeBounds.height}
-
-      if (index === 0) {
-        boundingBoxTopLeft.x = shapeTopLeft.x;
-        boundingBoxTopLeft.y = shapeTopLeft.y;
-        boundingBoxBottomRight.x  = shapeBottomRight.x;
-        boundingBoxBottomRight.y = shapeBottomRight.y;
-      } else {
-        if (shapeTopLeft.x < boundingBoxTopLeft.x) {
-          boundingBoxTopLeft.x = shapeTopLeft.x;
-        }
-        if (shapeTopLeft.y < boundingBoxTopLeft.y) {
-          boundingBoxTopLeft.y = shapeTopLeft.y;
-        }
-        if (shapeBottomRight.x > boundingBoxBottomRight.x) {
-          boundingBoxBottomRight.x  = shapeBottomRight.x;
-        }
-        if (shapeBottomRight.y > boundingBoxBottomRight.y) {
-          boundingBoxBottomRight.y = shapeBottomRight.y;
-        }
-      }
-    });
-
-    return {
-      topLeft: boundingBoxTopLeft,
-      bottomRight: boundingBoxBottomRight,
-    }
-  }
-
   /**
    * Extracts the {@link FrameRange} of the {@link LabeledThingGroup} from the given {@link PaperThingShape}s
    *

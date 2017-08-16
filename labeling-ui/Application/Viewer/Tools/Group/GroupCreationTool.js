@@ -1,6 +1,5 @@
 import CreationTool from '../CreationTool';
 import PaperGroupRectangleMulti from '../../Shapes/PaperGroupRectangleMulti';
-import MultiToolActionStruct from '../ToolActionStructs/MultiToolActionStruct';
 
 class GroupCreationTool extends CreationTool {
   /**
@@ -67,46 +66,6 @@ class GroupCreationTool extends CreationTool {
      * @private
      */
     this._toolSelectorListenerService = toolSelectorListenerService;
-
-    const toolActivationCallback =  (shape, labelStructureObject) => {
-      //
-      // const multiToolOptions = {
-      //   initialDragDistance: 1,
-      //   minDragDistance: 1,
-      //   hitTestTolerance: 8,
-      // };
-      //
-      // const defaultOptions = {
-      //   initialDragDistance: 8,
-      //   minDragDistance: 1,
-      //   minimalHeight: 1,
-      // };
-      //
-      // const toolActionStruct = new MultiToolActionStruct(
-      //   multiToolOptions,
-      //   viewport,
-      //   defaultOptions,
-      //   readOnly,
-      //   video,
-      //   task,
-      //   {}, // framePosition
-      //   labelStructureObject.id,
-      //   shape,
-      //   null
-      // );
-
-      // const bar = new LabeledThingGroupInFrame();
-      // const foo = new PaperGroupShape();
-
-      // if (this._shapeSelectionService.count() > 0) {
-      //   const shapes = this._shapeSelectionService.getAllShapes();
-      //   const groupId = this._entityIdService.getUniqueId();
-      //   this._createPaperGroup(groupId, toolActionStruct, shapes);
-      //   // this._complete(paperGroup);
-      // }
-    };
-
-    this._toolSelectorListenerService.addListener(toolActivationCallback, PaperGroupRectangleMulti.getClass(), true);
   }
 
   /**
@@ -115,8 +74,6 @@ class GroupCreationTool extends CreationTool {
    */
   activate(toolActionStruct) {
     super.activate(toolActionStruct);
-
-
   }
 
   /**
