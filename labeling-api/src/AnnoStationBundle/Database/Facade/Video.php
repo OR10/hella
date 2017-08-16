@@ -271,7 +271,9 @@ class Video
                 function ($carry, Model\Video $video) {
                     $imageTypesSize = 0;
                     foreach ($video->getImageTypes() as $imageType) {
-                        $imageTypesSize += $imageType['accumulatedSizeInBytes'];
+                        if (isset($imageType['accumulatedSizeInBytes'])) {
+                            $imageTypesSize += $imageType['accumulatedSizeInBytes'];
+                        }
                     }
 
                     $videoMetadata = $video->getMetaData();
