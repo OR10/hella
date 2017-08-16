@@ -39,8 +39,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {ShapeSelectionService} shapeSelectionService
-   * @param {ToolSelectorListenerService} toolSelectorListenerService
-   * @param {HierarchyCreationService} hierarchyCreationService
    */
   constructor(width,
               height,
@@ -58,9 +56,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
               modalService,
               labeledThingGateway,
               labeledThingGroupGateway,
-              shapeSelectionService,
-              toolSelectorListenerService,
-              hierarchyCreationService) {
+              shapeSelectionService) {
     super(width, height, $scope, drawingContext);
 
     /**
@@ -178,18 +174,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._shapeSelectionService = shapeSelectionService;
-
-    /**
-     * @type {ToolSelectorListenerService}
-     * @private
-     */
-    this._toolSelectorListenerService = toolSelectorListenerService;
-
-    /**
-     * @type {HierarchyCreationService}
-     * @private
-     */
-    this._hierarchyCreationService = hierarchyCreationService;
 
     $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
       const oldSet = new Set(oldPaperGroupShapes);

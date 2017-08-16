@@ -826,9 +826,7 @@ class ViewerController {
       this._modalService,
       this._labeledThingGateway,
       this._labeledThingGroupGateway,
-      this._shapeSelectionService,
-      this._toolSelectorListenerService,
-      this._hierarchyCreationService
+      this._shapeSelectionService
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
