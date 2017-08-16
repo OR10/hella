@@ -168,7 +168,6 @@ class GroupCreationTool extends CreationTool {
     const promise = super.invokeShapeCreation(toolActionStruct);
 
     this._rectangleCreationTool.invokeShapeCreation(toolActionStruct).then(paperShape => {
-      console.log(paperShape);
       paperShape.remove();
       const shapes = this._labeledThingGroupService.getShapesWithinBounds(this._context, paperShape.bounds);
 

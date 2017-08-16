@@ -357,17 +357,16 @@ class ViewerController {
         const struct = {
           task: this.task,
           requirementsThingOrGroupId: labelStructureObject.id,
-          framePosition: this.framePosition
+          framePosition: this.framePosition,
         };
         const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
 
-        let group;
-
-        this._thingLayerContext.withScope(() => {
-          group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+        this._thingLayerContext.withScope(scope => {
+          const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+          this._storeGroup(group, shapes);
+          group.remove();
         });
-        
-        this._storeGroup(group, shapes);
+        // this._extractAndStorePaperGroupShapes([labeledThingInGroupFrame]);
       }
     }
     this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
