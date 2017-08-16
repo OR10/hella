@@ -10,9 +10,7 @@
       },
       "incomplete": true,
       "rev": "{{:revision}}",
-      "classes": [
-        "pedestrian"
-      ],
+      "classes": [],
       "groupIds": [
         "{{:groupId1}}",
         "{{:groupId2}}"
@@ -31,9 +29,7 @@
         },
         "incomplete": true,
         "rev": "{{:revision}}",
-        "classes": [
-          "pedestrian"
-        ],
+        "classes": [],
         "groupIds": [
           "E2E-TEST-GROUP-ID-1",
           "E2E-TEST-GROUP-ID-2"

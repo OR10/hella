@@ -8,6 +8,7 @@ describe('Group Creation', () => {
   let assets;
   let sharedMocks;
   let viewer;
+  let groupButton;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
@@ -34,6 +35,7 @@ describe('Group Creation', () => {
     ];
 
     viewer = element(by.css('.layer-container'));
+    groupButton = element(by.css('button.tool-group.tool-0'));
   });
 
   it('does not create a group', done => {
@@ -44,6 +46,7 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
@@ -76,6 +79,7 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -109,6 +113,7 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -142,6 +147,7 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -178,6 +184,7 @@ describe('Group Creation', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -186,6 +193,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 263, y: 50}) // initial position
@@ -223,6 +231,7 @@ describe('Group Creation', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -231,6 +240,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 263, y: 50}) // initial position
@@ -239,6 +249,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -310,15 +321,13 @@ describe('Group Creation', () => {
       });
   });
 
-  fit('creates and deletes a group around multiselected shapes', done => {
+  it('creates and deletes a group around multiselected shapes', done => {
     mock(sharedMocks.concat([
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
-
-    const groupButton = element(by.css('button.tool-group.tool-0'));
 
     const firstShape = {
       topLeft: {x: 100, y: 100},
