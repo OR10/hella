@@ -12,6 +12,7 @@ import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
+import GroupToolActionStruct from '../Tools/ToolActionStructs/GroupToolActionStruct'
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -354,11 +355,7 @@ class ViewerController {
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
         const shapes = this._shapeSelectionService.getAllShapes();
-        const struct = {
-          task: this.task,
-          requirementsThingOrGroupId: labelStructureObject.id,
-          framePosition: this.framePosition,
-        };
+        const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
         const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
 
         this._thingLayerContext.withScope(() => {
