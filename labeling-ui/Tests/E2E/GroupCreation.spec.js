@@ -284,8 +284,6 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
 
-    const groupButton = element(by.css('button.tool-group.tool-0'));
-
     const firstShape = {
       topLeft: {x: 100, y: 100},
       bottomRight: {x: 200, y: 200},
