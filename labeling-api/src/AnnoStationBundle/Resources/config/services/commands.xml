@@ -151,6 +151,14 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.reprocess_videos"
+                 class="AnnoStationBundle\Command\ReprocessVideos">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
 
