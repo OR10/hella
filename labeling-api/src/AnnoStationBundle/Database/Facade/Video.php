@@ -270,6 +270,7 @@ class Video
                 $videosInChunk,
                 function ($carry, Model\Video $video) {
                     $imageTypesSize = 0;
+                    //Its possible that not all images types are calculated yet
                     foreach ($video->getImageTypes() as $imageType) {
                         if (isset($imageType['accumulatedSizeInBytes'])) {
                             $imageTypesSize += $imageType['accumulatedSizeInBytes'];
