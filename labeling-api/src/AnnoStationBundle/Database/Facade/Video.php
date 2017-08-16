@@ -275,7 +275,7 @@ class Video
                     }
 
                     $videoMetadata = $video->getMetaData();
-                    $rawVideoSize  = $videoMetadata['sizeInBytes'];
+                    $rawVideoSize  = $videoMetadata->sizeInBytes;
 
                     return ($carry + $imageTypesSize + $rawVideoSize);
                 },
