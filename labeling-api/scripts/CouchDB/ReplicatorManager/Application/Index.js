@@ -1,6 +1,7 @@
 const { CommandLineOptions } = require('./CommandLineOptions');
 const { Logger } = require('./Logger');
 const { WorkerQueue } = require('./WorkerQueue');
+const { CompactionService } = require('./CompactionService');
 const nano = require('nano');
 const { ReplicationManager } = require('./ReplicationManager');
 
@@ -21,11 +22,18 @@ if (!options.isComplete()) {
 }
 
 const nanoAdmin = nano(options.adminUrl);
-const ReplicationManagerStarter = new ReplicationManager(
+const compactionService = new CompactionService(nanoAdmin.use('_replicator'));
+const workerQueue = new WorkerQueue(
+  nanoAdmin,
+  logger,
+  compactionService
+);
+
+const replicationManager = new ReplicationManager(
   logger,
   nanoAdmin,
-  new WorkerQueue(nanoAdmin, logger),
+  workerQueue,
   options,
 );
-ReplicationManagerStarter.run();
 
+replicationManager.run();

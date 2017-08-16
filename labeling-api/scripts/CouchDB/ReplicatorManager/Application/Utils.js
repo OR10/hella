@@ -106,12 +106,6 @@ function getReplicationDocumentIdName(source, target) {
   return `replication-manager-${md5(source + target)}`;
 }
 
-function compactReplicationDatabase(nanoAdmin, logger) {
-  logger.logString('Starting _replicator compaction');
-  nanoAdmin.db.compact('_replicator');
-}
-
 exports.destroyAndPurgeDocument = destroyAndPurgeDocument;
 exports.purgeCouchDbReplicationDocument = purgeCouchDbReplicationDocument;
 exports.getReplicationDocumentIdName = getReplicationDocumentIdName;
-exports.compactReplicationDatabase = compactReplicationDatabase;
