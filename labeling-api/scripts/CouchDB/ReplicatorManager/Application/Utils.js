@@ -9,10 +9,14 @@ function _purgeDocument(nanoAdmin, db, documentId, revisions) {
       method: 'post',
       path: '_purge',
       body: purgeBody,
-    }, err => {
+    }, (err, body) => {
       if (err) {
         reject(err);
         return err;
+      }
+      if (Object.keys(body.purged).length === 0) {
+        reject('No revisions purged');
+        return false;
       }
 
       resolve();
@@ -30,7 +34,7 @@ function _purgeDocument(nanoAdmin, db, documentId, revisions) {
  * @param revision
  * @returns {Promise}
  */
-function destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
+function _destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
   return new Promise((resolve, reject) => {
     db.get(documentId, { revs_info: true }, (err, body) => {
       if (err) {
@@ -40,13 +44,13 @@ function destroyAndPurgeDocument(nanoAdmin, db, documentId, revision) {
 
       const revisions = body._revs_info.map(revInfo => revInfo.rev).reverse();
 
-      db.destroy(documentId, revision, destroyError => {
+      db.destroy(documentId, revision, (destroyError, destroyBody) => {
         if (destroyError) {
           reject(destroyError);
           return;
         }
 
-        revisions.push(body._rev);
+        revisions.push(destroyBody.rev);
 
         _purgeDocument(nanoAdmin, db, documentId, revisions).then(() => {
           resolve();
@@ -67,21 +71,35 @@ function purgeCouchDbReplicationDocument(nanoAdmin, documentId, logger) {
       }
 
       // There should only be one or none ok result
-      const okResult = results.find(result => ('ok' in result));
+      const okResults = results.filter(candidate => ('ok' in candidate));
 
-      if (okResult === undefined) {
+      if (okResults.length === 0) {
         resolve();
         return true;
-      } else if (okResult.ok._deleted === true) {
-        const revisions = okResult.ok._revisions.ids.map((hash, index) => `${okResult.ok._revisions.ids.length - index}-${hash}`);
+      }
+
+      // first purge when document is already deleted then delete and purge the rest
+      okResults.forEach(okResult => {
+        if (!okResult.ok._deleted) {
+          return;
+        }
+
+        const revisions = okResult.ok._revisions.ids.map(
+          (hash, index) => `${okResult.ok._revisions.ids.length - index}-${hash}`
+        );
         return _purgeDocument(nanoAdmin, db, documentId, revisions).then(() => {
           resolve();
         }).catch(error => {
           reject(error);
         });
-        // eslint-disable-next-line no-else-return
-      } else {
-        return destroyAndPurgeDocument(
+      });
+
+      okResults.forEach(okResult => {
+        if (okResult.ok._deleted) {
+          return;
+        }
+
+        return _destroyAndPurgeDocument(
           nanoAdmin,
           db,
           documentId,
@@ -91,7 +109,7 @@ function purgeCouchDbReplicationDocument(nanoAdmin, documentId, logger) {
         }).catch(destroyAndPurgeError => {
           logger.logString(destroyAndPurgeError);
         });
-      }
+      });
     });
   });
 }
@@ -106,6 +124,5 @@ function getReplicationDocumentIdName(source, target) {
   return `replication-manager-${md5(source + target)}`;
 }
 
-exports.destroyAndPurgeDocument = destroyAndPurgeDocument;
 exports.purgeCouchDbReplicationDocument = purgeCouchDbReplicationDocument;
 exports.getReplicationDocumentIdName = getReplicationDocumentIdName;
