@@ -111,7 +111,7 @@ class ReprocessVideos extends Base
         return $videos;
     }
 
-    private function addJobsForVideo(Output\OutputInterface $output, Model\Video $video): void
+    private function addJobsForVideo(Output\OutputInterface $output, Model\Video $video)
     {
         foreach($video->getImageTypes() as $imageTypeName => $imageType) {
             $output->writeln("Adding job for video {$video->getId()} and imagetype {$imageTypeName}");
