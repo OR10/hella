@@ -13,7 +13,7 @@ describe('WorkerQueue', () => {
   }
 
   function createReplicationJob(sourceBaseUrl = 'http://example.com', sourceDatabase = 'some-database', targetUrl = 'http://some-other.couch:5984/foobar-db') {
-    return new Replicator(nanoAdminMock, sourceBaseUrl, sourceDatabase, targetUrl);
+    return new Replicator(loggerMock, nanoAdminMock, sourceBaseUrl, sourceDatabase, targetUrl);
   }
 
   beforeEach(() => {
