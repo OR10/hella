@@ -12,11 +12,8 @@ class GroupCreationTool extends CreationTool {
    * @param {ToolService} toolService
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {GroupShapeNameService} groupShapeNameService
-   * @param {ShapeSelectionService} shapeSelectionService
-   * @param {EntityIdService} entityIdService
-   * @param {ToolSelectorListenerService} toolSelectorListenerService
    */
-  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService, groupShapeNameService, shapeSelectionService, entityIdService, toolSelectorListenerService) {
+  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService, groupShapeNameService) {
     super(drawingContext, $scope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -48,32 +45,6 @@ class GroupCreationTool extends CreationTool {
      * @private
      */
     this._groupShapeNameService = groupShapeNameService;
-
-    /**
-     * @type {ShapeSelectionService}
-     * @private
-     */
-    this._shapeSelectionService = shapeSelectionService;
-
-    /**
-     * @type {EntityIdService}
-     * @private
-     */
-    this._entityIdService = entityIdService;
-
-    /**
-     * @type {ToolSelectorListenerService}
-     * @private
-     */
-    this._toolSelectorListenerService = toolSelectorListenerService;
-  }
-
-  /**
-   *
-   * @param {ToolActionStruct} toolActionStruct
-   */
-  activate(toolActionStruct) {
-    super.activate(toolActionStruct);
   }
 
   /**
@@ -249,9 +220,6 @@ GroupCreationTool.$inject = [
   'toolService',
   'labeledThingGroupService',
   'groupShapeNameService',
-  'shapeSelectionService',
-  'entityIdService',
-  'toolSelectorListenerService',
 ];
 
 export default GroupCreationTool;
