@@ -272,6 +272,10 @@ class MultiTool extends PaperTool {
           this._complete({actionIdentifier: 'selection', paperShape: null});
           return;
         }
+
+        // clear selection when selectedPaperShape is null
+        this._shapeSelectionService.clear();
+
         // Do not invoke any further action if readOnly is active
         if (this._toolActionStruct.readOnly === true) {
           return;
