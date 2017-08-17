@@ -1,5 +1,6 @@
 import {inject} from 'angular-mocks';
 import ViewerController from 'Application/Viewer/Directives/ViewerController';
+import GroupToolActionStruct from 'Application/Viewer/Tools/ToolActionStructs/GroupToolActionStruct';
 
 fdescribe('ViewerController tests', () => {
   let angularQ;
@@ -22,6 +23,8 @@ fdescribe('ViewerController tests', () => {
   let shapeSelectionService;
   let toolSelectorListener;
   let hierarchyCreationService;
+  let paperShapeFactory;
+  let labeledThingGroupGateway;
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
@@ -78,6 +81,8 @@ fdescribe('ViewerController tests', () => {
     shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes']);
     toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener']);
     hierarchyCreationService = jasmine.createSpyObj('hierarchyCreationService', ['createLabeledThingGroupInFrameWithHierarchy']);
+    paperShapeFactory = jasmine.createSpyObj('paperShapeFactory', ['createPaperGroupShape']);
+    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['createLabeledThingGroup']);
   });
 
   beforeEach(() => {
@@ -109,9 +114,9 @@ fdescribe('ViewerController tests', () => {
       frameLocationGateway,
       null, // frameGateway,
       null, // labeledThingInFrameGateway,
-      null, // labeledThingGroupGateway,
+      labeledThingGroupGateway,
       null, // entityIdService,
-      null, // paperShapeFactory,
+      paperShapeFactory,
       null, // applicationConfig,
       null, // $interval,
       null, // labeledThingGateway,
@@ -186,6 +191,58 @@ fdescribe('ViewerController tests', () => {
       imagePreloaderReadyCallback();
 
       expect(imagePreloader.preloadImages).toHaveBeenCalledWith(task, undefined, 1);
+    });
+  });
+
+  describe('Group Tool Selection', () => {
+    let groupListener;
+
+    beforeEach(() => {
+      toolSelectorListener.addListener.and.callFake(callback => {
+        groupListener = callback;
+      });
+    });
+
+    it('does nothing if there are no shapes selected', () => {
+      shapeSelectionService.count.and.returnValue(0);
+
+      createController();
+      groupListener();
+
+      expect(shapeSelectionService.getAllShapes).not.toHaveBeenCalled();
+      expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).not.toHaveBeenCalled();
+    });
+
+    it('creates a group around the selected shapes if there is at least one selected shape', () => {
+      const thingLayerContext = jasmine.createSpyObj('thingLayerContext', ['withScope']);
+      const labelStructureObject = {id: 'lso-id'};
+      const shapes = [{some: 'shape'}];
+      const ltg = {labeled: 'thing-group'};
+      const ltgif = {group: 'id', labeledThingGroup: ltg};
+      const group = jasmine.createSpyObj('PaperGroupRectangleMulti', ['sendToBack', 'select']);
+      const controller = createController();
+
+      controller._thingLayerContext = thingLayerContext;
+      group.labeledThingGroupInFrame = ltgif;
+      thingLayerContext.withScope.and.callFake(callback => callback());
+      labeledThingGroupGateway.createLabeledThingGroup.and.returnValue(angularQ.resolve());
+      shapeSelectionService.count.and.returnValue(1);
+      shapeSelectionService.getAllShapes.and.returnValue(shapes);
+      hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy.and.returnValue(ltgif);
+      paperShapeFactory.createPaperGroupShape.and.returnValue(group);
+
+
+      groupListener(null, labelStructureObject);
+
+      expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).toHaveBeenCalledWith(jasmine.any(GroupToolActionStruct));
+      expect(paperShapeFactory.createPaperGroupShape).toHaveBeenCalledWith(ltgif, shapes);
+      expect(group.sendToBack).toHaveBeenCalled();
+      expect(group.select).toHaveBeenCalled();
+      expect(shapeSelectionService.clear).toHaveBeenCalled();
+      expect(thingLayerContext.withScope).toHaveBeenCalled();
+      expect(labeledThingGroupGateway.createLabeledThingGroup).toHaveBeenCalledWith(task, ltg);
+      expect(controller.selectedPaperShape).toBe(group);
+      expect(controller.paperGroupShapes).toEqual([group]);
     });
   });
 });
