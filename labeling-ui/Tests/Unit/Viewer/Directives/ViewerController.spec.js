@@ -1,7 +1,7 @@
 import {inject} from 'angular-mocks';
 import ViewerController from 'Application/Viewer/Directives/ViewerController';
 
-describe('ViewerController tests', () => {
+fdescribe('ViewerController tests', () => {
   let angularQ;
   let rootScope;
   let scope;
@@ -19,6 +19,9 @@ describe('ViewerController tests', () => {
   let frameLocation;
   let imagePreloader;
   let task;
+  let shapeSelectionService;
+  let toolSelectorListener;
+  let hierarchyCreationService;
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
@@ -72,6 +75,9 @@ describe('ViewerController tests', () => {
     pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
     imagePreloader = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
+    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes']);
+    toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener']);
+    hierarchyCreationService = jasmine.createSpyObj('hierarchyCreationService', ['createLabeledThingGroupInFrameWithHierarchy']);
   });
 
   beforeEach(() => {
@@ -127,7 +133,10 @@ describe('ViewerController tests', () => {
       null, // labeledThingGroupService,
       null, // inProgressService,
       pouchDbSyncManager,
-      imagePreloader
+      imagePreloader,
+      shapeSelectionService,
+      toolSelectorListener,
+      hierarchyCreationService
     );
   }
 
