@@ -93,7 +93,7 @@ class PurgeService {
           // Revisions in the response don't have a revision number
           // Therefore we are adding it again.
           const revisions = okResult.ok._revisions.ids.map(
-            (hash, index) => `${okResult.ok._revisions.ids.length - index}-${hash}`
+            (hash, index) => `${okResult.ok._revisions.start - index}-${hash}`
           );
 
           return {
