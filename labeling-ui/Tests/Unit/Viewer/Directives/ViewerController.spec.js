@@ -196,6 +196,13 @@ fdescribe('ViewerController tests', () => {
 
   describe('Group Tool Selection', () => {
     let groupListener;
+    let thingLayerContext;
+    let labelStructureObject;
+    let shapes;
+    let ltg;
+    let ltgif;
+    let group;
+    let controller;
 
     beforeEach(() => {
       toolSelectorListener.addListener.and.callFake(callback => {
@@ -203,46 +210,62 @@ fdescribe('ViewerController tests', () => {
       });
     });
 
+    beforeEach(() => {
+      thingLayerContext = jasmine.createSpyObj('thingLayerContext', ['withScope']);
+      labelStructureObject = {id: 'lso-id'};
+      shapes = [{some: 'shape'}];
+      ltg = {labeled: 'thing-group'};
+      ltgif = {group: 'id', labeledThingGroup: ltg};
+      group = jasmine.createSpyObj('PaperGroupRectangleMulti', ['sendToBack', 'select']);
+      controller = createController();
+    });
+
     it('does nothing if there are no shapes selected', () => {
       shapeSelectionService.count.and.returnValue(0);
 
-      createController();
       groupListener();
 
       expect(shapeSelectionService.getAllShapes).not.toHaveBeenCalled();
       expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).not.toHaveBeenCalled();
     });
 
-    it('creates a group around the selected shapes if there is at least one selected shape', () => {
-      const thingLayerContext = jasmine.createSpyObj('thingLayerContext', ['withScope']);
-      const labelStructureObject = {id: 'lso-id'};
-      const shapes = [{some: 'shape'}];
-      const ltg = {labeled: 'thing-group'};
-      const ltgif = {group: 'id', labeledThingGroup: ltg};
-      const group = jasmine.createSpyObj('PaperGroupRectangleMulti', ['sendToBack', 'select']);
-      const controller = createController();
+    describe('group creation', () => {
+      beforeEach(() => {
+        controller._thingLayerContext = thingLayerContext;
+        group.labeledThingGroupInFrame = ltgif;
+        thingLayerContext.withScope.and.callFake(callback => callback());
+        labeledThingGroupGateway.createLabeledThingGroup.and.returnValue(angularQ.resolve());
+        shapeSelectionService.count.and.returnValue(1);
+        shapeSelectionService.getAllShapes.and.returnValue(shapes);
+        hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy.and.returnValue(ltgif);
+        paperShapeFactory.createPaperGroupShape.and.returnValue(group);
+      });
 
-      controller._thingLayerContext = thingLayerContext;
-      group.labeledThingGroupInFrame = ltgif;
-      thingLayerContext.withScope.and.callFake(callback => callback());
-      labeledThingGroupGateway.createLabeledThingGroup.and.returnValue(angularQ.resolve());
-      shapeSelectionService.count.and.returnValue(1);
-      shapeSelectionService.getAllShapes.and.returnValue(shapes);
-      hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy.and.returnValue(ltgif);
-      paperShapeFactory.createPaperGroupShape.and.returnValue(group);
+      it('creates a group around the selected shapes if there is at least one selected shape', () => {
+        groupListener(null, labelStructureObject);
 
+        expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).toHaveBeenCalledWith(jasmine.any(GroupToolActionStruct));
+        expect(paperShapeFactory.createPaperGroupShape).toHaveBeenCalledWith(ltgif, shapes);
+        expect(group.sendToBack).toHaveBeenCalled();
+        expect(thingLayerContext.withScope).toHaveBeenCalled();
+        expect(labeledThingGroupGateway.createLabeledThingGroup).toHaveBeenCalledWith(task, ltg);
+      });
 
-      groupListener(null, labelStructureObject);
+      it('clears all selected paper shapes and selects the group', () => {
+        groupListener(null, labelStructureObject);
+        expect(group.select).toHaveBeenCalled();
+        expect(shapeSelectionService.clear).toHaveBeenCalled();
+      });
 
-      expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).toHaveBeenCalledWith(jasmine.any(GroupToolActionStruct));
-      expect(paperShapeFactory.createPaperGroupShape).toHaveBeenCalledWith(ltgif, shapes);
-      expect(group.sendToBack).toHaveBeenCalled();
-      expect(group.select).toHaveBeenCalled();
-      expect(shapeSelectionService.clear).toHaveBeenCalled();
-      expect(thingLayerContext.withScope).toHaveBeenCalled();
-      expect(labeledThingGroupGateway.createLabeledThingGroup).toHaveBeenCalledWith(task, ltg);
-      expect(controller.selectedPaperShape).toBe(group);
-      expect(controller.paperGroupShapes).toEqual([group]);
+      it('sets the group shape as selected paper shape', () => {
+        groupListener(null, labelStructureObject);
+        expect(controller.selectedPaperShape).toBe(group);
+      });
+
+      it('adds the group shape to the known paperGroupShapes', () => {
+        groupListener(null, labelStructureObject);
+        expect(controller.paperGroupShapes).toEqual([group]);
+      });
     });
   });
 });
