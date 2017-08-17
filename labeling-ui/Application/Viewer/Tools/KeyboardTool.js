@@ -1,5 +1,4 @@
 import Tool from './NewTool';
-import {debounce} from 'lodash';
 
 /**
  * Base class of Tools providing keyboard shortcuts
