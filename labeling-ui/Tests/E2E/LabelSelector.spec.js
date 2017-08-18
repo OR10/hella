@@ -92,7 +92,7 @@ fdescribe('LabelSelector (right sidebar)', () => {
         .then(() => done());
     });
 
-    fit('should have no panes if a group is selected', done => {
+    it('should have no panes if a group is selected', done => {
       const groupButton = element(by.css('button.tool-group.tool-0'));
 
       mock(sharedMocks.concat([
