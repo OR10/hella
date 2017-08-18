@@ -665,6 +665,8 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => browser.sleep(250))
         .then(() => toolButton0.click())
         .then(() => browser.sleep(250))
+        .then(() => clickPedestrian()) // Switch back to pedestrian to check if values were kept
+        .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(pedestrianLabelTitleTexts))
         .then(done);
     });
