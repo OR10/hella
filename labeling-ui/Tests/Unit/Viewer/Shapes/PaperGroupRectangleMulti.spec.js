@@ -145,8 +145,7 @@ describe('PaperGroupRectangleMulti', () => {
   });
 
   it('should return correct tool class', () => {
-    const group = createMultiRectangle();
-    const className = group.getClass();
+    const className = PaperGroupRectangleMulti.getClass();
     expect(className).toEqual('group-rectangle');
   });
 

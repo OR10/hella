@@ -1,12 +1,26 @@
 const {Replicator} = require('./Jobs/Replicator');
 
-const {purgeCouchDbReplicationDocument, getReplicationDocumentIdName} = require('./Utils');
+const {getReplicationDocumentIdName} = require('./Utils');
 
 class ReplicationManager {
-  constructor(logger, nanoAdmin, workerQueue, options) {
+  /**
+   * @param {Logger} logger
+   * @param {nano} nanoAdmin
+   * @param {WorkerQueue} workerQueue
+   * @param {PurgeService} purgeService
+   * @param {object} options
+   */
+  constructor(logger, nanoAdmin, workerQueue, purgeService, options) {
     this.logger = logger;
     this.nanoAdmin = nanoAdmin;
     this.workerQueue = workerQueue;
+
+    /**
+     * @type {PurgeService}
+     * @private
+     */
+    this._purgeService = purgeService;
+
     this.options = options;
     this.purgeQueue = [];
   }
@@ -129,20 +143,18 @@ class ReplicationManager {
       const sourceUrl = this.sourceBaseUrl + sourceDatabase;
       const targetUrl = this.hotStandByUrl + sourceDatabase;
       purgePromises.push(
-        purgeCouchDbReplicationDocument(
-          this.nanoAdmin,
-          getReplicationDocumentIdName(sourceUrl, targetUrl),
-          this.logger,
+        this._purgeService.purgeDocument(
+          '_replicator',
+          getReplicationDocumentIdName(sourceUrl, targetUrl)
         ),
       );
     }
     const sourceUrl = this.sourceBaseUrl + sourceDatabase;
     const targetUrl = this.targetBaseUrl + targetDatabase;
     purgePromises.push(
-      purgeCouchDbReplicationDocument(
-        this.nanoAdmin,
-        getReplicationDocumentIdName(sourceUrl, targetUrl),
-        this.logger,
+      this._purgeService.purgeDocument(
+        '_replicator',
+        getReplicationDocumentIdName(sourceUrl, targetUrl)
       ),
     );
 
@@ -158,11 +170,11 @@ class ReplicationManager {
   _addWorkerJob(sourceDatabase, targetDatabase) {
     if (this.hotStandByUrl !== undefined) {
       const targetUrl = this.hotStandByUrl + sourceDatabase;
-      const job = new Replicator(this.nanoAdmin, this.sourceBaseUrl, sourceDatabase, targetUrl);
+      const job = new Replicator(this.logger, this.nanoAdmin, this._purgeService, this.sourceBaseUrl, sourceDatabase, targetUrl);
       this.workerQueue.addJob(job);
     }
     const targetUrl = this.targetBaseUrl + targetDatabase;
-    const job = new Replicator(this.nanoAdmin, this.sourceBaseUrl, sourceDatabase, targetUrl);
+    const job = new Replicator(this.logger, this.nanoAdmin, this._purgeService, this.sourceBaseUrl, sourceDatabase, targetUrl);
     this.workerQueue.addJob(job);
   }
 

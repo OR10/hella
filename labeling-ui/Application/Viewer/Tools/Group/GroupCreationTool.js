@@ -107,31 +107,36 @@ class GroupCreationTool extends CreationTool {
         this._completeEmpty();
         return;
       }
-
-      const {color, colorIdString} = this._getColor();
-
-      const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);
-      labeledThingGroupInFrame.labeledThingGroup.lineColor = colorIdString;
-
-      let paperGroup;
-      this._context.withScope(() => {
-        paperGroup = new PaperGroupRectangleMulti(
-          this._groupShapeNameService,
-          labeledThingGroupInFrame,
-          paperShape.id,
-          shapes,
-          color
-        );
-
-        // Place this group shape behind all other shapes
-        paperGroup.sendToBack();
-      });
+      const paperGroup = this._createPaperGroup(paperShape.id, toolActionStruct, shapes);
 
       this._complete(paperGroup);
     })
       .catch(reason => this._reject(reason));
 
     return promise;
+  }
+
+  _createPaperGroup(id, toolActionStruct, shapes) {
+    const {color, colorIdString} = this._getColor();
+
+    const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);
+    labeledThingGroupInFrame.labeledThingGroup.lineColor = colorIdString;
+
+    let paperGroup;
+    this._context.withScope(() => {
+      paperGroup = new PaperGroupRectangleMulti(
+        this._groupShapeNameService,
+        labeledThingGroupInFrame,
+        id,
+        shapes,
+        color
+      );
+
+      // Place this group shape behind all other shapes
+      paperGroup.sendToBack();
+    });
+
+    return paperGroup;
   }
 
   /**

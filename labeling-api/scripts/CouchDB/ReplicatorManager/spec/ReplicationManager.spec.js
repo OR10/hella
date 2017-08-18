@@ -7,6 +7,7 @@ describe('ReplicationManager', () => {
   let loggerMock;
   let workerQueueMock;
   let compactionServiceMock;
+  let purgeServiceMock;
 
   function getOptions() {
     return {
@@ -23,6 +24,7 @@ describe('ReplicationManager', () => {
       loggerMock,
       nanoAdminMock,
       workerQueueMock,
+      purgeServiceMock,
       getOptions()
     );
   }
@@ -35,6 +37,9 @@ describe('ReplicationManager', () => {
     replicatorDbMock = jasmine.createSpyObj('replicatorDb', ['insert']);
     loggerMock = jasmine.createSpyObj('Logger', ['logString']);
     workerQueueMock = jasmine.createSpyObj('WorkerQueue', ['listenToReplicationChanges']);
+    purgeServiceMock = jasmine.createSpyObj('PurgeService', ['purgeDocument']);
+
+    purgeServiceMock.purgeDocument.and.returnValue(Promise.resolve());
 
     nanoAdminMock = {
       db: {
