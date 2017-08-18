@@ -1,5 +1,6 @@
 import {inject} from 'angular-mocks';
 import ViewerController from 'Application/Viewer/Directives/ViewerController';
+import GroupToolActionStruct from 'Application/Viewer/Tools/ToolActionStructs/GroupToolActionStruct';
 
 describe('ViewerController tests', () => {
   let angularQ;
@@ -19,6 +20,11 @@ describe('ViewerController tests', () => {
   let frameLocation;
   let imagePreloader;
   let task;
+  let shapeSelectionService;
+  let toolSelectorListener;
+  let hierarchyCreationService;
+  let paperShapeFactory;
+  let labeledThingGroupGateway;
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
@@ -72,6 +78,11 @@ describe('ViewerController tests', () => {
     pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
     imagePreloader = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
+    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes']);
+    toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener']);
+    hierarchyCreationService = jasmine.createSpyObj('hierarchyCreationService', ['createLabeledThingGroupInFrameWithHierarchy']);
+    paperShapeFactory = jasmine.createSpyObj('paperShapeFactory', ['createPaperGroupShape']);
+    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['createLabeledThingGroup']);
   });
 
   beforeEach(() => {
@@ -103,9 +114,9 @@ describe('ViewerController tests', () => {
       frameLocationGateway,
       null, // frameGateway,
       null, // labeledThingInFrameGateway,
-      null, // labeledThingGroupGateway,
+      labeledThingGroupGateway,
       null, // entityIdService,
-      null, // paperShapeFactory,
+      paperShapeFactory,
       null, // applicationConfig,
       null, // $interval,
       null, // labeledThingGateway,
@@ -127,7 +138,10 @@ describe('ViewerController tests', () => {
       null, // labeledThingGroupService,
       null, // inProgressService,
       pouchDbSyncManager,
-      imagePreloader
+      imagePreloader,
+      shapeSelectionService,
+      toolSelectorListener,
+      hierarchyCreationService
     );
   }
 
@@ -177,6 +191,81 @@ describe('ViewerController tests', () => {
       imagePreloaderReadyCallback();
 
       expect(imagePreloader.preloadImages).toHaveBeenCalledWith(task, undefined, 1);
+    });
+  });
+
+  describe('Group Tool Selection', () => {
+    let groupListener;
+    let thingLayerContext;
+    let labelStructureObject;
+    let shapes;
+    let ltg;
+    let ltgif;
+    let group;
+    let controller;
+
+    beforeEach(() => {
+      toolSelectorListener.addListener.and.callFake(callback => {
+        groupListener = callback;
+      });
+    });
+
+    beforeEach(() => {
+      thingLayerContext = jasmine.createSpyObj('thingLayerContext', ['withScope']);
+      labelStructureObject = {id: 'lso-id'};
+      shapes = [{some: 'shape'}];
+      ltg = {labeled: 'thing-group'};
+      ltgif = {group: 'id', labeledThingGroup: ltg};
+      group = jasmine.createSpyObj('PaperGroupRectangleMulti', ['sendToBack', 'select']);
+      controller = createController();
+    });
+
+    it('does nothing if there are no shapes selected', () => {
+      shapeSelectionService.count.and.returnValue(0);
+
+      groupListener();
+
+      expect(shapeSelectionService.getAllShapes).not.toHaveBeenCalled();
+      expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).not.toHaveBeenCalled();
+    });
+
+    describe('group creation', () => {
+      beforeEach(() => {
+        controller._thingLayerContext = thingLayerContext;
+        group.labeledThingGroupInFrame = ltgif;
+        thingLayerContext.withScope.and.callFake(callback => callback());
+        labeledThingGroupGateway.createLabeledThingGroup.and.returnValue(angularQ.resolve());
+        shapeSelectionService.count.and.returnValue(1);
+        shapeSelectionService.getAllShapes.and.returnValue(shapes);
+        hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy.and.returnValue(ltgif);
+        paperShapeFactory.createPaperGroupShape.and.returnValue(group);
+      });
+
+      it('creates a group around the selected shapes if there is at least one selected shape', () => {
+        groupListener(null, labelStructureObject);
+
+        expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).toHaveBeenCalledWith(jasmine.any(GroupToolActionStruct));
+        expect(paperShapeFactory.createPaperGroupShape).toHaveBeenCalledWith(ltgif, shapes);
+        expect(group.sendToBack).toHaveBeenCalled();
+        expect(thingLayerContext.withScope).toHaveBeenCalled();
+        expect(labeledThingGroupGateway.createLabeledThingGroup).toHaveBeenCalledWith(task, ltg);
+      });
+
+      it('clears all selected paper shapes and selects the group', () => {
+        groupListener(null, labelStructureObject);
+        expect(group.select).toHaveBeenCalled();
+        expect(shapeSelectionService.clear).toHaveBeenCalled();
+      });
+
+      it('sets the group shape as selected paper shape', () => {
+        groupListener(null, labelStructureObject);
+        expect(controller.selectedPaperShape).toBe(group);
+      });
+
+      it('adds the group shape to the known paperGroupShapes', () => {
+        groupListener(null, labelStructureObject);
+        expect(controller.paperGroupShapes).toEqual([group]);
+      });
     });
   });
 });
