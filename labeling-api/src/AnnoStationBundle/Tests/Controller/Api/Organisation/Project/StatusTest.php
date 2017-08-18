@@ -29,12 +29,7 @@ class StatusTest extends Tests\WebTestCase
     /**
      * @var Model\User
      */
-    private $client;
-
-    /**
-     * @var Model\User
-     */
-    private $labelCoordinator;
+    private $labelManager;
 
     /**
      * @var Model\User
@@ -49,15 +44,15 @@ class StatusTest extends Tests\WebTestCase
     public function testAcceptProject()
     {
         $project       = $this->createProject($this->organisation);
-        $labelingGroup = $this->createLabelingGroup($this->organisation, $this->labelCoordinator);
+        $labelingGroup = $this->createLabelingGroup($this->organisation, $this->labelManager);
 
-        $this->labelCoordinator->assignToOrganisation($this->organisation);
+        $this->labelManager->assignToOrganisation($this->organisation);
 
         $requestWrapper = $this->createRequest(
             '/api/v1/organisation/%s/project/%s/status/accept',
             [$this->organisation->getId(), $project->getId()]
         )
-            ->withCredentialsFromUsername($this->labelCoordinator)
+            ->withCredentialsFromUsername($this->labelManager)
             ->setJsonBody(
                 [
                     'assignedGroupId' => $labelingGroup->getId(),
@@ -68,7 +63,7 @@ class StatusTest extends Tests\WebTestCase
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
         $this->assertSame(Model\Project::STATUS_IN_PROGRESS, $project->getStatus());
-        $this->assertSame($this->labelCoordinator->getId(), $project->getLatestAssignedCoordinatorUserId());
+        $this->assertSame($this->labelManager->getId(), $project->getLatestAssignedLabelManagerUserId());
         $this->assertSame($labelingGroup->getId(), $project->getLabelingGroupId());
     }
 
@@ -81,7 +76,7 @@ class StatusTest extends Tests\WebTestCase
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->labelCoordinator)
+            ->withCredentialsFromUsername($this->labelManager)
             ->execute();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
@@ -98,7 +93,7 @@ class StatusTest extends Tests\WebTestCase
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->labelCoordinator)
+            ->withCredentialsFromUsername($this->labelManager)
             ->execute();
 
         $this->assertSame($response->getResponse()->getStatusCode(), 400);
@@ -117,24 +112,24 @@ class StatusTest extends Tests\WebTestCase
             Helper\ProjectBuilder::create($organisation)
                 ->withName('foobar')
                 ->withCreationDate(new \DateTime('yesterday'))
-                ->withProjectOwnedByUserId($this->client->getId())
-                ->withAddedCoordinatorAssignment($this->labelCoordinator, new \DateTime('yesterday'))
+                ->withProjectOwnedByUserId($this->labelManager->getId())
+                ->withAddedLabelManagerAssignment($this->labelManager, new \DateTime('yesterday'))
                 ->build()
         );
     }
 
     /**
-     * Create and persist a labeling group for the given coordinator with the default labeler.
+     * Create and persist a labeling group for the given labelManager with the default labeler.
      *
      * @param AnnoStationBundleModel\Organisation $organisation
-     * @param Model\User                          $coordinator
+     * @param Model\User                          $labelManager
      *
      * @return Model\LabelingGroup
      */
-    private function createLabelingGroup(AnnoStationBundleModel\Organisation $organisation, Model\User $coordinator)
+    private function createLabelingGroup(AnnoStationBundleModel\Organisation $organisation, Model\User $labelManager)
     {
         return $this->labelingGroupFacade->save(
-            Model\LabelingGroup::create($organisation, $coordinator, $this->labeler)
+            Model\LabelingGroup::create($organisation, $labelManager, $this->labeler)
         );
     }
 
@@ -161,8 +156,7 @@ class StatusTest extends Tests\WebTestCase
         $this->labelingTaskFacade  = $this->getAnnostationService('database.facade.labeling_task');
         $organisationFacade        = $this->getAnnostationService('database.facade.organisation');
         $this->organisation        = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
-        $this->client              = $this->createClientUser($this->organisation);
-        $this->labelCoordinator    = $this->createLabelCoordinatorUser($this->organisation);
         $this->labeler             = $this->createLabelerUser($this->organisation);
+        $this->labelManager        = $this->createLabelManagerUser($this->organisation);
     }
 }

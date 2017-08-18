@@ -24,15 +24,15 @@ class KernelTestCase extends AppBundleTests\KernelTestCase
     protected $userFacade;
 
     /**
-     * Create a persisted client with its username as password.
+     * Create a persisted SuperAdmin with its username as password.
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return Model\User
      */
-    protected function createClientUser(AnnoStationBundleModel\Organisation $organisation = null)
+    protected function createSuperAdminUser(AnnoStationBundleModel\Organisation $organisation = null)
     {
-        $user = Helper\UserBuilder::createDefaultClient();
+        $user = Helper\UserBuilder::createDefaultSuperAdmin();
         if ($organisation instanceof AnnoStationBundleModel\Organisation) {
             $user->withOrganisations([$organisation]);
         }
@@ -41,15 +41,15 @@ class KernelTestCase extends AppBundleTests\KernelTestCase
     }
 
     /**
-     * Create a persisted label coordinator with its username as password.
+     * Create a persisted SuperAdmin with its username as password.
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return Model\User
      */
-    protected function createLabelCoordinatorUser(AnnoStationBundleModel\Organisation $organisation = null)
+    protected function createLabelManagerUser(AnnoStationBundleModel\Organisation $organisation = null)
     {
-        $user = Helper\UserBuilder::createDefaultLabelCoordinator();
+        $user = Helper\UserBuilder::createDefaultLabelManager();
         if ($organisation instanceof AnnoStationBundleModel\Organisation) {
             $user->withOrganisations([$organisation]);
         }
@@ -67,40 +67,6 @@ class KernelTestCase extends AppBundleTests\KernelTestCase
     protected function createLabelerUser(AnnoStationBundleModel\Organisation $organisation = null)
     {
         $user = Helper\UserBuilder::createDefaultLabeler();
-        if ($organisation instanceof AnnoStationBundleModel\Organisation) {
-            $user->withOrganisations([$organisation]);
-        }
-
-        return $this->userFacade->updateUser($user->build());
-    }
-
-    /**
-     * Create a persisted admin with its username as password.
-     *
-     * @param AnnoStationBundleModel\Organisation $organisation
-     *
-     * @return Model\User
-     */
-    protected function createAdminUser(AnnoStationBundleModel\Organisation $organisation = null)
-    {
-        $user = Helper\UserBuilder::createDefaultAdmin();
-        if ($organisation instanceof AnnoStationBundleModel\Organisation) {
-            $user->withOrganisations([$organisation]);
-        }
-
-        return $this->userFacade->updateUser($user->build());
-    }
-
-    /**
-     * Create a persisted SuperAdmin with its username as password.
-     *
-     * @param AnnoStationBundleModel\Organisation $organisation
-     *
-     * @return Model\User
-     */
-    protected function createSuperAdminUser(AnnoStationBundleModel\Organisation $organisation = null)
-    {
-        $user = Helper\UserBuilder::createDefaultSuperAdmin();
         if ($organisation instanceof AnnoStationBundleModel\Organisation) {
             $user->withOrganisations([$organisation]);
         }

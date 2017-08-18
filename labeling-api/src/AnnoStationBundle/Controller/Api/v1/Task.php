@@ -119,10 +119,6 @@ class Task extends Controller\Base
             throw new Exception\BadRequestHttpException(sprintf('There is no project with the id "%s"', $projectId));
         }
 
-        if (!$project->isAccessibleBy($user)) {
-            throw new Exception\BadRequestHttpException('You are not allowed to access this project!');
-        }
-
         if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
             throw new Exception\BadRequestHttpException('Invalid offset or limit');
         }
@@ -216,12 +212,6 @@ class Task extends Controller\Base
     public function getTaskAction(Model\LabelingTask $task)
     {
         $this->authorizationService->denyIfTaskIsNotReadable($task);
-
-        $project = $this->projectFacade->find($task->getProjectId());
-        $user    = $this->tokenStorage->getToken()->getUser();
-        if (!$project->isAccessibleBy($user)) {
-            throw new Exception\BadRequestHttpException('You are not allowed to access this project!');
-        }
 
         $users = array();
         $users = array_merge(

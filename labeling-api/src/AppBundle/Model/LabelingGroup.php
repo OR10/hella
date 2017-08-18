@@ -28,6 +28,11 @@ class LabelingGroup
     /**
      * @CouchDB\Field(type="mixed")
      */
+    private $labelManagers = [];
+
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
     private $labeler = [];
 
     /**
@@ -42,32 +47,32 @@ class LabelingGroup
 
     /**
      * @param AnnoStationBundleModel\Organisation $organisation
-     * @param                                     $coordinators
+     * @param                                     $labelManagers
      * @param                                     $labeler
      *
      * @return static
      */
-    public static function create(AnnoStationBundleModel\Organisation $organisation, $coordinators, $labeler)
+    public static function create(AnnoStationBundleModel\Organisation $organisation, $labelManagers, $labeler)
     {
-        return new static($organisation, $coordinators, $labeler);
+        return new static($organisation, $labelManagers, $labeler);
     }
 
     /**
      * LabelingGroup constructor.
      *
      * @param AnnoStationBundleModel\Organisation $organisation
-     * @param                                     $coordinators
+     * @param                                     $labelManagers
      * @param                                     $labeler
      * @param                                     $name
      */
     public function __construct(
         AnnoStationBundleModel\Organisation $organisation,
-        $coordinators,
+        $labelManagers,
         $labeler,
         $name = null
     ) {
         $this->organisationId = $organisation->getId();
-        $this->coordinators   = $coordinators;
+        $this->labelManagers  = $labelManagers;
         $this->labeler        = $labeler;
         $this->name           = $name;
     }
@@ -150,5 +155,21 @@ class LabelingGroup
     public function setOrganisationId($organisationId)
     {
         $this->organisationId = $organisationId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLabelManagers()
+    {
+        return $this->labelManagers;
+    }
+
+    /**
+     * @param mixed $labelManagers
+     */
+    public function setLabelManagers($labelManagers)
+    {
+        $this->labelManagers = $labelManagers;
     }
 }

@@ -285,10 +285,10 @@ class Project
      *
      * @return array|View\Result
      */
-    public function findAllForCoordinator(AnnoStationBundleModel\Organisation $organisation, Model\User $user)
+    public function findAllForLabelManager(AnnoStationBundleModel\Organisation $organisation, Model\User $user)
     {
-        if (!$user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
-            throw new \RuntimeException('You are not allowed to request this method');
+        if (!$user->hasRole(Model\User::ROLE_LABEL_MANAGER)) {
+            throw new \RuntimeException('This user is not a label_manager!');
         }
 
         $query = $this->documentManager
@@ -315,42 +315,12 @@ class Project
         $status,
         $countOnly = false
     ) {
-        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_OBSERVER, Model\User::ROLE_SUPER_ADMIN])) {
+        if ($user->hasOneRoleOf([Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER, Model\User::ROLE_OBSERVER])) {
             if ($countOnly) {
                 return $this->getSumOfProjectsByStatus($organisation, $status);
             } else {
                 return $this->findAllByStatus($organisation, $status);
             }
-        }
-
-        if ($user->hasRole(Model\User::ROLE_CLIENT)) {
-            $query = $this->documentManager
-                ->createQuery('annostation_project_by_organisation_and_userId_and_status_003', 'view');
-            $query->setKey([$organisation->getId(), $user->getId(), $status]);
-            if ($countOnly) {
-                $query->setReduce(true);
-                $query->setGroup(true);
-            } else {
-                $query->onlyDocs(true);
-                $query->setReduce(false);
-            }
-
-            return $query->execute();
-        }
-
-        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
-            $query = $this->documentManager
-                ->createQuery('annostation_project_by_organisation_and_assigned_userId_and_status_003', 'view');
-            $query->setKey([$organisation->getId(), $user->getId(), $status]);
-            if ($countOnly) {
-                $query->setReduce(true);
-                $query->setGroup(true);
-            } else {
-                $query->onlyDocs(true);
-                $query->setReduce(false);
-            }
-
-            return $query->execute();
         }
 
         if ($user->hasRole(Model\User::ROLE_LABELER)) {

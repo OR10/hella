@@ -70,7 +70,6 @@ class Users extends Controller\Base
      * Get all users
      *
      * @Rest\Get("/{organisation}/users")
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      *
@@ -78,6 +77,9 @@ class Users extends Controller\Base
      */
     public function getUsersListAction(AnnoStationBundleModel\Organisation $organisation)
     {
+        if (!$this->currentUserPermissions->hasPermission('canViewUserList')) {
+            throw new Exception\AccessDeniedHttpException('You are not allowed to request the user list');
+        }
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
         $users = $this->userFacade->getUserList($organisation);

@@ -162,7 +162,7 @@ class TaskListController {
       this._modalService.info(
         {
           title: 'Already Flagged',
-          headline: 'This task is already flagged! Please wait for the labeling coordinator to remove the flag.',
+          headline: 'This task is already flagged! Please wait for the labeling manager to remove the flag.',
           confirmButtonText: 'Understood',
         },
         undefined,

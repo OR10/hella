@@ -88,7 +88,7 @@ class TaskDatabaseSecurityPermissionService
         $memberNames = [$this->replicationUser];
         $memberRoles = [
             UserRolesRebuilder::SUPER_ADMIN_GROUP,
-            sprintf('%s%s', UserRolesRebuilder::ADMIN_GROUP_PREFIX, $organisation->getId()),
+            sprintf('%s%s', UserRolesRebuilder::LABEL_MANAGER_PREFIX, $organisation->getId()),
             sprintf('%s%s', UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $organisation->getId()),
         ];
 
@@ -98,7 +98,7 @@ class TaskDatabaseSecurityPermissionService
         );
 
         $memberRoles = array_merge(
-            $this->getCoordinatorRoles($project),
+            $this->getLabelManagerRoles($project),
             $memberRoles
         );
         sort($memberRoles);
@@ -117,9 +117,9 @@ class TaskDatabaseSecurityPermissionService
         );
     }
 
-    private function getCoordinatorRoles(Model\Project $project)
+    private function getLabelManagerRoles(Model\Project $project)
     {
-        return [sprintf('%s%s-%s', UserRolesRebuilder::COORDINATORS_PREFIX, $project->getOrganisationId(), $project->getId())];
+        return [sprintf('%s%s-%s', UserRolesRebuilder::LABEL_MANAGER_PREFIX, $project->getOrganisationId(), $project->getId())];
     }
 
     /**
@@ -157,24 +157,6 @@ class TaskDatabaseSecurityPermissionService
                 $labelingGroupId
             ),
         ];
-    }
-
-    /**
-     * @param Model\Project $project
-     *
-     * @return array
-     */
-    private function getCoordinatorUsernames(Model\Project $project)
-    {
-        $memberNames                     = [];
-        $latestAssignedCoordinatorUserId = $project->getLatestAssignedCoordinatorUserId();
-        if ($latestAssignedCoordinatorUserId !== null) {
-            $memberNames[] = $this->addCouchDbPrefix(
-                $this->userFacade->getUserById($latestAssignedCoordinatorUserId)->getUsername()
-            );
-        }
-
-        return $memberNames;
     }
 
     /**

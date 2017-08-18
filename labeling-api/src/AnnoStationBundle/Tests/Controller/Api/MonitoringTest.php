@@ -49,12 +49,12 @@ class MonitoringTest extends Tests\WebTestCase
         $this->couchdbClient->deleteDatabase('monitoring');
     }
 
-    public function testGetLatestMonitoringResultAsAdmin()
+    public function testGetLatestMonitoringResultAsLabelManager()
     {
         $this->couchdbClient->deleteDatabase('monitoring');
         $this->couchdbClient->createDatabase('monitoring');
         $requestWrapper = $this->createRequest('/api/v1/monitoring')
-            ->withCredentialsFromUsername($this->createAdminUser())
+            ->withCredentialsFromUsername($this->createLabelManagerUser())
             ->execute();
 
         $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());

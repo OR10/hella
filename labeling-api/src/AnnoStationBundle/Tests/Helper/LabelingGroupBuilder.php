@@ -18,7 +18,7 @@ class LabelingGroupBuilder
     /**
      * @var array
      */
-    private $coordinators = [];
+    private $labelManagers = [];
 
     /**
      * @var AnnoStationBundleModel\Organisation
@@ -45,9 +45,9 @@ class LabelingGroupBuilder
         return $this;
     }
 
-    public function withCoordinators(array $coordinators)
+    public function withLabelManagers(array $labelManagers)
     {
-        $this->coordinators = $coordinators;
+        $this->labelManagers = $labelManagers;
 
         return $this;
     }
@@ -57,7 +57,7 @@ class LabelingGroupBuilder
      */
     public function build()
     {
-        $labelingGroup = Model\LabelingGroup::create($this->organisation, $this->coordinators, $this->users);
+        $labelingGroup = Model\LabelingGroup::create($this->organisation, $this->labelManagers, $this->users);
 
         return $labelingGroup;
     }

@@ -57,7 +57,7 @@ class AccessCheckVoterTest extends Tests\CouchDbTestCase
         $this->voter->method('getChecks')->willReturn([$this->check]);
 
         $this->user = $this->createUser();
-        $this->user->removeRole(Model\User::ROLE_ADMIN);
+        $this->user->removeRole(Model\User::ROLE_LABEL_MANAGER);
 
         $this->token = $this->getMockBuilder(TokenInterface::class)->getMock();
         $this->token->method('getUser')->willReturn($this->user);

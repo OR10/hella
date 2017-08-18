@@ -82,7 +82,7 @@ class CampaignTest extends Tests\WebTestCase
         $this->organisation   = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
 
         $this->createDefaultUser();
-        $this->defaultUser->setRoles([Model\User::ROLE_ADMIN]);
+        $this->defaultUser->setRoles([Model\User::ROLE_LABEL_MANAGER]);
         $this->defaultUser->assignToOrganisation($this->organisation);
     }
 }

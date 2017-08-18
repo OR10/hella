@@ -2,15 +2,15 @@ function (doc) {
     if (doc.type !== 'AppBundle.Model.Project') {
         return;
     }
-    if (doc.coordinatorAssignmentHistory === null) {
+    if (doc.labelManagerAssignmentHistory === null) {
         return;
     }
-    var coordinatorAssignmentHistory = [];
-    doc.coordinatorAssignmentHistory.forEach(function (history) {
-        coordinatorAssignmentHistory.push(history);
+    var labelManagerAssignmentHistory = [];
+    doc.labelManagerAssignmentHistory.forEach(function (history) {
+        labelManagerAssignmentHistory.push(history);
     });
 
-    coordinatorAssignmentHistory.sort(function (a, b) {
+    labelManagerAssignmentHistory.sort(function (a, b) {
         return b.assignedAt - a.assignedAt;
     });
 
@@ -23,8 +23,8 @@ function (doc) {
         statusHistory.sort(function (a, b) {
             return b.timestamp - a.timestamp;
         });
-        emit([doc.organisationId, coordinatorAssignmentHistory[0].userId, statusHistory[0].status]);
+        emit([doc.organisationId, labelManagerAssignmentHistory[0].userId, statusHistory[0].status]);
     }else{
-        emit([doc.organisationId, coordinatorAssignmentHistory[0].userId, doc.status]);
+        emit([doc.organisationId, labelManagerAssignmentHistory[0].userId, doc.status]);
     }
 }

@@ -33,13 +33,13 @@ class AttentionTest extends Tests\WebTestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function testEnableAttentionAsCoordinator()
+    public function testEnableAttentionAsLabelManager()
     {
         $response = $this->createRequest(
             '/api/v1/task/%s/attention/enable',
             [$this->task->getId()],
-            'label_coordinator',
-            'label_coordinator'
+            'label_manager',
+            'label_manager'
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute()
@@ -52,13 +52,13 @@ class AttentionTest extends Tests\WebTestCase
         $this->assertTrue($actualTask->isTaskAttentionFlag());
     }
 
-    public function testDisableAttentionAsCoordinator()
+    public function testDisableAttentionAsLabelManager()
     {
         $response = $this->createRequest(
             '/api/v1/task/%s/attention/disable',
             [$this->task->getId()],
-            'label_coordinator',
-            'label_coordinator'
+            'label_manager',
+            'label_manager'
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute()
@@ -72,21 +72,6 @@ class AttentionTest extends Tests\WebTestCase
     }
 
     public function testEnableAttentionAsAnotherLabeler()
-    {
-        $response = $this->createRequest(
-            '/api/v1/task/%s/attention/enable',
-            [$this->task->getId()],
-            'label_coordinator_2',
-            'label_coordinator_2'
-        )
-            ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->execute()
-            ->getResponse();
-
-        $this->assertEquals(403, $response->getStatusCode());
-    }
-
-    public function testEnableAttentionAsAnotherCoordinator()
     {
         $response = $this->createRequest(
             '/api/v1/task/%s/attention/enable',
@@ -113,34 +98,32 @@ class AttentionTest extends Tests\WebTestCase
         /** @var AppFacade\User $userFacade */
         $userFacade = $this->getAnnostationService('database.facade.user');
 
-        $labelerUser        = $userFacade->updateUser(AppBundleHelper\UserBuilder::createDefaultLabeler()->build());
+        $labelerUser        = $this->createLabelerUser();
         $anotherLabelerUser = AppBundleHelper\UserBuilder::create()
             ->withUsername('labeler_2')
             ->withPlainPassword('labeler_2')
             ->withRoles([Model\User::ROLE_LABELER])
             ->build();
         $this->userFacade->updateUser($anotherLabelerUser);
-        $coordinatorUser = $userFacade->updateUser(
-            AppBundleHelper\UserBuilder::createDefaultLabelCoordinator()->build()
-        );
-        $anotherCoordinatorUser = AppBundleHelper\UserBuilder::create()
-            ->withUsername('label_coordinator_2')
-            ->withPlainPassword('label_coordinator_2')
-            ->withRoles([Model\User::ROLE_LABEL_COORDINATOR])
+        $labelManagerUser = $this->createLabelManagerUser();
+        $anotherLabelManagerUser = AppBundleHelper\UserBuilder::create()
+            ->withUsername('label_manager_2')
+            ->withPlainPassword('label_manager_2')
+            ->withRoles([Model\User::ROLE_LABEL_MANAGER])
             ->build();
-        $this->userFacade->updateUser($anotherCoordinatorUser);
+        $this->userFacade->updateUser($anotherLabelManagerUser);
 
         $organisation = Helper\OrganisationBuilder::create()->build();
 
         $labelingGroup = $labelingGroup->save(
             Helper\LabelingGroupBuilder::create($organisation)
-                ->withCoordinators([$coordinatorUser->getId()])
+                ->withLabelManagers([$labelManagerUser->getId()])
                 ->withUsers([$labelerUser->getId()])
                 ->build()
         );
 
         $project = Helper\ProjectBuilder::create($organisation)
-            ->withAddedCoordinatorAssignment($coordinatorUser)
+            ->withAddedLabelManagerAssignment($labelManagerUser)
             ->withLabelGroup($labelingGroup);
         $project = $projectFacade->save($project->build());
 

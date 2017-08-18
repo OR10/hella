@@ -56,6 +56,11 @@ class Project
     private $coordinatorAssignmentHistory = null;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $labelManagerAssignmentHistory = null;
+
+    /**
      * @CouchDB\Field(type="string")
      */
     private $labelingGroupId;
@@ -390,6 +395,14 @@ class Project
     }
 
     /**
+     * @return array
+     */
+    public function getLabelManagerAssignmentHistory()
+    {
+        return $this->labelManagerAssignmentHistory;
+    }
+
+    /**
      * @param User      $user
      * @param \DateTime $date
      */
@@ -400,6 +413,23 @@ class Project
         }
 
         $this->coordinatorAssignmentHistory[] = array(
+            'userId'     => $user->getId(),
+            'assignedAt' => $date->getTimestamp(),
+            'status'     => $this->getStatus(),
+        );
+    }
+
+    /**
+     * @param User      $user
+     * @param \DateTime $date
+     */
+    public function addLabelManagerAssignmentHistory(User $user, \DateTime $date = null)
+    {
+        if ($date === null) {
+            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
+
+        $this->labelManagerAssignmentHistory[] = array(
             'userId'     => $user->getId(),
             'assignedAt' => $date->getTimestamp(),
             'status'     => $this->getStatus(),
@@ -431,6 +461,30 @@ class Project
     }
 
     /**
+     * @return null
+     */
+    public function getLatestAssignedLabelManagerUserId()
+    {
+        $historyEntries = $this->getLabelManagerAssignmentHistory();
+        if (empty($historyEntries)) {
+            return null;
+        }
+
+        usort(
+            $historyEntries,
+            function ($a, $b) {
+                if ($a['assignedAt'] === $b['assignedAt']) {
+                    return 0;
+                }
+
+                return ($a['assignedAt'] > $b['assignedAt']) ? -1 : 1;
+            }
+        );
+
+        return $historyEntries[0]['userId'];
+    }
+
+    /**
      * @param User $user
      *
      * @return bool
@@ -438,6 +492,16 @@ class Project
     public function isLatestAssignedCoordinator(User $user)
     {
         return $this->getLatestAssignedCoordinatorUserId() === $user->getId();
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return bool
+     */
+    public function isLatestAssignedLabelManager(User $user)
+    {
+        return $this->getLatestAssignedLabelManagerUserId() === $user->getId();
     }
 
     /**
@@ -790,28 +854,6 @@ class Project
     public function isDeleted()
     {
         return $this->getStatus() === Project::STATUS_DELETED;
-    }
-
-    /**
-     * @param User $user
-     *
-     * @return bool
-     */
-    public function isAccessibleBy(User $user)
-    {
-        if ($user->hasRole(User::ROLE_CLIENT) && $this->userId === $user->getId()) {
-            return true;
-        }
-
-        if ($user->hasRole(User::ROLE_LABEL_COORDINATOR) && $this->isLatestAssignedCoordinator($user)) {
-            return true;
-        }
-
-        if ($user->hasOneRoleOf([User::ROLE_SUPER_ADMIN, User::ROLE_ADMIN, User::ROLE_LABELER, User::ROLE_OBSERVER])) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

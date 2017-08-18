@@ -119,7 +119,7 @@ class Status extends Controller\Base
             Model\Project::STATUS_IN_PROGRESS,
             $user
         );
-        $project->addCoordinatorAssignmentHistory($user);
+        $project->addLabelManagerAssignmentHistory($user);
         $project->setLabelingGroupId($assignedGroupId);
         $this->projectFacade->save($project);
 
@@ -150,7 +150,7 @@ class Status extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+        if ($this->userPermissions->hasPermission('canMoveProjectToDone')) {
             $sumOfTasksByPhaseForProject = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
             foreach ($sumOfTasksByPhaseForProject as $phase => $status) {
                 // @TODO Remove this if the revision process is finally implemented

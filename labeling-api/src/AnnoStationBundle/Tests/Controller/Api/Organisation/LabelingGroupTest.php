@@ -29,7 +29,7 @@ class LabelingGroupTest extends Tests\WebTestCase
         return [
             'missing name'        => [
                 [
-                    'coordinators' => [
+                    'labelManager' => [
                         '4b1ae8ac5323af2673b73dbfcf5aa6de',
                     ],
                     'labeler'      => [
@@ -37,7 +37,7 @@ class LabelingGroupTest extends Tests\WebTestCase
                     ],
                 ],
             ],
-            'missing coordinator' => [
+            'missing labelManagers' => [
                 [
                     'name'    => 'A Labeling Group',
                     'labeler' => [
@@ -48,7 +48,7 @@ class LabelingGroupTest extends Tests\WebTestCase
             'missing labelers'    => [
                 [
                     'name'         => 'A Labeling Group',
-                    'coordinators' => [
+                    'labelManager' => [
                         '4b1ae8ac5323af2673b73dbfcf5aa6de',
                     ],
                 ],
@@ -59,7 +59,7 @@ class LabelingGroupTest extends Tests\WebTestCase
             'empty name'          => [
                 [
                     'name'         => '',
-                    'coordinators' => [
+                    'labelManager' => [
                         '4b1ae8ac5323af2673b73dbfcf5aa6de',
                     ],
                     'labeler'      => [
@@ -67,10 +67,10 @@ class LabelingGroupTest extends Tests\WebTestCase
                     ],
                 ],
             ],
-            'empty coordinators'  => [
+            'empty labelManager'  => [
                 [
                     'name'         => 'A Labeling Group',
-                    'coordinators' => [],
+                    'labelManager' => [],
                     'labeler'      => [
                         'fc687f8423e6d27e616925eb3bae8e57',
                     ],
@@ -79,7 +79,7 @@ class LabelingGroupTest extends Tests\WebTestCase
             'empty labelers'      => [
                 [
                     'name'         => 'A Labeling Group',
-                    'coordinators' => [
+                    'labelManager' => [
                         '4b1ae8ac5323af2673b73dbfcf5aa6de',
                     ],
                     'labeler'      => [],
@@ -90,15 +90,15 @@ class LabelingGroupTest extends Tests\WebTestCase
 
     public function testGetLabelingGroup()
     {
-        $coordinatorUser1 = $this->createUser('coordinatorUser1');
-        $coordinatorUser2 = $this->createUser('coordinatorUser2');
+        $labelManagerUser1 = $this->createUser('labelManagerUser1');
+        $labelManagerUser2 = $this->createUser('labelManagerUser2');
         $labelingUser1    = $this->createUser('labelingUser1');
         $labelingUser2    = $this->createUser('labelingUser2');
 
-        $coordinators = [$coordinatorUser1->getId(), $coordinatorUser2->getId()];
+        $labelManagers = [$labelManagerUser1->getId(), $labelManagerUser2->getId()];
         $labeler      = [$labelingUser1->getId(), $labelingUser2->getId()];
 
-        $labelingGroup = $this->createLabelingGroup($coordinators, $labeler, 'foobar');
+        $labelingGroup = $this->createLabelingGroup($labelManagers, $labeler, 'foobar');
 
         $response = $this->createRequest(self::ROUTE, [$this->organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_GET)
@@ -114,9 +114,10 @@ class LabelingGroupTest extends Tests\WebTestCase
                 [
                     'id'             => $labelingGroup->getId(),
                     'rev'            => $labelingGroup->getRev(),
-                    'coordinators'   => [
-                        $coordinatorUser1->getId(),
-                        $coordinatorUser2->getId(),
+                    'coordinators'    => [],
+                    'labelManagers'   => [
+                        $labelManagerUser1->getId(),
+                        $labelManagerUser2->getId(),
                     ],
                     'labeler'        => [
                         $labelingUser1->getId(),
@@ -135,7 +136,7 @@ class LabelingGroupTest extends Tests\WebTestCase
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
                 [
-                    'coordinators' => [
+                    'labelManagers' => [
                         '4b1ae8ac5323af2673b73dbfcf5aa6de',
                     ],
                     'labeler'      => [
@@ -150,7 +151,7 @@ class LabelingGroupTest extends Tests\WebTestCase
 
         $expectedLabelingGroup = $this->labelingGroupFacade->find($content->result->labelingGroups->id);
 
-        $this->assertSame($content->result->labelingGroups->coordinators, $expectedLabelingGroup->getCoordinators());
+        $this->assertSame($content->result->labelingGroups->labelManagers, $expectedLabelingGroup->getLabelManagers());
     }
 
     /**
@@ -168,23 +169,23 @@ class LabelingGroupTest extends Tests\WebTestCase
 
     public function testUpdateLabelingGroup()
     {
-        $coordinatorUser1 = $this->createUser('coordinatorUser1');
-        $coordinatorUser2 = $this->createUser('coordinatorUser2');
+        $labelManagerUser1 = $this->createUser('labelManagerUser1');
+        $labelManagerUser2 = $this->createUser('labelManagerUser2');
         $labelingUser1    = $this->createUser('labelingUser1');
         $labelingUser2    = $this->createUser('labelingUser2');
 
-        $coordinators = [$coordinatorUser1->getId(), $coordinatorUser2->getId()];
-        $labeler      = [$labelingUser1->getId(), $labelingUser2->getId()];
+        $labelManagers = [$labelManagerUser1->getId(), $labelManagerUser2->getId()];
+        $labeler       = [$labelingUser1->getId(), $labelingUser2->getId()];
 
-        $labelingGroup = $this->createLabelingGroup($coordinators, $labeler);
+        $labelingGroup = $this->createLabelingGroup($labelManagers, $labeler);
 
         $response = $this->createRequest(self::ROUTE . '/%s', [$this->organisation->getId(), $labelingGroup->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
                 [
-                    'rev'          => $labelingGroup->getRev(),
-                    'coordinators' => $labelingGroup->getCoordinators(),
-                    'labeler'      => $labelingGroup->getLabeler(),
+                    'rev'           => $labelingGroup->getRev(),
+                    'labelManagers' => $labelingGroup->getLabelManagers(),
+                    'labeler'       => $labelingGroup->getLabeler(),
                 ]
             )
             ->execute();
@@ -193,27 +194,27 @@ class LabelingGroupTest extends Tests\WebTestCase
 
         $expectedLabelingGroup = $this->labelingGroupFacade->find($content->result->labelingGroups->id);
 
-        $this->assertSame($content->result->labelingGroups->coordinators, $expectedLabelingGroup->getCoordinators());
+        $this->assertSame($content->result->labelingGroups->labelManagers, $expectedLabelingGroup->getLabelManagers());
     }
 
     public function testDeleteLabelingGroup()
     {
-        $coordinatorUser1 = $this->createUser('coordinatorUser1');
-        $coordinatorUser2 = $this->createUser('coordinatorUser2');
+        $labelManagerUser1 = $this->createUser('labelManagerUser1');
+        $labelManagerUser2 = $this->createUser('labelManagerUser2');
         $labelingUser1    = $this->createUser('labelingUser1');
         $labelingUser2    = $this->createUser('labelingUser2');
 
-        $coordinators = [$coordinatorUser1->getId(), $coordinatorUser2->getId()];
-        $labeler      = [$labelingUser1->getId(), $labelingUser2->getId()];
+        $labelManagers = [$labelManagerUser1->getId(), $labelManagerUser2->getId()];
+        $labeler       = [$labelingUser1->getId(), $labelingUser2->getId()];
 
-        $labelingGroup = $this->createLabelingGroup($coordinators, $labeler);
+        $labelingGroup = $this->createLabelingGroup($labelManagers, $labeler);
 
         $this->createRequest(self::ROUTE . '/%s', [$this->organisation->getId(), $labelingGroup->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->setJsonBody(
                 [
-                    'coordinators' => $labelingGroup->getCoordinators(),
-                    'labeler'      => $labelingGroup->getLabeler(),
+                    'labelManagers' => $labelingGroup->getLabelManagers(),
+                    'labeler'       => $labelingGroup->getLabeler(),
                 ]
             )
             ->execute();
@@ -230,20 +231,20 @@ class LabelingGroupTest extends Tests\WebTestCase
         $this->organisation        = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
 
         $this->createDefaultUser();
-        $this->defaultUser->setRoles([Model\User::ROLE_ADMIN]);
+        $this->defaultUser->setRoles([Model\User::ROLE_LABEL_MANAGER]);
         $this->defaultUser->assignToOrganisation($this->organisation);
     }
 
     /**
-     * @param        $coordinators
+     * @param        $labelManagers
      * @param        $labeler
      * @param string $name
      *
      * @return Model\LabelingGroup
      */
-    private function createLabelingGroup($coordinators, $labeler, string $name = null)
+    private function createLabelingGroup($labelManagers, $labeler, string $name = null)
     {
-        $labelingGroup = new Model\LabelingGroup($this->organisation, $coordinators, $labeler, $name);
+        $labelingGroup = new Model\LabelingGroup($this->organisation, $labelManagers, $labeler, $name);
 
         return $this->labelingGroupFacade->save($labelingGroup);
     }

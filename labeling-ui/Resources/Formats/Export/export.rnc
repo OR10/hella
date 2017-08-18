@@ -80,7 +80,7 @@ grammar {
 
   LabelingGroup = element e:labeling-group {
     NameAndIdAttributes,
-    element e:coordinator {UserInterface}+,
+    element e:label-manager {UserInterface}+,
     element e:labeler {UserInterface}+
   }
 

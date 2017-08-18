@@ -159,7 +159,7 @@ class CouchDbTestCase extends Tests\WebTestCase
             true,
             false
         );
-        $user->addRole(Model\User::ROLE_ADMIN);
+        $user->addRole(Model\User::ROLE_LABEL_MANAGER);
 
         return $user;
     }
@@ -211,13 +211,13 @@ class CouchDbTestCase extends Tests\WebTestCase
 
     protected function createLabelingGroup(
         AnnoStationBundleModel\Organisation $organisation,
-        Model\User $coordinator,
+        Model\User $labelManager,
         array $labelers
     ) {
         return $this->labelingGroupFacade->save(
             Model\LabelingGroup::create(
                 $organisation,
-                [$coordinator->getId()],
+                [$labelManager->getId()],
                 array_map(
                     function ($labeler) {
                         /** @var Model\User $labeler */

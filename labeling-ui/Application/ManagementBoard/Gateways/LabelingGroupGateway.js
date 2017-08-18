@@ -58,7 +58,7 @@ class LabelingGroupGateway {
   }
 
   /**
-   * Get all labeling groups in which i am the coordinator for the current organisation
+   * Get all labeling groups in which i am the labelManager for the current organisation
    *
    * @returns {AbortablePromise<LabelingGroup>|Error}
    */
@@ -77,13 +77,13 @@ class LabelingGroupGateway {
   }
 
   /**
-   * Get all label coordinators for the current organisation
+   * Get all label managers for the current organisation
    *
    * @returns {AbortablePromise|Error}
    */
-  getLabelCoordinators() {
+  getLabelManagers() {
     const organisationId = this._organisationService.get();
-    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/user/coordinators`);
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/labelingGroup/user/labelManagers`);
 
     return this._bufferedHttp.get(url, undefined, 'labelingGroups')
       .then(response => {

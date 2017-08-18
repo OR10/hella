@@ -236,27 +236,27 @@
           },
           "user-id-2": {
             "id": "user-id-2",
-            "username": "admin",
-            "email": "admin@example.com",
+            "username": "super_admin",
+            "email": "super_admin@example.com",
             "enabled": true,
             "lastLogin": "2016-08-02T11:25:43+0200",
             "locked": false,
             "roles": [
-              "ROLE_ADMINISTRATOR",
-              "ROLE_LABEL_COORDINATOR",
+              "ROLE_SUPER_ADMIN",
+              "ROLE_LABEL_MANAGER",
               "ROLE_LABELER",
               "ROLE_USER"
             ]
           },
           "user-id-3": {
             "id": "user-id-3",
-            "username": "coordinator",
-            "email": "coordinator@example.com",
+            "username": "label_manager",
+            "email": "label_manager@example.com",
             "enabled": true,
             "lastLogin": "2016-08-02T11:25:43+0200",
             "locked": false,
             "roles": [
-              "ROLE_LABEL_COORDINATOR",
+              "ROLE_LABEL_MANAGER",
               "ROLE_LABELER",
               "ROLE_USER"
             ]

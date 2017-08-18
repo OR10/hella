@@ -147,13 +147,13 @@ class ProjectGateway {
 
   /**
    * @param {string} projectId
-   * @param {string} labelCoordinatorId
+   * @param {string} labelManagerId
    * @returns {AbortablePromise}
    */
-  assignCoordinator(projectId, labelCoordinatorId) {
+  assignLabelManager(projectId, labelManagerId) {
     const organisationId = this._organisationService.get();
     const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/assign`);
-    return this._bufferedHttp.post(url, {assignedLabelCoordinatorId: labelCoordinatorId}, undefined, 'project')
+    return this._bufferedHttp.post(url, {assignedLabelManagerId: labelManagerId}, undefined, 'project')
       .then(response => {
         if (response.data && response.data.result) {
           return response.data.result;

@@ -9,6 +9,7 @@ use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\Authentication;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Version;
 use Symfony\Component\HttpFoundation;
@@ -41,20 +42,20 @@ class Attention extends Controller\Base
     private $authorizationService;
 
     /**
-     * @var Storage\TokenStorage
+     * @var Authentication\UserPermissions
      */
-    private $tokenStorage;
+    private $userPermissions;
 
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Project $projectFacade,
         Service\Authorization $authorizationService,
-        Storage\TokenStorage $tokenStorage
+        Authentication\UserPermissions $userPermissions
     ) {
         $this->labelingTaskFacade   = $labelingTaskFacade;
         $this->projectFacade        = $projectFacade;
         $this->authorizationService = $authorizationService;
-        $this->tokenStorage         = $tokenStorage;
+        $this->userPermissions      = $userPermissions;
     }
 
     /**
@@ -66,10 +67,7 @@ class Attention extends Controller\Base
      */
     public function enableAttentionFlagAction(Model\LabelingTask $task)
     {
-        /** @var Model\User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+        if ($this->userPermissions->hasPermission('canFlagLabelingTask')) {
             $project = $this->projectFacade->find($task->getProjectId());
             $this->authorizationService->denyIfProjectIsNotWritable($project);
         } else {
@@ -85,16 +83,18 @@ class Attention extends Controller\Base
     /**
      * @Rest\Post("/{task}/attention/disable")
      *
-     * @Security("has_role('ROLE_LABEL_COORDINATOR')")
-     *
      * @param Model\LabelingTask $task
      *
      * @return \FOS\RestBundle\View\View
      */
     public function disableAttentionFlagAction(Model\LabelingTask $task)
     {
-        $project = $this->projectFacade->find($task->getProjectId());
-        $this->authorizationService->denyIfProjectIsNotWritable($project);
+        if ($this->userPermissions->hasPermission('canUnflagLabelingTask')) {
+            $project = $this->projectFacade->find($task->getProjectId());
+            $this->authorizationService->denyIfProjectIsNotWritable($project);
+        } else {
+            $this->authorizationService->denyIfTaskIsNotWritable($task);
+        }
 
         $task->setTaskAttentionFlag(false);
         $this->labelingTaskFacade->save($task);

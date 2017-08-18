@@ -57,8 +57,6 @@ class BatchUploadTest extends Tests\WebTestCase
 
     public function testUploadIsForbiddenIfUserIsNotAssignedToProject()
     {
-        $this->defaultUser->setRoles([Model\User::ROLE_CLIENT]);
-
         $project      = $this->createProject($this->organisation);
         $project->setUserId(null);
         $this->projectFacade->save($project);
@@ -166,7 +164,7 @@ class BatchUploadTest extends Tests\WebTestCase
         );
 
         $this->createDefaultUser();
-        $this->defaultUser->setRoles([Model\User::ROLE_ADMIN, Model\User::ROLE_CLIENT]);
+        $this->defaultUser->setRoles([Model\User::ROLE_LABEL_MANAGER]);
         $this->defaultUser->assignToOrganisation($this->organisation);
     }
 

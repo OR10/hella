@@ -5,7 +5,7 @@ use AppBundle\Model;
 use AppBundle\Voter;
 use AnnoStationBundle\Service\Authentication;
 
-class HasAdminRole extends Voter\AccessCheck
+class HasLabelManagerRole extends Voter\AccessCheck
 {
     /**
      * @var Authentication\UserPermissions
@@ -33,6 +33,6 @@ class HasAdminRole extends Voter\AccessCheck
             return false;
         }
 
-        return $user->hasRole(Model\User::ROLE_ADMIN);
+        return $user->hasRole(Model\User::ROLE_LABEL_MANAGER);
     }
 }
