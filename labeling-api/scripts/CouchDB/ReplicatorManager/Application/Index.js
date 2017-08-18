@@ -1,9 +1,11 @@
-const { CommandLineOptions } = require('./CommandLineOptions');
-const { Logger } = require('./Logger');
-const { WorkerQueue } = require('./WorkerQueue');
-const { CompactionService } = require('./CompactionService');
 const nano = require('nano');
-const { ReplicationManager } = require('./ReplicationManager');
+
+const {CommandLineOptions} = require('./CommandLineOptions');
+const {Logger} = require('./Logger');
+const {WorkerQueue} = require('./WorkerQueue');
+const {CompactionService} = require('./CompactionService');
+const {PurgeService} = require('./PurgeService');
+const {ReplicationManager} = require('./ReplicationManager');
 
 const logger = new Logger();
 const options = new CommandLineOptions(process.argv);
@@ -29,10 +31,16 @@ const workerQueue = new WorkerQueue(
   compactionService
 );
 
+const purgeService = new PurgeService(
+  logger,
+  nanoAdmin
+);
+
 const replicationManager = new ReplicationManager(
   logger,
   nanoAdmin,
   workerQueue,
+  purgeService,
   options,
 );
 

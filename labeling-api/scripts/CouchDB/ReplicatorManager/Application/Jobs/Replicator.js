@@ -1,18 +1,32 @@
-const {getReplicationDocumentIdName, destroyAndPurgeDocument} = require('../Utils');
+const {getReplicationDocumentIdName} = require('../Utils');
 const uuid = require('uuid');
 
 class Replicator {
   /**
+   * @param {Logger} logger
    * @param {nano} nanoAdmin
+   * @param {PurgeService} purgeService
    * @param {string} sourceBaseUrl
    * @param {string} sourceDatabase
    * @param {string} targetUrl
    */
-  constructor(nanoAdmin, sourceBaseUrl, sourceDatabase, targetUrl) {
+  constructor(logger, nanoAdmin, purgeService, sourceBaseUrl, sourceDatabase, targetUrl) {
+    /**
+     * @type {Logger}
+     * @private
+     */
+    this._logger = logger;
+
     /**
      * @type {nano}
      */
     this.nanoAdmin = nanoAdmin;
+
+    /**
+     * @type {PurgeService}
+     * @private
+     */
+    this._purgeService = purgeService;
 
     /**
      * @type {string}
@@ -123,14 +137,11 @@ class Replicator {
     if (this._resolve === undefined || this._reject === undefined) {
       return;
     }
-    const replicatorDb = this.nanoAdmin.use('_replicator');
     if (change.doc._id === this.id) {
       if (change.doc._replication_state === 'completed' || change.doc._replication_state === 'error') {
-        destroyAndPurgeDocument(
-          this.nanoAdmin,
-          replicatorDb,
-          change.doc._id,
-          change.doc._rev,
+        this._purgeService.purgeDocument(
+          '_replicator',
+          change.doc._id
         )
           .then(() => {
             if (change.doc._replication_state === 'completed') {

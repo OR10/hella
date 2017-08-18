@@ -7,13 +7,14 @@ describe('WorkerQueue', () => {
   let replicatorDbMock;
   let loggerMock;
   let compactionServiceMock;
+  let purgeServiceMock;
 
   function createWorkerQueue() {
     return new WorkerQueue(nanoAdminMock, loggerMock, compactionServiceMock, 50, 500);
   }
 
   function createReplicationJob(sourceBaseUrl = 'http://example.com', sourceDatabase = 'some-database', targetUrl = 'http://some-other.couch:5984/foobar-db') {
-    return new Replicator(nanoAdminMock, sourceBaseUrl, sourceDatabase, targetUrl);
+    return new Replicator(loggerMock, nanoAdminMock, purgeServiceMock, sourceBaseUrl, sourceDatabase, targetUrl);
   }
 
   beforeEach(() => {
@@ -23,6 +24,9 @@ describe('WorkerQueue', () => {
     compactionServiceMock = jasmine.createSpyObj('CompactionService', ['compactDb', 'isCompactionInProgress']);
     compactionServiceMock.isCompactionInProgress.and.returnValue(false);
     compactionServiceMock.compactDb.and.returnValue(Promise.resolve());
+
+    purgeServiceMock = jasmine.createSpyObj('PurgeService', ['purgeDocument']);
+    purgeServiceMock.purgeDocument.and.returnValue(Promise.resolve());
 
     nanoAdminMock.use.and.returnValue(replicatorDbMock);
   });
