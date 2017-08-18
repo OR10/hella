@@ -373,7 +373,6 @@ class User extends Controller\Base
      * Delete a User
      *
      * @Rest\Delete("/{user}")
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param Model\User                          $user
      *
