@@ -7,7 +7,7 @@ import {
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
-describe('LabelSelector (right sidebar)', () => {
+fdescribe('LabelSelector (right sidebar)', () => {
   let assets;
   let sharedMocks;
   let labelSelector;
@@ -88,6 +88,33 @@ describe('LabelSelector (right sidebar)', () => {
         viewerWidth: 1104,
         viewerHeight: 620,
       })
+        .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(0))
+        .then(() => done());
+    });
+
+    fit('should have no panes if a group is selected', done => {
+      const groupButton = element(by.css('button.tool-group.tool-0'));
+
+      mock(sharedMocks.concat([
+        assets.mocks.LabelSelector.BasicBehaviour.Groups.Task,
+        assets.mocks.LabelSelector.BasicBehaviour.Groups.TaskConfiguration,
+        assets.mocks.LabelSelector.BasicBehaviour.Groups.TaskConfigurationFile,
+      ]));
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
+        viewerWidth: 1104,
+        viewerHeight: 620,
+      })
+        .then(() => groupButton.click())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 1, y: 1}) // initial position
+            .mouseDown()
+            .mouseMove(viewer, {x: 500, y: 500}) // drag
+            .mouseUp()
+            .perform();
+        })
+        .then(() => browser.sleep(200))
         .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(0))
         .then(() => done());
     });
