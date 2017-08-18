@@ -5,7 +5,7 @@ import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('MultiSelect', () => {
+fdescribe('MultiSelect', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -226,6 +226,39 @@ describe('MultiSelect', () => {
       .then(() => {
         done();
       });
+  });
+
+  fit('should should select and deselect with ctrl+click (TTANNO-1813)', done => {
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => drawRectangle(firstShape))
+        .then(() => drawRectangle(secondShape))
+        .then(() => drawRectangle(thirdShape))
+        .then(deselectAfterDrawing)
+        .then(() => {
+          return browser.actions()
+              .sendKeys(protractor.Key.CONTROL)
+              .mouseMove(viewer, thirdShape.topLeft)
+              .click()
+              .sendKeys(protractor.Key.CONTROL)
+              .mouseMove(viewer, firstShape.topLeft)
+              .click()
+              .mouseMove(viewer, secondShape.topLeft)
+              .click()
+              .sendKeys(protractor.Key.NULL)
+              .mouseMove(viewer, {x: 1, y: 1})
+              .click()
+              .perform();
+        })
+        .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'DeselectShapesWithCTRLCLICK')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.DeselectShapesWithCTRLCLICK);
+        })
+        .then(() => {
+          done();
+        });
   });
 
   it('should remove the label selector once more than one rectangle is selected', done => {
