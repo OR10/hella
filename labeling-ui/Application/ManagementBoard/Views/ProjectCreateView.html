@@ -98,7 +98,7 @@
                             <tab header="RequirementsXML">
                                 <div class="grid-block horizontal">
                                     <div class="grid-content">
-                                        <select id="requirementsTaskType" ng-model="vm.taskTypeToAdd">
+                                        <select id="requirementsTaskType" ng-model="vm.taskTypeToAdd" ng-class="{error: !vm.validation.requirementsTaskType}">
                                             <option value="" disabled selected>Select task type</option>
                                             <option ng-repeat="taskType in vm.taskTypes"
                                                     value="{{taskType.id}}">
@@ -107,7 +107,7 @@
                                         </select>
                                     </div>
                                     <div class="grid-content">
-                                        <select id="requirementsTaskConfig" ng-model="vm.taskConfigToAdd">
+                                        <select id="requirementsTaskConfig" ng-model="vm.taskConfigToAdd" ng-class="{error: !vm.validation.requirementsTaskConfig}">
                                             <option value="" disabled selected>Select task configuration</option>
                                             <option ng-repeat="taskConfig in vm.requirementsXmlTaskConfigurations"
                                                     value="{{taskConfig.id}}">
