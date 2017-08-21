@@ -12,6 +12,9 @@
     <define name="FrameRangeAttributes">
         <attribute name="start"/>
         <attribute name="end"/>
+        <optional>
+            <attribute name="class"/>
+        </optional>
     </define>
     <!-- <metadata> -->
     <define name="Metadata">
