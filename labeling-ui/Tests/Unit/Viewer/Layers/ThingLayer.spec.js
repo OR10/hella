@@ -44,7 +44,7 @@ describe('ThingLayer', () => {
     labeledFrameGateway = jasmine.createSpyObj('labeledFrameGateway', ['getLabeledFrame', 'saveLabeledFrame', 'deleteLabeledFrame']);
     $provide.service('labeledFrameGateway', () => labeledFrameGateway);
 
-    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['setSelectedShape']);
+    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['setSelectedShape', 'removeShape']);
     $provide.service('shapeSelectionService', () => shapeSelectionService);
 
     paperScope = jasmine.createSpy('paperScope');
@@ -130,7 +130,7 @@ describe('ThingLayer', () => {
   });
 
   it('updates the view when leaving the canvas', () => {
-    const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort']);
+    const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort', 'activate']);
     toolService.getTool.and.returnValue(keyboardTool);
     const keyboardPromise = jasmine.createSpyObj('keyboardPromise', ['then']);
     keyboardTool.invokeKeyboardShortcuts.and.returnValue(keyboardPromise);
@@ -297,7 +297,7 @@ describe('ThingLayer', () => {
           shape: 'pedestrian',
         };
 
-        const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort']);
+        const keyboardTool = jasmine.createSpyObj('keyboardTool', ['invokeKeyboardShortcuts', 'abort', 'activate']);
         keyboardTool.invokeKeyboardShortcuts.and.returnValue({
           then: () => {
           },

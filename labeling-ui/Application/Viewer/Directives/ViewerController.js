@@ -11,6 +11,8 @@ import Environment from '../../Common/Support/Environment';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
+import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
+import GroupToolActionStruct from '../Tools/ToolActionStructs/GroupToolActionStruct';
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -67,6 +69,8 @@ class ViewerController {
    * @param {InProgressService} inProgressService
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {ToolSelectorListenerService} toolSelectorListenerService
+   * @param {HierarchyCreationService} hierarchyCreationService
    */
   constructor($scope,
               $rootScope,
@@ -102,7 +106,9 @@ class ViewerController {
               inProgressService,
               pouchDbSyncManager,
               imagePreloader,
-              shapeSelectionService) {
+              shapeSelectionService,
+              toolSelectorListenerService,
+              hierarchyCreationService) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -333,6 +339,37 @@ class ViewerController {
      * @private
      */
     this._backgroupLayerContext = null;
+
+    /**
+     * @type {ToolSelectorListenerService}
+     * @private
+     */
+    this._toolSelectorListenerService = toolSelectorListenerService;
+
+    /**
+     * @type {HierarchyCreationService}
+     * @private
+     */
+    this._hierarchyCreationService = hierarchyCreationService;
+
+    const groupListener = (tool, labelStructureObject) => {
+      if (this._shapeSelectionService.count() > 0) {
+        const shapes = this._shapeSelectionService.getAllShapes();
+        const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
+        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
+
+        this._thingLayerContext.withScope(() => {
+          const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+          this._storeGroup(group, shapes);
+          group.sendToBack();
+          this.paperGroupShapes = this.paperGroupShapes.concat([group]);
+          this._shapeSelectionService.clear();
+          this.selectedPaperShape = group;
+          group.select();
+        });
+      }
+    };
+    this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
 
     this._viewerMouseCursorService.on('cursor:updated', cursor => {
       this.actionMouseCursor = cursor;
@@ -1302,7 +1339,10 @@ class ViewerController {
     let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(this._thingLayerContext, paperGroupShape.bounds);
     // Service finds the group shape itself, so we need to remove the shape id from the array
     shapesInGroup = shapesInGroup.filter(shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
+    this._storeGroup(paperGroupShape, shapesInGroup);
+  }
 
+  _storeGroup(paperGroupShape, shapesInGroup) {
     this._labeledThingGroupGateway.createLabeledThingGroup(this.task, paperGroupShape.labeledThingGroupInFrame.labeledThingGroup)
       .then(labeledThingGroup => {
         const labeledThings = [];
@@ -1589,6 +1629,8 @@ ViewerController.$inject = [
   'pouchDbSyncManager',
   'imagePreloader',
   'shapeSelectionService',
+  'toolSelectorListenerService',
+  'hierarchyCreationService',
 ];
 
 export default ViewerController;
