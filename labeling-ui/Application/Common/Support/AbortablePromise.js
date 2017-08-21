@@ -29,7 +29,7 @@ class AbortablePromise {
 
       abortedCallbacks.forEach(fn => fn());
       abortDeferred.resolve();
-      innerDeferred.reject();
+      innerDeferred.reject(new Error('AbortablePromise: Promise chain abortion requested'));
     };
 
 
