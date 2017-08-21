@@ -52,6 +52,14 @@
           <top-right-back x="11" y="-1" z="1"/>
           <bottom-right-back x="11" y="-1" z="0"/>
           <bottom-left-back x="11" y="1" z="0"/>
+          <image-top-left-front x="458.1858" y="350.7308"/>
+          <image-top-right-front x="677.7297" y="350.7089"/>
+          <image-bottom-right-front x="677.3999" y="460.0614"/>
+          <image-bottom-left-front x="458.4672" y="460.1372"/>
+          <image-top-left-back x="466.5114" y="347.1099"/>
+          <image-top-right-back x="667.9696" y="347.093"/>
+          <image-bottom-right-back x="667.7146" y="447.5025"/>
+          <image-bottom-left-back x="466.7289" y="447.5612"/>
         </cuboid>
       </shape>
       <shape id="3659ecca-7c2b-440b-8dfa-38426c7969b6" start="6" end="12">
@@ -64,6 +72,14 @@
           <top-right-back x="12.0342" y="-0.929" z="1"/>
           <bottom-right-back x="12.0342" y="-0.929" z="0"/>
           <bottom-left-back x="12.0342" y="1.071" z="0"/>
+          <image-top-left-front x="459.6602" y="346.9894"/>
+          <image-top-right-front x="660.5571" y="346.9875"/>
+          <image-bottom-right-front x="660.3206" y="447.136"/>
+          <image-bottom-left-front x="459.8924" y="447.1425"/>
+          <image-top-left-back x="467.219" y="343.9374"/>
+          <image-top-right-back x="652.8613" y="343.9359"/>
+          <image-bottom-right-back x="652.6746" y="436.5242"/>
+          <image-bottom-left-back x="467.4024" y="436.5294"/>
         </cuboid>
       </shape>
       <value id="u-turn" start="2" end="6"/>
