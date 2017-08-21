@@ -181,7 +181,9 @@ grammar {
 
   PedestrianShape = element e:pedestrian {
     element e:top-center {XYCoordinateAttributes},
+    element e:top-left {XYCoordinateAttributes}?,
     element e:bottom-center {XYCoordinateAttributes},
+    element e:bottom-right {XYCoordinateAttributes}?,
     element e:aspect-ratio {text}
   }
 
