@@ -24,6 +24,11 @@ class LabeledThingGroup
     /**
      * @CouchDB\Field(type="string")
      */
+    private $projectId;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
     private $taskId;
 
     /**
@@ -48,6 +53,7 @@ class LabeledThingGroup
 
     public function __construct(AppBundleModel\LabelingTask $task, $lineColor, $groupType = null, $groupIds = [])
     {
+        $this->projectId = $task->getProjectId();
         $this->taskId    = $task->getId();
         $this->groupType = $groupType;
         $this->groupIds  = $groupIds;
