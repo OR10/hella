@@ -8,6 +8,7 @@ describe('Group Creation', () => {
   let assets;
   let sharedMocks;
   let viewer;
+  let groupButton;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
@@ -34,6 +35,7 @@ describe('Group Creation', () => {
     ];
 
     viewer = element(by.css('.layer-container'));
+    groupButton = element(by.css('button.tool-group.tool-0'));
   });
 
   it('does not create a group', done => {
@@ -44,6 +46,7 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
@@ -76,6 +79,7 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -109,6 +113,7 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -142,6 +147,7 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -178,6 +184,7 @@ describe('Group Creation', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -186,6 +193,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 263, y: 50}) // initial position
@@ -223,6 +231,7 @@ describe('Group Creation', () => {
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -231,6 +240,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 263, y: 50}) // initial position
@@ -239,6 +249,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(200))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -261,6 +272,102 @@ describe('Group Creation', () => {
         expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing);
         expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint);
         expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+        done();
+      });
+  });
+
+  it('creates a group around multiselected shapes', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
+    ]));
+
+    const firstShape = {
+      topLeft: {x: 100, y: 100},
+      bottomRight: {x: 200, y: 200},
+    };
+
+    const secondShape = {
+      topLeft: {x: 300, y: 100},
+      bottomRight: {x: 400, y: 200},
+    };
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, firstShape.topLeft)
+          .click()
+          .mouseMove(viewer, secondShape.topLeft)
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(() => groupButton.click())
+      .then(() => browser.sleep(200))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateGroupMultiselectedShapes')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateGroupMultiselectedShapes);
+      })
+      .then(() => {
+        done();
+      });
+  });
+
+  it('creates and deletes a group around multiselected shapes', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
+      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
+    ]));
+
+    const firstShape = {
+      topLeft: {x: 100, y: 100},
+      bottomRight: {x: 200, y: 200},
+    };
+
+    const secondShape = {
+      topLeft: {x: 300, y: 100},
+      bottomRight: {x: 400, y: 200},
+    };
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, firstShape.topLeft)
+          .click()
+          .mouseMove(viewer, secondShape.topLeft)
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(() => groupButton.click())
+      .then(() => browser.sleep(200))
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.DELETE)
+          .perform();
+      })
+      .then(() => browser.sleep(300))
+      .then(() => {
+        const confirmButton = element(by.css('#modal-confirm-button'));
+        return confirmButton.click();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateAndDeleteGroupMultiselectedShapes')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateAndDeleteGroupMultiselectedShapes);
+      })
+      .then(() => {
         done();
       });
   });
