@@ -65,8 +65,8 @@ class SetProjectIdToLabeledThingGroups extends Command\Base
                 $labeledThingGroupFacade->save($labeledThingGroup);
 
                 $this->documentManager->detach($labeledThingGroup);
-                $progress->advance();
             }
+            $progress->advance();
             $this->documentManager->detach($task);
         }
         $progress->finish();

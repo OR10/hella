@@ -65,8 +65,8 @@ class SetProjectIdToLabeledFrames extends Command\Base
                 $labeledFrameFacade->save($labeledFrame);
 
                 $this->documentManager->detach($labeledFrame);
-                $progress->advance();
             }
+            $progress->advance();
             $this->documentManager->detach($task);
         }
         $progress->finish();
