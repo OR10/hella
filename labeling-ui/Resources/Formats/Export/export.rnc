@@ -12,7 +12,8 @@ grammar {
 
   FrameRangeAttributes = (
     attribute start {text},
-    attribute end {text}
+    attribute end {text},
+    attribute class {text}?
   )
 
 # <metadata>

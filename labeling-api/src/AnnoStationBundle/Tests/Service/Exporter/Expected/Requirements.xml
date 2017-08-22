@@ -20,7 +20,7 @@
       <created-by-user username="client" email="client@client.com"/>
     </export>
     <requirements id="" name="testconfig" filename="testconfig.labelconfiguration.xml">
-      <sha256>970a7d3447f981dd86a5201477d36492f4707556dbd2d1063688824f9fe0f3ef</sha256>
+      <sha256>aec55d7ade1c1bc59b82bd995deacdcdd3dbe90549f02ee9d3080e1c48221893</sha256>
     </requirements>
     <additional-frame-number-mapping id="" filename="labeling-video.frame-index.csv">
       <sha256>33ffd1aa3fe909d336abfcae533eeb93d57e53357a736b6b53872405fbd6dc6f</sha256>
@@ -31,11 +31,11 @@
       <references>
         <task id=""/>
       </references>
-      <value id="sun" start="1" end="25"/>
-      <value id="summer" start="1" end="100"/>
-      <value id="rain" start="26" end="50"/>
-      <value id="thunderstorm" start="51" end="75"/>
-      <value id="sun" start="76" end="100"/>
+      <value id="sun" class="weather" start="1" end="25"/>
+      <value id="summer" class="season" start="1" end="100"/>
+      <value id="rain" class="weather" start="26" end="50"/>
+      <value id="thunderstorm" class="weather" start="51" end="75"/>
+      <value id="sun" class="weather" start="76" end="100"/>
     </frame-labeling>
     <group id="" start="1" end="2" type="sign" line-color="1" incomplete="true"/>
     <thing id="e363906c1c4a5a5bd01e8902467d1426" start="1" end="100" line-color="1" type="fooobar" incomplete="true">
@@ -82,11 +82,11 @@
           <image-bottom-left-back x="467.4024" y="436.5294"/>
         </cuboid>
       </shape>
-      <value id="u-turn" start="2" end="6"/>
-      <value id="germany" start="2" end="3"/>
-      <value id="spain" start="4" end="6"/>
-      <value id="u-turn" start="12" end="12"/>
-      <value id="germany" start="12" end="12"/>
+      <value id="u-turn" class="sign-type" start="2" end="6"/>
+      <value id="germany" class="country" start="2" end="3"/>
+      <value id="spain" class="country" start="4" end="6"/>
+      <value id="u-turn" class="sign-type" start="12" end="12"/>
+      <value id="germany" class="country" start="12" end="12"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e890246819813" start="1" end="1" line-color="1" type="fooobar" incomplete="true">
       <references>
@@ -99,8 +99,8 @@
           <bottom-right x="3" y="4"/>
         </rectangle>
       </shape>
-      <value id="u-turn" start="1" end="1"/>
-      <value id="spain" start="1" end="1"/>
+      <value id="u-turn" class="sign-type" start="1" end="1"/>
+      <value id="spain" class="country" start="1" end="1"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e89024681a191" start="1" end="2" line-color="1" type="fooobar" incomplete="true">
       <references>
@@ -113,8 +113,8 @@
           <bottom-right x="3" y="4"/>
         </rectangle>
       </shape>
-      <value id="u-turn" start="2" end="2"/>
-      <value id="spain" start="2" end="2"/>
+      <value id="u-turn" class="sign-type" start="2" end="2"/>
+      <value id="spain" class="country" start="2" end="2"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e89024681abcd" start="2" end="2" line-color="1" type="fooobar" incomplete="true">
       <references>
@@ -126,7 +126,7 @@
           <point x="200" y="200"/>
         </polygon>
       </shape>
-      <value id="lane-yes" start="2" end="2"/>
+      <value id="lane-yes" class="is-lane" start="2" end="2"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e89024681abce" start="2" end="2" line-color="1" type="fooobar" incomplete="true">
       <references>
@@ -138,7 +138,7 @@
           <point x="631" y="835"/>
         </polyline>
       </shape>
-      <value id="lane-open-no" start="2" end="2"/>
+      <value id="lane-open-no" class="is-lane-open" start="2" end="2"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e89024681abcf" start="2" end="2" line-color="1" type="fooobar" incomplete="true">
       <references>
@@ -149,7 +149,7 @@
           <center x="624" y="321"/>
         </point>
       </shape>
-      <value id="lightsource-yes" start="2" end="2"/>
+      <value id="lightsource-yes" class="is-lightsource" start="2" end="2"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01easdasdasdasdasd" start="2" end="2" line-color="1" type="fooobar" incomplete="true">
       <references>
@@ -164,7 +164,7 @@
           <aspect-ratio>0.41</aspect-ratio>
         </pedestrian>
       </shape>
-      <value id="hat-yes" start="2" end="2"/>
+      <value id="hat-yes" class="has-hat" start="2" end="2"/>
     </thing>
   </video>
 </export>

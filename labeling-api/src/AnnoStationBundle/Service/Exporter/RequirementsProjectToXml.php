@@ -271,6 +271,7 @@ class RequirementsProjectToXml
                         $valuesForRanges = $this->getValuesRanges($labeledThingInFrameForLabeledThing);
                         foreach ($valuesForRanges as $value) {
                             $thing->addValue(
+                                $this->findClassIdForValue($value['value'], array_values($taskConfigurations)[0]),
                                 $value['value'],
                                 $frameMapping[$value['start']],
                                 $frameMapping[$value['end']]
@@ -281,11 +282,18 @@ class RequirementsProjectToXml
 
                     $labeledFrames    = new Iterator\LabeledFrame($task, $labelingTaskFacade);
                     if (count(iterator_to_array($labeledFrames, false)) > 0) {
-                        $xmlVideo->setFrame($this->getLabeledFrameElement($task, $labeledFrames, $xml->getDocument()));
+                        $xmlVideo->setFrame(
+                            $this->getLabeledFrameElement(
+                                $task,
+                                $labeledFrames,
+                                $xml->getDocument(),
+                                array_values($taskConfigurations)[0]
+                            )
+                        );
                     }
                 }
                 $xml->appendChild($xmlVideo->getElement($xml->getDocument()));
-                $taskConfiguration = reset($taskConfigurations);
+                $taskConfiguration = array_values($taskConfigurations)[0];
                 $postfix = $this->getPostfixFromRequirementsXml($taskConfiguration);
                 $zipData[$video->getName() . $postfix . '.xml'] = $xml->getDocument()->saveXML();
             }
@@ -321,16 +329,50 @@ class RequirementsProjectToXml
     }
 
     /**
-     * @param Model\LabelingTask   $task
-     * @param Model\LabeledFrame[] $labeledFrames
-     * @param \DOMDocument         $xmlDocument
+     * Search for the values parent class name
+     * Note: This only works if all IDs are unique in the whole document
+     *
+     * @param                         $value
+     * @param Model\TaskConfiguration $taskConfiguration
+     *
+     * @return string
+     */
+    private function findClassIdForValue($value, Model\TaskConfiguration $taskConfiguration)
+    {
+        $xmlImport = new \DOMDocument();
+        $xmlImport->loadXML($taskConfiguration->getRawData());
+
+        $xpath = new \DOMXPath($xmlImport);
+        $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/requirements");
+
+        $requirementsElement = $xpath->query(sprintf('//x:value[@id="%s"]', $value));
+
+        if ($requirementsElement->length === 0) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Could not find any class for value "%s" in TaskConfiguration "%s"',
+                    $value,
+                    $taskConfiguration->getId()
+                )
+            );
+        }
+
+        return $requirementsElement->item(0)->parentNode->getAttribute('id');
+    }
+
+    /**
+     * @param Model\LabelingTask      $task
+     * @param Model\LabeledFrame[]    $labeledFrames
+     * @param \DOMDocument            $xmlDocument
+     * @param Model\TaskConfiguration $taskConfiguration
      *
      * @return ExportXml\Element\Video\FrameLabeling
      */
     private function getLabeledFrameElement(
         Model\LabelingTask $task,
         $labeledFrames,
-        \DOMDocument $xmlDocument
+        \DOMDocument $xmlDocument,
+        Model\TaskConfiguration $taskConfiguration
     ) {
         $references = new ExportXml\Element\Video\References(
             new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
@@ -343,15 +385,16 @@ class RequirementsProjectToXml
         $previousLabeledFrame = null;
         /** @var Model\LabeledFrame $labeledFrame */
         foreach ($labeledFrames as $labeledFrame) {
-            foreach ($labeledFrame->getClasses() as $class) {
-                if (!$this->isClassInLabeledFrame($previousLabeledFrame, $class)) {
+            foreach ($labeledFrame->getClasses() as $id) {
+                if (!$this->isClassInLabeledFrame($previousLabeledFrame, $id)) {
                     $xmlLabeledFrame->addValue(
                         $xmlDocument,
-                        $class,
+                        $this->findClassIdForValue($id, $taskConfiguration),
+                        $id,
                         $taskFrameMapping[$labeledFrame->getFrameIndex()],
                         $taskFrameMapping[$this->labeledFrameEndCalculationService->getEndOfForClassOfLabeledFrame(
                             $labeledFrame,
-                            $class
+                            $id
                         )]
                     );
                 }
