@@ -47,6 +47,7 @@ class SetProjectIdToLabeledFrames extends Command\Base
     {
         $tasks = $this->labelingTaskFacade->findAll();
         $progress      = new Helper\ProgressBar($output, count($tasks));
+        $progress->start();
         foreach ($tasks as $task) {
             $labeledFrameFacade = $this->labeledFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
                 $task->getProjectId(),
@@ -59,7 +60,6 @@ class SetProjectIdToLabeledFrames extends Command\Base
                 }
             );
 
-            $progress->start();
             foreach ($labeledFrames as $labeledFrame) {
                 $labeledFrame->setProjectId($task->getProjectId());
                 $labeledFrameFacade->save($labeledFrame);

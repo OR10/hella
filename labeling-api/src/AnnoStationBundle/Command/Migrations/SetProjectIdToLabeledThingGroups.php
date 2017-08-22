@@ -47,6 +47,7 @@ class SetProjectIdToLabeledThingGroups extends Command\Base
     {
         $tasks    = $this->labelingTaskFacade->findAll();
         $progress = new Helper\ProgressBar($output, count($tasks));
+        $progress->start();
         foreach ($tasks as $task) {
             $labeledThingGroupFacade = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
                 $task->getProjectId(),
@@ -59,7 +60,6 @@ class SetProjectIdToLabeledThingGroups extends Command\Base
                 }
             );
 
-            $progress->start();
             foreach ($labeledThingGroups as $labeledThingGroup) {
                 $labeledThingGroup->setProjectId($task->getProjectId());
                 $labeledThingGroupFacade->save($labeledThingGroup);
