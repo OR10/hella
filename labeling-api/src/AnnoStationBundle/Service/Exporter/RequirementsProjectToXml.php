@@ -253,7 +253,7 @@ class RequirementsProjectToXml
                         $valuesForRanges = $this->getValuesRanges($labeledThingInFrameForLabeledThing);
                         foreach ($valuesForRanges as $value) {
                             $thing->addValue(
-                                $this->findClassIdForValue($value['value'], reset($taskConfigurations)),
+                                $this->findClassIdForValue($value['value'], array_values($taskConfigurations)[0]),
                                 $value['value'],
                                 $frameMapping[$value['start']],
                                 $frameMapping[$value['end']]
@@ -269,13 +269,13 @@ class RequirementsProjectToXml
                                 $task,
                                 $labeledFrames,
                                 $xml->getDocument(),
-                                reset($taskConfigurations)
+                                array_values($taskConfigurations)[0]
                             )
                         );
                     }
                 }
                 $xml->appendChild($xmlVideo->getElement($xml->getDocument()));
-                $taskConfiguration = reset($taskConfigurations);
+                $taskConfiguration = array_values($taskConfigurations)[0];
                 $postfix = $this->getPostfixFromRequirementsXml($taskConfiguration);
                 $zipData[$video->getName() . $postfix . '.xml'] = $xml->getDocument()->saveXML();
             }
