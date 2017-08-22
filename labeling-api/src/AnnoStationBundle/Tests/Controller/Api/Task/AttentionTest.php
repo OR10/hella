@@ -71,21 +71,6 @@ class AttentionTest extends Tests\WebTestCase
         $this->assertFalse($actualTask->isTaskAttentionFlag());
     }
 
-    public function testEnableAttentionAsAnotherLabeler()
-    {
-        $response = $this->createRequest(
-            '/api/v1/task/%s/attention/enable',
-            [$this->task->getId()],
-            'labeler_2',
-            'labeler_2'
-        )
-            ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->execute()
-            ->getResponse();
-
-        $this->assertEquals(403, $response->getStatusCode());
-    }
-
     protected function setUpImplementation()
     {
         /** @var Facade\Video $videoFacade */
