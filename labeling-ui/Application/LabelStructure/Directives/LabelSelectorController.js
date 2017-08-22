@@ -157,7 +157,7 @@ export default class LabelSelectorController {
 
 
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
-      if (newSelectedPaperShape === null) {
+      if (newSelectedPaperShape === null || newSelectedPaperShape instanceof PaperGroupShape) {
         return this._clearLabelSelector();
       }
       // TODO: Find the root caus why the selectedLabelStructureObject here is different from the one in the
@@ -256,7 +256,8 @@ export default class LabelSelectorController {
   show() {
     const hasPaperShape = (this.selectedPaperShape !== undefined && this.selectedPaperShape !== null);
     const hasAtMostOneSelectedShape = (this._shapeSelectionService.count() <= 1);
-    return hasPaperShape && hasAtMostOneSelectedShape;
+    const selectedPaperShapeIsNotGroupShape = !(this.selectedPaperShape instanceof PaperGroupShape);
+    return hasPaperShape && hasAtMostOneSelectedShape && selectedPaperShapeIsNotGroupShape;
   }
 
   /**
