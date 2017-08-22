@@ -5,9 +5,11 @@ namespace AnnoStationBundle\Controller\Api\v1;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\Authentication;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Worker\Jobs;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\Service\Validation\ValidationError;
@@ -78,17 +80,23 @@ class User extends Controller\Base
     private $userRolesRebuilderService;
 
     /**
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
+
+    /**
      * Users constructor.
      *
-     * @param AppFacade\User               $userFacade
-     * @param Facade\Organisation          $organisationFacade
-     * @param Facade\LabelingGroup         $labelingGroupFacade
-     * @param Facade\Project               $projectFacade
-     * @param Storage\TokenStorage         $tokenStorage
-     * @param Service\Authorization        $authorizationService
-     * @param Service\UserRolesRebuilder   $userRolesRebuilderService
-     * @param Validation\ValidationService $validationService
-     * @param AMQP\FacadeAMQP              $amqpFacade
+     * @param AppFacade\User                 $userFacade
+     * @param Facade\Organisation            $organisationFacade
+     * @param Facade\LabelingGroup           $labelingGroupFacade
+     * @param Facade\Project                 $projectFacade
+     * @param Storage\TokenStorage           $tokenStorage
+     * @param Service\Authorization          $authorizationService
+     * @param Service\UserRolesRebuilder     $userRolesRebuilderService
+     * @param Validation\ValidationService   $validationService
+     * @param AMQP\FacadeAMQP                $amqpFacade
+     * @param Authentication\UserPermissions $userPermissions
      */
     public function __construct(
         AppFacade\User $userFacade,
@@ -99,7 +107,8 @@ class User extends Controller\Base
         Service\Authorization $authorizationService,
         Service\UserRolesRebuilder $userRolesRebuilderService,
         Validation\ValidationService $validationService,
-        AMQP\FacadeAMQP $amqpFacade
+        AMQP\FacadeAMQP $amqpFacade,
+        Authentication\UserPermissions $userPermissions
     ) {
         $this->userFacade                = $userFacade;
         $this->tokenStorage              = $tokenStorage;
@@ -110,6 +119,7 @@ class User extends Controller\Base
         $this->userRolesRebuilderService = $userRolesRebuilderService;
         $this->validationService         = $validationService;
         $this->amqpFacade                = $amqpFacade;
+        $this->userPermissions           = $userPermissions;
     }
 
     /**
@@ -144,7 +154,7 @@ class User extends Controller\Base
      *
      * @Rest\Get("/{user}")
      *
-     * @param Model\User                          $user
+     * @param Model\User $user
      *
      * @return View\View
      */
@@ -178,7 +188,6 @@ class User extends Controller\Base
      * Add a new User
      *
      * @Rest\Post("")
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param HttpFoundation\Request              $request
      *
@@ -189,7 +198,12 @@ class User extends Controller\Base
         /** @var Model\User $loginUser */
         $loginUser = $this->tokenStorage->getToken()->getUser();
 
-        if (!$loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN) &&
+        if (!$this->userPermissions->hasPermission('canAddUserToOwnOrganisation') &&
+            !$this->userPermissions->hasPermission('canAddUserToAnyOrganisation')) {
+            throw new Exception\AccessDeniedHttpException('You are not allowed to add user to any organisation');
+        }
+
+        if (!$this->userPermissions->hasPermission('canAddUserToAnyOrganisation') &&
             count(array_diff($request->request->get('organisationIds', []), $loginUser->getOrganisations())) > 0) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to add this user to this organisations');
         }
@@ -248,7 +262,6 @@ class User extends Controller\Base
      * Edit a User
      *
      * @Rest\Put("/{user}")
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param HttpFoundation\Request              $request
      * @param Model\User                          $user
@@ -260,7 +273,12 @@ class User extends Controller\Base
         /** @var Model\User $loginUser */
         $loginUser = $this->tokenStorage->getToken()->getUser();
 
-        if (!$loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN) &&
+        if (!$this->userPermissions->hasPermission('canAddUserToOwnOrganisation') &&
+            !$this->userPermissions->hasPermission('canAddUserToAnyOrganisation')) {
+            throw new Exception\AccessDeniedHttpException('You are not allowed to add user to any organisation');
+        }
+
+        if (!$this->userPermissions->hasPermission('canAddUserToAnyOrganisation') &&
             count(array_diff($request->request->get('organisationIds'), $loginUser->getOrganisations())) > 0) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to add this user to this organisations');
         }
@@ -356,7 +374,7 @@ class User extends Controller\Base
      * Delete a User
      *
      * @Rest\Delete("/{user}")
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
+     * @CheckPermissions({"canDeleteUser"})
      *
      * @param Model\User                          $user
      *
@@ -369,7 +387,7 @@ class User extends Controller\Base
 
         if (!$loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN) &&
             count(array_intersect($user->getOrganisations(), $loginUser->getOrganisations())) === 0) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to get this user');
+            throw new Exception\AccessDeniedHttpException('Your are not allowed to deleted this user');
         }
 
         $this->userFacade->deleteUser($user);

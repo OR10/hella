@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+    <frame>
+        <class id="weather" name="Weather">
+            <value id="sun" name="Sun" />
+            <value id="rain" name="Rain" />
+            <value id="thunderstorm" name="Thunderstorm" />
+        </class>
+        <class id="season" name="Season">
+            <value id="summer" name="Summer" />
+        </class>
+    </frame>
     <thing id="sign" shape="cuboid" name="Traffic Sign">
         <class id="sign-type" name="Sign type">
             <value id="u-turn" name="U-Turn"/>

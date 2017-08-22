@@ -36,13 +36,13 @@ class LabelingGroup extends ExportXml\Element
         $labelingGroup->setAttribute('id', $this->labelingGroup->getId());
         $labelingGroup->setAttribute('name', $this->labelingGroup->getName());
 
-        foreach ($this->labelingGroup->getCoordinators() as $coordinatorId) {
-            $user        = $this->userFacade->getUserById($coordinatorId);
-            $coordinator = $document->createElementNS($this->namespace, 'coordinator');
-            $coordinator->setAttribute('username', $user->getUsername());
-            $coordinator->setAttribute('email', $user->getEmail());
+        foreach ($this->labelingGroup->getLabelManagers() as $labelManagerId) {
+            $user        = $this->userFacade->getUserById($labelManagerId);
+            $labelmanager = $document->createElementNS($this->namespace, 'label-manager');
+            $labelmanager->setAttribute('username', $user->getUsername());
+            $labelmanager->setAttribute('email', $user->getEmail());
 
-            $labelingGroup->appendChild($coordinator);
+            $labelingGroup->appendChild($labelmanager);
         }
 
         foreach ($this->labelingGroup->getLabeler() as $labelerId) {

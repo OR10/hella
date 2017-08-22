@@ -111,11 +111,8 @@ class UserProfileController {
      * @type {Array}
      */
     this.availableRoles = [
+      {id: 'ROLE_LABEL_MANAGER', label: 'Label Manager'},
       {id: 'ROLE_LABELER', label: 'Labeler'},
-      {id: 'ROLE_LABEL_COORDINATOR', label: 'Label Coordinator'},
-      {id: 'ROLE_CLIENT_COORDINATOR', label: 'Client + Label Coordinator'},
-      {id: 'ROLE_CLIENT', label: 'Client'},
-      {id: 'ROLE_ADMIN', label: 'Administrator'},
       {id: 'ROLE_OBSERVER', label: 'Observer'},
     ];
 
@@ -356,23 +353,14 @@ class UserProfileController {
 
   _updateRoles() {
     switch (this.singleRole.id) {
-      case 'ROLE_ADMIN':
-        this.user.roles = ['ROLE_ADMIN', 'ROLE_LABEL_COORDINATOR', 'ROLE_LABELER'];
-        break;
       case 'ROLE_SUPER_ADMIN':
         this.user.roles = ['ROLE_SUPER_ADMIN'];
         break;
-      case 'ROLE_LABEL_COORDINATOR':
-        this.user.roles = ['ROLE_LABEL_COORDINATOR', 'ROLE_LABELER'];
+      case 'ROLE_LABEL_MANAGER':
+        this.user.roles = ['ROLE_LABEL_MANAGER', 'ROLE_LABELER'];
         break;
       case 'ROLE_LABELER':
         this.user.roles = ['ROLE_LABELER'];
-        break;
-      case 'ROLE_CLIENT':
-        this.user.roles = ['ROLE_CLIENT'];
-        break;
-      case 'ROLE_CLIENT_COORDINATOR':
-        this.user.roles = ['ROLE_CLIENT', 'ROLE_LABEL_COORDINATOR'];
         break;
       case 'ROLE_OBSERVER':
         this.user.roles = ['ROLE_OBSERVER'];

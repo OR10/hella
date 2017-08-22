@@ -188,4 +188,61 @@ describe('ShapeSelectionService tests', () => {
       expect(selectedShape).toBe(shapeOne);
     });
   });
+
+  describe('getAllShapes', () => {
+    it('returns an empty array by default', () => {
+      const service = new ShapeSelectionService();
+
+      const allShapes = service.getAllShapes();
+
+      expect(allShapes).toEqual(jasmine.any(Array));
+      expect(allShapes.length).toEqual(0);
+    });
+
+    it('returns all the shapes as array', () => {
+      const service = new ShapeSelectionService();
+      const shapeOne = createCuboid('some-id-1');
+      const shapeTwo = createCuboid('some-id-2');
+      const shapeThree = createCuboid('some-id-3');
+
+      service.toggleShape(shapeOne);
+      service.toggleShape(shapeTwo);
+      service.toggleShape(shapeThree);
+      const allShapes = service.getAllShapes();
+
+      expect(allShapes).toEqual(jasmine.any(Array));
+      expect(allShapes.length).toEqual(3);
+      expect(allShapes[0]).toBe(shapeOne);
+      expect(allShapes[1]).toBe(shapeTwo);
+      expect(allShapes[2]).toBe(shapeThree);
+    });
+  });
+
+  describe('removeShape()', () => {
+    it('deselects the shape, even if it is not known to the service', () => {
+      const service = new ShapeSelectionService();
+      const shapeOne = createCuboid('some-id-1');
+
+      service.removeShape(shapeOne);
+
+      expect(shapeOne.deselect).toHaveBeenCalled();
+      expect(service.count()).toEqual(0);
+    });
+
+    it('removes the shape from the selected shapes', () => {
+      const service = new ShapeSelectionService();
+      const shapeOne = createCuboid('some-id-1');
+      const shapeTwo = createCuboid('some-id-2');
+
+      service.toggleShape(shapeOne);
+      service.toggleShape(shapeTwo);
+      service.removeShape(shapeOne);
+      const allShapes = service.getAllShapes();
+
+      expect(shapeOne.deselect).toHaveBeenCalled();
+      expect(shapeTwo.deselect).not.toHaveBeenCalled();
+      expect(service.count()).toEqual(1);
+      expect(allShapes[0]).toBe(shapeTwo);
+    });
+  });
 });

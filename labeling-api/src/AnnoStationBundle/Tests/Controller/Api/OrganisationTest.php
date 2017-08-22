@@ -28,7 +28,7 @@ class OrganisationTest extends Tests\WebTestCase
     /**
      * @var Model\User
      */
-    private $admin;
+    private $labelManager;
 
     /**
      * @var Model\User
@@ -39,7 +39,7 @@ class OrganisationTest extends Tests\WebTestCase
     {
         $this->organisationFacade = $this->getAnnostationService('database.facade.organisation');
         $this->superAdmin         = $this->createSuperAdminUser();
-        $this->admin              = $this->createAdminUser();
+        $this->labelManager       = $this->createLabelManagerUser();
         $this->labeler            = $this->createLabelerUser();
     }
 
@@ -61,15 +61,15 @@ class OrganisationTest extends Tests\WebTestCase
         $this->assertEquals(['Test 4', 'Test 3', 'Test 2', 'Test 1'], $actualOrganisations);
     }
 
-    public function testGetOrganisationsAsAdmin()
+    public function testGetOrganisationsAsLabelManager()
     {
         $organisation = $this->createOrganisation();
-        $this->admin->assignToOrganisation($organisation);
+        $this->labelManager->assignToOrganisation($organisation);
         $this->createOrganisation('Test 1');
         $this->createOrganisation('Test 2');
 
         $requestWrapper = $this->createRequest('/api/v1/organisation')
-            ->withCredentialsFromUsername($this->admin)
+            ->withCredentialsFromUsername($this->labelManager)
             ->execute();
 
         $actualOrganisations = array_map(
@@ -111,7 +111,7 @@ class OrganisationTest extends Tests\WebTestCase
     {
         $requestWrapper = $this->createRequest('/api/v1/organisation')
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->admin)
+            ->withCredentialsFromUsername($this->labelManager)
             ->setJsonBody(
                 [
                     'name' => 'Test create new organisation',
@@ -145,7 +145,7 @@ class OrganisationTest extends Tests\WebTestCase
         $organisation   = $this->createOrganisation();
         $requestWrapper = $this->createRequest('/api/v1/organisation/%s', [$organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
-            ->withCredentialsFromUsername($this->admin)
+            ->withCredentialsFromUsername($this->labelManager)
             ->setJsonBody(
                 [
                     'name' => 'Test Organisation Updated',
@@ -173,7 +173,7 @@ class OrganisationTest extends Tests\WebTestCase
         $organisation   = $this->createOrganisation();
         $requestWrapper = $this->createRequest('/api/v1/organisation/%s', [$organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
-            ->withCredentialsFromUsername($this->admin)
+            ->withCredentialsFromUsername($this->labelManager)
             ->execute();
 
         $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());

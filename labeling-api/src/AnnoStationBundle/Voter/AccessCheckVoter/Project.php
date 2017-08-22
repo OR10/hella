@@ -25,27 +25,24 @@ class Project extends Voter\AccessCheckVoter
         /*
          * The checks are based on the nature of the user account:
          *
-         * - Client: Creator of the Project
-         * - LabelCoordinator: Directly assigned to the project
-         * - Labeler: Inside a LabelingGroup, which has a LabelCoordinator, which is assigned to the project
-         * - Admin: grant access to all projects
+         * - LabelManager: Directly assigned to the project
+         * - Labeler: Inside a LabelingGroup, which has a LabelManager, which is assigned to the project
+         * - LabelManager: grant access to all projects
          *
          */
         $this->checks = [
             self::PROJECT_READ  => [
-                new AccessCheck\ClientIsProjectCreator($userPermissions),
-                new AccessCheck\LabelCoordinatorIsAssignedToProject($userPermissions),
+                new AccessCheck\LabelManagerIsAssignedToProject($userPermissions),
                 new AccessCheck\LabelerIsAssignedToProject($userPermissions, $labelingGroupFacade),
                 new AccessCheck\HasSuperAdminRole($userPermissions),
-                new AccessCheck\HasAdminRole($userPermissions),
+                new AccessCheck\HasLabelManagerRole($userPermissions),
                 new AccessCheck\HasObserverRole($userPermissions),
             ],
             self::PROJECT_WRITE => [
-                new AccessCheck\ClientIsProjectCreator($userPermissions),
-                new AccessCheck\LabelCoordinatorIsAssignedToProject($userPermissions),
+                new AccessCheck\LabelManagerIsAssignedToProject($userPermissions),
                 new AccessCheck\LabelerIsAssignedToProject($userPermissions, $labelingGroupFacade),
                 new AccessCheck\HasSuperAdminRole($userPermissions),
-                new AccessCheck\HasAdminRole($userPermissions),
+                new AccessCheck\HasLabelManagerRole($userPermissions),
             ],
         ];
     }

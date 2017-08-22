@@ -83,6 +83,15 @@ class RequirementsProjectToXml
     private $additionalFrameNumberMappingFacade;
 
     /**
+     * @var Service\DepthBufferService
+     */
+    private $depthBufferService;
+    /**
+     * @var Facade\CalibrationData
+     */
+    private $calibrationDataFacade;
+
+    /**
      * RequirementsProjectToXml constructor.
      *
      * @param Facade\Exporter                           $exporterFacade
@@ -91,6 +100,7 @@ class RequirementsProjectToXml
      * @param LabelingTask                              $labelingTaskFacade
      * @param Facade\TaskConfiguration                  $taskConfiguration
      * @param Facade\AdditionalFrameNumberMapping       $additionalFrameNumberMappingFacade
+     * @param Facade\CalibrationData                    $calibrationDataFacade
      * @param Service\GhostClassesPropagation           $ghostClassesPropagation
      * @param AppBundleFacade\User                      $userFacade
      * @param Facade\LabelingGroup                      $labelingGroupFacade
@@ -98,6 +108,7 @@ class RequirementsProjectToXml
      * @param LabelingTask\FacadeInterface              $labelingTaskFacadeFactory
      * @param LabeledThing\FacadeInterface              $labeledThingFacadeFactory
      * @param LabeledThingGroup\FacadeInterface         $labeledThingGroupFacadeFactory
+     * @param Service\DepthBuffer                       $depthBufferService
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -106,27 +117,31 @@ class RequirementsProjectToXml
         Facade\LabelingTask $labelingTaskFacade,
         Facade\TaskConfiguration $taskConfiguration,
         Facade\AdditionalFrameNumberMapping $additionalFrameNumberMappingFacade,
+        Facade\CalibrationData $calibrationDataFacade,
         Service\GhostClassesPropagation $ghostClassesPropagation,
         AppBundleFacade\User $userFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService,
         LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
         LabeledThing\FacadeInterface $labeledThingFacadeFactory,
-        LabeledThingGroup\FacadeInterface $labeledThingGroupFacadeFactory
+        LabeledThingGroup\FacadeInterface $labeledThingGroupFacadeFactory,
+        Service\DepthBuffer $depthBufferService
     ) {
-        $this->exporterFacade                    = $exporterFacade;
-        $this->projectFacade                     = $projectFacade;
-        $this->videoFacade                       = $videoFacade;
-        $this->labelingTaskFacade                = $labelingTaskFacade;
-        $this->taskConfiguration                 = $taskConfiguration;
-        $this->ghostClassesPropagation           = $ghostClassesPropagation;
-        $this->userFacade                        = $userFacade;
-        $this->labelingGroupFacade               = $labelingGroupFacade;
-        $this->labeledFrameEndCalculationService = $labeledFrameEndCalculationService;
-        $this->labelingTaskFacadeFactory         = $labelingTaskFacadeFactory;
-        $this->labeledThingFacadeFactory         = $labeledThingFacadeFactory;
-        $this->labeledThingGroupFacadeFactory    = $labeledThingGroupFacadeFactory;
+        $this->exporterFacade                     = $exporterFacade;
+        $this->projectFacade                      = $projectFacade;
+        $this->videoFacade                        = $videoFacade;
+        $this->labelingTaskFacade                 = $labelingTaskFacade;
+        $this->taskConfiguration                  = $taskConfiguration;
+        $this->ghostClassesPropagation            = $ghostClassesPropagation;
+        $this->userFacade                         = $userFacade;
+        $this->labelingGroupFacade                = $labelingGroupFacade;
+        $this->labeledFrameEndCalculationService  = $labeledFrameEndCalculationService;
+        $this->labelingTaskFacadeFactory          = $labelingTaskFacadeFactory;
+        $this->labeledThingFacadeFactory          = $labeledThingFacadeFactory;
+        $this->labeledThingGroupFacadeFactory     = $labeledThingGroupFacadeFactory;
         $this->additionalFrameNumberMappingFacade = $additionalFrameNumberMappingFacade;
+        $this->depthBufferService                 = $depthBufferService;
+        $this->calibrationDataFacade              = $calibrationDataFacade;
     }
 
     /**
@@ -240,11 +255,14 @@ class RequirementsProjectToXml
                         foreach ($labeledThingInFramesInRanges as $labeledThingInFramesInRange) {
                             /** @var Model\LabeledThingInFrame $labeledThingInFrame */
                             $labeledThingInFrame = $labeledThingInFramesInRange['labeledThingInFrame'];
+                            $calibrationData = $video->getCalibrationId() === null ? null : $this->calibrationDataFacade->findById($video->getCalibrationId());
                             $shape               = new ExportXml\Element\Video\Shape(
                                 $labeledThingInFrame->getShapesAsObjects()[0],
                                 $frameMapping[$labeledThingInFramesInRange['start']],
                                 $frameMapping[$labeledThingInFramesInRange['end']],
-                                self::XML_NAMESPACE
+                                self::XML_NAMESPACE,
+                                $calibrationData,
+                                $this->depthBufferService
                             );
                             $thing->addShape($shape);
                             $thing->setType($labeledThingInFrame->getIdentifierName());
@@ -253,6 +271,7 @@ class RequirementsProjectToXml
                         $valuesForRanges = $this->getValuesRanges($labeledThingInFrameForLabeledThing);
                         foreach ($valuesForRanges as $value) {
                             $thing->addValue(
+                                $this->findClassIdForValue($value['value'], array_values($taskConfigurations)[0]),
                                 $value['value'],
                                 $frameMapping[$value['start']],
                                 $frameMapping[$value['end']]
@@ -263,11 +282,18 @@ class RequirementsProjectToXml
 
                     $labeledFrames    = new Iterator\LabeledFrame($task, $labelingTaskFacade);
                     if (count(iterator_to_array($labeledFrames, false)) > 0) {
-                        $xmlVideo->setFrame($this->getLabeledFrameElement($task, $labeledFrames, $xml->getDocument()));
+                        $xmlVideo->setFrame(
+                            $this->getLabeledFrameElement(
+                                $task,
+                                $labeledFrames,
+                                $xml->getDocument(),
+                                array_values($taskConfigurations)[0]
+                            )
+                        );
                     }
                 }
                 $xml->appendChild($xmlVideo->getElement($xml->getDocument()));
-                $taskConfiguration = reset($taskConfigurations);
+                $taskConfiguration = array_values($taskConfigurations)[0];
                 $postfix = $this->getPostfixFromRequirementsXml($taskConfiguration);
                 $zipData[$video->getName() . $postfix . '.xml'] = $xml->getDocument()->saveXML();
             }
@@ -303,16 +329,50 @@ class RequirementsProjectToXml
     }
 
     /**
-     * @param Model\LabelingTask   $task
-     * @param Model\LabeledFrame[] $labeledFrames
-     * @param \DOMDocument         $xmlDocument
+     * Search for the values parent class name
+     * Note: This only works if all IDs are unique in the whole document
+     *
+     * @param                         $value
+     * @param Model\TaskConfiguration $taskConfiguration
+     *
+     * @return string
+     */
+    private function findClassIdForValue($value, Model\TaskConfiguration $taskConfiguration)
+    {
+        $xmlImport = new \DOMDocument();
+        $xmlImport->loadXML($taskConfiguration->getRawData());
+
+        $xpath = new \DOMXPath($xmlImport);
+        $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/requirements");
+
+        $requirementsElement = $xpath->query(sprintf('//x:value[@id="%s"]', $value));
+
+        if ($requirementsElement->length === 0) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Could not find any class for value "%s" in TaskConfiguration "%s"',
+                    $value,
+                    $taskConfiguration->getId()
+                )
+            );
+        }
+
+        return $requirementsElement->item(0)->parentNode->getAttribute('id');
+    }
+
+    /**
+     * @param Model\LabelingTask      $task
+     * @param Model\LabeledFrame[]    $labeledFrames
+     * @param \DOMDocument            $xmlDocument
+     * @param Model\TaskConfiguration $taskConfiguration
      *
      * @return ExportXml\Element\Video\FrameLabeling
      */
     private function getLabeledFrameElement(
         Model\LabelingTask $task,
         $labeledFrames,
-        \DOMDocument $xmlDocument
+        \DOMDocument $xmlDocument,
+        Model\TaskConfiguration $taskConfiguration
     ) {
         $references = new ExportXml\Element\Video\References(
             new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
@@ -325,15 +385,16 @@ class RequirementsProjectToXml
         $previousLabeledFrame = null;
         /** @var Model\LabeledFrame $labeledFrame */
         foreach ($labeledFrames as $labeledFrame) {
-            foreach ($labeledFrame->getClasses() as $class) {
-                if (!$this->isClassInLabeledFrame($previousLabeledFrame, $class)) {
+            foreach ($labeledFrame->getClasses() as $id) {
+                if (!$this->isClassInLabeledFrame($previousLabeledFrame, $id)) {
                     $xmlLabeledFrame->addValue(
                         $xmlDocument,
-                        $class,
+                        $this->findClassIdForValue($id, $taskConfiguration),
+                        $id,
                         $taskFrameMapping[$labeledFrame->getFrameIndex()],
                         $taskFrameMapping[$this->labeledFrameEndCalculationService->getEndOfForClassOfLabeledFrame(
                             $labeledFrame,
-                            $class
+                            $id
                         )]
                     );
                 }

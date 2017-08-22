@@ -1,4 +1,5 @@
 <?php
+
 namespace AnnoStationBundle\Database\Facade;
 
 use AppBundle\Database\Facade\CouchDb as CouchDbBase;
@@ -52,6 +53,7 @@ class Video
 
     /**
      * @param $id
+     *
      * @return Model\Video
      */
     public function find($id)
@@ -96,7 +98,7 @@ class Video
         $videoIds = array_values(
             array_unique(
                 array_map(
-                    function(Model\LabelingTask $task) {
+                    function (Model\LabelingTask $task) {
                         return $task->getVideoId();
                     },
                     $tasks
@@ -248,5 +250,44 @@ class Video
         }
 
         return $numberOfVideosByOrganisation;
+    }
+
+    public function calculateAggregatedeVideoSizeForProject(Model\Project $project): int
+    {
+        $videoIds = $project->getVideoIds();
+        $chunks   = array_chunk($videoIds, 100);
+
+        $aggregatedSize = 0;
+        foreach ($chunks as $chunk) {
+            $videosInChunk = $this->documentManager
+                ->createQuery('annostation_video_001', 'by_id')
+                ->setKeys($chunk)
+                ->onlyDocs(true)
+                ->execute()
+                ->toArray();
+
+            $aggregatedSizeOfChunk = array_reduce(
+                $videosInChunk,
+                function ($carry, Model\Video $video) {
+                    $imageTypesSize = 0;
+                    //Its possible that not all images types are calculated yet
+                    foreach ($video->getImageTypes() as $imageType) {
+                        if (isset($imageType['accumulatedSizeInBytes'])) {
+                            $imageTypesSize += $imageType['accumulatedSizeInBytes'];
+                        }
+                    }
+
+                    $videoMetadata = $video->getMetaData();
+                    $rawVideoSize  = $videoMetadata->sizeInBytes;
+
+                    return ($carry + $imageTypesSize + $rawVideoSize);
+                },
+                0
+            );
+
+            $aggregatedSize += $aggregatedSizeOfChunk;
+        }
+
+        return $aggregatedSize;
     }
 }

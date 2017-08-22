@@ -11,6 +11,8 @@ import Environment from '../../Common/Support/Environment';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
+import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
+import GroupToolActionStruct from '../Tools/ToolActionStructs/GroupToolActionStruct';
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -67,6 +69,8 @@ class ViewerController {
    * @param {InProgressService} inProgressService
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {ToolSelectorListenerService} toolSelectorListenerService
+   * @param {HierarchyCreationService} hierarchyCreationService
    */
   constructor($scope,
               $rootScope,
@@ -102,7 +106,9 @@ class ViewerController {
               inProgressService,
               pouchDbSyncManager,
               imagePreloader,
-              shapeSelectionService) {
+              shapeSelectionService,
+              toolSelectorListenerService,
+              hierarchyCreationService) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -334,6 +340,37 @@ class ViewerController {
      */
     this._backgroupLayerContext = null;
 
+    /**
+     * @type {ToolSelectorListenerService}
+     * @private
+     */
+    this._toolSelectorListenerService = toolSelectorListenerService;
+
+    /**
+     * @type {HierarchyCreationService}
+     * @private
+     */
+    this._hierarchyCreationService = hierarchyCreationService;
+
+    const groupListener = (tool, labelStructureObject) => {
+      if (this._shapeSelectionService.count() > 0) {
+        const shapes = this._shapeSelectionService.getAllShapes();
+        const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
+        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
+
+        this._thingLayerContext.withScope(() => {
+          const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+          this._storeGroup(group, shapes);
+          group.sendToBack();
+          this.paperGroupShapes = this.paperGroupShapes.concat([group]);
+          this._shapeSelectionService.clear();
+          this.selectedPaperShape = group;
+          group.select();
+        });
+      }
+    };
+    this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
+
     this._viewerMouseCursorService.on('cursor:updated', cursor => {
       this.actionMouseCursor = cursor;
     });
@@ -429,7 +466,7 @@ class ViewerController {
       this._modalService.info(
         {
           title: 'Missing calibration data',
-          headline: 'This task is missing its camera calibration data. Please contact the label coordinator for further assistance!',
+          headline: 'This task is missing its camera calibration data. Please contact the Label Manager for further assistance!',
           confirmButtonText: 'Go back to project list',
         },
         () => {
@@ -458,7 +495,7 @@ class ViewerController {
         {
           title: 'Unauthorized Access',
           headline: 'You do not longer have the access rights to work on this task.',
-          message: 'You have lost the authorization to work on this task. This can for example happen if the task was reassigned to another labeler, while you were working on it. Please contact your label coordinator for further instructions.',
+          message: 'You have lost the authorization to work on this task. This can for example happen if the task was reassigned to another labeler, while you were working on it. Please contact your Label Manager for further instructions.',
           confirmButtonText: 'Understood',
         },
         () => {
@@ -1217,7 +1254,7 @@ class ViewerController {
         {
           title: 'Error',
           headline: `There was an error updating the shape`,
-          message: `The shape could not be saved. Please contact the label coordinator and reload the page to continue with the labeling process!`,
+          message: `The shape could not be saved. Please contact the Label Manager and reload the page to continue with the labeling process!`,
           confirmButtonText: 'Reload',
         },
         () => window.location.reload(),
@@ -1272,7 +1309,7 @@ class ViewerController {
           {
             title: 'Error',
             headline: `There was an error creating the shape`,
-            message: `The shape could not be created. Please contact the label coordinator and reload the page to continue with the labeling process!`,
+            message: `The shape could not be created. Please contact the Label Manager and reload the page to continue with the labeling process!`,
             confirmButtonText: 'Reload',
           },
           () => window.location.reload(),
@@ -1302,7 +1339,10 @@ class ViewerController {
     let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(this._thingLayerContext, paperGroupShape.bounds);
     // Service finds the group shape itself, so we need to remove the shape id from the array
     shapesInGroup = shapesInGroup.filter(shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
+    this._storeGroup(paperGroupShape, shapesInGroup);
+  }
 
+  _storeGroup(paperGroupShape, shapesInGroup) {
     this._labeledThingGroupGateway.createLabeledThingGroup(this.task, paperGroupShape.labeledThingGroupInFrame.labeledThingGroup)
       .then(labeledThingGroup => {
         const labeledThings = [];
@@ -1320,7 +1360,7 @@ class ViewerController {
           {
             title: 'Error',
             headline: `There was an error saving the shape`,
-            message: `The shape could not be created. Please contact the label coordinator and reload the page to continue with the labeling process!`,
+            message: `The shape could not be created. Please contact the Label Manager and reload the page to continue with the labeling process!`,
             confirmButtonText: 'Reload',
           },
           () => window.location.reload(),
@@ -1589,6 +1629,8 @@ ViewerController.$inject = [
   'pouchDbSyncManager',
   'imagePreloader',
   'shapeSelectionService',
+  'toolSelectorListenerService',
+  'hierarchyCreationService',
 ];
 
 export default ViewerController;

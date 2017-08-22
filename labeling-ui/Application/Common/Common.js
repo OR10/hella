@@ -57,6 +57,7 @@ import AssemblyJobFactory from './Services/PackagingExecutor/AssemblyJobFactory'
 import ReplicationStateService from './Services/ReplicationStateService';
 import TaskReplicationService from './Services/TaskReplicationService';
 import ShapeSelectionService from './Services/ShapeSelectionService';
+import ToolSelectorListenerService from './Services/ToolSelectorListenerService';
 
 import modalDialogProvider from './Services/ModalDialogs/ModalDialog';
 import infoDialogProvider from './Services/ModalDialogs/InfoDialog';
@@ -133,6 +134,7 @@ class Common extends Module {
     this.module.service('replicationStateService', ReplicationStateService);
     this.module.service('taskReplicationService', TaskReplicationService);
     this.module.service('shapeSelectionService', ShapeSelectionService);
+    this.module.service('toolSelectorListenerService', ToolSelectorListenerService);
 
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
@@ -240,7 +242,7 @@ class Common extends Module {
           {
             title: 'Revision Error (409)',
             headline: 'There was an error with the application!',
-            message: 'Please reload the page and contact your label coordinator about this error.',
+            message: 'Please reload the page and contact your Label Manager about this error.',
             confirmButtonText: 'Reload Page',
           },
           () => window.location.reload(),
@@ -257,7 +259,7 @@ class Common extends Module {
           {
             title: 'Http Connection Error',
             headline: 'There was an error with the application!',
-            message: 'Please reload the page and contact your label coordinator about this error.',
+            message: 'Please reload the page and contact your Label Manager about this error.',
             confirmButtonText: 'Reload Page',
           },
           () => window.location.reload(),

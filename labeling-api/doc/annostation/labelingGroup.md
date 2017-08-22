@@ -106,7 +106,7 @@ Get all LabelingGroups of the current logged in User
     + Attributes
         + result array(LabelingGroup)
 
-## Get all Coordinators [/api/v1/organisation/{organisationId}/labelingGroup/user/coordinators]
+## Get all Coordinators [/api/v1/organisation/{organisationId}/labelingGroup/user/labelManagers]
 
 Get all LabelCoordinator for a LabelGroup
 

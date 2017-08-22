@@ -22,12 +22,7 @@ class ProjectTest extends Tests\WebTestCase
     /**
      * @var Model\User
      */
-    private $client;
-
-    /**
-     * @var Model\User
-     */
-    private $labelCoordinator;
+    private $labelManager;
 
     /**
      * @var Facade\LabelingTask
@@ -62,11 +57,12 @@ class ProjectTest extends Tests\WebTestCase
                         'videosCount'                => 1,
                         'dueTimestamp'               => null,
                         'taskFailedCount'            => 0,
-                        'coordinator'                => null,
+                        'labelManager'               => null,
                         'taskInstructionType'        => 'legacy',
                         'diskUsage'                  => ['total' => 0],
                         'campaigns'                  => [],
                         'labelingGroupId'            => null,
+                        'deletedState'               => 'unaccepted',
                     ],
                 ],
             ],
@@ -87,11 +83,12 @@ class ProjectTest extends Tests\WebTestCase
                         'videosCount'                => 1,
                         'dueTimestamp'               => null,
                         'taskFailedCount'            => 0,
-                        'coordinator'                => null,
+                        'labelManager'               => null,
                         'taskInstructionType'        => 'legacy',
                         'diskUsage'                  => ['total' => 0],
                         'campaigns'                  => [],
                         'labelingGroupId'            => null,
+                        'deletedState'               => 'unaccepted',
                     ],[
                         'name'                       => 'Test Project 1',
                         'status'                     => Model\LabelingTask::STATUS_TODO,
@@ -106,11 +103,12 @@ class ProjectTest extends Tests\WebTestCase
                         'videosCount'                => 1,
                         'dueTimestamp'               => null,
                         'taskFailedCount'            => 0,
-                        'coordinator'                => null,
+                        'labelManager'               => null,
                         'taskInstructionType'        => 'legacy',
                         'diskUsage'                  => ['total' => 0],
                         'campaigns'                  => [],
                         'labelingGroupId'            => null,
+                        'deletedState'               => 'unaccepted',
                     ],[
                         'name'                       => 'Test Project 2',
                         'status'                     => Model\LabelingTask::STATUS_TODO,
@@ -125,11 +123,12 @@ class ProjectTest extends Tests\WebTestCase
                         'videosCount'                => 1,
                         'dueTimestamp'               => null,
                         'taskFailedCount'            => 0,
-                        'coordinator'                => null,
+                        'labelManager'               => null,
                         'taskInstructionType'        => 'legacy',
                         'diskUsage'                  => ['total' => 0],
                         'campaigns'                  => [],
                         'labelingGroupId'            => null,
+                        'deletedState'               => 'unaccepted',
                     ],
                 ],
             ],
@@ -150,11 +149,12 @@ class ProjectTest extends Tests\WebTestCase
                         'videosCount'                => 1,
                         'dueTimestamp'               => null,
                         'taskFailedCount'            => 0,
-                        'coordinator'                => null,
+                        'labelManager'               => null,
                         'taskInstructionType'        => 'legacy',
                         'diskUsage'                  => ['total' => 0],
                         'campaigns'                  => [],
                         'labelingGroupId'            => null,
+                        'deletedState'               => 'unaccepted',
                     ],
                 ],
             ],
@@ -172,7 +172,7 @@ class ProjectTest extends Tests\WebTestCase
         $this->createProjectsForProjectListTest();
 
         $request = $this->prepareProjectsByStatusRequest($this->organisation, $status)
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->labelManager)
             ->execute();
 
         $data = array_map(
@@ -195,7 +195,7 @@ class ProjectTest extends Tests\WebTestCase
         $video        = Tests\Helper\VideoBuilder::create($this->organisation)->build();
 
         $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
-            ->withProjectOwnedByUserId($this->client->getId());
+            ->withProjectOwnedByUserId($this->labelManager->getId());
 
         $testProject1 = $this->projectFacade->save(
             $projectBuilder
@@ -290,27 +290,27 @@ class ProjectTest extends Tests\WebTestCase
         $project      = $this->projectFacade->save(
             Tests\Helper\ProjectBuilder::create($this->organisation)
                 ->withCreationDate(new \DateTime('yesterday'))
-                ->withProjectOwnedByUserId($this->client->getId())
-                ->withAddedCoordinatorAssignment($this->labelCoordinator, new \DateTime('-1 minute'))
+                ->withProjectOwnedByUserId($this->labelManager->getId())
+                ->withAddedLabelManagerAssignment($this->labelManager, new \DateTime('-1 minute'))
                 ->build()
         );
 
         $this->assertEquals($project->getStatus(), Model\Project::STATUS_TODO);
-        $this->assertCount(1, $project->getCoordinatorAssignmentHistory());
-        $this->assertEquals($this->labelCoordinator->getId(), $project->getCoordinatorAssignmentHistory()[0]['userId']);
+        $this->assertCount(1, $project->getLabelManagerAssignmentHistory());
+        $this->assertEquals($this->labelManager->getId(), $project->getLabelManagerAssignmentHistory()[0]['userId']);
 
         $requestWrapper = $this->createRequest(
             '/api/v1/organisation/%s/project/%s/status/accept',
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->labelCoordinator)
+            ->withCredentialsFromUsername($this->labelManager)
             ->execute();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
         $this->assertEquals(Model\Project::STATUS_IN_PROGRESS, $project->getStatus());
-        $this->assertCount(2, $project->getCoordinatorAssignmentHistory());
-        $this->assertEquals($this->labelCoordinator->getId(), $project->getLatestAssignedCoordinatorUserId());
+        $this->assertCount(2, $project->getLabelManagerAssignmentHistory());
+        $this->assertEquals($this->labelManager->getId(), $project->getLatestAssignedLabelManagerUserId());
     }
 
     public function testSetProjectDone()
@@ -318,7 +318,7 @@ class ProjectTest extends Tests\WebTestCase
         $project      = $this->projectFacade->save(
             Tests\Helper\ProjectBuilder::create($this->organisation)
                 ->withCreationDate(new \DateTime('yesterday'))
-                ->withProjectOwnedByUserId($this->client->getId())
+                ->withProjectOwnedByUserId($this->labelManager->getId())
                 ->withStatusChange(Model\Project::STATUS_IN_PROGRESS)
                 ->build()
         );
@@ -328,18 +328,18 @@ class ProjectTest extends Tests\WebTestCase
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->labelManager)
             ->execute();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $requestWrapper->getResponse()->getStatusCode());
         $this->assertEquals(Model\Project::STATUS_DONE, $project->getStatus());
     }
 
-    public function testAssignCoordinatorToProject()
+    public function testAssignLabelManagerToProject()
     {
         $project      = $this->projectFacade->save(
             Tests\Helper\ProjectBuilder::create($this->organisation)
-                ->withProjectOwnedByUserId($this->client->getId())
+                ->withProjectOwnedByUserId($this->labelManager->getId())
                 ->build()
         );
 
@@ -349,23 +349,23 @@ class ProjectTest extends Tests\WebTestCase
         )
             ->setJsonBody(
                 [
-                    'assignedLabelCoordinatorId' => $this->labelCoordinator->getId(),
+                    'assignedLabelManagerId' => $this->labelManager->getId(),
                 ]
             )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->labelManager)
             ->execute()
             ->getResponse();
 
         $this->assertEquals(HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
-        $this->assertEquals($this->labelCoordinator->getId(), $project->getLatestAssignedCoordinatorUserId());
+        $this->assertEquals($this->labelManager->getId(), $project->getLatestAssignedLabelManagerUserId());
     }
 
     public function testSaveLegacyProject()
     {
         $response = $this->createRequest(self::ROUTE, [$this->organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->labelManager)
             ->setJsonBody(
                 [
                     'name'                     => 'Some Test Project',
@@ -432,7 +432,7 @@ class ProjectTest extends Tests\WebTestCase
     {
         $response     = $this->createRequest(self::ROUTE, [$this->organisation->getId()])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->labelManager)
             ->setJsonBody(
                 [
                     'name'                   => 'Some Test Project',
@@ -509,70 +509,11 @@ class ProjectTest extends Tests\WebTestCase
         $this->assertSame($responseProject['taskInstructions']['genericXml'], $expectedGenericXmlTaskInstructions);
     }
 
-    public function testGetProjectsForLabelCoordinator()
-    {
-        $project = $this->projectFacade->save(Tests\Helper\ProjectBuilder::create($this->organisation)->build());
-
-        $requestWrapper = $this->prepareProjectsByStatusRequest($this->organisation, Model\Project::STATUS_TODO)
-            ->withCredentialsFromUsername($this->labelCoordinator);
-
-        $data = $requestWrapper->execute()->getJsonResponseBody();
-
-        $this->assertSame(0, count($data['result']));
-
-        $project->addCoordinatorAssignmentHistory($this->labelCoordinator);
-        $this->projectFacade->save($project);
-
-        $data = $requestWrapper->execute()->getJsonResponseBody();
-
-        $this->assertSame(1, count($data['result']));
-    }
-
-    public function testGetProjectsForClientReturnsEmptyProjectListIfClientHasNoProjects()
-    {
-        $this->projectFacade->save(Tests\Helper\ProjectBuilder::create($this->organisation)->build());
-
-        $responseBody = $this->prepareProjectsByStatusRequest($this->organisation, Model\Project::STATUS_TODO)
-            ->withCredentialsFromUsername($this->client)
-            ->execute()
-            ->getJsonResponseBody();
-
-        $this->assertEquals(Tests\Helper\ProjectListResponseBuilder::create()->build(), $responseBody);
-    }
-
-    public function testGetProjectsForClientReturnsOwnProjects()
-    {
-        $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
-            ->withProjectOwnedByUserId($this->client->getId());
-
-        $project = $this->projectFacade->save(
-            $projectBuilder->withProjectOwnedByUserId($this->client->getId())->build()
-        );
-
-        $responseBody = $this->prepareProjectsByStatusRequest($this->organisation, Model\Project::STATUS_TODO)
-            ->withCredentialsFromUsername($this->client)
-            ->execute()
-            ->getJsonResponseBody();
-
-        $expectedResponseBody = Tests\Helper\ProjectListResponseBuilder::create()
-            ->withProjects(
-                [
-                    $projectBuilder
-                        ->withId($project->getId())
-                        ->withCreationDate(date_create()->setTimestamp($project->getCreationDate()))
-                        ->withProjectOwnedByUserId($this->client->getId())
-                        ->buildArray(),
-                ]
-            )
-            ->build();
-        $this->assertEquals($expectedResponseBody, $responseBody);
-    }
-
     public function testDeleteProject()
     {
         $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
             ->withCreationDate(new \DateTime('2017-02-10 08:00:00', new \DateTimeZone('UTC')))
-            ->withProjectOwnedByUserId($this->client->getId())
+            ->withProjectOwnedByUserId($this->labelManager->getId())
             ->build();
 
         $project = $this->projectFacade->save($projectBuilder);
@@ -582,7 +523,7 @@ class ProjectTest extends Tests\WebTestCase
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->labelManager)
             ->setJsonBody(
                 [
                     'message' => 'delete this project pls',
@@ -599,7 +540,7 @@ class ProjectTest extends Tests\WebTestCase
     {
         $projectBuilder    = Tests\Helper\ProjectBuilder::create($this->organisation)
             ->withCreationDate(new \DateTime('2017-06-01 14:00:00', new \DateTimeZone('UTC')))
-            ->withProjectOwnedByUserId($this->client->getId())
+            ->withProjectOwnedByUserId($this->labelManager->getId())
             ->build();
         $labelGroupBuilder = Tests\Helper\LabelingGroupBuilder::create($this->organisation)->build();
 
@@ -610,7 +551,7 @@ class ProjectTest extends Tests\WebTestCase
             [$this->organisation->getId(), $project->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
-            ->withCredentialsFromUsername($this->client)
+            ->withCredentialsFromUsername($this->labelManager)
             ->setJsonBody(
                 [
                     'labelGroupId' => $labelGroupBuilder->getId(),
@@ -631,7 +572,6 @@ class ProjectTest extends Tests\WebTestCase
         $this->taskFacade         = $taskFacadeFactory->getReadOnlyFacade();
         $organisationFacade       = $this->getAnnostationService('database.facade.organisation');
         $this->organisation       = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
-        $this->client             = $this->createClientUser($this->organisation);
-        $this->labelCoordinator   = $this->createLabelCoordinatorUser($this->organisation);
+        $this->labelManager       = $this->createLabelManagerUser($this->organisation);
     }
 }

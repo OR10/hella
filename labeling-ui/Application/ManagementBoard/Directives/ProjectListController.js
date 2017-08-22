@@ -144,9 +144,9 @@ class ProjectListController {
         }
 
         response.result = response.result.map(project => {
-          const coordinatorId = project.coordinator;
-          if (coordinatorId !== undefined) {
-            project.coordinator = response.users[coordinatorId];
+          const labelManagerId = project.labelManager;
+          if (labelManagerId !== undefined) {
+            project.labelManager = response.users[labelManagerId];
           }
           return project;
         });
@@ -475,13 +475,13 @@ class ProjectListController {
   assignProject(projectId, taskInPreProcessingCount) {
     this.showLoadingMask = true;
 
-    this._labelingGroupGateway.getLabelCoordinators().then(response => {
+    this._labelingGroupGateway.getLabelManagers().then(response => {
       if (!response.length) {
         this._modalService.info(
           {
-            title: 'No label coordinators',
-            headline: 'There are no label coordinators',
-            message: 'There are no labeling coordinators that could be assigned to this project. Please contact the admin and wait for further assistance.',
+            title: 'No label Label Managers',
+            headline: 'There are no Label Managers',
+            message: 'There are no Label Managers that could be assigned to this project.',
             confirmButtonText: 'Understood',
           },
           undefined,
@@ -501,23 +501,23 @@ class ProjectListController {
       this._modalService.show(
         new this._SelectionDialog(
           {
-            title: 'Assign Label Coordinator',
-            headline: `Select a label coordinator to assign to this project`,
-            message: 'Please select a label coordinator that you want to assign to this project',
+            title: 'Assign Label Manager',
+            headline: `Select a Label Manager to assign to this project`,
+            message: 'Please select a Label Manager that you want to assign to this project',
             confirmButtonText: 'Assign',
             data: response,
           },
-          labelCoordinatorId => {
-            if (labelCoordinatorId) {
+          labelManagerId => {
+            if (labelManagerId) {
               this.loadingInProgress = true;
-              this._projectGateway.assignCoordinator(projectId, labelCoordinatorId)
+              this._projectGateway.assignLabelManager(projectId, labelManagerId)
                 .then(() => this._triggerReloadAll());
             } else {
               this._modalService.info(
                 {
-                  title: 'No Label Coordinator Selected',
-                  headline: 'You need to select a label coordinator',
-                  message: 'You need to select a label coordinator to assign to this Project. Without a selected labeling coordinator the project can not be accepted!',
+                  title: 'No Label Manager Selected',
+                  headline: 'You need to select a Label Manager',
+                  message: 'You need to select a Label Manager to assign to this Project. Without a selected labeling manager the project can not be accepted!',
                   confirmButtonText: 'Understood',
                 },
                 undefined,

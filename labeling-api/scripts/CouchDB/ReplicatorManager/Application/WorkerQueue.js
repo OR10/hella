@@ -37,7 +37,6 @@ class WorkerQueue {
   }
 
   /**
-   *
    * @param job
    */
   addJob(job) {
@@ -60,8 +59,25 @@ class WorkerQueue {
   }
 
   /**
+   * Remove a queued entry by its id
    *
+   * The id can be calculated using the {@link getReplicationDocumentIdName} function
+   *
+   * The return value indicates if the item to remove was found or not.
+   *
+   * @param {string} id
+   * @returns {boolean}
    */
+  removeJob(id) {
+    const jobIndexToRemove = this.queue.findIndex(candidate => candidate.id === id);
+    if (jobIndexToRemove === -1) {
+      return false;
+    }
+
+    this.queue.splice(jobIndexToRemove, 1);
+    return true;
+  }
+
   doWork() {
     setImmediate(() => {
       this._printQueueStatus();
@@ -70,7 +86,6 @@ class WorkerQueue {
   }
 
   /**
-   *
    * @returns {boolean}
    */
   queueWorker() {
@@ -116,11 +131,13 @@ class WorkerQueue {
 
     if (isElementInActiveTasks) {
       this.queue.push(element);
+      this.logger.logString(`Ignore element ${element.id} because its already in active queue`);
 
       return false;
     }
 
     this.activeTasks.push(element);
+    this.logger.logString(`Added ${element.id} to active tasks`);
     element.run()
       .then(() => {
         const index = this.activeTasks.findIndex(task => task.id === element.id);
@@ -136,6 +153,7 @@ class WorkerQueue {
         this.doWork();
       })
       .catch(error => {
+        this.logger.logString(error);
         const index = this.activeTasks.findIndex(task => task.id === element.id);
         if (index !== -1) {
           this.activeTasks.splice(index, 1);
@@ -194,7 +212,7 @@ class WorkerQueue {
   _printQueueStatus() {
     if (this.lastQueueStatus.activeTasksLength !== this.activeTasks.length ||
       this.lastQueueStatus.queueLength !== this.queue.length) {
-      this.logger.logString(`Active tasks: ${this.activeTasks.length}/${this.maxSimultaneousJobs} | Queue length: ${this.queue.length}`);
+      this.logger.logString(`Active tasks: ${this.activeTasks.length}/${this.maxSimultaneousJobs} | Queue length: ${this.queue.length} | Compaction Req./inProgress: ${this._isDatabaseReplicationNecessary()}/${this._compactionService.isCompactionInProgress()}`);
     }
     this.lastQueueStatus.activeTasksLength = this.activeTasks.length;
     this.lastQueueStatus.queueLength = this.queue.length;

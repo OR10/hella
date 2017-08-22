@@ -59,6 +59,11 @@ class Project extends Controller\Base
     private $userFacade;
 
     /**
+     * @var Facade\TaskConfiguration
+     */
+    private $taskConfigurationFacade;
+
+    /**
      * @var Service\Authorization
      */
     private $authorizationService;
@@ -110,6 +115,7 @@ class Project extends Controller\Base
      * @param Facade\LabelingTask                              $labelingTaskFacade
      * @param Facade\Organisation                              $organisationFacade
      * @param Facade\Campaign                                  $campaignFacade
+     * @param Facade\TaskConfiguration                         $taskConfigurationFacade
      * @param ProjectFacadeFactory\FacadeInterface             $projectFacadeFactory
      * @param LabelingTaskFacadeFactory\FacadeInterface        $labelingTaskFacadeFactory
      * @param LabeledThingInFrameFacadeFactory\FacadeInterface $labeledThingInFrameFacadeFactory
@@ -125,6 +131,7 @@ class Project extends Controller\Base
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Organisation $organisationFacade,
         Facade\Campaign $campaignFacade,
+        Facade\TaskConfiguration $taskConfigurationFacade,
         ProjectFacadeFactory\FacadeInterface $projectFacadeFactory,
         LabelingTaskFacadeFactory\FacadeInterface $labelingTaskFacadeFactory,
         LabeledThingInFrameFacadeFactory\FacadeInterface $labeledThingInFrameFacadeFactory,
@@ -139,6 +146,7 @@ class Project extends Controller\Base
         $this->labelingTaskFacade                    = $labelingTaskFacade;
         $this->tokenStorage                          = $tokenStorage;
         $this->userFacade                            = $userFacade;
+        $this->taskConfigurationFacade               = $taskConfigurationFacade;
         $this->authorizationService                  = $authorizationService;
         $this->amqpFacade                            = $amqpFacade;
         $this->organisationFacade                    = $organisationFacade;
@@ -262,22 +270,13 @@ class Project extends Controller\Base
                 'campaigns'                => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
             );
 
-            if ($user->hasOneRoleOf(
-                [
-                    Model\User::ROLE_SUPER_ADMIN,
-                    Model\User::ROLE_ADMIN,
-                    Model\User::ROLE_LABEL_COORDINATOR,
-                    Model\User::ROLE_CLIENT,
-                    Model\User::ROLE_OBSERVER,
-                ]
-            )
-            ) {
+            if ($this->userPermissions->hasPermission('canViewMoreProjectDetails')) {
                 $taskInProgressCount = 0;
                 $taskFailedCount     = 0;
 
                 foreach ($sumOfTasksByPhaseForProject as $phase => $states) {
                     $taskInProgressCount += $states[Model\LabelingTask::STATUS_IN_PROGRESS];
-                    $taskFailedCount += $states[Model\LabelingTask::STATUS_FAILED];
+                    $taskFailedCount     += $states[Model\LabelingTask::STATUS_FAILED];
                 }
 
                 $responseProject['taskCount']                  = $sumOfTasksForProjects[$project->getId()];
@@ -305,23 +304,17 @@ class Project extends Controller\Base
                 $responseProject['deletedState'] = $project->getDeletedState();
             }
 
-            if ($user->hasOneRoleOf([Model\User::ROLE_CLIENT, Model\User::ROLE_SUPER_ADMIN])) {
-                $responseProject['coordinator'] = $project->getLatestAssignedCoordinatorUserId();
-                if ($project->getLatestAssignedCoordinatorUserId() !== null) {
-                    $users[] = $this->userFacade->getUserById($project->getLatestAssignedCoordinatorUserId());
+            if ($this->userPermissions->hasPermission('canViewProjectsAssignedLabelManager')) {
+                $responseProject['labelManager'] = $project->getLatestAssignedLabelManagerUserId();
+                if ($project->getLatestAssignedLabelManagerUserId() !== null) {
+                    $users[] = $this->userFacade->getUserById($project->getLatestAssignedLabelManagerUserId());
                 }
             }
 
             $result[$project->getStatus()][] = $responseProject;
         }
 
-        $roleNeededForCreationTime = [
-            Model\User::ROLE_SUPER_ADMIN,
-            Model\User::ROLE_ADMIN,
-            Model\User::ROLE_LABEL_COORDINATOR,
-            Model\User::ROLE_CLIENT
-        ];
-        if (!$user->hasOneRoleOf($roleNeededForCreationTime)) {
+        if (!$this->userPermissions->hasPermission('canViewProjectsCreationTimestamp')) {
             foreach (array_keys($result) as $status) {
                 $result[$status] = array_map(
                     function ($data) {
@@ -502,12 +495,23 @@ class Project extends Controller\Base
                     );
                 }
 
-                foreach ($taskTypeConfigurations as $taskTypeConfiguration) {
-                    $project->addRequirementsXmlTaskInstruction(
-                        $taskTypeConfiguration['type'],
-                        $taskTypeConfiguration['taskConfigurationId']
-                    );
+                $taskTypeConfiguration = reset($taskTypeConfigurations);
+
+                if ($taskTypeConfiguration['taskConfigurationId'] === '' || $taskTypeConfiguration['type'] === '') {
+                    throw new Exception\BadRequestHttpException('Invalid taskConfigurationId or taskType');
                 }
+
+                $taskConfiguration = $this->taskConfigurationFacade->find(
+                    $taskTypeConfiguration['taskConfigurationId']
+                );
+                if ($taskConfiguration === null) {
+                    throw new Exception\BadRequestHttpException('Task configuration not found.');
+                }
+
+                $project->addRequirementsXmlTaskInstruction(
+                    $taskTypeConfiguration['type'],
+                    $taskTypeConfiguration['taskConfigurationId']
+                );
                 break;
         }
 
@@ -606,7 +610,7 @@ class Project extends Controller\Base
     }
 
     /**
-     * Assign a label coordinator to a project
+     * Assign a Label Manager to a project
      *
      * @CheckPermissions({"canAssignProject"})
      *
@@ -639,14 +643,14 @@ class Project extends Controller\Base
             );
         }
 
-        $assignedLabelCoordinatorId = $request->request->get('assignedLabelCoordinatorId', null);
+        $assignedLabelManagerId = $request->request->get('assignedLabelManagerId', null);
 
-        $coordinator = $this->userFacade->getUserById($assignedLabelCoordinatorId);
-        if (!$coordinator->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+        $labelManager = $this->userFacade->getUserById($assignedLabelManagerId);
+        if (!$labelManager->hasRole(Model\User::ROLE_LABEL_MANAGER)) {
             throw new Exception\AccessDeniedHttpException();
         }
 
-        $project->addCoordinatorAssignmentHistory($coordinator);
+        $project->addLabelManagerAssignmentHistory($labelManager);
         $project = $this->projectFacade->save($project);
 
         $this->taskDatabaseSecurityPermissionService->updateForProject($project);

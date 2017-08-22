@@ -74,9 +74,9 @@ class LabelingGroup
                 }
             )
         );
-        $labelingGroup->setCoordinators(
+        $labelingGroup->setLabelManagers(
             array_filter(
-                $labelingGroup->getCoordinators(),
+                $labelingGroup->getLabelManagers(),
                 function ($userId) use ($user) {
                     return $userId !== $user->getId();
                 }
@@ -107,12 +107,12 @@ class LabelingGroup
      *
      * @return \Doctrine\CouchDB\View\Result
      */
-    public function findAllByOrganisationAndCoordinator(
+    public function findAllByOrganisationAndLabelManager(
         AnnoStationBundleModel\Organisation $organisation,
         Model\User $user
     ) {
         $query = $this->documentManager
-            ->createQuery('annostation_labeling_group_by_organisation_and_coordinator_002', 'view')
+            ->createQuery('annostation_labeling_group_by_organisation_and_label_manager_003', 'view')
             ->onlyDocs(true)
             ->setKey([$organisation->getId(), $user->getId()]);
 
@@ -120,7 +120,7 @@ class LabelingGroup
     }
 
     /**
-     * Find and retrieve all LabelingGroups a specific user is listed in as either Labeler or LabelCoordinator.
+     * Find and retrieve all LabelingGroups a specific user is listed in as either Labeler or LabelManager.
      *
      * @param Model\User $user
      *

@@ -43,12 +43,12 @@ class UserTest extends Tests\WebTestCase
 
     public function testGetUsersListAsNonSuperAdmin()
     {
-        $admin        = $this->createAdminUser();
+        $labelManager = $this->createLabelManagerUser();
         $organisation = $this->organisationFacade->save(new AnnoStationBundleModel\Organisation('Test'));
         $this->createUsersForOrganisation($organisation);
 
         $requestWrapper = $this->createRequest('/api/v1/user')
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->execute();
 
         $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
@@ -67,46 +67,46 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testGetSingleUserAsAdminInSameOrganisation()
+    public function testGetSingleUserAsLabelManagerInSameOrganisation()
     {
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
-        $admin        = $this->createAdminUser($organisation);
+        $labelManager = $this->createLabelManagerUser($organisation);
         $labeler      = $this->createLabelerUser($organisation);
 
         $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->execute();
 
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testGetSingleLabelUserAsAdminInOtherOrganisation()
+    public function testGetSingleLabelUserAsLabelManagerInOtherOrganisation()
     {
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
-        $admin        = $this->createAdminUser();
+        $labelManager = $this->createLabelManagerUser();
         $labeler      = $this->createLabelerUser($organisation);
 
         $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->execute();
 
         $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testGetSingleSuperAdminUserAsAdminInOtherOrganisation()
+    public function testGetSingleSuperAdminUserAsLabelManagerInOtherOrganisation()
     {
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
-        $admin        = $this->createAdminUser();
+        $labelManager = $this->createLabelManagerUser();
         $superAdmin   = $this->createSuperAdminUser($organisation);
 
         $requestWrapper = $this->createRequest('/api/v1/user/%s', [$superAdmin->getId()])
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->execute();
 
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
@@ -153,15 +153,15 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testAddUserAsAdminInSameOrganisation()
+    public function testAddUserAsLabelManagerInSameOrganisation()
     {
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
-        $admin        = $this->createAdminUser($organisation);
+        $labelManager = $this->createLabelManagerUser($organisation);
 
         $requestWrapper = $this->createRequest('/api/v1/user')
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
                 [
@@ -179,15 +179,15 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testAddUserAsAdminInOtherOrganisation()
+    public function testAddUserAsLabelManagerInOtherOrganisation()
     {
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
-        $admin        = $this->createAdminUser();
+        $labelManager = $this->createlabelManagerUser();
 
         $requestWrapper = $this->createRequest('/api/v1/user')
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->setJsonBody(
                 [
@@ -232,16 +232,16 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testUpdateUserAsAdminInSameOrganisation()
+    public function testUpdateUserAsLabelManagerInSameOrganisation()
     {
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
-        $admin        = $this->createAdminUser($organisation);
+        $labelManager = $this->createLabelManagerUser($organisation);
         $labeler      = $this->createLabelerUser($organisation);
 
         $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
                 [
@@ -259,7 +259,7 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testUpdateUserToOtherOrganisationAsAdminInSameOrganisation()
+    public function testUpdateUserToOtherOrganisationAsLabelManagerInSameOrganisation()
     {
         $organisation    = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
@@ -267,11 +267,11 @@ class UserTest extends Tests\WebTestCase
         $organisationNew = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
-        $admin           = $this->createAdminUser($organisation);
+        $labelManager    = $this->createLabelManagerUser($organisation);
         $labeler         = $this->createLabelerUser($organisation);
 
         $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
                 [
@@ -289,16 +289,16 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testUpdateUserAsAdminInOtherOrganisation()
+    public function testUpdateUserAsLabelManagerInOtherOrganisation()
     {
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
-        $admin        = $this->createAdminUser($organisation);
+        $labelManager = $this->createlabelManagerUser($organisation);
         $labeler      = $this->createLabelerUser();
 
         $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(
                 [
@@ -332,34 +332,34 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testDeleteUserAsAdminInSameOrganisation()
+    public function testDeleteUserAsLabelManagerInSameOrganisation()
     {
         $this->markTestSkipped('This test requires a RabbitMQ Server!');
 
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
-        $admin        = $this->createAdminUser($organisation);
+        $labelManager = $this->createLabelManagerUser($organisation);
         $labeler      = $this->createLabelerUser($organisation);
 
         $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->execute();
 
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testDeleteUserAsAdminInOtherOrganisation()
+    public function testDeleteUserAsLabelManagerInOtherOrganisation()
     {
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
         );
-        $admin        = $this->createAdminUser($organisation);
+        $labelManager = $this->createLabelManagerUser($organisation);
         $labeler      = $this->createLabelerUser();
 
         $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->execute();
 
@@ -395,9 +395,7 @@ class UserTest extends Tests\WebTestCase
 
     private function createUsersForOrganisation(AnnoStationBundleModel\Organisation $organisation)
     {
-        $this->createAdminUser($organisation);
         $this->createLabelerUser($organisation);
-        $this->createClientUser($organisation);
-        $this->createLabelCoordinatorUser($organisation);
+        $this->createLabelManagerUser($organisation);
     }
 }

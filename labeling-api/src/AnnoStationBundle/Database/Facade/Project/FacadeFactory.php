@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Database\Facade\Project;
 
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\Authentication;
 use AppBundle\Service as AppBundleService;
 
 class FacadeFactory
@@ -13,7 +14,8 @@ class FacadeFactory
         Facade\Project $projectFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $readOnlyDatabase
+        $readOnlyDatabase,
+        Authentication\UserPermissions $userPermissions
     ) {
         switch ($type) {
             case 'taskDatabase':
@@ -21,7 +23,8 @@ class FacadeFactory
                     $projectFacade,
                     $databaseDocumentManagerFactory,
                     $taskDatabaseCreatorService,
-                    $readOnlyDatabase
+                    $readOnlyDatabase,
+                    $userPermissions
                 );
             default:
                 throw new \RuntimeException('Unknown facade type: ' . $type);

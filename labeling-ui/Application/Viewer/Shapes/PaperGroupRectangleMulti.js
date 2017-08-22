@@ -151,13 +151,6 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   }
 
   /**
-   * @returns {string}
-   */
-  getClass() {
-    return PaperGroupRectangle.getClass();
-  }
-
-  /**
    * @param {Handle|null} handle
    * @returns {string}
    */
@@ -216,7 +209,21 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
       labeledThingGroupId: this.groupId,
     };
   }
+
+  /**
+   * @returns {string}
+   */
+  getClass() {
+    return PaperGroupRectangleMulti.getClass();
+  }
 }
+
+/**
+ * @returns {string}
+ */
+PaperGroupRectangleMulti.getClass = () => {
+  return PaperGroupRectangle.getClass();
+};
 
 PaperGroupRectangleMulti.PADDING = 5;
 

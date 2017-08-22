@@ -88,10 +88,10 @@
 
                 <button ng-if="vm.userPermissions.canAssignProject && project.status == 'todo'"
                         ng-click="vm.assignProject(project.id, project.taskInPreProcessingCount)"
-                        ng-class="{'green': project.coordinator !== undefined}"
+                        ng-class="{'green': project.labelManager !== undefined}"
                 >
-                    <i ng-show="project.coordinator !== undefined" tooltip="Selected coordinator: {{project.coordinator.username}}" class="fa fa-user"></i>
-                    <i ng-hide="project.coordinator !== undefined" tooltip="Assign project to a label coordinator" class="fa fa-user"></i>
+                    <i ng-show="project.labelManager !== undefined" tooltip="Selected Label Manager: {{project.labelManager.username}}" class="fa fa-user"></i>
+                    <i ng-hide="project.labelManager !== undefined" tooltip="Assign project to a Label Manager" class="fa fa-user"></i>
                 </button>
 
                 <button tooltip="Close Project (Move to done)"

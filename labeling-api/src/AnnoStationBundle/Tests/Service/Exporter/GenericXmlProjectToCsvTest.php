@@ -332,7 +332,7 @@ class GenericXmlProjectToCsvTest extends Tests\CouchDbTestCase
             $this->createTaskConfiguration(
                 $xmlTaskConfiguration,
                 $organisation,
-                $this->createClientUser()
+                $this->createLabelManagerUser()
             ),
             $data['drawingTool']
         );
@@ -369,7 +369,7 @@ class GenericXmlProjectToCsvTest extends Tests\CouchDbTestCase
             $this->createTaskConfiguration(
                 $xmlTaskConfiguration,
                 $this->createOrganisation(),
-                $this->createClientUser()
+                $this->createLabelManagerUser()
             ),
             null,
             Model\LabelingTask::TYPE_META_LABELING

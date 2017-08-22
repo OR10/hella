@@ -1,8 +1,11 @@
 <?php
+
 namespace AnnoStationBundle\Helper\ExportXml\Element\Video\Shape;
 
 use AnnoStationBundle\Helper\ExportXml;
+use AnnoStationBundle\Service;
 use AppBundle\Model\Shapes;
+use AppBundle\Model;
 
 class Cuboid3d extends ExportXml\Element
 {
@@ -16,17 +19,33 @@ class Cuboid3d extends ExportXml\Element
      */
     private $namespace;
 
-    public function __construct(Shapes\Cuboid3d $cuboid3d, $namespace)
-    {
-        $this->cuboid3d  = $cuboid3d;
-        $this->namespace = $namespace;
+    /**
+     * @var Model\CalibrationData
+     */
+    private $calibrationData;
+
+    /**
+     * @var Service\DepthBuffer
+     */
+    private $depthBufferService;
+
+    public function __construct(
+        Shapes\Cuboid3d $cuboid3d,
+        $namespace,
+        Model\CalibrationData $calibrationData,
+        Service\DepthBuffer $depthBufferService
+    ) {
+        $this->cuboid3d           = $cuboid3d;
+        $this->namespace          = $namespace;
+        $this->depthBufferService = $depthBufferService;
+        $this->calibrationData    = $calibrationData;
     }
 
     public function getElement(\DOMDocument $document)
     {
         $cuboid = $document->createElementNS($this->namespace, 'cuboid');
-
         $topLeftFrontPoints = $this->cuboid3d->getFrontTopLeft();
+
         if ($topLeftFrontPoints !== null) {
             $topLeftFront = $document->createElementNS($this->namespace, 'top-left-front');
             $topLeftFront->setAttribute('x', round($topLeftFrontPoints[0], 4));
@@ -96,6 +115,26 @@ class Cuboid3d extends ExportXml\Element
             $bottomLeftBack->setAttribute('y', round($bottomLeftBackPoints[1], 4));
             $bottomLeftBack->setAttribute('z', round($bottomLeftBackPoints[2], 4));
             $cuboid->appendChild($bottomLeftBack);
+        }
+
+        $vertices = $this->depthBufferService->getVertices($this->cuboid3d, $this->calibrationData->getCalibration());
+
+        $cuboidSites = [
+            'top-left-front'     => 0,
+            'top-right-front'    => 1,
+            'bottom-right-front' => 2,
+            'bottom-left-front'  => 3,
+            'top-left-back'      => 4,
+            'top-right-back'     => 5,
+            'bottom-right-back'  => 6,
+            'bottom-left-back'   => 7,
+        ];
+
+        foreach ($cuboidSites as $vertexName => $vertexPoint) {
+            $imagePoint = $document->createElementNS($this->namespace, 'image-' . $vertexName);
+            $imagePoint->setAttribute('x', round($vertices[0][$vertexPoint][0], 4));
+            $imagePoint->setAttribute('y', round($vertices[0][$vertexPoint][1],4));
+            $cuboid->appendChild($imagePoint);
         }
 
         return $cuboid;

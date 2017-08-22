@@ -65,6 +65,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.user"
@@ -80,7 +81,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
-            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.phase"
@@ -138,6 +139,7 @@
             <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
             <argument type="service" id="annostation.labeling_api.service.validation"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
         <service
@@ -159,6 +161,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
             <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>

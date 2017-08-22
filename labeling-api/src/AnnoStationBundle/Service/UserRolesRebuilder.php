@@ -8,11 +8,10 @@ use AppBundle\Model;
 
 class UserRolesRebuilder
 {
-    const LABELGROUP_PREFIX = 'label-group-member-';
-    const COORDINATORS_PREFIX = 'coordinator-for-organisation-project-';
-    const ADMIN_GROUP_PREFIX = 'admin-group-';
-    const OBSERVER_GROUP_PREFIX = 'observer-group-';
     const SUPER_ADMIN_GROUP = 'super-admin-group';
+    const LABEL_MANAGER_PREFIX = 'label-manager-';
+    const LABELGROUP_PREFIX = 'label-group-member-';
+    const OBSERVER_GROUP_PREFIX = 'observer-group-';
 
     /**
      * @var Facade\LabelingGroup
@@ -65,25 +64,13 @@ class UserRolesRebuilder
             $labelingGroups
         );
 
-        if ($user->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
-            foreach ($user->getOrganisations() as $organisationId) {
-                $organisation = $this->organisationFacade->find($organisationId);
-                $assignedProjects = $this->projectFacade->findAllForCoordinator($organisation, $user)->toArray();
-                /** @var Model\Project $assignedProject */
-                foreach ($assignedProjects as $assignedProject) {
-                    $roles[] = sprintf(
-                        '%s%s-%s',
-                        UserRolesRebuilder::COORDINATORS_PREFIX,
-                        $assignedProject->getOrganisationId(),
-                        $assignedProject->getId()
-                    );
-                }
-            }
+        if ($user->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
+            $roles[] = self::SUPER_ADMIN_GROUP;
         }
 
-        if ($user->hasRole(Model\User::ROLE_ADMIN)) {
+        if ($user->hasRole(Model\User::ROLE_LABEL_MANAGER)) {
             foreach ($user->getOrganisations() as $organisation) {
-                $roles[] = sprintf('%s%s', self::ADMIN_GROUP_PREFIX, $organisation);
+                $roles[] = sprintf('%s%s', self::LABEL_MANAGER_PREFIX, $organisation);
             }
         }
 
@@ -93,9 +80,6 @@ class UserRolesRebuilder
             }
         }
 
-        if ($user->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
-            $roles[] = self::SUPER_ADMIN_GROUP;
-        }
         sort($roles);
 
         $this->couchDbUsersFacade->updateUser(

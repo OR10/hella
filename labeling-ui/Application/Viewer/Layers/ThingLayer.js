@@ -293,6 +293,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     try {
       this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
         .then(() => {
+          this._shapeSelectionService.removeShape(shape);
           shape.remove();
           viewModel.selectedPaperShape = null;
           viewModel.paperThingShapes = viewModel.paperThingShapes.filter(
@@ -342,6 +343,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
           return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
         })
         .then(() => {
+          this._shapeSelectionService.removeShape(shape);
           shape.remove();
           viewModel.selectedPaperShape = null;
           viewModel.paperGroupShapes = viewModel.paperGroupShapes.filter(

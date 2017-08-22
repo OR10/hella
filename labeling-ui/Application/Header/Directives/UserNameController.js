@@ -13,14 +13,8 @@ class UserNameController {
         case 'ROLE_SUPER_ADMIN':
           this.readableRoles.push('SuperAdmin');
           break;
-        case 'ROLE_ADMIN':
-          this.readableRoles.push('Admin');
-          break;
-        case 'ROLE_LABEL_COORDINATOR':
-          this.readableRoles.push('Label Coordinator');
-          break;
-        case 'ROLE_CLIENT':
-          this.readableRoles.push('Client');
+        case 'ROLE_LABEL_MANAGER':
+          this.readableRoles.push('LabelManager');
           break;
         case 'ROLE_LABELER':
           this.readableRoles.push('Labeler');

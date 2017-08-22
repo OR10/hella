@@ -21,7 +21,7 @@ class ReplicationTest extends Tests\WebTestCase
     /**
      * @var Model\User
      */
-    private $admin;
+    private $labelManager;
 
     /**
      * @var Model\Project
@@ -36,7 +36,7 @@ class ReplicationTest extends Tests\WebTestCase
     public function testGetReplicationForTask()
     {
         $response = $this->createRequest('/api/v1/task/%s/replication', [$this->task->getId()])
-            ->withCredentialsFromUsername($this->admin)
+            ->withCredentialsFromUsername($this->labelManager)
             ->execute()
             ->getResponse();
 
@@ -49,7 +49,7 @@ class ReplicationTest extends Tests\WebTestCase
         $username            = sprintf(
             '%s%s',
             Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
-            'admin'
+            'label_manager'
         );
 
         $expectedResponse = [
@@ -93,7 +93,7 @@ class ReplicationTest extends Tests\WebTestCase
 
         $replication = new Replication($tokenStorageMock, $externalCouchDbHost, $externalCouchDbPort, $externalCouchDbPath);
 
-        $plainUsername = 'admin';
+        $plainUsername = 'label_manager';
         $username            = sprintf(
             '%s%s',
             Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
@@ -165,10 +165,10 @@ class ReplicationTest extends Tests\WebTestCase
         $projectFacade      = $this->getAnnostationService('database.facade.project');
         $taskFacade         = $this->getAnnostationService('database.facade.labeling_task');
 
-        $organisation = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
-        $this->admin  = $this->createAdminUser($organisation);
-        $this->admin->setCouchDbPassword('password1234');
-        $this->userFacade->saveUser($this->admin);
+        $organisation       = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
+        $this->labelManager = $this->createLabelManagerUser($organisation);
+        $this->labelManager->setCouchDbPassword('password1234');
+        $this->userFacade->saveUser($this->labelManager);
 
         $this->project = $projectFacade->save(Tests\Helper\ProjectBuilder::create($organisation)->build());
         $this->video   = $videoFacade->save(Tests\Helper\VideoBuilder::create($organisation)->build());

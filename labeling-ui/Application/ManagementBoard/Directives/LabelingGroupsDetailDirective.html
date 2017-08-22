@@ -13,14 +13,14 @@
                 </td>
             </tr>
             <tr>
-                <td>Coordinator</td>
+                <td>Label Manager</td>
                 <td>
-                    <select id="coordinator" ng-model="vm.groupCoordinatorId"
-                            ng-class="{error: !vm.validation.coordinator}">
+                    <select id="labelManager" ng-model="vm.groupLabelManagerId"
+                            ng-class="{error: !vm.validation.labelManager}">
                         <option value="" disabled selected>Choose a user</option>
-                        <option ng-repeat="coordinator in vm.possibleCoordinators track by coordinator.id"
-                                value="{{coordinator.id}}">
-                            {{coordinator.username}} &lt;{{coordinator.email}}&gt;
+                        <option ng-repeat="labelManager in vm.possibleLabelManagers track by labelManager.id"
+                                value="{{labelManager.id}}">
+                            {{labelManager.username}} &lt;{{labelManager.email}}&gt;
                         </option>
                     </select>
                 </td>

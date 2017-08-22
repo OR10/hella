@@ -13,10 +13,8 @@ use FOS\UserBundle\Model\User as BaseUser;
 class User extends BaseUser
 {
     const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
-    const ROLE_ADMIN = 'ROLE_ADMIN';
-    const ROLE_LABEL_COORDINATOR = 'ROLE_LABEL_COORDINATOR';
+    const ROLE_LABEL_MANAGER = 'ROLE_LABEL_MANAGER';
     const ROLE_LABELER = 'ROLE_LABELER';
-    const ROLE_CLIENT = 'ROLE_CLIENT';
     const ROLE_OBSERVER = 'ROLE_OBSERVER';
 
     /**

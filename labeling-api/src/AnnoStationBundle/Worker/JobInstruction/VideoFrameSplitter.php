@@ -139,7 +139,7 @@ class VideoFrameSplitter extends JobInstruction
             }
             foreach (array_unique($projectIds) as $projectId) {
                 $project = $this->projectFacade->find($projectId);
-                $this->updateProject($project, $project->getDiskUsageInBytes() + array_sum($frameSizesInBytes));
+                $this->updateProject($project, $this->videoFacade->calculateAggregatedeVideoSizeForProject($project));
             }
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);

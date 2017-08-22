@@ -14,7 +14,7 @@
          -->
         <thead ng-if="vm.groups.length > 0">
         <tr>
-            <th>Label Coordinator</th>
+            <th>Label Manager</th>
             <th>Group Name</th>
             <th>Group Members</th>
             <th>Actions</th>
@@ -23,7 +23,7 @@
         <tbody ng-if="vm.groups.length > 0">
         <tr ng-repeat="group in vm.groups track by group.id"
             ng-click="vm.openGroup(group.id)">
-            <td>{{vm.users[group.coordinators[0]].username}}</td>
+            <td>{{vm.users[group.labelManagers[0]].username}}</td>
             <td>{{group.name}}</td>
             <td>
                 <div ng-repeat="labelerId in group.labelers">

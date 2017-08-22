@@ -106,7 +106,7 @@ class StatusTest extends Tests\WebTestCase
 
         $this->user = $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
-        $this->user->addRole(Model\User::ROLE_ADMIN);
+        $this->user->addRole(Model\User::ROLE_LABEL_MANAGER);
 
         $this->video   = $this->videoFacade->save(Model\Video::create($organisation, 'Testvideo'));
         $this->project = $this->projectFacade->save(Model\Project::create('test project', $organisation));

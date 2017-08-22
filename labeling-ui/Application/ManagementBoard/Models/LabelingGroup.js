@@ -5,7 +5,7 @@ import {clone, cloneDeep} from 'lodash';
  */
 class LabelingGroup {
   /**
-   * @param {{id: string|undefined, coordinators: Array.<string>, labeler: Array.<string>}} group
+   * @param {{id: string|undefined, labelManagers: Array.<string>, labeler: Array.<string>}} group
    */
   constructor(group) {
     // Required properties
@@ -23,7 +23,7 @@ class LabelingGroup {
     /**
      * @type {Array.<string>}
      */
-    this.coordinators = group.coordinators;
+    this.labelManagers = group.labelManagers;
 
     /**
      * @type {Array.<string>}
@@ -42,9 +42,9 @@ class LabelingGroup {
    * @return {Object}
    */
   toJSON() {
-    const {id, name, coordinators, labelers} = this;
+    const {id, name, labelManagers, labelers} = this;
     return {
-      coordinators: cloneDeep(coordinators),
+      labelManagers: cloneDeep(labelManagers),
       labeler: cloneDeep(labelers),
       name: clone(name),
       id,

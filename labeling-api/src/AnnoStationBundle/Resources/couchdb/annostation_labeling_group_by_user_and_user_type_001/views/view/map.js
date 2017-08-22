@@ -1,7 +1,7 @@
 function(doc) {
     if (doc.type === 'AppBundle.Model.LabelingGroup') {
-        doc.coordinators.forEach(function(coordinatorId) {
-            emit([coordinatorId, 'coordinator'], doc._id);
+        doc.labelManagers.forEach(function(labelManagerId) {
+            emit([labelManagerId, 'labelManager'], doc._id);
         });
 
         doc.labeler.forEach(function (labelerId) {
