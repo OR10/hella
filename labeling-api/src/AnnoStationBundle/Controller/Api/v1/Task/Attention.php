@@ -60,6 +60,7 @@ class Attention extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/attention/enable")
+     * @CheckPermissions({"canFlagLabelingTask"})
      *
      * @param Model\LabelingTask $task
      *
@@ -67,13 +68,6 @@ class Attention extends Controller\Base
      */
     public function enableAttentionFlagAction(Model\LabelingTask $task)
     {
-        if ($this->userPermissions->hasPermission('canFlagLabelingTask')) {
-            $project = $this->projectFacade->find($task->getProjectId());
-            $this->authorizationService->denyIfProjectIsNotWritable($project);
-        } else {
-            $this->authorizationService->denyIfTaskIsNotWritable($task);
-        }
-
         $task->setTaskAttentionFlag(true);
         $this->labelingTaskFacade->save($task);
 
@@ -82,6 +76,7 @@ class Attention extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/attention/disable")
+     * @CheckPermissions({"canUnflagLabelingTask"})
      *
      * @param Model\LabelingTask $task
      *
@@ -89,13 +84,6 @@ class Attention extends Controller\Base
      */
     public function disableAttentionFlagAction(Model\LabelingTask $task)
     {
-        if ($this->userPermissions->hasPermission('canUnflagLabelingTask')) {
-            $project = $this->projectFacade->find($task->getProjectId());
-            $this->authorizationService->denyIfProjectIsNotWritable($project);
-        } else {
-            $this->authorizationService->denyIfTaskIsNotWritable($task);
-        }
-
         $task->setTaskAttentionFlag(false);
         $this->labelingTaskFacade->save($task);
 

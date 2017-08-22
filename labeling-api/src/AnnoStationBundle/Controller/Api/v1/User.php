@@ -373,6 +373,7 @@ class User extends Controller\Base
      * Delete a User
      *
      * @Rest\Delete("/{user}")
+     * @CheckPermissions({"canDeleteUser"})
      *
      * @param Model\User                          $user
      *
@@ -382,10 +383,6 @@ class User extends Controller\Base
     {
         /** @var Model\User $loginUser */
         $loginUser = $this->tokenStorage->getToken()->getUser();
-
-        if (!$this->userPermissions->hasPermission('canDeleteUser')) {
-            throw new Exception\AccessDeniedHttpException('Your are not allowed to deleted this user');
-        }
 
         if (!$loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN) &&
             count(array_intersect($user->getOrganisations(), $loginUser->getOrganisations())) === 0) {

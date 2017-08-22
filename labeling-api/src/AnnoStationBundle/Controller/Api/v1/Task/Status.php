@@ -240,6 +240,7 @@ class Status extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/status/reopen")
+     * @CheckPermissions({"canReopenTask"})
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
@@ -254,16 +255,12 @@ class Status extends Controller\Base
         /** @var Model\User $user */
         $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $request->request->get('phase');
-        if ($this->userPermissions->hasPermission('canReopenTask')) {
-            $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
-            $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO, $user);
-            $task->setReopen($phase, true);
-            $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO);
-            $this->labelingTaskFacade->save($task);
+        $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
+        $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO, $user);
+        $task->setReopen($phase, true);
+        $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO);
+        $this->labelingTaskFacade->save($task);
 
-            return View\View::create()->setData(['result' => ['success' => true]]);
-        }
-
-        throw new Exception\AccessDeniedHttpException('You are not allowed to change the status');
+        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 }
