@@ -7,7 +7,16 @@ import PaperVirtualShape from '../../Viewer/Shapes/PaperVirtualShape';
  * Controller of the {@link PopupPanelDirective}
  */
 class ToolSelectorController {
-  constructor() {
+  /**
+   * @param {ToolSelectorListenerService} toolSelectorListenerService
+   */
+  constructor(toolSelectorListenerService) {
+    /**
+     * @type {ToolSelectorListenerService}
+     * @private
+     */
+    this._toolSelectorListenerService = toolSelectorListenerService;
+
     /**
      * @type {Array.<Object>}
      */
@@ -24,11 +33,13 @@ class ToolSelectorController {
    * @param {{id, shape, name}} labelStructureObject
    */
   setCurrentLabelStructureObject(labelStructureObject) {
+    const oldSelectedLabelStructureObject = this.selectedLabelStructureObject;
     this.selectedLabelStructureObject = labelStructureObject;
 
     if (this.selectedPaperShape && !this._hasSelectedPaperShapeSameTypeAsLabelStructureObject(this.selectedLabelStructureObject.id)) {
       this.selectedPaperShape = null;
     }
+    this._toolSelectorListenerService.trigger(labelStructureObject, oldSelectedLabelStructureObject);
   }
 
   /**
@@ -66,6 +77,8 @@ class ToolSelectorController {
   }
 }
 
-ToolSelectorController.$inject = [];
+ToolSelectorController.$inject = [
+  'toolSelectorListenerService',
+];
 
 export default ToolSelectorController;

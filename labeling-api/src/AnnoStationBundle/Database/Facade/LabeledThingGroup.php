@@ -61,6 +61,22 @@ class LabeledThingGroup
      *
      * @return mixed[]
      */
+    public function getLabeledThingGroupsByTask(AppBundleModel\LabelingTask $labelingTask)
+    {
+        $documentManager = $this->documentManager
+            ->createQuery('annostation_labeled_thing_group_by_task_and_original_id_001', 'view')
+            ->onlyDocs(true)
+            ->setStartKey([$labelingTask->getId(), null])
+            ->setEndKey([$labelingTask->getId(), []]);
+
+        return $documentManager->execute()->toArray();
+    }
+
+    /**
+     * @param AppBundleModel\LabelingTask $labelingTask
+     *
+     * @return mixed[]
+     */
     public function getLabeledThingGroupIdsByTask(AppBundleModel\LabelingTask $labelingTask)
     {
         $documentManager = $this->documentManager

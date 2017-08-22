@@ -1,8 +1,10 @@
 <?php
+
 namespace AnnoStationBundle\Helper\ExportXml\Element\Video;
 
 use AnnoStationBundle\Helper\ExportXml;
 use AnnoStationBundle\Helper\ExportXml\Element\Video\Shape;
+use AnnoStationBundle\Service;
 use AppBundle\Model;
 
 class Shape extends ExportXml\Element
@@ -27,12 +29,30 @@ class Shape extends ExportXml\Element
      */
     private $namespace;
 
-    public function __construct(Model\Shape $shape, $start, $end, $namespace)
-    {
-        $this->shape     = $shape;
-        $this->start     = $start;
-        $this->end       = $end;
-        $this->namespace = $namespace;
+    /**
+     * @var Model\CalibrationData
+     */
+    private $calibrationData;
+
+    /**
+     * @var Service\DepthBuffer
+     */
+    private $depthBufferService;
+
+    public function __construct(
+        Model\Shape $shape,
+        $start,
+        $end,
+        $namespace,
+        Model\CalibrationData $calibrationData = null,
+        Service\DepthBuffer $depthBufferService
+    ) {
+        $this->shape              = $shape;
+        $this->start              = $start;
+        $this->end                = $end;
+        $this->namespace          = $namespace;
+        $this->calibrationData    = $calibrationData;
+        $this->depthBufferService = $depthBufferService;
     }
 
     public function getElement(\DOMDocument $document)
@@ -47,7 +67,12 @@ class Shape extends ExportXml\Element
                 $shapeElement = new Shape\Rectangle($this->shape, $this->namespace);
                 break;
             case $this->shape instanceof Model\Shapes\Cuboid3d:
-                $shapeElement = new Shape\Cuboid3d($this->shape, $this->namespace);
+                $shapeElement = new Shape\Cuboid3d(
+                    $this->shape,
+                    $this->namespace,
+                    $this->calibrationData,
+                    $this->depthBufferService
+                );
                 break;
             case $this->shape instanceof Model\Shapes\Polyline:
                 $shapeElement = new Shape\Polyline($this->shape, $this->namespace);

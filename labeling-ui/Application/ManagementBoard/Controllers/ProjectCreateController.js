@@ -227,6 +227,8 @@ class ProjectCreateController {
       startFrameNumber: true,
       splitEach: true,
       dueDate: true,
+      requirementsTaskType: true,
+      requirementsTaskConfig: true,
     };
 
     /**
@@ -288,7 +290,16 @@ class ProjectCreateController {
    * Save a project with genericXml export
    */
   saveRequirementsXml() {
-    if (!this._validateProjectNameAndSettings()) {
+    this.validation.requirementsTaskConfig = true;
+    this.validation.requirementsTaskType = true;
+    if (this.taskConfigToAdd === '') {
+      this.validation.requirementsTaskConfig = false;
+    }
+    if (this.taskTypeToAdd === '') {
+      this.validation.requirementsTaskType = false;
+    }
+
+    if (!this._validateProjectNameAndSettings() || !this.validation.requirementsTaskType || !this.validation.requirementsTaskConfig) {
       return;
     }
     ++this.loadingInProgress;

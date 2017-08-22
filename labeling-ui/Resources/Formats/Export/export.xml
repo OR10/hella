@@ -98,6 +98,14 @@
                     <top-right-back x="7" y="1" z="1" />
                     <bottom-right-back x="7" y="1" z="0" />
                     <bottom-left-back x="7" y="3" z="0" />
+                    <image-top-left-front x="5" y="3" />
+                    <image-top-right-front x="5" y="1" />
+                    <image-bottom-right-front x="5" y="1" />
+                    <image-bottom-left-front x="5" y="3" />
+                    <image-top-left-back x="7" y="3" />
+                    <image-top-right-back x="7" y="1" />
+                    <image-bottom-right-back x="7" y="1" />
+                    <image-bottom-left-back x="7" y="3" />
                 </cuboid>
             </shape>
             <!-- ... -->
