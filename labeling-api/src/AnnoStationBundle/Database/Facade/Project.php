@@ -3,6 +3,7 @@ namespace AnnoStationBundle\Database\Facade;
 
 use AppBundle\Model;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
+use AnnoStationBundle\Service\Authentication;
 use Doctrine\CouchDB\View;
 use Doctrine\ODM\CouchDB;
 
@@ -13,9 +14,17 @@ class Project
      */
     private $documentManager;
 
-    public function __construct(CouchDB\DocumentManager $documentManager)
-    {
+    /**
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
+
+    public function __construct(
+        CouchDB\DocumentManager $documentManager,
+        Authentication\UserPermissions $userPermissions
+    ) {
         $this->documentManager = $documentManager;
+        $this->userPermissions = $userPermissions;
     }
 
     /**
@@ -293,7 +302,7 @@ class Project
         $status,
         $countOnly = false
     ) {
-        if ($user->hasOneRoleOf([Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER, Model\User::ROLE_OBSERVER])) {
+        if ($this->userPermissions->hasPermission('canViewAllProjectsOfAnOrganisation')) {
             if ($countOnly) {
                 return $this->getSumOfProjectsByStatus($organisation, $status);
             } else {
@@ -301,30 +310,31 @@ class Project
             }
         }
 
-        if ($user->hasRole(Model\User::ROLE_LABELER)) {
-            $query = $this->documentManager
-                ->createQuery('annostation_labeling_group_by_labeler', 'view');
-            $query->setKey([$organisation->getId(), $user->getId()]);
+        $query = $this->documentManager
+            ->createQuery('annostation_labeling_group_by_labeler', 'view');
+        $query->setKey([$organisation->getId(), $user->getId()]);
 
-            $labelingGroups = $query->execute()->toArray();
+        $labelingGroups = $query->execute()->toArray();
 
-            $keys = array_map(function ($labelingGroup) use ($status) {
+        $keys = array_map(
+            function ($labelingGroup) use ($status) {
                 return [$labelingGroup['id'], $status];
-            }, $labelingGroups);
+            },
+            $labelingGroups
+        );
 
-            $query = $this->documentManager
-                ->createQuery('annostation_project_by_labeling_group_and_status_003', 'view');
-            $query->setKeys($keys);
-            if ($countOnly) {
-                $query->setReduce(true);
-                $query->setGroup(true);
-            } else {
-                $query->onlyDocs(true);
-                $query->setReduce(false);
-            }
-
-            return $query->execute();
+        $query = $this->documentManager
+            ->createQuery('annostation_project_by_labeling_group_and_status_003', 'view');
+        $query->setKeys($keys);
+        if ($countOnly) {
+            $query->setReduce(true);
+            $query->setGroup(true);
+        } else {
+            $query->onlyDocs(true);
+            $query->setReduce(false);
         }
+
+        return $query->execute();
     }
 
     /**
