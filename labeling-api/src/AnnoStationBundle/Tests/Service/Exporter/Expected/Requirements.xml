@@ -164,7 +164,7 @@
           <aspect-ratio>0.41</aspect-ratio>
         </pedestrian>
       </shape>
-      <value id="hat-yes" start="2" end="2"/>
+      <value id="hat-yes" class="has-hat" start="2" end="2"/>
     </thing>
   </video>
 </export>
