@@ -151,5 +151,20 @@
       </shape>
       <value id="lightsource-yes" start="2" end="2"/>
     </thing>
+    <thing id="e363906c1c4a5a5bd01easdasdasdasdasd" start="2" end="2" line-color="1" type="fooobar" incomplete="true">
+      <references>
+        <task id=""/>
+      </references>
+      <shape id="3659ecca-7c2b-440b-8dfa-38426cyxcyxc" start="2" end="2">
+        <pedestrian>
+          <top-center x="100" y="0"/>
+          <top-left x="29" y="0"/>
+          <bottom-center x="100" y="347"/>
+          <bottom-right x="171" y="347"/>
+          <aspect-ratio>0.41</aspect-ratio>
+        </pedestrian>
+      </shape>
+      <value id="hat-yes" start="2" end="2"/>
+    </thing>
   </video>
 </export>

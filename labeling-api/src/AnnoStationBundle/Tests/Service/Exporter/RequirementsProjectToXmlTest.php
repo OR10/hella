@@ -286,6 +286,16 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             ['x' => 624, 'y' => 321]
         );
         $this->createLabeledThingInFrame($pointLabeledThing, 1, [$point->toArray()], ['lightsource-yes']);
+
+        $pointLabeledThing = $this->createLabeledThing($task);
+        $pointLabeledThing->setOriginalId('e363906c1c4a5a5bd01easdasdasdasdasd');
+        $pointLabeledThing->setFrameRange(new AppBundleModel\FrameIndexRange(1, 1));
+        $this->labeledThingFacade->save($pointLabeledThing);
+        $point = new Shapes\pedestrian(
+            '3659ecca-7c2b-440b-8dfa-38426cyxcyxc',
+            100, 0, 100, 347
+        );
+        $this->createLabeledThingInFrame($pointLabeledThing, 1, [$point->toArray()], ['hat-yes']);
     }
 
     private function getContentFromZip($data, $filename)

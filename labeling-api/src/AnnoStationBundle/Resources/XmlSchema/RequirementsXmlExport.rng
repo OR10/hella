@@ -319,9 +319,19 @@
             <element name="e:top-center">
                 <ref name="XYCoordinateAttributes"/>
             </element>
+            <optional>
+                <element name="e:top-left">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </optional>
             <element name="e:bottom-center">
                 <ref name="XYCoordinateAttributes"/>
             </element>
+            <optional>
+                <element name="e:bottom-right">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </optional>
             <element name="e:aspect-ratio">
                 <text/>
             </element>
