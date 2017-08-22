@@ -282,28 +282,6 @@ class Project
     /**
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
-     *
-     * @return array|View\Result
-     */
-    public function findAllForLabelManager(AnnoStationBundleModel\Organisation $organisation, Model\User $user)
-    {
-        if (!$user->hasRole(Model\User::ROLE_LABEL_MANAGER)) {
-            throw new \RuntimeException('This user is not a label_manager!');
-        }
-
-        $query = $this->documentManager
-            ->createQuery('annostation_project_by_organisation_and_assigned_userId_and_status_003', 'view')
-            ->setStartKey([$organisation->getId(), $user->getId(), null])
-            ->setEndKey([$organisation->getId(), $user->getId(), []])
-            ->setReduce(false)
-            ->onlyDocs(true);
-
-        return $query->execute();
-    }
-
-    /**
-     * @param AnnoStationBundleModel\Organisation $organisation
-     * @param Model\User                          $user
      * @param                                     $status
      * @param bool                                $countOnly
      *
