@@ -1,0 +1,73 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+case ARGV[0]
+when "provision", "up"
+  system "git submodule init && git submodule update"
+end
+
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "puppetlabs/ubuntu-14.04-64-puppet"
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1536
+    v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  end
+
+  config.vm.hostname = "vagrant"
+
+  config.vm.network "private_network", ip: "192.168.222.20"
+  config.vm.network "private_network", ip: "192.168.222.21"
+
+  config.nfs.map_uid = Process.uid
+  config.nfs.map_gid = Process.gid
+
+  config.vm.synced_folder ".", "/vagrant", type: "nfs"
+  config.vm.synced_folder "../puppet", "/puppet", type: "nfs"
+  config.vm.synced_folder "../labeling-ui/", "/labeling-ui", type: "nfs"
+
+  config.ssh.forward_agent = true
+
+  if Vagrant.has_plugin?("nugrant")
+    config.user.defaults = {
+      "vm" => {
+        "memory" => 1536,
+        "cpu" => 1,
+      }
+    }
+
+    config.user.array_merge_strategy = :extend
+
+    config.vm.provider "virtualbox" do |v|
+      v.cpus = config.user.vm.cpu
+      v.memory = config.user.vm.memory
+      v.customize ["modifyvm", :id, "--ioapic", config.user.vm.cpu > 1 ? "on" : "off"]
+    end
+  else
+    puts <<-EOT
+Install nugrant in order to make ram/cpu user configurable :-)
+$ vagrant plugin install nugrant
+$ cp .vagrantuser.example .vagrantuser
+And then modify .vagrantuser
+    EOT
+  end
+
+  config.vm.provision "shell", path: "../shell-provisioner/01-software-common.sh"
+
+  config.vm.provision "puppet" do |puppet|
+    puppet.module_path = ["puppet/modules", "puppet/vendor"]
+    puppet.hiera_config_path = "puppet/hiera/hiera.yaml"
+    puppet.working_directory = "/vagrant"
+
+    puppet.environment_path = "puppet/environments"
+    puppet.environment = "development"
+    puppet.facter = {
+      "annostation_project" => "labeling",
+      "vagrant_environment" => "single",
+    }
+  end
+
+  config.vm.provision "shell", path: "../shell-provisioner/99-labeling.sh", args: "vagrant"
+
+end

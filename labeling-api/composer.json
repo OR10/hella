@@ -1,0 +1,103 @@
+{
+    "name": "labeling.api",
+    "autoload": {
+        "psr-4": {
+            "": "src/",
+            "Hagl\\": "src/"
+	},
+	"classmap": [ "app/AnnoStation/AnnoStationKernel.php", "app/AnnoStation/AnnoStationCache.php" ]
+    },
+    "require": {
+        "php": ">=7.0",
+        "symfony/symfony": "2.7.*",
+        "doctrine/orm": "^2.4.8",
+        "doctrine/doctrine-bundle": "~1.4",
+        "symfony/monolog-bundle": "~2.4",
+        "sensio/distribution-bundle": "~4.0",
+        "sensio/framework-extra-bundle": "^3.0.20",
+        "friendsofsymfony/user-bundle": "~2.0@dev",
+        "symfony/swiftmailer-bundle": "~2.3",
+        "doctrine/couchdb": "dev-master",
+        "doctrine/couchdb-odm": "dev-master",
+        "doctrine/couchdb-odm-bundle": "dev-master",
+        "friendsofsymfony/rest-bundle": "^2.2.0",
+        "jms/serializer-bundle": "^1.0",
+        "fzaninotto/faker": "^1.5",
+        "oneup/flysystem-bundle": "@stable",
+        "crosscan/worker-pool": "@dev",
+        "mlehner/gelf-php": "dev-master",
+        "crosscan/logger": "@dev",
+        "crosscan/php-stdlib": "@dev",
+        "qafoolabs/profiler": "dev-master",
+        "videlalvaro/php-amqplib": "dev-master",
+        "arbit/phpillow": "dev-master",
+        "phake/phake": "dev-master",
+        "snc/redis-bundle": "dev-master",
+        "predis/predis": "^1.0",
+        "guzzlehttp/guzzle": "^6.2",
+        "hco/phar-installer-plugin": "^0.1.3",
+        "league/flysystem-aws-s3-v3": "^1.0",
+        "flowjs/flow-php-server": "^1.0",
+        "liip/monitor-bundle": "^2.4",
+        "ruflin/elastica": "3.2.3",
+        "maennchen/zipstream-php": "^0.4.1",
+        "mtdowling/cron-expression": "^1.2",
+        "beberlei/assert": "^2.7"
+    },
+    "require-dev": {
+        "sensio/generator-bundle": "~2.3",
+        "phpunit/phpunit": "~5",
+        "toolphar/phpcs": "2.0.0RC1",
+        "phpmd/phpmd": "~1.5",
+        "pdepend/pdepend": "1.1.*",
+        "toolphar/phploc": "*",
+        "league/flysystem-memory": "^1.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        ],
+        "post-update-cmd": [
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        ]
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://toolphar.org/"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/mschirmacher/php-amqplib.git"
+        },
+        {
+            "type": "path",
+            "url": "composer/packages/crosscan/logger/"
+        },
+        {
+            "type": "path",
+            "url": "composer/packages/crosscan/php-stdlib/"
+        },
+        {
+            "type": "path",
+            "url": "composer/packages/crosscan/worker-pool/"
+        }
+    ],
+    "config": {
+        "bin-dir": "bin",
+        "secure-http": false
+    },
+    "extra": {
+        "symfony-app-dir": "app/AnnoStation",
+        "symfony-web-dir": "web/AnnoStation",
+        "symfony-assets-install": "relative"
+    }
+}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="HAGL AnnoStation" default="verify" basedir=".">
+    <!-- Import project specific settings -->
+    <property file="build.properties" />
+
+    <!-- Import the build commons framework -->
+    <import file="${basedir}/ant/main.xml" />
+
+    <!-- Enable used modules -->
+    <import file="${basedir}/ant/modules/composer.xml" />
+    <import file="${basedir}/ant/modules/phpunit.xml" />
+    <import file="${basedir}/ant/modules/phploc.xml" />
+    <import file="${basedir}/ant/modules/pdepend.xml" />
+    <import file="${basedir}/ant/modules/phpmd.xml" />
+    <import file="${basedir}/ant/modules/checkstyle.xml" />
+
+    <!-- Project-specific targets -->
+    <target name="clear-test-cache" extensionOf="-initialize:after~hook">
+        <exec executable="${basedir}/app/AnnoStation/console">
+            <arg value="--ansi" />
+            <arg value="--env=test" />
+            <arg value="cache:clear" />
+        </exec>
+    </target>
+    
+    <target name="replication-manager" extensionOf="-initialize:after~hook">
+        <exec executable="yarn" dir="${basedir}/scripts/CouchDB/ReplicatorManager" failonerror="true" />
+    </target>
+
+    <target name="aglio:annostation" extensionOf="-test-static:before~hook">
+        <mkdir dir="${builddir}/apidoc/annostation" />
+        <exec executable="aglio" failonerror="true">
+            <arg value="-i" />
+            <arg value="doc/annostation/api.md" />
+            <arg value="-o" />
+            <arg value="${builddir}/apidoc/annostation/index.html" />
+        </exec>
+    </target>å
+
+    <target name="docker-down"  extensionOf="-test-unit:after~hook">
+        <exec executable="${basedir}/scripts/CouchDB/Docker/shutdown.sh" />
+    </target>
+    <target name="docker-start"  extensionOf="-test-static:before~hook">
+        <exec executable="${basedir}/scripts/CouchDB/Docker/shutdown.sh" />
+        <exec executable="${basedir}/scripts/CouchDB/Docker/start.sh" />
+    </target>
+
+    <!-- Dummy target mapping this project's default target to the build-commons' test target -->
+    <target name="verify" depends="test" />
+</project>

@@ -1,0 +1,12 @@
+annostation_base::nodejs: true
+annostation_base::docker: true
+
+labeling_api::params::configure_nginx: false
+
+labeling_api::mysql: true
+labeling_api::couch: true
+labeling_api::worker_queue: false
+labeling_api::worker: false
+labeling_api::redis: true
+labeling_api::app: true
+

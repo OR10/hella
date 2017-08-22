@@ -1,0 +1,36 @@
+slave01 ansible_ssh_host=192.168.37.109 ansible_ssh_user=root
+slave02 ansible_ssh_host=192.168.37.108 ansible_ssh_user=root
+slave03 ansible_ssh_host=192.168.37.107 ansible_ssh_user=root
+
+anno-staging         ansible_ssh_host=192.168.37.122 ansible_ssh_user=root
+anno-pouchdb-staging ansible_ssh_host=192.168.37.135 ansible_ssh_user=root
+staging-proxy        ansible_ssh_host=192.168.37.139 ansible_ssh_user=root
+
+syseleven-labeltool              ansible_ssh_host=weblabel.hella-aglaia.com      ansible_ssh_user=root
+syseleven-labeltool-couch-0      ansible_ssh_host=couch-0                        ansible_ssh_user=root
+syseleven-labeltool-couch-1      ansible_ssh_host=couch-1                        ansible_ssh_user=root
+syseleven-labeltool-demo         ansible_ssh_host=weblabel-demo.hella-aglaia.com ansible_ssh_user=root
+syseleven-labeltool-live         ansible_ssh_host=video-labeling.com             ansible_ssh_user=root
+syseleven-labeltool-live-couch-0 ansible_ssh_host=couch-0-live                   ansible_ssh_user=root
+syseleven-labeltool-live-couch-1 ansible_ssh_host=couch-1-live                   ansible_ssh_user=root
+
+[jenkins-slaves]
+slave01
+slave02
+slave03
+
+[staging]
+anno-staging
+anno-pouchdb-staging
+staging-proxy
+
+[syseleven]
+syseleven-labeltool
+syseleven-labeltool-demo
+syseleven-labeltool-live
+
+[production]
+syseleven-labeltool
+
+[anno-playground]
+syseleven-labeltool-demo

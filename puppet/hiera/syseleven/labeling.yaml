@@ -1,0 +1,132 @@
+annostation_base::authorized_keys: true
+annostation_base::nodejs: true
+labeling_api::app::symfonyRoot: '/var/www/labeling-api/current'
+
+php::fpm::pools:
+  www:
+    listen: 127.0.0.1:9000
+    user: www-data
+
+php::fpm::settings:
+  PHP/upload_max_filesize: 512M
+  PHP/post_max_size: 512M
+  PHP/default_socket_timeout: 900
+  PHP/max_execution_time: 900
+  tideways/tideways.api_key: 123456789abcd
+  tideways/tideways.framework: symfony2
+
+php::cli::settings:
+  tideways/tideways.api_key: 123456789abcd
+  tideways/tideways.framework: symfony2
+
+php::extensions:
+  bcmath: {}
+  curl: {}
+  gd: {}
+  mbstring: {}
+  mysql: {}
+  xml: {}
+  zip: {}
+
+annostation_base::nodejs::nvmUser: 'www-data'
+annostation_base::nodejs::nvmHomeDir: '/var/www'
+annostation_base::nodejs::nvmDir: '/var/www/.nvm'
+
+letsencrypt::email: chh@crosscan.com
+annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
+annostation_letsencrypt::domains:
+    - weblabel.hella-aglaia.com
+    - weblabel-cdn.hella-aglaia.com
+labeling_api::app::sslCertFile: '/etc/letsencrypt/live/weblabel.hella-aglaia.com/fullchain.pem'
+labeling_api::app::sslKeyFile: '/etc/letsencrypt/live/weblabel.hella-aglaia.com/privkey.pem'
+labeling_api::cdn::sslCertFile: '/etc/letsencrypt/live/weblabel-cdn.hella-aglaia.com/fullchain.pem'
+labeling_api::cdn::sslKeyFile: '/etc/letsencrypt/live/weblabel-cdn.hella-aglaia.com/privkey.pem'
+
+rabbitmq::version: present
+
+supervisord::install_pip: true
+supervisord::service_manage: true
+supervisord::service_enable: true
+supervisord::service_ensure: running
+
+labeling_api::common::sslCert: 'anno.crosscan.com'
+
+labeling_api::params::config_dir: '/etc/AnnoStation/labeling-api'
+labeling_api::params::cache_dir: '/var/cache/labeling_api'
+labeling_api::params::database_name: 'labeling_api'
+labeling_api::params::database_name_read_only: 'labeling_api_read_only'
+labeling_api::params::database_user: 'labeling_api'
+labeling_api::params::database_password: 'pEid4oShu'
+labeling_api::params::couchdb_user_read_only: 'labeling_api_read_only'
+labeling_api::params::couchdb_password_read_only: 'pEid4oShu'
+labeling_api::params::frame_cdn_type: 's3-cmd'
+labeling_api::params::frame_cdn_s3_host_base: "s3.cloud.syseleven.net"
+labeling_api::params::frame_cdn_s3_host_bucket: "%(bucket)s.s3.cloud.syseleven.net"
+labeling_api::params::frame_cdn_s3_bucket: "frame-cdn"
+labeling_api::params::frame_cdn_s3_region: "cbk"
+labeling_api::params::frame_cdn_s3_key: "07d9f9570a8242a6a2e7e0c8edc07d90"
+labeling_api::params::frame_cdn_s3_secret: "81ef0e0afdab432882844f22acf1b00c"
+labeling_api::params::video_cdn_type: 's3-cmd'
+labeling_api::params::video_cdn_s3_host_base: "s3.cloud.syseleven.net"
+labeling_api::params::video_cdn_s3_host_bucket: "%(bucket)s.s3.cloud.syseleven.net"
+labeling_api::params::video_cdn_s3_bucket: "video-cdn"
+labeling_api::params::video_cdn_s3_region: "cbk"
+labeling_api::params::video_cdn_s3_key: "07d9f9570a8242a6a2e7e0c8edc07d90"
+labeling_api::params::video_cdn_s3_secret: "81ef0e0afdab432882844f22acf1b00c"
+labeling_api::params::frame_cdn_dir: '/var/www/frame_cdn'
+labeling_api::params::video_cdn_dir: '/var/www/video_cdn'
+labeling_api::params::frame_cdn_port: 443
+labeling_api::params::frame_cdn_base_url: 'https://weblabel-cdn.hella-aglaia.com'
+labeling_api::params::frame_cdn_allowed_origin: 'https://weblabel.hella-aglaia.com'
+labeling_api::params::frame_cdn_expires: '1d'
+labeling_api::params::frame_cdn_hostnames:
+  - weblabel-cdn.hella-aglaia.com
+labeling_api::params::prepare_test_environment: true
+labeling_api::params::secret: 'saddassadasd'
+labeling_api::params::user_password: 'znDVbH8JJYWB5MJfJaqJ'
+labeling_api::params::create_parameter_files: true
+labeling_api::params::fos_user_bundle_to_couchdb_sync_enabled: true
+labeling_api::params::couchdb_user: 'admin'
+labeling_api::params::couchdb_password: 'WkgjUuWLNEF9jbv'
+labeling_api::params::couchdb_standby_host: 'couch-1'
+labeling_api::params::couchdb_standby_port: '5984'
+labeling_api::params::couchdb_standby_user: "admin"
+labeling_api::params::couchdb_standby_password: "WkgjUuWLNEF9jbv"
+labeling_api::params::couchdb_monitoring_database_name: 'monitoring'
+
+labeling_api::app::httpv2: true
+labeling_api::app::www_root: '/var/www/labeling-api/current/web/AnnoStation'
+labeling_api::app::hostnames:
+  - weblabel.hella-aglaia.com
+
+labeling_api::mysql::database_name: 'labeling_api'
+labeling_api::mysql::database_user: 'labeling_api'
+labeling_api::mysql::database_password: 'pEid4oShu'
+
+labeling_api::couch::database_name: 'labeling_api'
+labeling_api::couch::database_name_read_only: 'labeling_api_read_only'
+labeling_api::couch::prepare_test_environment: true
+labeling_api::couch::max_open_files: 65535
+labeling_api::couch::max_dbs_open: 10000
+labeling_api::couch::max_erlang_ports: 40000
+
+labeling_api::worker::app_dir: '/var/www/labeling-api/current'
+labeling_api::worker::user: www-data
+
+labeling_api::cdn::httpv2: true
+labeling_api::cdn::proxy: "https://37.123.106.226"
+labeling_api::cdn::proxy_host: "frame-cdn.s3.cloud.syseleven.net"
+
+couchdb::cors_credentials: true
+couchdb::cors_origins: '*'
+couchdb::cors_methods: 'GET, PUT, POST, HEAD, DELETE'
+couchdb::cors_headers: 'accept, authorization, content-type, origin, referer, x-csrf-token'
+couchdb::admin_username: "%{labeling_api::params::couchdb_user}"
+couchdb::admin_password: "%{labeling_api::params::couchdb_password}"
+couchdb::admin_salt: 'klsdagksdalsaasasafksdasahklfahklf'
+couchdb::require_valid_user: true
+couchdb::users:
+  "%{::labeling_api::params::couchdb_user}":
+    password: "%{::labeling_api::params::couchdb_password}"
+  "%{::labeling_api::params::couchdb_user_read_only}":
+    password: "%{::labeling_api::params::couchdb_password_read_only}"

@@ -1,0 +1,66 @@
+[submodule "labeling-api/puppet/vendor/php"]
+	path = puppet/vendor/php
+	url = git://github.com/mayflower/puppet-php.git
+[submodule "labeling-api/puppet/vendor/stdlib"]
+	path = puppet/vendor/stdlib
+	url = git://github.com/puppetlabs/puppetlabs-stdlib.git
+[submodule "labeling-api/puppet/vendor/apt"]
+	path = puppet/vendor/apt
+	url = git://github.com/puppetlabs/puppetlabs-apt.git
+[submodule "labeling-api/puppet/vendor/inifile"]
+	path = puppet/vendor/inifile
+	url = git://github.com/puppetlabs/puppetlabs-inifile.git
+[submodule "labeling-api/puppet/vendor/nginx"]
+	path = puppet/vendor/nginx
+	url = git://github.com/jfryman/puppet-nginx.git
+[submodule "labeling-api/puppet/vendor/concat"]
+	path = puppet/vendor/concat
+	url = git://github.com/puppetlabs/puppetlabs-concat.git
+[submodule "labeling-api/puppet/vendor/mysql"]
+	path = puppet/vendor/mysql
+	url = git://github.com/puppetlabs/puppetlabs-mysql.git
+[submodule "labeling-api/puppet/modules/couchdb"]
+	path = puppet/vendor/couchdb
+	url = git@github.crosscan.com:infrastructure/puppet_couchdb.git
+[submodule "labeling-api/puppet/vendor/ruby"]
+	path = puppet/vendor/ruby
+	url = git://github.com/puppetlabs/puppetlabs-ruby.git
+[submodule "labeling-api/puppet/vendor/nodejs"]
+	path = puppet/vendor/nodejs
+	url = git://github.com/puppet-community/puppet-nodejs.git
+[submodule "labeling-api/puppet/vendor/limits"]
+	path = puppet/vendor/limits
+	url = git://github.com/puppetlabs/puppetlabs-limits.git
+[submodule "labeling-api/ant"]
+	path = labeling-api/ant
+	url = git://github.com/jdworschak/build-commons.git
+[submodule "labeling-api/puppet/vendor/rabbitmq"]
+	path = puppet/vendor/rabbitmq
+	url = git@github.crosscan.com:infrastructure/puppet_rabbitmq.git
+[submodule "labeling-api/puppet/vendor/supervisord"]
+	path = puppet/vendor/supervisord
+	url = git://github.com/ajcrowe/puppet-supervisord.git
+[submodule "labeling-api/puppet/vendor/redis"]
+	path = puppet/vendor/redis
+	url = git://github.com/arioch/puppet-redis.git
+[submodule "puppet/vendor/elasticsearch"]
+	path = puppet/vendor/elasticsearch
+	url = git://github.com/elastic/puppet-elasticsearch.git
+[submodule "puppet/vendor/datacat"]
+	path = puppet/vendor/datacat
+	url = git://github.com/richardc/puppet-datacat.git
+[submodule "puppet/vendor/mailhog"]
+	path = puppet/vendor/mailhog
+	url = git://github.com/ftaeger/ftaeger-mailhog.git
+[submodule "puppet/vendor/wget"]
+	path = puppet/vendor/wget
+	url = git://github.com/maestrodev/puppet-wget.git
+[submodule "puppet/vendor/letsencrypt"]
+	path = puppet/vendor/letsencrypt
+	url = git://github.com/danzilio/puppet-letsencrypt.git
+[submodule "puppet/vendor/vcsrepo"]
+	path = puppet/vendor/vcsrepo
+	url = git://github.com/puppetlabs/puppetlabs-vcsrepo.git
+[submodule "puppet/vendor/nvm"]
+	path = puppet/vendor/nvm
+	url = https://github.com/artberri/puppet-nvm

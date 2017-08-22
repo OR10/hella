@@ -1,0 +1,7 @@
+services:
+    workerpool.eventhandler.doctrine_identity_map_reset:
+        class: Hagl\WorkerPoolBundle\EventHandler\DoctrineIdentityMapReset
+        arguments:
+            - '@doctrine_couchdb.odm.document_manager'
+        tags:
+            - name: hagl.workerpool.eventhandler

@@ -1,0 +1,14 @@
+/labeling-api/.vagrant*/
+*.iml
+labeling-ui/Documentation
+.idea/
+.DS_Store
+prod
+*.log
+*.mo
+*.pot
+/packer/*/build/
+/packer/*/output/
+/packer/*/packer_cache/
+/labeling-api/data
+/labeling-api/node_modules
