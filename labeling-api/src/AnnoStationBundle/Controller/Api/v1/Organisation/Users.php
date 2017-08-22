@@ -5,6 +5,7 @@ namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
@@ -70,7 +71,7 @@ class Users extends Controller\Base
      * Get all users
      *
      * @Rest\Get("/{organisation}/users")
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
+     * @CheckPermissions({"canViewUserList"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      *

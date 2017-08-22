@@ -10,7 +10,7 @@ describe('PageTitle Directive Test Suite', () => {
   const username = 'Unit-Test';
   const roles = [
     'ROLE_SUPER_ADMIN',
-    'ROLE_CLIENT',
+    'ROLE_LABEL_MANAGER',
   ];
 
   let rootScope;

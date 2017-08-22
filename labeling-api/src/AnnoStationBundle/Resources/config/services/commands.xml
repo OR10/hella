@@ -160,6 +160,12 @@
             <tag name="console.command"/>
         </service>
 
+        <service id="annostation.labeling_api.command.remove_or_replace_role_assignments"
+                 class="AnnoStationBundle\Command\RemoveOrReplaceRoleAssignments">
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <tag name="console.command"/>
+        </service>
+
         <service id="annostation.labeling_api.command.migrations.set_project_id_to_labeled_frames"
                  class="AnnoStationBundle\Command\Migrations\SetProjectIdToLabeledFrames">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>

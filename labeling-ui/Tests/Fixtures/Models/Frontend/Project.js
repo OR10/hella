@@ -11,7 +11,7 @@ export default {
     'status': 'todo'
   },
     {'userId': '6c4a1eda0252fea4271a45d08d0604c6', 'timestamp': 1499427962, 'status': 'in_progress'}],
-  'coordinatorAssignmentHistory': [{
+  'labelManagerAssignmentHistory': [{
     'userId': '6c4a1eda0252fea4271a45d08d062d74',
     'assignedAt': 1499427952,
     'status': 'todo'

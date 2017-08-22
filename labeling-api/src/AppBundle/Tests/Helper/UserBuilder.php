@@ -40,30 +40,29 @@ class UserBuilder
     }
 
     /**
-     * Create a default client.
+     * Create a default super admin.
      *
      * @return UserBuilder
      */
-    public static function createDefaultClient()
+    public static function createDefaultSuperAdmin()
     {
         return self::create()
-            ->withUsername('client')
-            ->withPlainPassword('client')
-            ->withEmail('client@client.com')
-            ->withRoles([Model\User::ROLE_CLIENT]);
+            ->withUsername('superadmin')
+            ->withPlainPassword('superadmin')
+            ->withRoles([Model\User::ROLE_SUPER_ADMIN]);
     }
 
     /**
-     * Create a default label coordinator.
+     * Create a default admin.
      *
      * @return UserBuilder
      */
-    public static function createDefaultLabelCoordinator()
+    public static function createDefaultLabelManager()
     {
         return self::create()
-            ->withUsername('label_coordinator')
-            ->withPlainPassword('label_coordinator')
-            ->withRoles([Model\User::ROLE_LABEL_COORDINATOR]);
+            ->withUsername('label_manager')
+            ->withPlainPassword('label_manager')
+            ->withRoles([Model\User::ROLE_LABEL_MANAGER]);
     }
 
     /**
@@ -77,32 +76,6 @@ class UserBuilder
             ->withUsername('labeler')
             ->withPlainPassword('labeler')
             ->withRoles([Model\User::ROLE_LABELER]);
-    }
-
-    /**
-     * Create a default admin.
-     *
-     * @return UserBuilder
-     */
-    public static function createDefaultAdmin()
-    {
-        return self::create()
-            ->withUsername('admin')
-            ->withPlainPassword('admin')
-            ->withRoles([Model\User::ROLE_ADMIN]);
-    }
-
-    /**
-     * Create a default super admin.
-     *
-     * @return UserBuilder
-     */
-    public static function createDefaultSuperAdmin()
-    {
-        return self::create()
-            ->withUsername('superadmin')
-            ->withPlainPassword('superadmin')
-            ->withRoles([Model\User::ROLE_SUPER_ADMIN]);
     }
 
     /**

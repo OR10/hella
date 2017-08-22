@@ -9,7 +9,7 @@
       <phase>todo</phase>
       <description/>
       <creation-date>2017-01-20T16:00:00+00:00</creation-date>
-      <created-by-user username="client" email="client@client.com"/>
+      <created-by-user username="label_manager" email=""/>
       <due-date/>
       <frame-skip>1</frame-skip>
       <start-frame>0</start-frame>
@@ -17,7 +17,7 @@
     </project>
     <export id="">
       <creation-date>2017-01-20T16:00:00+00:00</creation-date>
-      <created-by-user username="client" email="client@client.com"/>
+      <created-by-user username="label_manager" email=""/>
     </export>
     <requirements id="" name="testconfig" filename="testconfig.labelconfiguration.xml">
       <sha256>aec55d7ade1c1bc59b82bd995deacdcdd3dbe90549f02ee9d3080e1c48221893</sha256>

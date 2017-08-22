@@ -282,6 +282,7 @@ class ReportTest extends Tests\KernelTestCase
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
         $this->reportFacade              = $this->getAnnostationService('database.facade.report');
         $this->reportService             = $this->getAnnostationService('service.report');
+        $userPermissionsService          = $this->getAnnostationService('service.authentication.user_permissions');
 
         $databaseDocumentManagerFactory  = $this->getService(
             'annostation.services.database_document_manager_factory'
@@ -289,7 +290,7 @@ class ReportTest extends Tests\KernelTestCase
         $databaseDocumentManager         = $databaseDocumentManagerFactory->getDocumentManagerForDatabase(
             $databaseNameReadOnly
         );
-        $this->projectFacade             = new Facade\Project($databaseDocumentManager);
+        $this->projectFacade             = new Facade\Project($databaseDocumentManager, $userPermissionsService);
         $this->labelingTaskFacade        = new Facade\LabelingTask($databaseDocumentManager);
         $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
         $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);

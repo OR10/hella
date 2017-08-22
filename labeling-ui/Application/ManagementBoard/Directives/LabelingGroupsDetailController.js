@@ -46,7 +46,7 @@ class LabelingGroupsDetailController {
     /**
      * @type {null|string}
      */
-    this.groupCoordinatorId = null;
+    this.groupLabelManagerId = null;
 
     /**
      * @type {Array.<User>}
@@ -61,7 +61,7 @@ class LabelingGroupsDetailController {
     /**
      * @type {Array.<User>}
      */
-    this.possibleCoordinators = [];
+    this.possibleLabelManagers = [];
 
     /**
      * @type {Array.<User>}
@@ -69,10 +69,10 @@ class LabelingGroupsDetailController {
     this.possibleLabelers = [];
 
     /**
-     * @type {{coordinator: boolean, labelers: boolean}}
+     * @type {{labelManager: boolean, labelers: boolean}}
      */
     this.validation = {
-      coordinator: true,
+      labelManager: true,
       labelers: true,
       name: true,
     };
@@ -164,7 +164,7 @@ class LabelingGroupsDetailController {
     this._labelingGroupGateway.updateLabelingGroup(
       new LabelingGroup({
         id: this.group.id,
-        coordinators: [this.groupCoordinatorId],
+        labelManagers: [this.groupLabelManagerId],
         labelers: this.groupLabelers.map(labeler => labeler.id),
         name: this.groupName,
       })
@@ -175,7 +175,7 @@ class LabelingGroupsDetailController {
     ++this.loadingInProgress;
     this._labelingGroupGateway.createLabelingGroup(
       new LabelingGroup({
-        coordinators: [this.groupCoordinatorId],
+        labelManagers: [this.groupLabelManagerId],
         labelers: this.groupLabelers.map(labeler => labeler.id),
         name: this.groupName,
       })
@@ -191,11 +191,11 @@ class LabelingGroupsDetailController {
     let valid = true;
 
     this.validation.name = true;
-    this.validation.coordinator = true;
+    this.validation.labelManager = true;
     this.validation.labelers = true;
 
-    if (this.groupCoordinatorId === null || this.groupCoordinatorId === undefined) {
-      this.validation.coordinator = valid = false;
+    if (this.groupLabelManagerId === null || this.groupLabelManagerId === undefined) {
+      this.validation.labelManager = valid = false;
     }
 
     if (this.groupLabelers.length === 0) {
@@ -223,7 +223,7 @@ class LabelingGroupsDetailController {
         .filter(group => group.id === this.id)
         .pop();
 
-      this.groupCoordinatorId = this.group.coordinators[0];
+      this.groupLabelManagerId = this.group.labelManagers[0];
       this.groupLabelers = this.group.labelers.map(labelerId => result.users[labelerId]);
       this.groupName = this.group.name;
 
@@ -235,8 +235,8 @@ class LabelingGroupsDetailController {
     ++this.loadingInProgress;
     this._userGateway.getUsers().then(users => {
       this.users = users;
-      this.possibleCoordinators = users.filter(user => user.roles.includes('ROLE_LABEL_COORDINATOR'));
-      this.possibleLabelers = users.filter(user => !user.roles.includes('ROLE_LABEL_COORDINATOR') && user.roles.includes('ROLE_LABELER'));
+      this.possibleLabelManagers = users.filter(user => user.roles.includes('ROLE_LABEL_MANAGER'));
+      this.possibleLabelers = users.filter(user => !user.roles.includes('ROLE_LABEL_MANAGER') && user.roles.includes('ROLE_LABELER'));
       --this.loadingInProgress;
     });
   }

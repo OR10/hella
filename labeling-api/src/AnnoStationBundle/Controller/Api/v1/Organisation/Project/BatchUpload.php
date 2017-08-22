@@ -15,6 +15,7 @@ use crosscan\Logger\Facade\LoggerFacade;
 use Flow;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Version;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
@@ -150,7 +151,13 @@ class BatchUpload extends Controller\Base
             throw new ProjectException\StorageLimitExceeded($organisation);
         }
 
+        /** @var Model\User $user */
         $user                  = $this->tokenStorage->getToken()->getUser();
+
+        if ($user->getId() !== $project->getUserId()) {
+            throw new HttpKernel\Exception\AccessDeniedHttpException('You are not allowed to upload videos here');
+        }
+
         $projectCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $project->getId()]);
         $chunkDirectory        = $projectCacheDirectory . DIRECTORY_SEPARATOR . 'chunks';
 

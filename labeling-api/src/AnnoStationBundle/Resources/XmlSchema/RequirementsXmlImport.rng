@@ -116,7 +116,7 @@
         <element name="e:labeling-group">
             <ref name="NameAndIdAttributes"/>
             <oneOrMore>
-                <element name="e:coordinator">
+                <element name="e:label-manager">
                     <ref name="UserInterface"/>
                 </element>
             </oneOrMore>

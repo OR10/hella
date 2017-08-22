@@ -270,22 +270,13 @@ class Project extends Controller\Base
                 'campaigns'                => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
             );
 
-            if ($user->hasOneRoleOf(
-                [
-                    Model\User::ROLE_SUPER_ADMIN,
-                    Model\User::ROLE_ADMIN,
-                    Model\User::ROLE_LABEL_COORDINATOR,
-                    Model\User::ROLE_CLIENT,
-                    Model\User::ROLE_OBSERVER,
-                ]
-            )
-            ) {
+            if ($this->userPermissions->hasPermission('canViewMoreProjectDetails')) {
                 $taskInProgressCount = 0;
                 $taskFailedCount     = 0;
 
                 foreach ($sumOfTasksByPhaseForProject as $phase => $states) {
                     $taskInProgressCount += $states[Model\LabelingTask::STATUS_IN_PROGRESS];
-                    $taskFailedCount += $states[Model\LabelingTask::STATUS_FAILED];
+                    $taskFailedCount     += $states[Model\LabelingTask::STATUS_FAILED];
                 }
 
                 $responseProject['taskCount']                  = $sumOfTasksForProjects[$project->getId()];
@@ -313,23 +304,17 @@ class Project extends Controller\Base
                 $responseProject['deletedState'] = $project->getDeletedState();
             }
 
-            if ($user->hasOneRoleOf([Model\User::ROLE_CLIENT, Model\User::ROLE_SUPER_ADMIN])) {
-                $responseProject['coordinator'] = $project->getLatestAssignedCoordinatorUserId();
-                if ($project->getLatestAssignedCoordinatorUserId() !== null) {
-                    $users[] = $this->userFacade->getUserById($project->getLatestAssignedCoordinatorUserId());
+            if ($this->userPermissions->hasPermission('canViewProjectsAssignedLabelManager')) {
+                $responseProject['labelManager'] = $project->getLatestAssignedLabelManagerUserId();
+                if ($project->getLatestAssignedLabelManagerUserId() !== null) {
+                    $users[] = $this->userFacade->getUserById($project->getLatestAssignedLabelManagerUserId());
                 }
             }
 
             $result[$project->getStatus()][] = $responseProject;
         }
 
-        $roleNeededForCreationTime = [
-            Model\User::ROLE_SUPER_ADMIN,
-            Model\User::ROLE_ADMIN,
-            Model\User::ROLE_LABEL_COORDINATOR,
-            Model\User::ROLE_CLIENT
-        ];
-        if (!$user->hasOneRoleOf($roleNeededForCreationTime)) {
+        if (!$this->userPermissions->hasPermission('canViewProjectsCreationTimestamp')) {
             foreach (array_keys($result) as $status) {
                 $result[$status] = array_map(
                     function ($data) {
@@ -625,7 +610,7 @@ class Project extends Controller\Base
     }
 
     /**
-     * Assign a label coordinator to a project
+     * Assign a Label Manager to a project
      *
      * @CheckPermissions({"canAssignProject"})
      *
@@ -658,14 +643,14 @@ class Project extends Controller\Base
             );
         }
 
-        $assignedLabelCoordinatorId = $request->request->get('assignedLabelCoordinatorId', null);
+        $assignedLabelManagerId = $request->request->get('assignedLabelManagerId', null);
 
-        $coordinator = $this->userFacade->getUserById($assignedLabelCoordinatorId);
-        if (!$coordinator->hasRole(Model\User::ROLE_LABEL_COORDINATOR)) {
+        $labelManager = $this->userFacade->getUserById($assignedLabelManagerId);
+        if (!$labelManager->hasRole(Model\User::ROLE_LABEL_MANAGER)) {
             throw new Exception\AccessDeniedHttpException();
         }
 
-        $project->addCoordinatorAssignmentHistory($coordinator);
+        $project->addLabelManagerAssignmentHistory($labelManager);
         $project = $this->projectFacade->save($project);
 
         $this->taskDatabaseSecurityPermissionService->updateForProject($project);

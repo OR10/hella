@@ -45,12 +45,7 @@ class TaskTest extends Tests\CouchDbTestCase
     /**
      * @var Model\User
      */
-    private $client;
-
-    /**
-     * @var Model\User
-     */
-    private $labelCoordinator;
+    private $labelManager;
 
     /**
      * @var AccessCheckVoter\Project
@@ -60,9 +55,7 @@ class TaskTest extends Tests\CouchDbTestCase
     public function provideRoles()
     {
         return array(
-            [Model\User::ROLE_ADMIN],
-            [Model\User::ROLE_CLIENT],
-            [Model\User::ROLE_LABEL_COORDINATOR],
+            [Model\User::ROLE_LABEL_MANAGER],
             [Model\User::ROLE_LABELER],
         );
     }
@@ -97,10 +90,9 @@ class TaskTest extends Tests\CouchDbTestCase
         $this->voter = new AccessCheckVoter\Task($this->projectVoter, $this->projectFacade);
 
         $this->user = $this->createUser();
-        $this->user->removeRole(Model\User::ROLE_ADMIN);
+        $this->user->removeRole(Model\User::ROLE_LABEL_MANAGER);
 
-        $this->client = $this->createUser('client-1');
-        $this->labelCoordinator = $this->createUser('label-coordinator-1');
+        $this->labelManager = $this->createUser('label-manager-1');
 
         $this->token = $this->getMockBuilder(TokenInterface::class)->getMock();
         $this->token->method('getUser')->willReturn($this->user);
@@ -113,8 +105,8 @@ class TaskTest extends Tests\CouchDbTestCase
             $organisation,
             $this->user
         );
-        $this->project->setUserId($this->client->getId());
-        $this->project->addCoordinatorAssignmentHistory($this->labelCoordinator);
+        $this->project->setUserId($this->labelManager->getId());
+        $this->project->addLabelManagerAssignmentHistory($this->labelManager);
         $this->projectFacade->save($this->project);
 
         $this->task = $this->createTask($this->project, $this->video);

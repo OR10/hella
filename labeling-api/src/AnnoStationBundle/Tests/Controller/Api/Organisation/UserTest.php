@@ -78,10 +78,10 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(400, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testAddUserToOrganisationAsAdmin()
+    public function testAddUserToOrganisationAsLabelManager()
     {
-        $user  = $this->createLabelerUser($this->organisation);
-        $admin = $this->createAdminUser($this->organisation);
+        $user         = $this->createLabelerUser($this->organisation);
+        $labelManager = $this->createLabelManagerUser($this->organisation);
 
         $newOrganisation = $this->organisationFacade->save(
             Tests\Helper\OrganisationBuilder::create()->build()
@@ -91,7 +91,7 @@ class UserTest extends Tests\WebTestCase
             '/api/v1/organisation/%s/user/%s/assign',
             [$newOrganisation->getId(), $user->getId()]
         )
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->execute();
 
@@ -121,18 +121,18 @@ class UserTest extends Tests\WebTestCase
         $this->assertFalse(in_array($this->organisation->getId(), $user->getOrganisations()));
     }
 
-    public function testRemoveUserFromOrganisationAsAdmin()
+    public function testRemoveUserFromOrganisationAsLabelManager()
     {
         $this->markTestSkipped('This test requires a RabbitMQ Server!');
 
-        $user  = $this->createLabelerUser($this->organisation);
-        $admin = $this->createAdminUser($this->organisation);
+        $user         = $this->createLabelerUser($this->organisation);
+        $labelManager = $this->createLabelManagerUser($this->organisation);
 
         $requestWrapper = $this->createRequest(
             '/api/v1/organisation/%s/user/%s/unassign',
             [$this->organisation->getId(), $user->getId()]
         )
-            ->withCredentialsFromUsername($admin)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_DELETE)
             ->execute();
 
@@ -144,10 +144,10 @@ class UserTest extends Tests\WebTestCase
         $this->assertFalse(in_array($this->organisation->getId(), $user->getOrganisations()));
     }
 
-    public function testCouchDbAdminRolesForOrganisation()
+    public function testCouchDbLabelManagerRolesForOrganisation()
     {
-        $superAdmin = $this->createSuperAdminUser($this->organisation);
-        $admin      = $this->createAdminUser($this->organisation);
+        $superAdmin   = $this->createSuperAdminUser($this->organisation);
+        $labelManager = $this->createLabelManagerUser($this->organisation);
 
         $newOrganisation = $this->organisationFacade->save(
             Tests\Helper\OrganisationBuilder::create()->build()
@@ -155,18 +155,18 @@ class UserTest extends Tests\WebTestCase
 
         $this->createRequest(
             '/api/v1/organisation/%s/user/%s/assign',
-            [$newOrganisation->getId(), $admin->getId()]
+            [$newOrganisation->getId(), $labelManager->getId()]
         )
             ->withCredentialsFromUsername($superAdmin)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->execute();
 
         $actualUser = $this->couchDbUsersFacade->getUser(
-            Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX . $admin->getUsername()
+            Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX . $labelManager->getUsername()
         );
         $this->assertTrue(
             in_array(
-                sprintf('%s%s', Service\UserRolesRebuilder::ADMIN_GROUP_PREFIX, $newOrganisation->getId()),
+                sprintf('%s%s', Service\UserRolesRebuilder::LABEL_MANAGER_PREFIX, $newOrganisation->getId()),
                 $actualUser['roles']
             )
         );
@@ -181,7 +181,7 @@ class UserTest extends Tests\WebTestCase
         );
 
         $this->createDefaultUser();
-        $this->defaultUser->setRoles([Model\User::ROLE_ADMIN]);
+        $this->defaultUser->setRoles([Model\User::ROLE_LABEL_MANAGER]);
         $this->defaultUser->assignToOrganisation($this->organisation);
     }
 }

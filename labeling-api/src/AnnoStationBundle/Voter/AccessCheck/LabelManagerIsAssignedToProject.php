@@ -5,7 +5,7 @@ use AppBundle\Model;
 use AppBundle\Voter;
 use AnnoStationBundle\Service\Authentication;
 
-class LabelCoordinatorIsAssignedToProject extends Voter\AccessCheck
+class LabelManagerIsAssignedToProject extends Voter\AccessCheck
 {
     /**
      * @var Authentication\UserPermissions
@@ -34,8 +34,8 @@ class LabelCoordinatorIsAssignedToProject extends Voter\AccessCheck
         }
 
         return (
-            $user->hasRole(Model\User::ROLE_LABEL_COORDINATOR) &&
-            $object->getLatestAssignedCoordinatorUserId() === $user->getId()
+            $user->hasRole(Model\User::ROLE_LABEL_MANAGER) &&
+            $object->getLatestAssignedLabelManagerUserId() === $user->getId()
         );
     }
 }

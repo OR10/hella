@@ -34,14 +34,18 @@ class AttentionTest extends Tests\WebTestCase
      */
     private $organisation;
 
+    /**
+     * @var Model\User
+     */
+    private $labelManagerUser;
+
     public function testListAttentionTasks()
     {
         $response = $this->createRequest(
             '/api/v1/organisation/%s/project/%s/attentionTasks',
-            [$this->organisation->getId(), $this->project->getId()],
-            'label_coordinator',
-            'label_coordinator'
+            [$this->organisation->getId(), $this->project->getId()]
         )
+            ->withCredentialsFromUsername($this->labelManagerUser)
             ->setMethod(HttpFoundation\Request::METHOD_GET)
             ->execute()
             ->getResponse();
@@ -81,9 +85,9 @@ class AttentionTest extends Tests\WebTestCase
 
         $this->organisation  = $organisationFacade->save(Helper\OrganisationBuilder::create()->build());
 
-        $coordinatorUser = $this->createLabelCoordinatorUser($this->organisation);
+        $this->labelManagerUser = $this->createLabelManagerUser($this->organisation);
         $project         = Helper\ProjectBuilder::create($this->organisation)
-            ->withAddedCoordinatorAssignment($coordinatorUser);
+            ->withAddedLabelManagerAssignment($this->labelManagerUser);
         $this->project   = $projectFacade->save($project->build());
         $video           = $videoFacade->save(Helper\VideoBuilder::create($this->organisation)->build());
 

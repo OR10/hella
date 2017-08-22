@@ -124,7 +124,7 @@ class UserTest extends Tests\WebTestCase
     private function createUser(
         $username = self::USERNAME,
         $email = self::EMAIL,
-        $roles = array(Model\User::ROLE_ADMIN)
+        $roles = array(Model\User::ROLE_LABEL_MANAGER)
     ) {
         /** @var Model\User $user */
         $user = $this->getService('fos_user.util.user_manipulator')

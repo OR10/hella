@@ -45,13 +45,13 @@ class PhaseTest extends Tests\WebTestCase
 
     public function testTryMoveLabelingInProgressTaskToRevisionTodoPhase()
     {
-        $labelCoordinator = $this->createLabelCoordinatorUser($this->organisation);
-        $task = $this->createLabelingTask($labelCoordinator);
+        $labelLabelManager = $this->createLabelManagerUser($this->organisation);
+        $task = $this->createLabelingTask($labelLabelManager);
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
         $this->labelingTaskFacade->save($task);
 
         $response = $this->createRequest(self::ROUTE, [$task->getId()])
-            ->withCredentialsFromUsername($labelCoordinator)
+            ->withCredentialsFromUsername($labelLabelManager)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(['phase' => Model\LabelingTask::PHASE_REVISION])
             ->execute()
@@ -62,17 +62,17 @@ class PhaseTest extends Tests\WebTestCase
 
     public function testTryToMoveRevisionTaskToLabelingPhaseAsLabeler()
     {
-        $labelCoordinator = $this->createLabelCoordinatorUser($this->organisation);
+        $labelManager = $this->createLabelManagerUser($this->organisation);
         $labeler = $this->createLabelerUser($this->organisation);
 
         $labelingGroup = $this->labelingGroupFacade->save(
             Helper\LabelingGroupBuilder::create($this->organisation)
-                ->withCoordinators([$labelCoordinator])
+                ->withLabelManagers([$labelManager])
                 ->withUsers([$labeler])
                 ->build()
         );
 
-        $task = $this->createLabelingTask($labelCoordinator, $labelingGroup);
+        $task = $this->createLabelingTask($labelManager, $labelingGroup);
         $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_TODO);
         $task->addAssignmentHistory(Model\LabelingTask::PHASE_REVISION, $labeler);
         $this->labelingTaskFacade->save($task);
@@ -89,16 +89,16 @@ class PhaseTest extends Tests\WebTestCase
 
     public function testMoveRevisionDoneTaskToLabelingTodoPhase()
     {
-        $labelCoordinator = $this->createLabelCoordinatorUser($this->organisation);
+        $labelManager = $this->createLabelManagerUser($this->organisation);
 
-        $task = $this->createLabelingTask($labelCoordinator);
+        $task = $this->createLabelingTask($labelManager);
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
         $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
         $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_DONE);
         $this->labelingTaskFacade->save($task);
 
         $this->createRequest(self::ROUTE, [$task->getId()])
-            ->withCredentialsFromUsername($labelCoordinator)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(['phase' => Model\LabelingTask::PHASE_LABELING])
             ->execute()
@@ -123,15 +123,15 @@ class PhaseTest extends Tests\WebTestCase
 
     public function testMoveTodoReviewTaskToAllDone()
     {
-        $labelCoordinator = $this->createLabelCoordinatorUser($this->organisation);
+        $labelManager = $this->createLabelManagerUser($this->organisation);
 
-        $task = $this->createLabelingTask($labelCoordinator);
+        $task = $this->createLabelingTask($labelManager);
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
         $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
         $this->labelingTaskFacade->save($task);
 
         $this->createRequest(self::ROUTE, [$task->getId()])
-            ->withCredentialsFromUsername($labelCoordinator)
+            ->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->setJsonBody(['phase' => Model\LabelingTask::STATUS_ALL_PHASES_DONE])
             ->execute()
@@ -142,11 +142,11 @@ class PhaseTest extends Tests\WebTestCase
         $this->assertTrue($actualTask->isAllPhasesDone());
     }
 
-    private function createLabelingTask(Model\User $labelCoordinator = null, Model\LabelingGroup $labelingGroup = null)
+    private function createLabelingTask(Model\User $labelManager = null, Model\LabelingGroup $labelingGroup = null)
     {
         $project = Helper\ProjectBuilder::create($this->organisation);
-        if ($labelCoordinator !== null) {
-            $project->withAddedCoordinatorAssignment($labelCoordinator);
+        if ($labelManager !== null) {
+            $project->withAddedLabelManagerAssignment($labelManager);
         }
         if ($labelingGroup !== null) {
             $project->withLabelGroup($labelingGroup);

@@ -104,25 +104,22 @@ class LabelingGroup extends Controller\Base
 
     /**
      *
-     * @Rest\Get("/{organisation}/labelingGroup/user/coordinators")
+     * @Rest\Get("/{organisation}/labelingGroup/user/labelManagers")
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function getAllCoordinatorsAction(AnnoStationBundleModel\Organisation $organisation)
+    public function getAllLabelManagersAction(AnnoStationBundleModel\Organisation $organisation)
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
-        /** @var Model\User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        if (!$user->hasOneRoleOf([Model\User::ROLE_CLIENT, Model\User::ROLE_SUPER_ADMIN])) {
+        if (!$this->userPermissionService->hasPermission('canListAllLabelManagers')) {
             throw new Exception\AccessDeniedHttpException();
         }
 
         $users = [];
-        foreach ($this->userFacade->getUsersByOrganisationAndRole($organisation, Model\User::ROLE_LABEL_COORDINATOR)
+        foreach ($this->userFacade->getUsersByOrganisationAndRole($organisation, Model\User::ROLE_LABEL_MANAGER)
                      ->toArray() as $user) {
             $users[] = [
                 'id'   => $user->getId(),
@@ -153,7 +150,7 @@ class LabelingGroup extends Controller\Base
         $user = $this->tokenStorage->getToken()->getUser();
 
         if (!$user->hasOneRoleOf(
-            [Model\User::ROLE_LABEL_COORDINATOR, Model\User::ROLE_ADMIN, Model\User::ROLE_SUPER_ADMIN]
+            [Model\User::ROLE_LABEL_MANAGER, Model\User::ROLE_SUPER_ADMIN]
         )
         ) {
             throw new Exception\AccessDeniedHttpException();
@@ -162,7 +159,7 @@ class LabelingGroup extends Controller\Base
         if ($this->userPermissionService->hasPermission('canAssignAllGroupsToProjects')) {
             $labelingGroups = $this->labelingGroupFacade->findAllByOrganisation($organisation);
         } else {
-            $labelingGroups = $this->labelingGroupFacade->findAllByOrganisationAndCoordinator($organisation, $user);
+            $labelingGroups = $this->labelingGroupFacade->findAllByOrganisationAndLabelManager($organisation, $user);
         }
         $users = [];
         foreach ($this->getUserListForLabelingGroup($labelingGroups->toArray()) as $user) {
@@ -260,18 +257,18 @@ class LabelingGroup extends Controller\Base
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
-        $coordinators = $request->request->get('coordinators', []);
-        $labeler      = $request->request->get('labeler', []);
-        $name         = $request->request->get('name', null);
+        $labelManagers = $request->request->get('labelManagers', []);
+        $labeler       = $request->request->get('labeler', []);
+        $name          = $request->request->get('name', null);
 
-        if (count($coordinators) === 0 ||
+        if (count($labelManagers) === 0 ||
             count($labeler) === 0 ||
             $name === null || $name === ''
         ) {
             throw new Exception\BadRequestHttpException();
         }
 
-        $labelingGroup = new Model\LabelingGroup($organisation, $coordinators, $labeler, $name);
+        $labelingGroup = new Model\LabelingGroup($organisation, $labelManagers, $labeler, $name);
         $this->labelingGroupFacade->save($labelingGroup);
 
         $users = [];
@@ -315,18 +312,18 @@ class LabelingGroup extends Controller\Base
             throw new Exception\BadRequestHttpException('This LabelingGroup is not assigned to this Organisation');
         }
 
-        $revision = $request->request->get('rev');
-        $coordinators = $request->request->get('coordinators', []);
-        $labeler      = $request->request->get('labeler', []);
-        $name         = $request->request->get('name', null);
+        $revision      = $request->request->get('rev');
+        $labelManagers = $request->request->get('labelManagers', []);
+        $labeler       = $request->request->get('labeler', []);
+        $name          = $request->request->get('name', null);
 
         if ($revision !== $labelingGroup->getRev()) {
             throw new Exception\ConflictHttpException('Revision mismatch');
         }
 
-        $oldUserIds = array_unique(array_merge($labelingGroup->getLabeler(), $labelingGroup->getCoordinators()));
+        $oldUserIds = array_unique(array_merge($labelingGroup->getLabeler(), $labelingGroup->getLabelManagers()));
 
-        $labelingGroup->setCoordinators($coordinators);
+        $labelingGroup->setLabelManagers($labelManagers);
         $labelingGroup->setLabeler($labeler);
         $labelingGroup->setName($name);
         $this->labelingGroupFacade->save($labelingGroup);
@@ -338,8 +335,8 @@ class LabelingGroup extends Controller\Base
             $this->projectFacade->getProjectsForLabelGroup($labelingGroup)
         );
 
-        $deletedUsersIds = array_diff($oldUserIds, array_unique(array_merge($labeler, $coordinators)));
-        $newUsersIds     = array_diff(array_unique(array_merge($labeler, $coordinators)), $oldUserIds);
+        $deletedUsersIds = array_diff($oldUserIds, array_unique(array_merge($labeler, $labelManagers)));
+        $newUsersIds     = array_diff(array_unique(array_merge($labeler, $labelManagers)), $oldUserIds);
 
         foreach ($deletedUsersIds as $deletedUsersId) {
             $user = $this->userFacade->getUserById($deletedUsersId);
@@ -447,7 +444,7 @@ class LabelingGroup extends Controller\Base
         $labelingUserIds = array_map(function(Model\LabelingGroup $labelingGroup) {
             return array_unique(
                 array_merge(
-                    $labelingGroup->getCoordinators(),
+                    $labelingGroup->getLabelManagers(),
                     $labelingGroup->getLabeler()
                 )
             );

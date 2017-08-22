@@ -29,11 +29,11 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
     public function testXmlExport()
     {
-        $clientUser           = $this->createClientUser();
+        $labelManagerUser     = $this->createLabelManagerUser();
         $date                 = new \DateTime('2017-01-20 16:00:00', new \DateTimeZone('UTC'));
         $organisation         = $this->createOrganisation();
         $xmlTaskConfiguration = file_get_contents(__DIR__ . '/TaskConfiguration/Requirements.xml');
-        $project              = $this->createProject('project-id-1', $organisation, $clientUser, $date);
+        $project              = $this->createProject('project-id-1', $organisation, $labelManagerUser, $date);
         $project->addAdditionalFrameNumberMapping($this->createAdditionalFrameNumberMapping($organisation));
         $this->projectFacade->save($project);
         $video                = $this->createVideoWithCalibration($organisation);
@@ -45,7 +45,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             $this->createTaskConfiguration(
                 $xmlTaskConfiguration,
                 $this->createOrganisation(),
-                $clientUser,
+                $labelManagerUser,
                 'testconfig',
                 'testconfig.xml',
                 'application/xml',
@@ -59,7 +59,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $this->createLabeledFrames($task);
 
         $export = $this->exporterFacade->save(
-            new AppBundleModel\Export($project, $clientUser, $date)
+            new AppBundleModel\Export($project, $labelManagerUser, $date)
         );
 
         $this->exporter->export($export);

@@ -73,7 +73,7 @@ class ProjectBuilder
     /**
      * @var array
      */
-    private $coordinatorAssignments = [];
+    private $labelManagersAssignments = [];
 
     /**
      * @var string
@@ -197,23 +197,23 @@ class ProjectBuilder
     /**
      * @return $this
      */
-    public function withEmptyCoordinatorAssignments()
+    public function withEmptyLabelManagerAssignments()
     {
-        $this->coordinatorAssignments = [];
+        $this->labelManagersAssignments = [];
 
         return $this;
     }
 
     /**
-     * @param Model\User     $coordinator
+     * @param Model\User     $labelManager
      * @param \DateTime|null $dateTime
      *
      * @return $this
      */
-    public function withAddedCoordinatorAssignment(Model\User $coordinator, \DateTime $dateTime = null)
+    public function withAddedLabelManagerAssignment(Model\User $labelManager, \DateTime $dateTime = null)
     {
-        $this->coordinatorAssignments[] = [
-            'coordinator' => $coordinator,
+        $this->labelManagersAssignments[] = [
+            'labelManager' => $labelManager,
             'dateTime'    => $dateTime,
         ];
 
@@ -372,7 +372,7 @@ class ProjectBuilder
             'videosCount'                => 0,
             'dueTimestamp'               => null,
             'taskFailedCount'            => 0,
-            'coordinator'                => $this->getLatestAssignedCoordinatorUserId(),
+            'labelManager'               => $this->getLatestAssignedLabelManagerUserId(),
             'taskInstructionType'        => 'legacy',
             'diskUsage'                  => ['total' => 0],
             'campaigns'                  => [],
@@ -424,10 +424,10 @@ class ProjectBuilder
             $project->addStatusHistory($change['changedAt'], $change['status'], $change['changedBy']);
         }
 
-        foreach ($this->coordinatorAssignments as $coordinatorAssignment) {
-            $project->addCoordinatorAssignmentHistory(
-                $coordinatorAssignment['coordinator'],
-                $coordinatorAssignment['dateTime']
+        foreach ($this->labelManagersAssignments as $labelManagerAssignment) {
+            $project->addLabelManagerAssignmentHistory(
+                $labelManagerAssignment['labelManager'],
+                $labelManagerAssignment['dateTime']
             );
         }
 
@@ -441,9 +441,9 @@ class ProjectBuilder
     /**
      * @return null
      */
-    private function getLatestAssignedCoordinatorUserId()
+    private function getLatestAssignedLabelManagerUserId()
     {
-        $historyEntries = $this->coordinatorAssignments;
+        $historyEntries = $this->labelManagersAssignments;
         if (empty($historyEntries)) {
             return null;
         }

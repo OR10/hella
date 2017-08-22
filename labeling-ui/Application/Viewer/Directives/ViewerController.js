@@ -466,7 +466,7 @@ class ViewerController {
       this._modalService.info(
         {
           title: 'Missing calibration data',
-          headline: 'This task is missing its camera calibration data. Please contact the label coordinator for further assistance!',
+          headline: 'This task is missing its camera calibration data. Please contact the Label Manager for further assistance!',
           confirmButtonText: 'Go back to project list',
         },
         () => {
@@ -495,7 +495,7 @@ class ViewerController {
         {
           title: 'Unauthorized Access',
           headline: 'You do not longer have the access rights to work on this task.',
-          message: 'You have lost the authorization to work on this task. This can for example happen if the task was reassigned to another labeler, while you were working on it. Please contact your label coordinator for further instructions.',
+          message: 'You have lost the authorization to work on this task. This can for example happen if the task was reassigned to another labeler, while you were working on it. Please contact your Label Manager for further instructions.',
           confirmButtonText: 'Understood',
         },
         () => {
@@ -1254,7 +1254,7 @@ class ViewerController {
         {
           title: 'Error',
           headline: `There was an error updating the shape`,
-          message: `The shape could not be saved. Please contact the label coordinator and reload the page to continue with the labeling process!`,
+          message: `The shape could not be saved. Please contact the Label Manager and reload the page to continue with the labeling process!`,
           confirmButtonText: 'Reload',
         },
         () => window.location.reload(),
@@ -1309,7 +1309,7 @@ class ViewerController {
           {
             title: 'Error',
             headline: `There was an error creating the shape`,
-            message: `The shape could not be created. Please contact the label coordinator and reload the page to continue with the labeling process!`,
+            message: `The shape could not be created. Please contact the Label Manager and reload the page to continue with the labeling process!`,
             confirmButtonText: 'Reload',
           },
           () => window.location.reload(),
@@ -1360,7 +1360,7 @@ class ViewerController {
           {
             title: 'Error',
             headline: `There was an error saving the shape`,
-            message: `The shape could not be created. Please contact the label coordinator and reload the page to continue with the labeling process!`,
+            message: `The shape could not be created. Please contact the Label Manager and reload the page to continue with the labeling process!`,
             confirmButtonText: 'Reload',
           },
           () => window.location.reload(),

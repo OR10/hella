@@ -10,7 +10,7 @@
         "username": "user",
         "email": "user@example.com",
         "roles": [
-          "ROLE_ADMIN"
+          "ROLE_LABEL_MANAGER"
         ]
       }
     }

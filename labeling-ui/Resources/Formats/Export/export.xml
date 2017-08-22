@@ -23,7 +23,7 @@
             <created-by-user username="admin" email="admin@example.org" />
         </export>
         <labeling-group id="ee7921e2503c67339e5efb6c19b9d8f8d" name="Example Labeling Group">
-            <coordinator username="Ingmar" email="ingmar@hella.com" />
+            <label-manager username="Ingmar" email="ingmar@hella.com" />
             <labeler username="labeler1" email="labeler1@hella.com" />
             <labeler username="labeler2" email="labeler2@hella.com" />
         </labeling-group>

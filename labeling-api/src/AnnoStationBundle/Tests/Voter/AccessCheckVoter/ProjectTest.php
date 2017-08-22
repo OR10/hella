@@ -37,7 +37,7 @@ class ProjectTest extends Tests\CouchDbTestCase
         $this->voter = $this->getAnnostationService('voter.access_check.project');
 
         $this->user = $this->createUser();
-        $this->user->removeRole(Model\User::ROLE_ADMIN);
+        $this->user->removeRole(Model\User::ROLE_LABEL_MANAGER);
 
         $this->token = $this->getMockBuilder(TokenInterface::class)->getMock();
         $this->token->method('getUser')->willReturn($this->user);
@@ -51,38 +51,18 @@ class ProjectTest extends Tests\CouchDbTestCase
         $this->projectFacade->save($this->project);
     }
 
-    public function testAssignedClientHasReadAccess()
-    {
-        $this->user->addRole(Model\User::ROLE_CLIENT);
-        $this->project->setUserId($this->user->getId());
-
-        $this->assertTrue(
-            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_READ])
-        );
-    }
-
-    public function testAssignedLabelCoordinatorHasReadAccess()
-    {
-        $this->user->addRole(Model\User::ROLE_LABEL_COORDINATOR);
-        $this->project->addCoordinatorAssignmentHistory($this->user);
-
-        $this->assertTrue(
-            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_READ])
-        );
-    }
-
     public function testAssignedLabelerHasReadAccess()
     {
         $this->user->addRole(Model\User::ROLE_LABELER);
 
-        $assignedLabelCoordinator = $this->createUser('assigned-label-coordinator');
-        $otherLabelCoordinator    = $this->createUser('other-label-coordinator');
+        $assignedLabelManager = $this->createUser('assigned-label-manager');
+        $otherLabelManager    = $this->createUser('other-label-Manager');
         $otherUser                = $this->createUser('other-user');
 
-        $this->project->addCoordinatorAssignmentHistory($assignedLabelCoordinator);
+        $this->project->addLabelManagerAssignmentHistory($assignedLabelManager);
 
-        $assignmentLabelingGroup = $this->createLabelingGroup($this->createOrganisation(), $assignedLabelCoordinator, [$this->user]);
-        $otherLabelingGroup      = $this->createLabelingGroup($this->createOrganisation(), $otherLabelCoordinator, [$otherUser]);
+        $assignmentLabelingGroup = $this->createLabelingGroup($this->createOrganisation(), $assignedLabelManager, [$this->user]);
+        $otherLabelingGroup      = $this->createLabelingGroup($this->createOrganisation(), $otherLabelManager, [$otherUser]);
 
         $this->project->setLabelingGroupId($assignmentLabelingGroup->getId());
 
@@ -91,35 +71,15 @@ class ProjectTest extends Tests\CouchDbTestCase
         );
     }
 
-    public function testAdminHasReadAccess()
+    public function testLabelManagerHasReadAccess()
     {
-        $this->user->addRole(Model\User::ROLE_ADMIN);
+        $this->user->addRole(Model\User::ROLE_LABEL_MANAGER);
 
-        $assignedLabelCoordinator = $this->createUser('assigned-label-coordinator');
-        $this->project->addCoordinatorAssignmentHistory($assignedLabelCoordinator);
+        $assignedLabelManager = $this->createUser('assigned-label-Manager');
+        $this->project->addLabelManagerAssignmentHistory($assignedLabelManager);
 
         $this->assertTrue(
             $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_READ])
-        );
-    }
-
-    public function testAssignedClientHasWriteAccess()
-    {
-        $this->user->addRole(Model\User::ROLE_CLIENT);
-        $this->project->setUserId($this->user->getId());
-
-        $this->assertTrue(
-            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])
-        );
-    }
-
-    public function testAssignedLabelCoordinatorHasWriteAccess()
-    {
-        $this->user->addRole(Model\User::ROLE_LABEL_COORDINATOR);
-        $this->project->addCoordinatorAssignmentHistory($this->user);
-
-        $this->assertTrue(
-            $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])
         );
     }
 
@@ -127,14 +87,14 @@ class ProjectTest extends Tests\CouchDbTestCase
     {
         $this->user->addRole(Model\User::ROLE_LABELER);
 
-        $assignedLabelCoordinator = $this->createUser('assigned-label-coordinator');
-        $otherLabelCoordinator    = $this->createUser('other-label-coordinator');
+        $assignedLabelManager = $this->createUser('assigned-label-Manager');
+        $otherLabelManager    = $this->createUser('other-label-Manager');
         $otherUser                = $this->createUser('other-user');
 
-        $this->project->addCoordinatorAssignmentHistory($assignedLabelCoordinator);
+        $this->project->addLabelManagerAssignmentHistory($assignedLabelManager);
 
-        $assignmentLabelingGroup = $this->createLabelingGroup($this->createOrganisation(), $assignedLabelCoordinator, [$this->user]);
-        $otherLabelingGroup      = $this->createLabelingGroup($this->createOrganisation(), $otherLabelCoordinator, [$otherUser]);
+        $assignmentLabelingGroup = $this->createLabelingGroup($this->createOrganisation(), $assignedLabelManager, [$this->user]);
+        $otherLabelingGroup      = $this->createLabelingGroup($this->createOrganisation(), $otherLabelManager, [$otherUser]);
 
         $this->project->setLabelingGroupId($assignmentLabelingGroup->getId());
 
@@ -143,12 +103,12 @@ class ProjectTest extends Tests\CouchDbTestCase
         );
     }
 
-    public function testAdminHasWriteAccess()
+    public function testLabelManagerHasWriteAccess()
     {
-        $this->user->addRole(Model\User::ROLE_ADMIN);
+        $this->user->addRole(Model\User::ROLE_LABEL_MANAGER);
 
-        $assignedLabelCoordinator = $this->createUser('assigned-label-coordinator');
-        $this->project->addCoordinatorAssignmentHistory($assignedLabelCoordinator);
+        $assignedLabelManager = $this->createUser('assigned-label-Manager');
+        $this->project->addLabelManagerAssignmentHistory($assignedLabelManager);
 
         $this->assertTrue(
             $this->voter->voteOnAttribute($this->token, $this->project, [AccessCheckVoter\Project::PROJECT_WRITE])

@@ -97,7 +97,6 @@ class User extends Controller\Base
      * Add a user to an organisation
      *
      * @Rest\Put("/{organisation}/user/{user}/assign")
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
@@ -129,7 +128,6 @@ class User extends Controller\Base
      * Remove a user from an organisation
      *
      * @Rest\Delete("/{organisation}/user/{user}/unassign")
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_SUPER_ADMIN')")
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user

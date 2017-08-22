@@ -4,8 +4,10 @@ namespace AnnoStationBundle\Controller\Api\v1\Task;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Service\Authentication;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
 use AppBundle\View;
@@ -55,12 +57,18 @@ class Status extends Controller\Base
     private $labeledThingFacade;
 
     /**
+     * @var Authentication\UserPermissions
+     */
+    private $userPermissions;
+
+    /**
      * @param Facade\LabelingTask                           $labelingTaskFacade
      * @param Storage\TokenStorage                          $tokenStorage
      * @param Facade\Project                                $projectFacade
      * @param Facade\LabeledThing                           $labeledThingFacade
      * @param Service\Authorization                         $authorizationService
      * @param Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
+     * @param Authentication\UserPermissions                $userPermissions
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
@@ -68,7 +76,8 @@ class Status extends Controller\Base
         Facade\Project $projectFacade,
         Facade\LabeledThing $labeledThingFacade,
         Service\Authorization $authorizationService,
-        Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
+        Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService,
+        Authentication\UserPermissions $userPermissions
     ) {
         $this->labelingTaskFacade                = $labelingTaskFacade;
         $this->tokenStorage                      = $tokenStorage;
@@ -76,6 +85,7 @@ class Status extends Controller\Base
         $this->authorizationService              = $authorizationService;
         $this->databaseSecurityPermissionService = $databaseSecurityPermissionService;
         $this->labeledThingFacade                = $labeledThingFacade;
+        $this->userPermissions                   = $userPermissions;
     }
 
     /**
@@ -94,7 +104,7 @@ class Status extends Controller\Base
         $user    = $this->tokenStorage->getToken()->getUser();
         $phase   = $task->getCurrentPhase();
 
-        if (!$user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])
+        if (!$this->userPermissions->hasPermission('canFinishTaskOfOtherUsers')
             && $task->getLatestAssignedUserIdForPhase($phase) !== $user->getId()
         ) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to change the status');
@@ -109,7 +119,7 @@ class Status extends Controller\Base
                 }
             }
             if (!$isOneLabeledFrameComplete) {
-                throw new Exception\PreconditionFailedHttpException('No LabeledThing is incomplete');
+                throw new Exception\PreconditionFailedHttpException('There must be at least one LabeledFrame labeled');
             }
         }
 
@@ -150,7 +160,7 @@ class Status extends Controller\Base
         $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $task->getCurrentPhase();
 
-        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+        if ($this->userPermissions->hasPermission('canMoveTaskInOtherPhase')) {
             if ($task->getStatus($phase) !== Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION &&
                 $phase !== Model\LabelingTask::PHASE_PREPROCESSING
             ) {
@@ -182,7 +192,7 @@ class Status extends Controller\Base
         $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $task->getCurrentPhase();
 
-        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
+        if ($this->userPermissions->hasPermission('canMoveTaskInOtherPhase')) {
             if ($task->getStatus($phase) !== Model\LabelingTask::STATUS_TODO) {
                 throw new Exception\BadRequestHttpException();
             }
@@ -231,6 +241,7 @@ class Status extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/status/reopen")
+     * @CheckPermissions({"canReopenTask"})
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
@@ -245,16 +256,12 @@ class Status extends Controller\Base
         /** @var Model\User $user */
         $user  = $this->tokenStorage->getToken()->getUser();
         $phase = $request->request->get('phase');
-        if ($user->hasOneRoleOf([Model\User::ROLE_ADMIN, Model\User::ROLE_LABEL_COORDINATOR])) {
-            $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
-            $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO, $user);
-            $task->setReopen($phase, true);
-            $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO);
-            $this->labelingTaskFacade->save($task);
+        $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
+        $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO, $user);
+        $task->setReopen($phase, true);
+        $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO);
+        $this->labelingTaskFacade->save($task);
 
-            return View\View::create()->setData(['result' => ['success' => true]]);
-        }
-
-        throw new Exception\AccessDeniedHttpException('You are not allowed to change the status');
+        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 }

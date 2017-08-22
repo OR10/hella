@@ -83,35 +83,6 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
         $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
     }
 
-    public function testAdminPermissions()
-    {
-        $user = $this->createUser('admin');
-        $user->addRole(Model\User::ROLE_ADMIN);
-        $this->userFacade->saveUser($user);
-
-        $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
-
-        $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
-
-        $user->setOrganisations([]);
-        $this->userFacade->saveUser($user);
-
-        $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
-
-        $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
-    }
-
-    public function testClientPermissions()
-    {
-        $user = $this->createUser('client');
-        $user->addRole(Model\User::ROLE_CLIENT);
-        $this->userFacade->saveUser($user);
-
-        $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
-
-        $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
-    }
-
     public function testObserverPermissions()
     {
         $user = $this->createUser('observer');
@@ -123,17 +94,17 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
         $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
     }
 
-    public function testLabelCoordinatorPermissions()
+    public function testLabelLabelManagerPermissions()
     {
-        $user = $this->createUser('label_coordinator');
-        $user->addRole(Model\User::ROLE_LABEL_COORDINATOR);
+        $user = $this->createUser('label_manager');
+        $user->addRole(Model\User::ROLE_LABEL_MANAGER);
         $this->userFacade->saveUser($user);
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
 
         $this->assertEquals($this->getExpectedResponse(), $this->getDatabaseSecurityDocumentResponse());
 
-        $this->project->addCoordinatorAssignmentHistory($user);
+        $this->project->addLabelManagerAssignmentHistory($user);
         $this->projectFacade->save($this->project);
 
         $this->taskDatabaseSecurityPermissionService->updateForTask($this->labelingTask);
@@ -178,12 +149,12 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
         $fixedRoles       = [
             sprintf(
                 '%s%s-%s',
-                Service\UserRolesRebuilder::COORDINATORS_PREFIX,
+                Service\UserRolesRebuilder::LABEL_MANAGER_PREFIX,
                 $this->organisation->getId(),
                 $this->project->getId()
             ),
             Service\UserRolesRebuilder::SUPER_ADMIN_GROUP,
-            sprintf('%s%s', Service\UserRolesRebuilder::ADMIN_GROUP_PREFIX, $this->organisation->getId()),
+            sprintf('%s%s', Service\UserRolesRebuilder::LABEL_MANAGER_PREFIX, $this->organisation->getId()),
             sprintf('%s%s', Service\UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $this->organisation->getId()),
         ];
         $memberNames      = array_merge($memberNames, $fixedMemberNames);

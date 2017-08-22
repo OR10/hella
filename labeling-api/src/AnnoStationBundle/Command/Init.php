@@ -351,7 +351,7 @@ class Init extends Base
     {
         $this->writeSection($output, 'Creating users');
 
-        $users = ['admin', 'label_coordinator', 'user', 'client', 'superadmin'];
+        $users = ['superadmin', 'label_manager', 'labeler', 'observer'];
 
         if ($this->userPassword !== null) {
             foreach ($users as $username) {
@@ -367,25 +367,16 @@ class Init extends Base
 
                 switch ($username) {
                     case 'superadmin':
-                        $roleNames = [
-                            Model\User::ROLE_SUPER_ADMIN,
-                        ];
+                        $roleNames = [Model\User::ROLE_SUPER_ADMIN];
                         break;
-                    case 'admin':
-                        $roleNames = [
-                            Model\User::ROLE_ADMIN,
-                            Model\User::ROLE_LABEL_COORDINATOR,
-                            Model\User::ROLE_CLIENT,
-                        ];
+                    case 'label_manager':
+                        $roleNames = [Model\User::ROLE_LABEL_MANAGER];
                         break;
-                    case 'label_coordinator':
-                        $roleNames = [Model\User::ROLE_LABEL_COORDINATOR];
-                        break;
-                    case 'client':
-                        $roleNames = [Model\User::ROLE_CLIENT];
-                        break;
-                    case 'user':
+                    case 'labeler':
                         $roleNames = [Model\User::ROLE_LABELER];
+                        break;
+                    case 'observer':
+                        $roleNames = [Model\User::ROLE_OBSERVER];
                         break;
                     default:
                         $roleNames = 'ROLE_USER';
@@ -417,20 +408,20 @@ class Init extends Base
 
     private function createLabelGroup(OutputInterface $output)
     {
-        if (!isset($this->users['label_coordinator']) || !isset($this->users['user'])) {
+        if (!isset($this->users['label_manager']) || !isset($this->users['user'])) {
             return false;
         }
 
         $labelGroup = new Model\LabelingGroup(
             $this->getOrganisation(),
-            [$this->users['label_coordinator']->getId()],
-            [$this->users['user']->getId()],
+            [$this->users['label_manager']->getId()],
+            [$this->users['labeler']->getId()],
             'Example Labeling Group'
         );
 
         $this->labelingGroupFacade->save($labelGroup);
 
-        $this->writeSection($output, 'Added new LabelGroup for label_coordinator and user');
+        $this->writeSection($output, 'Added new LabelGroup for label_manager and user');
 
         return true;
     }
@@ -502,13 +493,13 @@ class Init extends Base
             'example.xml',
             'application/xml',
             $xmlData,
-            $this->users['client']->getId(),
+            $this->users['label_manager']->getId(),
             $taskConfigurationXmlConverter->convertToJson()
         );
 
         $this->taskConfigurationFacade->save($config);
 
-        $this->writeSection($output, 'Added new Sample Task Configuration for the Client User');
+        $this->writeSection($output, 'Added new Sample Task Configuration for the LabelManager User');
     }
 
     private function downloadSampleVideo(OutputInterface $output, string $videoBasePath, $skipImport, $lossless)
@@ -561,7 +552,7 @@ class Init extends Base
 
             $video = $this->videoImporterService->importVideo($project, $fileName, $path, $lossless);
 
-            $this->taskCreator->createTasks($project, $video, $this->users['admin']);
+            $this->taskCreator->createTasks($project, $video, $this->users['label_manager']);
         }
     }
 }
