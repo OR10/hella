@@ -37,6 +37,11 @@ class LabeledFrame
     /**
      * @CouchDB\Field(type="string")
      */
+    private $projectId;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
     private $taskId;
 
     /**
@@ -65,6 +70,7 @@ class LabeledFrame
         if (!in_array($frameIndex, array_keys($task->getFrameNumberMapping()))) {
             throw new \RangeException("Invalid frameNumber '{$frameIndex}'");
         }
+        $this->projectId  = $task->getProjectId();
         $this->taskId     = $task->getId();
         $this->frameIndex = $frameIndex;
     }
