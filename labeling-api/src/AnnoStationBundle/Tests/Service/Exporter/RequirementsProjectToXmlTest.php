@@ -36,7 +36,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $project              = $this->createProject('project-id-1', $organisation, $labelManagerUser, $date);
         $project->addAdditionalFrameNumberMapping($this->createAdditionalFrameNumberMapping($organisation));
         $this->projectFacade->save($project);
-        $video                = $this->createVideo($this->createOrganisation(), 'labeling-video');
+        $video                = $this->createVideoWithCalibration($organisation);
         $video->setOriginalId('e363906c1c4a5a5bd01e8902467d4b0e');
         $this->videoFacade->save($video);
         $task                 = $this->createTask(
@@ -286,6 +286,16 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             ['x' => 624, 'y' => 321]
         );
         $this->createLabeledThingInFrame($pointLabeledThing, 1, [$point->toArray()], ['lightsource-yes']);
+
+        $pointLabeledThing = $this->createLabeledThing($task);
+        $pointLabeledThing->setOriginalId('e363906c1c4a5a5bd01easdasdasdasdasd');
+        $pointLabeledThing->setFrameRange(new AppBundleModel\FrameIndexRange(1, 1));
+        $this->labeledThingFacade->save($pointLabeledThing);
+        $point = new Shapes\pedestrian(
+            '3659ecca-7c2b-440b-8dfa-38426cyxcyxc',
+            100, 0, 100, 347
+        );
+        $this->createLabeledThingInFrame($pointLabeledThing, 1, [$point->toArray()], ['hat-yes']);
     }
 
     private function getContentFromZip($data, $filename)
@@ -317,6 +327,27 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         );
 
         return $additionalFrameNumberMappingFacade->save($additionalFrameNumberMapping);
+    }
+
+    private function createVideoWithCalibration(Model\Organisation $organisation)
+    {
+        $calibrationFileConverter = $this->getAnnostationService('service.calibration_file_converter');
+        $calibrationDataFacade    = $this->getAnnostationService('database.facade.calibration_data');
+
+        $calibrationFileConverter->setCalibrationData(__DIR__ . '/Calibration/Video.csv');
+
+        $video = AppBundleModel\Video::create($organisation, 'labeling-video');
+
+        $calibrationData = new AppBundleModel\CalibrationData($this->createOrganisation(), 'test_video');
+        $calibrationData->setRawCalibration($calibrationFileConverter->getRawData());
+        $calibrationData->setCameraMatrix($calibrationFileConverter->getCameraMatrix());
+        $calibrationData->setRotationMatrix($calibrationFileConverter->getRotationMatrix());
+        $calibrationData->setTranslation($calibrationFileConverter->getTranslation());
+        $calibrationData->setDistortionCoefficients($calibrationFileConverter->getDistortionCoefficients());
+        $calibrationDataFacade->save($calibrationData);
+        $video->setCalibrationId($calibrationData->getId());
+
+        return $this->videoFacade->save($video);
     }
 
     protected function setUpImplementation()

@@ -49,7 +49,7 @@
                 </task>
             </references>
             <!-- #15 -->
-            <value id="raining" start="22" end="444" />
+            <value class="weather" id="raining" start="22" end="444" />
             <!-- ... -->
         </frame-labeling>
         <!-- ... -->
@@ -75,9 +75,9 @@
                 </shape>
                 <!-- ... -->
                 <!-- #27 -->
-                <value id="direction-left" start="22" end="44" />
-                <value id="occlusion-0" start="22" end="44" />
-                <value id="has-hat" start="22" end="44" />
+                <value class="direction" id="direction-left" start="22" end="44" />
+                <value class="occlusion" id="occlusion-0" start="22" end="44" />
+                <value class="hat" id="has-hat" start="22" end="44" />
               <!-- ... -->
         </thing>
         <thing id="e54ad7e1-95e3-434e-867c-02fe2625f610" start="66" end="66" line-color="25" type="sign">
@@ -98,10 +98,18 @@
                     <top-right-back x="7" y="1" z="1" />
                     <bottom-right-back x="7" y="1" z="0" />
                     <bottom-left-back x="7" y="3" z="0" />
+                    <image-top-left-front x="5" y="3" />
+                    <image-top-right-front x="5" y="1" />
+                    <image-bottom-right-front x="5" y="1" />
+                    <image-bottom-left-front x="5" y="3" />
+                    <image-top-left-back x="7" y="3" />
+                    <image-top-right-back x="7" y="1" />
+                    <image-bottom-right-back x="7" y="1" />
+                    <image-bottom-left-back x="7" y="3" />
                 </cuboid>
             </shape>
             <!-- ... -->
-            <value id="direction-back" start="66" end="66" />
+            <value class="direction" id="direction-back" start="66" end="66" />
             <!-- ... -->
         </thing>
         <!-- ... -->

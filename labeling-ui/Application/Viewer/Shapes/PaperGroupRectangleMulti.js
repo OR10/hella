@@ -209,6 +209,13 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
       labeledThingGroupId: this.groupId,
     };
   }
+
+  /**
+   * @returns {string}
+   */
+  getClass() {
+    return PaperGroupRectangleMulti.getClass();
+  }
 }
 
 /**

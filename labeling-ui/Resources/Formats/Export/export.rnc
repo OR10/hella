@@ -12,7 +12,8 @@ grammar {
 
   FrameRangeAttributes = (
     attribute start {text},
-    attribute end {text}
+    attribute end {text},
+    attribute class {text}?
   )
 
 # <metadata>
@@ -164,7 +165,15 @@ grammar {
     element e:top-left-back {XYZCoordinateAttributes},
     element e:top-right-back {XYZCoordinateAttributes},
     element e:bottom-right-back {XYZCoordinateAttributes},
-    element e:bottom-left-back {XYZCoordinateAttributes}
+    element e:bottom-left-back {XYZCoordinateAttributes},
+    element e:image-top-left-front {XYCoordinateAttributes}?,
+    element e:image-top-right-front {XYCoordinateAttributes}?,
+    element e:image-bottom-right-front {XYCoordinateAttributes}?,
+    element e:image-bottom-left-front {XYCoordinateAttributes}?,
+    element e:image-top-left-back {XYCoordinateAttributes}?,
+    element e:image-top-right-back {XYCoordinateAttributes}?,
+    element e:image-bottom-right-back {XYCoordinateAttributes}?,
+    element e:image-bottom-left-back {XYCoordinateAttributes}?
   }
 
   PolygonShape = element e:polygon {
@@ -181,7 +190,9 @@ grammar {
 
   PedestrianShape = element e:pedestrian {
     element e:top-center {XYCoordinateAttributes},
+    element e:top-left {XYCoordinateAttributes}?,
     element e:bottom-center {XYCoordinateAttributes},
+    element e:bottom-right {XYCoordinateAttributes}?,
     element e:aspect-ratio {text}
   }
 
