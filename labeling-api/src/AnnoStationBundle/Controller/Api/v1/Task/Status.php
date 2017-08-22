@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Controller\Api\v1\Task;
 
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;

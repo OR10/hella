@@ -9,6 +9,7 @@ use AnnoStationBundle\Service\Authentication;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Worker\Jobs;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\Service\Validation\ValidationError;
