@@ -312,6 +312,7 @@ class RequirementsProjectToXml
 
     /**
      * Search for the values parent class name
+     * Note: This only works if all IDs are unique in the whole document
      *
      * @param                         $value
      * @param Model\TaskConfiguration $taskConfiguration
