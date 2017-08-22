@@ -199,4 +199,20 @@ class LabeledFrame
     {
         $this->ghostClasses = $ghostClasses;
     }
+
+    /**
+     * @param mixed $projectId
+     */
+    public function setProjectId($projectId)
+    {
+        $this->projectId = $projectId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjectId()
+    {
+        return $this->projectId;
+    }
 }
