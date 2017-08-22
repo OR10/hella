@@ -228,7 +228,7 @@ describe('MultiSelect', () => {
       });
   });
 
-  it('should should select and deselect with ctrl+click (TTANNO-1813)', done => {
+  it('should deselect multi selection if empty view area is clicked (TTANNO-1813)', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => drawRectangle(firstShape))
         .then(() => drawRectangle(secondShape))
