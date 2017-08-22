@@ -90,8 +90,8 @@
                         ng-click="vm.assignProject(project.id, project.taskInPreProcessingCount)"
                         ng-class="{'green': project.labelManager !== undefined}"
                 >
-                    <i ng-show="project.labelManager !== undefined" tooltip="Selected label manager: {{project.labelManager.username}}" class="fa fa-user"></i>
-                    <i ng-hide="project.labelManager !== undefined" tooltip="Assign project to a label manager" class="fa fa-user"></i>
+                    <i ng-show="project.labelManager !== undefined" tooltip="Selected Label Manager: {{project.labelManager.username}}" class="fa fa-user"></i>
+                    <i ng-hide="project.labelManager !== undefined" tooltip="Assign project to a Label Manager" class="fa fa-user"></i>
                 </button>
 
                 <button tooltip="Close Project (Move to done)"

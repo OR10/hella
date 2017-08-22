@@ -479,9 +479,9 @@ class ProjectListController {
       if (!response.length) {
         this._modalService.info(
           {
-            title: 'No label labelManagers',
-            headline: 'There are no labelManagers',
-            message: 'There are no labelManagers that could be assigned to this project.',
+            title: 'No label Label Managers',
+            headline: 'There are no Label Managers',
+            message: 'There are no Label Managers that could be assigned to this project.',
             confirmButtonText: 'Understood',
           },
           undefined,
@@ -501,9 +501,9 @@ class ProjectListController {
       this._modalService.show(
         new this._SelectionDialog(
           {
-            title: 'Assign label manager',
-            headline: `Select a label manager to assign to this project`,
-            message: 'Please select a label manager that you want to assign to this project',
+            title: 'Assign Label Manager',
+            headline: `Select a Label Manager to assign to this project`,
+            message: 'Please select a Label Manager that you want to assign to this project',
             confirmButtonText: 'Assign',
             data: response,
           },
@@ -516,8 +516,8 @@ class ProjectListController {
               this._modalService.info(
                 {
                   title: 'No Label Manager Selected',
-                  headline: 'You need to select a label manager',
-                  message: 'You need to select a label manager to assign to this Project. Without a selected labeling manager the project can not be accepted!',
+                  headline: 'You need to select a Label Manager',
+                  message: 'You need to select a Label Manager to assign to this Project. Without a selected labeling manager the project can not be accepted!',
                   confirmButtonText: 'Understood',
                 },
                 undefined,

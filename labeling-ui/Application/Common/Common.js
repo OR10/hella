@@ -242,7 +242,7 @@ class Common extends Module {
           {
             title: 'Revision Error (409)',
             headline: 'There was an error with the application!',
-            message: 'Please reload the page and contact your label manager about this error.',
+            message: 'Please reload the page and contact your Label Manager about this error.',
             confirmButtonText: 'Reload Page',
           },
           () => window.location.reload(),
@@ -259,7 +259,7 @@ class Common extends Module {
           {
             title: 'Http Connection Error',
             headline: 'There was an error with the application!',
-            message: 'Please reload the page and contact your label manager about this error.',
+            message: 'Please reload the page and contact your Label Manager about this error.',
             confirmButtonText: 'Reload Page',
           },
           () => window.location.reload(),

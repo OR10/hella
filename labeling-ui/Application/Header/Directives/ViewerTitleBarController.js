@@ -339,7 +339,7 @@ class ViewerTitleBarController {
         {
           title: 'Finish Task',
           headline: 'Mark this task as finished?',
-          message: 'You are about to mark this task as being finished. After that it will be assigned back to the Label-Manager for review. You will not be able to change anything in this task from this point on.',
+          message: 'You are about to mark this task as being finished. After that it will be assigned back to the Label Manager for review. You will not be able to change anything in this task from this point on.',
           confirmButtonText: 'Finish',
         },
         () => {

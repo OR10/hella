@@ -610,7 +610,7 @@ class Project extends Controller\Base
     }
 
     /**
-     * Assign a label manager to a project
+     * Assign a Label Manager to a project
      *
      * @CheckPermissions({"canAssignProject"})
      *
