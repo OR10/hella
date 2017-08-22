@@ -59,6 +59,11 @@ class Project extends Controller\Base
     private $userFacade;
 
     /**
+     * @var Facade\TaskConfiguration
+     */
+    private $taskConfigurationFacade;
+
+    /**
      * @var Service\Authorization
      */
     private $authorizationService;
@@ -110,6 +115,7 @@ class Project extends Controller\Base
      * @param Facade\LabelingTask                              $labelingTaskFacade
      * @param Facade\Organisation                              $organisationFacade
      * @param Facade\Campaign                                  $campaignFacade
+     * @param Facade\TaskConfiguration                         $taskConfigurationFacade
      * @param ProjectFacadeFactory\FacadeInterface             $projectFacadeFactory
      * @param LabelingTaskFacadeFactory\FacadeInterface        $labelingTaskFacadeFactory
      * @param LabeledThingInFrameFacadeFactory\FacadeInterface $labeledThingInFrameFacadeFactory
@@ -125,6 +131,7 @@ class Project extends Controller\Base
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Organisation $organisationFacade,
         Facade\Campaign $campaignFacade,
+        Facade\TaskConfiguration $taskConfigurationFacade,
         ProjectFacadeFactory\FacadeInterface $projectFacadeFactory,
         LabelingTaskFacadeFactory\FacadeInterface $labelingTaskFacadeFactory,
         LabeledThingInFrameFacadeFactory\FacadeInterface $labeledThingInFrameFacadeFactory,
@@ -139,6 +146,7 @@ class Project extends Controller\Base
         $this->labelingTaskFacade                    = $labelingTaskFacade;
         $this->tokenStorage                          = $tokenStorage;
         $this->userFacade                            = $userFacade;
+        $this->taskConfigurationFacade               = $taskConfigurationFacade;
         $this->authorizationService                  = $authorizationService;
         $this->amqpFacade                            = $amqpFacade;
         $this->organisationFacade                    = $organisationFacade;
@@ -502,12 +510,23 @@ class Project extends Controller\Base
                     );
                 }
 
-                foreach ($taskTypeConfigurations as $taskTypeConfiguration) {
-                    $project->addRequirementsXmlTaskInstruction(
-                        $taskTypeConfiguration['type'],
-                        $taskTypeConfiguration['taskConfigurationId']
-                    );
+                $taskTypeConfiguration = reset($taskTypeConfigurations);
+
+                if ($taskTypeConfiguration['taskConfigurationId'] === '' || $taskTypeConfiguration['type'] === '') {
+                    throw new Exception\BadRequestHttpException('Invalid taskConfigurationId or taskType');
                 }
+
+                $taskConfiguration = $this->taskConfigurationFacade->find(
+                    $taskTypeConfiguration['taskConfigurationId']
+                );
+                if ($taskConfiguration === null) {
+                    throw new Exception\BadRequestHttpException('Task configuration not found.');
+                }
+
+                $project->addRequirementsXmlTaskInstruction(
+                    $taskTypeConfiguration['type'],
+                    $taskTypeConfiguration['taskConfigurationId']
+                );
                 break;
         }
 

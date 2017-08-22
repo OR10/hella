@@ -159,6 +159,22 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.migrations.set_project_id_to_labeled_frames"
+                 class="AnnoStationBundle\Command\Migrations\SetProjectIdToLabeledFrames">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_frame"/>
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="annostation.labeling_api.command.migrations.set_project_id_to_labeled_thing_groups"
+                 class="AnnoStationBundle\Command\Migrations\SetProjectIdToLabeledThingGroups">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
 

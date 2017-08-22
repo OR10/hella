@@ -259,6 +259,46 @@
             <element name="e:bottom-left-back">
                 <ref name="XYZCoordinateAttributes"/>
             </element>
+            <optional>
+                <element name="e:image-top-left-front">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:image-top-right-front">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:image-bottom-right-front">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:image-bottom-left-front">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:image-top-left-back">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:image-top-right-back">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:image-bottom-right-back">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:image-bottom-left-back">
+                    <ref name="XYCoordinateAttributes"/>
+                </element>
+            </optional>
         </element>
     </define>
     <define name="PolygonShape">

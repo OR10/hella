@@ -1,5 +1,4 @@
 import Tool from './NewTool';
-import {debounce} from 'lodash';
 
 /**
  * Base class of Tools providing keyboard shortcuts
@@ -34,12 +33,6 @@ class KeyboardTool extends Tool {
      * @private
      */
     this._keyboardShortcutOverlayIdentifier = null;
-
-    const staticSelf = this.constructor;
-    this._debouncedInvocationComplete = debounce(
-      () => this._complete(this._toolActionStruct.shape),
-      staticSelf.DEBOUNCE_TIMEOUT
-    );
   }
 
   /**
@@ -121,7 +114,7 @@ class KeyboardTool extends Tool {
       {
         callback: (...args) => {
           callback(...args);
-          this._debouncedInvocationComplete();
+          this._complete( this._toolActionStruct.shape);
         },
         combo,
         description,
@@ -129,12 +122,6 @@ class KeyboardTool extends Tool {
     );
   }
 }
-
-/**
- * Timeout in which no shortcuts are supposed to be pressed, before the invocation cyclce is completed.
- * @type {number}
- */
-KeyboardTool.DEBOUNCE_TIMEOUT = 300;
 
 KeyboardTool.$inject = [
   'drawingContext',
