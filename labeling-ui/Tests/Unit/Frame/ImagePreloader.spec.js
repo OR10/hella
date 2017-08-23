@@ -112,7 +112,8 @@ describe('ImagePreloader', () => {
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
         [...sourceJpgUrls, ...thumbnailUrls],
-        undefined
+        undefined,
+        jasmine.anything()
       );
     });
 
@@ -127,7 +128,8 @@ describe('ImagePreloader', () => {
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
         [...sourceJpgUrls, ...thumbnailUrls],
-        42
+        42,
+        jasmine.anything()
       );
     });
 
@@ -211,7 +213,8 @@ describe('ImagePreloader', () => {
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
         [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]],
-        undefined
+        undefined,
+        jasmine.anything()
       );
     });
 
@@ -226,7 +229,8 @@ describe('ImagePreloader', () => {
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
         [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]],
-        undefined
+        undefined,
+        jasmine.anything(),
       );
     });
 
@@ -241,7 +245,8 @@ describe('ImagePreloader', () => {
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
         [sourceJpgUrls[0], sourceJpgUrls[1], thumbnailUrls[0], thumbnailUrls[1]],
-        undefined
+        undefined,
+        jasmine.anything()
       );
 
       preloader.preloadImages(task, 2);
@@ -250,7 +255,8 @@ describe('ImagePreloader', () => {
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledWith(
         [sourceJpgUrls[2], sourceJpgUrls[3], thumbnailUrls[2], thumbnailUrls[3]],
-        undefined
+        undefined,
+        jasmine.anything()
       );
     });
 
