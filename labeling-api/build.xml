@@ -35,7 +35,7 @@
             <arg value="-o" />
             <arg value="${builddir}/apidoc/annostation/index.html" />
         </exec>
-    </target>å
+    </target>
 
     <target name="docker-down"  extensionOf="-test-unit:after~hook">
         <exec executable="${basedir}/scripts/CouchDB/Docker/shutdown.sh" />
