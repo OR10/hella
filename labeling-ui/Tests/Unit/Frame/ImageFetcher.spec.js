@@ -319,6 +319,26 @@ describe('ImageFetcher', () => {
       expect(resolveSpy).toHaveBeenCalledWith(images);
     });
 
+    it('should allow fetches to be aborted after current chunk', () => {
+      const imageFetcher = createImageFetcher();
+
+      const fetchId = 'some-fetch-id';
+
+      const imagesPromise = imageFetcher.fetchMultiple([urls[0], urls[1]], 1, fetchId);
+      const resolveSpy = jasmine.createSpy('image loaded');
+      imagesPromise.then(resolveSpy);
+
+      applyAsync();
+      expect(resolveSpy).not.toHaveBeenCalled();
+
+      imageFetcher.abortFetchMultiple(fetchId);
+
+      registeredEvents[0].load();
+      applyAsync();
+
+      expect(resolveSpy).toHaveBeenCalledWith([images[0]]);
+    });
+
     afterEach(() => jasmine.clock().uninstall());
   });
 });

@@ -22,6 +22,28 @@ class ImageFetcher {
      * @private
      */
     this._imageFactory = imageFactory;
+
+    /**
+     * State of aborted ids
+     *
+     * All ids in this set are marked as aborted.
+     *
+     * @type {Set}
+     * @private
+     */
+    this._abortedIds = new Set();
+
+    /**
+     * A list of running fetches by their fetchId
+     *
+     * Note: Only multifetches, which have been given a `fetchId´ are stored in here.
+     *
+     * One fetchId may be assigned to multiple fetches.
+     *
+     * @type {Map.<string, Promise[]>}
+     * @private
+     */
+    this._runningMultiFetchesById = new Map();
   }
 
   /**
@@ -47,15 +69,27 @@ class ImageFetcher {
    *
    * By default a maximum of 4 images is fetched in parallel.
    *
+   * Optionally an id may be specified, which can be used to abort the multifetch later on
+   * Please be adviced, that you are responsible for chosing a unique id. If two fetching
+   * operations with the same id are started and this id is aborted, both operations will be
+   * cancelled. Cancelled fetching operations will simply terminate successfully after the
+   * currently active chunk has been fetched.
+   *
    * @param {Array.<string>} urls
    * @param {number?} chunkSize
+   * @param {string} fetchId
+   * @returns {Promise.<Image[]>}
    */
-  fetchMultiple(urls, chunkSize = 4) {
+  fetchMultiple(urls, chunkSize = 4, fetchId = undefined) {
     const fetchMultipleDeferred = this._$q.defer();
-    const fetchQueue = clone(urls);
+    let fetchQueue = clone(urls);
     const activeFetches = [];
     const completedFetches = [];
     let processedIndex = 0;
+
+    if (fetchId !== undefined) {
+      this._addFetchWithId(fetchId, fetchMultipleDeferred.promise);
+    }
 
     const removeFromActive = fetch => {
       const fetchIndex = activeFetches.findIndex(candidate => candidate === fetch);
@@ -66,6 +100,12 @@ class ImageFetcher {
     };
 
     const fetchNextInLine = index => {
+      if (fetchId !== undefined && this._abortedIds.has(fetchId)) {
+        // Do not queue any more items and resolve as soon as all active
+        // have been finished
+        fetchQueue = [];
+      }
+
       if (activeFetches.length >= chunkSize) {
         return;
       }
@@ -103,6 +143,59 @@ class ImageFetcher {
     fetchNextInLine(processedIndex);
 
     return fetchMultipleDeferred.promise;
+  }
+
+  /**
+   * Abort a fetch running under a specific id.
+   *
+   * All fetches with the given id will be aborted as soon as there current
+   * chunk has been processed.
+   *
+   * @param {string} fetchId
+   */
+  abortFetchMultiple(fetchId) {
+    if (!this._runningMultiFetchesById.has(fetchId)) {
+      throw new Error(`Tried to abort multi fetch with unknown id "${fetchId}".`);
+    }
+
+    this._abortedIds.add(fetchId);
+  }
+
+  /**
+   * @param fetchId
+   * @param promise
+   * @private
+   */
+  _addFetchWithId(fetchId, promise) {
+    if (!this._runningMultiFetchesById.has(fetchId)) {
+      this._runningMultiFetchesById.set(fetchId, []);
+    }
+
+    const runningFetches = this._runningMultiFetchesById.get(fetchId);
+    runningFetches.push(promise);
+
+    // Automatically track the finishing of the given promise and handle the appropriate state change
+    promise
+      .then(() => this._finishFetchWithId(fetchId, promise))
+      .catch(() => this._finishFetchWithId(fetchId, promise));
+  }
+
+  _finishFetchWithId(fetchId, promise) {
+    if (!this._runningMultiFetchesById.has(fetchId)) {
+      return;
+    }
+
+    const runningFetches = this._runningMultiFetchesById.get(fetchId);
+    const fetchIndex = runningFetches.findIndex(candidate => candidate === promise);
+    runningFetches.splice(fetchIndex, 1);
+
+    if (runningFetches.length === 0) {
+      this._runningMultiFetchesById.delete(fetchId);
+      // Remove all aborted markers once all corresponding sessions have terminated.
+      if (this._abortedIds.has(fetchId)) {
+        this._abortedIds.delete(fetchId);
+      }
+    }
   }
 }
 
