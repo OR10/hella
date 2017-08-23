@@ -1,0 +1,14 @@
+{
+  "name": "hagl/worker-pool-bundle",
+  "version": "dev-master",
+  "autoload": {
+    "psr-4": {
+      "Hagl\\WorkerPoolBundle\\": "./"
+    }
+  },
+  "require": {
+    "php": ">=5.6",
+    "crosscan/logger": "dev-master",
+    "crosscan/worker-pool": "dev-master"
+  }
+}

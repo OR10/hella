@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!--
+        <service id="hagl.workerpool.logger" alias="annostation.labeling_api.vendor.logger">
+        </service>
+
+        <service id="hagl.workerpool.config" alias="annostation.labeling_api.service.amqp_pool_config">
+        </service>
+
+        <service id="hagl.workerpool.facade" alias="annostation.labeling_api.vendor.worker_pool.amqp">
+        </service>
+        -->
+
+        <!--
+        <service id="hagl.workerpool.eventhandler_registry" class="Hagl\WorkerPoolBundle\EventHandler\EventHandlerRegistry">
+        </service>
+
+        <service id="hagl.workerpool.job_instruction_factory" class="Hagl\WorkerPoolBundle\JobInstructionFactory">
+        </service>
+        -->
+
+        <!-- console commands -->
+        <!--
+        <service id="hagl.workerpool.command.setup" class="Hagl\WorkerPoolBundle\Command\Setup">
+            <argument type="service" id="hagl.workerpool.config"/>
+            <argument>%hagl.workerpool.queue_prefix%</argument>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="hagl.workerpool.command.starter" class="Hagl\WorkerPoolBundle\Command\Starter">
+            <argument type="service" id="hagl.workerpool.config"/>
+            <argument type="service" id="hagl.workerpool.logger"/>
+            <argument type="service" id="hagl.workerpool.job_instruction_factory"/>
+            <argument type="service" id="hagl.workerpool.eventhandler_registry"/>
+            <argument>%hagl.workerpool.queue_prefix%</argument>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="hagl.workerpool.command.queue_maintainer" class="Hagl\WorkerPoolBundle\Command\Maintainer">
+            <argument type="service" id="hagl.workerpool.config"/>
+            <argument type="service" id="hagl.workerpool.facade"/>
+            <argument>%hagl.workerpool.queue_prefix%</argument>
+            <tag name="console.command"/>
+        </service>
+        -->
+    </services>
+</container>
