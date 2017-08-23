@@ -53,7 +53,39 @@ the `supervisord` system.
 Manual execution from the commandline for debugging purposes is possible. See
 the output of `node Application/Index.js` for details on the needed arguments.
 
-## Debugging
+## Development 
+
+### Testing
+
+The `ReplicationManager` has self contained unit tests. Those tests may be run
+through `yarn`.
+
+#### Run once
+ 
+```
+nvm use
+yarn run test
+```
+
+#### Run and watch for changes
+
+```
+nvm use
+yarn run test:continous
+```
+
+### Coding Style
+
+The coding style used in this project is a slightly modified version of the
+air-bnb javascript style. The ReplicationManager may be checked against the
+coding style using `eslint`:
+
+```
+nvm use
+yarn run eslint
+```
+
+### Debugging
 
 Once running the `ReplicationManager` creates a debugging directory at
 `/var/tmp/replication-manager-debug`. Certain debugging operation can be
@@ -71,7 +103,7 @@ The active tasks will then be written into JSON files inside a timestamped
 directory under `/var/tmp/replication-manager-debug/`. The command file will
 be removed after processing automatically.
 
-### Commands
+#### Commands
 
 The following commands are available:
 
