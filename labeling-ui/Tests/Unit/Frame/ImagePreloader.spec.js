@@ -24,7 +24,7 @@ describe('ImagePreloader', () => {
   }));
 
   beforeEach(() => {
-    imageFetcherMock = jasmine.createSpyObj('ImageFetcher', ['fetch', 'fetchMultiple']);
+    imageFetcherMock = jasmine.createSpyObj('ImageFetcher', ['fetch', 'fetchMultiple', 'abortFetchMultiple', 'isFetchMultipleRunning']);
     imageCacheMock = jasmine.createSpyObj('ImageCache', ['hasImageForUrl', 'addImages', 'addImage']);
     frameLocationGatewayMock = jasmine.createSpyObj('FrameLocationGateway', ['getFrameLocations']);
     frameIndexServiceMock = jasmine.createSpyObj('FrameIndexService', ['getFrameIndexLimits']);
@@ -271,6 +271,42 @@ describe('ImagePreloader', () => {
       rootScope.$apply();
 
       expect(imageFetcherMock.fetchMultiple).toHaveBeenCalledTimes(1);
+    });
+
+    it('should provide the image fetcher with an id based on the task.id', () => {
+      const preloader = createImagePreloader();
+      preloader.preloadImages(task, 2);
+
+      rootScope.$apply();
+
+      expect(imageFetcherMock.fetchMultiple.calls.mostRecent().args[2])
+        .toMatch(task.id);
+    });
+  });
+
+  describe('stopPreloadingForTask', () => {
+    it('should abort the fetchMultiple call if a fetch for the given task is running', () => {
+      imageFetcherMock.isFetchMultipleRunning.and.returnValue(true);
+      const preloader = createImagePreloader();
+      preloader.preloadImages(task, 2);
+      preloader.stopPreloadingForTask(task);
+      rootScope.$apply();
+
+      expect(imageFetcherMock.isFetchMultipleRunning).toHaveBeenCalled();
+      expect(imageFetcherMock.abortFetchMultiple).toHaveBeenCalled();
+      expect(imageFetcherMock.abortFetchMultiple.calls.mostRecent().args[0])
+        .toMatch(task.id);
+    });
+
+    it('should do nothing if the fetch for the given task is not running', () => {
+      imageFetcherMock.isFetchMultipleRunning.and.returnValue(false);
+      const preloader = createImagePreloader();
+      preloader.preloadImages(task, 2);
+      preloader.stopPreloadingForTask(task);
+      rootScope.$apply();
+
+      expect(imageFetcherMock.isFetchMultipleRunning).toHaveBeenCalled();
+      expect(imageFetcherMock.abortFetchMultiple).not.toHaveBeenCalled();
     });
   });
 
