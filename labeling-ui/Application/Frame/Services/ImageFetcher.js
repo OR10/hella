@@ -162,6 +162,16 @@ class ImageFetcher {
   }
 
   /**
+   * Check if a multifetch registered under a certain id is still
+   * running
+   *
+   * @param {string} fetchId
+   */
+  isFetchMultipleRunning(fetchId) {
+    return this._runningMultiFetchesById.has(fetchId);
+  }
+
+  /**
    * @param fetchId
    * @param promise
    * @private
