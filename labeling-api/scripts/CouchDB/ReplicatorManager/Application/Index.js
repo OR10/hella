@@ -1,4 +1,5 @@
 const nano = require('nano');
+const {DebugInterface} = require('./DebugInterface');
 
 const {CommandLineOptions} = require('./CommandLineOptions');
 const {Logger} = require('./Logger');
@@ -36,11 +37,14 @@ const purgeService = new PurgeService(
   nanoAdmin
 );
 
+const debugInterface = new DebugInterface(logger, '/var/tmp/replication-manager-debug');
+
 const replicationManager = new ReplicationManager(
   logger,
   nanoAdmin,
   workerQueue,
   purgeService,
+  debugInterface,
   options,
 );
 

@@ -177,6 +177,19 @@ class Replicator {
   hasReachedMaximumRetries() {
     return this._retryCount > 5;
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      sourceBaseUrl: this.sourceBaseUrl,
+      sourceDatabase: this.sourceDatabase,
+      sourceUrl: this.sourceUrl,
+      targetUrl: this.targetUrl,
+      retryCount: this._retryCount,
+      resolveIsDefined: this._resolve !== undefined,
+      rejectIsDefined: this._reject !== undefined,
+    }
+  }
 }
 
 exports.Replicator = Replicator;
