@@ -10,9 +10,10 @@ class FrontendInterpolation {
   /**
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {angular.$q} $q
+   * @param {EntityIdService} entityIdService
    * @param {InterpolationEasing[]} easings
    */
-  constructor(labeledThingInFrameGateway, $q, ...easings) {
+  constructor(labeledThingInFrameGateway, $q, entityIdService, ...easings) {
     /**
      * @type {LabeledThingInFrameGateway}
      * @private
@@ -24,6 +25,12 @@ class FrontendInterpolation {
      * @private
      */
     this._$q = $q;
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
 
     /**
      * @type {InterpolationEasing[]}
@@ -118,7 +125,7 @@ class FrontendInterpolation {
    * @private
    */
   _transformGhostToLabeledThing(labeledThingInFrame) {
-    labeledThingInFrame.ghostBust(uuid.v4(), labeledThingInFrame.frameIndex);
+    labeledThingInFrame.ghostBust(this._entityIdService.getUniqueId(), labeledThingInFrame.frameIndex);
 
     return labeledThingInFrame;
   }
@@ -135,6 +142,7 @@ class FrontendInterpolation {
 FrontendInterpolation.$inject = [
   'labeledThingInFrameGateway',
   '$q',
+  'entityIdService',
   'linearRectangleInterpolationEasing',
   'linearPedestrianInterpolationEasing',
   'linearPolyInterpolationEasing',
