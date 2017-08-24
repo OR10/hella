@@ -1,4 +1,3 @@
-import uuid from 'uuid';
 import moment from 'moment';
 
 /**

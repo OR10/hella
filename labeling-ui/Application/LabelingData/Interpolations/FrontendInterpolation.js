@@ -1,5 +1,3 @@
-import uuid from 'uuid';
-
 /**
  * Interpolation base class, for all {@link Interpolation}s, which are executed on the backend
  *

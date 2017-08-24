@@ -2,7 +2,6 @@ import paper from 'paper';
 import RectangleHandle from './Handles/Rectangle';
 import PaperVirtualShape from './PaperVirtualShape';
 import VirtualLabeledThingInFrame from '../../LabelingData/Models/VirtualLabeledThingInFrame';
-import uuid from 'uuid';
 
 class PaperMeasurementRectangle extends PaperVirtualShape {
   /**
