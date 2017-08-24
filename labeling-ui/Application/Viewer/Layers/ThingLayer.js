@@ -334,16 +334,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._applicationState.disableAll();
 
     this._labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
-      .catch((error) => {
-        console.error('#1', error);
-        this._onDeletionError()
-      })
       .then(() => {
         return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
-      })
-      .catch((error) => {
-        console.error('#2', error);
-        this._onDeletionError()
       })
       .then(() => {
         this._shapeSelectionService.removeShape(shape);
@@ -354,10 +346,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         );
         this._deleteAfterAction();
       })
-      .catch((error) => {
-        console.error('#3', error);
-        this._onDeletionError()
-      });
+      .catch(() => this._onDeletionError());
   }
 
   /**
