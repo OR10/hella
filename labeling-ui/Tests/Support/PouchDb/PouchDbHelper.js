@@ -1,7 +1,7 @@
 import PouchDB from 'pouchdb';
-import uuid from 'uuid';
 import {forEach, pickBy} from 'lodash';
 import PouchDbViewService from '../../../Application/Common/Services/PouchDbViewService';
+import EntityIdService from '../../../Application/Common/Services/EntityIdService';
 
 class PouchDbHelper {
   constructor() {
@@ -163,7 +163,7 @@ class PouchDbHelper {
    * @private
    */
   _generateDatabaseName() {
-    return `__annostation_test__${uuid.v4()}`;
+    return `__annostation_test__${EntityIdService.getUniqueId()}`;
   }
 }
 
