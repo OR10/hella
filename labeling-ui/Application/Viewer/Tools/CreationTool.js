@@ -7,9 +7,10 @@ class CreationTool extends PaperTool {
    * @param {$q} $q
    * @param {LoggerService} loggerService
    * @param {HierarchyCreationService} hierarchyCreationService
+   * @param {ModalService} modalService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService) {
-    super(drawingContext, $rootScope, $q, loggerService);
+  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, modalService) {
+    super(drawingContext, $rootScope, $q, loggerService, modalService);
 
     /**
      * @type {HierarchyCreationService}
@@ -57,6 +58,7 @@ CreationTool.$inject = [
   '$rootScope',
   '$q',
   'loggerService',
+  'modalService',
 ];
 
 export default CreationTool;
