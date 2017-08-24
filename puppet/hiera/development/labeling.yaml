@@ -99,7 +99,7 @@ labeling_api::worker::user: vagrant
 labeling_api::worker::numberOfLowNormalWorkers: 2
 labeling_api::worker::numberOfHighNormalWorkers: 1
 labeling_api::worker::symfony_environment: 'dev'
-labeling_api::worker::autostart: false
+labeling_api::worker::autostart: true
 
 labeling_api::couch::max_open_files: 65535
 labeling_api::couch::max_dbs_open: 65535
