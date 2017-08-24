@@ -68,6 +68,7 @@ class ViewerController {
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {InProgressService} inProgressService
    * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {ImagePreloader} imagePreloader
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ToolSelectorListenerService} toolSelectorListenerService
    * @param {HierarchyCreationService} hierarchyCreationService
@@ -355,18 +356,38 @@ class ViewerController {
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
         const shapes = this._shapeSelectionService.getAllShapes();
+        shapes.forEach(shape => console.log(shape.labeledThingInFrame.labeledThing.groupIds));
         const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
         const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
-
-        this._thingLayerContext.withScope(() => {
-          const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
-          this._storeGroup(group, shapes);
-          group.sendToBack();
-          this.paperGroupShapes = this.paperGroupShapes.concat([group]);
-          this._shapeSelectionService.clear();
-          this.selectedPaperShape = group;
-          group.select();
-        });
+        if (shapes.length == 2) {
+          
+          const groupIds = [];
+          shapes.forEach(shape => {
+            const shapeGroups = shape.labeledThingInFrame.labeledThing.groupIds;
+            if (shapeGroups.length !== 0) {
+              shapeGroups.forEach(group => groupIds.push(group));
+            }
+          });
+          if (groupIds.length !== 0) {
+            groupIds.forEach(groupId => {
+              const toAddShape = shapes.find(shape => shape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) === -1);
+              console.log(toAddShape);
+              //TODO: add also group name here
+              const group = this.paperGroupShapes.find(pgs => pgs.groupId === groupId);
+              this._thingLayerContext.withScope(() => {
+                group.addShape(toAddShape);
+                this._handleGroupAddAfterActions(group, shapes);
+              })
+            })
+          }
+        }
+        else {
+          this._thingLayerContext.withScope(() => {
+            console.log("asdasdsad")
+            const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+            this._handleGroupAddAfterActions(group, shapes);
+          });
+        }
       }
     };
     this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
@@ -759,7 +780,7 @@ class ViewerController {
 
   _setupBackgroundLayer() {
     this._backgroupLayerContext = this._drawingContextService.createContext();
-
+    
     /**
      * @type {BackgroundLayer}
      * @private
@@ -888,6 +909,20 @@ class ViewerController {
     );
 
     this._updateViewport();
+  }
+
+  /**
+   * @param {PaperGroupShape} group
+   * @param {Array.<PaperThingShape>} shapes
+   * @private
+   */
+  _handleGroupAddAfterActions(group, shapes) {
+    this._storeGroup(group, shapes);
+    group.sendToBack();
+    this.paperGroupShapes = this.paperGroupShapes.concat([group]);
+    this._shapeSelectionService.clear();
+    this.selectedPaperShape = group;
+    group.select();
   }
 
   _resize() {
