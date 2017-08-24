@@ -338,7 +338,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._applicationState.disableAll();
 
     try {
-      this._labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
+      this._labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
         .then(() => {
           return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
         })

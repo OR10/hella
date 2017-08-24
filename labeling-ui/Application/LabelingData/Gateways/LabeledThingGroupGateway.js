@@ -230,7 +230,7 @@ class LabeledThingGroupGateway {
    * @param {Array.<LabeledThing>} labeledThings
    * @param {LabeledThingGroup} labeledThingGroup
    */
-  unassignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
+  unassignLabeledThingsFromLabeledThingGroup(labeledThings, labeledThingGroup) {
     const modifiedLabeledThings = labeledThings.map(labeledThing => {
       const index = labeledThing.groupIds.indexOf(labeledThingGroup.id);
       if (index !== -1) {

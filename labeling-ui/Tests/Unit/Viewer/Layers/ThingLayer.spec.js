@@ -61,7 +61,7 @@ describe('ThingLayer', () => {
 
     labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['deleteLabeledThing']);
 
-    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['unassignLabeledThingsToLabeledThingGroup', 'deleteLabeledThingGroup']);
+    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['unassignLabeledThingsFromLabeledThingGroup', 'deleteLabeledThingGroup']);
   }));
 
   beforeEach(inject(($injector, $rootScope, $q) => {
@@ -969,7 +969,7 @@ describe('ThingLayer', () => {
       });
       it('Delete shape from group and delete group when it has only one shape in it', () => {
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-        labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
@@ -1002,7 +1002,7 @@ describe('ThingLayer', () => {
         paperShapeKeep.select = jasmine.createSpy('paperShapeSelect');
 
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-        labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
@@ -1030,7 +1030,7 @@ describe('ThingLayer', () => {
         expect(modalService.info).toHaveBeenCalled();
       });
       it('Delete group', () => {
-        labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
