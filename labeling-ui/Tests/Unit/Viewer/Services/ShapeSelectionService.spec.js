@@ -37,7 +37,7 @@ describe('ShapeSelectionService tests', () => {
 
   function createShapeSelectionService(drawingContext = drawingContextMock) {
     const service = new ShapeSelectionService();
-    if (drawingContext !== undefined) {
+    if (drawingContext !== null) {
       service.setDrawingContext(drawingContext);
     }
     return service;
@@ -271,13 +271,13 @@ describe('ShapeSelectionService tests', () => {
 
   describe('DrawingContext', () => {
     it('should accept a new drawingContext to be set', () => {
-      const service = createShapeSelectionService(undefined);
+      const service = createShapeSelectionService(null);
       const someContextMock = {};
       expect(() => service.setDrawingContext(someContextMock)).not.toThrow();
     });
 
     it('should clear the selected shapes once an initial new drawingContext is set', () => {
-      const service = createShapeSelectionService(undefined);
+      const service = createShapeSelectionService(null);
       const someContextMock = {};
       spyOn(service, 'clear');
       service.setDrawingContext(someContextMock);
@@ -286,7 +286,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('should not clear the selected shapes if the same drawing context is set again', () => {
-      const service = createShapeSelectionService(undefined);
+      const service = createShapeSelectionService(null);
       const someContextMock = {};
 
       spyOn(service, 'clear');
@@ -298,7 +298,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('should clear the selected shapes if the the drawingContext is changed', () => {
-      const service = createShapeSelectionService(undefined);
+      const service = createShapeSelectionService(null);
       const someContextMock = {};
       const someOtherContextMock = {};
 
