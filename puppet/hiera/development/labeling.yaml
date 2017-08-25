@@ -96,8 +96,10 @@ labeling_api::cdn::httpv2: true
 
 labeling_api::worker::app_dir: '/vagrant'
 labeling_api::worker::user: vagrant
-labeling_api::worker::numberOfLowNormalWorkers: 2
-labeling_api::worker::numberOfHighNormalWorkers: 1
+labeling_api::worker::numberOfLowWorkers: 1
+labeling_api::worker::numberOfNormalWorkers: 2
+labeling_api::worker::numberOfHighWorkers: 1
+labeling_api::worker::numberOfNormalLowWorkers: 2
 labeling_api::worker::symfony_environment: 'dev'
 labeling_api::worker::autostart: true
 
