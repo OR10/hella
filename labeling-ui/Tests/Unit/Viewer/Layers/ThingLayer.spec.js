@@ -1053,7 +1053,7 @@ describe('ThingLayer', () => {
     describe('PaperGroupShape', () => {
       it('shows modal window on error', () => {
         const error = new Error('Help! Help! I am caught in a big whale!');
-        labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.reject(error))
+        labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.reject(error));
         angularScope.vm.paperThingShapes = [];
         const pgs = new PaperGroupShape({labeledThingGroup: {id: 1}});
         rootScope.$emit('action:delete-shape', pgs);
