@@ -13,6 +13,7 @@ describe('FrontendInterpolation Test Suite', () => {
      */
     let interpolation;
     let gateway;
+    let entityIdService;
     let angularQ;
     let rootScope;
     let frameRange;
@@ -25,8 +26,9 @@ describe('FrontendInterpolation Test Suite', () => {
 
     beforeEach(() => {
       gateway = jasmine.createSpyObj('LabeledThingInFrameGateway', ['getLabeledThingInFrame', 'saveLabeledThingInFrame']);
+      entityIdService = jasmine.createSpyObj('EntityIdService', ['getUniqueId']);
       easingMock = jasmine.createSpyObj('Easing Mock', ['supportsShape', 'supportsEasing', 'step']);
-      interpolation = new FrontendInterpolation(gateway, angularQ, easingMock);
+      interpolation = new FrontendInterpolation(gateway, angularQ, entityIdService, easingMock);
 
       frameRange = {
         startFrameIndex: 1,
