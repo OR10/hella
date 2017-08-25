@@ -463,7 +463,7 @@ ProjectCreateController.$inject = [
   'taskConfigurationGateway',
   'modalService',
   'organisationService',
-  'EntityIdService',
+  'entityIdService',
 ];
 
 export default ProjectCreateController;
