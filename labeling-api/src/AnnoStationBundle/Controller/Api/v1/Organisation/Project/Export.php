@@ -181,7 +181,7 @@ class Export extends Controller\Base
                     $this->amqpFacade->addJob(new Jobs\GenericXmlProjectToCsvExporter($export), WorkerPool\Facade::HIGH_PRIO);
                     break;
                 case 'requirementsXml':
-                    $this->amqpFacade->addJob(new Jobs\RequirementsProjectToXml($export));
+                    $this->amqpFacade->addJob(new Jobs\RequirementsProjectToXml($export), WorkerPool\Facade::HIGH_PRIO);
                     break;
             }
         }
