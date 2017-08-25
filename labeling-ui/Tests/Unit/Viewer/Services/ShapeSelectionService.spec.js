@@ -284,6 +284,24 @@ describe('ShapeSelectionService tests', () => {
       expect(service.count()).toEqual(1);
       expect(allShapes[0]).toBe(shapeTwo);
     });
+
+    it('should do nothing if drawingContext is not set', () => {
+      const service = createShapeSelectionService(null);
+      const shape = createCuboid();
+
+      service.removeShape(shape);
+
+      expect(shape.deselect).not.toHaveBeenCalled();
+    });
+
+    it('should execute commands within withScope block', () => {
+      const service = createShapeSelectionService();
+      const shape = createCuboid();
+
+      service.removeShape(shape);
+
+      expect(drawingContextMock.withScope).toHaveBeenCalled();
+    });
   });
 
   describe('DrawingContext', () => {

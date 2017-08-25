@@ -79,8 +79,14 @@ class ShapeSelectionService {
    * @returns {boolean}
    */
   removeShape(shape) {
-    shape.deselect();
-    this._shapes.delete(shape.id);
+    if (this._isDrawingContextUndefined()) {
+      return;
+    }
+
+    this._drawingContext.withScope(() => {
+      shape.deselect();
+      this._shapes.delete(shape.id);
+    });
   }
 
   /**
