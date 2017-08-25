@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use AnnoStationBundle\Response;
+use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 use AnnoStationBundle\Worker\Jobs;
 use AnnoStationBundle\Service\Authentication;
@@ -693,7 +694,7 @@ class Project extends Controller\Base
                 $job = new Jobs\LabelingTaskRemoveAssignment(
                     $userId, $task->getId()
                 );
-                $this->amqpFacade->addJob($job);
+                $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
             }
         }
 
