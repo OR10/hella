@@ -117,18 +117,19 @@ class Tool {
       this._logger.groupEnd('tool:invocation');
 
       if (displayModalInfo) {
-        this._modalService.info(
-          {
-            title: 'Error',
-            headline: reason.message,
-          },
-          undefined,
-          undefined,
-          {
-            warning: true,
-            abortable: false,
-          }
-        );
+          console.log(this._modalService);
+          this._modalService.info(
+              {
+                  title: 'Error',
+                  headline: reason.message,
+              },
+              undefined,
+              undefined,
+              {
+                  warning: true,
+                  abortable: false,
+              }
+          );
       }
 
       this._invoked = false;
