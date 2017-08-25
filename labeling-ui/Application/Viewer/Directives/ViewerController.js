@@ -356,11 +356,9 @@ class ViewerController {
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
         const shapes = this._shapeSelectionService.getAllShapes();
-        shapes.forEach(shape => console.log(shape.labeledThingInFrame.labeledThing.groupIds));
         const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
         const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
-        if (shapes.length == 2) {
-          
+        if (shapes.length === 2) {
           const groupIds = [];
           shapes.forEach(shape => {
             const shapeGroups = shape.labeledThingInFrame.labeledThing.groupIds;
@@ -371,21 +369,22 @@ class ViewerController {
           if (groupIds.length !== 0) {
             groupIds.forEach(groupId => {
               const toAddShape = shapes.find(shape => shape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) === -1);
-              console.log(toAddShape);
-              //TODO: add also group name here
-              const group = this.paperGroupShapes.find(pgs => pgs.groupId === groupId);
+              // TODO: add also group name here
+
               this._thingLayerContext.withScope(() => {
+                const group = this.paperGroupShapes.find(pgs => pgs.groupId === groupId);
                 group.addShape(toAddShape);
-                this._handleGroupAddAfterActions(group, shapes);
-              })
-            })
+                this._updateGroup(group, toAddShape);
+                this._handleGroupAddAfterActions(group);
+                group.update();
+              });
+            });
           }
-        }
-        else {
+        } else {
           this._thingLayerContext.withScope(() => {
-            console.log("asdasdsad")
             const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
-            this._handleGroupAddAfterActions(group, shapes);
+            this._storeGroup(group, shapes);
+            this._handleGroupAddAfterActions(group);
           });
         }
       }
@@ -780,7 +779,7 @@ class ViewerController {
 
   _setupBackgroundLayer() {
     this._backgroupLayerContext = this._drawingContextService.createContext();
-    
+
     /**
      * @type {BackgroundLayer}
      * @private
@@ -913,11 +912,9 @@ class ViewerController {
 
   /**
    * @param {PaperGroupShape} group
-   * @param {Array.<PaperThingShape>} shapes
    * @private
    */
-  _handleGroupAddAfterActions(group, shapes) {
-    this._storeGroup(group, shapes);
+  _handleGroupAddAfterActions(group) {
     group.sendToBack();
     this.paperGroupShapes = this.paperGroupShapes.concat([group]);
     this._shapeSelectionService.clear();
@@ -1375,6 +1372,38 @@ class ViewerController {
     // Service finds the group shape itself, so we need to remove the shape id from the array
     shapesInGroup = shapesInGroup.filter(shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
     this._storeGroup(paperGroupShape, shapesInGroup);
+  }
+
+  /**
+   *
+   * @param {PaperGroupShape} paperGroupShape
+   * @param {PaperThingShape} shape
+   * @private
+   */
+  _updateGroup(paperGroupShape, shape) {
+    const labeledThings = [];
+    labeledThings.push(shape.labeledThingInFrame.labeledThing);
+    if (shape.labeledThingInFrame.labeledThing.groupIds.indexOf(paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id) === -1) {
+      shape.labeledThingInFrame.labeledThing.groupIds.push(paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id);
+    }
+
+    return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, paperGroupShape.labeledThingGroupInFrame.labeledThingGroup)
+      .catch(() => {
+        this._modalService.info(
+          {
+            title: 'Error',
+            headline: `There was an error update the shape`,
+            message: `The shape could not be updated. Please contact the Label Manager and reload the page to continue with the labeling process!`,
+            confirmButtonText: 'Reload',
+          },
+          () => window.location.reload(),
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
+      });
   }
 
   _storeGroup(paperGroupShape, shapesInGroup) {

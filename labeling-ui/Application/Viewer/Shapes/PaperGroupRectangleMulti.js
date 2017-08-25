@@ -149,18 +149,15 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
       child.deselect();
     });
   }
-  
+
   /**
    * @param {PaperThingShape} shape
    */
   addShape(shape) {
     if (!(shape instanceof PaperGroupRectangle)) {
-      console.log(this._allThingShapes);
       this._allThingShapes.push(shape);
-      console.log(this._allThingShapes);
-      this.update()
+      this.update();
     }
-    
   }
 
   /**
