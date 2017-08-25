@@ -19,6 +19,8 @@ class Cuboid extends MockShape {
 }
 
 describe('ShapeSelectionService tests', () => {
+  let drawingContextMock;
+
   function createRectangle(id = 'some-rectangle-id') {
     const rectangle = new Rectangle(id);
     spyOn(rectangle, 'select');
@@ -33,9 +35,18 @@ describe('ShapeSelectionService tests', () => {
     return cuboid;
   }
 
-  function createShapeSelectionService() {
-    return new ShapeSelectionService();
+  function createShapeSelectionService(drawingContext = drawingContextMock) {
+    const service = new ShapeSelectionService();
+    if (drawingContext !== undefined) {
+      service.setDrawingContext(drawingContext);
+    }
+    return service;
   }
+
+  beforeEach(() => {
+    drawingContextMock = jasmine.createSpyObj('DrawingContext', ['withScope']);
+    drawingContextMock.withScope.and.callFake(callback => callback());
+  });
 
   it('can be created', () => {
     const service = createShapeSelectionService();
@@ -260,13 +271,13 @@ describe('ShapeSelectionService tests', () => {
 
   describe('DrawingContext', () => {
     it('should accept a new drawingContext to be set', () => {
-      const service = createShapeSelectionService();
+      const service = createShapeSelectionService(undefined);
       const someContextMock = {};
       expect(() => service.setDrawingContext(someContextMock)).not.toThrow();
     });
 
     it('should clear the selected shapes once an initial new drawingContext is set', () => {
-      const service = createShapeSelectionService();
+      const service = createShapeSelectionService(undefined);
       const someContextMock = {};
       spyOn(service, 'clear');
       service.setDrawingContext(someContextMock);
@@ -275,7 +286,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('should not clear the selected shapes if the same drawing context is set again', () => {
-      const service = createShapeSelectionService();
+      const service = createShapeSelectionService(undefined);
       const someContextMock = {};
 
       spyOn(service, 'clear');
@@ -287,7 +298,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('should clear the selected shapes if the the drawingContext is changed', () => {
-      const service = createShapeSelectionService();
+      const service = createShapeSelectionService(undefined);
       const someContextMock = {};
       const someOtherContextMock = {};
 
@@ -298,6 +309,5 @@ describe('ShapeSelectionService tests', () => {
 
       expect(service.clear).toHaveBeenCalledTimes(2);
     });
-
   });
 });
