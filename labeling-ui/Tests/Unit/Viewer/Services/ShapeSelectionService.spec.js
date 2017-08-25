@@ -25,14 +25,18 @@ describe('ShapeSelectionService tests', () => {
     return cuboid;
   }
 
+  function createShapeSelectionService() {
+    return new ShapeSelectionService();
+  }
+
   it('can be created', () => {
-    const service = new ShapeSelectionService();
+    const service = createShapeSelectionService();
     expect(service).toEqual(jasmine.any(ShapeSelectionService));
   });
 
   describe('toggleShape', () => {
     it('adds a shape', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shape = createRectangle();
 
       service.toggleShape(shape);
@@ -42,7 +46,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('removes a shape', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shape = createCuboid();
 
       service.toggleShape(shape);
@@ -54,7 +58,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('adds two shapes', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
       const shapeTwo = createCuboid('some-id-2');
 
@@ -67,7 +71,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('selects all the shapes when adding a new shape', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createRectangle('some-id-1');
       const shapeTwo = createRectangle('some-id-2');
 
@@ -78,7 +82,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('adds three shapes and removes one shape', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createRectangle('some-id-1');
       const shapeTwo = createRectangle('some-id-2');
       const shapeThree = createRectangle('some-id-3');
@@ -96,7 +100,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('only allows shapes of the same type', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const cuboid = createCuboid();
       const rectangle = createRectangle();
 
@@ -112,7 +116,7 @@ describe('ShapeSelectionService tests', () => {
 
   describe('count()', () => {
     it('returns 0 by default', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
 
       const count = service.count();
 
@@ -122,7 +126,7 @@ describe('ShapeSelectionService tests', () => {
 
   describe('clear', () => {
     it('removes all the shapes and deselects them', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
       const shapeTwo = createCuboid('some-id-2');
       const shapeThree = createCuboid('some-id-3');
@@ -143,7 +147,7 @@ describe('ShapeSelectionService tests', () => {
 
   describe('setSelectedShape', () => {
     it('removes all previous shapes and only sets this one', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createRectangle('some-id-1');
       const shapeTwo = createRectangle('some-id-2');
       const shapeThree = createRectangle('some-id-3');
@@ -165,7 +169,7 @@ describe('ShapeSelectionService tests', () => {
 
   describe('getSelectedShape', () => {
     it('returns the shape set via setSelectedShape', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shape = createRectangle();
 
       service.setSelectedShape(shape);
@@ -175,7 +179,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('returns the first shape set via toggleShaoe', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
       const shapeTwo = createCuboid('some-id-2');
       const shapeThree = createCuboid('some-id-3');
@@ -191,7 +195,7 @@ describe('ShapeSelectionService tests', () => {
 
   describe('getAllShapes', () => {
     it('returns an empty array by default', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
 
       const allShapes = service.getAllShapes();
 
@@ -200,7 +204,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('returns all the shapes as array', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
       const shapeTwo = createCuboid('some-id-2');
       const shapeThree = createCuboid('some-id-3');
@@ -220,7 +224,7 @@ describe('ShapeSelectionService tests', () => {
 
   describe('removeShape()', () => {
     it('deselects the shape, even if it is not known to the service', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
 
       service.removeShape(shapeOne);
@@ -230,7 +234,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('removes the shape from the selected shapes', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
       const shapeTwo = createCuboid('some-id-2');
 
