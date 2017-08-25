@@ -2,7 +2,6 @@ import paper from 'paper';
 import RectangleHandle from './Handles/Rectangle';
 import PaperVirtualShape from './PaperVirtualShape';
 import VirtualLabeledThingInFrame from '../../LabelingData/Models/VirtualLabeledThingInFrame';
-import uuid from 'uuid';
 
 class PaperMeasurementRectangle extends PaperVirtualShape {
   /**
@@ -11,8 +10,9 @@ class PaperMeasurementRectangle extends PaperVirtualShape {
    * @param {Point} topLeft
    * @param {Point} bottomRight
    * @param {{primary: string, secondary: string}} color
+   * @param {EntityIdService} entityIdService
    */
-  constructor(task, shapeId, topLeft, bottomRight, color) {
+  constructor(task, shapeId, topLeft, bottomRight, color, entityIdService) {
     super(shapeId, color);
 
     /**
@@ -32,7 +32,7 @@ class PaperMeasurementRectangle extends PaperVirtualShape {
      * @private
      */
     this._virtualLabeledThingInFrame = new VirtualLabeledThingInFrame({
-      id: uuid.v4(),
+      id: entityIdService.getUniqueId(),
       identifierName: 'measurement-rectangle',
       task,
     });

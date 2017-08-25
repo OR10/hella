@@ -8,7 +8,7 @@ class EntityIdService {
    * @returns {string}
    */
   getUniqueId() {
-    return uuid.v4();
+    return uuid.v4().replace(/-/g, '');
   }
 }
 
