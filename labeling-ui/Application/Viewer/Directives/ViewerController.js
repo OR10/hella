@@ -372,7 +372,23 @@ class ViewerController {
               // TODO: add also group name here
 
               this._thingLayerContext.withScope(() => {
-                const group = this.paperGroupShapes.find(pgs => pgs.groupId === groupId);
+                const group = this.paperGroupShapes.find(pgs => pgs.groupId === groupId && pgs.labeledThingGroupInFrame.type === labeledThingInGroupFrame.labeledThingGroup.type);
+                if (group === undefined) {
+                  this._modalService.info(
+                    {
+                      title: 'Operation invalid',
+                      headline: 'Group is not the same as inital group',
+                      confirmButtonText: 'Verstanden!',
+                    },
+                    undefined,
+                    undefined,
+                    {
+                      warning: true,
+                      abortable: false,
+                    }
+                  );
+                  return;
+                }
                 group.addShape(toAddShape);
                 this._updateGroup(group, toAddShape);
                 this._handleGroupAddAfterActions(group);
