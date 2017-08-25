@@ -378,7 +378,7 @@ class ViewerController {
                     {
                       title: 'Operation invalid',
                       headline: 'Group is not the same as inital group',
-                      confirmButtonText: 'Verstanden!',
+                      confirmButtonText: 'Ok thank you!',
                     },
                     undefined,
                     undefined,
