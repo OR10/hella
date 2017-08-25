@@ -140,6 +140,14 @@ describe('ShapeSelectionService tests', () => {
       expect(shape.deselect).not.toHaveBeenCalled();
       expect(service.count()).toEqual(0);
     });
+
+    it('should use withScope to handle paper changes', () => {
+      const service = createShapeSelectionService();
+      const shape = createRectangle();
+      service.toggleShape(shape);
+
+      expect(drawingContextMock.withScope).toHaveBeenCalled();
+    });
   });
 
   describe('count()', () => {
