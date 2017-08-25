@@ -344,7 +344,7 @@ describe('ImageFetcher', () => {
 
       const fetchId = 'some-fetch-id';
 
-      const imagesPromise = imageFetcher.fetchMultiple([urls[0], urls[1]], 1, fetchId);
+      imageFetcher.fetchMultiple([urls[0], urls[1]], 1, fetchId);
 
       applyAsync();
       expect(imageFetcher.isFetchMultipleRunning(fetchId)).toBeTruthy();
