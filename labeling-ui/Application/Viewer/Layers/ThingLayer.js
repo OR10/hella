@@ -298,7 +298,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         viewModel.paperThingShapes = viewModel.paperThingShapes.filter(
           paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
         );
-      
+
         return selectedLabeledThing;
       })
       .then(() => {
@@ -307,7 +307,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
             thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
           const shapeGroup = viewModel.paperGroupShapes.find(
             paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
-        
+
           if (relatedThingShapes.length === 0) {
             return this._deleteGroupShape(shapeGroup);
           }
