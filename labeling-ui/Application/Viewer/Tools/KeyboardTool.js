@@ -12,10 +12,9 @@ class KeyboardTool extends Tool {
    * @param {LoggerService} loggerService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {EntityIdService} entityIdService
-   * @param {ModalService} modalService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, keyboardShortcutService, entityIdService, modalService) {
-    super(drawingContext, $rootScope, $q, loggerService, modalService);
+  constructor(drawingContext, $rootScope, $q, loggerService, keyboardShortcutService, entityIdService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
     /**
      * @type {KeyboardShortcutService}
@@ -131,7 +130,6 @@ KeyboardTool.$inject = [
   'loggerService',
   'keyboardShortcutService',
   'entityIdService',
-  'modalService',
 ];
 
 export default KeyboardTool;

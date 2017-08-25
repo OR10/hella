@@ -23,8 +23,8 @@ class CuboidDrawingTool extends CreationTool {
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService, modalService) {
-    super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, modalService);
+  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService) {
+    super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
 
     /**
      * @type {EntityIdService}
@@ -263,7 +263,7 @@ class CuboidDrawingTool extends CreationTool {
       if (this._projection3d.projectBottomCoordinateTo3d(point).x < 0) {
         this._$rootScope.$emit('drawingtool:exception', 'Drawing above the horizon is not possible. The invalid shape has been removed!');
         this._cleanUp();
-        this._reject(new Error('Drawing above the horizon is not possible. The invalid shape has been removed!'), true);
+        this._reject(new Error('Drawing above the horizon is not possible. The invalid shape has been removed!'));
         return;
       }
 
@@ -386,7 +386,7 @@ class CuboidDrawingTool extends CreationTool {
       if (this._projection3d.projectBottomCoordinateTo3d(this._bottomPoint).x < 0) {
         this._$rootScope.$emit('drawingtool:exception', 'Drawing above the horizon is not possible. The invalid shape has been removed!');
         this._cleanUp();
-        this._reject(new Error('Drawing above the horizon is not possible. The invalid shape has been removed!'), true);
+        this._reject(new Error('Drawing above the horizon is not possible. The invalid shape has been removed!'));
         return;
       }
     }
@@ -518,7 +518,6 @@ CuboidDrawingTool.$inject = [
   'hierarchyCreationService',
   'entityIdService',
   'entityColorService',
-  'modalService',
 ];
 
 export default CuboidDrawingTool;

@@ -13,10 +13,9 @@ class ZoomTool extends PaperTool {
    * @param {$q} $q
    * @param {LoggerService} loggerService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
-   * @param {ModalService} modalService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, viewerMouseCursorService, modalService) {
-    super(drawingContext, $rootScope, $q, loggerService, modalService);
+  constructor(drawingContext, $rootScope, $q, loggerService, viewerMouseCursorService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
     /**
      * @type {ViewerMouseCursorService}
@@ -119,7 +118,6 @@ ZoomTool.$inject = [
   '$q',
   'loggerService',
   'viewerMouseCursorService',
-  'modalService',
 ];
 
 export default ZoomTool;

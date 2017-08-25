@@ -34,10 +34,9 @@ class MultiTool extends PaperTool {
    * @param {ViewerMouseCursorService} viewerMouseCursorService
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {ShapeSelectionService} shapeSelectionService
-   * @param {ModalService} modalService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, toolService, viewerMouseCursorService, labeledFrameGateway, shapeSelectionService, modalService) {
-    super(drawingContext, $rootScope, $q, loggerService, modalService);
+  constructor(drawingContext, $rootScope, $q, loggerService, toolService, viewerMouseCursorService, labeledFrameGateway, shapeSelectionService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
     /**
      * @type {$rootScope.Scope}
@@ -604,7 +603,6 @@ MultiTool.$inject = [
   'viewerMouseCursorService',
   'labeledFrameGateway',
   'shapeSelectionService',
-  'modalService',
 ];
 
 export default MultiTool;

@@ -10,10 +10,9 @@ class PaperTool extends Tool {
    * @param {$scope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
-   * @param {ModalService} modalService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, modalService) {
-    super(drawingContext, $rootScope, $q, loggerService, modalService);
+  constructor(drawingContext, $rootScope, $q, loggerService) {
+    super(drawingContext, $rootScope, $q, loggerService);
 
     /**
      * @type {paper.Tool|null}
@@ -227,13 +226,12 @@ class PaperTool extends Tool {
    * Cancel all current tool actions and clean up the state.
    *
    * @param {*} reason
-   * @param {boolean} displayModalInfo
    * @protected
    */
-  _reject(reason, displayModalInfo = false) {
+  _reject(reason) {
     if (this._invoked === true) {
       this._disableInternalPaperTool();
-      super._reject(reason, displayModalInfo);
+      super._reject(reason);
     }
   }
 
@@ -310,7 +308,6 @@ PaperTool.$inject = [
   '$rootScope',
   '$q',
   'loggerService',
-  'modalService',
 ];
 
 export default PaperTool;

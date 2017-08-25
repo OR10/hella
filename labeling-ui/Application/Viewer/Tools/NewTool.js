@@ -10,9 +10,8 @@ class Tool {
    * @param {$scope} $rootScope
    * @param {$q} $q
    * @param {LoggerService} loggerService
-   * @param {ModalService} modalService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, modalService) {
+  constructor(drawingContext, $rootScope, $q, loggerService) {
     /**
      * @type {DrawingContext}
      * @protected
@@ -36,12 +35,6 @@ class Tool {
      * @protected
      */
     this._logger = loggerService;
-
-    /**
-     * @type {ModalService}
-     * @private
-     */
-    this._modalService = modalService;
 
     /**
      * @type {Promise|null}
@@ -106,31 +99,14 @@ class Tool {
    * Cancel all current tool actions and clean up the state.
    *
    * @param {*} reason
-   * @param {boolean} displayModalInfo
    * @protected
    */
-  _reject(reason, displayModalInfo = false) {
+  _reject(reason) {
     this._notifyScope('abort', reason);
     if (this._deferred !== null && this._invoked === true) {
       const staticSelf = this.constructor;
       this._logger.log('tool:invocation', `Rejected ${staticSelf.getToolName()}`, reason);
       this._logger.groupEnd('tool:invocation');
-
-      if (displayModalInfo) {
-          console.log(this._modalService);
-          this._modalService.info(
-              {
-                  title: 'Error',
-                  headline: reason.message,
-              },
-              undefined,
-              undefined,
-              {
-                  warning: true,
-                  abortable: false,
-              }
-          );
-      }
 
       this._invoked = false;
       this._deferred.reject(reason);
@@ -263,7 +239,6 @@ Tool.$inject = [
   '$rootScope',
   '$q',
   'loggerService',
-  'modalService',
 ];
 
 export default Tool;
