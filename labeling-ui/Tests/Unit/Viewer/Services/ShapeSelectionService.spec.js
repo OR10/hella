@@ -131,6 +131,15 @@ describe('ShapeSelectionService tests', () => {
       expect(selectedShape).toBe(cuboid);
       expect(count).toEqual(1);
     });
+
+    it('should do nothing if no drawingContext is set', () => {
+      const service = createShapeSelectionService(null);
+      const shape = createRectangle();
+      service.toggleShape(shape);
+      expect(shape.select).not.toHaveBeenCalled();
+      expect(shape.deselect).not.toHaveBeenCalled();
+      expect(service.count()).toEqual(0);
+    });
   });
 
   describe('count()', () => {

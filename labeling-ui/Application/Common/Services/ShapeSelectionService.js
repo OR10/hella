@@ -35,6 +35,14 @@ class ShapeSelectionService {
   }
 
   /**
+   * @returns {boolean}
+   * @private
+   */
+  _isDrawingContextUndefined() {
+    return this._drawingContext === undefined;
+  }
+
+  /**
    * Toggle a shape, meaning:
    *  If the shape is new and not selected: select it
    *  If the shape is already selected: deselect it
@@ -42,6 +50,10 @@ class ShapeSelectionService {
    * @param {PaperThingShape} shape
    */
   toggleShape(shape) {
+    if (this._isDrawingContextUndefined()) {
+      return;
+    }
+
     const firstShape = this.getSelectedShape();
 
     // If the user tries to add a shape that is not the same, ignore
