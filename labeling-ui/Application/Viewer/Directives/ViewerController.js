@@ -808,6 +808,7 @@ class ViewerController {
 
   _setupThingLayer() {
     this._thingLayerContext = this._drawingContextService.createContext();
+    this._shapeSelectionService.setDrawingContext(this._thingLayerContext);
 
     this.thingLayer = new ThingLayer(
       this._contentWidth,
