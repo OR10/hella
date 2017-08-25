@@ -179,6 +179,39 @@ describe('ShapeSelectionService tests', () => {
       expect(shapeThree.deselect).toHaveBeenCalled();
       expect(count).toEqual(0);
     });
+
+    it('should not deselect shapes if no drawing context is set', () => {
+      const service = createShapeSelectionService();
+      const shape = createRectangle();
+
+      service.toggleShape(shape);
+      service.setDrawingContext(undefined);
+      service.clear();
+
+      expect(shape.deselect).toHaveBeenCalledTimes(1); // deselect from toggleShape with context
+    });
+
+    it('should clear selection list even if no drawing context is set', () => {
+      const service = createShapeSelectionService();
+      const shape = createRectangle();
+
+      service.toggleShape(shape);
+      service.setDrawingContext(undefined);
+      service.clear();
+
+      expect(service.count()).toEqual(0);
+      expect(service.getAllShapes()).toEqual([]);
+    });
+
+    it('should use withScope to execute drawing operations', () => {
+      const service = createShapeSelectionService();
+      const shape = createRectangle();
+
+      service.toggleShape(shape);
+      service.clear();
+
+      expect(drawingContextMock.withScope).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('setSelectedShape', () => {

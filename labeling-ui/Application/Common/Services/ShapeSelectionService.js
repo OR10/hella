@@ -108,8 +108,16 @@ class ShapeSelectionService {
   }
 
   clear() {
-    this._deselectAllShapes();
-    this._shapes.clear();
+    if (this._isDrawingContextUndefined()) {
+      // Clearing the shape stack is always possíble
+      this._shapes.clear();
+      return;
+    }
+
+    this._drawingContext.withScope(() => {
+      this._deselectAllShapes();
+      this._shapes.clear();
+    });
   }
 
   /**
