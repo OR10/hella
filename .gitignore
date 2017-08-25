@@ -52,6 +52,8 @@ npm-debug.log
 .idea/**/workspace.xml
 # No idea why this is needed
 /labeling-ui/.idea/**/workspace.xml
+# No idea why this is needed
+/labeling-api/.idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
 
