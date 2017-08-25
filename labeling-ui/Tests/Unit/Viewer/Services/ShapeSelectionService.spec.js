@@ -4,11 +4,19 @@ class MockShape {
   constructor(id) {
     this.id = id;
   }
-  select() {}
-  deselect() {}
+
+  select() {
+  }
+
+  deselect() {
+  }
 }
-class Rectangle extends MockShape {}
-class Cuboid extends MockShape {}
+
+class Rectangle extends MockShape {
+}
+
+class Cuboid extends MockShape {
+}
 
 describe('ShapeSelectionService tests', () => {
   function createRectangle(id = 'some-rectangle-id') {
@@ -248,5 +256,48 @@ describe('ShapeSelectionService tests', () => {
       expect(service.count()).toEqual(1);
       expect(allShapes[0]).toBe(shapeTwo);
     });
+  });
+
+  describe('DrawingContext', () => {
+    it('should accept a new drawingContext to be set', () => {
+      const service = createShapeSelectionService();
+      const someContextMock = {};
+      expect(() => service.setDrawingContext(someContextMock)).not.toThrow();
+    });
+
+    it('should clear the selected shapes once an initial new drawingContext is set', () => {
+      const service = createShapeSelectionService();
+      const someContextMock = {};
+      spyOn(service, 'clear');
+      service.setDrawingContext(someContextMock);
+
+      expect(service.clear).toHaveBeenCalled();
+    });
+
+    it('should not clear the selected shapes if the same drawing context is set again', () => {
+      const service = createShapeSelectionService();
+      const someContextMock = {};
+
+      spyOn(service, 'clear');
+
+      service.setDrawingContext(someContextMock);
+      service.setDrawingContext(someContextMock);
+
+      expect(service.clear).toHaveBeenCalledTimes(1);
+    });
+
+    it('should clear the selected shapes if the the drawingContext is changed', () => {
+      const service = createShapeSelectionService();
+      const someContextMock = {};
+      const someOtherContextMock = {};
+
+      spyOn(service, 'clear');
+
+      service.setDrawingContext(someContextMock);
+      service.setDrawingContext(someOtherContextMock);
+
+      expect(service.clear).toHaveBeenCalledTimes(2);
+    });
+
   });
 });

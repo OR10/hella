@@ -5,6 +5,33 @@ class ShapeSelectionService {
      * @private
      */
     this._shapes = new Map();
+
+    /**
+     * @type {DrawingContext|undefined}
+     * @private
+     */
+    this._drawingContext = undefined;
+  }
+
+  /**
+   * Set the active main viewer {@link DrawingContext} to be used by this SelectionService.
+   *
+   * The DrawingContext needs to be set before any selection operation is executed.
+   *
+   * All operations on an unset context are ignored by the service.
+   *
+   * Setting a new context results in a reset of all before selected shapes to a non selected
+   * state.
+   *
+   * @param {DrawingContext} drawingContext
+   */
+  setDrawingContext(drawingContext) {
+    if (this._drawingContext === drawingContext) {
+      return;
+    }
+
+    this.clear();
+    this._drawingContext = drawingContext;
   }
 
   /**
