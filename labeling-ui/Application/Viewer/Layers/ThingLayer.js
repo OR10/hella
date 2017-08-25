@@ -630,6 +630,18 @@ class ThingLayer extends PanAndZoomPaperLayer {
             }
             break;
           default:
+            this._modalService.info(
+              {
+                title: 'Error',
+                headline: reason.message,
+              },
+              undefined,
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
             this._logger.warn('tool:error', 'Tool aborted with unknown reason', reason);
         }
       });
