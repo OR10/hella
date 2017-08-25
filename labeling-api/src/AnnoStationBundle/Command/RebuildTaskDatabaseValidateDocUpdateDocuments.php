@@ -7,6 +7,7 @@ use AnnoStationBundle\Database\Facade;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use Symfony\Component\Console\Helper\ProgressBar;
+use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 use AnnoStationBundle\Worker\Jobs;
 
@@ -65,7 +66,8 @@ class RebuildTaskDatabaseValidateDocUpdateDocuments extends Base
         /** @var Model\LabelingTask $task */
         foreach ($labelingTasks as $labelingTask) {
             $this->amqpFacade->addJob(
-                new Jobs\TaskDatabaseValidateDocUpdateRebuilder($labelingTask->getProjectId(), $labelingTask->getId())
+                new Jobs\TaskDatabaseValidateDocUpdateRebuilder($labelingTask->getProjectId(), $labelingTask->getId()),
+                WorkerPool\Facade::HIGH_PRIO
             );
             $progress->advance();
         }
