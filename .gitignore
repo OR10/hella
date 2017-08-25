@@ -50,6 +50,8 @@ npm-debug.log
 
 # User-specific stuff:
 .idea/**/workspace.xml
+# No idea why this is needed
+/labeling-ui/.idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
 
