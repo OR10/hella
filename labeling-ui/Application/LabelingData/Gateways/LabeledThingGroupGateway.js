@@ -16,16 +16,18 @@ class LabeledThingGroupGateway {
    * @param {EntityIdService} entityIdService
    * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q,
-              pouchDbContextService,
-              packagingExecutor,
-              couchDbModelSerializer,
-              couchDbModelDeserializer,
-              revisionManager,
-              abortablePromiseFactory,
-              labeledThingGateway,
-              entityIdService,
-              pouchDbViewService) {
+  constructor(
+    $q,
+    pouchDbContextService,
+    packagingExecutor,
+    couchDbModelSerializer,
+    couchDbModelDeserializer,
+    revisionManager,
+    abortablePromiseFactory,
+    labeledThingGateway,
+    entityIdService,
+    pouchDbViewService
+  ) {
     /**
      * @type {angular.$q}
      * @private
@@ -187,7 +189,8 @@ class LabeledThingGroupGateway {
       () => {
         this._injectRevisionOrFailSilently(serializedLabeledThingGroup);
         return dbContext.put(serializedLabeledThingGroup);
-      })
+      }
+    )
       .then(response => {
         return dbContext.get(response.id);
       })
@@ -221,7 +224,8 @@ class LabeledThingGroupGateway {
         });
 
         return this._abortablePromiseFactory(this._$q.all(promises));
-      });
+      }
+    );
   }
 
   /**
@@ -249,7 +253,8 @@ class LabeledThingGroupGateway {
         });
 
         return this._abortablePromiseFactory(this._$q.all(promises));
-      });
+      }
+    );
   }
 
   /**
