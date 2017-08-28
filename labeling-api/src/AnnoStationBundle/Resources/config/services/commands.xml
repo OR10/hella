@@ -181,19 +181,6 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <tag name="console.command"/>
         </service>
-
-        <service id="annostation.labeling_api.command.migrations.copy_label_group_coordinators_to_label_managers"
-                 class="AnnoStationBundle\Command\Migrations\CopyLabelGroupCoordinatorsToLabelManagers">
-            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
-            <tag name="console.command"/>
-        </service>
-
-        <service id="annostation.labeling_api.command.migrations.copy_project_coordinator_assignment_history_to_label_managers"
-                 class="AnnoStationBundle\Command\Migrations\CopyProjectCoordinatorAssignmentHistoryToLabelManagers">
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <tag name="console.command"/>
-        </service>
     </services>
 </container>
 
