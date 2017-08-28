@@ -28,12 +28,6 @@
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
 
-        <service id="annostation.labeling_api.worker.job_instruction.generic_xml_project_to_csv_exporter" class="AnnoStationBundle\Worker\JobInstruction\GenericXmlProjectToCsvExporter">
-            <argument type="service" id="annostation.labeling_api.service.exporter.generic_xml_project_to_csv" />
-            <argument type="service" id="annostation.labeling_api.database.facade.project" />
-            <tag name="hagl.workerpool.job_instruction"/>
-        </service>
-
         <service id="annostation.labeling_api.worker.job_instruction.requirements_project_to_xml" class="AnnoStationBundle\Worker\JobInstruction\RequirementsProjectToXml">
             <argument type="service" id="annostation.labeling_api.service.exporter.requirements_project_to_xml" />
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
