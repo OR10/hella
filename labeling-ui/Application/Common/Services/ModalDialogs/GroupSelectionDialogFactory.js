@@ -54,7 +54,6 @@ class GroupSelectionDialogFactory {
    * - `title`
    * - `headline`
    * - `message`
-   * - `groupIds`: Array of groupIds
    * - `defaultSelection`: Text which is displayed if no item was chosen yet.
    * - `confirmButtonText`
    * - `cancelButtonText`
