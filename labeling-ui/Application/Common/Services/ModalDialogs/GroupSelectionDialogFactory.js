@@ -98,7 +98,7 @@ class GroupSelectionDialogFactory {
       })
       .catch(error => {
         this._logger.warn('dialog:group-selection', error);
-        this._$q.reject(error);
+        return this._$q.reject(error);
       });
   }
 }
