@@ -145,6 +145,35 @@ class LabeledThingGroupGateway {
   }
 
   /**
+   * @param {Task} task
+   * @param {string[]} ids
+   * @returns {Promise.<LabeledThingGroup[]>}
+   */
+  getLabeledThingGroupsByIds(task, ids) {
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return dbContext.allDocs({
+        include_docs: true,
+        keys: ids,
+      })
+        .then(result => {
+          const rows = result.rows;
+          const erronousDocuments = rows.filter(
+            row => row.error !== undefined || row.deleted === true
+          );
+
+          if (erronousDocuments.length > 0) {
+            const errorJson = JSON.stringify(erronousDocuments, undefined, 2);
+            return this._$q.reject(new Error(`One or more of the requested groups could not be retrieved: ${errorJson}`));
+          }
+
+          const documents = rows.map(row => row.doc);
+          return documents.map(document => this._couchDbModelDeserializer.deserializeLabeledThingGroup(document, task));
+        });
+    });
+  }
+
+  /**
    * Deletes a labeled thing group with the given id.
    *
    * @param {LabeledThingGroup} labeledThingGroup
