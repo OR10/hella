@@ -71,6 +71,7 @@ class ViewerController {
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ToolSelectorListenerService} toolSelectorListenerService
    * @param {HierarchyCreationService} hierarchyCreationService
+   * @param {SelectionDialog} SelectionDialog
    */
   constructor($scope,
               $rootScope,
@@ -108,7 +109,8 @@ class ViewerController {
               imagePreloader,
               shapeSelectionService,
               toolSelectorListenerService,
-              hierarchyCreationService) {
+              hierarchyCreationService,
+              SelectionDialog) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -352,21 +354,52 @@ class ViewerController {
      */
     this._hierarchyCreationService = hierarchyCreationService;
 
+    const showGroupSelector = (labelStructureObject, groupSelectedCallback) => {
+      this._modalService.show(
+        new SelectionDialog(
+          {
+            title: 'Select Group Type',
+            headline: `Please select the type of group you would like to create`,
+            message: 'The following groups are available:',
+            confirmButtonText: 'Accept and Create',
+            data: labelStructureObject.availableGroups,
+          },
+          groupId => {
+            if (groupId) {
+              const group = labelStructureObject.availableGroups.find(group => group.id === groupId);
+              groupSelectedCallback(group);
+            } else {
+              showGroupSelector(labelStructureObject, groupSelectedCallback);
+            }
+          },
+          null,
+          {
+            abortable: false,
+          }
+        )
+      );
+    };
+
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
-        const shapes = this._shapeSelectionService.getAllShapes();
-        const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
-        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
 
-        this._thingLayerContext.withScope(() => {
-          const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
-          this._storeGroup(group, shapes);
-          group.sendToBack();
-          this.paperGroupShapes = this.paperGroupShapes.concat([group]);
-          this._shapeSelectionService.clear();
-          this.selectedPaperShape = group;
-          group.select();
-        });
+        const groupSelectedCallback = groupStructureObject => {
+          const shapes = this._shapeSelectionService.getAllShapes();
+          const struct = new GroupToolActionStruct({}, this.viewport, this.task, groupStructureObject.id, this.framePosition);
+          const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
+
+          this._thingLayerContext.withScope(() => {
+            const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+            this._storeGroup(group, shapes);
+            group.sendToBack();
+            this.paperGroupShapes = this.paperGroupShapes.concat([group]);
+            this._shapeSelectionService.clear();
+            this.selectedPaperShape = group;
+            group.select();
+          });
+        };
+
+        showGroupSelector(labelStructureObject, groupSelectedCallback);
       }
     };
     this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
@@ -1631,6 +1664,7 @@ ViewerController.$inject = [
   'shapeSelectionService',
   'toolSelectorListenerService',
   'hierarchyCreationService',
+  'SelectionDialog',
 ];
 
 export default ViewerController;
