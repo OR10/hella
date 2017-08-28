@@ -11,6 +11,7 @@ use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Worker\Jobs;
+use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Version;
@@ -174,13 +175,13 @@ class Export extends Controller\Base
         foreach ($project->getAvailableExports() as $exportType) {
             switch ($exportType) {
                 case 'legacy':
-                    $this->amqpFacade->addJob(new Jobs\LegacyProjectToCsvExporter($export));
+                    $this->amqpFacade->addJob(new Jobs\LegacyProjectToCsvExporter($export), WorkerPool\Facade::HIGH_PRIO);
                     break;
                 case 'genericXml':
-                    $this->amqpFacade->addJob(new Jobs\GenericXmlProjectToCsvExporter($export));
+                    $this->amqpFacade->addJob(new Jobs\GenericXmlProjectToCsvExporter($export), WorkerPool\Facade::HIGH_PRIO);
                     break;
                 case 'requirementsXml':
-                    $this->amqpFacade->addJob(new Jobs\RequirementsProjectToXml($export));
+                    $this->amqpFacade->addJob(new Jobs\RequirementsProjectToXml($export), WorkerPool\Facade::HIGH_PRIO);
                     break;
             }
         }

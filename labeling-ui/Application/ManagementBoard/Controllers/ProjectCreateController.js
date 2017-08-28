@@ -1,4 +1,3 @@
-import uuid from 'uuid';
 import moment from 'moment';
 
 /**
@@ -14,8 +13,9 @@ class ProjectCreateController {
    * @param {TaskConfigurationGateway} taskConfigurationGateway
    * @param {ModalService} modalService
    * @param {OrganisationService} organisationService
+   * @param {EntityIdService} entityIdService
    */
-  constructor($scope, $state, user, userPermissions, projectGateway, taskConfigurationGateway, modalService, organisationService) {
+  constructor($scope, $state, user, userPermissions, projectGateway, taskConfigurationGateway, modalService, organisationService, entityIdService) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -178,7 +178,7 @@ class ProjectCreateController {
     /**
      * @type {string}
      */
-    this.uploadUuid = uuid.v4();
+    this.uploadUuid = entityIdService.getUniqueId();
 
     /**
      * @type {Array.<Object>}
@@ -463,6 +463,7 @@ ProjectCreateController.$inject = [
   'taskConfigurationGateway',
   'modalService',
   'organisationService',
+  'entityIdService',
 ];
 
 export default ProjectCreateController;

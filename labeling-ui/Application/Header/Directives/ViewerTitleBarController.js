@@ -19,6 +19,7 @@ class ViewerTitleBarController {
    * @param {PouchDbContextService} pouchDbContextService
    * @param {ApplicationLoadingMaskService} applicationLoadingMaskService
    * @param {ImageCache} imageCache
+   * @param {ImagePreloader} imagePreloader
    */
   constructor($timeout,
               $scope,
@@ -35,7 +36,8 @@ class ViewerTitleBarController {
               pouchDbSyncManager,
               pouchDbContextService,
               applicationLoadingMaskService,
-              imageCache) {
+              imageCache,
+              imagePreloader) {
     this._$timeout = $timeout;
     /**
      * @param {angular.$scope} $scope
@@ -134,6 +136,12 @@ class ViewerTitleBarController {
     this._imageCache = imageCache;
 
     /**
+     * @type {ImagePreloader}
+     * @private
+     */
+    this._imagePreloader = imagePreloader;
+
+    /**
      * @type {string}
      */
     this.shapeBounds = null;
@@ -179,6 +187,7 @@ class ViewerTitleBarController {
 
     return this._$q.all([
       this._pouchDbSyncManager.pushUpdatesForContext(context),
+      this._imagePreloader.stopPreloadingForTask(this.task),
       this._imageCache.clear(),
     ]);
   }
@@ -514,6 +523,7 @@ ViewerTitleBarController.$inject = [
   'pouchDbContextService',
   'applicationLoadingMaskService',
   'imageCache',
+  'imagePreloader',
 ];
 
 export default ViewerTitleBarController;

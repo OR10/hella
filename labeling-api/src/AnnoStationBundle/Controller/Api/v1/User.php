@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 
 /**
@@ -413,7 +414,7 @@ class User extends Controller\Base
             );
 
             $job = new Jobs\DeleteProjectAssignmentsForUserJobCreator($user->getId(), $projectIds);
-            $this->amqpFacade->addJob($job);
+            $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
         }
     }
 

@@ -437,6 +437,14 @@ class Project
     }
 
     /**
+     * @param $labelManagerAssignmentHistory
+     */
+    public function setLabelManagerAssignmentHistory($labelManagerAssignmentHistory)
+    {
+        $this->labelManagerAssignmentHistory = $labelManagerAssignmentHistory;
+    }
+
+    /**
      * @return null
      */
     public function getLatestAssignedCoordinatorUserId()

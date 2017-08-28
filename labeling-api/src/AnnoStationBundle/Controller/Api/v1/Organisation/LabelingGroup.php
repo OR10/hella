@@ -18,6 +18,7 @@ use FOS\RestBundle\Controller\Annotations\Version;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 use AnnoStationBundle\Service\Authentication;
 
@@ -342,7 +343,7 @@ class LabelingGroup extends Controller\Base
             $user = $this->userFacade->getUserById($deletedUsersId);
             $this->userRolesRebuilderService->rebuildForUser($user);
             $job = new DeleteProjectAssignmentsForUserJobCreator($user->getId(), $projectIds);
-            $this->amqpFacade->addJob($job);
+            $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
         }
 
         foreach ($newUsersIds as $newUsersId) {
@@ -424,7 +425,7 @@ class LabelingGroup extends Controller\Base
         foreach ($users as $user) {
             $this->userRolesRebuilderService->rebuildForUser($user);
             $job = new DeleteProjectAssignmentsForUserJobCreator($user->getId(), $projectIds);
-            $this->amqpFacade->addJob($job);
+            $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
         }
 
         return View\View::create()->setData(

@@ -7,6 +7,7 @@ use AnnoStationBundle\Database\Facade;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use Symfony\Component\Console\Helper\ProgressBar;
+use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 use AnnoStationBundle\Worker\Jobs;
 
@@ -64,7 +65,7 @@ class RebuildTaskDatabaseSecurityPermissions extends Base
 
         /** @var Model\LabelingTask $task */
         foreach ($labelingTasks as $labelingTask) {
-            $this->amqpFacade->addJob(new Jobs\TaskDatabaseSecurityRebuilder($labelingTask->getId()));
+            $this->amqpFacade->addJob(new Jobs\TaskDatabaseSecurityRebuilder($labelingTask->getId()), WorkerPool\Facade::HIGH_PRIO);
             $progress->advance();
         }
         $progress->finish();

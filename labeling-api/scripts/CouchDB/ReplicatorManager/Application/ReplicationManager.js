@@ -8,9 +8,10 @@ class ReplicationManager {
    * @param {nano} nanoAdmin
    * @param {WorkerQueue} workerQueue
    * @param {PurgeService} purgeService
+   * @param {DebugInterface} debugInterface
    * @param {object} options
    */
-  constructor(logger, nanoAdmin, workerQueue, purgeService, options) {
+  constructor(logger, nanoAdmin, workerQueue, purgeService, debugInterface, options) {
     this.logger = logger;
     this.nanoAdmin = nanoAdmin;
     this.workerQueue = workerQueue;
@@ -20,6 +21,12 @@ class ReplicationManager {
      * @private
      */
     this._purgeService = purgeService;
+
+    /**
+     * @type {DebugInterface}
+     * @private
+     */
+    this._debugInterface = debugInterface;
 
     this.options = options;
     this.purgeQueue = [];
@@ -34,6 +41,8 @@ class ReplicationManager {
     this.hotStandByUrl = this.options.hotStandByUrl;
 
     Promise.resolve()
+      .then(() => this._debugInterface.initialize())
+      .then(() => this._registerDebugCommands())
       .then(() => this.purgeAllPreviousManagedReplicationLeftOvers())
       .then(() => this.addOneTimeReplicationForAllDatabases())
       .then(() => this.workerQueue.listenToReplicationChanges())
@@ -189,6 +198,30 @@ class ReplicationManager {
     const targetUrl = this.targetBaseUrl + targetDatabase;
     const id = getReplicationDocumentIdName(sourceUrl, targetUrl);
     this.workerQueue.removeJob(id);
+  }
+
+  _registerDebugCommands() {
+    this._debugInterface.on('dumpActiveTasks', () => {
+      const now = new Date();
+      const target = `${now.toISOString()}-activeTasks`;
+      const promises = this.workerQueue.activeTasks.map(
+        (activeTask, index) => this._debugInterface.writeJson(target, index, activeTask.toJSON())
+      );
+
+      Promise.all(promises)
+        .then(() => this.logger.logString(`DEBUG: Dumped all activeTasks to ${target}`));
+    });
+
+    this._debugInterface.on('dumpWaitingTasks', () => {
+      const now = new Date();
+      const target = `${now.toISOString()}-waitingTasks`;
+      const promises = this.workerQueue.queue.map(
+        (waitingTask, index) => this._debugInterface.writeJson(target, index, waitingTask.toJSON())
+      );
+
+      Promise.all(promises)
+        .then(() => this.logger.logString(`DEBUG: Dumped all waitingTasks to ${target}`));
+    });
   }
 }
 

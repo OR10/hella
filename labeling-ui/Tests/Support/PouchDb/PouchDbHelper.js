@@ -163,7 +163,7 @@ class PouchDbHelper {
    * @private
    */
   _generateDatabaseName() {
-    return `__annostation_test__${uuid.v4()}`;
+    return `__annostation_test__${uuid.v4().replace(/-/g, '')}`;
   }
 }
 

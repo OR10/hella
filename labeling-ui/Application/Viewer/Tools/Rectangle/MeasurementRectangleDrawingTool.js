@@ -115,7 +115,8 @@ class MeasurementRectangleDrawingTool extends CreationTool {
         this._entityIdService.getUniqueId(),
         from,
         from,
-        this._entityColorService.getColorById(1) // Use same color for every shape
+        this._entityColorService.getColorById(1), // Use same color for every shape
+        this._entityIdService
       );
       this._creationHandle = this._getScaleAnchor(from);
       this._rect.resize(this._creationHandle, to, {width: 1, height: this._getMinimalHeight()});
@@ -149,7 +150,8 @@ class MeasurementRectangleDrawingTool extends CreationTool {
         this._entityIdService.getUniqueId(),
         from,
         to,
-        this._entityColorService.getColorById(1)
+        this._entityColorService.getColorById(1),
+        this._entityIdService
       );
     });
 

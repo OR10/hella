@@ -6,6 +6,7 @@ use AppBundle\Model;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Worker\Jobs;
+use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 
 class LabelingTasks
@@ -98,7 +99,7 @@ class LabelingTasks
             );
 
             $job = new Jobs\DatabaseDeleter($database);
-            $this->amqpFacade->addJob($job);
+            $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
         }
     }
 }

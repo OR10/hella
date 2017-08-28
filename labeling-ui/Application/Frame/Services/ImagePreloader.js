@@ -78,9 +78,22 @@ class ImagePreloader {
       .then(() => currentPosition = this._positions.get(task) || 0)
       .then(() => this._getLocationsToPreload(locationsByType, currentPosition, maximumToPreload))
       .then(({locationsToPreload, newPosition}) => {
+        const fetchId = this._getFetchIdForTask(task);
         this._positions.set(task, newPosition);
-        return this._preloadImagesByLocation(locationsToPreload, maxParallelRequests);
+        return this._preloadImagesByLocationWithId(locationsToPreload, maxParallelRequests, fetchId);
       });
+  }
+
+  /**
+   * Stop any running preload operation for the given task
+   *
+   * @param {Task} task
+   */
+  stopPreloadingForTask(task) {
+    const fetchId = this._getFetchIdForTask(task);
+    if (this._imageFetcher.isFetchMultipleRunning(fetchId)) {
+      this._imageFetcher.abortFetchMultiple(fetchId);
+    }
   }
 
   /**
@@ -131,9 +144,10 @@ class ImagePreloader {
    *
    * @param {Array.<FrameLocation>} locations
    * @param {number|undefined} maxParallelRequests
+   * @param {string} fetchId
    * @return {Promise.<Array.<HTMLImageElement>>}
    */
-  _preloadImagesByLocation(locations, maxParallelRequests) {
+  _preloadImagesByLocationWithId(locations, maxParallelRequests, fetchId) {
     // Only images not in the cache are requested
     const urls = locations.map(location => location.url);
     const nonCachedUrls = urls.filter(url => !this._imageCache.hasImageForUrl(url));
@@ -150,7 +164,7 @@ class ImagePreloader {
     });
 
     return this._$q.resolve()
-      .then(() => this._imageFetcher.fetchMultiple(nonCachedUrls, maxParallelRequests))
+      .then(() => this._imageFetcher.fetchMultiple(nonCachedUrls, maxParallelRequests, fetchId))
       .then(
         images => {
           this._emit('preload:finished', {
@@ -242,6 +256,16 @@ class ImagePreloader {
       newPosition,
     };
   }
+
+  /**
+   * @param {Task} task
+   * @returns {string}
+   * @private
+   */
+  _getFetchIdForTask(task) {
+    return `image-preloader-for-task-${task.id}`;
+  }
+
 }
 
 ImagePreloader.$inject = [
