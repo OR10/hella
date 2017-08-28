@@ -70,6 +70,7 @@
             <v-pane-content>
                 <ul class="grid-block vertical">
                     <li class="grid-block shrink"
+                        ng-class="{ 'highlighted-grid-row': vm.isResponseSelected(page, response) }"
                         ng-repeat="response in page.responses track by response.id">
                         <input id="{{page.id}}-{{$index}}"
                                type="radio"

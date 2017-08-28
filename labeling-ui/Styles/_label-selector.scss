@@ -106,7 +106,7 @@
 
     input[type="radio"]:checked + label {
       .response {
-        color: $color-ut-midgrey-2;
+        color: $color-ut-darkgrey-1;
         font-weight: bold;
       }
     }
@@ -276,4 +276,9 @@
     text-align: center;
     margin-top: 50%;
   }
+}
+
+.highlighted-grid-row {
+  background-color: $color-ut-yellow;
+  color: $color-ut-darkgrey-1;
 }
