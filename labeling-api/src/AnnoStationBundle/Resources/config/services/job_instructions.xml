@@ -102,27 +102,5 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
-
-        <service id="annostation.labeling_api.worker.job_instruction.task_documents_to_task_database"
-                 class="AnnoStationBundle\Worker\JobInstruction\TaskDocumentsToTaskDatabase">
-            <argument type="service" id="annostation.services.database_document_manager_factory"/>
-            <argument type="service" id="annostation.services.couch_db_replicator_service"/>
-            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
-            <argument type="service" id="guzzle.client"/>
-            <argument type="service" id="annostation.labeling_api.migration.configuration"/>
-            <argument>%couchdb_user%</argument>
-            <argument>%couchdb_password%</argument>
-            <argument>%couchdb_host%</argument>
-            <argument>%couchdb_port%</argument>
-            <argument>%database_name%</argument>
-            <tag name="hagl.workerpool.job_instruction"/>
-        </service>
     </services>
 </container>
