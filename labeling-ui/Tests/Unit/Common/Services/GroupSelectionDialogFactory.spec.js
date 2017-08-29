@@ -155,6 +155,32 @@ describe('GroupSelectionDialogFactory', () => {
     expect(confirmCallback).toHaveBeenCalled();
   });
 
+  it('should call the given confirm callback with undefined if nothing was selected', () => {
+    const confirmCallback = jasmine.createSpy('confirm callback');
+
+    const factory = createFactory();
+    factory.createAsync(task, groupIds, {}, confirmCallback);
+    rootScope.$apply();
+
+    const dialogConfirmCallback = SelectionDialogMock.calls.mostRecent().args[1];
+    dialogConfirmCallback(undefined);
+
+    expect(confirmCallback).toHaveBeenCalledWith(undefined);
+  });
+
+  it('should call the given confirm callback with corresponding group model', () => {
+    const confirmCallback = jasmine.createSpy('confirm callback');
+
+    const factory = createFactory();
+    factory.createAsync(task, groupIds, {}, confirmCallback);
+    rootScope.$apply();
+
+    const dialogConfirmCallback = SelectionDialogMock.calls.mostRecent().args[1];
+    dialogConfirmCallback('group-2');
+
+    expect(confirmCallback).toHaveBeenCalledWith(groupTwo);
+  });
+
   it('should pass through the cancel callback', () => {
     const cancelCallback = jasmine.createSpy('cancel callback');
 

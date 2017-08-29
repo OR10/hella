@@ -29,6 +29,7 @@ describe('ThingLayer', () => {
   let labeledThingGateway;
   let labeledThingGroupGateway;
   let shapeSelectionService;
+  let groupSelectionDialogFactory;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -74,7 +75,7 @@ describe('ThingLayer', () => {
 
     applicationState = jasmine.createSpyObj('applicationState', ['disableAll', 'enableAll']);
 
-    modalService = jasmine.createSpyObj('modalService', ['info']);
+    modalService = jasmine.createSpyObj('modalService', ['show', 'info']);
 
     labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['deleteLabeledThing']);
     labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
@@ -85,6 +86,9 @@ describe('ThingLayer', () => {
     );
     labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.resolve());
     labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+
+    groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
+    groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
   });
 
   function createThingLayerInstance() {
@@ -107,7 +111,8 @@ describe('ThingLayer', () => {
       modalService,
       labeledThingGateway,
       labeledThingGroupGateway,
-      shapeSelectionService
+      shapeSelectionService,
+      groupSelectionDialogFactory
     );
   }
 
@@ -188,7 +193,14 @@ describe('ThingLayer', () => {
       const bottomRight = {x: 200, y: 200};
       const color = {primary: 'yellow', secondary: 'black'};
       const entityIdService = jasmine.createSpyObj('EntityIdService', ['getUniqueId']);
-      const measurementRectangle = new PaperMeasurementRectangle(task, 'foobar', topLeft, bottomRight, color, entityIdService);
+      const measurementRectangle = new PaperMeasurementRectangle(
+        task,
+        'foobar',
+        topLeft,
+        bottomRight,
+        color,
+        entityIdService
+      );
       spyOn(measurementRectangle, 'remove');
       angularScope.vm.selectedPaperShape = measurementRectangle;
 
@@ -930,7 +942,7 @@ describe('ThingLayer', () => {
     });
   });
 
-  describe('deleteShapeEvent', () => {
+  describe('action:delete-shape', () => {
     let thingLayer;
     let paperGroupShape;
     let paperShape;
@@ -1077,6 +1089,210 @@ describe('ThingLayer', () => {
         expect(angularScope.vm.selectedPaperShape).toBeNull();
         expect(paperScope.view.update).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('action:ask-and-delete-shape', () => {
+    let thingLayer;
+    let paperShape;
+
+    beforeEach(setupPaperJs);
+
+    beforeEach(() => {
+      thingLayer = createThingLayerInstance();
+      angularScope.vm.paperThingShapes = [];
+      angularScope.vm.paperGroupShapes = [];
+
+      const ltif = {
+        id: 'ltif_id',
+        labeledThing: {
+          id: 'lt_id',
+          groupIds: ['ltg_id'],
+        },
+      };
+
+      paperShape = new PaperThingShape(ltif, 'ps_id', '', true);
+      paperShape.deselect = jasmine.createSpy('paperShape.deselect');
+      paperShape.select = jasmine.createSpy('paperShape.select');
+
+      paperScope.project = jasmine.createSpyObj('paperScope.project', ['getItems']);
+      paperScope.project.getItems.and.returnValue([paperShape]);
+
+      thingLayer.addPaperThingShape(paperShape, true);
+      angularScope.vm.paperThingShapes.push(paperShape);
+      angularScope.vm.selectedPaperShape = null;
+    });
+
+    it('should use groupSelectionDialogFactory', () => {
+      rootScope.$emit('action:ask-and-delete-shape', task, paperShape);
+      expect(groupSelectionDialogFactory.createAsync).toHaveBeenCalled();
+    });
+
+    it('should provide the dialog factory with the given task', () => {
+      rootScope.$emit('action:ask-and-delete-shape', task, paperShape);
+      expect(groupSelectionDialogFactory.createAsync.calls.mostRecent().args[0]).toBe(task);
+    });
+
+    it('should provide the dialog factory with the groupIds of the given shape', () => {
+      rootScope.$emit('action:ask-and-delete-shape', task, paperShape);
+      expect(groupSelectionDialogFactory.createAsync.calls.mostRecent().args[1]).toEqual(['ltg_id']);
+    });
+
+    it('should show the created modal using the modalService', () => {
+      const mockedModalDialog = {};
+      groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve(mockedModalDialog));
+      rootScope.$emit('action:ask-and-delete-shape', task, paperShape);
+      rootScope.$apply();
+      expect(modalService.show).toHaveBeenCalledWith(mockedModalDialog);
+    });
+
+    it('should display an error dialog if the factory fails', () => {
+      const error = new Error('Help! I am stuck in a error factory factory constructing error factories all day long!');
+      groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.reject(error));
+
+      rootScope.$emit('action:ask-and-delete-shape', task, paperShape);
+      rootScope.$apply();
+      expect(modalService.info).toHaveBeenCalled();
+    });
+
+    it('should emit a action:delete-shape if no group was selected', () => {
+      const mockedModalDialog = {};
+      groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve(mockedModalDialog));
+      rootScope.$emit('action:ask-and-delete-shape', task, paperShape);
+      rootScope.$apply();
+
+      spyOn(rootScope, '$emit');
+
+      const dialogConfirmCallback = groupSelectionDialogFactory.createAsync.calls.mostRecent().args[3];
+      // `undefined` is given to the callback if nothing has been selected
+      dialogConfirmCallback(undefined);
+
+      expect(rootScope.$emit).toHaveBeenCalledWith('action:delete-shape', task, paperShape);
+    });
+
+    it('should emit a action:unassign-group-from-shape if a group was selected', () => {
+      const ltg = {
+        id: 'ltg_id',
+        groupIds: [],
+      };
+
+      const ltgif = {
+        id: 'ltgif_id',
+        labeledThingGroup: ltg,
+      };
+
+      const paperGroupShape = new PaperGroupShape(ltgif, 'pgs_id', '', true);
+      paperScope.project.getItems.and.returnValue([paperGroupShape, paperShape]);
+
+      thingLayer.addPaperGroupShape(paperGroupShape, true);
+      angularScope.vm.paperGroupShapes.push(paperGroupShape);
+
+      const mockedModalDialog = {};
+      groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve(mockedModalDialog));
+      rootScope.$emit('action:ask-and-delete-shape', task, paperShape);
+      rootScope.$apply();
+
+      spyOn(rootScope, '$emit');
+
+      const dialogConfirmCallback = groupSelectionDialogFactory.createAsync.calls.mostRecent().args[3];
+      // `undefined` is given to the callback if nothing has been selected
+      dialogConfirmCallback(ltg);
+
+      expect(rootScope.$emit).toHaveBeenCalledWith('action:unassign-group-from-shape', task, paperShape, ltg);
+    });
+  });
+
+  describe('action:unassign-group-from-shape', () => {
+    let thingLayer;
+    let paperShape;
+    let paperGroupShape;
+    let labeledThingGroup;
+
+    beforeEach(setupPaperJs);
+
+    beforeEach(() => {
+      thingLayer = createThingLayerInstance();
+      angularScope.vm.paperThingShapes = [];
+      angularScope.vm.paperGroupShapes = [];
+
+      labeledThingGroup = {
+        id: 'ltg_id',
+        groupIds: [],
+      };
+
+      const ltgif = {
+        id: 'ltgif_id',
+        labeledThingGroup: labeledThingGroup,
+      };
+
+      const ltif = {
+        id: 'ltif_id',
+        labeledThing: {
+          id: 'lt_id',
+          groupIds: ['ltg_id'],
+        },
+      };
+
+      paperGroupShape = new PaperGroupShape(ltgif, 'pgs_id', '', true);
+      paperGroupShape.deselect = jasmine.createSpy('paperGroupShape.deselect');
+      paperGroupShape.select = jasmine.createSpy('paperGroupShape.select');
+
+      paperShape = new PaperThingShape(ltif, 'ps_id', '', true);
+      paperShape.deselect = jasmine.createSpy('paperShape.deselect');
+      paperShape.select = jasmine.createSpy('paperShape.select');
+
+      paperScope.project = jasmine.createSpyObj('paperScope.project', ['getItems']);
+      paperScope.project.getItems.and.returnValue([paperGroupShape, paperShape]);
+
+      thingLayer.addPaperThingShape(paperShape, true);
+      thingLayer.addPaperGroupShape(paperGroupShape, true);
+      angularScope.vm.paperThingShapes.push(paperShape);
+      angularScope.vm.paperGroupShapes.push(paperGroupShape);
+      angularScope.vm.selectedPaperShape = null;
+    });
+
+    it('should set application state to disabled when running', () => {
+      rootScope.$emit('action:unassign-group-from-shape', task, paperShape, labeledThingGroup);
+      expect(applicationState.disableAll).toHaveBeenCalled();
+    });
+
+    it('should set application state to enabled when finished', () => {
+      const deferred = angularQ.defer();
+      labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup
+        .and.returnValue(deferred.promise);
+
+      rootScope.$emit('action:unassign-group-from-shape', task, paperShape, labeledThingGroup);
+      rootScope.$apply();
+
+      expect(applicationState.enableAll).not.toHaveBeenCalled();
+
+      deferred.resolve();
+      rootScope.$apply();
+      expect(applicationState.enableAll).toHaveBeenCalled();
+    });
+
+    it('should set application state to enabled if it fails', () => {
+      const error = new Error('It is quite dark in here. Anyone got a match?');
+      const deferred = angularQ.defer();
+      labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup
+        .and.returnValue(deferred.promise);
+
+      rootScope.$emit('action:unassign-group-from-shape', task, paperShape, labeledThingGroup);
+      rootScope.$apply();
+
+      expect(applicationState.enableAll).not.toHaveBeenCalled();
+
+      deferred.reject(error);
+      rootScope.$apply();
+      expect(applicationState.enableAll).toHaveBeenCalled();
+    });
+
+    it('should unassign given group using the corresponding gateway', () => {
+      rootScope.$emit('action:unassign-group-from-shape', task, paperShape, labeledThingGroup);
+      rootScope.$apply();
+
+      expect(labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup)
+        .toHaveBeenCalledWith([paperShape.labeledThingInFrame.labeledThing], labeledThingGroup);
     });
   });
 
