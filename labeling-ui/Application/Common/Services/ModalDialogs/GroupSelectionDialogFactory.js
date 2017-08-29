@@ -94,7 +94,11 @@ class GroupSelectionDialogFactory {
           dialogContent,
           groupId => {
             if (confirmCallback) {
-              confirmCallback(groups.find(candidate => candidate.id === groupId));
+              if (groupId) {
+                confirmCallback(groups.find(candidate => candidate.id === groupId));
+              } else {
+                confirmCallback(undefined);
+              }
             }
           },
           cancelCallback
