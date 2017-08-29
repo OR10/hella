@@ -372,7 +372,10 @@ class ViewerController {
               // TODO: add also group name here
 
               this._thingLayerContext.withScope(() => {
-                const group = this.paperGroupShapes.find(pgs => pgs.groupId === groupId && pgs.labeledThingGroupInFrame.type === labeledThingInGroupFrame.labeledThingGroup.type);
+                const group = this.paperGroupShapes.find(pgs =>
+                  pgs.groupId === groupId &&
+                  pgs.labeledThingGroupInFrame.labeledThingGroup.type === labeledThingInGroupFrame.labeledThingGroup.type
+                );
                 if (group === undefined) {
                   this._modalService.info(
                     {
