@@ -13,7 +13,7 @@ class RequirementsProjectToXml extends WorkerPool\Job
     private $export;
 
     /**
-     * GenericXmlProjectToCsvExporter constructor.
+     * RequirementsProjectToXml constructor.
      *
      * @param Model\Export $export
      */

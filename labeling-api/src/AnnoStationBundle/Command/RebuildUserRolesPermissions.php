@@ -7,6 +7,7 @@ use AppBundle\Database\Facade as AppBundleFacade;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use Symfony\Component\Console\Helper\ProgressBar;
+use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 use AnnoStationBundle\Worker\Jobs;
 
@@ -56,7 +57,7 @@ class RebuildUserRolesPermissions extends Base
 
         /** @var Model\User $user */
         foreach ($users as $user) {
-            $this->amqpFacade->addJob(new Jobs\UserRolePermissionRebuilder($user->getId()));
+            $this->amqpFacade->addJob(new Jobs\UserRolePermissionRebuilder($user->getId()), WorkerPool\Facade::HIGH_PRIO);
             $progress->advance();
         }
         $progress->finish();

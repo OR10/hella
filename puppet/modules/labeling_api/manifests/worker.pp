@@ -1,8 +1,10 @@
 class labeling_api::worker(
   $app_dir,
   $user,
-  $numberOfLowNormalWorkers = 8,
-  $numberOfHighNormalWorkers = 2,
+  $numberOfLowWorkers = 1,
+  $numberOfNormalWorkers = 4,
+  $numberOfHighWorkers = 2,
+  $numberOfNormalLowWorkers = 4,
   $symfony_environment = 'prod',
   $autostart = true,
 ) {
@@ -10,14 +12,14 @@ class labeling_api::worker(
   include ::annostation_base::supervisord
   include ::labeling_api::common
 
-  supervisord::program { 'worker-pool-starter-low-normal':
-    command             => "${app_dir}/app/AnnoStation/console annostation:workerpool:starter low normal",
+  supervisord::program { 'annostation-worker-pool-starter-low':
+    command             => "${app_dir}/app/AnnoStation/console annostation:workerpool:starter low",
     autostart           => $autostart,
     autorestart         => true,
     user                => $user,
     directory           => $app_dir,
     startsecs           => 0,
-    numprocs            => $numberOfLowNormalWorkers,
+    numprocs            => $numberOfLowWorkers,
     stopasgroup         => true,
     program_environment => {
         'SYMFONY_ENV'   => $symfony_environment,
@@ -25,14 +27,44 @@ class labeling_api::worker(
     notify              => Exec['restart supervisord'],
   }
 
-  supervisord::program { 'worker-pool-starter-high-normal':
-    command             => "${app_dir}/app/AnnoStation/console annostation:workerpool:starter high normal",
+  supervisord::program { 'annostation-worker-pool-starter-normal':
+    command             => "${app_dir}/app/AnnoStation/console annostation:workerpool:starter normal",
     autostart           => $autostart,
     autorestart         => true,
     user                => $user,
     directory           => $app_dir,
     startsecs           => 0,
-    numprocs            => $numberOfHighNormalWorkers,
+    numprocs            => $numberOfNormalWorkers,
+    stopasgroup         => true,
+    program_environment => {
+        'SYMFONY_ENV'   => $symfony_environment,
+    },
+    notify              => Exec['restart supervisord'],
+  }
+
+  supervisord::program { 'annostation-worker-pool-starter-high':
+    command             => "${app_dir}/app/AnnoStation/console annostation:workerpool:starter high",
+    autostart           => $autostart,
+    autorestart         => true,
+    user                => $user,
+    directory           => $app_dir,
+    startsecs           => 0,
+    numprocs            => $numberOfHighWorkers,
+    stopasgroup         => true,
+    program_environment => {
+        'SYMFONY_ENV'   => $symfony_environment,
+    },
+    notify              => Exec['restart supervisord'],
+  }
+
+  supervisord::program { 'annostation-worker-pool-starter-normal-low':
+    command             => "${app_dir}/app/AnnoStation/console annostation:workerpool:starter normal low",
+    autostart           => $autostart,
+    autorestart         => true,
+    user                => $user,
+    directory           => $app_dir,
+    startsecs           => 0,
+    numprocs            => $numberOfNormalLowWorkers,
     stopasgroup         => true,
     program_environment => {
         'SYMFONY_ENV'   => $symfony_environment,
@@ -43,8 +75,10 @@ class labeling_api::worker(
   supervisord::group { 'annostation-worker-pool':
     priority => 100,
     programs => [
-        'worker-pool-starter-low-normal',
-        'worker-pool-starter-high-normal'
+        'annostation-worker-pool-starter-low',
+        'annostation-worker-pool-starter-normal',
+        'annostation-worker-pool-starter-high',
+        'annostation-worker-pool-starter-normal-low'
     ]
   }
 

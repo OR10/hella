@@ -194,7 +194,8 @@ describe('ThingLayer', () => {
       const topLeft = {x: 1, y: 1};
       const bottomRight = {x: 200, y: 200};
       const color = {primary: 'yellow', secondary: 'black'};
-      const measurementRectangle = new PaperMeasurementRectangle(taskFixture, 'foobar', topLeft, bottomRight, color);
+      const entityIdService = jasmine.createSpyObj('EntityIdService', ['getUniqueId']);
+      const measurementRectangle = new PaperMeasurementRectangle(taskFixture, 'foobar', topLeft, bottomRight, color, entityIdService);
       spyOn(measurementRectangle, 'remove');
       angularScope.vm.selectedPaperShape = measurementRectangle;
 

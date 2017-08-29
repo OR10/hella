@@ -13,6 +13,7 @@ use AppBundle\View;
 use AnnoStationBundle\Service;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Version;
+use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 use AnnoStationBundle\Worker\Jobs;
 use Symfony\Component\HttpFoundation;
@@ -189,7 +190,7 @@ class Report extends Controller\Base
 
         $report = Model\Report::create($project);
         $this->reportFacade->save($report);
-        $this->amqpFacade->addJob(new Jobs\Report($report->getId()));
+        $this->amqpFacade->addJob(new Jobs\Report($report->getId(), WorkerPool\Facade::LOW_PRIO));
 
         return View\View::create()->setData(['result' => $report]);
     }

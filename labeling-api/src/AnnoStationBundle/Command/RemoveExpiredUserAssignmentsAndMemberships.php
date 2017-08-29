@@ -6,6 +6,7 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Database\Facade as AppBundleFacade;
 use AppBundle\Model;
+use crosscan\WorkerPool;
 use crosscan\WorkerPool\AMQP;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
@@ -103,6 +104,6 @@ class RemoveExpiredUserAssignmentsAndMemberships extends Base
         );
 
         $job = new Jobs\DeleteProjectAssignmentsForUserJobCreator($user->getId(), $projectIds);
-        $this->amqpFacade->addJob($job);
+        $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
     }
 }

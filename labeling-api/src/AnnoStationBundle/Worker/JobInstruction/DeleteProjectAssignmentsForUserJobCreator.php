@@ -4,13 +4,12 @@ namespace AnnoStationBundle\Worker\JobInstruction;
 
 use crosscan\Logger;
 use crosscan\WorkerPool;
-use crosscan\WorkerPool\Job;
+use crosscan\WorkerPool\AMQP;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Database\Facade as AppBundleFacade;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Worker\Jobs;
 use Hagl\WorkerPoolBundle;
-use crosscan\WorkerPool\AMQP;
 
 class DeleteProjectAssignmentsForUserJobCreator extends WorkerPoolBundle\JobInstruction
 {
@@ -66,7 +65,7 @@ class DeleteProjectAssignmentsForUserJobCreator extends WorkerPoolBundle\JobInst
             $taskIds = $this->labelingTaskFacade->getTaskIdsForAssignedUserForProject($project, $user);
             foreach ($taskIds as $taskId) {
                 $job = new Jobs\LabelingTaskRemoveAssignment($user->getId(), $taskId);
-                $this->amqpFacade->addJob($job);
+                $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
             }
         }
     }

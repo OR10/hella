@@ -77,13 +77,6 @@
             <tag name="console.command"/>
         </service>
 
-        <service id="annostation.labeling_api.command.migrations.task_documents_to_task_database"
-                 class="AnnoStationBundle\Command\Migrations\TaskDocumentsToTaskDatabase">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
-            <tag name="console.command"/>
-        </service>
-
         <service id="annostation.labeling_api.command.reset_couch_db_user_passwords"
                  class="AnnoStationBundle\Command\ResetCouchDbUserPasswords">
             <argument type="service" id="annostation.labeling_api.database.facade.couchdb_users"/>
@@ -179,19 +172,6 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
-            <tag name="console.command"/>
-        </service>
-
-        <service id="annostation.labeling_api.command.migrations.copy_label_group_coordinators_to_label_managers"
-                 class="AnnoStationBundle\Command\Migrations\CopyLabelGroupCoordinatorsToLabelManagers">
-            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
-            <tag name="console.command"/>
-        </service>
-
-        <service id="annostation.labeling_api.command.migrations.copy_project_coordinator_assignment_history_to_label_managers"
-                 class="AnnoStationBundle\Command\Migrations\CopyProjectCoordinatorAssignmentHistoryToLabelManagers">
-            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <tag name="console.command"/>
         </service>
     </services>
