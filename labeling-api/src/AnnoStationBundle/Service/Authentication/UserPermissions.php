@@ -59,6 +59,8 @@ class UserPermissions
         // User management
         'canEditLabelingGroups'                           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                     ],
         'canViewUserList'                                 => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                     ],
+        'canAddUser'                                      => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                     ],
+        'canEditUser'                                     => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                     ],
         'canDeleteUser'                                   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                     ],
 
         // Management board
@@ -76,10 +78,10 @@ class UserPermissions
         'canCreateOrganisation'                           => [Model\User::ROLE_SUPER_ADMIN,                                                                                    ],
         'canEditOrganisation'                             => [Model\User::ROLE_SUPER_ADMIN,                                                                                    ],
         'canDeleteOrganisation'                           => [Model\User::ROLE_SUPER_ADMIN,                                                                                    ],
-        'canViewOrganisationQuota'                        => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                    ],
-        'canAddUserToAnyOrganisation'                     => [Model\User::ROLE_SUPER_ADMIN,                                                                                    ],
-        'canAddUserToOwnOrganisation'                     => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                   ],
-        'canDeleteUserFromOrganisation'                   => [Model\User::ROLE_SUPER_ADMIN,                                                                                    ],
+        'canViewOrganisationQuota'                        => [Model\User::ROLE_SUPER_ADMIN,                                                                                    ],
+        'canAssignUserToAnyOrganisation'                  => [Model\User::ROLE_SUPER_ADMIN,                                                                                    ],
+        'canAssignUserToOwnOrganisation'                  => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                    ],
+        'canDeleteUserFromOrganisation'                   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                    ],
         'canListAllUsers'                                 => [Model\User::ROLE_SUPER_ADMIN,                                                                                    ],
 
         //Monitoring
