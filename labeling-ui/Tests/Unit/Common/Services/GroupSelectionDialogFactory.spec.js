@@ -112,12 +112,6 @@ describe('GroupSelectionDialogFactory', () => {
   });
 
   it('should fetch given groups by id', () => {
-    const groupIds = [
-      'group-1',
-      'group-2',
-      'group-3',
-    ];
-
     const factory = createFactory();
     factory.createAsync(task, groupIds, {});
 
@@ -148,18 +142,17 @@ describe('GroupSelectionDialogFactory', () => {
     expect(dialogContent.data).toEqual(expectedDialogData);
   });
 
-  it('should pass through the confirm callback', () => {
+  it('should call the given confirm callback on dialog completion', () => {
     const confirmCallback = jasmine.createSpy('confirm callback');
 
     const factory = createFactory();
     factory.createAsync(task, groupIds, {}, confirmCallback);
-
     rootScope.$apply();
-    expect(SelectionDialogMock).toHaveBeenCalledWith(
-      jasmine.anything(),
-      confirmCallback,
-      undefined
-    );
+
+    const dialogConfirmCallback = SelectionDialogMock.calls.mostRecent().args[1];
+    dialogConfirmCallback();
+
+    expect(confirmCallback).toHaveBeenCalled();
   });
 
   it('should pass through the cancel callback', () => {
@@ -171,7 +164,7 @@ describe('GroupSelectionDialogFactory', () => {
     rootScope.$apply();
     expect(SelectionDialogMock).toHaveBeenCalledWith(
       jasmine.anything(),
-      undefined,
+      jasmine.anything(),
       cancelCallback,
     );
   });
