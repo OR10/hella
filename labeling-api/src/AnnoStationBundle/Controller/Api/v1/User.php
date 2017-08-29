@@ -185,17 +185,14 @@ class User extends Controller\Base
      *
      * @Rest\Post("")
      *
+     * @CheckPermissions({"canAddUser"})
+     *
      * @param HttpFoundation\Request              $request
      *
      * @return View\View
      */
     public function addUserAction(HttpFoundation\Request $request)
     {
-        if (!$this->userPermissions->hasPermission('canAddUser')) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to edit users');
-        }
-
-
         $user = new Model\User();
         $user->setEmail($request->request->get('email'));
         $user->setPlainPassword($request->request->get('password'));
@@ -245,6 +242,8 @@ class User extends Controller\Base
      *
      * @Rest\Put("/{user}")
      *
+     * @CheckPermissions({"canEditUser"})
+     *
      * @param HttpFoundation\Request              $request
      * @param Model\User                          $user
      *
@@ -254,10 +253,6 @@ class User extends Controller\Base
     {
         /** @var Model\User $loginUser */
         $loginUser = $this->tokenStorage->getToken()->getUser();
-
-        if (!$this->userPermissions->hasPermission('canEditUser')) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to edit users');
-        }
 
         if (!$this->userPermissions->hasPermission('canAssignUserToAnyOrganisation') &&
             count(array_diff($user->getOrganisations(), $loginUser->getOrganisations())) > 0) {
