@@ -112,7 +112,7 @@ class UsersListController {
     );
   }
 
-  goToUserProfilePage(user) {
+  goToUserProfilePageIfAllowed(user) {
     if (this.userPermissions.canEditUser) {
       this._$state.go('labeling.users.detail', {userId: user.id});
     }
