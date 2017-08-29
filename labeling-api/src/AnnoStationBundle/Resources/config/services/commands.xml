@@ -77,13 +77,6 @@
             <tag name="console.command"/>
         </service>
 
-        <service id="annostation.labeling_api.command.migrations.task_documents_to_task_database"
-                 class="AnnoStationBundle\Command\Migrations\TaskDocumentsToTaskDatabase">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
-            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
-            <tag name="console.command"/>
-        </service>
-
         <service id="annostation.labeling_api.command.reset_couch_db_user_passwords"
                  class="AnnoStationBundle\Command\ResetCouchDbUserPasswords">
             <argument type="service" id="annostation.labeling_api.database.facade.couchdb_users"/>
