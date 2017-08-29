@@ -68,9 +68,11 @@ class ViewerController {
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {InProgressService} inProgressService
    * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {ImagePreloader} imagePreloader
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ToolSelectorListenerService} toolSelectorListenerService
    * @param {HierarchyCreationService} hierarchyCreationService
+   * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    */
   constructor(
     $scope,
@@ -109,7 +111,8 @@ class ViewerController {
     imagePreloader,
     shapeSelectionService,
     toolSelectorListenerService,
-    hierarchyCreationService
+    hierarchyCreationService,
+    groupSelectionDialogFactory
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -353,6 +356,12 @@ class ViewerController {
      * @private
      */
     this._hierarchyCreationService = hierarchyCreationService;
+
+    /**
+     * @type {GroupSelectionDialogFactory}
+     * @private
+     */
+    this._groupSelectionDialogFactory = groupSelectionDialogFactory;
 
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
@@ -836,7 +845,8 @@ class ViewerController {
       this._modalService,
       this._labeledThingGateway,
       this._labeledThingGroupGateway,
-      this._shapeSelectionService
+      this._shapeSelectionService,
+      this._groupSelectionDialogFactory
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1659,6 +1669,7 @@ ViewerController.$inject = [
   'shapeSelectionService',
   'toolSelectorListenerService',
   'hierarchyCreationService',
+  'groupSelectionDialogFactory',
 ];
 
 export default ViewerController;

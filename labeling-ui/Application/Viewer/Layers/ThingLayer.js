@@ -39,24 +39,28 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    */
-  constructor(width,
-              height,
-              $scope,
-              $injector,
-              drawingContext,
-              toolService,
-              paperShapeFactory,
-              logger,
-              $timeout,
-              framePosition,
-              viewerMouseCursorService,
-              labeledThingGroupService,
-              applicationState,
-              modalService,
-              labeledThingGateway,
-              labeledThingGroupGateway,
-              shapeSelectionService) {
+  constructor(
+    width,
+    height,
+    $scope,
+    $injector,
+    drawingContext,
+    toolService,
+    paperShapeFactory,
+    logger,
+    $timeout,
+    framePosition,
+    viewerMouseCursorService,
+    labeledThingGroupService,
+    applicationState,
+    modalService,
+    labeledThingGateway,
+    labeledThingGroupGateway,
+    shapeSelectionService,
+    groupSelectionDialogFactory,
+  ) {
     super(width, height, $scope, drawingContext);
 
     /**
@@ -100,6 +104,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._labeledThingGroupService = labeledThingGroupService;
+
+    /**
+     * @type {GroupSelectionDialogFactory}
+     * @private
+     */
+    this._groupSelectionDialogFactory = groupSelectionDialogFactory;
 
     /**
      * @type {Tool|null}
