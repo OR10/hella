@@ -29,6 +29,7 @@ describe('ThingLayer', () => {
   let labeledThingGateway;
   let labeledThingGroupGateway;
   let shapeSelectionService;
+  let groupSelectionDialogFactory;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -74,7 +75,7 @@ describe('ThingLayer', () => {
 
     applicationState = jasmine.createSpyObj('applicationState', ['disableAll', 'enableAll']);
 
-    modalService = jasmine.createSpyObj('modalService', ['info']);
+    modalService = jasmine.createSpyObj('modalService', ['show', 'info']);
 
     labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['deleteLabeledThing']);
     labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
@@ -85,6 +86,9 @@ describe('ThingLayer', () => {
     );
     labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.resolve());
     labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+
+    groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
+    groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
   });
 
   function createThingLayerInstance() {
@@ -107,7 +111,8 @@ describe('ThingLayer', () => {
       modalService,
       labeledThingGateway,
       labeledThingGroupGateway,
-      shapeSelectionService
+      shapeSelectionService,
+      groupSelectionDialogFactory
     );
   }
 
