@@ -193,7 +193,14 @@ describe('ThingLayer', () => {
       const bottomRight = {x: 200, y: 200};
       const color = {primary: 'yellow', secondary: 'black'};
       const entityIdService = jasmine.createSpyObj('EntityIdService', ['getUniqueId']);
-      const measurementRectangle = new PaperMeasurementRectangle(task, 'foobar', topLeft, bottomRight, color, entityIdService);
+      const measurementRectangle = new PaperMeasurementRectangle(
+        task,
+        'foobar',
+        topLeft,
+        bottomRight,
+        color,
+        entityIdService
+      );
       spyOn(measurementRectangle, 'remove');
       angularScope.vm.selectedPaperShape = measurementRectangle;
 
@@ -935,7 +942,7 @@ describe('ThingLayer', () => {
     });
   });
 
-  describe('deleteShapeEvent', () => {
+  describe('action:delete-shape', () => {
     let thingLayer;
     let paperGroupShape;
     let paperShape;
