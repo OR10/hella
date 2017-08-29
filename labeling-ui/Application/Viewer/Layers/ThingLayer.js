@@ -297,6 +297,56 @@ class ThingLayer extends PanAndZoomPaperLayer {
           .catch(() => this._onDeletionError());
       }
     );
+
+    ThingLayer.deregisterAskAndDeleteEventListener();
+    ThingLayer.deregisterAskAndDeleteEventListener = $scope.$root.$on(
+      'action:ask-and-delete-shape',
+      (event, task, shape) => {
+        let groupIds = [];
+        if (shape.labeledThingInFrame && shape.labeledThingInFrame.labeledThing && shape.labeledThingInFrame.labeledThing.groupIds) {
+          groupIds = shape.labeledThingInFrame.labeledThing.groupIds;
+        }
+
+        this._groupSelectionDialogFactory.createAsync(
+          task,
+          groupIds,
+          {
+            title: 'Remove Shape or Group',
+            headline: 'The selected shape is going to be removed. Proceed?',
+            message: 'You may either delete the shape itself or remove its association from a certain group. What should I do?',
+            confirmButtonText: 'Delete',
+            defaultSelection: 'Delete the shape itself',
+          },
+          group => {
+            if (group === undefined) {
+              // User voted to remove the shape itself
+              $scope.$root.$emit('action:delete-shape', task, shape);
+            } else {
+              // User wants a certain group unassigned
+              $scope.$root.$emit('action:unassign-group-from-shape', task, shape, group);
+            }
+          }
+        )
+          .then(selectionDialog => {
+            this._modalService.show(selectionDialog);
+          })
+          .catch(() => {
+            this._modalService.info(
+              {
+                title: 'Error retrieving group correlation',
+                headline: 'The list of corresponding groups to the selected labeled thing could not be loaded. Please try again or inform your label manager if the problem persists.',
+                confirmButtonText: 'Understood',
+              },
+              undefined,
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+          });
+      }
+    );
   }
 
   /**
@@ -968,6 +1018,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
 ThingLayer.deregisterDeleteEventListener = () => {
 };
 ThingLayer.deregisterUnassignGroupFromShapeEventListener = () => {
+};
+ThingLayer.deregisterAskAndDeleteEventListener = () => {
 };
 
 export default ThingLayer;
