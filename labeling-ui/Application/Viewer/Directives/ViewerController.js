@@ -379,33 +379,39 @@ class ViewerController {
           if (groupIds.length !== 0) {
             groupIds.forEach(groupId => {
               const toAddShape = shapes.find(shape => shape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) === -1);
-              // TODO: add also group name here
 
-              this._thingLayerContext.withScope(() => {
-                const group = this.paperGroupShapes.find(pgs =>
-                  pgs.groupId === groupId &&
-                  pgs.labeledThingGroupInFrame.labeledThingGroup.type === labeledThingInGroupFrame.labeledThingGroup.type
-                );
-                if (group === undefined) {
-                  this._modalService.info(
-                    {
-                      title: 'Operation invalid',
-                      headline: 'Group is not the same as inital group',
-                      confirmButtonText: 'Ok thank you!',
-                    },
-                    undefined,
-                    undefined,
-                    {
-                      warning: true,
-                      abortable: false,
-                    }
-                  );
-                  return;
+              this._groupSelectionDialogFactory.createAsync(
+                this.task,
+                groupIds,
+                {
+                  title: 'Add shape to group',
+                  headline: 'The selected shape can add into your choosen group or create a complete new group around both shapes',
+                  message: 'Please select a group in which you want to add the selected shape or choose \'Create new group\'!',
+                  confirmButtonText: 'Add',
+                  defaultSelection: 'Create new group',
+                },
+                group => {
+                  if (group === undefined) {
+                    // create new group
+                    this._thingLayerContext.withScope(() => {
+                      const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+                      this._storeGroup(newGroup, shapes);
+                      this._handleGroupAddAfterActions(newGroup);
+                    });
+                  } else {
+                    // add to choosen group
+                    group.addShape(toAddShape);
+                    this._updateGroup(group, toAddShape);
+                    this._handleGroupAddAfterActions(group);
+                    group.update();
+                  }
                 }
-                group.addShape(toAddShape);
-                this._updateGroup(group, toAddShape);
-                this._handleGroupAddAfterActions(group);
-                group.update();
+              )
+              .then(selectionDialog => {
+                this._modalService.show(selectionDialog);
+              })
+              .catch(error => {
+                console.error(error);
               });
             });
           }
