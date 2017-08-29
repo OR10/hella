@@ -930,14 +930,13 @@ describe('ThingLayer', () => {
     });
   });
 
-  // xdescribe('#removePaperShapes()', () => {
-  // });
-
   describe('deleteShapeEvent', () => {
     let thingLayer;
     let paperGroupShape;
     let paperShape;
+
     beforeEach(setupPaperJs);
+
     beforeEach(() => {
       thingLayer = createThingLayerInstance();
       angularScope.vm.paperThingShapes = [];
@@ -957,6 +956,7 @@ describe('ThingLayer', () => {
           groupIds: ['ltg_id'],
         },
       };
+
       paperGroupShape = new PaperGroupShape(ltgif, 'pgs_id', '', true);
       paperShape = new PaperThingShape(ltif, 'ps_id', '', true);
 
@@ -974,6 +974,7 @@ describe('ThingLayer', () => {
       angularScope.vm.paperThingShapes.push(paperShape);
       angularScope.vm.paperGroupShapes.push(paperGroupShape);
     });
+
     describe('PaperThingShape', () => {
       it('shows modal window on error', () => {
         const error = new Error('Oh no! The universe imploded in the meantime!');
@@ -1009,6 +1010,7 @@ describe('ThingLayer', () => {
         expect(angularScope.vm.selectedPaperShape).toBeNull();
         expect(paperScope.view.update).toHaveBeenCalled();
       });
+
       it('Delete one shape of two from group and keep the group', () => {
         const ltif = {
           id: 'ltif_id2',
@@ -1044,6 +1046,7 @@ describe('ThingLayer', () => {
         expect(paperScope.view.update).toHaveBeenCalled();
       });
     });
+
     describe('PaperGroupShape', () => {
       it('shows modal window on error', () => {
         const error = new Error('Help! Help! I am caught in a big whale!');
@@ -1057,6 +1060,7 @@ describe('ThingLayer', () => {
         expect(applicationState.enableAll).toHaveBeenCalled();
         expect(modalService.info).toHaveBeenCalled();
       });
+
       it('Delete group', () => {
         labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
