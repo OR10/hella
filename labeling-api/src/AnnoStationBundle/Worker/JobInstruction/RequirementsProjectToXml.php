@@ -30,7 +30,7 @@ class RequirementsProjectToXml extends JobInstruction
     protected function runJob(WorkerPool\Job $job, Logger\Facade\LoggerFacade $logger)
     {
         try {
-            /** @var Jobs\GenericXmlProjectToCsvExporter $job */
+            /** @var Jobs\RequirementsProjectToXml $job */
             $this->requirementsProjectToXml->export($job->getExport());
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);

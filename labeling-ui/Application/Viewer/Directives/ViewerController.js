@@ -73,44 +73,45 @@ class ViewerController {
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {SelectionDialog} SelectionDialog
    */
-  constructor($scope,
-              $rootScope,
-              $element,
-              $window,
-              $injector,
-              drawingContextService,
-              frameLocationGateway,
-              frameGateway,
-              labeledThingInFrameGateway,
-              labeledThingGroupGateway,
-              entityIdService,
-              paperShapeFactory,
-              applicationConfig,
-              $interval,
-              labeledThingGateway,
-              abortablePromiseFactory,
-              animationFrameService,
-              $q,
-              entityColorService,
-              logger,
-              $timeout,
-              applicationState,
-              lockService,
-              keyboardShortcutService,
-              toolService,
-              debouncerService,
-              frameIndexService,
-              modalService,
-              $state,
-              viewerMouseCursorService,
-              labeledThingGroupService,
-              inProgressService,
-              pouchDbSyncManager,
-              imagePreloader,
-              shapeSelectionService,
-              toolSelectorListenerService,
-              hierarchyCreationService,
-              SelectionDialog) {
+  constructor(
+    $scope,
+    $rootScope,
+    $element,
+    $window,
+    $injector,
+    drawingContextService,
+    frameLocationGateway,
+    frameGateway,
+    labeledThingInFrameGateway,
+    labeledThingGroupGateway,
+    entityIdService,
+    paperShapeFactory,
+    applicationConfig,
+    $interval,
+    labeledThingGateway,
+    abortablePromiseFactory,
+    animationFrameService,
+    $q,
+    entityColorService,
+    logger,
+    $timeout,
+    applicationState,
+    lockService,
+    keyboardShortcutService,
+    toolService,
+    debouncerService,
+    frameIndexService,
+    modalService,
+    $state,
+    viewerMouseCursorService,
+    labeledThingGroupService,
+    inProgressService,
+    pouchDbSyncManager,
+    imagePreloader,
+    shapeSelectionService,
+    toolSelectorListenerService,
+    hierarchyCreationService
+  ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -382,11 +383,17 @@ class ViewerController {
 
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
-
         const groupSelectedCallback = groupStructureObject => {
           const shapes = this._shapeSelectionService.getAllShapes();
-          const struct = new GroupToolActionStruct({}, this.viewport, this.task, groupStructureObject.id, this.framePosition);
-          const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
+          const struct = new GroupToolActionStruct(
+            {},
+            this.viewport,
+            this.task,
+            groupStructureObject.id,
+            this.framePosition
+          );
+          const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(
+            struct);
 
           this._thingLayerContext.withScope(() => {
             const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
@@ -841,6 +848,7 @@ class ViewerController {
 
   _setupThingLayer() {
     this._thingLayerContext = this._drawingContextService.createContext();
+    this._shapeSelectionService.setDrawingContext(this._thingLayerContext);
 
     this.thingLayer = new ThingLayer(
       this._contentWidth,
@@ -1004,7 +1012,8 @@ class ViewerController {
         this._frameChangeInProgress = false;
       });
 
-    const labeledThingInFrameBufferPromise = this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameIndex))
+    const labeledThingInFrameBufferPromise = this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(
+      frameIndex))
       .aborted(() => {
         if (abortRelease) {
           return;
@@ -1014,7 +1023,10 @@ class ViewerController {
         this._frameChangeInProgress = false;
       });
 
-    const labeledThingGroupInFramePromise = this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(this.task, frameIndex)
+    const labeledThingGroupInFramePromise = this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(
+      this.task,
+      frameIndex
+    )
       .aborted(() => {
         if (abortRelease) {
           return;
@@ -1121,7 +1133,11 @@ class ViewerController {
     if (ghostedLabeledThingInFrame) {
       let ghostedPaperShape;
       this._thingLayerContext.withScope(() => {
-        ghostedPaperShape = this._paperShapeFactory.createPaperThingShape(ghostedLabeledThingInFrame, ghostedLabeledThingInFrame.shapes[0], this.video);
+        ghostedPaperShape = this._paperShapeFactory.createPaperThingShape(
+          ghostedLabeledThingInFrame,
+          ghostedLabeledThingInFrame.shapes[0],
+          this.video
+        );
       });
 
       this.paperThingShapes.push(ghostedPaperShape);
@@ -1334,7 +1350,10 @@ class ViewerController {
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(storedLabeledThing => {
-        return this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame, storedLabeledThing.task.id);
+        return this._labeledThingInFrameGateway.saveLabeledThingInFrame(
+          newLabeledThingInFrame,
+          storedLabeledThing.task.id
+        );
       })
       .catch(error => {
         console.error(error); // eslint-disable-line no-console
@@ -1369,14 +1388,21 @@ class ViewerController {
    * @private
    */
   _onGroupCreate(paperGroupShape) {
-    let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(this._thingLayerContext, paperGroupShape.bounds);
+    let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(
+      this._thingLayerContext,
+      paperGroupShape.bounds
+    );
     // Service finds the group shape itself, so we need to remove the shape id from the array
-    shapesInGroup = shapesInGroup.filter(shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
+    shapesInGroup = shapesInGroup.filter(
+      shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
     this._storeGroup(paperGroupShape, shapesInGroup);
   }
 
   _storeGroup(paperGroupShape, shapesInGroup) {
-    this._labeledThingGroupGateway.createLabeledThingGroup(this.task, paperGroupShape.labeledThingGroupInFrame.labeledThingGroup)
+    this._labeledThingGroupGateway.createLabeledThingGroup(
+      this.task,
+      paperGroupShape.labeledThingGroupInFrame.labeledThingGroup
+    )
       .then(labeledThingGroup => {
         const labeledThings = [];
         shapesInGroup.forEach(shape => {

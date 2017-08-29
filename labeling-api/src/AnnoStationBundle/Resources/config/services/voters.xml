@@ -17,6 +17,7 @@
         </service>
         <service id="annostation.labeling_api.voter.access_check.organisation"
                  class="AnnoStationBundle\Voter\AccessCheckVoter\Organisation">
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions" />
             <tag name="security.voter"/>
         </service>
     </services>

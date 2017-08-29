@@ -4,13 +4,23 @@ class MockShape {
   constructor(id) {
     this.id = id;
   }
-  select() {}
-  deselect() {}
-}
-class Rectangle extends MockShape {}
-class Cuboid extends MockShape {}
 
-describe('ShapeSelectionService tests', () => {
+  select() {
+  }
+
+  deselect() {
+  }
+}
+
+class Rectangle extends MockShape {
+}
+
+class Cuboid extends MockShape {
+}
+
+describe('ShapeSelectionService', () => {
+  let drawingContextMock;
+
   function createRectangle(id = 'some-rectangle-id') {
     const rectangle = new Rectangle(id);
     spyOn(rectangle, 'select');
@@ -25,14 +35,27 @@ describe('ShapeSelectionService tests', () => {
     return cuboid;
   }
 
-  it('can be created', () => {
+  function createShapeSelectionService(drawingContext = drawingContextMock) {
     const service = new ShapeSelectionService();
+    if (drawingContext !== null) {
+      service.setDrawingContext(drawingContext);
+    }
+    return service;
+  }
+
+  beforeEach(() => {
+    drawingContextMock = jasmine.createSpyObj('DrawingContext', ['withScope']);
+    drawingContextMock.withScope.and.callFake(callback => callback());
+  });
+
+  it('can be created', () => {
+    const service = createShapeSelectionService();
     expect(service).toEqual(jasmine.any(ShapeSelectionService));
   });
 
   describe('toggleShape', () => {
     it('adds a shape', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shape = createRectangle();
 
       service.toggleShape(shape);
@@ -42,7 +65,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('removes a shape', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shape = createCuboid();
 
       service.toggleShape(shape);
@@ -54,7 +77,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('adds two shapes', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
       const shapeTwo = createCuboid('some-id-2');
 
@@ -67,7 +90,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('selects all the shapes when adding a new shape', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createRectangle('some-id-1');
       const shapeTwo = createRectangle('some-id-2');
 
@@ -78,7 +101,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('adds three shapes and removes one shape', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createRectangle('some-id-1');
       const shapeTwo = createRectangle('some-id-2');
       const shapeThree = createRectangle('some-id-3');
@@ -96,7 +119,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('only allows shapes of the same type', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const cuboid = createCuboid();
       const rectangle = createRectangle();
 
@@ -108,11 +131,28 @@ describe('ShapeSelectionService tests', () => {
       expect(selectedShape).toBe(cuboid);
       expect(count).toEqual(1);
     });
+
+    it('should do nothing if no drawingContext is set', () => {
+      const service = createShapeSelectionService(null);
+      const shape = createRectangle();
+      service.toggleShape(shape);
+      expect(shape.select).not.toHaveBeenCalled();
+      expect(shape.deselect).not.toHaveBeenCalled();
+      expect(service.count()).toEqual(0);
+    });
+
+    it('should use withScope to handle paper changes', () => {
+      const service = createShapeSelectionService();
+      const shape = createRectangle();
+      service.toggleShape(shape);
+
+      expect(drawingContextMock.withScope).toHaveBeenCalled();
+    });
   });
 
   describe('count()', () => {
     it('returns 0 by default', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
 
       const count = service.count();
 
@@ -122,7 +162,7 @@ describe('ShapeSelectionService tests', () => {
 
   describe('clear', () => {
     it('removes all the shapes and deselects them', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
       const shapeTwo = createCuboid('some-id-2');
       const shapeThree = createCuboid('some-id-3');
@@ -139,11 +179,44 @@ describe('ShapeSelectionService tests', () => {
       expect(shapeThree.deselect).toHaveBeenCalled();
       expect(count).toEqual(0);
     });
+
+    it('should not deselect shapes if no drawing context is set', () => {
+      const service = createShapeSelectionService();
+      const shape = createRectangle();
+
+      service.toggleShape(shape);
+      service.setDrawingContext(undefined);
+      service.clear();
+
+      expect(shape.deselect).toHaveBeenCalledTimes(1); // deselect from toggleShape with context
+    });
+
+    it('should clear selection list even if no drawing context is set', () => {
+      const service = createShapeSelectionService();
+      const shape = createRectangle();
+
+      service.toggleShape(shape);
+      service.setDrawingContext(undefined);
+      service.clear();
+
+      expect(service.count()).toEqual(0);
+      expect(service.getAllShapes()).toEqual([]);
+    });
+
+    it('should use withScope to execute drawing operations', () => {
+      const service = createShapeSelectionService();
+      const shape = createRectangle();
+
+      service.toggleShape(shape);
+      service.clear();
+
+      expect(drawingContextMock.withScope).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('setSelectedShape', () => {
     it('removes all previous shapes and only sets this one', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createRectangle('some-id-1');
       const shapeTwo = createRectangle('some-id-2');
       const shapeThree = createRectangle('some-id-3');
@@ -165,7 +238,7 @@ describe('ShapeSelectionService tests', () => {
 
   describe('getSelectedShape', () => {
     it('returns the shape set via setSelectedShape', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shape = createRectangle();
 
       service.setSelectedShape(shape);
@@ -175,7 +248,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('returns the first shape set via toggleShaoe', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
       const shapeTwo = createCuboid('some-id-2');
       const shapeThree = createCuboid('some-id-3');
@@ -191,7 +264,7 @@ describe('ShapeSelectionService tests', () => {
 
   describe('getAllShapes', () => {
     it('returns an empty array by default', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
 
       const allShapes = service.getAllShapes();
 
@@ -200,7 +273,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('returns all the shapes as array', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
       const shapeTwo = createCuboid('some-id-2');
       const shapeThree = createCuboid('some-id-3');
@@ -220,7 +293,7 @@ describe('ShapeSelectionService tests', () => {
 
   describe('removeShape()', () => {
     it('deselects the shape, even if it is not known to the service', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
 
       service.removeShape(shapeOne);
@@ -230,7 +303,7 @@ describe('ShapeSelectionService tests', () => {
     });
 
     it('removes the shape from the selected shapes', () => {
-      const service = new ShapeSelectionService();
+      const service = createShapeSelectionService();
       const shapeOne = createCuboid('some-id-1');
       const shapeTwo = createCuboid('some-id-2');
 
@@ -243,6 +316,66 @@ describe('ShapeSelectionService tests', () => {
       expect(shapeTwo.deselect).not.toHaveBeenCalled();
       expect(service.count()).toEqual(1);
       expect(allShapes[0]).toBe(shapeTwo);
+    });
+
+    it('should do nothing if drawingContext is not set', () => {
+      const service = createShapeSelectionService(null);
+      const shape = createCuboid();
+
+      service.removeShape(shape);
+
+      expect(shape.deselect).not.toHaveBeenCalled();
+    });
+
+    it('should execute commands within withScope block', () => {
+      const service = createShapeSelectionService();
+      const shape = createCuboid();
+
+      service.removeShape(shape);
+
+      expect(drawingContextMock.withScope).toHaveBeenCalled();
+    });
+  });
+
+  describe('DrawingContext', () => {
+    it('should accept a new drawingContext to be set', () => {
+      const service = createShapeSelectionService(null);
+      const someContextMock = {};
+      expect(() => service.setDrawingContext(someContextMock)).not.toThrow();
+    });
+
+    it('should clear the selected shapes once an initial new drawingContext is set', () => {
+      const service = createShapeSelectionService(null);
+      const someContextMock = {};
+      spyOn(service, 'clear');
+      service.setDrawingContext(someContextMock);
+
+      expect(service.clear).toHaveBeenCalled();
+    });
+
+    it('should not clear the selected shapes if the same drawing context is set again', () => {
+      const service = createShapeSelectionService(null);
+      const someContextMock = {};
+
+      spyOn(service, 'clear');
+
+      service.setDrawingContext(someContextMock);
+      service.setDrawingContext(someContextMock);
+
+      expect(service.clear).toHaveBeenCalledTimes(1);
+    });
+
+    it('should clear the selected shapes if the the drawingContext is changed', () => {
+      const service = createShapeSelectionService(null);
+      const someContextMock = {};
+      const someOtherContextMock = {};
+
+      spyOn(service, 'clear');
+
+      service.setDrawingContext(someContextMock);
+      service.setDrawingContext(someOtherContextMock);
+
+      expect(service.clear).toHaveBeenCalledTimes(2);
     });
   });
 });
