@@ -9,11 +9,11 @@ class UsersListController {
    * @param {ModalService} modalService
    */
   constructor($state, userGateway, organisationGateway, organisationService, modalService) {
-      /**
-       * @type {$state}
-       * @private
-       */
-      this._$state = $state;
+    /**
+     * @type {$state}
+     * @private
+     */
+    this._$state = $state;
 
     /**
      * @type {UserGateway}
@@ -114,7 +114,7 @@ class UsersListController {
 
   goToUserProfilePage(user) {
     if (this.userPermissions.canEditUser) {
-        this._$state.go('labeling.users.detail', {userId: user.id});
+      this._$state.go('labeling.users.detail', {userId: user.id});
     }
   }
 }
