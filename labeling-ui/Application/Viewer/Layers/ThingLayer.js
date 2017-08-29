@@ -263,7 +263,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     ThingLayer.deregisterDeleteEventListener();
-    ThingLayer.deregisterDeleteEventListener = $scope.$root.$on('action:delete-shape', (event, shape) => {
+    ThingLayer.deregisterDeleteEventListener = $scope.$root.$on('action:delete-shape', (event, task, shape) => {
       switch (true) {
         case shape instanceof PaperThingShape:
           this._deleteThingShape(shape);

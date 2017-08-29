@@ -54,9 +54,8 @@ describe('ThingLayer', () => {
   beforeEach(inject(($injector, $rootScope, $q) => {
     injector = $injector;
 
-    task = {
-      minimalVisibleShapeOverflow: null,
-    };
+    task = TaskFixture.clone();
+
     angularQ = $q;
     rootScope = $rootScope;
 
@@ -182,12 +181,6 @@ describe('ThingLayer', () => {
   });
 
   describe('on action:delete:shape', () => {
-    let taskFixture;
-
-    beforeEach(() => {
-      taskFixture = TaskFixture.clone();
-    });
-
     it('deletes a PaperMeasurementRectangle', () => {
       setupPaperJs();
       createThingLayerInstance();
@@ -195,11 +188,11 @@ describe('ThingLayer', () => {
       const bottomRight = {x: 200, y: 200};
       const color = {primary: 'yellow', secondary: 'black'};
       const entityIdService = jasmine.createSpyObj('EntityIdService', ['getUniqueId']);
-      const measurementRectangle = new PaperMeasurementRectangle(taskFixture, 'foobar', topLeft, bottomRight, color, entityIdService);
+      const measurementRectangle = new PaperMeasurementRectangle(task, 'foobar', topLeft, bottomRight, color, entityIdService);
       spyOn(measurementRectangle, 'remove');
       angularScope.vm.selectedPaperShape = measurementRectangle;
 
-      rootScope.$emit('action:delete-shape', measurementRectangle);
+      rootScope.$emit('action:delete-shape', task, measurementRectangle);
 
       expect(measurementRectangle.remove).toHaveBeenCalled();
       // Don't use toBeNull as there is some kind of circular dependency in .bounds
@@ -991,7 +984,7 @@ describe('ThingLayer', () => {
             id: 4711,
           },
         });
-        rootScope.$emit('action:delete-shape', pss);
+        rootScope.$emit('action:delete-shape', task, pss);
         rootScope.$apply();
 
         expect(applicationState.disableAll).toHaveBeenCalled();
@@ -1005,7 +998,7 @@ describe('ThingLayer', () => {
 
         rootScope.$apply();
 
-        rootScope.$emit('action:delete-shape', paperShape);
+        rootScope.$emit('action:delete-shape', task, paperShape);
 
         rootScope.$apply();
 
@@ -1038,7 +1031,7 @@ describe('ThingLayer', () => {
 
         rootScope.$apply();
 
-        rootScope.$emit('action:delete-shape', paperShape);
+        rootScope.$emit('action:delete-shape', task, paperShape);
 
         rootScope.$apply();
 
@@ -1057,7 +1050,7 @@ describe('ThingLayer', () => {
         labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.reject(error));
         angularScope.vm.paperThingShapes = [];
         const pgs = new PaperGroupShape({labeledThingGroup: {id: 1}});
-        rootScope.$emit('action:delete-shape', pgs);
+        rootScope.$emit('action:delete-shape', task, pgs);
         rootScope.$apply();
 
         expect(applicationState.disableAll).toHaveBeenCalled();
@@ -1069,7 +1062,7 @@ describe('ThingLayer', () => {
 
         rootScope.$apply();
 
-        rootScope.$emit('action:delete-shape', paperGroupShape);
+        rootScope.$emit('action:delete-shape', task, paperGroupShape);
 
         rootScope.$apply();
 
