@@ -290,37 +290,33 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._applicationState.disableAll();
 
     // TODO: fix the revision error in the backend
-    try {
-      this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
-        .then(() => {
-          this._shapeSelectionService.removeShape(shape);
-          shape.remove();
-          viewModel.selectedPaperShape = null;
-          viewModel.paperThingShapes = viewModel.paperThingShapes.filter(
-            paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
-          );
+    this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
+      .then(() => {
+        this._shapeSelectionService.removeShape(shape);
+        shape.remove();
+        viewModel.selectedPaperShape = null;
+        viewModel.paperThingShapes = viewModel.paperThingShapes.filter(
+          paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
+        );
 
-          return selectedLabeledThing;
-        })
-        .then(() => {
-          selectedLabeledThing.groupIds.forEach(groupId => {
-            const relatedThingShapes = viewModel.paperThingShapes.filter(thingShape =>
-              thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
-            const shapeGroup = viewModel.paperGroupShapes.find(
-              paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
+        return selectedLabeledThing;
+      })
+      .then(() => {
+        selectedLabeledThing.groupIds.forEach(groupId => {
+          const relatedThingShapes = viewModel.paperThingShapes.filter(thingShape =>
+            thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
+          const shapeGroup = viewModel.paperGroupShapes.find(
+            paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
 
-            if (relatedThingShapes.length === 0) {
-              return this._deleteGroupShape(shapeGroup);
-            }
-          });
-        })
-        .then(() => {
-          this._deleteAfterAction();
-        })
-        .catch(() => this._onDeletionError());
-    } catch (error) {
-      this._onDeletionError();
-    }
+          if (relatedThingShapes.length === 0) {
+            return this._deleteGroupShape(shapeGroup);
+          }
+        });
+      })
+      .then(() => {
+        this._deleteAfterAction();
+      })
+      .catch(() => this._onDeletionError());
   }
 
   /**
@@ -337,24 +333,20 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._applicationState.disableAll();
 
-    try {
-      this._labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
-        .then(() => {
-          return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
-        })
-        .then(() => {
-          this._shapeSelectionService.removeShape(shape);
-          shape.remove();
-          viewModel.selectedPaperShape = null;
-          viewModel.paperGroupShapes = viewModel.paperGroupShapes.filter(
-            paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id !== labeledThingGroup.id
-          );
-          this._deleteAfterAction();
-        })
-        .catch(() => this._onDeletionError());
-    } catch (error) {
-      this._onDeletionError();
-    }
+    this._labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
+      .then(() => {
+        return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      })
+      .then(() => {
+        this._shapeSelectionService.removeShape(shape);
+        shape.remove();
+        viewModel.selectedPaperShape = null;
+        viewModel.paperGroupShapes = viewModel.paperGroupShapes.filter(
+          paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id !== labeledThingGroup.id
+        );
+        this._deleteAfterAction();
+      })
+      .catch(() => this._onDeletionError());
   }
 
   /**
