@@ -343,7 +343,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._applicationState.disableAll();
 
-    this._labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
+    this._labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
       .then(() => {
         return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
       })
@@ -686,7 +686,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
           paperShape => paperShape === this._$scope.vm.selectedPaperShape
         );
 
-      this._logger.groupStart('thinglayer:hiddenlabels', `Update visibility of non-selected LabeledThingsInFrame (${toHideShapes.length}/${drawnShapes.length})`);
+      this._logger.groupStart(
+        'thinglayer:hiddenlabels',
+        `Update visibility of non-selected LabeledThingsInFrame (${toHideShapes.length}/${drawnShapes.length})`
+      );
       toHideShapes
         .forEach(
           paperShape => {
