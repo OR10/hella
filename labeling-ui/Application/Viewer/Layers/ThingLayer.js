@@ -278,6 +278,25 @@ class ThingLayer extends PanAndZoomPaperLayer {
           throw new Error('Cannot delete shape of unknown type');
       }
     });
+
+    ThingLayer.deregisterUnassignGroupFromShapeEventListener();
+    ThingLayer.deregisterUnassignGroupFromShapeEventListener = $scope.$root.$on(
+      'action:unassign-group-from-shape',
+      (event, task, shape, group) => {
+        let labeledThing = undefined;
+        if (shape.labeledThingInFrame && shape.labeledThingInFrame.labeledThing) {
+          labeledThing = shape.labeledThingInFrame.labeledThing;
+        }
+        if (!labeledThing) {
+          throw new Error(`Can not unassign group ${groupId} from shape without labeledThing`);
+        }
+
+        this._applicationState.disableAll();
+        this._labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], group)
+          .then(() => this._deleteAfterAction())
+          .catch(() => this._onDeletionError());
+      }
+    );
   }
 
   /**
@@ -947,6 +966,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
 }
 
 ThingLayer.deregisterDeleteEventListener = () => {
+};
+ThingLayer.deregisterUnassignGroupFromShapeEventListener = () => {
 };
 
 export default ThingLayer;
