@@ -71,7 +71,7 @@ class ViewerController {
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ToolSelectorListenerService} toolSelectorListenerService
    * @param {HierarchyCreationService} hierarchyCreationService
-   * @param {SelectionDialog} SelectionDialog
+   * @param {GroupCreationService} groupCreationService
    */
   constructor(
     $scope,
@@ -110,7 +110,8 @@ class ViewerController {
     imagePreloader,
     shapeSelectionService,
     toolSelectorListenerService,
-    hierarchyCreationService
+    hierarchyCreationService,
+    groupCreationService
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -355,32 +356,6 @@ class ViewerController {
      */
     this._hierarchyCreationService = hierarchyCreationService;
 
-    const showGroupSelector = (labelStructureObject, groupSelectedCallback) => {
-      this._modalService.show(
-        new SelectionDialog(
-          {
-            title: 'Select Group Type',
-            headline: `Please select the type of group you would like to create`,
-            message: 'The following groups are available:',
-            confirmButtonText: 'Accept and Create',
-            data: labelStructureObject.availableGroups,
-          },
-          groupId => {
-            if (groupId) {
-              const group = labelStructureObject.availableGroups.find(group => group.id === groupId);
-              groupSelectedCallback(group);
-            } else {
-              showGroupSelector(labelStructureObject, groupSelectedCallback);
-            }
-          },
-          null,
-          {
-            abortable: false,
-          }
-        )
-      );
-    };
-
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
         const groupSelectedCallback = groupStructureObject => {
@@ -406,7 +381,7 @@ class ViewerController {
           });
         };
 
-        showGroupSelector(labelStructureObject, groupSelectedCallback);
+        groupCreationService.showGroupSelector(groupSelectedCallback);
       }
     };
     this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
@@ -1690,7 +1665,7 @@ ViewerController.$inject = [
   'shapeSelectionService',
   'toolSelectorListenerService',
   'hierarchyCreationService',
-  'SelectionDialog',
+  'groupCreationService',
 ];
 
 export default ViewerController;

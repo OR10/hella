@@ -1,5 +1,6 @@
 import CreationTool from '../CreationTool';
 import PaperGroupRectangleMulti from '../../Shapes/PaperGroupRectangleMulti';
+import GroupToolActionStruct from '../ToolActionStructs/GroupToolActionStruct';
 
 class GroupCreationTool extends CreationTool {
   /**
@@ -12,8 +13,9 @@ class GroupCreationTool extends CreationTool {
    * @param {ToolService} toolService
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {GroupShapeNameService} groupShapeNameService
+   * @param {GroupCreationService} groupCreationService
    */
-  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService, groupShapeNameService) {
+  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService, groupShapeNameService, groupCreationService) {
     super(drawingContext, $scope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -45,6 +47,12 @@ class GroupCreationTool extends CreationTool {
      * @private
      */
     this._groupShapeNameService = groupShapeNameService;
+
+    /**
+     * @type {GroupCreationService}
+     * @private
+     */
+    this._groupCreationService = groupCreationService;
   }
 
   /**
@@ -107,9 +115,22 @@ class GroupCreationTool extends CreationTool {
         this._completeEmpty();
         return;
       }
-      const paperGroup = this._createPaperGroup(paperShape.id, toolActionStruct, shapes);
 
-      this._complete(paperGroup);
+      this._groupCreationService.showGroupSelector(selectedGroup => {
+        toolActionStruct.requirementsThingOrGroupId = selectedGroup.id;
+
+        const struct = new GroupToolActionStruct(
+          {},
+          toolActionStruct.viewport,
+          toolActionStruct.task,
+          selectedGroup.id,
+          toolActionStruct.framePosition
+        );
+
+        const paperGroup = this._createPaperGroup(paperShape.id, toolActionStruct, shapes);
+
+        this._complete(paperGroup);
+      })
     })
       .catch(reason => this._reject(reason));
 
@@ -220,6 +241,7 @@ GroupCreationTool.$inject = [
   'toolService',
   'labeledThingGroupService',
   'groupShapeNameService',
+  'groupCreationService',
 ];
 
 export default GroupCreationTool;
