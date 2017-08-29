@@ -51,6 +51,11 @@ class UsersController {
      */
     this.showEditTab = !(this.userId === 'new' || this.userId === undefined);
 
+    /**
+    * @type {boolean}
+    */
+    this.showNewTab = this.userPermissions.canAddUser;
+
     this._$scope.$watch('vm.activeTab', (newValue, oldValue) => {
       if (newValue === oldValue) {
         return;

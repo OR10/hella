@@ -271,7 +271,7 @@ class Project extends Controller\Base
                 'campaigns'                => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
             );
 
-            if ($this->userPermissions->hasPermission('canViewMoreProjectDetails')) {
+            if ($this->userPermissions->hasPermission('canViewProjectManagementRelatedStatisticsColumn')) {
                 $taskInProgressCount = 0;
                 $taskFailedCount     = 0;
 
