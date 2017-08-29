@@ -129,9 +129,6 @@ class UserTest extends Tests\WebTestCase
 
     public function testAddUserAsSuperAdmin()
     {
-        $organisation = $this->organisationFacade->save(
-            new AnnoStationBundleModel\Organisation('Test')
-        );
         $superAdmin   = $this->createSuperAdminUser();
 
         $requestWrapper = $this->createRequest('/api/v1/user')
@@ -141,11 +138,10 @@ class UserTest extends Tests\WebTestCase
                 [
                     'username'        => 'Labeler',
                     'email'           => 'labeler@example.org',
-                    'password'        => '1234',
+                    'password'        => '12345!',
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_LABELER],
-                    'organisationIds' => [$organisation->getId()],
                 ]
             )
             ->execute();
@@ -153,7 +149,7 @@ class UserTest extends Tests\WebTestCase
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
-    public function testAddUserAsLabelManagerInSameOrganisation()
+    public function testAddUserAsLabelManagerAndSameOrganisationAssignment()
     {
         $organisation = $this->organisationFacade->save(
             new AnnoStationBundleModel\Organisation('Test')
@@ -167,23 +163,33 @@ class UserTest extends Tests\WebTestCase
                 [
                     'username'        => 'Labeler',
                     'email'           => 'labeler@example.org',
-                    'password'        => '1234',
+                    'password'        => '12345!',
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_LABELER],
-                    'organisationIds' => [$organisation->getId()],
                 ]
             )
             ->execute();
 
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
+
+        $newUser = $requestWrapper->getJsonResponseBody();
+
+        $requestWrapper = $this->createRequest(
+            '/api/v1/organisation/%s/user/%s/assign',
+            [
+                $organisation->getId(),
+                $newUser['result']['user']['id']
+            ]
+        )->withCredentialsFromUsername($labelManager)
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
+            ->execute();
+        $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
+
     }
 
     public function testAddUserAsLabelManagerInOtherOrganisation()
     {
-        $organisation = $this->organisationFacade->save(
-            new AnnoStationBundleModel\Organisation('Test')
-        );
         $labelManager = $this->createlabelManagerUser();
 
         $requestWrapper = $this->createRequest('/api/v1/user')
@@ -193,13 +199,30 @@ class UserTest extends Tests\WebTestCase
                 [
                     'username'        => 'Labeler',
                     'email'           => 'labeler@example.org',
-                    'password'        => '1234',
+                    'password'        => '12345!',
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_LABELER],
-                    'organisationIds' => [$organisation->getId()],
                 ]
             )
+            ->execute();
+
+        $newUser = $requestWrapper->getJsonResponseBody();
+
+        $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
+
+        $organisation = $this->organisationFacade->save(
+            new AnnoStationBundleModel\Organisation('Test')
+        );
+
+        $requestWrapper = $this->createRequest(
+            '/api/v1/organisation/%s/user/%s/assign',
+            [
+                $organisation->getId(),
+                $newUser['result']['user']['id']
+            ]
+        )->withCredentialsFromUsername($labelManager)
+            ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->execute();
 
         $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
@@ -207,9 +230,6 @@ class UserTest extends Tests\WebTestCase
 
     public function testUpdateUserAsSuperAdmin()
     {
-        $organisation = $this->organisationFacade->save(
-            new AnnoStationBundleModel\Organisation('Test')
-        );
         $superAdmin   = $this->createSuperAdminUser();
         $labeler      = $this->createLabelerUser();
 
@@ -220,11 +240,10 @@ class UserTest extends Tests\WebTestCase
                 [
                     'username'        => 'Labeler',
                     'email'           => 'labeler@example.org',
-                    'password'        => '1234',
+                    'password'        => '12345!',
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_LABELER],
-                    'organisationIds' => [$organisation->getId()],
                 ]
             )
             ->execute();
@@ -247,46 +266,15 @@ class UserTest extends Tests\WebTestCase
                 [
                     'username'        => 'Labeler',
                     'email'           => 'labeler@example.org',
-                    'password'        => '1234',
+                    'password'        => '12345!',
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_LABELER],
-                    'organisationIds' => [$organisation->getId()],
                 ]
             )
             ->execute();
 
         $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
-    }
-
-    public function testUpdateUserToOtherOrganisationAsLabelManagerInSameOrganisation()
-    {
-        $organisation    = $this->organisationFacade->save(
-            new AnnoStationBundleModel\Organisation('Test')
-        );
-        $organisationNew = $this->organisationFacade->save(
-            new AnnoStationBundleModel\Organisation('Test')
-        );
-        $labelManager    = $this->createLabelManagerUser($organisation);
-        $labeler         = $this->createLabelerUser($organisation);
-
-        $requestWrapper = $this->createRequest('/api/v1/user/%s', [$labeler->getId()])
-            ->withCredentialsFromUsername($labelManager)
-            ->setMethod(HttpFoundation\Request::METHOD_PUT)
-            ->setJsonBody(
-                [
-                    'username'        => 'Labeler',
-                    'email'           => 'labeler@example.org',
-                    'password'        => '1234',
-                    'enabled'         => 'true',
-                    'locked'          => 'false',
-                    'roles'           => [Model\User::ROLE_LABELER],
-                    'organisationIds' => [$organisationNew->getId()],
-                ]
-            )
-            ->execute();
-
-        $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
     }
 
     public function testUpdateUserAsLabelManagerInOtherOrganisation()
@@ -304,11 +292,10 @@ class UserTest extends Tests\WebTestCase
                 [
                     'username'        => 'Labeler',
                     'email'           => 'labeler@example.org',
-                    'password'        => '1234',
+                    'password'        => '12345!',
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_LABELER],
-                    'organisationIds' => [$organisation->getId()],
                 ]
             )
             ->execute();
@@ -318,9 +305,6 @@ class UserTest extends Tests\WebTestCase
 
     public function testDeleteUserAsSuperAdmin()
     {
-        $organisation = $this->organisationFacade->save(
-            new AnnoStationBundleModel\Organisation('Test')
-        );
         $superAdmin   = $this->createSuperAdminUser();
         $labeler      = $this->createLabelerUser();
 

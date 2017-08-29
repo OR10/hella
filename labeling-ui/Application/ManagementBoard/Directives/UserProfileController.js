@@ -459,7 +459,7 @@ class UserProfileController {
    * @returns {boolean|*}
    */
   showDropDownTableCell() {
-    return this.isOrganisationExpanded === true && this.userPermissions.canAddUserToAnyOrganisation;
+    return this.isOrganisationExpanded === true && (this.userPermissions.canAddUserToAnyOrganisation || this.userPermissions.canAddUserToOwnOrganisation);
   }
 
   /**

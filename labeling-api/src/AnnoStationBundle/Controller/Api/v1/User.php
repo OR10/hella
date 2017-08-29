@@ -169,17 +169,12 @@ class User extends Controller\Base
             throw new Exception\AccessDeniedHttpException('You are not allowed to get this user');
         }
 
-        $organisations = [];
-        if ($loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
-            $organisations = $this->organisationFacade->findByIds($user->getOrganisations());
-        }
-
         return View\View::create()->setData(
             [
                 'result' =>
                     [
                         'user' => $this->getUserResponse($user),
-                        'organisations' => $organisations,
+                        'organisations' => $this->organisationFacade->findByIds($this->getOrganisationsForUser($user)),
                     ],
             ]
         );
@@ -196,21 +191,12 @@ class User extends Controller\Base
      */
     public function addUserAction(HttpFoundation\Request $request)
     {
-        /** @var Model\User $loginUser */
-        $loginUser = $this->tokenStorage->getToken()->getUser();
-
-        if (!$this->userPermissions->hasPermission('canAddUserToOwnOrganisation') &&
-            !$this->userPermissions->hasPermission('canAddUserToAnyOrganisation')) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to add user to any organisation');
+        if (!$this->userPermissions->hasPermission('canAddUser')) {
+            throw new Exception\AccessDeniedHttpException('You are not allowed to edit users');
         }
 
-        if (!$this->userPermissions->hasPermission('canAddUserToAnyOrganisation') &&
-            count(array_diff($request->request->get('organisationIds', []), $loginUser->getOrganisations())) > 0) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to add this user to this organisations');
-        }
 
         $user = new Model\User();
-
         $user->setEmail($request->request->get('email'));
         $user->setPlainPassword($request->request->get('password'));
 
@@ -243,17 +229,12 @@ class User extends Controller\Base
         // This rebuild only affects superadmins because new users have no organisations yet
         $this->userRolesRebuilderService->rebuildForUser($user);
 
-        $organisations = [];
-        if ($loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
-            $organisations = $this->organisationFacade->findByIds($user->getOrganisations());
-        }
-
         return View\View::create()->setData(
             [
                 'result' =>
                     [
                         'user' => $this->getUserResponse($user),
-                        'organisations' => $organisations,
+                        'organisations' => $this->organisationFacade->findByIds($this->getOrganisationsForUser($user)),
                     ],
             ]
         );
@@ -274,14 +255,13 @@ class User extends Controller\Base
         /** @var Model\User $loginUser */
         $loginUser = $this->tokenStorage->getToken()->getUser();
 
-        if (!$this->userPermissions->hasPermission('canAddUserToOwnOrganisation') &&
-            !$this->userPermissions->hasPermission('canAddUserToAnyOrganisation')) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to add user to any organisation');
+        if (!$this->userPermissions->hasPermission('canEditUser')) {
+            throw new Exception\AccessDeniedHttpException('You are not allowed to edit users');
         }
 
         if (!$this->userPermissions->hasPermission('canAddUserToAnyOrganisation') &&
-            count(array_diff($request->request->get('organisationIds'), $loginUser->getOrganisations())) > 0) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to add this user to this organisations');
+            count(array_diff($user->getOrganisations(), $loginUser->getOrganisations())) > 0) {
+            throw new Exception\AccessDeniedHttpException('You are not allowed to edit this user in this organisation');
         }
 
         $roles = $request->request->get('roles', array());
@@ -326,17 +306,12 @@ class User extends Controller\Base
             return View\View::createRedirect('fos_user_security_logout');
         }
 
-        $organisations = [];
-        if ($loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
-            $organisations = $this->organisationFacade->findByIds($user->getOrganisations());
-        }
-
         return View\View::create()->setData(
             [
                 'result' =>
                     [
                         'user' => $this->getUserResponse($user),
-                        'organisations' => $organisations,
+                        'organisations' => $this->organisationFacade->findByIds($this->getOrganisationsForUser($user)),
                     ],
             ]
         );
@@ -360,15 +335,28 @@ class User extends Controller\Base
             'expiresAt'     => $user->getExpiresAt() ? $user->getExpiresAt()->format('c') : null,
             'organisations' => [],
         );
-
-        /** @var Model\User $loginUser */
-        $loginUser = $this->tokenStorage->getToken()->getUser();
-
-        if ($loginUser->hasRole(Model\User::ROLE_SUPER_ADMIN)) {
-            $response['organisations'] = $user->getOrganisations();
-        }
+        $response['organisations'] = $this->getOrganisationsForUser($user);
 
         return $response;
+    }
+
+    /**
+     * @param Model\User $user
+     * @return array
+     */
+    private function getOrganisationsForUser(Model\User $user)
+    {
+        $loginUser = $this->tokenStorage->getToken()->getUser();
+
+        if ($this->userPermissions->hasPermission('canAddUserToAnyOrganisation')) {
+            return $user->getOrganisations();
+        }
+
+        if ($this->userPermissions->hasPermission('canAddUserToOwnOrganisation')) {
+            return array_intersect($user->getOrganisations(), $loginUser->getOrganisations());
+        }
+
+        return [];
     }
 
     /**

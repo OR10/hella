@@ -8,7 +8,13 @@ class UsersListController {
    * @param {OrganisationService} organisationService
    * @param {ModalService} modalService
    */
-  constructor(userGateway, organisationGateway, organisationService, modalService) {
+  constructor($state, userGateway, organisationGateway, organisationService, modalService) {
+      /**
+       * @type {$state}
+       * @private
+       */
+      this._$state = $state;
+
     /**
      * @type {UserGateway}
      * @private
@@ -105,9 +111,16 @@ class UsersListController {
       }
     );
   }
+
+  goToUserProfilePage(user) {
+    if (this.userPermissions.canEditUser) {
+        this._$state.go('labeling.users.detail', {userId: user.id});
+    }
+  }
 }
 
 UsersListController.$inject = [
+  '$state',
   'userGateway',
   'organisationGateway',
   'organisationService',
