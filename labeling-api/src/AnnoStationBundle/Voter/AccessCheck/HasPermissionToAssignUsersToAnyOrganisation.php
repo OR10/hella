@@ -30,7 +30,7 @@ class HasPermissionToAssignUsersToAnyOrganisation extends Voter\AccessCheck
             throw new \RuntimeException('Organisation AccessCheck got non Organisation as object.');
         }
 
-        if ($this->userPermissions->hasPermission('canAddUserToAnyOrganisation')) {
+        if ($this->userPermissions->hasPermission('canAssignUserToAnyOrganisation')) {
             return true;
         }
 

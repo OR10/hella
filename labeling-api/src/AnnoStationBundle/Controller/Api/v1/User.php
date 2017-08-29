@@ -259,7 +259,7 @@ class User extends Controller\Base
             throw new Exception\AccessDeniedHttpException('You are not allowed to edit users');
         }
 
-        if (!$this->userPermissions->hasPermission('canAddUserToAnyOrganisation') &&
+        if (!$this->userPermissions->hasPermission('canAssignUserToAnyOrganisation') &&
             count(array_diff($user->getOrganisations(), $loginUser->getOrganisations())) > 0) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to edit this user in this organisation');
         }
@@ -348,11 +348,11 @@ class User extends Controller\Base
     {
         $loginUser = $this->tokenStorage->getToken()->getUser();
 
-        if ($this->userPermissions->hasPermission('canAddUserToAnyOrganisation')) {
+        if ($this->userPermissions->hasPermission('canAssignUserToAnyOrganisation')) {
             return $user->getOrganisations();
         }
 
-        if ($this->userPermissions->hasPermission('canAddUserToOwnOrganisation')) {
+        if ($this->userPermissions->hasPermission('canAssignUserToOwnOrganisation')) {
             return array_intersect($user->getOrganisations(), $loginUser->getOrganisations());
         }
 

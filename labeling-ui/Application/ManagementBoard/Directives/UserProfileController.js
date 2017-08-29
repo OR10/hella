@@ -117,7 +117,7 @@ class UserProfileController {
     ];
 
     // If creator can not add organisations by hand, add new user to creators organisation
-    if (!this.userPermissions.canAddUserToAnyOrganisation) {
+    if (!this.userPermissions.canAssignUserToAnyOrganisation) {
       this.userOrganisations.push(organisationService.getModel());
     }
 
@@ -440,7 +440,7 @@ class UserProfileController {
       this.validation.password = valid = false;
     }
 
-    if (this.userPermissions.canAddUserToAnyOrganisation && this.userOrganisations.length === 0) {
+    if (this.userPermissions.canAssignUserToAnyOrganisation && this.userOrganisations.length === 0) {
       this.validation.organisations = valid = false;
     }
 
@@ -459,7 +459,7 @@ class UserProfileController {
    * @returns {boolean|*}
    */
   showDropDownTableCell() {
-    return this.isOrganisationExpanded === true && (this.userPermissions.canAddUserToAnyOrganisation || this.userPermissions.canAddUserToOwnOrganisation);
+    return this.isOrganisationExpanded === true && (this.userPermissions.canAssignUserToAnyOrganisation || this.userPermissions.canAssignUserToOwnOrganisation);
   }
 
   /**
