@@ -4,9 +4,10 @@ namespace AnnoStationBundle\Voter\AccessCheckVoter;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Voter\AccessCheck;
 use AnnoStationBundle\Voter\AccessCheckVoter;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
+use AnnoStationBundle\Service\Authentication;
 use AppBundle\Voter;
 use AppBundle\Model;
-use AnnoStationBundle\Model as AnnoStationBundleModel;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -24,12 +25,13 @@ class Organisation extends Voter\AccessCheckVoter
      */
     private $checks;
 
-    public function __construct()
+    public function __construct(Authentication\UserPermissions $userPermissions)
     {
         $this->checks = [
             self::ORGANISATION_READ  => [
                 new AccessCheck\HasSuperAdminRole(),
                 new AccessCheck\UserAssignedToOrganisation(),
+                new AccessCheck\HasPermissionToAssignUsersToAnyOrganisation($userPermissions),
             ],
         ];
     }
