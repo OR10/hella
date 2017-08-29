@@ -92,7 +92,11 @@ class GroupSelectionDialogFactory {
 
         return new this._SelectionDialog(
           dialogContent,
-          confirmCallback,
+          groupId => {
+            if (confirmCallback) {
+              confirmCallback(groups.find(candidate => candidate.id === groupId));
+            }
+          },
           cancelCallback
         );
       })

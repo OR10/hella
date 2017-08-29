@@ -41,12 +41,29 @@ describe('ThingLayer', () => {
     viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['setMouseCursor']);
     $provide.service('viewerMouseCursorService', () => viewerMouseCursorService);
 
-    labeledFrameGateway = jasmine.createSpyObj('labeledFrameGateway', ['getLabeledFrame', 'saveLabeledFrame', 'deleteLabeledFrame']);
+    labeledFrameGateway = jasmine.createSpyObj(
+      'labeledFrameGateway',
+      ['getLabeledFrame', 'saveLabeledFrame', 'deleteLabeledFrame']
+    );
     $provide.service('labeledFrameGateway', () => labeledFrameGateway);
 
     shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['setSelectedShape', 'removeShape']);
     $provide.service('shapeSelectionService', () => shapeSelectionService);
+  }));
 
+  beforeEach(inject(($injector, $rootScope, $q) => {
+    injector = $injector;
+
+    task = TaskFixture.clone();
+
+    angularQ = $q;
+    rootScope = $rootScope;
+
+    angularScope = $rootScope.$new();
+    angularScope.vm = {task: task};
+  }));
+
+  beforeEach(() => {
     paperScope = jasmine.createSpy('paperScope');
     paperScope.view = jasmine.createSpyObj('scope.view', ['update']);
 
@@ -60,29 +77,38 @@ describe('ThingLayer', () => {
     modalService = jasmine.createSpyObj('modalService', ['info']);
 
     labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['deleteLabeledThing']);
+    labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
-    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['unassignLabeledThingsToLabeledThingGroup', 'deleteLabeledThingGroup']);
-  }));
-
-  beforeEach(inject(($injector, $rootScope, $q) => {
-    injector = $injector;
-
-    task = {
-      minimalVisibleShapeOverflow: null,
-    };
-    angularQ = $q;
-    rootScope = $rootScope;
-
-    angularScope = $rootScope.$new();
-    angularScope.vm = {task: task};
-  }));
+    labeledThingGroupGateway = jasmine.createSpyObj(
+      'labeledThingGroupGateway',
+      ['unassignLabeledThingsFromLabeledThingGroup', 'deleteLabeledThingGroup']
+    );
+    labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.resolve());
+    labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+  });
 
   function createThingLayerInstance() {
     const framePosition = jasmine.createSpyObj('framePosition', ['beforeFrameChangeAlways', 'afterFrameChangeAlways']);
 
-    return new ThingLayer(0, 0, angularScope, injector, drawingContext, toolService, null, loggerService, timeoutService,
-      framePosition, viewerMouseCursorService, null, applicationState, modalService, labeledThingGateway,
-      labeledThingGroupGateway, shapeSelectionService);
+    return new ThingLayer(
+      0,
+      0,
+      angularScope,
+      injector,
+      drawingContext,
+      toolService,
+      null,
+      loggerService,
+      timeoutService,
+      framePosition,
+      viewerMouseCursorService,
+      null,
+      applicationState,
+      modalService,
+      labeledThingGateway,
+      labeledThingGroupGateway,
+      shapeSelectionService
+    );
   }
 
   function setupPaperJs() {
@@ -155,12 +181,6 @@ describe('ThingLayer', () => {
   });
 
   describe('on action:delete:shape', () => {
-    let taskFixture;
-
-    beforeEach(() => {
-      taskFixture = TaskFixture.clone();
-    });
-
     it('deletes a PaperMeasurementRectangle', () => {
       setupPaperJs();
       createThingLayerInstance();
@@ -168,11 +188,11 @@ describe('ThingLayer', () => {
       const bottomRight = {x: 200, y: 200};
       const color = {primary: 'yellow', secondary: 'black'};
       const entityIdService = jasmine.createSpyObj('EntityIdService', ['getUniqueId']);
-      const measurementRectangle = new PaperMeasurementRectangle(taskFixture, 'foobar', topLeft, bottomRight, color, entityIdService);
+      const measurementRectangle = new PaperMeasurementRectangle(task, 'foobar', topLeft, bottomRight, color, entityIdService);
       spyOn(measurementRectangle, 'remove');
       angularScope.vm.selectedPaperShape = measurementRectangle;
 
-      rootScope.$emit('action:delete-shape', measurementRectangle);
+      rootScope.$emit('action:delete-shape', task, measurementRectangle);
 
       expect(measurementRectangle.remove).toHaveBeenCalled();
       // Don't use toBeNull as there is some kind of circular dependency in .bounds
@@ -910,14 +930,13 @@ describe('ThingLayer', () => {
     });
   });
 
-  // xdescribe('#removePaperShapes()', () => {
-  // });
-
   describe('deleteShapeEvent', () => {
     let thingLayer;
     let paperGroupShape;
     let paperShape;
+
     beforeEach(setupPaperJs);
+
     beforeEach(() => {
       thingLayer = createThingLayerInstance();
       angularScope.vm.paperThingShapes = [];
@@ -937,6 +956,7 @@ describe('ThingLayer', () => {
           groupIds: ['ltg_id'],
         },
       };
+
       paperGroupShape = new PaperGroupShape(ltgif, 'pgs_id', '', true);
       paperShape = new PaperThingShape(ltif, 'ps_id', '', true);
 
@@ -954,26 +974,32 @@ describe('ThingLayer', () => {
       angularScope.vm.paperThingShapes.push(paperShape);
       angularScope.vm.paperGroupShapes.push(paperGroupShape);
     });
+
     describe('PaperThingShape', () => {
-      it('It shows modal window on error', () => {
+      it('shows modal window on error', () => {
+        const error = new Error('Oh no! The universe imploded in the meantime!');
+        labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.reject(error));
+
         const pss = new PaperThingShape({
           labeledThingInFrame: {
             id: 4711,
           },
         });
-        rootScope.$emit('action:delete-shape', pss);
+        rootScope.$emit('action:delete-shape', task, pss);
+        rootScope.$apply();
 
         expect(applicationState.disableAll).toHaveBeenCalled();
         expect(applicationState.enableAll).toHaveBeenCalled();
         expect(modalService.info).toHaveBeenCalled();
       });
+
       it('Delete shape from group and delete group when it has only one shape in it', () => {
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-        labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
-        rootScope.$emit('action:delete-shape', paperShape);
+        rootScope.$emit('action:delete-shape', task, paperShape);
 
         rootScope.$apply();
 
@@ -984,6 +1010,7 @@ describe('ThingLayer', () => {
         expect(angularScope.vm.selectedPaperShape).toBeNull();
         expect(paperScope.view.update).toHaveBeenCalled();
       });
+
       it('Delete one shape of two from group and keep the group', () => {
         const ltif = {
           id: 'ltif_id2',
@@ -1002,11 +1029,11 @@ describe('ThingLayer', () => {
         paperShapeKeep.select = jasmine.createSpy('paperShapeSelect');
 
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-        labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
-        rootScope.$emit('action:delete-shape', paperShape);
+        rootScope.$emit('action:delete-shape', task, paperShape);
 
         rootScope.$apply();
 
@@ -1019,22 +1046,27 @@ describe('ThingLayer', () => {
         expect(paperScope.view.update).toHaveBeenCalled();
       });
     });
+
     describe('PaperGroupShape', () => {
-      it('It shows modal window on error', () => {
+      it('shows modal window on error', () => {
+        const error = new Error('Help! Help! I am caught in a big whale!');
+        labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.reject(error));
         angularScope.vm.paperThingShapes = [];
         const pgs = new PaperGroupShape({labeledThingGroup: {id: 1}});
-        rootScope.$emit('action:delete-shape', pgs);
+        rootScope.$emit('action:delete-shape', task, pgs);
+        rootScope.$apply();
 
         expect(applicationState.disableAll).toHaveBeenCalled();
         expect(applicationState.enableAll).toHaveBeenCalled();
         expect(modalService.info).toHaveBeenCalled();
       });
+
       it('Delete group', () => {
-        labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
-        rootScope.$emit('action:delete-shape', paperGroupShape);
+        rootScope.$emit('action:delete-shape', task, paperGroupShape);
 
         rootScope.$apply();
 
