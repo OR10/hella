@@ -300,7 +300,7 @@ class UserTest extends Tests\WebTestCase
             )
             ->execute();
 
-        $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
+        $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
     }
 
     public function testDeleteUserAsSuperAdmin()
