@@ -114,6 +114,7 @@ class UserProfileController {
       {id: 'ROLE_LABEL_MANAGER', label: 'Label Manager'},
       {id: 'ROLE_LABELER', label: 'Labeler'},
       {id: 'ROLE_OBSERVER', label: 'Observer'},
+      {id: 'ROLE_EXTERNAL_COORDINATOR', label: 'External Coordinator'},
     ];
 
     // If creator can not add organisations by hand, add new user to creators organisation
@@ -364,6 +365,9 @@ class UserProfileController {
         break;
       case 'ROLE_OBSERVER':
         this.user.roles = ['ROLE_OBSERVER'];
+        break;
+      case 'ROLE_EXTERNAL_COORDINATOR':
+        this.user.roles = ['ROLE_EXTERNAL_COORDINATOR'];
         break;
       default:
         throw new Error(`Unknown role: ${this.singleRole.id}`);
