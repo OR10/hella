@@ -349,6 +349,46 @@ class LabelingTaskTest extends Tests\WebTestCase
         $this->assertEquals($newLabeledFrame, $labeledFrame);
     }
 
+    public function testGetTaskIdsForAssignedUserForProject()
+    {
+        $organisation     = $this->organisationFacade->save(Helper\OrganisationBuilder::create()->build());
+        $video            = $this->videoFacade->save(Helper\VideoBuilder::create($organisation)->build());
+        $project          = $this->projectFacade->save(Helper\ProjectBuilder::create($organisation)->build());
+        $labelUser        = $this->createLabelerUser($organisation);
+        $labelManagerUser = $this->createLabelManagerUser($organisation);
+
+        $task             = Helper\LabelingTaskBuilder::create($project, $video)->build();
+        $task->addAssignmentHistory(
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            $labelManagerUser,
+            new \DateTime('2017-08-28 10:00:00')
+        );
+        $task->addAssignmentHistory(
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            null,
+            new \DateTime('2017-08-29 10:00:00')
+        );
+        $task->addAssignmentHistory(
+            Model\LabelingTask::PHASE_LABELING,
+            Model\LabelingTask::STATUS_IN_PROGRESS,
+            $labelUser,
+            new \DateTime('2017-08-30 10:00:00')
+        );
+
+        $this->labelingTaskFacade->save($task);
+
+        $this->assertEquals(
+            [$task->getId()],
+            $this->labelingTaskFacade->getTaskIdsForAssignedUserForProject($project, $labelUser)
+        );
+        $this->assertEquals(
+            [],
+            $this->labelingTaskFacade->getTaskIdsForAssignedUserForProject($project, $labelManagerUser)
+        );
+    }
+
     protected function setUpImplementation()
     {
         $this->videoFacade        = $this->getAnnostationService('database.facade.video');
