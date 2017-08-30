@@ -90,6 +90,7 @@ class TaskDatabaseSecurityPermissionService
             UserRolesRebuilder::SUPER_ADMIN_GROUP,
             sprintf('%s%s', UserRolesRebuilder::LABEL_MANAGER_PREFIX, $organisation->getId()),
             sprintf('%s%s', UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $organisation->getId()),
+            sprintf('%s%s', UserRolesRebuilder::EXTERNAL_COORDINATOR_PREFIX, $organisation->getId()),
         ];
 
         $memberRoles = array_merge(

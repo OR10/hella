@@ -351,7 +351,7 @@ class Init extends Base
     {
         $this->writeSection($output, 'Creating users');
 
-        $users = ['superadmin', 'label_manager', 'labeler', 'observer'];
+        $users = ['superadmin', 'label_manager', 'labeler', 'observer', 'ext_coordinator'];
 
         if ($this->userPassword !== null) {
             foreach ($users as $username) {
@@ -377,6 +377,9 @@ class Init extends Base
                         break;
                     case 'observer':
                         $roleNames = [Model\User::ROLE_OBSERVER];
+                        break;
+                    case 'ext_coordinator':
+                        $roleNames = [Model\User::ROLE_EXTERNAL_COORDINATOR];
                         break;
                     default:
                         $roleNames = 'ROLE_USER';
