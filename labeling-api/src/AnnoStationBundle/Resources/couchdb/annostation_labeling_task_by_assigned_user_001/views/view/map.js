@@ -6,7 +6,7 @@ function(doc) {
     });
 
     statusHistory.sort(function (a, b) {
-      return b.timestamp - a.timestamp;
+      return b.assignedAt - a.assignedAt;
     });
     emit([doc.projectId, statusHistory[0].userId], doc._id);
   }
