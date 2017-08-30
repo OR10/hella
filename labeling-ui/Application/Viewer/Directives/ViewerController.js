@@ -13,6 +13,7 @@ import PaperFrame from '../Shapes/PaperFrame';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
 import GroupToolActionStruct from '../Tools/ToolActionStructs/GroupToolActionStruct';
+import {difference} from 'lodash';
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -369,52 +370,48 @@ class ViewerController {
         const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
         const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
         if (shapes.length === 2) {
-          const groupIds = [];
-          shapes.forEach(shape => {
-            const shapeGroups = shape.labeledThingInFrame.labeledThing.groupIds;
-            if (shapeGroups.length !== 0) {
-              shapeGroups.forEach(group => groupIds.push(group));
-            }
-          });
-          if (groupIds.length !== 0) {
-            groupIds.forEach(groupId => {
-              const toAddShape = shapes.find(shape => shape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) === -1);
+          const firstLabeledThing = shapes[0].labeledThingInFrame.labeledThing;
+          const secondLabeledThing = shapes[1].labeledThingInFrame.labeledThing;
+          const groupIds = difference(firstLabeledThing.groupIds, secondLabeledThing.groupIds);
 
-              this._groupSelectionDialogFactory.createAsync(
-                this.task,
-                groupIds,
-                {
-                  title: 'Add shape to group',
-                  headline: 'The selected shape can add into your choosen group or create a complete new group around both shapes',
-                  message: 'Please select a group in which you want to add the selected shape or choose \'Create new group\'!',
-                  confirmButtonText: 'Add',
-                  defaultSelection: 'Create new group',
-                },
-                group => {
-                  if (group === undefined) {
-                    // create new group
-                    this._thingLayerContext.withScope(() => {
-                      const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
-                      this._storeGroup(newGroup, shapes);
-                      this._handleGroupAddAfterActions(newGroup);
-                    });
-                  } else {
-                    // add to choosen group
-                    group.addShape(toAddShape);
-                    this._updateGroup(group, toAddShape);
-                    this._handleGroupAddAfterActions(group);
-                    group.update();
-                  }
-                }
-              )
-              .then(selectionDialog => {
-                this._modalService.show(selectionDialog);
-              })
-              .catch(error => {
-                console.error(error);
-              });
+          this._groupSelectionDialogFactory.createAsync(
+            this.task,
+            groupIds,
+            labeledThingInGroupFrame.labeledThingGroup.type,
+            {
+              title: 'Add shape to group',
+              headline: 'The selected shape can add into your choosen group or create a complete new group around both shapes',
+              message: 'Please select a group in which you want to add the selected shape or choose \'Create new group\'!',
+              confirmButtonText: 'Add',
+              defaultSelection: 'Create new group',
+            },
+            group => {
+              if (group === undefined) {
+                // create new group
+                this._thingLayerContext.withScope(() => {
+                  const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+                  this._storeGroup(newGroup, shapes);
+                  this._handleGroupAddAfterActions(newGroup);
+                });
+              } else {
+                // add to choosen group
+                this._thingLayerContext.withScope(() => {
+                  const toAddShape = shapes.find(candidate => !candidate.labeledThingInFrame.labeledThing.groupIds.includes(group.id));
+                  const groupShape = this.paperGroupShapes.find(pgs => pgs.labeledThingGroupInFrame.labeledThingGroup.id === group.id);
+                  groupShape.addShape(toAddShape);
+                  this._updateGroup(group, toAddShape);
+                  this._handleGroupAddAfterActions(groupShape);
+                  groupShape.update();
+                });
+              }
+            }
+          )
+            .then(selectionDialog => {
+              this._modalService.show(selectionDialog);
+            })
+            .catch(error => {
+              console.error(error); // eslint-disable-line no-console
             });
-          }
         } else {
           this._thingLayerContext.withScope(() => {
             const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
@@ -953,7 +950,9 @@ class ViewerController {
    */
   _handleGroupAddAfterActions(group) {
     group.sendToBack();
-    this.paperGroupShapes = this.paperGroupShapes.concat([group]);
+    if (!this.paperGroupShapes.includes(group)) {
+      this.paperGroupShapes.push(group);
+    }
     this._shapeSelectionService.clear();
     this.selectedPaperShape = group;
     group.select();
@@ -1428,18 +1427,18 @@ class ViewerController {
 
   /**
    *
-   * @param {PaperGroupShape} paperGroupShape
+   * @param {LabeledThingGroup} labeledThingGroup
    * @param {PaperThingShape} shape
    * @private
    */
-  _updateGroup(paperGroupShape, shape) {
+  _updateGroup(labeledThingGroup, shape) {
     const labeledThings = [];
     labeledThings.push(shape.labeledThingInFrame.labeledThing);
-    if (shape.labeledThingInFrame.labeledThing.groupIds.indexOf(paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id) === -1) {
-      shape.labeledThingInFrame.labeledThing.groupIds.push(paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id);
+    if (shape.labeledThingInFrame.labeledThing.groupIds.indexOf(labeledThingGroup.id) === -1) {
+      shape.labeledThingInFrame.labeledThing.groupIds.push(labeledThingGroup.id);
     }
 
-    return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, paperGroupShape.labeledThingGroupInFrame.labeledThingGroup)
+    return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup)
       .catch(() => {
         this._modalService.info(
           {
