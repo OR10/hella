@@ -3,6 +3,7 @@ import {inject} from 'angular-mocks';
 
 import taskModelFixture from '../../../Fixtures/Models/Frontend/Task';
 import labeledThingGroupFixture from '../../../Fixtures/Models/Frontend/LabeledThingGroup';
+import labeledThingGroupFixture2 from '../../../Fixtures/Models/Frontend/LabeledThingGroup2';
 import LabelStructureGroup from '../../../../Application/Task/Model/LabelStructureGroup';
 
 describe('GroupSelectionDialogFactory', () => {
@@ -68,7 +69,7 @@ describe('GroupSelectionDialogFactory', () => {
     groupOne.id = 'group-1';
     groupTwo = labeledThingGroupFixture.clone();
     groupTwo.id = 'group-2';
-    groupThree = labeledThingGroupFixture.clone();
+    groupThree = labeledThingGroupFixture2.clone();
     groupThree.id = 'group-3';
 
     groups = [
@@ -86,6 +87,14 @@ describe('GroupSelectionDialogFactory', () => {
       new LabelStructureGroup(
         'extension-sign-group',
         'Extension Sign',
+        'rectangle'
+      )
+    );
+    groupStructureMap.set(
+      'extension-sign-group-2',
+      new LabelStructureGroup(
+        'extension-sign-group-2',
+        'Extension Sign 2',
         'rectangle'
       )
     );
@@ -107,7 +116,7 @@ describe('GroupSelectionDialogFactory', () => {
 
   it('should return promise', () => {
     const factory = createFactory();
-    const returnValue = factory.createAsync({}, [], '', {});
+    const returnValue = factory.createAsync({}, [], {});
     expect(returnValue.then).toEqual(jasmine.any(Function));
   });
 
@@ -131,11 +140,11 @@ describe('GroupSelectionDialogFactory', () => {
     const expectedDialogData = [
       {id: 'group-1', name: 'unique-group-1: Extension Sign'},
       {id: 'group-2', name: 'unique-group-2: Extension Sign'},
-      {id: 'group-3', name: 'unique-group-3: Extension Sign'},
+      {id: 'group-3', name: 'unique-group-3: Extension Sign 2'},
     ];
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, 'extension-sign-group', {});
+    factory.createAsync(task, groupIds, undefined, {});
 
     rootScope.$apply();
     const dialogContent = SelectionDialogMock.calls.mostRecent().args[0];
@@ -146,7 +155,7 @@ describe('GroupSelectionDialogFactory', () => {
     const confirmCallback = jasmine.createSpy('confirm callback');
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, 'extension-sign-group', {}, confirmCallback);
+    factory.createAsync(task, groupIds, undefined, {}, confirmCallback);
     rootScope.$apply();
 
     const dialogConfirmCallback = SelectionDialogMock.calls.mostRecent().args[1];
@@ -159,7 +168,7 @@ describe('GroupSelectionDialogFactory', () => {
     const confirmCallback = jasmine.createSpy('confirm callback');
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, 'extension-sign-group', {}, confirmCallback);
+    factory.createAsync(task, groupIds, undefined, {}, confirmCallback);
     rootScope.$apply();
 
     const dialogConfirmCallback = SelectionDialogMock.calls.mostRecent().args[1];
@@ -172,7 +181,7 @@ describe('GroupSelectionDialogFactory', () => {
     const confirmCallback = jasmine.createSpy('confirm callback');
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, 'extension-sign-group', {}, confirmCallback);
+    factory.createAsync(task, groupIds, undefined, {}, confirmCallback);
     rootScope.$apply();
 
     const dialogConfirmCallback = SelectionDialogMock.calls.mostRecent().args[1];
@@ -185,7 +194,7 @@ describe('GroupSelectionDialogFactory', () => {
     const cancelCallback = jasmine.createSpy('cancel callback');
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, 'extension-sign-group', {}, undefined, cancelCallback);
+    factory.createAsync(task, groupIds, undefined, {}, undefined, cancelCallback);
 
     rootScope.$apply();
     expect(SelectionDialogMock).toHaveBeenCalledWith(
@@ -206,7 +215,7 @@ describe('GroupSelectionDialogFactory', () => {
     };
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, 'extension-sign-group', content);
+    factory.createAsync(task, groupIds, undefined, content);
 
     rootScope.$apply();
     const dialogContent = SelectionDialogMock.calls.mostRecent().args[0];
@@ -222,7 +231,7 @@ describe('GroupSelectionDialogFactory', () => {
       .and.returnValue(angularQ.reject(error));
 
     const factory = createFactory();
-    const returnValue = factory.createAsync(task, groupIds, 'extension-sign-group', {});
+    const returnValue = factory.createAsync(task, groupIds, {});
     const rejectPromise = jasmine.createSpy('promise rejected');
     returnValue.catch(rejectPromise);
 
@@ -238,12 +247,25 @@ describe('GroupSelectionDialogFactory', () => {
       .and.returnValue(angularQ.reject(error));
 
     const factory = createFactory();
-    const returnValue = factory.createAsync(task, groupIds, 'extension-sign-group', {});
+    const returnValue = factory.createAsync(task, groupIds, {});
     const rejectPromise = jasmine.createSpy('promise rejected');
     returnValue.catch(rejectPromise);
 
     rootScope.$apply();
 
     expect(rejectPromise).toHaveBeenCalledWith(error);
+  });
+
+  it('should filter selection to specific group type', () => {
+    const expectedDialogData = [
+      {id: 'group-3', name: 'unique-group-3: Extension Sign 2'},
+    ];
+
+    const factory = createFactory();
+    factory.createAsync(task, groupIds, 'extension-sign-group-2', {});
+
+    rootScope.$apply();
+    const dialogContent = SelectionDialogMock.calls.mostRecent().args[0];
+    expect(dialogContent.data).toEqual(expectedDialogData);
   });
 });
