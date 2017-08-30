@@ -107,7 +107,7 @@ describe('GroupSelectionDialogFactory', () => {
 
   it('should return promise', () => {
     const factory = createFactory();
-    const returnValue = factory.createAsync({}, [], {});
+    const returnValue = factory.createAsync({}, [], '', {});
     expect(returnValue.then).toEqual(jasmine.any(Function));
   });
 
@@ -135,7 +135,7 @@ describe('GroupSelectionDialogFactory', () => {
     ];
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, {});
+    factory.createAsync(task, groupIds, 'extension-sign-group', {});
 
     rootScope.$apply();
     const dialogContent = SelectionDialogMock.calls.mostRecent().args[0];
@@ -146,7 +146,7 @@ describe('GroupSelectionDialogFactory', () => {
     const confirmCallback = jasmine.createSpy('confirm callback');
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, {}, confirmCallback);
+    factory.createAsync(task, groupIds, 'extension-sign-group', {}, confirmCallback);
     rootScope.$apply();
 
     const dialogConfirmCallback = SelectionDialogMock.calls.mostRecent().args[1];
@@ -159,7 +159,7 @@ describe('GroupSelectionDialogFactory', () => {
     const confirmCallback = jasmine.createSpy('confirm callback');
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, {}, confirmCallback);
+    factory.createAsync(task, groupIds, 'extension-sign-group', {}, confirmCallback);
     rootScope.$apply();
 
     const dialogConfirmCallback = SelectionDialogMock.calls.mostRecent().args[1];
@@ -172,7 +172,7 @@ describe('GroupSelectionDialogFactory', () => {
     const confirmCallback = jasmine.createSpy('confirm callback');
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, {}, confirmCallback);
+    factory.createAsync(task, groupIds, 'extension-sign-group', {}, confirmCallback);
     rootScope.$apply();
 
     const dialogConfirmCallback = SelectionDialogMock.calls.mostRecent().args[1];
@@ -185,7 +185,7 @@ describe('GroupSelectionDialogFactory', () => {
     const cancelCallback = jasmine.createSpy('cancel callback');
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, {}, undefined, cancelCallback);
+    factory.createAsync(task, groupIds, 'extension-sign-group', {}, undefined, cancelCallback);
 
     rootScope.$apply();
     expect(SelectionDialogMock).toHaveBeenCalledWith(
@@ -206,7 +206,7 @@ describe('GroupSelectionDialogFactory', () => {
     };
 
     const factory = createFactory();
-    factory.createAsync(task, groupIds, content);
+    factory.createAsync(task, groupIds, 'extension-sign-group', content);
 
     rootScope.$apply();
     const dialogContent = SelectionDialogMock.calls.mostRecent().args[0];
@@ -222,7 +222,7 @@ describe('GroupSelectionDialogFactory', () => {
       .and.returnValue(angularQ.reject(error));
 
     const factory = createFactory();
-    const returnValue = factory.createAsync(task, groupIds, {});
+    const returnValue = factory.createAsync(task, groupIds, 'extension-sign-group', {});
     const rejectPromise = jasmine.createSpy('promise rejected');
     returnValue.catch(rejectPromise);
 
@@ -238,7 +238,7 @@ describe('GroupSelectionDialogFactory', () => {
       .and.returnValue(angularQ.reject(error));
 
     const factory = createFactory();
-    const returnValue = factory.createAsync(task, groupIds, {});
+    const returnValue = factory.createAsync(task, groupIds, 'extension-sign-group', {});
     const rejectPromise = jasmine.createSpy('promise rejected');
     returnValue.catch(rejectPromise);
 
