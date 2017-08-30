@@ -36,12 +36,14 @@ class Project extends Voter\AccessCheckVoter
                 new AccessCheck\LabelerIsAssignedToProject($userPermissions, $labelingGroupFacade),
                 new AccessCheck\HasSuperAdminRole($userPermissions),
                 new AccessCheck\HasLabelManagerRole($userPermissions),
+                new AccessCheck\HasExternalCoordinatorRole($userPermissions),
                 new AccessCheck\HasObserverRole($userPermissions),
             ],
             self::PROJECT_WRITE => [
                 new AccessCheck\LabelManagerIsAssignedToProject($userPermissions),
                 new AccessCheck\LabelerIsAssignedToProject($userPermissions, $labelingGroupFacade),
                 new AccessCheck\HasSuperAdminRole($userPermissions),
+                new AccessCheck\HasExternalCoordinatorRole($userPermissions),
                 new AccessCheck\HasLabelManagerRole($userPermissions),
             ],
         ];
