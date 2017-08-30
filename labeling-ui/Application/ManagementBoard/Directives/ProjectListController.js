@@ -418,7 +418,7 @@ class ProjectListController {
     }
     const startTimeStamp = project.creationTimestamp;
     const endTimeStamp = project.dueTimestamp;
-    if (startTimeStamp === null || endTimeStamp === null) {
+    if (startTimeStamp === undefined || endTimeStamp === undefined || startTimeStamp === null || endTimeStamp === null) {
       return null;
     }
     const endDate = moment.unix(endTimeStamp);
