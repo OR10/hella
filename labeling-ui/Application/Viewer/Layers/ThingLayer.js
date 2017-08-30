@@ -312,10 +312,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
           groupIds,
           {
             title: 'Remove Shape or Group',
-            headline: 'The selected shape is going to be removed. Proceed?',
-            message: 'You may either delete the shape itself or remove its association from a certain group. What should I do?',
+            headline: 'The selected object is going to be removed. Proceed?',
+            message: 'You may either delete the object itself or remove its association from a certain group.',
             confirmButtonText: 'Delete',
-            defaultSelection: 'Delete the shape itself',
+            defaultSelection: 'Delete the object itself',
           },
           group => {
             if (group === undefined) {
