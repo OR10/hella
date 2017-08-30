@@ -31,7 +31,8 @@ framework:
     default_locale:  "%locale%"
     trusted_hosts:   ~
     trusted_proxies: ~
-    session:         ~
+    session:
+        handler_id: snc_redis.session.handler
     fragments:       ~
     http_method_override: true
 
