@@ -156,6 +156,7 @@ class TaskDatabaseSecurityPermissionServiceTest extends Tests\KernelTestCase
             Service\UserRolesRebuilder::SUPER_ADMIN_GROUP,
             sprintf('%s%s', Service\UserRolesRebuilder::LABEL_MANAGER_PREFIX, $this->organisation->getId()),
             sprintf('%s%s', Service\UserRolesRebuilder::OBSERVER_GROUP_PREFIX, $this->organisation->getId()),
+            sprintf('%s%s', Service\UserRolesRebuilder::EXTERNAL_COORDINATOR_PREFIX, $this->organisation->getId()),
         ];
         $memberNames      = array_merge($memberNames, $fixedMemberNames);
         $roles            = array_merge($memberRoles, $fixedRoles);
