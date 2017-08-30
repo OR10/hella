@@ -8,7 +8,7 @@ import ToolService from './Services/ToolService';
 import ViewerMouseCursorService from './Services/ViewerMouseCursorService';
 import LabeledThingGroupService from './Services/LabeledThingGroupService';
 import HierarchyCreationService from './Services/HierarchyCreationService';
-import GroupShapeNameService from './Services/GroupShapeNameService';
+import GroupNameService from './Services/GroupNameService';
 import DrawingContextServiceProvider from './Providers/DrawingContextServiceProvider';
 
 import 'jquery-mousewheel';
@@ -27,7 +27,7 @@ export default class Viewer extends Module {
     this.module.service('viewerMouseCursorService', ViewerMouseCursorService);
     this.module.service('labeledThingGroupService', LabeledThingGroupService);
     this.module.service('hierarchyCreationService', HierarchyCreationService);
-    this.module.service('groupShapeNameService', GroupShapeNameService);
+    this.module.service('groupNameService', GroupNameService);
 
     this.module.provider('drawingContextService', DrawingContextServiceProvider);
   }
