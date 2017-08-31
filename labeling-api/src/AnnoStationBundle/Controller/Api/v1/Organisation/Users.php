@@ -112,9 +112,9 @@ class Users extends Controller\Base
     private function filterUserListByPermission($users)
     {
         $users = array_values(array_filter($users, function (Model\User $user) {
-            $authUserCanListAllUsers = $this->currentUserPermissions->hasPermission('canListAllUsers');
+            $canSeeSuperAdminUsers = $this->currentUserPermissions->hasPermission('canViewUserListWithSuperAdmins');
 
-            if ($user->isSuperAdmin() && !$authUserCanListAllUsers) {
+            if ($user->isSuperAdmin() && !$canSeeSuperAdminUsers) {
                 return false;
             }
 
