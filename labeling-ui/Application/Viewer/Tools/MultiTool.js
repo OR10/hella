@@ -463,14 +463,23 @@ class MultiTool extends PaperTool {
    */
   onMouseMove(event) {
     this._currentMousePoint = event.point;
+    const keyboardModifiers = this._getKeyboardModifiers(event);
+
     // Shift is used for zoom panning
-    if (this._getKeyboardModifiers(event).shift) {
+    if (keyboardModifiers.shift) {
       return;
     }
 
     if (this._paperToolDelegationInvoked) {
       this._activePaperTool.delegateMouseEvent('move', event);
       return;
+    }
+
+    const selectedShape = this._shapeSelectionService.getSelectedShape();
+
+    if (selectedShape && keyboardModifiers.alt) {
+      this._invokeTransformationTool(event, selectedShape, null, keyboardModifiers, this._currentMousePoint);
+      this._activePaperTool.delegateMouseEvent('move', event);
     }
 
     this._handleMouseMoveCursor(event);
