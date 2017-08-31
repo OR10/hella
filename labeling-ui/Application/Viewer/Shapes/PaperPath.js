@@ -104,9 +104,14 @@ class PaperPath extends PaperThingShape {
 
   /**
    * @param {Handle|null} handle
+   * @param {boolean} keyboardModifiers
    * @returns {string}
    */
-  getToolActionIdentifier(handle) {
+  getToolActionIdentifier(handle, keyboardModifiers) {
+    if (keyboardModifiers.alt && handle === null) {
+      return 'transformation';
+    }
+
     if (handle === null) {
       return 'move';
     }
