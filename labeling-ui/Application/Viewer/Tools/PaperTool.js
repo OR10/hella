@@ -257,6 +257,30 @@ class PaperTool extends Tool {
   }
 
   /**
+   * Performs a hit test for the given point in the context.
+   *
+   * Returns the hitResult from paperjs
+   *
+   * @param {paper.Point} point
+   * @return {null|paper.HitResult}
+   * @protected
+   */
+  _getHitTestResult(point) {
+    return this._context.withScope(scope => {
+      let hitTestTolerance = null;
+      if (this._toolActionStruct !== null) {
+        hitTestTolerance = this._toolActionStruct.options.hitTestTolerance;
+      }
+
+      return scope.project.hitTest(point, {
+        fill: true,
+        bounds: false,
+        tolerance: hitTestTolerance,
+      });
+    });
+  }
+
+  /**
    * Generates an extended keyboard modifier object with the specified keys
    * added in short syntax ($keyName instead of $keyName+Key)
    *

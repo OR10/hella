@@ -273,67 +273,61 @@ class MultiTool extends PaperTool {
 
     this._handleMouseDownCursor(event);
 
-    this._context.withScope(scope => {
-      const hitResult = scope.project.hitTest(point, {
-        fill: true,
-        bounds: false,
-        tolerance: this._toolActionStruct.options.hitTestTolerance,
-      });
+    const hitResult = this._getHitTestResult(point);
 
-      // Hit nothing
-      if (!hitResult) {
-        const selectedShape = this._shapeSelectionService.getSelectedShape();
-        // Deselection if there was a selection
-        if (selectedShape !== null) {
-          // Metalabeling is can not be deselected
-          if (selectedShape instanceof PaperFrame) {
-            return;
-          }
-
-          this._shapeSelectionService.clear();
-          this._complete({actionIdentifier: 'selection', paperShape: null});
+    // Hit nothing
+    if (!hitResult) {
+      const selectedShape = this._shapeSelectionService.getSelectedShape();
+      // Deselection if there was a selection
+      if (selectedShape !== null) {
+        // Metalabeling is can not be deselected
+        if (selectedShape instanceof PaperFrame) {
           return;
         }
 
-        // clear selection when selectedPaperShape is null
         this._shapeSelectionService.clear();
-
-        // Do not invoke any further action if readOnly is active
-        if (this._toolActionStruct.readOnly === true) {
-          return;
-        }
-
-        // Invoke shape creation
-        this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
-        this._activePaperTool.delegateMouseEvent('down', event);
+        this._complete({actionIdentifier: 'selection', paperShape: null});
         return;
       }
 
-      // Hit something
-      const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+      // clear selection when selectedPaperShape is null
+      this._shapeSelectionService.clear();
 
-      // If selected paperShape changed select the new one
-      if (this._shapeSelectionService.getSelectedShape() !== hitShape) {
-        if (multiSelect) {
-          this._shapeSelectionService.toggleShape(hitShape);
-        } else {
-          this._shapeSelectionService.setSelectedShape(hitShape);
-          this._complete({actionIdentifier: 'selection', paperShape: hitShape});
-        }
-        return;
-      }
-
-      // Do not delegate to PaperTool if we are readOnly
+      // Do not invoke any further action if readOnly is active
       if (this._toolActionStruct.readOnly === true) {
         return;
       }
 
-      // Invoke mutation tool
-      const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle, keyboardModifiers);
-      const tool = this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier);
-      this._invokePaperToolDelegation(tool, actionIdentifier, hitShape, hitHandle, point);
+      // Invoke shape creation
+      this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
       this._activePaperTool.delegateMouseEvent('down', event);
-    });
+      return;
+    }
+
+    // Hit something
+    const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+
+    // If selected paperShape changed select the new one
+    if (this._shapeSelectionService.getSelectedShape() !== hitShape) {
+      if (multiSelect) {
+        this._shapeSelectionService.toggleShape(hitShape);
+      } else {
+        this._shapeSelectionService.setSelectedShape(hitShape);
+        this._complete({actionIdentifier: 'selection', paperShape: hitShape});
+      }
+      return;
+    }
+
+    // Do not delegate to PaperTool if we are readOnly
+    if (this._toolActionStruct.readOnly === true) {
+      return;
+    }
+
+    // Invoke mutation tool
+    const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle, keyboardModifiers);
+    const tool = this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier);
+    this._invokePaperToolDelegation(tool, actionIdentifier, hitShape, hitHandle, point);
+    this._activePaperTool.delegateMouseEvent('down', event);
   }
 
   onKeyDown(event) {
@@ -494,30 +488,19 @@ class MultiTool extends PaperTool {
     const point = event.point;
     const keyboardModifiers = this._getKeyboardModifiers(event);
 
-    this._context.withScope(scope => {
-      let hitTestTolerance = null;
-      if (this._toolActionStruct !== null) {
-        hitTestTolerance = this._toolActionStruct.options.hitTestTolerance;
-      }
+    const hitResult = this._getHitTestResult(point);
 
-      const hitResult = scope.project.hitTest(point, {
-        fill: true,
-        bounds: false,
-        tolerance: hitTestTolerance,
-      });
-
-      if (!hitResult) {
-        if (this._viewerMouseCursorService.isCrosshairShowing()) {
-          this._viewerMouseCursorService.setMouseCursor('none');
-        } else {
-          this._viewerMouseCursorService.setMouseCursor(null);
-        }
+    if (!hitResult) {
+      if (this._viewerMouseCursorService.isCrosshairShowing()) {
+        this._viewerMouseCursorService.setMouseCursor('none');
       } else {
-        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-
-        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, undefined, keyboardModifiers));
+        this._viewerMouseCursorService.setMouseCursor(null);
       }
-    });
+    } else {
+      const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+
+      this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, undefined, keyboardModifiers));
+    }
   }
 
   /**
@@ -531,18 +514,11 @@ class MultiTool extends PaperTool {
     if (this._viewerMouseCursorService.isCrosshairShowing()) {
       this._viewerMouseCursorService.setMouseCursor('none');
     } else {
-      this._context.withScope(scope => {
-        const hitResult = scope.project.hitTest(point, {
-          fill: true,
-          bounds: false,
-          tolerance: this._toolActionStruct.options.hitTestTolerance,
-        });
-
-        if (hitResult) {
-          const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-          this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, true, keyboardModifiers));
-        }
-      });
+      const hitResult = this._getHitTestResult(point);
+      if (hitResult) {
+        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, true, keyboardModifiers));
+      }
     }
   }
 
@@ -572,17 +548,11 @@ class MultiTool extends PaperTool {
     const point = event.point;
     const keyboardModifiers = this._getKeyboardModifiers(event);
 
-    this._context.withScope(scope => {
-      const hitResult = scope.project.hitTest(point, {
-        fill: true,
-        bounds: false,
-        tolerance: this._toolActionStruct.options.hitTestTolerance,
-      });
-      if (hitResult) {
-        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, false, keyboardModifiers));
-      }
-    });
+    const hitResult = this._getHitTestResult(point);
+    if (hitResult) {
+      const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+      this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, false, keyboardModifiers));
+    }
   }
 
   /**
