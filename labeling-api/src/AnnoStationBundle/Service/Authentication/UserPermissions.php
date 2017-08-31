@@ -24,7 +24,6 @@ class UserPermissions
         'canViewDeletedProjects'                          => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canCreateProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canMoveInProgressProjectToDone'                  => [ Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canViewStats'                                    => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER                                       ],
         'canDeleteProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canExportProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canViewProjectReport'                            => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],

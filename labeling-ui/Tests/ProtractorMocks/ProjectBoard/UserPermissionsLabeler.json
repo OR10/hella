@@ -7,7 +7,6 @@
     "data": {
       "result": {
         "canReopenTask": false,
-        "canViewStats": false,
         "canViewUserList": false,
         "canViewVideoUploadButton": false,
         "canChangeUserTaskAssignment": false
