@@ -133,9 +133,18 @@ class PaperPath extends PaperThingShape {
   /**
    * @param {Handle|null} handle
    * @param {boolean} mouseDown
+   * @param {boolean} keyboardModifiers
    * @returns {string}
    */
-  getCursor(handle, mouseDown = false) {
+  getCursor(handle, mouseDown = false, keyboardModifiers) {
+    if (keyboardModifiers.alt && !handle) {
+      return 'add';
+    }
+
+    if (keyboardModifiers.alt && handle) {
+      return 'remove';
+    }
+
     return mouseDown ? 'grabbing' : 'grab';
   }
 
