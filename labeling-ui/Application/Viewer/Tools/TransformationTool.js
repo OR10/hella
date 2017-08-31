@@ -1,5 +1,6 @@
 import PaperTool from './PaperTool';
 import NotModifiedError from './Errors/NotModifiedError';
+import hitResolver from '../Support/HitResolver';
 
 class TransformationTool extends PaperTool {
   constructor(drawingContext, $rootScope, $q, loggerService, viewerMouseCursorService) {
@@ -24,9 +25,16 @@ class TransformationTool extends PaperTool {
   // TODO: Move to PaperTool
   onMouseMove(event) {
     const keyboardModifiers = this._getKeyboardModifiers(event);
+    const point = event.point;
     const {shape} = this._toolActionStruct;
 
-    this._viewerMouseCursorService.setMouseCursor(shape.getCursor(null, undefined, keyboardModifiers));
+    const hitResult = this._getHitTestResult(point);
+    let hitHandle = null;
+    if (hitResult) {
+      [, hitHandle] = hitResolver.resolve(hitResult.item);
+    }
+
+    this._viewerMouseCursorService.setMouseCursor(shape.getCursor(hitHandle, undefined, keyboardModifiers));
   }
 
   onKeyUp(event) {
