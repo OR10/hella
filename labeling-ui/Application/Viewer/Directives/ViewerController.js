@@ -364,28 +364,25 @@ class ViewerController {
 
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
+        const shapes = this._shapeSelectionService.getAllShapes();
+        const struct = new GroupToolActionStruct(
+          {},
+          this.viewport,
+          this.task,
+          labelStructureObject.id,
+          this.framePosition
+        );
+        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(
+          struct);
 
-        this._groupCreationService.showGroupSelector().then(groupStructureObject => {
-          const shapes = this._shapeSelectionService.getAllShapes();
-          const struct = new GroupToolActionStruct(
-            {},
-            this.viewport,
-            this.task,
-            groupStructureObject.id,
-            this.framePosition
-          );
-          const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(
-            struct);
-
-          this._thingLayerContext.withScope(() => {
-            const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
-            this._storeGroup(group, shapes);
-            group.sendToBack();
-            this.paperGroupShapes = this.paperGroupShapes.concat([group]);
-            this._shapeSelectionService.clear();
-            this.selectedPaperShape = group;
-            group.select();
-          });
+        this._thingLayerContext.withScope(() => {
+          const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+          this._storeGroup(group, shapes);
+          group.sendToBack();
+          this.paperGroupShapes = this.paperGroupShapes.concat([group]);
+          this._shapeSelectionService.clear();
+          this.selectedPaperShape = group;
+          group.select();
         });
       }
     };
@@ -1368,28 +1365,28 @@ class ViewerController {
    * @private
    */
   _onGroupCreate(paperGroupShape) {
+    let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(
+      this._thingLayerContext,
+      paperGroupShape.bounds
+    );
+
+    // Service finds the group shape itself, so we need to remove the shape id from the array
+    shapesInGroup = shapesInGroup.filter(
+      shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
+
+    this._storeGroup(paperGroupShape, shapesInGroup);
+  }
+
+  _storeGroup(paperGroupShape, shapesInGroup) {
     this._groupCreationService.showGroupSelector()
       .then(selectedGroup => {
         paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.type = selectedGroup.id;
 
-        let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(
-          this._thingLayerContext,
-          paperGroupShape.bounds
+        return this._labeledThingGroupGateway.createLabeledThingGroup(
+          this.task,
+          paperGroupShape.labeledThingGroupInFrame.labeledThingGroup
         );
-
-        // Service finds the group shape itself, so we need to remove the shape id from the array
-        shapesInGroup = shapesInGroup.filter(
-          shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
-
-        this._storeGroup(paperGroupShape, shapesInGroup);
-      });
-  }
-
-  _storeGroup(paperGroupShape, shapesInGroup) {
-    this._labeledThingGroupGateway.createLabeledThingGroup(
-      this.task,
-      paperGroupShape.labeledThingGroupInFrame.labeledThingGroup
-    )
+      })
       .then(labeledThingGroup => {
         const labeledThings = [];
         shapesInGroup.forEach(shape => {
