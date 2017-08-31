@@ -399,7 +399,7 @@ class ViewerController {
                   this._handleGroupAddAfterActions(newGroup);
                 });
               } else {
-                // add to choosen group
+                // add to selected group
                 this._thingLayerContext.withScope(() => {
                   const toAddShape = shapes.find(candidate => !candidate.labeledThingInFrame.labeledThing.groupIds.includes(group.id));
                   const groupShape = this.paperGroupShapes.find(pgs => pgs.labeledThingGroupInFrame.labeledThingGroup.id === group.id);
@@ -412,11 +412,6 @@ class ViewerController {
             },
             () => {
               this._shapeSelectionService.clear();
-              /*
-              this._thingLayerContext.withScope(() => {
-                shapes.forEach(shape => shape.select());
-              });
-              */
             }
           )
             .then(selectionDialog => {
