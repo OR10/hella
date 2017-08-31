@@ -63,7 +63,7 @@ class GroupCreationService {
     }
 
     return deferred.promise;
-  };
+  }
 }
 
 GroupCreationService.$inject = [

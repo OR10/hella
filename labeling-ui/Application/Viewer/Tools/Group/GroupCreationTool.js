@@ -1,6 +1,5 @@
 import CreationTool from '../CreationTool';
 import PaperGroupRectangleMulti from '../../Shapes/PaperGroupRectangleMulti';
-import GroupToolActionStruct from '../ToolActionStructs/GroupToolActionStruct';
 
 class GroupCreationTool extends CreationTool {
   /**

@@ -500,7 +500,7 @@ TaskController.$inject = [
   'frameIndexService',
   'lockService',
   'labelStructureService',
-  'groupCreationService'
+  'groupCreationService',
 ];
 
 export default TaskController;
