@@ -209,6 +209,7 @@ class Status extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/status/begin")
+     * @CheckPermissions({"canBeginTask"})
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
