@@ -6,11 +6,10 @@
   "response": {
     "data": {
       "result": {
-        "canViewProject": true,
         "canReopenTask": false,
         "canViewUserList": false,
         "canViewVideoUploadButton": false,
-        "unassignPermission": false
+        "canChangeUserTaskAssignment": false
       }
     }
   }

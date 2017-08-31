@@ -11,10 +11,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
  */
 class UserPermissions
 {
-    /**
-     * @todo chh: duplicate permission? canCreateProject, canCreateNewProject
-     * @todo chh: missing permission? canViewTaskListOfClosedProject
-     */
     // @codingStandardsIgnoreStart
     // @formatter:off
     const PERMISSION_MAP = [
@@ -27,16 +23,11 @@ class UserPermissions
         'canViewTodoProjects'                             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canViewDeletedProjects'                          => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canCreateProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canMoveFinishedProjectToDone'                    => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canMoveInProgressProjectToDone'                  => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canViewProject'                                  => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
+        'canMoveInProgressProjectToDone'                  => [ Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canDeleteProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canCreateNewProject'                             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canReopenProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canExportProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canViewProjectReport'                            => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canAssignProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canViewProjectQuota'                             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER, Model\User::ROLE_LABELER,                            Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canListAllLabelManagers'                         => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canViewProjectManagementRelatedStatisticsColumn' => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER                                       ],
         'canViewProjectsCreationTimestamp'                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER                                       ],
@@ -45,9 +36,8 @@ class UserPermissions
 
         // Label-Jobs
         'canViewTaskList'                                 => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER, Model\User::ROLE_LABELER, Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
-        'canViewTaskListOfClosedProject'                  => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canReopenTask'                                   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                      Model\User::ROLE_EXTERNAL_COORDINATOR],
-        'unassignPermission'                              => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                      Model\User::ROLE_EXTERNAL_COORDINATOR],
+        'canChangeUserTaskAssignment'                         => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                      Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canFlagLabelingTask'                             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER, Model\User::ROLE_LABELER,                            Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canUnflagLabelingTask'                           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                      Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canViewAttentionTasks'                           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
@@ -58,6 +48,7 @@ class UserPermissions
         // User management
         'canEditLabelingGroups'                           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                                                            ],
         'canViewUserList'                                 => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                                                            ],
+        'canViewUserListWithSuperAdmins'                  => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                           ],
         'canAddUser'                                      => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                                                            ],
         'canEditUser'                                     => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                                                            ],
         'canDeleteUser'                                   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                                                            ],
@@ -77,11 +68,9 @@ class UserPermissions
         'canCreateOrganisation'                           => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                           ],
         'canEditOrganisation'                             => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                           ],
         'canDeleteOrganisation'                           => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                           ],
-        'canViewOrganisationQuota'                        => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                           ],
         'canAssignUserToAnyOrganisation'                  => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                           ],
         'canAssignUserToOwnOrganisation'                  => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canDeleteUserFromOrganisation'                   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canListAllUsers'                                 => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                           ],
 
         //Monitoring
         'canViewLatestMonitoringRun'                      => [Model\User::ROLE_SUPER_ADMIN                                                                                                                            ],
