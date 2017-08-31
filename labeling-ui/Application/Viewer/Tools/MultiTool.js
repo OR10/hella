@@ -334,6 +334,21 @@ class MultiTool extends PaperTool {
   }
 
   /**
+   * @param {Event} event
+   * @param {PaperShape} shape
+   * @param {Handle} handle
+   * @param {Object} keyboardModifiers
+   * @param {paper.Point} point
+   * @private
+   */
+  _invokeTransformationTool(event, shape, handle, keyboardModifiers, point) {
+    // Invoke mutation tool
+    const actionIdentifier = shape.getToolActionIdentifier(handle, keyboardModifiers);
+    const tool = this._toolService.getTool(this._context, shape.getClass(), actionIdentifier);
+    this._invokePaperToolDelegation(tool, actionIdentifier, shape, handle, point);
+  }
+
+  /**
    * @param {KeyboardTool} tool
    * @param {PaperShape} shape
    * @private
