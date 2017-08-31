@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Tests\Controller\Api\Organisation;
 
 use AnnoStationBundle\Tests;
+use AppBundle\Model as AppBundleModel;
 use AnnoStationBundle\Model;
 use Symfony\Component\HttpFoundation;
 
@@ -13,6 +14,11 @@ class TaskConfigurationTest extends Tests\WebTestCase
      */
     private $organisation;
 
+    /**
+     * @var AppBundleModel\User
+     */
+    private $labelManager;
+
     public function testInvalidDuplicateId()
     {
         $requestWrapper = $this->createRequest(
@@ -20,6 +26,7 @@ class TaskConfigurationTest extends Tests\WebTestCase
             [$this->organisation->getId()]
         )
             ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentialsFromUsername($this->labelManager)
             ->setJsonBody(['name' => 'some_config'])
             ->setFiles(
                 [
@@ -39,7 +46,6 @@ class TaskConfigurationTest extends Tests\WebTestCase
         $organisationFacade = $this->getAnnostationService('database.facade.organisation');
         $this->organisation = $organisationFacade->save(Tests\Helper\OrganisationBuilder::create()->build());
 
-        $this->createDefaultUser();
-        $this->defaultUser->assignToOrganisation($this->organisation);
+        $this->labelManager = $this->createLabelManagerUser($this->organisation);
     }
 }

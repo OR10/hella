@@ -59,7 +59,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     labeledThingGateway,
     labeledThingGroupGateway,
     shapeSelectionService,
-    groupSelectionDialogFactory,
+    groupSelectionDialogFactory
   ) {
     super(width, height, $scope, drawingContext);
 
