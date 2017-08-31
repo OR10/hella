@@ -10,7 +10,7 @@
         "canViewStats": true,
         "canViewUserList": true,
         "canViewVideoUploadButton": true,
-        "unassignPermission": true
+        "canChangeUserTaskAssignment": true
       }
     }
   }
