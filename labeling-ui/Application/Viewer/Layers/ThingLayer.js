@@ -288,7 +288,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
           labeledThing = shape.labeledThingInFrame.labeledThing;
         }
         if (!labeledThing) {
-          throw new Error(`Can not unassign group ${groupId} from shape without labeledThing`);
+          throw new Error(`Can not unassign group ${group.id} from shape without labeledThing`);
         }
 
         this._applicationState.disableAll();
