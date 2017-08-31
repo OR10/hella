@@ -6,7 +6,6 @@
   "response": {
     "data": {
       "result": {
-        "canReopenTask": true,
         "canViewUserList": true,
         "canViewVideoUploadButton": true,
         "canChangeUserTaskAssignment": true
