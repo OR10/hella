@@ -209,7 +209,7 @@ class MultiTool extends PaperTool {
    */
   _invokeCreationToolDelegation(requirementsShape) {
     const tool = this._getCreationToolForRequirementsShape(requirementsShape);
-    this._invokePaperToolDelegation(tool, 'creation', null, null);
+    this._invokePaperToolDelegation(tool, 'creation', null, null, null);
   }
 
   /**
@@ -328,7 +328,7 @@ class MultiTool extends PaperTool {
       // Invoke mutation tool
       const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
       const tool = this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier);
-      this._invokePaperToolDelegation(tool, actionIdentifier, hitShape, hitHandle);
+      this._invokePaperToolDelegation(tool, actionIdentifier, hitShape, hitHandle, point);
       this._activePaperTool.delegateMouseEvent('down', event);
     });
   }
@@ -359,9 +359,10 @@ class MultiTool extends PaperTool {
    * @param {string} actionIdentifier
    * @param {PaperShape} shape
    * @param {Handle} handle
+   * @param {paper.Point} point
    * @private
    */
-  _invokePaperToolDelegation(tool, actionIdentifier, shape, handle) {
+  _invokePaperToolDelegation(tool, actionIdentifier, shape, handle, point) {
     this._paperToolDelegationInvoked = true;
     const {viewport, video, task, framePosition, requirementsThingOrGroupId, delegatedOptions} = this._toolActionStruct;
     let promise = null;
@@ -423,7 +424,7 @@ class MultiTool extends PaperTool {
       // Example: Group Shape without shapes inside
       // For more info see {@link GroupCreationTool.invokeShapeCreation()}
       if (paperShape === null) {
-        this._invokePaperToolDelegation(tool, actionIdentifier, shape, handle);
+        this._invokePaperToolDelegation(tool, actionIdentifier, shape, handle, point);
       } else {
         this._complete({actionIdentifier, paperShape});
       }
