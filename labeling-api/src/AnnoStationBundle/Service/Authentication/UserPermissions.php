@@ -31,7 +31,6 @@ class UserPermissions
         'canViewStats'                                    => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER                                       ],
         'canDeleteProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canCreateNewProject'                             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canReopenProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canExportProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canViewProjectReport'                            => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canAssignProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
