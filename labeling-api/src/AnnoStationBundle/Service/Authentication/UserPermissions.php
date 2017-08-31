@@ -53,6 +53,7 @@ class UserPermissions
         // User management
         'canEditLabelingGroups'                           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                                                            ],
         'canViewUserList'                                 => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                                                            ],
+        'canViewUserListWithSuperAdmins'                  => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                           ],
         'canAddUser'                                      => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                                                            ],
         'canEditUser'                                     => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                                                            ],
         'canDeleteUser'                                   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER                                                                                            ],
@@ -75,7 +76,6 @@ class UserPermissions
         'canAssignUserToAnyOrganisation'                  => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                           ],
         'canAssignUserToOwnOrganisation'                  => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canDeleteUserFromOrganisation'                   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canListAllUsers'                                 => [Model\User::ROLE_SUPER_ADMIN,                                                                                                                           ],
 
         //Monitoring
         'canViewLatestMonitoringRun'                      => [Model\User::ROLE_SUPER_ADMIN                                                                                                                            ],
