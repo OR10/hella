@@ -132,7 +132,7 @@ class Status extends Controller\Base
      * Set the Project to status done
      *
      * @Rest\POST("/{organisation}/project/{project}/status/done")
-     * @CheckPermissions({"canMoveFinishedProjectToDone", "canMoveInProgressProjectToDone"})
+     * @CheckPermissions({"canMoveInProgressProjectToDone"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project

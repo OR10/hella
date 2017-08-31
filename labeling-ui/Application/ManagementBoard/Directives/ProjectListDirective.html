@@ -95,7 +95,7 @@
                 </button>
 
                 <button tooltip="Close Project (Move to done)"
-                        ng-if="(vm.userPermissions.canMoveFinishedProjectToDone || vm.userPermissions.canMoveInProgressProjectToDone) && project.status == 'in_progress'"
+                        ng-if="vm.userPermissions.canMoveInProgressProjectToDone && project.status == 'in_progress'"
                         ng-click="vm.closeProject(project.id, project.name, project.taskCount == project.taskFinishedCount)"
                 >
                     <i class="fa fa-check-square"></i>
