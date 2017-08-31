@@ -333,6 +333,22 @@ class MultiTool extends PaperTool {
     });
   }
 
+  onKeyDown(event) {
+    const keyIdentifier = event.key;
+    const selectedShape = this._shapeSelectionService.getSelectedShape();
+    const keyboardModifiers = this._getKeyboardModifiers(event);
+
+    if (this._paperToolDelegationInvoked) {
+      this._activePaperTool.delegateKeyboardEvent('down', event);
+      return;
+    }
+
+    if (selectedShape !== undefined && keyIdentifier === 'option') {
+      this._invokeTransformationTool(event, selectedShape, null, keyboardModifiers, this._currentMousePoint);
+      this._activePaperTool.delegateKeyboardEvent('down', event);
+    }
+  }
+
   /**
    * @param {Event} event
    * @param {PaperShape} shape
