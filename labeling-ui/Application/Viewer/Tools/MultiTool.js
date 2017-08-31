@@ -326,7 +326,7 @@ class MultiTool extends PaperTool {
       }
 
       // Invoke mutation tool
-      const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
+      const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle, keyboardModifiers);
       const tool = this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier);
       this._invokePaperToolDelegation(tool, actionIdentifier, hitShape, hitHandle, point);
       this._activePaperTool.delegateMouseEvent('down', event);
@@ -511,7 +511,8 @@ class MultiTool extends PaperTool {
         }
       } else {
         const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle));
+
+        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, undefined, keyboardModifiers));
       }
     });
   }
@@ -536,7 +537,7 @@ class MultiTool extends PaperTool {
 
         if (hitResult) {
           const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-          this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, true));
+          this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, true, keyboardModifiers));
         }
       });
     }
@@ -576,7 +577,7 @@ class MultiTool extends PaperTool {
       });
       if (hitResult) {
         const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, false));
+        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, false, keyboardModifiers));
       }
     });
   }
