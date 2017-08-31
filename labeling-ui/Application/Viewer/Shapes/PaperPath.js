@@ -175,6 +175,14 @@ class PaperPath extends PaperThingShape {
     this._renderShape();
   }
 
+  /**
+   * Removes a point from the path at the given index
+   *
+   * @param {number} index
+   */
+  removePoint(index) {
+    this._points.splice(index, 1);
+    this._renderShape();
   }
 
   /**

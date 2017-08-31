@@ -1,3 +1,4 @@
+import paper from 'paper';
 import TransformationTool from '../TransformationTool';
 
 /**
@@ -59,6 +60,13 @@ class PathTransformationTool extends TransformationTool {
    */
   onMouseDown(event) {
     console.log('mouse down');
+    const point = event.point;
+    const selectedShape = this._toolActionStruct.shape;
+    const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
+
+    if (hitHandle && hitShape === selectedShape) {
+      this._removeVertexFromShape(hitHandle);
+    }
   }
 
   onMouseUp() {
@@ -72,6 +80,22 @@ class PathTransformationTool extends TransformationTool {
   onMouseMove(event) {
     super.onMouseMove(event);
     console.log('mouse move');
+  }
+
+  _removeVertexFromShape(handle) {
+    const shape = this._toolActionStruct.shape;
+    const shapePoints = shape.points.map(point => new paper.Point(point));
+    const handleCenter = handle.position;
+
+    const hitVertex = shapePoints.reduce((carry, currentPoint, index) => {
+      const distance = currentPoint.getDistance(handleCenter, true);
+      if (distance < carry.distance) {
+        return {distance, index};
+      }
+      return carry;
+    }, {distance: Infinity, index: -1});
+
+    shape.removePoint(hitVertex.index);
   }
 }
 
