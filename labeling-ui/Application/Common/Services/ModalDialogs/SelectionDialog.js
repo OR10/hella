@@ -65,6 +65,7 @@ function selectionDialogProvider(ModalDialog) {
         super.getScope(confirmCallback, cancelCallback),
         {
           data: augmentedData,
+          selection: this._options.selected,
         }
       );
     }

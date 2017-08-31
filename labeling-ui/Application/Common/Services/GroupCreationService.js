@@ -53,6 +53,7 @@ class GroupCreationService {
         null,
         {
           abortable: false,
+          selected: this._availableGroups[0].id,
         }
       )
     );
