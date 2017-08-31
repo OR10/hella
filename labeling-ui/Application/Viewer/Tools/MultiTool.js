@@ -269,7 +269,7 @@ class MultiTool extends PaperTool {
       return;
     }
 
-    this._handleMouseDownCursor(point);
+    this._handleMouseDownCursor(event);
 
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
@@ -449,14 +449,17 @@ class MultiTool extends PaperTool {
       return;
     }
 
-    this._handleMouseMoveCursor(event.point);
+    this._handleMouseMoveCursor(event);
   }
 
   /**
-   * @param {Point} point
+   * @param {Event} event
    * @private
    */
-  _handleMouseMoveCursor(point) {
+  _handleMouseMoveCursor(event) {
+    const point = event.point;
+    const keyboardModifiers = this._getKeyboardModifiers(event);
+
     this._context.withScope(scope => {
       let hitTestTolerance = null;
       if (this._toolActionStruct !== null) {
@@ -483,10 +486,13 @@ class MultiTool extends PaperTool {
   }
 
   /**
-   * @param {Point} point
+   * @param {Event} event
    * @private
    */
-  _handleMouseDownCursor(point) {
+  _handleMouseDownCursor(event) {
+    const point = event.point;
+    const keyboardModifiers = this._getKeyboardModifiers(event);
+
     if (this._viewerMouseCursorService.isCrosshairShowing()) {
       this._viewerMouseCursorService.setMouseCursor('none');
     } else {
@@ -520,14 +526,17 @@ class MultiTool extends PaperTool {
       return;
     }
 
-    this._handleMouseUpCursor(event.point);
+    this._handleMouseUpCursor(event);
   }
 
   /**
-   * @param {Point} point
+   * @param {Event} event
    * @private
    */
-  _handleMouseUpCursor(point) {
+  _handleMouseUpCursor(event) {
+    const point = event.point;
+    const keyboardModifiers = this._getKeyboardModifiers(event);
+
     this._context.withScope(scope => {
       const hitResult = scope.project.hitTest(point, {
         fill: true,
