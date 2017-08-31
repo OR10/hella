@@ -1,13 +1,11 @@
 import PaperTool from './PaperTool';
 import NotModifiedError from './Errors/NotModifiedError';
-import hitResolver from '../Support/HitResolver';
 
 class TransformationTool extends PaperTool {
   constructor(drawingContext, $rootScope, $q, loggerService, viewerMouseCursorService) {
     super(drawingContext, $rootScope, $q, loggerService);
 
     this._viewerMouseCursorService = viewerMouseCursorService;
-    console.log(this._viewerMouseCursorService);
   }
 
   /**
