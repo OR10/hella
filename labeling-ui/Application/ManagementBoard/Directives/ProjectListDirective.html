@@ -101,15 +101,6 @@
                     <i class="fa fa-check-square"></i>
                 </button>
 
-                <!--
-                <button tooltip="Reopen Project"
-                        ng-if="vm.userPermissions.canReopenProject"
-                        ng-click="vm.reopenProject(project.id)"
-                >
-                    <i class="fa fa-refresh"></i>
-                </button>
-                -->
-
                 <button tooltip="View Report of Project"
                         ng-if="vm.userPermissions.canViewProjectReport && project.status != 'deleted'"
                         ng-click="vm.openReport(project.id)"
