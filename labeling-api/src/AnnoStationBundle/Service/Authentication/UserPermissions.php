@@ -48,7 +48,7 @@ class UserPermissions
         'canViewTaskList'                                 => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER, Model\User::ROLE_LABELER, Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canViewTaskListOfClosedProject'                  => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canReopenTask'                                   => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                      Model\User::ROLE_EXTERNAL_COORDINATOR],
-        'unassignPermission'                              => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                      Model\User::ROLE_EXTERNAL_COORDINATOR],
+        'canChangeUserTaskAssignment'                         => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                      Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canFlagLabelingTask'                             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER, Model\User::ROLE_LABELER,                            Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canUnflagLabelingTask'                           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                      Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canViewAttentionTasks'                           => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
