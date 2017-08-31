@@ -36,7 +36,16 @@ class MultiTool extends PaperTool {
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {ShapeSelectionService} shapeSelectionService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, toolService, viewerMouseCursorService, labeledFrameGateway, shapeSelectionService) {
+  constructor(
+    drawingContext,
+    $rootScope,
+    $q,
+    loggerService,
+    toolService,
+    viewerMouseCursorService,
+    labeledFrameGateway,
+    shapeSelectionService
+  ) {
     super(drawingContext, $rootScope, $q, loggerService);
 
     /**
@@ -266,10 +275,11 @@ class MultiTool extends PaperTool {
 
       // Hit nothing
       if (!hitResult) {
+        const selectedShape = this._shapeSelectionService.getSelectedShape();
         // Deselection if there was a selection
-        if (this._toolActionStruct.selectedPaperShape !== null) {
+        if (selectedShape !== null) {
           // Metalabeling is can not be deselected
-          if (this._toolActionStruct.selectedPaperShape instanceof PaperFrame) {
+          if (selectedShape instanceof PaperFrame) {
             return;
           }
 
@@ -295,7 +305,7 @@ class MultiTool extends PaperTool {
       const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
 
       // If selected paperShape changed select the new one
-      if (this._toolActionStruct.selectedPaperShape !== hitShape) {
+      if (this._shapeSelectionService.getSelectedShape() !== hitShape) {
         if (multiSelect) {
           this._shapeSelectionService.toggleShape(hitShape);
         } else {
