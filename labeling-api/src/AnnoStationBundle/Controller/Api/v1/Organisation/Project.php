@@ -403,7 +403,7 @@ class Project extends Controller\Base
      *
      * @Rest\Post("/{organisation}/project")
      *
-     * @CheckPermissions({"canCreateProject", "canCreateNewProject"})
+     * @CheckPermissions({"canCreateProject"})
      *
      * @param HttpFoundation\Request              $request
      * @param AnnoStationBundleModel\Organisation $organisation

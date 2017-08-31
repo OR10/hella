@@ -11,9 +11,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
  */
 class UserPermissions
 {
-    /**
-     * @todo chh: duplicate permission? canCreateProject, canCreateNewProject
-     */
     // @codingStandardsIgnoreStart
     // @formatter:off
     const PERMISSION_MAP = [
@@ -29,7 +26,6 @@ class UserPermissions
         'canMoveInProgressProjectToDone'                  => [ Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canViewStats'                                    => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER                                       ],
         'canDeleteProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
-        'canCreateNewProject'                             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canExportProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
         'canViewProjectReport'                            => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
         'canAssignProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
