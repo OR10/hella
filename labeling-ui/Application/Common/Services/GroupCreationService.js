@@ -35,7 +35,6 @@ class GroupCreationService {
     if (this._availableGroups.length === 1) {
       deferred.resolve(this._availableGroups[0]);
     } else {
-
       this._modalService.show(
         new this._SelectionDialog(
           {
