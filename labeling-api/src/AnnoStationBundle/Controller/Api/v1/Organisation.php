@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1;
 
 use AppBundle\Annotations\CloseSession;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
@@ -74,6 +75,7 @@ class Organisation extends Controller\Base
 
     /**
      * @Rest\Get("")
+     * @CheckPermissions({"canListOrganisations"})
      *
      * @param HttpFoundation\Request $request
      *
@@ -81,10 +83,6 @@ class Organisation extends Controller\Base
      */
     public function listAction(HttpFoundation\Request $request)
     {
-        if (!$this->userPermissions->hasPermission('canListOrganisations')) {
-            throw new Exception\AccessDeniedHttpException();
-        }
-
         $skip  = $request->request->get('skip');
         $limit = $request->request->get('limit');
 
@@ -108,16 +106,14 @@ class Organisation extends Controller\Base
 
     /**
      * @Rest\Post("")
+     * @CheckPermissions({"canCreateOrganisation"})
+     *
      * @param HttpFoundation\Request $request
      *
      * @return View\View
      */
     public function createAction(HttpFoundation\Request $request)
     {
-        if (!$this->userPermissions->hasPermission('canCreateOrganisation')) {
-            throw new Exception\AccessDeniedHttpException();
-        }
-
         $name      = $request->request->get('name');
         $quota     = $request->request->get('quota', 0);
         $userQuota = $request->request->get('userQuota', 0);
@@ -130,6 +126,8 @@ class Organisation extends Controller\Base
 
     /**
      * @Rest\Put("/{organisation}")
+     * @CheckPermissions({"canEditOrganisation"})
+     *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param HttpFoundation\Request              $request
      *
@@ -137,10 +135,6 @@ class Organisation extends Controller\Base
      */
     public function updateAction(AnnoStationBundleModel\Organisation $organisation, HttpFoundation\Request $request)
     {
-        if (!$this->userPermissions->hasPermission('canEditOrganisation')) {
-            throw new Exception\AccessDeniedHttpException();
-        }
-
         $rev       = $request->request->get('rev');
         $name      = $request->request->get('name');
         $quota     = $request->request->get('quota');
@@ -162,6 +156,8 @@ class Organisation extends Controller\Base
 
     /**
      * @Rest\Delete("/{organisation}")
+     * @CheckPermissions({"canDeleteOrganisation"})
+     *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param HttpFoundation\Request              $request
      *
@@ -169,10 +165,6 @@ class Organisation extends Controller\Base
      */
     public function deleteAction(AnnoStationBundleModel\Organisation $organisation, HttpFoundation\Request $request)
     {
-        if (!$this->userPermissions->hasPermission('canDeleteOrganisation')) {
-            throw new Exception\AccessDeniedHttpException();
-        }
-
         $this->organisationFacade->delete($organisation);
 
         return new View\View(['success' => true]);
