@@ -101,7 +101,7 @@ class PaperTool extends Tool {
    * @param {paper.Event} event
    * @private
    */
-  _delegateKeyboardEvent(type, event) {
+  delegateKeyboardEvent(type, event) {
     const delegationTarget = `onKey${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
 
     switch (type) {
@@ -123,8 +123,8 @@ class PaperTool extends Tool {
     this._tool.onMouseDrag = event => this.delegateMouseEvent('drag', event);
     this._tool.onMouseMove = event => this.delegateMouseEvent('move', event);
 
-    this._tool.onKeyDown = event => this._delegateKeyboardEvent('down', event);
-    this._tool.onKeyUp = event => this._delegateKeyboardEvent('up', event);
+    this._tool.onKeyDown = event => this.delegateKeyboardEvent('down', event);
+    this._tool.onKeyUp = event => this.delegateKeyboardEvent('up', event);
   }
 
   /**
