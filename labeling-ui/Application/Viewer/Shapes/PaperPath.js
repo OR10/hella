@@ -63,6 +63,15 @@ class PaperPath extends PaperThingShape {
   }
 
   /**
+   * @param {boolean} drawHandles
+   * @protected
+   * @abstract
+   */
+  _renderShape(drawHandles = true) { // eslint-disable-line no-unused-vars
+    throw new Error('Abstract function can not be called');
+  }
+
+  /**
    * @returns {Array.<RectangleHandle>}
    * @private
    */
@@ -84,7 +93,7 @@ class PaperPath extends PaperThingShape {
    */
   select(drawHandles = true) {
     this._isSelected = true;
-    this._drawShape(drawHandles);
+    this._renderShape(drawHandles);
   }
 
   /**
@@ -92,7 +101,7 @@ class PaperPath extends PaperThingShape {
    */
   deselect() {
     this._isSelected = false;
-    this._drawShape();
+    this._renderShape();
   }
 
   /**
@@ -127,7 +136,7 @@ class PaperPath extends PaperThingShape {
     this._points = this._points.map(shapePoint => {
       return new paper.Point(shapePoint).add(moveVector);
     });
-    this._drawShape();
+    this._renderShape();
   }
 
   /**
@@ -155,7 +164,7 @@ class PaperPath extends PaperThingShape {
   resize(handle, point) {
     const index = parseInt(handle.name.replace('point-', ''), 10);
     this._points[index] = point;
-    this._drawShape();
+    this._renderShape();
   }
 
   /**
@@ -163,7 +172,9 @@ class PaperPath extends PaperThingShape {
    */
   addPoint(point) {
     this._points.push(point);
-    this._drawShape();
+    this._renderShape();
+  }
+
   }
 
   /**
@@ -171,14 +182,14 @@ class PaperPath extends PaperThingShape {
    */
   setSecondPoint(point) {
     this._points[1] = point;
-    this._drawShape();
+    this._renderShape();
   }
 
   /**
    * Fix the points of the shape to represent the right coordinates
    */
   fixOrientation() {
-    this._drawShape();
+    this._renderShape();
   }
 
   /**
