@@ -25,6 +25,7 @@ describe('ViewerController tests', () => {
   let hierarchyCreationService;
   let paperShapeFactory;
   let labeledThingGroupGateway;
+  let groupSelectionDialogFactory;
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
@@ -83,6 +84,8 @@ describe('ViewerController tests', () => {
     hierarchyCreationService = jasmine.createSpyObj('hierarchyCreationService', ['createLabeledThingGroupInFrameWithHierarchy']);
     paperShapeFactory = jasmine.createSpyObj('paperShapeFactory', ['createPaperGroupShape']);
     labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['createLabeledThingGroup']);
+    groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
+    groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
   });
 
   beforeEach(() => {
@@ -141,7 +144,8 @@ describe('ViewerController tests', () => {
       imagePreloader,
       shapeSelectionService,
       toolSelectorListener,
-      hierarchyCreationService
+      hierarchyCreationService,
+      groupSelectionDialogFactory
     );
   }
 
@@ -265,6 +269,54 @@ describe('ViewerController tests', () => {
       it('adds the group shape to the known paperGroupShapes', () => {
         groupListener(null, labelStructureObject);
         expect(controller.paperGroupShapes).toEqual([group]);
+      });
+    });
+    describe('group creation multi', () => {
+      beforeEach(() => {
+        shapes =
+        [
+          {
+            labeledThingInFrame: {
+              id: '4711',
+              labeledThing: {
+                id: 'lt1',
+                groupIds: ['1', '2'],
+              },
+            },
+          },
+          {
+            labeledThingInFrame: {
+              id: '4711',
+              labeledThing: {
+                id: 'lt1',
+                groupIds: [],
+              },
+            },
+          },
+        ];
+        controller._thingLayerContext = thingLayerContext;
+        group.labeledThingGroupInFrame = ltgif;
+        thingLayerContext.withScope.and.callFake(callback => callback());
+        labeledThingGroupGateway.createLabeledThingGroup.and.returnValue(angularQ.resolve());
+        shapeSelectionService.count.and.returnValue(1);
+        shapeSelectionService.getAllShapes.and.returnValue(shapes);
+        hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy.and.returnValue(ltgif);
+        paperShapeFactory.createPaperGroupShape.and.returnValue(group);
+      });
+      it('creates a group around the selected shapes if there are at least two selected shape', () => {
+        groupListener(null, labelStructureObject);
+
+        expect(groupSelectionDialogFactory.createAsync).toHaveBeenCalled();
+      });
+      it('should provide the dialog factory with the given task', () => {
+        groupListener(null, labelStructureObject);
+
+        expect(groupSelectionDialogFactory.createAsync.calls.mostRecent().args[0]).toBe(task);
+      });
+      it('should provide the dialog factory with the groupIds of the given shape', () => {
+        groupListener(null, labelStructureObject);
+
+        expect(groupSelectionDialogFactory.createAsync.calls.mostRecent().args[1]).toEqual(['1', '2']);
       });
     });
   });
