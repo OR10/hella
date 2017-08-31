@@ -278,7 +278,7 @@ class MultiTool extends PaperTool {
     if (!hitShape) {
       const selectedShape = this._shapeSelectionService.getSelectedShape();
       // Deselection if there was a selection
-      if (selectedShape !== null) {
+      if (selectedShape) {
         // Metalabeling is can not be deselected
         if (selectedShape instanceof PaperFrame) {
           return;
