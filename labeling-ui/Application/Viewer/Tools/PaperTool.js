@@ -1,6 +1,7 @@
 import paper from 'paper';
 import {clone} from 'lodash';
 import Tool from './NewTool';
+import hitResolver from '../Support/HitResolver';
 
 /**
  * Base class for Tools using the PaperJs tool concept
@@ -262,21 +263,27 @@ class PaperTool extends Tool {
    * Returns the hitResult from paperjs
    *
    * @param {paper.Point} point
-   * @return {null|paper.HitResult}
+   * @return {[null|PaperShape,null|Handle]}
    * @protected
    */
-  _getHitTestResult(point) {
+  _getHitShapeAndHandle(point) {
     return this._context.withScope(scope => {
       let hitTestTolerance = null;
       if (this._toolActionStruct !== null) {
         hitTestTolerance = this._toolActionStruct.options.hitTestTolerance;
       }
 
-      return scope.project.hitTest(point, {
+      const hitResult = scope.project.hitTest(point, {
         fill: true,
         bounds: false,
         tolerance: hitTestTolerance,
       });
+
+      if (!hitResult) {
+        return [null, undefined];
+      }
+
+      return hitResolver.resolve(hitResult.item);
     });
   }
 

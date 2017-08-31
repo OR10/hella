@@ -10,7 +10,6 @@ import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
 import PaperPolyline from '../../Viewer/Shapes/PaperPolyline';
 import PaperFrame from '../../Viewer/Shapes/PaperFrame';
 import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
-import hitResolver from '../Support/HitResolver';
 
 import FrameCreationTool from './FrameCreationTool';
 
@@ -273,10 +272,10 @@ class MultiTool extends PaperTool {
 
     this._handleMouseDownCursor(event);
 
-    const hitResult = this._getHitTestResult(point);
+    const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
 
     // Hit nothing
-    if (!hitResult) {
+    if (!hitShape) {
       const selectedShape = this._shapeSelectionService.getSelectedShape();
       // Deselection if there was a selection
       if (selectedShape !== null) {
@@ -303,9 +302,6 @@ class MultiTool extends PaperTool {
       this._activePaperTool.delegateMouseEvent('down', event);
       return;
     }
-
-    // Hit something
-    const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
 
     // If selected paperShape changed select the new one
     if (this._shapeSelectionService.getSelectedShape() !== hitShape) {
@@ -488,17 +484,15 @@ class MultiTool extends PaperTool {
     const point = event.point;
     const keyboardModifiers = this._getKeyboardModifiers(event);
 
-    const hitResult = this._getHitTestResult(point);
+    const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
 
-    if (!hitResult) {
+    if (!hitShape) {
       if (this._viewerMouseCursorService.isCrosshairShowing()) {
         this._viewerMouseCursorService.setMouseCursor('none');
       } else {
         this._viewerMouseCursorService.setMouseCursor(null);
       }
     } else {
-      const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-
       this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, undefined, keyboardModifiers));
     }
   }
@@ -514,9 +508,8 @@ class MultiTool extends PaperTool {
     if (this._viewerMouseCursorService.isCrosshairShowing()) {
       this._viewerMouseCursorService.setMouseCursor('none');
     } else {
-      const hitResult = this._getHitTestResult(point);
-      if (hitResult) {
-        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+      const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
+      if (hitShape) {
         this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, true, keyboardModifiers));
       }
     }
@@ -548,9 +541,8 @@ class MultiTool extends PaperTool {
     const point = event.point;
     const keyboardModifiers = this._getKeyboardModifiers(event);
 
-    const hitResult = this._getHitTestResult(point);
-    if (hitResult) {
-      const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+    const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
+    if (hitShape) {
       this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, false, keyboardModifiers));
     }
   }

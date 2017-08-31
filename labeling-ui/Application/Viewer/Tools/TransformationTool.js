@@ -28,12 +28,7 @@ class TransformationTool extends PaperTool {
     const point = event.point;
     const {shape} = this._toolActionStruct;
 
-    const hitResult = this._getHitTestResult(point);
-    let hitHandle = null;
-    if (hitResult) {
-      [, hitHandle] = hitResolver.resolve(hitResult.item);
-    }
-
+    const [, hitHandle = null] = this._getHitShapeAndHandle(point);
     this._viewerMouseCursorService.setMouseCursor(shape.getCursor(hitHandle, undefined, keyboardModifiers));
   }
 
