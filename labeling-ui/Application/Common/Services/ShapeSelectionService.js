@@ -85,7 +85,7 @@ class ShapeSelectionService {
   }
 
   /**
-   * @returns {PaperThingShape}
+   * @returns {PaperThingShape|undefined}
    */
   getSelectedShape() {
     return this._shapes.values().next().value;
