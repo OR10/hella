@@ -59,7 +59,6 @@ class PathTransformationTool extends TransformationTool {
    * @param {paper.Event} event
    */
   onMouseDown(event) {
-    console.log('mouse down');
     const point = event.point;
     const selectedShape = this._toolActionStruct.shape;
     const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
@@ -69,17 +68,11 @@ class PathTransformationTool extends TransformationTool {
     }
   }
 
-  onMouseUp() {
-    console.log('mouse up');
-  }
-
-  onMouseDrag(event) {
-    console.log('mouse drag');
-  }
-
+  /**
+   * @param {paper.Event} event
+   */
   onMouseMove(event) {
     super.onMouseMove(event);
-    console.log('mouse move');
   }
 
   /**
