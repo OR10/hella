@@ -3,7 +3,7 @@ class GroupCreationService {
    * @param {ModalService} modalService
    * @param {SelectionDialog} SelectionDialog
    */
-  constructor(modalService, SelectionDialog) {
+  constructor(modalService, SelectionDialog, $q) {
     /**
      * @type {ModalService}
      * @private
@@ -15,6 +15,8 @@ class GroupCreationService {
      * @private
      */
     this._SelectionDialog = SelectionDialog;
+
+    this._$q = $q;
   }
 
   /**
@@ -27,7 +29,9 @@ class GroupCreationService {
   /**
    * @param {Function} groupSelectedCallback
    */
-  showGroupSelector(groupSelectedCallback) {
+  showGroupSelector() {
+    const deferred = this._$q.defer();
+
     this._modalService.show(
       new this._SelectionDialog(
         {
@@ -40,9 +44,10 @@ class GroupCreationService {
         groupId => {
           if (groupId) {
             const selectedGroup = this._availableGroups.find(group => group.id === groupId);
-            groupSelectedCallback(selectedGroup);
+            // groupSelectedCallback(selectedGroup);
+            deferred.resolve(selectedGroup);
           } else {
-            this.showGroupSelector(groupSelectedCallback);
+            this.showGroupSelector();
           }
         },
         null,
@@ -51,12 +56,15 @@ class GroupCreationService {
         }
       )
     );
+
+    return deferred.promise;
   };
 }
 
 GroupCreationService.$inject = [
   'modalService',
   'SelectionDialog',
+  '$q',
 ];
 
 export default GroupCreationService;

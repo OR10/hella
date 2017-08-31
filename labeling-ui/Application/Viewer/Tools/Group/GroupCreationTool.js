@@ -116,21 +116,9 @@ class GroupCreationTool extends CreationTool {
         return;
       }
 
-      this._groupCreationService.showGroupSelector(selectedGroup => {
-        toolActionStruct.requirementsThingOrGroupId = selectedGroup.id;
+      const paperGroup = this._createPaperGroup(paperShape.id, toolActionStruct, shapes);
 
-        const struct = new GroupToolActionStruct(
-          {},
-          toolActionStruct.viewport,
-          toolActionStruct.task,
-          selectedGroup.id,
-          toolActionStruct.framePosition
-        );
-
-        const paperGroup = this._createPaperGroup(paperShape.id, toolActionStruct, shapes);
-
-        this._complete(paperGroup);
-      })
+      this._complete(paperGroup);
     })
       .catch(reason => this._reject(reason));
 

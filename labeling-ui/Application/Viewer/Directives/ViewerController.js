@@ -356,9 +356,16 @@ class ViewerController {
      */
     this._hierarchyCreationService = hierarchyCreationService;
 
+    /**
+     * @type {GroupCreationService}
+     * @private
+     */
+    this._groupCreationService = groupCreationService;
+
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
-        const groupSelectedCallback = groupStructureObject => {
+
+        this._groupCreationService.showGroupSelector().then(groupStructureObject => {
           const shapes = this._shapeSelectionService.getAllShapes();
           const struct = new GroupToolActionStruct(
             {},
@@ -379,9 +386,7 @@ class ViewerController {
             this.selectedPaperShape = group;
             group.select();
           });
-        };
-
-        groupCreationService.showGroupSelector(groupSelectedCallback);
+        });
       }
     };
     this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
@@ -1363,14 +1368,21 @@ class ViewerController {
    * @private
    */
   _onGroupCreate(paperGroupShape) {
-    let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(
-      this._thingLayerContext,
-      paperGroupShape.bounds
-    );
-    // Service finds the group shape itself, so we need to remove the shape id from the array
-    shapesInGroup = shapesInGroup.filter(
-      shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
-    this._storeGroup(paperGroupShape, shapesInGroup);
+    this._groupCreationService.showGroupSelector()
+      .then(selectedGroup => {
+        paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.type = selectedGroup.id;
+
+        let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(
+          this._thingLayerContext,
+          paperGroupShape.bounds
+        );
+
+        // Service finds the group shape itself, so we need to remove the shape id from the array
+        shapesInGroup = shapesInGroup.filter(
+          shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
+
+        this._storeGroup(paperGroupShape, shapesInGroup);
+      });
   }
 
   _storeGroup(paperGroupShape, shapesInGroup) {
