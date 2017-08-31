@@ -302,6 +302,7 @@ class MultiTool extends PaperTool {
         if (this._toolActionStruct.readOnly === true) {
           return;
         }
+
         // Invoke shape creation
         this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
         this._activePaperTool.delegateMouseEvent('down', event);
