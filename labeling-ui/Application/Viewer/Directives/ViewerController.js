@@ -372,7 +372,12 @@ class ViewerController {
         if (shapes.length === 2) {
           const firstLabeledThing = shapes[0].labeledThingInFrame.labeledThing;
           const secondLabeledThing = shapes[1].labeledThingInFrame.labeledThing;
-          const groupIds = difference(firstLabeledThing.groupIds, secondLabeledThing.groupIds);
+          let groupIds;
+          if (secondLabeledThing.groupIds.length >= firstLabeledThing.groupIds.length) {
+            groupIds = difference(secondLabeledThing.groupIds, firstLabeledThing.groupIds);
+          } else {
+            groupIds = difference(firstLabeledThing.groupIds, secondLabeledThing.groupIds);
+          }
 
           this._groupSelectionDialogFactory.createAsync(
             this.task,
@@ -404,6 +409,14 @@ class ViewerController {
                   groupShape.update();
                 });
               }
+            },
+            () => {
+              this._shapeSelectionService.clear();
+              /*
+              this._thingLayerContext.withScope(() => {
+                shapes.forEach(shape => shape.select());
+              });
+              */
             }
           )
             .then(selectionDialog => {
