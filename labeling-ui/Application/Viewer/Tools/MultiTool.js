@@ -16,6 +16,7 @@ import CreationToolActionStruct from './ToolActionStructs/CreationToolActionStru
 import MovingToolActionStruct from './ToolActionStructs/MovingToolActionStruct';
 import ScalingToolActionStruct from './ToolActionStructs/ScalingToolActionStruct';
 import KeyboardToolActionStruct from './ToolActionStructs/KeyboardToolActionStruct';
+import TransformationToolActionStruct from './ToolActionStructs/TransformationToolActionStruct';
 
 /**
  * A multi tool for handling multiple functionalities
@@ -379,6 +380,17 @@ class MultiTool extends PaperTool {
           shape
         );
         promise = tool.invokeShapeMoving(struct);
+        break;
+      case 'transformation':
+        /** @var {MovingTool} tool */
+        struct = new TransformationToolActionStruct(
+          delegatedOptions,
+          viewport,
+          shape,
+          handle,
+          point,
+        );
+        promise = tool.invokeShapeTransformation(struct);
         break;
       default:
         throw new Error(`Unknown actionIdentifier: ${actionIdentifier}`);
