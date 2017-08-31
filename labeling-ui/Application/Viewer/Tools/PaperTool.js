@@ -1,4 +1,5 @@
 import paper from 'paper';
+import {clone} from 'lodash';
 import Tool from './NewTool';
 
 /**
