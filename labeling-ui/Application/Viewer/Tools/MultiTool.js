@@ -1,3 +1,5 @@
+import paper from 'paper';
+
 import PaperTool from './PaperTool';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
 import PaperGroupRectangle from '../../Viewer/Shapes/PaperGroupRectangle';
