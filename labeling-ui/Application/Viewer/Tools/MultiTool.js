@@ -103,6 +103,11 @@ class MultiTool extends PaperTool {
      * @private
      */
     this._shapeSelectionService = shapeSelectionService;
+
+    /**
+     * @type {paper.Point}
+     */
+    this._currentMousePoint = new paper.Point(0, 0);
   }
 
   /**
@@ -432,6 +437,7 @@ class MultiTool extends PaperTool {
    * @param {paper.Event} event
    */
   onMouseMove(event) {
+    this._currentMousePoint = event.point;
     // Shift is used for zoom panning
     if (this._getKeyboardModifiers(event).shift) {
       return;
