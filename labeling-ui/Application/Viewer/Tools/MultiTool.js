@@ -233,14 +233,18 @@ class MultiTool extends PaperTool {
    * @private
    */
   onMouseDown(event) {
+    /**
+     * @var {{capsLock: boolean, command: boolean, control: boolean, option: boolean, shift: boolean, space: boolean}}
+     */
+    const keyboardModifiers = this._getKeyboardModifiers(event);
     let multiSelect = false;
 
     // Shift is only used for zoom panning
-    if (event.event.shiftKey) {
+    if (keyboardModifiers.shift) {
       return;
     }
 
-    if (event.event.ctrlKey) {
+    if (keyboardModifiers.control) {
       multiSelect = true;
     }
 
@@ -419,7 +423,7 @@ class MultiTool extends PaperTool {
    */
   onMouseMove(event) {
     // Shift is used for zoom panning
-    if (event.event.shiftKey) {
+    if (this._getKeyboardModifiers(event).shift) {
       return;
     }
 
@@ -490,7 +494,7 @@ class MultiTool extends PaperTool {
    */
   onMouseUp(event) {
     // Shift is only used for zoom panning
-    if (event.shiftkey) {
+    if (this._getKeyboardModifiers(event).shift) {
       return;
     }
 
@@ -526,7 +530,7 @@ class MultiTool extends PaperTool {
    */
   onMouseDrag(event) {
     // Shift is used for zoom panning
-    if (event.event.shiftKey) {
+    if (this._getKeyboardModifiers(event).shift) {
       return;
     }
 

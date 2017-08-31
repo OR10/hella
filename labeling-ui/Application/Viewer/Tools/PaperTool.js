@@ -254,6 +254,28 @@ class PaperTool extends Tool {
       scope.tool = null;
     });
   }
+
+  /**
+   * Generates an extended keyboard modifier object with the specified keys
+   * added in short syntax ($keyName instead of $keyName+Key)
+   *
+   * Currently the following keys are processed:
+   * - alt
+   *
+   * @param {Event} event
+   * @protected
+   */
+  _getKeyboardModifiers(event) {
+    const modifiers = clone(event.modifiers);
+    const keys = ['altKey'];
+
+    keys.forEach(key => {
+      const shortName = key.replace(/Key/, '');
+      modifiers[shortName] = event.event[key];
+    });
+
+    return modifiers;
+  }
 }
 
 /**
