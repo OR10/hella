@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
 use AppBundle\Annotations\CloseSession;
+use AnnoStationBundle\Annotations\CheckPermissions;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
@@ -97,6 +98,7 @@ class User extends Controller\Base
      * Add a user to an organisation
      *
      * @Rest\Put("/{organisation}/user/{user}/assign")
+     * @CheckPermissions({"canAssignUserToOwnOrganisation"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
@@ -106,10 +108,6 @@ class User extends Controller\Base
     public function assignUserToOrganisationAction(AnnoStationBundleModel\Organisation $organisation, Model\User $user)
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
-
-        if (!$this->userPermissions->hasPermission('canAssignUserToOwnOrganisation')) {
-            throw new AccessDeniedHttpException();
-        }
 
         $userLimit = $organisation->getUserQuota();
 
@@ -128,6 +126,7 @@ class User extends Controller\Base
      * Remove a user from an organisation
      *
      * @Rest\Delete("/{organisation}/user/{user}/unassign")
+     * @CheckPermissions({"canDeleteUserFromOrganisation"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
@@ -139,10 +138,6 @@ class User extends Controller\Base
         Model\User $user
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
-
-        if (!$this->userPermissions->hasPermission('canDeleteUserFromOrganisation')) {
-            throw new AccessDeniedHttpException();
-        }
 
         $user->removeFromOrganisation($organisation);
         $this->userFacade->updateUser($user);
