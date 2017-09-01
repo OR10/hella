@@ -2,6 +2,7 @@ class GroupCreationService {
   /**
    * @param {ModalService} modalService
    * @param {SelectionDialog} SelectionDialog
+   * @param {$q} $q
    */
   constructor(modalService, SelectionDialog, $q) {
     /**
@@ -16,6 +17,10 @@ class GroupCreationService {
      */
     this._SelectionDialog = SelectionDialog;
 
+    /**
+     * @type {$q}
+     * @private
+     */
     this._$q = $q;
   }
 
@@ -27,7 +32,7 @@ class GroupCreationService {
   }
 
   /**
-   * @param {Function} groupSelectedCallback
+   * @return {Promise}
    */
   showGroupSelector() {
     const deferred = this._$q.defer();
@@ -47,7 +52,6 @@ class GroupCreationService {
           groupId => {
             if (groupId) {
               const selectedGroup = this._availableGroups.find(group => group.id === groupId);
-              // groupSelectedCallback(selectedGroup);
               deferred.resolve(selectedGroup);
             } else {
               this.showGroupSelector();
