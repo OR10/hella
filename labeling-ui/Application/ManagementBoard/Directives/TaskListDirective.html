@@ -47,7 +47,7 @@
                 <i ng-if="task.labelDataImportInProgress == true"
                    class="fa fa-spin fa-spinner" tooltip="Label-Data Import in progress."></i>
                 <button tooltip="Unassign user: {{task.latestAssignee.username}}"
-                        ng-if="vm.userPermissions.unassignPermission && task.latestAssignee != null && task.status !== 'done'"
+                        ng-if="vm.userPermissions.canChangeUserTaskAssignment && task.latestAssignee != null && task.status !== 'done'"
                         ng-click="vm.unassignTask(task.id, task.latestAssignee.id)">
                     <i class="fa fa-close"></i>
                 </button>
@@ -55,11 +55,6 @@
                         ng-if="vm.userPermissions.canFlagLabelingTask && task.latestAssignee.username === vm.user.username"
                         ng-click="vm.flagTask(task.id)">
                     <i class="fa fa-flag" ng-class="{flagged: task.attentionFlag}"></i>
-                </button>
-                <button tooltip="Reopen task"
-                        ng-if="vm.userPermissions.canReopenTask && task.status === 'done'"
-                        ng-click="vm.reopenTask(task.id, vm.taskPhase)">
-                    <i class="fa fa-refresh"></i>
                 </button>
                 <button tooltip="Move task"
                         ng-if="vm.userPermissions.canMoveTaskInOtherPhase && task.latestAssignee === null && task.status !== 'in_progress'"

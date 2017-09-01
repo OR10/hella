@@ -28,21 +28,13 @@
 
         <div class="grid-content text-left shrink noscroll">
             <badge class="grid-block noscroll" label="vm.incompleteCount">
-                <button ng-hide="vm.task.getStatusForPhase(vm.taskPhase) === 'labeled'"
-                        ng-click="vm.onFinishLabelingTaskButtonClicked()"
+                <button ng-click="vm.onFinishLabelingTaskButtonClicked()"
                         ng-disabled="vm.readOnly"
                         ng-class="{'disabled': vm.readOnly}"
                         tooltip="Finish the active task"
                         style="margin-left: -.7rem;"
                 >
                     <i class="icon icon-ok" ng-class="{'disabled': vm.incompleteCount}"></i>
-                </button>
-                <button ng-show="vm.userPermissions.canReopenTask && vm.task.getStatusForPhase(vm.taskPhase) === 'labeled'"
-                        ng-click="vm.reOpenLabelingTask()"
-                        tooltip="Reopen this task for Labelers"
-                        style="margin-left: -.7rem;"
-                >
-                    <i class="icon-fa fa fa-lg fa-pencil-square-o"></i>
                 </button>
             </badge>
         </div>

@@ -49,7 +49,7 @@ Get the current logged in users permission list.
             + canViewUserListButton: `true` (boolean)
             + canViewVideoUploadButton: `true` (boolean)
             + canViewReopenButton: `true` (boolean)
-            + unassignPermission: `true` (boolean)
+            + canChangeUserTaskAssignment: `true` (boolean)
             + canViewProjectButton: `true` (boolean)
 
 ## Get users organisations [/api/v1/currentUser/organisations]

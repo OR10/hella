@@ -132,7 +132,7 @@ class Status extends Controller\Base
      * Set the Project to status done
      *
      * @Rest\POST("/{organisation}/project/{project}/status/done")
-     * @CheckPermissions({"canMoveFinishedProjectToDone", "canMoveInProgressProjectToDone"})
+     * @CheckPermissions({"canMoveInProgressProjectToDone"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
@@ -153,10 +153,6 @@ class Status extends Controller\Base
         if ($this->userPermissions->hasPermission('canMoveProjectToDone')) {
             $sumOfTasksByPhaseForProject = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
             foreach ($sumOfTasksByPhaseForProject as $phase => $status) {
-                // @TODO Remove this if the revision process is finally implemented
-                if ($phase === Model\LabelingTask::PHASE_REVISION) {
-                    continue;
-                }
                 if ($status[Model\LabelingTask::STATUS_TODO] > 0 ||
                     $status[Model\LabelingTask::STATUS_IN_PROGRESS] > 0 ||
                     $status[Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION] > 0

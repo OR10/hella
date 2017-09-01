@@ -483,27 +483,6 @@ class ViewerTitleBarController {
       });
     });
   }
-
-  reOpenLabelingTask() {
-    this._modalService.info(
-      {
-        title: 'Reopen Task',
-        headline: 'Reopen this labeling task?',
-        message: 'You are about to reopen this tasked. After this operation the task will be editable again by the labeler.',
-        confirmButtonText: 'Reopen',
-      },
-      () => {
-        this._applicationState.disableAll();
-        this._applicationState.viewer.work();
-        this._taskGateway.markTaskAsTodo(this.task.id)
-          .then(() => {
-            this._$state.go('labeling.tasks');
-            this._applicationState.viewer.finish();
-            this._applicationState.enableAll();
-          });
-      }
-    );
-  }
 }
 
 ViewerTitleBarController.$inject = [
