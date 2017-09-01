@@ -57,6 +57,21 @@ class LinearPolyInterpolationEasing extends InterpolationEasing {
       'polyline',
     ].includes(shape);
   }
+
+  /**
+   * @param {Array.<LabeledThingInFrame>} ltifs
+   */
+  supportsInterpolationOf(ltifs) {
+    const vertexLengthMissmatches = ltifs
+      .map(ltif => ltif.shapes[0].points.length)
+      .filter(length => length !== ltifs[0].shapes[0].points.length);
+
+    if (vertexLengthMissmatches === 0) {
+      return true;
+    }
+
+    return 'Shapes with variable vertex count can not be interpolated';
+  }
 }
 
 export default LinearPolyInterpolationEasing;

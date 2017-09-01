@@ -42,6 +42,18 @@ class InterpolationEasing {
   supportsShape(shape) { // eslint-disable-line no-unused-vars
     throw new Error('supportsShape is abstract. Override in implementing class!');
   }
+
+  /**
+   * Checks based on ltif if interpolation is possible
+   *
+   * Returns either true or a string explaining why interpolation is not possible
+   *
+   * @param {Array.<LabeledThingInFrame>} ltifs
+   * @returns {true|string}
+   */
+  supportsInterpolationOf(ltifs) { // eslint-disable-line no-unused-vars
+    return true;
+  }
 }
 
 export default InterpolationEasing;
