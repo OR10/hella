@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Organisation\Project;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
@@ -76,8 +76,7 @@ class Export extends Controller\Base
 
     /**
      * @Rest\Get("/{organisation}/project/{project}/export")
-     *
-     * @CheckPermissions({"canExportProject"})
+     * @Annotations\CheckPermissions({"canExportProject"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
@@ -102,8 +101,7 @@ class Export extends Controller\Base
 
     /**
      * @Rest\Get("/{organisation}/project/{project}/export/{exportId}")
-     *
-     * @CheckPermissions({"canExportProject"})
+     * @Annotations\CheckPermissions({"canExportProject"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
@@ -155,8 +153,7 @@ class Export extends Controller\Base
 
     /**
      * @Rest\Post("/{organisation}/project/{project}/export/csv")
-     *
-     * @CheckPermissions({"canExportProject"})
+     * @Annotations\CheckPermissions({"canExportProject"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
