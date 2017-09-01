@@ -1,4 +1,6 @@
 import paper from 'paper';
+import {Vector2} from 'three-math';
+import NotModifiedError from '../Errors/NotModifiedError';
 import TransformationTool from '../TransformationTool';
 
 /**
@@ -65,7 +67,10 @@ class PathTransformationTool extends TransformationTool {
 
     if (hitHandle && hitShape === selectedShape) {
       this._removeVertexFromShape(hitHandle);
+      return;
     }
+
+    this._addVertexToShape(point);
   }
 
   /**
@@ -103,6 +108,110 @@ class PathTransformationTool extends TransformationTool {
     shape.removePoint(hitVertex.index);
 
     this._complete(shape);
+  }
+
+  /**
+   * Add a vertex to the shape at the given point position
+   *
+   * @param {paper.Point} point
+   * @private
+   */
+  _addVertexToShape(point) {
+    const {shape} = this._toolActionStruct;
+    const shapePoints = shape.points.map(p => new paper.Point(p));
+    const {maxHandles = 15} = this._toolActionStruct.options;
+
+    if (shapePoints.length >= maxHandles) {
+      return;
+    }
+
+    const index = this._getInsertionIndexForPoint(point);
+    shape.addPoint(point, index);
+    this._complete(shape);
+  }
+
+  /**
+   * Get the index in the points array to which the given point is closest to
+   *
+   * It uses the distance of the point to each path segment the is formed beween each point tuple on the path
+   *
+   * @param {paper.Point} point
+   * @private
+   */
+  _getInsertionIndexForPoint(point) {
+    const {shape} = this._toolActionStruct;
+    const shapePoints = shape.points.map(p => new paper.Point(p));
+
+    // Generate tuples for each path segment
+    const ntuple = shapePoints.map(
+      (firstPoint, firstIndex) => {
+        const secondIndex = (firstIndex + 1) % shapePoints.length;
+        const secondPoint = shapePoints[secondIndex];
+        return [{point: firstPoint, index: firstIndex}, {point: secondPoint, index: secondIndex}];
+      }
+    );
+
+    const nearestMatch = ntuple.reduce((carry, [first, second]) => {
+      const distance = this._calculateDistanceBetweenLineSegmentAndPoint(first.point, second.point, point);
+
+      if (distance <= carry.distance) {
+        return {distance: distance, index: first.index};
+      }
+
+      return carry;
+    }, {distance: Infinity, index: -1});
+
+    // If we match the start-end connection
+    if (nearestMatch.index === shapePoints.length - 1) {
+      const startDistance = shapePoints[0].getDistance(point, true);
+      const endDistance = shapePoints[shapePoints.length - 1].getDistance(point, true);
+
+      return startDistance < endDistance ? 0 : shapePoints.length;
+    }
+
+    return nearestMatch.index + 1;
+  }
+
+  /**
+   * Calculate the min. distance between a point and the line segment between two points
+   *
+   * @param {paper.Point} firstLinePoint
+   * @param {paper.Point} secondLinePoint
+   * @param {paper.Point} point
+   * @return {number}
+   * @private
+   */
+  _calculateDistanceBetweenLineSegmentAndPoint(firstLinePoint, secondLinePoint, point) {
+    const {x: x1, y: y1} = firstLinePoint;
+    const {x: x2, y: y2} = secondLinePoint;
+    const {x: x0, y: y0} = point;
+
+    const vectorFirstToPoint = new Vector2(x0 - x1, y0 - y1);
+    const vectorFirstToSecond = new Vector2(x2 - x1, y2 - y1);
+
+    const lengthFirstToSecond = vectorFirstToSecond.length();
+
+    let projectionLengthNormalized = -1;
+    if (lengthFirstToSecond !== 0) {
+      projectionLengthNormalized = vectorFirstToPoint.dot(vectorFirstToSecond) / Math.pow(lengthFirstToSecond, 2);
+    }
+
+    let projectionVector;
+    switch (true) {
+      // We are left of the first point
+      case projectionLengthNormalized < 0:
+        projectionVector = new Vector2(0, 0);
+        break;
+      // We are right of the second Point
+      case projectionLengthNormalized > 1:
+        projectionVector = vectorFirstToSecond;
+        break;
+      // We are between first an second point
+      default:
+        projectionVector = vectorFirstToSecond.clone().multiplyScalar(projectionLengthNormalized);
+    }
+
+    return projectionVector.distanceTo(vectorFirstToPoint);
   }
 }
 
