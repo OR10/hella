@@ -87,6 +87,7 @@
                  class="AnnoStationBundle\Worker\JobInstruction\LabelingTaskRemoveAssignment">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
 
