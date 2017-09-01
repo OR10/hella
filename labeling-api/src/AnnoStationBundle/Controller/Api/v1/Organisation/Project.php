@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Database\Facade\Project as ProjectFacadeFactory;
@@ -402,8 +402,7 @@ class Project extends Controller\Base
      * Create a new Project
      *
      * @Rest\Post("/{organisation}/project")
-     *
-     * @CheckPermissions({"canCreateProject"})
+     * @Annotations\CheckPermissions({"canCreateProject"})
      *
      * @param HttpFoundation\Request              $request
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -596,6 +595,7 @@ class Project extends Controller\Base
      * Return the project with the given id
      *
      * @Rest\Post("/{organisation}/project/{project}/delete")
+     * @Annotations\CheckPermissions({"canDeleteProject"})
      *
      * @param HttpFoundation\Request              $request
      * @param Model\Project                       $project
@@ -611,13 +611,6 @@ class Project extends Controller\Base
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
-
-        /** @var Model\User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        if (!$this->userPermissions->hasPermission('canDeleteProject')) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to deleted this project.');
-        }
 
         $projectStatus = $project->getStatus();
         if ($projectStatus !== Model\Project::STATUS_DELETED) {
@@ -640,8 +633,7 @@ class Project extends Controller\Base
 
     /**
      * Assign a Label Manager to a project
-     *
-     * @CheckPermissions({"canAssignProject"})
+     * @Annotations\CheckPermissions({"canAssignProject"})
      *
      * @Rest\Post("/{organisation}/project/{project}/assign")
      *
@@ -689,8 +681,7 @@ class Project extends Controller\Base
 
     /**
      * Change the label-group project assignment
-     *
-     * @CheckPermissions({"canChangeProjectLabelGroupAssignment"})
+     * @Annotations\CheckPermissions({"canChangeProjectLabelGroupAssignment"})
      *
      * @Rest\Post("/{organisation}/project/{project}/assignLabelGroup")
      *
