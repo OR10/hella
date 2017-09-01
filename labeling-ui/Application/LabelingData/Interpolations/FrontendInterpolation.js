@@ -44,7 +44,7 @@ class FrontendInterpolation {
    */
   execute(task, labeledThing, frameRange) {
     const limit = (frameRange.endFrameIndex - frameRange.startFrameIndex) + 1;
-    this._labeledThingInFrameGateway.getLabeledThingInFrame(
+    return this._labeledThingInFrameGateway.getLabeledThingInFrame(
       task,
       frameRange.startFrameIndex,
       labeledThing,
