@@ -414,12 +414,24 @@ class ViewerController {
               this._shapeSelectionService.clear();
             }
           )
-            .then(selectionDialog => {
-              this._modalService.show(selectionDialog);
-            })
-            .catch(error => {
-              console.error(error); // eslint-disable-line no-console
-            });
+          .then(selectionDialog => {
+            this._modalService.show(selectionDialog);
+          })
+          .catch(() => {
+            this._modalService.info(
+              {
+                title: 'Error retrieving group correlation',
+                headline: 'The list of corresponding groups to the selected labeled thing could not be loaded. Please try again or inform your label manager if the problem persists.',
+                confirmButtonText: 'Understood',
+              },
+              undefined,
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+          });
         } else {
           this._thingLayerContext.withScope(() => {
             const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);

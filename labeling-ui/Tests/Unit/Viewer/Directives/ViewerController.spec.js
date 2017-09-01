@@ -8,6 +8,7 @@ describe('ViewerController tests', () => {
   let scope;
   let debouncerService;
   let frameIndexService;
+  let modalService;
   let frameLocationGateway;
   let drawingContextService;
   let animationFrameService;
@@ -70,6 +71,7 @@ describe('ViewerController tests', () => {
     viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['on']);
     element = jasmine.createSpyObj('element', ['find']);
     frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameIndexLimits']);
+    modalService = jasmine.createSpyObj('modalService', ['show', 'info']);
     frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
     drawingContextService = jasmine.createSpyObj('drawingContextService', ['createContext']);
     animationFrameService = jasmine.createSpyObj('animationFrameService', ['debounce']);
@@ -135,7 +137,7 @@ describe('ViewerController tests', () => {
       null, // toolService,
       debouncerService,
       frameIndexService,
-      null, // modalService,
+      modalService, // modalService,
       null, // $state,
       viewerMouseCursorService,
       null, // labeledThingGroupService,
