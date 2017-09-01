@@ -101,7 +101,7 @@ class LabeledThingGateway {
         .then(documents => {
           return documents.rows.filter(document => {
             return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
-            document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
+              document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
           });
         })
         .then(toBeDeletedDocuments => {
