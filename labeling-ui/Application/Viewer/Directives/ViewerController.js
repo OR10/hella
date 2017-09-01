@@ -72,7 +72,7 @@ class ViewerController {
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ToolSelectorListenerService} toolSelectorListenerService
    * @param {HierarchyCreationService} hierarchyCreationService
-   * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
+   * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory,
    */
   constructor(
     $scope,
