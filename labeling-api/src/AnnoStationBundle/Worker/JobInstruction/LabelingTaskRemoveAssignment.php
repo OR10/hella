@@ -49,7 +49,8 @@ class LabelingTaskRemoveAssignment extends WorkerPoolBundle\JobInstruction
         if ($job->getUserId() !== $lastAssignedUserId) {
             throw new \RuntimeException(
                 sprintf(
-                    'This task "%s" is assigned to "%s" and not to user "%s".', $task->getId(),
+                    'This task "%s" is assigned to "%s" and not to user "%s".',
+                    $task->getId(),
                     $lastAssignedUserId,
                     $job->getUserId()
                 )
