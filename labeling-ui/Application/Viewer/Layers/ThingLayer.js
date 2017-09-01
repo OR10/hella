@@ -432,9 +432,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @private
    */
   _deleteAfterAction() {
+    this._context.withScope(scope => scope.view.update());
     this._applicationState.enableAll();
     this._$scope.$root.$emit('shape:delete:after');
-    this._context.withScope(scope => scope.view.update());
   }
 
   /**
