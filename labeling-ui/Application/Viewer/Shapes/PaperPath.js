@@ -168,10 +168,19 @@ class PaperPath extends PaperThingShape {
   }
 
   /**
+   * Adds a point at the given index
+   *
+   * index positioning is equivilant of the one of array.splice()
+   *
    * @param {Point} point
+   * @param {number|undefined} index
    */
-  addPoint(point) {
-    this._points.push(point);
+  addPoint(point, index = undefined) {
+    if (index === undefined) {
+      this._points.push(point);
+    } else {
+      this._points.splice(index, 0, point);
+    }
     this._renderShape();
   }
 
