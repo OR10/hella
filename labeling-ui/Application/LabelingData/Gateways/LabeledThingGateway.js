@@ -18,7 +18,8 @@ class LabeledThingGateway {
     couchDbModelSerializer,
     couchDbModelDeserializer,
     revisionManager,
-    pouchDbViewService) {
+    pouchDbViewService
+  ) {
     /**
      * @type {angular.$q}
      * @private
