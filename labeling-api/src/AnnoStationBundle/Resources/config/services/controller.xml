@@ -116,7 +116,6 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
         </service>
         <service
