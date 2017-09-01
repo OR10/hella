@@ -272,7 +272,6 @@
         <service id="annostation.labeling_api.controller.api.monitoring"
                  class="AnnoStationBundle\Controller\Api\v1\Monitoring">
             <argument type="service" id="annostation.labeling_api.database.facade.monitoring"/>
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
     </services>
 </container>
