@@ -64,8 +64,11 @@ class DeleteProjectAssignmentsForUserJobCreator extends WorkerPoolBundle\JobInst
             $project = $this->projectFacade->find($projectId);
             $taskIds = $this->labelingTaskFacade->getTaskIdsForAssignedUserForProject($project, $user);
             foreach ($taskIds as $taskId) {
-                $job = new Jobs\LabelingTaskRemoveAssignment($user->getId(), $taskId);
-                $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
+                $task = $this->labelingTaskFacade->find($taskId);
+                if (!$task->isAllPhasesDone()) {
+                    $job = new Jobs\LabelingTaskRemoveAssignment($user->getId(), $taskId);
+                    $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
+                }
             }
         }
     }
