@@ -56,11 +56,6 @@
                         ng-click="vm.flagTask(task.id)">
                     <i class="fa fa-flag" ng-class="{flagged: task.attentionFlag}"></i>
                 </button>
-                <button tooltip="Reopen task"
-                        ng-if="vm.userPermissions.canReopenTask && task.status === 'done'"
-                        ng-click="vm.reopenTask(task.id, vm.taskPhase)">
-                    <i class="fa fa-refresh"></i>
-                </button>
                 <button tooltip="Move task"
                         ng-if="vm.userPermissions.canMoveTaskInOtherPhase && task.latestAssignee === null && task.status !== 'in_progress'"
                         ng-click="vm.moveTask(task.id)">
