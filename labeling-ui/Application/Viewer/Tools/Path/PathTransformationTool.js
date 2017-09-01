@@ -1,6 +1,5 @@
 import paper from 'paper';
 import {Vector2} from 'three-math';
-import NotModifiedError from '../Errors/NotModifiedError';
 import TransformationTool from '../TransformationTool';
 
 /**
@@ -118,7 +117,7 @@ class PathTransformationTool extends TransformationTool {
    */
   _addVertexToShape(point) {
     const {shape} = this._toolActionStruct;
-    const shapePoints = shape.points.map(p => new paper.Point(p));
+    const shapePoints = shape.points.map(shapePoint => new paper.Point(shapePoint));
     const {maxHandles = 15} = this._toolActionStruct.options;
 
     if (shapePoints.length >= maxHandles) {
@@ -140,7 +139,7 @@ class PathTransformationTool extends TransformationTool {
    */
   _getInsertionIndexForPoint(point) {
     const {shape} = this._toolActionStruct;
-    const shapePoints = shape.points.map(p => new paper.Point(p));
+    const shapePoints = shape.points.map(shapePoint => new paper.Point(shapePoint));
 
     // Generate tuples for each path segment
     const ntuple = shapePoints.map(
