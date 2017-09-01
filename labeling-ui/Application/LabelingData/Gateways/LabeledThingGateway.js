@@ -207,7 +207,7 @@ class LabeledThingGateway {
         });
 
       // Return promise of the deletion of lt and associated ltifs
-      return this._$q.all(ltPromise, ltifPromise);
+      return this._$q.all([ltPromise, ltifPromise]);
     });
 
     // @TODO: is the return value (couchdb-document) correct for the implemented interface here?
