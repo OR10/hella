@@ -200,7 +200,6 @@
 
         <service id="annostation.labeling_api.controller.api.organisation.task_configuration"
                  class="AnnoStationBundle\Controller\Api\v1\Organisation\TaskConfiguration">
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.simple_xml_validator"/>
