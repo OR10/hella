@@ -16,6 +16,12 @@
  */
 
 /**
+ * @name Logger#error
+ * @param {string} context
+ * @param {*} message
+ */
+
+/**
  * @name Logger#groupStart
  * @param {string} context
  * @param {*} message

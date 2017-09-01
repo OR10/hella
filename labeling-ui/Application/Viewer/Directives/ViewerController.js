@@ -178,6 +178,12 @@ class ViewerController {
     this._$element = $element;
 
     /**
+     * @type {angular.window}
+     * @private
+     */
+    this._$window = $window;
+
+    /**
      * @type {FrameLocationGateway}
      * @private
      */
@@ -619,6 +625,42 @@ class ViewerController {
     $rootScope.$on('framerange:change:after', () => {
       this._debouncedOnThingUpdate.triggerImmediately()
         .then(() => this._handleFrameChange(this._currentFrameIndex));
+    });
+
+    $rootScope.$on('shape:delete:after', () => {
+      this._applicationState.disableAll();
+      this._$q.all([
+        this._loadLabeledThingsInFrame(this._currentFrameIndex),
+        this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(this.task, this._currentFrameIndex),
+        this._fetchGhostedLabeledThingInFrame(this._currentFrameIndex),
+      ])
+        .then(([labeledThingsInFrame, labeledThingGroupsInFrame, ghostedLabeledThingsInFrame]) => {
+          this.paperThingShapes = [];
+          this.paperGroupShapes = [];
+          this.labeledFrame = null;
+
+          this._extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame, ghostedLabeledThingsInFrame);
+          this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame);
+          this._applicationState.enableAll();
+        })
+        .catch(error => {
+          this._applicationState.enableAll();
+          this._logger.error('shape:delete', error);
+          this._modalService.info(
+            {
+              title: 'Error during deletion',
+              headline: 'After deleting a shape/group a consistent state could not be reached.',
+              message: 'Please reload in order to archive a consistent application state again.',
+              confirmButtonText: 'Reload',
+            },
+            () => this._$window.location.reload(),
+            undefined,
+            {
+              warning: true,
+              abortable: false,
+            }
+          );
+        });
     });
 
     $scope.$watch(
