@@ -10,6 +10,10 @@ class ConsoleLogger {
     console.warn(...this._incorporateContext(context, ...args)); // eslint-disable-line no-console
   }
 
+  error(context, ...args) {
+    console.error(...this._incorporateContext(context, ...args)); // eslint-disable-line no-console
+  }
+
   groupStart(context, ...args) {
     console.groupCollapsed(...this._incorporateContext(context, ...args)); // eslint-disable-line no-console
   }

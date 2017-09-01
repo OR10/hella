@@ -38,6 +38,10 @@ class RemoteLogger {
     this._log('warning', context, args);
   }
 
+  error(context, ...args) {
+    this._log('error', context, args);
+  }
+
   _log(level, context, args) {
     const {appCodeName, appName, appVersion, language, platform, product, userAgent, vendor} = navigator;
 

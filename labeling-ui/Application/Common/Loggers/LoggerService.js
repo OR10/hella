@@ -24,6 +24,10 @@ class LoggerService {
     this._dispatch('warn', context, ...args);
   }
 
+  error(context, ...args) {
+    this._dispatch('error', context, ...args)
+  }
+
   groupStart(context, ...args) {
     this._dispatch('groupStart', context, ...args);
   }
@@ -48,7 +52,7 @@ class LoggerService {
   }
 
   _dispatch(fn, context, ...args) {
-    if (this._isInContext(context)) {
+    if (this._isInContext(context) || fn === 'error') {
       this._loggers.forEach(logger => logger[fn](context, ...args));
     }
   }
