@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service\Authentication;
@@ -37,11 +37,6 @@ class Phase extends Controller\Base
     private $projectFacade;
 
     /**
-     * @var Authentication\UserPermissions
-     */
-    private $userPermissions;
-
-    /**
      * @var Service\Authorization
      */
     private $authorizationService;
@@ -51,23 +46,21 @@ class Phase extends Controller\Base
      *
      * @param Facade\LabelingTask            $labelingTaskFacade
      * @param Facade\Project                 $projectFacade
-     * @param Authentication\UserPermissions $userPermissions
      * @param Service\Authorization          $authorizationService
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Project $projectFacade,
-        Authentication\UserPermissions $userPermissions,
         Service\Authorization $authorizationService
     ) {
         $this->labelingTaskFacade   = $labelingTaskFacade;
         $this->projectFacade        = $projectFacade;
-        $this->userPermissions      = $userPermissions;
         $this->authorizationService = $authorizationService;
     }
 
     /**
      * @Rest\Put("/{task}/phase")
+     * @Annotations\CheckPermissions({"canMoveTaskInOtherPhase"})
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
@@ -78,10 +71,6 @@ class Phase extends Controller\Base
     {
         $project = $this->projectFacade->find($task->getProjectId());
         $this->authorizationService->denyIfProjectIsNotWritable($project);
-
-        if (!$this->userPermissions->hasPermission('canMoveTaskInOtherPhase')) {
-            throw new Exception\BadRequestHttpException('You are not allowed to move tasks');
-        }
 
         $newPhase      = $request->request->get('phase');
         $currentStatus = $task->getStatus($task->getCurrentPhase());
