@@ -3,8 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Organisation\Project;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
@@ -85,8 +84,7 @@ class Status extends Controller\Base
      * Set the Project to status inProgress and assign the current user to this project
      *
      * @Rest\POST("/{organisation}/project/{project}/status/accept")
-     *
-     * @CheckPermissions({"canAcceptProject"})
+     * @Annotations\CheckPermissions({"canAcceptProject"})
      *
      * @param HttpFoundation\Request              $request
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -132,7 +130,7 @@ class Status extends Controller\Base
      * Set the Project to status done
      *
      * @Rest\POST("/{organisation}/project/{project}/status/done")
-     * @CheckPermissions({"canMoveInProgressProjectToDone"})
+     * @Annotations\CheckPermissions({"canMoveInProgressProjectToDone"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
@@ -174,6 +172,7 @@ class Status extends Controller\Base
 
     /**
      * @Rest\Post("/{organisation}/project/{project}/status/deleted")
+     * @Annotations\CheckPermissions({"canDeleteProject"})
      *
      * @param HttpFoundation\Request              $request
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -192,10 +191,6 @@ class Status extends Controller\Base
 
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
-
-        if (!$this->userPermissions->hasPermission('canDeleteProject')) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to deleted this project.');
-        }
 
         $projectStatus = $project->getStatus();
         if ($projectStatus !== Model\Project::STATUS_DONE && $projectStatus !== Model\Project::STATUS_TODO) {
