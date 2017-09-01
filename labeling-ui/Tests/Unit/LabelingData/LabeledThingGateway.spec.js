@@ -340,7 +340,7 @@ describe('LabeledThingGateway', () => {
       .then(() => done());
   });
 
-  fit('should resolve promise after lt and ltif has been deleted', () => {
+  it('should resolve promise after lt and ltif has been deleted', () => {
     const pouchDbMock = jasmine.createSpyObj('PouchDB', ['query', 'bulkDocs', 'remove']);
     pouchDbContextServiceMock.provideContextForTaskId
       .and.returnValue(pouchDbMock);
@@ -376,7 +376,7 @@ describe('LabeledThingGateway', () => {
     expect(resolveSpy).toHaveBeenCalled();
   });
 
-  fit('should resolve promise after lt and ltif has been deleted in reverse order', () => {
+  it('should resolve promise after lt and ltif has been deleted in reverse order', () => {
     const pouchDbMock = jasmine.createSpyObj('PouchDB', ['query', 'bulkDocs', 'remove']);
     pouchDbContextServiceMock.provideContextForTaskId
       .and.returnValue(pouchDbMock);

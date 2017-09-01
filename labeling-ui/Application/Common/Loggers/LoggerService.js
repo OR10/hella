@@ -25,7 +25,7 @@ class LoggerService {
   }
 
   error(context, ...args) {
-    this._dispatch('error', context, ...args)
+    this._dispatch('error', context, ...args);
   }
 
   groupStart(context, ...args) {
