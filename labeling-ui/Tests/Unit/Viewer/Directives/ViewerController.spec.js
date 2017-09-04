@@ -338,6 +338,13 @@ describe('ViewerController tests', () => {
           expect(group.update).toHaveBeenCalled();
           expect(thingLayerScopeView.update).toHaveBeenCalled();
         });
+
+        it('sets the current frame position as bookmarkedFrameIndex', () => {
+          groupListener(null, labelStructureObject);
+          scope.$apply();
+
+          expect(controller.bookmarkedFrameIndex).toEqual(controller.framePosition.position);
+        });
       });
     });
   });
