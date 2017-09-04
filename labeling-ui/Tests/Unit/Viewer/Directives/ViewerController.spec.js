@@ -96,7 +96,7 @@ describe('ViewerController tests', () => {
     labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['createLabeledThingGroup', 'assignLabeledThingsToLabeledThingGroup', 'getLabeledThingGroupsInFrameForFrameIndex']);
     groupCreationService = jasmine.createSpyObj('groupCreationService', ['showGroupSelector']);
     lockService = jasmine.createSpyObj('lockService', ['acquire']);
-    labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['listLabeledThingInFrame']);
+    labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['listLabeledThingInFrame', 'getLabeledThingInFrame']);
   });
 
   beforeEach(() => {
@@ -119,6 +119,7 @@ describe('ViewerController tests', () => {
     groupCreationService.showGroupSelector.and.returnValue(angularQ.resolve());
     frameLocationGateway.getFrameLocations.and.returnValue(abortablePromise);
     labeledThingInFrameGateway.listLabeledThingInFrame.and.returnValue(abortablePromise);
+    labeledThingInFrameGateway.getLabeledThingInFrame.and.returnValue(abortablePromise);
     labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex.and.returnValue(abortablePromise);
   });
 
@@ -299,33 +300,26 @@ describe('ViewerController tests', () => {
         expect(controller.paperGroupShapes).toEqual([group]);
       });
 
-      fit('stores the group after showing the group selector', done => {
+      fit('stores the group after showing the group selector', () => {
         // For the sake of this test, showGroupSelector will return a normal Promise and not an angular $q promise
         // Reason: for the angular Promise, $scope.$apply() needs to be called which would have a lot of side effects
         // in this test, namely a whole bunch of things from the constructor which would then be called
         const selectedGroup = { id: 'selected-group-id' };
-        const labeledThingGroup = { id: 'labeled-thing-group' };
         const showGroupSelectorPromise = angularQ.resolve(selectedGroup);
-        const createLabeledThinGroupPromise = angularQ.resolve(labeledThingGroup);
+        const createLabeledThinGroupPromise = angularQ.resolve(ltg);
         const assignLtToLtgPromise = angularQ.resolve();
 
         groupCreationService.showGroupSelector.and.returnValue(showGroupSelectorPromise);
         labeledThingGroupGateway.createLabeledThingGroup.and.returnValue(createLabeledThinGroupPromise);
         labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup.and.returnValue(assignLtToLtgPromise);
         scope.vm = { filters: { filters: [] } };
-        controller.selectedPaperShape = { labeledThingInFrame: ltif };
+        group.labeledThingInFrame = ltif;
 
         groupListener(null, labelStructureObject);
         scope.$apply();
 
-        createLabeledThinGroupPromise.then(() => {
-          assignLtToLtgPromise.then(() => {
-            console.log('expect');
-            expect(labeledThingGroupGateway.createLabeledThingGroup).toHaveBeenCalledWith(task, ltg);
-            expect(labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup).toHaveBeenCalledWith([lt], ltg);
-            done();
-          });
-        })
+        expect(labeledThingGroupGateway.createLabeledThingGroup).toHaveBeenCalledWith(task, ltg);
+        expect(labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup).toHaveBeenCalledWith([lt], ltg);
       });
     });
   });

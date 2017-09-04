@@ -1170,7 +1170,6 @@ class ViewerController {
       return Promise.resolve(null);
     }
 
-    console.log(this.selectedPaperShape.labeledThingInFrame);
     const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
 
     return this._ghostedLabeledThingInFrameBuffer.add(
@@ -1379,12 +1378,10 @@ class ViewerController {
   }
 
   _storeGroup(paperGroupShape, shapesInGroup) {
-    console.log('_storeGroup');
     this._groupCreationService.showGroupSelector()
       .then(selectedGroup => {
         paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.type = selectedGroup.id;
 
-        console.log(this._labeledThingGroupGateway);
         return this._labeledThingGroupGateway.createLabeledThingGroup(
           this.task,
           paperGroupShape.labeledThingGroupInFrame.labeledThingGroup
@@ -1418,12 +1415,8 @@ class ViewerController {
         );
       })
       .then(() => {
-        console.log('assign then');
         this._updateAllGroupDimensions();
         this._$rootScope.$emit('shape:add:after', paperGroupShape);
-      })
-      .catch(error => {
-        console.log(error.message);
       });
 
     this.bookmarkedFrameIndex = this.framePosition.position;
