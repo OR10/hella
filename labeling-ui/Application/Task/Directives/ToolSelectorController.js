@@ -30,11 +30,28 @@ class ToolSelectorController {
   }
 
   /**
+   * @returns {{shape: String, id: String, name: String}}
+   */
+  get firstDrawableGroup() {
+    return this.drawableGroups[0];
+  }
+
+  /**
+   * @param {String} groupId
+   * @returns {boolean}
+   */
+  isDrawableGroup(groupId) {
+    const index = this.drawableGroups.findIndex(group => group.id === groupId);
+    return (index !== -1);
+  }
+
+  /**
    * @param {{id, shape, name}} labelStructureObject
    */
   setCurrentLabelStructureObject(labelStructureObject) {
     const oldSelectedLabelStructureObject = this.selectedLabelStructureObject;
     this.selectedLabelStructureObject = labelStructureObject;
+    this.selectedLabelStructureObject.availableGroups = this.drawableGroups;
 
     if (this.selectedPaperShape && !this._hasSelectedPaperShapeSameTypeAsLabelStructureObject(this.selectedLabelStructureObject.id)) {
       this.selectedPaperShape = null;

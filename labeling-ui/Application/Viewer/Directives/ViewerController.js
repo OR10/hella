@@ -73,6 +73,7 @@ class ViewerController {
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ToolSelectorListenerService} toolSelectorListenerService
    * @param {HierarchyCreationService} hierarchyCreationService
+   * @param {GroupCreationService} groupCreationService
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    */
   constructor(
@@ -113,6 +114,7 @@ class ViewerController {
     shapeSelectionService,
     toolSelectorListenerService,
     hierarchyCreationService,
+    groupCreationService,
     groupSelectionDialogFactory
   ) {
     /**
@@ -363,6 +365,12 @@ class ViewerController {
      * @private
      */
     this._hierarchyCreationService = hierarchyCreationService;
+
+    /**
+     * @type {GroupCreationService}
+     * @private
+     */
+    this._groupCreationService = groupCreationService;
 
     /**
      * @type {GroupSelectionDialogFactory}
@@ -1481,9 +1489,11 @@ class ViewerController {
       this._thingLayerContext,
       paperGroupShape.bounds
     );
+
     // Service finds the group shape itself, so we need to remove the shape id from the array
     shapesInGroup = shapesInGroup.filter(
       shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
+
     this._storeGroup(paperGroupShape, shapesInGroup);
   }
 
@@ -1520,10 +1530,15 @@ class ViewerController {
   }
 
   _storeGroup(paperGroupShape, shapesInGroup) {
-    this._labeledThingGroupGateway.createLabeledThingGroup(
-      this.task,
-      paperGroupShape.labeledThingGroupInFrame.labeledThingGroup
-    )
+    this._groupCreationService.showGroupSelector()
+      .then(selectedGroup => {
+        paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.type = selectedGroup.id;
+
+        return this._labeledThingGroupGateway.createLabeledThingGroup(
+          this.task,
+          paperGroupShape.labeledThingGroupInFrame.labeledThingGroup
+        );
+      })
       .then(labeledThingGroup => {
         const labeledThings = [];
         shapesInGroup.forEach(shape => {
@@ -1811,6 +1826,7 @@ ViewerController.$inject = [
   'shapeSelectionService',
   'toolSelectorListenerService',
   'hierarchyCreationService',
+  'groupCreationService',
   'groupSelectionDialogFactory',
 ];
 

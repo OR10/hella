@@ -12,8 +12,9 @@ class GroupCreationTool extends CreationTool {
    * @param {ToolService} toolService
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {GroupNameService} groupNameService
+   * @param {GroupCreationService} groupCreationService
    */
-  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService, groupNameService) {
+  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService, groupNameService, groupCreationService) {
     super(drawingContext, $scope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -45,6 +46,12 @@ class GroupCreationTool extends CreationTool {
      * @private
      */
     this._groupNameService = groupNameService;
+
+    /**
+     * @type {GroupCreationService}
+     * @private
+     */
+    this._groupCreationService = groupCreationService;
   }
 
   /**
@@ -107,6 +114,7 @@ class GroupCreationTool extends CreationTool {
         this._completeEmpty();
         return;
       }
+
       const paperGroup = this._createPaperGroup(paperShape.id, toolActionStruct, shapes);
 
       this._complete(paperGroup);
@@ -220,6 +228,7 @@ GroupCreationTool.$inject = [
   'toolService',
   'labeledThingGroupService',
   'groupNameService',
+  'groupCreationService',
 ];
 
 export default GroupCreationTool;

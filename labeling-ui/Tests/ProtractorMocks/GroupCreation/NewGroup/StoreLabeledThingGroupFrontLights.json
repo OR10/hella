@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/task/TASKID-TASKID/labeledThingGroup",
+    "data": {
+      "id": "{{:labeledThingGroupId}}",
+      "groupIds": [],
+      "groupType": "front-lights",
+      "lineColor": "2"
+    }
+  },
+  "response": {
+    "data": {
+      "result": {
+        "id": "E2E-TEST-GROUP-ID",
+        "rev": "1-cd6652f921498681a36c828e58aa21b6",
+        "taskId": "TASKID-TASKID",
+        "groupType": "extension-sign-group",
+        "lineColor": "2",
+        "groupIds": null
+      }
+    }
+  }
+}
