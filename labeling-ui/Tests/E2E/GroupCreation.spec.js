@@ -4,7 +4,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Group Creation', () => {
+describe('Group Creation', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -413,7 +413,7 @@ fdescribe('Group Creation', () => {
       });
   });
 
-  fit('shows the selection again if user does not select a group type', done => {
+  it('shows the selection again if user does not select a group type', done => {
     mock(sharedMocks.concat([
       assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
