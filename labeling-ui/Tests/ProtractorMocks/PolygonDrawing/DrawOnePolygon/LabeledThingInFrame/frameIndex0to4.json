@@ -28,6 +28,7 @@
           {
             "classes": [],
             "frameIndex": 0,
+            "identifierName": "sign",
             "ghost": false,
             "ghostClasses": null,
             "id": "LABELED-THING-IN-FRAME-ID-1",
