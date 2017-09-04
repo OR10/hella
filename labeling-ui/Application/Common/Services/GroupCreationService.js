@@ -1,3 +1,9 @@
+/**
+ * Service to support Group Shape creation
+ * So far the only support given is the possibility to open a modal window
+ * that let's the user choose which group she/he wants to create
+ *
+ */
 class GroupCreationService {
   /**
    * @param {ModalService} modalService
