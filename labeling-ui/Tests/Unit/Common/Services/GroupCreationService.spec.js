@@ -1,6 +1,7 @@
+import {inject} from 'angular-mocks';
 import GroupCreationService from 'Application/Common/Services/GroupCreationService';
 
-fdescribe('GroupCreationService', () => {
+describe('GroupCreationService', () => {
   let groupCreationService;
   let modalService;
   let selectionDialog;
