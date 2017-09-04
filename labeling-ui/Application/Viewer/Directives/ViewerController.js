@@ -13,6 +13,7 @@ import PaperFrame from '../Shapes/PaperFrame';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
 import GroupToolActionStruct from '../Tools/ToolActionStructs/GroupToolActionStruct';
+import {difference} from 'lodash';
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -372,25 +373,78 @@ class ViewerController {
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
         const shapes = this._shapeSelectionService.getAllShapes();
-        const struct = new GroupToolActionStruct(
-          {},
-          this.viewport,
-          this.task,
-          labelStructureObject.id,
-          this.framePosition
-        );
-        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(
-          struct);
+        const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
+        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
+        if (shapes.length === 2) {
+          const firstLabeledThing = shapes[0].labeledThingInFrame.labeledThing;
+          const secondLabeledThing = shapes[1].labeledThingInFrame.labeledThing;
+          let groupIds;
+          if (secondLabeledThing.groupIds.length >= firstLabeledThing.groupIds.length) {
+            groupIds = difference(secondLabeledThing.groupIds, firstLabeledThing.groupIds);
+          } else {
+            groupIds = difference(firstLabeledThing.groupIds, secondLabeledThing.groupIds);
+          }
 
-        this._thingLayerContext.withScope(() => {
-          const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
-          this._storeGroup(group, shapes);
-          group.sendToBack();
-          this.paperGroupShapes = this.paperGroupShapes.concat([group]);
-          this._shapeSelectionService.clear();
-          this.selectedPaperShape = group;
-          group.select();
-        });
+          this._groupSelectionDialogFactory.createAsync(
+            this.task,
+            groupIds,
+            labeledThingInGroupFrame.labeledThingGroup.type,
+            {
+              title: 'Add shape to group',
+              headline: 'The selected shape can add into your choosen group or create a complete new group around both shapes',
+              message: 'Please select a group in which you want to add the selected shape or choose \'Create new group\'!',
+              confirmButtonText: 'Add',
+              defaultSelection: 'Create new group',
+            },
+            group => {
+              if (group === undefined) {
+                // create new group
+                this._thingLayerContext.withScope(() => {
+                  const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+                  this._storeGroup(newGroup, shapes);
+                  this._handleGroupAddAfterActions(newGroup);
+                });
+              } else {
+                // add to selected group
+                this._thingLayerContext.withScope(() => {
+                  const toAddShape = shapes.find(candidate => !candidate.labeledThingInFrame.labeledThing.groupIds.includes(group.id));
+                  const groupShape = this.paperGroupShapes.find(pgs => pgs.labeledThingGroupInFrame.labeledThingGroup.id === group.id);
+                  groupShape.addShape(toAddShape);
+                  this._updateGroup(group, toAddShape);
+                  this._handleGroupAddAfterActions(groupShape);
+                  groupShape.update();
+                });
+              }
+            },
+            () => {
+              this._shapeSelectionService.clear();
+            }
+          )
+          .then(selectionDialog => {
+            this._modalService.show(selectionDialog);
+          })
+          .catch(() => {
+            this._modalService.info(
+              {
+                title: 'Error retrieving group correlation',
+                headline: 'The list of corresponding groups to the selected labeled thing could not be loaded. Please try again or inform your label manager if the problem persists.',
+                confirmButtonText: 'Understood',
+              },
+              undefined,
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+          });
+        } else {
+          this._thingLayerContext.withScope(() => {
+            const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+            this._storeGroup(group, shapes);
+            this._handleGroupAddAfterActions(group);
+          });
+        }
       }
     };
     this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
@@ -952,6 +1006,20 @@ class ViewerController {
     this._updateViewport();
   }
 
+  /**
+   * @param {PaperGroupShape} group
+   * @private
+   */
+  _handleGroupAddAfterActions(group) {
+    group.sendToBack();
+    if (!this.paperGroupShapes.includes(group)) {
+      this.paperGroupShapes.push(group);
+    }
+    this._shapeSelectionService.clear();
+    this.selectedPaperShape = group;
+    group.select();
+  }
+
   _resize() {
     const viewerHeight = this._$element.outerHeight(true);
     const viewerWidth = this._$element.outerWidth(true);
@@ -1417,6 +1485,38 @@ class ViewerController {
     shapesInGroup = shapesInGroup.filter(
       shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
     this._storeGroup(paperGroupShape, shapesInGroup);
+  }
+
+  /**
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @param {PaperThingShape} shape
+   * @private
+   */
+  _updateGroup(labeledThingGroup, shape) {
+    const labeledThings = [];
+    labeledThings.push(shape.labeledThingInFrame.labeledThing);
+    if (shape.labeledThingInFrame.labeledThing.groupIds.indexOf(labeledThingGroup.id) === -1) {
+      shape.labeledThingInFrame.labeledThing.groupIds.push(labeledThingGroup.id);
+    }
+
+    return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup)
+      .catch(() => {
+        this._modalService.info(
+          {
+            title: 'Error',
+            headline: `There was an error update the shape`,
+            message: `The shape could not be updated. Please contact the Label Manager and reload the page to continue with the labeling process!`,
+            confirmButtonText: 'Reload',
+          },
+          () => window.location.reload(),
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
+      });
   }
 
   _storeGroup(paperGroupShape, shapesInGroup) {

@@ -62,12 +62,13 @@ class GroupSelectionDialogFactory {
    *
    * @param {Task} task
    * @param {string[]} groupIds
+   * @param {string?} groupType
    * @param {object} content
    * @param {Function?} confirmCallback
    * @param {Function?} cancelCallback
    * @returns {Promise.<SelectionDialog>}
    */
-  createAsync(task, groupIds, content, confirmCallback, cancelCallback) {
+  createAsync(task, groupIds, groupType, content, confirmCallback, cancelCallback) {
     return this._$q.all([
       this._labeledThingGroupGateway.getLabeledThingGroupsByIds(task, groupIds),
       this._labelStructureService.getLabelStructure(task),
@@ -75,14 +76,16 @@ class GroupSelectionDialogFactory {
       .then(([groups, labelStructure]) => {
         const labelStructureGroupsById = labelStructure.getGroups();
 
-        const groupSelections = groups.map(group => {
-          const uniqueGroupNumber = this._groupNameService.getNameById(group.id);
-          const groupName = labelStructureGroupsById.get(group.type).name;
-          return {
-            id: group.id,
-            name: `${uniqueGroupNumber}: ${groupName}`,
-          };
-        });
+        const groupSelections = groups
+          .filter(group => groupType === undefined || group.type === groupType)
+          .map(group => {
+            const uniqueGroupNumber = this._groupNameService.getNameById(group.id);
+            const groupName = labelStructureGroupsById.get(group.type).name;
+            return {
+              id: group.id,
+              name: `${uniqueGroupNumber}: ${groupName}`,
+            };
+          });
 
         const dialogContent = Object.assign(
           {},
