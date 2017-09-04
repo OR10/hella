@@ -53,7 +53,7 @@ The vm uses the ip address: `192.168.222.20`.
 
 #### Installation steps
 ```bash
-git clone https://github.crosscan.com/AnnoStation/AnnoStation
+git clone https://github.crosscan.com/AnnoStation/AnnoStation-Single
 cd AnnoStation/labeling-api/
 git submodule update --init --recursive
 vagrant up
