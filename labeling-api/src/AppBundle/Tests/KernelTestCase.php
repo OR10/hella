@@ -165,6 +165,18 @@ class KernelTestCase extends Test\KernelTestCase
     }
 
     /**
+     * Set a service with identified by $name.
+     *
+     * @param string $name
+     * @param        $service
+     * @return mixed
+     */
+    protected function setService($name, $service)
+    {
+        return $this->getContainer()->set($name, $service);
+    }
+
+    /**
      * Get the annostation service identified by $name.
      *
      * @param string $name
