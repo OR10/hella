@@ -4,7 +4,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Group Creation', () => {
+fdescribe('Group Creation', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -368,6 +368,41 @@ describe('Group Creation', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateAndDeleteGroupMultiselectedShapes);
       })
       .then(() => {
+        done();
+      });
+  });
+
+  fit('shows a selection if there is more than one group type defined', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
+      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
+    ]));
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 500, y: 500}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(() => browser.sleep(200))
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
         done();
       });
   });
