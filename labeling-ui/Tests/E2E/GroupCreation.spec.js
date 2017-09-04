@@ -372,12 +372,12 @@ fdescribe('Group Creation', () => {
       });
   });
 
-  fit('shows a selection if there is more than one group type defined', done => {
+  it('shows a selection if there is more than one group type defined', done => {
     mock(sharedMocks.concat([
       assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupFrontLights,
       assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -391,6 +391,12 @@ fdescribe('Group Creation', () => {
           .perform();
       })
       .then(() => browser.sleep(200))
+      .then(() => element(by.cssContainingText('option', 'Front lights')).click())
+      .then(() => {
+        const confirmButton = element(by.css('.modal-button-confirm'));
+        return confirmButton.click();
+      })
+      .then(() => browser.sleep(200))
       // .then(() => dumpAllRequestsMade(mock))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
@@ -402,7 +408,54 @@ fdescribe('Group Creation', () => {
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupFrontLights);
+        done();
+      });
+  });
+
+  fit('shows the selection again if user does not select a group type', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
+      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
+      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupBackLights,
+      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
+    ]));
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => groupButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 500, y: 500}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(() => browser.sleep(200))
+      .then(() => element(by.cssContainingText('option', 'Please make a selection')).click())
+      .then(() => {
+        const confirmButton = element(by.css('.modal-button-confirm'));
+        return confirmButton.click();
+      })
+      .then(() => browser.sleep(1000))
+      .then(() => element(by.cssContainingText('option', 'Back lights')).click())
+      .then(() => {
+        const confirmButton = element(by.css('.modal-button-confirm'));
+        return confirmButton.click();
+      })
+      .then(() => browser.sleep(200))
+      // .then(() => dumpAllRequestsMade(mock))
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
+      })
+      .then(() => getMockRequestsMade(mock))
+      .then(requests => {
+        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing);
+        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupBackLights);
         done();
       });
   });
