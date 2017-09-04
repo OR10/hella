@@ -30,7 +30,7 @@ class ToolSelectorController {
   }
 
   /**
-   * @returns {{shape: <String>, id: <String>, name: <String>}}
+   * @returns {{shape: String, id: String, name: String}}
    */
   get firstDrawableGroup() {
     return this.drawableGroups[0];
