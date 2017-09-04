@@ -58,6 +58,7 @@ import ReplicationStateService from './Services/ReplicationStateService';
 import TaskReplicationService from './Services/TaskReplicationService';
 import ShapeSelectionService from './Services/ShapeSelectionService';
 import ToolSelectorListenerService from './Services/ToolSelectorListenerService';
+import GroupCreationService from './Services/GroupCreationService';
 
 import modalDialogProvider from './Services/ModalDialogs/ModalDialog';
 import infoDialogProvider from './Services/ModalDialogs/InfoDialog';
@@ -113,6 +114,7 @@ class Common extends Module {
     this.module.service('applicationLoadingMaskStateService', ApplicationLoadingMaskStateService);
     this.module.service('inProgressService', InProgressService);
     this.module.service('pouchDbViewService', PouchDbViewService);
+    this.module.service('groupCreationService', GroupCreationService);
 
     this.module.service('pouchDbLiveMigration', PouchDbLiveMigration);
     this.module.service('pouchDbContextService', PouchDbContextService);

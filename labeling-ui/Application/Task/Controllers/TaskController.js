@@ -25,6 +25,7 @@ class TaskController {
    * @param {FrameIndexService} frameIndexService
    * @param {LockService} lockService
    * @param {LabelStructureService} labelStructureService
+   * @param {GroupCreationService} groupCreationService
    */
   constructor($scope,
               $q,
@@ -38,7 +39,8 @@ class TaskController {
               keyboardShortcutService,
               frameIndexService,
               lockService,
-              labelStructureService) {
+              labelStructureService,
+              groupCreationService) {
     /**
      * @type {FrameIndexService}
      * @private
@@ -61,6 +63,12 @@ class TaskController {
      * @private
      */
     this._labelStructureService = labelStructureService;
+
+    /**
+     * @type {GroupCreationService}
+     * @private
+     */
+    this._groupCreationService = groupCreationService;
 
     /**
      * @type {string}
@@ -406,6 +414,7 @@ class TaskController {
         this.selectedLabelStructureObject = labelStructureObject;
         this.drawableThings = labelStructureThingArray;
         this.drawableGroups = labelStructureGroupArray;
+        this._groupCreationService.setAvailableGroups(this.drawableGroups);
         this.drawableRequirementFrames = labelStructureFrameArray;
         this.activeTool = 'multi';
 
@@ -491,6 +500,7 @@ TaskController.$inject = [
   'frameIndexService',
   'lockService',
   'labelStructureService',
+  'groupCreationService',
 ];
 
 export default TaskController;
