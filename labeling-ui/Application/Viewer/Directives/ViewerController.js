@@ -68,10 +68,12 @@ class ViewerController {
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {InProgressService} inProgressService
    * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {ImagePreloader} imagePreloader
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ToolSelectorListenerService} toolSelectorListenerService
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {GroupCreationService} groupCreationService
+   * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    */
   constructor(
     $scope,
@@ -111,7 +113,8 @@ class ViewerController {
     shapeSelectionService,
     toolSelectorListenerService,
     hierarchyCreationService,
-    groupCreationService
+    groupCreationService,
+    groupSelectionDialogFactory
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -175,6 +178,12 @@ class ViewerController {
      * @private
      */
     this._$element = $element;
+
+    /**
+     * @type {angular.window}
+     * @private
+     */
+    this._$window = $window;
 
     /**
      * @type {FrameLocationGateway}
@@ -361,6 +370,12 @@ class ViewerController {
      * @private
      */
     this._groupCreationService = groupCreationService;
+
+    /**
+     * @type {GroupSelectionDialogFactory}
+     * @private
+     */
+    this._groupSelectionDialogFactory = groupSelectionDialogFactory;
 
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
@@ -620,6 +635,42 @@ class ViewerController {
         .then(() => this._handleFrameChange(this._currentFrameIndex));
     });
 
+    $rootScope.$on('shape:delete:after', () => {
+      this._applicationState.disableAll();
+      this._$q.all([
+        this._loadLabeledThingsInFrame(this._currentFrameIndex),
+        this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(this.task, this._currentFrameIndex),
+        this._fetchGhostedLabeledThingInFrame(this._currentFrameIndex),
+      ])
+        .then(([labeledThingsInFrame, labeledThingGroupsInFrame, ghostedLabeledThingsInFrame]) => {
+          this.paperThingShapes = [];
+          this.paperGroupShapes = [];
+          this.labeledFrame = null;
+
+          this._extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame, ghostedLabeledThingsInFrame);
+          this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame);
+          this._applicationState.enableAll();
+        })
+        .catch(error => {
+          this._applicationState.enableAll();
+          this._logger.error('shape:delete', error);
+          this._modalService.info(
+            {
+              title: 'Error during deletion',
+              headline: 'After deleting a shape/group a consistent state could not be reached.',
+              message: 'Please reload in order to archive a consistent application state again.',
+              confirmButtonText: 'Reload',
+            },
+            () => this._$window.location.reload(),
+            undefined,
+            {
+              warning: true,
+              abortable: false,
+            }
+          );
+        });
+    });
+
     $scope.$watch(
       'vm.playing', (playingNow, playingBefore) => {
         if (playingNow === playingBefore) {
@@ -844,7 +895,8 @@ class ViewerController {
       this._modalService,
       this._labeledThingGateway,
       this._labeledThingGroupGateway,
-      this._shapeSelectionService
+      this._shapeSelectionService,
+      this._groupSelectionDialogFactory
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1675,6 +1727,7 @@ ViewerController.$inject = [
   'toolSelectorListenerService',
   'hierarchyCreationService',
   'groupCreationService',
+  'groupSelectionDialogFactory',
 ];
 
 export default ViewerController;

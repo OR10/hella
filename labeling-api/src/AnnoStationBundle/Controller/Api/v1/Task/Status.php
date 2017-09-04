@@ -209,6 +209,7 @@ class Status extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/status/begin")
+     * @CheckPermissions({"canBeginTask"})
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task
@@ -235,32 +236,6 @@ class Status extends Controller\Base
         }
         $this->labelingTaskFacade->save($task);
         $this->databaseSecurityPermissionService->updateForTask($task);
-
-        return View\View::create()->setData(['result' => ['success' => true]]);
-    }
-
-    /**
-     * @Rest\Post("/{task}/status/reopen")
-     * @CheckPermissions({"canReopenTask"})
-     *
-     * @param HttpFoundation\Request $request
-     * @param Model\LabelingTask     $task
-     *
-     * @return \FOS\RestBundle\View\View
-     */
-    public function reopenTaskAction(HttpFoundation\Request $request, Model\LabelingTask $task)
-    {
-        $project = $this->projectFacade->find($task->getProjectId());
-        $this->authorizationService->denyIfProjectIsNotWritable($project);
-
-        /** @var Model\User $user */
-        $user  = $this->tokenStorage->getToken()->getUser();
-        $phase = $request->request->get('phase');
-        $task->setStatus($phase, Model\LabelingTask::STATUS_TODO);
-        $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO, $user);
-        $task->setReopen($phase, true);
-        $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_TODO);
-        $this->labelingTaskFacade->save($task);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }

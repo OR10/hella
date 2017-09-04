@@ -348,7 +348,7 @@ class User extends Controller\Base
         }
 
         if ($this->userPermissions->hasPermission('canAssignUserToOwnOrganisation')) {
-            return array_intersect($user->getOrganisations(), $loginUser->getOrganisations());
+            return array_values(array_intersect($user->getOrganisations(), $loginUser->getOrganisations()));
         }
 
         return [];

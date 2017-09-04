@@ -178,6 +178,11 @@ class Project extends Controller\Base
         $limit  = $request->query->get('limit', null);
         $offset = $request->query->get('offset', null);
         $status = $request->query->get('projectStatus', null);
+
+        if (!$this->isUserAllowedToAccessThisStatus($status)) {
+            throw new Exception\AccessDeniedHttpException(sprintf('You are not allowed to request the status "%s".', $status));
+        }
+
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
@@ -346,6 +351,29 @@ class Project extends Controller\Base
     }
 
     /**
+     * Check if the user is allowed to request this status
+     * The in_progress status is currently always allowed
+     *
+     * @param $status
+     * @return bool
+     */
+    private function isUserAllowedToAccessThisStatus($status)
+    {
+        switch ($status) {
+            case Model\Project::STATUS_IN_PROGRESS:
+                return true;
+            case Model\Project::STATUS_TODO:
+                return $this->userPermissions->hasPermission('canViewTodoProjects');
+            case Model\Project::STATUS_DONE:
+                return $this->userPermissions->hasPermission('canViewClosedProjects');
+            case Model\Project::STATUS_DELETED:
+                return $this->userPermissions->hasPermission('canViewDeletedProjects');
+        }
+
+        return false;
+    }
+
+    /**
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param                                     $campaignIds
      *
@@ -375,7 +403,7 @@ class Project extends Controller\Base
      *
      * @Rest\Post("/{organisation}/project")
      *
-     * @CheckPermissions({"canCreateProject", "canCreateNewProject"})
+     * @CheckPermissions({"canCreateProject"})
      *
      * @param HttpFoundation\Request              $request
      * @param AnnoStationBundleModel\Organisation $organisation

@@ -12,6 +12,7 @@ class UserRolesRebuilder
     const LABEL_MANAGER_PREFIX = 'label-manager-';
     const LABELGROUP_PREFIX = 'label-group-member-';
     const OBSERVER_GROUP_PREFIX = 'observer-group-';
+    const EXTERNAL_COORDINATOR_PREFIX = 'external-coordinator-member-of-organisation-id-';
 
     /**
      * @var Facade\LabelingGroup
@@ -77,6 +78,12 @@ class UserRolesRebuilder
         if ($user->hasRole(Model\User::ROLE_OBSERVER)) {
             foreach ($user->getOrganisations() as $organisation) {
                 $roles[] = sprintf('%s%s', self::OBSERVER_GROUP_PREFIX, $organisation);
+            }
+        }
+
+        if ($user->hasRole(Model\User::ROLE_EXTERNAL_COORDINATOR)) {
+            foreach ($user->getOrganisations() as $organisation) {
+                $roles[] = sprintf('%s%s', self::EXTERNAL_COORDINATOR_PREFIX, $organisation);
             }
         }
 

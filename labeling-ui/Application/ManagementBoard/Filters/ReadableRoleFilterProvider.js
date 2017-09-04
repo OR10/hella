@@ -9,6 +9,8 @@ function ReadableRoleFilterProvider() {
         return 'Labeler';
       case 'ROLE_OBSERVER':
         return 'Observer';
+      case 'ROLE_EXTERNAL_COORDINATOR':
+        return 'External Coordinator';
       default:
         throw new Error(`Unknown Role: ${role}`);
     }

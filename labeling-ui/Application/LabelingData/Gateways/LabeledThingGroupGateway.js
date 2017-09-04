@@ -16,16 +16,18 @@ class LabeledThingGroupGateway {
    * @param {EntityIdService} entityIdService
    * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q,
-              pouchDbContextService,
-              packagingExecutor,
-              couchDbModelSerializer,
-              couchDbModelDeserializer,
-              revisionManager,
-              abortablePromiseFactory,
-              labeledThingGateway,
-              entityIdService,
-              pouchDbViewService) {
+  constructor(
+    $q,
+    pouchDbContextService,
+    packagingExecutor,
+    couchDbModelSerializer,
+    couchDbModelDeserializer,
+    revisionManager,
+    abortablePromiseFactory,
+    labeledThingGateway,
+    entityIdService,
+    pouchDbViewService
+  ) {
     /**
      * @type {angular.$q}
      * @private
@@ -145,6 +147,35 @@ class LabeledThingGroupGateway {
   }
 
   /**
+   * @param {Task} task
+   * @param {string[]} ids
+   * @returns {Promise.<LabeledThingGroup[]>}
+   */
+  getLabeledThingGroupsByIds(task, ids) {
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return dbContext.allDocs({
+        include_docs: true,
+        keys: ids,
+      })
+        .then(result => {
+          const rows = result.rows;
+          const erronousDocuments = rows.filter(
+            row => row.error !== undefined || row.deleted === true
+          );
+
+          if (erronousDocuments.length > 0) {
+            const errorJson = JSON.stringify(erronousDocuments, undefined, 2);
+            return this._$q.reject(new Error(`One or more of the requested groups could not be retrieved: ${errorJson}`));
+          }
+
+          const documents = rows.map(row => row.doc);
+          return documents.map(document => this._couchDbModelDeserializer.deserializeLabeledThingGroup(document, task));
+        });
+    });
+  }
+
+  /**
    * Deletes a labeled thing group with the given id.
    *
    * @param {LabeledThingGroup} labeledThingGroup
@@ -187,7 +218,8 @@ class LabeledThingGroupGateway {
       () => {
         this._injectRevisionOrFailSilently(serializedLabeledThingGroup);
         return dbContext.put(serializedLabeledThingGroup);
-      })
+      }
+    )
       .then(response => {
         return dbContext.get(response.id);
       })
@@ -221,7 +253,8 @@ class LabeledThingGroupGateway {
         });
 
         return this._abortablePromiseFactory(this._$q.all(promises));
-      });
+      }
+    );
   }
 
   /**
@@ -230,7 +263,7 @@ class LabeledThingGroupGateway {
    * @param {Array.<LabeledThing>} labeledThings
    * @param {LabeledThingGroup} labeledThingGroup
    */
-  unassignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
+  unassignLabeledThingsFromLabeledThingGroup(labeledThings, labeledThingGroup) {
     const modifiedLabeledThings = labeledThings.map(labeledThing => {
       const index = labeledThing.groupIds.indexOf(labeledThingGroup.id);
       if (index !== -1) {
@@ -249,7 +282,8 @@ class LabeledThingGroupGateway {
         });
 
         return this._abortablePromiseFactory(this._$q.all(promises));
-      });
+      }
+    );
   }
 
   /**
