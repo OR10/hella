@@ -40,33 +40,42 @@ class GroupCreationService {
     if (this._availableGroups.length === 1) {
       deferred.resolve(this._availableGroups[0]);
     } else {
-      this._modalService.show(
-        new this._SelectionDialog(
-          {
-            title: 'Select Group Type',
-            headline: `Please select the type of group you would like to create`,
-            message: 'The following groups are available:',
-            confirmButtonText: 'Accept and Create',
-            data: this._availableGroups,
-          },
-          groupId => {
-            if (groupId) {
-              const selectedGroup = this._availableGroups.find(group => group.id === groupId);
-              deferred.resolve(selectedGroup);
-            } else {
-              this.showGroupSelector();
-            }
-          },
-          null,
-          {
-            abortable: false,
-            selected: this._availableGroups[0].id,
-          }
-        )
-      );
+      this._showSelectionModal(deferred);
     }
 
     return deferred.promise;
+  }
+
+  /**
+   * Show the actual selection modal
+   *
+   * @param {$q.deferred} deferred
+   */
+  _showSelectionModal(deferred) {
+    this._modalService.show(
+      new this._SelectionDialog(
+        {
+          title: 'Select Group Type',
+          headline: `Please select the type of group you would like to create`,
+          message: 'The following groups are available:',
+          confirmButtonText: 'Accept and Create',
+          data: this._availableGroups,
+        },
+        groupId => {
+          if (groupId) {
+            const selectedGroup = this._availableGroups.find(group => group.id === groupId);
+            deferred.resolve(selectedGroup);
+          } else {
+            this._showSelectionModal(deferred);
+          }
+        },
+        null,
+        {
+          abortable: false,
+          selected: this._availableGroups[0].id,
+        }
+      )
+    );
   }
 }
 
