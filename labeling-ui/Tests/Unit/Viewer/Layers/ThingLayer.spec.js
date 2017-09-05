@@ -1163,7 +1163,7 @@ describe('ThingLayer', () => {
 
       spyOn(rootScope, '$emit');
 
-      const dialogConfirmCallback = groupSelectionDialogFactory.createAsync.calls.mostRecent().args[3];
+      const dialogConfirmCallback = groupSelectionDialogFactory.createAsync.calls.mostRecent().args[4];
       // `undefined` is given to the callback if nothing has been selected
       dialogConfirmCallback(undefined);
 
@@ -1194,7 +1194,7 @@ describe('ThingLayer', () => {
 
       spyOn(rootScope, '$emit');
 
-      const dialogConfirmCallback = groupSelectionDialogFactory.createAsync.calls.mostRecent().args[3];
+      const dialogConfirmCallback = groupSelectionDialogFactory.createAsync.calls.mostRecent().args[4];
       // `undefined` is given to the callback if nothing has been selected
       dialogConfirmCallback(ltg);
 

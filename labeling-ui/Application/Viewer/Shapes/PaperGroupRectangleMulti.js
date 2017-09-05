@@ -151,6 +151,16 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   }
 
   /**
+   * @param {PaperThingShape} shape
+   */
+  addShape(shape) {
+    if (!(shape instanceof PaperGroupRectangle)) {
+      this._allThingShapes.push(shape);
+      this.update();
+    }
+  }
+
+  /**
    * @param {Handle|null} handle
    * @returns {string}
    */

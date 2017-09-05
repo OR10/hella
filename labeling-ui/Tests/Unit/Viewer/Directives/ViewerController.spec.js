@@ -8,6 +8,7 @@ describe('ViewerController tests', () => {
   let scope;
   let debouncerService;
   let frameIndexService;
+  let modalService;
   let frameLocationGateway;
   let drawingContextService;
   let animationFrameService;
@@ -24,10 +25,11 @@ describe('ViewerController tests', () => {
   let toolSelectorListener;
   let hierarchyCreationService;
   let paperShapeFactory;
-  let labeledThingGroupGateway;
+  let groupSelectionDialogFactory;
   let groupCreationService;
   let lockService;
   let abortablePromise;
+  let labeledThingGroupGateway;
   let labeledThingInFrameGateway;
   let thingLayerScopeView;
 
@@ -81,6 +83,7 @@ describe('ViewerController tests', () => {
     viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['on']);
     element = jasmine.createSpyObj('element', ['find']);
     frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameIndexLimits']);
+    modalService = jasmine.createSpyObj('modalService', ['show', 'info']);
     frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
     drawingContextService = jasmine.createSpyObj('drawingContextService', ['createContext']);
     animationFrameService = jasmine.createSpyObj('animationFrameService', ['debounce']);
@@ -94,6 +97,8 @@ describe('ViewerController tests', () => {
     toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener']);
     hierarchyCreationService = jasmine.createSpyObj('hierarchyCreationService', ['createLabeledThingGroupInFrameWithHierarchy']);
     paperShapeFactory = jasmine.createSpyObj('paperShapeFactory', ['createPaperGroupShape']);
+    groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
+    groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
     labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['createLabeledThingGroup', 'assignLabeledThingsToLabeledThingGroup', 'getLabeledThingGroupsInFrameForFrameIndex']);
     groupCreationService = jasmine.createSpyObj('groupCreationService', ['showGroupSelector']);
     lockService = jasmine.createSpyObj('lockService', ['acquire']);
@@ -154,7 +159,7 @@ describe('ViewerController tests', () => {
       null, // toolService,
       debouncerService,
       frameIndexService,
-      null, // modalService,
+      modalService, // modalService,
       null, // $state,
       viewerMouseCursorService,
       null, // labeledThingGroupService,
@@ -165,6 +170,7 @@ describe('ViewerController tests', () => {
       toolSelectorListener,
       hierarchyCreationService,
       groupCreationService,
+      groupSelectionDialogFactory,
     );
 
     controller.framePosition.lock = lockService;
@@ -345,6 +351,54 @@ describe('ViewerController tests', () => {
 
           expect(controller.bookmarkedFrameIndex).toEqual(controller.framePosition.position);
         });
+      });
+    });
+    describe('group creation multi', () => {
+      beforeEach(() => {
+        shapes =
+        [
+          {
+            labeledThingInFrame: {
+              id: '4711',
+              labeledThing: {
+                id: 'lt1',
+                groupIds: ['1', '2'],
+              },
+            },
+          },
+          {
+            labeledThingInFrame: {
+              id: '4711',
+              labeledThing: {
+                id: 'lt1',
+                groupIds: [],
+              },
+            },
+          },
+        ];
+        controller._thingLayerContext = thingLayerContext;
+        group.labeledThingGroupInFrame = ltgif;
+        thingLayerContext.withScope.and.callFake(callback => callback());
+        labeledThingGroupGateway.createLabeledThingGroup.and.returnValue(angularQ.resolve());
+        shapeSelectionService.count.and.returnValue(1);
+        shapeSelectionService.getAllShapes.and.returnValue(shapes);
+        hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy.and.returnValue(ltgif);
+        paperShapeFactory.createPaperGroupShape.and.returnValue(group);
+      });
+      it('creates a group around the selected shapes if there are at least two selected shape', () => {
+        groupListener(null, labelStructureObject);
+
+        expect(groupSelectionDialogFactory.createAsync).toHaveBeenCalled();
+      });
+      it('should provide the dialog factory with the given task', () => {
+        groupListener(null, labelStructureObject);
+
+        expect(groupSelectionDialogFactory.createAsync.calls.mostRecent().args[0]).toBe(task);
+      });
+      it('should provide the dialog factory with the groupIds of the given shape', () => {
+        groupListener(null, labelStructureObject);
+
+        expect(groupSelectionDialogFactory.createAsync.calls.mostRecent().args[1]).toEqual(['1', '2']);
       });
     });
   });

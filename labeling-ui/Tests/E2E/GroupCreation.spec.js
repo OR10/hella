@@ -306,7 +306,7 @@ describe('Group Creation', () => {
           .perform();
       })
       .then(() => groupButton.click())
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(300))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateGroupMultiselectedShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -349,15 +349,16 @@ describe('Group Creation', () => {
           .perform();
       })
       .then(() => groupButton.click())
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(300))
       .then(() => {
         return browser.actions()
           .sendKeys(protractor.Key.DELETE)
           .perform();
       })
-      .then(() => browser.sleep(300))
+      .then(() => browser.sleep(1000))
+      .then(() => element(by.cssContainingText('option', 'Delete the object itself')).click())
       .then(() => {
-        const confirmButton = element(by.css('#modal-confirm-button'));
+        const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
       .then(
