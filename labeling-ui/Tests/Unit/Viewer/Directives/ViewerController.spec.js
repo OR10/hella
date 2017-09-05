@@ -2,7 +2,7 @@ import {inject} from 'angular-mocks';
 import ViewerController from 'Application/Viewer/Directives/ViewerController';
 import GroupToolActionStruct from 'Application/Viewer/Tools/ToolActionStructs/GroupToolActionStruct';
 
-fdescribe('ViewerController tests', () => {
+describe('ViewerController tests', () => {
   let angularQ;
   let rootScope;
   let scope;
