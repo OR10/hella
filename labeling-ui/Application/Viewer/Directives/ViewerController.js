@@ -1558,21 +1558,25 @@ class ViewerController {
 
         return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup);
       })
-      .catch(() => {
-        this._modalService.info(
-          {
-            title: 'Error',
-            headline: `There was an error saving the shape`,
-            message: `The shape could not be created. Please contact the Label Manager and reload the page to continue with the labeling process!`,
-            confirmButtonText: 'Reload',
-          },
-          () => window.location.reload(),
-          undefined,
-          {
-            warning: true,
-            abortable: false,
-          }
-        );
+      .catch(error => {
+        if (error.cancelledGroupCreation) {
+          paperGroupShape.remove();
+        } else {
+          this._modalService.info(
+            {
+              title: 'Error',
+              headline: `There was an error saving the shape`,
+              message: `The shape could not be created. Please contact the Label Manager and reload the page to continue with the labeling process!`,
+              confirmButtonText: 'Reload',
+            },
+            () => window.location.reload(),
+            undefined,
+            {
+              warning: true,
+              abortable: false,
+            }
+          );
+        }
       })
       .then(() => {
         this._updateAllGroupDimensions();
