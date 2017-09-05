@@ -393,59 +393,67 @@ class ViewerController {
             groupIds = difference(firstLabeledThing.groupIds, secondLabeledThing.groupIds);
           }
 
-          this._groupSelectionDialogFactory.createAsync(
-            this.task,
-            groupIds,
-            labeledThingInGroupFrame.labeledThingGroup.type,
-            {
-              title: 'Add shape to group',
-              headline: 'The selected shape can add into your choosen group or create a complete new group around both shapes',
-              message: 'Please select a group in which you want to add the selected shape or choose \'Create new group\'!',
-              confirmButtonText: 'Add',
-              defaultSelection: 'Create new group',
-            },
-            group => {
-              if (group === undefined) {
-                // create new group
-                this._thingLayerContext.withScope(() => {
-                  const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
-                  this._storeGroup(newGroup, shapes);
-                  this._handleGroupAddAfterActions(newGroup);
-                });
-              } else {
-                // add to selected group
-                this._thingLayerContext.withScope(() => {
-                  const toAddShape = shapes.find(candidate => !candidate.labeledThingInFrame.labeledThing.groupIds.includes(group.id));
-                  const groupShape = this.paperGroupShapes.find(pgs => pgs.labeledThingGroupInFrame.labeledThingGroup.id === group.id);
-                  groupShape.addShape(toAddShape);
-                  this._updateGroup(group, toAddShape);
-                  this._handleGroupAddAfterActions(groupShape);
-                  groupShape.update();
-                });
-              }
-            },
-            () => {
-              this._shapeSelectionService.clear();
-            }
-          )
-          .then(selectionDialog => {
-            this._modalService.show(selectionDialog);
-          })
-          .catch(() => {
-            this._modalService.info(
+          if (groupIds.length === 0) {
+            this._thingLayerContext.withScope(() => {
+              const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+              this._storeGroup(newGroup, shapes);
+              this._handleGroupAddAfterActions(newGroup);
+            });
+          } else {
+            this._groupSelectionDialogFactory.createAsync(
+              this.task,
+              groupIds,
+              labeledThingInGroupFrame.labeledThingGroup.type,
               {
-                title: 'Error retrieving group correlation',
-                headline: 'The list of corresponding groups to the selected labeled thing could not be loaded. Please try again or inform your label manager if the problem persists.',
-                confirmButtonText: 'Understood',
+                title: 'Add shape to group',
+                headline: 'The selected shape can add into your choosen group or create a complete new group around both shapes',
+                message: 'Please select a group in which you want to add the selected shape or choose \'Create new group\'!',
+                confirmButtonText: 'Add',
+                defaultSelection: 'Create new group',
               },
-              undefined,
-              undefined,
-              {
-                warning: true,
-                abortable: false,
+              group => {
+                if (group === undefined) {
+                  // create new group
+                  this._thingLayerContext.withScope(() => {
+                    const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+                    this._storeGroup(newGroup, shapes);
+                    this._handleGroupAddAfterActions(newGroup);
+                  });
+                } else {
+                  // add to selected group
+                  this._thingLayerContext.withScope(() => {
+                    const toAddShape = shapes.find(candidate => !candidate.labeledThingInFrame.labeledThing.groupIds.includes(group.id));
+                    const groupShape = this.paperGroupShapes.find(pgs => pgs.labeledThingGroupInFrame.labeledThingGroup.id === group.id);
+                    groupShape.addShape(toAddShape);
+                    this._updateGroup(group, toAddShape);
+                    this._handleGroupAddAfterActions(groupShape);
+                    groupShape.update();
+                  });
+                }
+              },
+              () => {
+                this._shapeSelectionService.clear();
               }
-            );
-          });
+            )
+            .then(selectionDialog => {
+              this._modalService.show(selectionDialog);
+            })
+            .catch(() => {
+              this._modalService.info(
+                {
+                  title: 'Error retrieving group correlation',
+                  headline: 'The list of corresponding groups to the selected labeled thing could not be loaded. Please try again or inform your label manager if the problem persists.',
+                  confirmButtonText: 'Understood',
+                },
+                undefined,
+                undefined,
+                {
+                  warning: true,
+                  abortable: false,
+                }
+              );
+            });
+          }
         } else {
           this._thingLayerContext.withScope(() => {
             const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
