@@ -9,6 +9,8 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Worker\Jobs;
 use Hagl\WorkerPoolBundle;
+use Doctrine\ODM\CouchDB;
+
 
 class LabelingTaskRemoveAssignment extends WorkerPoolBundle\JobInstruction
 {
@@ -23,17 +25,25 @@ class LabelingTaskRemoveAssignment extends WorkerPoolBundle\JobInstruction
     private $labelingTaskFacade;
 
     /**
+     * @var CouchDB\DocumentManager
+     */
+    private $documentManager;
+
+    /**
      * TaskDatabaseSecurityRebuilder constructor.
      *
      * @param Facade\LabelingTask                           $labelingTaskFacade
      * @param Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
+     * @param CouchDB\DocumentManager                       $documentManager
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
-        Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
+        Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService,
+        CouchDB\DocumentManager $documentManager
     ) {
         $this->databaseSecurityPermissionService = $databaseSecurityPermissionService;
         $this->labelingTaskFacade                = $labelingTaskFacade;
+        $this->documentManager                   = $documentManager;
     }
 
     /**
@@ -43,11 +53,19 @@ class LabelingTaskRemoveAssignment extends WorkerPoolBundle\JobInstruction
     protected function runJob(WorkerPool\Job $job, Logger\Facade\LoggerFacade $loggerFacade)
     {
         $task = $this->labelingTaskFacade->find($job->getTaskId());
+        $this->documentManager->refresh($task);
 
         $lastAssignedUserId = $task->getLatestAssignedUserIdForPhase($task->getCurrentPhase());
 
         if ($job->getUserId() !== $lastAssignedUserId) {
-            throw new \RuntimeException('This task is not assigned to this user.');
+            throw new \RuntimeException(
+                sprintf(
+                    'This task "%s" is assigned to "%s" and not to user "%s".',
+                    $task->getId(),
+                    $lastAssignedUserId,
+                    $job->getUserId()
+                )
+            );
         }
 
         $task->addAssignmentHistory($task->getCurrentPhase(), $task->getStatus($task->getCurrentPhase()));

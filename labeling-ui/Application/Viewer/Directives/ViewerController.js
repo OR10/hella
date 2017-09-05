@@ -68,47 +68,54 @@ class ViewerController {
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {InProgressService} inProgressService
    * @param {PouchDbSyncManager} pouchDbSyncManager
+   * @param {ImagePreloader} imagePreloader
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ToolSelectorListenerService} toolSelectorListenerService
    * @param {HierarchyCreationService} hierarchyCreationService
+   * @param {GroupCreationService} groupCreationService
+   * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    */
-  constructor($scope,
-              $rootScope,
-              $element,
-              $window,
-              $injector,
-              drawingContextService,
-              frameLocationGateway,
-              frameGateway,
-              labeledThingInFrameGateway,
-              labeledThingGroupGateway,
-              entityIdService,
-              paperShapeFactory,
-              applicationConfig,
-              $interval,
-              labeledThingGateway,
-              abortablePromiseFactory,
-              animationFrameService,
-              $q,
-              entityColorService,
-              logger,
-              $timeout,
-              applicationState,
-              lockService,
-              keyboardShortcutService,
-              toolService,
-              debouncerService,
-              frameIndexService,
-              modalService,
-              $state,
-              viewerMouseCursorService,
-              labeledThingGroupService,
-              inProgressService,
-              pouchDbSyncManager,
-              imagePreloader,
-              shapeSelectionService,
-              toolSelectorListenerService,
-              hierarchyCreationService) {
+  constructor(
+    $scope,
+    $rootScope,
+    $element,
+    $window,
+    $injector,
+    drawingContextService,
+    frameLocationGateway,
+    frameGateway,
+    labeledThingInFrameGateway,
+    labeledThingGroupGateway,
+    entityIdService,
+    paperShapeFactory,
+    applicationConfig,
+    $interval,
+    labeledThingGateway,
+    abortablePromiseFactory,
+    animationFrameService,
+    $q,
+    entityColorService,
+    logger,
+    $timeout,
+    applicationState,
+    lockService,
+    keyboardShortcutService,
+    toolService,
+    debouncerService,
+    frameIndexService,
+    modalService,
+    $state,
+    viewerMouseCursorService,
+    labeledThingGroupService,
+    inProgressService,
+    pouchDbSyncManager,
+    imagePreloader,
+    shapeSelectionService,
+    toolSelectorListenerService,
+    hierarchyCreationService,
+    groupCreationService,
+    groupSelectionDialogFactory
+  ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
      *
@@ -171,6 +178,12 @@ class ViewerController {
      * @private
      */
     this._$element = $element;
+
+    /**
+     * @type {angular.window}
+     * @private
+     */
+    this._$window = $window;
 
     /**
      * @type {FrameLocationGateway}
@@ -352,11 +365,30 @@ class ViewerController {
      */
     this._hierarchyCreationService = hierarchyCreationService;
 
+    /**
+     * @type {GroupCreationService}
+     * @private
+     */
+    this._groupCreationService = groupCreationService;
+
+    /**
+     * @type {GroupSelectionDialogFactory}
+     * @private
+     */
+    this._groupSelectionDialogFactory = groupSelectionDialogFactory;
+
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
         const shapes = this._shapeSelectionService.getAllShapes();
-        const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
-        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
+        const struct = new GroupToolActionStruct(
+          {},
+          this.viewport,
+          this.task,
+          labelStructureObject.id,
+          this.framePosition
+        );
+        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(
+          struct);
 
         this._thingLayerContext.withScope(() => {
           const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
@@ -603,6 +635,42 @@ class ViewerController {
         .then(() => this._handleFrameChange(this._currentFrameIndex));
     });
 
+    $rootScope.$on('shape:delete:after', () => {
+      this._applicationState.disableAll();
+      this._$q.all([
+        this._loadLabeledThingsInFrame(this._currentFrameIndex),
+        this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(this.task, this._currentFrameIndex),
+        this._fetchGhostedLabeledThingInFrame(this._currentFrameIndex),
+      ])
+        .then(([labeledThingsInFrame, labeledThingGroupsInFrame, ghostedLabeledThingsInFrame]) => {
+          this.paperThingShapes = [];
+          this.paperGroupShapes = [];
+          this.labeledFrame = null;
+
+          this._extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame, ghostedLabeledThingsInFrame);
+          this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame);
+          this._applicationState.enableAll();
+        })
+        .catch(error => {
+          this._applicationState.enableAll();
+          this._logger.error('shape:delete', error);
+          this._modalService.info(
+            {
+              title: 'Error during deletion',
+              headline: 'After deleting a shape/group a consistent state could not be reached.',
+              message: 'Please reload in order to archive a consistent application state again.',
+              confirmButtonText: 'Reload',
+            },
+            () => this._$window.location.reload(),
+            undefined,
+            {
+              warning: true,
+              abortable: false,
+            }
+          );
+        });
+    });
+
     $scope.$watch(
       'vm.playing', (playingNow, playingBefore) => {
         if (playingNow === playingBefore) {
@@ -808,6 +876,7 @@ class ViewerController {
 
   _setupThingLayer() {
     this._thingLayerContext = this._drawingContextService.createContext();
+    this._shapeSelectionService.setDrawingContext(this._thingLayerContext);
 
     this.thingLayer = new ThingLayer(
       this._contentWidth,
@@ -826,7 +895,8 @@ class ViewerController {
       this._modalService,
       this._labeledThingGateway,
       this._labeledThingGroupGateway,
-      this._shapeSelectionService
+      this._shapeSelectionService,
+      this._groupSelectionDialogFactory
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -971,7 +1041,8 @@ class ViewerController {
         this._frameChangeInProgress = false;
       });
 
-    const labeledThingInFrameBufferPromise = this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(frameIndex))
+    const labeledThingInFrameBufferPromise = this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(
+      frameIndex))
       .aborted(() => {
         if (abortRelease) {
           return;
@@ -981,7 +1052,10 @@ class ViewerController {
         this._frameChangeInProgress = false;
       });
 
-    const labeledThingGroupInFramePromise = this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(this.task, frameIndex)
+    const labeledThingGroupInFramePromise = this._labeledThingGroupGateway.getLabeledThingGroupsInFrameForFrameIndex(
+      this.task,
+      frameIndex
+    )
       .aborted(() => {
         if (abortRelease) {
           return;
@@ -1088,7 +1162,11 @@ class ViewerController {
     if (ghostedLabeledThingInFrame) {
       let ghostedPaperShape;
       this._thingLayerContext.withScope(() => {
-        ghostedPaperShape = this._paperShapeFactory.createPaperThingShape(ghostedLabeledThingInFrame, ghostedLabeledThingInFrame.shapes[0], this.video);
+        ghostedPaperShape = this._paperShapeFactory.createPaperThingShape(
+          ghostedLabeledThingInFrame,
+          ghostedLabeledThingInFrame.shapes[0],
+          this.video
+        );
       });
 
       this.paperThingShapes.push(ghostedPaperShape);
@@ -1301,7 +1379,10 @@ class ViewerController {
     // Store the newly created hierarchy to the backend
     this._labeledThingGateway.saveLabeledThing(newLabeledThing)
       .then(storedLabeledThing => {
-        return this._labeledThingInFrameGateway.saveLabeledThingInFrame(newLabeledThingInFrame, storedLabeledThing.task.id);
+        return this._labeledThingInFrameGateway.saveLabeledThingInFrame(
+          newLabeledThingInFrame,
+          storedLabeledThing.task.id
+        );
       })
       .catch(error => {
         console.error(error); // eslint-disable-line no-console
@@ -1336,14 +1417,28 @@ class ViewerController {
    * @private
    */
   _onGroupCreate(paperGroupShape) {
-    let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(this._thingLayerContext, paperGroupShape.bounds);
+    let shapesInGroup = this._labeledThingGroupService.getShapesWithinBounds(
+      this._thingLayerContext,
+      paperGroupShape.bounds
+    );
+
     // Service finds the group shape itself, so we need to remove the shape id from the array
-    shapesInGroup = shapesInGroup.filter(shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
+    shapesInGroup = shapesInGroup.filter(
+      shape => shape.id !== paperGroupShape.id && !(shape instanceof PaperGroupShape));
+
     this._storeGroup(paperGroupShape, shapesInGroup);
   }
 
   _storeGroup(paperGroupShape, shapesInGroup) {
-    this._labeledThingGroupGateway.createLabeledThingGroup(this.task, paperGroupShape.labeledThingGroupInFrame.labeledThingGroup)
+    this._groupCreationService.showGroupSelector()
+      .then(selectedGroup => {
+        paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.type = selectedGroup.id;
+
+        return this._labeledThingGroupGateway.createLabeledThingGroup(
+          this.task,
+          paperGroupShape.labeledThingGroupInFrame.labeledThingGroup
+        );
+      })
       .then(labeledThingGroup => {
         const labeledThings = [];
         shapesInGroup.forEach(shape => {
@@ -1631,6 +1726,8 @@ ViewerController.$inject = [
   'shapeSelectionService',
   'toolSelectorListenerService',
   'hierarchyCreationService',
+  'groupCreationService',
+  'groupSelectionDialogFactory',
 ];
 
 export default ViewerController;

@@ -319,14 +319,8 @@ class MediaControlsController {
     if (this.selectedPaperShape === null) {
       return;
     }
-    this._modalService.info(
-      {
-        title: 'Remove shape',
-        headline: 'The selected shape is going to be removed. Proceed?',
-        confirmButtonText: 'Delete',
-      },
-      () => this._$rootScope.$emit('action:delete-shape', this.selectedPaperShape)
-    );
+
+    this._$rootScope.$emit('action:ask-and-delete-shape', this.task, this.selectedPaperShape);
   }
 
   handlePlay() {

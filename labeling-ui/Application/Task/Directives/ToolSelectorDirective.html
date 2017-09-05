@@ -18,13 +18,13 @@
         <i class="icon icon-tool-{{thing.shape}}"></i>
     </button>
     <h1 ng-if="vm.drawableGroups.length > 0"><i class="fa fa-object-group"></i></h1>
-    <button ng-repeat="group in vm.drawableGroups"
-            class="tool-button tool-group tool-{{$index}} tool-{{group.shape}}"
-            ng-class="{'active': group.id === vm.selectedLabelStructureObject.id}"
-            ng-click="vm.setCurrentLabelStructureObject(group)"
-            tooltip="{{group.name}}"
+    <button
+            class="tool-button tool-group tool-0 tool-{{vm.firstDrawableGroup.shape}}"
+            ng-class="{'active': vm.isDrawableGroup(vm.selectedLabelStructureObject.id)}"
+            ng-click="vm.setCurrentLabelStructureObject(vm.firstDrawableGroup)"
+            tooltip="Create shape group"
     >
-        <i class="icon icon-tool-{{group.shape}}"></i>
+        <i class="icon icon-tool-{{vm.firstDrawableGroup.shape}}"></i>
     </button>
     <h1><i class="fa fa-th-large"></i></h1>
     <button ng-repeat="tool in vm.additionalTools"

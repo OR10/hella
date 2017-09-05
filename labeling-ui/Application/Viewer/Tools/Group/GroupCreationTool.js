@@ -11,9 +11,10 @@ class GroupCreationTool extends CreationTool {
    * @param {EntityColorService} entityColorService
    * @param {ToolService} toolService
    * @param {LabeledThingGroupService} labeledThingGroupService
-   * @param {GroupShapeNameService} groupShapeNameService
+   * @param {GroupNameService} groupNameService
+   * @param {GroupCreationService} groupCreationService
    */
-  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService, groupShapeNameService) {
+  constructor(drawingContext, $scope, $q, loggerService, hierarchyCreationService, entityColorService, toolService, labeledThingGroupService, groupNameService, groupCreationService) {
     super(drawingContext, $scope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -41,10 +42,16 @@ class GroupCreationTool extends CreationTool {
     this._rectangleCreationTool = this._toolService.getTool(drawingContext, 'rectangle');
 
     /**
-     * @type {GroupShapeNameService}
+     * @type {GroupNameService}
      * @private
      */
-    this._groupShapeNameService = groupShapeNameService;
+    this._groupNameService = groupNameService;
+
+    /**
+     * @type {GroupCreationService}
+     * @private
+     */
+    this._groupCreationService = groupCreationService;
   }
 
   /**
@@ -107,6 +114,7 @@ class GroupCreationTool extends CreationTool {
         this._completeEmpty();
         return;
       }
+
       const paperGroup = this._createPaperGroup(paperShape.id, toolActionStruct, shapes);
 
       this._complete(paperGroup);
@@ -125,7 +133,7 @@ class GroupCreationTool extends CreationTool {
     let paperGroup;
     this._context.withScope(() => {
       paperGroup = new PaperGroupRectangleMulti(
-        this._groupShapeNameService,
+        this._groupNameService,
         labeledThingGroupInFrame,
         id,
         shapes,
@@ -219,7 +227,8 @@ GroupCreationTool.$inject = [
   'entityColorService',
   'toolService',
   'labeledThingGroupService',
-  'groupShapeNameService',
+  'groupNameService',
+  'groupCreationService',
 ];
 
 export default GroupCreationTool;

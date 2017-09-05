@@ -39,24 +39,28 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    */
-  constructor(width,
-              height,
-              $scope,
-              $injector,
-              drawingContext,
-              toolService,
-              paperShapeFactory,
-              logger,
-              $timeout,
-              framePosition,
-              viewerMouseCursorService,
-              labeledThingGroupService,
-              applicationState,
-              modalService,
-              labeledThingGateway,
-              labeledThingGroupGateway,
-              shapeSelectionService) {
+  constructor(
+    width,
+    height,
+    $scope,
+    $injector,
+    drawingContext,
+    toolService,
+    paperShapeFactory,
+    logger,
+    $timeout,
+    framePosition,
+    viewerMouseCursorService,
+    labeledThingGroupService,
+    applicationState,
+    modalService,
+    labeledThingGateway,
+    labeledThingGroupGateway,
+    shapeSelectionService,
+    groupSelectionDialogFactory
+  ) {
     super(width, height, $scope, drawingContext);
 
     /**
@@ -100,6 +104,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._labeledThingGroupService = labeledThingGroupService;
+
+    /**
+     * @type {GroupSelectionDialogFactory}
+     * @private
+     */
+    this._groupSelectionDialogFactory = groupSelectionDialogFactory;
 
     /**
      * @type {Tool|null}
@@ -253,7 +263,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     ThingLayer.deregisterDeleteEventListener();
-    ThingLayer.deregisterDeleteEventListener = $scope.$root.$on('action:delete-shape', (event, shape) => {
+    ThingLayer.deregisterDeleteEventListener = $scope.$root.$on('action:delete-shape', (event, task, shape) => {
       switch (true) {
         case shape instanceof PaperThingShape:
           this._deleteThingShape(shape);
@@ -268,6 +278,75 @@ class ThingLayer extends PanAndZoomPaperLayer {
           throw new Error('Cannot delete shape of unknown type');
       }
     });
+
+    ThingLayer.deregisterUnassignGroupFromShapeEventListener();
+    ThingLayer.deregisterUnassignGroupFromShapeEventListener = $scope.$root.$on(
+      'action:unassign-group-from-shape',
+      (event, task, shape, group) => {
+        let labeledThing = undefined;
+        if (shape.labeledThingInFrame && shape.labeledThingInFrame.labeledThing) {
+          labeledThing = shape.labeledThingInFrame.labeledThing;
+        }
+        if (!labeledThing) {
+          throw new Error(`Can not unassign group ${group.id} from shape without labeledThing`);
+        }
+
+        this._applicationState.disableAll();
+        this._labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], group)
+          .then(() => this._deleteAfterAction())
+          .catch(() => this._onDeletionError());
+      }
+    );
+
+    ThingLayer.deregisterAskAndDeleteEventListener();
+    ThingLayer.deregisterAskAndDeleteEventListener = $scope.$root.$on(
+      'action:ask-and-delete-shape',
+      (event, task, shape) => {
+        let groupIds = [];
+        if (shape.labeledThingInFrame && shape.labeledThingInFrame.labeledThing && shape.labeledThingInFrame.labeledThing.groupIds) {
+          groupIds = shape.labeledThingInFrame.labeledThing.groupIds;
+        }
+
+        this._groupSelectionDialogFactory.createAsync(
+          task,
+          groupIds,
+          {
+            title: 'Remove Shape or Group',
+            headline: 'The selected object is going to be removed. Proceed?',
+            message: 'You may either delete the object itself or remove its association from a certain group.',
+            confirmButtonText: 'Delete',
+            defaultSelection: 'Delete the object itself',
+          },
+          group => {
+            if (group === undefined) {
+              // User voted to remove the shape itself
+              $scope.$root.$emit('action:delete-shape', task, shape);
+            } else {
+              // User wants a certain group unassigned
+              $scope.$root.$emit('action:unassign-group-from-shape', task, shape, group);
+            }
+          }
+        )
+          .then(selectionDialog => {
+            this._modalService.show(selectionDialog);
+          })
+          .catch(() => {
+            this._modalService.info(
+              {
+                title: 'Error retrieving group correlation',
+                headline: 'The list of corresponding groups to the selected labeled thing could not be loaded. Please try again or inform your label manager if the problem persists.',
+                confirmButtonText: 'Understood',
+              },
+              undefined,
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+          });
+      }
+    );
   }
 
   /**
@@ -290,37 +369,33 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._applicationState.disableAll();
 
     // TODO: fix the revision error in the backend
-    try {
-      this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
-        .then(() => {
-          this._shapeSelectionService.removeShape(shape);
-          shape.remove();
-          viewModel.selectedPaperShape = null;
-          viewModel.paperThingShapes = viewModel.paperThingShapes.filter(
-            paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
-          );
+    this._labeledThingGateway.deleteLabeledThing(selectedLabeledThing)
+      .then(() => {
+        this._shapeSelectionService.removeShape(shape);
+        shape.remove();
+        viewModel.selectedPaperShape = null;
+        viewModel.paperThingShapes = viewModel.paperThingShapes.filter(
+          paperThingShape => paperThingShape.labeledThingInFrame.id !== selectedLabeledThingInFrame.id
+        );
 
-          return selectedLabeledThing;
-        })
-        .then(() => {
-          selectedLabeledThing.groupIds.forEach(groupId => {
-            const relatedThingShapes = viewModel.paperThingShapes.filter(thingShape =>
-              thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
-            const shapeGroup = viewModel.paperGroupShapes.find(
-              paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
+        return selectedLabeledThing;
+      })
+      .then(() => {
+        selectedLabeledThing.groupIds.forEach(groupId => {
+          const relatedThingShapes = viewModel.paperThingShapes.filter(thingShape =>
+            thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
+          const shapeGroup = viewModel.paperGroupShapes.find(
+            paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
 
-            if (relatedThingShapes.length === 0) {
-              return this._deleteGroupShape(shapeGroup);
-            }
-          });
-        })
-        .then(() => {
-          this._deleteAfterAction();
-        })
-        .catch(() => this._onDeletionError());
-    } catch (error) {
-      this._onDeletionError();
-    }
+          if (relatedThingShapes.length === 0) {
+            return this._deleteGroupShape(shapeGroup);
+          }
+        });
+      })
+      .then(() => {
+        this._deleteAfterAction();
+      })
+      .catch(() => this._onDeletionError());
   }
 
   /**
@@ -337,33 +412,29 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._applicationState.disableAll();
 
-    try {
-      this._labeledThingGroupGateway.unassignLabeledThingsToLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
-        .then(() => {
-          return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
-        })
-        .then(() => {
-          this._shapeSelectionService.removeShape(shape);
-          shape.remove();
-          viewModel.selectedPaperShape = null;
-          viewModel.paperGroupShapes = viewModel.paperGroupShapes.filter(
-            paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id !== labeledThingGroup.id
-          );
-          this._deleteAfterAction();
-        })
-        .catch(() => this._onDeletionError());
-    } catch (error) {
-      this._onDeletionError();
-    }
+    this._labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
+      .then(() => {
+        return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      })
+      .then(() => {
+        this._shapeSelectionService.removeShape(shape);
+        shape.remove();
+        viewModel.selectedPaperShape = null;
+        viewModel.paperGroupShapes = viewModel.paperGroupShapes.filter(
+          paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id !== labeledThingGroup.id
+        );
+        this._deleteAfterAction();
+      })
+      .catch(() => this._onDeletionError());
   }
 
   /**
    * @private
    */
   _deleteAfterAction() {
+    this._context.withScope(scope => scope.view.update());
     this._applicationState.enableAll();
     this._$scope.$root.$emit('shape:delete:after');
-    this._context.withScope(scope => scope.view.update());
   }
 
   /**
@@ -684,7 +755,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
           paperShape => paperShape === this._$scope.vm.selectedPaperShape
         );
 
-      this._logger.groupStart('thinglayer:hiddenlabels', `Update visibility of non-selected LabeledThingsInFrame (${toHideShapes.length}/${drawnShapes.length})`);
+      this._logger.groupStart(
+        'thinglayer:hiddenlabels',
+        `Update visibility of non-selected LabeledThingsInFrame (${toHideShapes.length}/${drawnShapes.length})`
+      );
       toHideShapes
         .forEach(
           paperShape => {
@@ -942,6 +1016,10 @@ class ThingLayer extends PanAndZoomPaperLayer {
 }
 
 ThingLayer.deregisterDeleteEventListener = () => {
+};
+ThingLayer.deregisterUnassignGroupFromShapeEventListener = () => {
+};
+ThingLayer.deregisterAskAndDeleteEventListener = () => {
 };
 
 export default ThingLayer;

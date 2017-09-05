@@ -58,12 +58,14 @@ import ReplicationStateService from './Services/ReplicationStateService';
 import TaskReplicationService from './Services/TaskReplicationService';
 import ShapeSelectionService from './Services/ShapeSelectionService';
 import ToolSelectorListenerService from './Services/ToolSelectorListenerService';
+import GroupCreationService from './Services/GroupCreationService';
 
 import modalDialogProvider from './Services/ModalDialogs/ModalDialog';
 import infoDialogProvider from './Services/ModalDialogs/InfoDialog';
 import inputDialogProvider from './Services/ModalDialogs/InputDialog';
 import listDialogProvider from './Services/ModalDialogs/ListDialog';
 import selectionDialogProvider from './Services/ModalDialogs/SelectionDialog';
+import groupSelectionDialogFactory from './Services/ModalDialogs/GroupSelectionDialogFactory';
 
 import ConsoleLogger from './Loggers/ConsoleLogger';
 
@@ -112,6 +114,7 @@ class Common extends Module {
     this.module.service('applicationLoadingMaskStateService', ApplicationLoadingMaskStateService);
     this.module.service('inProgressService', InProgressService);
     this.module.service('pouchDbViewService', PouchDbViewService);
+    this.module.service('groupCreationService', GroupCreationService);
 
     this.module.service('pouchDbLiveMigration', PouchDbLiveMigration);
     this.module.service('pouchDbContextService', PouchDbContextService);
@@ -146,6 +149,7 @@ class Common extends Module {
     this.module.factory('InputDialog', inputDialogProvider);
     this.module.factory('ListDialog', listDialogProvider);
     this.module.factory('SelectionDialog', selectionDialogProvider);
+    this.module.service('groupSelectionDialogFactory', groupSelectionDialogFactory);
 
     this.registerDirective('loadingMask', LoadingMaskDirective);
     this.registerDirective('ribbon', RibbonDirective);

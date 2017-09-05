@@ -114,10 +114,11 @@ class UserProfileController {
       {id: 'ROLE_LABEL_MANAGER', label: 'Label Manager'},
       {id: 'ROLE_LABELER', label: 'Labeler'},
       {id: 'ROLE_OBSERVER', label: 'Observer'},
+      {id: 'ROLE_EXTERNAL_COORDINATOR', label: 'External Coordinator'},
     ];
 
     // If creator can not add organisations by hand, add new user to creators organisation
-    if (!this.userPermissions.canAddUserToAnyOrganisation) {
+    if (!this.userPermissions.canAssignUserToAnyOrganisation) {
       this.userOrganisations.push(organisationService.getModel());
     }
 
@@ -365,6 +366,9 @@ class UserProfileController {
       case 'ROLE_OBSERVER':
         this.user.roles = ['ROLE_OBSERVER'];
         break;
+      case 'ROLE_EXTERNAL_COORDINATOR':
+        this.user.roles = ['ROLE_EXTERNAL_COORDINATOR'];
+        break;
       default:
         throw new Error(`Unknown role: ${this.singleRole.id}`);
     }
@@ -440,7 +444,7 @@ class UserProfileController {
       this.validation.password = valid = false;
     }
 
-    if (this.userPermissions.canAddUserToAnyOrganisation && this.userOrganisations.length === 0) {
+    if (this.userPermissions.canAssignUserToAnyOrganisation && this.userOrganisations.length === 0) {
       this.validation.organisations = valid = false;
     }
 
@@ -459,7 +463,7 @@ class UserProfileController {
    * @returns {boolean|*}
    */
   showDropDownTableCell() {
-    return this.isOrganisationExpanded === true && this.userPermissions.canAddUserToAnyOrganisation;
+    return this.isOrganisationExpanded === true && (this.userPermissions.canAssignUserToAnyOrganisation || this.userPermissions.canAssignUserToOwnOrganisation);
   }
 
   /**

@@ -44,7 +44,7 @@
                 </td>
             </tr>
             <tr
-                ng-if="vm.userPermissions.canAddUserToAnyOrganisation"
+                ng-if="vm.userPermissions.canAssignUserToAnyOrganisation || vm.userPermissions.canAssignUserToOwnOrganisation"
                 ng-style="{'border-bottom': !vm.isOrganisationExpanded ? '2px solid #D7DDE4' : 'none' }"
             >
                 <td>Organisation</td>

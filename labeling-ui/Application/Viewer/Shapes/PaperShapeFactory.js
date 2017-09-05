@@ -19,9 +19,9 @@ class PaperShapeFactory {
   /**
    * @param {EntityColorService} entityColorService
    * @param {LabeledThingGroupService} labeledThingGroupService
-   * @param {GroupShapeNameService} groupShapeNameService
+   * @param {GroupNameService} groupNameService
    */
-  constructor(entityColorService, labeledThingGroupService, groupShapeNameService) {
+  constructor(entityColorService, labeledThingGroupService, groupNameService) {
     /**
      * @type {EntityColorService}
      * @private
@@ -35,10 +35,10 @@ class PaperShapeFactory {
     this._labeledThingGroupService = labeledThingGroupService;
 
     /**
-     * @type {GroupShapeNameService}
+     * @type {GroupNameService}
      * @private
      */
-    this._groupShapeNameService = groupShapeNameService;
+    this._groupNameService = groupNameService;
   }
 
   /**
@@ -63,7 +63,7 @@ class PaperShapeFactory {
    * @private
    */
   _createGroupRectangle(labeledThingGroupInFrame, shapesInBound, color) {
-    return new PaperGroupRectangleMulti(this._groupShapeNameService, labeledThingGroupInFrame, labeledThingGroupInFrame.id, shapesInBound, color);
+    return new PaperGroupRectangleMulti(this._groupNameService, labeledThingGroupInFrame, labeledThingGroupInFrame.id, shapesInBound, color);
   }
 
   /**
@@ -181,7 +181,7 @@ class PaperShapeFactory {
 PaperShapeFactory.$inject = [
   'entityColorService',
   'labeledThingGroupService',
-  'groupShapeNameService',
+  'groupNameService',
 ];
 
 export default PaperShapeFactory;

@@ -18,7 +18,8 @@ class LabeledThingGateway {
     couchDbModelSerializer,
     couchDbModelDeserializer,
     revisionManager,
-    pouchDbViewService) {
+    pouchDbViewService
+  ) {
     /**
      * @type {angular.$q}
      * @private
@@ -101,7 +102,7 @@ class LabeledThingGateway {
         .then(documents => {
           return documents.rows.filter(document => {
             return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
-            document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
+              document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
           });
         })
         .then(toBeDeletedDocuments => {
@@ -189,20 +190,24 @@ class LabeledThingGateway {
 
       const ltPromise = dbContext.remove(labeledThingDocument);
 
-      const ltifPromise = this._getAssociatedLabeledThingsInFrames(task, labeledThing).then(documents => {
-        // Mark found documents as deleted
-        const docs = documents.rows.map(document => {
-          const doc = document.doc;
-          doc._deleted = true;
-          return doc;
+      const ltifPromise = this._getAssociatedLabeledThingsInFrames(task, labeledThing)
+        .then(documents => {
+          // Mark found documents as deleted
+          return documents.rows.map(document => {
+            return {
+              _id: document.doc._id,
+              _rev: document.doc._rev,
+              _deleted: true,
+            };
+          });
+        })
+        .then(updatedDocs => {
+          // Bulk update as deleted marked documents
+          return dbContext.bulkDocs(updatedDocs);
         });
 
-        // Bulk update as deleted marked documents
-        return dbContext.bulkDocs(docs);
-      });
-
       // Return promise of the deletion of lt and associated ltifs
-      return this._$q.all(ltPromise, ltifPromise);
+      return this._$q.all([ltPromise, ltifPromise]);
     });
 
     // @TODO: is the return value (couchdb-document) correct for the implemented interface here?

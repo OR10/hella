@@ -5,6 +5,41 @@ class ShapeSelectionService {
      * @private
      */
     this._shapes = new Map();
+
+    /**
+     * @type {DrawingContext|undefined}
+     * @private
+     */
+    this._drawingContext = undefined;
+  }
+
+  /**
+   * Set the active main viewer {@link DrawingContext} to be used by this SelectionService.
+   *
+   * The DrawingContext needs to be set before any selection operation is executed.
+   *
+   * All operations on an unset context are ignored by the service.
+   *
+   * Setting a new context results in a reset of all before selected shapes to a non selected
+   * state.
+   *
+   * @param {DrawingContext} drawingContext
+   */
+  setDrawingContext(drawingContext) {
+    if (this._drawingContext === drawingContext) {
+      return;
+    }
+
+    this.clear();
+    this._drawingContext = drawingContext;
+  }
+
+  /**
+   * @returns {boolean}
+   * @private
+   */
+  _isDrawingContextUndefined() {
+    return this._drawingContext === undefined;
   }
 
   /**
@@ -15,20 +50,26 @@ class ShapeSelectionService {
    * @param {PaperThingShape} shape
    */
   toggleShape(shape) {
-    const firstShape = this.getSelectedShape();
-
-    // If the user tries to add a shape that is not the same, ignore
-    if (firstShape !== undefined && shape.constructor !== firstShape.constructor) {
+    if (this._isDrawingContextUndefined()) {
       return;
     }
 
-    if (this._shapes.has(shape.id)) {
-      shape.deselect();
-      this._shapes.delete(shape.id);
-    } else {
-      this._shapes.set(shape.id, shape);
-      this._selectAllShapes();
-    }
+    this._drawingContext.withScope(() => {
+      const firstShape = this.getSelectedShape();
+
+      // If the user tries to add a shape that is not the same, ignore
+      if (firstShape !== undefined && shape.constructor !== firstShape.constructor) {
+        return;
+      }
+
+      if (this._shapes.has(shape.id)) {
+        shape.deselect();
+        this._shapes.delete(shape.id);
+      } else {
+        this._shapes.set(shape.id, shape);
+        this._selectAllShapes();
+      }
+    });
   }
 
   /**
@@ -38,8 +79,14 @@ class ShapeSelectionService {
    * @returns {boolean}
    */
   removeShape(shape) {
-    shape.deselect();
-    this._shapes.delete(shape.id);
+    if (this._isDrawingContextUndefined()) {
+      return;
+    }
+
+    this._drawingContext.withScope(() => {
+      shape.deselect();
+      this._shapes.delete(shape.id);
+    });
   }
 
   /**
@@ -61,8 +108,16 @@ class ShapeSelectionService {
   }
 
   clear() {
-    this._deselectAllShapes();
-    this._shapes.clear();
+    if (this._isDrawingContextUndefined()) {
+      // Clearing the shape stack is always possíble
+      this._shapes.clear();
+      return;
+    }
+
+    this._drawingContext.withScope(() => {
+      this._deselectAllShapes();
+      this._shapes.clear();
+    });
   }
 
   /**

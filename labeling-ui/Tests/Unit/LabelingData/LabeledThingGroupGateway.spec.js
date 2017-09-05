@@ -68,7 +68,7 @@ describe('LabeledThingGroupGateway', () => {
     commonModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.Common');
 
-    pouchDbContext = jasmine.createSpyObj('pouchDbContext', ['query', 'get', 'remove', 'put']);
+    pouchDbContext = jasmine.createSpyObj('pouchDbContext', ['query', 'get', 'remove', 'put', 'allDocs']);
     thingGateway = jasmine.createSpyObj('LabeledThingGateway', ['saveLabeledThing']);
 
     pouchDbContext.query.and.callFake(() => {
@@ -118,6 +118,16 @@ describe('LabeledThingGroupGateway', () => {
     });
   });
 
+  beforeEach(() => {
+    pouchDbContext.allDocs.and.returnValue(
+      $q.resolve({
+        'offset': 0,
+        'total_rows': 0,
+        'rows': [],
+      })
+    );
+  });
+
   it('should load labeled thing groups and group in frames for frame index', () => {
     const task = createTask();
     const frameIndex = 0;
@@ -131,6 +141,139 @@ describe('LabeledThingGroupGateway', () => {
         key: [task.id, frameIndex],
       });
     expect(pouchDbContext.get).toHaveBeenCalledWith(labeledThingGroupResponse._id);
+  });
+
+  describe('getLabeledThingGroupsByIds', () => {
+    let task;
+    let ids;
+    let labeledThingGroupDocument;
+    let deserializedLabeledThingGroup;
+
+    beforeEach(() => {
+      task = createTask();
+
+      ids = [
+        'id-1',
+        'id-2',
+        'id-3',
+      ];
+
+      labeledThingGroupDocument = {
+        _id: '3224971765fa4f728ea25009576db0bc',
+        _rev: '1-5c6dbbf287f44c5f92420ff4c3e5d59d',
+        projectId: '1ddd13ede9a21be5a63943362a015487',
+        taskId: '1ddd13ede9a21be5a63943362a04382b',
+        groupType: 'lights-group',
+        lineColor: '10',
+        type: 'AnnoStationBundle.Model.LabeledThingGroup',
+        groupIds: [],
+      };
+
+      pouchDbContext.allDocs.and.returnValue($q.resolve({
+        offset: 0,
+        total_rows: 1,
+        rows: [{
+          id: '3224971765fa4f728ea25009576db0bc',
+          key: '3224971765fa4f728ea25009576db0bc',
+          value: {
+            rev: '1-5c6dbbf287f44c5f92420ff4c3e5d59d',
+          },
+          doc: labeledThingGroupDocument,
+        }],
+      }));
+
+      deserializedLabeledThingGroup = new LabeledThingGroup(
+        Object.assign({}, labeledThingGroupDocument, {id: labeledThingGroupDocument._id}, {task})
+      );
+    });
+
+    it('should fetch labeledThingGroups from pouchdb by list of ids', () => {
+      groupGateway.getLabeledThingGroupsByIds(task, ids);
+      $rootScope.$apply();
+
+      expect(pouchDbContext.allDocs).toHaveBeenCalledWith({
+        include_docs: true,
+        keys: ids,
+      });
+    });
+
+
+    it('should deserialize fetched labeledThingGroups by list of ids', () => {
+      spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroup');
+
+      groupGateway.getLabeledThingGroupsByIds(task, ids);
+      $rootScope.$apply();
+
+      expect(couchDbModelDeserializer.deserializeLabeledThingGroup).toHaveBeenCalledWith(
+        labeledThingGroupDocument,
+        task
+      );
+    });
+
+    it('should return deserialized labeledThingGroups by list of ids', () => {
+      const resultPromise = groupGateway.getLabeledThingGroupsByIds(task, ids);
+      const resultSpy = jasmine.createSpy('resultPromise resolved');
+      resultPromise.then(resultSpy);
+      $rootScope.$apply();
+
+      expect(resultSpy).toHaveBeenCalledWith([deserializedLabeledThingGroup]);
+    });
+
+    it('should fail if a requested id is missing', () => {
+      pouchDbContext.allDocs.and.returnValue($q.resolve({
+        offset: 0,
+        total_rows: 2,
+        rows: [
+          {
+            id: '3224971765fa4f728ea25009576db0bc',
+            key: '3224971765fa4f728ea25009576db0bc',
+            value: {
+              rev: '1-5c6dbbf287f44c5f92420ff4c3e5d59d',
+            },
+            doc: labeledThingGroupDocument,
+          },
+          {
+            id: '123456',
+            error: 'not_found',
+          },
+        ],
+      }));
+
+      const resultPromise = groupGateway.getLabeledThingGroupsByIds(task, ids);
+      const resultSpy = jasmine.createSpy('resultPromise rejected');
+      resultPromise.catch(resultSpy);
+      $rootScope.$apply();
+
+      expect(resultSpy).toHaveBeenCalledWith(jasmine.any(Error));
+    });
+
+    it('should fail if a requested id is deleted', () => {
+      pouchDbContext.allDocs.and.returnValue($q.resolve({
+        offset: 0,
+        total_rows: 2,
+        rows: [
+          {
+            id: '3224971765fa4f728ea25009576db0bc',
+            key: '3224971765fa4f728ea25009576db0bc',
+            value: {
+              rev: '1-5c6dbbf287f44c5f92420ff4c3e5d59d',
+            },
+            doc: labeledThingGroupDocument,
+          },
+          {
+            id: '123456',
+            deleted: true,
+          },
+        ],
+      }));
+
+      const resultPromise = groupGateway.getLabeledThingGroupsByIds(task, ids);
+      const resultSpy = jasmine.createSpy('resultPromise rejected');
+      resultPromise.catch(resultSpy);
+      $rootScope.$apply();
+
+      expect(resultSpy).toHaveBeenCalledWith(jasmine.any(Error));
+    });
   });
 
   it('should delete a labeled thing group', () => {
@@ -286,7 +429,7 @@ describe('LabeledThingGroupGateway', () => {
       task,
     });
 
-    groupGateway.unassignLabeledThingsToLabeledThingGroup([labeledThing], labeledThingGroup);
+    groupGateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], labeledThingGroup);
 
     $rootScope.$apply();
 

@@ -1,14 +1,14 @@
 import paper from 'paper';
 import PaperGroupRectangleMulti from 'Application/Viewer/Shapes/PaperGroupRectangleMulti';
 import PaperGroupRectangle from 'Application/Viewer/Shapes/PaperGroupRectangle';
-import PaperShapeGroupNameService from 'Application/Viewer/Services/GroupShapeNameService';
+import GroupNameService from 'Application/Viewer/Services/GroupNameService';
 
 describe('PaperGroupRectangleMulti', () => {
   let firstShape;
   let secondShape;
   let labeledThingGroupInFrame;
   let color;
-  let paperShapeGroupNameService;
+  let groupNameService;
 
   const shapeId = 'multi-shape-id';
 
@@ -35,7 +35,7 @@ describe('PaperGroupRectangleMulti', () => {
       primary: 'first-color',
       secondary: 'second-color',
     };
-    paperShapeGroupNameService = new PaperShapeGroupNameService();
+    groupNameService = new GroupNameService();
   });
 
   function createDefaultShapesArray() {
@@ -43,7 +43,7 @@ describe('PaperGroupRectangleMulti', () => {
   }
 
   function createMultiRectangle(shapes = createDefaultShapesArray()) {
-    return new PaperGroupRectangleMulti(paperShapeGroupNameService, labeledThingGroupInFrame, shapeId, shapes, color);
+    return new PaperGroupRectangleMulti(groupNameService, labeledThingGroupInFrame, shapeId, shapes, color);
   }
 
   function setupPaperJs() {
@@ -55,7 +55,7 @@ describe('PaperGroupRectangleMulti', () => {
 
   it('can be created', () => {
     const shapes = [];
-    const group = new PaperGroupRectangleMulti(paperShapeGroupNameService, null, null, shapes, null);
+    const group = new PaperGroupRectangleMulti(groupNameService, null, null, shapes, null);
     expect(group).toEqual(jasmine.any(PaperGroupRectangleMulti));
   });
 

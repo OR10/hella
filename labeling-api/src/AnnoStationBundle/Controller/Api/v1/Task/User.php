@@ -113,7 +113,7 @@ class User extends Controller\Base
     {
         $currentUser = $this->tokenStorage->getToken()->getUser();
 
-        if (!$this->userPermissions->hasPermission('unassignPermission') && $currentUser !== $user) {
+        if (!$this->userPermissions->hasPermission('canChangeUserTaskAssignment') && $currentUser !== $user) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to assign this task');
         }
     }

@@ -16,6 +16,7 @@ function selectionDialogProvider(ModalDialog) {
      * - `headline`
      * - `message`
      * - `data`: Object of `id` and `name`
+     * - `defaultSelection`: Text which is displayed if no item was chosen yet.
      * - `confirmButtonText`
      * - `cancelButtonText`
      *
@@ -37,6 +38,7 @@ function selectionDialogProvider(ModalDialog) {
         title: 'Selection required',
         heading: '',
         message: '',
+        defaultSelection: 'Please make a selection',
         data: [],
       });
     }
@@ -58,13 +60,14 @@ function selectionDialogProvider(ModalDialog) {
      */
     getScope(confirmCallback, cancelCallback) {
       const augmentedData = [
-        {name: 'Please make a selection'},
+        {name: this._content.defaultSelection},
       ].concat(this._content.data);
 
       return Object.assign(
         super.getScope(confirmCallback, cancelCallback),
         {
           data: augmentedData,
+          selection: this._options.selected,
         }
       );
     }

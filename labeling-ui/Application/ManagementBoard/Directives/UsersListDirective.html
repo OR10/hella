@@ -21,14 +21,14 @@
         </thead>
         <tbody>
         <tr ng-repeat="user in vm.users">
-            <td ui-sref="labeling.users.detail({userId: user.id})">{{user.username}}</td>
-            <td ui-sref="labeling.users.detail({userId: user.id})">{{user.email}}</td>
-            <td ui-sref="labeling.users.detail({userId: user.id})">{{user.roles | singleRole | readableRole}}
+            <td ng-click="vm.goToUserProfilePageIfAllowed(user)">{{user.username}}</td>
+            <td ng-click="vm.goToUserProfilePageIfAllowed(user)">{{user.email}}</td>
+            <td ng-click="vm.goToUserProfilePageIfAllowed(user)">{{user.roles | singleRole | readableRole}}
             </td>
-            <td ui-sref="labeling.users.detail({userId: user.id})">{{user.lastLogin === null ? 'Never' :
+            <td ng-click="vm.goToUserProfilePageIfAllowed(user)">{{user.lastLogin === null ? 'Never' :
                 (user.lastLogin | date:'d. MMM yyyy, HH:mm')}}
             </td>
-            <td ui-sref="labeling.users.detail({userId: user.id})">{{user.expiresAt === null ? 'Never' :
+            <td ng-click="vm.goToUserProfilePageIfAllowed(user)">{{user.expiresAt === null ? 'Never' :
                 (user.expiresAt | date:'d. MMM yyyy')}}
             </td>
             <td class="action-cell">

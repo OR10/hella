@@ -1,5 +1,5 @@
 import Environment from './Common/Support/Environment';
-import RemoteLogger from './Common/Loggers/RemoteLogger';
+// import RemoteLogger from './Common/Loggers/RemoteLogger';
 
 class ApplicationController {
   /**
@@ -62,7 +62,8 @@ class ApplicationController {
     });
 
     if (!Environment.isDevelopment && !Environment.isTesting && !Environment.isFunctionalTesting) {
-      loggerService.addLogger(new RemoteLogger(logGateway, user));
+      // Remote logging is only enabled if really needed for error finding
+      // loggerService.addLogger(new RemoteLogger(logGateway, user));
     }
   }
 
