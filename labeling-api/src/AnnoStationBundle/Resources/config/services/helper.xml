@@ -25,5 +25,9 @@
                  class="AnnoStationBundle\Helper\Export\ShapeColumns\Polygon"
                  public="false">
         </service>
+
+        <service id="annostation.labeling_api.helper.system_date_time_provider"
+                 class="AnnoStationBundle\Helper\SystemDateTimeProvider">
+        </service>
     </services>
 </container>
