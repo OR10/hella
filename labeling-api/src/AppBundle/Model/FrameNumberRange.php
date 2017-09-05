@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @CouchDB\Document
  */
-class FrameNumberRange
+class FrameNumberRange extends Base
 {
     /**
      * @CouchDB\Id

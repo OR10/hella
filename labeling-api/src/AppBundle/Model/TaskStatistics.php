@@ -4,7 +4,7 @@ namespace AppBundle\Model;
 
 use JMS\Serializer\Annotation as Serializer;
 
-class TaskStatistics
+class TaskStatistics extends Base
 {
     /**
      * @var LabelingTask

@@ -7,7 +7,7 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 /**
  * @CouchDB\Document
  */
-class Report
+class Report extends Base
 {
     const REPORT_STATUS_IN_PROGRESS = 'in_progress';
     const REPORT_STATUS_DONE = 'done';

@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @CouchDB\Document
  */
-class LabelingTask
+class LabelingTask extends Base
 {
     const TYPE_META_LABELING   = 'meta-labeling';
     const TYPE_OBJECT_LABELING = 'object-labeling';
@@ -176,12 +176,6 @@ class LabelingTask
     );
 
     /**
-     * @var \DateTime
-     * @CouchDB\Field(type="datetime")
-     */
-    private $createdAt;
-
-    /**
      * @var bool
      * @CouchDB\Field(type="boolean")
      */
@@ -215,7 +209,6 @@ class LabelingTask
      * @param string    $drawingTool
      * @param array     $predefinedClasses
      * @param array     $requiredImageTypes
-     * @param \DateTime $createdAt
      * @param bool      $hideAttributeSelector
      * @param string    $taskConfigurationId
      *
@@ -229,7 +222,6 @@ class LabelingTask
         string $drawingTool = null,
         array $predefinedClasses = array(),
         array $requiredImageTypes = array(),
-        \DateTime $createdAt = null,
         bool $hideAttributeSelector = false,
         string $taskConfigurationId = null
     ) {
@@ -241,7 +233,6 @@ class LabelingTask
             $drawingTool,
             $predefinedClasses,
             $requiredImageTypes,
-            $createdAt,
             $hideAttributeSelector,
             $taskConfigurationId
         );
@@ -255,7 +246,6 @@ class LabelingTask
      * @param string    $drawingTool
      * @param array     $predefinedClasses
      * @param array     $requiredImageTypes
-     * @param \DateTime $createdAt
      * @param bool      $hideAttributeSelector
      * @param string    $taskConfigurationId
      */
@@ -267,7 +257,6 @@ class LabelingTask
         string $drawingTool = null,
         array $predefinedClasses = array(),
         array $requiredImageTypes = array(),
-        \DateTime $createdAt = null,
         bool $hideAttributeSelector = false,
         string $taskConfigurationId = null
     ) {
@@ -280,7 +269,6 @@ class LabelingTask
         $this->requiredImageTypes    = $requiredImageTypes;
         $this->hideAttributeSelector = $hideAttributeSelector;
         $this->taskConfigurationId   = $taskConfigurationId;
-        $this->createdAt             = $createdAt ? clone $createdAt : new \DateTime();
     }
 
     /**
@@ -604,14 +592,6 @@ class LabelingTask
     public function getReopenByPhase()
     {
         return $this->reopen;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
     }
 
     /**

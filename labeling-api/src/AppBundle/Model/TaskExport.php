@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @CouchDB\Document
  */
-class TaskExport
+class TaskExport extends Base
 {
     /**
      * @CouchDB\Id

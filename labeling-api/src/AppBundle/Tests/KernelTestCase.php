@@ -102,6 +102,16 @@ class KernelTestCase extends Test\KernelTestCase
         $this->couchdbClient->createDatabase($this->couchDbNameReadOnly);
         $this->couchDbUsersFacade->purgeCouchDbsUserDatabase();
 
+        $systemDateTimeMock = \Phake::mock('AnnoStationBundle\Helper\SystemDateTimeProvider');
+        \Phake::when($systemDateTimeMock)->getDateTime->thenReturn(new \DateTime('2017-03-10 10:00'));
+
+        $eventListenerMock = \Phake::partialMock('AnnoStationBundle\EventListener\SetCreatedModifiedAtToDocuments', $systemDateTimeMock);
+
+        /** @var \Doctrine\Common\EventManager $eventManager */
+        $eventManager = $this->getService('doctrine_couchdb.odm.default_connection.event_manager');
+        $eventManager->removeEventSubscriber($this->getAnnostationService('event_listener.set_created_modified_at_to_documents'));
+        $eventManager->addEventSubscriber($eventListenerMock);
+
         $this->setUpImplementation();
     }
 

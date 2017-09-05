@@ -271,8 +271,10 @@ class LabelingTaskTest extends Tests\WebTestCase
             foreach ($sampleTask['status'] as $phase => $status) {
                 $task->withStatus($phase, $status);
             }
-            $task->withCreationDate($sampleTask['date']);
-            $this->labelingTaskFacade->save($task->build());
+            $task = $this->labelingTaskFacade->save($task->build());
+            // Overwrite the task creation date with test data
+            $task->setCreatedAt($sampleTask['date']);
+            $this->labelingTaskFacade->save($task);
         }
 
         foreach ($expectedTasksByPhase as $expectedPhase => $tasksByState) {
@@ -337,8 +339,7 @@ class LabelingTaskTest extends Tests\WebTestCase
             Model\LabelingTask::TYPE_OBJECT_LABELING,
             null,
             array(),
-            array(),
-            new \DateTime('2016-05-03 12:01:00')
+            array()
         );
 
         $newLabeledFrame = new Model\LabeledFrame($task, 0);

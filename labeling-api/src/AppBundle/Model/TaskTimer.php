@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @CouchDB\Document
  */
-class TaskTimer
+class TaskTimer extends Base
 {
     /**
      * @CouchDB\Id

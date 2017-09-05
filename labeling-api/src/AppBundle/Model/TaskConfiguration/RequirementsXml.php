@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Model\TaskConfiguration;
 
+use AppBundle\Model;
 use AppBundle\Model\TaskConfiguration;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use JMS\Serializer\Annotation as Serializer;
@@ -9,7 +10,7 @@ use AnnoStationBundle\Model as AnnoStationBundleModel;
 /**
  * @CouchDB\Document
  */
-class RequirementsXml implements TaskConfiguration
+class RequirementsXml extends Model\Base implements TaskConfiguration
 {
     const TYPE = 'requirements';
 

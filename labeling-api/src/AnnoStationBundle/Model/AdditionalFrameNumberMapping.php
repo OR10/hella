@@ -5,11 +5,12 @@ namespace AnnoStationBundle\Model;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use JMS\Serializer\Annotation as Serializer;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
+use AppBundle\Model as AppBundleModel;
 
 /**
  * @CouchDB\Document
  */
-class AdditionalFrameNumberMapping
+class AdditionalFrameNumberMapping extends AppBundleModel\Base
 {
     /**
      * @CouchDB\Id

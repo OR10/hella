@@ -7,7 +7,7 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 /**
  * @CouchDB\Document
  */
-class UserProfileImage
+class UserProfileImage extends Base
 {
     /**
      * @CouchDB\Id

@@ -4,11 +4,12 @@ namespace AnnoStationBundle\Model;
 
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use JMS\Serializer\Annotation as Serializer;
+use AppBundle\Model as AppBundleModel;
 
 /**
  * @CouchDB\Document
  */
-class LabeledThingGroupInFrame
+class LabeledThingGroupInFrame extends AppBundleModel\Base
 {
     /**
      * @CouchDB\Id
