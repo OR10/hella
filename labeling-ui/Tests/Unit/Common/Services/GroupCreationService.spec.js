@@ -5,7 +5,8 @@ describe('GroupCreationService', () => {
   let groupCreationService;
   let modalService;
   let selectionDialog;
-  let selectionDialogCallback;
+  let selectionDialogConfirmCallback;
+  let selectionDialogAbortCallback;
   let angularQ;
   let rootScope;
 
@@ -16,8 +17,9 @@ describe('GroupCreationService', () => {
 
   beforeEach(() => {
     modalService = jasmine.createSpyObj('modalService', ['show']);
-    selectionDialog = (config, callback) => {
-      selectionDialogCallback = callback;
+    selectionDialog = (config, confirmCallback, abortCallback) => {
+      selectionDialogConfirmCallback = confirmCallback;
+      selectionDialogAbortCallback = abortCallback;
     };
 
     groupCreationService = new GroupCreationService(modalService, selectionDialog, angularQ);
@@ -61,7 +63,24 @@ describe('GroupCreationService', () => {
         done();
       });
 
-      selectionDialogCallback('second-group');
+      selectionDialogConfirmCallback('second-group');
+      rootScope.$apply();
+    });
+
+    it('rejects the group creation with an object that clearly states that group creation has been aborted', done => {
+      const groupOne = {id: 'first-group'};
+      const groupTwo = {id: 'second-group'};
+      const groupThree = {id: 'third-group'};
+      const groups = [groupOne, groupTwo, groupThree];
+      groupCreationService.setAvailableGroups(groups);
+
+      groupCreationService.showGroupSelector().catch(options => {
+        expect(options.cancelledGroupCreation).toBe(true);
+        expect(modalService.show).toHaveBeenCalledTimes(1);
+        done();
+      });
+
+      selectionDialogAbortCallback();
       rootScope.$apply();
     });
 
@@ -75,7 +94,7 @@ describe('GroupCreationService', () => {
       groupCreationService.showGroupSelector().then(() => {
         done.fail('This should not have happened');
       });
-      selectionDialogCallback(undefined);
+      selectionDialogConfirmCallback(undefined);
       rootScope.$apply();
 
       expect(modalService.show).toHaveBeenCalledTimes(2);
