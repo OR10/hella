@@ -3,7 +3,6 @@ import {
   expectAllModalsToBeClosed,
   initApplication,
   mock,
-  dumpAllRequestsMade,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -224,8 +223,8 @@ describe('Polyline vertex', () => {
 
   it('should add new vertices to two polylines', done => {
     mock(sharedMocks.concat([
-        assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
-        assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -249,8 +248,8 @@ describe('Polyline vertex', () => {
 
   it('should add multiple new vertices to two polylines', done => {
     mock(sharedMocks.concat([
-        assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
-        assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -282,8 +281,8 @@ describe('Polyline vertex', () => {
 
   it('should add multiple new vertices to two polylines and remove vertex', done => {
     mock(sharedMocks.concat([
-        assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
-        assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')

@@ -3,7 +3,6 @@ import {
   expectAllModalsToBeClosed,
   initApplication,
   mock,
-  dumpAllRequestsMade,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -213,7 +212,10 @@ describe('Polygon vertex', () => {
       .then(() => clickAtBottomVertexOfFirstPolygon())
       .then(() => clickAtPositionOne())
       .then(
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddThreeNewVerticesToPolygonAndDeleteTwo'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(
+          'PolygonVertex',
+          'AddThreeNewVerticesToPolygonAndDeleteTwo'
+        ),
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
@@ -224,8 +226,8 @@ describe('Polygon vertex', () => {
 
   it('should add new vertices to two polygons', done => {
     mock(sharedMocks.concat([
-        assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-        assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -249,8 +251,8 @@ describe('Polygon vertex', () => {
 
   it('should add multiple new vertices to two polygons', done => {
     mock(sharedMocks.concat([
-        assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-        assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -282,8 +284,8 @@ describe('Polygon vertex', () => {
 
   it('should add multiple new vertices to two polygons and remove vertex', done => {
     mock(sharedMocks.concat([
-        assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-        assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
