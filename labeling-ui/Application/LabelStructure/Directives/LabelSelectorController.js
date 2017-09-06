@@ -489,6 +489,21 @@ export default class LabelSelectorController {
   }
 
   /**
+   * Get a meaningful title for the labelselector
+   *
+   * @returns {string}
+   */
+  getLabelSelectorTitle() {
+    if (this.selectedLabelStructureObject === null) {
+      return 'Properties';
+    } else if (this.selectedLabelStructureObject.name !== undefined) {
+      return this.selectedLabelStructureObject.name;
+    } else {
+      return this.selectedLabelStructureObject.id;
+    }
+  }
+
+  /**
    * @param {LabelStructureObject} labelStructureObject
    * @param {PaperShape} selectedPaperShape
    * @return {boolean}
