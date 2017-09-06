@@ -1,4 +1,6 @@
 import fs from 'fs';
+import path from 'path';
+import mkdirp from 'mkdirp';
 
 class CanvasInstructionLogManager {
 
@@ -145,9 +147,9 @@ class CanvasInstructionLogManager {
    * @private
    */
   _createFixture(testName, fixtureName, obj) {
-    const path = `./Tests/Fixtures/Canvas/${testName}/${fixtureName}.json`;
+    const fixturePath = `./Tests/Fixtures/Canvas/${testName}/${fixtureName}.json`;
 
-    this._storeFixture(path, JSON.stringify(obj));
+    this._storeFixture(fixturePath, JSON.stringify(obj));
   }
 
   /**
@@ -156,6 +158,11 @@ class CanvasInstructionLogManager {
    * @private
    */
   _storeFixture(targetPath, data) {
+    const directoryPath = path.dirname(targetPath);
+    if (!fs.existsSync(directoryPath)) {
+      mkdirp.sync(directoryPath);
+    }
+
     fs.writeFileSync(targetPath, data);
 
     // Throw an error here, to fail every test, which generates a fixture.
