@@ -263,7 +263,7 @@ class PaperTool extends Tool {
    * Returns the hitResult from paperjs
    *
    * @param {paper.Point} point
-   * @return {[null|PaperShape,null|Handle]}
+   * @return {null|PaperShape|Handle}
    * @protected
    */
   _getHitShapeAndHandle(point) {
