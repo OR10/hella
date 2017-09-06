@@ -310,6 +310,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._groupSelectionDialogFactory.createAsync(
           task,
           groupIds,
+          undefined,
           {
             title: 'Remove Shape or Group',
             headline: 'The selected object is going to be removed. Proceed?',

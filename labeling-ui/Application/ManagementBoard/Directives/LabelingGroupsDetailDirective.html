@@ -26,10 +26,7 @@
                 </td>
             </tr>
 
-            <tr
-                    ng-if="vm.userPermissions.canAssignUserToAnyOrganisation"
-                    ng-style="{'border-bottom': !vm.isUsersExpanded ? '2px solid #D7DDE4' : 'none' }"
-            >
+            <tr ng-style="{'border-bottom': !vm.isUsersExpanded ? '2px solid #D7DDE4' : 'none' }">
                 <td>Users</td>
                 <td ng-click="vm.clickAngle()">
                    <span class="organisation-tag" ng-repeat="labeler in vm.groupLabelers track by labeler.id">
