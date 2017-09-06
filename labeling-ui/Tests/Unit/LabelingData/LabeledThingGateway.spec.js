@@ -150,9 +150,12 @@ describe('LabeledThingGateway', () => {
   it('should save a new labeled thing', done => {
     // By default now a LT without any LTIF is incomplete (TTANNO-1924)
     const incompleteLabeledThingFrontendModel = clone(labeledThingFrontendModel);
+    const expectedIncompleteLabeledThingFrontendModel = clone(labeledThingFrontendModel);
     const incompleteLabeledThingPouchDbModel = clone(labeledThingPouchDbModel);
     incompleteLabeledThingFrontendModel.incomplete = true;
     incompleteLabeledThingPouchDbModel.incomplete = true;
+    expectedIncompleteLabeledThingFrontendModel.incomplete = true;
+    spyOn(incompleteLabeledThingFrontendModel, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
 
     const db = pouchDbHelper.database;
     Promise.resolve()
@@ -163,7 +166,7 @@ describe('LabeledThingGateway', () => {
         );
       })
       .then(storedLabeledThing => {
-        expect(storedLabeledThing).toEqual(incompleteLabeledThingFrontendModel);
+        expect(storedLabeledThing).toEqual(expectedIncompleteLabeledThingFrontendModel);
       })
       .then(() => {
         // Check if document is really stored correctly in the db.

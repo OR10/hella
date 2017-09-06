@@ -11,4 +11,6 @@ export default new LabeledFrame({
   "ghostClasses": null,
   "incomplete": true,
   "task": taskFixture,
+  "createdAt": "2017-09-05 16:11:56.000000",
+  "lastModifiedAt": "2017-09-05 16:11:56.000000"
 });

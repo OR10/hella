@@ -42,6 +42,8 @@ describe('CouchDbModelSerializer', () => {
       const couchDbModelWithoutRevision = angular.copy(couchDbModel);
       delete couchDbModelWithoutRevision._rev;
 
+      spyOn(frontendModel, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
+
       const serializedCouchDbModel = serializer.serialize(frontendModel);
       expect(serializedCouchDbModel).toEqual(couchDbModelWithoutRevision);
     });
@@ -56,6 +58,10 @@ describe('CouchDbModelSerializer', () => {
     it('serialize model by specifying its type', () => {
       const couchDbModelWithoutRevision = angular.copy(couchDbModel);
       delete couchDbModelWithoutRevision._rev;
+
+      if (type !== CouchDbModelSerializer.TYPE_FRAME_RANGE) {
+        spyOn(frontendModel, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
+      }
 
       const serializedCouchDbModel = serializer.serialize(frontendModel, type);
       expect(serializedCouchDbModel).toEqual(couchDbModelWithoutRevision);
