@@ -58,6 +58,14 @@ class GroupCreationService {
    * @param {$q} deferred
    */
   _showSelectionModal(deferred) {
+    const confirmCallback = groupId => {
+      this._groupSelected(groupId, deferred);
+    };
+
+    const abortCallback = () => {
+      this._abortGroupCreation(deferred);
+    };
+
     this._modalService.show(
       new this._SelectionDialog(
         {
@@ -67,8 +75,8 @@ class GroupCreationService {
           confirmButtonText: 'Accept and Create',
           data: this._availableGroups,
         },
-        groupId => { this._groupSelected(groupId, deferred); },
-        () => { this._abortGroupCreation(deferred); },
+        confirmCallback,
+        abortCallback,
         { selected: this._availableGroups[0].id }
       )
     );
