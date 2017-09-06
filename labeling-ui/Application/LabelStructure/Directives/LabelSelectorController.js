@@ -32,19 +32,21 @@ export default class LabelSelectorController {
    * @param {TaskGateway} taskGateway
    * @param {ShapeSelectionService} shapeSelectionService
    */
-  constructor($scope,
-              $rootScope,
-              $location,
-              linearLabelStructureVisitor,
-              annotationStructureVisitor,
-              labeledFrameGateway,
-              labeledThingGateway,
-              labeledThingInFrameGateway,
-              entityIdService,
-              modalService,
-              applicationState,
-              taskGateway,
-              shapeSelectionService) {
+  constructor(
+    $scope,
+    $rootScope,
+    $location,
+    linearLabelStructureVisitor,
+    annotationStructureVisitor,
+    labeledFrameGateway,
+    labeledThingGateway,
+    labeledThingInFrameGateway,
+    entityIdService,
+    modalService,
+    applicationState,
+    taskGateway,
+    shapeSelectionService
+  ) {
     /**
      * Pages displayed by the wizzards
      * @type {Array|null}
@@ -179,7 +181,8 @@ export default class LabelSelectorController {
           return this._clearLabelSelector();
         }
         this._startWithFirstPageOfLabelSelector();
-      });
+      }
+    );
 
     // Store and process choices made by the user
     $scope.$watch('vm.choices', newChoices => {
