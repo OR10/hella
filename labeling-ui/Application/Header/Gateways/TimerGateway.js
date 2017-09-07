@@ -1,3 +1,4 @@
+import moment from 'moment';
 /**
  * Gateway for retrieving timer data
  */
@@ -51,11 +52,21 @@ class TimerGateway {
       timeInSeconds: {
         labeling: 0,
       },
+      createdAt: this._getCurrentDate(),
+      lastModifiedAt: this._getCurrentDate(),
     };
 
     return this._packagingExecutor.execute(queueIdentifier, () => {
       return dbContext.post(timerDocument);
     });
+  }
+
+  /**
+   * @protected
+   * @returns {string}
+   */
+  _getCurrentDate() {
+    return moment().format('YYYY-MM-DD HH:mm:ss.000000');
   }
 
   /**
@@ -149,6 +160,10 @@ class TimerGateway {
       .then(timerDocument => {
         const phase = task.getPhase();
         timerDocument.timeInSeconds[phase] = time;
+        timerDocument.lastModifiedAt = this._getCurrentDate();
+        if (timerDocument.createdAt === undefined) {
+          timerDocument.createdAt = this._getCurrentDate();
+        }
 
         return this._packagingExecutor.execute(queueIdentifier, () => {
           return dbContext.put(timerDocument);
