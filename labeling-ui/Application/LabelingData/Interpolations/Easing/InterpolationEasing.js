@@ -49,10 +49,10 @@ class InterpolationEasing {
    * Returns either true or a string explaining why interpolation is not possible
    *
    * @param {Array.<LabeledThingInFrame>} ltifs
-   * @returns {true|string}
+   * @returns {{supportsInterpolation: boolean, reason: string}}}
    */
-  supportsInterpolationOf(ltifs) { // eslint-disable-line no-unused-vars
-    return true;
+  checkInterpolationSupport(ltifs) { // eslint-disable-line no-unused-vars
+    return {supportsInterpolation: true, reason: ''};
   }
 }
 

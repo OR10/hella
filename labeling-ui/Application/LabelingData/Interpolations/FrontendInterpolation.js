@@ -72,9 +72,9 @@ class FrontendInterpolation {
 
       const easing = this._getEasingForShapeAndType(labeledThingInFrames[0]);
 
-      const supportsInterpolation = easing.supportsInterpolationOf(labeledThingInFramesWithGhosts);
-      if (supportsInterpolation !== true) {
-        throw new Error(supportsInterpolation);
+      const interpolationSupport = easing.checkInterpolationSupport(labeledThingInFramesWithGhosts);
+      if (interpolationSupport.supportsInterpolation !== true) {
+        throw new Error(interpolationSupport.reason);
       }
 
       const savePromises = [];

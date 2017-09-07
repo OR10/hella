@@ -61,16 +61,16 @@ class LinearPolyInterpolationEasing extends InterpolationEasing {
   /**
    * @param {Array.<LabeledThingInFrame>} ltifs
    */
-  supportsInterpolationOf(ltifs) {
+  checkInterpolationSupport(ltifs) {
     const vertexLengthMissmatches = ltifs
       .map(ltif => ltif.shapes[0].points.length)
       .filter(length => length !== ltifs[0].shapes[0].points.length);
 
     if (vertexLengthMissmatches === 0) {
-      return true;
+      return {supportsInterpolation: true, reason: ''};
     }
 
-    return 'Shapes with variable vertex count can not be interpolated';
+    return {supportsInterpolation: false, reason: 'Shapes with variable vertex count can not be interpolated'};
   }
 }
 
