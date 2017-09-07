@@ -44,8 +44,7 @@ function getPouchDbCustomBootstrap(mocks) {
 
     let transformedDocument = {
       fileName: `${mock.containingDirectory}/${mock.fileName}`,
-      labeledThings: [],
-      labeledThingsInFrame: []
+      documents: []
     }
 
     if (things.labeledThings) {
@@ -68,7 +67,7 @@ function getPouchDbCustomBootstrap(mocks) {
         delete labeledThing.id;
 
         documents.push(labeledThing);
-        transformedDocument.labeledThings.push(labeledThing);
+        transformedDocument.documents.push(labeledThing);
       });
     }
 
@@ -85,18 +84,14 @@ function getPouchDbCustomBootstrap(mocks) {
         delete ltif.ghostClasses;
       });
       documents = documents.concat(things.labeledThingsInFrame);
-      transformedDocument.labeledThingsInFrame = transformedDocument.labeledThingsInFrame.concat(things.labeledThingsInFrame);
+      transformedDocument.documents = transformedDocument.documents.concat(things.labeledThingsInFrame);
     }
 
     transformedDocuments.push(transformedDocument);
   });
 
   transformedDocuments.forEach(document => {
-    const fileContents = {
-      labeledThings: document.labeledThings,
-      labeledThingsInFrame: document.labeledThingsInFrame,
-    };
-    saveMock(document.fileName, fileContents);
+    saveMock(document.fileName, document.documents);
   });
 
   return [
