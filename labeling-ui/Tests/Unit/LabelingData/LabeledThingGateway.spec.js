@@ -199,6 +199,9 @@ describe('LabeledThingGateway', () => {
       taskFrontendModel
     );
 
+    const expectedChangedLabeledThingFrontendModel = clone(changedLabeledThingFrontendModel);
+    spyOn(changedLabeledThingFrontendModel, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
+
     Promise.resolve()
     // Prepare document in database
       .then(() => db.put(labeledThingCouchDbModel))
@@ -210,7 +213,7 @@ describe('LabeledThingGateway', () => {
         );
       })
       .then(storedLabeledThing => {
-        expect(storedLabeledThing).toEqual(changedLabeledThingFrontendModel);
+        expect(storedLabeledThing).toEqual(expectedChangedLabeledThingFrontendModel);
       })
       // Check if document is really stored correctly in the db.
       .then(() => db.get(changedLabeledThingCouchDbModel._id))
