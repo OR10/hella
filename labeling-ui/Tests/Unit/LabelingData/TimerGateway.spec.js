@@ -115,6 +115,8 @@ describe('TimerGateway', () => {
         timeInSeconds: {
           labeling: 0,
         },
+        createdAt: '2017-09-05 16:11:56.000000',
+        lastModifiedAt: '2017-09-05 16:11:56.000000',
       };
 
       packagingExecutorMock.execute.and.callFake((queueIdentifier, callback) => {
@@ -123,6 +125,7 @@ describe('TimerGateway', () => {
         expect(pouchDbMock.post).toHaveBeenCalledWith(expectedDocument);
         done();
       });
+      spyOn(gateway, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
 
       gateway.createTimerDocument(project, task, user);
     });
@@ -213,12 +216,15 @@ describe('TimerGateway', () => {
 
       expectedTimerDocument = angular.copy(pouchTimerDocument);
       expectedTimerDocument.timeInSeconds[phase] = time;
+      expectedTimerDocument.createdAt = '2017-09-05 16:11:56.000000';
+      expectedTimerDocument.lastModifiedAt = '2017-09-05 16:11:56.000000';
 
       setupSuccessfulPouchFetchQuery();
     });
 
 
     it('updates the Timer Document with the given time', () => {
+      spyOn(gateway, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
       gateway.updateTime(task, {}, time);
       rootScope.$apply();
 
