@@ -8,7 +8,7 @@ use AnnoStationBundle\Model as AnnoStationBundleModel;
 /**
  * @CouchDB\Document
  */
-class LabelingGroup
+class LabelingGroup extends Base
 {
     /**
      * @CouchDB\Id

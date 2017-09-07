@@ -7,7 +7,7 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 /**
  * @CouchDB\Document
  */
-class PrelabeledFrame
+class PrelabeledFrame extends Base
 {
     /**
      * @CouchDB\Id

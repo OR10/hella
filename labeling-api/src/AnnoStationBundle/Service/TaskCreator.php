@@ -478,7 +478,6 @@ class TaskCreator
             $drawingTool,
             $predefinedClasses,
             $imageTypes,
-            null,
             $hideAttributeSelector,
             $taskConfigurationId
         );

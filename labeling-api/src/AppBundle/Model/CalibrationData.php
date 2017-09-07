@@ -8,7 +8,7 @@ use AnnoStationBundle\Model as AnnoStationBundleModel;
 /**
  * @CouchDB\Document
  */
-class CalibrationData
+class CalibrationData extends Base
 {
     /**
      * @CouchDB\Id

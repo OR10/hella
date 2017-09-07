@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @CouchDB\Document
  */
-class MonitoringCheckResults
+class MonitoringCheckResults extends Base
 {
     /**
      * @CouchDB\Id

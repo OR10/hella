@@ -10,7 +10,7 @@ use AnnoStationBundle\Model as AnnoStationBundleModel;
 /**
  * @CouchDB\Document
  */
-class Video
+class Video extends Base
 {
     /**
      * @CouchDB\Id

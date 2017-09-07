@@ -9,7 +9,7 @@ use AnnoStationBundle\Model as AnnoStationBundleModel;
 /**
  * @CouchDB\Document
  */
-class Project
+class Project extends Base
 {
     const STATUS_TODO        = 'todo';
     const STATUS_IN_PROGRESS = 'in_progress';

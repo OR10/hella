@@ -8,7 +8,7 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 /**
  * @CouchDB\Document
  */
-class Role
+class Role extends Base
 {
 
     /**

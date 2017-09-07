@@ -112,8 +112,10 @@ class LabelingGroupTest extends Tests\WebTestCase
             $content['result']['labelingGroups'],
             [
                 [
-                    'id'             => $labelingGroup->getId(),
-                    'rev'            => $labelingGroup->getRev(),
+                    'createdAt'       => '2017-03-10T10:00:00+0000',
+                    'lastModifiedAt'  => '2017-03-10T10:00:00+0000',
+                    'id'              => $labelingGroup->getId(),
+                    'rev'             => $labelingGroup->getRev(),
                     'coordinators'    => [],
                     'labelManagers'   => [
                         $labelManagerUser1->getId(),

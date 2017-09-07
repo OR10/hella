@@ -187,18 +187,6 @@ class LabelingTaskBuilder
     }
 
     /**
-     * @param \DateTime $dateTime
-     *
-     * @return $this
-     */
-    public function withCreationDate(\DateTime $dateTime)
-    {
-        $this->creationDate = $dateTime;
-
-        return $this;
-    }
-
-    /**
      * @param $labelStructure
      *
      * @return $this
@@ -251,7 +239,6 @@ class LabelingTaskBuilder
             $this->drawingTool,
             [],
             [],
-            $this->creationDate,
             false,
             $taskConfigurationId
         );

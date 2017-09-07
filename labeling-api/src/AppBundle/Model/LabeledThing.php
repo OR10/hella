@@ -7,7 +7,7 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 /**
  * @CouchDB\Document
  */
-class LabeledThing
+class LabeledThing extends Base
 {
     /**
      * @CouchDB\Id(strategy="ASSIGNED")

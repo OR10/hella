@@ -391,5 +391,11 @@
             <argument>%couchdb_port%</argument>
             <tag name="liip_monitor.check" alias="validate_doc_update_document_existence_in_task_databases" group="default"/>
         </service>
+
+        <service id="annostation.labeling_api.event_listener.set_created_modified_at_to_documents"
+                 class="AnnoStationBundle\EventListener\SetCreatedModifiedAtToDocuments">
+            <argument type="service" id="annostation.labeling_api.helper.system_date_time_provider" />
+            <tag name="doctrine_couchdb.event_subscriber"/>
+        </service>
     </services>
 </container>

@@ -105,7 +105,6 @@ class CouchDbTestCase extends Tests\WebTestCase
             $drawingTool,
             [],
             [],
-            null,
             false,
             $taskConfiguration === null ? null : $taskConfiguration->getId()
         );
@@ -142,6 +141,8 @@ class CouchDbTestCase extends Tests\WebTestCase
             $shapes
         );
         $labeledThingInFrame->setIdentifierName('fooobar');
+        $labeledThingInFrame->setCreatedAt(new \DateTime('2017-03-10 10:00:00'));
+        $labeledThingInFrame->setLastModifiedAt(new \DateTime('2017-03-10 10:00:00'));
 
         if ($id !== null) {
             $labeledThingInFrame->setId($id);

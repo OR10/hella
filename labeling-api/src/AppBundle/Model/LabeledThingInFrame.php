@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @CouchDB\Document
  */
-class LabeledThingInFrame
+class LabeledThingInFrame extends Base
 {
     /**
      * @CouchDB\Id(strategy="ASSIGNED")
@@ -137,6 +137,8 @@ class LabeledThingInFrame
         $copy->incomplete     = $this->incomplete;
         $copy->ghost          = $this->ghost;
         $copy->identifierName = $this->identifierName;
+        $copy->createdAt      = $this->createdAt;
+        $copy->lastModifiedAt = $this->lastModifiedAt;
 
         if ($toFrameIndex === null) {
             $copy->frameIndex = $this->frameIndex;

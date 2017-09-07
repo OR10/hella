@@ -9,7 +9,7 @@ use AppBundle\Model as AppBundleModel;
 /**
  * @CouchDB\Document
  */
-class LabeledThingGroup
+class LabeledThingGroup extends AppBundleModel\Base
 {
     /**
      * @CouchDB\Id

@@ -58,6 +58,16 @@ class User extends BaseUser
     protected $couchDbPassword;
 
     /**
+     * @CouchDB\Field(type="datetime")
+     */
+    protected $createdAt;
+
+    /**
+     * @CouchDB\Field(type="datetime")
+     */
+    protected $lastModifiedAt;
+
+    /**
      * User constructor.
      */
     public function __construct()
@@ -304,5 +314,37 @@ class User extends BaseUser
         } else {
             return $default;
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastModifiedAt()
+    {
+        return $this->lastModifiedAt;
+    }
+
+    /**
+     * @param mixed $lastModifiedAt
+     */
+    public function setLastModifiedAt($lastModifiedAt)
+    {
+        $this->lastModifiedAt = $lastModifiedAt;
     }
 }

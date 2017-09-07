@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @CouchDB\Document
  */
-class Export
+class Export extends Base
 {
     const EXPORT_STATUS_IN_WAITING = 'waiting';
     const EXPORT_STATUS_IN_PROGRESS = 'in_progress';
