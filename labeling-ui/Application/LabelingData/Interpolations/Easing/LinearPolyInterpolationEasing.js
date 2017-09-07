@@ -66,7 +66,7 @@ class LinearPolyInterpolationEasing extends InterpolationEasing {
       .map(ltif => ltif.shapes[0].points.length)
       .filter(length => length !== ltifs[0].shapes[0].points.length);
 
-    if (vertexLengthMissmatches === 0) {
+    if (vertexLengthMissmatches.length === 0) {
       return {supportsInterpolation: true, reason: ''};
     }
 
