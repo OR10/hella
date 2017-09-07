@@ -1,4 +1,5 @@
 require('babel-core/register');
+const browserstack = require('browserstack-local');
 
 // We don't have SystemJS available here so we can't use 'import'
 const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter').default;
@@ -70,15 +71,44 @@ exports.config = {
 
 if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
   // CI MODE
-  exports.config.multiCapabilities = [
-    {
-      'browserName': 'chrome',
-      'platform': 'WINDOWS',
-      'chromeOptions': {
-        'args': ['--no-sandbox' ]
-      }
-    },
-  ];
+  // exports.config.multiCapabilities = [
+  //   {
+  //     'browserName': 'chrome',
+  //     'platform': 'WINDOWS',
+  //     'chromeOptions': {
+  //       'args': ['--no-sandbox' ]
+  //     }
+  //   },
+  // ];
+
+  exports.config.capabilities = {
+    'browserstack.user': 'dominikehrenberg1',
+    'browserstack.key': 'vK4saX1buKopB38pifgk',
+    'resolution': '1920x1080',
+    'browserstack.local': true,
+    'browserName': 'chrome',
+  };
+
+  // Code to start browserstack local before start of test
+  exports.config.beforeLaunch = () => {
+    console.log("Connecting local");
+    return new Promise((resolve, reject) => {
+      exports.bs_local = new browserstack.Local();
+      exports.bs_local.start({'key': exports.config.capabilities['browserstack.key'] }, error => {
+        if (error) return reject(error.message);
+        console.log('Connected. Now testing...');
+
+        resolve();
+      });
+    });
+  };
+
+  // Code to stop browserstack local after end of test
+  exports.config.afterLaunch = () => {
+    return new Promise(resolve => {
+      exports.bs_local.stop(resolve);
+    });
+  };
 } else {
   exports.config.capabilities = {
     'browserName': 'chrome',

@@ -687,7 +687,8 @@ describe('LabelSelector (right sidebar)', () => {
       })
         .then(() => clickPedestrian())
         .then(() => browser.sleep(250))
-        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(pedestrianLabelTitleTexts))
+        .then(() => labelSelectorHelper.getTitleTexts())
+        .then(titleTexts => expect(titleTexts).toEqual(pedestrianLabelTitleTexts))
         .then(done);
     });
 
@@ -728,7 +729,8 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => browser.sleep(250))
         .then(() => clickPedestrian()) // Switch back to pedestrian to check if values were kept
         .then(() => browser.sleep(250))
-        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(pedestrianLabelTitleTexts))
+        .then(() => labelSelectorHelper.getTitleTexts())
+        .then(titleTexts => expect(titleTexts).toEqual(pedestrianLabelTitleTexts))
         .then(done);
     });
   });
