@@ -77,6 +77,16 @@ function getPouchDbCustomBootstrap(mocks) {
       });
       documents = documents.concat(things.labeledThingsInFrame);
     }
+
+    if (things.labeledThingGroups) {
+      things.labeledThingGroups.forEach(ltg => {
+        ltg._id = ltg.id;
+        ltg.type = 'AnnoStationBundle.Model.LabeledThingGroup';
+
+        delete ltg.id;
+      });
+      documents = documents.concat(things.labeledThingGroups);
+    }
   });
 
   return [
@@ -110,8 +120,9 @@ export function mock(sharedMocks) {
   mocks.specific = mocks.shared.filter((mock, key) => {
     const hasLabeledThings = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThings);
     const hasLabeledThingsInFrame = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThingsInFrame);
+    const hasLabeledThingGroups = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThingGroups);
     const isGetRequest = mock.request.method.toUpperCase() === 'GET';
-    const mustBeStoredInCouch = ((hasLabeledThings || hasLabeledThingsInFrame) && isGetRequest);
+    const mustBeStoredInCouch = ((hasLabeledThings || hasLabeledThingsInFrame || hasLabeledThingGroups) && isGetRequest);
     if (mustBeStoredInCouch) {
       specificMocksKeys.push(key);
     }
