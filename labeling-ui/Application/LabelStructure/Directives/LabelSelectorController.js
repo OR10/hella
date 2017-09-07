@@ -494,7 +494,7 @@ export default class LabelSelectorController {
    * @returns {string}
    */
   getLabelSelectorTitle() {
-    if (this.selectedLabelStructureObject === null) {
+    if (!this.selectedLabelStructureObject) {
       return 'Properties';
     } else if (this.selectedLabelStructureObject.name !== undefined) {
       return this.selectedLabelStructureObject.name;
