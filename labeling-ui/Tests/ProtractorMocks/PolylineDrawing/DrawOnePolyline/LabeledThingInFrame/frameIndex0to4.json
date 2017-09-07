@@ -1,66 +1,48 @@
-{
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
-    "method": "GET",
-    "queryString": {
-      "limit": "5",
-      "offset": "0"
-    }
+[
+  {
+    "classes": [],
+    "frameRange": {
+      "startFrameIndex": 1,
+      "endFrameIndex": 1,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "incomplete": true,
+    "lineColor": 6,
+    "taskId": "TASKID-TASKID",
+    "_id": "LABELED-THING-ID-1",
+    "type": "AppBundle.Model.LabeledThing"
   },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThings": {
-          "LABELED-THING-ID-1": {
-            "classes": [],
-            "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 1
-            },
-            "id": "LABELED-THING-ID-1",
-            "incomplete": true,
-            "lineColor": "6",
-            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-            "taskId": "TASKID-TASKID"
-          }
-        },
-        "labeledThingsInFrame": [
+  {
+    "classes": [],
+    "frameIndex": 0,
+    "incomplete": true,
+    "labeledThingId": "LABELED-THING-ID-1",
+    "shapes": [
+      {
+        "id": "SHAPE-ID-1",
+        "points": [
           {
-            "classes": [],
-            "frameIndex": 0,
-            "ghost": false,
-            "ghostClasses": null,
-            "id": "LABELED-THING-IN-FRAME-ID-1",
-            "incomplete": true,
-            "labeledThingId": "LABELED-THING-ID-1",
-            "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "shapes": [
-              {
-                "id": "SHAPE-ID-1",
-                "points": [
-                  {
-                    "x": 200,
-                    "y": 100
-                  },
-                  {
-                    "x": 300,
-                    "y": 200
-                  },
-                  {
-                    "x": 200,
-                    "y": 300
-                  },
-                  {
-                    "x": 100,
-                    "y": 200
-                  }
-                ],
-                "type": "polyline"
-              }
-            ]
+            "x": 200,
+            "y": 100
+          },
+          {
+            "x": 300,
+            "y": 200
+          },
+          {
+            "x": 200,
+            "y": 300
+          },
+          {
+            "x": 100,
+            "y": 200
           }
-        ]
+        ],
+        "type": "polyline"
       }
-    }
+    ],
+    "_id": "LABELED-THING-IN-FRAME-ID-1",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
   }
-}
+]
