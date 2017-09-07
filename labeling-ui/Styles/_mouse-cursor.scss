@@ -44,6 +44,14 @@
   cursor: pointer;
 }
 
+.cursor-add {
+  cursor: copy;
+}
+
+.cursor-remove {
+  cursor: cell;
+}
+
 .cursor-none {
   cursor: none;
 }

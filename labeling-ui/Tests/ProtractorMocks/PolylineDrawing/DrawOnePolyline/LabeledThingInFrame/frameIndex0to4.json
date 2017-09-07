@@ -14,8 +14,8 @@
           "LABELED-THING-ID-1": {
             "classes": [],
             "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 1
+              "startFrameNumber": 0,
+              "endFrameNumber": 0
             },
             "id": "LABELED-THING-ID-1",
             "incomplete": true,
@@ -31,6 +31,7 @@
             "ghost": false,
             "ghostClasses": null,
             "id": "LABELED-THING-IN-FRAME-ID-1",
+            "identifierName": "sign",
             "incomplete": true,
             "labeledThingId": "LABELED-THING-ID-1",
             "rev": "2-b65227715b51dadd97f8521646e88a22",
