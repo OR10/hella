@@ -1,0 +1,38 @@
+{
+  "labeledThings": [
+    {
+      "classes": [],
+      "frameRange": {
+        "startFrameIndex": 1,
+        "endFrameIndex": 1,
+        "type": "AppBundle.Model.FrameIndexRange"
+      },
+      "incomplete": true,
+      "lineColor": 6,
+      "taskId": "TASKID-TASKID",
+      "_id": "LABELED-THING-ID-1",
+      "type": "AppBundle.Model.LabeledThing"
+    }
+  ],
+  "labeledThingsInFrame": [
+    {
+      "classes": [],
+      "frameIndex": 0,
+      "incomplete": true,
+      "labeledThingId": "LABELED-THING-ID-1",
+      "shapes": [
+        {
+          "id": "SHAPE-ID-1",
+          "point": {
+            "x": 200,
+            "y": 100
+          },
+          "type": "point"
+        }
+      ],
+      "_id": "LABELED-THING-IN-FRAME-ID-1",
+      "taskId": "TASKID-TASKID",
+      "type": "AppBundle.Model.LabeledThingInFrame"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import PouchDb from '../PouchDb/PouchDbWrapper';
 import httpMock from 'protractor-http-mock';
 import {cloneDeep} from 'lodash';
 import ExtendedBrowser from './ExtendedBrowser';
+import fs from 'fs';
 
 export function getMockRequestsMade(mock) {
   return Promise.resolve()
@@ -33,12 +34,19 @@ function waitForApplicationReady() {
 
 function getPouchDbCustomBootstrap(mocks) {
   let documents = [];
+  let transformedDocuments = [];
 
   mocks.forEach(mock => {
     const things = cloneDeep(mock.response.data.result);
     let labeledThing;
     let taskId;
     let projectId;
+
+    let transformedDocument = {
+      fileName: `${mock.containingDirectory}/bootstrap-${mock.fileName}`,
+      labeledThings: [],
+      labeledThingsInFrame: []
+    }
 
     if (things.labeledThings) {
       const labeledThingKeys = Object.keys(things.labeledThings);
@@ -60,6 +68,7 @@ function getPouchDbCustomBootstrap(mocks) {
         delete labeledThing.id;
 
         documents.push(labeledThing);
+        transformedDocument.labeledThings.push(labeledThing);
       });
     }
 
@@ -76,7 +85,21 @@ function getPouchDbCustomBootstrap(mocks) {
         delete ltif.ghostClasses;
       });
       documents = documents.concat(things.labeledThingsInFrame);
+      transformedDocument.labeledThingsInFrame = transformedDocument.labeledThingsInFrame.concat(things.labeledThingsInFrame);
     }
+
+    transformedDocuments.push(transformedDocument);
+  });
+
+  transformedDocuments.forEach(document => {
+    let fileContents = {
+      labeledThings: document.labeledThings,
+      labeledThingsInFrame: document.labeledThingsInFrame,
+    };
+    fileContents = JSON.stringify(fileContents, null, 2);
+
+    fs.writeFileSync(document.fileName, fileContents);
+    console.log(`Wrote file ${document.fileName}`);
   });
 
   return [
