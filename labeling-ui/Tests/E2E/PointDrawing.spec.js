@@ -35,7 +35,7 @@ describe('Point drawing', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  fit('should load and draw one point shape', done => {
+  it('should load and draw one point shape', done => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.DrawOnePoint.LabeledThingInFrame.frameIndex0,
       assets.mocks.PointDrawing.DrawOnePoint.LabeledThingInFrame.frameIndex0to4,
