@@ -121,6 +121,7 @@ describe('Polygon vertex', () => {
       .then(() => selectFirstPolygon())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
+      .then(() => releaseAltKey())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddNewVertexToPolygon'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -142,6 +143,7 @@ describe('Polygon vertex', () => {
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
       .then(() => clickAtPositionTwo())
+      .then(() => releaseAltKey())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddTwoNewVerticesToPolygon'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -164,6 +166,7 @@ describe('Polygon vertex', () => {
       .then(() => clickAtPositionOne())
       .then(() => clickAtPositionTwo())
       .then(() => clickAtPositionThree())
+      .then(() => releaseAltKey())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddThreeNewVerticesToPolygon'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -187,6 +190,7 @@ describe('Polygon vertex', () => {
       .then(() => clickAtPositionTwo())
       .then(() => clickAtPositionThree())
       .then(() => clickAtBottomVertexOfFirstPolygon())
+      .then(() => releaseAltKey())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddThreeNewVerticesToPolygonAndDeleteOne'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -211,12 +215,10 @@ describe('Polygon vertex', () => {
       .then(() => clickAtPositionThree())
       .then(() => clickAtBottomVertexOfFirstPolygon())
       .then(() => clickAtPositionOne())
+      .then(() => releaseAltKey())
       .then(
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs(
-          'PolygonVertex',
-          'AddThreeNewVerticesToPolygonAndDeleteTwo'
-        ),
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddThreeNewVerticesToPolygonAndDeleteTwo'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.AddThreeNewVerticesToPolygonAndDeleteTwo);
@@ -309,6 +311,7 @@ describe('Polygon vertex', () => {
       .then(() => pressDownAltKey())
       .then(() => clickAtBottomVertexOfFirstPolygon())
       .then(() => clickAtTopVertexOfFirstPolygon())
+      .then(() => releaseAltKey())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddNewVerticesToTwoPolygons3'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
