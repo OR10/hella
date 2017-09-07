@@ -298,6 +298,17 @@ class LabelSelectorHelper {
   }
 
   /**
+   * Return the overall title text of the LabelSelector Widget
+   *
+   * @returns {webdriver.promise.Promise<string>}
+   */
+  getLabelSelectorTitleText() {
+    return getTextContentFromElementFinder(
+      this._getTitleElementFinder()
+    );
+  }
+
+  /**
    * @returns {webdriver.promise.Promise}
    * @private
    */
@@ -392,6 +403,13 @@ class LabelSelectorHelper {
     return this._labelSelector.element(by.model('vm.multiSelection'));
   }
 
+  /**
+   * @returns {ElementFinder}
+   * @private
+   */
+  _getTitleElementFinder() {
+    return this._labelSelector.element(by.css('.label-selector-title > div:nth-child(1)'));
+  }
 }
 
 export default LabelSelectorHelper;
