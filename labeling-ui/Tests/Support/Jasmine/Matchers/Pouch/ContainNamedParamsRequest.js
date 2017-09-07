@@ -40,7 +40,7 @@ function checkDocuments(allPouchDocuments, namedParamsMock, overallResult) {
     return isDocumentDeleted(namedParamsRequestData, allPouchDocuments, overallResult);
   }
   namedParamsRequestData = namedParamsMock.request.data;
-  const fileName = `${namedParamsMock.containingDirectory}/compare-${namedParamsMock.fileName}`;
+  const fileName = `${namedParamsMock.containingDirectory}/${namedParamsMock.fileName}`;
 
   return checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult, fileName);
 }

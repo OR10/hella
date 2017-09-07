@@ -43,7 +43,7 @@ function getPouchDbCustomBootstrap(mocks) {
     let projectId;
 
     let transformedDocument = {
-      fileName: `${mock.containingDirectory}/bootstrap-${mock.fileName}`,
+      fileName: `${mock.containingDirectory}/${mock.fileName}`,
       labeledThings: [],
       labeledThingsInFrame: []
     }
