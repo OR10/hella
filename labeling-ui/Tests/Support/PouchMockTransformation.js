@@ -7,8 +7,8 @@ export function saveMock(fileName, fileContents) {
   if (!mockAlreadySaved) {
     const jsonFileContents = JSON.stringify(fileContents, null, 2);
     fs.writeFileSync(fileName, jsonFileContents);
-    console.log(`Wrote file ${document.fileName}`);
+    console.log(`Wrote file ${fileName}`);
   } else {
-    console.log(`File ${document.fileName} already written`);
+    console.log(`File ${fileName} already written`);
   }
 }
