@@ -1,11 +1,12 @@
 import {clone} from 'lodash';
+import moment from 'moment';
 
 /**
  * Base model for any object, which has labels
  */
 class LabeledObject {
   /**
-   * @param {{id: string, classes: *, incomplete: boolean, task: Task}} labeledObject
+   * @param {{id: string, classes: *, incomplete: boolean, task: Task, createdAt: string, lastModifiedAt: string}} labeledObject
    */
   constructor(labeledObject) {
     // Required properties
@@ -48,6 +49,18 @@ class LabeledObject {
      * @type {boolean}
      */
     this.incomplete = labeledObject.incomplete;
+
+    /**
+     *
+     * @type {string}
+     */
+    this.createdAt = labeledObject.createdAt;
+
+    /**
+     *
+     * @type {string}
+     */
+    this.lastModifiedAt = labeledObject.lastModifiedAt;
   }
 
   /**
@@ -97,14 +110,28 @@ class LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {id, task, projectId, classes, incomplete} = this;
+    if (this.createdAt === undefined) {
+      this.createdAt = this._getCurrentDate();
+    }
+    this.lastModifiedAt = this._getCurrentDate();
+    const {id, task, projectId, classes, incomplete, createdAt, lastModifiedAt} = this;
     return {
       id,
       incomplete,
       projectId,
       taskId: task.id,
       classes: clone(classes),
+      createdAt,
+      lastModifiedAt,
     };
+  }
+
+  /**
+   * @protected
+   * @returns {string}
+   */
+  _getCurrentDate() {
+    return moment().format('YYYY-MM-DD HH:mm:ss.000000');
   }
 
   /**

@@ -30,5 +30,7 @@ export default new LabeledThingInFrame({
   "projectId": "5242f8bff15774fe72586e569a0469e0",
   "labeledThingId": "04d2f1b2-fa17-438d-abe3-7c1db43186a0",
   "labeledThing": labeledThingFixture,
-  "incomplete": false
+  "incomplete": false,
+  "createdAt": "2017-09-05 16:11:56.000000",
+  "lastModifiedAt": "2017-09-05 16:11:56.000000"
 });

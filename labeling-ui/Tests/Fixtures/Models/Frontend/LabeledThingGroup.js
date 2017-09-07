@@ -11,4 +11,6 @@ export default new LabeledThingGroup({
   "task": taskFixture,
   "classes": [],
   "incomplete": true,
+  "createdAt": "2017-09-05 16:11:56.000000",
+  "lastModifiedAt": "2017-09-05 16:11:56.000000"
 });

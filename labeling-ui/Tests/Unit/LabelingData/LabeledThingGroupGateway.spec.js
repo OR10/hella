@@ -287,7 +287,11 @@ describe('LabeledThingGroupGateway', () => {
       groupIds: [],
       classes: [],
       incomplete: true,
+      createdAt: '2017-09-05 16:11:56.000000',
+      lastModifiedAt: '2017-09-05 16:11:56.000000',
     });
+    spyOn(labeledThingGroup, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
+
 
     const serializedGroup = {
       _id: 'LABELED-THING-GROUP-ID',
@@ -297,6 +301,8 @@ describe('LabeledThingGroupGateway', () => {
       type: 'AnnoStationBundle.Model.LabeledThingGroup',
       classes: [],
       incomplete: true,
+      createdAt: '2017-09-05 16:11:56.000000',
+      lastModifiedAt: '2017-09-05 16:11:56.000000',
       taskId: task.id,
       projectId: task.projectId,
     };
@@ -322,7 +328,10 @@ describe('LabeledThingGroupGateway', () => {
       groupIds: [],
       classes: [],
       incomplete: true,
+      createdAt: '2017-09-05 16:11:56.000000',
+      lastModifiedAt: '2017-09-05 16:11:56.000000',
     });
+    spyOn(labeledThingGroup, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
 
     const serializedGroup = {
       _id: 'LABELED-THING-GROUP-ID',
@@ -334,6 +343,8 @@ describe('LabeledThingGroupGateway', () => {
       incomplete: true,
       taskId: task.id,
       projectId: task.projectId,
+      createdAt: '2017-09-05 16:11:56.000000',
+      lastModifiedAt: '2017-09-05 16:11:56.000000',
     };
 
     groupGateway.createLabeledThingGroup(task, labeledThingGroup);
