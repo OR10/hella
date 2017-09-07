@@ -1569,6 +1569,69 @@ describe('LabelSelector (right sidebar)', () => {
     });
   });
 
+  describe('LabelSelector Dynamic Title', () => {
+    let pedestrianName;
+    let rectangleName;
+    let groupOneName;
+    let groupTwoName;
+    let groupThreeName;
+
+    beforeEach(() => {
+      pedestrianName = 'Blub';
+      rectangleName = 'Traffic Sign';
+      groupOneName = 'The Blues Brothers';
+      groupTwoName = 'The Blues Brothers';
+      groupThreeName = 'Peter, Paul and Mary';
+    });
+
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.LabelSelector.DynamicTitle.Task,
+        assets.mocks.LabelSelector.DynamicTitle.TaskConfiguration,
+        assets.mocks.LabelSelector.DynamicTitle.RequirementsXmlFile,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupOne,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupTwo,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupThree,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.frameIndex0,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.frameIndex0to4,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
+      ]);
+
+      mock(sharedMocks);
+    });
+
+    it('should show the name of pedestrian shape', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickPedestrian())
+        .then(() => browser.sleep(250))
+        .then(() => expect(labelSelectorHelper.getLabelSelectorTitleText()).toEqual(pedestrianName))
+        .then(done);
+    });
+
+    it('should show the name of rectangle shape', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickRectangleOne())
+        .then(() => browser.sleep(250))
+        .then(() => expect(labelSelectorHelper.getLabelSelectorTitleText()).toEqual(rectangleName))
+        .then(done);
+    });
+
+    // @TODO: add tests for groupnames here, once TTANNO-1792 is implemented
+  });
+
   afterEach(() => {
     expectAllModalsToBeClosed();
     mock.teardown();
