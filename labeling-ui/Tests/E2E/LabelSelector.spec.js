@@ -1572,16 +1572,16 @@ describe('LabelSelector (right sidebar)', () => {
   describe('LabelSelector Dynamic Title', () => {
     let pedestrianName;
     let rectangleName;
-    let groupOneName;
-    let groupTwoName;
-    let groupThreeName;
+    // let groupOneName;
+    // let groupTwoName;
+    // let groupThreeName;
 
     beforeEach(() => {
       pedestrianName = 'Blub';
       rectangleName = 'Traffic Sign';
-      groupOneName = 'The Blues Brothers';
-      groupTwoName = 'The Blues Brothers';
-      groupThreeName = 'Peter, Paul and Mary';
+      // groupOneName = 'The Blues Brothers';
+      // groupTwoName = 'The Blues Brothers';
+      // groupThreeName = 'Peter, Paul and Mary';
     });
 
     beforeEach(() => {
