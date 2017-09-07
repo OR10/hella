@@ -3,8 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Organisation\Project;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
@@ -69,8 +68,7 @@ class Attention extends Controller\Base
     /**
      *
      * @Rest\GET("/{organisation}/project/{project}/attentionTasks")
-     *
-     * @CheckPermissions({"canViewAttentionTasks"})
+     * @Annotations\CheckPermissions({"canViewAttentionTasks"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param HttpFoundation\Request              $request

@@ -2,7 +2,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Response;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
@@ -28,10 +28,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage;
  */
 class TaskConfiguration extends Controller\Base
 {
-    /**
-     * @var Authentication\UserPermissions
-     */
-    private $currentUserPermissions;
     /**
      * @var Facade\TaskConfiguration
      */
@@ -63,7 +59,6 @@ class TaskConfiguration extends Controller\Base
     private $authorizationService;
 
     /**
-     * @param Authentication\UserPermissions               $currentUserPermissions
      * @param Facade\TaskConfiguration                     $taskConfigurationFacade
      * @param Storage\TokenStorage                         $tokenStorage
      * @param Service\XmlValidator                         $simpleXmlValidator
@@ -72,7 +67,6 @@ class TaskConfiguration extends Controller\Base
      * @param Service\Authorization                        $authorizationService
      */
     public function __construct(
-        Authentication\UserPermissions $currentUserPermissions,
         Facade\TaskConfiguration $taskConfigurationFacade,
         Storage\TokenStorage $tokenStorage,
         Service\XmlValidator $simpleXmlValidator,
@@ -80,7 +74,6 @@ class TaskConfiguration extends Controller\Base
         Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
         Service\Authorization $authorizationService
     ) {
-        $this->currentUserPermissions           = $currentUserPermissions;
         $this->taskConfigurationFacade          = $taskConfigurationFacade;
         $this->tokenStorage                     = $tokenStorage;
         $this->simpleXmlValidator               = $simpleXmlValidator;
@@ -173,8 +166,7 @@ class TaskConfiguration extends Controller\Base
 
     /**
      * @Rest\Post("/{organisation}/taskConfiguration/requirements")
-     *
-     * @CheckPermissions({"canUploadTaskConfiguration"})
+     * @Annotations\CheckPermissions({"canUploadTaskConfiguration"})
      *
      * @param HttpFoundation\Request              $request
      * @param AnnoStationBundleModel\Organisation $organisation

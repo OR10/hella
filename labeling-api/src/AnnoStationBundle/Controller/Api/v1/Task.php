@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1;
 
 use AppBundle\Annotations\CloseSession;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Database\Facade as AppFacade;
@@ -16,7 +17,6 @@ use FOS\RestBundle\Controller\Annotations\Version;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
-use AnnoStationBundle\Annotations\CheckPermissions;
 
 /**
  * @Version("v1")
@@ -94,7 +94,7 @@ class Task extends Controller\Base
      *
      * @Rest\Get("")
      *
-     * @CheckPermissions({"canViewTaskList"})
+     * @Annotations\CheckPermissions({"canViewTaskList"})
      *
      * @param HttpFoundation\Request $request
      *

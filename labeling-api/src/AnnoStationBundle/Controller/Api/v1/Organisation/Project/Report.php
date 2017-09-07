@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Organisation\Project;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Database\Facade as AppFacade;
@@ -88,8 +88,7 @@ class Report extends Controller\Base
      * Return the report with the given id
      *
      * @Rest\Get("/{organisation}/project/{project}/report/{report}")
-     *
-     * @CheckPermissions({"canViewProjectReport"})
+     * @Annotations\CheckPermissions({"canViewProjectReport"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
@@ -144,9 +143,8 @@ class Report extends Controller\Base
     /**
      * Return all reports for this project
      *
-     * @CheckPermissions({"canViewProjectReport"})
-     *
      * @Rest\Get("/{organisation}/project/{project}/report")
+     * @Annotations\CheckPermissions({"canViewProjectReport"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
@@ -171,9 +169,8 @@ class Report extends Controller\Base
     /**
      * Create a new report for this project
      *
-     * @CheckPermissions({"canViewProjectReport"})
-     *
      * @Rest\Post("/{organisation}/project/{project}/report")
+     * @Annotations\CheckPermissions({"canViewProjectReport"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project

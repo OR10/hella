@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
@@ -75,7 +75,7 @@ class Organisation extends Controller\Base
 
     /**
      * @Rest\Get("")
-     * @CheckPermissions({"canListOrganisations"})
+     * @Annotations\CheckPermissions({"canListOrganisations"})
      *
      * @param HttpFoundation\Request $request
      *
@@ -106,7 +106,7 @@ class Organisation extends Controller\Base
 
     /**
      * @Rest\Post("")
-     * @CheckPermissions({"canCreateOrganisation"})
+     * @Annotations\CheckPermissions({"canCreateOrganisation"})
      *
      * @param HttpFoundation\Request $request
      *
@@ -126,7 +126,7 @@ class Organisation extends Controller\Base
 
     /**
      * @Rest\Put("/{organisation}")
-     * @CheckPermissions({"canEditOrganisation"})
+     * @Annotations\CheckPermissions({"canEditOrganisation"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param HttpFoundation\Request              $request
@@ -156,7 +156,7 @@ class Organisation extends Controller\Base
 
     /**
      * @Rest\Delete("/{organisation}")
-     * @CheckPermissions({"canDeleteOrganisation"})
+     * @Annotations\CheckPermissions({"canDeleteOrganisation"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param HttpFoundation\Request              $request

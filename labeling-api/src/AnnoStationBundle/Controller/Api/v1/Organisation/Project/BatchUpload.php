@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Organisation\Project;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Controller\Api\v1\Organisation\Project\Exception as ProjectException;
 use AnnoStationBundle\Database\Facade;
@@ -127,8 +127,7 @@ class BatchUpload extends Controller\Base
 
     /**
      * @Rest\Post("/{organisation}/project/batchUpload/{project}")
-     *
-     * @CheckPermissions({"canUploadNewVideo"})
+     * @Annotations\CheckPermissions({"canUploadNewVideo"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
@@ -269,8 +268,7 @@ class BatchUpload extends Controller\Base
 
     /**
      * @Rest\Post("/{organisation}/project/batchUpload/{project}/complete")
-     *
-     * @CheckPermissions({"canUploadNewVideo"})
+     * @Annotations\CheckPermissions({"canUploadNewVideo"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project

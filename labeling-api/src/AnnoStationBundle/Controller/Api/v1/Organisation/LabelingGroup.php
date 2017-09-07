@@ -4,7 +4,7 @@ namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
 use AnnoStationBundle\Worker\Jobs\DeleteProjectAssignmentsForUserJobCreator;
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
@@ -106,18 +106,16 @@ class LabelingGroup extends Controller\Base
     /**
      *
      * @Rest\Get("/{organisation}/labelingGroup/user/labelManagers")
+     * @Annotations\CheckPermissions({"canListAllLabelManagers"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
+     *
      *
      * @return \FOS\RestBundle\View\View
      */
     public function getAllLabelManagersAction(AnnoStationBundleModel\Organisation $organisation)
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
-
-        if (!$this->userPermissionService->hasPermission('canListAllLabelManagers')) {
-            throw new Exception\AccessDeniedHttpException();
-        }
 
         $users = [];
         foreach ($this->userFacade->getUsersByOrganisationAndRole($organisation, Model\User::ROLE_LABEL_MANAGER)
@@ -246,8 +244,7 @@ class LabelingGroup extends Controller\Base
     /**
      *
      * @Rest\Post("/{organisation}/labelingGroup")
-     *
-     * @CheckPermissions({"canEditLabelingGroups"})
+     * @Annotations\CheckPermissions({"canEditLabelingGroups"})
      *
      * @param HttpFoundation\Request              $request
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -293,8 +290,7 @@ class LabelingGroup extends Controller\Base
     /**
      *
      * @Rest\Put("/{organisation}/labelingGroup/{labelingGroup}")
-     *
-     * @CheckPermissions({"canEditLabelingGroups"})
+     * @Annotations\CheckPermissions({"canEditLabelingGroups"})
      *
      * @param HttpFoundation\Request              $request
      * @param Model\LabelingGroup                 $labelingGroup
@@ -371,8 +367,7 @@ class LabelingGroup extends Controller\Base
     /**
      *
      * @Rest\Delete("/{organisation}/labelingGroup/{labelingGroup}")
-     *
-     * @CheckPermissions({"canEditLabelingGroups"})
+     * @Annotations\CheckPermissions({"canEditLabelingGroups"})
      *
      * @param Model\LabelingGroup                 $labelingGroup
      * @param AnnoStationBundleModel\Organisation $organisation

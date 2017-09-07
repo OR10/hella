@@ -3,8 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
@@ -42,26 +41,19 @@ class Attention extends Controller\Base
      */
     private $authorizationService;
 
-    /**
-     * @var Authentication\UserPermissions
-     */
-    private $userPermissions;
-
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Project $projectFacade,
-        Service\Authorization $authorizationService,
-        Authentication\UserPermissions $userPermissions
+        Service\Authorization $authorizationService
     ) {
         $this->labelingTaskFacade   = $labelingTaskFacade;
         $this->projectFacade        = $projectFacade;
         $this->authorizationService = $authorizationService;
-        $this->userPermissions      = $userPermissions;
     }
 
     /**
      * @Rest\Post("/{task}/attention/enable")
-     * @CheckPermissions({"canFlagLabelingTask"})
+     * @Annotations\CheckPermissions({"canFlagLabelingTask"})
      *
      * @param Model\LabelingTask $task
      *
@@ -77,7 +69,7 @@ class Attention extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/attention/disable")
-     * @CheckPermissions({"canUnflagLabelingTask"})
+     * @Annotations\CheckPermissions({"canUnflagLabelingTask"})
      *
      * @param Model\LabelingTask $task
      *
