@@ -1,6 +1,6 @@
 import {matchDocuments} from './MatchDocuments';
 
-function checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult) {
+function checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult, fileName) {
   if (namedParamsRequestData.labeledThing && namedParamsRequestData.labeledThingInFrame) {
     namedParamsRequestData = namedParamsRequestData.labeledThingInFrame;
   }
@@ -8,7 +8,7 @@ function checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouc
     .map(row => row.doc)
     .filter(doc => !(doc._id.indexOf('_design/') === 0));
 
-  const {message, pass} = matchDocuments(namedParamsRequestData, collection);
+  const {message, pass} = matchDocuments(namedParamsRequestData, collection, fileName);
   overallResult.message = message;
 
   return pass;
@@ -40,8 +40,9 @@ function checkDocuments(allPouchDocuments, namedParamsMock, overallResult) {
     return isDocumentDeleted(namedParamsRequestData, allPouchDocuments, overallResult);
   }
   namedParamsRequestData = namedParamsMock.request.data;
+  const fileName = `${namedParamsMock.containingDirectory}/compare-${namedParamsMock.fileName}`;
 
-  return checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult);
+  return checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult, fileName);
 }
 
 module.exports = function toContainNamedParamsRequest() {

@@ -1,5 +1,6 @@
 import {forEach, isArray, isObject, isNumber, isString, isBoolean, isNull, isUndefined} from 'lodash';
 import JsonTemplateComparator from '../../../JsonTemplateComparator';
+import fs from 'fs';
 
 const comparator = new JsonTemplateComparator();
 
@@ -85,6 +86,8 @@ function preprocessTemplate(template, depth = 0) {
       processedTemplate.projectId = `{{:--project-id}}`;
       processedTemplate.taskId = `{{:--task-id}}`;
       processedTemplate._rev = `{{:--revision}}`;
+      processedTemplate.createdAt = `{{:--created-at}}`;
+      processedTemplate.lastModifiedAt = `{{:--last-modified-at}}`;
     }
 
     return processedTemplate;
@@ -98,8 +101,11 @@ function preprocessTemplate(template, depth = 0) {
   throw new Error(`Unknown value type in mocked request/response data: ${typeof template}`);
 }
 
-export function matchDocuments(expectedTemplate, collection) {
+export function matchDocuments(expectedTemplate, collection, fileName) {
   const processedExpectedTemplate = preprocessTemplate(expectedTemplate);
+  const fileContents = JSON.stringify(processedExpectedTemplate, null, 2);
+  fs.writeFileSync(fileName, fileContents);
+  console.log(`Wrote file ${fileName}`);
   try {
     comparator.assertDocumentIsInCollection(processedExpectedTemplate, collection);
     return {message: 'Matched', pass: true};
