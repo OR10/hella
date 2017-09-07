@@ -20,6 +20,9 @@ describe('Class Ghosting', () => {
     ltifTemplate.shapes[0].topLeft = topLeft;
     ltifTemplate.shapes[0].bottomRight = bottomRight;
 
+    delete ltifTemplate.containingDirectory;
+    delete ltifTemplate.fileName;
+
     return ltifTemplate;
   }
 
@@ -129,7 +132,7 @@ describe('Class Ghosting', () => {
       .then(() => done());
   });
 
-  it('should transfer attributes to shape ghosts', done => {
+  fit('should transfer attributes to shape ghosts', done => {
     mock(sharedMocks.concat([]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
