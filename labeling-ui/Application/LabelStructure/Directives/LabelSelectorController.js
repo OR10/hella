@@ -498,9 +498,9 @@ export default class LabelSelectorController {
       return 'Properties';
     } else if (this.selectedLabelStructureObject.name !== undefined) {
       return this.selectedLabelStructureObject.name;
-    } else {
-      return this.selectedLabelStructureObject.id;
     }
+
+    return this.selectedLabelStructureObject.id;
   }
 
   /**
