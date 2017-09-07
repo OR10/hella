@@ -132,7 +132,7 @@ describe('Class Ghosting', () => {
       .then(() => done());
   });
 
-  fit('should transfer attributes to shape ghosts', done => {
+  it('should transfer attributes to shape ghosts', done => {
     mock(sharedMocks.concat([]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
