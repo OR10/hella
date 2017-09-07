@@ -265,7 +265,9 @@ class LabelSelectorHelper {
     return this.getTitleTexts()
       .then(titleTexts => {
         const titleOpenStatePromises = titleTexts.map(titleText => this.getOpenStateByTitleText(titleText));
-        const entrySelectionStatePromises = titleTexts.map(titleText => this.getEntrySelectionStatesByTitleText(titleText));
+        const entrySelectionStatePromises = titleTexts.map(
+          titleText => this.getEntrySelectionStatesByTitleText(titleText)
+        );
 
         return Promise.all([
           Promise.resolve(titleTexts),
