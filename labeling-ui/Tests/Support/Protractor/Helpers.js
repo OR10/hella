@@ -3,7 +3,7 @@ import PouchDb from '../PouchDb/PouchDbWrapper';
 import httpMock from 'protractor-http-mock';
 import {cloneDeep} from 'lodash';
 import ExtendedBrowser from './ExtendedBrowser';
-import fs from 'fs';
+import {saveMock} from '../PouchMockTransformation';
 
 export function getMockRequestsMade(mock) {
   return Promise.resolve()
@@ -92,14 +92,11 @@ function getPouchDbCustomBootstrap(mocks) {
   });
 
   transformedDocuments.forEach(document => {
-    let fileContents = {
+    const fileContents = {
       labeledThings: document.labeledThings,
       labeledThingsInFrame: document.labeledThingsInFrame,
     };
-    fileContents = JSON.stringify(fileContents, null, 2);
-
-    fs.writeFileSync(document.fileName, fileContents);
-    console.log(`Wrote file ${document.fileName}`);
+    saveMock(document.fileName, fileContents);
   });
 
   return [
