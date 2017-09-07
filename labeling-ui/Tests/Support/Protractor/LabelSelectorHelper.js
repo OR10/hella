@@ -194,7 +194,7 @@ class LabelSelectorHelper {
       });
   }
 
-   /**
+  /**
    * Determine if a certain pane identified by its title is open or closes
    *
    * @param {string} titleText
@@ -205,7 +205,7 @@ class LabelSelectorHelper {
     return hasClassByElementFinder(pane, 'is-expanded');
   }
 
-   /**
+  /**
    * Get information about all opened panes
    *
    * The returned value will be an object containing a mapping of the pane title texts to their open/closes state as boolean:
