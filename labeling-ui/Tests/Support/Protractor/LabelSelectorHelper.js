@@ -194,7 +194,7 @@ class LabelSelectorHelper {
       });
   }
 
-   /**
+  /**
    * Determine if a certain pane identified by its title is open or closes
    *
    * @param {string} titleText
@@ -205,7 +205,7 @@ class LabelSelectorHelper {
     return hasClassByElementFinder(pane, 'is-expanded');
   }
 
-   /**
+  /**
    * Get information about all opened panes
    *
    * The returned value will be an object containing a mapping of the pane title texts to their open/closes state as boolean:
@@ -265,7 +265,9 @@ class LabelSelectorHelper {
     return this.getTitleTexts()
       .then(titleTexts => {
         const titleOpenStatePromises = titleTexts.map(titleText => this.getOpenStateByTitleText(titleText));
-        const entrySelectionStatePromises = titleTexts.map(titleText => this.getEntrySelectionStatesByTitleText(titleText));
+        const entrySelectionStatePromises = titleTexts.map(
+          titleText => this.getEntrySelectionStatesByTitleText(titleText)
+        );
 
         return Promise.all([
           Promise.resolve(titleTexts),
@@ -295,6 +297,17 @@ class LabelSelectorHelper {
     const pane = this._getPaneFinderByTitleText(titleText);
     const entries = this._getEntriesTextFromPane(pane);
     return entries;
+  }
+
+  /**
+   * Return the overall title text of the LabelSelector Widget
+   *
+   * @returns {webdriver.promise.Promise<string>}
+   */
+  getLabelSelectorTitleText() {
+    return getTextContentFromElementFinder(
+      this._getTitleElementFinder()
+    );
   }
 
   /**
@@ -392,6 +405,13 @@ class LabelSelectorHelper {
     return this._labelSelector.element(by.model('vm.multiSelection'));
   }
 
+  /**
+   * @returns {ElementFinder}
+   * @private
+   */
+  _getTitleElementFinder() {
+    return this._labelSelector.element(by.css('.label-selector-title > div:nth-child(1)'));
+  }
 }
 
 export default LabelSelectorHelper;

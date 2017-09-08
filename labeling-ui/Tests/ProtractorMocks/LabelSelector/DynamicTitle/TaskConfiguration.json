@@ -1,0 +1,17 @@
+{
+  "request": {
+    "path": "/api/v1/organisation/ORGANISATION-ID-1/taskConfiguration/TASK-CONFIGURATION-1",
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "id": "TASK-CONFIGURATION-1",
+        "name": "Example TaskConfiguration with Requirements XML",
+        "filename": "nested_classes_requirements_example.xml",
+        "userId": "user-id-1",
+        "type": "requirements"
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import LabelStructureObject from './LabelStructureObject';
 
-class LabelStructureThing extends LabelStructureObject {
+class LabelStructureGroup extends LabelStructureObject {
   /**
    * @param {string} id
    * @param {string} name
@@ -21,4 +21,4 @@ class LabelStructureThing extends LabelStructureObject {
   }
 }
 
-export default LabelStructureThing;
+export default LabelStructureGroup;

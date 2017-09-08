@@ -1,5 +1,8 @@
 import {inject} from 'angular-mocks';
 import LabelSelectorController from 'Application/LabelStructure/Directives/LabelSelectorController';
+import LabelStructureThing from '../../../../Application/Task/Model/LabelStructureThing';
+import LabelStructureGroup from '../../../../Application/Task/Model/LabelStructureGroup';
+import LabelStructureObject from '../../../../Application/Task/Model/LabelStructureObject';
 
 describe('LabelSelectorController tests', () => {
   /**
@@ -113,6 +116,59 @@ describe('LabelSelectorController tests', () => {
 
       const show = controller.show();
       expect(show).toBe(true);
+    });
+  });
+
+  describe('getLabelSelectorTitle', () => {
+    let controller;
+
+    beforeEach(() => {
+      controller = createController();
+    });
+
+    it('should provide default title if no LabelStructure is available (null)', () => {
+      controller.selectedLabelStructureObject = null;
+      const returnValue = controller.getLabelSelectorTitle();
+
+      expect(returnValue).toEqual('Properties');
+    });
+
+    it('should provide default title if no LabelStructure is available (undefined)', () => {
+      controller.selectedLabelStructureObject = undefined;
+      const returnValue = controller.getLabelSelectorTitle();
+
+      expect(returnValue).toEqual('Properties');
+    });
+
+    it('should return name of LabelStructureThings', () => {
+      const id = 'very-very-unique-id';
+      const name = 'Atticus O\'Sullivan - The Iron Druid';
+      const shape = 'cup-of-tea';
+
+      controller.selectedLabelStructureObject = new LabelStructureThing(id, name, shape);
+      const returnValue = controller.getLabelSelectorTitle();
+
+      expect(returnValue).toEqual(name);
+    });
+
+    it('should return name of LabelStructureGroups', () => {
+      const id = 'very-very-unique-id';
+      const name = 'Atticus O\'Sullivan - The Iron Druid';
+      const shape = 'cup-of-tea';
+
+      controller.selectedLabelStructureObject = new LabelStructureGroup(id, name, shape);
+      const returnValue = controller.getLabelSelectorTitle();
+
+      expect(returnValue).toEqual(name);
+    });
+
+    it('should return the id of LabelStructureObjects without a name', () => {
+      const id = 'very-very-unique-id';
+
+      controller.selectedLabelStructureObject = new LabelStructureObject(id);
+      const returnValue = controller.getLabelSelectorTitle();
+
+      expect(returnValue).toEqual(id);
     });
   });
 });

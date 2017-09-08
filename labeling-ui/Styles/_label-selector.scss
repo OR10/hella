@@ -31,6 +31,14 @@
   .view-style {
     margin-right: .7rem;
   }
+
+  /* Title Text */
+  > div:nth-child(1) {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 0;
+  }
 }
 
 /** List View **/
