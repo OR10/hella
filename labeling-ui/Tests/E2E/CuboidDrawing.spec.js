@@ -201,12 +201,6 @@ describe('Cuboid Drawing', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1,
-        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2,
-        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3,
-        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4,
-        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5,
-        assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame6,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -228,7 +222,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1);
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
         .then(() => sendKeySequences(keySequences))
         .then(
@@ -242,7 +236,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2);
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
         .then(() => sendKeySequences(keySequences))
         .then(
@@ -256,7 +250,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3);
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
         .then(() => sendKeySequences(keySequences))
         .then(
@@ -270,7 +264,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4);
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
         .then(() => sendKeySequences(keySequences))
         .then(
@@ -284,7 +278,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5);
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5).toExistInPouchDb();
         })
         .then(() => sendKeySequences(keySequences))
         .then(
@@ -298,7 +292,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame6);
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame6).toExistInPouchDb();
           done();
         });
     });
