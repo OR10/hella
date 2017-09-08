@@ -34,65 +34,69 @@ function waitForApplicationReady() {
 
 function getPouchDbCustomBootstrap(mocks) {
   let documents = [];
-  let transformedDocuments = [];
+  // let transformedDocuments = [];
 
   mocks.forEach(mock => {
-    const things = cloneDeep(mock.response.data.result);
-    let labeledThing;
-    let taskId;
-    let projectId;
-
-    let transformedDocument = {
-      fileName: `${mock.containingDirectory}/${mock.fileName}`,
-      documents: []
-    }
-
-    if (things.labeledThings) {
-      const labeledThingKeys = Object.keys(things.labeledThings);
-      labeledThingKeys.forEach(labeledThingKey => {
-        labeledThing = things.labeledThings[labeledThingKey];
-        taskId = labeledThing.taskId;
-        projectId = labeledThing.projectId;
-
-        labeledThing._id = labeledThing.id;
-        labeledThing.type = 'AppBundle.Model.LabeledThing';
-        labeledThing.lineColor = parseInt(labeledThing.lineColor);
-        labeledThing.frameRange = {
-          'startFrameIndex': labeledThing.frameRange.startFrameNumber,
-          'endFrameIndex': labeledThing.frameRange.endFrameNumber,
-          'type': 'AppBundle.Model.FrameIndexRange',
-        };
-
-        delete labeledThing.rev;
-        delete labeledThing.id;
-
-        documents.push(labeledThing);
-        transformedDocument.documents.push(labeledThing);
-      });
-    }
-
-    if (things.labeledThingsInFrame) {
-      things.labeledThingsInFrame.forEach(ltif => {
-        ltif._id = ltif.id;
-        ltif.taskId = taskId;
-        ltif.projectId = projectId;
-        ltif.type = 'AppBundle.Model.LabeledThingInFrame';
-
-        delete ltif.id;
-        delete ltif.rev;
-        delete ltif.ghost;
-        delete ltif.ghostClasses;
-      });
-      documents = documents.concat(things.labeledThingsInFrame);
-      transformedDocument.documents = transformedDocument.documents.concat(things.labeledThingsInFrame);
-    }
-
-    transformedDocuments.push(transformedDocument);
+    documents = documents.concat(mock);
   });
 
-  transformedDocuments.forEach(document => {
-    saveMock(document.fileName, document.documents);
-  });
+  // mocks.forEach(mock => {
+  //   const things = cloneDeep(mock.response.data.result);
+  //   let labeledThing;
+  //   let taskId;
+  //   let projectId;
+  //
+  //   let transformedDocument = {
+  //     fileName: `${mock.containingDirectory}/${mock.fileName}`,
+  //     documents: []
+  //   }
+  //
+  //   if (things.labeledThings) {
+  //     const labeledThingKeys = Object.keys(things.labeledThings);
+  //     labeledThingKeys.forEach(labeledThingKey => {
+  //       labeledThing = things.labeledThings[labeledThingKey];
+  //       taskId = labeledThing.taskId;
+  //       projectId = labeledThing.projectId;
+  //
+  //       labeledThing._id = labeledThing.id;
+  //       labeledThing.type = 'AppBundle.Model.LabeledThing';
+  //       labeledThing.lineColor = parseInt(labeledThing.lineColor);
+  //       labeledThing.frameRange = {
+  //         'startFrameIndex': labeledThing.frameRange.startFrameNumber,
+  //         'endFrameIndex': labeledThing.frameRange.endFrameNumber,
+  //         'type': 'AppBundle.Model.FrameIndexRange',
+  //       };
+  //
+  //       delete labeledThing.rev;
+  //       delete labeledThing.id;
+  //
+  //       documents.push(labeledThing);
+  //       transformedDocument.documents.push(labeledThing);
+  //     });
+  //   }
+  //
+  //   if (things.labeledThingsInFrame) {
+  //     things.labeledThingsInFrame.forEach(ltif => {
+  //       ltif._id = ltif.id;
+  //       ltif.taskId = taskId;
+  //       ltif.projectId = projectId;
+  //       ltif.type = 'AppBundle.Model.LabeledThingInFrame';
+  //
+  //       delete ltif.id;
+  //       delete ltif.rev;
+  //       delete ltif.ghost;
+  //       delete ltif.ghostClasses;
+  //     });
+  //     documents = documents.concat(things.labeledThingsInFrame);
+  //     transformedDocument.documents = transformedDocument.documents.concat(things.labeledThingsInFrame);
+  //   }
+  //
+  //   transformedDocuments.push(transformedDocument);
+  // });
+
+  // transformedDocuments.forEach(document => {
+  //   saveMock(document.fileName, document.documents);
+  // });
 
   return [
     function (documents, databaseName, next) {
@@ -118,21 +122,13 @@ const mocks = {
   specific: [],
 };
 
+function isPouchMock(mockDocument) {
+  return mockDocument instanceof Array;
+}
+
 export function mock(sharedMocks) {
-  const specificMocksKeys = [];
-
-  mocks.shared = sharedMocks;
-  mocks.specific = mocks.shared.filter((mock, key) => {
-    const hasLabeledThings = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThings);
-    const hasLabeledThingsInFrame = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThingsInFrame);
-    const isGetRequest = mock.request.method.toUpperCase() === 'GET';
-    const mustBeStoredInCouch = ((hasLabeledThings || hasLabeledThingsInFrame) && isGetRequest);
-    if (mustBeStoredInCouch) {
-      specificMocksKeys.push(key);
-    }
-
-    return mustBeStoredInCouch;
-  });
+  mocks.shared = sharedMocks.filter(mockDocument => !isPouchMock(mockDocument));
+  mocks.specific = sharedMocks.filter(mockDocument => isPouchMock(mockDocument));
 }
 
 mock.teardown = () => {
@@ -140,7 +136,7 @@ mock.teardown = () => {
 };
 
 export function initApplication(url, testConfig = defaultTestConfig) {
-  httpMock(mocks.shared.concat(mocks.specific));
+  httpMock(mocks.shared);
   const builder = new UrlBuilder(testConfig);
 
   const customBootstrap = getPouchDbCustomBootstrap(mocks.specific);
