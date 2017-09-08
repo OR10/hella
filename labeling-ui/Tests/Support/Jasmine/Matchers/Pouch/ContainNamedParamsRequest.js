@@ -14,8 +14,8 @@ function checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouc
   return pass;
 }
 
-function isDocumentDeleted(namedParamsRequestData, allPouchDocuments, overallResult) {
-  const isDeleted = !checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult);
+function isDocumentDeleted(namedParamsRequestData, allPouchDocuments, overallResult, fileName) {
+  const isDeleted = !checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult, fileName);
   if (!isDeleted) {
     overallResult.message = `Expected document with id ${namedParamsRequestData.id} to be deleted.`;
   }
@@ -32,15 +32,17 @@ function checkDocuments(allPouchDocuments, namedParamsMock, overallResult) {
   const requestMethod = namedParamsMock.request.method.toUpperCase();
   let namedParamsRequestData;
 
+  const fileName = `${namedParamsMock.containingDirectory}/${namedParamsMock.fileName}`;
+
   if (requestMethod === 'DELETE') {
     const id = getIdFromUrl(namedParamsMock.request.path);
     namedParamsRequestData = {
       id: id,
     };
-    return isDocumentDeleted(namedParamsRequestData, allPouchDocuments, overallResult);
+    return isDocumentDeleted(namedParamsRequestData, allPouchDocuments, overallResult, fileName);
   }
   namedParamsRequestData = namedParamsMock.request.data;
-  const fileName = `${namedParamsMock.containingDirectory}/${namedParamsMock.fileName}`;
+
 
   return checkLabeledThingAndLabeledThingInFrame(namedParamsRequestData, allPouchDocuments, overallResult, fileName);
 }
