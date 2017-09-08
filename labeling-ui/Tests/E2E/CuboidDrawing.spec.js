@@ -4,6 +4,7 @@ import {
   getMockRequestsMade,
   initApplication,
   mock,
+  sendKeySequences,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -972,11 +973,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardSubstract')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()

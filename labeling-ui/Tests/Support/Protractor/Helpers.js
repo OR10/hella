@@ -185,3 +185,24 @@ export function hasClassByElementFinder(elementFinder, className) {
     classString => classString.split(' ').includes(className),
   );
 }
+
+export function sendKey(key) {
+  return browser.actions().sendKeys(key).perform();
+}
+
+export function sendKeySequences(keySequences) {
+  let promises = [];
+
+  keySequences.forEach(keySequence => {
+    if (typeof keySequence === 'string') {
+      const keys = keySequence.split('');
+      keys.forEach(key => {
+        promises.push(sendKey(key));
+      });
+    } else {
+      promises.push(sendKey(keySequence));
+    }
+  });
+
+  return Promise.all(promises);
+}
