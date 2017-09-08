@@ -10,7 +10,7 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 const imageComparision = new ImageComparisionService();
 const interaction = new InteractionService();
 
-fdescribe('Zoom', () => {
+describe('Zoom', () => {
   let assets;
   let sharedMocks;
   let viewer;
