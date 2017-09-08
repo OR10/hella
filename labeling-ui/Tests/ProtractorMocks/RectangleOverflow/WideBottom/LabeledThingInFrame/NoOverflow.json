@@ -1,76 +1,28 @@
 {
-  "request": {
-    "path": "/api/v1/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-1",
-    "method": "PUT",
-    "data": {
-      "identifierName": "legacy",
-      "id": "LABELED-THING-IN-FRAME-ID-1",
-      "rev": "2-b65227715b51dadd97f8521646e88a22",
-      "frameIndex": 0,
-      "classes": [],
-      "ghostClasses": null,
-      "shapes": [
-        {
-          "type": "rectangle",
-          "id": "SHAPE-ID-1",
-          "topLeft": {
-            "x": 10,
-            "y": 600
-          },
-          "bottomRight": {
-            "x": 1000,
-            "y": 610
-          }
-        }
-      ],
-      "labeledThingId": "LABELED-THING-ID-1",
-      "incomplete": true,
-      "ghost": false
-    }
-  },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThing": {
-          "id": "LABELED-THING-ID-1",
-          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-          "frameRange": {
-            "startFrameNumber": 1,
-            "endFrameNumber": 1
-          },
-          "classes": [
-            "pedestrian"
-          ],
-          "taskId": "TASKID-TASKID",
-          "incomplete": true,
-          "lineColor": "6"
-        },
-        "labeledThingInFrame": {
-          "identifierName": "legacy",
-          "id": "LABELED-THING-IN-FRAME-ID-1",
-          "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "frameIndex": 0,
-          "classes": [],
-          "ghostClasses": null,
-          "shapes": [
-            {
-              "type": "rectangle",
-              "id": "SHAPE-ID-1",
-              "topLeft": {
-                "x": 10,
-                "y": 600
-              },
-              "bottomRight": {
-                "x": 1000,
-                "y": 610
-              }
-            }
-          ],
-          "labeledThingId": "LABELED-THING-ID-1",
-          "incomplete": true,
-          "ghost": false
-        }
+  "identifierName": "legacy",
+  "_id": "LABELED-THING-IN-FRAME-ID-1",
+  "frameIndex": 0,
+  "classes": [],
+  "shapes": [
+    {
+      "type": "rectangle",
+      "id": "SHAPE-ID-1",
+      "topLeft": {
+        "x": 10,
+        "y": 600
+      },
+      "bottomRight": {
+        "x": 1000,
+        "y": 610
       }
     }
-  }
+  ],
+  "labeledThingId": "LABELED-THING-ID-1",
+  "incomplete": true,
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }
