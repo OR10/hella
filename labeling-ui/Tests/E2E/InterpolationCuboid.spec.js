@@ -97,7 +97,7 @@ describe('Interpolation Cuboid Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationCuboid.Frame4);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
@@ -163,7 +163,7 @@ describe('Interpolation Cuboid Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationCuboid.Frame0);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex2).toExistInPouchDb();

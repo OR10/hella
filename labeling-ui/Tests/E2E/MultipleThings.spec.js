@@ -165,7 +165,7 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect1).toExistInPouchDb();
       })
       .then(() => {
@@ -183,7 +183,7 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFramePedestrian).toExistInPouchDb();
       })
       .then(() => {
@@ -205,7 +205,7 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid).toExistInPouchDb();
       })
       .then(() => {
@@ -223,7 +223,7 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect2).toExistInPouchDb();
       })
       .then(

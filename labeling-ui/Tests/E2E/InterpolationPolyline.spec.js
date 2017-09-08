@@ -97,7 +97,7 @@ describe('Interpolation Polyline Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame4);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Polyline.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Polyline.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Polyline.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
@@ -163,7 +163,7 @@ describe('Interpolation Polyline Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame0);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Polyline.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Polyline.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Polyline.LabeledThingInFrame.frameIndex2).toExistInPouchDb();

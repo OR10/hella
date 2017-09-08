@@ -97,7 +97,7 @@ describe('Interpolation Polygon Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame4);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
@@ -164,7 +164,7 @@ describe('Interpolation Polygon Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame0);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex2).toExistInPouchDb();

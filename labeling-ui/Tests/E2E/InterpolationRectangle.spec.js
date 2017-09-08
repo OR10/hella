@@ -98,7 +98,7 @@ describe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame4);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
@@ -166,7 +166,7 @@ describe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame0);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
@@ -235,7 +235,7 @@ describe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.DrawFrame0);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex2).toExistInPouchDb();

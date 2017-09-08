@@ -181,7 +181,7 @@ describe('Polyline drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.MoveOnePolyline);
       })
       .then(() => browser.sleep(500))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolylineDrawing.MoveOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
@@ -220,7 +220,7 @@ describe('Polyline drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.ResizeOnePolyline);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
@@ -294,7 +294,7 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolyline);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
@@ -375,7 +375,7 @@ describe('Polyline drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary4);
       })
       .then(() => browser.sleep(300))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
@@ -446,7 +446,7 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewMultiplePolyline3);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame2).toExistInPouchDb();
         expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame3).toExistInPouchDb();
@@ -564,7 +564,7 @@ describe('Polyline handle/point limiting', () => {
           .click()
           .perform();
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame5).toExistInPouchDb();
       })
       .then(

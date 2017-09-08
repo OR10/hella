@@ -176,7 +176,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.MoveOneRectangle);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
@@ -210,7 +210,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.ResizeOneRectangle);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
@@ -243,7 +243,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.ResizeFlip);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
@@ -302,7 +302,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangle);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
@@ -334,7 +334,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleMinimalHeight);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
@@ -366,7 +366,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleMinimalHeight);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
@@ -422,7 +422,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary3);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
@@ -463,7 +463,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewMultipleRectangles);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2).toExistInPouchDb();
         expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3).toExistInPouchDb();
@@ -496,7 +496,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
@@ -527,7 +527,7 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame).toExistInPouchDb();
         done();

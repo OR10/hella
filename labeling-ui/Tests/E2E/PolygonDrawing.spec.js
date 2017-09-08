@@ -182,7 +182,7 @@ describe('Polygon drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.MoveOnePolygon);
       })
       .then(() => browser.sleep(500))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolygonDrawing.MoveOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
@@ -221,7 +221,7 @@ describe('Polygon drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.ResizeOnePolygon);
         return browser.sleep(1000);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
@@ -295,7 +295,7 @@ describe('Polygon drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygon);
       })
       .then(() => browser.sleep(500))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
@@ -376,7 +376,7 @@ describe('Polygon drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary4);
       })
       .then(() => browser.sleep(500))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
@@ -450,7 +450,7 @@ describe('Polygon drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewMultiplePolygon3);
       })
       .then(() => browser.sleep(800))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame2).toExistInPouchDb();
         expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame3).toExistInPouchDb();
@@ -571,7 +571,7 @@ describe('Polygon handle/point limiting', () => {
           .click()
           .perform();
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame5).toExistInPouchDb();
       })
       .then(

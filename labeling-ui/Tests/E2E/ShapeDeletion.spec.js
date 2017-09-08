@@ -71,7 +71,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
@@ -114,7 +114,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
@@ -157,7 +157,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
@@ -200,7 +200,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
@@ -243,7 +243,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
@@ -287,7 +287,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();

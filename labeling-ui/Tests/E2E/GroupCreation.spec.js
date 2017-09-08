@@ -63,7 +63,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateNoGroup);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).not.toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
         done();
@@ -96,7 +96,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
         done();
@@ -129,7 +129,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoRectangles);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
         done();
@@ -162,7 +162,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoPoints);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
         done();
@@ -207,7 +207,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateTwoGroupsWithFourShapes);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
@@ -262,7 +262,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateThreeGroupsWithFourShapes);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
@@ -400,7 +400,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupFrontLights).toExistInPouchDb();
         done();
@@ -446,7 +446,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupBackLights).toExistInPouchDb();
         done();
@@ -486,7 +486,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateNoGroup);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).not.toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
         done();

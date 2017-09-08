@@ -53,7 +53,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Rectangle);
       })
       .then(() => browser.sleep(300))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.DefaultShapeCreation.Rectangle.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
@@ -76,7 +76,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Pedestrian);
       })
       .then(() => browser.sleep(300))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.DefaultShapeCreation.Pedestrian.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
@@ -99,7 +99,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Polygon);
       })
       .then(() => browser.sleep(300))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.DefaultShapeCreation.Polygon.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
@@ -122,7 +122,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Cuboid);
       })
       .then(() => browser.sleep(300))
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.DefaultShapeCreation.Cuboid.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });

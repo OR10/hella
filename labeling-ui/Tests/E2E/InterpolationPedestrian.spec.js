@@ -97,7 +97,7 @@ describe('Interpolation Pedestrian Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame4);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
@@ -163,7 +163,7 @@ describe('Interpolation Pedestrian Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame0);
       })
-      .then(requests => {
+      .then(() => {
         expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
         expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
