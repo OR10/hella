@@ -264,6 +264,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_frame"/>
         </service>
 
         <service id="annostation.labeling_api.service.label_importer.simple_xml_2d"

@@ -40,6 +40,12 @@ class ReportTest extends Tests\KernelTestCase
      * @var Facade\LabeledThingInFrame
      */
     private $labeledThingInFrameFacade;
+
+    /**
+     * @var Facade\LabeledFrame
+     */
+    private $labeledFrameFacade;
+
     /**
      * @var Service\Report
      */
@@ -171,6 +177,11 @@ class ReportTest extends Tests\KernelTestCase
         );
 
         $this->assertEquals(
+            79200,
+            $actualReport->getNumberOfLabeledFrames()
+        );
+
+        $this->assertEquals(
             $moveToInProgressUser->getId(),
             $actualReport->getProjectMovedToInProgressBy()
         );
@@ -268,6 +279,13 @@ class ReportTest extends Tests\KernelTestCase
                         ->build()
                 );
             }
+            foreach (range(1, 2) as $i4) {
+                $this->labeledFrameFacade->save(
+                    Helper\LabeledFrameBuilder::create($task, $i4)
+                    ->withClasses(['foo1', 'foo2', 'foo3', 'foo4'])
+                    ->build()
+                );
+            }
         }
     }
 
@@ -280,6 +298,7 @@ class ReportTest extends Tests\KernelTestCase
         $this->labelingTaskFacade        = $this->getAnnostationService('database.facade.labeling_task');
         $this->labeledThingFacade        = $this->getAnnostationService('database.facade.labeled_thing');
         $this->labeledThingInFrameFacade = $this->getAnnostationService('database.facade.labeled_thing_in_frame');
+        $this->labeledFrameFacade        = $this->getAnnostationService('database.facade.labeled_frame');
         $this->reportFacade              = $this->getAnnostationService('database.facade.report');
         $this->reportService             = $this->getAnnostationService('service.report');
         $userPermissionsService          = $this->getAnnostationService('service.authentication.user_permissions');
@@ -294,5 +313,6 @@ class ReportTest extends Tests\KernelTestCase
         $this->labelingTaskFacade        = new Facade\LabelingTask($databaseDocumentManager);
         $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
         $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
+        $this->labeledFrameFacade        = new Facade\LabeledFrame($databaseDocumentManager);
     }
 }

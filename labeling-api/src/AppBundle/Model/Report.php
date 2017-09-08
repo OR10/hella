@@ -176,6 +176,11 @@ class Report extends Base
     /**
      * @CouchDB\Field(type="integer")
      */
+    private $numberOfLabeledFrames;
+
+    /**
+     * @CouchDB\Field(type="integer")
+     */
     private $totalTime;
 
     /**
@@ -874,5 +879,21 @@ class Report extends Base
     public function setNumberOfDoneTasksInAllPhases($numberOfDoneTasksInAllPhases)
     {
         $this->numberOfDoneTasksInAllPhases = $numberOfDoneTasksInAllPhases;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberOfLabeledFrames()
+    {
+        return $this->numberOfLabeledFrames;
+    }
+
+    /**
+     * @param mixed $numberOfLabeledFrames
+     */
+    public function setNumberOfLabeledFrames($numberOfLabeledFrames)
+    {
+        $this->numberOfLabeledFrames = $numberOfLabeledFrames;
     }
 }
