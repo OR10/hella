@@ -53,9 +53,8 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Rectangle);
       })
       .then(() => browser.sleep(300))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.DefaultShapeCreation.Rectangle.StoreLabeledThingInFrame);
+        expect(assets.mocks.DefaultShapeCreation.Rectangle.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
   });
@@ -77,9 +76,8 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Pedestrian);
       })
       .then(() => browser.sleep(300))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.DefaultShapeCreation.Pedestrian.StoreLabeledThingInFrame);
+        expect(assets.mocks.DefaultShapeCreation.Pedestrian.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
   });
@@ -101,9 +99,8 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Polygon);
       })
       .then(() => browser.sleep(300))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.DefaultShapeCreation.Polygon.StoreLabeledThingInFrame);
+        expect(assets.mocks.DefaultShapeCreation.Polygon.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
   });
@@ -125,9 +122,8 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Cuboid);
       })
       .then(() => browser.sleep(300))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.DefaultShapeCreation.Cuboid.StoreLabeledThingInFrame);
+        expect(assets.mocks.DefaultShapeCreation.Cuboid.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
   });

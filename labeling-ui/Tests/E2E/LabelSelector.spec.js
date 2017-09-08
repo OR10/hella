@@ -333,8 +333,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
         .then(() => browser.sleep(250))
-        .then(() => getMockRequestsMade(mock))
-        // .then(() => dumpAllRequestsMade(mock))
         .then(requests => expect(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck).toExistInPouchDb())
         .then(() => done());
     });
@@ -385,7 +383,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Car').click())
         .then(() => browser.sleep(250))
-        .then(() => getMockRequestsMade(mock))
         .then(requests => expect(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar).toExistInPouchDb())
         .then(() => done());
     });
@@ -650,7 +647,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Ignore vehicle').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Art des Ignore', 'Gruppe').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
-        .then(() => getMockRequestsMade(mock))
         .then(requests => expect(assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesTruck).toExistInPouchDb())
         .then(() => done());
     });
@@ -1058,7 +1054,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Street lights', 'Neon lights').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Day').click())
         .then(() => browser.sleep(250))
-        .then(() => getMockRequestsMade(mock))
         .then(requests => expect(assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesDay).toExistInPouchDb())
         .then(() => done());
     });

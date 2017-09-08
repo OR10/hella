@@ -177,7 +177,6 @@ describe('Point drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.MoveOnePoint);
       })
       .then(() => browser.sleep(500))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
         expect(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
@@ -239,10 +238,9 @@ describe('Point drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewPoint);
       })
       .then(() => browser.sleep(800))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame1);
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -282,12 +280,11 @@ describe('Point drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewMultiplePoints);
       })
       .then(() => browser.sleep(500))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4);
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame2).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame3).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4).toExistInPouchDb();
         done();
       });
   });

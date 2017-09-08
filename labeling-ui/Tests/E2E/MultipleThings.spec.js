@@ -165,10 +165,8 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect1);
+        expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect1).toExistInPouchDb();
       })
       .then(() => {
         return browser.actions()
@@ -185,10 +183,8 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFramePedestrian);
+        expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFramePedestrian).toExistInPouchDb();
       })
       .then(() => {
         return browser.actions()
@@ -209,10 +205,8 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid);
+        expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid).toExistInPouchDb();
       })
       .then(() => {
         return browser.actions()
@@ -229,10 +223,8 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect2);
+        expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect2).toExistInPouchDb();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'DrawMultipleDifferentThings')
