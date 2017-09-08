@@ -103,7 +103,7 @@ function preprocessTemplate(template, depth = 0) {
 
 export function matchDocuments(expectedTemplate, collection, fileName) {
   const processedExpectedTemplate = preprocessTemplate(expectedTemplate);
-  saveMock(fileName, processedExpectedTemplate);
+  // saveMock(fileName, processedExpectedTemplate);
   try {
     comparator.assertDocumentIsInCollection(processedExpectedTemplate, collection);
     return {message: 'Matched', pass: true};
