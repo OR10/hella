@@ -195,6 +195,8 @@ describe('Cuboid Drawing', () => {
   });
 
   describe('DepthBuffer', () => {
+    const keySequences = [protractor.Key.SHIFT, 'pppppp', protractor.Key.NULL];
+
     it('should properly render a cuboid with low height from all sides', done => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0,
@@ -214,13 +216,7 @@ describe('Cuboid Drawing', () => {
             .click()
             .perform();
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT)
-            .sendKeys('pppppp')
-            .sendKeys(protractor.Key.NULL)
-            .perform();
-        })
+        .then(() => sendKeySequences(keySequences))
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -234,13 +230,7 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT)
-            .sendKeys('pppppp')
-            .sendKeys(protractor.Key.NULL)
-            .perform();
-        })
+        .then(() => sendKeySequences(keySequences))
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -254,13 +244,7 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT)
-            .sendKeys('pppppp')
-            .sendKeys(protractor.Key.NULL)
-            .perform();
-        })
+        .then(() => sendKeySequences(keySequences))
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -274,13 +258,7 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT)
-            .sendKeys('pppppp')
-            .sendKeys(protractor.Key.NULL)
-            .perform();
-        })
+        .then(() => sendKeySequences(keySequences))
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -294,13 +272,7 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT)
-            .sendKeys('pppppp')
-            .sendKeys(protractor.Key.NULL)
-            .perform();
-        })
+        .then(() => sendKeySequences(keySequences))
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow5')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -314,13 +286,7 @@ describe('Cuboid Drawing', () => {
         .then(requests => {
           expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT)
-            .sendKeys('pppppp')
-            .sendKeys(protractor.Key.NULL)
-            .perform();
-        })
+        .then(() => sendKeySequences(keySequences))
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow6')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -458,11 +424,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeKeyboardAdd')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -495,11 +457,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeKeyboardSubstract')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -532,11 +490,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           // Currently I have no idea why this is needed.
           .then(() => browser.sleep(3000))
           .then(
@@ -571,11 +525,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeKeyboardSubstractFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -936,11 +886,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardAdd')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1006,11 +952,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           // Currently I have no idea why this is needed.
           .then(() => browser.sleep(3000))
           .then(
@@ -1045,11 +987,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardSubstractFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1118,11 +1056,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChangeKeyboardAdd')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1155,11 +1089,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChangeKeyboardSubstract')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1192,11 +1122,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChangeKeyboardAddFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1229,11 +1155,7 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => {
-            const actions = browser.actions();
-            keySequences.forEach(keySequence => actions.sendKeys(keySequence));
-            return actions.perform();
-          })
+          .then(() => sendKeySequences(keySequences))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChangeKeyboardSubstractFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
