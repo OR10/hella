@@ -317,7 +317,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -351,7 +351,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.HeightChangeMinimal.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.HeightChangeMinimal.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -385,7 +385,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.HeightChangeNonNegative.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.HeightChangeNonNegative.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -418,7 +418,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.HeightChangeKeyboardAdd.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -451,7 +451,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstract.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -486,7 +486,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.HeightChangeKeyboardAddFast.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -519,7 +519,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstractFast.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -555,7 +555,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -589,7 +589,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -621,7 +621,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
@@ -667,7 +667,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
@@ -714,7 +714,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.RotateKeyboardLeft.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.RotateKeyboardLeft.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -745,7 +745,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.RotateKeyboardRight.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.RotateKeyboardRight.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -778,7 +778,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.RotateKeyboardShiftLeft.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftLeft.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -811,7 +811,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -847,7 +847,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.WidthChange.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.WidthChange.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -880,7 +880,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.WidthChangeKeyboardAdd.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -913,7 +913,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstract.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -948,7 +948,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.WidthChangeKeyboardAddFast.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -981,7 +981,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstractFast.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -1017,7 +1017,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthChange.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.DepthChange.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -1050,7 +1050,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthChangeKeyboardAdd.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -1083,7 +1083,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstract.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -1116,7 +1116,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthChangeKeyboardAddFast.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -1149,7 +1149,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstractFast.StoreLabeledThingInFrame);
+            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
             done();
           });
       });
@@ -1188,7 +1188,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame1);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
@@ -1209,7 +1209,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame2);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
@@ -1230,7 +1230,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame3);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
@@ -1251,7 +1251,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame4);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
             done();
           });
       });
@@ -1285,7 +1285,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame1);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
@@ -1303,7 +1303,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame2);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
@@ -1321,7 +1321,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame3);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
@@ -1339,7 +1339,7 @@ describe('Cuboid Drawing', () => {
           // .then(() => dumpAllRequestsMade(mock))
           .then(() => getMockRequestsMade(mock))
           .then(requests => {
-            expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame4);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
             done();
           });
       });
@@ -1375,7 +1375,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFramePseudo3d);
+          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -1394,7 +1394,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFrameReal3d);
+          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
           done();
         });
     });
@@ -1428,7 +1428,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFramePseudo3d);
+          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -1447,7 +1447,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFrameReal3d);
+          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
           done();
         });
     });
@@ -1480,7 +1480,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFramePseudo3d);
+          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -1499,7 +1499,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFrameReal3d);
+          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
           done();
         });
     });
@@ -1533,7 +1533,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFramePseudo3d);
+          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -1552,7 +1552,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFrameReal3d);
+          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
           done();
         });
     });
@@ -1586,7 +1586,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d);
+          expect(assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
           done();
         });
     });
@@ -1620,7 +1620,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame1);
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -1638,7 +1638,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame2);
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -1656,7 +1656,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame3);
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -1674,7 +1674,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame4);
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
           done();
         });
     });
@@ -1708,7 +1708,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1);
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -1726,7 +1726,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2);
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -1744,7 +1744,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3);
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -1762,7 +1762,7 @@ describe('Cuboid Drawing', () => {
         // .then(() => dumpAllRequestsMade(mock))
         .then(() => getMockRequestsMade(mock))
         .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4);
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
           done();
         });
     });

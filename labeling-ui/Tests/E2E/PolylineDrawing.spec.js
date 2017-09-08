@@ -184,7 +184,7 @@ describe('Polyline drawing', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PolylineDrawing.MoveOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1);
+        expect(assets.mocks.PolylineDrawing.MoveOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -225,7 +225,7 @@ describe('Polyline drawing', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1);
+        expect(assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });

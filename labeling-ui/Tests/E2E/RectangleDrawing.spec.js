@@ -178,7 +178,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1);
+        expect(assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -213,7 +213,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1);
+        expect(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -247,7 +247,7 @@ describe('Rectangle drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame);
+        expect(assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
   });

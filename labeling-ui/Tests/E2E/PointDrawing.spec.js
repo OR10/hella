@@ -179,7 +179,7 @@ describe('Point drawing', () => {
       .then(() => browser.sleep(500))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1);
+        expect(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });

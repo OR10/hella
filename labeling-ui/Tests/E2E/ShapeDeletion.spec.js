@@ -74,8 +74,8 @@ describe('Shape deletion (TTANNO-1474)', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
       });
   });
@@ -119,8 +119,8 @@ describe('Shape deletion (TTANNO-1474)', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
       });
   });
@@ -164,8 +164,8 @@ describe('Shape deletion (TTANNO-1474)', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
       });
   });
@@ -209,8 +209,8 @@ describe('Shape deletion (TTANNO-1474)', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
       });
   });
@@ -254,8 +254,8 @@ describe('Shape deletion (TTANNO-1474)', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
       });
   });
@@ -300,8 +300,8 @@ describe('Shape deletion (TTANNO-1474)', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing);
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         done();
       });
   });

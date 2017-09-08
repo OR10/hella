@@ -185,7 +185,7 @@ describe('Polygon drawing', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PolygonDrawing.MoveOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1);
+        expect(assets.mocks.PolygonDrawing.MoveOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -226,7 +226,7 @@ describe('Polygon drawing', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1);
+        expect(assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });

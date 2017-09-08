@@ -177,7 +177,7 @@ describe('Pedestrian drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PedestrianDrawing.MoveOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1);
+        expect(assets.mocks.PedestrianDrawing.MoveOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -213,7 +213,7 @@ describe('Pedestrian drawing', () => {
       // .then(() => dumpAllRequestsMade(mock))
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1);
+        expect(assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -248,7 +248,7 @@ describe('Pedestrian drawing', () => {
       })
       .then(() => getMockRequestsMade(mock))
       .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1);
+        expect(assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
