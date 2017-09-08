@@ -126,9 +126,17 @@ function isPouchMock(mockDocument) {
   return mockDocument instanceof Array;
 }
 
+/**
+ * @param {Array} sharedMocks
+ */
 export function mock(sharedMocks) {
-  mocks.shared = sharedMocks.filter(mockDocument => !isPouchMock(mockDocument));
-  mocks.specific = sharedMocks.filter(mockDocument => isPouchMock(mockDocument));
+  let clonedMocks = [];
+  sharedMocks.forEach(mockDocument => {
+    clonedMocks.push(cloneDeep(mockDocument));
+  });
+
+  mocks.shared = clonedMocks.filter(mockDocument => !isPouchMock(mockDocument));
+  mocks.specific = clonedMocks.filter(mockDocument => isPouchMock(mockDocument));
 }
 
 mock.teardown = () => {
