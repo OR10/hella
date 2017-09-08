@@ -157,10 +157,8 @@ describe('Rectangle viewer overflow', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-          done();
-        });
+        expect(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+        done();
       });
   });
 
@@ -189,10 +187,8 @@ describe('Rectangle viewer overflow', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.WideBottomNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-          done();
-        });
+        expect(assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+        done();
       });
   });
 
@@ -221,10 +217,8 @@ describe('Rectangle viewer overflow', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.WideTopNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-          done();
-        });
+        expect(assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+        done();
       });
   });
 
@@ -253,10 +247,8 @@ describe('Rectangle viewer overflow', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TallLeftNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-          done();
-        });
+        expect(assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+        done();
       });
   });
 
@@ -285,10 +277,8 @@ describe('Rectangle viewer overflow', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TallRightNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-          done();
-        });
+        expect(assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+        done();
       });
   });
 
