@@ -292,7 +292,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-          assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -324,7 +323,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-          assets.mocks.CuboidDrawing.HeightChangeMinimal.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -356,7 +354,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-          assets.mocks.CuboidDrawing.HeightChangeNonNegative.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -390,7 +387,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.HeightChangeKeyboardAdd.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -421,7 +417,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstract.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -452,7 +447,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.HeightChangeKeyboardAddFast.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -485,7 +479,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstractFast.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -516,7 +509,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -548,7 +540,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -580,7 +571,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-          assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -624,7 +614,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-          assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -670,7 +659,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.RotateKeyboardLeft.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -699,7 +687,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.RotateKeyboardRight.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -728,7 +715,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.RotateKeyboardShiftLeft.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -759,7 +745,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -792,7 +777,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.WidthChange.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -826,7 +810,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.WidthChangeKeyboardAdd.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -857,7 +840,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstract.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -888,7 +870,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.WidthChangeKeyboardAddFast.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -921,7 +902,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstractFast.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -952,7 +932,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.DepthChange.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -986,7 +965,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.DepthChangeKeyboardAdd.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1017,7 +995,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstract.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1048,7 +1025,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.DepthChangeKeyboardAddFast.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1079,7 +1055,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-          assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstractFast.StoreLabeledThingInFrame,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1110,10 +1085,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-          assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame1,
-          assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame2,
-          assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame3,
-          assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame4,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1202,10 +1173,6 @@ describe('Cuboid Drawing', () => {
         mock(sharedMocks.concat([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-          assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame1,
-          assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame2,
-          assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame3,
-          assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame4,
         ]));
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1285,8 +1252,6 @@ describe('Cuboid Drawing', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.Pseudo3dDepth.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dDepth.frameIndex0to4,
-        assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFramePseudo3d,
-        assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFrameReal3d,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1333,8 +1298,6 @@ describe('Cuboid Drawing', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.Pseudo3dDepth180.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dDepth180.frameIndex0to4,
-        assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFramePseudo3d,
-        assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFrameReal3d,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1382,8 +1345,6 @@ describe('Cuboid Drawing', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.Pseudo3dWidth.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dWidth.frameIndex0to4,
-        assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFramePseudo3d,
-        assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFrameReal3d,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1430,8 +1391,6 @@ describe('Cuboid Drawing', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.Pseudo3dWidth180.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dWidth180.frameIndex0to4,
-        assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFramePseudo3d,
-        assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFrameReal3d,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1479,7 +1438,6 @@ describe('Cuboid Drawing', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0to4,
-        assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1511,10 +1469,6 @@ describe('Cuboid Drawing', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0,
         assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0to4,
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame1,
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame2,
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame3,
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame4,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1591,10 +1545,6 @@ describe('Cuboid Drawing', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0,
         assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0to4,
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1,
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2,
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3,
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
