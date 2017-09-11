@@ -1,6 +1,7 @@
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup';
+import LabeledThingGroupInFrame from 'Application/LabelingData/Models/LabeledThingGroupInFrame';
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 
 import {cloneDeep} from 'lodash';
@@ -24,6 +25,7 @@ class CouchDbModelSerializer {
       [LabeledThing, CouchDbModelSerializer.TYPE_LABELED_THING],
       [LabeledThingInFrame, CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME],
       [LabeledThingGroup, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP],
+      [LabeledThingGroupInFrame, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP_IN_FRAME],
       [LabeledFrame, CouchDbModelSerializer.TYPE_LABELED_FRAME],
     ]);
   }
@@ -63,6 +65,25 @@ class CouchDbModelSerializer {
 
     // Type annotation
     document.type = CouchDbModelSerializer.TYPE_LABELED_THING_GROUP;
+
+    return document;
+  }
+
+  /**
+   * Serialize a LabeledThingGroupInFrame Model
+   *
+   * @param {LabeledThingGroupInFrame} labeledThingGroupInFrame
+   *
+   * @return {object}
+   *
+   * @private
+   */
+  _serializeAnnoStationBundleModelLabeledThingGroupInFrame(labeledThingGroupInFrame) {
+    const document = labeledThingGroupInFrame.toJSON();
+    this._prefixIdAndRevision(document);
+
+    // Type annotation
+    document.type = CouchDbModelSerializer.TYPE_LABELED_THING_GROUP_IN_FRAME;
 
     return document;
   }
@@ -172,7 +193,8 @@ class CouchDbModelSerializer {
       }
     }
 
-    throw new Error(`Unknown Model constructor: Unable to determine corresponding CouchDB model type: ${JSON.stringify(model)}`);
+    throw new Error(`Unknown Model constructor: Unable to determine corresponding CouchDB model type: ${JSON.stringify(
+      model)}`);
   }
 
   /**
@@ -212,6 +234,7 @@ class CouchDbModelSerializer {
 }
 
 CouchDbModelSerializer.TYPE_LABELED_THING_GROUP = 'AnnoStationBundle.Model.LabeledThingGroup';
+CouchDbModelSerializer.TYPE_LABELED_THING_GROUP_IN_FRAME = 'AnnoStationBundle.Model.LabeledThingGroupInFrame';
 CouchDbModelSerializer.TYPE_LABELED_THING = 'AppBundle.Model.LabeledThing';
 CouchDbModelSerializer.TYPE_LABELED_THING_IN_FRAME = 'AppBundle.Model.LabeledThingInFrame';
 CouchDbModelSerializer.TYPE_FRAME_RANGE = 'AppBundle.Model.FrameIndexRange';
