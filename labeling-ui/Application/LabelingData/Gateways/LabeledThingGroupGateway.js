@@ -203,9 +203,12 @@ class LabeledThingGroupGateway {
       this._injectRevisionOrFailSilently(labeledThingGroupDocument);
 
       return dbContext.remove(labeledThingGroupDocument)
-        .then(result => result.ok === true)
-        .catch(() => {
-          throw new Error('Received malformed response when deleting labeled thing group.');
+        .then(result => {
+          if (result.ok !== true) {
+            return this._$q.reject(`Error deleting ${labeledThingGroupDocument._id}: ${result.error}`);
+          }
+
+          return true;
         });
     });
   }
