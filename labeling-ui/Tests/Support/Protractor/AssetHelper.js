@@ -65,8 +65,6 @@ class AssetHelper {
       } else if (path.extname(filePath) === suffix) {
         try {
           structure[key] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-          structure[key].containingDirectory = pathName;
-          structure[key].fileName = file;
         } catch (error) {
           throw new Error(`Error loading asset "${filePath}": ${error.message}`);
         }
