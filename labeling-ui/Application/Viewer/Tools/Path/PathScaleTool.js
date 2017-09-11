@@ -13,7 +13,7 @@ class PathScaleTool extends ScalingTool {
    * @param {angular.$q} $q
    * @param {LoggerService} loggerService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, pathCollisionService) {
     super(drawingContext, $rootScope, $q, loggerService);
 
     /**
@@ -23,6 +23,11 @@ class PathScaleTool extends ScalingTool {
      * @private
      */
     this._modified = false;
+
+    /**
+     * @type {PathCollisionService}
+     */
+    this._pathCollisionService = pathCollisionService;
   }
 
   /**
@@ -52,7 +57,7 @@ class PathScaleTool extends ScalingTool {
   onMouseUp() {
     const {shape} = this._toolActionStruct;
     if (this._modified !== true) {
-      this._reject(new NotModifiedError('Polygon not scaled.'));
+      this._reject(new NotModifiedError('Path not scaled.'));
       return;
     }
 
@@ -60,7 +65,11 @@ class PathScaleTool extends ScalingTool {
   }
 
   onMouseDrag(event) {
-    const point = event.point;
+    let point = event.point;
+    const result = this._pathCollisionService.collisionForPoint(point);
+    if (result !== undefined) {
+      point = result.point;
+    }
     const {shape, handle} = this._toolActionStruct;
     this._modified = true;
 
@@ -127,6 +136,7 @@ PathScaleTool.$inject = [
   '$rootScope',
   '$q',
   'loggerService',
+  'pathCollisionService',
 ];
 
 export default PathScaleTool;
