@@ -43,8 +43,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -114,8 +112,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -165,8 +161,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -235,8 +229,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -307,8 +299,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.MinimalTopToBottom.StoreLabeledThingInFrame,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -356,8 +346,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.MinimalBottomToTop.StoreLabeledThingInFrame,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
