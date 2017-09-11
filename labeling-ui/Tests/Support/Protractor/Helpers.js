@@ -3,7 +3,7 @@ import PouchDb from '../PouchDb/PouchDbWrapper';
 import httpMock from 'protractor-http-mock';
 import {cloneDeep} from 'lodash';
 import ExtendedBrowser from './ExtendedBrowser';
-import {saveMock} from '../PouchMockTransformation';
+import moment from 'moment';
 
 export function getMockRequestsMade(mock) {
   return Promise.resolve()
@@ -36,11 +36,23 @@ function waitForApplicationReady() {
   });
 }
 
+function getCurrentDate() {
+  return moment().format('YYYY-MM-DD HH:mm:ss.000000');
+}
+
 function getPouchDbCustomBootstrap(mocks) {
   let documents = [];
   // let transformedDocuments = [];
 
   mocks.forEach(mock => {
+    mock.forEach(mockDocument => {
+      if (mockDocument.createdAt === undefined) {
+        mockDocument.createdAt = getCurrentDate();
+      }
+      if (mockDocument.lastModifiedAt === undefined) {
+        mockDocument.lastModifiedAt = getCurrentDate();
+      }
+    });
     documents = documents.concat(mock);
   });
 
