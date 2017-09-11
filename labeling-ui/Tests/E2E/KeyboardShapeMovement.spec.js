@@ -43,12 +43,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameUp,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameRight,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameDown,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -125,12 +120,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftDown,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -218,12 +208,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameDown,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -300,12 +285,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftDown,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -392,12 +372,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameDown,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -480,12 +455,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftDown,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
