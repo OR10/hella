@@ -40,7 +40,6 @@ describe('Shape deletion (TTANNO-1474)', () => {
       assets.mocks.ShapeDeletion.Rectangle.Task,
       assets.mocks.ShapeDeletion.Rectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.ShapeDeletion.Rectangle.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -83,7 +82,6 @@ describe('Shape deletion (TTANNO-1474)', () => {
       assets.mocks.ShapeDeletion.Pedestrian.Task,
       assets.mocks.ShapeDeletion.Pedestrian.LabeledThingInFrame.frameIndex0,
       assets.mocks.ShapeDeletion.Pedestrian.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -126,7 +124,6 @@ describe('Shape deletion (TTANNO-1474)', () => {
       assets.mocks.ShapeDeletion.Polygon.Task,
       assets.mocks.ShapeDeletion.Polygon.LabeledThingInFrame.frameIndex0,
       assets.mocks.ShapeDeletion.Polygon.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -169,7 +166,6 @@ describe('Shape deletion (TTANNO-1474)', () => {
       assets.mocks.ShapeDeletion.Polyline.Task,
       assets.mocks.ShapeDeletion.Polyline.LabeledThingInFrame.frameIndex0,
       assets.mocks.ShapeDeletion.Polyline.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -212,7 +208,6 @@ describe('Shape deletion (TTANNO-1474)', () => {
       assets.mocks.ShapeDeletion.Point.Task,
       assets.mocks.ShapeDeletion.Point.LabeledThingInFrame.frameIndex0,
       assets.mocks.ShapeDeletion.Point.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -256,7 +251,6 @@ describe('Shape deletion (TTANNO-1474)', () => {
       assets.mocks.ShapeDeletion.Cuboid.Video,
       assets.mocks.ShapeDeletion.Cuboid.LabeledThingInFrame.frameIndex0,
       assets.mocks.ShapeDeletion.Cuboid.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
