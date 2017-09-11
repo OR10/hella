@@ -1,6 +1,7 @@
 import 'jquery';
 import angular from 'angular';
 import {inject, module} from 'angular-mocks';
+import {cloneDeep} from 'lodash';
 
 import Common from 'Application/Common/Common';
 
@@ -11,6 +12,9 @@ import LabeledThingGroupGateway from 'Application/LabelingData/Gateways/LabeledT
 
 import Task from 'Application/Task/Model/Task';
 import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
+
+import labeledThingGroupInFrameFixture from 'Tests/Fixtures/Models/Frontend/LabeledThingGroupInFrame';
+import labeledThingGroupInFrameDocumentFixture from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroupInFrame';
 
 describe('LabeledThingGroupGateway', () => {
   /**
@@ -27,10 +31,21 @@ describe('LabeledThingGroupGateway', () => {
   let labeledThingGroupResponse;
   let queryResponse;
   let couchDbModelDeserializer;
+  let couchDbModelSerializer;
+  let packagingExecutor;
+  let revisionManager;
+
+  let labeledThingGroupInFrame;
+  let labeledThingGroupInFrameDocument;
 
   function createTask(id = 'TASK-ID') {
     return new Task(Object.assign({}, TaskFrontendModel.toJSON(), {id}));
   }
+
+  beforeEach(() => {
+    labeledThingGroupInFrame = labeledThingGroupInFrameFixture.clone();
+    labeledThingGroupInFrameDocument = cloneDeep(labeledThingGroupInFrameDocumentFixture);
+  });
 
   beforeEach(() => {
     const featureFlags = {};
@@ -114,6 +129,9 @@ describe('LabeledThingGroupGateway', () => {
       $q = $injector.get('$q');
       $rootScope = $injector.get('$rootScope');
       couchDbModelDeserializer = $injector.get('couchDbModelDeserializer');
+      couchDbModelSerializer = $injector.get('couchDbModelSerializer');
+      packagingExecutor = $injector.get('packagingExecutor');
+      revisionManager = $injector.get('revisionManager');
       groupGateway = $injector.instantiate(LabeledThingGroupGateway);
     });
   });
@@ -446,5 +464,107 @@ describe('LabeledThingGroupGateway', () => {
 
     expect(thingGateway.saveLabeledThing)
       .toHaveBeenCalledWith(labeledThingCalled);
+  });
+
+  fdescribe('saveLabeledThingGroupInFrame', () => {
+    it('should return a promise', () => {
+      const returnValue = groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
+      expect(returnValue.then).toEqual(jasmine.any(Function));
+    });
+
+    it('should utilize the packaging executor', () => {
+      spyOn(packagingExecutor, 'execute');
+      const returnValue = groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
+
+      expect(packagingExecutor.execute).toHaveBeenCalled();
+      expect(returnValue).toBe(packagingExecutor.execute.calls.mostRecent().returnValue);
+    });
+
+    it('should serialize the given ltgif', () => {
+      spyOn(couchDbModelSerializer, 'serialize');
+      groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
+
+      expect(couchDbModelSerializer.serialize).toHaveBeenCalledWith(
+        labeledThingGroupInFrame
+      );
+    });
+
+    it('should try to inject the revision before updating', () => {
+      spyOn(couchDbModelSerializer, 'serialize');
+      spyOn(revisionManager, 'injectRevision');
+      groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
+
+      expect(revisionManager.injectRevision).toHaveBeenCalledWith(
+        couchDbModelSerializer.serialize.calls.mostRecent().returnValue
+      );
+    });
+
+    it('should put the updated ltgif to the database', () => {
+      spyOn(couchDbModelSerializer, 'serialize');
+
+      groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
+      $rootScope.$apply();
+
+      expect(pouchDbContext.put).toHaveBeenCalledWith(
+        couchDbModelSerializer.serialize.calls.mostRecent().returnValue
+      );
+    });
+
+    it('should retrieve the stored ltgif after putting for revision extraction', () => {
+      pouchDbContext.put.and.callFake(() => {
+        const deferred = $q.defer();
+        deferred.resolve({id: labeledThingGroupInFrame.id});
+        return deferred.promise;
+      });
+
+      groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
+      $rootScope.$apply();
+
+      expect(pouchDbContext.get).toHaveBeenCalledWith(labeledThingGroupInFrame.id);
+    });
+
+    it('should extract revision after storage of ltgif', () => {
+      spyOn(revisionManager, 'extractRevision');
+      pouchDbContext.get.and.callFake(() => {
+        const deferred = $q.defer();
+        deferred.resolve(labeledThingGroupInFrameDocument);
+        return deferred.promise;
+      });
+
+      pouchDbContext.put.and.callFake(() => {
+        const deferred = $q.defer();
+        deferred.resolve({id: labeledThingGroupInFrame.id});
+        return deferred.promise;
+      });
+
+      groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
+      $rootScope.$apply();
+
+      expect(revisionManager.extractRevision).toHaveBeenCalledWith(labeledThingGroupInFrameDocument);
+    });
+
+    it('should resolve with the loaded and deserialized document after storing', () => {
+      spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroupInFrame');
+      pouchDbContext.get.and.callFake(() => {
+        const deferred = $q.defer();
+        deferred.resolve(labeledThingGroupInFrameDocument);
+        return deferred.promise;
+      });
+
+      pouchDbContext.put.and.callFake(() => {
+        const deferred = $q.defer();
+        deferred.resolve({id: labeledThingGroupInFrame.id});
+        return deferred.promise;
+      });
+
+      const returnValue = groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
+      const returnValueSpy = jasmine.createSpy('returnValue resolve');
+      returnValue.then(returnValueSpy);
+      $rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalledWith(
+        couchDbModelDeserializer.deserializeLabeledThingGroupInFrame.calls.mostRecent().returnValue
+      );
+    });
   });
 });

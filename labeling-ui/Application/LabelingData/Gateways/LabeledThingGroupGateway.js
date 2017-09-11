@@ -298,6 +298,32 @@ class LabeledThingGroupGateway {
   }
 
   /**
+   * @param {LabeledThingGroupInFrame} ltgif
+   */
+  saveLabeledThingGroupInFrame(ltgif) {
+    const ltg = ltgif.labeledThingGroup;
+    const task = ltg.task;
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+    const serializedLtgif = this._couchDbModelSerializer.serialize(ltgif);
+
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute(
+      'labeledThingGroup',
+      () => {
+        this._injectRevisionOrFailSilently(serializedLtgif);
+        return dbContext.put(serializedLtgif)
+          .then(response => dbContext.get(response.id))
+          .then(readDocument => {
+            this._revisionManager.extractRevision(readDocument);
+            return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(readDocument, ltg);
+          });
+      }
+    );
+  }
+
+  /**
    * Inject a revision into the document or fail silently and ignore the error.
    *
    * @param {object} document
