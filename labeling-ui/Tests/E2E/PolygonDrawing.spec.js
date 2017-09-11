@@ -160,7 +160,6 @@ describe('Polygon drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolygonDrawing.MoveOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -192,10 +191,7 @@ describe('Polygon drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1IntermediateStep,
       assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.getLabeledThingsInFrame0to4,
-      assets.mocks.PolygonDrawing.Shared.StoreLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -261,8 +257,6 @@ describe('Polygon drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -306,8 +300,6 @@ describe('Polygon drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -388,10 +380,6 @@ describe('Polygon drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame2,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame3,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame4,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -528,8 +516,6 @@ describe('Polygon handle/point limiting', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame5,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
