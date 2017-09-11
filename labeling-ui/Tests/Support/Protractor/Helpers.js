@@ -4,6 +4,7 @@ import httpMock from 'protractor-http-mock';
 import {cloneDeep} from 'lodash';
 import ExtendedBrowser from './ExtendedBrowser';
 import moment from 'moment';
+import {saveMock} from '../PouchMockTransformation';
 
 export function getMockRequestsMade(mock) {
   return Promise.resolve()
@@ -40,9 +41,86 @@ function getCurrentDate() {
   return moment().format('YYYY-MM-DD HH:mm:ss.000000');
 }
 
+/**
+ * When using, make sure AssetHelper.js, lines 68 and 69 are also active:
+ *  structure[key].containingDirectory = pathName;
+ *  structure[key].fileName = file;
+ *
+ * @param {Array} mocks
+ */
+export function mockTransform(mocks) {
+  const transformedDocuments = [];
+
+  mocks.forEach(mock => {
+    const things = cloneDeep(mock.response.data.result);
+    let labeledThing;
+    let taskId;
+    let projectId;
+
+    let transformedDocument = {
+      fileName: `${mock.containingDirectory}/${mock.fileName}`,
+      documents: [],
+    };
+
+    if (things.labeledThings) {
+      const labeledThingKeys = Object.keys(things.labeledThings);
+      labeledThingKeys.forEach(labeledThingKey => {
+        labeledThing = things.labeledThings[labeledThingKey];
+        taskId = labeledThing.taskId;
+        projectId = labeledThing.projectId;
+
+        labeledThing._id = labeledThing.id;
+        labeledThing.type = 'AppBundle.Model.LabeledThing';
+        labeledThing.lineColor = parseInt(labeledThing.lineColor);
+        labeledThing.frameRange = {
+          'startFrameIndex': labeledThing.frameRange.startFrameNumber,
+          'endFrameIndex': labeledThing.frameRange.endFrameNumber,
+          'type': 'AppBundle.Model.FrameIndexRange',
+        };
+
+        delete labeledThing.rev;
+        delete labeledThing.id;
+
+        transformedDocument.documents.push(labeledThing);
+      });
+    }
+
+    if (things.labeledThingsInFrame) {
+      things.labeledThingsInFrame.forEach(ltif => {
+        ltif._id = ltif.id;
+        ltif.taskId = taskId;
+        ltif.projectId = projectId;
+        ltif.type = 'AppBundle.Model.LabeledThingInFrame';
+
+        delete ltif.id;
+        delete ltif.rev;
+        delete ltif.ghost;
+        delete ltif.ghostClasses;
+      });
+      transformedDocument.documents = transformedDocument.documents.concat(things.labeledThingsInFrame);
+    }
+
+    if (things.labeledThingGroups) {
+      things.labeledThingGroups.forEach(ltg => {
+        ltg._id = ltg.id;
+        ltg.type = 'AnnoStationBundle.Model.LabeledThingGroup';
+
+        delete ltg.id;
+      });
+      transformedDocument.documents = transformedDocument.documents.concat(things.labeledThingGroups);
+    }
+
+
+    transformedDocuments.push(transformedDocument);
+  });
+
+  transformedDocuments.forEach(document => {
+    saveMock(document.fileName, document.documents);
+  });
+}
+
 function getPouchDbCustomBootstrap(mocks) {
   let documents = [];
-  // let transformedDocuments = [];
 
   mocks.forEach(mock => {
     mock.forEach(mockDocument => {
@@ -55,64 +133,6 @@ function getPouchDbCustomBootstrap(mocks) {
     });
     documents = documents.concat(mock);
   });
-
-  // mocks.forEach(mock => {
-  //   const things = cloneDeep(mock.response.data.result);
-  //   let labeledThing;
-  //   let taskId;
-  //   let projectId;
-  //
-  //   let transformedDocument = {
-  //     fileName: `${mock.containingDirectory}/${mock.fileName}`,
-  //     documents: []
-  //   }
-  //
-  //   if (things.labeledThings) {
-  //     const labeledThingKeys = Object.keys(things.labeledThings);
-  //     labeledThingKeys.forEach(labeledThingKey => {
-  //       labeledThing = things.labeledThings[labeledThingKey];
-  //       taskId = labeledThing.taskId;
-  //       projectId = labeledThing.projectId;
-  //
-  //       labeledThing._id = labeledThing.id;
-  //       labeledThing.type = 'AppBundle.Model.LabeledThing';
-  //       labeledThing.lineColor = parseInt(labeledThing.lineColor);
-  //       labeledThing.frameRange = {
-  //         'startFrameIndex': labeledThing.frameRange.startFrameNumber,
-  //         'endFrameIndex': labeledThing.frameRange.endFrameNumber,
-  //         'type': 'AppBundle.Model.FrameIndexRange',
-  //       };
-  //
-  //       delete labeledThing.rev;
-  //       delete labeledThing.id;
-  //
-  //       documents.push(labeledThing);
-  //       transformedDocument.documents.push(labeledThing);
-  //     });
-  //   }
-  //
-  //   if (things.labeledThingsInFrame) {
-  //     things.labeledThingsInFrame.forEach(ltif => {
-  //       ltif._id = ltif.id;
-  //       ltif.taskId = taskId;
-  //       ltif.projectId = projectId;
-  //       ltif.type = 'AppBundle.Model.LabeledThingInFrame';
-  //
-  //       delete ltif.id;
-  //       delete ltif.rev;
-  //       delete ltif.ghost;
-  //       delete ltif.ghostClasses;
-  //     });
-  //     documents = documents.concat(things.labeledThingsInFrame);
-  //     transformedDocument.documents = transformedDocument.documents.concat(things.labeledThingsInFrame);
-  //   }
-  //
-  //   transformedDocuments.push(transformedDocument);
-  // });
-
-  // transformedDocuments.forEach(document => {
-  //   saveMock(document.fileName, document.documents);
-  // });
 
   return [
     function (documents, databaseName, next) {
