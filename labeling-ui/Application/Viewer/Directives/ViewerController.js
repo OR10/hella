@@ -14,7 +14,6 @@ import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
 import GroupToolActionStruct from '../Tools/ToolActionStructs/GroupToolActionStruct';
 import {difference} from 'lodash';
-import PaperPolyline from '../Shapes/PaperPolyline';
 
 
 /**
