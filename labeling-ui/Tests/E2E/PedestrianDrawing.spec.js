@@ -153,7 +153,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.MoveOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -185,8 +184,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -219,8 +216,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -283,8 +278,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame1,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -315,8 +308,6 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.Task,
-      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing,
-      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -347,8 +338,6 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.Task,
-      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing,
-      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -379,8 +368,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThingInFrame,
-      assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -437,10 +424,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame2,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame3,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
