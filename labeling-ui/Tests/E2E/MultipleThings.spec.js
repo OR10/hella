@@ -136,12 +136,6 @@ describe('Multiple Things', () => {
     mock(sharedMocks.concat([
       assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThing,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect1,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect2,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThingInFramePedestrian,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid,
       assets.mocks.MultipleThings.Shared.SingleLabeledThingInFrame,
     ]));
 
