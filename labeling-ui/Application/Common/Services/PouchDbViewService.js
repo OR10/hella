@@ -220,6 +220,13 @@ PouchDbViewService.VIEWS = {
       }
     },
   },
+  'labeledThingGroupInFrameByLabeledThingGroupId': {
+    map: function(doc) { // eslint-disable-line func-names
+      if (doc.type === 'AnnoStationBundle.Model.LabeledThingGroupInFrame') {
+        emit([doc.labeledThingGroupId]); // eslint-disable-line no-undef
+      }
+    },
+  },
   'labeledFrameByTaskIdAndFrameIndex': {
     map: function(doc) { // eslint-disable-line func-names
       if (doc.type === 'AppBundle.Model.LabeledFrame') {
