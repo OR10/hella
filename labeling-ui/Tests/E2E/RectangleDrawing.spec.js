@@ -153,7 +153,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -186,8 +185,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -220,7 +217,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0,
       assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0to4,
-      assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -282,8 +278,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -314,8 +308,6 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.Task,
-      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing,
-      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -346,8 +338,6 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.Task,
-      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing,
-      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -377,8 +367,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame,
-      assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -433,10 +421,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -476,8 +460,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing,
-      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -507,8 +489,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing,
-      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
