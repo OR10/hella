@@ -159,7 +159,6 @@ describe('Polyline drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolylineDrawing.MoveOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -191,8 +190,6 @@ describe('Polyline drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1IntermediateStep,
       assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.getLabeledThingsInFrame0to4,
       assets.mocks.PolylineDrawing.Shared.StoreLabeledThing,
     ]));
@@ -260,8 +257,6 @@ describe('Polyline drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -305,8 +300,6 @@ describe('Polyline drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -386,10 +379,6 @@ describe('Polyline drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame2,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame3,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame4,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -521,8 +510,6 @@ describe('Polyline handle/point limiting', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame5,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
