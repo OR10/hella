@@ -13,6 +13,8 @@ import LabeledThingGroupGateway from 'Application/LabelingData/Gateways/LabeledT
 import Task from 'Application/Task/Model/Task';
 import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
 
+import labeledThingGroupFixture from 'Tests/Fixtures/Models/Frontend/LabeledThingGroup';
+import labeledThingGroupDocumentFixture from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroup';
 import labeledThingGroupInFrameFixture from 'Tests/Fixtures/Models/Frontend/LabeledThingGroupInFrame';
 import labeledThingGroupInFrameDocumentFixture from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroupInFrame';
 
@@ -35,6 +37,8 @@ describe('LabeledThingGroupGateway', () => {
   let packagingExecutor;
   let revisionManager;
 
+  let labeledThingGroup;
+  let labeledThingGroupDocument;
   let labeledThingGroupInFrame;
   let labeledThingGroupInFrameDocument;
 
@@ -43,6 +47,8 @@ describe('LabeledThingGroupGateway', () => {
   }
 
   beforeEach(() => {
+    labeledThingGroup = labeledThingGroupFixture.clone();
+    labeledThingGroupDocument = cloneDeep(labeledThingGroupDocumentFixture);
     labeledThingGroupInFrame = labeledThingGroupInFrameFixture.clone();
     labeledThingGroupInFrameDocument = cloneDeep(labeledThingGroupInFrameDocumentFixture);
   });
@@ -294,45 +300,6 @@ describe('LabeledThingGroupGateway', () => {
     });
   });
 
-  it('should delete a labeled thing group', () => {
-    const task = createTask();
-
-    const labeledThingGroup = new LabeledThingGroup({
-      task,
-      id: 'LABELED-THING-GROUP-ID',
-      groupType: 'extension-sign-group',
-      lineColor: 1,
-      groupIds: [],
-      classes: [],
-      incomplete: true,
-      createdAt: '2017-09-05 16:11:56.000000',
-      lastModifiedAt: '2017-09-05 16:11:56.000000',
-    });
-    spyOn(labeledThingGroup, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
-
-
-    const serializedGroup = {
-      _id: 'LABELED-THING-GROUP-ID',
-      groupType: 'extension-sign-group',
-      lineColor: 1,
-      groupIds: [],
-      type: 'AnnoStationBundle.Model.LabeledThingGroup',
-      classes: [],
-      incomplete: true,
-      createdAt: '2017-09-05 16:11:56.000000',
-      lastModifiedAt: '2017-09-05 16:11:56.000000',
-      taskId: task.id,
-      projectId: task.projectId,
-    };
-
-    groupGateway.deleteLabeledThingGroup(labeledThingGroup);
-
-    $rootScope.$apply();
-
-    expect(pouchDbContext.remove)
-      .toHaveBeenCalledWith(serializedGroup);
-  });
-
   it('should create a labeled thing group', () => {
     spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroup').and.callThrough();
 
@@ -466,7 +433,143 @@ describe('LabeledThingGroupGateway', () => {
       .toHaveBeenCalledWith(labeledThingCalled);
   });
 
-  fdescribe('saveLabeledThingGroupInFrame', () => {
+  describe('deleteLabeledThingGroup', () => {
+    it('should return a promise', () => {
+      const returnValue = groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      expect(returnValue.then).toEqual(jasmine.any(Function));
+    });
+
+    it('should utilize the packaging exeuctor', () => {
+      spyOn(packagingExecutor, 'execute');
+      const returnValue = groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+
+      expect(packagingExecutor.execute).toHaveBeenCalled();
+      expect(returnValue).toBe(
+        packagingExecutor.execute.calls.mostRecent().returnValue
+      );
+    });
+
+    it('should use the serializer to retrieve the document to remove', () => {
+      spyOn(labeledThingGroup, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
+      spyOn(revisionManager, 'injectRevision').and.callFake(
+        document => document._rev = labeledThingGroupDocument._rev
+      );
+      spyOn(couchDbModelSerializer, 'serialize');
+
+      groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+
+      $rootScope.$apply();
+
+      expect(couchDbModelSerializer.serialize).toHaveBeenCalledWith(labeledThingGroup);
+    });
+
+    it('should inject and use the known revision of the document', () => {
+      const revision = '42-TheAnswerToTheUniverseLifeAndEverythingElse';
+
+      spyOn(labeledThingGroup, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
+      spyOn(revisionManager, 'injectRevision').and.callFake(
+        document => document._rev = revision
+      );
+      spyOn(couchDbModelSerializer, 'serialize').and.callThrough();
+
+      groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+
+      $rootScope.$apply();
+
+      expect(revisionManager.injectRevision).toHaveBeenCalledWith(
+        couchDbModelSerializer.serialize.calls.mostRecent().returnValue
+      );
+
+      expect(pouchDbContext.remove.calls.mostRecent().args[0]._rev).toEqual(revision);
+    });
+
+    it('should delete the corresponding labeled thing group', () => {
+      spyOn(labeledThingGroup, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
+      spyOn(revisionManager, 'injectRevision').and.callFake(
+        document => document._rev = labeledThingGroupDocument._rev
+      );
+      groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+
+      $rootScope.$apply();
+
+      expect(pouchDbContext.remove)
+        .toHaveBeenCalledWith(labeledThingGroupDocumentFixture);
+    });
+
+    it('should resolve returned promise once deletion is complete', () => {
+      const deferred = $q.defer();
+      pouchDbContext.remove.and.returnValue(deferred.promise);
+
+      const returnValue = groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      const returnValuePromise = jasmine.createSpy('returnValue resolved');
+      returnValue.then(returnValuePromise);
+
+      $rootScope.$apply();
+
+      expect(returnValuePromise).not.toHaveBeenCalled();
+      deferred.resolve({ok: true});
+
+      $rootScope.$apply();
+
+      expect(returnValuePromise).toHaveBeenCalled();
+    });
+
+    it('should reject returned promise if deletion could not be executed correctly', () => {
+      const deferred = $q.defer();
+      pouchDbContext.remove.and.returnValue(deferred.promise);
+
+      const returnValue = groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      const returnValuePromise = jasmine.createSpy('returnValue rejected');
+      returnValue.catch(returnValuePromise);
+
+      $rootScope.$apply();
+
+      expect(returnValuePromise).not.toHaveBeenCalled();
+      deferred.resolve({ok: false, error: 'The most gruesome thing just occured!'});
+
+      $rootScope.$apply();
+
+      expect(returnValuePromise).toHaveBeenCalled();
+    });
+
+    it('should reject returned promise if deletion went horribly wrong', () => {
+      const deferred = $q.defer();
+      pouchDbContext.remove.and.returnValue(deferred.promise);
+
+      const returnValue = groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      const returnValuePromise = jasmine.createSpy('returnValue rejected');
+      returnValue.catch(returnValuePromise);
+
+      $rootScope.$apply();
+
+      expect(returnValuePromise).not.toHaveBeenCalled();
+      deferred.reject({ok: false, error: 'Some error'});
+
+      $rootScope.$apply();
+
+      expect(returnValuePromise).toHaveBeenCalled();
+    });
+
+    it('should reject returned promise if deletion horribly went wrong', () => {
+      const deferred = $q.defer();
+      pouchDbContext.remove.and.returnValue(deferred.promise);
+
+      const returnValue = groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      const returnValuePromise = jasmine.createSpy('returnValue rejected');
+      returnValue.catch(returnValuePromise);
+
+      $rootScope.$apply();
+
+      expect(returnValuePromise).not.toHaveBeenCalled();
+      deferred.reject({ok: false, error: 'Some error'});
+
+      $rootScope.$apply();
+
+      expect(returnValuePromise).toHaveBeenCalled();
+    });
+  });
+
+  describe('saveLabeledThingGroupInFrame', () => {
     it('should return a promise', () => {
       const returnValue = groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
       expect(returnValue.then).toEqual(jasmine.any(Function));
