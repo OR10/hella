@@ -1,7 +1,6 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
   expectModalToBePresent,
-  getMockRequestsMade,
   initApplication,
   mock,
 } from '../Support/Protractor/Helpers';

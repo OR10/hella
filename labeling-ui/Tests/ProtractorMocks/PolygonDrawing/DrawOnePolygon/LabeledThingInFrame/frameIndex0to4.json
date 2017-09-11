@@ -17,6 +17,7 @@
     "frameIndex": 0,
     "incomplete": true,
     "labeledThingId": "LABELED-THING-ID-1",
+    "identifierName": "sign",
     "shapes": [
       {
         "id": "SHAPE-ID-1",
