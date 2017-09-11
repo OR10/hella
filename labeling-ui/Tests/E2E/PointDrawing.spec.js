@@ -155,7 +155,6 @@ describe('Point drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -217,8 +216,6 @@ describe('Point drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame1,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -249,10 +246,6 @@ describe('Point drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame2,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame3,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
