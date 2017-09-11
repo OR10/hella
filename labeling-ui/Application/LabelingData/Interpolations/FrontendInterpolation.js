@@ -44,7 +44,7 @@ class FrontendInterpolation {
    */
   execute(task, labeledThing, frameRange) {
     const limit = (frameRange.endFrameIndex - frameRange.startFrameIndex) + 1;
-    this._labeledThingInFrameGateway.getLabeledThingInFrame(
+    return this._labeledThingInFrameGateway.getLabeledThingInFrame(
       task,
       frameRange.startFrameIndex,
       labeledThing,
@@ -67,9 +67,15 @@ class FrontendInterpolation {
         throw new Error('Error in _doInterpolation: You need more then 1 real labeledThingInFrames for interpolation');
       }
 
-      const labeledThingInFrameIndices = labeledThingInFrames.map(labeledThingInFrame => labeledThingInFrame.frameIndex);
+      const labeledThingInFrameIndices = labeledThingInFrames.map(
+        labeledThingInFrame => labeledThingInFrame.frameIndex);
 
       const easing = this._getEasingForShapeAndType(labeledThingInFrames[0]);
+
+      const interpolationSupport = easing.checkInterpolationSupport(labeledThingInFramesWithGhosts);
+      if (interpolationSupport.supportsInterpolation !== true) {
+        throw new Error(interpolationSupport.reason);
+      }
 
       const savePromises = [];
       labeledThingInFrameIndices.forEach((currentLtifIndex, ltifIndicesIndex) => {
@@ -110,7 +116,8 @@ class FrontendInterpolation {
    */
   _getEasingForShapeAndType(labeledThingInFrame, easingType = 'linear') {
     const shape = labeledThingInFrame.shapes[0].type;
-    const interpolationEasing = this._easings.find(easing => easing.supportsShape(shape) && easing.supportsEasing(easingType));
+    const interpolationEasing = this._easings.find(
+      easing => easing.supportsShape(shape) && easing.supportsEasing(easingType));
     if (interpolationEasing === undefined) {
       throw new Error(`There is no easing for ${shape} with type ${easingType}`);
     }

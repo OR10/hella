@@ -63,6 +63,15 @@ class PaperPath extends PaperThingShape {
   }
 
   /**
+   * @param {boolean} drawHandles
+   * @protected
+   * @abstract
+   */
+  _renderShape(drawHandles = true) { // eslint-disable-line no-unused-vars
+    throw new Error('Abstract function can not be called');
+  }
+
+  /**
    * @returns {Array.<RectangleHandle>}
    * @private
    */
@@ -84,7 +93,7 @@ class PaperPath extends PaperThingShape {
    */
   select(drawHandles = true) {
     this._isSelected = true;
-    this._drawShape(drawHandles);
+    this._renderShape(drawHandles);
   }
 
   /**
@@ -92,7 +101,7 @@ class PaperPath extends PaperThingShape {
    */
   deselect() {
     this._isSelected = false;
-    this._drawShape();
+    this._renderShape();
   }
 
   /**
@@ -104,9 +113,14 @@ class PaperPath extends PaperThingShape {
 
   /**
    * @param {Handle|null} handle
+   * @param {boolean} keyboardModifiers
    * @returns {string}
    */
-  getToolActionIdentifier(handle) {
+  getToolActionIdentifier(handle, keyboardModifiers) {
+    if (keyboardModifiers.alt && handle === null) {
+      return 'transformation';
+    }
+
     if (handle === null) {
       return 'move';
     }
@@ -122,15 +136,24 @@ class PaperPath extends PaperThingShape {
     this._points = this._points.map(shapePoint => {
       return new paper.Point(shapePoint).add(moveVector);
     });
-    this._drawShape();
+    this._renderShape();
   }
 
   /**
    * @param {Handle|null} handle
    * @param {boolean} mouseDown
+   * @param {boolean} keyboardModifiers
    * @returns {string}
    */
-  getCursor(handle, mouseDown = false) {
+  getCursor(handle, mouseDown = false, keyboardModifiers) {
+    if (keyboardModifiers.alt && !handle) {
+      return 'add';
+    }
+
+    if (keyboardModifiers.alt && handle) {
+      return 'remove';
+    }
+
     return mouseDown ? 'grabbing' : 'grab';
   }
 
@@ -141,15 +164,34 @@ class PaperPath extends PaperThingShape {
   resize(handle, point) {
     const index = parseInt(handle.name.replace('point-', ''), 10);
     this._points[index] = point;
-    this._drawShape();
+    this._renderShape();
   }
 
   /**
+   * Adds a point at the given index
+   *
+   * index positioning is equivilant of the one of array.splice()
+   *
    * @param {Point} point
+   * @param {number|undefined} index
    */
-  addPoint(point) {
-    this._points.push(point);
-    this._drawShape();
+  addPoint(point, index = undefined) {
+    if (index === undefined) {
+      this._points.push(point);
+    } else {
+      this._points.splice(index, 0, point);
+    }
+    this._renderShape();
+  }
+
+  /**
+   * Removes a point from the path at the given index
+   *
+   * @param {number} index
+   */
+  removePoint(index) {
+    this._points.splice(index, 1);
+    this._renderShape();
   }
 
   /**
@@ -157,14 +199,14 @@ class PaperPath extends PaperThingShape {
    */
   setSecondPoint(point) {
     this._points[1] = point;
-    this._drawShape();
+    this._renderShape();
   }
 
   /**
    * Fix the points of the shape to represent the right coordinates
    */
   fixOrientation() {
-    this._drawShape();
+    this._renderShape();
   }
 
   /**

@@ -84,10 +84,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have no panes if nothing is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(0))
         .then(() => done());
     });
@@ -101,10 +104,13 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.Groups.TaskConfigurationFile,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => groupButton.click())
         .then(() => {
           return browser.actions()
@@ -128,10 +134,13 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.Groups.TaskConfigurationFile,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => groupButton.click())
         .then(() => {
           return browser.actions()
@@ -156,10 +165,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should start with all panes closed', done => {
       mock(sharedMocks);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => expect(
@@ -177,10 +189,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('pane should open on click', done => {
       mock(sharedMocks);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Direction').click())
@@ -199,10 +214,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('open pane should close on click', done => {
       mock(sharedMocks);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Direction').click())
@@ -222,10 +240,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should only have one pane open at a time in single-select mode', done => {
       mock(sharedMocks);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToSingleSelectMode())
@@ -246,10 +267,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should allow multiple open panes in multi-select mode', done => {
       mock(sharedMocks);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
@@ -270,10 +294,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should close clicked open open panes in multi-select mode', done => {
       mock(sharedMocks);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
@@ -298,14 +325,20 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Vehicle Type',
+          'Truck'
+        ).click())
         .then(() => expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Vehicle Type')).toEqual(
           {
             'Car': false,
@@ -324,14 +357,20 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Vehicle Type',
+          'Truck'
+        ).click())
         .then(() => browser.sleep(250))
         .then(() => expect(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck).toExistInPouchDb())
         .then(() => done());
@@ -343,15 +382,21 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Vehicle Type',
+          'Truck'
+        ).click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Car').click())
         .then(() => expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Vehicle Type')).toEqual(
           {
@@ -372,15 +417,21 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Vehicle Type',
+          'Truck'
+        ).click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Car').click())
         .then(() => browser.sleep(250))
         .then(() => expect(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar).toExistInPouchDb())
@@ -402,10 +453,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct number of panes if rectangle is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(4))
@@ -415,10 +469,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct pane titles if rectangle is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => expect(
@@ -435,10 +492,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct entries in panes if rectangle is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => expect(
@@ -478,15 +538,21 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesIgnoreVehicle,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Ignore vehicle').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Vehicle Type',
+          'Ignore vehicle'
+        ).click())
         .then(() => expect(
           labelSelectorHelper.getAllEntryTexts()
         ).toEqual(
@@ -529,16 +595,25 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesIgnoreVehicleAndIgnoreGroup,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Ignore vehicle').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Art des Ignore', 'Gruppe').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Vehicle Type',
+          'Ignore vehicle'
+        ).click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Art des Ignore',
+          'Gruppe'
+        ).click())
         .then(() => expect(
           labelSelectorHelper.getAllEntryTexts()
         ).toEqual(
@@ -586,17 +661,29 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Ignore vehicle').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Art des Ignore', 'Gruppe').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Vehicle Type',
+          'Ignore vehicle'
+        ).click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Art des Ignore',
+          'Gruppe'
+        ).click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Vehicle Type',
+          'Truck'
+        ).click())
         .then(() => expect(
           labelSelectorHelper.getAllEntryTexts()
         ).toEqual(
@@ -636,10 +723,13 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesTruck,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
@@ -677,10 +767,13 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('shows the correct panes if selected tool and selected shape are of different types', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickPedestrian())
         .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(pedestrianLabelTitleTexts))
@@ -688,10 +781,13 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('correctly switches the label selector when switching the shapes', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(350))
         .then(() => labelSelectorHelper.getTitleTexts())
@@ -714,10 +810,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('keeps the label selector values when selecting a different tool', done => {
       const toolButton0 = element(by.css('button.tool-button.tool-thing.tool-0'));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickPedestrian())
         .then(() => browser.sleep(250))
         .then(() => toolButton0.click())
@@ -745,10 +844,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct number of panes if rectangle one is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(1))
@@ -758,10 +860,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct pane titles if rectangle one is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => expect(
@@ -775,10 +880,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct entries in panes if rectangle one is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => expect(
@@ -796,10 +904,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct number of panes if rectangle two is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleTwo())
         .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(2))
@@ -809,10 +920,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct pane titles if rectangle two is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleTwo())
         .then(() => browser.sleep(250))
         .then(() => expect(
@@ -827,10 +941,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have correct entries in panes if rectangle two is selected', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleTwo())
         .then(() => browser.sleep(250))
         .then(() => expect(
@@ -853,10 +970,13 @@ describe('LabelSelector (right sidebar)', () => {
     it('should switch to correct entries if rectangle is changed', done => {
       mock(sharedMocks.concat([]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => clickRectangleTwo())
@@ -887,10 +1007,13 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesNight,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleTwo())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
@@ -924,16 +1047,22 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesNightAndNeon,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleTwo())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Street lights', 'Neon lights').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Street lights',
+          'Neon lights'
+        ).click())
         .then(() => expect(
           labelSelectorHelper.getAllEntryTexts()
         ).toEqual(
@@ -967,17 +1096,26 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesNightAndXenon,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleTwo())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Street lights', 'Neon lights').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Street lights', 'Xenon lights').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Street lights',
+          'Neon lights'
+        ).click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Street lights',
+          'Xenon lights'
+        ).click())
         .then(() => expect(
           labelSelectorHelper.getAllEntryTexts()
         ).toEqual(
@@ -1007,16 +1145,22 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesDay,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleTwo())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Street lights', 'Neon lights').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Street lights',
+          'Neon lights'
+        ).click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Day').click())
         .then(() => expect(
           labelSelectorHelper.getAllEntryTexts()
@@ -1042,16 +1186,22 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesDay,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleTwo())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Street lights', 'Neon lights').click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Street lights',
+          'Neon lights'
+        ).click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Day').click())
         .then(() => browser.sleep(250))
         .then(() => expect(assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesDay).toExistInPouchDb())
@@ -1083,10 +1233,13 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueA,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
@@ -1114,10 +1267,13 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueB,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
@@ -1154,10 +1310,13 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueBF,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
@@ -1200,10 +1359,13 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueBCE,
       ]));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
@@ -1250,10 +1412,13 @@ describe('LabelSelector (right sidebar)', () => {
       ]));
       const nextFrameButton = element(by.css('.next-frame-button'));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
@@ -1323,7 +1488,8 @@ describe('LabelSelector (right sidebar)', () => {
     });
     it('should shown only checked attributes', done => {
       mock(sharedMocks.concat([]));
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
@@ -1366,7 +1532,8 @@ describe('LabelSelector (right sidebar)', () => {
 
     it('should show attribute list view style', done => {
       mock(sharedMocks.concat([]));
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangleOne())
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
@@ -1382,6 +1549,69 @@ describe('LabelSelector (right sidebar)', () => {
         .then(element => expect(element.isDisplayed()).toBe(true))
         .then(() => done());
     });
+  });
+
+  describe('LabelSelector Dynamic Title', () => {
+    let pedestrianName;
+    let rectangleName;
+    // let groupOneName;
+    // let groupTwoName;
+    // let groupThreeName;
+
+    beforeEach(() => {
+      pedestrianName = 'Blub';
+      rectangleName = 'Traffic Sign';
+      // groupOneName = 'The Blues Brothers';
+      // groupTwoName = 'The Blues Brothers';
+      // groupThreeName = 'Peter, Paul and Mary';
+    });
+
+    beforeEach(() => {
+      sharedMocks = sharedMocks.concat([
+        assets.mocks.LabelSelector.DynamicTitle.Task,
+        assets.mocks.LabelSelector.DynamicTitle.TaskConfiguration,
+        assets.mocks.LabelSelector.DynamicTitle.RequirementsXmlFile,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupOne,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupTwo,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupThree,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.frameIndex0,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.frameIndex0to4,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
+        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
+      ]);
+
+      mock(sharedMocks);
+    });
+
+    it('should show the name of pedestrian shape', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickPedestrian())
+        .then(() => browser.sleep(250))
+        .then(() => expect(labelSelectorHelper.getLabelSelectorTitleText()).toEqual(pedestrianName))
+        .then(done);
+    });
+
+    it('should show the name of rectangle shape', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickRectangleOne())
+        .then(() => browser.sleep(250))
+        .then(() => expect(labelSelectorHelper.getLabelSelectorTitleText()).toEqual(rectangleName))
+        .then(done);
+    });
+
+    // @TODO: add tests for groupnames here, once TTANNO-1792 is implemented
   });
 
   afterEach(() => {

@@ -15,9 +15,10 @@ import PolygonDrawingTool from '../Tools/Polygon/PolygonDrawingTool';
 import GroupCreationTool from '../Tools/Group/GroupCreationTool';
 import NoOperationPaperTool from '../Tools/NoOperationPaperTool';
 import PolylineDrawingTool from '../Tools/Polyline/PolylineDrawingTool';
-import PathScaleTool from '../Tools/PathScaleTool';
-import PathMoveTool from '../Tools/PathMoveTool';
-import PathKeyboardTool from '../Tools/PathKeyboardTool';
+import PathScaleTool from '../Tools/Path/PathScaleTool';
+import PathMoveTool from '../Tools/Path/PathMoveTool';
+import PathTransformationTool from '../Tools/Path/PathTransformationTool';
+import PathKeyboardTool from '../Tools/Path/PathKeyboardTool';
 import PointDrawingTool from '../Tools/Point/PointDrawingTool';
 import PointMoveTool from '../Tools/Point/PointMoveTool';
 import PointKeyboardTool from '../Tools/Point/PointKeyboardTool';
@@ -82,6 +83,7 @@ class ToolService {
       CuboidKeyboardTool,
       PathScaleTool,
       PathMoveTool,
+      PathTransformationTool,
       PathKeyboardTool,
       PolygonDrawingTool,
       PolylineDrawingTool,

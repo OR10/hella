@@ -1,5 +1,5 @@
 import paper from 'paper';
-import KeyboardTool from './KeyboardTool';
+import KeyboardTool from '../KeyboardTool';
 
 /**
  * Keyboard shortcuts for rectangle shapes

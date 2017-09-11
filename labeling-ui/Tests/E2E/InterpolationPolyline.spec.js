@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock } from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, expectModalToBePresent, getMockRequestsMade, initApplication, mock } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -175,6 +175,60 @@ describe('Interpolation Polyline Tests', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
+    mock.teardown();
+  });
+});
+
+describe('Interpolation Polyline Tests Modal', () => {
+  let assets;
+  let sharedMocks;
+  let viewer;
+  let interpolateButton;
+
+  beforeEach(() => {
+    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
+    sharedMocks = [
+      assets.mocks.Shared.TaskDb,
+      assets.mocks.Shared.UserProfile,
+      assets.mocks.Shared.UserPermissions,
+      assets.mocks.Shared.UserOrganisations,
+      assets.mocks.Shared.Video,
+      assets.mocks.Shared.LabelStructure,
+      assets.mocks.Shared.GetTimer,
+      assets.mocks.Shared.PutTimer,
+      assets.mocks.Shared.LabeledThingIncompleteCount,
+      assets.mocks.Shared.FrameLocations.SourceJpg.frameIndex0,
+      assets.mocks.Shared.FrameLocations.SourceJpg.frameIndex0to4,
+      assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0,
+      assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
+      assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
+      assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
+      assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
+      assets.mocks.Interpolation.Shared.Task,
+      assets.mocks.Interpolation.Polygon.LabeledThingInFrame.frameIndex0and4WithDifferentVertexCount,
+    ];
+    viewer = element(by.css('.layer-container'));
+    interpolateButton = element(by.css('#interpolate-shape-button'));
+  });
+
+  it('should show a modal if the vertex count of shapes in different', done => {
+    mock(sharedMocks);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
+          .click()
+          .perform();
+      })
+      .then(() => interpolateButton.click())
+      .then(() => {
+        expectModalToBePresent();
+        done();
+      });
+  });
+
+  afterEach(() => {
     mock.teardown();
   });
 });

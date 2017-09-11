@@ -19,7 +19,11 @@ export function dumpAllRequestsMade(mock) {
     strippedRequests = strippedRequests.filter(doc => doc._id.indexOf('_design') === -1);
 
     console.log( // eslint-disable-line no-console
-      `The following documents are in the Pouch. Design documents have been filtered out.\n${JSON.stringify(strippedRequests, undefined, 2)}`,
+      `The following documents are in the Pouch. Design documents have been filtered out.\n${JSON.stringify(
+        strippedRequests,
+        undefined,
+        2
+      )}`,
     );
 
     return failTest;

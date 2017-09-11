@@ -1,8 +1,8 @@
 import paper from 'paper';
-import CreationTool from './CreationTool';
-import PaperPolygon from '../Shapes/PaperPolygon';
-import PaperPolyline from '../Shapes/PaperPolyline';
-import NotModifiedError from './Errors/NotModifiedError';
+import CreationTool from '../CreationTool';
+import PaperPolygon from '../../Shapes/PaperPolygon';
+import PaperPolyline from '../../Shapes/PaperPolyline';
+import NotModifiedError from '../Errors/NotModifiedError';
 
 /**
  * A tool for drawing rectangle shapes with the mouse cursor
