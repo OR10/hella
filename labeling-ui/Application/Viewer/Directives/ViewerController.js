@@ -14,6 +14,8 @@ import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
 import GroupToolActionStruct from '../Tools/ToolActionStructs/GroupToolActionStruct';
 import {difference} from 'lodash';
+import PaperPolyline from '../Shapes/PaperPolyline';
+
 
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
@@ -75,6 +77,7 @@ class ViewerController {
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {GroupCreationService} groupCreationService
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
+   * @param {PathCollisionService} pathCollisionService
    */
   constructor(
     $scope,
@@ -115,7 +118,8 @@ class ViewerController {
     toolSelectorListenerService,
     hierarchyCreationService,
     groupCreationService,
-    groupSelectionDialogFactory
+    groupSelectionDialogFactory,
+    pathCollisionService,
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -377,6 +381,12 @@ class ViewerController {
      * @private
      */
     this._groupSelectionDialogFactory = groupSelectionDialogFactory;
+
+    /**
+     * @type {PathCollisionService}
+     * @private
+     */
+    this._pathCollisionService = pathCollisionService;
 
     const groupListener = (tool, labelStructureObject) => {
       if (this._shapeSelectionService.count() > 0) {
@@ -958,7 +968,8 @@ class ViewerController {
       this._labeledThingGateway,
       this._labeledThingGroupGateway,
       this._shapeSelectionService,
-      this._groupSelectionDialogFactory
+      this._groupSelectionDialogFactory,
+      this._pathCollisionService,
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1840,6 +1851,7 @@ ViewerController.$inject = [
   'hierarchyCreationService',
   'groupCreationService',
   'groupSelectionDialogFactory',
+  'pathCollisionService',
 ];
 
 export default ViewerController;

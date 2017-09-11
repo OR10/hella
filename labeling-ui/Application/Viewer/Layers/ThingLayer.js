@@ -14,6 +14,7 @@ import PaperShape from '../Shapes/PaperShape';
 import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
+import PaperPolyline from '../Shapes/PaperPolyline';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -40,6 +41,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
+   * @param {PathCollisionService} pathCollisionService
    */
   constructor(
     width,
@@ -59,7 +61,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
     labeledThingGateway,
     labeledThingGroupGateway,
     shapeSelectionService,
-    groupSelectionDialogFactory
+    groupSelectionDialogFactory,
+    pathCollisionService,
   ) {
     super(width, height, $scope, drawingContext);
 
@@ -185,6 +188,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._shapeSelectionService = shapeSelectionService;
 
+    /**
+     * @type {PathCollisionService}
+     * @private
+     */
+    this._pathCollisionService = pathCollisionService;
+
     $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
       const oldSet = new Set(oldPaperGroupShapes);
       const newSet = new Set(newPaperGroupShapes);
@@ -243,7 +252,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
           this._$scope.vm.hideLabeledThingsInFrame = false;
         }
       }
-
+      const viewModel = this._$scope.vm;
+      this._pathCollisionService.setShapes(viewModel.paperThingShapes.filter(shape => shape instanceof PaperPolyline && shape !== newShape));
       this._applyHiddenLabeledThingsInFrameFilter();
     });
 
