@@ -105,9 +105,14 @@ class LabeledThingGroupGateway {
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute('labeledThingGroup', () => {
-      return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupOnFrameByTaskIdAndFrameIndex'), {
-        key: [taskId, frameIndex],
-      })
+      return dbContext.query(
+        this._pouchDbViewService.getDesignDocumentViewName(
+          'labeledThingGroupOnFrameByTaskIdAndFrameIndex'
+        ),
+        {
+          key: [taskId, frameIndex],
+        }
+      )
         .then(response => response.rows.map(row => row.value))
         .then(labeledThingGroupIds => {
           // TODO: Move to pouchdb reduce function
@@ -127,19 +132,25 @@ class LabeledThingGroupGateway {
             return this._couchDbModelDeserializer.deserializeLabeledThingGroup(labeledThingGroupDocument, task);
           });
 
-          const labeledThingGroupsInFrame = labeledThingGroupIds.map(labeledThingGroupId => {
-            const assignedLabeledThingGroup = labeledThingGroups.find(labeledThingGroup => labeledThingGroup.id === labeledThingGroupId);
+          const labeledThingGroupsInFrame = labeledThingGroupIds.map(
+            labeledThingGroupId => {
+              const assignedLabeledThingGroup = labeledThingGroups.find(
+                labeledThingGroup => labeledThingGroup.id === labeledThingGroupId);
 
-            const dbDocument = {
-              id: this._entityIdService.getUniqueId(),
-              classes: [],
-              labeledThingGroup: assignedLabeledThingGroup,
-              frameIndex,
-              labeledThingGroupId,
-            };
-            // TODO: If the labeledThingGroupInFrame documents are no longer generated, we need to extract revision here
-            return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(dbDocument, assignedLabeledThingGroup);
-          });
+              const dbDocument = {
+                id: this._entityIdService.getUniqueId(),
+                classes: [],
+                labeledThingGroup: assignedLabeledThingGroup,
+                frameIndex,
+                labeledThingGroupId,
+              };
+              // TODO: If the labeledThingGroupInFrame documents are no longer generated, we need to extract revision here
+              return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(
+                dbDocument,
+                assignedLabeledThingGroup
+              );
+            }
+          );
 
           return labeledThingGroupsInFrame;
         });
