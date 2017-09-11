@@ -217,7 +217,7 @@ describe('LabeledThingGroupGateway', () => {
 
 
     it('should deserialize fetched labeledThingGroups by list of ids', () => {
-      spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroup');
+      spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroup').and.callThrough();
 
       groupGateway.getLabeledThingGroupsByIds(task, ids);
       $rootScope.$apply();
@@ -473,7 +473,7 @@ describe('LabeledThingGroupGateway', () => {
     });
 
     it('should utilize the packaging executor', () => {
-      spyOn(packagingExecutor, 'execute');
+      spyOn(packagingExecutor, 'execute').and.callThrough();
       const returnValue = groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
 
       expect(packagingExecutor.execute).toHaveBeenCalled();
@@ -481,7 +481,7 @@ describe('LabeledThingGroupGateway', () => {
     });
 
     it('should serialize the given ltgif', () => {
-      spyOn(couchDbModelSerializer, 'serialize');
+      spyOn(couchDbModelSerializer, 'serialize').and.callThrough();
       groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
 
       expect(couchDbModelSerializer.serialize).toHaveBeenCalledWith(
@@ -490,8 +490,8 @@ describe('LabeledThingGroupGateway', () => {
     });
 
     it('should try to inject the revision before updating', () => {
-      spyOn(couchDbModelSerializer, 'serialize');
-      spyOn(revisionManager, 'injectRevision');
+      spyOn(couchDbModelSerializer, 'serialize').and.callThrough();
+      spyOn(revisionManager, 'injectRevision').and.callThrough();
       groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
 
       expect(revisionManager.injectRevision).toHaveBeenCalledWith(
@@ -500,7 +500,7 @@ describe('LabeledThingGroupGateway', () => {
     });
 
     it('should put the updated ltgif to the database', () => {
-      spyOn(couchDbModelSerializer, 'serialize');
+      spyOn(couchDbModelSerializer, 'serialize').and.callThrough();
 
       groupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
       $rootScope.$apply();
@@ -524,7 +524,7 @@ describe('LabeledThingGroupGateway', () => {
     });
 
     it('should extract revision after storage of ltgif', () => {
-      spyOn(revisionManager, 'extractRevision');
+      spyOn(revisionManager, 'extractRevision').and.callThrough();
       pouchDbContext.get.and.callFake(() => {
         const deferred = $q.defer();
         deferred.resolve(labeledThingGroupInFrameDocument);
@@ -544,7 +544,7 @@ describe('LabeledThingGroupGateway', () => {
     });
 
     it('should resolve with the loaded and deserialized document after storing', () => {
-      spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroupInFrame');
+      spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroupInFrame').and.callThrough();
       pouchDbContext.get.and.callFake(() => {
         const deferred = $q.defer();
         deferred.resolve(labeledThingGroupInFrameDocument);
