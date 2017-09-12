@@ -66,9 +66,10 @@ class PathScaleTool extends ScalingTool {
 
   onMouseDrag(event) {
     let point = event.point;
-    const result = this._pathCollisionService.collisionForPoint(point);
-    if (result !== undefined) {
-      point = result.point;
+    const snapPoint = this._pathCollisionService.collisionForPoint(point);
+    console.log(snapPoint);
+    if (snapPoint !== undefined) {
+      point = snapPoint;
     }
     const {shape, handle} = this._toolActionStruct;
     this._modified = true;
