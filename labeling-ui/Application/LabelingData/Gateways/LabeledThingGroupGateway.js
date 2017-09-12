@@ -115,7 +115,6 @@ class LabeledThingGroupGateway {
       )
         .then(response => response.rows.map(row => row.value))
         .then(labeledThingGroupIds => {
-          // TODO: Move to pouchdb reduce function
           // Filter duplicate labeledThingGroupIds
           const uniqueLabeledThingGroupIds = uniq(labeledThingGroupIds);
           const promises = [];
