@@ -338,6 +338,7 @@ describe('Group Creation', () => {
         const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
+      .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateAndDeleteGroupMultiselectedShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),

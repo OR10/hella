@@ -84,9 +84,12 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
   exports.config.capabilities = {
     'browserstack.user': 'dominikehrenberg1',
     'browserstack.key': 'vK4saX1buKopB38pifgk',
-    'resolution': '1920x1080',
+    'os': 'Windows',
+    'os_version': '7',
+    'browserName': 'Chrome',
+    'browser_version': '61.0',
+    'resolution': '1920x1200',
     'browserstack.local': true,
-    'browserName': 'chrome',
   };
 
   // Code to start browserstack local before start of test
