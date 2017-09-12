@@ -17,6 +17,7 @@ import labeledThingGroupFixture from 'Tests/Fixtures/Models/Frontend/LabeledThin
 import labeledThingGroupDocumentFixture from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroup';
 import labeledThingGroupInFrameFixture from 'Tests/Fixtures/Models/Frontend/LabeledThingGroupInFrame';
 import labeledThingGroupInFrameDocumentFixture from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroupInFrame';
+import labeledThingGroupInFrameDocumentTwoFixture from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroupInFrameTwo';
 
 describe('LabeledThingGroupGateway', () => {
   /**
@@ -41,6 +42,7 @@ describe('LabeledThingGroupGateway', () => {
   let labeledThingGroupDocument;
   let labeledThingGroupInFrame;
   let labeledThingGroupInFrameDocument;
+  let labeledThingGroupInFrameTwoDocument;
 
   function createTask(id = 'TASK-ID') {
     return new Task(Object.assign({}, TaskFrontendModel.toJSON(), {id}));
@@ -51,6 +53,7 @@ describe('LabeledThingGroupGateway', () => {
     labeledThingGroupDocument = cloneDeep(labeledThingGroupDocumentFixture);
     labeledThingGroupInFrame = labeledThingGroupInFrameFixture.clone();
     labeledThingGroupInFrameDocument = cloneDeep(labeledThingGroupInFrameDocumentFixture);
+    labeledThingGroupInFrameTwoDocument = cloneDeep(labeledThingGroupInFrameDocumentTwoFixture);
   });
 
   beforeEach(() => {
@@ -574,6 +577,194 @@ describe('LabeledThingGroupGateway', () => {
       $rootScope.$apply();
 
       expect(returnValuePromise).toHaveBeenCalled();
+    });
+
+    it('should request associated ltgifs for given lt', () => {
+      groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      $rootScope.$apply();
+
+      expect(pouchDbContext.query).toHaveBeenCalledWith(
+        'labeledThingGroupInFrameByLabeledThingGroupIdAndFrameIndex',
+        {
+          include_docs: true,
+          startkey: [labeledThingGroup.id, 0],
+          endkey: [labeledThingGroup.id, {}],
+        }
+      );
+    });
+
+    it('should remove associated ltgifs for given lt using bulk operation', () => {
+      pouchDbContext.query.and.returnValue($q.resolve({
+        rows: [
+          {doc: labeledThingGroupInFrameDocument},
+          {doc: labeledThingGroupInFrameTwoDocument},
+        ],
+      }));
+
+      const expectedBulkActions = [
+        {
+          _id: labeledThingGroupInFrameDocument._id,
+          _rev: labeledThingGroupInFrameDocument._rev,
+          _deleted: true,
+        },
+        {
+          _id: labeledThingGroupInFrameTwoDocument._id,
+          _rev: labeledThingGroupInFrameTwoDocument._rev,
+          _deleted: true,
+        },
+      ];
+
+      revisionManager.updateRevision(labeledThingGroupInFrameDocument._id, labeledThingGroupInFrameDocument._rev);
+      revisionManager.updateRevision(labeledThingGroupInFrameTwoDocument._id, labeledThingGroupInFrameTwoDocument._rev);
+
+      groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      $rootScope.$apply();
+
+      expect(pouchDbContext.bulkDocs).toHaveBeenCalledWith(
+        expectedBulkActions
+      );
+    });
+
+    it('should remove associated ltgifs for before removing ltg', () => {
+      pouchDbContext.query.and.returnValue($q.resolve({
+        rows: [
+          {doc: labeledThingGroupInFrameDocument},
+          {doc: labeledThingGroupInFrameTwoDocument},
+        ],
+      }));
+
+      revisionManager.updateRevision(labeledThingGroupInFrameDocument._id, labeledThingGroupInFrameDocument._rev);
+      revisionManager.updateRevision(labeledThingGroupInFrameTwoDocument._id, labeledThingGroupInFrameTwoDocument._rev);
+
+      const bulkDocsDeferred = $q.defer();
+      pouchDbContext.bulkDocs.and.returnValue(bulkDocsDeferred.promise);
+
+      groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      $rootScope.$apply();
+
+      expect(pouchDbContext.bulkDocs).toHaveBeenCalled();
+      expect(pouchDbContext.remove).not.toHaveBeenCalled();
+
+      bulkDocsDeferred.resolve([]);
+
+      $rootScope.$apply();
+
+      expect(pouchDbContext.remove).toHaveBeenCalled();
+    });
+
+    it('should not remove ltg if removal of ltgifs failed catastrophically', () => {
+      pouchDbContext.query.and.returnValue($q.resolve({
+        rows: [
+          {doc: labeledThingGroupInFrameDocument},
+          {doc: labeledThingGroupInFrameTwoDocument},
+        ],
+      }));
+
+      revisionManager.updateRevision(labeledThingGroupInFrameDocument._id, labeledThingGroupInFrameDocument._rev);
+      revisionManager.updateRevision(labeledThingGroupInFrameTwoDocument._id, labeledThingGroupInFrameTwoDocument._rev);
+
+      const bulkDocsDeferred = $q.defer();
+      pouchDbContext.bulkDocs.and.returnValue(bulkDocsDeferred.promise);
+
+      const error = '!noisnemid rorrim a ni ma I ,on hO';
+
+      groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      $rootScope.$apply();
+
+      expect(pouchDbContext.bulkDocs).toHaveBeenCalled();
+
+      bulkDocsDeferred.reject(error);
+
+      $rootScope.$apply();
+
+      expect(pouchDbContext.remove).not.toHaveBeenCalled();
+    });
+
+    it('should not remove ltg if one of the ltgif removals failed', () => {
+      pouchDbContext.query.and.returnValue($q.resolve({
+        rows: [
+          {doc: labeledThingGroupInFrameDocument},
+          {doc: labeledThingGroupInFrameTwoDocument},
+        ],
+      }));
+
+      revisionManager.updateRevision(labeledThingGroupInFrameDocument._id, labeledThingGroupInFrameDocument._rev);
+      revisionManager.updateRevision(labeledThingGroupInFrameTwoDocument._id, labeledThingGroupInFrameTwoDocument._rev);
+
+      const bulkDocsDeferred = $q.defer();
+      pouchDbContext.bulkDocs.and.returnValue(bulkDocsDeferred.promise);
+
+      const error = '¡uʍop ǝpᴉsdn sᴉ ƃuᴉɥʇʎɹǝʌǝ ʍou \'dɐɹƆ';
+
+      groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      $rootScope.$apply();
+
+      expect(pouchDbContext.bulkDocs).toHaveBeenCalled();
+
+      bulkDocsDeferred.resolve([
+        {ok: true},
+        {error: error},
+      ]);
+
+      $rootScope.$apply();
+
+      expect(pouchDbContext.remove).not.toHaveBeenCalled();
+    });
+
+    it('should reject operations promise if removal of ltgifs failed catastrophically', () => {
+      pouchDbContext.query.and.returnValue($q.resolve({
+        rows: [
+          {doc: labeledThingGroupInFrameDocument},
+          {doc: labeledThingGroupInFrameTwoDocument},
+        ],
+      }));
+
+      revisionManager.updateRevision(labeledThingGroupInFrameDocument._id, labeledThingGroupInFrameDocument._rev);
+      revisionManager.updateRevision(labeledThingGroupInFrameTwoDocument._id, labeledThingGroupInFrameTwoDocument._rev);
+
+      const bulkDocsDeferred = $q.defer();
+      pouchDbContext.bulkDocs.and.returnValue(bulkDocsDeferred.promise);
+
+      const error = 'Still not home. Now everything is here twice | eciwt ereh si gnihtyreve woN .emoh ton llitS';
+
+      const resultValue = groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      const resultValuePromise = jasmine.createSpy('resultValue rejected');
+      resultValue.catch(resultValuePromise);
+
+      bulkDocsDeferred.reject(error);
+      $rootScope.$apply();
+
+      expect(resultValuePromise).toHaveBeenCalled();
+    });
+
+    it('should reject operations promise if one of the ltgif removals failed', () => {
+      pouchDbContext.query.and.returnValue($q.resolve({
+        rows: [
+          {doc: labeledThingGroupInFrameDocument},
+          {doc: labeledThingGroupInFrameTwoDocument},
+        ],
+      }));
+
+      revisionManager.updateRevision(labeledThingGroupInFrameDocument._id, labeledThingGroupInFrameDocument._rev);
+      revisionManager.updateRevision(labeledThingGroupInFrameTwoDocument._id, labeledThingGroupInFrameTwoDocument._rev);
+
+      const bulkDocsDeferred = $q.defer();
+      pouchDbContext.bulkDocs.and.returnValue(bulkDocsDeferred.promise);
+
+      const error = 'Smethinog is stlil not rghit!';
+
+      const resultValue = groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+      const resultValuePromise = jasmine.createSpy('resultValue rejected');
+      resultValue.catch(resultValuePromise);
+
+      bulkDocsDeferred.resolve([
+        {ok: true},
+        {error: error},
+      ]);
+
+      $rootScope.$apply();
+
+      expect(resultValuePromise).toHaveBeenCalled();
     });
   });
 
