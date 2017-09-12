@@ -215,6 +215,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .perform();
       })
       .then(() => interpolateButton.click())
+      .then(() => browser.sleep(250))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 350, y: 150}) // Second RectangleWithGroup in first frame
@@ -222,6 +223,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .perform();
       })
       .then(() => interpolateButton.click())
+      .then(() => browser.sleep(250))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame0BothInterpolated')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
