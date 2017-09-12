@@ -18,7 +18,7 @@ class Rectangle extends MockShape {
 class Cuboid extends MockShape {
 }
 
-describe('ShapeSelectionService', () => {
+fdescribe('ShapeSelectionService', () => {
   let drawingContextMock;
 
   function createRectangle(id = 'some-rectangle-id') {
@@ -148,6 +148,32 @@ describe('ShapeSelectionService', () => {
 
       expect(drawingContextMock.withScope).toHaveBeenCalled();
     });
+
+    it('passes true for drawHandles if readOnly is false', () => {
+      const service = createShapeSelectionService();
+      const shapeOne = createCuboid('some-id-1');
+      const shapeTwo = createCuboid('some-id-2');
+
+      service.toggleShape(shapeOne);
+      service.toggleShape(shapeTwo);
+
+      expect(shapeOne.select).toHaveBeenCalledWith(true);
+      expect(shapeTwo.select).toHaveBeenCalledWith(true);
+      expect(service.count()).toEqual(2);
+    });
+
+    it('passes false for drawHandles if readOnly is true', () => {
+      const service = createShapeSelectionService();
+      const shapeOne = createCuboid('some-id-1');
+      const shapeTwo = createCuboid('some-id-2');
+
+      service.toggleShape(shapeOne, true);
+      service.toggleShape(shapeTwo, true);
+
+      expect(shapeOne.select).toHaveBeenCalledWith(false);
+      expect(shapeTwo.select).toHaveBeenCalledWith(false);
+      expect(service.count()).toEqual(2);
+    });
   });
 
   describe('count()', () => {
@@ -233,6 +259,24 @@ describe('ShapeSelectionService', () => {
       expect(shapeThree.deselect).toHaveBeenCalled();
       expect(shapeFour.select).toHaveBeenCalled();
       expect(count).toEqual(1);
+    });
+
+    it('passes true for drawHandles by default', () => {
+      const service = createShapeSelectionService();
+      const shapeOne = createRectangle('some-id-1');
+
+      service.setSelectedShape(shapeOne);
+
+      expect(shapeOne.select).toHaveBeenCalledWith(true);
+    });
+
+    it('passes false for drawHandles if readOnly is true', () => {
+      const service = createShapeSelectionService();
+      const shapeOne = createRectangle('some-id-1');
+
+      service.setSelectedShape(shapeOne, true);
+
+      expect(shapeOne.select).toHaveBeenCalledWith(false);
     });
   });
 

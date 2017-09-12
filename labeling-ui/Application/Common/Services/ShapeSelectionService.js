@@ -43,13 +43,25 @@ class ShapeSelectionService {
   }
 
   /**
+   * Returns whether to draw handles based on the readOnly information
+   *
+   * @param {boolean} readOnly
+   * @return {boolean}
+   * @private
+   */
+  _drawHandles(readOnly) {
+    return !readOnly;
+  }
+
+  /**
    * Toggle a shape, meaning:
    *  If the shape is new and not selected: select it
    *  If the shape is already selected: deselect it
    *
    * @param {PaperThingShape} shape
+   * @param {boolean} readOnly
    */
-  toggleShape(shape) {
+  toggleShape(shape, readOnly = false) {
     if (this._isDrawingContextUndefined()) {
       return;
     }
@@ -67,7 +79,7 @@ class ShapeSelectionService {
         this._shapes.delete(shape.id);
       } else {
         this._shapes.set(shape.id, shape);
-        this._selectAllShapes();
+        this._selectAllShapes(readOnly);
       }
     });
   }
@@ -92,9 +104,10 @@ class ShapeSelectionService {
   /**
    * @private
    */
-  _selectAllShapes() {
+  _selectAllShapes(readOnly) {
+    const drawHandles = this._drawHandles(readOnly);
     this._shapes.forEach(shape => {
-      shape.select();
+      shape.select(drawHandles);
     });
   }
 
@@ -131,12 +144,13 @@ class ShapeSelectionService {
    * Set one single selected shape, purging all previously selected shapes
    *
    * @param {PaperThingShape} shape
+   * @param {boolean} readOnly
    */
-  setSelectedShape(shape) {
+  setSelectedShape(shape, readOnly = false) {
     // First: Purge all previously selected shapes
     this.clear();
     // Since there are now no more selected shapes left, we can simply toggle the new shape, which will select it
-    this.toggleShape(shape);
+    this.toggleShape(shape, readOnly);
   }
 
   /**
