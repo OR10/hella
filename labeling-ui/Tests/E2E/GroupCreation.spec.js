@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import {initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -41,9 +41,6 @@ describe('Group Creation', () => {
   it('does not create a group', done => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
@@ -63,10 +60,9 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateNoGroup);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).not.toContainNamedParamsRequest(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing);
-        expect(requests).not.toContainNamedParamsRequest(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
         done();
       });
   });
@@ -75,8 +71,6 @@ describe('Group Creation', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
@@ -97,10 +91,9 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
         done();
       });
   });
@@ -109,8 +102,6 @@ describe('Group Creation', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
@@ -131,10 +122,9 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoRectangles);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
         done();
       });
   });
@@ -143,8 +133,6 @@ describe('Group Creation', () => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
@@ -165,10 +153,9 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoPoints);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
         done();
       });
   });
@@ -179,8 +166,6 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0,
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -211,11 +196,10 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateTwoGroupsWithFourShapes);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+      .then(() => {
+        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
         done();
       });
   });
@@ -226,8 +210,6 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0,
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -267,11 +249,10 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateThreeGroupsWithFourShapes);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+      .then(() => {
+        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
         done();
       });
   });
@@ -280,8 +261,6 @@ describe('Group Creation', () => {
     mock(sharedMocks.concat([
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
 
     const firstShape = {
@@ -323,8 +302,6 @@ describe('Group Creation', () => {
     mock(sharedMocks.concat([
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
       assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
 
     const firstShape = {
@@ -378,8 +355,6 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupFrontLights,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
@@ -406,10 +381,9 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupFrontLights);
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupFrontLights).toExistInPouchDb();
         done();
       });
   });
@@ -419,8 +393,6 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupBackLights,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
@@ -453,10 +425,9 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequestOnce(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupBackLights);
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupBackLights).toExistInPouchDb();
         done();
       });
   });
@@ -466,8 +437,6 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupFrontLights,
-      assets.mocks.GroupCreation.NewGroup.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
@@ -494,10 +463,9 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateNoGroup);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).not.toContainNamedParamsRequest(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing);
-        expect(requests).not.toContainNamedParamsRequest(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup);
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
         done();
       });
   });

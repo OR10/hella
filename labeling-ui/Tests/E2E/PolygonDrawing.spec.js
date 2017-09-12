@@ -2,7 +2,6 @@ import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager'
 import {
   expectAllModalsToBeClosed,
   expectModalToBePresent,
-  getMockRequestsMade,
   initApplication,
   mock,
 } from '../Support/Protractor/Helpers';
@@ -160,7 +159,6 @@ describe('Polygon drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolygonDrawing.MoveOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -182,10 +180,8 @@ describe('Polygon drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.MoveOnePolygon);
       })
       .then(() => browser.sleep(500))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PolygonDrawing.MoveOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.MoveOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -194,10 +190,7 @@ describe('Polygon drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1IntermediateStep,
       assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.getLabeledThingsInFrame0to4,
-      assets.mocks.PolygonDrawing.Shared.StoreLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -223,10 +216,8 @@ describe('Polygon drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.ResizeOnePolygon);
         return browser.sleep(1000);
       })
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -265,8 +256,6 @@ describe('Polygon drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -299,11 +288,9 @@ describe('Polygon drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygon);
       })
       .then(() => browser.sleep(500))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -312,8 +299,6 @@ describe('Polygon drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -382,11 +367,9 @@ describe('Polygon drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary4);
       })
       .then(() => browser.sleep(500))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -396,10 +379,6 @@ describe('Polygon drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame2,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame3,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame4,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -458,12 +437,11 @@ describe('Polygon drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewMultiplePolygon3);
       })
       .then(() => browser.sleep(800))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame4);
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame2).toExistInPouchDb();
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame3).toExistInPouchDb();
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame4).toExistInPouchDb();
         done();
       });
   });
@@ -537,8 +515,6 @@ describe('Polygon handle/point limiting', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame5,
-      assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -580,9 +556,8 @@ describe('Polygon handle/point limiting', () => {
           .click()
           .perform();
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame5);
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame5).toExistInPouchDb();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'TooManyHandles'),

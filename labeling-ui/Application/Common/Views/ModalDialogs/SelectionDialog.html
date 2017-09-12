@@ -10,9 +10,9 @@
 </div>
 <div class="modal-footer grid-block">
     <!-- Abortable Dialog -->
-    <button ng-if="isAbortable" class="modal-button-cancel grid-content small-12" ng-click="cancelCallback()">{{cancelButtonText}}</button>
-    <button ng-if="isAbortable" class="modal-button-confirm grid-content small-12" ng-click="confirmCallback(selection)" autofocus>{{confirmButtonText}}</button>
+    <button id="modal-cancel-button" ng-if="isAbortable" class="modal-button-cancel grid-content small-12" ng-click="cancelCallback()">{{cancelButtonText}}</button>
+    <button id="modal-confirm-button" ng-if="isAbortable" class="modal-button-confirm grid-content small-12" ng-click="confirmCallback(selection)" autofocus>{{confirmButtonText}}</button>
 
     <!-- Non abortable Dialog -->
-    <button ng-if="!isAbortable" class="modal-button-confirm grid-content text-center" ng-click="confirmCallback(selection)" autofocus>{{confirmButtonText}}</button>
+    <button id="modal-confirm-button" ng-if="!isAbortable" class="modal-button-confirm grid-content text-center" ng-click="confirmCallback(selection)" autofocus>{{confirmButtonText}}</button>
 </div>

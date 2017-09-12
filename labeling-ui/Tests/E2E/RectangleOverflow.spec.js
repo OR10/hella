@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -40,7 +40,6 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
-      assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -60,9 +59,8 @@ describe('Rectangle viewer overflow', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftOverflow);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow);
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow).toExistInPouchDb();
         done();
       });
   });
@@ -74,7 +72,6 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
-      assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -94,9 +91,8 @@ describe('Rectangle viewer overflow', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightOverflow);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow);
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow).toExistInPouchDb();
         done();
       });
   });
@@ -108,7 +104,6 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
-      assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -128,9 +123,8 @@ describe('Rectangle viewer overflow', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftNoOverflow);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow);
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
         done();
       });
   });
@@ -142,7 +136,6 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
       assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
-      assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -154,16 +147,15 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'BottomRightNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow);
-          done();
-        });
+        expect(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+        done();
       });
   });
 
@@ -174,7 +166,6 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.LabeledThingId1Frame0to3,
       assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.LabeledThingId1Frame0to4,
-      assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.NoOverflow,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -186,16 +177,15 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'WideBottomNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.WideBottomNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.NoOverflow);
-          done();
-        });
+        expect(assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+        done();
       });
   });
 
@@ -206,7 +196,6 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.LabeledThingId1Frame0to3,
       assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.LabeledThingId1Frame0to4,
-      assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.NoOverflow,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -218,16 +207,15 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'WideTopNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.WideTopNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.NoOverflow);
-          done();
-        });
+        expect(assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+        done();
       });
   });
 
@@ -238,7 +226,6 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.LabeledThingId1Frame0to3,
       assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.LabeledThingId1Frame0to4,
-      assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.NoOverflow,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -250,16 +237,15 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TallLeftNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TallLeftNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.NoOverflow);
-          done();
-        });
+        expect(assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+        done();
       });
   });
 
@@ -270,7 +256,6 @@ describe('Rectangle viewer overflow', () => {
       assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.frameIndex0to4,
       assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.LabeledThingId1Frame0to3,
       assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.LabeledThingId1Frame0to4,
-      assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.NoOverflow,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -282,16 +267,15 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => browser.sleep(500))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TallRightNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TallRightNoOverflow);
-        getMockRequestsMade(mock).then(requests => {
-          expect(requests).toContainRequest(assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.NoOverflow);
-          done();
-        });
+        expect(assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+        done();
       });
   });
 
