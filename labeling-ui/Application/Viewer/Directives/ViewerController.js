@@ -465,6 +465,14 @@ class ViewerController {
     };
     this._toolSelectorListenerService.addListener(groupListener, PaperGroupRectangle.getClass(), true);
 
+    const toolSelectionListener = (tool, newLabelStructureObject, oldLabelStructureObject) => {
+      if (newLabelStructureObject !== oldLabelStructureObject) {
+        this._shapeSelectionService.clear();
+      }
+    };
+
+    this._toolSelectorListenerService.addListener(toolSelectionListener);
+
     this._viewerMouseCursorService.on('cursor:updated', cursor => {
       this.actionMouseCursor = cursor;
     });
