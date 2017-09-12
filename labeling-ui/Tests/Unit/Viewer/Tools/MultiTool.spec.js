@@ -1,6 +1,7 @@
 import MultiTool from 'Application/Viewer/Tools/MultiTool';
 import PaperShape from 'Application/Viewer/Shapes/PaperShape';
 import paper from 'paper';
+import {inject} from 'angular-mocks';
 
 describe('MultiTool tests', () => {
   let drawingContext;
@@ -25,7 +26,7 @@ describe('MultiTool tests', () => {
    */
   let angularQ;
 
-  beforeEach(inject(($q) => {
+  beforeEach(inject($q => {
     angularQ = $q;
   }));
 
@@ -74,7 +75,7 @@ describe('MultiTool tests', () => {
     };
 
     const singleSelectModifiers = {
-      control: false
+      control: false,
     };
 
     beforeEach(() => {
