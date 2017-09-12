@@ -27,13 +27,17 @@ describe('FrontendInterpolation', () => {
     beforeEach(() => {
       gateway = jasmine.createSpyObj('LabeledThingInFrameGateway', ['getLabeledThingInFrame', 'saveLabeledThingInFrame']);
       entityIdService = jasmine.createSpyObj('EntityIdService', ['getUniqueId']);
-      easingMock = jasmine.createSpyObj('Easing Mock', ['supportsShape', 'supportsEasing', 'step']);
+      easingMock = jasmine.createSpyObj('Easing Mock', ['supportsShape', 'supportsEasing', 'step', 'checkInterpolationSupport']);
       interpolation = new FrontendInterpolation(gateway, angularQ, entityIdService, easingMock);
 
       frameRange = {
         startFrameIndex: 1,
         endFrameIndex: 4,
       };
+    });
+
+    beforeEach(() => {
+      easingMock.checkInterpolationSupport.and.returnValue({supportsInterpolation: true});
     });
 
     it('throws an error if labeledThingInFramesWithGhosts has length 0', () => {
