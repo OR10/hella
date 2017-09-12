@@ -1,42 +1,38 @@
 {
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
-    "method": "GET",
-    "data": {
-      "identifierName": "legacy",
-      "frameIndex": 3,
-      "incomplete": true,
-      "labeledThingId": "LABELED-THING-ID-1",
-      "shapes": [
+  "identifierName": "legacy",
+  "frameIndex": 3,
+  "incomplete": true,
+  "labeledThingId": "LABELED-THING-ID-1",
+  "shapes": [
+    {
+      "id": "{{:shapeid}}",
+      "type": "polyline",
+      "points": [
         {
-          "id": "{{:shapeid}}",
-          "type": "polyline",
-          "points": [
-            {
-              "x": 425,
-              "y": 250
-            },
-            {
-              "x": 225,
-              "y": 425
-            },
-            {
-              "x": 275,
-              "y": 225
-            },
-            {
-              "x": 325,
-              "y": 575
-            }
-          ]
+          "x": 425,
+          "y": 250
+        },
+        {
+          "x": 225,
+          "y": 425
+        },
+        {
+          "x": 275,
+          "y": 225
+        },
+        {
+          "x": 325,
+          "y": 575
         }
-      ],
-      "classes": [],
-      "rev": "{{:revision}}",
-      "id": "{{:ltifid}}",
-      "type": "AppBundle.Model.LabeledThingInFrame",
-      "taskId": "TASKID-TASKID"
+      ]
     }
-  },
-  "response": {}
+  ],
+  "classes": [],
+  "_id": "{{:ltifid}}",
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "taskId": "{{:--task-id}}",
+  "projectId": "{{:--project-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }

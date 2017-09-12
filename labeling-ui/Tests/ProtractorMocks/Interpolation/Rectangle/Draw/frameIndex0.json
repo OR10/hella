@@ -1,33 +1,28 @@
 {
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
-    "method": "GET",
-    "data": {
-      "identifierName": "legacy",
-      "frameIndex": 0,
-      "incomplete": true,
-      "labeledThingId": "{{:ltid}}",
-      "shapes": [
-        {
-          "id": "{{:shapeid}}",
-          "type": "rectangle",
-          "bottomRight": {
-            "x": 200,
-            "y": 200
-          },
-          "topLeft": {
-            "x": 100,
-            "y": 100
-          }
-        }
-      ],
-      "classes": [],
-      "rev": "{{:revision}}",
-      "id": "{{:ltifid}}",
-      "type": "AppBundle.Model.LabeledThingInFrame",
-      "ghostClasses": null,
-      "taskId": "TASKID-TASKID"
+  "identifierName": "legacy",
+  "frameIndex": 0,
+  "incomplete": true,
+  "labeledThingId": "{{:ltid}}",
+  "shapes": [
+    {
+      "id": "{{:shapeid}}",
+      "type": "rectangle",
+      "bottomRight": {
+        "x": 200,
+        "y": 200
+      },
+      "topLeft": {
+        "x": 100,
+        "y": 100
+      }
     }
-  },
-  "response": {}
+  ],
+  "classes": [],
+  "_id": "{{:ltifid}}",
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "taskId": "{{:--task-id}}",
+  "projectId": "{{:--project-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }
