@@ -202,7 +202,34 @@ class LabeledThingGroupGateway {
     return this._packagingExecutor.execute('labeledThingGroup', () => {
       this._injectRevisionOrFailSilently(labeledThingGroupDocument);
 
-      return dbContext.remove(labeledThingGroupDocument)
+      return this._$q.resolve()
+        .then(() => this._getAssociatedLTGIFsForLTG(labeledThingGroup))
+        .then(ltgifs => {
+          if (ltgifs.length === 0) {
+            return [];
+          }
+
+          const bulkDocumentActions = ltgifs.map(
+            ltgif => ({
+              _id: ltgif.id,
+              _rev: this._revisionManager.getRevision(ltgif.id),
+              _deleted: true,
+            })
+          );
+
+          return dbContext.bulkDocs(bulkDocumentActions);
+        })
+        .then(results => {
+          const oneOrMoreBulkOperationsFailed = results.reduce(
+            (carry, result) => carry || result.ok !== true,
+            false
+          );
+
+          if (oneOrMoreBulkOperationsFailed) {
+            return this._$q.reject(`Removal of LTGIFs failed: ${JSON.stringify(results)}`);
+          }
+        })
+        .then(() => dbContext.remove(labeledThingGroupDocument))
         .then(result => {
           if (result.ok !== true) {
             return this._$q.reject(`Error deleting ${labeledThingGroupDocument._id}: ${result.error}`);
@@ -211,6 +238,44 @@ class LabeledThingGroupGateway {
           return true;
         });
     });
+  }
+
+  /**
+   * Retrieve all {@link LabeledThingGroupInFrame} objects associated with a certain
+   * {@link LabeledThingGroup}
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @returns {Promise.<LabeledThingGroupInFrame[]>}
+   * @private
+   */
+  _getAssociatedLTGIFsForLTG(labeledThingGroup) {
+    const task = labeledThingGroup.task;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    return this._$q.resolve()
+      .then(
+        () => dbContext.query(
+          this._pouchDbViewService.getDesignDocumentViewName(
+            'labeledThingGroupInFrameByLabeledThingGroupIdAndFrameIndex'),
+          {
+            include_docs: true,
+            startkey: [labeledThingGroup.id, 0],
+            endkey: [labeledThingGroup.id, {}],
+          }
+        )
+      )
+      .then(result => {
+        if (result.rows.length === 0) {
+          return [];
+        }
+
+        return result.rows.map(
+          row => this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(
+            row.doc,
+            labeledThingGroup
+          )
+        );
+      });
   }
 
   /**
