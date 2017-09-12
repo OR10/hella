@@ -87,14 +87,14 @@ describe('ViewerController tests', () => {
     frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
     drawingContextService = jasmine.createSpyObj('drawingContextService', ['createContext']);
     animationFrameService = jasmine.createSpyObj('animationFrameService', ['debounce']);
-    window = jasmine.createSpyObj('$window', ['addEventListener']);
+    window = jasmine.createSpyObj('$window', ['addEventListener', 'removeEventListener']);
     window.document = jasmine.createSpyObj('window.document', ['addEventListener']);
     keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey']);
     pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
     imagePreloader = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
     shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes']);
-    toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener']);
+    toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener', 'removeAllListeners']);
     hierarchyCreationService = jasmine.createSpyObj('hierarchyCreationService', ['createLabeledThingGroupInFrameWithHierarchy']);
     paperShapeFactory = jasmine.createSpyObj('paperShapeFactory', ['createPaperGroupShape']);
     groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
@@ -437,6 +437,25 @@ describe('ViewerController tests', () => {
       toolSelectionListener(null, newLabelStructureObject, newLabelStructureObject);
 
       expect(shapeSelectionService.clear).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('scope destroy', () => {
+    it('removes all tool selector listeners', () => {
+      createController();
+
+      scope.$emit('$destroy');
+
+      expect(toolSelectorListener.removeAllListeners).toHaveBeenCalled();
+    });
+
+    it('removes the window listeners', () => {
+      createController();
+
+      scope.$emit('$destroy');
+
+      expect(window.removeEventListener).toHaveBeenCalledWith('resize', undefined);
+      expect(window.removeEventListener).toHaveBeenCalledWith('visibilitychange', jasmine.any(Function));
     });
   });
 });

@@ -638,6 +638,7 @@ class ViewerController {
       '$destroy', () => {
         $window.removeEventListener('resize', this._resizeDebounced);
         $window.removeEventListener('visibilitychange', onVisibilityChange);
+        this._toolSelectorListenerService.removeAllListeners();
       }
     );
 
