@@ -1,18 +1,1 @@
-{
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
-    "method": "GET",
-    "queryString": {
-      "limit": "1",
-      "offset": "0"
-    }
-  },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThings": {},
-        "labeledThingsInFrame": []
-      }
-    }
-  }
-}
+[]

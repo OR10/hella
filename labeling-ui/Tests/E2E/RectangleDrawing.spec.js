@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -153,7 +153,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -176,9 +175,8 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.MoveOneRectangle);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -187,8 +185,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -211,9 +207,8 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.ResizeOneRectangle);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -222,7 +217,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0,
       assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0to4,
-      assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -245,9 +239,8 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.ResizeFlip);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame);
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
   });
@@ -285,8 +278,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -305,10 +296,9 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangle);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -318,8 +308,6 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.Task,
-      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing,
-      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -338,10 +326,9 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleMinimalHeight);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -351,8 +338,6 @@ describe('Rectangle drawing', () => {
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.Task,
-      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing,
-      assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -371,10 +356,9 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleMinimalHeight);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -383,8 +367,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame,
-      assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -428,10 +410,9 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary3);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame);
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
   });
@@ -440,10 +421,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4,
-      assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -470,12 +447,11 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewMultipleRectangles);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4);
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4).toExistInPouchDb();
         done();
       });
   });
@@ -484,8 +460,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing,
-      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -504,10 +478,9 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame);
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
   });
@@ -516,8 +489,6 @@ describe('Rectangle drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing,
-      assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -536,10 +507,9 @@ describe('Rectangle drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame);
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
   });
