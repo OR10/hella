@@ -15,12 +15,27 @@ describe('MultiTool tests', () => {
    */
   let viewerMouseCursorService;
 
+  /**
+   * @type {ToolService}
+   */
+  let toolService;
+
+  /**
+   * @type {$q}
+   */
+  let angularQ;
+
+  beforeEach(inject(($q) => {
+    angularQ = $q;
+  }));
+
   beforeEach(() => {
     drawingContext = jasmine.createSpyObj('drawingContext', ['withScope']);
     drawingContext.withScope.and.callFake(callback => callback());
 
-    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['clear', 'setSelectedShape', 'toggleShape']);
+    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['clear', 'setSelectedShape', 'getSelectedShape', 'toggleShape']);
     viewerMouseCursorService = jasmine.createSpyObj('viewerMouseCursorService', ['isCrosshairShowing', 'setMouseCursor']);
+    toolService = jasmine.createSpyObj('toolService', ['getTool']);
   });
 
   /**
@@ -30,9 +45,9 @@ describe('MultiTool tests', () => {
     return new MultiTool(
       drawingContext,
       null, // $rootScope,
-      null, // $q,
+      angularQ,
       null, // loggerService,
-      null, // toolService,
+      toolService,
       viewerMouseCursorService,
       null, // labeledFrameGateway,
       shapeSelectionService
@@ -52,14 +67,14 @@ describe('MultiTool tests', () => {
     let project;
     let toolActionStruct;
 
-    const multiSelectEvent = {
-      shiftKey: false,
-      ctrlKey: true,
+    const emptyEvent = {};
+
+    const multiSelectModifiers = {
+      control: true,
     };
 
-    const singleSelectEvent = {
-      shiftKey: false,
-      ctrlKey: false,
+    const singleSelectModifiers = {
+      control: false
     };
 
     beforeEach(() => {
@@ -77,32 +92,38 @@ describe('MultiTool tests', () => {
     });
 
     it('clears the selection of nothing was hit', () => {
-      const event = { event: multiSelectEvent };
+      const event = { event: emptyEvent, modifiers: singleSelectModifiers };
+      const someShapeCreationTool = jasmine.createSpyObj('ShapeCreationTool', ['invokeShapeCreation', 'delegateMouseEvent']);
+
+      multiTool._toolActionStruct.requirementsShape = 'rectangle';
+      toolService.getTool.and.returnValue(someShapeCreationTool);
+      someShapeCreationTool.invokeShapeCreation.and.returnValue(angularQ.resolve());
+
       multiTool.onMouseDown(event);
 
       expect(shapeSelectionService.clear).toHaveBeenCalled();
     });
 
     it('sets the selected shape if ctrl was not held while clicking', () => {
-      const event = { event: singleSelectEvent };
+      const event = { event: emptyEvent, modifiers: singleSelectModifiers };
       const shape = new PaperShape();
       shape.getCursor = () => {};
       project.hitTest.and.returnValue({ item: shape });
 
       multiTool.onMouseDown(event);
 
-      expect(shapeSelectionService.setSelectedShape).toHaveBeenCalledWith(shape);
+      expect(shapeSelectionService.setSelectedShape).toHaveBeenCalledWith(shape, false);
     });
 
     it('toggles the selected shape if ctrl was held while clicking', () => {
-      const event = { event: multiSelectEvent };
+      const event = { event: {}, modifiers: multiSelectModifiers };
       const shape = new PaperShape();
       shape.getCursor = () => {};
       project.hitTest.and.returnValue({ item: shape });
 
       multiTool.onMouseDown(event);
 
-      expect(shapeSelectionService.toggleShape).toHaveBeenCalledWith(shape);
+      expect(shapeSelectionService.toggleShape).toHaveBeenCalledWith(shape, false);
     });
   });
 });
