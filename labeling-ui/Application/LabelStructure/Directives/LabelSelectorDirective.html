@@ -4,7 +4,7 @@
     </div>
     <div ng-show="vm.show()"
             class="grid-block label-selector-title">
-        <div class="grid-content noscroll">Categories</div>
+        <div class="grid-content noscroll">{{vm.getLabelSelectorTitle()}}</div>
         <div class="grid-content shrink view-style">
             <input type="checkbox" ng-model="vm.multiSelection">
             <input id="view-style-icon-view"

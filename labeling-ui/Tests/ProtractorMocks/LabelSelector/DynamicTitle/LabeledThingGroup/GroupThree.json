@@ -1,0 +1,23 @@
+{
+  "request": {
+    "path": "/api/v1/task/TASKID-TASKID/labeledThingGroup/group-three",
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "labeledThingGroups": [
+          {
+            "id": "group-three",
+            "groupType": "peter-paul-and-mary",
+            "lineColor": "7",
+            "groupIds": [
+            ],
+            "taskId": "TASKID-TASKID",
+            "projectId": "PROJECTID-PROJECTID"
+          }
+        ]
+      }
+    }
+  }
+}
