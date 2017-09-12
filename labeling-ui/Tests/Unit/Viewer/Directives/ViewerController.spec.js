@@ -408,4 +408,35 @@ describe('ViewerController tests', () => {
       });
     });
   });
+
+  describe('Tool selection (TTANNO-2052)', () => {
+    let toolSelectionListener;
+
+    beforeEach(() => {
+      toolSelectorListener.addListener.and.callFake((callback, type) => {
+        if (type === undefined) {
+          toolSelectionListener = callback;
+        }
+      });
+    });
+
+    it('clears the selection if the labeledStructureObject has changed', () => {
+      const newLabelStructureObject = {};
+      const oldLabelStructureObject = {};
+
+      createController();
+      toolSelectionListener(null, newLabelStructureObject, oldLabelStructureObject);
+
+      expect(shapeSelectionService.clear).toHaveBeenCalled();
+    });
+
+    it('does not the selection if the labeledStructureObject has not changed', () => {
+      const newLabelStructureObject = {};
+
+      createController();
+      toolSelectionListener(null, newLabelStructureObject, newLabelStructureObject);
+
+      expect(shapeSelectionService.clear).not.toHaveBeenCalled();
+    });
+  });
 });
