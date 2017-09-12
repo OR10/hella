@@ -60,20 +60,9 @@ describe('LabeledThingGroupGateway', () => {
     const featureFlags = {};
 
     queryResponse = {
-      'total_rows': 6,
+      'total_rows': 0,
       'offset': 0,
-      'rows': [
-        {
-          'id': '60950e57-5e93-4f7f-9196-6821eaaa74d3',
-          'key': ['e2c029002f1375ec4c10f55d4b2618c3', 0],
-          'value': 'e2c029002f1375ec4c10f55d4b2e71c9',
-        },
-        {
-          'id': '32dd14b4-12c4-4888-b60b-53afcc49de5f',
-          'key': ['e2c029002f1375ec4c10f55d4b2618c3', 4],
-          'value': 'e2c029002f1375ec4c10f55d4b2e71c9',
-        },
-      ],
+      'rows': [],
     };
 
     labeledThingGroupResponse = {
@@ -157,19 +146,77 @@ describe('LabeledThingGroupGateway', () => {
     pouchDbContext.bulkDocs.and.returnValue($q.resolve([]));
   });
 
-  it('should load labeled thing groups and group in frames for frame index', () => {
-    const task = createTask();
-    const frameIndex = 0;
+  describe('getLabeledThingGroupsInFrameForFrameIndex', () => {
+    beforeEach(() => {
+      queryResponse = {
+        'total_rows': 6,
+        'offset': 0,
+        'rows': [
+          {
+            'id': '60950e57-5e93-4f7f-9196-6821eaaa74d3',
+            'key': ['e2c029002f1375ec4c10f55d4b2618c3', 0],
+            'value': 'e2c029002f1375ec4c10f55d4b2e71c9',
+          },
+          {
+            'id': '32dd14b4-12c4-4888-b60b-53afcc49de5f',
+            'key': ['e2c029002f1375ec4c10f55d4b2618c3', 4],
+            'value': 'e2c029002f1375ec4c10f55d4b2e71c9',
+          },
+        ],
+      };
+    });
 
-    groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+    it('should return promise', () => {
+      const task = createTask();
+      const frameIndex = 0;
 
-    $rootScope.$apply();
+      const returnValue = groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
 
-    expect(pouchDbContext.query)
-      .toHaveBeenCalledWith('labeledThingGroupOnFrameByTaskIdAndFrameIndex', {
-        key: [task.id, frameIndex],
-      });
-    expect(pouchDbContext.get).toHaveBeenCalledWith(labeledThingGroupResponse._id);
+      expect(returnValue.then).toEqual(jasmine.any(Function));
+    });
+
+    it('should utilize packaging executor', () => {
+      const task = createTask();
+      const frameIndex = 0;
+
+      spyOn(packagingExecutor, 'execute').and.callThrough();
+
+      groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+
+      $rootScope.$apply();
+
+      expect(packagingExecutor.execute).toHaveBeenCalled();
+    });
+
+    it('should return packaging executor provided promise', () => {
+      const task = createTask();
+      const frameIndex = 0;
+
+      spyOn(packagingExecutor, 'execute').and.callThrough();
+
+      const returnValue = groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+
+      $rootScope.$apply();
+
+      expect(returnValue).toBe(
+        packagingExecutor.execute.calls.mostRecent().returnValue
+      );
+    });
+
+    it('should load labeled thing groups and group in frames for frame index', () => {
+      const task = createTask();
+      const frameIndex = 0;
+
+      groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+
+      $rootScope.$apply();
+
+      expect(pouchDbContext.query)
+        .toHaveBeenCalledWith('labeledThingGroupOnFrameByTaskIdAndFrameIndex', {
+          key: [task.id, frameIndex],
+        });
+      expect(pouchDbContext.get).toHaveBeenCalledWith(labeledThingGroupResponse._id);
+    });
   });
 
   describe('getLabeledThingGroupsByIds', () => {
