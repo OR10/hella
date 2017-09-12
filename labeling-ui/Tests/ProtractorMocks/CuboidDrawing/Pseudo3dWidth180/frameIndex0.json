@@ -1,93 +1,75 @@
-{
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
-    "method": "GET",
-    "queryString": {
-      "limit": "1",
-      "offset": "0"
-    }
+[
+  {
+    "classes": [
+      "pedestrian"
+    ],
+    "frameRange": {
+      "startFrameIndex": 1,
+      "endFrameIndex": 1,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "incomplete": true,
+    "lineColor": 6,
+    "taskId": "TASKID-TASKID",
+    "_id": "LABELED-THING-ID-1",
+    "type": "AppBundle.Model.LabeledThing"
   },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThings": {
-          "LABELED-THING-ID-1": {
-            "classes": [
-              "pedestrian"
-            ],
-            "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 1
-            },
-            "id": "LABELED-THING-ID-1",
-            "incomplete": true,
-            "lineColor": "6",
-            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-            "taskId": "TASKID-TASKID"
-          }
-        },
-        "labeledThingsInFrame": [
-          {
-            "identifierName": "legacy",
-            "classes": [],
-            "frameIndex": 0,
-            "ghost": false,
-            "ghostClasses": null,
-            "id": "LABELED-THING-IN-FRAME-ID-1",
-            "incomplete": true,
-            "labeledThingId": "LABELED-THING-ID-1",
-            "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "shapes": [
-              {
-                "id": "SHAPE-ID-1",
-                "type": "cuboid3d",
-                "vehicleCoordinates": [
-                  [
-                    9.2671482311736,
-                    -0.11710901569851,
-                    2.2312736181519
-                  ],
-                  [
-                    10.251952128272,
-                    0.056560924755612,
-                    2.2312736181519
-                  ],
-                  [
-                    10.251952128272,
-                    0.056560924755612,
-                    0
-                  ],
-                  [
-                    9.2671482311736,
-                    -0.11710901569851,
-                    0
-                  ],
-                  [
-                    9.0934783439252,
-                    0.8676945796945,
-                    2.2312736181519
-                  ],
-                  [
-                    10.078282241024,
-                    1.0413645201486,
-                    2.2312736181519
-                  ],
-                  [
-                    10.078282241024,
-                    1.0413645201486,
-                    0
-                  ],
-                  [
-                    9.0934783439252,
-                    0.8676945796945,
-                    0
-                  ]
-                ]
-              }
-            ]
-          }
+  {
+    "identifierName": "legacy",
+    "classes": [],
+    "frameIndex": 0,
+    "incomplete": true,
+    "labeledThingId": "LABELED-THING-ID-1",
+    "shapes": [
+      {
+        "id": "SHAPE-ID-1",
+        "type": "cuboid3d",
+        "vehicleCoordinates": [
+          [
+            9.2671482311736,
+            -0.11710901569851,
+            2.2312736181519
+          ],
+          [
+            10.251952128272,
+            0.056560924755612,
+            2.2312736181519
+          ],
+          [
+            10.251952128272,
+            0.056560924755612,
+            0
+          ],
+          [
+            9.2671482311736,
+            -0.11710901569851,
+            0
+          ],
+          [
+            9.0934783439252,
+            0.8676945796945,
+            2.2312736181519
+          ],
+          [
+            10.078282241024,
+            1.0413645201486,
+            2.2312736181519
+          ],
+          [
+            10.078282241024,
+            1.0413645201486,
+            0
+          ],
+          [
+            9.0934783439252,
+            0.8676945796945,
+            0
+          ]
         ]
       }
-    }
+    ],
+    "_id": "LABELED-THING-IN-FRAME-ID-1",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
   }
-}
+]

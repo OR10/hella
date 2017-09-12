@@ -1,7 +1,6 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
   expectAllModalsToBeClosed,
-  getMockRequestsMade,
   initApplication,
   mock,
 } from '../Support/Protractor/Helpers';
@@ -43,8 +42,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -104,10 +101,8 @@ describe('Cuboid creation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboid4);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1);
+        .then(() => {
+          expect(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1).toExistInPouchDb();
           done();
         });
     });
@@ -116,8 +111,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -155,10 +148,8 @@ describe('Cuboid creation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboidBottomToTop2);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1);
+        .then(() => {
+          expect(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1).toExistInPouchDb();
           done();
         });
     });
@@ -169,8 +160,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -229,10 +218,8 @@ describe('Cuboid creation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.Pseudo3dTopToBottom4);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame);
+        .then(() => {
+          expect(assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame).toExistInPouchDb();
           done();
         });
     });
@@ -241,8 +228,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -301,10 +286,8 @@ describe('Cuboid creation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.Pseudo3dBottomToTop4);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame);
+        .then(() => {
+          expect(assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame).toExistInPouchDb();
           done();
         });
     });
@@ -315,8 +298,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.MinimalTopToBottom.StoreLabeledThingInFrame,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -354,10 +335,8 @@ describe('Cuboid creation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.MinimalTopToBottom2);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.MinimalTopToBottom.StoreLabeledThingInFrame);
+        .then(() => {
+          expect(assets.mocks.CuboidCreation.MinimalTopToBottom.StoreLabeledThingInFrame).toExistInPouchDb();
           done();
         });
     });
@@ -366,8 +345,6 @@ describe('Cuboid creation', () => {
       mock(sharedMocks.concat([
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.MinimalBottomToTop.StoreLabeledThingInFrame,
       ]));
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
@@ -405,10 +382,8 @@ describe('Cuboid creation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.MinimalBottomToTop2);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainNamedParamsRequest(assets.mocks.CuboidCreation.MinimalBottomToTop.StoreLabeledThingInFrame);
+        .then(() => {
+          expect(assets.mocks.CuboidCreation.MinimalBottomToTop.StoreLabeledThingInFrame).toExistInPouchDb();
           done();
         });
     });

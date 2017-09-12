@@ -1,78 +1,30 @@
 {
-  "request": {
-    "path": "/api/v1/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-2",
-    "method": "PUT",
-    "data": {
-      "id": "LABELED-THING-IN-FRAME-ID-2",
-      "rev": "2-b65227715b51dadd97f8521646e88a22",
-      "frameIndex": 0,
-      "classes": [
-        "day"
-      ],
-      "ghostClasses": null,
-      "identifierName": "thing-two",
-      "shapes": [
-        {
-          "type": "rectangle",
-          "id": "SHAPE-ID-2",
-          "topLeft": {
-            "x": 300,
-            "y": 300
-          },
-          "bottomRight": {
-            "x": 400,
-            "y": 400
-          }
-        }
-      ],
-      "labeledThingId": "LABELED-THING-ID-2",
-      "incomplete": true,
-      "ghost": false
-    }
-  },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThing": {
-          "id": "LABELED-THING-ID-2",
-          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-          "frameRange": {
-            "startFrameNumber": 1,
-            "endFrameNumber": 1
-          },
-          "classes": [],
-          "taskId": "TASKID-TASKID",
-          "incomplete": true,
-          "lineColor": "16"
-        },
-        "labeledThingInFrame": {
-          "id": "LABELED-THING-IN-FRAME-ID-2",
-          "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "frameIndex": 0,
-          "classes": [
-            "day"
-          ],
-          "ghostClasses": null,
-          "identifierName": "thing-two",
-          "shapes": [
-            {
-              "type": "rectangle",
-              "id": "SHAPE-ID-2",
-              "topLeft": {
-                "x": 300,
-                "y": 300
-              },
-              "bottomRight": {
-                "x": 400,
-                "y": 400
-              }
-            }
-          ],
-          "labeledThingId": "LABELED-THING-ID-2",
-          "incomplete": true,
-          "ghost": false
-        }
+  "_id": "LABELED-THING-IN-FRAME-ID-2",
+  "frameIndex": 0,
+  "classes": [
+    "day"
+  ],
+  "identifierName": "thing-two",
+  "shapes": [
+    {
+      "type": "rectangle",
+      "id": "SHAPE-ID-2",
+      "topLeft": {
+        "x": 300,
+        "y": 300
+      },
+      "bottomRight": {
+        "x": 400,
+        "y": 400
       }
     }
-  }
+  ],
+  "labeledThingId": "LABELED-THING-ID-2",
+  "incomplete": true,
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }

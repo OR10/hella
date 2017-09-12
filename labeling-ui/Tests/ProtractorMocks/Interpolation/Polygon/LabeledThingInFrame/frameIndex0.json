@@ -1,43 +1,38 @@
 {
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
-    "method": "GET",
-    "data": {
-      "identifierName": "legacy",
-      "frameIndex": 0,
-      "incomplete": true,
-      "labeledThingId": "LABELED-THING-ID-1",
-      "shapes": [
+  "identifierName": "legacy",
+  "frameIndex": 0,
+  "incomplete": true,
+  "labeledThingId": "LABELED-THING-ID-1",
+  "shapes": [
+    {
+      "id": "{{:shapeid}}",
+      "type": "polygon",
+      "points": [
         {
-          "id": "{{:shapeid}}",
-          "type": "polygon",
-          "points": [
-            {
-              "x": 200,
-              "y": 100
-            },
-            {
-              "x": 300,
-              "y": 200
-            },
-            {
-              "x": 200,
-              "y": 300
-            },
-            {
-              "x": 100,
-              "y": 200
-            }
-          ]
+          "x": 200,
+          "y": 100
+        },
+        {
+          "x": 300,
+          "y": 200
+        },
+        {
+          "x": 200,
+          "y": 300
+        },
+        {
+          "x": 100,
+          "y": 200
         }
-      ],
-      "classes": [],
-      "rev": "{{:revision}}",
-      "id": "{{:ltifid}}",
-      "type": "AppBundle.Model.LabeledThingInFrame",
-      "ghostClasses": null,
-      "taskId": "TASKID-TASKID"
+      ]
     }
-  },
-  "response": {}
+  ],
+  "classes": [],
+  "_id": "{{:ltifid}}",
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "taskId": "{{:--task-id}}",
+  "projectId": "{{:--project-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }
