@@ -81,6 +81,8 @@ import 'flowjs/dist/flow.js';
 import 'ng-flow/dist/ng-flow';
 import 'angular-hotkeys';
 
+import CapitalizeFilter from './Filters/CapitalizeFilter';
+
 class Common extends Module {
   /**
    * Register this {@link Module} with the angular service container system
@@ -150,6 +152,8 @@ class Common extends Module {
     this.module.factory('ListDialog', listDialogProvider);
     this.module.factory('SelectionDialog', selectionDialogProvider);
     this.module.service('groupSelectionDialogFactory', groupSelectionDialogFactory);
+
+    this.module.filter('CapitalizeFilter', CapitalizeFilter);
 
     this.registerDirective('loadingMask', LoadingMaskDirective);
     this.registerDirective('ribbon', RibbonDirective);
