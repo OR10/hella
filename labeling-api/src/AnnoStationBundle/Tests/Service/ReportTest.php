@@ -279,10 +279,10 @@ class ReportTest extends Tests\KernelTestCase
                         ->build()
                 );
             }
-            foreach (range(1, 2) as $i4) {
+            foreach (range(1, 20, 2) as $i4) {
                 $this->labeledFrameFacade->save(
                     Helper\LabeledFrameBuilder::create($task, $i4)
-                    ->withClasses(['foo1', 'foo2', 'foo3', 'foo4'])
+                    ->withClasses(['foo1_' . $i4, 'foo2_' . $i4, 'foo3_' . $i4, 'foo4_' . $i4])
                     ->build()
                 );
             }
