@@ -1347,9 +1347,12 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
-            .sendKeys('p')
-            .sendKeys('p')
             .perform();
+        })
+        .then(() => sendKeySequences(['pp']))
+        .then(() => browser.sleep(500))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dWidth')
@@ -1359,14 +1362,10 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dWidth);
           return browser.sleep(1000);
         })
+        .then(() => sendKeySequences(['oo']))
+        .then(() => browser.sleep(500))
         .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys('o')
-            .sendKeys('o')
-            .perform();
+          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dWidth')
@@ -1377,7 +1376,6 @@ describe('Cuboid Drawing', () => {
           return browser.sleep(1000);
         })
         .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
           done();
         });
     });
