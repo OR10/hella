@@ -53,12 +53,7 @@ class ProjectBuilder
     /**
      * @var array
      */
-    private $legacyTaskInstruction = [
-        [
-            'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
-            'drawingTool' => Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
-        ],
-    ];
+    private $legacyTaskInstruction = [];
 
     /**
      * @var Model\Video
@@ -214,7 +209,7 @@ class ProjectBuilder
     {
         $this->labelManagersAssignments[] = [
             'labelManager' => $labelManager,
-            'dateTime'    => $dateTime,
+            'dateTime'     => $dateTime,
         ];
 
         return $this;
@@ -352,6 +347,13 @@ class ProjectBuilder
         return $this;
     }
 
+    public function withRequirementsXmlConfigurationId($id)
+    {
+        $this->requirementsXmlId = $id;
+
+        return $this;
+    }
+
     /**
      * @return array
      */
@@ -388,6 +390,17 @@ class ProjectBuilder
     {
         $creationDate = $this->creationDate === null ? null : clone $this->creationDate;
 
+        if (empty($this->legacyTaskInstruction) && $this->requirementsXmlId === null) {
+            $this->withLegacyTaskInstruction(
+                [
+                    [
+                        'instruction' => Model\LabelingTask::INSTRUCTION_PERSON,
+                        'drawingTool' => Model\LabelingTask::DRAWING_TOOL_RECTANGLE,
+                    ],
+                ]
+            );
+        }
+
         $project = Model\Project::create(
             $this->name,
             $this->organisation,
@@ -400,7 +413,7 @@ class ProjectBuilder
             $this->splitEach
         );
 
-        foreach($this->additionalFrameNumberMappings as $additionalFrameNumberMapping) {
+        foreach ($this->additionalFrameNumberMappings as $additionalFrameNumberMapping) {
             $project->addAdditionalFrameNumberMapping($additionalFrameNumberMapping);
         }
 
@@ -418,6 +431,10 @@ class ProjectBuilder
 
         if ($this->labelingGroupId !== null) {
             $project->setLabelingGroupId($this->labelingGroupId);
+        }
+
+        if ($this->requirementsXmlId !== null) {
+            $project->addRequirementsXmlTaskInstruction('test_instruction', $this->requirementsXmlId);
         }
 
         foreach ($this->statusChanges as $change) {
