@@ -89,7 +89,7 @@ describe('LabeledThingGroupGateway', () => {
     commonModule.registerWithAngular(angular, featureFlags);
     module('AnnoStation.Common');
 
-    pouchDbContext = jasmine.createSpyObj('pouchDbContext', ['query', 'get', 'remove', 'put', 'allDocs']);
+    pouchDbContext = jasmine.createSpyObj('pouchDbContext', ['query', 'get', 'remove', 'put', 'allDocs', 'bulkDocs']);
     thingGateway = jasmine.createSpyObj('LabeledThingGateway', ['saveLabeledThing']);
 
     pouchDbContext.query.and.callFake(() => {
@@ -150,6 +150,8 @@ describe('LabeledThingGroupGateway', () => {
         'rows': [],
       })
     );
+
+    pouchDbContext.bulkDocs.and.returnValue($q.resolve([]));
   });
 
   it('should load labeled thing groups and group in frames for frame index', () => {
@@ -434,6 +436,12 @@ describe('LabeledThingGroupGateway', () => {
   });
 
   describe('deleteLabeledThingGroup', () => {
+    beforeEach(() => {
+      pouchDbContext.query.and.returnValue($q.resolve({
+        rows: [],
+      }));
+    });
+
     it('should return a promise', () => {
       const returnValue = groupGateway.deleteLabeledThingGroup(labeledThingGroup);
       expect(returnValue.then).toEqual(jasmine.any(Function));
