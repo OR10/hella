@@ -233,8 +233,9 @@ describe('ThingLayer', () => {
       });
     });
 
-    it('calls setSelectedShape on the shapeSelectionService', () => {
+    it('calls setSelectedShape on the shapeSelectionService, readOnly = false', () => {
       createThingLayerInstance();
+      angularScope.vm.readOnly = false;
       const shape = jasmine.createSpyObj('shape', ['select']);
       const project = jasmine.createSpyObj('project', ['getItems']);
       project.getItems.and.returnValue([]);
@@ -243,7 +244,21 @@ describe('ThingLayer', () => {
 
       watcherFunction(shape, null);
 
-      expect(shapeSelectionService.setSelectedShape).toHaveBeenCalledWith(shape);
+      expect(shapeSelectionService.setSelectedShape).toHaveBeenCalledWith(shape, false);
+    });
+
+    it('calls setSelectedShape on the shapeSelectionService, readOnly = true', () => {
+      createThingLayerInstance();
+      angularScope.vm.readOnly = true;
+      const shape = jasmine.createSpyObj('shape', ['select']);
+      const project = jasmine.createSpyObj('project', ['getItems']);
+      project.getItems.and.returnValue([]);
+      const view = jasmine.createSpyObj('view', ['update']);
+      drawingContext.withScope.and.callFake(callback => callback({project, view}));
+
+      watcherFunction(shape, null);
+
+      expect(shapeSelectionService.setSelectedShape).toHaveBeenCalledWith(shape, true);
     });
   });
   //

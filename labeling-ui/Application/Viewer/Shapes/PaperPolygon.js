@@ -14,19 +14,19 @@ class PaperPolygon extends PaperPath {
    */
   constructor(labeledThingInFrame, shapeId, points = [], color) {
     super(labeledThingInFrame, shapeId, points, color);
-    this._drawShape();
+    this._renderShape();
   }
 
   /**
    * @param {Boolean} drawHandles
-   * @private
+   * @protected
    */
-  _drawShape(drawHandles = true) {
+  _renderShape(drawHandles = true) {
     super.drawShape(this._createShape(), drawHandles);
   }
 
   /**
-   * @returns {Path}
+   * @returns {paper.Path}
    * @private
    */
   _createShape() {

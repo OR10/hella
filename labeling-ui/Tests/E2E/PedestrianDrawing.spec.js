@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -153,7 +153,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.MoveOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -175,9 +174,8 @@ describe('Pedestrian drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.MoveOnePedestrian);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PedestrianDrawing.MoveOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PedestrianDrawing.MoveOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -186,8 +184,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -210,10 +206,8 @@ describe('Pedestrian drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.ResizeOnePedestrian);
         return browser.sleep(1000);
       })
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PedestrianDrawing.ResizeOnePedestrian.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -222,8 +216,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
       assets.mocks.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.getLabeledThingsInFrame0to4,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -246,9 +238,8 @@ describe('Pedestrian drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.ScaleOverFixedHandle);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -287,8 +278,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame1,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -307,10 +296,9 @@ describe('Pedestrian drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrian);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -320,8 +308,6 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.Task,
-      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing,
-      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -340,10 +326,9 @@ describe('Pedestrian drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrianMinimalHeight);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -353,8 +338,6 @@ describe('Pedestrian drawing', () => {
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
       assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.Task,
-      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing,
-      assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -373,10 +356,9 @@ describe('Pedestrian drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrianMinimalHeight);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -386,8 +368,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThingInFrame,
-      assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -432,10 +412,9 @@ describe('Pedestrian drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewPedestrianIntermediary3);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThingInFrame);
+      .then(() => {
+        expect(assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PedestrianDrawing.NewPedestrianIntermediary.StoreLabeledThingInFrame).toExistInPouchDb();
         done();
       });
   });
@@ -445,10 +424,6 @@ describe('Pedestrian drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PedestrianDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame2,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame3,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4,
-      assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -475,12 +450,11 @@ describe('Pedestrian drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.NewMultiplePedestrian);
         return browser.sleep(1000);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4);
+      .then(() => {
+        expect(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame2).toExistInPouchDb();
+        expect(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame3).toExistInPouchDb();
+        expect(assets.mocks.PedestrianDrawing.NewPedestrian.StoreLabeledThingInFrame4).toExistInPouchDb();
         done();
       });
   });

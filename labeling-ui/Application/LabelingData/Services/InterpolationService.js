@@ -7,9 +7,10 @@ class InterpolationService {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
+   * @param {ModalService} modalService
    * @param {Interpolation} interpolationType
    */
-  constructor($q, labeledThingGateway, pouchDbSyncManager, pouchDbContextService, interpolationType) {
+  constructor($q, labeledThingGateway, pouchDbSyncManager, pouchDbContextService, modalService, interpolationType) {
     /**
      * @type {$q}
      * @private
@@ -33,6 +34,12 @@ class InterpolationService {
      * @private
      */
     this._pouchDbContextService = pouchDbContextService;
+
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
 
     /**
      *
@@ -74,6 +81,21 @@ class InterpolationService {
       .then(() => {
         return this._interpolation.execute(task, labeledThing, interpolationFrameRange);
       })
+      .catch(error => {
+        this._modalService.info(
+          {
+            title: 'Error during interpolation',
+            headline: 'Interpolation could not be executed correctly',
+            message: error.message,
+          },
+          undefined,
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
+      })
       .then(() => {
         return this._pouchDbSyncManager.pullUpdatesForContext(pouchDBContext);
       })
@@ -88,6 +110,7 @@ InterpolationService.$inject = [
   'labeledThingGateway',
   'pouchDbSyncManager',
   'pouchDbContextService',
+  'modalService',
   'interpolationType',
 ];
 

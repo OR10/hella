@@ -9,7 +9,7 @@ use AnnoStationBundle\Service\Authentication;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Worker\Jobs;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
 use AppBundle\Service\Validation\ValidationError;
@@ -184,8 +184,7 @@ class User extends Controller\Base
      * Add a new User
      *
      * @Rest\Post("")
-     *
-     * @CheckPermissions({"canAddUser"})
+     * @Annotations\CheckPermissions({"canAddUser"})
      *
      * @param HttpFoundation\Request              $request
      *
@@ -241,8 +240,7 @@ class User extends Controller\Base
      * Edit a User
      *
      * @Rest\Put("/{user}")
-     *
-     * @CheckPermissions({"canEditUser"})
+     * @Annotations\CheckPermissions({"canEditUser"})
      *
      * @param HttpFoundation\Request              $request
      * @param Model\User                          $user
@@ -358,7 +356,7 @@ class User extends Controller\Base
      * Delete a User
      *
      * @Rest\Delete("/{user}")
-     * @CheckPermissions({"canDeleteUser"})
+     * @Annotations\CheckPermissions({"canDeleteUser"})
      *
      * @param Model\User                          $user
      *

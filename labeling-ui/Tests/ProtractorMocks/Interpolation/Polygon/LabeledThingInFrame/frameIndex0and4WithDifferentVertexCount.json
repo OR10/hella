@@ -1,0 +1,92 @@
+[
+  {
+    "classes": [
+      "pedestrian"
+    ],
+    "frameRange": {
+      "startFrameIndex": 0,
+      "endFrameIndex": 4,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "incomplete": true,
+    "lineColor": 6,
+    "taskId": "TASKID-TASKID",
+    "projectId": "PROJECTID-PROJECTID",
+    "_id": "LABELED-THING-ID-1",
+    "type": "AppBundle.Model.LabeledThing"
+  },
+  {
+    "classes": [],
+    "identifierName": "legacy",
+    "frameIndex": 0,
+    "incomplete": true,
+    "labeledThingId": "LABELED-THING-ID-1",
+    "shapes": [
+      {
+        "id": "SHAPE-ID-1",
+        "points": [
+          {
+            "x": 200,
+            "y": 100
+          },
+          {
+            "x": 300,
+            "y": 200
+          },
+          {
+            "x": 200,
+            "y": 300
+          },
+          {
+            "x": 100,
+            "y": 200
+          }
+        ],
+        "type": "polyline"
+      }
+    ],
+    "_id": "LABELED-THING-IN-FRAME-ID-1",
+    "taskId": "TASKID-TASKID",
+    "projectId": "PROJECTID-PROJECTID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "classes": [],
+    "identifierName": "legacy",
+    "frameIndex": 4,
+    "incomplete": true,
+    "labeledThingId": "LABELED-THING-ID-1",
+    "shapes": [
+      {
+        "id": "SHAPE-ID-4",
+        "points": [
+          {
+            "x": 500,
+            "y": 300
+          },
+          {
+            "x": 200,
+            "y": 500
+          },
+          {
+            "x": 300,
+            "y": 200
+          },
+          {
+            "x": 400,
+            "y": 700
+          },
+          {
+            "x": 450,
+            "y": 650
+          }
+        ],
+        "type": "polyline"
+      }
+    ],
+    "_id": "LABELED-THING-IN-FRAME-ID-2",
+    "taskId": "TASKID-TASKID",
+    "projectId": "PROJECTID-PROJECTID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  }
+]

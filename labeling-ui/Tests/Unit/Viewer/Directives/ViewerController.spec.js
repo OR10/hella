@@ -87,14 +87,14 @@ describe('ViewerController tests', () => {
     frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
     drawingContextService = jasmine.createSpyObj('drawingContextService', ['createContext']);
     animationFrameService = jasmine.createSpyObj('animationFrameService', ['debounce']);
-    window = jasmine.createSpyObj('$window', ['addEventListener']);
+    window = jasmine.createSpyObj('$window', ['addEventListener', 'removeEventListener']);
     window.document = jasmine.createSpyObj('window.document', ['addEventListener']);
     keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey']);
     pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
     imagePreloader = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
     shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes']);
-    toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener']);
+    toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener', 'removeAllListeners']);
     hierarchyCreationService = jasmine.createSpyObj('hierarchyCreationService', ['createLabeledThingGroupInFrameWithHierarchy']);
     paperShapeFactory = jasmine.createSpyObj('paperShapeFactory', ['createPaperGroupShape']);
     groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
@@ -241,8 +241,10 @@ describe('ViewerController tests', () => {
     let thingLayerScope;
 
     beforeEach(() => {
-      toolSelectorListener.addListener.and.callFake(callback => {
-        groupListener = callback;
+      toolSelectorListener.addListener.and.callFake((callback, type) => {
+        if (type === 'group-rectangle') {
+          groupListener = callback;
+        }
       });
 
       animationFrameService.debounce.and.returnValue(() => {});
@@ -353,6 +355,7 @@ describe('ViewerController tests', () => {
         });
       });
     });
+
     describe('group creation multi', () => {
       beforeEach(() => {
         shapes =
@@ -385,21 +388,74 @@ describe('ViewerController tests', () => {
         hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy.and.returnValue(ltgif);
         paperShapeFactory.createPaperGroupShape.and.returnValue(group);
       });
+
       it('creates a group around the selected shapes if there are at least two selected shape', () => {
         groupListener(null, labelStructureObject);
 
         expect(groupSelectionDialogFactory.createAsync).toHaveBeenCalled();
       });
+
       it('should provide the dialog factory with the given task', () => {
         groupListener(null, labelStructureObject);
 
         expect(groupSelectionDialogFactory.createAsync.calls.mostRecent().args[0]).toBe(task);
       });
+
       it('should provide the dialog factory with the groupIds of the given shape', () => {
         groupListener(null, labelStructureObject);
 
         expect(groupSelectionDialogFactory.createAsync.calls.mostRecent().args[1]).toEqual(['1', '2']);
       });
+    });
+  });
+
+  describe('Tool selection (TTANNO-2052)', () => {
+    let toolSelectionListener;
+
+    beforeEach(() => {
+      toolSelectorListener.addListener.and.callFake((callback, type) => {
+        if (type === undefined) {
+          toolSelectionListener = callback;
+        }
+      });
+    });
+
+    it('clears the selection if the labeledStructureObject has changed', () => {
+      const newLabelStructureObject = {};
+      const oldLabelStructureObject = {};
+
+      createController();
+      toolSelectionListener(null, newLabelStructureObject, oldLabelStructureObject);
+
+      expect(shapeSelectionService.clear).toHaveBeenCalled();
+    });
+
+    it('does not the selection if the labeledStructureObject has not changed', () => {
+      const newLabelStructureObject = {};
+
+      createController();
+      toolSelectionListener(null, newLabelStructureObject, newLabelStructureObject);
+
+      expect(shapeSelectionService.clear).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('scope destroy', () => {
+    it('removes all tool selector listeners', () => {
+      createController();
+
+      scope.$emit('$destroy');
+
+      expect(toolSelectorListener.removeAllListeners).toHaveBeenCalled();
+    });
+
+    it('removes the window listeners', () => {
+      createController();
+
+      scope.$emit('$destroy');
+
+      expect(window.removeEventListener).toHaveBeenCalledWith('resize', undefined);
+      expect(window.removeEventListener).toHaveBeenCalledWith('visibilitychange', jasmine.any(Function));
     });
   });
 });

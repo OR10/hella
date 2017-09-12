@@ -81,14 +81,12 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.phase"
                  class="AnnoStationBundle\Controller\Api\v1\Task\Phase">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
         </service>
 
@@ -116,7 +114,6 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
         </service>
         <service
@@ -200,7 +197,6 @@
 
         <service id="annostation.labeling_api.controller.api.organisation.task_configuration"
                  class="AnnoStationBundle\Controller\Api\v1\Organisation\TaskConfiguration">
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.simple_xml_validator"/>
@@ -231,7 +227,6 @@
         </service>
 
         <service id="annostation.labeling_api.controller.api.system" class="AnnoStationBundle\Controller\Api\v1\System">
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="guzzle.client"/>
             <argument>%rabbitmq_host%</argument>
             <argument>%rabbitmq_management_port%</argument>
@@ -272,7 +267,6 @@
         <service id="annostation.labeling_api.controller.api.monitoring"
                  class="AnnoStationBundle\Controller\Api\v1\Monitoring">
             <argument type="service" id="annostation.labeling_api.database.facade.monitoring"/>
-            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
         </service>
     </services>
 </container>

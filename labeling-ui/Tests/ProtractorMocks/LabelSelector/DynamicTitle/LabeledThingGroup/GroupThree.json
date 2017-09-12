@@ -1,0 +1,11 @@
+[
+  {
+    "groupType": "peter-paul-and-mary",
+    "lineColor": "7",
+    "groupIds": [],
+    "taskId": "TASKID-TASKID",
+    "projectId": "PROJECTID-PROJECTID",
+    "_id": "group-three",
+    "type": "AnnoStationBundle.Model.LabeledThingGroup"
+  }
+]

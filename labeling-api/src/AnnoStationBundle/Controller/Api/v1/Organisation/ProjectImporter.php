@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
 use AppBundle\Model;
@@ -96,8 +96,7 @@ class ProjectImporter extends Controller\Base
 
     /**
      * @Rest\Post("/{organisation}/projectImport/{uploadId}")
-     *
-     * @CheckPermissions({"canUploadNewVideo"})
+     * @Annotations\CheckPermissions({"canUploadNewVideo"})
      *
      * @param HttpFoundation\Request              $request
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -164,8 +163,7 @@ class ProjectImporter extends Controller\Base
 
     /**
      * @Rest\Post("/{organisation}/projectImport/{uploadId}/complete")
-     *
-     * @CheckPermissions({"canUploadNewVideo"})
+     * @Annotations\CheckPermissions({"canUploadNewVideo"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param                                     $uploadId

@@ -1,5 +1,7 @@
 import paper from 'paper';
+import {clone} from 'lodash';
 import Tool from './NewTool';
+import hitResolver from '../Support/HitResolver';
 
 /**
  * Base class for Tools using the PaperJs tool concept
@@ -101,7 +103,7 @@ class PaperTool extends Tool {
    * @param {paper.Event} event
    * @private
    */
-  _delegateKeyboardEvent(type, event) {
+  delegateKeyboardEvent(type, event) {
     const delegationTarget = `onKey${type.substr(0, 1).toUpperCase()}${type.substr(1).toLowerCase()}`;
 
     switch (type) {
@@ -123,8 +125,8 @@ class PaperTool extends Tool {
     this._tool.onMouseDrag = event => this.delegateMouseEvent('drag', event);
     this._tool.onMouseMove = event => this.delegateMouseEvent('move', event);
 
-    this._tool.onKeyDown = event => this._delegateKeyboardEvent('down', event);
-    this._tool.onKeyUp = event => this._delegateKeyboardEvent('up', event);
+    this._tool.onKeyDown = event => this.delegateKeyboardEvent('down', event);
+    this._tool.onKeyUp = event => this.delegateKeyboardEvent('up', event);
   }
 
   /**
@@ -253,6 +255,58 @@ class PaperTool extends Tool {
     this._context.withScope(scope => {
       scope.tool = null;
     });
+  }
+
+  /**
+   * Performs a hit test for the given point in the context.
+   *
+   * Returns the hitResult from paperjs
+   *
+   * @param {paper.Point} point
+   * @return {null|PaperShape|Handle}
+   * @protected
+   */
+  _getHitShapeAndHandle(point) {
+    return this._context.withScope(scope => {
+      let hitTestTolerance = null;
+      if (this._toolActionStruct !== null) {
+        hitTestTolerance = this._toolActionStruct.options.hitTestTolerance;
+      }
+
+      const hitResult = scope.project.hitTest(point, {
+        fill: true,
+        bounds: false,
+        tolerance: hitTestTolerance,
+      });
+
+      if (!hitResult) {
+        return [null, undefined];
+      }
+
+      return hitResolver.resolve(hitResult.item);
+    });
+  }
+
+  /**
+   * Generates an extended keyboard modifier object with the specified keys
+   * added in short syntax ($keyName instead of $keyName+Key)
+   *
+   * Currently the following keys are processed:
+   * - alt
+   *
+   * @param {Event} event
+   * @protected
+   */
+  _getKeyboardModifiers(event) {
+    const modifiers = clone(event.modifiers);
+    const keys = ['altKey'];
+
+    keys.forEach(key => {
+      const shortName = key.replace(/Key/, '');
+      modifiers[shortName] = event.event[key];
+    });
+
+    return modifiers;
   }
 }
 

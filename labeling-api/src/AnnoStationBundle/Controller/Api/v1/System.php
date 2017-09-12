@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Controller\Api\v1;
 
 use GuzzleHttp;
 use AppBundle\Annotations\CloseSession;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -21,11 +22,6 @@ use AnnoStationBundle\Service\Authentication;
  */
 class System extends Controller\Base
 {
-    /**
-     * @var Authentication\UserPermissions
-     */
-    private $userPermissions;
-
     /**
      * @var GuzzleHttp\Client
      */
@@ -52,7 +48,6 @@ class System extends Controller\Base
     private $amqpPassword;
 
     public function __construct(
-        Authentication\UserPermissions $userPermissions,
         GuzzleHttp\Client $guzzleClient,
         $amqpHost,
         $amqpManagmentPort,
@@ -60,7 +55,6 @@ class System extends Controller\Base
         $amqpPassword
     ) {
 
-        $this->userPermissions   = $userPermissions;
         $this->guzzleClient      = $guzzleClient;
         $this->amqpHost          = $amqpHost;
         $this->amqpManagmentPort = $amqpManagmentPort;
@@ -73,14 +67,12 @@ class System extends Controller\Base
      *
      * @Rest\Get("/queues")
      *
+     * @Annotations\CheckPermissions({"canViewSystemQueues"})
+     *
      * @return \FOS\RestBundle\View\View
      */
     public function queuedMessagesAction()
     {
-        if (!$this->userPermissions->hasPermission('canCreateOrganisation')) {
-            throw new Exception\AccessDeniedHttpException();
-        }
-
         $res    = $this->guzzleClient->request(
             'GET',
             sprintf(

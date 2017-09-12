@@ -1,3 +1,5 @@
+import paper from 'paper';
+
 import PaperTool from './PaperTool';
 import PaperRectangle from '../../Viewer/Shapes/PaperRectangle';
 import PaperGroupRectangle from '../../Viewer/Shapes/PaperGroupRectangle';
@@ -8,7 +10,6 @@ import PaperPolygon from '../../Viewer/Shapes/PaperPolygon';
 import PaperPolyline from '../../Viewer/Shapes/PaperPolyline';
 import PaperFrame from '../../Viewer/Shapes/PaperFrame';
 import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
-import hitResolver from '../Support/HitResolver';
 
 import FrameCreationTool from './FrameCreationTool';
 
@@ -16,6 +17,7 @@ import CreationToolActionStruct from './ToolActionStructs/CreationToolActionStru
 import MovingToolActionStruct from './ToolActionStructs/MovingToolActionStruct';
 import ScalingToolActionStruct from './ToolActionStructs/ScalingToolActionStruct';
 import KeyboardToolActionStruct from './ToolActionStructs/KeyboardToolActionStruct';
+import TransformationToolActionStruct from './ToolActionStructs/TransformationToolActionStruct';
 
 /**
  * A multi tool for handling multiple functionalities
@@ -35,7 +37,16 @@ class MultiTool extends PaperTool {
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {ShapeSelectionService} shapeSelectionService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, toolService, viewerMouseCursorService, labeledFrameGateway, shapeSelectionService) {
+  constructor(
+    drawingContext,
+    $rootScope,
+    $q,
+    loggerService,
+    toolService,
+    viewerMouseCursorService,
+    labeledFrameGateway,
+    shapeSelectionService
+  ) {
     super(drawingContext, $rootScope, $q, loggerService);
 
     /**
@@ -93,6 +104,11 @@ class MultiTool extends PaperTool {
      * @private
      */
     this._shapeSelectionService = shapeSelectionService;
+
+    /**
+     * @type {paper.Point}
+     */
+    this._currentMousePoint = new paper.Point(0, 0);
   }
 
   /**
@@ -194,7 +210,7 @@ class MultiTool extends PaperTool {
    */
   _invokeCreationToolDelegation(requirementsShape) {
     const tool = this._getCreationToolForRequirementsShape(requirementsShape);
-    this._invokePaperToolDelegation(tool, 'creation', null, null);
+    this._invokePaperToolDelegation(tool, 'creation', null, null, null);
   }
 
   /**
@@ -232,14 +248,19 @@ class MultiTool extends PaperTool {
    * @private
    */
   onMouseDown(event) {
+    /**
+     * @var {{capsLock: boolean, command: boolean, control: boolean, option: boolean, shift: boolean, space: boolean}}
+     */
+    const keyboardModifiers = this._getKeyboardModifiers(event);
+    const readOnly = this._toolActionStruct.readOnly === true;
     let multiSelect = false;
 
     // Shift is only used for zoom panning
-    if (event.event.shiftKey) {
+    if (keyboardModifiers.shift) {
       return;
     }
 
-    if (event.event.ctrlKey) {
+    if (keyboardModifiers.control) {
       multiSelect = true;
     }
 
@@ -250,67 +271,91 @@ class MultiTool extends PaperTool {
       return;
     }
 
-    this._handleMouseDownCursor(point);
+    this._handleMouseDownCursor(event);
 
-    this._context.withScope(scope => {
-      const hitResult = scope.project.hitTest(point, {
-        fill: true,
-        bounds: false,
-        tolerance: this._toolActionStruct.options.hitTestTolerance,
-      });
+    const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
 
-      // Hit nothing
-      if (!hitResult) {
-        // Deselection if there was a selection
-        if (this._toolActionStruct.selectedPaperShape !== null) {
-          // Metalabeling is can not be deselected
-          if (this._toolActionStruct.selectedPaperShape instanceof PaperFrame) {
-            return;
-          }
-
-          this._shapeSelectionService.clear();
-          this._complete({actionIdentifier: 'selection', paperShape: null});
+    // Hit nothing
+    if (!hitShape) {
+      const selectedShape = this._shapeSelectionService.getSelectedShape();
+      // Deselection if there was a selection
+      if (selectedShape) {
+        // Metalabeling is can not be deselected
+        if (selectedShape instanceof PaperFrame) {
           return;
         }
 
-        // clear selection when selectedPaperShape is null
         this._shapeSelectionService.clear();
-
-        // Do not invoke any further action if readOnly is active
-        if (this._toolActionStruct.readOnly === true) {
-          return;
-        }
-        // Invoke shape creation
-        this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
-        this._activePaperTool.delegateMouseEvent('down', event);
+        this._complete({actionIdentifier: 'selection', paperShape: null});
         return;
       }
 
-      // Hit something
-      const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
+      // clear selection when selectedPaperShape is null
+      this._shapeSelectionService.clear();
 
-      // If selected paperShape changed select the new one
-      if (this._toolActionStruct.selectedPaperShape !== hitShape) {
-        if (multiSelect) {
-          this._shapeSelectionService.toggleShape(hitShape);
-        } else {
-          this._shapeSelectionService.setSelectedShape(hitShape);
-          this._complete({actionIdentifier: 'selection', paperShape: hitShape});
-        }
+      // Do not invoke any further action if readOnly is active
+      if (readOnly) {
         return;
       }
 
-      // Do not delegate to PaperTool if we are readOnly
-      if (this._toolActionStruct.readOnly === true) {
-        return;
-      }
-
-      // Invoke mutation tool
-      const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle);
-      const tool = this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier);
-      this._invokePaperToolDelegation(tool, actionIdentifier, hitShape, hitHandle);
+      // Invoke shape creation
+      this._invokeCreationToolDelegation(this._toolActionStruct.requirementsShape);
       this._activePaperTool.delegateMouseEvent('down', event);
-    });
+      return;
+    }
+
+    // If selected paperShape changed select the new one
+    if (this._shapeSelectionService.getSelectedShape() !== hitShape) {
+      if (multiSelect) {
+        this._shapeSelectionService.toggleShape(hitShape, readOnly);
+      } else {
+        this._shapeSelectionService.setSelectedShape(hitShape, readOnly);
+        this._complete({actionIdentifier: 'selection', paperShape: hitShape});
+      }
+      return;
+    }
+
+    // Do not delegate to PaperTool if we are readOnly
+    if (readOnly) {
+      return;
+    }
+
+    // Invoke mutation tool
+    const actionIdentifier = hitShape.getToolActionIdentifier(hitHandle, keyboardModifiers);
+    const tool = this._toolService.getTool(this._context, hitShape.getClass(), actionIdentifier);
+    this._invokePaperToolDelegation(tool, actionIdentifier, hitShape, hitHandle, point);
+    this._activePaperTool.delegateMouseEvent('down', event);
+  }
+
+  onKeyDown(event) {
+    const keyIdentifier = event.key;
+    const selectedShape = this._shapeSelectionService.getSelectedShape();
+    const keyboardModifiers = this._getKeyboardModifiers(event);
+
+    if (this._paperToolDelegationInvoked) {
+      this._activePaperTool.delegateKeyboardEvent('down', event);
+      return;
+    }
+
+    if (selectedShape !== undefined && keyIdentifier === 'option') {
+      this._invokeTransformationTool(event, selectedShape, null, keyboardModifiers, this._currentMousePoint);
+      this._activePaperTool.delegateKeyboardEvent('down', event);
+    }
+  }
+
+  /**
+   * @param {Event} event
+   * @param {PaperShape} shape
+   * @param {Handle} handle
+   * @param {Object} keyboardModifiers
+   * @param {paper.Point} point
+   * @private
+   */
+  _invokeTransformationTool(event, shape, handle, keyboardModifiers, point) {
+    // Invoke mutation tool
+    const actionIdentifier = shape.getToolActionIdentifier(handle, keyboardModifiers);
+    const tool = this._toolService.getTool(this._context, shape.getClass(), actionIdentifier);
+    this._invokePaperToolDelegation(tool, actionIdentifier, shape, handle, point);
   }
 
   /**
@@ -339,9 +384,10 @@ class MultiTool extends PaperTool {
    * @param {string} actionIdentifier
    * @param {PaperShape} shape
    * @param {Handle} handle
+   * @param {paper.Point} point
    * @private
    */
-  _invokePaperToolDelegation(tool, actionIdentifier, shape, handle) {
+  _invokePaperToolDelegation(tool, actionIdentifier, shape, handle, point) {
     this._paperToolDelegationInvoked = true;
     const {viewport, video, task, framePosition, requirementsThingOrGroupId, delegatedOptions} = this._toolActionStruct;
     let promise = null;
@@ -380,6 +426,17 @@ class MultiTool extends PaperTool {
         );
         promise = tool.invokeShapeMoving(struct);
         break;
+      case 'transformation':
+        /** @var {MovingTool} tool */
+        struct = new TransformationToolActionStruct(
+          delegatedOptions,
+          viewport,
+          shape,
+          handle,
+          point
+        );
+        promise = tool.invokeShapeTransformation(struct);
+        break;
       default:
         throw new Error(`Unknown actionIdentifier: ${actionIdentifier}`);
     }
@@ -392,7 +449,7 @@ class MultiTool extends PaperTool {
       // Example: Group Shape without shapes inside
       // For more info see {@link GroupCreationTool.invokeShapeCreation()}
       if (paperShape === null) {
-        this._invokePaperToolDelegation(tool, actionIdentifier, shape, handle);
+        this._invokePaperToolDelegation(tool, actionIdentifier, shape, handle, point);
       } else {
         this._complete({actionIdentifier, paperShape});
       }
@@ -406,8 +463,11 @@ class MultiTool extends PaperTool {
    * @param {paper.Event} event
    */
   onMouseMove(event) {
+    this._currentMousePoint = event.point;
+    const keyboardModifiers = this._getKeyboardModifiers(event);
+
     // Shift is used for zoom panning
-    if (event.event.shiftKey) {
+    if (keyboardModifiers.shift) {
       return;
     }
 
@@ -416,59 +476,52 @@ class MultiTool extends PaperTool {
       return;
     }
 
-    this._handleMouseMoveCursor(event.point);
+    const selectedShape = this._shapeSelectionService.getSelectedShape();
+
+    if (selectedShape && keyboardModifiers.alt) {
+      this._invokeTransformationTool(event, selectedShape, null, keyboardModifiers, this._currentMousePoint);
+      this._activePaperTool.delegateMouseEvent('move', event);
+    }
+
+    this._handleMouseMoveCursor(event);
   }
 
   /**
-   * @param {Point} point
+   * @param {Event} event
    * @private
    */
-  _handleMouseMoveCursor(point) {
-    this._context.withScope(scope => {
-      let hitTestTolerance = null;
-      if (this._toolActionStruct !== null) {
-        hitTestTolerance = this._toolActionStruct.options.hitTestTolerance;
-      }
+  _handleMouseMoveCursor(event) {
+    const point = event.point;
+    const keyboardModifiers = this._getKeyboardModifiers(event);
 
-      const hitResult = scope.project.hitTest(point, {
-        fill: true,
-        bounds: false,
-        tolerance: hitTestTolerance,
-      });
+    const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
 
-      if (!hitResult) {
-        if (this._viewerMouseCursorService.isCrosshairShowing()) {
-          this._viewerMouseCursorService.setMouseCursor('none');
-        } else {
-          this._viewerMouseCursorService.setMouseCursor(null);
-        }
+    if (!hitShape) {
+      if (this._viewerMouseCursorService.isCrosshairShowing()) {
+        this._viewerMouseCursorService.setMouseCursor('none');
       } else {
-        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle));
+        this._viewerMouseCursorService.setMouseCursor(null);
       }
-    });
+    } else {
+      this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, undefined, keyboardModifiers));
+    }
   }
 
   /**
-   * @param {Point} point
+   * @param {Event} event
    * @private
    */
-  _handleMouseDownCursor(point) {
+  _handleMouseDownCursor(event) {
+    const point = event.point;
+    const keyboardModifiers = this._getKeyboardModifiers(event);
+
     if (this._viewerMouseCursorService.isCrosshairShowing()) {
       this._viewerMouseCursorService.setMouseCursor('none');
     } else {
-      this._context.withScope(scope => {
-        const hitResult = scope.project.hitTest(point, {
-          fill: true,
-          bounds: false,
-          tolerance: this._toolActionStruct.options.hitTestTolerance,
-        });
-
-        if (hitResult) {
-          const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-          this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, true));
-        }
-      });
+      const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
+      if (hitShape) {
+        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, true, keyboardModifiers));
+      }
     }
   }
 
@@ -478,7 +531,7 @@ class MultiTool extends PaperTool {
    */
   onMouseUp(event) {
     // Shift is only used for zoom panning
-    if (event.shiftkey) {
+    if (this._getKeyboardModifiers(event).shift) {
       return;
     }
 
@@ -487,25 +540,21 @@ class MultiTool extends PaperTool {
       return;
     }
 
-    this._handleMouseUpCursor(event.point);
+    this._handleMouseUpCursor(event);
   }
 
   /**
-   * @param {Point} point
+   * @param {Event} event
    * @private
    */
-  _handleMouseUpCursor(point) {
-    this._context.withScope(scope => {
-      const hitResult = scope.project.hitTest(point, {
-        fill: true,
-        bounds: false,
-        tolerance: this._toolActionStruct.options.hitTestTolerance,
-      });
-      if (hitResult) {
-        const [hitShape, hitHandle = null] = hitResolver.resolve(hitResult.item);
-        this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, false));
-      }
-    });
+  _handleMouseUpCursor(event) {
+    const point = event.point;
+    const keyboardModifiers = this._getKeyboardModifiers(event);
+
+    const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
+    if (hitShape) {
+      this._viewerMouseCursorService.setMouseCursor(hitShape.getCursor(hitHandle, false, keyboardModifiers));
+    }
   }
 
   /**
@@ -514,7 +563,7 @@ class MultiTool extends PaperTool {
    */
   onMouseDrag(event) {
     // Shift is used for zoom panning
-    if (event.event.shiftKey) {
+    if (this._getKeyboardModifiers(event).shift) {
       return;
     }
 

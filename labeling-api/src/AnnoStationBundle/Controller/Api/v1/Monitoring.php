@@ -4,6 +4,7 @@ namespace AnnoStationBundle\Controller\Api\v1;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Version;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service\Authentication;
 use AppBundle\Annotations\CloseSession;
@@ -27,28 +28,19 @@ class Monitoring extends Controller\Base
      */
     private $monitoringFacade;
 
-    /**
-     * @var Authentication\UserPermissions
-     */
-    private $userPermissions;
-
-    public function __construct(Facade\Monitoring $monitoringFacade, Authentication\UserPermissions $userPermissions)
+    public function __construct(Facade\Monitoring $monitoringFacade)
     {
         $this->monitoringFacade = $monitoringFacade;
-        $this->userPermissions  = $userPermissions;
     }
 
     /**
      * @Rest\Get("")
+     * @Annotations\CheckPermissions({"canViewLatestMonitoringRun"})
      *
      * @return View\View
      */
     public function lastMonitoringCheckResultAction()
     {
-        if (!$this->userPermissions->hasPermission('canViewLatestMonitoringRun')) {
-            throw new Exception\AccessDeniedHttpException();
-        }
-
         $result = $this->monitoringFacade->getLatestCheckResult();
 
         if ($result === null) {

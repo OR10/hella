@@ -26,6 +26,13 @@ class ToolSelectorListenerService {
   }
 
   /**
+   * REMOVE ALL THE LISTENERS!
+   */
+  removeAllListeners() {
+    this._listeners.clear();
+  }
+
+  /**
    * @param {{id, shape, name}} newLabelStructureObject
    * @param {{id, shape, name}} oldLabelStructureObject
    */

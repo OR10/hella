@@ -3,7 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
@@ -46,11 +46,6 @@ class User extends Controller\Base
     private $userRolesRebuilderService;
 
     /**
-     * @var Authentication\UserPermissions
-     */
-    private $userPermissions;
-
-    /**
      * @var Facade\Project
      */
     private $projectFacade;
@@ -73,7 +68,6 @@ class User extends Controller\Base
      * @param Facade\LabelingGroup           $labelingGroupFacade
      * @param Service\Authorization          $authorizationService
      * @param Service\UserRolesRebuilder     $userRolesRebuilderService
-     * @param Authentication\UserPermissions $userPermissions
      * @param AMQP\FacadeAMQP                $amqpFacade
      */
     public function __construct(
@@ -82,13 +76,11 @@ class User extends Controller\Base
         Facade\LabelingGroup $labelingGroupFacade,
         Service\Authorization $authorizationService,
         Service\UserRolesRebuilder $userRolesRebuilderService,
-        Authentication\UserPermissions $userPermissions,
         AMQP\FacadeAMQP $amqpFacade
     ) {
         $this->userFacade                = $userFacade;
         $this->authorizationService      = $authorizationService;
         $this->userRolesRebuilderService = $userRolesRebuilderService;
-        $this->userPermissions           = $userPermissions;
         $this->projectFacade             = $projectFacade;
         $this->amqpFacade                = $amqpFacade;
         $this->labelingGroupFacade       = $labelingGroupFacade;
@@ -98,7 +90,7 @@ class User extends Controller\Base
      * Add a user to an organisation
      *
      * @Rest\Put("/{organisation}/user/{user}/assign")
-     * @CheckPermissions({"canAssignUserToOwnOrganisation"})
+     * @Annotations\CheckPermissions({"canAssignUserToOwnOrganisation"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
@@ -126,7 +118,7 @@ class User extends Controller\Base
      * Remove a user from an organisation
      *
      * @Rest\Delete("/{organisation}/user/{user}/unassign")
-     * @CheckPermissions({"canDeleteUserFromOrganisation"})
+     * @Annotations\CheckPermissions({"canDeleteUserFromOrganisation"})
      *
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user

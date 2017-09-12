@@ -3,8 +3,7 @@
 namespace AnnoStationBundle\Controller\Api\v1\Task;
 
 use AppBundle\Annotations\CloseSession;
-use AnnoStationBundle\Annotations\ForbidReadonlyTasks;
-use AnnoStationBundle\Annotations\CheckPermissions;
+use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
@@ -209,7 +208,7 @@ class Status extends Controller\Base
 
     /**
      * @Rest\Post("/{task}/status/begin")
-     * @CheckPermissions({"canBeginTask"})
+     * @Annotations\CheckPermissions({"canBeginTask"})
      *
      * @param HttpFoundation\Request $request
      * @param Model\LabelingTask     $task

@@ -54,6 +54,18 @@ class NoOperationPaperTool extends PaperTool {
    * The returning promise is resolved after the
    * tool workflow is finished.
    *
+   * @param {TransformationToolActionStruct} toolActionStruct
+   * @returns {Promise}
+   */
+  invokeShapeTransformation(toolActionStruct) {
+    return this._invoke(toolActionStruct);
+  }
+
+  /**
+   * Invoke the tool to start its workflow.
+   * The returning promise is resolved after the
+   * tool workflow is finished.
+   *
    * @param {CreationToolActionStruct} toolActionStruct
    * @returns {Promise}
    */
@@ -122,6 +134,7 @@ NoOperationPaperTool.isActionIdentifierSupported = actionIdentifier => {
     'creation',
     'move',
     'scale',
+    'transformation',
   ].includes(actionIdentifier);
 };
 

@@ -9,60 +9,43 @@ use GuzzleHttp;
 
 class SystemTest extends Tests\WebTestCase
 {
-    public function testGetQueuesWithPermission()
+    protected function setUpImplementation()
     {
-        $userPermissionMock = $this->getUserPermissionsMock();
-        $userPermissionMock
-            ->expects($this->once())
-            ->method('hasPermission')
-            ->with('canCreateOrganisation')
-            ->willReturn(true);
-
         $guzzleResponseMock = $this->getGuzzleResponseMock();
         $guzzleResponseMock->method('getBody')
             ->willReturn(json_encode([]));
 
         $guzzleMock = $this->getGuzzleClientMock();
-        $guzzleMock->expects($this->once())
+        $guzzleMock->expects($this->any())
             ->method('request')
             ->willReturn($guzzleResponseMock);
 
-        $system = new Api\v1\System($userPermissionMock, $guzzleMock, '', '', '', '');
-
-        $request = $system->queuedMessagesAction();
-
-        $this->assertEquals(200, $request->getStatusCode());
+        $this->setService('guzzle.client', $guzzleMock);
     }
 
-    /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
-     */
+    public function testGetQueuesWithPermission()
+    {
+        $superAdmin     = $this->createSuperAdminUser();
+        $requestWrapper = $this->createRequest('/api/v1/system/queues')
+            ->withCredentialsFromUsername($superAdmin)
+            ->execute();
+
+        $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
+    }
+
     public function testGetQueuesWithoutPermission()
     {
-        $userPermissionMock = $this->getUserPermissionsMock();
-        $userPermissionMock
-            ->expects($this->once())
-            ->method('hasPermission')
-            ->with('canCreateOrganisation')
-            ->willReturn(false);
+        $labelManager     = $this->createLabelManagerUser();
+        $requestWrapper = $this->createRequest('/api/v1/system/queues')
+            ->withCredentialsFromUsername($labelManager)
+            ->execute();
 
-        $guzzleMock = $this->getGuzzleClientMock();
-
-        $system = new Api\v1\System($userPermissionMock, $guzzleMock, '', '', '', '');
-
-        $system->queuedMessagesAction();
+        $this->assertEquals(403, $requestWrapper->getResponse()->getStatusCode());
     }
 
     private function getGuzzleClientMock()
     {
         return $this->getMockBuilder(GuzzleHttp\Client::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    private function getUserPermissionsMock()
-    {
-        return $this->getMockBuilder(Authentication\UserPermissions::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
