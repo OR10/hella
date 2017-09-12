@@ -9,7 +9,7 @@ import PaperMeasurementRectangle from 'Application/Viewer/Shapes/PaperMeasuremen
 import paper from 'paper';
 import TaskFixture from '../../../Fixtures/Models/Frontend/Task';
 
-describe('ThingLayer', () => {
+fdescribe('ThingLayer', () => {
   let injector;
   let angularScope;
   let paperScope;
@@ -30,6 +30,7 @@ describe('ThingLayer', () => {
   let labeledThingGroupGateway;
   let shapeSelectionService;
   let groupSelectionDialogFactory;
+  let pathCollisionService;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -89,6 +90,8 @@ describe('ThingLayer', () => {
 
     groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
     groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
+
+    pathCollisionService = jasmine.createSpyObj('PathCollisionService', ['setShapes']);
   });
 
   function createThingLayerInstance() {
@@ -112,7 +115,8 @@ describe('ThingLayer', () => {
       labeledThingGateway,
       labeledThingGroupGateway,
       shapeSelectionService,
-      groupSelectionDialogFactory
+      groupSelectionDialogFactory,
+      pathCollisionService
     );
   }
 
