@@ -43,17 +43,6 @@ class ShapeSelectionService {
   }
 
   /**
-   * Returns whether to draw handles based on the readOnly information
-   *
-   * @param {boolean} readOnly
-   * @return {boolean}
-   * @private
-   */
-  _drawHandles(readOnly) {
-    return !readOnly;
-  }
-
-  /**
    * Toggle a shape, meaning:
    *  If the shape is new and not selected: select it
    *  If the shape is already selected: deselect it
@@ -105,7 +94,7 @@ class ShapeSelectionService {
    * @private
    */
   _selectAllShapes(readOnly) {
-    const drawHandles = this._drawHandles(readOnly);
+    const drawHandles = !readOnly;
     this._shapes.forEach(shape => {
       shape.select(drawHandles);
     });
