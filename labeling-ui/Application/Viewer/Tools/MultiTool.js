@@ -433,7 +433,7 @@ class MultiTool extends PaperTool {
           viewport,
           shape,
           handle,
-          point,
+          point
         );
         promise = tool.invokeShapeTransformation(struct);
         break;
