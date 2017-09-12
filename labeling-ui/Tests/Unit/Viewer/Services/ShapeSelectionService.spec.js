@@ -18,7 +18,7 @@ class Rectangle extends MockShape {
 class Cuboid extends MockShape {
 }
 
-fdescribe('ShapeSelectionService', () => {
+describe('ShapeSelectionService', () => {
   let drawingContextMock;
 
   function createRectangle(id = 'some-rectangle-id') {
