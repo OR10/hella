@@ -1,7 +1,6 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
   expectAllModalsToBeClosed,
-  getMockRequestsMade,
   initApplication,
   mock,
   sendKeySequences,

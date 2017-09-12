@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, expectModalToBePresent, getMockRequestsMade, initApplication, mock } from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, expectModalToBePresent, initApplication, mock } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);

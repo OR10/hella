@@ -2,7 +2,6 @@ import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager'
 import {
   expectAllModalsToBeClosed,
   expectModalToBePresent,
-  getMockRequestsMade,
   initApplication,
   mock,
 } from '../Support/Protractor/Helpers';
