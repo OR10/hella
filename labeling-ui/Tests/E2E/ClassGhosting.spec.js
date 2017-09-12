@@ -20,9 +20,6 @@ describe('Class Ghosting', () => {
     ltifTemplate.shapes[0].topLeft = topLeft;
     ltifTemplate.shapes[0].bottomRight = bottomRight;
 
-    delete ltifTemplate.containingDirectory;
-    delete ltifTemplate.fileName;
-
     return ltifTemplate;
   }
 
