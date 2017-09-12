@@ -241,8 +241,10 @@ describe('ViewerController tests', () => {
     let thingLayerScope;
 
     beforeEach(() => {
-      toolSelectorListener.addListener.and.callFake(callback => {
-        groupListener = callback;
+      toolSelectorListener.addListener.and.callFake((callback, type) => {
+        if (type === 'group-rectangle') {
+          groupListener = callback;
+        }
       });
 
       animationFrameService.debounce.and.returnValue(() => {});
@@ -353,6 +355,7 @@ describe('ViewerController tests', () => {
         });
       });
     });
+
     describe('group creation multi', () => {
       beforeEach(() => {
         shapes =
@@ -385,16 +388,19 @@ describe('ViewerController tests', () => {
         hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy.and.returnValue(ltgif);
         paperShapeFactory.createPaperGroupShape.and.returnValue(group);
       });
+
       it('creates a group around the selected shapes if there are at least two selected shape', () => {
         groupListener(null, labelStructureObject);
 
         expect(groupSelectionDialogFactory.createAsync).toHaveBeenCalled();
       });
+
       it('should provide the dialog factory with the given task', () => {
         groupListener(null, labelStructureObject);
 
         expect(groupSelectionDialogFactory.createAsync.calls.mostRecent().args[0]).toBe(task);
       });
+
       it('should provide the dialog factory with the groupIds of the given shape', () => {
         groupListener(null, labelStructureObject);
 
