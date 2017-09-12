@@ -235,7 +235,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       if (newShape) {
         this._context.withScope(() => {
           newShape.select(!this._$scope.vm.readOnly);
-          this._shapeSelectionService.setSelectedShape(newShape);
+          this._shapeSelectionService.setSelectedShape(newShape, this._$scope.vm.readOnly);
         });
       } else {
         // If shape is deselected in hidden LabeledThingInFrame mode switch it off

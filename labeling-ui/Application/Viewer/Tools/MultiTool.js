@@ -252,6 +252,7 @@ class MultiTool extends PaperTool {
      * @var {{capsLock: boolean, command: boolean, control: boolean, option: boolean, shift: boolean, space: boolean}}
      */
     const keyboardModifiers = this._getKeyboardModifiers(event);
+    const readOnly = this._toolActionStruct.readOnly === true;
     let multiSelect = false;
 
     // Shift is only used for zoom panning
@@ -293,7 +294,7 @@ class MultiTool extends PaperTool {
       this._shapeSelectionService.clear();
 
       // Do not invoke any further action if readOnly is active
-      if (this._toolActionStruct.readOnly === true) {
+      if (readOnly) {
         return;
       }
 
@@ -306,16 +307,16 @@ class MultiTool extends PaperTool {
     // If selected paperShape changed select the new one
     if (this._shapeSelectionService.getSelectedShape() !== hitShape) {
       if (multiSelect) {
-        this._shapeSelectionService.toggleShape(hitShape);
+        this._shapeSelectionService.toggleShape(hitShape, readOnly);
       } else {
-        this._shapeSelectionService.setSelectedShape(hitShape);
+        this._shapeSelectionService.setSelectedShape(hitShape, readOnly);
         this._complete({actionIdentifier: 'selection', paperShape: hitShape});
       }
       return;
     }
 
     // Do not delegate to PaperTool if we are readOnly
-    if (this._toolActionStruct.readOnly === true) {
+    if (readOnly) {
       return;
     }
 
