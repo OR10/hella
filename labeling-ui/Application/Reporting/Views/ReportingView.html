@@ -123,21 +123,43 @@
         </tbody>
     </table>
 
-    <h3 style="margin-top: 1.2rem">Object Frames by Class</h3>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Object Frames</th>
-            <th>Amount</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="(classname, value) in vm.report.report.numberOfTotalClassesInLabeledThingInFrameByClasses track by $index">
-            <td>{{classname}}</td>
-            <td>{{value}}</td>
-        </tr>
-        </tbody>
-    </table>
+    <div ng-if="vm.report.report.reportType === 'legacy'">
+        <h3 style="margin-top: 1.2rem">Object Frames by Class</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Object Frames</th>
+                <th>Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="(classname, value) in vm.report.report.numberOfTotalClassesInLabeledThingInFrameByClasses track by $index">
+                <td>{{classname}}</td>
+                <td>{{value}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div ng-if="vm.report.report.reportType === 'requirements_xml'">
+        <h3 style="margin-top: 1.2rem">Object Frames by Objects</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Labeled Item</th>
+                <th>Objects</th>
+                <th>Object Frames</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="reporting-view" ng-repeat="(key, value) in vm.classesThingList track by $index">
+                <td class="type-{{value.type}}">{{value.type | CapitalizeFilter}}: {{value.name}}</td>
+                <td>{{value.labeledThings}}</td>
+                <td>{{value.labeledThingInFrames}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <h3 style="margin-top: 1.2rem">Time spent</h3>
     <table class="table">

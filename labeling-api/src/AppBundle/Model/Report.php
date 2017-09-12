@@ -13,6 +13,9 @@ class Report extends Base
     const REPORT_STATUS_DONE = 'done';
     const REPORT_STATUS_ERROR = 'error';
 
+    const REPORT_TYPE_LEGACY = 'legacy';
+    const REPORT_TYPE_REQUIREMENTS_XML = 'requirements_xml';
+
     /**
      * @CouchDB\Id
      */
@@ -32,6 +35,11 @@ class Report extends Base
      * @CouchDB\Field(type="string")
      */
     private $reportStatus = self::REPORT_STATUS_IN_PROGRESS;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    private $reportType;
 
     /**
      * @CouchDB\Field(type="string")
@@ -224,23 +232,25 @@ class Report extends Base
      */
     private $averageTimePerLabeledThing;
 
-    public function __construct(Project $project, $creationDate)
+    public function __construct(Project $project, $type, $creationDate)
     {
         if ($creationDate === null) {
             $creationDate = new \DateTime('now', new \DateTimeZone('UTC'));
         }
-        $this->projectId = $project->getId();
+        $this->projectId          = $project->getId();
+        $this->reportType         = $type;
         $this->reportCreationDate = $creationDate->getTimestamp();
     }
 
     /**
      * @param Project $project
+     * @param         $type
      * @param null    $creationDate
      * @return static
      */
-    public static function create(Project $project, $creationDate = null)
+    public static function create(Project $project, $type, $creationDate = null)
     {
-        return new static($project, $creationDate);
+        return new static($project, $type, $creationDate);
     }
 
     /**
@@ -874,5 +884,13 @@ class Report extends Base
     public function setNumberOfDoneTasksInAllPhases($numberOfDoneTasksInAllPhases)
     {
         $this->numberOfDoneTasksInAllPhases = $numberOfDoneTasksInAllPhases;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReportType()
+    {
+        return $this->reportType;
     }
 }
