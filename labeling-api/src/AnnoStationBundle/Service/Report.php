@@ -431,7 +431,7 @@ class Report
         $sumOfLabeledFrames = 0;
         foreach ($tasks as $task) {
             // Remove unnecessary frame information
-            $taskFrameMappingWithLabeledFrames = array_map(function ($FrameNumberMap) {
+            $taskFrameMappingWithLabeledFrames = array_map(function () {
                 return null;
             }, $task->getFrameNumberMapping());
 
