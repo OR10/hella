@@ -1,7 +1,7 @@
 import {inject} from 'angular-mocks';
 import FrontendInterpolation from 'Application/LabelingData/Interpolations/FrontendInterpolation';
 
-describe('FrontendInterpolation Test Suite', () => {
+describe('FrontendInterpolation', () => {
   it('can be instantiated', () => {
     const interpolation = new FrontendInterpolation();
     expect(interpolation).toEqual(jasmine.any(FrontendInterpolation));
