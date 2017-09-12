@@ -1033,7 +1033,9 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
+          .then(() => browser.sleep(250))
           .then(() => sendKeySequences(keySequences))
+          .then(() => browser.sleep(250))
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChangeKeyboardAddFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1258,10 +1260,9 @@ describe('Cuboid Drawing', () => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
-            .sendKeys('o')
-            .sendKeys('o')
             .perform();
         })
+        .then(() => sendKeySequences(['oo']))
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dDepth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -1273,12 +1274,7 @@ describe('Cuboid Drawing', () => {
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys('p')
-            .sendKeys('p')
-            .perform();
-        })
+        .then(() => sendKeySequences(['pp']))
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dDepth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
