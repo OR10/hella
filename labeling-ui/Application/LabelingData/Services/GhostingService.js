@@ -129,16 +129,16 @@ class GhostingService {
   }
 
   /**
-   * @param {Array} ltifList
+   * @param {Array} list
    * @param {Function} fn
    * @returns {Promise}
    * @private
    */
-  _serializePromiseEach(ltifList, fn) {
+  _serializePromiseEach(list, fn) {
     const promise = this._$q.resolve();
 
-    return ltifList.reduce((previousPromise, currentLtif) => {
-      return previousPromise.then(() => fn(currentLtif));
+    return list.reduce((previousPromise, current) => {
+      return previousPromise.then(() => fn(current));
     }, promise);
   }
 
