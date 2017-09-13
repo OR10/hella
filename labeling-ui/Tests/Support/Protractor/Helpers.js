@@ -154,8 +154,8 @@ const defaultTestConfig = {
 };
 
 const mocks = {
-  shared: [],
-  specific: [],
+  http: [],
+  pouch: [],
 };
 
 function isPouchMock(mockDocument) {
@@ -165,14 +165,32 @@ function isPouchMock(mockDocument) {
 /**
  * @param {Array} sharedMocks
  */
-export function mock(sharedMocks) {
+// export function mock(sharedMocks) {
+//   let clonedMocks = [];
+//   sharedMocks.forEach(mockDocument => {
+//     clonedMocks.push(cloneDeep(mockDocument));
+//   });
+//
+//   mocks.http = clonedMocks.filter(mockDocument => !isPouchMock(mockDocument));
+//   mocks.pouch = clonedMocks.filter(mockDocument => isPouchMock(mockDocument));
+// }
+
+export function mock(httpMocks) {
   let clonedMocks = [];
-  sharedMocks.forEach(mockDocument => {
+  httpMocks.forEach(mockDocument => {
     clonedMocks.push(cloneDeep(mockDocument));
   });
 
-  mocks.shared = clonedMocks.filter(mockDocument => !isPouchMock(mockDocument));
-  mocks.specific = clonedMocks.filter(mockDocument => isPouchMock(mockDocument));
+  mocks.http = clonedMocks;
+}
+
+export function bootstrapPouch(pouchMocks) {
+  let clonedMocks = [];
+  pouchMocks.forEach(mockDocument => {
+    clonedMocks.push(cloneDeep(mockDocument));
+  });
+
+  pouchMocks.pouch = clonedMocks;
 }
 
 mock.teardown = () => {
@@ -180,10 +198,10 @@ mock.teardown = () => {
 };
 
 export function initApplication(url, testConfig = defaultTestConfig) {
-  httpMock(mocks.shared);
+  httpMock(mocks.http);
   const builder = new UrlBuilder(testConfig);
 
-  const customBootstrap = getPouchDbCustomBootstrap(mocks.specific);
+  const customBootstrap = getPouchDbCustomBootstrap(mocks.pouch);
   const extendedBrowser = new ExtendedBrowser(browser);
   return extendedBrowser.getWithCustomBootstrap(builder.url(url), undefined, customBootstrap)
     .then(() => waitForApplicationReady());
