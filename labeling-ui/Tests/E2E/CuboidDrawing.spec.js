@@ -41,7 +41,7 @@ fdescribe('Cuboid Drawing', () => {
   describe('Drawing', () => {
     it('should load and draw one cuboid in the back center', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.BackCenter.LabeledThingInFrame.frameIndex0,
+        assets.documents.CuboidDrawing.BackCenter.LabeledThingInFrame.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -57,7 +57,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should load and draw one cuboid in the back left', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.BackLeft.LabeledThingInFrame.frameIndex0,
+        assets.documents.CuboidDrawing.BackLeft.LabeledThingInFrame.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -73,7 +73,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should load and draw one cuboid in the back right', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0,
+        assets.documents.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -89,7 +89,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should load and draw one cuboid in the front center', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.FrontCenter.LabeledThingInFrame.frameIndex0,
+        assets.documents.CuboidDrawing.FrontCenter.LabeledThingInFrame.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -105,7 +105,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should load and draw one cuboid in the front left', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.FrontLeft.LabeledThingInFrame.frameIndex0,
+        assets.documents.CuboidDrawing.FrontLeft.LabeledThingInFrame.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -121,7 +121,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should load and draw one cuboid in the front right', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.FrontRight.LabeledThingInFrame.frameIndex0,
+        assets.documents.CuboidDrawing.FrontRight.LabeledThingInFrame.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -137,7 +137,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should load and draw one cuboid in the front center rotated right by 45°', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.FrontCenterRotateRight45.LabeledThingInFrame.frameIndex0,
+        assets.documents.CuboidDrawing.FrontCenterRotateRight45.LabeledThingInFrame.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -153,7 +153,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should load and draw one cuboid in the front center rotated right by 225°', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.FrontCenterRotateRight225.LabeledThingInFrame.frameIndex0,
+        assets.documents.CuboidDrawing.FrontCenterRotateRight225.LabeledThingInFrame.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -169,7 +169,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should load and draw one cuboid in the front center rotated where the top side is overlapping the deepest vertex', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0,
+        assets.documents.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
