@@ -106,6 +106,7 @@ describe('Class Ghosting', () => {
       assets.mocks.ClassGhosting.TaskConfiguration,
       assets.mocks.ClassGhosting.TaskConfigurationFile,
     ];
+    mock(sharedMocks);
 
     viewer = element(by.css('.layer-container'));
     nextFrameButton = element(by.css('.next-frame-button'));
@@ -116,8 +117,6 @@ describe('Class Ghosting', () => {
   });
 
   it('should set attribute on non ghosts', done => {
-    mock(sharedMocks.concat([]));
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => createRectangle())
       .then(() => browser.sleep(300))
@@ -130,8 +129,6 @@ describe('Class Ghosting', () => {
   });
 
   it('should transfer attributes to shape ghosts', done => {
-    mock(sharedMocks.concat([]));
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => createRectangle())
       .then(() => browser.sleep(300))
@@ -147,8 +144,6 @@ describe('Class Ghosting', () => {
   });
 
   it('should create ghosts classes on manifested ghosts', done => {
-    mock(sharedMocks.concat([]));
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => createRectangle())
       .then(() => browser.sleep(300))
@@ -169,8 +164,6 @@ describe('Class Ghosting', () => {
   });
 
   it('should propagate class changes through ghost classes onto saved labeled thing in frame', done => {
-    mock(sharedMocks.concat([]));
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => createRectangle())
       .then(() => browser.sleep(300))
@@ -203,8 +196,6 @@ describe('Class Ghosting', () => {
   });
 
   it('should propagate class changes of ltif created from ghost onto saved labeled thing in frame', done => {
-    mock(sharedMocks.concat([]));
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => createRectangle())
       .then(() => browser.sleep(300))
