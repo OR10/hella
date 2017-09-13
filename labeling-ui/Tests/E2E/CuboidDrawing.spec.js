@@ -371,8 +371,7 @@ fdescribe('Cuboid Drawing', () => {
         const keySequences = ['88888888888888888888'];
 
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
