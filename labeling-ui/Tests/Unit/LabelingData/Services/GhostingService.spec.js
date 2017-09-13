@@ -12,6 +12,7 @@ describe('GhostingService', () => {
   let pouchDbViewServiceMock;
   let couchDbModelDeserializerMock;
   let revisionManagerMock;
+  let entityIdServiceMock;
   let dbContextMock;
 
   let labeledThingGroup;
@@ -23,7 +24,8 @@ describe('GhostingService', () => {
       pouchDbContextServiceMock,
       pouchDbViewServiceMock,
       couchDbModelDeserializerMock,
-      revisionManagerMock
+      revisionManagerMock,
+      entityIdServiceMock
     );
   }
 
@@ -45,6 +47,7 @@ describe('GhostingService', () => {
       ['deserializeLabeledThingGroupInFrame']
     );
     revisionManagerMock = jasmine.createSpyObj('RevisionManagerMock', ['extractRevision']);
+    entityIdServiceMock = jasmine.createSpyObj('EntityIdServiceMock', ['getUniqueId']);
     dbContextMock = jasmine.createSpyObj('PouchDB Context', ['query']);
   });
 
