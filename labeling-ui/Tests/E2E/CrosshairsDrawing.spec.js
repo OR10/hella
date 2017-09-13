@@ -4,7 +4,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Mouse Crosshair', () => {
+fdescribe('Mouse Crosshair', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -30,16 +30,13 @@ describe('Mouse Crosshair', () => {
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
+    mock(sharedMocks);
+
     viewer = element(by.css('.layer-container'));
     crosshairsToggleButton = element(by.css('.task-bar-right button .fa-crosshairs')).element(by.xpath('..'));
   });
 
   it('should not show crosshair if it is disabled', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
-      assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
-    ]));
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -56,11 +53,6 @@ describe('Mouse Crosshair', () => {
   });
 
   it('should show crosshair if it is enabled (position top left)', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
-      assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
-    ]));
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -79,11 +71,6 @@ describe('Mouse Crosshair', () => {
   });
 
   it('should show crosshair if it is enabled (position center)', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
-      assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
-    ]));
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -102,11 +89,6 @@ describe('Mouse Crosshair', () => {
   });
 
   it('should show crosshair if it is enabled (position bottom right)', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
-      assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
-    ]));
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -125,11 +107,6 @@ describe('Mouse Crosshair', () => {
   });
 
   it('should not show crosshair if it is enabled and mousecursor is outside of the viewer', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0,
-      assets.mocks.CrosshairsDrawing.Shared.LabeledThingInFrame.frameIndex0to4,
-    ]));
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
