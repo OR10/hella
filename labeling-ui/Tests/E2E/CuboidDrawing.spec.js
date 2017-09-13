@@ -489,8 +489,7 @@ fdescribe('Cuboid Drawing', () => {
     describe('Position', () => {
       it('should move loaded cuboid without primary edge change', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -520,8 +519,7 @@ fdescribe('Cuboid Drawing', () => {
 
       it('should move loaded cuboid with primary edge change', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -637,8 +635,7 @@ fdescribe('Cuboid Drawing', () => {
     describe('Rotation', () => {
       it('should rotate cuboid left around middle axis using keyboard shortcuts', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -665,8 +662,7 @@ fdescribe('Cuboid Drawing', () => {
 
       it('should rotate cuboid right around middle axis using keyboard shortcuts', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -693,8 +689,7 @@ fdescribe('Cuboid Drawing', () => {
 
       it('should fast rotate cuboid left around middle axis using keyboard shortcuts', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -723,8 +718,7 @@ fdescribe('Cuboid Drawing', () => {
 
       it('should fast rotate cuboid right around middle axis using keyboard shortcuts', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -755,8 +749,7 @@ fdescribe('Cuboid Drawing', () => {
     describe('Width', () => {
       it('should change width of loaded cuboid', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -788,8 +781,7 @@ fdescribe('Cuboid Drawing', () => {
         const keySequences = ['44444444444444444444'];
 
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -818,8 +810,7 @@ fdescribe('Cuboid Drawing', () => {
         const keySequences = ['66666666666666666666'];
 
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -848,8 +839,7 @@ fdescribe('Cuboid Drawing', () => {
         const keySequences = [protractor.Key.SHIFT, '44444444444444444444', protractor.Key.NULL];
 
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -880,8 +870,7 @@ fdescribe('Cuboid Drawing', () => {
         const keySequences = [protractor.Key.SHIFT, '66666', protractor.Key.NULL];
 
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -910,8 +899,7 @@ fdescribe('Cuboid Drawing', () => {
     describe('Depth', () => {
       it('should change depth of loaded cuboid', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -943,8 +931,7 @@ fdescribe('Cuboid Drawing', () => {
         const keySequences = ['9999999999'];
 
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -973,8 +960,7 @@ fdescribe('Cuboid Drawing', () => {
         const keySequences = ['3333333333'];
 
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1003,8 +989,7 @@ fdescribe('Cuboid Drawing', () => {
         const keySequences = [protractor.Key.SHIFT, '99', protractor.Key.NULL];
 
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1035,8 +1020,7 @@ fdescribe('Cuboid Drawing', () => {
         const keySequences = [protractor.Key.SHIFT, '33', protractor.Key.NULL];
 
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
