@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -30,7 +30,7 @@ describe('Mouse Crosshair', () => {
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
     ];
 
-    mock(sharedMocks);
+    bootstrapHttp(sharedMocks);
 
     viewer = element(by.css('.layer-container'));
     crosshairsToggleButton = element(by.css('.task-bar-right button .fa-crosshairs')).element(by.xpath('..'));
@@ -130,6 +130,6 @@ describe('Mouse Crosshair', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
   });
 });

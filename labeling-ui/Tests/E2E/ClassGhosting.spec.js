@@ -1,4 +1,4 @@
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 import {cloneDeep} from 'lodash';
@@ -106,7 +106,7 @@ describe('Class Ghosting', () => {
       assets.mocks.ClassGhosting.TaskConfiguration,
       assets.mocks.ClassGhosting.TaskConfigurationFile,
     ];
-    mock(sharedMocks);
+    bootstrapHttp(sharedMocks);
 
     viewer = element(by.css('.layer-container'));
     nextFrameButton = element(by.css('.next-frame-button'));
@@ -225,6 +225,6 @@ describe('Class Ghosting', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
   });
 });

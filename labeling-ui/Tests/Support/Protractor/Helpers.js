@@ -165,17 +165,17 @@ function isPouchMock(mockDocument) {
 /**
  * @param {Array} sharedMocks
  */
-// export function mock(sharedMocks) {
-//   let clonedMocks = [];
-//   sharedMocks.forEach(mockDocument => {
-//     clonedMocks.push(cloneDeep(mockDocument));
-//   });
-//
-//   mocks.http = clonedMocks.filter(mockDocument => !isPouchMock(mockDocument));
-//   mocks.pouch = clonedMocks.filter(mockDocument => isPouchMock(mockDocument));
-// }
+export function mock(sharedMocks) {
+  const clonedMocks = [];
+  sharedMocks.forEach(mockDocument => {
+    clonedMocks.push(cloneDeep(mockDocument));
+  });
 
-export function mock(httpMocks) {
+  mocks.http = clonedMocks.filter(mockDocument => !isPouchMock(mockDocument));
+  mocks.pouch = clonedMocks.filter(mockDocument => isPouchMock(mockDocument));
+}
+
+export function bootstrapHttp(httpMocks) {
   const clonedMocks = [];
   httpMocks.forEach(mockDocument => {
     clonedMocks.push(cloneDeep(mockDocument));
@@ -194,6 +194,10 @@ export function bootstrapPouch(pouchMocks) {
 }
 
 mock.teardown = () => {
+  httpMock.teardown();
+};
+
+bootstrapHttp.teardown = () => {
   httpMock.teardown();
 };
 
