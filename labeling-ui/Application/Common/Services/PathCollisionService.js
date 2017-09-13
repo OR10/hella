@@ -59,6 +59,7 @@ class PathCollisionService {
   }
 }
 
+/* This is the radius in px around start and endpoint where snap detection will work */
 PathCollisionService.RADIUS = 10;
 
 export default PathCollisionService;
