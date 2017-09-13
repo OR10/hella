@@ -397,5 +397,10 @@
             <argument type="service" id="annostation.labeling_api.helper.system_date_time_provider" />
             <tag name="doctrine_couchdb.event_subscriber"/>
         </service>
+
+        <service id="annostation.labeling_api.service.ghost_labeled_thing_group_in_frame_classes_propagation"
+                 class="AnnoStationBundle\Service\GhostLabeledThingGroupInFrameClassesPropagation">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+        </service>
     </services>
 </container>
