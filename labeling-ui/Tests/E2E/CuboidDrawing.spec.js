@@ -1297,10 +1297,9 @@ fdescribe('Cuboid Drawing', () => {
         });
     });
 
-    it('should switch to 2d mode and back to 3d if left side is not visible', done => {
+    fit('should switch to 2d mode and back to 3d if left side is not visible', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.Pseudo3dWidth.frameIndex0,
-        assets.mocks.CuboidDrawing.Pseudo3dWidth.frameIndex0to4,
+        assets.documents.CuboidDrawing.Pseudo3dWidth.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
