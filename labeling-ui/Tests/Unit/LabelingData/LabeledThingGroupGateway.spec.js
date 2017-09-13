@@ -16,6 +16,7 @@ import TaskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
 import labeledThingGroupFixture from 'Tests/Fixtures/Models/Frontend/LabeledThingGroup';
 import labeledThingGroupDocumentFixture from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroup';
 import labeledThingGroupInFrameFixture from 'Tests/Fixtures/Models/Frontend/LabeledThingGroupInFrame';
+import labeledThingGroupInFrameTwoFixture from 'Tests/Fixtures/Models/Frontend/LabeledThingGroupInFrameTwo';
 import labeledThingGroupInFrameDocumentFixture from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroupInFrame';
 import labeledThingGroupInFrameDocumentTwoFixture from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroupInFrameTwo';
 
@@ -37,10 +38,12 @@ describe('LabeledThingGroupGateway', () => {
   let couchDbModelSerializer;
   let packagingExecutor;
   let revisionManager;
+  let ghostingServiceMock;
 
   let labeledThingGroup;
   let labeledThingGroupDocument;
   let labeledThingGroupInFrame;
+  let labeledThingGroupInFrameTwo;
   let labeledThingGroupInFrameDocument;
   let labeledThingGroupInFrameTwoDocument;
 
@@ -52,6 +55,7 @@ describe('LabeledThingGroupGateway', () => {
     labeledThingGroup = labeledThingGroupFixture.clone();
     labeledThingGroupDocument = cloneDeep(labeledThingGroupDocumentFixture);
     labeledThingGroupInFrame = labeledThingGroupInFrameFixture.clone();
+    labeledThingGroupInFrameTwo = labeledThingGroupInFrameTwoFixture.clone();
     labeledThingGroupInFrameDocument = cloneDeep(labeledThingGroupInFrameDocumentFixture);
     labeledThingGroupInFrameTwoDocument = cloneDeep(labeledThingGroupInFrameDocumentTwoFixture);
   });
@@ -83,6 +87,10 @@ describe('LabeledThingGroupGateway', () => {
 
     pouchDbContext = jasmine.createSpyObj('pouchDbContext', ['query', 'get', 'remove', 'put', 'allDocs', 'bulkDocs']);
     thingGateway = jasmine.createSpyObj('LabeledThingGateway', ['saveLabeledThing']);
+    ghostingServiceMock = jasmine.createSpyObj(
+      'GhostingService',
+      ['calculateClassGhostsForLabeledThingGroupsAndFrameIndex']
+    );
 
     pouchDbContext.query.and.callFake(() => {
       const deferred = $q.defer();
@@ -120,6 +128,7 @@ describe('LabeledThingGroupGateway', () => {
 
       $provide.value('pouchDbContextService', pouchDbContextServiceMock);
       $provide.value('labeledThingGateway', thingGateway);
+      $provide.value('ghostingService', ghostingServiceMock);
       // $provide.value('applicationConfig', mockConfig);
     });
 
@@ -203,7 +212,7 @@ describe('LabeledThingGroupGateway', () => {
       );
     });
 
-    it('should load labeled thing groups and group in frames for frame index', () => {
+    it('should request LTGs for the given frame and load their documents', () => {
       const task = createTask();
       const frameIndex = 0;
 
@@ -211,18 +220,138 @@ describe('LabeledThingGroupGateway', () => {
 
       $rootScope.$apply();
 
-      expect(pouchDbContext.query)
-        .toHaveBeenCalledWith('labeledThingGroupOnFrameByTaskIdAndFrameIndex', {
+      expect(pouchDbContext.query).toHaveBeenCalledWith(
+        'labeledThingGroupOnFrameByTaskIdAndFrameIndex',
+        {
           key: [task.id, frameIndex],
-        });
+        }
+      );
+
       expect(pouchDbContext.get).toHaveBeenCalledWith(labeledThingGroupResponse._id);
+    });
+
+    it('should request LTGs only once even though the view returns the ids multiple times', () => {
+      const task = createTask();
+      const frameIndex = 0;
+
+      groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+
+      $rootScope.$apply();
+
+      expect(pouchDbContext.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should deserialize loaded LTGs', () => {
+      const task = createTask();
+      const frameIndex = 0;
+
+      spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroup').and.callThrough();
+
+      groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+
+      $rootScope.$apply();
+
+      expect(couchDbModelDeserializer.deserializeLabeledThingGroup).toHaveBeenCalledWith(
+        labeledThingGroupResponse,
+        task
+      );
+    });
+
+    it('should feed the revision manager with loaded LTGs revision', () => {
+      const task = createTask();
+      const frameIndex = 0;
+
+      spyOn(revisionManager, 'extractRevision').and.callThrough();
+
+      groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+
+      $rootScope.$apply();
+
+      expect(revisionManager.extractRevision).toHaveBeenCalledWith(
+        labeledThingGroupResponse
+      );
+    });
+
+    it('should pump loaded LTGs into ghostingService', () => {
+      const task = createTask();
+      const frameIndex = 0;
+
+      spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroup').and.callThrough();
+
+      groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+
+      $rootScope.$apply();
+
+      expect(ghostingServiceMock.calculateClassGhostsForLabeledThingGroupsAndFrameIndex).toHaveBeenCalledWith(
+        [couchDbModelDeserializer.deserializeLabeledThingGroup.calls.mostRecent().returnValue],
+        frameIndex
+      );
+    });
+
+    it('should pass through the results provided by the ghosting service', () => {
+      const task = createTask();
+      const frameIndex = 0;
+
+      const expectedLabeledThingGroupInFrames = [
+        labeledThingGroupInFrame,
+        labeledThingGroupInFrameTwo,
+      ];
+
+      ghostingServiceMock.calculateClassGhostsForLabeledThingGroupsAndFrameIndex.and.returnValue(
+        $q.resolve(expectedLabeledThingGroupInFrames)
+      );
+
+      const returnValue = groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+      const returnValueSpy = jasmine.createSpy('returnValue resolved');
+      returnValue.then(returnValueSpy);
+
+      $rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalledWith(expectedLabeledThingGroupInFrames);
+    });
+
+    it('should reject if LTG on frame query fails', () => {
+      const task = createTask();
+      const frameIndex = 0;
+
+      const error = 'Listen up, Jennis, Denise, Tiffany, Whitney, Houston!';
+
+      pouchDbContext.query.and.returnValue(
+        $q.reject(error)
+      );
+
+      const returnValue = groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+      const returnValueSpy = jasmine.createSpy('returnValue rejected');
+      returnValue.catch(returnValueSpy);
+
+      $rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalledWith(error);
+    });
+
+    it('should reject if get of specific LTG fails', () => {
+      const task = createTask();
+      const frameIndex = 0;
+
+      const error = 'Shall be lifted—nevermore!';
+
+      pouchDbContext.get.and.returnValue(
+        $q.reject(error)
+      );
+
+      const returnValue = groupGateway.getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex);
+      const returnValueSpy = jasmine.createSpy('returnValue rejected');
+      returnValue.catch(returnValueSpy);
+
+      $rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalledWith(error);
     });
   });
 
   describe('getLabeledThingGroupsByIds', () => {
     let task;
     let ids;
-    let labeledThingGroupDocument;
     let deserializedLabeledThingGroup;
 
     beforeEach(() => {
@@ -234,26 +363,10 @@ describe('LabeledThingGroupGateway', () => {
         'id-3',
       ];
 
-      labeledThingGroupDocument = {
-        _id: '3224971765fa4f728ea25009576db0bc',
-        _rev: '1-5c6dbbf287f44c5f92420ff4c3e5d59d',
-        projectId: '1ddd13ede9a21be5a63943362a015487',
-        taskId: '1ddd13ede9a21be5a63943362a04382b',
-        groupType: 'lights-group',
-        lineColor: '10',
-        type: 'AnnoStationBundle.Model.LabeledThingGroup',
-        groupIds: [],
-      };
-
       pouchDbContext.allDocs.and.returnValue($q.resolve({
         offset: 0,
         total_rows: 1,
         rows: [{
-          id: '3224971765fa4f728ea25009576db0bc',
-          key: '3224971765fa4f728ea25009576db0bc',
-          value: {
-            rev: '1-5c6dbbf287f44c5f92420ff4c3e5d59d',
-          },
           doc: labeledThingGroupDocument,
         }],
       }));

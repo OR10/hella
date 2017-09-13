@@ -15,6 +15,7 @@ class LabeledThingGroupGateway {
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {EntityIdService} entityIdService
    * @param {PouchDbViewService} pouchDbViewService
+   * @param {GhostingService} ghostingService
    */
   constructor(
     $q,
@@ -26,7 +27,8 @@ class LabeledThingGroupGateway {
     abortablePromiseFactory,
     labeledThingGateway,
     entityIdService,
-    pouchDbViewService
+    pouchDbViewService,
+    ghostingService
   ) {
     /**
      * @type {angular.$q}
@@ -88,7 +90,76 @@ class LabeledThingGroupGateway {
      */
     this._entityIdService = entityIdService;
 
+    /**
+     * @type {PouchDbViewService}
+     * @private
+     */
     this._pouchDbViewService = pouchDbViewService;
+
+    /**
+     * @type {GhostingService}
+     * @private
+     */
+    this._ghostingService = ghostingService;
+  }
+
+  /**
+   * Get the ids of LabeledThingGroups, which are present on a certain frameIndex of the given task
+   *
+   * @param {number} frameIndex
+   * @param {Task} task
+   * @return {Promise.<string[]>}
+   * @private
+   */
+  _getLabeledThingGroupIdsOnFrameForTask(frameIndex, task) {
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    return dbContext.query(
+      this._pouchDbViewService.getDesignDocumentViewName(
+        'labeledThingGroupOnFrameByTaskIdAndFrameIndex'
+      ),
+      {
+        key: [taskId, frameIndex],
+      }
+    )
+      .then(response => response.rows.map(row => row.value))
+      .then(ids => uniq(ids));
+  }
+
+  /**
+   * Retrieve all LabeledThingGroups which are present on a certain frameIndex for the given task
+   *
+   * @param {number} frameIndex
+   * @param {Task} task
+   * @return {Promise.<LabeledThingGroup[]>}
+   * @private
+   */
+  _getLabeledThingGroupsOnFrameForTask(frameIndex, task) {
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    return this._getLabeledThingGroupIdsOnFrameForTask(frameIndex, task)
+      .then(labeledThingGroupIds => {
+        const promises = [];
+
+        labeledThingGroupIds.forEach(labeledThingGroupId => {
+          promises.push(dbContext.get(labeledThingGroupId));
+        });
+
+        return this._$q.all(promises);
+      })
+      .then(labeledThingGroupDocuments => {
+        labeledThingGroupDocuments.forEach(
+          labeledThingGroupDocument => this._revisionManager.extractRevision(labeledThingGroupDocument)
+        );
+
+        return labeledThingGroupDocuments.map(
+          labeledThingGroupDocument => this._couchDbModelDeserializer.deserializeLabeledThingGroup(
+            labeledThingGroupDocument,
+            task
+          )
+        );
+      });
   }
 
   /**
@@ -99,60 +170,16 @@ class LabeledThingGroupGateway {
    * @return {AbortablePromise}
    */
   getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex) {
-    const taskId = task.id;
-    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
-
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute('labeledThingGroup', () => {
-      return dbContext.query(
-        this._pouchDbViewService.getDesignDocumentViewName(
-          'labeledThingGroupOnFrameByTaskIdAndFrameIndex'
-        ),
-        {
-          key: [taskId, frameIndex],
-        }
-      )
-        .then(response => response.rows.map(row => row.value))
-        .then(labeledThingGroupIds => {
-          // Filter duplicate labeledThingGroupIds
-          const uniqueLabeledThingGroupIds = uniq(labeledThingGroupIds);
-          const promises = [];
-
-          uniqueLabeledThingGroupIds.forEach(labeledThingGroupId => {
-            promises.push(dbContext.get(labeledThingGroupId));
-          });
-
-          return this._$q.all([uniqueLabeledThingGroupIds, this._$q.all(promises)]);
-        })
-        .then(([labeledThingGroupIds, labeledThingGroupDocuments]) => {
-          const labeledThingGroups = labeledThingGroupDocuments.map(labeledThingGroupDocument => {
-            this._revisionManager.extractRevision(labeledThingGroupDocument);
-            return this._couchDbModelDeserializer.deserializeLabeledThingGroup(labeledThingGroupDocument, task);
-          });
-
-          const labeledThingGroupsInFrame = labeledThingGroupIds.map(
-            labeledThingGroupId => {
-              const assignedLabeledThingGroup = labeledThingGroups.find(
-                labeledThingGroup => labeledThingGroup.id === labeledThingGroupId);
-
-              const dbDocument = {
-                id: this._entityIdService.getUniqueId(),
-                classes: [],
-                labeledThingGroup: assignedLabeledThingGroup,
-                frameIndex,
-                labeledThingGroupId,
-              };
-              // TODO: If the labeledThingGroupInFrame documents are no longer generated, we need to extract revision here
-              return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(
-                dbDocument,
-                assignedLabeledThingGroup
-              );
-            }
-          );
-
-          return labeledThingGroupsInFrame;
-        });
+      return this._getLabeledThingGroupsOnFrameForTask(frameIndex, task)
+        .then(
+          labeledThingGroups => this._ghostingService.calculateClassGhostsForLabeledThingGroupsAndFrameIndex(
+            labeledThingGroups,
+            frameIndex
+          )
+        );
     });
   }
 
@@ -416,6 +443,7 @@ LabeledThingGroupGateway.$inject = [
   'labeledThingGateway',
   'entityIdService',
   'pouchDbViewService',
+  'ghostingService',
 ];
 
 export default LabeledThingGroupGateway;
