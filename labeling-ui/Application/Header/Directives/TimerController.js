@@ -56,14 +56,18 @@ class TimerController {
     this._intervalHandle = null;
     this._idleTimeoutHandle = null;
 
-    $element.on('$destroy', () => this.deinit());
-
-    $document.on('mousedown', () => {
+    const triggerHandler = () => {
       this.triggerAction();
-    });
+    };
 
-    $document.on('keypress', () => {
-      this.triggerAction();
+    $document.on('mousedown', triggerHandler);
+
+    $document.on('keypress', triggerHandler);
+
+    $element.on('$destroy', () => {
+      $document.off('mousedown', triggerHandler);
+      $document.off('keypress', triggerHandler);
+      this.deinit();
     });
 
     this.timerGateway.getTime(this.task, this.user).then(this.init.bind(this));
@@ -97,6 +101,7 @@ class TimerController {
     if (this._idleTimeoutHandle !== null) {
       this.$interval.cancel(this._idleTimeoutHandle);
     }
+    this.listenToEvents = false;
   }
 
   saveTime() {
