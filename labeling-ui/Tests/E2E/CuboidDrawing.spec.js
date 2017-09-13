@@ -3,6 +3,7 @@ import {
   expectAllModalsToBeClosed,
   initApplication,
   mock,
+  bootstrapPouch,
   sendKeySequences,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
@@ -16,7 +17,7 @@ describe('Cuboid Drawing', () => {
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
-    sharedMocks = [
+    mock([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -33,17 +34,16 @@ describe('Cuboid Drawing', () => {
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
       assets.mocks.Shared.Thumbnails.cuboidLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-    ];
+    ]);
 
     viewer = element(by.css('.layer-container'));
   });
 
   describe('Drawing', () => {
     it('should load and draw one cuboid in the back center', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.BackCenter.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidDrawing.BackCenter.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
@@ -57,10 +57,9 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should load and draw one cuboid in the back left', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.BackLeft.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidDrawing.BackLeft.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
@@ -74,10 +73,9 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should load and draw one cuboid in the back right', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
@@ -91,10 +89,9 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should load and draw one cuboid in the front center', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.FrontCenter.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidDrawing.FrontCenter.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
@@ -108,10 +105,9 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should load and draw one cuboid in the front left', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.FrontLeft.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidDrawing.FrontLeft.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
@@ -125,10 +121,9 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should load and draw one cuboid in the front right', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.FrontRight.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidDrawing.FrontRight.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
@@ -142,10 +137,9 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should load and draw one cuboid in the front center rotated right by 45°', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.FrontCenterRotateRight45.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidDrawing.FrontCenterRotateRight45.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
@@ -159,10 +153,9 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should load and draw one cuboid in the front center rotated right by 225°', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.FrontCenterRotateRight225.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidDrawing.FrontCenterRotateRight225.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
@@ -176,10 +169,9 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should load and draw one cuboid in the front center rotated where the top side is overlapping the deepest vertex', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
@@ -197,10 +189,10 @@ describe('Cuboid Drawing', () => {
     const keySequences = [protractor.Key.SHIFT, 'pppppp', protractor.Key.NULL];
 
     it('should properly render a cuboid with low height from all sides', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0,
         assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -288,10 +280,10 @@ describe('Cuboid Drawing', () => {
   describe('Transformation', () => {
     describe('Height', () => {
       it('should change height of loaded cuboid', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -319,10 +311,10 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should adhere to minimalHeight of loaded cuboid', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -350,10 +342,10 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should not allow the height to become negative', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -383,10 +375,10 @@ describe('Cuboid Drawing', () => {
       it('should add to height of loaded cuboid by keyboard', done => {
         const keySequences = ['88888888888888888888'];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -413,10 +405,10 @@ describe('Cuboid Drawing', () => {
       it('should substract from height of loaded cuboid by keyboard', done => {
         const keySequences = ['22222222222222222222'];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -443,10 +435,10 @@ describe('Cuboid Drawing', () => {
       it('should add to height of loaded cuboid by keyboard in fast mode', done => {
         const keySequences = [protractor.Key.SHIFT, '88888888888888888888888888888888888888', protractor.Key.NULL];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -475,10 +467,10 @@ describe('Cuboid Drawing', () => {
       it('should substract from height of loaded cuboid by keyboard in fast mode', done => {
         const keySequences = [protractor.Key.SHIFT, '22222', protractor.Key.NULL];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -505,10 +497,10 @@ describe('Cuboid Drawing', () => {
 
     describe('Position', () => {
       it('should move loaded cuboid without primary edge change', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -536,10 +528,10 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should move loaded cuboid with primary edge change', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -567,10 +559,10 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should limit movement at the horizon', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -610,10 +602,10 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should limit movement if the height is below the minimal height', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -655,10 +647,10 @@ describe('Cuboid Drawing', () => {
 
     describe('Rotation', () => {
       it('should rotate cuboid left around middle axis using keyboard shortcuts', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -683,10 +675,10 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should rotate cuboid right around middle axis using keyboard shortcuts', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -711,10 +703,10 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should fast rotate cuboid left around middle axis using keyboard shortcuts', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -741,10 +733,10 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should fast rotate cuboid right around middle axis using keyboard shortcuts', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -773,10 +765,10 @@ describe('Cuboid Drawing', () => {
 
     describe('Width', () => {
       it('should change width of loaded cuboid', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -806,10 +798,10 @@ describe('Cuboid Drawing', () => {
       it('should add to width of loaded cuboid by keyboard', done => {
         const keySequences = ['44444444444444444444'];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -836,10 +828,10 @@ describe('Cuboid Drawing', () => {
       it('should substract from width of loaded cuboid by keyboard', done => {
         const keySequences = ['66666666666666666666'];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -866,10 +858,10 @@ describe('Cuboid Drawing', () => {
       it('should add to width of loaded cuboid by keyboard in fast mode', done => {
         const keySequences = [protractor.Key.SHIFT, '44444444444444444444', protractor.Key.NULL];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -898,10 +890,10 @@ describe('Cuboid Drawing', () => {
       it('should substract from width of loaded cuboid by keyboard in fast mode', done => {
         const keySequences = [protractor.Key.SHIFT, '66666', protractor.Key.NULL];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -928,10 +920,10 @@ describe('Cuboid Drawing', () => {
 
     describe('Depth', () => {
       it('should change depth of loaded cuboid', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -961,10 +953,10 @@ describe('Cuboid Drawing', () => {
       it('should add to depth of loaded cuboid by keyboard', done => {
         const keySequences = ['9999999999'];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -991,10 +983,10 @@ describe('Cuboid Drawing', () => {
       it('should substract from depth of loaded cuboid by keyboard', done => {
         const keySequences = ['3333333333'];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -1021,10 +1013,10 @@ describe('Cuboid Drawing', () => {
       it('should add to depth of loaded cuboid by keyboard in fast mode', done => {
         const keySequences = [protractor.Key.SHIFT, '99', protractor.Key.NULL];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -1053,10 +1045,10 @@ describe('Cuboid Drawing', () => {
       it('should substract from depth of loaded cuboid by keyboard in fast mode', done => {
         const keySequences = [protractor.Key.SHIFT, '33', protractor.Key.NULL];
 
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -1083,10 +1075,10 @@ describe('Cuboid Drawing', () => {
 
     describe('Orientation', () => {
       it('should flip faces clockwise using keyboard shortcuts', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -1171,10 +1163,10 @@ describe('Cuboid Drawing', () => {
       });
 
       it('should flip faces counter clockwise using keyboard shortcuts', done => {
-        mock(sharedMocks.concat([
+        bootstrapPouch([
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
           assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
-        ]));
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -1250,10 +1242,10 @@ describe('Cuboid Drawing', () => {
 
   describe('Pseudo3d', () => {
     it('should switch to 2d mode and back to 3d if back side is not visible', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.Pseudo3dDepth.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dDepth.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -1290,10 +1282,10 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should switch to 2d mode and back to 3d if front side is not visible', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.Pseudo3dDepth180.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dDepth180.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -1337,10 +1329,10 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should switch to 2d mode and back to 3d if left side is not visible', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.Pseudo3dWidth.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dWidth.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -1383,10 +1375,10 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should switch to 2d mode and back to 3d if right side is not visible', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.Pseudo3dWidth180.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dWidth180.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -1430,10 +1422,10 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should switch to 2d mode if height is changed to above the visual threshold', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0,
         assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -1461,10 +1453,10 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should flip faces clockwise using keyboard shortcuts', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0,
         assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -1537,10 +1529,10 @@ describe('Cuboid Drawing', () => {
     });
 
     it('should flip faces counter clockwise using keyboard shortcuts', done => {
-      mock(sharedMocks.concat([
+      bootstrapPouch([
         assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0,
         assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0to4,
-      ]));
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {

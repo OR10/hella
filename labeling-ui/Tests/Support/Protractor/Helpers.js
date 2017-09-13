@@ -176,7 +176,7 @@ function isPouchMock(mockDocument) {
 // }
 
 export function mock(httpMocks) {
-  let clonedMocks = [];
+  const clonedMocks = [];
   httpMocks.forEach(mockDocument => {
     clonedMocks.push(cloneDeep(mockDocument));
   });
@@ -185,12 +185,12 @@ export function mock(httpMocks) {
 }
 
 export function bootstrapPouch(pouchMocks) {
-  let clonedMocks = [];
+  const clonedMocks = [];
   pouchMocks.forEach(mockDocument => {
     clonedMocks.push(cloneDeep(mockDocument));
   });
 
-  pouchMocks.pouch = clonedMocks;
+  mocks.pouch = clonedMocks;
 }
 
 mock.teardown = () => {
