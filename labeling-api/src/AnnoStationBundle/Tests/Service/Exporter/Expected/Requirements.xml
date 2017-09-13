@@ -37,7 +37,13 @@
       <value id="thunderstorm" class="weather" start="51" end="75"/>
       <value id="sun" class="weather" start="76" end="100"/>
     </frame-labeling>
-    <group id="" start="1" end="2" type="sign" line-color="1" incomplete="true"/>
+    <group id="" start="1" end="21" type="sign" line-color="1" incomplete="true">
+      <value id="sign" class="spain" start="1" end="14"/>
+      <value id="sign" class="foo1" start="1" end="9"/>
+      <value id="sign" class="foo2" start="10" end="14"/>
+      <value id="sign" class="foo3" start="15" end="15"/>
+      <value id="sign" class="foo4" start="15" end="15"/>
+    </group>
     <thing id="e363906c1c4a5a5bd01e8902467d1426" start="1" end="100" line-color="1" type="fooobar" incomplete="true">
       <references>
         <task id=""/>
@@ -102,19 +108,19 @@
       <value id="u-turn" class="sign-type" start="1" end="1"/>
       <value id="spain" class="country" start="1" end="1"/>
     </thing>
-    <thing id="e363906c1c4a5a5bd01e89024681a191" start="1" end="2" line-color="1" type="fooobar" incomplete="true">
+    <thing id="e363906c1c4a5a5bd01e89024681a191" start="1" end="21" line-color="1" type="fooobar" incomplete="true">
       <references>
         <task id=""/>
         <group ref=""/>
       </references>
-      <shape id="3659ecca-7c2b-440b-8dfa-38426c7969b7" start="2" end="2">
+      <shape id="3659ecca-7c2b-440b-8dfa-38426c7969b7" start="2" end="21">
         <rectangle>
           <top-left x="1" y="2"/>
           <bottom-right x="3" y="4"/>
         </rectangle>
       </shape>
-      <value id="u-turn" class="sign-type" start="2" end="2"/>
-      <value id="spain" class="country" start="2" end="2"/>
+      <value id="u-turn" class="sign-type" start="2" end="21"/>
+      <value id="spain" class="country" start="2" end="21"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e89024681abcd" start="2" end="2" line-color="1" type="fooobar" incomplete="true">
       <references>

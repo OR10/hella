@@ -4,11 +4,13 @@ namespace AnnoStationBundle\Service\Exporter;
 use AppBundle\Model;
 use AppBundle\Database\Facade as AppBundleFacade;
 use AppBundle\Service as AppBundleService;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Helper\Iterator;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Database\Facade\LabelingTask;
 use AnnoStationBundle\Database\Facade\LabeledThing;
 use AnnoStationBundle\Database\Facade\LabeledThingGroup;
+use AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper\ExportXml;
 
@@ -90,25 +92,35 @@ class RequirementsProjectToXml
      * @var Facade\CalibrationData
      */
     private $calibrationDataFacade;
+    /**
+     * @var LabeledThingGroupInFrame\FacadeInterface
+     */
+    private $labeledThingGroupInFrameFacadeFactory;
+    /**
+     * @var Service\GhostLabeledThingGroupInFrameClassesPropagation
+     */
+    private $ghostLabeledThingGroupInFrameClassesPropagation;
 
     /**
      * RequirementsProjectToXml constructor.
      *
-     * @param Facade\Exporter                           $exporterFacade
-     * @param Facade\Project                            $projectFacade
-     * @param Facade\Video                              $videoFacade
-     * @param LabelingTask                              $labelingTaskFacade
-     * @param Facade\TaskConfiguration                  $taskConfiguration
-     * @param Facade\AdditionalFrameNumberMapping       $additionalFrameNumberMappingFacade
-     * @param Facade\CalibrationData                    $calibrationDataFacade
-     * @param Service\GhostClassesPropagation           $ghostClassesPropagation
-     * @param AppBundleFacade\User                      $userFacade
-     * @param Facade\LabelingGroup                      $labelingGroupFacade
-     * @param Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService
-     * @param LabelingTask\FacadeInterface              $labelingTaskFacadeFactory
-     * @param LabeledThing\FacadeInterface              $labeledThingFacadeFactory
-     * @param LabeledThingGroup\FacadeInterface         $labeledThingGroupFacadeFactory
-     * @param Service\DepthBuffer                       $depthBufferService
+     * @param Facade\Exporter                                         $exporterFacade
+     * @param Facade\Project                                          $projectFacade
+     * @param Facade\Video                                            $videoFacade
+     * @param LabelingTask                                            $labelingTaskFacade
+     * @param Facade\TaskConfiguration                                $taskConfiguration
+     * @param Facade\AdditionalFrameNumberMapping                     $additionalFrameNumberMappingFacade
+     * @param Facade\CalibrationData                                  $calibrationDataFacade
+     * @param Service\GhostClassesPropagation                         $ghostClassesPropagation
+     * @param Service\GhostLabeledThingGroupInFrameClassesPropagation $ghostLabeledThingGroupInFrameClassesPropagation
+     * @param AppBundleFacade\User                                    $userFacade
+     * @param Facade\LabelingGroup                                    $labelingGroupFacade
+     * @param Service\LabeledFrameEndCalculationService               $labeledFrameEndCalculationService
+     * @param LabelingTask\FacadeInterface                            $labelingTaskFacadeFactory
+     * @param LabeledThing\FacadeInterface                            $labeledThingFacadeFactory
+     * @param LabeledThingGroup\FacadeInterface                       $labeledThingGroupFacadeFactory
+     * @param LabeledThingGroupInFrame\FacadeInterface                $labeledThingGroupInFrameFacadeFactory
+     * @param Service\DepthBuffer                                     $depthBufferService
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -119,29 +131,33 @@ class RequirementsProjectToXml
         Facade\AdditionalFrameNumberMapping $additionalFrameNumberMappingFacade,
         Facade\CalibrationData $calibrationDataFacade,
         Service\GhostClassesPropagation $ghostClassesPropagation,
+        Service\GhostLabeledThingGroupInFrameClassesPropagation $ghostLabeledThingGroupInFrameClassesPropagation,
         AppBundleFacade\User $userFacade,
         Facade\LabelingGroup $labelingGroupFacade,
         Service\LabeledFrameEndCalculationService $labeledFrameEndCalculationService,
         LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
         LabeledThing\FacadeInterface $labeledThingFacadeFactory,
         LabeledThingGroup\FacadeInterface $labeledThingGroupFacadeFactory,
+        LabeledThingGroupInFrame\FacadeInterface $labeledThingGroupInFrameFacadeFactory,
         Service\DepthBuffer $depthBufferService
     ) {
-        $this->exporterFacade                     = $exporterFacade;
-        $this->projectFacade                      = $projectFacade;
-        $this->videoFacade                        = $videoFacade;
-        $this->labelingTaskFacade                 = $labelingTaskFacade;
-        $this->taskConfiguration                  = $taskConfiguration;
-        $this->ghostClassesPropagation            = $ghostClassesPropagation;
-        $this->userFacade                         = $userFacade;
-        $this->labelingGroupFacade                = $labelingGroupFacade;
-        $this->labeledFrameEndCalculationService  = $labeledFrameEndCalculationService;
-        $this->labelingTaskFacadeFactory          = $labelingTaskFacadeFactory;
-        $this->labeledThingFacadeFactory          = $labeledThingFacadeFactory;
-        $this->labeledThingGroupFacadeFactory     = $labeledThingGroupFacadeFactory;
-        $this->additionalFrameNumberMappingFacade = $additionalFrameNumberMappingFacade;
-        $this->depthBufferService                 = $depthBufferService;
-        $this->calibrationDataFacade              = $calibrationDataFacade;
+        $this->exporterFacade                                  = $exporterFacade;
+        $this->projectFacade                                   = $projectFacade;
+        $this->videoFacade                                     = $videoFacade;
+        $this->labelingTaskFacade                              = $labelingTaskFacade;
+        $this->taskConfiguration                               = $taskConfiguration;
+        $this->ghostClassesPropagation                         = $ghostClassesPropagation;
+        $this->ghostLabeledThingGroupInFrameClassesPropagation = $ghostLabeledThingGroupInFrameClassesPropagation;
+        $this->userFacade                                      = $userFacade;
+        $this->labelingGroupFacade                             = $labelingGroupFacade;
+        $this->labeledFrameEndCalculationService               = $labeledFrameEndCalculationService;
+        $this->labelingTaskFacadeFactory                       = $labelingTaskFacadeFactory;
+        $this->labeledThingFacadeFactory                       = $labeledThingFacadeFactory;
+        $this->labeledThingGroupFacadeFactory                  = $labeledThingGroupFacadeFactory;
+        $this->labeledThingGroupInFrameFacadeFactory           = $labeledThingGroupInFrameFacadeFactory;
+        $this->additionalFrameNumberMappingFacade              = $additionalFrameNumberMappingFacade;
+        $this->depthBufferService                              = $depthBufferService;
+        $this->calibrationDataFacade                           = $calibrationDataFacade;
     }
 
     /**
@@ -224,14 +240,28 @@ class RequirementsProjectToXml
                                 $groupFrameRange = $labelingThingGroupFacade->getLabeledThingGroupFrameRange(
                                     $group
                                 );
+                                $groupElement = new ExportXml\Element\Video\Group(
+                                    $group,
+                                    $frameMapping[$groupFrameRange['min']],
+                                    $frameMapping[$groupFrameRange['max']],
+                                    $labelingThingGroupFacade->isLabeledThingGroupIncomplete($group),
+                                    self::XML_NAMESPACE
+                                );
+
+                                $labeledThingGroupInFrameFacade = $this->labeledThingGroupInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+                                    $task->getProjectId(),
+                                    $task->getId()
+                                );
+                                $labeledThingGroupInFrames = $labeledThingGroupInFrameFacade->getLabeledThingGroupInFramesForLabeledThingGroup($group);
+
+                                $labeledThingGroupInFramesWithGhosts = $this->ghostLabeledThingGroupInFrameClassesPropagation->propagateGhostClasses($task, $labeledThingGroupInFrames);
+
+                                foreach($this->getLabeledThingGroupInFrameRanges($task, $labeledThingGroupInFramesWithGhosts) as $value) {
+                                    $groupElement->addValue($value['class'], $value['value'], $value['start'], $value['end']);
+                                }
+
                                 $xmlVideo->addGroup(
-                                    new ExportXml\Element\Video\Group(
-                                        $group,
-                                        $frameMapping[$groupFrameRange['min']],
-                                        $frameMapping[$groupFrameRange['max']],
-                                        $labelingThingGroupFacade->isLabeledThingGroupIncomplete($group),
-                                        self::XML_NAMESPACE
-                                    )
+                                    $groupElement
                                 );
                                 $references->addGroup($groupId);
                             }
@@ -326,6 +356,50 @@ class RequirementsProjectToXml
 
             throw $exception;
         }
+    }
+
+    /**
+     * @param Model\LabelingTask                                $task
+     * @param AnnoStationBundleModel\LabeledThingGroupInFrame[] $labeledThingGroupInFrames
+     * @return array
+     */
+    private function getLabeledThingGroupInFrameRanges(Model\LabelingTask $task, $labeledThingGroupInFrames)
+    {
+        $labelingThingGroupFacade = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $task->getProjectId(),
+            $task->getId()
+        );
+
+        $knownClasses = [];
+        foreach($labeledThingGroupInFrames as $labeledThingGroupInFrame) {
+            $knownClasses = array_unique(array_merge($knownClasses, $labeledThingGroupInFrame->getClasses()));
+        }
+
+        $values = [];
+        foreach($knownClasses as $class) {
+            $previousLabeledThingInFrame = null;
+            $currentValueIndex = null;
+            foreach($labeledThingGroupInFrames as $labeledThingGroupInFrame) {
+                $labeledThingGroup = $labelingThingGroupFacade->find($labeledThingGroupInFrame->getLabeledThingGroupId());
+                if (in_array($class, $labeledThingGroupInFrame->getClasses())) {
+
+                    if ($previousLabeledThingInFrame !== null && in_array($class, $previousLabeledThingInFrame->getClasses())) {
+                        $lastElement = count($values)-1;
+                        $values[$lastElement]['end'] = $labeledThingGroupInFrame->getFrameIndex();
+                    }else {
+                        $values[] = [
+                            'value' => $labeledThingGroup->getGroupType(),
+                            'class' => $class,
+                            'start' => $labeledThingGroupInFrame->getFrameIndex(),
+                            'end'   => $labeledThingGroupInFrame->getFrameIndex(),
+                        ];
+                    }
+                    $previousLabeledThingInFrame = $labeledThingGroupInFrame;
+                }
+            }
+        }
+
+        return $values;
     }
 
     /**

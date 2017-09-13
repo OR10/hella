@@ -184,12 +184,14 @@
             <argument type="service" id="annostation.labeling_api.database.facade.additional_frame_number_mapping"/>
             <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation"/>
+            <argument type="service" id="annostation.labeling_api.service.ghost_labeled_thing_group_in_frame_classes_propagation"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.service.labeled_frame_end_calculation_service"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group_in_frame"/>
             <argument type="service" id="annostation.labeling_api.service.depth_buffer"/>
         </service>
 
