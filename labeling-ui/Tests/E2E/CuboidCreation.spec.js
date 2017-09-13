@@ -11,7 +11,6 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Cuboid creation', () => {
   let assets;
-  let sharedMocks;
   let viewer;
 
   beforeEach(() => {
