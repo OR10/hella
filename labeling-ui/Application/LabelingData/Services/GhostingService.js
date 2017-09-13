@@ -7,8 +7,10 @@ class GhostingService {
    * @param {angular.$q} $q
    * @param {PouchDbContextService} pouchDbContextService
    * @param {PouchDbViewService} pouchDbViewService
+   * @param {CouchDbModelDeserializer} couchDbModelDeserializer
+   * @param {RevisionManager} revisionManager
    */
-  constructor($q, pouchDbContextService, pouchDbViewService) {
+  constructor($q, pouchDbContextService, pouchDbViewService, couchDbModelDeserializer, revisionManager) {
     /**
      * @type {angular.$q}
      * @private
@@ -26,6 +28,18 @@ class GhostingService {
      * @private
      */
     this._pouchDbViewService = pouchDbViewService;
+
+    /**
+     * @type {CouchDbModelDeserializer}
+     * @private
+     */
+    this._couchDbModelDeserializer = couchDbModelDeserializer;
+
+    /**
+     * @type {RevisionManager}
+     * @private
+     */
+    this._revisionManager = revisionManager;
   }
 
   /**
@@ -129,6 +143,48 @@ class GhostingService {
   }
 
   /**
+   * Retrieve the {@link LabeledThingGroupInFrame} for a specific {@link LabeledThingGroup} and a frameIndex.
+   *
+   * If there is no {@link LabeledThingGroupInFrame} associated with the given {@link LabeledThingGroup} on the
+   * specified `frameIndex` stored inside the datastore `null` will be returned.
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @param {number} frameIndex
+   * @returns {LabeledThingGroupInFrame|undefined}
+   * @private
+   */
+  _getLabeledThingGroupsInFrameForLabeledThingGroupAndFrameIndex(labeledThingGroup, frameIndex) {
+    const task = labeledThingGroup.task;
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+
+    return this._$q.resolve()
+      .then(
+        () => dbContext.query(
+          this._pouchDbViewService.getDesignDocumentViewName(
+            'labeledThingGroupInFrameByLabeledThingGroupIdAndFrameIndex'
+          ),
+          {
+            include_docs: true,
+            startkey: [labeledThingGroup.id, frameIndex],
+            endkey: [labeledThingGroup.id, frameIndex],
+          }
+        )
+      )
+      .then(results => {
+        if (results.rows.length === 0) {
+          // No corresponding ltgif found
+          return null;
+        }
+
+        const ltgifDocument = results.rows[0].doc;
+
+        this._revisionManager.extractRevision(ltgifDocument);
+        return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(ltgifDocument, labeledThingGroup);
+      });
+  }
+
+  /**
    * Retrieve a correctly ghosted list of {@link LabeledThingGroupInFrame} objects
    * based on a list of {@link LabeledThingGroup} models and a specific frameIndex.
    *
@@ -137,7 +193,17 @@ class GhostingService {
    * @returns {Promise.<LabeledThingGroupInFrame[]>}
    */
   calculateClassGhostsForLabeledThingGroupsAndFrameIndex(labeledThingGroups, frameIndex) {
-    return this._$q.resolve();
+    return this._$q.resolve()
+      .then(
+        () => this._$q.all(
+          labeledThingGroups.map(
+            labeledThingGroup => this._getLabeledThingGroupsInFrameForLabeledThingGroupAndFrameIndex(
+              labeledThingGroup,
+              frameIndex
+            )
+          )
+        )
+      );
   }
 
   /**
@@ -224,6 +290,8 @@ GhostingService.$inject = [
   '$q',
   'pouchDbContextService',
   'pouchDbViewService',
+  'couchDbModelDeserializer',
+  'revisionManager',
 ];
 
 export default GhostingService;
