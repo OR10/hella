@@ -1390,8 +1390,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should switch to 2d mode if height is changed to above the visual threshold', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0,
-        assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0to4,
+        assets.documents.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1421,8 +1420,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should flip faces clockwise using keyboard shortcuts', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0,
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0to4,
+        assets.documents.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1497,8 +1495,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should flip faces counter clockwise using keyboard shortcuts', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0,
-        assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0to4,
+        assets.documents.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
