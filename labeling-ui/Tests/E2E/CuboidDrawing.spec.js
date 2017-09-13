@@ -1548,21 +1548,25 @@ describe('Cuboid Drawing', () => {
             .sendKeys('u')
             .perform();
         })
+        .then(() => browser.sleep(250))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise1);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
             .sendKeys('u')
             .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise2')
@@ -1570,15 +1574,15 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise2);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
             .sendKeys('u')
             .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise3')
@@ -1586,15 +1590,15 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise3);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
             .sendKeys('u')
             .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise4')
@@ -1602,10 +1606,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise4);
-          return browser.sleep(1000);
         })
         .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
           done();
         });
     });
