@@ -28,6 +28,6 @@ class TaskDatabase extends Factory\TaskDatabase implements FacadeInterface
 
     public function getFacadeInstance($databaseDocumentManager)
     {
-        return new Facade\LabeledThingGroup($databaseDocumentManager);
+        return new Facade\LabeledThingGroupInFrame($databaseDocumentManager);
     }
 }

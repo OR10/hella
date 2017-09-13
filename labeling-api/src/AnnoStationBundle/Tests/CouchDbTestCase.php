@@ -72,6 +72,11 @@ class CouchDbTestCase extends Tests\WebTestCase
     protected $labeledThingGroupFacade;
 
     /**
+     * @var Facade\LabeledThingGroupInFrame
+     */
+    protected $labeledThingGroupInFrameFacade;
+
+    /**
      * @var Facade\Organisation
      */
     protected $organisationFacade;
@@ -310,6 +315,9 @@ class CouchDbTestCase extends Tests\WebTestCase
         );
         $this->labeledThingGroupFacade              = $this->getAnnostationService(
             'database.facade.labeled_thing_group'
+        );
+        $this->labeledThingGroupInFrameFacade       = $this->getAnnostationService(
+            'database.facade.labeled_thing_group_in_frame'
         );
         $this->organisationFacade                   = $this->getAnnostationService(
             'database.facade.organisation'
