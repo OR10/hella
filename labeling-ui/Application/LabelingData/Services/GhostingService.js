@@ -1,6 +1,7 @@
 import {cloneDeep} from 'lodash';
 
 import LabeledThingInFrame from '../Models/LabeledThingInFrame';
+import LabeledThingGroupInFrame from '../Models/LabeledThingGroupInFrame';
 
 class GhostingService {
   /**
@@ -9,8 +10,16 @@ class GhostingService {
    * @param {PouchDbViewService} pouchDbViewService
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
+   * @param {EntityIdService} entityIdService
    */
-  constructor($q, pouchDbContextService, pouchDbViewService, couchDbModelDeserializer, revisionManager) {
+  constructor(
+    $q,
+    pouchDbContextService,
+    pouchDbViewService,
+    couchDbModelDeserializer,
+    revisionManager,
+    entityIdService
+  ) {
     /**
      * @type {angular.$q}
      * @private
@@ -40,6 +49,12 @@ class GhostingService {
      * @private
      */
     this._revisionManager = revisionManager;
+
+    /**
+     * @type {EntityIdService}
+     * @private
+     */
+    this._entityIdService = entityIdService;
   }
 
   /**
@@ -146,7 +161,7 @@ class GhostingService {
    * Retrieve the {@link LabeledThingGroupInFrame} for a specific {@link LabeledThingGroup} and a frameIndex.
    *
    * If there is no {@link LabeledThingGroupInFrame} associated with the given {@link LabeledThingGroup} on the
-   * specified `frameIndex` stored inside the datastore `null` will be returned.
+   * specified `frameIndex` stored inside the datastore `undefined` will be returned.
    *
    * @param {LabeledThingGroup} labeledThingGroup
    * @param {number} frameIndex
@@ -174,7 +189,110 @@ class GhostingService {
       .then(results => {
         if (results.rows.length === 0) {
           // No corresponding ltgif found
-          return null;
+          return undefined;
+        }
+
+        const ltgifDocument = results.rows[0].doc;
+
+        this._revisionManager.extractRevision(ltgifDocument);
+        return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(ltgifDocument, labeledThingGroup);
+      });
+  }
+
+  /**
+   * Retrieve/Create/Calculate {@link LabeledThingGroupInFrame} models for a bunch of
+   * {@link LabeledThingGroup}s and a specific frameIndex
+   *
+   * This method enforces ghost generation for the given LTGs. Therefore it should only be called
+   * on LTGs, which do not have LTGIFs on the given frameIndex.
+   *
+   * @param {LabeledThingGroup[]} labeledThingGroupsToBeGhosted
+   * @param {number} frameIndex
+   * @returns {Promise.<LabeledThingGroupInFrame[]>}
+   * @private
+   */
+  _getLabeledThingGroupInFrameGhostsForLabeledThingGroups(labeledThingGroupsToBeGhosted, frameIndex) {
+    return this._$q.resolve()
+      .then(
+        // Try and find a LabeledThingGroupInFrame before the current frameIndex for each of the LabeledThingGroups
+        () => this._$q.all(
+          labeledThingGroupsToBeGhosted.map(
+            labeledThingGroup => this._getPreviousLabeledThingGroupInFrameForLabeledThinGroupAndFrameIndex(
+              labeledThingGroup,
+              frameIndex
+            )
+          )
+        )
+      )
+      .then(labeledThingGroupInFrameGhostCandidates => {
+        const labeledThingInFramesWithNoGhost = labeledThingGroupsToBeGhosted
+          .filter(
+            (labeledThingGroup, index) => labeledThingGroupInFrameGhostCandidates[index] === undefined
+          )
+          .map(labeledThingGroup => {
+            return new LabeledThingGroupInFrame({
+              id: this._entityIdService.getUniqueId(),
+              classes: [],
+              task: labeledThingGroup.task,
+              incomplete: true,
+              frameIndex,
+              labeledThingGroup,
+            });
+          });
+
+        const labeledThingInFrameGhosts = labeledThingGroupInFrameGhostCandidates
+          .filter(
+            ghostCandidate => ghostCandidate !== undefined
+          )
+          .map(
+            ghostCandidate => {
+              // Ghost 'em!
+              ghostCandidate.id = this._entityIdService.getUniqueId();
+              ghostCandidate.frameIndex = frameIndex;
+            }
+          );
+
+        return [...labeledThingInFrameGhosts, ...labeledThingInFramesWithNoGhost];
+      });
+  }
+
+  /**
+   * Try to find a {@link LabeledThingGroupInFrame} for the given {@link LabeledThingGroup}, which lies
+   * before the given `frameIndex`.
+   *
+   * If no such {@link LabeledThingGroupInFrame} could be found `undefined` is returned.
+   *
+   * The document is unmodified. Therefore it will have its original frameIndex.
+   * Take this into account if you are using it as a ghost.
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @param {number} frameIndex
+   * @results {Promise.<LabeledThingGroupInFrame|undefined>}
+   * @private
+   */
+  _getPreviousLabeledThingGroupInFrameForLabeledThinGroupAndFrameIndex(labeledThingGroup, frameIndex) {
+    const task = labeledThingGroup.task;
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+
+    return this._$q.resolve()
+      .then(
+        () => dbContext.query(
+          this._pouchDbViewService.getDesignDocumentViewName(
+            'labeledThingGroupInFrameByLabeledThingGroupIdAndFrameIndex'),
+          {
+            include_docs: true,
+            startkey: [labeledThingGroup.id, 0],
+            endkey: [labeledThingGroup.id, frameIndex - 1],
+            descending: true,
+            limit: 1,
+          }
+        )
+      )
+      .then(results => {
+        if (results.rows.length === 0) {
+          // No match before frameIndex found
+          return undefined;
         }
 
         const ltgifDocument = results.rows[0].doc;
@@ -203,6 +321,28 @@ class GhostingService {
             )
           )
         )
+      )
+      .then(loadedLabeledThingGroupInFrames => {
+        const labeledThingGroupsToBeGhosted = labeledThingGroups.filter(
+          (labeledThingGroup, index) => loadedLabeledThingGroupInFrames[index] === undefined
+        );
+
+        const actualLabeledThingGroupInFrames = loadedLabeledThingGroupInFrames.filter(
+          labeledThingGroupInFrameCandidate => labeledThingGroupInFrameCandidate !== undefined
+        );
+
+        return this._$q.all([
+          actualLabeledThingGroupInFrames,
+          this._getLabeledThingGroupInFrameGhostsForLabeledThingGroups(
+            labeledThingGroupsToBeGhosted,
+            frameIndex
+          ),
+        ]);
+      })
+      .then(
+        ([actualLabeledThingGroupInFrames, ghostedLabeledThingGroupInFrames]) => {
+          return [...actualLabeledThingGroupInFrames, ...ghostedLabeledThingGroupInFrames];
+        }
       );
   }
 
@@ -292,6 +432,7 @@ GhostingService.$inject = [
   'pouchDbViewService',
   'couchDbModelDeserializer',
   'revisionManager',
+  'entityIdService',
 ];
 
 export default GhostingService;
