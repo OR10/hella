@@ -279,8 +279,7 @@ fdescribe('Cuboid Drawing', () => {
     describe('Height', () => {
       it('should change height of loaded cuboid', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -310,8 +309,7 @@ fdescribe('Cuboid Drawing', () => {
 
       it('should adhere to minimalHeight of loaded cuboid', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -341,8 +339,7 @@ fdescribe('Cuboid Drawing', () => {
 
       it('should not allow the height to become negative', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -558,8 +555,7 @@ fdescribe('Cuboid Drawing', () => {
 
       it('should limit movement at the horizon', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -601,8 +597,7 @@ fdescribe('Cuboid Drawing', () => {
 
       it('should limit movement if the height is below the minimal height', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1074,8 +1069,7 @@ fdescribe('Cuboid Drawing', () => {
     describe('Orientation', () => {
       it('should flip faces clockwise using keyboard shortcuts', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -1162,8 +1156,7 @@ fdescribe('Cuboid Drawing', () => {
 
       it('should flip faces counter clockwise using keyboard shortcuts', done => {
         bootstrapPouch([
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
-          assets.mocks.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0to4,
+          assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
