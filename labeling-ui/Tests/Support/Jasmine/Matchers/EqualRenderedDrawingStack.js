@@ -31,7 +31,7 @@ module.exports = function toEqualRenderedDrawingStack() {
     compare: function compare(actual, expected) {
       const result = {pass: true};
 
-      if (!equalRenderedDrawingStack(expected, actual)) {
+      if (!equalRenderedDrawingStack(actual, expected)) {
         result.pass = false;
       }
 
