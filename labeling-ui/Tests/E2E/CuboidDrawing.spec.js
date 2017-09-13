@@ -189,8 +189,7 @@ fdescribe('Cuboid Drawing', () => {
 
     it('should properly render a cuboid with low height from all sides', done => {
       bootstrapPouch([
-        assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0to4,
+        assets.documents.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0,
       ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
