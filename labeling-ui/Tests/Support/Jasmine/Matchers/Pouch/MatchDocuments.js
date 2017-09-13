@@ -1,6 +1,5 @@
 import {forEach, isArray, isObject, isNumber, isString, isBoolean, isNull, isUndefined} from 'lodash';
 import JsonTemplateComparator from '../../../JsonTemplateComparator';
-import {saveMock} from '../../../PouchMockTransformation';
 
 const comparator = new JsonTemplateComparator();
 
@@ -103,7 +102,6 @@ function preprocessTemplate(template, depth = 0) {
 
 export function matchDocuments(expectedTemplate, collection, fileName) {
   const processedExpectedTemplate = preprocessTemplate(expectedTemplate);
-  // saveMock(fileName, processedExpectedTemplate);
   try {
     comparator.assertDocumentIsInCollection(processedExpectedTemplate, collection);
     return {message: 'Matched', pass: true};
