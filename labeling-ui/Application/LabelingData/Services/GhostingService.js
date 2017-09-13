@@ -129,6 +129,18 @@ class GhostingService {
   }
 
   /**
+   * Retrieve a correctly ghosted list of {@link LabeledThingGroupInFrame} objects
+   * based on a list of {@link LabeledThingGroup} models and a specific frameIndex.
+   *
+   * @param {LabeledThingGroup[]} labeledThingGroups
+   * @param {number} frameIndex
+   * @returns {Promise.<LabeledThingGroupInFrame[]>}
+   */
+  calculateClassGhostsForLabeledThingGroupsAndFrameIndex(labeledThingGroups, frameIndex) {
+    return this._$q.resolve();
+  }
+
+  /**
    * @param {Array} list
    * @param {Function} fn
    * @returns {Promise}
