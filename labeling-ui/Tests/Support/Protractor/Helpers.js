@@ -240,5 +240,7 @@ export function sendKeySequences(keySequences) {
     }
   });
 
+  promises.push(browser.sleep(250));
+
   return Promise.all(promises);
 }
