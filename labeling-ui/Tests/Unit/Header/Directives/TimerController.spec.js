@@ -2,7 +2,7 @@ import TimerController from 'Application/Header/Directives/TimerController';
 import {inject} from 'angular-mocks';
 import angular from 'angular';
 
-fdescribe('TimerController', () => {
+describe('TimerController', () => {
   /**
    * @type {$q}
    */
