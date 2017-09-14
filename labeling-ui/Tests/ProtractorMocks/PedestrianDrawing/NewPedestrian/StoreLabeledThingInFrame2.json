@@ -1,75 +1,28 @@
 {
-  "request": {
-    "path": "/api/v1/labeledThingInFrame/{{:labeledThingInFrameId}}",
-    "namedParams": true,
-    "method": "PUT",
-    "data": {
-      "identifierName": "legacy",
-      "frameIndex": 0,
-      "incomplete": true,
-      "labeledThingId": "{{:labeledThingId}}",
-      "shapes": [
-        {
-          "id": "{{:shapeId}}",
-          "type": "pedestrian",
-          "topCenter": {
-            "x": 100,
-            "y": 50
-          },
-          "bottomCenter": {
-            "x": 100,
-            "y": 600
-          }
-        }
-      ],
-      "classes": [],
-      "id": "{{:labeledThingInFrameDataId}}",
-      "ghostClasses": null
-    }
-  },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThing": {
-          "id": "{{labeledThingId}}",
-          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-          "frameRange": {
-            "startFrameNumber": 1,
-            "endFrameNumber": 1
-          },
-          "classes": [
-            "pedestrian"
-          ],
-          "taskId": "TASKID-TASKID",
-          "incomplete": true,
-          "lineColor": "6"
-        },
-        "labeledThingInFrame": {
-          "identifierName": "legacy",
-          "id": "{{labeledThingInFrameId}}",
-          "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "frameIndex": 0,
-          "classes": [],
-          "ghostClasses": null,
-          "shapes": [
-            {
-              "id": "{{shapeId}}",
-              "type": "pedestrian",
-              "bottomCenter": {
-                "x": 100,
-                "y": 50
-              },
-              "topCenter": {
-                "x": 100,
-                "y": 600
-              }
-            }
-          ],
-          "labeledThingId": "{{labeledThingId}}",
-          "incomplete": true,
-          "ghost": false
-        }
+  "identifierName": "legacy",
+  "frameIndex": 0,
+  "incomplete": true,
+  "labeledThingId": "{{:labeledThingId}}",
+  "shapes": [
+    {
+      "id": "{{:shapeId}}",
+      "type": "pedestrian",
+      "topCenter": {
+        "x": 100,
+        "y": 50
+      },
+      "bottomCenter": {
+        "x": 100,
+        "y": 600
       }
     }
-  }
+  ],
+  "classes": [],
+  "_id": "{{:labeledThingInFrameDataId}}",
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }

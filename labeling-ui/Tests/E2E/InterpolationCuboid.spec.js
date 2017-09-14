@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock } from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, initApplication, mock } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -97,14 +97,12 @@ describe('Interpolation Cuboid Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationCuboid.Frame4);
       })
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex0);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex1);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex4);
+      .then(() => {
+        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });
@@ -165,14 +163,12 @@ describe('Interpolation Cuboid Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationCuboid.Frame0);
       })
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex0);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex1);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex4);
+      .then(() => {
+        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });

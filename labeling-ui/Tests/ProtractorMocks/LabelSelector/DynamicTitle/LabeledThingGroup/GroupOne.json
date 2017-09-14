@@ -1,23 +1,11 @@
-{
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingGroup/group-one",
-    "method": "GET"
-  },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThingGroups": [
-          {
-            "id": "group-one",
-            "groupType": "the-blues-brothers",
-            "lineColor": "5",
-            "groupIds": [
-            ],
-            "taskId": "TASKID-TASKID",
-            "projectId": "PROJECTID-PROJECTID"
-          }
-        ]
-      }
-    }
+[
+  {
+    "groupType": "the-blues-brothers",
+    "lineColor": "5",
+    "groupIds": [],
+    "taskId": "TASKID-TASKID",
+    "projectId": "PROJECTID-PROJECTID",
+    "_id": "group-one",
+    "type": "AnnoStationBundle.Model.LabeledThingGroup"
   }
-}
+]

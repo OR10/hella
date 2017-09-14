@@ -1,94 +1,76 @@
-{
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
-    "method": "GET",
-    "queryString": {
-      "limit": "1",
-      "offset": "0"
-    }
+[
+  {
+    "classes": [],
+    "frameRange": {
+      "startFrameIndex": 1,
+      "endFrameIndex": 1,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "incomplete": true,
+    "lineColor": 6,
+    "taskId": "TASKID-TASKID",
+    "_id": "LABELED-THING-ID-1",
+    "type": "AppBundle.Model.LabeledThing"
   },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThings": {
-          "LABELED-THING-ID-1": {
-            "classes": [],
-            "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 1
-            },
-            "id": "LABELED-THING-ID-1",
-            "incomplete": true,
-            "lineColor": "6",
-            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-            "taskId": "TASKID-TASKID"
-          },
-          "LABELED-THING-ID-2": {
-            "classes": [],
-            "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 1
-            },
-            "id": "LABELED-THING-ID-2",
-            "incomplete": true,
-            "lineColor": "5",
-            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7d",
-            "taskId": "TASKID-TASKID"
-          }
+  {
+    "classes": [],
+    "frameRange": {
+      "startFrameIndex": 1,
+      "endFrameIndex": 1,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "incomplete": true,
+    "lineColor": 5,
+    "taskId": "TASKID-TASKID",
+    "_id": "LABELED-THING-ID-2",
+    "type": "AppBundle.Model.LabeledThing"
+  },
+  {
+    "frameIndex": 0,
+    "classes": [],
+    "shapes": [
+      {
+        "type": "rectangle",
+        "id": "SHAPE-ID-1",
+        "topLeft": {
+          "x": 100,
+          "y": 100
         },
-        "labeledThingsInFrame": [
-          {
-            "id": "LABELED-THING-IN-FRAME-ID-1",
-            "rev": "1-39f4e422c9be2167851ded5d0a1c9288",
-            "frameIndex": 0,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "type": "rectangle",
-                "id": "SHAPE-ID-1",
-                "topLeft": {
-                  "x": 100,
-                  "y": 100
-                },
-                "bottomRight": {
-                  "x": 200,
-                  "y": 200
-                }
-              }
-            ],
-            "labeledThingId": "LABELED-THING-ID-1",
-            "incomplete": true,
-            "identifierName": "sign",
-            "ghost": false
-          },
-          {
-            "classes": [],
-            "frameIndex": 0,
-            "identifierName": "sign",
-            "ghost": false,
-            "ghostClasses": null,
-            "id": "LABELED-THING-IN-FRAME-ID-2",
-            "incomplete": true,
-            "labeledThingId": "LABELED-THING-ID-2",
-            "rev": "2-b65227715b51dadd97f8521646e88a23",
-            "shapes": [
-              {
-                "bottomRight": {
-                  "x": 400,
-                  "y": 200
-                },
-                "id": "SHAPE-ID-2",
-                "topLeft": {
-                  "x": 300,
-                  "y": 100
-                },
-                "type": "rectangle"
-              }
-            ]
-          }
-        ]
+        "bottomRight": {
+          "x": 200,
+          "y": 200
+        }
       }
-    }
+    ],
+    "labeledThingId": "LABELED-THING-ID-1",
+    "incomplete": true,
+    "identifierName": "sign",
+    "_id": "LABELED-THING-IN-FRAME-ID-1",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "classes": [],
+    "frameIndex": 0,
+    "identifierName": "sign",
+    "incomplete": true,
+    "labeledThingId": "LABELED-THING-ID-2",
+    "shapes": [
+      {
+        "bottomRight": {
+          "x": 400,
+          "y": 200
+        },
+        "id": "SHAPE-ID-2",
+        "topLeft": {
+          "x": 300,
+          "y": 100
+        },
+        "type": "rectangle"
+      }
+    ],
+    "_id": "LABELED-THING-IN-FRAME-ID-2",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
   }
-}
+]

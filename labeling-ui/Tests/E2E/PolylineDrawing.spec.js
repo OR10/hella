@@ -1,7 +1,6 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
   expectModalToBePresent,
-  getMockRequestsMade,
   initApplication,
   mock,
 } from '../Support/Protractor/Helpers';
@@ -159,7 +158,6 @@ describe('Polyline drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolylineDrawing.MoveOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -181,10 +179,8 @@ describe('Polyline drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.MoveOnePolyline);
       })
       .then(() => browser.sleep(500))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PolylineDrawing.MoveOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.MoveOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -193,8 +189,6 @@ describe('Polyline drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
       assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1,
-      assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1IntermediateStep,
       assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.getLabeledThingsInFrame0to4,
       assets.mocks.PolylineDrawing.Shared.StoreLabeledThing,
     ]));
@@ -222,10 +216,8 @@ describe('Polyline drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.ResizeOnePolyline);
         return browser.sleep(1000);
       })
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -264,8 +256,6 @@ describe('Polyline drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -298,10 +288,9 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolyline);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -310,8 +299,6 @@ describe('Polyline drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -380,10 +367,9 @@ describe('Polyline drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary4);
       })
       .then(() => browser.sleep(300))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -392,10 +378,6 @@ describe('Polyline drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame2,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame3,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame4,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -452,12 +434,11 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewMultiplePolyline3);
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame4);
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame2).toExistInPouchDb();
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame3).toExistInPouchDb();
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame4).toExistInPouchDb();
         done();
       });
   });
@@ -528,8 +509,6 @@ describe('Polyline handle/point limiting', () => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PolylineDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame5,
-      assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -571,9 +550,8 @@ describe('Polyline handle/point limiting', () => {
           .click()
           .perform();
       })
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame5);
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame5).toExistInPouchDb();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'TooManyHandles'),

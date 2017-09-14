@@ -1,159 +1,137 @@
-{
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
-    "method": "GET",
-    "queryString": {
-      "limit": "5",
-      "offset": "0"
-    }
+[
+  {
+    "frameRange": {
+      "startFrameIndex": 1,
+      "endFrameIndex": 2,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "classes": [
+      "pedestrian"
+    ],
+    "taskId": "TASKID-TASKID",
+    "incomplete": true,
+    "lineColor": 6,
+    "_id": "LABELED-THING-ID-1",
+    "type": "AppBundle.Model.LabeledThing"
   },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThings": {
-          "LABELED-THING-ID-1": {
-            "id": "LABELED-THING-ID-1",
-            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-            "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 2
-            },
-            "classes": [
-              "pedestrian"
-            ],
-            "taskId": "TASKID-TASKID",
-            "incomplete": true,
-            "lineColor": "6"
-          }
+  {
+    "identifierName": "legacy",
+    "frameIndex": 0,
+    "classes": [],
+    "shapes": [
+      {
+        "bottomCenter": {
+          "x": 100,
+          "y": 200
         },
-        "labeledThingsInFrame": [
-          {
-            "id": "LABELED-THING-IN-FRAME-ID-11",
-            "identifierName": "legacy",
-            "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "frameIndex": 0,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "bottomCenter": {
-                  "x": 100,
-                  "y": 200
-                },
-                "id": "SHAPE-ID-1",
-                "topCenter": {
-                  "x": 100,
-                  "y": 100
-                },
-                "type": "pedestrian"
-              }
-            ],
-            "labeledThingId": "LABELED-THING-ID-1",
-            "incomplete": true,
-            "ghost": false
-          },
-          {
-            "id": "LABELED-THING-IN-FRAME-ID-2",
-            "identifierName": "legacy",
-            "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "frameIndex": 1,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "bottomCenter": {
-                  "x": 100,
-                  "y": 200
-                },
-                "id": "SHAPE-ID-1",
-                "topCenter": {
-                  "x": 100,
-                  "y": 100
-                },
-                "type": "pedestrian"
-              }
-            ],
-            "labeledThingId": "LABELED-THING-ID-1",
-            "incomplete": true,
-            "ghost": false
-          },
-          {
-            "id": null,
-            "identifierName": "legacy",
-            "rev": null,
-            "frameIndex": 2,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "bottomCenter": {
-                  "x": 100,
-                  "y": 200
-                },
-                "id": "SHAPE-ID-1",
-                "topCenter": {
-                  "x": 100,
-                  "y": 100
-                },
-                "type": "pedestrian"
-              }
-            ],
-            "labeledThingId": "LABELED-THING-ID-1",
-            "incomplete": true,
-            "ghost": true
-          },
-          {
-            "id": null,
-            "identifierName": "legacy",
-            "rev": null,
-            "frameIndex": 3,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "bottomCenter": {
-                  "x": 100,
-                  "y": 200
-                },
-                "id": "SHAPE-ID-1",
-                "topCenter": {
-                  "x": 100,
-                  "y": 100
-                },
-                "type": "pedestrian"
-              }
-            ],
-            "labeledThingId": "LABELED-THING-ID-1",
-            "incomplete": true,
-            "ghost": true
-          },
-          {
-            "id": null,
-            "identifierName": "legacy",
-            "rev": null,
-            "frameIndex": 4,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "bottomCenter": {
-                  "x": 100,
-                  "y": 200
-                },
-                "id": "SHAPE-ID-1",
-                "topCenter": {
-                  "x": 100,
-                  "y": 100
-                },
-                "type": "pedestrian"
-              }
-            ],
-            "labeledThingId": "LABELED-THING-ID-1",
-            "incomplete": true,
-            "ghost": true
-          }
-        ]
+        "id": "SHAPE-ID-1",
+        "topCenter": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "pedestrian"
       }
-    }
+    ],
+    "labeledThingId": "LABELED-THING-ID-1",
+    "incomplete": true,
+    "_id": "LABELED-THING-IN-FRAME-ID-11",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "identifierName": "legacy",
+    "frameIndex": 1,
+    "classes": [],
+    "shapes": [
+      {
+        "bottomCenter": {
+          "x": 100,
+          "y": 200
+        },
+        "id": "SHAPE-ID-1",
+        "topCenter": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "pedestrian"
+      }
+    ],
+    "labeledThingId": "LABELED-THING-ID-1",
+    "incomplete": true,
+    "_id": "LABELED-THING-IN-FRAME-ID-2",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "identifierName": "legacy",
+    "frameIndex": 2,
+    "classes": [],
+    "shapes": [
+      {
+        "bottomCenter": {
+          "x": 100,
+          "y": 200
+        },
+        "id": "SHAPE-ID-1",
+        "topCenter": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "pedestrian"
+      }
+    ],
+    "labeledThingId": "LABELED-THING-ID-1",
+    "incomplete": true,
+    "_id": null,
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "identifierName": "legacy",
+    "frameIndex": 3,
+    "classes": [],
+    "shapes": [
+      {
+        "bottomCenter": {
+          "x": 100,
+          "y": 200
+        },
+        "id": "SHAPE-ID-1",
+        "topCenter": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "pedestrian"
+      }
+    ],
+    "labeledThingId": "LABELED-THING-ID-1",
+    "incomplete": true,
+    "_id": null,
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "identifierName": "legacy",
+    "frameIndex": 4,
+    "classes": [],
+    "shapes": [
+      {
+        "bottomCenter": {
+          "x": 100,
+          "y": 200
+        },
+        "id": "SHAPE-ID-1",
+        "topCenter": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "pedestrian"
+      }
+    ],
+    "labeledThingId": "LABELED-THING-ID-1",
+    "incomplete": true,
+    "_id": null,
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
   }
-}
+]

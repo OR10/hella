@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock } from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, initApplication, mock } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -98,14 +98,12 @@ describe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame4);
       })
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex1);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex4);
+      .then(() => {
+        expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });
@@ -168,14 +166,12 @@ describe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame0);
       })
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex1);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex4);
+      .then(() => {
+        expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });
@@ -239,12 +235,10 @@ describe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.DrawFrame0);
       })
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.Draw.frameIndex0);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.Draw.frameIndex1);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.Interpolation.Rectangle.Draw.frameIndex2);
+      .then(() => {
+        expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex2).toExistInPouchDb();
         done();
       });
   });
