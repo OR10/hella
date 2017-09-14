@@ -174,5 +174,6 @@ describe('Interpolation Cuboid Tests', () => {
   afterEach(() => {
     expectAllModalsToBeClosed();
     bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

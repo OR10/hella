@@ -38,6 +38,11 @@ describe('Group Creation', () => {
     groupButton = element(by.css('button.tool-group.tool-0'));
   });
 
+  afterEach(() => {
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
+  });
+
   it('does not create a group', done => {
     bootstrapHttp(sharedMocks);
     bootstrapPouch([

@@ -278,5 +278,6 @@ describe('Interpolation RectangleWithGroup Tests', () => {
   afterEach(() => {
     expectAllModalsToBeClosed();
     mock.teardown();
+    bootstrapPouch.teardown();
   });
 });

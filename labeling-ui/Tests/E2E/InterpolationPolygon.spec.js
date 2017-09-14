@@ -211,5 +211,6 @@ describe('Interpolation Polygon Tests', () => {
 
   afterEach(() => {
     bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

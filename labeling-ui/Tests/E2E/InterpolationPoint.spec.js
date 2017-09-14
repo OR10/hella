@@ -179,5 +179,6 @@ describe('Interpolation Point Tests', () => {
   afterEach(() => {
     expectAllModalsToBeClosed();
     bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

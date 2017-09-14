@@ -61,5 +61,6 @@ describe('Cuboid exception', () => {
 
   afterEach(() => {
     bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

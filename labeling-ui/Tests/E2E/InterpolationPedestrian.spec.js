@@ -179,5 +179,6 @@ describe('Interpolation Pedestrian Tests', () => {
   afterEach(() => {
     expectAllModalsToBeClosed();
     bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

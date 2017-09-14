@@ -204,5 +204,6 @@ describe('Interpolation Polyline Tests', () => {
 
   afterEach(() => {
     bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

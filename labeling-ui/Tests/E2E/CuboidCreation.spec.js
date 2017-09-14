@@ -281,5 +281,6 @@ describe('Cuboid creation', () => {
   afterEach(() => {
     expectAllModalsToBeClosed();
     bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

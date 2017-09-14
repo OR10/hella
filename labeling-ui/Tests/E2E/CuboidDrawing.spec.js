@@ -1572,5 +1572,6 @@ describe('Cuboid Drawing', () => {
   afterEach(() => {
     expectAllModalsToBeClosed();
     bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });
