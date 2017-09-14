@@ -711,17 +711,15 @@ fdescribe('LabelSelector (right sidebar)', () => {
     ];
 
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.MultipleShapes.Task,
         assets.mocks.LabelSelector.MultipleShapes.TaskConfiguration,
         assets.mocks.LabelSelector.MultipleShapes.RequirementsXmlFile,
-        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.frameIndex0,
-        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
-        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
-      ]);
+      ]));
 
-      bootstrapHttp(sharedMocks);
+      bootstrapPouch([
+        assets.documents.LabelSelector.MultipleShapes.LabeledThingInFrame.frameIndex0,
+      ]);
     });
 
     it('shows the correct panes if selected tool and selected shape are of different types', done => {
