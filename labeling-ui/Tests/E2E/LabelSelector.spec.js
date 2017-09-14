@@ -1132,10 +1132,10 @@ fdescribe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.Task,
         assets.mocks.LabelSelector.RequirementsXml.TaskConfiguration,
         assets.mocks.LabelSelector.References.RequirementsXmlFile,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
+      ]);
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
       ]);
     });
 
@@ -1212,10 +1212,7 @@ fdescribe('LabelSelector (right sidebar)', () => {
     });
 
     it('should resolve a reference from the same thing', done => {
-      bootstrapHttp(sharedMocks.concat([
-        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueB,
-        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueBF,
-      ]));
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -1306,12 +1303,13 @@ fdescribe('LabelSelector (right sidebar)', () => {
     });
 
     it('should keep the label selector open after a frame change (TTANNO-1165)', done => {
-      bootstrapHttp(sharedMocks.concat([
-        assets.mocks.LabelSelector.Framechange.LabeledThingInFrame.frameIndex1,
-        assets.mocks.LabelSelector.Framechange.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
-        assets.mocks.LabelSelector.Framechange.LabeledThingInFrame.getLabeledThingInFrame1Frame1,
-        assets.mocks.LabelSelector.Framechange.LabeledThingInFrame.getLabeledThingInFrame1Frame1to5,
-      ]));
+      bootstrapHttp(sharedMocks);
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
+        assets.documents.LabelSelector.Framechange.LabeledThingInFrame.frameIndex1,
+      ]);
+
       const nextFrameButton = element(by.css('.next-frame-button'));
 
       initApplication(
