@@ -2,24 +2,12 @@
 
 namespace AnnoStationBundle\Service;
 
-use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 
 
 class GhostLabeledThingGroupInFrameClassesPropagation
 {
-    /**
-     * @var Facade\LabelingTask
-     */
-    private $labelingTaskFacade;
-
-    public function __construct(
-        Facade\LabelingTask $labelingTaskFacade
-    ) {
-        $this->labelingTaskFacade = $labelingTaskFacade;
-    }
-
     /**
      * @param Model\LabelingTask                                $task
      * @param AnnoStationBundleModel\LabeledThingGroupInFrame[] $labeledThingGroupInFrames
