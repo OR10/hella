@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, initApplication, mock } from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -15,7 +15,7 @@ describe('Interpolation Cuboid Tests', () => {
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
-    sharedMocks = [
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -33,8 +33,11 @@ describe('Interpolation Cuboid Tests', () => {
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
       assets.mocks.Interpolation.Shared.TaskCuboid,
       assets.mocks.Interpolation.Shared.VideoCuboid,
-      assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex0and4,
-    ];
+    ]);
+
+    bootstrapPouch([
+      assets.documents.Interpolation.Cuboid.LabeledThingInFrame.frameIndex0and4,
+    ]);
 
     viewer = element(by.css('.layer-container'));
     nextFrameButton = element(by.css('.next-frame-button'));
@@ -44,8 +47,6 @@ describe('Interpolation Cuboid Tests', () => {
   });
 
   it('should interpolate a Cuboid when selecting the start LTIF', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -98,18 +99,16 @@ describe('Interpolation Cuboid Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationCuboid.Frame4);
       })
       .then(() => {
-        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });
 
   it('should interpolate a Cuboid when selecting the end LTIF', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -164,17 +163,17 @@ describe('Interpolation Cuboid Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationCuboid.Frame0);
       })
       .then(() => {
-        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Cuboid.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Cuboid.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
   });
 });
