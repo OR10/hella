@@ -8,6 +8,7 @@ use AnnoStationBundle\Database\Facade\Project;
 use AnnoStationBundle\Database\Facade\LabelingTask;
 use AnnoStationBundle\Database\Facade\LabeledThing;
 use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
+use AnnoStationBundle\Database\Facade\LabeledFrame;
 use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
 
@@ -49,6 +50,11 @@ class Report
     private $ghostClassesPropagation;
 
     /**
+     * @var Facade\LabeledFrame
+     */
+    private $labeledFrameFacade;
+
+    /**
      * @var Facade\TaskConfiguration
      */
     private $taskConfigurationFacade;
@@ -64,6 +70,7 @@ class Report
      * @param LabelingTask\FacadeInterface                    $labelingTaskFacadeFactory
      * @param LabeledThing\FacadeInterface                    $labeledThingFacadeFactory
      * @param LabeledThingInFrame\FacadeInterface             $labeledThingInFrameFacadeFactory
+     * @param LabeledFrame\FacadeInterface                    $labeledFrameFacadeFactory
      * @param Facade\TaskConfiguration                        $taskConfigurationFacade
      */
     public function __construct(
@@ -75,6 +82,7 @@ class Report
         LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
         LabeledThing\FacadeInterface $labeledThingFacadeFactory,
         LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory,
+        LabeledFrame\FacadeInterface $labeledFrameFacadeFactory,
         Facade\TaskConfiguration $taskConfigurationFacade
     ) {
         $this->videoFacade               = $videoFacade;
@@ -84,6 +92,7 @@ class Report
         $this->labelingTaskFacade        = $labelingTaskFacadeFactory->getReadOnlyFacade();
         $this->labeledThingFacade        = $labeledThingFacadeFactory->getReadOnlyFacade();
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacadeFactory->getReadOnlyFacade();
+        $this->labeledFrameFacade        = $labeledFrameFacadeFactory->getReadOnlyFacade();
         $this->taskConfigurationFacade   = $taskConfigurationFacade;
     }
 
@@ -195,6 +204,10 @@ class Report
                     $this->getLegacyLabeledClassesInNumbers($project)
                 );
             }
+
+            $report->setNumberOfLabeledFrames(
+                $this->getSumOfLabeledFramesByProject($project)
+            );
 
             $timeByPhaseForProject = $this->projectFacade->getTimeForProject($project);
             foreach ($phases as $phase) {
@@ -480,6 +493,45 @@ class Report
     }
 
     /**
+     * Calculate the number of labeled frames
+     *
+     * @param Model\Project $project
+     * @return float|int
+     */
+    private function getSumOfLabeledFramesByProject(Model\Project $project)
+    {
+        $tasks              = $this->labelingTaskFacade->findAllByProject($project, true);
+        $sumOfLabeledFrames = 0;
+        foreach ($tasks as $task) {
+            // Remove unnecessary frame information
+            $taskFrameMappingWithLabeledFrames = array_map(function () {
+                return null;
+            }, $task->getFrameNumberMapping());
+
+            // Set the number of labeled frame classes to the frame index
+            foreach ($this->labeledFrameFacade->findBylabelingTask($task) as $labeledFrame) {
+                $taskFrameMappingWithLabeledFrames[$labeledFrame->getFrameIndex()] = count($labeledFrame->getClasses());
+            }
+
+            // Create ghosted classes count
+            $previousFrameCount  = null;
+            $ghostedClassesCount = array_map(function ($taskFrameMappingWithLabeledFrame) use (&$previousFrameCount) {
+                if ($taskFrameMappingWithLabeledFrame === null && $previousFrameCount !== null) {
+                    return $previousFrameCount;
+                }
+
+                $previousFrameCount = $taskFrameMappingWithLabeledFrame;
+                return $taskFrameMappingWithLabeledFrame;
+
+            }, $taskFrameMappingWithLabeledFrames);
+
+            $sumOfLabeledFrames += array_sum($ghostedClassesCount);
+        }
+
+        return $sumOfLabeledFrames;
+    }
+
+     /**
      * @param Model\TaskConfiguration $taskConfiguration
      *
      * @return array
