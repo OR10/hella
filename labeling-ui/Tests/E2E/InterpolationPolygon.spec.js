@@ -12,7 +12,6 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Interpolation Polygon Tests', () => {
   let assets;
-  let sharedMocks;
   let viewer;
   let nextFrameButton;
   let previousFrameButton;
