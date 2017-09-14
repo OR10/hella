@@ -1,95 +1,38 @@
 {
-  "request": {
-    "path": "/api/v1/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-1",
-    "method": "PUT",
-    "data": {
-      "id": "LABELED-THING-IN-FRAME-ID-1",
-      "rev": "2-b65227715b51dadd97f8521646e88a22",
-      "identifierName": "sign",
-      "frameIndex": 0,
-      "classes": [],
-      "ghostClasses": null,
-      "shapes": [
+  "_id": "LABELED-THING-IN-FRAME-ID-1",
+  "identifierName": "sign",
+  "frameIndex": 0,
+  "classes": [],
+  "shapes": [
+    {
+      "id": "SHAPE-ID-1",
+      "points": [
         {
-          "id": "SHAPE-ID-1",
-          "points": [
-            {
-              "x": 250,
-              "y": 100
-            },
-            {
-              "x": 350,
-              "y": 200
-            },
-            {
-              "x": 250,
-              "y": 300
-            },
-            {
-              "x": 150,
-              "y": 200
-            }
-          ],
-          "type": "polygon"
+          "x": 250,
+          "y": 100
+        },
+        {
+          "x": 350,
+          "y": 200
+        },
+        {
+          "x": 250,
+          "y": 300
+        },
+        {
+          "x": 150,
+          "y": 200
         }
       ],
-      "labeledThingId": "LABELED-THING-ID-1",
-      "incomplete": true,
-      "ghost": false
+      "type": "polygon"
     }
-  },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThing": {
-          "id": "LABELED-THING-ID-1",
-          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-          "frameRange": {
-            "startFrameNumber": 1,
-            "endFrameNumber": 1
-          },
-          "classes": [
-            "pedestrian"
-          ],
-          "taskId": "TASKID-TASKID",
-          "incomplete": true,
-          "lineColor": "6"
-        },
-        "labeledThingInFrame": {
-          "id": "LABELED-THING-IN-FRAME-ID-1",
-          "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "frameIndex": 0,
-          "classes": [],
-          "ghostClasses": null,
-          "shapes": [
-            {
-              "id": "SHAPE-ID-1",
-              "points": [
-                {
-                  "x": 200,
-                  "y": 100
-                },
-                {
-                  "x": 300,
-                  "y": 200
-                },
-                {
-                  "x": 200,
-                  "y": 300
-                },
-                {
-                  "x": 100,
-                  "y": 200
-                }
-              ],
-              "type": "polygon"
-            }
-          ],
-          "labeledThingId": "LABELED-THING-ID-1",
-          "incomplete": true,
-          "ghost": false
-        }
-      }
-    }
-  }
+  ],
+  "labeledThingId": "LABELED-THING-ID-1",
+  "incomplete": true,
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }

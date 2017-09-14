@@ -1,16 +1,8 @@
 {
-  "request": {
-    "method": "DELETE",
-    "path": "/api/v1/task/TASKID-TASKID/labeledThing/LABELED-THING-ID-1",
-    "queryString": {
-      "rev": "LABELED-THING-REVISION"
-    }
-  },
-  "response": {
-    "data": {
-      "result": {
-        "success": true
-      }
-    }
-  }
+  "_id": "LABELED-THING-ID-1",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }

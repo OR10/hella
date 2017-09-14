@@ -1,33 +1,17 @@
-{
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
-    "method": "GET",
-    "queryString": {
-      "limit": "1",
-      "offset": "0"
-    }
-  },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThings": {
-          "LABELED-THING-ID-1": {
-            "classes": [
-              "pedestrian"
-            ],
-            "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 1
-            },
-            "id": "LABELED-THING-ID-1",
-            "incomplete": true,
-            "lineColor": "6",
-            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-            "taskId": "TASKID-TASKID"
-          }
-        },
-        "labeledThingsInFrame": []
-      }
-    }
+[
+  {
+    "classes": [
+      "pedestrian"
+    ],
+    "frameRange": {
+      "startFrameIndex": 1,
+      "endFrameIndex": 1,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "incomplete": true,
+    "lineColor": 6,
+    "taskId": "TASKID-TASKID",
+    "_id": "LABELED-THING-ID-1",
+    "type": "AppBundle.Model.LabeledThing"
   }
-}
+]

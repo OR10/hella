@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import {initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -155,7 +155,6 @@ describe('Point drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
       assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1,
     ]));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -177,9 +176,8 @@ describe('Point drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.MoveOnePoint);
       })
       .then(() => browser.sleep(500))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainRequest(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -218,8 +216,6 @@ describe('Point drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame1,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -239,10 +235,9 @@ describe('Point drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewPoint);
       })
       .then(() => browser.sleep(800))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame1);
+      .then(() => {
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame1).toExistInPouchDb();
         done();
       });
   });
@@ -251,10 +246,6 @@ describe('Point drawing', () => {
     mock(sharedMocks.concat([
       assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame2,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame3,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4,
-      assets.mocks.PointDrawing.NewPoint.StoreLabeledThing,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -282,12 +273,11 @@ describe('Point drawing', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewMultiplePoints);
       })
       .then(() => browser.sleep(500))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame2);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame3);
-        expect(requests).toContainNamedParamsRequest(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4);
+      .then(() => {
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame2).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame3).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4).toExistInPouchDb();
         done();
       });
   });

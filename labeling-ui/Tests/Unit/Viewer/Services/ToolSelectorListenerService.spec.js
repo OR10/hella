@@ -110,4 +110,20 @@ describe('ToolSelectorListenerService tests', () => {
       expect(ToolSelectorListenerService.getClass()).toEqual('ToolSelectorListenerService');
     });
   });
+
+  describe('removeAllListeners()', () => {
+    it('removes all the listeners', () => {
+      const service = new ToolSelectorListenerService();
+      const callbackOne = jasmine.createSpy('Callback 1');
+      const oldStruct = { shape: 'old-shape', task: {} };
+      const newStruct = { shape: 'new-shape', task: {} };
+
+      service.addListener(callbackOne);
+      service.removeAllListeners();
+
+      service.trigger(newStruct, oldStruct);
+
+      expect(callbackOne).not.toHaveBeenCalled();
+    });
+  });
 });
