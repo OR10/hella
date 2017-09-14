@@ -11,6 +11,44 @@ class ReportingController {
     this.userPermissions = userPermissions;
     this.project = project;
     this.report = report;
+
+    this.classesThingList = this.getClassesThingList(report.report.numberOfTotalClassesInLabeledThingInFrameByClasses);
+  }
+
+  getClassesThingList(objectTree) {
+    const list = [];
+
+    Object.keys(objectTree).forEach(thingKey => {
+      const thing = objectTree[thingKey];
+      list.push({
+        type: 'thing',
+        name: thingKey,
+        labeledThings: thing.labeledThings,
+        labeledThingInFrames: thing.labeledThingInFrames,
+      });
+
+      Object.keys(thing.childs).forEach(classKey => {
+        const classElements = thing.childs[classKey];
+        list.push({
+          type: 'class',
+          name: classKey,
+          labeledThings: classElements.labeledThings,
+          labeledThingInFrames: classElements.labeledThingInFrames,
+        });
+
+        Object.keys(classElements.childs).forEach(valueKey => {
+          const value = classElements.childs[valueKey];
+          list.push({
+            type: 'value',
+            name: valueKey,
+            labeledThings: value.labeledThings,
+            labeledThingInFrames: value.labeledThingInFrames,
+          });
+        });
+      });
+    });
+
+    return list;
   }
 }
 
