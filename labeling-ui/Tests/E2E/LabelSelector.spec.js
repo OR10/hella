@@ -1379,15 +1379,18 @@ fdescribe('LabelSelector (right sidebar)', () => {
     const selectedOnlyButton = element(by.css('label[for="view-style-selected-only"]'));
 
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.RequirementsXml.Task,
         assets.mocks.LabelSelector.RequirementsXml.TaskConfiguration,
         assets.mocks.LabelSelector.References.RequirementsXmlFile,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
+      ]));
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
       ]);
     });
-    it('should shown only checked attributes', done => {
-      bootstrapHttp(sharedMocks);
+
+    it('should show only checked attributes', done => {
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangleOne())
@@ -1431,7 +1434,6 @@ fdescribe('LabelSelector (right sidebar)', () => {
     });
 
     it('should show attribute list view style', done => {
-      bootstrapHttp(sharedMocks);
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangleOne())
