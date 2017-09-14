@@ -14,6 +14,7 @@ import PaperShape from '../Shapes/PaperShape';
 import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
+import PaperPolyline from '../Shapes/PaperPolyline';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -40,6 +41,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
+   * @param {PathCollisionService} pathCollisionService
    */
   constructor(
     width,
@@ -59,7 +61,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
     labeledThingGateway,
     labeledThingGroupGateway,
     shapeSelectionService,
-    groupSelectionDialogFactory
+    groupSelectionDialogFactory,
+    pathCollisionService,
   ) {
     super(width, height, $scope, drawingContext);
 
@@ -185,6 +188,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      */
     this._shapeSelectionService = shapeSelectionService;
 
+    /**
+     * @type {PathCollisionService}
+     * @private
+     */
+    this._pathCollisionService = pathCollisionService;
+
     $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
       const oldSet = new Set(oldPaperGroupShapes);
       const newSet = new Set(newPaperGroupShapes);
@@ -216,6 +225,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
 
     $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
+      const viewModel = this._$scope.vm;
       if (oldShape !== null) {
         this._context.withScope(() => {
           oldShape.deselect();
@@ -224,9 +234,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
         if (oldShape instanceof PaperThingShape) {
           // Remove a Ghost upon deselection
           if (oldShape.labeledThingInFrame.ghost === true) {
-            const index = this._$scope.vm.paperThingShapes.indexOf(oldShape);
+            const index = viewModel.paperThingShapes.indexOf(oldShape);
             if (index !== -1) {
-              this._$scope.vm.paperThingShapes.splice(index, 1);
+              viewModel.paperThingShapes.splice(index, 1);
             }
           }
         }
@@ -234,15 +244,19 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
       if (newShape) {
         this._context.withScope(() => {
-          const readOnly = this._$scope.vm.readOnly;
+          const readOnly = viewModel.readOnly;
           newShape.select(!readOnly);
           this._shapeSelectionService.setSelectedShape(newShape, readOnly);
         });
       } else {
         // If shape is deselected in hidden LabeledThingInFrame mode switch it off
-        if (this._$scope.vm.hideLabeledThingsInFrame) {
-          this._$scope.vm.hideLabeledThingsInFrame = false;
+        if (viewModel.hideLabeledThingsInFrame) {
+          viewModel.hideLabeledThingsInFrame = false;
         }
+      }
+
+      if (viewModel.paperThingShapes !== undefined) {
+        this._pathCollisionService.setShapes(viewModel.paperThingShapes.filter(shape => shape instanceof PaperPolyline && shape !== newShape));
       }
 
       this._applyHiddenLabeledThingsInFrameFilter();
