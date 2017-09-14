@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -37,7 +37,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Rectangle* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Rectangle.Task,
     ]));
 
@@ -59,7 +59,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Pedestrian* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Pedestrian.Task,
     ]));
 
@@ -81,7 +81,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Polygon* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Polygon.Task,
     ]));
 
@@ -103,7 +103,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Cuboid* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
     ]));
 
@@ -126,6 +126,6 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
   });
 });
