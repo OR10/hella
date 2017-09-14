@@ -1,18 +1,18 @@
 import {
-    expectModalToBePresent,
-    initApplication,
-    mock,
+  expectModalToBePresent,
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 describe('Cuboid exception', () => {
   let assets;
-  let sharedMocks;
   let viewer;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
-    sharedMocks = [
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -29,19 +29,17 @@ describe('Cuboid exception', () => {
       assets.mocks.CuboidCreation.Shared.FrameLocations.Thumbnail.frameIndex0to1,
       assets.mocks.Shared.Thumbnails.cuboidLabeledThingsInFrame0to1,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-    ];
+    ]);
 
     viewer = element(by.css('.layer-container'));
   });
 
   describe('horizon', () => {
     it('should display a modal if drawn above the horizon', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-        assets.mocks.CuboidCreation.Shared.StoreLabeledThing,
-        assets.mocks.CuboidCreation.MinimalBottomToTop.StoreLabeledThingInFrame,
-      ]));
+      bootstrapPouch([
+        assets.documents.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
+      ]);
+
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
@@ -62,6 +60,6 @@ describe('Cuboid exception', () => {
   });
 
   afterEach(() => {
-    mock.teardown();
+    bootstrapHttp.teardown();
   });
 });
