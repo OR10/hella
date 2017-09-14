@@ -1,7 +1,8 @@
 import {
   expectAllModalsToBeClosed,
   initApplication,
-  mock,
+  bootstrapHttp,
+  bootstrapPouch,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
@@ -54,14 +55,15 @@ describe('Metalabeling', () => {
 
   describe('Basic behaviour', () => {
     beforeEach(() => {
-      mock(sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.MetaLabeling.Shared.Task,
         assets.mocks.MetaLabeling.Shared.TaskConfiguration,
         assets.mocks.MetaLabeling.Shared.RequirementsXmlFile,
-        assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0,
-        assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.getLabeledThingInFrame0to4,
       ]));
+
+      bootstrapPouch([
+        assets.documents.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0,
+      ]);
     });
 
     it('should show incomplete object if meta labeling is activated and frame one is not labeled', done => {
@@ -112,16 +114,14 @@ describe('Metalabeling', () => {
 
   describe('No Metalabeling (TTANNO-1670)', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.MetaLabeling.Shared.Task,
         assets.mocks.MetaLabeling.Shared.TaskConfiguration,
         assets.mocks.MetaLabeling.NoMetaLabeling.RequirementsXmlFile,
-      ]);
+      ]));
     });
 
     it('is not incomplete if Metalabeling is not active (no shapes exist)', done => {
-      mock(sharedMocks);
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
@@ -132,11 +132,9 @@ describe('Metalabeling', () => {
     });
 
     it('is not incomplete if Metalabeling is not active (shapes exist)', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0,
-        assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.MetaLabeling.Shared.LabeledThingInFrame.getLabeledThingInFrame0to4,
-      ]));
+      bootstrapPouch([
+        assets.documents.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0,
+      ]);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
@@ -150,6 +148,7 @@ describe('Metalabeling', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });
