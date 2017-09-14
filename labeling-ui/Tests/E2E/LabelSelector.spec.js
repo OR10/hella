@@ -68,7 +68,6 @@ describe('LabelSelector (right sidebar)', () => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.Task,
         assets.mocks.LabelSelector.BasicBehaviour.LabelStructure,
-        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.getLabeledThingInFrame0to4,
       ]);
 
       bootstrapPouch([
