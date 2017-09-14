@@ -195,7 +195,7 @@ describe('Keyboard Shape Movement', () => {
     });
   });
 
-  fdescribe('Pedestrian', () => {
+  describe('Pedestrian', () => {
     beforeEach(() => {
       bootstrapHttp(sharedMocks.concat([
         assets.mocks.Shared.Thumbnails.pedestrianLabeledThingsInFrame0to3,
