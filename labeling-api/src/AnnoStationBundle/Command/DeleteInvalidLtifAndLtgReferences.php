@@ -61,6 +61,7 @@ class DeleteInvalidLtifAndLtgReferences extends Base
         $this->setName('annostation:delete-invalid-ltif-and-ltg-references')
             ->setDescription('Delete all LTIF with an invalid LT reference and LT with an invalid LTG reference')
             ->addArgument('logFilePath', InputArgument::REQUIRED)
+            ->addArgument('taskId', InputArgument::OPTIONAL)
             ->addOption('dryRun');
     }
 
@@ -70,7 +71,13 @@ class DeleteInvalidLtifAndLtgReferences extends Base
         $logFilePath          = $input->getArgument('logFilePath');
         $deletedDocs          = 0;
         $deletedLtgReferences = 0;
-        $tasks                = $this->labelingTaskFacade->findAll();
+
+        if ($input->getArgument('taskId') !== null) {
+            $tasks = [$this->labelingTaskFacade->find($input->getArgument('taskId'))];
+        } else {
+            $tasks = $this->labelingTaskFacade->findAll();
+        }
+
         $progressBar          = new ProgressBar($output, count($tasks));
         $progressBar->setFormatDefinition(
             'custom',
