@@ -107,7 +107,7 @@ describe('Interpolation Rectangle Tests', () => {
       });
   });
 
-  fit('should interpolate a Rectangle when selecting the end LTIF', done => {
+  it('should interpolate a Rectangle when selecting the end LTIF', done => {
     bootstrapPouch([
       assets.documents.Interpolation.Rectangle.LabeledThingInFrame.frameIndex0and4,
     ]);
@@ -175,7 +175,7 @@ describe('Interpolation Rectangle Tests', () => {
       });
   });
 
-  fit('should draw and interpolate a new rectangle', done => {
+  it('should draw and interpolate a new rectangle', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()

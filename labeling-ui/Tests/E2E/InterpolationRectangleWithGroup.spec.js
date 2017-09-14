@@ -1,12 +1,11 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import { expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Interpolation RectangleWithGroup Tests', () => {
   let assets;
-  let sharedMocks;
   let viewer;
   let groupButton;
   let interpolateButton;
@@ -16,7 +15,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
-    sharedMocks = [
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -36,8 +35,11 @@ describe('Interpolation RectangleWithGroup Tests', () => {
       assets.mocks.Interpolation.RectangleWithGroup.Group.Task,
       assets.mocks.Interpolation.RectangleWithGroup.Group.TaskConfiguration,
       assets.mocks.Interpolation.RectangleWithGroup.Group.TaskConfigurationFile,
-      assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex0and4,
-    ];
+    ]);
+
+    bootstrapPouch([
+      assets.documents.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex0and4,
+    ]);
 
     viewer = element(by.css('.layer-container'));
     groupButton = element(by.css('.tool-button.tool-group'));
@@ -48,8 +50,6 @@ describe('Interpolation RectangleWithGroup Tests', () => {
   });
 
   it('should interpolate a RectangleWithGroup when selecting the start LTIF', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
       .then(() => {
@@ -111,18 +111,16 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame4);
       })
       .then(() => {
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });
 
   it('should interpolate a RectangleWithGroup when selecting the end LTIF', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
       .then(() => {
@@ -186,18 +184,16 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame0Backwards);
       })
       .then(() => {
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });
 
   it('should interpolate both rectangles within a RectangleWithGroup when selecting the start LTIF', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
       .then(() => {
@@ -266,18 +262,18 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame4BothInterpolated);
       })
       .then(() => {
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
     bootstrapPouch.teardown();
   });
 });
