@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -34,17 +34,17 @@ describe('Keyboard Shape Movement', () => {
 
   describe('Rectangle', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Rectangle.frameIndex0,
-        assets.mocks.KeyboardShapeMovement.Rectangle.frameIndex0to4,
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
         assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
-      ]);
+      ]));
+
+      bootstrapPouch([
+        assets.documents.KeyboardShapeMovement.Rectangle.frameIndex0,
+      ])
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks);
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -120,8 +120,6 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks);
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -197,19 +195,19 @@ describe('Keyboard Shape Movement', () => {
     });
   });
 
-  describe('Pedestrian', () => {
+  fdescribe('Pedestrian', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Pedestrian.frameIndex0,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.frameIndex0to4,
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.Shared.Thumbnails.pedestrianLabeledThingsInFrame0to3,
         assets.mocks.Shared.Thumbnails.pedestrianLabeledThingsInFrame0to4,
+      ]));
+
+      bootstrapPouch([
+        assets.documents.KeyboardShapeMovement.Pedestrian.frameIndex0,
       ]);
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks);
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -285,8 +283,6 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks);
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -372,7 +368,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -455,7 +451,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -534,6 +530,7 @@ describe('Keyboard Shape Movement', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });
