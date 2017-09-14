@@ -7,7 +7,7 @@ import {
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
-fdescribe('LabelSelector (right sidebar)', () => {
+describe('LabelSelector (right sidebar)', () => {
   let assets;
   let sharedMocks;
   let labelSelector;
@@ -1456,33 +1456,25 @@ fdescribe('LabelSelector (right sidebar)', () => {
   describe('LabelSelector Dynamic Title', () => {
     let pedestrianName;
     let rectangleName;
-    // let groupOneName;
-    // let groupTwoName;
-    // let groupThreeName;
 
     beforeEach(() => {
       pedestrianName = 'Blub';
       rectangleName = 'Traffic Sign';
-      // groupOneName = 'The Blues Brothers';
-      // groupTwoName = 'The Blues Brothers';
-      // groupThreeName = 'Peter, Paul and Mary';
     });
 
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.DynamicTitle.Task,
         assets.mocks.LabelSelector.DynamicTitle.TaskConfiguration,
         assets.mocks.LabelSelector.DynamicTitle.RequirementsXmlFile,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupOne,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupTwo,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupThree,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.frameIndex0,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
-      ]);
+      ]));
 
-      bootstrapHttp(sharedMocks);
+      bootstrapPouch([
+        assets.documents.LabelSelector.DynamicTitle.LabeledThingGroup.GroupOne,
+        assets.documents.LabelSelector.DynamicTitle.LabeledThingGroup.GroupTwo,
+        assets.documents.LabelSelector.DynamicTitle.LabeledThingGroup.GroupThree,
+        assets.documents.LabelSelector.DynamicTitle.LabeledThingInFrame.frameIndex0,
+      ]);
     });
 
     it('should show the name of pedestrian shape', done => {
