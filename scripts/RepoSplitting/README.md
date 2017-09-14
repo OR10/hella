@@ -60,5 +60,5 @@ Git repositories inside of git repositories are not a good idea (Inception anyon
 The script may then be run with the following example command:
 
 ```
-./split.sh source-repo ./target-repo Example/includes.txt Example/excludes.txt Example/history-excludes.txt Example/commit-message-blacklist.txt
+./split.sh source-repo ./target-repo Example/includes.txt Example/excludes.txt Example/included-excludes.txt Example/history-excludes.txt Example/commit-message-blacklist.txt master
 ```
