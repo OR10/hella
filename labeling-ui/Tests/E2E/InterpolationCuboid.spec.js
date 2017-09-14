@@ -6,7 +6,6 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Interpolation Cuboid Tests', () => {
   let assets;
-  let sharedMocks;
   let viewer;
   let nextFrameButton;
   let previousFrameButton;

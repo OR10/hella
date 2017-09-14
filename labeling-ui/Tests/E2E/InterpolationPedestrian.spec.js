@@ -1,12 +1,14 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed, initApplication, bootstrapHttp,
+  bootstrapPouch
+} from '../Support/Protractor/Helpers'
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Interpolation Pedestrian Tests', () => {
   let assets;
-  let sharedMocks;
   let viewer;
   let nextFrameButton;
   let previousFrameButton;
@@ -15,7 +17,7 @@ describe('Interpolation Pedestrian Tests', () => {
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
-    sharedMocks = [
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -33,8 +35,11 @@ describe('Interpolation Pedestrian Tests', () => {
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
       assets.mocks.Interpolation.Shared.Task,
-      assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex0and4,
-    ];
+    ]);
+
+    bootstrapPouch([
+      assets.documents.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex0and4,
+    ]);
 
     viewer = element(by.css('.layer-container'));
     nextFrameButton = element(by.css('.next-frame-button'));
@@ -44,8 +49,6 @@ describe('Interpolation Pedestrian Tests', () => {
   });
 
   it('should interpolate a Pedestrian when selecting the start LTIF', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -98,18 +101,16 @@ describe('Interpolation Pedestrian Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame4);
       })
       .then(() => {
-        expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });
 
   it('should interpolate a Pedestrian when selecting the end LTIF', done => {
-    mock(sharedMocks);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -164,17 +165,17 @@ describe('Interpolation Pedestrian Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame0);
       })
       .then(() => {
-        expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.LabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
         done();
       });
   });
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
   });
 });
