@@ -185,7 +185,11 @@ class Report extends Controller\Base
         $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
 
-        $report = Model\Report::create($project);
+        if (!empty($project->getRequirementsXmlTaskInstructions())) {
+            $report = Model\Report::create($project, Model\Report::REPORT_TYPE_REQUIREMENTS_XML);
+        }else{
+            $report = Model\Report::create($project, Model\Report::REPORT_TYPE_LEGACY);
+        }
         $this->reportFacade->save($report);
         $this->amqpFacade->addJob(new Jobs\Report($report->getId(), WorkerPool\Facade::LOW_PRIO));
 
