@@ -9,7 +9,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Interpolation Point Tests', () => {
+describe('Interpolation Point Tests', () => {
   let assets;
   let viewer;
   let nextFrameButton;
