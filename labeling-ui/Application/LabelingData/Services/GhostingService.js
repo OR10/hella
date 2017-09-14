@@ -332,6 +332,11 @@ class GhostingService {
           labeledThingGroupInFrameCandidate => labeledThingGroupInFrameCandidate !== undefined
         );
 
+        // If there are no ghosts, we can take the quick route out of it.
+        if (labeledThingGroupsToBeGhosted.length === 0) {
+          return this._$q.all([actualLabeledThingGroupInFrames, []]);
+        }
+
         return this._$q.all([
           actualLabeledThingGroupInFrames,
           this._getLabeledThingGroupInFrameGhostsForLabeledThingGroups(
