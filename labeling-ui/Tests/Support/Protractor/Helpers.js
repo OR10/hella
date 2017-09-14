@@ -199,7 +199,12 @@ mock.teardown = () => {
 
 bootstrapHttp.teardown = () => {
   httpMock.teardown();
+  mocks.http = [];
 };
+
+bootstrapPouch.teardown = () => {
+  mocks.pouch = [];
+}
 
 export function initApplication(url, testConfig = defaultTestConfig) {
   httpMock(mocks.http);
