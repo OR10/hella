@@ -29,7 +29,7 @@ describe('PathCollisionService test', () => {
     expect(service).toEqual(jasmine.any(PathCollisionService));
   });
 
-  it('should reset shapes when new will set', () => {
+  it('should reset shapes when new shapes are set', () => {
     const service = createService();
     service.setShapes([{'id': 1}, {'id': 2}]);
     service.setShapes([{'id': 3}]);

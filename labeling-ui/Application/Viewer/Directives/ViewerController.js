@@ -15,7 +15,6 @@ import PaperGroupRectangle from '../Shapes/PaperGroupRectangle';
 import GroupToolActionStruct from '../Tools/ToolActionStructs/GroupToolActionStruct';
 import {difference} from 'lodash';
 
-
 /**
  * @property {Array.<PaperThingShape>} paperThingShapes
  * @property {PaperShape|null} selectedPaperShape

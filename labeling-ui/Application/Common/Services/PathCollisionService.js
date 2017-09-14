@@ -42,6 +42,7 @@ class PathCollisionService {
         result = shapePoint.end;
         return true;
       }
+      return false;
     });
     return result;
   }
