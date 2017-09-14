@@ -1,74 +1,28 @@
 {
-  "request": {
-    "path": "/api/v1/labeledThingInFrame/{{:labeledThingInFrameId}}",
-    "namedParams": true,
-    "method": "PUT",
-    "data": {
-      "frameIndex": 0,
-      "incomplete": true,
-      "identifierName": "legacy",
-      "labeledThingId": "{{:labeledThingId}}",
-      "shapes": [
-        {
-          "id": "{{:shapeId}}",
-          "type": "rectangle",
-          "bottomRight": {
-            "x": 600,
-            "y": 400
-          },
-          "topLeft": {
-            "x": 50,
-            "y": 100
-          }
-        }
-      ],
-      "classes": [],
-      "id": "{{:labeledThingInFrameDataId}}",
-      "ghostClasses": null
-    }
-  },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThing": {
-          "id": "{{labeledThingId}}",
-          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-          "frameRange": {
-            "startFrameNumber": 1,
-            "endFrameNumber": 1
-          },
-          "classes": [
-            "pedestrian"
-          ],
-          "taskId": "TASKID-TASKID",
-          "incomplete": true,
-          "lineColor": "6"
-        },
-        "labeledThingInFrame": {
-          "id": "{{labeledThingInFrameId}}",
-          "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "frameIndex": 0,
-          "classes": [],
-          "ghostClasses": null,
-          "shapes": [
-            {
-              "type": "rectangle",
-              "id": "{{shapeId}}",
-              "bottomRight": {
-                "x": 600,
-                "y": 400
-              },
-              "topLeft": {
-                "x": 50,
-                "y": 100
-              }
-            }
-          ],
-          "labeledThingId": "{{labeledThingId}}",
-          "incomplete": true,
-          "ghost": false
-        }
+  "frameIndex": 0,
+  "incomplete": true,
+  "identifierName": "legacy",
+  "labeledThingId": "{{:labeledThingId}}",
+  "shapes": [
+    {
+      "id": "{{:shapeId}}",
+      "type": "rectangle",
+      "bottomRight": {
+        "x": 600,
+        "y": 400
+      },
+      "topLeft": {
+        "x": 50,
+        "y": 100
       }
     }
-  }
+  ],
+  "classes": [],
+  "_id": "{{:labeledThingInFrameDataId}}",
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }

@@ -8,16 +8,26 @@ describe('Interpolation with PouchDB', () => {
 
   let pouchDbContextServiceMock;
   let pouchDBSyncManagerMock;
+  let modalServiceMock;
 
   function createInterpolationService() {
-    interpolationService = new InterpolationService(null, null, pouchDBSyncManagerMock, pouchDbContextServiceMock, interpolations);
+    interpolationService = new InterpolationService(
+      null,
+      null,
+      pouchDBSyncManagerMock,
+      pouchDbContextServiceMock,
+      modalServiceMock,
+      interpolations
+    );
   }
 
   beforeEach(() => {
     firstInterpolation = jasmine.createSpyObj('firstInterpolation', ['execute']);
-    firstInterpolation.execute.and.returnValue({then: () => {}});
+    firstInterpolation.execute.and.returnValue(Promise.resolve());
 
     interpolations = firstInterpolation;
+
+    modalServiceMock = jasmine.createSpyObj('ModalService', ['show', 'info']);
   });
 
   it('It can be instantiate', () => {

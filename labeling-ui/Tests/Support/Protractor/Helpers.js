@@ -3,6 +3,8 @@ import PouchDb from '../PouchDb/PouchDbWrapper';
 import httpMock from 'protractor-http-mock';
 import {cloneDeep} from 'lodash';
 import ExtendedBrowser from './ExtendedBrowser';
+import moment from 'moment';
+import {saveMock} from '../PouchMockTransformation';
 
 export function getMockRequestsMade(mock) {
   return Promise.resolve()
@@ -35,14 +37,30 @@ function waitForApplicationReady() {
   });
 }
 
-function getPouchDbCustomBootstrap(mocks) {
-  let documents = [];
+function getCurrentDate() {
+  return moment().format('YYYY-MM-DD HH:mm:ss.000000');
+}
+
+/**
+ * When using, make sure AssetHelper.js, lines 68 and 69 are also active:
+ *  structure[key].containingDirectory = pathName;
+ *  structure[key].fileName = file;
+ *
+ * @param {Array} mocks
+ */
+export function mockTransform(mocks) {
+  const transformedDocuments = [];
 
   mocks.forEach(mock => {
     const things = cloneDeep(mock.response.data.result);
     let labeledThing;
     let taskId;
     let projectId;
+
+    let transformedDocument = {
+      fileName: `${mock.containingDirectory}/${mock.fileName}`,
+      documents: [],
+    };
 
     if (things.labeledThings) {
       const labeledThingKeys = Object.keys(things.labeledThings);
@@ -63,7 +81,7 @@ function getPouchDbCustomBootstrap(mocks) {
         delete labeledThing.rev;
         delete labeledThing.id;
 
-        documents.push(labeledThing);
+        transformedDocument.documents.push(labeledThing);
       });
     }
 
@@ -79,7 +97,7 @@ function getPouchDbCustomBootstrap(mocks) {
         delete ltif.ghost;
         delete ltif.ghostClasses;
       });
-      documents = documents.concat(things.labeledThingsInFrame);
+      transformedDocument.documents = transformedDocument.documents.concat(things.labeledThingsInFrame);
     }
 
     if (things.labeledThingGroups) {
@@ -89,8 +107,31 @@ function getPouchDbCustomBootstrap(mocks) {
 
         delete ltg.id;
       });
-      documents = documents.concat(things.labeledThingGroups);
+      transformedDocument.documents = transformedDocument.documents.concat(things.labeledThingGroups);
     }
+
+
+    transformedDocuments.push(transformedDocument);
+  });
+
+  transformedDocuments.forEach(document => {
+    saveMock(document.fileName, document.documents);
+  });
+}
+
+function getPouchDbCustomBootstrap(mocks) {
+  let documents = [];
+
+  mocks.forEach(mock => {
+    mock.forEach(mockDocument => {
+      if (mockDocument.createdAt === undefined) {
+        mockDocument.createdAt = getCurrentDate();
+      }
+      if (mockDocument.lastModifiedAt === undefined) {
+        mockDocument.lastModifiedAt = getCurrentDate();
+      }
+    });
+    documents = documents.concat(mock);
   });
 
   return [
@@ -117,22 +158,21 @@ const mocks = {
   specific: [],
 };
 
+function isPouchMock(mockDocument) {
+  return mockDocument instanceof Array;
+}
+
+/**
+ * @param {Array} sharedMocks
+ */
 export function mock(sharedMocks) {
-  const specificMocksKeys = [];
-
-  mocks.shared = sharedMocks;
-  mocks.specific = mocks.shared.filter((mock, key) => {
-    const hasLabeledThings = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThings);
-    const hasLabeledThingsInFrame = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThingsInFrame);
-    const hasLabeledThingGroups = (mock.response && mock.response.data && mock.response.data.result && mock.response.data.result.labeledThingGroups);
-    const isGetRequest = mock.request.method.toUpperCase() === 'GET';
-    const mustBeStoredInCouch = ((hasLabeledThings || hasLabeledThingsInFrame || hasLabeledThingGroups) && isGetRequest);
-    if (mustBeStoredInCouch) {
-      specificMocksKeys.push(key);
-    }
-
-    return mustBeStoredInCouch;
+  let clonedMocks = [];
+  sharedMocks.forEach(mockDocument => {
+    clonedMocks.push(cloneDeep(mockDocument));
   });
+
+  mocks.shared = clonedMocks.filter(mockDocument => !isPouchMock(mockDocument));
+  mocks.specific = clonedMocks.filter(mockDocument => isPouchMock(mockDocument));
 }
 
 mock.teardown = () => {
@@ -140,7 +180,7 @@ mock.teardown = () => {
 };
 
 export function initApplication(url, testConfig = defaultTestConfig) {
-  httpMock(mocks.shared.concat(mocks.specific));
+  httpMock(mocks.shared);
   const builder = new UrlBuilder(testConfig);
 
   const customBootstrap = getPouchDbCustomBootstrap(mocks.specific);
@@ -180,4 +220,25 @@ export function hasClassByElementFinder(elementFinder, className) {
   return elementFinder.getAttribute('class').then(
     classString => classString.split(' ').includes(className),
   );
+}
+
+export function sendKey(key) {
+  return browser.actions().sendKeys(key).perform();
+}
+
+export function sendKeySequences(keySequences) {
+  let promises = [];
+
+  keySequences.forEach(keySequence => {
+    if (typeof keySequence === 'string') {
+      const keys = keySequence.split('');
+      keys.forEach(key => {
+        promises.push(sendKey(key));
+      });
+    } else {
+      promises.push(sendKey(keySequence));
+    }
+  });
+
+  return Promise.all(promises);
 }

@@ -1,55 +1,37 @@
-{
-  "request": {
-    "path": "/api/v1/task/TASKID-TASKID/labeledThingInFrame/0",
-    "method": "GET",
-    "queryString": {
-      "limit": "1",
-      "offset": "0"
-    }
+[
+  {
+    "frameRange": {
+      "startFrameIndex": 1,
+      "endFrameIndex": 2,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "classes": [
+      "pedestrian"
+    ],
+    "taskId": "TASKID-TASKID",
+    "incomplete": true,
+    "lineColor": 6,
+    "_id": "LABELED-THING-ID-1",
+    "type": "AppBundle.Model.LabeledThing"
   },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThings": {
-          "LABELED-THING-ID-1": {
-            "id": "LABELED-THING-ID-1",
-            "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-            "frameRange": {
-              "startFrameNumber": 1,
-              "endFrameNumber": 2
-            },
-            "classes": [
-              "pedestrian"
-            ],
-            "taskId": "TASKID-TASKID",
-            "incomplete": true,
-            "lineColor": "6"
-          }
+  {
+    "FrameIndex": 0,
+    "classes": [],
+    "shapes": [
+      {
+        "id": "SHAPE-ID-1",
+        "point": {
+          "x": 200,
+          "y": 100
         },
-        "labeledThingsInFrame": [
-          {
-            "id": "LABELED-THING-IN-FRAME-ID-1",
-            "rev": "2-b65227715b51dadd97f8521646e88a22",
-            "FrameIndex": 0,
-            "classes": [],
-            "ghostClasses": null,
-            "shapes": [
-              {
-                "id": "SHAPE-ID-1",
-                "point": {
-                  "x": 200,
-                  "y": 100
-                },
-                "type": "point"
-              }
-            ],
-            "labeledThingId": "LABELED-THING-ID-1",
-            "identifierName": "lsr-01",
-            "incomplete": true,
-            "ghost": false
-          }
-        ]
+        "type": "point"
       }
-    }
+    ],
+    "labeledThingId": "LABELED-THING-ID-1",
+    "identifierName": "lsr-01",
+    "incomplete": true,
+    "_id": "LABELED-THING-IN-FRAME-ID-1",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
   }
-}
+]

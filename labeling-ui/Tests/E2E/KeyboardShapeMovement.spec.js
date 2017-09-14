@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -43,12 +43,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameUp,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameRight,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameDown,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -70,10 +65,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleUp);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameUp);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameUp).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -88,10 +81,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleRight);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameRight);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameRight).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -106,10 +97,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleDown);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameDown);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameDown).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -124,21 +113,14 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleLeft);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameLeft);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameLeft).toExistInPouchDb();
           done();
         });
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftDown,
-        assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -160,10 +142,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftUp);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -178,10 +158,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftRight);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -196,10 +174,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftDown);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftDown);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftDown).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -214,10 +190,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftLeft);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftLeft);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftLeft).toExistInPouchDb();
           done();
         });
     });
@@ -234,12 +208,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameDown,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -261,10 +230,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianUp);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -279,10 +246,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianRight);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -297,10 +262,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianDown);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameDown);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameDown).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -315,21 +278,14 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianLeft);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameLeft);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameLeft).toExistInPouchDb();
           done();
         });
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftDown,
-        assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -351,10 +307,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftUp);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -369,10 +323,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftRight);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -387,10 +339,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftDown);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftDown);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftDown).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -405,10 +355,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftLeft);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftLeft);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftLeft).toExistInPouchDb();
           done();
         });
     });
@@ -424,12 +372,7 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameDown,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -457,10 +400,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidUp);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -475,10 +416,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidRight);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -493,10 +432,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidDown);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameDown);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameDown).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -511,21 +448,14 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidLeft);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameLeft);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameLeft).toExistInPouchDb();
           done();
         });
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftDown,
-        assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftLeft,
-      ]));
+      mock(sharedMocks);
 
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
@@ -547,10 +477,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftUp);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -565,10 +493,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftRight);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -583,10 +509,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftDown);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftDown);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftDown).toExistInPouchDb();
         })
         .then(() => {
           return browser.actions()
@@ -601,10 +525,8 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftLeft);
           return browser.sleep(1000);
         })
-        // .then(() => dumpAllRequestsMade(mock))
-        .then(() => getMockRequestsMade(mock))
-        .then(requests => {
-          expect(requests).toContainRequest(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftLeft);
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftLeft).toExistInPouchDb();
           done();
         });
     });

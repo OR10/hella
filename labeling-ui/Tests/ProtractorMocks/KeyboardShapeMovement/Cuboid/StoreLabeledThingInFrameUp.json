@@ -1,144 +1,62 @@
 {
-  "request": {
-    "method": "PUT",
-    "path": "/api/v1/labeledThingInFrame/LABELED-THING-IN-FRAME-ID-1",
-    "data": {
-      "identifierName": "legacy",
-      "frameIndex": 0,
-      "incomplete": true,
-      "rev": "2-b65227715b51dadd97f8521646e88a22",
-      "ghost": false,
-      "labeledThingId": "LABELED-THING-ID-1",
-      "shapes": [
-        {
-          "id": "SHAPE-ID-1",
-          "type": "cuboid3d",
-          "vehicleCoordinates": [
-            [
-              10.171013651634,
-              1.914575042908,
-              2.1077753411803
-            ],
-            [
-              9.4869733495771,
-              0.035189753081351,
-              2.1077753411803
-            ],
-            [
-              9.4869733495771,
-              0.035189753081351,
-              0
-            ],
-            [
-              10.171013651634,
-              1.914575042908,
-              0
-            ],
-            [
-              12.990091586374,
-              0.88851458982299,
-              2.1077753411803
-            ],
-            [
-              12.306051284317,
-              -0.99087070000369,
-              2.1077753411803
-            ],
-            [
-              12.306051284317,
-              -0.99087070000369,
-              0
-            ],
-            [
-              12.990091586374,
-              0.88851458982299,
-              0
-            ]
-          ]
-        }
-      ],
-      "classes": [],
-      "id": "LABELED-THING-IN-FRAME-ID-1",
-      "ghostClasses": null
+  "identifierName": "legacy",
+  "frameIndex": 0,
+  "incomplete": true,
+  "labeledThingId": "LABELED-THING-ID-1",
+  "shapes": [
+    {
+      "id": "SHAPE-ID-1",
+      "type": "cuboid3d",
+      "vehicleCoordinates": [
+        [
+          10.171013651634,
+          1.914575042908,
+          2.1077753411803
+        ],
+        [
+          9.4869733495771,
+          0.035189753081351,
+          2.1077753411803
+        ],
+        [
+          9.4869733495771,
+          0.035189753081351,
+          0
+        ],
+        [
+          10.171013651634,
+          1.914575042908,
+          0
+        ],
+        [
+          12.990091586374,
+          0.88851458982299,
+          2.1077753411803
+        ],
+        [
+          12.306051284317,
+          -0.99087070000369,
+          2.1077753411803
+        ],
+        [
+          12.306051284317,
+          -0.99087070000369,
+          0
+        ],
+        [
+          12.990091586374,
+          0.88851458982299,
+          0
+        ]
+      ]
     }
-  },
-  "response": {
-    "data": {
-      "result": {
-        "labeledThing": {
-          "id": "LABELED-THING-ID-1",
-          "rev": "2-c03b9c54082c73d11ae0d4eb373c3e7c",
-          "frameRange": {
-            "startFrameNumber": 1,
-            "endFrameNumber": 1
-          },
-          "classes": [
-            "vehicle"
-          ],
-          "taskId": "TASKID-TASKID",
-          "incomplete": true,
-          "lineColor": "6"
-        },
-        "labeledThingInFrame": {
-          "identifierName": "legacy",
-          "frameIndex": 0,
-          "incomplete": true,
-          "rev": "2-b65227715b51dadd97f8521646e88a22",
-          "ghost": false,
-          "labeledThingId": "LABELED-THING-ID-1",
-          "shapes": [
-            {
-              "id": "SHAPE-ID-1",
-              "type": "cuboid3d",
-              "vehicleCoordinates": [
-                [
-                  10.171013651634,
-                  1.914575042908,
-                  2.1077753411803
-                ],
-                [
-                  9.4869733495771,
-                  0.035189753081351,
-                  2.1077753411803
-                ],
-                [
-                  9.4869733495771,
-                  0.035189753081351,
-                  0
-                ],
-                [
-                  10.171013651634,
-                  1.914575042908,
-                  0
-                ],
-                [
-                  12.990091586374,
-                  0.88851458982299,
-                  2.1077753411803
-                ],
-                [
-                  12.306051284317,
-                  -0.99087070000369,
-                  2.1077753411803
-                ],
-                [
-                  12.306051284317,
-                  -0.99087070000369,
-                  0
-                ],
-                [
-                  12.990091586374,
-                  0.88851458982299,
-                  0
-                ]
-              ]
-            }
-          ],
-          "classes": [],
-          "id": "LABELED-THING-IN-FRAME-ID-1",
-          "ghostClasses": null
-        }
-      }
-    }
-  }
+  ],
+  "classes": [],
+  "_id": "LABELED-THING-IN-FRAME-ID-1",
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }

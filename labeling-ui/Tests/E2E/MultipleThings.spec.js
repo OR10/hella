@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, getMockRequestsMade, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -136,12 +136,6 @@ describe('Multiple Things', () => {
     mock(sharedMocks.concat([
       assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0,
       assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0to4,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThing,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect1,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect2,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThingInFramePedestrian,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid,
-      assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid,
       assets.mocks.MultipleThings.Shared.SingleLabeledThingInFrame,
     ]));
 
@@ -165,10 +159,8 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect1);
+      .then(() => {
+        expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect1).toExistInPouchDb();
       })
       .then(() => {
         return browser.actions()
@@ -185,10 +177,8 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFramePedestrian);
+      .then(() => {
+        expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFramePedestrian).toExistInPouchDb();
       })
       .then(() => {
         return browser.actions()
@@ -209,10 +199,8 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid);
+      .then(() => {
+        expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid).toExistInPouchDb();
       })
       .then(() => {
         return browser.actions()
@@ -229,10 +217,8 @@ describe('Multiple Things', () => {
           .perform();
       })
       .then(() => browser.sleep(800))
-      // .then(() => dumpAllRequestsMade(mock))
-      .then(() => getMockRequestsMade(mock))
-      .then(requests => {
-        expect(requests).toContainNamedParamsRequest(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect2);
+      .then(() => {
+        expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect2).toExistInPouchDb();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'DrawMultipleDifferentThings')

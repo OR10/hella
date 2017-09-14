@@ -464,6 +464,9 @@ export default class LabelSelectorController {
   }
 
   isResponseSelected(page, response) {
+    if (this.choices === null) {
+      return false;
+    }
     return this.choices[page.id] === response.id;
   }
 

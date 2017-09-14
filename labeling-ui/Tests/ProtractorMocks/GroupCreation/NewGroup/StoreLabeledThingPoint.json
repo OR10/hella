@@ -1,41 +1,20 @@
 {
-  "request": {
-    "method": "PUT",
-    "namedParams": true,
-    "path": "/api/v1/task/TASKID-TASKID/labeledThing/{{:labeledThingId}}",
-    "data": {
-      "frameRange": {
-        "startFrameNumber": 1,
-        "endFrameNumber": 1
-      },
-      "incomplete": true,
-      "rev": "{{:revision}}",
-      "classes": [],
-      "groupIds": [
-        "{{:groupId}}"
-      ],
-      "lineColor": "{{:lineColor}}",
-      "id": "{{:labeledThingDataId}}",
-      "taskId": "TASKID-TASKID"
-    }
+  "frameRange": {
+    "startFrameIndex": 1,
+    "endFrameIndex": 1,
+    "type": "AppBundle.Model.FrameIndexRange"
   },
-  "response": {
-    "data": {
-      "result": {
-        "frameRange": {
-          "startFrameNumber": 1,
-          "endFrameNumber": 1
-        },
-        "incomplete": true,
-        "rev": "{{:revision}}",
-        "classes": [],
-        "groupIds": [
-          "E2E-TEST-GROUP-ID"
-        ],
-        "lineColor": "{{:lineColor}}",
-        "id": "{{:labeledThingDataId}}",
-        "taskId": "TASKID-TASKID"
-      }
-    }
-  }
+  "incomplete": true,
+  "classes": [],
+  "groupIds": [
+    "{{:groupId}}"
+  ],
+  "lineColor": "{{:lineColor}}",
+  "_id": "{{:labeledThingDataId}}",
+  "taskId": "{{:--task-id}}",
+  "type": "AppBundle.Model.LabeledThing",
+  "projectId": "{{:--project-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
 }
