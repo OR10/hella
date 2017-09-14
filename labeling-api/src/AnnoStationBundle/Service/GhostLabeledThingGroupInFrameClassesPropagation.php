@@ -23,6 +23,8 @@ class GhostLabeledThingGroupInFrameClassesPropagation
     /**
      * @param Model\LabelingTask                                $task
      * @param AnnoStationBundleModel\LabeledThingGroupInFrame[] $labeledThingGroupInFrames
+     *
+     * @return array
      */
     public function propagateGhostClasses(Model\LabelingTask $task, array $labeledThingGroupInFrames)
     {
@@ -53,6 +55,9 @@ class GhostLabeledThingGroupInFrameClassesPropagation
         return $values;
     }
 
+    /**
+     * @param array $labeledThingGroupInFrames
+     */
     private function sortLabeledThingGroupInFrames(array &$labeledThingGroupInFrames)
     {
         usort($labeledThingGroupInFrames, function (AnnoStationBundleModel\LabeledThingGroupInFrame $item1, AnnoStationBundleModel\LabeledThingGroupInFrame $item2) {
@@ -60,6 +65,10 @@ class GhostLabeledThingGroupInFrameClassesPropagation
         });
     }
 
+    /**
+     * @param $labeledThingGroupInFrames
+     * @return array
+     */
     private function getLabeledThingGroupInFramesWithFrameIndex($labeledThingGroupInFrames)
     {
         $result = [];
