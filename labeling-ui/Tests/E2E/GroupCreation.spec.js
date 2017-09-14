@@ -1,10 +1,10 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {initApplication, mock} from '../Support/Protractor/Helpers';
+import {initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Group Creation', () => {
+fdescribe('Group Creation', () => {
   let assets;
   let sharedMocks;
   let viewer;
@@ -12,7 +12,7 @@ describe('Group Creation', () => {
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
-    sharedMocks = [
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -32,16 +32,16 @@ describe('Group Creation', () => {
       assets.mocks.GroupCreation.Shared.Task,
       assets.mocks.GroupCreation.Shared.TaskConfiguration,
       assets.mocks.GroupCreation.Shared.TaskConfigurationFile,
-    ];
+    ]);
 
     viewer = element(by.css('.layer-container'));
     groupButton = element(by.css('button.tool-group.tool-0'));
   });
 
   it('does not create a group', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
-    ]));
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
       .then(() => {
@@ -52,7 +52,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      // .then(() => dumpAllRequestsMade(mock))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateNoGroup')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -68,10 +68,9 @@ describe('Group Creation', () => {
   });
 
   it('creates a group around 1 rectangle', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
       .then(() => {
@@ -82,8 +81,8 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
-      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => browser.sleep(250))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -99,10 +98,9 @@ describe('Group Creation', () => {
   });
 
   it('creates a group around 2 rectangles', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
       .then(() => {
@@ -113,8 +111,8 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
-      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => browser.sleep(250))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoRectangles')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -130,10 +128,9 @@ describe('Group Creation', () => {
   });
 
   it('creates a group around 2 point shapes', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
       .then(() => {
@@ -144,8 +141,8 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
-      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => browser.sleep(250))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoPoints')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -161,12 +158,10 @@ describe('Group Creation', () => {
   });
 
   it('creates two groups with four different shapes', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0,
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
+      assets.documents.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
@@ -178,7 +173,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(250))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 263, y: 50}) // initial position
@@ -187,8 +182,8 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
-      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => browser.sleep(250))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateTwoGroupsWithFourShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -205,12 +200,10 @@ describe('Group Creation', () => {
   });
 
   it('creates three groups with four different shapes', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0,
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
+      assets.documents.GroupCreation.MultipleGroups.LabeledThingInFrame2.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
@@ -222,7 +215,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(250))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 263, y: 50}) // initial position
@@ -231,7 +224,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(250))
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -240,8 +233,8 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
-      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => browser.sleep(250))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateThreeGroupsWithFourShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -258,10 +251,9 @@ describe('Group Creation', () => {
   });
 
   it('creates a group around multiselected shapes', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
+    ]);
 
     const firstShape = {
       topLeft: {x: 100, y: 100},
@@ -299,10 +291,9 @@ describe('Group Creation', () => {
   });
 
   it('creates and deletes a group around multiselected shapes', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
-      assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.GroupCreation.MultipleGroups.LabeledThingInFrame1.frameIndex0,
+    ]);
 
     const firstShape = {
       topLeft: {x: 100, y: 100},
@@ -351,11 +342,10 @@ describe('Group Creation', () => {
   });
 
   it('shows a selection if there is more than one group type defined', done => {
-    mock(sharedMocks.concat([
+    bootstrapPouch([
       assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
-      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-    ]));
+      assets.documents.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
       .then(() => {
@@ -366,14 +356,14 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(250))
       .then(() => element(by.cssContainingText('option', 'Front lights')).click())
       .then(() => {
         const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(200))
-      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => browser.sleep(250))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -389,11 +379,11 @@ describe('Group Creation', () => {
   });
 
   it('shows the selection again if user does not select a group type', done => {
-    mock(sharedMocks.concat([
+    bootstrapPouch([
       assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
       .then(() => {
@@ -404,7 +394,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(250))
       .then(() => element(by.cssContainingText('option', 'Please make a selection')).click())
       .then(() => {
         const confirmButton = element(by.css('.modal-button-confirm'));
@@ -416,8 +406,8 @@ describe('Group Creation', () => {
         const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(200))
-      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => browser.sleep(250))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -433,11 +423,11 @@ describe('Group Creation', () => {
   });
 
   it('does not create a group if user clicks Abort when shown the group type selection modal', done => {
-    mock(sharedMocks.concat([
+    bootstrapPouch([
       assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
       assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
       .then(() => {
@@ -448,14 +438,14 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => browser.sleep(250))
       .then(() => element(by.cssContainingText('option', 'Front lights')).click())
       .then(() => {
         const cancelButton = element(by.css('.modal-button-cancel'));
         return cancelButton.click();
       })
-      .then(() => browser.sleep(200))
-      // .then(() => dumpAllRequestsMade(mock))
+      .then(() => browser.sleep(250))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateNoGroup')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
