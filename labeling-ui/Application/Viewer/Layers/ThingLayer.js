@@ -255,7 +255,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._invokeActiveTool();
     });
 
-    $scope.$root.$on('action:create-new-default-shape', () => {
+    ThingLayer.deregisterNewDefaultShapeEventListener();
+    ThingLayer.deregisterNewDefaultShapeEventListener = $scope.$root.$on('action:create-new-default-shape', () => {
       if (this._selectedLabelStructureObject === null) {
         return;
       }
@@ -1018,6 +1019,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
 }
 
 ThingLayer.deregisterDeleteEventListener = () => {
+};
+ThingLayer.deregisterNewDefaultShapeEventListener = () => {
 };
 ThingLayer.deregisterUnassignGroupFromShapeEventListener = () => {
 };
