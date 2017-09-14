@@ -360,16 +360,16 @@ describe('Keyboard Shape Movement', () => {
 
   describe('Cuboid', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
-        assets.mocks.KeyboardShapeMovement.Cuboid.frameIndex0,
-        assets.mocks.KeyboardShapeMovement.Cuboid.frameIndex0to4,
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.Shared.Thumbnails.cuboidLabeledThingsInFrame0to4,
+      ]));
+
+      bootstrapPouch([
+        assets.documents.KeyboardShapeMovement.Cuboid.frameIndex0,
       ]);
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      bootstrapHttp(sharedMocks);
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -451,8 +451,6 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      bootstrapHttp(sharedMocks);
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
