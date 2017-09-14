@@ -279,7 +279,8 @@ class GhostingService {
       .then(
         () => dbContext.query(
           this._pouchDbViewService.getDesignDocumentViewName(
-            'labeledThingGroupInFrameByLabeledThingGroupIdAndFrameIndex'),
+            'labeledThingGroupInFrameByLabeledThingGroupIdAndFrameIndex'
+          ),
           {
             include_docs: true,
             startkey: [labeledThingGroup.id, 0],
