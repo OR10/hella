@@ -7,7 +7,7 @@ import {
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
-describe('LabelSelector (right sidebar)', () => {
+fdescribe('LabelSelector (right sidebar)', () => {
   let assets;
   let sharedMocks;
   let labelSelector;
@@ -425,18 +425,17 @@ describe('LabelSelector (right sidebar)', () => {
 
   describe('Legacy and SimpleXml LabelStructure', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.Legacy.Task,
         assets.mocks.LabelSelector.Legacy.LabelStructure,
-        assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.frameIndex0,
-        assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.getLabeledThingInFrame0to4,
+      ]));
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.Legacy.LabeledThingInFrame.frameIndex0,
       ]);
     });
 
     it('should have correct number of panes if rectangle is selected', done => {
-      bootstrapHttp(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -451,8 +450,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should have correct pane titles if rectangle is selected', done => {
-      bootstrapHttp(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -474,8 +471,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should have correct entries in panes if rectangle is selected', done => {
-      bootstrapHttp(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -518,8 +513,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should display dependency once proper attribute is set', done => {
-      bootstrapHttp(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -572,8 +565,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should display nested dependency once proper attributes are set', done => {
-      bootstrapHttp(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -634,8 +625,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should remove whole dependency tree once high level attribute is changed', done => {
-      bootstrapHttp(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -692,8 +681,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should remove not longer valid classes from ltif request once high level attribute is changed', done => {
-      bootstrapHttp(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
