@@ -1,17 +1,16 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Measurement Rectangle', () => {
   let assets;
-  let sharedMocks;
   let viewer;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
-    sharedMocks = [
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -30,14 +29,12 @@ describe('Measurement Rectangle', () => {
       assets.mocks.ClassGhosting.Task,
       assets.mocks.ClassGhosting.TaskConfiguration,
       assets.mocks.ClassGhosting.TaskConfigurationFile,
-    ];
+    ]);
 
     viewer = element(by.css('.layer-container'));
   });
 
   it('should draw one measurement rectangle', done => {
-    mock(sharedMocks.concat([]));
-
     const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -73,8 +70,6 @@ describe('Measurement Rectangle', () => {
   });
 
   it('should draw one measurement rectangle and keep it on frame change', done => {
-    mock(sharedMocks.concat([]));
-
     const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
     const nextFrameButton = element(by.css('.next-frame-button'));
     const previousFrameButton = element(by.css('.previous-frame-button'));
@@ -118,8 +113,6 @@ describe('Measurement Rectangle', () => {
   });
 
   it('should draw one measurement rectangle and delete it on shape delete button click', done => {
-    mock(sharedMocks.concat([]));
-
     const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
     const deleteShapeButton = element(by.css('#delete-shape-button'));
 
@@ -160,8 +153,6 @@ describe('Measurement Rectangle', () => {
   });
 
   it('should draw one measurement rectangle and delete it on delete key', done => {
-    mock(sharedMocks.concat([]));
-
     const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -205,8 +196,6 @@ describe('Measurement Rectangle', () => {
   });
 
   it('should draw multiple measurement rectangles', done => {
-    mock(sharedMocks.concat([]));
-
     const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -299,8 +288,6 @@ describe('Measurement Rectangle', () => {
   });
 
   it('should draw multiple measurement rectangles and keep them on frame change', done => {
-    mock(sharedMocks.concat([]));
-
     const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
     const nextFrameButton = element(by.css('.next-frame-button'));
     const previousFrameButton = element(by.css('.previous-frame-button'));
@@ -376,8 +363,6 @@ describe('Measurement Rectangle', () => {
   });
 
   it('should draw one measurement rectangle with multiple mouse movements', done => {
-    mock(sharedMocks.concat([]));
-
     const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -448,8 +433,6 @@ describe('Measurement Rectangle', () => {
   });
 
   it('should draw one measurement rectangle and not save it to the database', done => {
-    mock(sharedMocks.concat([]));
-
     const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -468,8 +451,6 @@ describe('Measurement Rectangle', () => {
   });
 
   it('should draw multiple measurement rectangles and not save them to the database', done => {
-    mock(sharedMocks.concat([]));
-
     const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -513,6 +494,6 @@ describe('Measurement Rectangle', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
   });
 });
