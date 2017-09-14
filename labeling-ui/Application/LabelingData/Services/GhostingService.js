@@ -249,6 +249,8 @@ class GhostingService {
               // Ghost 'em!
               ghostCandidate.id = this._entityIdService.getUniqueId();
               ghostCandidate.frameIndex = frameIndex;
+
+              return ghostCandidate;
             }
           );
 
