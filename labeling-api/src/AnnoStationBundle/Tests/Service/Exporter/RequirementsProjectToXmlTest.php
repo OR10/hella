@@ -150,10 +150,11 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
     private function createCuboids(AppBundleModel\LabelingTask $task)
     {
-        $databaseDocumentManager         = $this->getDocumentManagerForTask($task);
-        $this->labeledThingGroupFacade   = new Facade\LabeledThingGroup($databaseDocumentManager);
-        $this->labeledThingFacade        = new Facade\LabeledThing($databaseDocumentManager);
-        $this->labeledThingInFrameFacade = new Facade\LabeledThingInFrame($databaseDocumentManager);
+        $databaseDocumentManager              = $this->getDocumentManagerForTask($task);
+        $this->labeledThingGroupFacade        = new Facade\LabeledThingGroup($databaseDocumentManager);
+        $this->labeledThingGroupInFrameFacade = new Facade\LabeledThingGroupInFrame($databaseDocumentManager);
+        $this->labeledThingFacade             = new Facade\LabeledThing($databaseDocumentManager);
+        $this->labeledThingInFrameFacade      = new Facade\LabeledThingInFrame($databaseDocumentManager);
 
         $labeledThing = $this->createLabeledThing($task);
         $labeledThing->setOriginalId('e363906c1c4a5a5bd01e8902467d1426');
@@ -232,8 +233,15 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         );
         $this->createLabeledThingInFrame($labeledThing, 11, [$cuboid5->toArray()], ['u-turn', 'germany']);
 
-        $labeledThingGroup = new Model\LabeledThingGroup($task, 1, 'sign');
+        $labeledThingGroup = Tests\Helper\LabeledThingGroupBuilder::create($task)->withGroupType('sign')->build();
         $this->labeledThingGroupFacade->save($labeledThingGroup);
+
+        $labeledThingGroupInFrame1 = Tests\Helper\LabeledThingGroupInFrameBuilder::create($task, $labeledThingGroup, 1)->withClasses(['spain', 'foo1'])->build();
+        $this->labeledThingGroupInFrameFacade->save($labeledThingGroupInFrame1);
+        $labeledThingGroupInFrame2 = Tests\Helper\LabeledThingGroupInFrameBuilder::create($task, $labeledThingGroup, 10)->withClasses(['spain', 'foo2'])->build();
+        $this->labeledThingGroupInFrameFacade->save($labeledThingGroupInFrame2);
+        $labeledThingGroupInFrame3 = Tests\Helper\LabeledThingGroupInFrameBuilder::create($task, $labeledThingGroup, 15)->withClasses(['foo3', 'foo4'])->build();
+        $this->labeledThingGroupInFrameFacade->save($labeledThingGroupInFrame3);
 
         $labeledThingWithGroup1 = $this->createLabeledThing($task);
         $labeledThingWithGroup1->setOriginalId('e363906c1c4a5a5bd01e890246819813');
@@ -245,11 +253,13 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
         $labeledThingWithGroup2 = $this->createLabeledThing($task);
         $labeledThingWithGroup2->setOriginalId('e363906c1c4a5a5bd01e89024681a191');
-        $labeledThingWithGroup2->setFrameRange(new AppBundleModel\FrameIndexRange(0, 1));
+        $labeledThingWithGroup2->setFrameRange(new AppBundleModel\FrameIndexRange(0, 20));
         $labeledThingWithGroup2->setGroupIds([$labeledThingGroup->getId()]);
         $this->labeledThingFacade->save($labeledThingWithGroup2);
-        $rectangle2 = new Shapes\Rectangle('3659ecca-7c2b-440b-8dfa-38426c7969b7', 1, 2, 3, 4);
-        $this->createLabeledThingInFrame($labeledThingWithGroup2, 1, [$rectangle2->toArray()], ['u-turn', 'spain']);
+        foreach(range(1,20) as $frameIndex) {
+            $rectangle2 = new Shapes\Rectangle('3659ecca-7c2b-440b-8dfa-38426c7969b7', 1, 2, 3, 4);
+            $this->createLabeledThingInFrame($labeledThingWithGroup2, $frameIndex, [$rectangle2->toArray()], ['u-turn', 'spain']);
+        }
 
         $polygonLabeledThing = $this->createLabeledThing($task);
         $polygonLabeledThing->setOriginalId('e363906c1c4a5a5bd01e89024681abcd');
