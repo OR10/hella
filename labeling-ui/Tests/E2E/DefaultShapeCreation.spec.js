@@ -28,8 +28,6 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-      assets.mocks.DefaultShapeCreation.Shared.EmptyFrameIndex0,
-      assets.mocks.DefaultShapeCreation.Shared.EmptyFrameIndex0to4,
       assets.mocks.DefaultShapeCreation.Shared.StoreLabeledThing,
     ];
 
