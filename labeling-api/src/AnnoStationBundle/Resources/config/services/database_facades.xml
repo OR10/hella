@@ -71,6 +71,10 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
 
+        <service id="annostation.labeling_api.database.facade.labeled_thing_group_in_frame" class="AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
         <service id="annostation.labeling_api.database.facade.organisation" class="AnnoStationBundle\Database\Facade\Organisation">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
@@ -109,6 +113,17 @@
                  factory-method="get">
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.factory.labeled_thing_group_in_frame"
+                 class="AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame\FacadeInterface"
+                 factory-class="AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame\FacadeFactory"
+                 factory-method="get">
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group_in_frame" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
             <argument>%database_name_read_only%</argument>

@@ -31,6 +31,11 @@ class Group extends ExportXml\Element
      */
     private $incomplete;
 
+    /**
+     * @var array
+     */
+    private $values = [];
+
     public function __construct(Model\LabeledThingGroup $labeledThingGroup, $start, $end, $incomplete, $namespace)
     {
         $this->namespace         = $namespace;
@@ -55,7 +60,32 @@ class Group extends ExportXml\Element
         $group->setAttribute('line-color', $this->labeledThingGroup->getLineColor());
         $group->setAttribute('incomplete', ($this->incomplete) ? 'true' : 'false');
 
+        foreach ($this->values as $value) {
+            $valueElement = $document->createElementNS($this->namespace, 'value');
+            $valueElement->setAttribute('id', $value['value']);
+            $valueElement->setAttribute('class', $value['class']);
+            $valueElement->setAttribute('start', $value['start']);
+            $valueElement->setAttribute('end', $value['end']);
+            $group->appendChild($valueElement);
+        }
+
         return $group;
+    }
+
+    /**
+     * @param $class
+     * @param $value
+     * @param $start
+     * @param $end
+     */
+    public function addValue($class, $value, $start, $end)
+    {
+        $this->values[] = [
+            'class' => $class,
+            'value' => $value,
+            'start' => $start,
+            'end'   => $end,
+        ];
     }
 
     /**
