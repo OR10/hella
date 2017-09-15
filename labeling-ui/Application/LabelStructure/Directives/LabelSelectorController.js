@@ -5,6 +5,7 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
 import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
+import LabeledThingGroupInFrame from '../../LabelingData/Models/LabeledThingGroupInFrame';
 
 /**
  * @property {string} labeledObjectType
@@ -26,6 +27,7 @@ export default class LabelSelectorController {
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {EntityIdService} entityIdService
    * @param {ModalService} modalService
    * @param {ApplicationState} applicationState
@@ -41,6 +43,7 @@ export default class LabelSelectorController {
     labeledFrameGateway,
     labeledThingGateway,
     labeledThingInFrameGateway,
+    labeledThingGroupGateway,
     entityIdService,
     modalService,
     applicationState,
@@ -101,6 +104,12 @@ export default class LabelSelectorController {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {LabeledThingGroupGateway}
+     * @private
+     */
+    this._labeledThingGroupGateway = labeledThingGroupGateway;
 
     /**
      * @type {EntityIdService}
@@ -395,6 +404,11 @@ export default class LabelSelectorController {
         this._storeUpdatedLabeledFrame(selectedLabeledObject)
           .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
+      case selectedLabeledObject instanceof LabeledThingGroupInFrame:
+        console.warn('store ltgif', selectedLabeledObject.classes);
+        this._storeUpdatedLabeledThingGroupInFrame(selectedLabeledObject)
+          .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
+        break;
       default:
         throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);
     }
@@ -439,6 +453,15 @@ export default class LabelSelectorController {
       this.framePosition.position,
       labeledFrame
     );
+  }
+
+  /**
+   * @param {LabeledThingGroupInFrame} labeledThingGroupInFrame
+   * @private
+   */
+  _storeUpdatedLabeledThingGroupInFrame(labeledThingGroupInFrame) {
+    labeledThingGroupInFrame.incomplete = !this._isCompleted();
+    return this._labeledThingGroupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
   }
 
   /**
@@ -557,6 +580,7 @@ LabelSelectorController.$inject = [
   'labeledFrameGateway',
   'labeledThingGateway',
   'labeledThingInFrameGateway',
+  'labeledThingGroupGateway',
   'entityIdService',
   'modalService',
   'applicationState',
