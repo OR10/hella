@@ -55,68 +55,23 @@ describe('LabelSelectorController tests', () => {
   });
 
   describe('show', () => {
-    it('returns false by default (selectedPaperShape = undefined)', () => {
-      const controller = createController();
-      const show = controller.show();
-      expect(show).toBe(false);
-    });
+    using([
+      [undefined, 1, false],
+      [undefined, 23, false],
+      [null, 1, false],
+      [null, 42, false],
+      [{}, 0, true],
+      [{}, 1, true],
+      [{}, 3, false],
+    ], (selectedPaperShape, shapeSelectionServiceCount, expectedResult) => {
+      it('should return correct value for selectedPaperShapes', () => {
+        const controller = createController();
+        controller.selectedPaperShape = selectedPaperShape;
+        shapeSelectionService.count.and.returnValue(shapeSelectionServiceCount);
 
-    it('returns false if selectedPaperShape is null', () => {
-      const controller = createController();
-      controller.selectedPaperShape = null;
-      const show = controller.show();
-      expect(show).toBe(false);
-    });
-
-    it('returns true if selectedPaperShape is set', () => {
-      const controller = createController();
-      controller.selectedPaperShape = {};
-      const show = controller.show();
-      expect(show).toBe(true);
-    });
-
-    it('returns false if selectedPaperShape is undefined but shapeSelectionService.count() > 0', () => {
-      const controller = createController();
-      shapeSelectionService.count.and.returnValue(3);
-
-      const show = controller.show();
-      expect(show).toBe(false);
-    });
-
-    it('returns false if selectedPaperShape is null but shapeSelectionService.count() > 0', () => {
-      const controller = createController();
-      controller.selectedPaperShape = null;
-      shapeSelectionService.count.and.returnValue(42);
-
-      const show = controller.show();
-      expect(show).toBe(false);
-    });
-
-    it('returns false if selectedPaperShape is set and shapeSelectionService.count() > 0', () => {
-      const controller = createController();
-      controller.selectedPaperShape = {};
-      shapeSelectionService.count.and.returnValue(3);
-
-      const show = controller.show();
-      expect(show).toBe(false);
-    });
-
-    it('returns true if selectedPaperShape is set but shapeSelectionService.count() is 0', () => {
-      const controller = createController();
-      controller.selectedPaperShape = {};
-      shapeSelectionService.count.and.returnValue(0);
-
-      const show = controller.show();
-      expect(show).toBe(true);
-    });
-
-    it('returns true if selectedPaperShape is set and shapeSelectionService.count() is 1', () => {
-      const controller = createController();
-      controller.selectedPaperShape = {};
-      shapeSelectionService.count.and.returnValue(1);
-
-      const show = controller.show();
-      expect(show).toBe(true);
+        const show = controller.show();
+        expect(show).toBe(expectedResult);
+      });
     });
   });
 
