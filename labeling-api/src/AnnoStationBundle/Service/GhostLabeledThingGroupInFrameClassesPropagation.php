@@ -11,19 +11,21 @@ class GhostLabeledThingGroupInFrameClassesPropagation
     /**
      * @param Model\LabelingTask                                $task
      * @param AnnoStationBundleModel\LabeledThingGroupInFrame[] $labeledThingGroupInFrames
+     * @param                                                   $groupFrameRange
      *
      * @return array
      */
-    public function propagateGhostClasses(Model\LabelingTask $task, array $labeledThingGroupInFrames)
+    public function propagateGhostClasses(Model\LabelingTask $task, array $labeledThingGroupInFrames, $groupFrameRange)
     {
+        if (empty($labeledThingGroupInFrames)) {
+            return [];
+        }
         $this->sortLabeledThingGroupInFrames($labeledThingGroupInFrames);
-        $startFrameIndex = $labeledThingGroupInFrames[0]->getFrameIndex();
-        $endFrameIndex   = $labeledThingGroupInFrames[count($labeledThingGroupInFrames)-1]->getFrameIndex();
 
         $frameMapping = array_filter(
             $task->getFrameNumberMapping(),
-            function($frameIndex) use ($startFrameIndex, $endFrameIndex) {
-                return $startFrameIndex <= $frameIndex && $frameIndex <= $endFrameIndex;
+            function($frameIndex) use ($groupFrameRange) {
+                return $frameIndex >= $groupFrameRange['min'] && $frameIndex <= $groupFrameRange['max'];
             },
             ARRAY_FILTER_USE_KEY
         );
@@ -35,7 +37,7 @@ class GhostLabeledThingGroupInFrameClassesPropagation
             if (isset($labeledThingGroupInFrames[$frameIndex]) && !empty($labeledThingGroupInFrames[$frameIndex]->getClasses())) {
                 $values[$frameIndex] = $labeledThingGroupInFrames[$frameIndex];
                 $previousLabeledThingGroupInFrame = $labeledThingGroupInFrames[$frameIndex];
-            }else{
+            }else if($previousLabeledThingGroupInFrame !== null){
                 $values[$frameIndex] = $previousLabeledThingGroupInFrame->copy($frameIndex);
             }
         }

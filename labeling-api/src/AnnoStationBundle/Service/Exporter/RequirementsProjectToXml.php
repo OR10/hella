@@ -254,7 +254,11 @@ class RequirementsProjectToXml
                                 );
                                 $labeledThingGroupInFrames = $labeledThingGroupInFrameFacade->getLabeledThingGroupInFramesForLabeledThingGroup($group);
 
-                                $labeledThingGroupInFramesWithGhosts = $this->ghostLabeledThingGroupInFrameClassesPropagation->propagateGhostClasses($task, $labeledThingGroupInFrames);
+                                $labeledThingGroupInFramesWithGhosts = $this->ghostLabeledThingGroupInFrameClassesPropagation->propagateGhostClasses(
+                                    $task,
+                                    $labeledThingGroupInFrames,
+                                    $groupFrameRange
+                                );
 
                                 foreach($this->getLabeledThingGroupInFrameRanges($task, $labeledThingGroupInFramesWithGhosts) as $value) {
                                     $groupElement->addValue($value['class'], $value['value'], $value['start'], $value['end']);
@@ -365,6 +369,7 @@ class RequirementsProjectToXml
      */
     private function getLabeledThingGroupInFrameRanges(Model\LabelingTask $task, $labeledThingGroupInFrames)
     {
+        $taskFrameNumberMapping = $task->getFrameNumberMapping();
         $labelingThingGroupFacade = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
             $task->getProjectId(),
             $task->getId()
@@ -385,13 +390,13 @@ class RequirementsProjectToXml
 
                     if ($previousLabeledThingInFrame !== null && in_array($class, $previousLabeledThingInFrame->getClasses())) {
                         $lastElement = count($values)-1;
-                        $values[$lastElement]['end'] = $labeledThingGroupInFrame->getFrameIndex();
+                        $values[$lastElement]['end'] = $taskFrameNumberMapping[$labeledThingGroupInFrame->getFrameIndex()];
                     }else {
                         $values[] = [
                             'value' => $labeledThingGroup->getGroupType(),
                             'class' => $class,
-                            'start' => $labeledThingGroupInFrame->getFrameIndex(),
-                            'end'   => $labeledThingGroupInFrame->getFrameIndex(),
+                            'start' => $taskFrameNumberMapping[$labeledThingGroupInFrame->getFrameIndex()],
+                            'end'   => $taskFrameNumberMapping[$labeledThingGroupInFrame->getFrameIndex()],
                         ];
                     }
                     $previousLabeledThingInFrame = $labeledThingGroupInFrame;

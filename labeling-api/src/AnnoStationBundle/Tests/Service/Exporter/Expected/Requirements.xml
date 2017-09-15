@@ -38,11 +38,11 @@
       <value id="sun" class="weather" start="76" end="100"/>
     </frame-labeling>
     <group id="" start="1" end="21" type="sign" line-color="1" incomplete="true">
-      <value id="sign" class="spain" start="1" end="14"/>
-      <value id="sign" class="foo1" start="1" end="9"/>
-      <value id="sign" class="foo2" start="10" end="14"/>
-      <value id="sign" class="foo3" start="15" end="15"/>
-      <value id="sign" class="foo4" start="15" end="15"/>
+      <value id="sign" class="spain" start="2" end="15"/>
+      <value id="sign" class="foo1" start="2" end="10"/>
+      <value id="sign" class="foo2" start="11" end="15"/>
+      <value id="sign" class="foo3" start="16" end="21"/>
+      <value id="sign" class="foo4" start="16" end="21"/>
     </group>
     <thing id="e363906c1c4a5a5bd01e8902467d1426" start="1" end="100" line-color="1" type="fooobar" incomplete="true">
       <references>

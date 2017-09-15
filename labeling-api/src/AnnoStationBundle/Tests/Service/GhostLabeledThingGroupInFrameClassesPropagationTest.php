@@ -49,7 +49,8 @@ class GhostLabeledThingGroupInFrameClassesPropagationTest extends KernelTestCase
     {
         $ghostedLabeledThingGroupInFrames = $this->ghostLabeledThingGroupInFrameClassesPropagation->propagateGhostClasses(
             $this->task,
-            $this->createLabeledThingGroupInFrames()
+            $this->createLabeledThingGroupInFrames(),
+            ['min' => 1, 'max' => 18]
         );
 
         $this->assertEquals(
@@ -69,6 +70,9 @@ class GhostLabeledThingGroupInFrameClassesPropagationTest extends KernelTestCase
                 LabeledThingGroupInFrameBuilder::create($this->task, $this->labeledThingGroup, 13)->withClasses(['foo1', 'foo2', 'foo3'])->build(),
                 LabeledThingGroupInFrameBuilder::create($this->task, $this->labeledThingGroup, 14)->withClasses(['foo1', 'foo2', 'foo3'])->build(),
                 LabeledThingGroupInFrameBuilder::create($this->task, $this->labeledThingGroup, 15)->withClasses(['foo1'])->build(),
+                LabeledThingGroupInFrameBuilder::create($this->task, $this->labeledThingGroup, 16)->withClasses(['foo1'])->build(),
+                LabeledThingGroupInFrameBuilder::create($this->task, $this->labeledThingGroup, 17)->withClasses(['foo1'])->build(),
+                LabeledThingGroupInFrameBuilder::create($this->task, $this->labeledThingGroup, 18)->withClasses(['foo1'])->build(),
             ],
             array_values($ghostedLabeledThingGroupInFrames));
     }
