@@ -255,8 +255,9 @@ describe('GhostingService', () => {
 
       resolveViewQuery(onFrameStartkey, onFrameEndkey, []);
 
-      const beforeFrameStartkey = [labeledThingGroup.id, 0];
-      const beforeFrameEndkey = [labeledThingGroup.id, frameIndex - 1];
+      // Keys are inverse (descending: true)
+      const beforeFrameStartkey = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameEndkey = [labeledThingGroup.id, 0];
 
       expect(viewOptionsForCall(
         beforeFrameStartkey,
@@ -281,8 +282,8 @@ describe('GhostingService', () => {
 
       resolveViewQuery(onFrameStartkey, onFrameEndkey, []);
 
-      const beforeFrameStartkey = [labeledThingGroup.id, 0];
-      const beforeFrameEndkey = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameStartkey = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameEndkey = [labeledThingGroup.id, 0];
 
       resolveViewQuery(beforeFrameStartkey, beforeFrameEndkey, [labeledThingGroupInFrameDocument]);
 
@@ -322,8 +323,8 @@ describe('GhostingService', () => {
 
       resolveViewQuery(onFrameStartkey, onFrameEndkey, []);
 
-      const beforeFrameStartkey = [labeledThingGroup.id, 0];
-      const beforeFrameEndkey = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameStartkey = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameEndkey = [labeledThingGroup.id, 0];
 
       rejectViewQuery(beforeFrameStartkey, beforeFrameEndkey, error);
 
@@ -345,8 +346,8 @@ describe('GhostingService', () => {
 
       resolveViewQuery(onFrameStartkey, onFrameEndkey, []);
 
-      const beforeFrameStartkey = [labeledThingGroup.id, 0];
-      const beforeFrameEndkey = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameStartkey = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameEndkey = [labeledThingGroup.id, 0];
 
       resolveViewQuery(beforeFrameStartkey, beforeFrameEndkey, [labeledThingGroupInFrameDocument]);
 
@@ -370,8 +371,8 @@ describe('GhostingService', () => {
 
       resolveViewQuery(onFrameStartkey, onFrameEndkey, []);
 
-      const beforeFrameStartkey = [labeledThingGroup.id, 0];
-      const beforeFrameEndkey = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameStartkey = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameEndkey = [labeledThingGroup.id, 0];
 
       resolveViewQuery(beforeFrameStartkey, beforeFrameEndkey, []);
 
@@ -422,8 +423,8 @@ describe('GhostingService', () => {
         []
       );
 
-      const beforeFrameStartkeyGroupTwo = [labeledThingGroupTwo.id, 0];
-      const beforeFrameEndkeyGroupTwo = [labeledThingGroupTwo.id, frameIndex - 1];
+      const beforeFrameStartkeyGroupTwo = [labeledThingGroupTwo.id, frameIndex - 1];
+      const beforeFrameEndkeyGroupTwo = [labeledThingGroupTwo.id, 0];
 
       resolveViewQuery(
         beforeFrameStartkeyGroupTwo,
@@ -475,8 +476,8 @@ describe('GhostingService', () => {
         []
       );
 
-      const beforeFrameStartkeyGroupTwo = [labeledThingGroupTwo.id, 0];
-      const beforeFrameEndkeyGroupTwo = [labeledThingGroupTwo.id, frameIndex - 1];
+      const beforeFrameStartkeyGroupTwo = [labeledThingGroupTwo.id, frameIndex - 1];
+      const beforeFrameEndkeyGroupTwo = [labeledThingGroupTwo.id, 0];
 
       resolveViewQuery(
         beforeFrameStartkeyGroupTwo,
@@ -526,8 +527,8 @@ describe('GhostingService', () => {
         []
       );
 
-      const beforeFrameStartkeyGroupOne = [labeledThingGroup.id, 0];
-      const beforeFrameEndkeyGroupOne = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameStartkeyGroupOne = [labeledThingGroup.id, frameIndex - 1];
+      const beforeFrameEndkeyGroupOne = [labeledThingGroup.id, 0];
 
       resolveViewQuery(
         beforeFrameStartkeyGroupOne,
@@ -537,8 +538,8 @@ describe('GhostingService', () => {
         ]
       );
 
-      const beforeFrameStartkeyGroupTwo = [labeledThingGroupTwo.id, 0];
-      const beforeFrameEndkeyGroupTwo = [labeledThingGroupTwo.id, frameIndex - 1];
+      const beforeFrameStartkeyGroupTwo = [labeledThingGroupTwo.id, frameIndex - 1];
+      const beforeFrameEndkeyGroupTwo = [labeledThingGroupTwo.id, 0];
 
       resolveViewQuery(
         beforeFrameStartkeyGroupTwo,
