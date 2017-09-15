@@ -166,7 +166,7 @@ describe('Rectangle viewer overflow', () => {
 
     bootstrapPouch([
       assets.documents.RectangleOverflow.WideBottom.LabeledThingInFrame.frameIndex0,
-    ])
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {

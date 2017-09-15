@@ -356,7 +356,7 @@ describe('Group Creation', () => {
 
   it('shows a selection if there is more than one group type defined', done => {
     bootstrapHttp(sharedMocks.concat([
-      assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups
+      assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
     ]));
     bootstrapPouch([
       assets.documents.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,

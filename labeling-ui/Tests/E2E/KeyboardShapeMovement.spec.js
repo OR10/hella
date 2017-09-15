@@ -41,7 +41,7 @@ describe('Keyboard Shape Movement', () => {
 
       bootstrapPouch([
         assets.documents.KeyboardShapeMovement.Rectangle.frameIndex0,
-      ])
+      ]);
     });
 
     it('should move shape by a small distance using arrow keys', done => {
