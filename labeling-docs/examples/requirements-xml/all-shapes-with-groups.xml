@@ -67,6 +67,7 @@
             <value id="rainbow" name="Rainbow"/>
         </class>
     </group>
+    <group id="backlights" name="Car Back Lights" />
     <private>
         <class name="Country" id="country">
             <value id="germany" name="Germany"/>
