@@ -81,12 +81,13 @@ class DeleteInvalidLtifAndLtgReferences extends Base
         $progressBar          = new ProgressBar($output, count($tasks));
         $progressBar->setFormatDefinition(
             'custom',
-            ' Scanning Task %current% of %max% Tasks -- [Deleted LTIFs: %deletedDocs%] [Deleted LTG References: %deletedLtgReferences%]'
+            ' Scanning Task %current% of %max% Tasks -- [Deleted LTIFs: %deletedDocs%] [Deleted LTG References: %deletedLtgReferences%] [TaskId: %currentTask%]'
         );
         $progressBar->setFormat('custom');
         $progressBar->setMessage($deletedDocs, 'deletedDocs');
         $progressBar->setMessage($deletedDocs, 'deletedLtgReferences');
         foreach ($tasks as $task) {
+        $progressBar->setMessage($task->getId(), 'currentTask');
             $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
                 $task->getProjectId(),
                 $task->getId()
