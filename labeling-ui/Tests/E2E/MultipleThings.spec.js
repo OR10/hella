@@ -136,10 +136,6 @@ describe('Multiple Things', () => {
       assets.mocks.MultipleThings.Shared.SingleLabeledThingInFrame,
     ]));
 
-    bootstrapPouch([
-      assets.documents.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0,
-    ]);
-
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'SelectMultipleDifferentThings1')
