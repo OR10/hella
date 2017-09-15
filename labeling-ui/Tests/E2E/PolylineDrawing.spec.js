@@ -222,6 +222,39 @@ describe('Polyline drawing', () => {
       });
   });
 
+  it('should snap to nearest start end point of other polyline', done => {
+    mock(sharedMocks.concat([
+      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
+      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
+      assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.getLabeledThingsInFrame0to4,
+      assets.mocks.PolylineDrawing.Shared.StoreLabeledThing,
+    ]));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 200, y: 100}) // top drag handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 591, y: 99}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(() => browser.sleep(500))
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1Snap).toExistInPouchDb();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'SnapPoint')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.SnapPoint);
+      })
+      .then(() => done());
+  });
+
   it('should keep the polyline shape selected over a frame change', done => {
     mock(sharedMocks.concat([
       assets.mocks.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex0,
