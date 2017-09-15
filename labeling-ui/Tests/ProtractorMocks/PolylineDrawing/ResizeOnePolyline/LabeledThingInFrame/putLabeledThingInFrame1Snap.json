@@ -1,0 +1,38 @@
+{
+  "_id": "LABELED-THING-IN-FRAME-ID-1",
+  "frameIndex": 0,
+  "identifierName": "sign",
+  "classes": [],
+  "shapes": [
+    {
+      "id": "SHAPE-ID-1",
+      "type": "polyline",
+      "points": [
+        {
+          "x": 600,
+          "y": 100
+        },
+        {
+          "x": 300,
+          "y": 200
+        },
+        {
+          "x": 200,
+          "y": 300
+        },
+        {
+          "x": 100,
+          "y": 200
+        }
+      ]
+    }
+  ],
+  "labeledThingId": "LABELED-THING-ID-1",
+  "incomplete": true,
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
+}

@@ -2,8 +2,8 @@ import FramePosition from '../Model/FramePosition';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 
 import Filters from '../../Viewer/Models/Filters';
-import BrightnessFilter from '../../Common/Filters/BrightnessFilter';
-import ContrastFilter from '../../Common/Filters/ContrastFilter';
+import BrightnessFilter from '../../Common/ImageFilters/BrightnessFilter';
+import ContrastFilter from '../../Common/ImageFilters/ContrastFilter';
 
 import PaperThingShape from '../../Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';

@@ -57,6 +57,7 @@ import AssemblyJobFactory from './Services/PackagingExecutor/AssemblyJobFactory'
 import ReplicationStateService from './Services/ReplicationStateService';
 import TaskReplicationService from './Services/TaskReplicationService';
 import ShapeSelectionService from './Services/ShapeSelectionService';
+import PathCollisionService from './Services/PathCollisionService';
 import ToolSelectorListenerService from './Services/ToolSelectorListenerService';
 import GroupCreationService from './Services/GroupCreationService';
 
@@ -80,6 +81,8 @@ import 'angular-ui-router';
 import 'flowjs/dist/flow.js';
 import 'ng-flow/dist/ng-flow';
 import 'angular-hotkeys';
+
+import CapitalizeFilter from './Filters/CapitalizeFilter';
 
 class Common extends Module {
   /**
@@ -137,6 +140,7 @@ class Common extends Module {
     this.module.service('replicationStateService', ReplicationStateService);
     this.module.service('taskReplicationService', TaskReplicationService);
     this.module.service('shapeSelectionService', ShapeSelectionService);
+    this.module.service('pathCollisionService', PathCollisionService);
     this.module.service('toolSelectorListenerService', ToolSelectorListenerService);
 
     this.module.provider('bufferedHttp', BufferedHttpProvider);
@@ -150,6 +154,8 @@ class Common extends Module {
     this.module.factory('ListDialog', listDialogProvider);
     this.module.factory('SelectionDialog', selectionDialogProvider);
     this.module.service('groupSelectionDialogFactory', groupSelectionDialogFactory);
+
+    this.module.filter('CapitalizeFilter', CapitalizeFilter);
 
     this.registerDirective('loadingMask', LoadingMaskDirective);
     this.registerDirective('ribbon', RibbonDirective);
