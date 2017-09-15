@@ -285,9 +285,9 @@ class GhostingService {
           ),
           {
             include_docs: true,
-            startkey: [labeledThingGroup.id, 0],
-            endkey: [labeledThingGroup.id, frameIndex - 1],
-            descending: true,
+            startkey: [labeledThingGroup.id, frameIndex - 1],
+            endkey: [labeledThingGroup.id, 0],
+            descending: true, // reverses order of start and endkey!
             limit: 1,
           }
         )
