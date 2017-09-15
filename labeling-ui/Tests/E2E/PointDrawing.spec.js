@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {initApplication, mock} from '../Support/Protractor/Helpers';
+import {initApplication, expectAllModalsToBeClosed, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -36,10 +36,11 @@ describe('Point drawing', () => {
   });
 
   it('should load and draw one point shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PointDrawing.DrawOnePoint.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PointDrawing.DrawOnePoint.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PointDrawing.DrawOnePoint.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -53,10 +54,11 @@ describe('Point drawing', () => {
   });
 
   it('should load and draw two point shapes', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -70,10 +72,11 @@ describe('Point drawing', () => {
   });
 
   it('should select a point shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -94,10 +97,11 @@ describe('Point drawing', () => {
   });
 
   it('should select and deselect a point shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -123,10 +127,11 @@ describe('Point drawing', () => {
   });
 
   it('should select one and then select an other point shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -152,10 +157,11 @@ describe('Point drawing', () => {
   });
 
   it('should correctly move a point shape and save the changed coordinates', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PointDrawing.DrawTwoPoints.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -183,11 +189,11 @@ describe('Point drawing', () => {
   });
 
   it('should keep the point shape selected over a frame change', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PointDrawing.OnePointTwoFrames.LabeledThingInFrame.frameIndex0and1,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -213,10 +219,8 @@ describe('Point drawing', () => {
   });
 
   it('should draw a new point shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -243,10 +247,8 @@ describe('Point drawing', () => {
   });
 
   it('should draw multiple new point shapes', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.PointDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -280,5 +282,11 @@ describe('Point drawing', () => {
         expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4).toExistInPouchDb();
         done();
       });
+  });
+
+  afterEach(() => {
+    expectAllModalsToBeClosed();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });
