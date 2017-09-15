@@ -2,7 +2,7 @@ import using from '../Support/Protractor/DataProvider';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import ImageComparisionService from '../Support/ImageComparisonService';
 import InteractionService from '../Support/InteractionService';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 
@@ -12,12 +12,11 @@ const interaction = new InteractionService();
 
 describe('Zoom', () => {
   let assets;
-  let sharedMocks;
   let viewer;
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
-    sharedMocks = [
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -35,18 +34,13 @@ describe('Zoom', () => {
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-    ];
+    ]);
 
     viewer = element(by.css('.layer-container'));
   });
 
   describe('Without shapes', () => {
     it('should zoom in on center point using keyboard shortcuts', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
-        assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      ]));
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -71,11 +65,6 @@ describe('Zoom', () => {
     });
 
     it('should pan the scene using shift + mousedrag', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
-        assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-      ]));
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -117,11 +106,6 @@ describe('Zoom', () => {
       [1024 - 50, 620 - 50, 'EmptyBottomRightMouseWheel'],
     ], (xTarget, yTarget, fixtureName) => {
       it('should zoom in at different positions using mousewheel', done => {
-        mock(sharedMocks.concat([
-          assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0,
-          assets.mocks.Zoom.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-        ]));
-
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 10))
           .then(
@@ -148,10 +132,9 @@ describe('Zoom', () => {
       [1024 - 50, 620 - 50, 'AnnotationBottomRightMouseWheel'],
     ], (xTarget, yTarget, fixtureName) => {
       it('should zoom in at different positions using mousewheel', done => {
-        mock(sharedMocks.concat([
-          assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0,
-          assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0to4,
-        ]));
+        bootstrapPouch([
+          assets.documents.Zoom.LabeledThingInFrame.Annotation.frameIndex0,
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => interaction.mouseWheelAtRepeat('.event-delegation-layer', xTarget, yTarget, 0, -120, 20))
@@ -174,10 +157,9 @@ describe('Zoom', () => {
       [1024 - 50, 620 - 50, 'SelectedAnnotationBottomRightMouseWheel', 612, 410],
     ], (xTarget, yTarget, fixtureName, selectX, selectY) => {
       it('should select a shape and then zoom in at different positions using mousewheel', done => {
-        mock(sharedMocks.concat([
-          assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0,
-          assets.mocks.Zoom.Shared.LabeledThingInFrame.Annotation.frameIndex0to4,
-        ]));
+        bootstrapPouch([
+          assets.documents.Zoom.LabeledThingInFrame.Annotation.frameIndex0,
+        ]);
 
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -201,6 +183,6 @@ describe('Zoom', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
   });
 });
