@@ -14,7 +14,7 @@ grammar {
     }
 
     Metadata = element r:metadata {
-        element r:export-prefix {text}
+        element r:export-postfix {text}
     }
 
     Frame = element r:frame {
