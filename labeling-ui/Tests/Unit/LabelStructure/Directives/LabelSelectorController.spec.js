@@ -40,6 +40,7 @@ describe('LabelSelectorController tests', () => {
       null, // labeledFrameGateway
       null, // labeledThingGateway
       null, // labeledThingInFrameGateway
+      null, // labeledThingGroupInFrameGateway
       null, // entityIdService
       null, // modalService
       null, // applicationState
