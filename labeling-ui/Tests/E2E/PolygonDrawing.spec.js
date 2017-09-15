@@ -1,9 +1,9 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
   expectAllModalsToBeClosed,
-  expectModalToBePresent,
   initApplication,
-  mock,
+  bootstrapHttp,
+  bootstrapPouch,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -41,10 +41,11 @@ describe('Polygon drawing', () => {
   });
 
   it('should load and draw one polygon shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -58,10 +59,11 @@ describe('Polygon drawing', () => {
   });
 
   it('should load and draw two polygon shapes', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -75,10 +77,11 @@ describe('Polygon drawing', () => {
   });
 
   it('should select a polygon shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -98,10 +101,11 @@ describe('Polygon drawing', () => {
   });
 
   it('should select and deselect a polygon shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -127,10 +131,11 @@ describe('Polygon drawing', () => {
   });
 
   it('should select one and then select an other polygon shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -156,10 +161,11 @@ describe('Polygon drawing', () => {
   });
 
   it('should correctly move a polygon shape and save the changed coordinates', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -187,11 +193,11 @@ describe('Polygon drawing', () => {
   });
 
   it('should correctly resize a polygon shape and save the changed coordinates', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.getLabeledThingsInFrame0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -223,11 +229,11 @@ describe('Polygon drawing', () => {
   });
 
   it('should keep the polygon shape selected over a frame change', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.getLabeledThingInFrame0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.OnePolygonTwoFrames.LabeledThingInFrame.frameIndex0and1,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -253,10 +259,8 @@ describe('Polygon drawing', () => {
   });
 
   it('should draw a new polygon shape', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -296,10 +300,8 @@ describe('Polygon drawing', () => {
   });
 
   it('should draw a new polygon shape with intermediary mouse movements', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -374,12 +376,9 @@ describe('Polygon drawing', () => {
       });
   });
 
-
   it('should draw multiple new polygon shapes', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -392,7 +391,7 @@ describe('Polygon drawing', () => {
           .click(protractor.Button.RIGHT)
           .perform();
       })
-      // .then(() => dumpAllRequestsMade(mock))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewMultiplePolygon1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -448,129 +447,7 @@ describe('Polygon drawing', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
-  });
-});
-
-describe('Polygon handle/point limiting', () => {
-  let assets;
-  let sharedMocks;
-  let viewer;
-
-  beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
-    sharedMocks = [
-      assets.mocks.Shared.UserProfile,
-      assets.mocks.Shared.UserPermissions,
-      assets.mocks.Shared.UserOrganisations,
-      assets.mocks.Shared.Video,
-      assets.mocks.PolygonDrawing.Shared.Task,
-      assets.mocks.PolygonDrawing.Shared.TaskConfiguration,
-      assets.mocks.PolygonDrawing.Shared.TaskConfigurationFile,
-      assets.mocks.Shared.GetTimer,
-      assets.mocks.Shared.PutTimer,
-      assets.mocks.Shared.LabeledThingIncompleteCount,
-      assets.mocks.Shared.FrameLocations.SourceJpg.frameIndex0,
-      assets.mocks.Shared.FrameLocations.SourceJpg.frameIndex0to4,
-      assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0,
-      assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
-      assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to3,
-      assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to4,
-      assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-    ];
-
-    viewer = element(by.css('.layer-container'));
-  });
-
-  xit('should add too few handles', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
-
-    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
-          .mouseMove(viewer, {x: 100, y: 100}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 100, y: 200}) // initial position
-          .mouseUp()
-          .mouseMove(viewer, {x: 1, y: 1}) // initial position
-          .click(protractor.Button.RIGHT)
-          .perform();
-      })
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'TooFewHandles'),
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
-      )
-      .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.TooFewHandles);
-        // @TODO This check does not seem to work. Validate and fix!
-        expectModalToBePresent();
-        done();
-      });
-  });
-
-  xit('should add too many handles', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.PolygonDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
-
-    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
-          .mouseMove(viewer, {x: 100, y: 100}) // initial position
-          .mouseDown()
-          .mouseMove(viewer, {x: 100, y: 200}) // initial position
-          .mouseUp()
-          .mouseMove(viewer, {x: 100, y: 300}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 100, y: 400}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 100, y: 500}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 100, y: 600}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 200, y: 600}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 200, y: 500}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 200, y: 400}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 200, y: 300}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 200, y: 200}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 300, y: 200}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 300, y: 300}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 700, y: 300}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 700, y: 100}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 400, y: 100}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 1, y: 1}) // initial position
-          .click()
-          .perform();
-      })
-      .then(() => {
-        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame5).toExistInPouchDb();
-      })
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'TooManyHandles'),
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
-      )
-      .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.TooManyHandles);
-        expectModalToBePresent();
-        done();
-      });
-  });
-
-  afterEach(() => {
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });
