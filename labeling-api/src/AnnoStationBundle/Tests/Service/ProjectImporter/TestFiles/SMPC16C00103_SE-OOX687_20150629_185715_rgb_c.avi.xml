@@ -20,13 +20,18 @@
       <created-by-user username="admin" email="admin@example.com"/>
     </export>
     <requirements id="936f01d0baf669cc0daad101ca8fb0eb" name="TestConfig" filename="TestConfig.xml">
-      <sha256>c2f50888d3e2db6d8ba1c97328979e1abe3e442e29a95123dd384a6a44ab49c4</sha256>
+      <sha256>75e3502cedafd24f682b16e8673a061357f880b0fe14702df31e6181b9ebf54a</sha256>
     </requirements>
   </metadata>
   <video id="936f01d0baf669cc0daad101ca8f830a" filename="SMPC16C00103_SE-OOX687_20150629_185715_rgb_c.avi">
+    <group id="cf6a96bdee95412f3309e2a62b26bc2f" start="22" end="88" type="extension-sign-group" line-color="7" incomplete="false">
+      <value id="extension-sign-group" class="position-below" start="22" end="44"/>
+      <value id="extension-sign-group" class="position-above" start="66" end="88"/>
+    </group>
     <thing id="936f01d0baf669cc0daad101ca8fbfdd" start="22" end="88" line-color="2" type="sign">
       <references>
         <task id="936f01d0baf669cc0daad101ca8f720d"/>
+        <group ref="cf6a96bdee95412f3309e2a62b26bc2f"/>
       </references>
       <shape id="bb8152af-c2dd-4cfc-96a9-5cd91aeaba5f" start="22" end="22">
         <cuboid>
