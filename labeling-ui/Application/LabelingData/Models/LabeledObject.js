@@ -41,6 +41,11 @@ class LabeledObject {
     this.classes = clone(labeledObject.classes);
 
     /**
+     * @type {null|string[]}
+     */
+    this.ghostClasses = null;
+
+    /**
      * Incomplete state of this `LabeledObject`
      *
      * A `LabeledObject` is flagged as being complete as soon, as all required labels are set and for example a shape
