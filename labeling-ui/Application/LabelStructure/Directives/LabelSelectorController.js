@@ -259,8 +259,7 @@ export default class LabelSelectorController {
   show() {
     const hasPaperShape = (this.selectedPaperShape !== undefined && this.selectedPaperShape !== null);
     const hasAtMostOneSelectedShape = (this._shapeSelectionService.count() <= 1);
-    const selectedPaperShapeIsNotGroupShape = !(this.selectedPaperShape instanceof PaperGroupShape);
-    return hasPaperShape && hasAtMostOneSelectedShape && selectedPaperShapeIsNotGroupShape;
+    return hasPaperShape && hasAtMostOneSelectedShape;
   }
 
   /**
