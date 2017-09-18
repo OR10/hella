@@ -259,6 +259,51 @@ class LabeledThingGroupGateway {
   }
 
   /**
+   * Delete a bunch of {@link LabeledThingGroupInFrame} entities
+   *
+   * If one or more documents could not be deleted the promise is rejected
+   *
+   * The operation is NOT atomic or transactional.
+   *
+   * @param {Task} task
+   * @param {LabeledThingGroupInFrame[]} ltgifs
+   * @returns {Promise.<Array>}
+   * @private
+   */
+  _deleteLabeledThingGroupInFrames(task, ltgifs) {
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    if (ltgifs.length === 0) {
+      return [];
+    }
+
+    return this._$q.resolve()
+      .then(() => {
+        const bulkDocumentActions = ltgifs.map(
+          ltgif => ({
+            _id: ltgif.id,
+            _rev: this._revisionManager.getRevision(ltgif.id),
+            _deleted: true,
+          })
+        );
+
+        return dbContext.bulkDocs(bulkDocumentActions);
+      })
+      .then(results => {
+        const oneOrMoreBulkOperationsFailed = results.reduce(
+          (carry, result) => carry || result.ok !== true,
+          false
+        );
+
+        if (oneOrMoreBulkOperationsFailed) {
+          return this._$q.reject(`Removal of LTGIFs failed: ${JSON.stringify(results)}`);
+        }
+
+        return true;
+      });
+  }
+
+  /**
    * Deletes a labeled thing group with the given id.
    *
    * @param {LabeledThingGroup} labeledThingGroup
@@ -276,31 +321,7 @@ class LabeledThingGroupGateway {
 
       return this._$q.resolve()
         .then(() => this._getAssociatedLTGIFsForLTG(labeledThingGroup))
-        .then(ltgifs => {
-          if (ltgifs.length === 0) {
-            return [];
-          }
-
-          const bulkDocumentActions = ltgifs.map(
-            ltgif => ({
-              _id: ltgif.id,
-              _rev: this._revisionManager.getRevision(ltgif.id),
-              _deleted: true,
-            })
-          );
-
-          return dbContext.bulkDocs(bulkDocumentActions);
-        })
-        .then(results => {
-          const oneOrMoreBulkOperationsFailed = results.reduce(
-            (carry, result) => carry || result.ok !== true,
-            false
-          );
-
-          if (oneOrMoreBulkOperationsFailed) {
-            return this._$q.reject(`Removal of LTGIFs failed: ${JSON.stringify(results)}`);
-          }
-        })
+        .then(ltgifs => this._deleteLabeledThingGroupInFrames(task, ltgifs))
         .then(() => dbContext.remove(labeledThingGroupDocument))
         .then(result => {
           if (result.ok !== true) {
@@ -308,6 +329,36 @@ class LabeledThingGroupGateway {
           }
 
           return true;
+        });
+    });
+  }
+
+  /**
+   * Remove all ltgifs of a given ltg, which are outside of the given frameIndexRange
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @param {{startFrameIndex: number, endFrameIndex: number}} frameIndexRange
+   * @return {Promise}
+   */
+  deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(labeledThingGroup, frameIndexRange) {
+    const task = labeledThingGroup.task;
+
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return this._$q.resolve()
+        .then(
+          () => this._getAssociatedLTGIFsForLTG(labeledThingGroup)
+        )
+        .then(ltgifs => {
+          const ltgifsNotInFrameRange = ltgifs.filter(
+            ltgif => ltgif.frameIndex < frameIndexRange.startFrameIndex || ltgif.frameIndex > frameIndexRange.endFrameIndex
+          );
+
+          if (ltgifsNotInFrameRange.length === 0) {
+            // We do not have anything to delete
+            return true;
+          }
+
+          return this._deleteLabeledThingGroupInFrames(task, ltgifsNotInFrameRange);
         });
     });
   }

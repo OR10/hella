@@ -1153,4 +1153,250 @@ describe('LabeledThingGroupGateway', () => {
       expect(returnValueSpy).toHaveBeenCalledWith(expectedReturnValue);
     });
   });
+
+  describe('deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange', () => {
+    let frameIndexRange;
+
+    function createQueryResponseWithTwoLtgifs(frameIndexOne = 0, frameIndexTwo = 1) {
+      return {
+        offset: 0,
+        total_rows: 2,
+        rows: [
+          {
+            id: labeledThingGroupInFrameDocument._id,
+            key: [labeledThingGroup.id, frameIndexOne],
+            doc: Object.assign({}, labeledThingGroupInFrameDocument, {frameIndex: frameIndexOne}),
+          },
+          {
+            id: labeledThingGroupInFrameTwoDocument._id,
+            key: [labeledThingGroup.id, frameIndexTwo],
+            doc: Object.assign({}, labeledThingGroupInFrameTwoDocument, {frameIndex: frameIndexTwo}),
+          },
+        ],
+      };
+    }
+
+    beforeEach(() => {
+      frameIndexRange = {
+        startFrameIndex: 23,
+        endFrameIndex: 42,
+      };
+    });
+
+    beforeEach(() => {
+      revisionManager.updateRevision(labeledThingGroupInFrameDocument._id, labeledThingGroupInFrameDocument._rev);
+      revisionManager.updateRevision(labeledThingGroupInFrameTwoDocument._id, labeledThingGroupInFrameTwoDocument._rev);
+    });
+
+    it('should return a promise', () => {
+      const returnValue = groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+
+      expect(returnValue.then).toEqual(jasmine.any(Function));
+    });
+
+    it('should utilize packaging executor', () => {
+      spyOn(packagingExecutor, 'execute').and.callThrough();
+
+      groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+
+      expect(packagingExecutor.execute).toHaveBeenCalledWith(
+        'labeledThingGroup',
+        jasmine.any(Function)
+      );
+    });
+
+    it('should return packaging executor return value', () => {
+      spyOn(packagingExecutor, 'execute').and.callThrough();
+
+      const returnValue = groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+
+      expect(returnValue).toBe(
+        packagingExecutor.execute.calls.mostRecent().returnValue
+      );
+    });
+
+    it('should use the labeledThingGroupInFrameByLabeledThingGroupIdAndFrameIndex view', () => {
+      spyOn(pouchDbViewService, 'getDesignDocumentViewName').and.callThrough();
+
+      groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+
+      $rootScope.$apply();
+
+      expect(pouchDbViewService.getDesignDocumentViewName).toHaveBeenCalledWith(
+        'labeledThingGroupInFrameByLabeledThingGroupIdAndFrameIndex'
+      );
+
+      const queriedViewName = pouchDbContext.query.calls.mostRecent().args[0];
+      expect(queriedViewName).toBe(
+        pouchDbViewService.getDesignDocumentViewName.calls.mostRecent().returnValue
+      );
+    });
+
+    it('should resolve if there are no ltgifs outside of the given range', () => {
+      pouchDbContext.query.and.returnValue(
+        $q.resolve(createQueryResponseWithTwoLtgifs(30, 40))
+      );
+
+      const returnValue = groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+      const returnValueSpy = jasmine.createSpy('returnValue resolved');
+      returnValue.then(returnValueSpy);
+
+      $rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalled();
+      expect(pouchDbContext.bulkDocs).not.toHaveBeenCalled();
+      expect(pouchDbContext.remove).not.toHaveBeenCalled();
+    });
+
+    it('should resolve if there are no ltgifs outside of the given range (frameRange border)', () => {
+      pouchDbContext.query.and.returnValue(
+        $q.resolve(createQueryResponseWithTwoLtgifs(23, 42))
+      );
+
+      const returnValue = groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+      const returnValueSpy = jasmine.createSpy('returnValue resolved');
+      returnValue.then(returnValueSpy);
+
+      $rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalled();
+      expect(pouchDbContext.bulkDocs).not.toHaveBeenCalled();
+      expect(pouchDbContext.remove).not.toHaveBeenCalled();
+    });
+
+    it('should reject if the query failed catastrophically', () => {
+      const error = 'If you are going to Zhahadum, you will die!';
+
+      pouchDbContext.query.and.returnValue($q.reject(error));
+
+      const returnValue = groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+      const returnValueSpy = jasmine.createSpy('returnValue rejected');
+      returnValue.catch(returnValueSpy);
+
+      $rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalledWith(error);
+    });
+
+    it('should resolve if there are no matching ltgifs', () => {
+      pouchDbContext.query.and.returnValue(
+        $q.resolve({
+          offset: 0,
+          total_rows: 0,
+          rows: [],
+        })
+      );
+
+      const returnValue = groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+      const returnValueSpy = jasmine.createSpy('returnValue resolved');
+      returnValue.then(returnValueSpy);
+
+      $rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalled();
+    });
+
+    it('should batch remove all ltgifs outside the given range', () => {
+      pouchDbContext.query.and.returnValue(
+        $q.resolve(createQueryResponseWithTwoLtgifs(20, 50))
+      );
+
+      groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+
+      $rootScope.$apply();
+
+      expect(pouchDbContext.bulkDocs).toHaveBeenCalledWith(
+        [
+          {
+            _id: labeledThingGroupInFrameDocument._id,
+            _rev: labeledThingGroupInFrameDocument._rev,
+            _deleted: true,
+          },
+          {
+            _id: labeledThingGroupInFrameTwoDocument._id,
+            _rev: labeledThingGroupInFrameTwoDocument._rev,
+            _deleted: true,
+          },
+        ]
+      );
+    });
+
+    it('should batch remove all ltgifs outside the given range (near range)', () => {
+      pouchDbContext.query.and.returnValue(
+        $q.resolve(createQueryResponseWithTwoLtgifs(22, 43))
+      );
+
+      groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+
+      $rootScope.$apply();
+
+      expect(pouchDbContext.bulkDocs).toHaveBeenCalledWith(
+        [
+          {
+            _id: labeledThingGroupInFrameDocument._id,
+            _rev: labeledThingGroupInFrameDocument._rev,
+            _deleted: true,
+          },
+          {
+            _id: labeledThingGroupInFrameTwoDocument._id,
+            _rev: labeledThingGroupInFrameTwoDocument._rev,
+            _deleted: true,
+          },
+        ]
+      );
+    });
+
+    it('should only batch remove ltgifs outside not inside', () => {
+      pouchDbContext.query.and.returnValue(
+        $q.resolve(createQueryResponseWithTwoLtgifs(30, 100))
+      );
+
+      groupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+        labeledThingGroup,
+        frameIndexRange
+      );
+
+      $rootScope.$apply();
+
+      expect(pouchDbContext.bulkDocs).toHaveBeenCalledWith(
+        [
+          {
+            _id: labeledThingGroupInFrameTwoDocument._id,
+            _rev: labeledThingGroupInFrameTwoDocument._rev,
+            _deleted: true,
+          },
+        ]
+      );
+    });
+  });
 });
