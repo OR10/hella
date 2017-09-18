@@ -1,6 +1,7 @@
 import paper from 'paper';
 import PaperShape from '../../Viewer/Shapes/PaperShape';
 import PaperGroupRectangleMulti from '../../Viewer/Shapes/PaperGroupRectangleMulti';
+import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
 
 class LabeledThingGroupService {
   constructor() {}
@@ -17,7 +18,7 @@ class LabeledThingGroupService {
       class: PaperShape,
     });
 
-    return shapes.filter(shape => (!(shape instanceof PaperGroupRectangleMulti)));
+    return shapes.filter(shape => (!(shape instanceof PaperGroupRectangleMulti || shape instanceof PaperMeasurementRectangle)));
   }
 
   /**
