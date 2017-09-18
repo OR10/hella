@@ -14,7 +14,7 @@ use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
 use AnnoStationBundle\Database\Facade\LabeledThingGroup;
 use Doctrine\ODM\CouchDB;
 
-class DeleteInvalidLtifAndLtgReferences extends Base
+class DeleteInvalidLtifLtAndLtgReferences extends Base
 {
     /**
      * @var Facade\LabelingTask
@@ -58,8 +58,8 @@ class DeleteInvalidLtifAndLtgReferences extends Base
 
     protected function configure()
     {
-        $this->setName('annostation:delete-invalid-ltif-and-ltg-references')
-            ->setDescription('Delete all LTIF with an invalid LT reference and LT with an invalid LTG reference')
+        $this->setName('annostation:delete-invalid-ltif-lt-and-ltg-references')
+            ->setDescription('Delete all LTIF with an invalid LT reference and LT with an invalid LTG OR no assigned LTIF reference')
             ->addArgument('logFilePath', InputArgument::REQUIRED)
             ->addArgument('taskId', InputArgument::OPTIONAL)
             ->addOption('dryRun');
@@ -69,8 +69,9 @@ class DeleteInvalidLtifAndLtgReferences extends Base
     {
         $dryRun               = $input->getOption('dryRun');
         $logFilePath          = $input->getArgument('logFilePath');
-        $deletedDocs          = 0;
+        $deletedLtifDocs      = 0;
         $deletedLtgReferences = 0;
+        $deletedLtDocs        = 0;
 
         if ($input->getArgument('taskId') !== null) {
             $tasks = [$this->labelingTaskFacade->find($input->getArgument('taskId'))];
@@ -81,11 +82,12 @@ class DeleteInvalidLtifAndLtgReferences extends Base
         $progressBar          = new ProgressBar($output, count($tasks));
         $progressBar->setFormatDefinition(
             'custom',
-            ' Scanning Task %current% of %max% Tasks -- [Deleted LTIFs: %deletedDocs%] [Deleted LTG References: %deletedLtgReferences%] [TaskId: %currentTask%]'
+            ' Scanning Task %current% of %max% Tasks -- [Deleted LTIFs: %deletedDocs%] [Deleted LTs: %deletedLtDocs%] [Deleted LTG References: %deletedLtgReferences%] [TaskId: %currentTask%]'
         );
         $progressBar->setFormat('custom');
-        $progressBar->setMessage($deletedDocs, 'deletedDocs');
-        $progressBar->setMessage($deletedDocs, 'deletedLtgReferences');
+        $progressBar->setMessage($deletedLtifDocs, 'deletedDocs');
+        $progressBar->setMessage($deletedLtgReferences, 'deletedLtgReferences');
+        $progressBar->setMessage($deletedLtDocs, 'deletedLtDocs');
         foreach ($tasks as $task) {
         $progressBar->setMessage($task->getId(), 'currentTask');
             $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
@@ -112,19 +114,74 @@ class DeleteInvalidLtifAndLtgReferences extends Base
                 $task->getId()
             );
 
+            $deletedLtDocs += $this->removeLabeledThingWithoutAnyLabeledThingInFrameRelation(
+                $labeledThings,
+                $task,
+                $logFilePath,
+                $dryRun
+            );
+
             $this->deleteLabeledThingInFrames(
                 $invalidLabeledThingsInFrames,
                 $task->getFrameNumberMapping(),
                 $dryRun,
                 $logFilePath
             );
-            $deletedDocs += count($invalidLabeledThingsInFrames);
-            $progressBar->setMessage($deletedDocs, 'deletedDocs');
+            $deletedLtifDocs += count($invalidLabeledThingsInFrames);
+            $progressBar->setMessage($deletedLtifDocs, 'deletedLtifDocs');
             $progressBar->setMessage($deletedLtgReferences, 'deletedLtgReferences');
+            $progressBar->setMessage($deletedLtDocs, 'deletedLtDocs');
             $progressBar->advance();
+            $this->detachObjects($labeledThings);
+            $this->detachObjects($labeledThingsInFrames);
             $this->documentManager->detach($task);
             $this->documentManager->clear();
         }
+    }
+
+    /**
+     * @param                    $labeledThings
+     * @param Model\LabelingTask $task
+     * @param                    $logFilePath
+     * @param                    $dryRun
+     * @return int
+     */
+    private function removeLabeledThingWithoutAnyLabeledThingInFrameRelation(
+      $labeledThings,
+      Model\LabelingTask $task,
+      $logFilePath,
+      $dryRun
+    ){
+        $labeledThingFacade        = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+            $task->getProjectId(),
+            $task->getId()
+        );
+
+        $removedLabeledThings = 0;
+        foreach($labeledThings as $labeledThing) {
+            if (empty($labeledThingFacade->getLabeledThingInFrames($labeledThing))) {
+                file_put_contents(
+                    $logFilePath,
+                    sprintf(
+                        "%s;%s;%s;%s;%s-%s%s",
+                        'invalid_empty_lt',
+                        $labeledThing->getProjectId(),
+                        $labeledThing->getTaskId(),
+                        $labeledThing->getId(),
+                        $labeledThing->getFrameRange()->getStartFrameIndex(),
+                        $labeledThing->getFrameRange()->getEndFrameIndex(),
+                        "\n"
+                    ),
+                    FILE_APPEND
+                );
+                $removedLabeledThings++;
+                if (!$dryRun) {
+                    $labeledThingFacade->delete($labeledThing);
+                }
+            }
+        }
+
+        return $removedLabeledThings;
     }
 
     /**
@@ -177,7 +234,6 @@ class DeleteInvalidLtifAndLtgReferences extends Base
             if (!$dryRun) {
                 $labeledThingFacade->save($labeledThing);
             }
-            $this->documentManager->detach($labeledThing);
         }
 
         return $numberOfDeletedReferences;
@@ -206,7 +262,6 @@ class DeleteInvalidLtifAndLtgReferences extends Base
             if ($labeledThing === null) {
                 $invalidLabeledThingInFrames[] = $labeledThingsInFrame;
             } else {
-                $this->documentManager->detach($labeledThingsInFrame);
                 $this->documentManager->detach($labeledThing);
             }
         }
@@ -242,5 +297,16 @@ class DeleteInvalidLtifAndLtgReferences extends Base
                 FILE_APPEND
             );
         }
+    }
+
+    /**
+     * @param $objects
+     */
+    private function detachObjects($objects)
+    {
+        foreach($objects as $object) {
+            $this->documentManager->detach($object);
+        }
+        $this->documentManager->clear();
     }
 }
