@@ -372,9 +372,9 @@
             <optional>
                 <attribute name="incomplete"/>
             </optional>
-            <optional>
+            <zeroOrMore>
                 <ref name="Value"/>
-            </optional>
+            </zeroOrMore>
         </element>
     </define>
     <!-- </group> -->
