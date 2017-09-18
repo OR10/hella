@@ -120,6 +120,7 @@
             <value id="position-above" name="Above" />
         </class>
     </group>
+    <group id="empty-group" name="Group without any classes" />
     <private>
         <class name="Country" id="country">
             <value id="germany" name="Germany" />

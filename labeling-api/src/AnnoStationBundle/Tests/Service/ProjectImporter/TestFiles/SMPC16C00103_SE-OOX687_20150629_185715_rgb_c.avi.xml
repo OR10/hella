@@ -20,7 +20,7 @@
       <created-by-user username="admin" email="admin@example.com"/>
     </export>
     <requirements id="936f01d0baf669cc0daad101ca8fb0eb" name="TestConfig" filename="TestConfig.xml">
-      <sha256>832105dce0b0eb2a9a79521fe3255a96f8cfbd8a90279a1c12f821f3da1a6baf</sha256>
+      <sha256>46ed2cf7d6cbf36dae45187b8c3459f54efb49749023fad73565cc142ad6f5ec</sha256>
     </requirements>
   </metadata>
   <video id="936f01d0baf669cc0daad101ca8f830a" filename="SMPC16C00103_SE-OOX687_20150629_185715_rgb_c.avi">
@@ -34,6 +34,8 @@
     <group id="cf6a96bdee95412f3309e2a62b26bc2f" start="22" end="88" type="extension-sign-group" line-color="7" incomplete="false">
       <value id="extension-sign-group" class="position-below" start="22" end="44"/>
       <value id="extension-sign-group" class="position-above" start="66" end="88"/>
+    </group>
+    <group id="89e703812ce34189aa7719845c759500" start="44" end="22" type="empty-group" line-color="8" incomplete="false">
     </group>
     <thing id="936f01d0baf669cc0daad101ca8fbfdd" start="22" end="88" line-color="2" type="sign">
       <references>
@@ -94,6 +96,7 @@
     <thing id="936f01d0baf669cc0daad101ca8fe155" start="22" end="22" line-color="5" type="time-range-sign">
       <references>
         <task id="936f01d0baf669cc0daad101ca8f720d"/>
+        <group ref="89e703812ce34189aa7719845c759500"/>
       </references>
       <shape id="7d670d47-55b0-4b2a-9262-f051dfcb1a4e" start="22" end="22">
         <rectangle>

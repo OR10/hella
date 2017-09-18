@@ -336,6 +336,13 @@ class ImportTest extends Tests\KernelTestCase
                     ],
                 ],
                 'labeledThingGroups' => [
+
+                    [
+                        'originalId' => '89e703812ce34189aa7719845c759500',
+                        'groupType' => 'empty-group',
+                        'lineColor' => '8',
+                        'labeledThingGroupInFrames' => []
+                    ],
                     [
                         'originalId' => 'cf6a96bdee95412f3309e2a62b26bc2f',
                         'groupType' => 'extension-sign-group',
