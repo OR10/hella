@@ -38,6 +38,7 @@ describe('LabeledThingGroupGateway', () => {
   let couchDbModelSerializer;
   let packagingExecutor;
   let revisionManager;
+  let pouchDbViewService;
   let ghostingServiceMock;
 
   let labeledThingGroup;
@@ -139,6 +140,7 @@ describe('LabeledThingGroupGateway', () => {
       couchDbModelSerializer = $injector.get('couchDbModelSerializer');
       packagingExecutor = $injector.get('packagingExecutor');
       revisionManager = $injector.get('revisionManager');
+      pouchDbViewService = $injector.get('pouchDbViewService');
       groupGateway = $injector.instantiate(LabeledThingGroupGateway);
     });
   });
@@ -1027,6 +1029,128 @@ describe('LabeledThingGroupGateway', () => {
       expect(returnValueSpy).toHaveBeenCalledWith(
         couchDbModelDeserializer.deserializeLabeledThingGroupInFrame.calls.mostRecent().returnValue
       );
+    });
+  });
+
+  describe('getFrameIndexRangeForLabeledThingGroup', () => {
+    it('should return promise', () => {
+      const returnValue = groupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup);
+      expect(returnValue.then).toEqual(jasmine.any(Function));
+    });
+
+    it('should utilize packaging executor', () => {
+      spyOn(packagingExecutor, 'execute').and.callThrough();
+
+      const returnValue = groupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup);
+
+      expect(packagingExecutor.execute).toHaveBeenCalled();
+      expect(returnValue).toBe(
+        packagingExecutor.execute.calls.mostRecent().returnValue
+      );
+    });
+
+    it('should utilize the labeledThingGroupFrameRange view', () => {
+      spyOn(pouchDbViewService, 'getDesignDocumentViewName').and.callThrough();
+      groupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup);
+
+      $rootScope.$apply();
+
+      expect(pouchDbViewService.getDesignDocumentViewName).toHaveBeenCalledWith(
+        'labeledThingGroupFrameRange'
+      );
+
+      const queriedViewName = pouchDbContext.query.calls.mostRecent().args[0];
+      expect(queriedViewName).toEqual(
+        pouchDbViewService.getDesignDocumentViewName.calls.mostRecent().returnValue
+      );
+    });
+
+    it('should query the view with correct group options', () => {
+      groupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup);
+
+      $rootScope.$apply();
+
+      const queryOptions = pouchDbContext.query.calls.mostRecent().args[1];
+      expect(queryOptions.group).toBeTruthy();
+      expect(queryOptions.group_level).toEqual(1);
+    });
+
+    it('should query the view with correct key', () => {
+      groupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup);
+
+      $rootScope.$apply();
+
+      const queryOptions = pouchDbContext.query.calls.mostRecent().args[1];
+      expect(queryOptions.key).toEqual([labeledThingGroup.id]);
+    });
+
+    it('should query the view without requesting document includes', () => {
+      groupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup);
+
+      $rootScope.$apply();
+
+      const queryOptions = pouchDbContext.query.calls.mostRecent().args[1];
+      expect(queryOptions.include_docs).toBeFalsy();
+    });
+
+    it('should reject if the query failed catastrophically', () => {
+      const error = 'We are writing the year 5 billion, the day the sun explodes!';
+
+      pouchDbContext.query.and.returnValue($q.reject(error));
+
+      const returnValue = groupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup);
+      const returnValueSpy = jasmine.createSpy('returnValue rejected');
+      returnValue.catch(returnValueSpy);
+
+      $rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalledWith(error);
+    });
+
+    it('should reject if the query does not provide an answer', () => {
+      pouchDbContext.query.and.returnValue(
+        $q.resolve({
+          offset: 0,
+          total_rows: 0,
+          rows: [],
+        })
+      );
+
+      const returnValue = groupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup);
+      const returnValueSpy = jasmine.createSpy('returnValue rejected');
+      returnValue.catch(returnValueSpy);
+
+      $rootScope.$apply();
+
+      expect(returnValueSpy).toHaveBeenCalled();
+    });
+
+    it('should resolve with the correct frame indices', () => {
+      pouchDbContext.query.and.returnValue(
+        $q.resolve({
+          offset: 0,
+          total_rows: 0,
+          rows: [
+            {
+              id: labeledThingGroup.id,
+              key: labeledThingGroup.id,
+              value: [23, 42],
+            },
+          ],
+        })
+      );
+
+      const returnValue = groupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup);
+      const returnValueSpy = jasmine.createSpy('returnValue resolved');
+      returnValue.then(returnValueSpy);
+
+      $rootScope.$apply();
+
+      const expectedReturnValue = {
+        startFrameIndex: 23,
+        endFrameIndex: 42,
+      };
+      expect(returnValueSpy).toHaveBeenCalledWith(expectedReturnValue);
     });
   });
 });

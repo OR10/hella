@@ -184,6 +184,52 @@ class LabeledThingGroupGateway {
   }
 
   /**
+   * Determine the frameRange for a specific {@link LabeledThingGroup}
+   *
+   * The `frameIndexRange` is calculated by looking at all associated {@link LabeledThing} frameRanges and determining
+   * the maximum span of overlapping frames.
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @returns {Promise.<{startFrameIndex: number, endFrameIndex: number}>}
+   */
+  getFrameIndexRangeForLabeledThingGroup(labeledThingGroup) {
+    const task = labeledThingGroup.task;
+    const taskId = task.id;
+    const groupId = labeledThingGroup.id;
+
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return this._$q.resolve()
+        .then(
+          () => dbContext.query(
+            this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupFrameRange'),
+            {
+              include_docs: false,
+              key: [groupId],
+              group: true,
+              group_level: 1,
+            }
+          )
+        )
+        .then(result => {
+          if (result.rows.length === 0) {
+            return this._$q.reject(
+              `The group ${groupId} does not have a frameRange, as it is not associated with any LabeledThing.`
+            );
+          }
+
+          const row = result.rows[0];
+
+          return {
+            startFrameIndex: row.value[0],
+            endFrameIndex: row.value[1],
+          };
+        });
+    });
+  }
+
+  /**
    * @param {Task} task
    * @param {string[]} ids
    * @returns {Promise.<LabeledThingGroup[]>}
