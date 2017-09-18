@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+    <frame>
+        <class id="time" name="Time">
+            <value id="day" name="Day" />
+            <value id="night" name="Night">
+                <class id="street-lights" name="Street lights">
+                    <value id="neon" name="Neon lights">
+                        <class name="Lamp Color" id="lamp-color">
+                            <value id="white" name="White" />
+                            <value id="orange" name="Orange" />
+                        </class>
+                    </value>
+                    <value id="halogen" name="Halogen lights">
+                        <class ref="lamp-color" />
+                    </value>
+                    <value id="xenon" name="Xenon lights" />
+                </class>
+            </value>
+        </class>
+        <class ref="country" />
+    </frame>
     <thing id="sign" shape="cuboid" name="Traffic Sign">
         <class id="sign-type" name="Sign type">
             <value id="u-turn" name="U-Turn"/>

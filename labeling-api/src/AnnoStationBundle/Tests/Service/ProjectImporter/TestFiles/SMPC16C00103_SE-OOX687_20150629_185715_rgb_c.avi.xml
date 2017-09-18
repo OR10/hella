@@ -20,10 +20,17 @@
       <created-by-user username="admin" email="admin@example.com"/>
     </export>
     <requirements id="936f01d0baf669cc0daad101ca8fb0eb" name="TestConfig" filename="TestConfig.xml">
-      <sha256>75e3502cedafd24f682b16e8673a061357f880b0fe14702df31e6181b9ebf54a</sha256>
+      <sha256>832105dce0b0eb2a9a79521fe3255a96f8cfbd8a90279a1c12f821f3da1a6baf</sha256>
     </requirements>
   </metadata>
   <video id="936f01d0baf669cc0daad101ca8f830a" filename="SMPC16C00103_SE-OOX687_20150629_185715_rgb_c.avi">
+    <frame-labeling incomplete="false">
+      <references>
+        <task id="936f01d0baf669cc0daad101ca8f720d"/>
+      </references>
+      <value id="day" class="time" start="22" end="660"/>
+      <value id="germany" class="country" start="22" end="660"/>
+    </frame-labeling>
     <group id="cf6a96bdee95412f3309e2a62b26bc2f" start="22" end="88" type="extension-sign-group" line-color="7" incomplete="false">
       <value id="extension-sign-group" class="position-below" start="22" end="44"/>
       <value id="extension-sign-group" class="position-above" start="66" end="88"/>
