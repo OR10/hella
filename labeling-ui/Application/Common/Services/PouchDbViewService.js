@@ -229,6 +229,32 @@ PouchDbViewService.VIEWS = {
       }
     },
   },
+  'labeledThingGroupFrameRange': {
+    map: function(doc) {
+      if (doc.type === 'AppBundle.Model.LabeledThing') {
+        doc.groupIds.forEach(
+          function(groupId) {
+            var frameIndex;
+            for (frameIndex = doc.frameRange.startFrameIndex; frameIndex <= doc.frameRange.endFrameIndex; frameIndex++) {
+              emit([groupId], [frameIndex, frameIndex]);
+            }
+          }
+        );
+      }
+    },
+    reduce: function(key, values) { // eslint-disable-line func-names
+      var min = Infinity;
+      var max = -Infinity;
+      var index;
+
+      for (index = 0; index < values.length; index++) {
+        min = Math.min(values[index][0], min);
+        max = Math.max(values[index][1], max);
+      }
+
+      return [min, max];
+    },
+  },
   'labeledFrameByTaskIdAndFrameIndex': {
     map: function(doc) {
       if (doc.type === 'AppBundle.Model.LabeledFrame') {
