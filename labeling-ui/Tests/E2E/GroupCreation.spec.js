@@ -477,6 +477,36 @@ describe('Group Creation', () => {
       });
   });
 
+  it('does not create a group by select a measurement rectangle and click the group button', done => {
+    bootstrapHttp(sharedMocks);
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => groupButton.click())
+      .then(() => browser.sleep(250))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangle);
+      })
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
+        done();
+      });
+  });
+
   it('does not create a group around measurement rectangle', done => {
     bootstrapHttp(sharedMocks);
 
