@@ -7,6 +7,8 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
 import Environment from '../../Common/Support/Environment';
+import PaperGroupRectangleMulti from '../../Viewer/Shapes/PaperGroupRectangleMulti';
+import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
 
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
@@ -387,8 +389,8 @@ class ViewerController {
     this._pathCollisionService = pathCollisionService;
 
     const groupListener = (tool, labelStructureObject) => {
-      if (this._shapeSelectionService.count() > 0) {
-        const shapes = this._shapeSelectionService.getAllShapes();
+      const shapes = this._shapeSelectionService.getAllShapes().filter(shape => (!(shape instanceof PaperGroupRectangleMulti || shape instanceof PaperMeasurementRectangle)));
+      if (shapes.length > 0) {
         const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
         const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
         if (shapes.length === 2) {
