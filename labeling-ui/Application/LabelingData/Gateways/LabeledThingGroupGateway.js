@@ -12,7 +12,6 @@ class LabeledThingGroupGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    * @param {AbortablePromiseFactory} abortablePromiseFactory
-   * @param {LabeledThingGateway} labeledThingGateway
    * @param {EntityIdService} entityIdService
    * @param {PouchDbViewService} pouchDbViewService
    * @param {GhostingService} ghostingService
@@ -25,7 +24,6 @@ class LabeledThingGroupGateway {
     couchDbModelDeserializer,
     revisionManager,
     abortablePromiseFactory,
-    labeledThingGateway,
     entityIdService,
     pouchDbViewService,
     ghostingService
@@ -77,12 +75,6 @@ class LabeledThingGroupGateway {
      * @private
      */
     this._abortablePromiseFactory = abortablePromiseFactory;
-
-    /**
-     * @type {LabeledThingGateway}
-     * @private
-     */
-    this._labeledThingGateway = labeledThingGateway;
 
     /**
      * @type {EntityIdService}
@@ -432,63 +424,6 @@ class LabeledThingGroupGateway {
   }
 
   /**
-   * Assign the given list of {@link LabeledThing}s to a {@link LabeledThingGroup}.
-   *
-   * @param {LabeledThing[]} labeledThings
-   * @param {LabeledThingGroup} labeledThingGroup
-   */
-  assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
-    const modifiedLabeledThings = labeledThings.map(labeledThing => {
-      if (labeledThing.groupIds.indexOf(labeledThingGroup.id) === -1) {
-        labeledThing.groupIds.push(labeledThingGroup.id);
-      }
-      return labeledThing;
-    });
-
-    return this._packagingExecutor.execute(
-      'labeledThingGroup',
-      () => {
-        const promises = [];
-
-        modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
-        });
-
-        return this._abortablePromiseFactory(this._$q.all(promises));
-      }
-    );
-  }
-
-  /**
-   * Remove assignment of a {@link LabeledThingGroup} from a list of {@link LabeledThing}s.
-   *
-   * @param {LabeledThing[]} labeledThings
-   * @param {LabeledThingGroup} labeledThingGroup
-   */
-  unassignLabeledThingsFromLabeledThingGroup(labeledThings, labeledThingGroup) {
-    const modifiedLabeledThings = labeledThings.map(labeledThing => {
-      const index = labeledThing.groupIds.indexOf(labeledThingGroup.id);
-      if (index !== -1) {
-        labeledThing.groupIds.splice(index, 1);
-      }
-      return labeledThing;
-    });
-
-    return this._packagingExecutor.execute(
-      'labeledThingGroup',
-      () => {
-        const promises = [];
-
-        modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
-        });
-
-        return this._abortablePromiseFactory(this._$q.all(promises));
-      }
-    );
-  }
-
-  /**
    * @param {LabeledThingGroupInFrame} ltgif
    */
   saveLabeledThingGroupInFrame(ltgif) {
@@ -537,7 +472,6 @@ LabeledThingGroupGateway.$inject = [
   'couchDbModelDeserializer',
   'revisionManager',
   'abortablePromiseFactory',
-  'labeledThingGateway',
   'entityIdService',
   'pouchDbViewService',
   'ghostingService',

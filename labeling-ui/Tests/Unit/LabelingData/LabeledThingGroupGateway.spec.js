@@ -28,7 +28,6 @@ describe('LabeledThingGroupGateway', () => {
   /**
    * @param {LabeledThingGateway}
    */
-  let thingGateway;
   let pouchDbContext;
   let $rootScope;
   let $q;
@@ -87,7 +86,6 @@ describe('LabeledThingGroupGateway', () => {
     module('AnnoStation.Common');
 
     pouchDbContext = jasmine.createSpyObj('pouchDbContext', ['query', 'get', 'remove', 'put', 'allDocs', 'bulkDocs']);
-    thingGateway = jasmine.createSpyObj('LabeledThingGateway', ['saveLabeledThing']);
     ghostingServiceMock = jasmine.createSpyObj(
       'GhostingService',
       ['calculateClassGhostsForLabeledThingGroupsAndFrameIndex']
@@ -117,18 +115,11 @@ describe('LabeledThingGroupGateway', () => {
       return deferred.promise;
     });
 
-    thingGateway.saveLabeledThing.and.callFake(doc => {
-      const deferred = $q.defer();
-      deferred.resolve(doc);
-      return deferred.promise;
-    });
-
     module($provide => {
       const pouchDbContextServiceMock = jasmine.createSpyObj('storageContextService', ['provideContextForTaskId']);
       pouchDbContextServiceMock.provideContextForTaskId.and.returnValue(pouchDbContext);
 
       $provide.value('pouchDbContextService', pouchDbContextServiceMock);
-      $provide.value('labeledThingGateway', thingGateway);
       $provide.value('ghostingService', ghostingServiceMock);
       // $provide.value('applicationConfig', mockConfig);
     });
@@ -506,98 +497,6 @@ describe('LabeledThingGroupGateway', () => {
     expect(pouchDbContext.put).toHaveBeenCalledWith(serializedGroup);
     expect(pouchDbContext.get).toHaveBeenCalledWith('PUT-LABELED-THING-GROUP-ID');
     expect(couchDbModelDeserializer.deserializeLabeledThingGroup).toHaveBeenCalledWith(labeledThingGroupResponse, task);
-  });
-
-  it('should assign labeled things to a labeled thing group', () => {
-    const task = createTask();
-
-    const labeledThingGroup = new LabeledThingGroup({
-      id: 'LABELED-THING-GROUP-ID',
-      task,
-      groupType: 'extension-sign-group',
-      lineColor: 1,
-      groupIds: [],
-    });
-
-    const labeledThing = new LabeledThing({
-      id: 'LABELED-THING-ID',
-      frameRange: {
-        startFrameIndex: 0,
-        endFrameIndex: 3,
-      },
-      groupIds: [],
-      classes: ['foo', 'bar', 'baz'],
-      incomplete: false,
-      lineColor: 8,
-      task,
-    });
-
-    const labeledThingCalled = new LabeledThing({
-      id: 'LABELED-THING-ID',
-      frameRange: {
-        startFrameIndex: 0,
-        endFrameIndex: 3,
-      },
-      groupIds: ['LABELED-THING-GROUP-ID'],
-      classes: ['foo', 'bar', 'baz'],
-      incomplete: false,
-      taskId: 'TASK-ID',
-      projectId: 'PROJECT-ID',
-      lineColor: 8,
-      task,
-    });
-
-    groupGateway.assignLabeledThingsToLabeledThingGroup([labeledThing], labeledThingGroup);
-
-    $rootScope.$apply();
-
-    expect(thingGateway.saveLabeledThing)
-      .toHaveBeenCalledWith(labeledThingCalled);
-  });
-
-  it('should unassign labeled things from a labeled thing group', () => {
-    const task = createTask();
-
-    const labeledThingGroup = new LabeledThingGroup({
-      id: 'LABELED-THING-GROUP-ID',
-      task,
-      groupType: 'extension-sign-group',
-      lineColor: 1,
-      groupIds: [],
-    });
-
-    const labeledThing = new LabeledThing({
-      id: 'LABELED-THING-ID',
-      frameRange: {
-        startFrameIndex: 0,
-        endFrameIndex: 3,
-      },
-      groupIds: ['LABELED-THING-GROUP-ID'],
-      classes: ['foo', 'bar', 'baz'],
-      incomplete: false,
-      lineColor: 8,
-      task,
-    });
-
-    const labeledThingCalled = new LabeledThing({
-      id: 'LABELED-THING-ID',
-      frameRange: {
-        startFrameIndex: 0,
-        endFrameIndex: 3,
-      },
-      groupIds: [],
-      classes: ['foo', 'bar', 'baz'],
-      incomplete: false,
-      lineColor: 8,
-      task,
-    });
-
-    groupGateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], labeledThingGroup);
-
-    $rootScope.$apply();
-
-    expect(thingGateway.saveLabeledThing)
-      .toHaveBeenCalledWith(labeledThingCalled);
   });
 
   describe('deleteLabeledThingGroup', () => {

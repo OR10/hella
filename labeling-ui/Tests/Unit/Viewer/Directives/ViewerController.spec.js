@@ -32,6 +32,7 @@ describe('ViewerController tests', () => {
   let labeledThingGroupGateway;
   let labeledThingInFrameGateway;
   let thingLayerScopeView;
+  let labeledThingGateway;
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
@@ -104,6 +105,7 @@ describe('ViewerController tests', () => {
     lockService = jasmine.createSpyObj('lockService', ['acquire']);
     labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['listLabeledThingInFrame', 'getLabeledThingInFrame']);
     thingLayerScopeView = jasmine.createSpyObj('thinglayer.withScope().view', ['update']);
+    labeledThingGateway = jasmine.createSpyObj('LabeledThingGateway', ['assignLabeledThingsToLabeledThingGroup']);
   });
 
   beforeEach(() => {
@@ -146,7 +148,7 @@ describe('ViewerController tests', () => {
       paperShapeFactory,
       null, // applicationConfig,
       null, // $interval,
-      null, // labeledThingGateway,
+      labeledThingGateway,
       null, // abortablePromiseFactory,
       animationFrameService,
       angularQ,
@@ -325,7 +327,7 @@ describe('ViewerController tests', () => {
           spyOn(rootScope, '$emit');
           groupCreationService.showGroupSelector.and.returnValue(showGroupSelectorPromise);
           labeledThingGroupGateway.createLabeledThingGroup.and.returnValue(createLabeledThingGroupPromise);
-          labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup.and.returnValue(assignLtToLtgPromise);
+          labeledThingGateway.assignLabeledThingsToLabeledThingGroup.and.returnValue(assignLtToLtgPromise);
           scope.vm = { filters: { filters: [] } };
           group.labeledThingInFrame = ltif;
         });
@@ -335,7 +337,7 @@ describe('ViewerController tests', () => {
           scope.$apply();
 
           expect(labeledThingGroupGateway.createLabeledThingGroup).toHaveBeenCalledWith(task, ltg);
-          expect(labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup).toHaveBeenCalledWith([lt], ltg);
+          expect(labeledThingGateway.assignLabeledThingsToLabeledThingGroup).toHaveBeenCalledWith([lt], ltg);
           expect(rootScope.$emit).toHaveBeenCalledWith('shape:add:after', group);
         });
 

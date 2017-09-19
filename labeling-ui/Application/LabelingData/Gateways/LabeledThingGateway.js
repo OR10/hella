@@ -123,7 +123,8 @@ class LabeledThingGateway {
   }
 
   _isLabeledThingIncomplete(dbContext, labeledThing) {
-    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
+    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName(
+      'labeledThingInFrameByLabeledThingIdAndIncomplete'), {
       group: true,
       group_level: 1,
       startkey: [labeledThing.id, labeledThing.frameRange.startFrameIndex],
@@ -240,6 +241,65 @@ class LabeledThingGateway {
   }
 
   /**
+   * Assign the given list of {@link LabeledThing}s to a {@link LabeledThingGroup}.
+   *
+   * @param {LabeledThing[]} labeledThings
+   * @param {LabeledThingGroup} labeledThingGroup
+   */
+  assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
+    const modifiedLabeledThings = labeledThings.map(labeledThing => {
+      if (labeledThing.groupIds.indexOf(labeledThingGroup.id) === -1) {
+        labeledThing.groupIds.push(labeledThingGroup.id);
+      }
+      return labeledThing;
+    });
+
+    return this._packagingExecutor.execute(
+      // It is important to put this into the `labeledThingGroup` queue not the `labeledThing` queue!
+      'labeledThingGroup',
+      () => {
+        const promises = [];
+
+        modifiedLabeledThings.forEach(labeledThing => {
+          promises.push(this.saveLabeledThing(labeledThing));
+        });
+
+        return this._$q.all(promises);
+      }
+    );
+  }
+
+  /**
+   * Remove assignment of a {@link LabeledThingGroup} from a list of {@link LabeledThing}s.
+   *
+   * @param {LabeledThing[]} labeledThings
+   * @param {LabeledThingGroup} labeledThingGroup
+   */
+  unassignLabeledThingsFromLabeledThingGroup(labeledThings, labeledThingGroup) {
+    const modifiedLabeledThings = labeledThings.map(labeledThing => {
+      const index = labeledThing.groupIds.indexOf(labeledThingGroup.id);
+      if (index !== -1) {
+        labeledThing.groupIds.splice(index, 1);
+      }
+      return labeledThing;
+    });
+
+    return this._packagingExecutor.execute(
+      // It is important to put this into the `labeledThingGroup` queue not the `labeledThing` queue!
+      'labeledThingGroup',
+      () => {
+        const promises = [];
+
+        modifiedLabeledThings.forEach(labeledThing => {
+          promises.push(this.saveLabeledThing(labeledThing));
+        });
+
+        return this._$q.all(promises);
+      }
+    );
+  }
+
+  /**
    * @param {Task} task
    * @param {LabeledThing} labeledThing
    * @private
@@ -247,7 +307,8 @@ class LabeledThingGateway {
   _getAssociatedLabeledThingsInFrames(task, labeledThing) {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
+    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName(
+      'labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
       include_docs: true,
       startkey: [labeledThing.id, 0],
       endkey: [labeledThing.id, {}],
