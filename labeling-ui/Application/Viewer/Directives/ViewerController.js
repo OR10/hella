@@ -389,7 +389,10 @@ class ViewerController {
     this._pathCollisionService = pathCollisionService;
 
     const groupListener = (tool, labelStructureObject) => {
-      const shapes = this._shapeSelectionService.getAllShapes().filter(shape => (!(shape instanceof PaperGroupRectangleMulti || shape instanceof PaperMeasurementRectangle)));
+      const shapes = this._shapeSelectionService.getAllShapes()
+        .filter(
+          shape => (!(shape instanceof PaperGroupRectangleMulti || shape instanceof PaperMeasurementRectangle))
+        );
       if (shapes.length > 0) {
         const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
         const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
