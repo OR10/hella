@@ -3,6 +3,9 @@ import LabelSelectorController from 'Application/LabelStructure/Directives/Label
 import LabelStructureThing from '../../../../Application/Task/Model/LabelStructureThing';
 import LabelStructureGroup from '../../../../Application/Task/Model/LabelStructureGroup';
 import LabelStructureObject from '../../../../Application/Task/Model/LabelStructureObject';
+import PaperMeasurementRectangle from '../../../../Application/Viewer/Shapes/PaperMeasurementRectangle';
+import TaskFixture from '../../../Fixtures/Models/Frontend/Task';
+import paper from 'paper';
 
 describe('LabelSelectorController tests', () => {
   /**
@@ -46,6 +49,11 @@ describe('LabelSelectorController tests', () => {
       null, // taskGateway
       shapeSelectionService
     );
+  }
+
+  function setupPaperJs() {
+    const canvas = document.createElement('canvas');
+    paper.setup(canvas);
   }
 
   it('can be created', () => {
@@ -116,6 +124,28 @@ describe('LabelSelectorController tests', () => {
 
       const show = controller.show();
       expect(show).toBe(true);
+    });
+
+    it('returns false if selectedPaperShape is type of PaperMeasurementRectangle', () => {
+      setupPaperJs();
+      const controller = createController();
+      const topLeft = {x: 1, y: 1};
+      const bottomRight = {x: 200, y: 200};
+      const color = {primary: 'yellow', secondary: 'black'};
+      const entityIdService = jasmine.createSpyObj('EntityIdService', ['getUniqueId']);
+      const measurementRectangle = new PaperMeasurementRectangle(
+        TaskFixture.clone(),
+        'foobar',
+        topLeft,
+        bottomRight,
+        color,
+        entityIdService
+      );
+      controller.selectedPaperShape = measurementRectangle;
+      shapeSelectionService.count.and.returnValue(1);
+
+      const show = controller.show();
+      expect(show).toBe(false);
     });
   });
 
