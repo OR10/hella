@@ -7,9 +7,10 @@ SOURCE_REPO="${1}"
 TARGET_REPO="${2}"
 INCLUDES="${3}"
 EXCLUDES="${4}"
-HISTORY_EXCLUDES="${5}"
-COMMIT_MESSAGE_FILTERS="${6}"
-BRANCH="${7}"
+INCLUDED_EXCLUDES="${5}"
+HISTORY_EXCLUDES="${6}"
+COMMIT_MESSAGE_FILTERS="${7}"
+BRANCH="${8}"
 
 log() {
   local message="${@}"
@@ -22,8 +23,8 @@ error() {
 }
 
 showUsageIfNecessary() {
-  if [ "$#" -lt 6 ]; then
-    echo "${0} <source-repository> <target-directory> <includes-file> <excludes-file> <history-excludes-file> <commit-message-blacklist>"
+  if [ "$#" -lt 8 ]; then
+    echo "${0} <source-repository> <target-directory> <includes-file> <excludes-file> <included-excludes> <history-excludes-file> <commit-message-blacklist> <branch>"
     exit 1
   fi
 }
@@ -63,6 +64,7 @@ prepare() {
   git clone -b "${branch}" --single-branch "${source}" "${target}"
 
   pushd "${target}" >/dev/null
+  git remote set-head -d origin
   git remote remove origin
   popd >/dev/null
 }
@@ -113,27 +115,33 @@ filterRepository() {
   local repository="${1}"
   local includes="${2}"
   local excludes="${3}"
-  local historyExcludes="${4}"
-  local branch="${5}"
+  local includedExcludes="${4}"
+  local historyExcludes="${5}"
+  local branch="${6}"
 
   local preprocessedIncludes="$(prepareFileListForRgFiltering "${includes}")"
   local preprocessedExcludes="$(prepareFileListForRgFiltering "${excludes}")"
+  local preprocessedIncludedExcludes="$(prepareFileListForRgFiltering "${includedExcludes}")"
   local preprocessedHistoryExcludes="$(prepareFileListForRgFiltering "${historyExcludes}")"
 
   pushd "${repository}" >/dev/null
   log "Removing everything, which should not longer be there according to excludes, includes and history-excludes."
   log "This will take a long (hours) time. Grab a coffee and something to eat ;)"
   git checkout "${branch}"
-  git filter-branch --prune-empty --tree-filter "\
+  git filter-branch --prune-empty \
+  --tree-filter "\
     git ls-files|rg -f \"${preprocessedIncludes}\" -v|xargs -d '\n' -n 32 -- rm -rf;\
-    git ls-files|rg -f \"${preprocessedExcludes}\"|xargs -d '\n' -n 32 -- rm -rf;\
-    git ls-files|rg -f \"${preprocessedHistoryExcludes}\"|xargs -d '\n' -n 32 -- rm -rf;"
+    git ls-files|rg -f \"${preprocessedExcludes}\"| rg -f \"${preprocessedIncludedExcludes}\" -v |xargs -d '\n' -n 32 -- rm -rf;\
+    git ls-files|rg -f \"${preprocessedHistoryExcludes}\"|xargs -d '\n' -n 32 -- rm -rf;" \
+  --tag-name-filter "cat"\
+  -- --all
 
   popd >/dev/null
 
   # Cleanup temp files
   rm "${preprocessedIncludes}"
   rm "${preprocessedExcludes}"
+  rm "${preprocessedIncludedExcludes}"
   rm "${preprocessedHistoryExcludes}"
 }
 
@@ -145,7 +153,8 @@ filterCommitMessages() {
   pushd "${repository}" >/dev/null
   log "Filtering commit messages to not include blacklist words"
   git checkout "${branch}"
-  git filter-branch --msg-filter "\
+  git filter-branch \
+  --msg-filter "\
     gawk 'FNR==NR{
      blacklist[\$0]
      next
@@ -160,7 +169,9 @@ filterCommitMessages() {
         }
       }
     }
-  }1' \"${commitMessageFilters}\" -"
+  }1' \"${commitMessageFilters}\" -" \
+  --tag-name-filter "cat"\
+  -- --all
 
   popd >/dev/null
 }
@@ -170,7 +181,9 @@ removeBackupRefs() {
   pushd "${repository}" >/dev/null
   log "Removing backup refs (refs/original)"
   git for-each-ref --format="%(refname)" refs/original/ | xargs -n 1 git update-ref -d
-
+  rm -r .git/refs/original 2>/dev/null
+  git reflog expire --expire=now --all
+  git gc --prune=now --aggressive
   popd >/dev/null
 }
 
@@ -192,13 +205,14 @@ main() {
   local absoluteHistoryExcludes="$(relativeToAbsolute "${HISTORY_EXCLUDES}")"
   local absoluteIncludes="$(relativeToAbsolute "${INCLUDES}")"
   local absoluteExcludes="$(relativeToAbsolute "${EXCLUDES}")"
+  local absoluteIncludedExcludes="$(relativeToAbsolute "${INCLUDED_EXCLUDES}")"
   local absoluteCommitMessageFilters="$(relativeToAbsolute "${COMMIT_MESSAGE_FILTERS}")"
   local branch="${BRANCH}"
 
 
   prepare "${absoluteSourceRepo}" "${absoluteTargetRepo}" "${branch}"
   saveHistoryExcludes "${absoluteTargetRepo}" "${absoluteHistoryExcludes}" "${historyStorage}" "${branch}"
-  filterRepository "${absoluteTargetRepo}" "${absoluteIncludes}" "${absoluteExcludes}" "${absoluteHistoryExcludes}" "${branch}"
+  filterRepository "${absoluteTargetRepo}" "${absoluteIncludes}" "${absoluteExcludes}" "${absoluteIncludedExcludes}" "${absoluteHistoryExcludes}" "${branch}"
   removeBackupRefs "${absoluteTargetRepo}"
   filterCommitMessages "${absoluteTargetRepo}" "${absoluteCommitMessageFilters}" "${branch}"
   removeBackupRefs "${absoluteTargetRepo}"

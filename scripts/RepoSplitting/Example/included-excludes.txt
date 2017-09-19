@@ -1,0 +1,1 @@
+Directory0/subfolder1/strange-file.txt
