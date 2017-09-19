@@ -432,9 +432,9 @@ class LabeledThingGroupGateway {
   }
 
   /**
-   * Assign the given labeled thing to the given group.
+   * Assign the given list of {@link LabeledThing}s to a {@link LabeledThingGroup}.
    *
-   * @param {Array.<LabeledThing>} labeledThings
+   * @param {LabeledThing[]} labeledThings
    * @param {LabeledThingGroup} labeledThingGroup
    */
   assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
@@ -460,9 +460,9 @@ class LabeledThingGroupGateway {
   }
 
   /**
-   * Remove group assignment from the labeled thing
+   * Remove assignment of a {@link LabeledThingGroup} from a list of {@link LabeledThing}s.
    *
-   * @param {Array.<LabeledThing>} labeledThings
+   * @param {LabeledThing[]} labeledThings
    * @param {LabeledThingGroup} labeledThingGroup
    */
   unassignLabeledThingsFromLabeledThingGroup(labeledThings, labeledThingGroup) {
