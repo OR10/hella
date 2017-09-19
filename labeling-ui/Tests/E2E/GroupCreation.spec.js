@@ -506,4 +506,45 @@ describe('Group Creation', () => {
         done();
       });
   });
+
+  it('does not create a group around measurement rectangle', done => {
+    bootstrapHttp(sharedMocks);
+
+    const toolButton = element(by.css('button.tool-button.tool-additional-tools.tool-0'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => toolButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .mouseMove(viewer, {x: 450, y: 450})
+          .mouseDown()
+          .mouseUp()
+          .perform();
+      })
+      .then(() => groupButton.click())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 500, y: 500}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(() => browser.sleep(250))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangle);
+      })
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
+        done();
+      });
+  });
 });
