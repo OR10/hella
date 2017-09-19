@@ -1,6 +1,11 @@
 import {inject} from 'angular-mocks';
 import ViewerController from 'Application/Viewer/Directives/ViewerController';
 import GroupToolActionStruct from 'Application/Viewer/Tools/ToolActionStructs/GroupToolActionStruct';
+import PaperMeasurementRectangle from '../../../../Application/Viewer/Shapes/PaperMeasurementRectangle';
+import PaperGroupRectangleMulti from '../../../../Application/Viewer/Shapes/PaperGroupRectangleMulti';
+import GroupNameService from '../../../../Application/Viewer/Services/GroupNameService';
+import TaskFixture from '../../../Fixtures/Models/Frontend/Task';
+import paper from 'paper';
 
 describe('ViewerController tests', () => {
   let angularQ;
@@ -36,6 +41,11 @@ describe('ViewerController tests', () => {
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
   class ViewerControllerTestable extends ViewerController {
+  }
+
+  function setupPaperJs() {
+    const canvas = document.createElement('canvas');
+    paper.setup(canvas);
   }
 
   beforeEach(() => {
@@ -264,10 +274,46 @@ describe('ViewerController tests', () => {
 
     it('does nothing if there are no shapes selected', () => {
       shapeSelectionService.count.and.returnValue(0);
+      shapeSelectionService.getAllShapes.and.returnValue([]);
 
       groupListener();
 
-      expect(shapeSelectionService.getAllShapes).not.toHaveBeenCalled();
+      expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).not.toHaveBeenCalled();
+    });
+
+    it('does nothing if there is a group selected', () => {
+      setupPaperJs();
+
+      const paperGroupRectangleMulti = new PaperGroupRectangleMulti(new GroupNameService(), null, null, [], null);
+
+      shapeSelectionService.getAllShapes.and.returnValue([paperGroupRectangleMulti]);
+      shapeSelectionService.count.and.returnValue(0);
+
+      groupListener();
+
+      expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).not.toHaveBeenCalled();
+    });
+
+    it('does nothing if there is a measurement rectangle selected', () => {
+      setupPaperJs();
+      const topLeft = {x: 1, y: 1};
+      const bottomRight = {x: 200, y: 200};
+      const color = {primary: 'yellow', secondary: 'black'};
+      const entityIdService = jasmine.createSpyObj('EntityIdService', ['getUniqueId']);
+      const measurementRectangle = new PaperMeasurementRectangle(
+        TaskFixture.clone(),
+        'foobar',
+        topLeft,
+        bottomRight,
+        color,
+        entityIdService
+      );
+
+      shapeSelectionService.getAllShapes.and.returnValue([measurementRectangle]);
+      shapeSelectionService.count.and.returnValue(0);
+
+      groupListener();
+
       expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).not.toHaveBeenCalled();
     });
 
