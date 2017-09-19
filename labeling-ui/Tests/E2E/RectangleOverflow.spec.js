@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -10,7 +10,7 @@ describe('Rectangle viewer overflow', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
+    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -34,13 +34,13 @@ describe('Rectangle viewer overflow', () => {
   });
 
   it('should allow overflowing of a rectangle in the top-left corner', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskOverflow,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -66,13 +66,13 @@ describe('Rectangle viewer overflow', () => {
   });
 
   it('should allow overflowing of a rectangle in the bottom-right corner', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskOverflow,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -98,13 +98,13 @@ describe('Rectangle viewer overflow', () => {
   });
 
   it('should restrict overflowing of a rectangle in the top left corner', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -130,13 +130,13 @@ describe('Rectangle viewer overflow', () => {
   });
 
   it('should restrict overflowing of a rectangle in the bottom right corner', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to3,
-      assets.mocks.RectangleOverflow.Shared.LabeledThingInFrame.LabeledThingId1Frame0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.RectangleOverflow.Shared.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -160,13 +160,13 @@ describe('Rectangle viewer overflow', () => {
   });
 
   it('should should correctly enforce shape overflows (bottom) (TTANNO-1324)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
-      assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.LabeledThingId1Frame0to3,
-      assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.LabeledThingId1Frame0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.RectangleOverflow.WideBottom.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -190,13 +190,13 @@ describe('Rectangle viewer overflow', () => {
   });
 
   it('should should correctly enforce shape overflows (top) (TTANNO-1324)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
-      assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.LabeledThingId1Frame0to3,
-      assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.LabeledThingId1Frame0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.RectangleOverflow.WideTop.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -220,13 +220,13 @@ describe('Rectangle viewer overflow', () => {
   });
 
   it('should should correctly enforce shape overflows (left) (TTANNO-1324)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
-      assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.LabeledThingId1Frame0to3,
-      assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.LabeledThingId1Frame0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.RectangleOverflow.TallLeft.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -250,13 +250,13 @@ describe('Rectangle viewer overflow', () => {
   });
 
   it('should should correctly enforce shape overflows (right) (TTANNO-1324)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.RectangleOverflow.Shared.TaskNoOverflow,
-      assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.LabeledThingId1Frame0to3,
-      assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.LabeledThingId1Frame0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.RectangleOverflow.TallRight.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -281,6 +281,7 @@ describe('Rectangle viewer overflow', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });
