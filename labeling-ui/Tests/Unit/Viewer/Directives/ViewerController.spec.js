@@ -264,10 +264,10 @@ describe('ViewerController tests', () => {
 
     it('does nothing if there are no shapes selected', () => {
       shapeSelectionService.count.and.returnValue(0);
+      shapeSelectionService.getAllShapes.and.returnValue([]);
 
       groupListener();
 
-      expect(shapeSelectionService.getAllShapes).not.toHaveBeenCalled();
       expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).not.toHaveBeenCalled();
     });
 
