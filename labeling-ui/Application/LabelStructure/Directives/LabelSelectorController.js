@@ -4,6 +4,7 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
+import PaperMeasurementRectangle from 'Application/Viewer/Shapes/PaperMeasurementRectangle';
 import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
 
 /**
@@ -260,7 +261,8 @@ export default class LabelSelectorController {
     const hasPaperShape = (this.selectedPaperShape !== undefined && this.selectedPaperShape !== null);
     const hasAtMostOneSelectedShape = (this._shapeSelectionService.count() <= 1);
     const selectedPaperShapeIsNotGroupShape = !(this.selectedPaperShape instanceof PaperGroupShape);
-    return hasPaperShape && hasAtMostOneSelectedShape && selectedPaperShapeIsNotGroupShape;
+    const selectedPaperShapeIsNotMeasurementRectangle = !(this.selectedPaperShape instanceof PaperMeasurementRectangle);
+    return hasPaperShape && hasAtMostOneSelectedShape && selectedPaperShapeIsNotGroupShape && selectedPaperShapeIsNotMeasurementRectangle;
   }
 
   /**
