@@ -1,7 +1,8 @@
 import {
   expectAllModalsToBeClosed,
   initApplication,
-  mock,
+  bootstrapHttp,
+  bootstrapPouch,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
@@ -38,15 +39,8 @@ describe('LabelSelector (right sidebar)', () => {
       .perform();
   }
 
-  // function deselectAllShapes() {
-  //   return browser.actions()
-  //     .mouseMove(viewer, {x: 1, y: 1})
-  //     .click()
-  //     .perform();
-  // }
-
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
+    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -74,14 +68,15 @@ describe('LabelSelector (right sidebar)', () => {
       sharedMocks = sharedMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.Task,
         assets.mocks.LabelSelector.BasicBehaviour.LabelStructure,
-        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.frameIndex0,
-        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.getLabeledThingInFrame0to4,
+      ]);
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.BasicBehaviour.LabeledThingInFrame.frameIndex0,
       ]);
     });
 
     it('should have no panes if nothing is selected', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -97,7 +92,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have no panes if a group is selected', done => {
       const groupButton = element(by.css('button.tool-group.tool-0'));
 
-      mock(sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.Groups.Task,
         assets.mocks.LabelSelector.BasicBehaviour.Groups.TaskConfiguration,
         assets.mocks.LabelSelector.BasicBehaviour.Groups.TaskConfigurationFile,
@@ -127,7 +122,7 @@ describe('LabelSelector (right sidebar)', () => {
     it('should have panes if first a group then another shape is selected', done => {
       const groupButton = element(by.css('button.tool-group.tool-0'));
 
-      mock(sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.BasicBehaviour.Groups.Task,
         assets.mocks.LabelSelector.BasicBehaviour.Groups.TaskConfiguration,
         assets.mocks.LabelSelector.BasicBehaviour.Groups.TaskConfigurationFile,
@@ -162,7 +157,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should start with all panes closed', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -186,7 +181,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('pane should open on click', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -211,7 +206,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('open pane should close on click', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -237,7 +232,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should only have one pane open at a time in single-select mode', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -264,7 +259,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should allow multiple open panes in multi-select mode', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -291,7 +286,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should close clicked open open panes in multi-select mode', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -320,7 +315,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should set entry upon click', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -350,7 +345,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should send LTIF storage request once entry is set', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -372,7 +367,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should change entry upon click', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -404,7 +399,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should send LTIF storage request once entry is changed', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -430,18 +425,17 @@ describe('LabelSelector (right sidebar)', () => {
 
   describe('Legacy and SimpleXml LabelStructure', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.Legacy.Task,
         assets.mocks.LabelSelector.Legacy.LabelStructure,
-        assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.frameIndex0,
-        assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.getLabeledThingInFrame0to4,
+      ]));
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.Legacy.LabeledThingInFrame.frameIndex0,
       ]);
     });
 
     it('should have correct number of panes if rectangle is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -456,8 +450,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should have correct pane titles if rectangle is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -479,8 +471,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should have correct entries in panes if rectangle is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -523,8 +513,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should display dependency once proper attribute is set', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -577,8 +565,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should display nested dependency once proper attributes are set', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -639,8 +625,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should remove whole dependency tree once high level attribute is changed', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -697,8 +681,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should remove not longer valid classes from ltif request once high level attribute is changed', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -729,17 +711,15 @@ describe('LabelSelector (right sidebar)', () => {
     ];
 
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.MultipleShapes.Task,
         assets.mocks.LabelSelector.MultipleShapes.TaskConfiguration,
         assets.mocks.LabelSelector.MultipleShapes.RequirementsXmlFile,
-        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.frameIndex0,
-        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
-        assets.mocks.LabelSelector.MultipleShapes.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
-      ]);
+      ]));
 
-      mock(sharedMocks);
+      bootstrapPouch([
+        assets.documents.LabelSelector.MultipleShapes.LabeledThingInFrame.frameIndex0,
+      ]);
     });
 
     it('shows the correct panes if selected tool and selected shape are of different types', done => {
@@ -808,20 +788,18 @@ describe('LabelSelector (right sidebar)', () => {
 
   describe('RequirementsXml LabelStructure', () => {
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.RequirementsXml.Task,
         assets.mocks.LabelSelector.RequirementsXml.TaskConfiguration,
         assets.mocks.LabelSelector.RequirementsXml.RequirementsXmlFile,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
+      ]));
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
       ]);
     });
 
     it('should have correct number of panes if rectangle one is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -836,8 +814,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should have correct pane titles if rectangle one is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -856,8 +832,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should have correct entries in panes if rectangle one is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -880,8 +854,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should have correct number of panes if rectangle two is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -896,8 +868,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should have correct pane titles if rectangle two is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -917,8 +887,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should have correct entries in panes if rectangle two is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -946,8 +914,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should switch to correct entries if rectangle is changed', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -981,8 +947,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should display dependencies once entry is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -1018,8 +982,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should display nested dependencies once entry is selected', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -1063,8 +1025,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should remove nested dependencies once entry is changed again', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -1108,8 +1068,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should remove whole dependency tree once entry with nested dependencies is changed again', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -1145,8 +1103,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should store only classes from visible dependency tree after entry changes', done => {
-      mock(sharedMocks);
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
         {
@@ -1168,13 +1124,7 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => expect(assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesDay).toExistInPouchDb())
         .then(() => done());
     });
-
-    afterEach(() => {
-      expectAllModalsToBeClosed();
-      mock.teardown();
-    });
   });
-
 
   describe('References', () => {
     beforeEach(() => {
@@ -1182,15 +1132,15 @@ describe('LabelSelector (right sidebar)', () => {
         assets.mocks.LabelSelector.RequirementsXml.Task,
         assets.mocks.LabelSelector.RequirementsXml.TaskConfiguration,
         assets.mocks.LabelSelector.References.RequirementsXmlFile,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
+      ]);
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
       ]);
     });
 
     it('should resolve a reference from the private block', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -1222,7 +1172,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should resolve a reference from another thing', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -1262,10 +1212,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should resolve a reference from the same thing', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueB,
-        assets.mocks.LabelSelector.References.LabeledThingInFrame.putRectangleOneWithClassesValueBF,
-      ]));
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -1310,7 +1257,7 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should keep a deterministic order if two of the same classes are referenced', done => {
-      mock(sharedMocks);
+      bootstrapHttp(sharedMocks);
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
@@ -1356,12 +1303,13 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should keep the label selector open after a frame change (TTANNO-1165)', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.LabelSelector.Framechange.LabeledThingInFrame.frameIndex1,
-        assets.mocks.LabelSelector.Framechange.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
-        assets.mocks.LabelSelector.Framechange.LabeledThingInFrame.getLabeledThingInFrame1Frame1,
-        assets.mocks.LabelSelector.Framechange.LabeledThingInFrame.getLabeledThingInFrame1Frame1to5,
-      ]));
+      bootstrapHttp(sharedMocks);
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
+        assets.documents.LabelSelector.Framechange.LabeledThingInFrame.frameIndex1,
+      ]);
+
       const nextFrameButton = element(by.css('.next-frame-button'));
 
       initApplication(
@@ -1431,15 +1379,18 @@ describe('LabelSelector (right sidebar)', () => {
     const selectedOnlyButton = element(by.css('label[for="view-style-selected-only"]'));
 
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.RequirementsXml.Task,
         assets.mocks.LabelSelector.RequirementsXml.TaskConfiguration,
         assets.mocks.LabelSelector.References.RequirementsXmlFile,
-        assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
+      ]));
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.RequirementsXml.LabeledThingInFrame.frameIndex0,
       ]);
     });
-    it('should shown only checked attributes', done => {
-      mock(sharedMocks);
+
+    it('should show only checked attributes', done => {
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangleOne())
@@ -1483,7 +1434,6 @@ describe('LabelSelector (right sidebar)', () => {
     });
 
     it('should show attribute list view style', done => {
-      mock(sharedMocks);
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangleOne())
@@ -1506,33 +1456,25 @@ describe('LabelSelector (right sidebar)', () => {
   describe('LabelSelector Dynamic Title', () => {
     let pedestrianName;
     let rectangleName;
-    // let groupOneName;
-    // let groupTwoName;
-    // let groupThreeName;
 
     beforeEach(() => {
       pedestrianName = 'Blub';
       rectangleName = 'Traffic Sign';
-      // groupOneName = 'The Blues Brothers';
-      // groupTwoName = 'The Blues Brothers';
-      // groupThreeName = 'Peter, Paul and Mary';
     });
 
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
+      bootstrapHttp(sharedMocks.concat([
         assets.mocks.LabelSelector.DynamicTitle.Task,
         assets.mocks.LabelSelector.DynamicTitle.TaskConfiguration,
         assets.mocks.LabelSelector.DynamicTitle.RequirementsXmlFile,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupOne,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupTwo,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingGroup.GroupThree,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.frameIndex0,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.getLabeledThingInFrame1Frame0to4,
-        assets.mocks.LabelSelector.DynamicTitle.LabeledThingInFrame.getLabeledThingInFrame2Frame0to4,
-      ]);
+      ]));
 
-      mock(sharedMocks);
+      bootstrapPouch([
+        assets.documents.LabelSelector.DynamicTitle.LabeledThingGroup.GroupOne,
+        assets.documents.LabelSelector.DynamicTitle.LabeledThingGroup.GroupTwo,
+        assets.documents.LabelSelector.DynamicTitle.LabeledThingGroup.GroupThree,
+        assets.documents.LabelSelector.DynamicTitle.LabeledThingInFrame.frameIndex0,
+      ]);
     });
 
     it('should show the name of pedestrian shape', done => {
@@ -1570,6 +1512,7 @@ describe('LabelSelector (right sidebar)', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

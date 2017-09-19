@@ -2,7 +2,8 @@ import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager'
 import {
   expectAllModalsToBeClosed,
   initApplication,
-  mock,
+  bootstrapHttp,
+  bootstrapPouch,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -10,12 +11,12 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Cuboid creation', () => {
   let assets;
-  let sharedMocks;
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
-    sharedMocks = [
+    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -32,18 +33,17 @@ describe('Cuboid creation', () => {
       assets.mocks.CuboidCreation.Shared.FrameLocations.Thumbnail.frameIndex0to1,
       assets.mocks.Shared.Thumbnails.cuboidLabeledThingsInFrame0to1,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-    ];
+    ]);
+
+    bootstrapPouch([
+      assets.documents.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
+    ]);
 
     viewer = element(by.css('.layer-container'));
   });
 
   describe('3d', () => {
     it('should create a new 3d cuboid starting top to bottom', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-      ]));
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
@@ -108,11 +108,6 @@ describe('Cuboid creation', () => {
     });
 
     it('should create a new 3d cuboid starting bottom to top', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-      ]));
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
@@ -157,11 +152,6 @@ describe('Cuboid creation', () => {
 
   describe('Pseudo 3d', () => {
     it('should create a new pseudo 3d cuboid starting top to bottom', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-      ]));
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
@@ -225,11 +215,6 @@ describe('Cuboid creation', () => {
     });
 
     it('should create a new pseudo 3d cuboid starting bottom to top', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-      ]));
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
         viewerWidth: 1104,
         viewerHeight: 620,
@@ -293,104 +278,9 @@ describe('Cuboid creation', () => {
     });
   });
 
-  xdescribe('Size Constraints', () => {
-    it('should create a new 3d cuboid with minimalHeight constraint starting top to bottom', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-      ]));
-
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
-        .then(() => {
-          return browser.actions()
-            .mouseMove(viewer, {x: 405, y: 372}) // initial position
-            .mouseDown()
-            .mouseMove(viewer, {x: 405, y: 380}) // drag
-            .perform();
-        })
-        .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'MinimalTopToBottom1')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.MinimalTopToBottom1);
-        })
-        .then(() => {
-          return browser.actions()
-            .mouseUp()
-            .mouseMove(viewer, {x: 673, y: 402}) // width
-            .click()
-            .mouseMove(viewer, {x: 637, y: 380}) // depth
-            .click()
-            .perform();
-        })
-        .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'MinimalTopToBottom2')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.MinimalTopToBottom2);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidCreation.MinimalTopToBottom.StoreLabeledThingInFrame).toExistInPouchDb();
-          done();
-        });
-    });
-
-    it('should create a new 3d cuboid with minimalHeight constraint starting bottom to top', done => {
-      mock(sharedMocks.concat([
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
-        assets.mocks.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0to1,
-      ]));
-
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
-        .then(() => {
-          return browser.actions()
-            .mouseMove(viewer, {x: 405, y: 372}) // initial position
-            .mouseDown()
-            .mouseMove(viewer, {x: 405, y: 362}) // drag
-            .perform();
-        })
-        .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'MinimalBottomToTop1')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.MinimalBottomToTop1);
-        })
-        .then(() => {
-          return browser.actions()
-            .mouseUp()
-            .mouseMove(viewer, {x: 673, y: 372}) // width
-            .click()
-            .mouseMove(viewer, {x: 647, y: 358}) // depth
-            .click()
-            .perform();
-        })
-        .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'MinimalBottomToTop2')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.MinimalBottomToTop2);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidCreation.MinimalBottomToTop.StoreLabeledThingInFrame).toExistInPouchDb();
-          done();
-        });
-    });
-  });
-
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });
