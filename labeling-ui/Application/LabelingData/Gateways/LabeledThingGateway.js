@@ -10,6 +10,7 @@ class LabeledThingGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    * @param {PouchDbViewService} pouchDbViewService
+   * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    */
   constructor(
     $q,
@@ -18,7 +19,8 @@ class LabeledThingGateway {
     couchDbModelSerializer,
     couchDbModelDeserializer,
     revisionManager,
-    pouchDbViewService
+    pouchDbViewService,
+    labeledThingGroupGateway,
   ) {
     /**
      * @type {angular.$q}
@@ -67,6 +69,100 @@ class LabeledThingGateway {
      * @private
      */
     this._pouchDbViewService = pouchDbViewService;
+
+    /**
+     * @type {LabeledThingGroupGateway}
+     * @private
+     */
+    this._labeledThingGroupGateway = labeledThingGroupGateway;
+  }
+
+  /**
+   * @param {LabeledThing} labeledThing
+   * @returns {Promise}
+   * @private
+   */
+  _deleteLtifsOutsideOfLtFrameRange(labeledThing) {
+    const task = labeledThing.task;
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+
+    return this._$q.resolve()
+      .then(() => {
+        return this._getAssociatedLabeledThingsInFrames(task, labeledThing);
+      })
+      .then(documents => {
+        return documents.rows.filter(document => {
+          return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
+            document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
+        });
+      })
+      .then(rows => {
+        // Mark filtered documents as deleted
+        const bulkActionDocuments = rows.map(
+          row => ({
+            _id: row._id,
+            _rev: row.doc._rev,
+            _deleted: true,
+          })
+        );
+
+        // Bulk update as deleted marked documents
+        return dbContext.bulkDocs(bulkActionDocuments);
+      })
+      .then(results => {
+        const oneOrMoreBulkOperationsFailed = results.reduce(
+          (carry, result) => carry || result.ok !== true,
+          false
+        );
+
+        if (oneOrMoreBulkOperationsFailed) {
+          return this._$q.reject(`Removal of LTIFs failed: ${JSON.stringify(results)}`);
+        }
+
+        return true;
+      });
+  }
+
+  /**
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @returns {Promise}
+   * @private
+   */
+  _deleteLtgifsOutsideOfLtgFrameRange(labeledThingGroup) {
+    return this._$q.resolve()
+      .then(
+        () => this._labeledThingGroupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup)
+      )
+      .then(
+        frameIndexRange => this._labeledThingGroupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+          labeledThingGroup,
+          frameIndexRange
+        )
+      );
+  }
+
+  /**
+   * @param {LabeledThing} labeledThing
+   * @returns {Promise}
+   * @private
+   */
+  _deleteLtgifsOutsideOfLtgsFrameRangesByLabeledThing(labeledThing) {
+    const task = labeledThing.task;
+
+    const groupIds = labeledThing.groupIds;
+
+    return this._$q.resolve()
+      .then(
+        () => this._labeledThingGroupGateway.getLabeledThingGroupsByIds(task, groupIds)
+      )
+      .then(
+        labeledThingGroups => this._$q.all(
+          labeledThingGroups.map(
+            labeledThingGroup => this._deleteLtgifsOutsideOfLtgFrameRange(labeledThingGroup)
+          )
+        )
+      );
   }
 
   /**
@@ -97,24 +193,10 @@ class LabeledThingGateway {
           readLabeledThing = this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThingDocument, task);
         })
         .then(() => {
-          return this._getAssociatedLabeledThingsInFrames(task, readLabeledThing);
-        })
-        .then(documents => {
-          return documents.rows.filter(document => {
-            return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
-              document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
-          });
-        })
-        .then(toBeDeletedDocuments => {
-          // Mark filtered documents as deleted
-          const docs = toBeDeletedDocuments.map(document => {
-            const doc = document.doc;
-            doc._deleted = true;
-            return doc;
-          });
-
-          // Bulk update as deleted marked documents
-          return dbContext.bulkDocs(docs);
+          return this._$q.all([
+            this._deleteLtifsOutsideOfLtFrameRange(readLabeledThing),
+            this._deleteLtgifsOutsideOfLtgsFrameRangesByLabeledThing(labeledThing),
+          ]);
         })
         .then(() => {
           return readLabeledThing;
@@ -328,6 +410,7 @@ LabeledThingGateway.$inject = [
   'couchDbModelDeserializer',
   'revisionManager',
   'pouchDbViewService',
+  'labeledThingGroupGateway',
 ];
 
 export default LabeledThingGateway;
