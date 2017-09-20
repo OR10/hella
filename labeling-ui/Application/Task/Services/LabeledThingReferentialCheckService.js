@@ -20,6 +20,8 @@ class LabeledThingReferentialCheckService {
   /**
    * @param {Task} task
    * @param {LabeledThing} labeledThing
+   * @param newStartFrameIndex
+   * @param newEndFrameIndex
    */
   isAtLeastOneLabeledThingInFrameInRange(task, labeledThing, newStartFrameIndex, newEndFrameIndex) {
     return this._$q.resolve()
@@ -27,8 +29,7 @@ class LabeledThingReferentialCheckService {
         return this._labeledThingGateway.getAssociatedLabeledThingsInFrames(task, labeledThing);
       }).then(documents => {
         return documents.rows.filter(document => {
-          return (document.doc.frameIndex >= newStartFrameIndex &&
-            document.doc.frameIndex <= newEndFrameIndex);
+          return (document.doc.frameIndex >= newStartFrameIndex && document.doc.frameIndex <= newEndFrameIndex);
         });
       }).then(documentOutsideRange => {
         return !(documentOutsideRange.length === 0);
