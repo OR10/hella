@@ -27,6 +27,8 @@ class ThumbnailReelController {
    * @param {LockService} lockService
    * @param {FrameIndexService} frameIndexService
    * @param {LabeledThingGroupService} labeledThingGroupService
+   * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
+   * @param {ModalService} modalService
    */
   constructor($scope,
               $rootScope,
@@ -41,7 +43,9 @@ class ThumbnailReelController {
               applicationState,
               lockService,
               frameIndexService,
-              labeledThingGroupService) {
+              labeledThingGroupService,
+              labeledThingReferentialCheckService,
+              modalService) {
     /**
      * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
@@ -152,6 +156,18 @@ class ThumbnailReelController {
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {LabeledThingReferentialCheckService}
+     * @private
+     */
+    this._labeledThingReferentialCheckService = labeledThingReferentialCheckService;
+
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
 
     /**
      * @type {AbortablePromiseRingBuffer}
@@ -579,14 +595,41 @@ class ThumbnailReelController {
       if (frameIndex <= frameRange.endFrameIndex) {
         const oldStartFrameIndex = frameRange.startFrameIndex;
 
-        frameRange.startFrameIndex = frameIndex;
-
-        // Synchronize operations on this LabeledThing
-        this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
-          // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-          if (frameIndex > oldStartFrameIndex) {
-            this._updateLabeledThingInFrames(this.selectedPaperShape);
-            this._$scope.$root.$emit('framerange:change:after');
+        this._labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange(
+          this.task,
+          this.selectedPaperShape.labeledThingInFrame.labeledThing,
+          frameIndex,
+          frameRange.endFrameIndex
+        ).then(isLabeledThingInFrameRange => {
+          if (isLabeledThingInFrameRange === true) {
+            frameRange.startFrameIndex = frameIndex;
+            // Synchronize operations on this LabeledThing
+            this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
+              // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
+              if (frameIndex > oldStartFrameIndex) {
+                this._updateLabeledThingInFrames(this.selectedPaperShape);
+                this._$scope.$root.$emit('framerange:change:after');
+              }
+            });
+          } else {
+            this._modalService.info(
+              {
+                title: 'Warning',
+                headline: 'Frame-Range without any shape.',
+                message: 'Inside the new frame-range are no shapes and this will delete this object. ',
+                confirmButtonText: 'Delete this shape',
+                cancelButtonText: 'Cancel',
+              },
+              () => {
+                this._$scope.$root.$emit('action:delete-shape', this.task, this.selectedPaperShape);
+              },
+              () => {
+                // @TODO restore Open Bracket
+              },
+              {
+                abortable: true,
+              }
+            );
           }
         });
       }
@@ -612,13 +655,41 @@ class ThumbnailReelController {
       if (frameIndex >= frameRange.startFrameIndex) {
         const oldEndFrameIndex = frameRange.endFrameIndex;
 
-        frameRange.endFrameIndex = frameIndex;
-
-        this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
-          // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-          if (frameIndex < oldEndFrameIndex) {
-            this._updateLabeledThingInFrames(this.selectedPaperShape);
-            this._$scope.$root.$emit('framerange:change:after');
+        this._labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange(
+          this.task,
+          this.selectedPaperShape.labeledThingInFrame.labeledThing,
+          frameRange.startFrameIndex,
+          frameIndex
+        ).then(isLabeledThingInFrameRange => {
+          if (isLabeledThingInFrameRange === true) {
+            frameRange.endFrameIndex = frameIndex;
+            // Synchronize operations on this LabeledThing
+            this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
+              // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
+              if (frameIndex > oldEndFrameIndex) {
+                this._updateLabeledThingInFrames(this.selectedPaperShape);
+                this._$scope.$root.$emit('framerange:change:after');
+              }
+            });
+          } else {
+            this._modalService.info(
+              {
+                title: 'Warning',
+                headline: 'Frame-Range without any shape.',
+                message: 'Inside the new frame-range are no shapes and this will delete this object. ',
+                confirmButtonText: 'Delete this shape',
+                cancelButtonText: 'Cancel',
+              },
+              () => {
+                this._$scope.$root.$emit('action:delete-shape', this.task, this.selectedPaperShape);
+              },
+              () => {
+                // @TODO restore Close Bracket
+              },
+              {
+                abortable: true,
+              }
+            );
           }
         });
       }
@@ -682,6 +753,8 @@ ThumbnailReelController.$inject = [
   'lockService',
   'frameIndexService',
   'labeledThingGroupService',
+  'labeledThingReferentialCheckService',
+  'modalService',
 ];
 
 export default ThumbnailReelController;
