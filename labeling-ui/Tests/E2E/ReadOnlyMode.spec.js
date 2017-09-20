@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -7,12 +7,11 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('ReadOnly Mode', () => {
   let assets;
-  let sharedMocks;
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
-    sharedMocks = [
+    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -30,7 +29,7 @@ describe('ReadOnly Mode', () => {
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0,
       assets.mocks.Shared.FrameLocations.Thumbnail.frameIndex0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-    ];
+    ]);
 
     viewer = element(by.css('.layer-container'));
   });
@@ -44,15 +43,12 @@ describe('ReadOnly Mode', () => {
     }
 
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
-        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0,
-        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.getLabeledThingInFrame1,
+      bootstrapPouch([
+        assets.documents.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0,
       ]);
     });
 
     it('should not show handles', done => {
-      mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
         .then(() => browser.sleep(200))
@@ -67,7 +63,6 @@ describe('ReadOnly Mode', () => {
     });
 
     it('should not be movable by mouse', done => {
-      mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
         .then(() => browser.sleep(200))
@@ -91,7 +86,6 @@ describe('ReadOnly Mode', () => {
     });
 
     it('should not be movable by keyboard', done => {
-      mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
         .then(() => browser.sleep(200))
@@ -119,7 +113,6 @@ describe('ReadOnly Mode', () => {
     });
 
     it('should not be resizable', done => {
-      mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
         .then(() => browser.sleep(200))
@@ -143,7 +136,6 @@ describe('ReadOnly Mode', () => {
     });
 
     it('should not be removable by mouse', done => {
-      mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
         .then(() => browser.sleep(200))
@@ -155,7 +147,6 @@ describe('ReadOnly Mode', () => {
     });
 
     it('should not be removable by keyboard', done => {
-      mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
         .then(() => browser.sleep(200))
@@ -170,7 +161,6 @@ describe('ReadOnly Mode', () => {
     });
 
     it('should not be interpolatable by mouse', done => {
-      mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
         .then(() => browser.sleep(200))
@@ -182,7 +172,6 @@ describe('ReadOnly Mode', () => {
     });
 
     it('should not be interpolatable by keyboard', done => {
-      mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
         .then(() => browser.sleep(200))
@@ -200,17 +189,9 @@ describe('ReadOnly Mode', () => {
   describe('New Shape', () => {
     let toolButton0;
 
-    beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
-        assets.mocks.ReadOnlyMode.Empty.LabeledThingInFrame.frameIndex0,
-        assets.mocks.ReadOnlyMode.Empty.LabeledThingInFrame.frameIndex0to4,
-      ]);
-    });
-
     beforeEach(() => toolButton0 = element(by.css('button.tool-button.tool-thing.tool-0')));
 
     it('should not be possible to be created', done => {
-      mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -242,10 +223,8 @@ describe('ReadOnly Mode', () => {
     let labelSelectorHelper;
 
     beforeEach(() => {
-      sharedMocks = sharedMocks.concat([
-        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0,
-        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0to4,
-        assets.mocks.ReadOnlyMode.Display.LabeledThingInFrame.getLabeledThingInFrame1,
+      bootstrapPouch([
+        assets.documents.ReadOnlyMode.Display.LabeledThingInFrame.frameIndex0,
       ]);
     });
 
@@ -255,7 +234,6 @@ describe('ReadOnly Mode', () => {
     });
 
     it('should not be changable', done => {
-      mock(sharedMocks);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -278,6 +256,7 @@ describe('ReadOnly Mode', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -10,7 +10,7 @@ describe('Multiple Things', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
+    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -35,10 +35,11 @@ describe('Multiple Things', () => {
   });
 
   it('it should display multiple different things', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.MultipleThings.Display.LabeledThingInFrame.frameIndex0,
-      assets.mocks.MultipleThings.Display.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.MultipleThings.Display.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -52,14 +53,11 @@ describe('Multiple Things', () => {
   });
 
   it('it should select multiple different things', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.MultipleThings.Display.LabeledThingInFrame.frameIndex0,
-      assets.mocks.MultipleThings.Display.LabeledThingInFrame.frameIndex0to4,
-      assets.mocks.MultipleThings.Display.LabeledThingInFrame.getLabeledThingInFrame1,
-      assets.mocks.MultipleThings.Display.LabeledThingInFrame.getLabeledThingInFrame2,
-      assets.mocks.MultipleThings.Display.LabeledThingInFrame.getLabeledThingInFrame3,
-      assets.mocks.MultipleThings.Display.LabeledThingInFrame.getLabeledThingInFrame4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.MultipleThings.Display.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -133,9 +131,8 @@ describe('Multiple Things', () => {
     const toolButton1 = element(by.css('button.tool-button.tool-thing.tool-1'));
     const toolButton2 = element(by.css('button.tool-button.tool-thing.tool-2'));
     const toolButton3 = element(by.css('button.tool-button.tool-thing.tool-3'));
-    mock(sharedMocks.concat([
-      assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.MultipleThings.Draw.LabeledThingInFrame.Empty.frameIndex0to4,
+
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.MultipleThings.Shared.SingleLabeledThingInFrame,
     ]));
 
@@ -224,7 +221,7 @@ describe('Multiple Things', () => {
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'DrawMultipleDifferentThings')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
-      // .then(() => dumpAllRequestsMade(mock))
+      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       // .then(() => browser.pause())
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.DrawMultipleDifferentThings);
@@ -234,6 +231,7 @@ describe('Multiple Things', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -10,7 +10,7 @@ describe('Rectangle drawing', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
+    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -35,10 +35,11 @@ describe('Rectangle drawing', () => {
   });
 
   it('should load and draw one rectangle', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.DrawOneRectangle.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -52,10 +53,11 @@ describe('Rectangle drawing', () => {
   });
 
   it('should load and draw two rectangles', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -69,10 +71,11 @@ describe('Rectangle drawing', () => {
   });
 
   it('should select a rectangle', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -92,10 +95,11 @@ describe('Rectangle drawing', () => {
   });
 
   it('should select and deselect a rectangle', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -121,10 +125,11 @@ describe('Rectangle drawing', () => {
   });
 
   it('should deselect one and select an other rectangle', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -150,10 +155,11 @@ describe('Rectangle drawing', () => {
   });
 
   it('should correctly move a rectangle and save the changed coordinates', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -182,10 +188,11 @@ describe('Rectangle drawing', () => {
   });
 
   it('should correctly resize a rectangle and save the changed coordinates', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.DrawTwoRectangles.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -214,10 +221,11 @@ describe('Rectangle drawing', () => {
   });
 
   it('should correctly resize a rectangle while flipping bottomRight and topLeft', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0,
-      assets.mocks.RectangleDrawing.ResizeFlip.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.ResizeFlip.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -246,10 +254,11 @@ describe('Rectangle drawing', () => {
   });
 
   it('should keep the rectangle selected over a frame change', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
+    bootstrapPouch([
+      assets.documents.RectangleDrawing.OneRectangleTwoFrames.LabeledThingInFrame.frameIndex0and1,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
@@ -275,10 +284,8 @@ describe('Rectangle drawing', () => {
   });
 
   it('should draw a new rectangle', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -304,9 +311,7 @@ describe('Rectangle drawing', () => {
   });
 
   it('should draw a new rectangle from top-left to bottom-right with minimal height constrains', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.Task,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -334,9 +339,7 @@ describe('Rectangle drawing', () => {
   });
 
   it('should draw a new rectangle from bottom-right to top-left with minimal height constrains', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.Task,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -364,10 +367,8 @@ describe('Rectangle drawing', () => {
   });
 
   it('should draw a new rectangle with intermediary mouse movements', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -418,10 +419,8 @@ describe('Rectangle drawing', () => {
   });
 
   it('should draw multiple new rectangles', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -457,10 +456,8 @@ describe('Rectangle drawing', () => {
   });
 
   it('should draw a new rectangle from top-right to bottom-left', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -486,10 +483,8 @@ describe('Rectangle drawing', () => {
   });
 
   it('should draw a new rectangle from bottom-left to top-right', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0,
-      assets.mocks.RectangleDrawing.Shared.LabeledThingInFrame.Empty.frameIndex0to4,
-    ]));
+    bootstrapHttp(sharedMocks);
+
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -514,27 +509,9 @@ describe('Rectangle drawing', () => {
       });
   });
 
-  // Needs to be fixed in code
-  xit('should correctly handle extra information in limited labeledThingInFrame request', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.RectangleDrawing.IgnoreLimit.LabeledThingInFrame.frameIndex0,
-      assets.mocks.RectangleDrawing.IgnoreLimit.LabeledThingInFrame.frameIndex0to4,
-    ]));
-
-    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'LoadAndDrawOneRectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawOneRectangle);
-        done();
-      });
-  });
-
-
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

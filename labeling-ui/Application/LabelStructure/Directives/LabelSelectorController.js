@@ -4,6 +4,7 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
+import PaperMeasurementRectangle from 'Application/Viewer/Shapes/PaperMeasurementRectangle';
 import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
 import LabeledThingGroupInFrame from '../../LabelingData/Models/LabeledThingGroupInFrame';
 

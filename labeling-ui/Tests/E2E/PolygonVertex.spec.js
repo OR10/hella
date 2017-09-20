@@ -2,7 +2,8 @@ import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager'
 import {
   expectAllModalsToBeClosed,
   initApplication,
-  mock,
+  bootstrapHttp,
+  bootstrapPouch,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -10,15 +11,15 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Polygon vertex', () => {
   let assets;
-  let sharedMocks;
   let viewer;
 
   beforeEach(() => {
     assets = new AssetHelper(
       `${__dirname}/../Fixtures`,
       `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
     );
-    sharedMocks = [
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -37,7 +38,7 @@ describe('Polygon vertex', () => {
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-    ];
+    ]);
 
     viewer = element(by.css('.layer-container'));
   });
@@ -112,10 +113,9 @@ describe('Polygon vertex', () => {
   }
 
   it('should add a new vertex to a polygon', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolygon())
@@ -133,10 +133,9 @@ describe('Polygon vertex', () => {
   });
 
   it('should add two new vertices to a polygon', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolygon())
@@ -155,10 +154,9 @@ describe('Polygon vertex', () => {
   });
 
   it('should add three new vertices to a polygon', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolygon())
@@ -178,10 +176,9 @@ describe('Polygon vertex', () => {
   });
 
   it('should add three new vertices to a polygon and delete one', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolygon())
@@ -202,10 +199,9 @@ describe('Polygon vertex', () => {
   });
 
   it('should add three new vertices to a polygon and delete two', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolygon())
@@ -227,10 +223,9 @@ describe('Polygon vertex', () => {
   });
 
   it('should add new vertices to two polygons', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolygon())
@@ -252,10 +247,9 @@ describe('Polygon vertex', () => {
   });
 
   it('should add multiple new vertices to two polygons', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolygon())
@@ -285,10 +279,9 @@ describe('Polygon vertex', () => {
   });
 
   it('should add multiple new vertices to two polygons and remove vertex', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawTwoPolygons.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolygon())
@@ -324,7 +317,8 @@ describe('Polygon vertex', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });
 

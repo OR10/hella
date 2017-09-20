@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -10,7 +10,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   let defaultShapeCreationButton;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
+    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -28,8 +28,6 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-      assets.mocks.DefaultShapeCreation.Shared.EmptyFrameIndex0,
-      assets.mocks.DefaultShapeCreation.Shared.EmptyFrameIndex0to4,
       assets.mocks.DefaultShapeCreation.Shared.StoreLabeledThing,
     ];
 
@@ -37,7 +35,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Rectangle* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Rectangle.Task,
     ]));
 
@@ -59,7 +57,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Pedestrian* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Pedestrian.Task,
     ]));
 
@@ -81,7 +79,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Polygon* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Polygon.Task,
     ]));
 
@@ -103,7 +101,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
   });
 
   it('should create and draw a *Cuboid* (TTANNO-1370)', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
     ]));
 
@@ -126,6 +124,6 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
   });
 });

@@ -125,4 +125,12 @@ class LabeledThingGroupInFrame extends AppBundleModel\Base
     {
         return $this->labeledThingGroupId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTaskId()
+    {
+        return $this->taskId;
+    }
 }
