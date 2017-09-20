@@ -123,13 +123,17 @@ class LabeledThingGateway {
   }
 
   _isLabeledThingIncomplete(dbContext, labeledThing) {
-    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName(
-      'labeledThingInFrameByLabeledThingIdAndIncomplete'), {
-      group: true,
-      group_level: 1,
-      startkey: [labeledThing.id, labeledThing.frameRange.startFrameIndex],
-      endkey: [labeledThing.id, labeledThing.frameRange.endFrameIndex],
-    }).then(response => {
+    return dbContext.query(
+      this._pouchDbViewService.getDesignDocumentViewName(
+        'labeledThingInFrameByLabeledThingIdAndIncomplete'
+      ),
+      {
+        group: true,
+        group_level: 1,
+        startkey: [labeledThing.id, labeledThing.frameRange.startFrameIndex],
+        endkey: [labeledThing.id, labeledThing.frameRange.endFrameIndex],
+      }
+    ).then(response => {
       if (response.rows.length === 0) {
         // New LabeledThings has no LabeledThingsInFrames.
         return true;
