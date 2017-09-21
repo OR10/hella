@@ -1,5 +1,9 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
+import {
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
