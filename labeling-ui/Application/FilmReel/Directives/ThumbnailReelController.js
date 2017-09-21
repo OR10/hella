@@ -666,7 +666,7 @@ class ThumbnailReelController {
             // Synchronize operations on this LabeledThing
             this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
               // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-              if (frameIndex > oldEndFrameIndex) {
+              if (frameIndex < oldEndFrameIndex) {
                 this._updateLabeledThingInFrames(this.selectedPaperShape);
                 this._$scope.$root.$emit('framerange:change:after');
               }
