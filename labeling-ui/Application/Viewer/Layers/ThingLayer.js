@@ -256,7 +256,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
       }
 
       if (viewModel.paperThingShapes !== undefined) {
-        this._pathCollisionService.setShapes(viewModel.paperThingShapes.filter(shape => shape instanceof PaperPolyline && shape !== newShape));
+        this._pathCollisionService.setShapes(
+          viewModel.paperThingShapes.filter(
+            shape => shape instanceof PaperPolyline && shape !== newShape
+          )
+        );
       }
 
       this._applyHiddenLabeledThingsInFrameFilter();
