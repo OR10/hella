@@ -9,7 +9,7 @@ use Symfony\Component\Console;
 use Symfony\Component\Console\Helper;
 use Doctrine\ODM\CouchDB;
 
-class RenameGroupTypeToIdentifierName extends Command\Base
+class AddIdentifierNameByGroupType extends Command\Base
 {
     /**
      * @var Facade\LabelingTask
@@ -39,7 +39,7 @@ class RenameGroupTypeToIdentifierName extends Command\Base
 
     protected function configure()
     {
-        $this->setName('annostation:migrations:rename-group-type-to-identifier-name');
+        $this->setName('annostation:migrations:add-identifier-name-by-group-type');
     }
 
     protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output)
