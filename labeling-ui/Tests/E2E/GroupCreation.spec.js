@@ -360,9 +360,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateAndDeleteGroupMultiselectedShapes);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it('shows a selection if there is more than one group type defined', done => {
