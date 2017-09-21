@@ -184,12 +184,14 @@
             <argument type="service" id="annostation.labeling_api.database.facade.additional_frame_number_mapping"/>
             <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation"/>
+            <argument type="service" id="annostation.labeling_api.service.ghost_labeled_thing_group_in_frame_classes_propagation"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
             <argument type="service" id="annostation.labeling_api.service.labeled_frame_end_calculation_service"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group_in_frame"/>
             <argument type="service" id="annostation.labeling_api.service.depth_buffer"/>
         </service>
 
@@ -264,6 +266,8 @@
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_frame"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
         </service>
 
         <service id="annostation.labeling_api.service.label_importer.simple_xml_2d"
@@ -334,6 +338,16 @@
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
         </service>
 
+        <service id="annostation.labeling_api.service.project_importer.facade.labeled_thing_group" class="AnnoStationBundle\Service\ProjectImporter\Facade\LabeledThingGroup">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.project_importer.facade.labeled_thing_group_in_frame" class="AnnoStationBundle\Service\ProjectImporter\Facade\LabeledThingGroupInFrame">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group_in_frame"/>
+        </service>
+
         <service id="annostation.labeling_api.service.project_deleter.project" class="AnnoStationBundle\Service\ProjectDeleter\Project">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.exports"/>
@@ -396,6 +410,10 @@
                  class="AnnoStationBundle\EventListener\SetCreatedModifiedAtToDocuments">
             <argument type="service" id="annostation.labeling_api.helper.system_date_time_provider" />
             <tag name="doctrine_couchdb.event_subscriber"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.ghost_labeled_thing_group_in_frame_classes_propagation"
+                 class="AnnoStationBundle\Service\GhostLabeledThingGroupInFrameClassesPropagation">
         </service>
     </services>
 </container>

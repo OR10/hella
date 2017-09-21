@@ -1,3 +1,4 @@
+Directory0/subfolder1/
 Directory1/foo bar.txt
 Directory3/cool-file-1.txt
 Directory3/cool-file-2.txt

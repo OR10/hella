@@ -1,5 +1,5 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, mock} from '../Support/Protractor/Helpers';
+import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -11,7 +11,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
   let deleteShapeButton;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`);
+    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -36,11 +36,13 @@ describe('Shape deletion (TTANNO-1474)', () => {
   });
 
   it('should delete a Rectangle', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.ShapeDeletion.Rectangle.Task,
-      assets.mocks.ShapeDeletion.Rectangle.LabeledThingInFrame.frameIndex0,
-      assets.mocks.ShapeDeletion.Rectangle.LabeledThingInFrame.frameIndex0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.ShapeDeletion.Rectangle.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -78,11 +80,13 @@ describe('Shape deletion (TTANNO-1474)', () => {
   });
 
   it('should delete a Pedestrian', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.ShapeDeletion.Pedestrian.Task,
-      assets.mocks.ShapeDeletion.Pedestrian.LabeledThingInFrame.frameIndex0,
-      assets.mocks.ShapeDeletion.Pedestrian.LabeledThingInFrame.frameIndex0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.ShapeDeletion.Pedestrian.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -120,11 +124,13 @@ describe('Shape deletion (TTANNO-1474)', () => {
   });
 
   it('should delete a Polygon', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.ShapeDeletion.Polygon.Task,
-      assets.mocks.ShapeDeletion.Polygon.LabeledThingInFrame.frameIndex0,
-      assets.mocks.ShapeDeletion.Polygon.LabeledThingInFrame.frameIndex0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.ShapeDeletion.Polygon.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -162,11 +168,13 @@ describe('Shape deletion (TTANNO-1474)', () => {
   });
 
   it('should delete a Polyline', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.ShapeDeletion.Polyline.Task,
-      assets.mocks.ShapeDeletion.Polyline.LabeledThingInFrame.frameIndex0,
-      assets.mocks.ShapeDeletion.Polyline.LabeledThingInFrame.frameIndex0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.ShapeDeletion.Polyline.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -204,11 +212,13 @@ describe('Shape deletion (TTANNO-1474)', () => {
   });
 
   it('should delete a Point', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.ShapeDeletion.Point.Task,
-      assets.mocks.ShapeDeletion.Point.LabeledThingInFrame.frameIndex0,
-      assets.mocks.ShapeDeletion.Point.LabeledThingInFrame.frameIndex0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.ShapeDeletion.Point.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -246,12 +256,14 @@ describe('Shape deletion (TTANNO-1474)', () => {
   });
 
   it('should delete a Cuboid', done => {
-    mock(sharedMocks.concat([
+    bootstrapHttp(sharedMocks.concat([
       assets.mocks.ShapeDeletion.Cuboid.Task,
       assets.mocks.ShapeDeletion.Cuboid.Video,
-      assets.mocks.ShapeDeletion.Cuboid.LabeledThingInFrame.frameIndex0,
-      assets.mocks.ShapeDeletion.Cuboid.LabeledThingInFrame.frameIndex0to4,
     ]));
+
+    bootstrapPouch([
+      assets.documents.ShapeDeletion.Cuboid.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(
@@ -290,6 +302,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });

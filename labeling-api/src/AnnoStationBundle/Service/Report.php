@@ -8,6 +8,7 @@ use AnnoStationBundle\Database\Facade\Project;
 use AnnoStationBundle\Database\Facade\LabelingTask;
 use AnnoStationBundle\Database\Facade\LabeledThing;
 use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
+use AnnoStationBundle\Database\Facade\LabeledFrame;
 use AppBundle\Model;
 use AppBundle\Service as AppBundleService;
 
@@ -49,6 +50,16 @@ class Report
     private $ghostClassesPropagation;
 
     /**
+     * @var Facade\LabeledFrame
+     */
+    private $labeledFrameFacade;
+
+    /**
+     * @var Facade\TaskConfiguration
+     */
+    private $taskConfigurationFacade;
+
+    /**
      * Report constructor.
      *
      * @param Facade\Video                                    $videoFacade
@@ -59,6 +70,8 @@ class Report
      * @param LabelingTask\FacadeInterface                    $labelingTaskFacadeFactory
      * @param LabeledThing\FacadeInterface                    $labeledThingFacadeFactory
      * @param LabeledThingInFrame\FacadeInterface             $labeledThingInFrameFacadeFactory
+     * @param LabeledFrame\FacadeInterface                    $labeledFrameFacadeFactory
+     * @param Facade\TaskConfiguration                        $taskConfigurationFacade
      */
     public function __construct(
         Facade\Video $videoFacade,
@@ -68,7 +81,9 @@ class Report
         Project\FacadeInterface $projectFacadeFactory,
         LabelingTask\FacadeInterface $labelingTaskFacadeFactory,
         LabeledThing\FacadeInterface $labeledThingFacadeFactory,
-        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory,
+        LabeledFrame\FacadeInterface $labeledFrameFacadeFactory,
+        Facade\TaskConfiguration $taskConfigurationFacade
     ) {
         $this->videoFacade               = $videoFacade;
         $this->reportFacade              = $reportFacade;
@@ -77,6 +92,8 @@ class Report
         $this->labelingTaskFacade        = $labelingTaskFacadeFactory->getReadOnlyFacade();
         $this->labeledThingFacade        = $labeledThingFacadeFactory->getReadOnlyFacade();
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacadeFactory->getReadOnlyFacade();
+        $this->labeledFrameFacade        = $labeledFrameFacadeFactory->getReadOnlyFacade();
+        $this->taskConfigurationFacade   = $taskConfigurationFacade;
     }
 
     /**
@@ -178,8 +195,18 @@ class Report
                 $this->getSumOfLabeledThingInFrameClasses($project)
             );
 
-            $report->setNumberOfTotalClassesInLabeledThingInFrameByClasses(
-                $this->getLabeledClassesInNumbers($project)
+            if ($report->getReportType() === Model\Report::REPORT_TYPE_REQUIREMENTS_XML) {
+                $report->setNumberOfTotalClassesInLabeledThingInFrameByClasses(
+                    $this->getRequirementsXmlLabeledClassesInNumbers($project)
+                );
+            } else {
+                $report->setNumberOfTotalClassesInLabeledThingInFrameByClasses(
+                    $this->getLegacyLabeledClassesInNumbers($project)
+                );
+            }
+
+            $report->setNumberOfLabeledFrames(
+                $this->getSumOfLabeledFramesByProject($project)
             );
 
             $timeByPhaseForProject = $this->projectFacade->getTimeForProject($project);
@@ -273,9 +300,9 @@ class Report
      *
      * @return array
      */
-    private function getLabeledClassesInNumbers(Model\Project $project)
+    private function getLegacyLabeledClassesInNumbers(Model\Project $project)
     {
-        $tasks = $this->projectFacade->getTasksByProject($project);
+        $tasks   = $this->projectFacade->getTasksByProject($project);
         $classes = [];
         foreach ($tasks as $task) {
             $labeledThingInFrames           = $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task);
@@ -292,7 +319,68 @@ class Report
                 }
             }
         }
+
         return $classes;
+    }
+
+    /**
+     * @param Model\Project $project
+     *
+     * @return array
+     */
+    private function getRequirementsXmlLabeledClassesInNumbers(Model\Project $project)
+    {
+        $tasks   = $this->projectFacade->getTasksByProject($project);
+        $objects = [];
+        foreach ($tasks as $task) {
+            $taskConfiguration = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
+
+            $objects = array_merge($this->getInitialObjectFramesByObjectsTree($taskConfiguration), $objects);
+
+            $labeledThingInFrames           = $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task);
+            $labeledThingInFramesWithGhosts = $this->ghostClassesPropagation->propagateGhostClasses(
+                $labeledThingInFrames
+            );
+
+            $labeledThingsValueCache = [];
+            $labeledThingsClassCache = [];
+            $labeledThingsCache      = [];
+            foreach ($labeledThingInFramesWithGhosts as $labeledThingInFrame) {
+                $thingId = $labeledThingInFrame->getIdentifierName();
+                foreach ($labeledThingInFrame->getClassesWithGhostClasses() as $valueId) {
+                    $classId = $this->findClassIdForValue($valueId, $taskConfiguration);
+
+                    if (!in_array(
+                        $labeledThingInFrame->getLabeledThingId() . '-' . $valueId,
+                        $labeledThingsValueCache
+                    )) {
+                        $objects[$thingId]['childs'][$classId]['childs'][$valueId]['labeledThings'] += 1;
+                        $labeledThingsValueCache[]                                                  = $labeledThingInFrame->getLabeledThingId() . '-' . $valueId;
+                    }
+
+                    if (!in_array(
+                        $labeledThingInFrame->getLabeledThingId() . '-' . $classId,
+                        $labeledThingsClassCache
+                    )) {
+                        $objects[$thingId]['childs'][$classId]['labeledThings'] += 1;
+                        $labeledThingsClassCache[]                              = $labeledThingInFrame->getLabeledThingId() . '-' . $classId;
+                    }
+
+                    if (!in_array($labeledThingInFrame->getLabeledThingId(), $labeledThingsCache)) {
+                        $labeledThing                              = $this->labeledThingFacade->find(
+                            $labeledThingInFrame->getLabeledThingId()
+                        );
+                        $objects[$thingId]['labeledThings']        += 1;
+                        $objects[$thingId]['labeledThingInFrames'] += $labeledThing->getFrameRange()->getNumberOfFrames();
+                        $labeledThingsCache[]                      = $labeledThingInFrame->getLabeledThingId();
+                    }
+                    $objects[$thingId]['childs'][$classId]['childs'][$valueId]['labeledThingInFrames'] += 1;
+                    $objects[$thingId]['childs'][$classId]['labeledThingInFrames']                     += 1;
+                }
+            }
+        }
+
+        return $objects;
     }
 
     /**
@@ -350,7 +438,7 @@ class Report
                 },
                 $this->labeledThingInFrameFacade->getLabeledThingsInFrame($task)
             );
-            $count += array_sum($labeledThingInFramesClassCount);
+            $count                          += array_sum($labeledThingInFramesClassCount);
         }
 
         return $count;
@@ -382,6 +470,11 @@ class Report
         return array_key_exists($project->getId(), $numberOfVideos) ? $numberOfVideos[$project->getId()] : 0;
     }
 
+    /**
+     * @param Model\Project $project
+     *
+     * @return float|int
+     */
     private function getSumOfVideoFramesForProject(Model\Project $project)
     {
         $videosByProjects = $this->labelingTaskFacade->findAllByProjects([$project]);
@@ -404,5 +497,140 @@ class Report
                 )
             )
         );
+    }
+
+    /**
+     * Calculate the number of labeled frames
+     *
+     * @param Model\Project $project
+     * @return float|int
+     */
+    private function getSumOfLabeledFramesByProject(Model\Project $project)
+    {
+        $tasks              = $this->labelingTaskFacade->findAllByProject($project, true);
+        $sumOfLabeledFrames = 0;
+        foreach ($tasks as $task) {
+            // Remove unnecessary frame information
+            $taskFrameMappingWithLabeledFrames = array_map(function () {
+                return null;
+            }, $task->getFrameNumberMapping());
+
+            // Set the number of labeled frame classes to the frame index
+            foreach ($this->labeledFrameFacade->findBylabelingTask($task) as $labeledFrame) {
+                $taskFrameMappingWithLabeledFrames[$labeledFrame->getFrameIndex()] = count($labeledFrame->getClasses());
+            }
+
+            // Create ghosted classes count
+            $previousFrameCount  = null;
+            $ghostedClassesCount = array_map(function ($taskFrameMappingWithLabeledFrame) use (&$previousFrameCount) {
+                if ($taskFrameMappingWithLabeledFrame === null && $previousFrameCount !== null) {
+                    return $previousFrameCount;
+                }
+
+                $previousFrameCount = $taskFrameMappingWithLabeledFrame;
+                return $taskFrameMappingWithLabeledFrame;
+
+            }, $taskFrameMappingWithLabeledFrames);
+
+            $sumOfLabeledFrames += array_sum($ghostedClassesCount);
+        }
+
+        return $sumOfLabeledFrames;
+    }
+
+     /**
+     * @param Model\TaskConfiguration $taskConfiguration
+     *
+     * @return array
+     */
+    private function getInitialObjectFramesByObjectsTree(Model\TaskConfiguration $taskConfiguration)
+    {
+        $xmlImport = new \DOMDocument();
+        $xmlImport->loadXML($taskConfiguration->getRawData());
+
+        $xpath = new \DOMXPath($xmlImport);
+        $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/requirements");
+
+        $thingElements = $xpath->query('//x:thing');
+
+        $objects = [];
+        foreach ($thingElements as $thingElement) {
+            $thingId            = $thingElement->getAttribute('id');
+            $thingClassElements = $xpath->query(sprintf('//x:thing[@id="%s"]//x:class', $thingId));
+            $childs             = [];
+
+            foreach ($thingClassElements as $thingClassElement) {
+                if ($thingClassElement->hasAttribute('ref')) {
+                    $values = $xpath->query(
+                        sprintf('//x:class[@id="%s"]//x:value', $thingClassElement->getAttribute('ref'))
+                    );
+                } else {
+                    $values = $xpath->query('x:value', $thingClassElement);
+                }
+
+                foreach ($values as $value) {
+                    $valueId = $value->getAttribute('id');
+                    $classId = $value->parentNode->getAttribute('id');
+
+                    if (isset($childs[$classId])) {
+                        $childs[$classId]['childs'][$valueId] = [
+                            'type'                 => 'value',
+                            'labeledThings'        => 0,
+                            'labeledThingInFrames' => 0,
+                        ];
+                    } else {
+                        $childs[$classId] = [
+                            'type'                 => 'class',
+                            'labeledThings'        => 0,
+                            'labeledThingInFrames' => 0,
+                            'childs'               => [
+                                $valueId => [
+                                    'type'                 => 'value',
+                                    'labeledThings'        => 0,
+                                    'labeledThingInFrames' => 0,
+                                ],
+                            ],
+                        ];
+                    }
+                }
+            }
+            $objects[$thingId] = [
+                'type'                 => 'thing',
+                'labeledThings'        => 0,
+                'labeledThingInFrames' => 0,
+                'childs'               => $childs,
+            ];
+        }
+
+        return $objects;
+    }
+
+    /**
+     * @param                         $value
+     * @param Model\TaskConfiguration $taskConfiguration
+     *
+     * @return string
+     */
+    private function findClassIdForValue($value, Model\TaskConfiguration $taskConfiguration)
+    {
+        $xmlImport = new \DOMDocument();
+        $xmlImport->loadXML($taskConfiguration->getRawData());
+
+        $xpath = new \DOMXPath($xmlImport);
+        $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/requirements");
+
+        $requirementsElement = $xpath->query(sprintf('//x:value[@id="%s"]', $value));
+
+        if ($requirementsElement->length === 0) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Could not find any class for value "%s" in TaskConfiguration "%s"',
+                    $value,
+                    $taskConfiguration->getId()
+                )
+            );
+        }
+
+        return $requirementsElement->item(0)->parentNode->getAttribute('id');
     }
 }

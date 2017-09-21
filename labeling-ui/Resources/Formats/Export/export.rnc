@@ -217,7 +217,7 @@ grammar {
     attribute type {text},
     attribute line-color {text}?,
     attribute incomplete {text}?,
-    Value?
+    Value*
   }
 # </group>
 

@@ -7,6 +7,8 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
 import Viewport from '../Models/Viewport';
 import paper from 'paper';
 import Environment from '../../Common/Support/Environment';
+import PaperGroupRectangleMulti from '../../Viewer/Shapes/PaperGroupRectangleMulti';
+import PaperMeasurementRectangle from '../../Viewer/Shapes/PaperMeasurementRectangle';
 
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperFrame from '../Shapes/PaperFrame';
@@ -75,6 +77,7 @@ class ViewerController {
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {GroupCreationService} groupCreationService
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
+   * @param {PathCollisionService} pathCollisionService
    */
   constructor(
     $scope,
@@ -115,7 +118,8 @@ class ViewerController {
     toolSelectorListenerService,
     hierarchyCreationService,
     groupCreationService,
-    groupSelectionDialogFactory
+    groupSelectionDialogFactory,
+    pathCollisionService,
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -378,9 +382,18 @@ class ViewerController {
      */
     this._groupSelectionDialogFactory = groupSelectionDialogFactory;
 
+    /**
+     * @type {PathCollisionService}
+     * @private
+     */
+    this._pathCollisionService = pathCollisionService;
+
     const groupListener = (tool, labelStructureObject) => {
-      if (this._shapeSelectionService.count() > 0) {
-        const shapes = this._shapeSelectionService.getAllShapes();
+      const shapes = this._shapeSelectionService.getAllShapes()
+        .filter(
+          shape => (!(shape instanceof PaperGroupRectangleMulti || shape instanceof PaperMeasurementRectangle))
+        );
+      if (shapes.length > 0) {
         const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
         const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
         if (shapes.length === 2) {
@@ -967,7 +980,8 @@ class ViewerController {
       this._labeledThingGateway,
       this._labeledThingGroupGateway,
       this._shapeSelectionService,
-      this._groupSelectionDialogFactory
+      this._groupSelectionDialogFactory,
+      this._pathCollisionService,
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1849,6 +1863,7 @@ ViewerController.$inject = [
   'hierarchyCreationService',
   'groupCreationService',
   'groupSelectionDialogFactory',
+  'pathCollisionService',
 ];
 
 export default ViewerController;

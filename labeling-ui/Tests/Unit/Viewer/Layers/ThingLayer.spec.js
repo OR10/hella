@@ -30,6 +30,7 @@ describe('ThingLayer', () => {
   let labeledThingGroupGateway;
   let shapeSelectionService;
   let groupSelectionDialogFactory;
+  let pathCollisionService;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -89,6 +90,8 @@ describe('ThingLayer', () => {
 
     groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
     groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
+
+    pathCollisionService = jasmine.createSpyObj('PathCollisionService', ['setShapes']);
   });
 
   function createThingLayerInstance() {
@@ -112,7 +115,8 @@ describe('ThingLayer', () => {
       labeledThingGateway,
       labeledThingGroupGateway,
       shapeSelectionService,
-      groupSelectionDialogFactory
+      groupSelectionDialogFactory,
+      pathCollisionService
     );
   }
 

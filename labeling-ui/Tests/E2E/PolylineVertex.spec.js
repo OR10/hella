@@ -2,7 +2,8 @@ import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager'
 import {
   expectAllModalsToBeClosed,
   initApplication,
-  mock,
+  bootstrapHttp,
+  bootstrapPouch,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -10,15 +11,15 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('Polyline vertex', () => {
   let assets;
-  let sharedMocks;
   let viewer;
 
   beforeEach(() => {
     assets = new AssetHelper(
       `${__dirname}/../Fixtures`,
       `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
     );
-    sharedMocks = [
+    bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -37,7 +38,7 @@ describe('Polyline vertex', () => {
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.polygonLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-    ];
+    ]);
 
     viewer = element(by.css('.layer-container'));
   });
@@ -112,10 +113,9 @@ describe('Polyline vertex', () => {
   }
 
   it('should add a new vertex to a polyline', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolyline())
@@ -133,10 +133,9 @@ describe('Polyline vertex', () => {
   });
 
   it('should add two new vertices to a polyline', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolyline())
@@ -155,10 +154,9 @@ describe('Polyline vertex', () => {
   });
 
   it('should add three new vertices to a polyline', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolyline())
@@ -178,10 +176,9 @@ describe('Polyline vertex', () => {
   });
 
   it('should add three new vertices to a polyline and delete one', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolyline())
@@ -202,10 +199,9 @@ describe('Polyline vertex', () => {
   });
 
   it('should add three new vertices to a polyline and delete two', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolyline())
@@ -227,10 +223,9 @@ describe('Polyline vertex', () => {
   });
 
   it('should add new vertices to two polylines', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolyline())
@@ -252,10 +247,9 @@ describe('Polyline vertex', () => {
   });
 
   it('should add multiple new vertices to two polylines', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolyline())
@@ -285,10 +279,9 @@ describe('Polyline vertex', () => {
   });
 
   it('should add multiple new vertices to two polylines and remove vertex', done => {
-    mock(sharedMocks.concat([
-      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
-      assets.mocks.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0to4,
-    ]));
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
+    ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolyline())
@@ -324,7 +317,8 @@ describe('Polyline vertex', () => {
 
   afterEach(() => {
     expectAllModalsToBeClosed();
-    mock.teardown();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });
 

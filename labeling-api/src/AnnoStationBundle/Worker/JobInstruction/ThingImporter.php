@@ -67,6 +67,11 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     private $labeledThingGroupFacade;
 
     /**
+     * @var Facade\LabeledThingGroupInFrame
+     */
+    private $labeledThingGroupInFrameFacade;
+
+    /**
      * @var array
      */
     private $labeledThingGroupCache = [];
@@ -79,14 +84,15 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     /**
      * ThingImporter constructor.
      *
-     * @param Service\TaskIncomplete         $taskIncompleteService
-     * @param Facade\LabeledThing            $labeledThingFacade
-     * @param Facade\LabeledThingInFrame     $labeledThingInFrameFacade
-     * @param Facade\LabeledFrame            $labeledFrameFacade
-     * @param Facade\Project                 $project
-     * @param Facade\LabeledThingGroup       $labeledThingGroupFacade
-     * @param AnnoStationFacade\LabelingTask $labelingTaskFacade
-     * @param CouchDB\DocumentManager        $documentManager
+     * @param Service\TaskIncomplete          $taskIncompleteService
+     * @param Facade\LabeledThing             $labeledThingFacade
+     * @param Facade\LabeledThingInFrame      $labeledThingInFrameFacade
+     * @param Facade\LabeledFrame             $labeledFrameFacade
+     * @param Facade\Project                  $project
+     * @param Facade\LabeledThingGroup        $labeledThingGroupFacade
+     * @param Facade\LabeledThingGroupInFrame $labeledThingGroupInFrameFacade
+     * @param AnnoStationFacade\LabelingTask  $labelingTaskFacade
+     * @param CouchDB\DocumentManager         $documentManager
      */
     public function __construct(
         Service\TaskIncomplete $taskIncompleteService,
@@ -95,17 +101,19 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         Facade\LabeledFrame $labeledFrameFacade,
         Facade\Project $project,
         Facade\LabeledThingGroup $labeledThingGroupFacade,
+        Facade\LabeledThingGroupInFrame $labeledThingGroupInFrameFacade,
         AnnoStationFacade\LabelingTask $labelingTaskFacade,
         CouchDB\DocumentManager $documentManager
     ) {
-        $this->taskIncompleteService     = $taskIncompleteService;
-        $this->labeledThingFacade        = $labeledThingFacade;
-        $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
-        $this->labeledFrameFacade        = $labeledFrameFacade;
-        $this->project                   = $project;
-        $this->labelingTaskFacade        = $labelingTaskFacade;
-        $this->labeledThingGroupFacade   = $labeledThingGroupFacade;
-        $this->documentManager           = $documentManager;
+        $this->taskIncompleteService          = $taskIncompleteService;
+        $this->labeledThingFacade             = $labeledThingFacade;
+        $this->labeledThingInFrameFacade      = $labeledThingInFrameFacade;
+        $this->labeledFrameFacade             = $labeledFrameFacade;
+        $this->project                        = $project;
+        $this->labelingTaskFacade             = $labelingTaskFacade;
+        $this->labeledThingGroupFacade        = $labeledThingGroupFacade;
+        $this->documentManager                = $documentManager;
+        $this->labeledThingGroupInFrameFacade = $labeledThingGroupInFrameFacade;
     }
 
     /**
@@ -123,7 +131,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         $this->taskIds = $job->getTaskIds();
         $videoElements = $xpath->query('/x:export/x:video');
         foreach ($videoElements as $videoElement) {
-            $groups = $this->getLabeledThingGroupsReferences($xpath->query('./x:group', $videoElement));
+            $groups = $this->getLabeledThingGroupsReferences($xpath, $xpath->query('./x:group', $videoElement));
             $things = $xpath->query('./x:thing', $videoElement);
             /** @var \DOMElement $thing */
             foreach ($things as $thing) {
@@ -147,19 +155,28 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     }
 
     /**
+     * @param \DOMXPath    $xpath
      * @param \DOMNodeList $groupsElement
      *
      * @return array
      */
-    private function getLabeledThingGroupsReferences(\DOMNodeList $groupsElement)
+    private function getLabeledThingGroupsReferences(\DOMXPath $xpath, \DOMNodeList $groupsElement)
     {
         $groups = [];
         foreach ($groupsElement as $groupElement) {
-            $originalId = $groupElement->getAttribute('id');
+            $originalId          = $groupElement->getAttribute('id');
             $groups[$originalId] = [
                 'lineColor' => $groupElement->getAttribute('line-color'),
                 'groupType' => $groupElement->getAttribute('type'),
             ];
+
+            $values = $xpath->query('./x:value', $groupElement);
+            foreach ($values as $value) {
+                $id = $value->getAttribute('id');
+                $class = $value->getAttribute('class');
+                $startFrame = $value->getAttribute('start');
+                $groups[$originalId]['values'][$id][$startFrame][] = $class;
+            }
         }
 
         return $groups;
@@ -190,6 +207,19 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
             );
             $labeledThingGroup->setOriginalId($originalId);
             $this->labeledThingGroupFacade->save($labeledThingGroup);
+
+            if (isset($groupReferences[$originalId]['values'][$groupReferences[$originalId]['groupType']])) {
+                foreach ($groupReferences[$originalId]['values'][$groupReferences[$originalId]['groupType']] as $startFrame => $classes) {
+                    $labeledThingGroupInFrame = new AnnoStationBundleModel\LabeledThingGroupInFrame(
+                        $task,
+                        $labeledThingGroup,
+                        array_search($startFrame, $task->getFrameNumberMapping()),
+                        $classes
+                    );
+
+                    $this->labeledThingGroupInFrameFacade->save($labeledThingGroupInFrame);
+                }
+            }
 
             $this->labeledThingGroupCache[$task->getId()][$originalId] = $labeledThingGroup;
         }

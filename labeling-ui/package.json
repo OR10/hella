@@ -55,7 +55,7 @@
     "jasmine-core": "^2.3.4",
     "jasmine-reporters": "^2.0.7",
     "jasmine-spec-reporter": "^2.7.0",
-    "jsdoc": "git+https://github.com/jsdoc3/jsdoc.git#6519acee73883d82711dd39f7d9d939b0122d5c8",
+    "jsdoc": "^3.5.0",
     "jspm": "^0.16.53",
     "karma": "^0.13.11",
     "karma-babel-preprocessor": "^6.0.1",
