@@ -338,8 +338,9 @@ describe('Group Creation', () => {
           .sendKeys(protractor.Key.NULL)
           .perform();
       })
-      .then(() => groupButton.click())
       .then(() => browser.sleep(300))
+      .then(() => groupButton.click())
+      .then(() => browser.sleep(800))
       .then(() => {
         return browser.actions()
           .sendKeys(protractor.Key.DELETE)
