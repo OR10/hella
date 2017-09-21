@@ -11,8 +11,9 @@ class PathMoveTool extends MovingTool {
    * @param $rootScope
    * @param $q
    * @param {LoggerService} loggerService
+   * @param {PathCollisionService} pathCollisionService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, pathCollisionService) {
     super(drawingContext, $rootScope, $q, loggerService);
 
     /**
@@ -30,6 +31,11 @@ class PathMoveTool extends MovingTool {
      * @private
      */
     this._modified = false;
+
+    /**
+     * @type {PathCollisionService}
+     */
+    this._pathCollisionService = pathCollisionService;
   }
 
   /**
@@ -100,9 +106,16 @@ class PathMoveTool extends MovingTool {
    * @private
    */
   _moveTo(shape, point) {
+    const {connectedShape, shapesIndices} = this._pathCollisionService.connectedShapeAndIndicesForMovingShape(shape);
     const {options} = this._toolActionStruct;
     this._context.withScope(() => {
       shape.moveTo(this._restrictToViewport(shape, point, options.minimalVisibleShapeOverflow === null ? undefined : options.minimalVisibleShapeOverflow));
+      if (connectedShape !== undefined) {
+        shapesIndices.forEach(index => {
+          connectedShape.points[index.connectedShapeIndex] = shape.points[index.movedShapeIndex];
+          connectedShape.fixOrientation();
+        });
+      }
     });
   }
 }
@@ -164,6 +177,7 @@ PathMoveTool.$inject = [
   '$rootScope',
   '$q',
   'loggerService',
+  'pathCollisionService',
 ];
 
 export default PathMoveTool;
