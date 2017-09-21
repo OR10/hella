@@ -116,6 +116,19 @@
             <value id="time-limit-end-23" name="23" />
         </class>
     </thing>
+    <group id="extension-sign-group" name="Sign with extension">
+        <class id="extension-position" name="Position of the extension sign">
+            <value id="position-below" name="Below" />
+            <value id="position-above" name="Above" />
+        </class>
+    </group>
+    <group id="lights-group" name="Lights">
+        <class id="color" name="Color">
+            <value id="red" name="Red" />
+            <value id="blue" name="Blue" />
+            <value id="rainbow" name="Rainbow" />
+        </class>
+    </group>
     <private>
         <class name="Country" id="country">
             <value id="germany" name="Germany" />

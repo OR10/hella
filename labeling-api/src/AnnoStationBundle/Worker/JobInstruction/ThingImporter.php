@@ -173,9 +173,8 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
             $values = $xpath->query('./x:value', $groupElement);
             foreach ($values as $value) {
                 $id = $value->getAttribute('id');
-                $class = $value->getAttribute('class');
                 $startFrame = $value->getAttribute('start');
-                $groups[$originalId]['values'][$id][$startFrame][] = $class;
+                $groups[$originalId]['values'][$startFrame][] = $id;
             }
         }
 
@@ -208,8 +207,8 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
             $labeledThingGroup->setOriginalId($originalId);
             $this->labeledThingGroupFacade->save($labeledThingGroup);
 
-            if (isset($groupReferences[$originalId]['values'][$groupReferences[$originalId]['groupType']])) {
-                foreach ($groupReferences[$originalId]['values'][$groupReferences[$originalId]['groupType']] as $startFrame => $classes) {
+            if (isset($groupReferences[$originalId]['values'])) {
+                foreach ($groupReferences[$originalId]['values'] as $startFrame => $classes) {
                     $labeledThingGroupInFrame = new AnnoStationBundleModel\LabeledThingGroupInFrame(
                         $task,
                         $labeledThingGroup,
