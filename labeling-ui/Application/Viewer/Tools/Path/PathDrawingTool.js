@@ -95,11 +95,11 @@ class PathDrawingTool extends CreationTool {
     ];
     const labeledThingInFrame = this._hierarchyCreationService.createLabeledThingInFrameWithHierarchy(this._toolActionStruct);
 
-    let polygon;
+    let shape;
     this._context.withScope(() => {
       switch (this._pathIdentifier) {
         case PaperPolygon.getClass():
-          polygon = new PaperPolygon(
+          shape = new PaperPolygon(
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
             points,
@@ -108,7 +108,7 @@ class PathDrawingTool extends CreationTool {
           break;
 
         case PaperPolyline.getClass():
-          polygon = new PaperPolyline(
+          shape = new PaperPolyline(
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
             points,
@@ -121,7 +121,7 @@ class PathDrawingTool extends CreationTool {
       }
     });
 
-    return this._complete(polygon);
+    return this._complete(shape);
   }
 
   /**
