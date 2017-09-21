@@ -386,6 +386,11 @@ describe('Group Creation', () => {
         const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
+      .then(() => browser.sleep(800))
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupFrontLights).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -393,11 +398,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
       })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupFrontLights).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('shows the selection again if user does not select a group type', done => {
