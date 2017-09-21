@@ -64,4 +64,10 @@ class annostation_base::authorized_keys() {
     type => 'ssh-rsa',
     key  => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDCPP86+GyK23jlvqh/Q1guu0lCNIrc0JiCRSjV9Zeo5d2s4U+/Gd+kZtAMXyl0yNYfgzbNBNHDcL2W0a8qUARc9TFjvbr/gxZZtNUTouVEpqLY8tyf6hGo/awAz91XazZQ4/6sBMsSzhgmp5ccc0vqkY+1L93mSLNdqrr4uZGs/NxLWEhsUvEL9acRkKpSqpdfNpS28C9ZzcnEJNOV6eGOb6PFOCrNwUx+GVQbM2T8ln0W81vayviccVDm2OhAuYqa28RNzd/7PirrWav2Ad3OaNrv1daI5mnq9ilfQu8DBY6jeoClrKQq0JSuSv56aG7fJcBrOFvadRMH8v3zmwmvwpr2/nU3oVxiA1xbbDYGEsbTtbbyv0c/0JoSDt3Zc6pScVpoGtNuz1LlzzMMlu/KY/JPKskyHdb4kqelnsHuy3fUlI0rR8hxMJz8nCIaGURqScTL50sLBgrbeM0ngf1/HN2bNr3+hVx9rcsyaj7yJucEOoOtWiCWOegMqXJuIChhyWWEKv6dPN/Hs08MLhi5b807tZE1MeWae34CR7yVop3GYAM3NxDRYTdo+HskWPnw2OpLPddUE4qhp+HfTM8yWxnTM/GfR8CtVlerOG+yqrVhNJzAqgTN1ZPVendEv4AdbHVz8XfyeWvWhGRFDxnivy2Kx7MHF2ct2K3zgDnyqQ==',
   }
+
+  ssh_authorized_key { 'koh@crosscan.com for root':
+      user => 'root',
+      type => 'ssh-rsa',
+      key  => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQChLNm7W6KP2JzXPyGQMh2m4Nwzo5DCQgmFxTZgqqkmP7dFKzTDvZ2dwqMDfA1zl4UwPgYesRQboahuaPs0OXMAdzNzeqCHF+CYXM9ZJPfttUtInmFF/03sIppWoGcMnwNmmsNo/F3ASXOdY+I1ebnkw1nN9LxcB/jmOKygVQ86ewWuiZ8Lw9n/YGYBmUIO1SqD0YT6ZJJYpxOwa7L17fChY5jq8IoNhZaai4E7fMdcRNTwnb1Xr9uZwJcdC4+Jhovq+PojlreevgRRQWZAsxCijjfWOUWD616xKkmX+19xCRgc73Wa6a8FSczd+zJZ3qvR0wKL+KvKUmTwO5T4ovUzD5bD6ybwnhCdm1MiK4zohdL/j7o4xzRf/h/8ki7eOPnnpLiJRTIhsasz1EXC1xENHvwzSOuiI/hNFyCsL7g3GBe5xgHGbduQxYbSEcZA1B1UmhwAwX2mgXo7blPNLH0eLIqC8b/95N1H2RKO6t/YJeMpzl2t+8jwp1xSVxKVHBMcO8kyesUngSlNLvctrO2alDlMwiMUpBuzqkHAGjMWMUXSjrbot5KphuPqMCujFZ/sIiwIwMOz0dAXSO6qOLqn4itV3cZRTO7ACW5qivBraN1sgy/0WKxO2CpvxzkhNHAolIHGZe4Vui5IZNti7f44jBsrl+hdy4n1dCYl1gR3jw==',
+    }
 }
