@@ -166,42 +166,62 @@ class LabeledThingGateway {
   }
 
   /**
+   * Save a {@link LabeledThing} without using the packaging executor
+   *
+   * This method is supposed to be only called internally. Its execution should always be executed inside a
+   * `labeledThing` based packaging executor queue.
+   *
+   * The method handles the removal of {@link LabeledThingInFrame} objects, as well as {@link LabeledThingGroupInFrame}
+   * objects, which are no longer valid due the `new` frameRange of the given `LabeledThing` as part of the update.
+   *
+   * The updated {@link LabeledThing} object is returned on success.
+   *
    * @param {LabeledThing} labeledThing
-   * @return {AbortablePromise.<LabeledThing|Error>}
+   * @returns {LabeledThing}
+   * @private
    */
-  saveLabeledThing(labeledThing) {
+  _saveLabeledThingWithoutPackagingExecutor(labeledThing) {
     const task = labeledThing.task;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);
     let readLabeledThing = null;
 
+    this._injectRevisionOrFailSilently(serializedLabeledThing);
+    return this._$q.resolve()
+      .then(() => this._isLabeledThingIncomplete(dbContext, labeledThing))
+      .then(isIncomplete => {
+        serializedLabeledThing.incomplete = isIncomplete;
+        return dbContext.put(serializedLabeledThing);
+      })
+      .then(dbResponse => {
+        return dbContext.get(dbResponse.id);
+      })
+      .then(readLabeledThingDocument => {
+        this._revisionManager.extractRevision(readLabeledThingDocument);
+        readLabeledThing = this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThingDocument, task);
+      })
+      .then(() => {
+        return this._$q.all([
+          this._deleteLtifsOutsideOfLtFrameRange(readLabeledThing),
+          this._deleteLtgifsOutsideOfLtgsFrameRangesByLabeledThing(labeledThing),
+        ]);
+      })
+      .then(() => {
+        return readLabeledThing;
+      });
+  }
+
+  /**
+   * @param {LabeledThing} labeledThing
+   * @return {AbortablePromise.<LabeledThing|Error>}
+   */
+  saveLabeledThing(labeledThing) {
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
-    return this._packagingExecutor.execute('labeledThing', () => {
-      this._injectRevisionOrFailSilently(serializedLabeledThing);
-      return this._$q.resolve()
-        .then(() => this._isLabeledThingIncomplete(dbContext, labeledThing))
-        .then(isIncomplete => {
-          serializedLabeledThing.incomplete = isIncomplete;
-          return dbContext.put(serializedLabeledThing);
-        })
-        .then(dbResponse => {
-          return dbContext.get(dbResponse.id);
-        })
-        .then(readLabeledThingDocument => {
-          this._revisionManager.extractRevision(readLabeledThingDocument);
-          readLabeledThing = this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThingDocument, task);
-        })
-        .then(() => {
-          return this._$q.all([
-            this._deleteLtifsOutsideOfLtFrameRange(readLabeledThing),
-            this._deleteLtgifsOutsideOfLtgsFrameRangesByLabeledThing(labeledThing),
-          ]);
-        })
-        .then(() => {
-          return readLabeledThing;
-        });
-    });
+    return this._packagingExecutor.execute(
+      'labeledThing',
+      () => this._saveLabeledThingWithoutPackagingExecutor(labeledThing)
+    );
   }
 
   _isLabeledThingIncomplete(dbContext, labeledThing) {
@@ -341,13 +361,13 @@ class LabeledThingGateway {
     });
 
     return this._packagingExecutor.execute(
-      // It is important to put this into the `labeledThingGroup` queue not the `labeledThing` queue!
-      'labeledThingGroup',
+      // It is important to put this into the `labeledThing` queue not the `labeledThingGroup` queue!
+      'labeledThing',
       () => {
         const promises = [];
 
         modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this.saveLabeledThing(labeledThing));
+          promises.push(this._saveLabeledThingWithoutPackagingExecutor(labeledThing));
         });
 
         return this._$q.all(promises);
@@ -371,13 +391,13 @@ class LabeledThingGateway {
     });
 
     return this._packagingExecutor.execute(
-      // It is important to put this into the `labeledThingGroup` queue not the `labeledThing` queue!
-      'labeledThingGroup',
+      // It is important to put this into the `labeledThing` queue not the `labeledThingGroup` queue!
+      'labeledThing',
       () => {
         const promises = [];
 
         modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this.saveLabeledThing(labeledThing));
+          promises.push(this._saveLabeledThingWithoutPackagingExecutor(labeledThing));
         });
 
         return this._$q.all(promises);
