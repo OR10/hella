@@ -50,7 +50,8 @@
         <div class="grid-content noscroll"
              ng-hide="vm.readOnly"
         >
-            <button ng-show="vm.showOpenCloseBrackets()"
+            <button id="set-open-bracket-button"
+                    ng-show="vm.showOpenCloseBrackets()"
                     ng-click="vm.handleSetOpenBracketClicked()"
                     tooltip="Set the start frame of the active shape">
                 <i class="icon icon-selection-start"></i>
@@ -63,7 +64,8 @@
             </button>
         </div>
         <div class="grid-content noscroll previous-frame-button">
-            <button ng-click="vm.handlePreviousFrameClicked()"
+            <button id="jump-to-previous-frame-button"
+                    ng-click="vm.handlePreviousFrameClicked()"
                     tooltip="Jump to previous frame">
                 <i class="icon icon-control-previous"></i>
             </button>
@@ -89,7 +91,8 @@
             </button>
         </div>
         <div class="grid-content noscroll next-frame-button">
-            <button ng-click="vm.handleNextFrameClicked()"
+            <button id="jump-to-next-frame-button"
+                    ng-click="vm.handleNextFrameClicked()"
                     tooltip="Jump to next frame">
                 <i class="icon icon-control-next"></i>
             </button>
@@ -103,7 +106,8 @@
         <div class="grid-content noscroll"
              ng-hide="vm.readOnly"
         >
-            <button ng-show="vm.showOpenCloseBrackets()"
+            <button id="set-close-bracket-button"
+                    ng-show="vm.showOpenCloseBrackets()"
                     ng-click="vm.handleSetCloseBracketClicked()"
                     tooltip="Set the end frame of the active shape">
                 <i class="icon icon-selection-end"></i>
