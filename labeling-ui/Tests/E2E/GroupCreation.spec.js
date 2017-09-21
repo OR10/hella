@@ -3,6 +3,7 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  expectAllModalsToBeClosed,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -550,5 +551,8 @@ describe('Group Creation', () => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
         done();
       });
+  });
+  afterEach(() => {
+    expectAllModalsToBeClosed();
   });
 });
