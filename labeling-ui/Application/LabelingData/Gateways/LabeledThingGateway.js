@@ -101,7 +101,7 @@ class LabeledThingGateway {
         // Mark filtered documents as deleted
         const bulkActionDocuments = rows.map(
           row => ({
-            _id: row._id,
+            _id: row.doc._id,
             _rev: row.doc._rev,
             _deleted: true,
           })
