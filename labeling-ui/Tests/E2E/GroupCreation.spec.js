@@ -386,8 +386,6 @@ describe('Group Creation', () => {
         const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(250))
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
