@@ -18,7 +18,9 @@ class ThumbnailReelControllerTestable extends ThumbnailReelController {
               applicationState,
               lockService,
               frameIndexService,
-              labeledThingGroupService) {
+              labeledThingGroupService,
+              labeledThingReferentialCheckService,
+              modalService) {
     super($scope,
       $rootScope,
       $window,
@@ -32,7 +34,9 @@ class ThumbnailReelControllerTestable extends ThumbnailReelController {
       applicationState,
       lockService,
       frameIndexService,
-      labeledThingGroupService);
+      labeledThingGroupService,
+      labeledThingReferentialCheckService,
+      modalService);
   }
 }
 
@@ -51,6 +55,8 @@ describe('ThumbnailReelController tests', () => {
   let labeledThingGateway;
   let promise;
   let lockService;
+  let labeledThingReferentialCheckService;
+  let modalService;
 
   function createController() {
     return new ThumbnailReelControllerTestable(
@@ -67,7 +73,9 @@ describe('ThumbnailReelController tests', () => {
       applicationState,
       lockService,
       frameIndexService,      // frameIndexService
-      null                    // labeledThingGroupService
+      null,                   // labeledThingGroupService
+      labeledThingReferentialCheckService,
+      modalService
     );
   }
 
@@ -84,7 +92,10 @@ describe('ThumbnailReelController tests', () => {
     frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameIndexLimits']);
     frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
+    modalService = jasmine.createSpyObj('modalService', ['info']);
     labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['saveLabeledThing']);
+    labeledThingReferentialCheckService = jasmine.createSpyObj('labeledThingReferentialCheckService', ['isAtLeastOneLabeledThingInFrameInRange']);
+    labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange.and.returnValue(promise.resolve(true));
     lockService = jasmine.createSpyObj('lockService', ['acquire']);
 
     animationFrameService.debounce.and.returnValue(() => {});
