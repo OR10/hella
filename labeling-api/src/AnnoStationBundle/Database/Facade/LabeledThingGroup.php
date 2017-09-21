@@ -59,7 +59,7 @@ class LabeledThingGroup
     /**
      * @param AppBundleModel\LabelingTask $labelingTask
      *
-     * @return mixed[]
+     * @return Model\LabeledThingGroup[]
      */
     public function getLabeledThingGroupsByTask(AppBundleModel\LabelingTask $labelingTask)
     {
