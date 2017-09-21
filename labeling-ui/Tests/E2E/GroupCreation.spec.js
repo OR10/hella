@@ -99,17 +99,17 @@ describe('Group Creation', () => {
       })
       .then(() => browser.sleep(250))
       // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
+        done();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
-      })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
-        done();
       });
   });
 
