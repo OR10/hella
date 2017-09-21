@@ -346,7 +346,7 @@ describe('Group Creation', () => {
           .sendKeys(protractor.Key.DELETE)
           .perform();
       })
-      .then(() => browser.sleep(1000))
+      .then(() => browser.sleep(800))
       .then(() => element(by.cssContainingText('option', 'Delete the object itself')).click())
       .then(() => {
         const confirmButton = element(by.css('.modal-button-confirm'));
