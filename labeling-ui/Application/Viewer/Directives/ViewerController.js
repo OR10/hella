@@ -78,6 +78,7 @@ class ViewerController {
    * @param {GroupCreationService} groupCreationService
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    * @param {PathCollisionService} pathCollisionService
+   * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
    */
   constructor(
     $scope,
@@ -120,6 +121,7 @@ class ViewerController {
     groupCreationService,
     groupSelectionDialogFactory,
     pathCollisionService,
+    labeledThingReferentialCheckService,
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -387,6 +389,12 @@ class ViewerController {
      * @private
      */
     this._pathCollisionService = pathCollisionService;
+
+    /**
+     * @type {LabeledThingReferentialCheckService}
+     * @private
+     */
+    this._labeledThingReferentialCheckService = labeledThingReferentialCheckService;
 
     const groupListener = (tool, labelStructureObject) => {
       const shapes = this._shapeSelectionService.getAllShapes()
@@ -982,6 +990,7 @@ class ViewerController {
       this._shapeSelectionService,
       this._groupSelectionDialogFactory,
       this._pathCollisionService,
+      this._labeledThingReferentialCheckService,
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1864,6 +1873,7 @@ ViewerController.$inject = [
   'groupCreationService',
   'groupSelectionDialogFactory',
   'pathCollisionService',
+  'labeledThingReferentialCheckService',
 ];
 
 export default ViewerController;

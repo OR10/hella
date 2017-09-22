@@ -58,7 +58,12 @@ describe('LabeledThingReferentialCheckService', () => {
     pouchDbContextService.provideContextForTaskId.and.returnValue(PouchDB);
     const pouchDbViewService = jasmine.createSpyObj('pouchDbViewService', ['getDesignDocumentViewName']);
 
-    const service = new LabeledThingReferentialCheckService(angularQ, pouchDbContextService, pouchDbViewService);
+    const packagingExecutorMock = jasmine.createSpyObj('PackagingExecutor', ['execute']);
+    packagingExecutorMock.execute.and.callFake((queueIdentifier, callback) => {
+      return callback();
+    });
+
+    const service = new LabeledThingReferentialCheckService(angularQ, packagingExecutorMock, pouchDbContextService, pouchDbViewService);
 
     service.isAtLeastOneLabeledThingInFrameInRange(task, labeledThing, 1, 3).then(
       isLabeledThingInFrame => {
@@ -80,7 +85,12 @@ describe('LabeledThingReferentialCheckService', () => {
     pouchDbContextService.provideContextForTaskId.and.returnValue(PouchDB);
     const pouchDbViewService = jasmine.createSpyObj('pouchDbViewService', ['getDesignDocumentViewName']);
 
-    const service = new LabeledThingReferentialCheckService(angularQ, pouchDbContextService, pouchDbViewService);
+    const packagingExecutorMock = jasmine.createSpyObj('PackagingExecutor', ['execute']);
+    packagingExecutorMock.execute.and.callFake((queueIdentifier, callback) => {
+      return callback();
+    });
+
+    const service = new LabeledThingReferentialCheckService(angularQ, packagingExecutorMock, pouchDbContextService, pouchDbViewService);
 
     service.isAtLeastOneLabeledThingInFrameInRange(task, labeledThing, 5, 7).then(
       isLabeledThingInFrame => {

@@ -27,7 +27,6 @@ class MediaControlsController {
    * @param {ModalService} modalService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
-   * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
    */
   constructor($scope,
               $rootScope,
@@ -41,8 +40,7 @@ class MediaControlsController {
               applicationState,
               modalService,
               keyboardShortcutService,
-              viewerMouseCursorService,
-              labeledThingReferentialCheckService) {
+              viewerMouseCursorService) {
     /**
      * @type {angular.$rootScope}
      */
@@ -120,12 +118,6 @@ class MediaControlsController {
     this._viewerMouseCursorService = viewerMouseCursorService;
 
     /**
-     * @type {LabeledThingReferentialCheckService}
-     * @private
-     */
-    this._labeledThingReferentialCheckService = labeledThingReferentialCheckService;
-
-    /**
      * @type {string}
      */
     this.popupPanelState = 'zoom';
@@ -189,35 +181,7 @@ class MediaControlsController {
       return;
     }
 
-    this._labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange(
-      this.task,
-      selectedLabeledThing,
-      framePosition,
-      selectedLabeledThing.frameRange.endFrameIndex
-    ).then(isLabeledThingInFrameRange => {
-      if (isLabeledThingInFrameRange === true) {
-        selectedLabeledThing.frameRange.startFrameIndex = framePosition;
-        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
-        });
-      } else {
-        this._modalService.info(
-          {
-            title: 'Warning',
-            headline: 'Frame-Range without any shape.',
-            message: 'Inside the new frame-range are no shapes and this will delete this object. ',
-            confirmButtonText: 'Delete this shape',
-            cancelButtonText: 'Cancel',
-          },
-          () => {
-            this._$rootScope.$emit('action:delete-shape', this.task, this.selectedPaperShape);
-          },
-          undefined,
-          {
-            abortable: true,
-          }
-        );
-      }
-    });
+    this._$rootScope.$emit('action:change-start-frame-index', this.task, this.selectedPaperShape, framePosition);
   }
 
   /**
@@ -273,36 +237,7 @@ class MediaControlsController {
       return;
     }
 
-
-    this._labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange(
-      this.task,
-      selectedLabeledThing,
-      selectedLabeledThing.frameRange.startFrameIndex,
-      framePosition
-    ).then(isLabeledThingInFrameRange => {
-      if (isLabeledThingInFrameRange === true) {
-        selectedLabeledThing.frameRange.endFrameIndex = framePosition;
-        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing).then(() => {
-        });
-      } else {
-        this._modalService.info(
-          {
-            title: 'Warning',
-            headline: 'Frame-Range without any shape.',
-            message: 'Inside the new frame-range are no shapes and this will delete this object. ',
-            confirmButtonText: 'Delete this shape',
-            cancelButtonText: 'Cancel',
-          },
-          () => {
-            this._$rootScope.$emit('action:delete-shape', this.task, this.selectedPaperShape);
-          },
-          undefined,
-          {
-            abortable: true,
-          }
-        );
-      }
-    });
+    this._$rootScope.$emit('action:change-end-frame-index', this.task, this.selectedPaperShape, framePosition);
   }
 
   /**
@@ -567,7 +502,6 @@ MediaControlsController.$inject = [
   'modalService',
   'keyboardShortcutService',
   'viewerMouseCursorService',
-  'labeledThingReferentialCheckService',
 ];
 
 export default MediaControlsController;

@@ -18,9 +18,7 @@ class ThumbnailReelControllerTestable extends ThumbnailReelController {
               applicationState,
               lockService,
               frameIndexService,
-              labeledThingGroupService,
-              labeledThingReferentialCheckService,
-              modalService) {
+              labeledThingGroupService) {
     super($scope,
       $rootScope,
       $window,
@@ -34,9 +32,7 @@ class ThumbnailReelControllerTestable extends ThumbnailReelController {
       applicationState,
       lockService,
       frameIndexService,
-      labeledThingGroupService,
-      labeledThingReferentialCheckService,
-      modalService);
+      labeledThingGroupService);
   }
 }
 
@@ -55,8 +51,6 @@ describe('ThumbnailReelController tests', () => {
   let labeledThingGateway;
   let promise;
   let lockService;
-  let labeledThingReferentialCheckService;
-  let modalService;
 
   function createController() {
     return new ThumbnailReelControllerTestable(
@@ -74,8 +68,6 @@ describe('ThumbnailReelController tests', () => {
       lockService,
       frameIndexService,      // frameIndexService
       null,                   // labeledThingGroupService
-      labeledThingReferentialCheckService,
-      modalService
     );
   }
 
@@ -92,10 +84,7 @@ describe('ThumbnailReelController tests', () => {
     frameIndexService = jasmine.createSpyObj('frameIndexService', ['getFrameIndexLimits']);
     frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
-    modalService = jasmine.createSpyObj('modalService', ['info']);
     labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['saveLabeledThing']);
-    labeledThingReferentialCheckService = jasmine.createSpyObj('labeledThingReferentialCheckService', ['isAtLeastOneLabeledThingInFrameInRange']);
-    labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange.and.returnValue(promise.resolve(true));
     lockService = jasmine.createSpyObj('lockService', ['acquire']);
 
     animationFrameService.debounce.and.returnValue(() => {});
@@ -141,7 +130,7 @@ describe('ThumbnailReelController tests', () => {
       frameLocationGateway.getFrameLocations.and.returnValue(frameLocationGatewayPromise);
     }
 
-    it('sends the framerange:change:after event if the framerange of a LT narrowed and start-bracket class is set', () => {
+    it('sends the action:change-start-frame-index event if the framerange of a LT narrowed and start-bracket class is set', () => {
       const dragObject = { draggable: { hasClass: () => true } };
       const reel = createController();
       setupReel(reel);
@@ -149,10 +138,10 @@ describe('ThumbnailReelController tests', () => {
       reel.handleDrop({}, dragObject, index);
       scope.$apply();
 
-      expect(rootScope.$emit).toHaveBeenCalledWith('framerange:change:after');
+      expect(rootScope.$emit).toHaveBeenCalledWith('action:change-start-frame-index', {requiredImageTypes: ['thumbnail']}, reel.selectedPaperShape, 2);
     });
 
-    it('sends the framerange:change:after event if the framerange of a LT narrowed but start-bracket class is not set', () => {
+    it('sends the action:change-end-frame-index event if the framerange of a LT narrowed but start-bracket class is not set', () => {
       const dragObject = { draggable: { hasClass: () => false } };
       const reel = createController();
       setupReel(reel);
@@ -160,7 +149,7 @@ describe('ThumbnailReelController tests', () => {
       reel.handleDrop({}, dragObject, index);
       scope.$apply();
 
-      expect(rootScope.$emit).toHaveBeenCalledWith('framerange:change:after');
+      expect(rootScope.$emit).toHaveBeenCalledWith('action:change-end-frame-index', {requiredImageTypes: ['thumbnail']}, reel.selectedPaperShape, 2);
     });
   });
 });

@@ -27,8 +27,6 @@ class ThumbnailReelController {
    * @param {LockService} lockService
    * @param {FrameIndexService} frameIndexService
    * @param {LabeledThingGroupService} labeledThingGroupService
-   * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
-   * @param {ModalService} modalService
    */
   constructor($scope,
               $rootScope,
@@ -43,9 +41,7 @@ class ThumbnailReelController {
               applicationState,
               lockService,
               frameIndexService,
-              labeledThingGroupService,
-              labeledThingReferentialCheckService,
-              modalService) {
+              labeledThingGroupService) {
     /**
      * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
      */
@@ -156,18 +152,6 @@ class ThumbnailReelController {
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
-
-    /**
-     * @type {LabeledThingReferentialCheckService}
-     * @private
-     */
-    this._labeledThingReferentialCheckService = labeledThingReferentialCheckService;
-
-    /**
-     * @type {ModalService}
-     * @private
-     */
-    this._modalService = modalService;
 
     /**
      * @type {AbortablePromiseRingBuffer}
@@ -583,59 +567,9 @@ class ThumbnailReelController {
    * @private
    */
   _setStartFrameIndex(index) {
-    if (this.selectedPaperShape instanceof PaperGroupShape) {
-      throw new Error('Cannot change the frame range of groups!');
-    }
-
-    const labeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
-    const labeledThing = labeledThingInFrame.labeledThing;
-    const frameRange = labeledThingInFrame.labeledThing.frameRange;
-    const endFrameIndex = labeledThingInFrame.labeledThing.frameRange.endFrameIndex;
-
     if (this.thumbnails[index + 1] && this.thumbnails[index + 1].location !== null) {
       const frameIndex = this.thumbnails[index + 1].location.frameIndex;
-
-      if (frameIndex <= frameRange.endFrameIndex) {
-        const oldStartFrameIndex = frameRange.startFrameIndex;
-
-        this._labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange(
-          this.task,
-          labeledThing,
-          frameIndex,
-          endFrameIndex
-        ).then(isLabeledThingInFrameRange => {
-          if (isLabeledThingInFrameRange === true) {
-            frameRange.startFrameIndex = frameIndex;
-            // Synchronize operations on this LabeledThing
-            this._labeledThingGateway.saveLabeledThing(labeledThing).then(() => {
-              // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-              if (frameIndex > oldStartFrameIndex) {
-                this._updateLabeledThingInFrames(this.selectedPaperShape);
-                this._$scope.$root.$emit('framerange:change:after');
-              }
-            });
-          } else {
-            this._modalService.info(
-              {
-                title: 'Warning',
-                headline: 'Frame-Range without any shape.',
-                message: 'Inside the new frame-range are no shapes and this will delete this object. ',
-                confirmButtonText: 'Delete this shape',
-                cancelButtonText: 'Cancel',
-              },
-              () => {
-                this._$scope.$root.$emit('action:delete-shape', this.task, this.selectedPaperShape);
-              },
-              () => {
-                // @TODO restore Open Bracket
-              },
-              {
-                abortable: true,
-              }
-            );
-          }
-        });
-      }
+      this._$scope.$root.$emit('action:change-start-frame-index', this.task, this.selectedPaperShape, frameIndex);
     }
   }
 
@@ -646,59 +580,9 @@ class ThumbnailReelController {
    * @private
    */
   _setEndFrameIndex(index) {
-    if (this.selectedPaperShape instanceof PaperGroupShape) {
-      throw new Error('Cannot change the frame range of groups!');
-    }
-
-    const labeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
-    const labeledThing = labeledThingInFrame.labeledThing;
-    const frameRange = labeledThingInFrame.labeledThing.frameRange;
-    const startFrameIndex = labeledThingInFrame.labeledThing.frameRange.startFrameIndex;
-
     if (this.thumbnails[index] && this.thumbnails[index].location !== null) {
       const frameIndex = this.thumbnails[index].location.frameIndex;
-
-      if (frameIndex >= frameRange.startFrameIndex) {
-        const oldEndFrameIndex = frameRange.endFrameIndex;
-
-        this._labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange(
-          this.task,
-          labeledThing,
-          startFrameIndex,
-          frameIndex
-        ).then(isLabeledThingInFrameRange => {
-          if (isLabeledThingInFrameRange === true) {
-            frameRange.endFrameIndex = frameIndex;
-            // Synchronize operations on this LabeledThing
-            this._labeledThingGateway.saveLabeledThing(labeledThing).then(() => {
-              // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-              if (frameIndex < oldEndFrameIndex) {
-                this._updateLabeledThingInFrames(this.selectedPaperShape);
-                this._$scope.$root.$emit('framerange:change:after');
-              }
-            });
-          } else {
-            this._modalService.info(
-              {
-                title: 'Warning',
-                headline: 'Frame-Range without any shape.',
-                message: 'Inside the new frame-range are no shapes and this will delete this object. ',
-                confirmButtonText: 'Delete this shape',
-                cancelButtonText: 'Cancel',
-              },
-              () => {
-                this._$scope.$root.$emit('action:delete-shape', this.task, this.selectedPaperShape);
-              },
-              () => {
-                // @TODO restore Close Bracket
-              },
-              {
-                abortable: true,
-              }
-            );
-          }
-        });
-      }
+      this._$scope.$root.$emit('action:change-end-frame-index', this.task, this.selectedPaperShape, frameIndex);
     }
   }
 
@@ -759,8 +643,6 @@ ThumbnailReelController.$inject = [
   'lockService',
   'frameIndexService',
   'labeledThingGroupService',
-  'labeledThingReferentialCheckService',
-  'modalService',
 ];
 
 export default ThumbnailReelController;
