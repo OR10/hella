@@ -254,7 +254,12 @@ describe('Group Creation', () => {
           .perform();
       })
       .then(() => browser.sleep(250))
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => {
+        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
+        done();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateThreeGroupsWithFourShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -262,12 +267,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateThreeGroupsWithFourShapes);
       })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint).toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('creates a group around multiselected shapes', done => {
@@ -432,6 +432,10 @@ describe('Group Creation', () => {
       })
       .then(() => browser.sleep(250))
       // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupBackLights).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -439,11 +443,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
       })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupBackLights).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('does not create a group if user clicks Abort when shown the group type selection modal', done => {
