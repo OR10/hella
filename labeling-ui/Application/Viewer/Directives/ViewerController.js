@@ -78,6 +78,7 @@ class ViewerController {
    * @param {GroupCreationService} groupCreationService
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    * @param {PathCollisionService} pathCollisionService
+   * @param {PouchDbContextService} pouchDbContextService
    */
   constructor(
     $scope,
@@ -120,6 +121,7 @@ class ViewerController {
     groupCreationService,
     groupSelectionDialogFactory,
     pathCollisionService,
+    pouchDbContextService,
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -388,6 +390,12 @@ class ViewerController {
      */
     this._pathCollisionService = pathCollisionService;
 
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._pouchDbContextService = pouchDbContextService;
+
     const groupListener = (tool, labelStructureObject) => {
       const shapes = this._shapeSelectionService.getAllShapes()
         .filter(
@@ -601,6 +609,10 @@ class ViewerController {
      */
     let unauthorizedAccessModalOpen = false;
     $rootScope.$on('pouchdb:replication:unauthorized', () => {
+      this._inProgressService.end();
+      const context = this._pouchDbContextService.provideContextForTaskId(this.task.id);
+      this._pouchDbSyncManager.stopReplicationsForContext(context);
+
       if (unauthorizedAccessModalOpen === true) {
         this._logger.log('pouchdb:replication:unauthorized', 'Unauthorized event already handled, skipping dialog');
         return;
@@ -1864,6 +1876,7 @@ ViewerController.$inject = [
   'groupCreationService',
   'groupSelectionDialogFactory',
   'pathCollisionService',
+  'pouchDbContextService',
 ];
 
 export default ViewerController;
