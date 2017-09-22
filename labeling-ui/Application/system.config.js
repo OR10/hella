@@ -66,10 +66,10 @@ System.config({
   },
 
   map: {
-    "angular": "github:angular/bower-angular@1.4.8",
+    "angular": "github:angular/bower-angular@1.4.14",
     "angular-animate": "github:angular/bower-angular-animate@1.4.8",
     "angular-dragdrop": "github:codef0rmer/angular-dragdrop@1.0.12",
-    "angular-hotkeys": "github:chieffancypants/angular-hotkeys@1.6.0",
+    "angular-hotkeys": "github:chieffancypants/angular-hotkeys@1.7.0",
     "angular-mocks": "github:angular/bower-angular-mocks@1.4.7",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.15",
     "babel": "npm:babel-core@5.8.34",
@@ -107,22 +107,22 @@ System.config({
     "uuid": "npm:uuid@2.0.1",
     "v-accordion": "npm:v-accordion@1.4.1",
     "github:angular-ui/ui-router@0.2.15": {
-      "angular": "github:angular/bower-angular@1.4.8"
+      "angular": "github:angular/bower-angular@1.4.14"
     },
     "github:angular/bower-angular-animate@1.4.8": {
-      "angular": "github:angular/bower-angular@1.4.8"
+      "angular": "github:angular/bower-angular@1.4.14"
     },
     "github:angular/bower-angular-mocks@1.4.7": {
-      "angular": "github:angular/bower-angular@1.4.8"
+      "angular": "github:angular/bower-angular@1.4.14"
     },
-    "github:chieffancypants/angular-hotkeys@1.6.0": {
-      "angular": "github:angular/bower-angular@1.4.8"
+    "github:chieffancypants/angular-hotkeys@1.7.0": {
+      "angular": "github:angular/bower-angular@1.4.14"
     },
     "github:components/jqueryui@1.11.4": {
       "jquery": "github:components/jquery@2.1.4"
     },
     "github:flowjs/ng-flow@2.7.4": {
-      "angular": "github:angular/bower-angular@1.4.8",
+      "angular": "github:angular/bower-angular@1.4.14",
       "flow.js": "github:flowjs/flow.js@2.11.2"
     },
     "github:jakobwesthoff/pouchdb-wrappers@taskqueue-race": {
