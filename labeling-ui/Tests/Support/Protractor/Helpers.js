@@ -154,9 +154,15 @@ function _sendKey(key) {
 }
 
 export function sendKeys(keysOrSequences) {
-  let keys = keysOrSequences;
-  if (typeof keysOrSequences === 'string' && keysOrSequences.length > 1) {
-    keys = keysOrSequences.split('');
+  let keys;
+  if (!Array.isArray(keysOrSequences)) {
+    if (typeof keysOrSequences === 'string' && keysOrSequences.length > 1) {
+      keys = keysOrSequences.split('');
+    } else {
+      keys = [keysOrSequences];
+    }
+  } else {
+    keys = keysOrSequences;
   }
 
   return keys.reduce(
