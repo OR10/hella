@@ -15,7 +15,11 @@ describe('Cuboid Drawing', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -44,7 +48,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.BackCenter.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackCenter')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -60,7 +66,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.BackLeft.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -76,7 +84,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -92,7 +102,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontCenter.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenter')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -108,7 +120,8 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontLeft.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -124,7 +137,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontRight.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -140,7 +155,8 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontCenterRotateRight45.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight45')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -156,7 +172,8 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontCenterRotateRight225.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight225')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -172,10 +189,11 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateVeryLow')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateVeryLow);
@@ -192,7 +210,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 596, y: 496})
@@ -282,7 +302,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -312,7 +334,8 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -342,7 +365,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -374,7 +399,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -403,7 +430,8 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -432,7 +460,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -463,7 +493,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -492,7 +524,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -522,7 +556,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -552,7 +588,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 565, y: 469}) // initial position
@@ -594,7 +632,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 565, y: 469}) // initial position
@@ -638,7 +678,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -665,7 +707,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -692,7 +736,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -721,7 +767,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -752,7 +800,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -784,7 +834,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -813,7 +865,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -842,7 +896,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -873,7 +929,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -902,7 +960,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -934,7 +994,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -963,7 +1025,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -992,7 +1056,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -1023,7 +1089,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -1052,7 +1120,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1139,7 +1209,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1217,7 +1289,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.Pseudo3dDepth.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1256,7 +1330,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.Pseudo3dDepth180.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1297,7 +1373,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.Pseudo3dWidth.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1338,7 +1416,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.Pseudo3dWidth180.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1379,7 +1459,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1409,7 +1491,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1478,7 +1562,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
