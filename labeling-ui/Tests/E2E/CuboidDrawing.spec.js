@@ -5,6 +5,9 @@ import {
   bootstrapPouch,
   bootstrapHttp,
   sendKeys,
+  comaLikeSleep,
+  mediumSleep,
+  shortSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -226,7 +229,7 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(keySequences))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
@@ -238,7 +241,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow1);
         })
         .then(() => sendKeys(keySequences))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
@@ -250,7 +253,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow2);
         })
         .then(() => sendKeys(keySequences))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
@@ -262,7 +265,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow3);
         })
         .then(() => sendKeys(keySequences))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
@@ -274,7 +277,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow4);
         })
         .then(() => sendKeys(keySequences))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5).toExistInPouchDb();
         })
@@ -286,7 +289,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow5);
         })
         .then(() => sendKeys(keySequences))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame6).toExistInPouchDb();
         })
@@ -321,7 +324,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -353,7 +356,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeMinimal.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -385,7 +388,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeNonNegative.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -416,7 +419,7 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -447,7 +450,7 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -479,7 +482,7 @@ describe('Cuboid Drawing', () => {
           })
           .then(() => sendKeys(keySequences))
           // Currently I have no idea why this is needed.
-          .then(() => browser.sleep(3000))
+          .then(() => comaLikeSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -510,7 +513,7 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -544,7 +547,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -576,7 +579,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -606,7 +609,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -625,7 +628,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
@@ -651,7 +654,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -696,7 +699,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('o')
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.RotateKeyboardLeft.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -725,7 +728,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('p')
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.RotateKeyboardRight.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -756,7 +759,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys(protractor.Key.NULL)
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftLeft.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -787,7 +790,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys(protractor.Key.NULL)
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -821,7 +824,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.WidthChange.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -852,7 +855,7 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -883,7 +886,7 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -915,7 +918,7 @@ describe('Cuboid Drawing', () => {
           })
           .then(() => sendKeys(keySequences))
           // Currently I have no idea why this is needed.
-          .then(() => browser.sleep(3000))
+          .then(() => comaLikeSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -946,7 +949,7 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -980,7 +983,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.DepthChange.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -1011,7 +1014,7 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -1042,7 +1045,7 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -1072,9 +1075,9 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => sendKeys(keySequences))
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -1105,7 +1108,7 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -1136,7 +1139,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('i')
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
           })
@@ -1152,7 +1155,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('i')
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
           })
@@ -1168,7 +1171,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('i')
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
           })
@@ -1184,7 +1187,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('i')
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
           })
@@ -1213,7 +1216,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('u')
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
           })
@@ -1229,7 +1232,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('u')
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
           })
@@ -1245,7 +1248,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('u')
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
           })
@@ -1261,7 +1264,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('u')
               .perform();
           })
-          .then(() => browser.sleep(800))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
           })
@@ -1293,7 +1296,7 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['oo']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
@@ -1305,7 +1308,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dDepth);
         })
         .then(() => sendKeys(['pp']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
@@ -1334,7 +1337,7 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['ppp']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
@@ -1346,7 +1349,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dDepth180);
         })
         .then(() => sendKeys(['oo']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
@@ -1375,7 +1378,7 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['pp']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
@@ -1387,7 +1390,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dWidth);
         })
         .then(() => sendKeys(['oo']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
@@ -1416,7 +1419,7 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['ppp']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
@@ -1428,7 +1431,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dWidth180);
         })
         .then(() => sendKeys(['oo']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
@@ -1460,7 +1463,7 @@ describe('Cuboid Drawing', () => {
             .mouseUp()
             .perform();
         })
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
@@ -1489,7 +1492,7 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['i']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
@@ -1501,7 +1504,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise1);
         })
         .then(() => sendKeys(['i']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
@@ -1513,7 +1516,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise2);
         })
         .then(() => sendKeys(['i']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
@@ -1525,7 +1528,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise3);
         })
         .then(() => sendKeys(['i']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
@@ -1554,7 +1557,7 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['u']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
@@ -1566,7 +1569,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise1);
         })
         .then(() => sendKeys(['u']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
@@ -1578,7 +1581,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise2);
         })
         .then(() => sendKeys(['u']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
@@ -1590,7 +1593,7 @@ describe('Cuboid Drawing', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise3);
         })
         .then(() => sendKeys(['u']))
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
