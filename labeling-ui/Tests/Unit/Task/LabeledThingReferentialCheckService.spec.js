@@ -52,10 +52,13 @@ describe('LabeledThingReferentialCheckService', () => {
     const labeledThing = createLabeledThing(task);
     const labeledThingInFrame = createLabeledThingInFrame(labeledThing);
 
-    const labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['getAssociatedLabeledThingsInFrames']);
-    labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve({rows: [{doc: labeledThingInFrame}]}));
+    const pouchDbContextService = jasmine.createSpyObj('pouchDbContextService', ['provideContextForTaskId']);
+    const PouchDB = jasmine.createSpyObj('PouchDB', ['query']);
+    PouchDB.query.and.returnValue(angularQ.resolve({rows: [{doc: labeledThingInFrame}]}));
+    pouchDbContextService.provideContextForTaskId.and.returnValue(PouchDB);
+    const pouchDbViewService = jasmine.createSpyObj('pouchDbViewService', ['getDesignDocumentViewName']);
 
-    const service = new LabeledThingReferentialCheckService(angularQ, labeledThingGateway);
+    const service = new LabeledThingReferentialCheckService(angularQ, pouchDbContextService, pouchDbViewService);
 
     service.isAtLeastOneLabeledThingInFrameInRange(task, labeledThing, 1, 3).then(
       isLabeledThingInFrame => {
@@ -71,10 +74,13 @@ describe('LabeledThingReferentialCheckService', () => {
     const labeledThing = createLabeledThing(task);
     const labeledThingInFrame = createLabeledThingInFrame(labeledThing);
 
-    const labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['getAssociatedLabeledThingsInFrames']);
-    labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve({rows: [{doc: labeledThingInFrame}]}));
+    const pouchDbContextService = jasmine.createSpyObj('pouchDbContextService', ['provideContextForTaskId']);
+    const PouchDB = jasmine.createSpyObj('PouchDB', ['query']);
+    PouchDB.query.and.returnValue(angularQ.resolve({rows: [{doc: labeledThingInFrame}]}));
+    pouchDbContextService.provideContextForTaskId.and.returnValue(PouchDB);
+    const pouchDbViewService = jasmine.createSpyObj('pouchDbViewService', ['getDesignDocumentViewName']);
 
-    const service = new LabeledThingReferentialCheckService(angularQ, labeledThingGateway);
+    const service = new LabeledThingReferentialCheckService(angularQ, pouchDbContextService, pouchDbViewService);
 
     service.isAtLeastOneLabeledThingInFrameInRange(task, labeledThing, 5, 7).then(
       isLabeledThingInFrame => {

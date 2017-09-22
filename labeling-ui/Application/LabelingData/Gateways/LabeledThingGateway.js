@@ -97,7 +97,7 @@ class LabeledThingGateway {
           readLabeledThing = this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThingDocument, task);
         })
         .then(() => {
-          return this.getAssociatedLabeledThingsInFrames(task, readLabeledThing);
+          return this._getAssociatedLabeledThingsInFrames(task, readLabeledThing);
         })
         .then(documents => {
           return documents.rows.filter(document => {
@@ -190,7 +190,7 @@ class LabeledThingGateway {
 
       const ltPromise = dbContext.remove(labeledThingDocument);
 
-      const ltifPromise = this.getAssociatedLabeledThingsInFrames(task, labeledThing)
+      const ltifPromise = this._getAssociatedLabeledThingsInFrames(task, labeledThing)
         .then(documents => {
           // Mark found documents as deleted
           return documents.rows.map(document => {
@@ -242,8 +242,9 @@ class LabeledThingGateway {
   /**
    * @param {Task} task
    * @param {LabeledThing} labeledThing
+   * @private
    */
-  getAssociatedLabeledThingsInFrames(task, labeledThing) {
+  _getAssociatedLabeledThingsInFrames(task, labeledThing) {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
     return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
