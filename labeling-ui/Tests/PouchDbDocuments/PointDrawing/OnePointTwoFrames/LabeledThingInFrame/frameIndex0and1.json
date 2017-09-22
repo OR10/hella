@@ -1,8 +1,8 @@
 [
   {
     "frameRange": {
-      "startFrameIndex": 1,
-      "endFrameIndex": 2,
+      "startFrameIndex": 0,
+      "endFrameIndex": 4,
       "type": "AppBundle.Model.FrameIndexRange"
     },
     "classes": [
