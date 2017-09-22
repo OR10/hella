@@ -4,6 +4,7 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -100,7 +101,7 @@ describe('Cuboid creation', () => {
             .click()
             .perform();
         })
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
@@ -145,7 +146,7 @@ describe('Cuboid creation', () => {
             .click()
             .perform();
         })
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
@@ -201,7 +202,7 @@ describe('Cuboid creation', () => {
             .click()
             .perform();
         })
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -214,7 +215,7 @@ describe('Cuboid creation', () => {
             .sendKeys('x')
             .perform();
         })
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame).toExistInPouchDb();
         })
@@ -280,7 +281,7 @@ describe('Cuboid creation', () => {
             .sendKeys('x')
             .perform();
         })
-        .then(() => browser.sleep(800))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame).toExistInPouchDb();
         })
