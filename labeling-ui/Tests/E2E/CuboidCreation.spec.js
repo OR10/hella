@@ -14,7 +14,11 @@ describe('Cuboid creation', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
 
     bootstrapHttp([
       assets.mocks.Shared.TaskDb,
@@ -44,10 +48,13 @@ describe('Cuboid creation', () => {
 
   describe('3d', () => {
     it('should create a new 3d cuboid starting top to bottom', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 405, y: 372}) // initial position
@@ -108,10 +115,13 @@ describe('Cuboid creation', () => {
     });
 
     it('should create a new 3d cuboid starting bottom to top', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 405, y: 525}) // initial
@@ -152,10 +162,13 @@ describe('Cuboid creation', () => {
 
   describe('Pseudo 3d', () => {
     it('should create a new pseudo 3d cuboid starting top to bottom', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 405, y: 372}) // initial position
@@ -215,10 +228,13 @@ describe('Cuboid creation', () => {
     });
 
     it('should create a new pseudo 3d cuboid starting bottom to top', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 405, y: 525}) // initial
