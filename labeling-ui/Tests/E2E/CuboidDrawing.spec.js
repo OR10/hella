@@ -57,8 +57,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackCenter);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the back left', done => {
@@ -75,8 +75,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackLeft);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the back right', done => {
@@ -93,8 +93,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackRight);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the front center', done => {
@@ -111,8 +111,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenter);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the front left', done => {
@@ -122,14 +122,15 @@ describe('Cuboid Drawing', () => {
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontLeft);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the front right', done => {
@@ -146,8 +147,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontRight);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the front center rotated right by 45°', done => {
@@ -157,14 +158,15 @@ describe('Cuboid Drawing', () => {
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight45')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight45);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the front center rotated right by 225°', done => {
@@ -174,35 +176,39 @@ describe('Cuboid Drawing', () => {
 
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight225')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight225);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
-    it('should load and draw one cuboid in the front center rotated where the top side is overlapping the deepest vertex', done => {
-      bootstrapPouch([
-        assets.documents.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0,
-      ]);
+    it(
+      'should load/draw one cuboid front center rotated with top side is overlapping the deepest vertex', done => {
+        bootstrapPouch([
+          assets.documents.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0,
+        ]);
 
-        .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateVeryLow')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         initApplication(
           '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
         )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateVeryLow);
-          done();
-        });
-    });
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateVeryLow')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateVeryLow);
+          })
+          .then(() => done());
+      }
+    );
   });
 
-  describe('DepthBuffer', () => {
+  xdescribe('DepthBuffer', () => {
     const keySequences = [protractor.Key.SHIFT, 'pppppp', protractor.Key.NULL];
 
     it('should properly render a cuboid with low height from all sides', done => {
@@ -220,17 +226,21 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(keySequences))
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow1);
-          return browser.sleep(1000);
         })
         .then(() => sendKeys(keySequences))
+        .then(() => browser.sleep(800))
         .then(() => {
-          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1).toExistInPouchDb();
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow2')
@@ -238,11 +248,11 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow2);
-          return browser.sleep(1000);
         })
         .then(() => sendKeys(keySequences))
+        .then(() => browser.sleep(800))
         .then(() => {
-          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2).toExistInPouchDb();
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow3')
@@ -250,11 +260,11 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow3);
-          return browser.sleep(1000);
         })
         .then(() => sendKeys(keySequences))
+        .then(() => browser.sleep(800))
         .then(() => {
-          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3).toExistInPouchDb();
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow4')
@@ -262,11 +272,11 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow4);
-          return browser.sleep(1000);
         })
         .then(() => sendKeys(keySequences))
+        .then(() => browser.sleep(800))
         .then(() => {
-          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4).toExistInPouchDb();
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow5')
@@ -274,11 +284,11 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow5);
-          return browser.sleep(1000);
         })
         .then(() => sendKeys(keySequences))
+        .then(() => browser.sleep(800))
         .then(() => {
-          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5).toExistInPouchDb();
+          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame6).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthBufferVeryLow6')
@@ -286,12 +296,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow6);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame6).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
   });
 
@@ -315,18 +321,18 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChange')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChange);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should adhere to minimalHeight of loaded cuboid', done => {
@@ -336,6 +342,7 @@ describe('Cuboid Drawing', () => {
 
         initApplication(
           '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -346,18 +353,18 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.HeightChangeMinimal.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeMinimal')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeMinimal);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.HeightChangeMinimal.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should not allow the height to become negative', done => {
@@ -378,18 +385,18 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.HeightChangeNonNegative.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeNonNegative')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeNonNegative);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.HeightChangeNonNegative.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should add to height of loaded cuboid by keyboard', done => {
@@ -409,18 +416,18 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeKeyboardAdd')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeKeyboardAdd);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should substract from height of loaded cuboid by keyboard', done => {
@@ -432,6 +439,7 @@ describe('Cuboid Drawing', () => {
 
         initApplication(
           '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
@@ -439,18 +447,18 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeKeyboardSubstract')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeKeyboardSubstract);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should add to height of loaded cuboid by keyboard in fast mode', done => {
@@ -472,18 +480,17 @@ describe('Cuboid Drawing', () => {
           .then(() => sendKeys(keySequences))
           // Currently I have no idea why this is needed.
           .then(() => browser.sleep(3000))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeKeyboardAddFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeKeyboardAddFast);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should substract from height of loaded cuboid by keyboard in fast mode', done => {
@@ -502,19 +509,19 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'HeightChangeKeyboardSubstractFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeKeyboardSubstractFast);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
     });
 
@@ -537,18 +544,18 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementLeft')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementLeft);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should move loaded cuboid with primary edge change', done => {
@@ -569,18 +576,18 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementRight')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementRight);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should limit movement at the horizon', done => {
@@ -599,16 +606,16 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementHorizonLimit')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementHorizonLimit);
-            return browser.sleep(1000);
-          })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
@@ -618,13 +625,14 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
+          .then(() => browser.sleep(800))
           .then(
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementHorizonLimit);
-            done();
-          });
+          })
+          .then(() => done());
       });
 
       it('should limit movement if the height is below the minimal height', done => {
@@ -643,16 +651,16 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'MovementMinimalHeightLimit')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementMinimalHeightLimit);
-            return browser.sleep(1000);
-          })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
@@ -667,8 +675,8 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementMinimalHeightLimit);
-            done();
-          });
+          })
+          .then(() => done());
       });
     });
 
@@ -688,18 +696,18 @@ describe('Cuboid Drawing', () => {
               .sendKeys('o')
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.RotateKeyboardLeft.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardLeft')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardLeft);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.RotateKeyboardLeft.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should rotate cuboid right around middle axis using keyboard shortcuts', done => {
@@ -717,18 +725,18 @@ describe('Cuboid Drawing', () => {
               .sendKeys('p')
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.RotateKeyboardRight.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardRight')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardRight);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.RotateKeyboardRight.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should fast rotate cuboid left around middle axis using keyboard shortcuts', done => {
@@ -748,18 +756,18 @@ describe('Cuboid Drawing', () => {
               .sendKeys(protractor.Key.NULL)
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftLeft.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardShiftLeft')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardShiftLeft);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftLeft.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should fast rotate cuboid right around middle axis using keyboard shortcuts', done => {
@@ -779,18 +787,18 @@ describe('Cuboid Drawing', () => {
               .sendKeys(protractor.Key.NULL)
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardShiftRight')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardShiftRight);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
     });
 
@@ -813,18 +821,18 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.WidthChange.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChange')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChange);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.WidthChange.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should add to width of loaded cuboid by keyboard', done => {
@@ -843,19 +851,19 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardAdd')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardAdd);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should substract from width of loaded cuboid by keyboard', done => {
@@ -875,18 +883,18 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardSubstract')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardSubstract);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should add to width of loaded cuboid by keyboard in fast mode', done => {
@@ -905,21 +913,20 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
           // Currently I have no idea why this is needed.
           .then(() => browser.sleep(3000))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardAddFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardAddFast);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should substract from width of loaded cuboid by keyboard in fast mode', done => {
@@ -939,18 +946,18 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardSubstractFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardSubstractFast);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
     });
 
@@ -973,18 +980,18 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.DepthChange.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChange')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChange);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.DepthChange.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should add to depth of loaded cuboid by keyboard', done => {
@@ -1004,18 +1011,18 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChangeKeyboardAdd')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChangeKeyboardAdd);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should substract from depth of loaded cuboid by keyboard', done => {
@@ -1035,18 +1042,18 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => sendKeys(keySequences))
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChangeKeyboardSubstract')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChangeKeyboardSubstract);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should add to depth of loaded cuboid by keyboard in fast mode', done => {
@@ -1066,20 +1073,19 @@ describe('Cuboid Drawing', () => {
               .perform();
           })
           .then(() => browser.sleep(250))
-          .then(() => browser.sleep(250))
           .then(() => sendKeys(keySequences))
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChangeKeyboardAddFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChangeKeyboardAddFast);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should substract from depth of loaded cuboid by keyboard in fast mode', done => {
@@ -1098,19 +1104,19 @@ describe('Cuboid Drawing', () => {
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChangeKeyboardSubstractFast')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChangeKeyboardSubstractFast);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
     });
 
@@ -1130,8 +1136,9 @@ describe('Cuboid Drawing', () => {
               .sendKeys('i')
               .perform();
           })
+          .then(() => browser.sleep(800))
           .then(() => {
-            return browser.sleep(500);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
           })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise1')
@@ -1139,18 +1146,15 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardClockwise1);
-            return browser.sleep(1000);
-          })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
               .sendKeys('i')
               .perform();
           })
+          .then(() => browser.sleep(800))
           .then(() => {
-            return browser.sleep(500);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
           })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise2')
@@ -1158,18 +1162,15 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardClockwise2);
-            return browser.sleep(1000);
-          })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
               .sendKeys('i')
               .perform();
           })
+          .then(() => browser.sleep(800))
           .then(() => {
-            return browser.sleep(500);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
           })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise3')
@@ -1177,18 +1178,15 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardClockwise3);
-            return browser.sleep(1000);
-          })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
               .sendKeys('i')
               .perform();
           })
+          .then(() => browser.sleep(800))
           .then(() => {
-            return browser.sleep(500);
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
           })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardClockwise4')
@@ -1196,12 +1194,8 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardClockwise4);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
 
       it('should flip faces counter clockwise using keyboard shortcuts', done => {
@@ -1219,21 +1213,25 @@ describe('Cuboid Drawing', () => {
               .sendKeys('u')
               .perform();
           })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardCounterClockwise1')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise1);
-            return browser.sleep(1000);
-          })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
               .sendKeys('u')
               .perform();
+          })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
           })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardCounterClockwise2')
@@ -1241,15 +1239,15 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise2);
-            return browser.sleep(1000);
-          })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
               .sendKeys('u')
               .perform();
+          })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
           })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardCounterClockwise3')
@@ -1257,15 +1255,15 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise3);
-            return browser.sleep(1000);
-          })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
           })
           .then(() => {
             return browser.actions()
               .sendKeys('u')
               .perform();
+          })
+          .then(() => browser.sleep(800))
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
           })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardCounterClockwise4')
@@ -1273,12 +1271,8 @@ describe('Cuboid Drawing', () => {
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise4);
-            return browser.sleep(1000);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
-            done();
-          });
+          .then(() => done());
       });
     });
   });
@@ -1299,17 +1293,21 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['oo']))
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dDepth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dDepth);
-          return browser.sleep(1000);
         })
         .then(() => sendKeys(['pp']))
+        .then(() => browser.sleep(800))
         .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
+          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dDepth')
@@ -1317,12 +1315,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Real3dDepth);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should switch to 2d mode and back to 3d if front side is not visible', done => {
@@ -1340,19 +1334,21 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['ppp']))
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dDepth180')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dDepth180);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
         .then(() => sendKeys(['oo']))
+        .then(() => browser.sleep(800))
         .then(() => {
+          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dDepth180')
@@ -1360,12 +1356,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Real3dDepth180);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should switch to 2d mode and back to 3d if left side is not visible', done => {
@@ -1383,19 +1375,21 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['pp']))
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dWidth')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dWidth);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
         .then(() => sendKeys(['oo']))
+        .then(() => browser.sleep(800))
         .then(() => {
+          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dWidth')
@@ -1403,12 +1397,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Real3dWidth);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should switch to 2d mode and back to 3d if right side is not visible', done => {
@@ -1426,19 +1416,21 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['ppp']))
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dWidth180')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dWidth180);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
         .then(() => sendKeys(['oo']))
+        .then(() => browser.sleep(800))
         .then(() => {
+          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Real3dWidth180')
@@ -1446,12 +1438,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Real3dWidth180);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should switch to 2d mode if height is changed to above the visual threshold', done => {
@@ -1472,18 +1460,18 @@ describe('Cuboid Drawing', () => {
             .mouseUp()
             .perform();
         })
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'Pseudo3dHeightHandle')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dHeightHandle);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should flip faces clockwise using keyboard shortcuts', done => {
@@ -1501,19 +1489,21 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['i']))
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise1);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
         .then(() => sendKeys(['i']))
+        .then(() => browser.sleep(800))
         .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise2')
@@ -1521,13 +1511,11 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise2);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
         .then(() => sendKeys(['i']))
+        .then(() => browser.sleep(800))
         .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise3')
@@ -1535,13 +1523,11 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise3);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
         .then(() => sendKeys(['i']))
+        .then(() => browser.sleep(800))
         .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dClockwise4')
@@ -1549,12 +1535,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise4);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should flip faces counter clockwise using keyboard shortcuts', done => {
@@ -1572,19 +1554,21 @@ describe('Cuboid Drawing', () => {
             .perform();
         })
         .then(() => sendKeys(['u']))
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise1);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
         .then(() => sendKeys(['u']))
+        .then(() => browser.sleep(800))
         .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise2')
@@ -1592,13 +1576,11 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise2);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
         .then(() => sendKeys(['u']))
+        .then(() => browser.sleep(800))
         .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise3')
@@ -1606,13 +1588,11 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise3);
-          return browser.sleep(1000);
-        })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
         .then(() => sendKeys(['u']))
+        .then(() => browser.sleep(800))
         .then(() => {
+          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FlipFaceKeyboardPseudo2dCounterClockwise4')
@@ -1620,12 +1600,8 @@ describe('Cuboid Drawing', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise4);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
   });
 
