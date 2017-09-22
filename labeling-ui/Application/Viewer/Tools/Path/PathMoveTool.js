@@ -106,16 +106,18 @@ class PathMoveTool extends MovingTool {
    * @private
    */
   _moveTo(shape, point) {
-    const {connectedShape, shapesIndices} = this._pathCollisionService.connectedShapeAndIndicesForMovingShape(shape);
+    const result = this._pathCollisionService.connectedShapeAndIndicesForMovingShape(shape);
+
     const {options} = this._toolActionStruct;
     this._context.withScope(() => {
       shape.moveTo(this._restrictToViewport(shape, point, options.minimalVisibleShapeOverflow === null ? undefined : options.minimalVisibleShapeOverflow));
-      if (connectedShape !== undefined) {
-        shapesIndices.forEach(index => {
-          connectedShape.points[index.connectedShapeIndex] = shape.points[index.movedShapeIndex];
-          connectedShape.fixOrientation();
+      if (result !== undefined) {
+        result.shapesIndices.forEach(index => {
+          const handle = {name: 'point-' + index.connectedShapeIndex};
+          result.connectedShape.resize(handle, shape.points[index.movedShapeIndex]);
         });
       }
+
     });
   }
 }

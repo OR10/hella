@@ -4,9 +4,15 @@ class PathCollisionService {
   constructor() {
     /**
      * @type {Array.<PaperThingShape>}
-     * @private
+     * @public
      */
     this.shapes = [];
+
+    /**
+     * @type {boolean}
+     * @public
+     */
+    this.needsRedraw = false;
   }
 
   /**
@@ -54,6 +60,7 @@ class PathCollisionService {
    * @returns {Object|undefined}
    */
   connectedShapeAndIndicesForMovingShape(moveShape) {
+    this.needsRedraw = false;
     // helper function
     const intersectWith = (filterFunction, xs, ys) => xs.filter(x => ys.some(y => filterFunction(x, y)));
 
@@ -79,6 +86,7 @@ class PathCollisionService {
           }
         });
         // return mapped indices and the shape that has to follow moving
+        this.needsRedraw = true;
         returnResult = {connectedShape, shapesIndices};
         return true;
       }
