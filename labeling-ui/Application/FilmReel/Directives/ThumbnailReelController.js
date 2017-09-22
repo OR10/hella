@@ -587,7 +587,10 @@ class ThumbnailReelController {
       throw new Error('Cannot change the frame range of groups!');
     }
 
-    const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
+    const labeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
+    const labeledThing = labeledThingInFrame.labeledThing;
+    const frameRange = labeledThingInFrame.labeledThing.frameRange;
+    const endFrameIndex = labeledThingInFrame.labeledThing.frameRange.endFrameIndex;
 
     if (this.thumbnails[index + 1] && this.thumbnails[index + 1].location !== null) {
       const frameIndex = this.thumbnails[index + 1].location.frameIndex;
@@ -597,14 +600,14 @@ class ThumbnailReelController {
 
         this._labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange(
           this.task,
-          this.selectedPaperShape.labeledThingInFrame.labeledThing,
+          labeledThing,
           frameIndex,
-          frameRange.endFrameIndex
+          endFrameIndex
         ).then(isLabeledThingInFrameRange => {
           if (isLabeledThingInFrameRange === true) {
             frameRange.startFrameIndex = frameIndex;
             // Synchronize operations on this LabeledThing
-            this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
+            this._labeledThingGateway.saveLabeledThing(labeledThing).then(() => {
               // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
               if (frameIndex > oldStartFrameIndex) {
                 this._updateLabeledThingInFrames(this.selectedPaperShape);
@@ -647,7 +650,10 @@ class ThumbnailReelController {
       throw new Error('Cannot change the frame range of groups!');
     }
 
-    const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
+    const labeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
+    const labeledThing = labeledThingInFrame.labeledThing;
+    const frameRange = labeledThingInFrame.labeledThing.frameRange;
+    const startFrameIndex = labeledThingInFrame.labeledThing.frameRange.startFrameIndex;
 
     if (this.thumbnails[index] && this.thumbnails[index].location !== null) {
       const frameIndex = this.thumbnails[index].location.frameIndex;
@@ -657,14 +663,14 @@ class ThumbnailReelController {
 
         this._labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange(
           this.task,
-          this.selectedPaperShape.labeledThingInFrame.labeledThing,
-          frameRange.startFrameIndex,
+          labeledThing,
+          startFrameIndex,
           frameIndex
         ).then(isLabeledThingInFrameRange => {
           if (isLabeledThingInFrameRange === true) {
             frameRange.endFrameIndex = frameIndex;
             // Synchronize operations on this LabeledThing
-            this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
+            this._labeledThingGateway.saveLabeledThing(labeledThing).then(() => {
               // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
               if (frameIndex < oldEndFrameIndex) {
                 this._updateLabeledThingInFrames(this.selectedPaperShape);
