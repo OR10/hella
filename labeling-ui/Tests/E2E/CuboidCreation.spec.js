@@ -100,18 +100,18 @@ describe('Cuboid creation', () => {
             .click()
             .perform();
         })
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboid4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboid4);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should create a new 3d cuboid starting bottom to top', done => {
@@ -145,18 +145,18 @@ describe('Cuboid creation', () => {
             .click()
             .perform();
         })
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'DrawMiddleCuboidBottomToTop2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.DrawMiddleCuboidBottomToTop2);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidCreation.DrawCuboids.StoreLabeledThingInFrame1).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
   });
 
@@ -201,6 +201,7 @@ describe('Cuboid creation', () => {
             .click()
             .perform();
         })
+        .then(() => browser.sleep(800))
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -213,18 +214,18 @@ describe('Cuboid creation', () => {
             .sendKeys('x')
             .perform();
         })
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dTopToBottom4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.Pseudo3dTopToBottom4);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should create a new pseudo 3d cuboid starting bottom to top', done => {
@@ -279,18 +280,18 @@ describe('Cuboid creation', () => {
             .sendKeys('x')
             .perform();
         })
+        .then(() => browser.sleep(800))
+        .then(() => {
+          expect(assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidCreation', 'Pseudo3dBottomToTop4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidCreation.Pseudo3dBottomToTop4);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.CuboidCreation.Pseudo3d.StoreLabeledThingInFrame).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
   });
 
