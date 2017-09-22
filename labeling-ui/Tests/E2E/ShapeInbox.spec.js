@@ -63,14 +63,14 @@ fdescribe('ShapeInbox', () => {
     shapeInboxBadge = element(by.css('.task-bar .badge'));
   });
 
-  it('should not show a badge if no shape is selected', done => {
+  it('does not show a badge if no shape is selected', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => shapeInboxBadge.getText())
       .then(shapeInboxCount => expect(shapeInboxCount).toEqual(''))
       .then(() => done());
   });
 
-  it('should show a badge if one shape is selected', done => {
+  it('shows a badge if one shape is selected', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -84,7 +84,7 @@ fdescribe('ShapeInbox', () => {
       .then(() => done());
   });
 
-  it('should show a badge if two shapes are selected', done => {
+  it('shows a badge if two shapes are selected', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
@@ -99,6 +99,58 @@ fdescribe('ShapeInbox', () => {
       .then(() => browser.sleep(250))
       .then(() => shapeInboxBadge.getText())
       .then(shapeInboxCount => expect(shapeInboxCount).toEqual('2'))
+      .then(() => done());
+  });
+
+  it('shows a badge if first two shapes are selected and then one is deselected', done => {
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, firstShape.topLeft) // initial position
+          .click()
+          .mouseMove(viewer, secondShape.topLeft) // initial position
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(() => browser.sleep(250))
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, secondShape.topLeft) // initial position
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(() => browser.sleep(250))
+      .then(() => shapeInboxBadge.getText())
+      .then(shapeInboxCount => expect(shapeInboxCount).toEqual('1'))
+      .then(() => done());
+  });
+
+  it('does not show a badge if first two shapes are selected and then deselected by clicking into the viewer', done => {
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, firstShape.topLeft) // initial position
+          .click()
+          .mouseMove(viewer, secondShape.topLeft) // initial position
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .perform();
+      })
+      .then(() => browser.sleep(250))
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1}) // initial position
+          .click()
+          .perform();
+      })
+      .then(() => browser.sleep(250))
+      .then(() => shapeInboxBadge.getText())
+      .then(shapeInboxCount => expect(shapeInboxCount).toEqual(''))
       .then(() => done());
   });
 
