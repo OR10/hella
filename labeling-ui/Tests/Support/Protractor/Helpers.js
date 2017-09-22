@@ -113,7 +113,13 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   const customBootstrap = getPouchDbCustomBootstrap(mocks.pouch);
   const extendedBrowser = new ExtendedBrowser(browser);
   return extendedBrowser.getWithCustomBootstrap(builder.url(url), undefined, customBootstrap)
-    .then(() => waitForApplicationReady());
+    .then(() => waitForApplicationReady())
+    .then(() => {
+      const viewer = element(by.css('.layer-container'));
+      return browser.actions()
+        .mouseMove(viewer, {x: 150, y: 150}) // Move mouse into viewer
+        .perform();
+    });
 }
 
 export function expectAllModalsToBeClosed() {
