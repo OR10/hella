@@ -1,11 +1,9 @@
 [
   {
-    "classes": [
-      "pedestrian"
-    ],
+    "classes": [],
     "frameRange": {
-      "startFrameIndex": 1,
-      "endFrameIndex": 1,
+      "startFrameIndex": 0,
+      "endFrameIndex": 0,
       "type": "AppBundle.Model.FrameIndexRange"
     },
     "incomplete": true,
@@ -15,12 +13,10 @@
     "type": "AppBundle.Model.LabeledThing"
   },
   {
-    "classes": [
-      "pedestrian"
-    ],
+    "classes": [],
     "frameRange": {
-      "startFrameIndex": 1,
-      "endFrameIndex": 1,
+      "startFrameIndex": 0,
+      "endFrameIndex": 0,
       "type": "AppBundle.Model.FrameIndexRange"
     },
     "incomplete": true,
@@ -30,12 +26,10 @@
     "type": "AppBundle.Model.LabeledThing"
   },
   {
-    "classes": [
-      "pedestrian"
-    ],
+    "classes": [],
     "frameRange": {
-      "startFrameIndex": 1,
-      "endFrameIndex": 1,
+      "startFrameIndex": 0,
+      "endFrameIndex": 0,
       "type": "AppBundle.Model.FrameIndexRange"
     },
     "incomplete": true,
@@ -45,12 +39,10 @@
     "type": "AppBundle.Model.LabeledThing"
   },
   {
-    "classes": [
-      "pedestrian"
-    ],
+    "classes": [],
     "frameRange": {
-      "startFrameIndex": 1,
-      "endFrameIndex": 1,
+      "startFrameIndex": 0,
+      "endFrameIndex": 0,
       "type": "AppBundle.Model.FrameIndexRange"
     },
     "incomplete": true,
