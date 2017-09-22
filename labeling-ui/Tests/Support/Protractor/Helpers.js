@@ -149,23 +149,26 @@ export function hasClassByElementFinder(elementFinder, className) {
   );
 }
 
-export function sendKey(key) {
+function _sendKey(key) {
   return browser.actions().sendKeys(key).perform();
 }
 
-export function sendKeySequences(keySequences) {
-  let promises = [];
+export function sendKeys(keysOrSequences) {
+  let keys = keysOrSequences;
+  if (typeof keysOrSequences === 'string' && keysOrSequences.length > 1) {
+    keys = keysOrSequences.split('');
+  }
 
-  keySequences.forEach(keySequence => {
-    if (typeof keySequence === 'string') {
-      const keys = keySequence.split('');
-      keys.forEach(key => {
-        promises.push(sendKey(key));
-      });
-    } else {
-      promises.push(sendKey(keySequence));
-    }
-  });
-
-  return Promise.all(promises);
+  return keys.reduce(
+    (carry, key) => {
+      let nextCarry;
+      if (typeof key === 'string' && key.length > 1) {
+        nextCarry = carry.then(() => sendKeys(key));
+      } else {
+        nextCarry = carry.then(() => _sendKey(key));
+      }
+      return nextCarry;
+    },
+    Promise.resolve()
+  );
 }
