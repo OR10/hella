@@ -39,10 +39,10 @@ describe('change frame index for shapes', () => {
     ];
 
     defaultShapeCreationButton = element(by.css('#default-shape-creation-button'));
-    jumpToPreviousFrameButton = element(by.css('#jump-to-previous-frame-button'));
-    jumpToNextFrameButton = element(by.css('#jump-to-next-frame-button'));
-    setOpenBracketButton = element(by.css('#set-open-bracket-button'));
-    setCloseBracketButton = element(by.css('#set-close-bracket-button'));
+    jumpToPreviousFrameButton = element(by.css('.previous-frame-button'));
+    jumpToNextFrameButton = element(by.css('.next-frame-button'));
+    setOpenBracketButton = element(by.css('.open-bracket-button'));
+    setCloseBracketButton = element(by.css('.close-bracket-button'));
   });
 
   it('should expand frame index ahead', done => {
