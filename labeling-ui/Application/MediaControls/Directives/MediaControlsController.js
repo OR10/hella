@@ -163,6 +163,13 @@ class MediaControlsController {
   }
 
   /**
+   * @return {number}
+   */
+  get selectedItemsCount() {
+    return this._shapeSelectionService.count();
+  }
+
+  /**
    * Whether to show the default shape creation tool or not
    *
    * @returns {boolean}
@@ -229,10 +236,6 @@ class MediaControlsController {
    */
   toggleShapeInbox() {
     // To be implemented
-  }
-
-  get selectedItemsCount() {
-    return this._shapeSelectionService.count();
   }
 
   /**
