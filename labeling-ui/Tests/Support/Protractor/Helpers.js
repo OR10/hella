@@ -56,11 +56,11 @@ function getPouchDbCustomBootstrap(mocks) {
   });
 
   return [
-    function (documents, databaseName, next) {
+    function(documents, databaseName, next) {
       // In Browser context!
       const db = new PouchDB(databaseName);
 
-      db.bulkDocs(documents).then(function (result) {
+      db.bulkDocs(documents).then(function(result) {
         next();
       });
     },
