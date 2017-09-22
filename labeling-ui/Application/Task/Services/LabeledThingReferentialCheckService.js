@@ -32,7 +32,7 @@ class LabeledThingReferentialCheckService {
           return (document.doc.frameIndex >= newStartFrameIndex && document.doc.frameIndex <= newEndFrameIndex);
         });
       }).then(documentOutsideRange => {
-        return !(documentOutsideRange.length === 0);
+        return documentOutsideRange.length !== 0;
       });
   }
 }
