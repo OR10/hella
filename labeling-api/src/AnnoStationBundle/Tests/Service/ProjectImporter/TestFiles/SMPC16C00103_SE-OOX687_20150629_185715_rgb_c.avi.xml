@@ -32,8 +32,8 @@
       <value id="germany" class="country" start="22" end="660"/>
     </frame-labeling>
     <group id="cf6a96bdee95412f3309e2a62b26bc2f" start="22" end="88" type="extension-sign-group" line-color="7" incomplete="false">
-      <value id="extension-sign-group" class="position-below" start="22" end="44"/>
-      <value id="extension-sign-group" class="position-above" start="66" end="88"/>
+      <value id="position-below" class="extension-position" start="22" end="44"/>
+      <value id="position-above" class="extension-position" start="66" end="88"/>
     </group>
     <group id="89e703812ce34189aa7719845c759500" start="44" end="22" type="empty-group" line-color="8" incomplete="false">
     </group>

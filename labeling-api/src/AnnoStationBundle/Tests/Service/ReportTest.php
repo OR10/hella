@@ -184,7 +184,7 @@ class ReportTest extends Tests\KernelTestCase
         $this->assertEquals(90, $actualReport->getNumberOfLabeledThingClasses());
 
         $this->assertEquals(
-            ['u-turn' => 300, '50' => 300],
+            ['u-turn' => 300, '50' => 240, '30' => 60],
             $actualReport->getNumberOfTotalClassesInLabeledThingInFrameByClasses()
         );
 
@@ -433,8 +433,8 @@ class ReportTest extends Tests\KernelTestCase
                                 ],
                                 '30' => [
                                     'type'                 => 'value',
-                                    'labeledThings'        => 0,
-                                    'labeledThingInFrames' => 0,
+                                    'labeledThings'        => 30,
+                                    'labeledThingInFrames' => 60,
                                 ],
                                 '40' => [
                                     'type'                 => 'value',
@@ -444,7 +444,7 @@ class ReportTest extends Tests\KernelTestCase
                                 '50' => [
                                     'type'                 => 'value',
                                     'labeledThings'        => 30,
-                                    'labeledThingInFrames' => 300,
+                                    'labeledThingInFrames' => 240,
                                 ],
                             ],
                         ],
@@ -656,11 +656,16 @@ class ReportTest extends Tests\KernelTestCase
             $this->labeledThingFacade->save($labeledThing);
 
             foreach (range(1, 5) as $i2) {
+                if ($i2 >= 3) {
+                    $classes = ['u-turn', '50'];
+                }else{
+                    $classes = ['u-turn', '30'];
+                }
                 $this->labeledThingInFrameFacade->save(
                     Helper\LabeledThingInFrameBuilder::create()
                         ->withLabeledThing($labeledThing)
                         ->withFrameIndex($i2)
-                        ->withClasses(['u-turn', '50'])
+                        ->withClasses($classes)
                         ->withIdentifierName('sign')
                         ->build()
                 );

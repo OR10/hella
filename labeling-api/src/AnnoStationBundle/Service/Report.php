@@ -343,6 +343,7 @@ class Report
             );
 
             $labeledThingsValueCache = [];
+            $labeledThingsClassCache = [];
             $labeledThingsCache      = [];
             foreach ($labeledThingInFramesWithGhosts as $labeledThingInFrame) {
                 $thingId = $labeledThingInFrame->getIdentifierName();
@@ -354,17 +355,23 @@ class Report
                         $labeledThingsValueCache
                     )) {
                         $objects[$thingId]['childs'][$classId]['childs'][$valueId]['labeledThings'] += 1;
-                        $objects[$thingId]['childs'][$classId]['labeledThings']                     += 1;
-                        $labeledThingsValueCache[]                                                  = $labeledThingInFrame->getLabeledThingId(
-                            ) . '-' . $valueId;
+                        $labeledThingsValueCache[]                                                  = $labeledThingInFrame->getLabeledThingId() . '-' . $valueId;
                     }
+
+                    if (!in_array(
+                        $labeledThingInFrame->getLabeledThingId() . '-' . $classId,
+                        $labeledThingsClassCache
+                    )) {
+                        $objects[$thingId]['childs'][$classId]['labeledThings'] += 1;
+                        $labeledThingsClassCache[]                              = $labeledThingInFrame->getLabeledThingId() . '-' . $classId;
+                    }
+
                     if (!in_array($labeledThingInFrame->getLabeledThingId(), $labeledThingsCache)) {
                         $labeledThing                              = $this->labeledThingFacade->find(
                             $labeledThingInFrame->getLabeledThingId()
                         );
                         $objects[$thingId]['labeledThings']        += 1;
-                        $objects[$thingId]['labeledThingInFrames'] += $labeledThing->getFrameRange()->getNumberOfFrames(
-                        );
+                        $objects[$thingId]['labeledThingInFrames'] += $labeledThing->getFrameRange()->getNumberOfFrames();
                         $labeledThingsCache[]                      = $labeledThingInFrame->getLabeledThingId();
                     }
                     $objects[$thingId]['childs'][$classId]['childs'][$valueId]['labeledThingInFrames'] += 1;
