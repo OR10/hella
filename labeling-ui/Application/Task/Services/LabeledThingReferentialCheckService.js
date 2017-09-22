@@ -1,15 +1,22 @@
 class LabeledThingReferentialCheckService {
   /**
    * @param $q
+   * @param {PackagingExecutor} packagingExecutor
    * @param {PouchDbContextService} pouchDbContextService
    * @param {PouchDbViewService} pouchDbViewService
    */
-  constructor($q, pouchDbContextService, pouchDbViewService) {
+  constructor($q, packagingExecutor, pouchDbContextService, pouchDbViewService) {
     /**
      * @type {$q}
      * @private
      */
     this._$q = $q;
+
+    /**
+     * @type {PackagingExecutor}
+     * @private
+     */
+    this._packagingExecutor = packagingExecutor;
 
     /**
      * @type {PouchDbContextService}
@@ -31,16 +38,18 @@ class LabeledThingReferentialCheckService {
    * @param newEndFrameIndex
    */
   isAtLeastOneLabeledThingInFrameInRange(task, labeledThing, newStartFrameIndex, newEndFrameIndex) {
-    return this._$q.resolve()
-      .then(() => {
-        return this.getAssociatedLabeledThingsInFrames(task, labeledThing);
-      }).then(documents => {
-        return documents.rows.filter(document => {
-          return (document.doc.frameIndex >= newStartFrameIndex && document.doc.frameIndex <= newEndFrameIndex);
+    return this._packagingExecutor.execute('labeledThing', () => {
+      return this._$q.resolve()
+        .then(() => {
+          return this.getAssociatedLabeledThingsInFrames(task, labeledThing);
+        }).then(documents => {
+          return documents.rows.filter(document => {
+            return (document.doc.frameIndex >= newStartFrameIndex && document.doc.frameIndex <= newEndFrameIndex);
+          });
+        }).then(documentOutsideRange => {
+          return documentOutsideRange.length !== 0;
         });
-      }).then(documentOutsideRange => {
-        return documentOutsideRange.length !== 0;
-      });
+    });
   }
 
   /**
@@ -60,6 +69,7 @@ class LabeledThingReferentialCheckService {
 
 LabeledThingReferentialCheckService.$inject = [
   '$q',
+  'packagingExecutor',
   'pouchDbContextService',
   'pouchDbViewService',
 ];
