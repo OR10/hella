@@ -1,4 +1,10 @@
-import {expectAllModalsToBeClosed, initApplication, bootstrapHttp} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  shortSleep,
+  mediumSleep,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 import {cloneDeep} from 'lodash';
@@ -80,12 +86,19 @@ describe('Class Ghosting', () => {
           return labelSelectorHelper.getTitleClickTargetFinderByTitleText('Sign type').click();
         }
       })
-      .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Sign type', 'Speed sign').click());
+      .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+        'Sign type',
+        'Speed sign'
+      ).click());
   }
 
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
