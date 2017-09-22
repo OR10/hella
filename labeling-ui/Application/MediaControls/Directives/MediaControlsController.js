@@ -27,6 +27,7 @@ class MediaControlsController {
    * @param {ModalService} modalService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
+   * @param {ShapeSelectionService} shapeSelectionService
    */
   constructor($scope,
               $rootScope,
@@ -40,7 +41,8 @@ class MediaControlsController {
               applicationState,
               modalService,
               keyboardShortcutService,
-              viewerMouseCursorService) {
+              viewerMouseCursorService,
+              shapeSelectionService) {
     /**
      * @type {angular.$rootScope}
      */
@@ -130,6 +132,12 @@ class MediaControlsController {
     this.fpsInputVisible = false;
 
     /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService
+
+    /**
      * @type {boolean}
      */
     this.currentToolSupportsDefaultShapeCreation = true;
@@ -214,6 +222,17 @@ class MediaControlsController {
     if (this.bookmarkedFrameIndex) {
       this.framePosition.goto(this.bookmarkedFrameIndex);
     }
+  }
+
+  /**
+   * Toggles the shape inbox for merging shapes and copying them to other frames
+   */
+  toggleShapeInbox() {
+    // To be implemented
+  }
+
+  get selectedItemsCount() {
+    return this._shapeSelectionService.count();
   }
 
   /**
@@ -504,6 +523,7 @@ MediaControlsController.$inject = [
   'modalService',
   'keyboardShortcutService',
   'viewerMouseCursorService',
+  'shapeSelectionService',
 ];
 
 export default MediaControlsController;
