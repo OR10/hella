@@ -11,6 +11,58 @@ class ShapeSelectionService {
      * @private
      */
     this._drawingContext = undefined;
+
+    /**
+     * @type {Array}
+     * @private
+     */
+    this._subscriber = {
+      any: {},
+      deselect: {},
+    };
+  }
+
+  /**
+   * Register a callback under the given name for any selection change
+   *
+   * @param {string} name
+   * @param {function} callback
+   */
+  afterAnySelectionChange(name, callback) {
+    this._subscriber.any[name] = callback;
+  }
+
+  /**
+   * Register a callback under the given name for any shape deselection
+   *
+   * @param name
+   * @param callback
+   */
+  afterShapeDeselect(name, callback) {
+    this._subscriber.deselect[name] = callback;
+  }
+
+  /**
+   * Calls all registered callbacks passing the current selected shapes
+   *
+   * @private
+   */
+  _triggerShapeSelectionChange() {
+    Object.keys(this._subscriber.any).forEach(name => {
+      this._subscriber.any[name](this._shapes);
+    });
+  }
+
+  /**
+   * Calls all registered callback passing the deselected shape
+   *
+   * @param deselectedShape
+   * @private
+   */
+  _triggerShapeDeselectionChange(deselectedShape) {
+    Object.keys(this._subscriber.deselect).forEach(name => {
+      this._subscriber.deselect[name](deselectedShape)
+    })
   }
 
   /**
@@ -66,9 +118,12 @@ class ShapeSelectionService {
       if (this._shapes.has(shape.id)) {
         shape.deselect();
         this._shapes.delete(shape.id);
+        this._triggerShapeDeselectionChange(shape);
+        this._triggerShapeSelectionChange();
       } else {
         this._shapes.set(shape.id, shape);
         this._selectAllShapes(readOnly);
+        this._triggerShapeSelectionChange();
       }
     });
   }
@@ -87,6 +142,8 @@ class ShapeSelectionService {
     this._drawingContext.withScope(() => {
       shape.deselect();
       this._shapes.delete(shape.id);
+      this._triggerShapeDeselectionChange(shape);
+      this._triggerShapeSelectionChange();
     });
   }
 
@@ -101,32 +158,50 @@ class ShapeSelectionService {
   }
 
   /**
+   * Deselect all shapes
    * @private
    */
   _deselectAllShapes() {
     this._shapes.forEach(shape => {
       shape.deselect();
+      this._triggerShapeDeselectionChange(shape);
     });
   }
 
+  /**
+   * Clear all shape selections
+   */
   clear() {
     if (this._isDrawingContextUndefined()) {
       // Clearing the shape stack is always possíble
       this._shapes.clear();
+      this._triggerShapeSelectionChange();
       return;
     }
 
     this._drawingContext.withScope(() => {
       this._deselectAllShapes();
       this._shapes.clear();
+      this._triggerShapeSelectionChange();
     });
   }
 
   /**
+   * Returns the number of selected shapes
+   *
    * @returns {number}
    */
   count() {
     return this._shapes.size;
+  }
+
+  /**
+   * Returns if there are shapes selected
+   *
+   * @return {boolean}
+   */
+  hasSelection() {
+    return this.count() > 0;
   }
 
   /**
@@ -140,9 +215,12 @@ class ShapeSelectionService {
     this.clear();
     // Since there are now no more selected shapes left, we can simply toggle the new shape, which will select it
     this.toggleShape(shape, readOnly);
+    this._triggerShapeSelectionChange();
   }
 
   /**
+   * Returns the first selected shapes from the shapes array
+   *
    * @returns {PaperThingShape|undefined}
    */
   getSelectedShape() {
