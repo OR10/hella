@@ -135,7 +135,7 @@ class MediaControlsController {
      * @type {ShapeSelectionService}
      * @private
      */
-    this._shapeSelectionService = shapeSelectionService
+    this._shapeSelectionService = shapeSelectionService;
 
     /**
      * @type {boolean}

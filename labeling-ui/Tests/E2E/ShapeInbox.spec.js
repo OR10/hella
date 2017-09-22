@@ -1,15 +1,13 @@
-import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 import {
-  expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch,
-  dumpAllRequestsMade
-} from '../Support/Protractor/Helpers'
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
-const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
-
-fdescribe('ShapeInbox', () => {
+describe('ShapeInbox', () => {
   let assets;
-  let sharedMocks;
   let viewer;
   let shapeInboxBadge;
 
@@ -22,16 +20,6 @@ fdescribe('ShapeInbox', () => {
     topLeft: {x: 250, y: 250},
     bottomRight: {x: 350, y: 450},
   };
-
-  function drawRectangle(rectangle) {
-    return browser.actions()
-      // .click(toolButton0) // Rect drawing
-      .mouseMove(viewer, rectangle.topLeft) // initial position
-      .mouseDown()
-      .mouseMove(viewer, rectangle.bottomRight) // initial position
-      .mouseUp()
-      .perform();
-  }
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
