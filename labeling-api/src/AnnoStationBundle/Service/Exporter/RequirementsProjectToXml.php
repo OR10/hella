@@ -260,7 +260,7 @@ class RequirementsProjectToXml
                                     $groupFrameRange
                                 );
 
-                                foreach($this->getLabeledThingGroupInFrameRanges($task, $labeledThingGroupInFramesWithGhosts) as $value) {
+                                foreach($this->getLabeledThingGroupInFrameRanges($task, array_values($taskConfigurations)[0], $labeledThingGroupInFramesWithGhosts) as $value) {
                                     $groupElement->addValue($value['class'], $value['value'], $value['start'], $value['end']);
                                 }
 
@@ -364,37 +364,37 @@ class RequirementsProjectToXml
 
     /**
      * @param Model\LabelingTask                                $task
+     * @param Model\TaskConfiguration                           $taskConfiguration
      * @param AnnoStationBundleModel\LabeledThingGroupInFrame[] $labeledThingGroupInFrames
+     *
      * @return array
      */
-    private function getLabeledThingGroupInFrameRanges(Model\LabelingTask $task, $labeledThingGroupInFrames)
-    {
+    private function getLabeledThingGroupInFrameRanges(
+        Model\LabelingTask $task,
+        Model\TaskConfiguration $taskConfiguration,
+        $labeledThingGroupInFrames
+    ) {
         $taskFrameNumberMapping = $task->getFrameNumberMapping();
-        $labelingThingGroupFacade = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
-            $task->getProjectId(),
-            $task->getId()
-        );
 
-        $knownClasses = [];
+        $knownValues = [];
         foreach($labeledThingGroupInFrames as $labeledThingGroupInFrame) {
-            $knownClasses = array_unique(array_merge($knownClasses, $labeledThingGroupInFrame->getClasses()));
+            $knownValues = array_unique(array_merge($knownValues, $labeledThingGroupInFrame->getClasses()));
         }
 
         $values = [];
-        foreach($knownClasses as $class) {
+        foreach($knownValues as $value) {
             $previousLabeledThingInFrame = null;
             $currentValueIndex = null;
             foreach($labeledThingGroupInFrames as $labeledThingGroupInFrame) {
-                $labeledThingGroup = $labelingThingGroupFacade->find($labeledThingGroupInFrame->getLabeledThingGroupId());
-                if (in_array($class, $labeledThingGroupInFrame->getClasses())) {
+                if (in_array($value, $labeledThingGroupInFrame->getClasses())) {
 
-                    if ($previousLabeledThingInFrame !== null && in_array($class, $previousLabeledThingInFrame->getClasses())) {
+                    if ($previousLabeledThingInFrame !== null && in_array($value, $previousLabeledThingInFrame->getClasses())) {
                         $lastElement = count($values)-1;
                         $values[$lastElement]['end'] = $taskFrameNumberMapping[$labeledThingGroupInFrame->getFrameIndex()];
                     }else {
                         $values[] = [
-                            'value' => $labeledThingGroup->getGroupType(),
-                            'class' => $class,
+                            'class' => $this->findClassIdForValue($value, $taskConfiguration),
+                            'value' => $value,
                             'start' => $taskFrameNumberMapping[$labeledThingGroupInFrame->getFrameIndex()],
                             'end'   => $taskFrameNumberMapping[$labeledThingGroupInFrame->getFrameIndex()],
                         ];
