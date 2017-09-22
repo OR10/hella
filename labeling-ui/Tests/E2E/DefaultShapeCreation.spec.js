@@ -4,7 +4,6 @@ import {
   initApplication,
   bootstrapHttp,
   mediumSleep,
-  shortSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -52,6 +51,9 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
       .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.DefaultShapeCreation.Rectangle.StoreLabeledThingInFrame).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Rectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -59,11 +61,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Rectangle);
       })
-      .then(() => shortSleep())
-      .then(() => {
-        expect(assets.mocks.DefaultShapeCreation.Rectangle.StoreLabeledThingInFrame).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should create and draw a *Pedestrian* (TTANNO-1370)', done => {
@@ -73,7 +71,10 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
-      .then(() => shortSleep())
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.DefaultShapeCreation.Pedestrian.StoreLabeledThingInFrame).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Pedestrian')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -81,11 +82,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Pedestrian);
       })
-      .then(() => shortSleep())
-      .then(() => {
-        expect(assets.mocks.DefaultShapeCreation.Pedestrian.StoreLabeledThingInFrame).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should create and draw a *Polygon* (TTANNO-1370)', done => {
@@ -95,7 +92,10 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
-      .then(() => shortSleep())
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.DefaultShapeCreation.Polygon.StoreLabeledThingInFrame).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Polygon')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -103,11 +103,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Polygon);
       })
-      .then(() => shortSleep())
-      .then(() => {
-        expect(assets.mocks.DefaultShapeCreation.Polygon.StoreLabeledThingInFrame).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should create and draw a *Cuboid* (TTANNO-1370)', done => {
@@ -117,7 +113,10 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
-      .then(() => shortSleep())
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.DefaultShapeCreation.Cuboid.StoreLabeledThingInFrame).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Cuboid')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -125,11 +124,7 @@ describe('Default Shape Creation (TTANNO-1370)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.DefaultShapeCreation.Cuboid);
       })
-      .then(() => shortSleep())
-      .then(() => {
-        expect(assets.mocks.DefaultShapeCreation.Cuboid.StoreLabeledThingInFrame).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   afterEach(() => {
