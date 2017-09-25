@@ -3,6 +3,8 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  shortSleep,
+  mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
@@ -21,10 +23,13 @@ describe('Metalabeling', () => {
   let labelSelectorHelper;
 
   function clickRectangleOne() {
-    return browser.actions()
-      .mouseMove(viewer, {x: 110, y: 110})
-      .click()
-      .perform();
+    return Promise.resolve()
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 110, y: 110})
+        .click()
+        .perform()
+      )
+      .then(() => shortSleep());
   }
 
   beforeEach(() => {
@@ -81,6 +86,7 @@ describe('Metalabeling', () => {
       // For some reason, when having a lot of tests beforehand, getText returns an empty string. Do a click before that
       // and then read the text. This seems to fix it
         .then(() => metaLabelingButton.click())
+        .then(() => shortSleep())
         .then(() => incompleteBadge.getText())
         // Two incomplete shapes + One incomplete/not existent frame
         .then(incompleteCount => expect(incompleteCount).toEqual('3'))
@@ -96,10 +102,10 @@ describe('Metalabeling', () => {
         }
       )
         .then(() => metaLabelingButton.click())
-        .then(() => browser.sleep(150))
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Day').click())
-        .then(() => browser.sleep(150))
+        .then(() => mediumSleep())
         .then(() => incompleteBadge.getText())
         .then(incompleteCount => expect(incompleteCount).toEqual('2'))
         .then(() => done());
@@ -114,11 +120,10 @@ describe('Metalabeling', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(150))
         .then(() => labelSelectorHelper.getTitleTexts())
         .then(titleTexts => expect(titleTexts).toEqual(['Sign type']))
         .then(() => metaLabelingButton.click())
-        .then(() => browser.sleep(150))
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleTexts())
         .then(titleTexts => expect(titleTexts).toEqual(['Time']))
         .then(() => done());
