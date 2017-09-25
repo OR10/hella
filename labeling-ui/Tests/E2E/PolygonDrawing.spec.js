@@ -325,7 +325,7 @@ describe('Polygon drawing', () => {
       });
   });
 
-  fit('should draw a new polygon shape with intermediary mouse movements', done => {
+  it('should draw a new polygon shape with intermediary mouse movements', done => {
     bootstrapHttp(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
