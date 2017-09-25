@@ -1,5 +1,9 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, bootstrapHttp} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
@@ -10,7 +14,11 @@ describe('MultiSelect', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -150,34 +158,38 @@ describe('MultiSelect', () => {
       });
   });
 
-  it('should draw four, deselect and then select one with normal click and a second rectangle with ctrl+click', done => {
-    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => drawRectangle(firstShape))
-      .then(() => drawRectangle(secondShape))
-      .then(() => drawRectangle(thirdShape))
-      .then(() => drawRectangle(fourthShape))
-      .then(deselectAfterDrawing)
-      .then(() => {
-        return browser.actions()
-          .mouseMove(viewer, thirdShape.topLeft)
-          .click()
-          .sendKeys(protractor.Key.CONTROL)
-          .mouseMove(viewer, secondShape.topLeft)
-          .click()
-          .sendKeys(protractor.Key.NULL)
-          .perform();
-      })
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'TwoSelectedShapes')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.TwoSelectedShapes);
-      })
-      .then(() => {
-        done();
-      });
-  });
+  it(
+    'should draw four, deselect and then select one with normal click and a second rectangle with ctrl+click',
+    done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => drawRectangle(firstShape))
+        .then(() => drawRectangle(secondShape))
+        .then(() => drawRectangle(thirdShape))
+        .then(() => drawRectangle(fourthShape))
+        .then(deselectAfterDrawing)
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, thirdShape.topLeft)
+            .click()
+            .sendKeys(protractor.Key.CONTROL)
+            .mouseMove(viewer, secondShape.topLeft)
+            .click()
+            .sendKeys(protractor.Key.NULL)
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'TwoSelectedShapes')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.TwoSelectedShapes);
+        })
+        .then(() => {
+          done();
+        });
+    }
+  );
 
   it('should should select and deselect with ctrl+click', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -227,35 +239,35 @@ describe('MultiSelect', () => {
 
   it('should deselect multi selection if empty view area is clicked (TTANNO-1813)', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(() => drawRectangle(firstShape))
-        .then(() => drawRectangle(secondShape))
-        .then(() => drawRectangle(thirdShape))
-        .then(deselectAfterDrawing)
-        .then(() => {
-          return browser.actions()
-              .sendKeys(protractor.Key.CONTROL)
-              .mouseMove(viewer, thirdShape.topLeft)
-              .click()
-              .sendKeys(protractor.Key.CONTROL)
-              .mouseMove(viewer, firstShape.topLeft)
-              .click()
-              .mouseMove(viewer, secondShape.topLeft)
-              .click()
-              .sendKeys(protractor.Key.NULL)
-              .mouseMove(viewer, {x: 1, y: 1})
-              .click()
-              .perform();
-        })
-        .then(
-            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'DeselectShapesWithCTRLCLICK')
-            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-        )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.DeselectShapesWithCTRLCLICK);
-        })
-        .then(() => {
-          done();
-        });
+      .then(() => drawRectangle(firstShape))
+      .then(() => drawRectangle(secondShape))
+      .then(() => drawRectangle(thirdShape))
+      .then(deselectAfterDrawing)
+      .then(() => {
+        return browser.actions()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, thirdShape.topLeft)
+          .click()
+          .sendKeys(protractor.Key.CONTROL)
+          .mouseMove(viewer, firstShape.topLeft)
+          .click()
+          .mouseMove(viewer, secondShape.topLeft)
+          .click()
+          .sendKeys(protractor.Key.NULL)
+          .mouseMove(viewer, {x: 1, y: 1})
+          .click()
+          .perform();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'DeselectShapesWithCTRLCLICK')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.DeselectShapesWithCTRLCLICK);
+      })
+      .then(() => {
+        done();
+      });
   });
 
   it('should remove the label selector once more than one rectangle is selected', done => {
