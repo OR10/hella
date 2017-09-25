@@ -5,6 +5,8 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  mediumSleep,
+  longSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -66,7 +68,16 @@ describe('Polyline Interpolation', () => {
             .click()
             .perform();
         })
+        .then(() => mediumSleep())
         .then(() => interpolateButton.click())
+        .then(() => longSleep())
+        .then(() => {
+          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolyline', 'Frame0')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -75,7 +86,7 @@ describe('Polyline Interpolation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame0);
         })
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolyline', 'Frame1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -84,7 +95,7 @@ describe('Polyline Interpolation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame1);
         })
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolyline', 'Frame2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -93,7 +104,7 @@ describe('Polyline Interpolation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame2);
         })
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolyline', 'Frame3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -102,7 +113,7 @@ describe('Polyline Interpolation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame3);
         })
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolyline', 'Frame4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -110,14 +121,7 @@ describe('Polyline Interpolation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame4);
         })
-        .then(() => {
-          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should interpolate a Polyline when selecting the end LTIF', done => {
@@ -135,8 +139,16 @@ describe('Polyline Interpolation', () => {
             .perform();
         })
         .then(() => goEndButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(() => interpolateButton.click())
+        .then(() => longSleep())
+        .then(() => {
+          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolyline', 'Frame4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -145,7 +157,7 @@ describe('Polyline Interpolation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame4);
         })
         .then(() => previousFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolyline', 'Frame3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -154,7 +166,7 @@ describe('Polyline Interpolation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame3);
         })
         .then(() => previousFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolyline', 'Frame2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -163,7 +175,7 @@ describe('Polyline Interpolation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame2);
         })
         .then(() => previousFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolyline', 'Frame1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -172,7 +184,7 @@ describe('Polyline Interpolation', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame1);
         })
         .then(() => previousFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolyline', 'Frame0')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -180,14 +192,7 @@ describe('Polyline Interpolation', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolyline.Frame0);
         })
-        .then(() => {
-          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polyline.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     afterEach(() => {
@@ -210,11 +215,13 @@ describe('Polyline Interpolation', () => {
             .click()
             .perform();
         })
+        .then(() => mediumSleep())
         .then(() => interpolateButton.click())
+        .then(() => longSleep())
         .then(() => {
           expectModalToBePresent();
-          done();
-        });
+        })
+        .then(() => done());
     });
   });
 
