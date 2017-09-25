@@ -132,17 +132,7 @@ class PopupPanelController {
           this._resizeDebounced();
         }, 0);
       } else if (open && newState === 'inbox') {
-        this.selectedObjects = [];
-
-        this._shapeSelectionService.getAllShapes().forEach(shape => {
-          this._labelStructureService.getLabelStructure(shape.labeledThingInFrame.task)
-            .then(structure => {
-              return structure.getThingById(shape.labeledThingInFrame.identifierName);
-            })
-            .then(labelStructureObject => {
-              this.selectedObjects.push({shape, labelStructureObject});
-            });
-        });
+        this._loadSelectedObjects();
       }
     });
 
@@ -184,6 +174,20 @@ class PopupPanelController {
     this._resizeDebounced();
 
     this.selectedObjects = [];
+  }
+
+  _loadSelectedObjects() {
+    this.selectedObjects = [];
+
+    this._shapeSelectionService.getAllShapes().forEach(shape => {
+      this._labelStructureService.getLabelStructure(shape.labeledThingInFrame.task)
+        .then(structure => {
+          return structure.getThingById(shape.labeledThingInFrame.identifierName);
+        })
+        .then(labelStructureObject => {
+          this.selectedObjects.push({shape, labelStructureObject});
+        });
+    });
   }
 
   _loadBackgroundImage() {
