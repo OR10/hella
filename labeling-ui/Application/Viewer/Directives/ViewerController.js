@@ -78,6 +78,7 @@ class ViewerController {
    * @param {GroupCreationService} groupCreationService
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    * @param {PathCollisionService} pathCollisionService
+   * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
    * @param {PouchDbContextService} pouchDbContextService
    */
   constructor(
@@ -121,6 +122,7 @@ class ViewerController {
     groupCreationService,
     groupSelectionDialogFactory,
     pathCollisionService,
+    labeledThingReferentialCheckService,
     pouchDbContextService,
   ) {
     /**
@@ -389,6 +391,12 @@ class ViewerController {
      * @private
      */
     this._pathCollisionService = pathCollisionService;
+
+    /**
+     * @type {LabeledThingReferentialCheckService}
+     * @private
+     */
+    this._labeledThingReferentialCheckService = labeledThingReferentialCheckService;
 
     /**
      * @type {PouchDbContextService}
@@ -994,6 +1002,7 @@ class ViewerController {
       this._shapeSelectionService,
       this._groupSelectionDialogFactory,
       this._pathCollisionService,
+      this._labeledThingReferentialCheckService,
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1876,6 +1885,7 @@ ViewerController.$inject = [
   'groupCreationService',
   'groupSelectionDialogFactory',
   'pathCollisionService',
+  'labeledThingReferentialCheckService',
   'pouchDbContextService',
 ];
 

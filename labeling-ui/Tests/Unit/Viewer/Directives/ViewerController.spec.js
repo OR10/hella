@@ -186,6 +186,7 @@ describe('ViewerController tests', () => {
       groupCreationService,
       groupSelectionDialogFactory,
       null,
+      null,
       pouchDbContextService
     );
 

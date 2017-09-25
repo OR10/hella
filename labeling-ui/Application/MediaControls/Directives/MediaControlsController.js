@@ -196,8 +196,7 @@ class MediaControlsController {
       return;
     }
 
-    selectedLabeledThing.frameRange.startFrameIndex = framePosition;
-    this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
+    this._$rootScope.$emit('action:change-start-frame-index', this.task, this.selectedPaperShape, framePosition);
   }
 
   /**
@@ -260,8 +259,7 @@ class MediaControlsController {
       return;
     }
 
-    selectedLabeledThing.frameRange.endFrameIndex = framePosition;
-    this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
+    this._$rootScope.$emit('action:change-end-frame-index', this.task, this.selectedPaperShape, framePosition);
   }
 
   /**
