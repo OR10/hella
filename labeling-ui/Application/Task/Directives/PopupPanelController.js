@@ -17,6 +17,7 @@ class PopupPanelController {
    * @param {FrameLocationGateway} frameLocationGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {$timeout} $timeout
+   * @param {LabelStructureService} labelStructureService
    * @param {ShapeSelectionService} shapeSelectionService
    */
   constructor(
@@ -29,6 +30,7 @@ class PopupPanelController {
     frameLocationGateway,
     abortablePromiseFactory,
     $timeout,
+    labelStructureService,
     shapeSelectionService
   ) {
     this._minimapContainer = $element.find('.minimap-container');
@@ -59,6 +61,12 @@ class PopupPanelController {
     this._frameGateway = frameGateway;
 
     this._$timeout = $timeout;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
 
     /**
      * @type {ShapeSelectionService}
@@ -123,6 +131,18 @@ class PopupPanelController {
         this._$timeout(() => {
           this._resizeDebounced();
         }, 0);
+      } else if (open && newState === 'inbox') {
+        this.selectedObjects = [];
+
+        this._shapeSelectionService.getAllShapes().forEach(shape => {
+          this._labelStructureService.getLabelStructure(shape.labeledThingInFrame.task)
+            .then(structure => {
+              return structure.getThingById(shape.labeledThingInFrame.identifierName);
+            })
+            .then(labelStructureObject => {
+              this.selectedObjects.push({shape, labelStructureObject});
+            });
+        });
       }
     });
 
@@ -162,10 +182,8 @@ class PopupPanelController {
     $scope.$on('sidebar.resized', () => this._resizeDebounced());
 
     this._resizeDebounced();
-  }
 
-  get selectedShapes() {
-    return this._shapeSelectionService.getAllShapes();
+    this.selectedObjects = [];
   }
 
   _loadBackgroundImage() {
@@ -320,6 +338,7 @@ PopupPanelController.$inject = [
   'frameLocationGateway',
   'abortablePromiseFactory',
   '$timeout',
+  'labelStructureService',
   'shapeSelectionService',
 ];
 
