@@ -188,7 +188,7 @@
 # LabeledThingGroup
 + id: `36047d429d50548893be41c6880632fd` (string) - LabeledThingGroup ID
 + rev: `1-36047d429d50548893be41c6880632fd` (string) - The Revision of the LabeledThingGroup
-+ groupType: `some-group-id` (string) - the type of the group (id)
++ identifierName: `some-group-id` (string) - the type of the group (id)
 + groupIds: `[]` (array) - Parent group ids
 
 # LabeledThingGroupInFrame

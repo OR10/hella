@@ -567,29 +567,9 @@ class ThumbnailReelController {
    * @private
    */
   _setStartFrameIndex(index) {
-    if (this.selectedPaperShape instanceof PaperGroupShape) {
-      throw new Error('Cannot change the frame range of groups!');
-    }
-
-    const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-
     if (this.thumbnails[index + 1] && this.thumbnails[index + 1].location !== null) {
       const frameIndex = this.thumbnails[index + 1].location.frameIndex;
-
-      if (frameIndex <= frameRange.endFrameIndex) {
-        const oldStartFrameIndex = frameRange.startFrameIndex;
-
-        frameRange.startFrameIndex = frameIndex;
-
-        // Synchronize operations on this LabeledThing
-        this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
-          // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-          if (frameIndex > oldStartFrameIndex) {
-            this._updateLabeledThingInFrames(this.selectedPaperShape);
-            this._$scope.$root.$emit('framerange:change:after');
-          }
-        });
-      }
+      this._$scope.$root.$emit('action:change-start-frame-index', this.task, this.selectedPaperShape, frameIndex);
     }
   }
 
@@ -600,28 +580,9 @@ class ThumbnailReelController {
    * @private
    */
   _setEndFrameIndex(index) {
-    if (this.selectedPaperShape instanceof PaperGroupShape) {
-      throw new Error('Cannot change the frame range of groups!');
-    }
-
-    const frameRange = this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
-
     if (this.thumbnails[index] && this.thumbnails[index].location !== null) {
       const frameIndex = this.thumbnails[index].location.frameIndex;
-
-      if (frameIndex >= frameRange.startFrameIndex) {
-        const oldEndFrameIndex = frameRange.endFrameIndex;
-
-        frameRange.endFrameIndex = frameIndex;
-
-        this._labeledThingGateway.saveLabeledThing(this.selectedPaperShape.labeledThingInFrame.labeledThing).then(() => {
-          // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
-          if (frameIndex < oldEndFrameIndex) {
-            this._updateLabeledThingInFrames(this.selectedPaperShape);
-            this._$scope.$root.$emit('framerange:change:after');
-          }
-        });
-      }
+      this._$scope.$root.$emit('action:change-end-frame-index', this.task, this.selectedPaperShape, frameIndex);
     }
   }
 

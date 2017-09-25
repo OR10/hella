@@ -76,7 +76,7 @@ class HierarchyCreationService {
       id: this._entityIdService.getUniqueId(),
       task: creationToolActionStruct.task,
       lineColor: this._entityColorService.getColorId(),
-      groupType: creationToolActionStruct.requirementsThingOrGroupId,
+      identifierName: creationToolActionStruct.requirementsThingOrGroupId,
       groupIds: [],
     });
 
