@@ -1,6 +1,6 @@
 import PathCollisionService from '../../../../Application/Common/Services/PathCollisionService';
 
-describe('PathCollisionService test', () => {
+fdescribe('PathCollisionService test', () => {
   function createService() {
     return new PathCollisionService();
   }
@@ -19,6 +19,25 @@ describe('PathCollisionService test', () => {
           {x: 200, y: 300},
           {x: 100, y: 150 },
           {x: 50, y: 100 },
+        ],
+      },
+    ];
+  }
+
+  function createSnappedShapes() {
+    return [
+      {
+        'points': [
+          {x: 100, y: 90},
+          {x: 80, y: 70 },
+          {x: 60, y: 75 },
+        ],
+      },
+      {
+        'points': [
+          {x: 200, y: 300},
+          {x: 100, y: 150 },
+          {x: 100, y: 90 },
         ],
       },
     ];
@@ -56,5 +75,16 @@ describe('PathCollisionService test', () => {
 
     expect(service.shapes.length).toEqual(2);
     expect(snapPoint).toEqual(undefined);
+  });
+
+  it('should find a shape that is snapped to a moving shape', () => {
+    const service = createService();
+    const shapes = createSnappedShapes();
+
+    service.setShapes(shapes);
+    const result = service.getConnectedShapeAndIndicesForMovingShape(shapes[1]);
+
+    expect(result.connectedShape).toEqual(shapes[0]);
+    expect(result.shapesIndices).toEqual([{connectedShapeIndex: 0, movedShapeIndex: 2}]);
   });
 });
