@@ -61,8 +61,8 @@ class ShapeSelectionService {
    */
   _triggerShapeDeselectionChange(deselectedShape) {
     Object.keys(this._subscriber.deselect).forEach(name => {
-      this._subscriber.deselect[name](deselectedShape)
-    })
+      this._subscriber.deselect[name](deselectedShape);
+    });
   }
 
   /**

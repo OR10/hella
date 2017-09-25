@@ -210,7 +210,6 @@ class PopupPanelController {
         })
         .then(labelStructureObject => {
           if (this._selectedObjects[shape.id] === undefined) {
-
             if (this._selectedObjectsLabelCounter[shape.id] === undefined) {
               this._selectedObjectsLabelCounter[shape.id] = this._selectedObjectsCounter++;
             }
@@ -219,7 +218,6 @@ class PopupPanelController {
             this._selectedObjects[shape.id] = {shape, label, labelStructureObject};
           }
         });
-
     });
   }
 
