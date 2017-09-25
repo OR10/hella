@@ -81,6 +81,9 @@
     </div>
 
     <div ng-show="vm.popupPanelState == 'inbox'" class="grid-block settings vertical popup-inbox">
-        <p class="selected-shape" ng-repeat="selectedObject in vm.selectedObjects track by selectedObject.shape.id">{{ selectedObject.label }}</p>
+        <p class="selected-shape" ng-repeat="selectedObject in vm.selectedObjects track by selectedObject.shape.id">
+            <i class="icon icon-tool-{{selectedObject.labelStructureObject.shape}}"></i>
+            {{ selectedObject.label }}
+        </p>
     </div>
 </div>

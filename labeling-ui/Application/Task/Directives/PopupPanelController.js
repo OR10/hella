@@ -178,7 +178,7 @@ class PopupPanelController {
     this._resizeDebounced();
 
     /**
-     * @type {shape: PaperShape, label: String}
+     * @type {shape: PaperShape, label: String, labelStructureObject: LabelStructureObject}
      * @private
      */
     this._selectedObjects = {};
@@ -216,7 +216,7 @@ class PopupPanelController {
             }
 
             const label = `${labelStructureObject.name} #${this._selectedObjectsLabelCounter[shape.id]}`;
-            this._selectedObjects[shape.id] = {shape, label};
+            this._selectedObjects[shape.id] = {shape, label, labelStructureObject};
           }
         });
 

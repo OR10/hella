@@ -115,6 +115,13 @@ div.popup-panel {
     .selected-shape {
       color: $color-ut-lightgrey-1;
       margin: 0;
+
+      .icon {
+        @include font-m();
+        color: $color-ut-lightgrey-1;
+        top: 2px;
+        position: relative;
+      }
     }
   }
 }
