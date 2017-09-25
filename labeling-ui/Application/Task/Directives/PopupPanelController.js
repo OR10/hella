@@ -177,7 +177,19 @@ class PopupPanelController {
 
     this._resizeDebounced();
 
+    /**
+     * @type {shape: PaperShape, label: String}
+     * @private
+     */
     this._selectedObjects = {};
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this._selectedObjectsCounter = 1;
+
+    this._selectedObjectsLabelCounter = {};
 
     this._shapeSelectionService.afterAnySelectionChange('PopupPanelController', () => {
       this._loadSelectedObjects();
@@ -198,7 +210,13 @@ class PopupPanelController {
         })
         .then(labelStructureObject => {
           if (this._selectedObjects[shape.id] === undefined) {
-            this._selectedObjects[shape.id] = {shape, labelStructureObject};
+
+            if (this._selectedObjectsLabelCounter[shape.id] === undefined) {
+              this._selectedObjectsLabelCounter[shape.id] = this._selectedObjectsCounter++;
+            }
+
+            const label = `${labelStructureObject.name} #${this._selectedObjectsLabelCounter[shape.id]}`;
+            this._selectedObjects[shape.id] = {shape, label};
           }
         });
 
