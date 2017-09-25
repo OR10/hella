@@ -175,6 +175,14 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.migrations.add_identifier_name_by_group_type"
+                 class="AnnoStationBundle\Command\Migrations\AddIdentifierNameByGroupType">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
 
