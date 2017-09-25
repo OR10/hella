@@ -106,7 +106,7 @@ class PathMoveTool extends MovingTool {
    * @private
    */
   _moveTo(shape, point) {
-    const result = this._pathCollisionService.connectedShapeAndIndicesForMovingShape(shape);
+    const result = this._pathCollisionService.getConnectedShapeAndIndicesForMovingShape(shape);
 
     const {options} = this._toolActionStruct;
     this._context.withScope(() => {
@@ -117,7 +117,6 @@ class PathMoveTool extends MovingTool {
           result.connectedShape.resize(handle, shape.points[index.movedShapeIndex]);
         });
       }
-
     });
   }
 }

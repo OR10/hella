@@ -56,10 +56,10 @@ class PathCollisionService {
   }
 
   /**
-   * @param {PaperPolyline} moveShape
+   * @param {PaperShape} moveShape
    * @returns {Object|undefined}
    */
-  connectedShapeAndIndicesForMovingShape(moveShape) {
+  getConnectedShapeAndIndicesForMovingShape(moveShape) {
     this.needsRedraw = false;
     // helper function
     const intersectWith = (filterFunction, xs, ys) => xs.filter(x => ys.some(y => filterFunction(x, y)));
@@ -78,9 +78,8 @@ class PathCollisionService {
         // indices have to find to recalculate and set new points at the correct position later
         const shapesIndices = [];
         equalPoints.forEach(equalPoint => {
-          const connectedShapeIndex = connectedShape.points.indexOf(equalPoint);
-          const movedShapeIndex = moveShape.points.indexOf(equalPoint);
-
+          const connectedShapeIndex = connectedShape.points.findIndex(point => point.x === equalPoint.x && point.y === equalPoint.y);
+          const movedShapeIndex = moveShape.points.findIndex(point => point.x === equalPoint.x && point.y === equalPoint.y);
           if (connectedShapeIndex !== -1 && movedShapeIndex !== -1) {
             shapesIndices.push({connectedShapeIndex: connectedShapeIndex, movedShapeIndex: movedShapeIndex});
           }
