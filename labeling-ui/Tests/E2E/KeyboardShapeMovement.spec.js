@@ -4,6 +4,9 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  mediumSleep,
+  shortSleep,
+  sendKeys,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -327,23 +330,20 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 521, y: 336}) // select shape
             .click()
             .perform();
         })
+        .then(() => shortSleep())
+        .then(() => sendKeys(protractor.Key.ARROW_UP))
+        .then(() => mediumSleep())
         .then(() => {
-          return browser.sleep(500);
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_UP)
-            .perform();
-        })
-        .then(() => {
-          return browser.sleep(500);
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidUp')
@@ -351,15 +351,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidUp);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys(protractor.Key.ARROW_RIGHT))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameUp).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_RIGHT)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidRight')
@@ -367,15 +363,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidRight);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys(protractor.Key.ARROW_DOWN))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameRight).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_DOWN)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameDown).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidDown')
@@ -383,15 +375,12 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidDown);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys(protractor.Key.ARROW_LEFT))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameDown).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_LEFT)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameLeft).toExistInPouchDb();
+          done();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidLeft')
@@ -399,26 +388,25 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidLeft);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameLeft).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 521, y: 336}) // select shape
             .click()
             .perform();
         })
+        .then(() => shortSleep())
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftUp')
@@ -426,15 +414,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftUp);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftUp).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftRight')
@@ -442,15 +426,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftRight);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftRight).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftDown).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftDown')
@@ -458,15 +438,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftDown);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftDown).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftLeft).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'CuboidShiftLeft')
@@ -474,12 +450,8 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.CuboidShiftLeft);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Cuboid.StoreLabeledThingInFrameShiftLeft).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
   });
 
