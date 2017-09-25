@@ -40,7 +40,11 @@ describe('LabelSelector (right sidebar)', () => {
   }
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -692,9 +696,24 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Ignore vehicle').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Art des Ignore', 'Gruppe').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Ignore vehicle'
+          ).click()
+        )
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Art des Ignore',
+            'Gruppe'
+          ).click()
+        )
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Truck'
+          ).click()
+        )
         .then(() => expect(assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesTruck).toExistInPouchDb())
         .then(() => done());
     });
