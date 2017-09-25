@@ -2,7 +2,7 @@ import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager'
 import {
   expectAllModalsToBeClosed,
   initApplication,
-  bootstrapHttp,
+  bootstrapHttp, mediumSleep, sendKeys, shortSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
@@ -68,30 +68,39 @@ describe('MultiSelect', () => {
   const toolButton1 = element(by.css('button.tool-button.tool-thing.tool-1'));
 
   function drawRectangle(rectangle) {
-    return browser.actions()
-      .click(toolButton0) // Rect drawing
-      .mouseMove(viewer, rectangle.topLeft) // initial position
-      .mouseDown()
-      .mouseMove(viewer, rectangle.bottomRight) // initial position
-      .mouseUp()
-      .perform();
+    return Promise.resolve()
+      .then(() => browser.actions()
+        .click(toolButton0) // Rect drawing
+        .mouseMove(viewer, rectangle.topLeft) // initial position
+        .mouseDown()
+        .mouseMove(viewer, rectangle.bottomRight) // initial position
+        .mouseUp()
+        .perform()
+      )
+      .then(() => mediumSleep());
   }
 
   function drawPedestrian(pedestrian) {
-    return browser.actions()
-      .click(toolButton1) // Rect drawing
-      .mouseMove(viewer, pedestrian.topLeft) // initial position
-      .mouseDown()
-      .mouseMove(viewer, pedestrian.bottomRight) // initial position
-      .mouseUp()
-      .perform();
+    return Promise.resolve()
+      .then(() => browser.actions()
+        .click(toolButton1) // Rect drawing
+        .mouseMove(viewer, pedestrian.topLeft) // initial position
+        .mouseDown()
+        .mouseMove(viewer, pedestrian.bottomRight) // initial position
+        .mouseUp()
+        .perform()
+      )
+      .then(() => mediumSleep());
   }
 
   function deselectAfterDrawing() {
-    return browser.actions()
-      .mouseMove(viewer, {x: 1, y: 1})
-      .click()
-      .perform();
+    return Promise.resolve()
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 1, y: 1})
+        .click()
+        .perform()
+      )
+      .then(() => shortSleep());
   }
 
   it('should draw four and then additionally select the first three rectangles', done => {
@@ -100,18 +109,18 @@ describe('MultiSelect', () => {
       .then(() => drawRectangle(secondShape))
       .then(() => drawRectangle(thirdShape))
       .then(() => drawRectangle(fourthShape))
+      .then(() => sendKeys(protractor.Key.CONTROL))
       .then(() => {
         return browser.actions()
-          .sendKeys(protractor.Key.CONTROL)
           .mouseMove(viewer, firstShape.topLeft)
           .click()
           .mouseMove(viewer, secondShape.topLeft)
           .click()
           .mouseMove(viewer, thirdShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.NULL)
           .perform();
       })
+      .then(() => sendKeys(protractor.Key.NULL))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'FourSelectedShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -119,9 +128,7 @@ describe('MultiSelect', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.FourSelectedShapes);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw four, deselect and then select two of the rectangles with ctrl+click', done => {
@@ -130,17 +137,17 @@ describe('MultiSelect', () => {
       .then(() => drawRectangle(secondShape))
       .then(() => drawRectangle(thirdShape))
       .then(() => drawRectangle(fourthShape))
-      .then(deselectAfterDrawing)
+      .then(() => deselectAfterDrawing())
+      .then(() => sendKeys(protractor.Key.CONTROL))
       .then(() => {
         return browser.actions()
-          .sendKeys(protractor.Key.CONTROL)
           .mouseMove(viewer, thirdShape.topLeft)
           .click()
           .mouseMove(viewer, secondShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.NULL)
           .perform();
       })
+      .then(() => sendKeys(protractor.Key.NULL))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'TwoSelectedShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -148,9 +155,7 @@ describe('MultiSelect', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.TwoSelectedShapes);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it(
@@ -162,17 +167,22 @@ describe('MultiSelect', () => {
         .then(() => drawRectangle(secondShape))
         .then(() => drawRectangle(thirdShape))
         .then(() => drawRectangle(fourthShape))
-        .then(deselectAfterDrawing)
-        .then(() => {
-          return browser.actions()
+        .then(() => deselectAfterDrawing())
+        .then(
+          () => browser.actions()
             .mouseMove(viewer, thirdShape.topLeft)
             .click()
-            .sendKeys(protractor.Key.CONTROL)
+            .perform()
+        )
+        .then(() => sendKeys(protractor.Key.CONTROL))
+        .then(
+          () => browser.actions()
             .mouseMove(viewer, secondShape.topLeft)
             .click()
-            .sendKeys(protractor.Key.NULL)
-            .perform();
-        })
+            .perform()
+        )
+        .then(() => sendKeys(protractor.Key.NULL))
+        .then(() => shortSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'TwoSelectedShapes')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -180,9 +190,7 @@ describe('MultiSelect', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.TwoSelectedShapes);
         })
-        .then(() => {
-          done();
-        });
+        .then(() => done());
     }
   );
 
@@ -192,19 +200,24 @@ describe('MultiSelect', () => {
       .then(() => drawRectangle(secondShape))
       .then(() => drawRectangle(thirdShape))
       .then(() => drawRectangle(fourthShape))
-      .then(deselectAfterDrawing)
-      .then(() => {
-        return browser.actions()
+      .then(() => deselectAfterDrawing())
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, thirdShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.CONTROL)
+          .perform()
+      )
+      .then(() => sendKeys(protractor.Key.CONTROL))
+      .then(() =>
+        browser.actions()
           .mouseMove(viewer, firstShape.topLeft)
           .click()
           .mouseMove(viewer, secondShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.NULL)
-          .perform();
-      })
+          .perform()
+      )
+      .then(() => sendKeys(protractor.Key.NULL))
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'ThreeSelectedShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -212,14 +225,15 @@ describe('MultiSelect', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.ThreeSelectedShapes);
       })
-      .then(() => {
-        return browser.actions()
-          .sendKeys(protractor.Key.CONTROL)
+      .then(() => sendKeys(protractor.Key.CONTROL))
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, firstShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.NULL)
-          .perform();
-      })
+          .perform()
+      )
+      .then(() => sendKeys(protractor.Key.NULL))
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'TwoSelectedShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -227,9 +241,7 @@ describe('MultiSelect', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.TwoSelectedShapes);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it('should deselect multi selection if empty view area is clicked (TTANNO-1813)', done => {
@@ -237,22 +249,31 @@ describe('MultiSelect', () => {
       .then(() => drawRectangle(firstShape))
       .then(() => drawRectangle(secondShape))
       .then(() => drawRectangle(thirdShape))
-      .then(deselectAfterDrawing)
-      .then(() => {
-        return browser.actions()
-          .sendKeys(protractor.Key.CONTROL)
+      .then(() => deselectAfterDrawing())
+      .then(() => sendKeys(protractor.Key.CONTROL))
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, thirdShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.CONTROL)
+          .perform()
+      )
+      .then(() => sendKeys(protractor.Key.CONTROL))
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, firstShape.topLeft)
           .click()
           .mouseMove(viewer, secondShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.NULL)
+          .perform()
+      )
+      .then(() => sendKeys(protractor.Key.NULL))
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, {x: 1, y: 1})
           .click()
-          .perform();
-      })
+          .perform()
+      )
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'DeselectShapesWithCTRLCLICK')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -260,9 +281,7 @@ describe('MultiSelect', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.DeselectShapesWithCTRLCLICK);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it('should remove the label selector once more than one rectangle is selected', done => {
@@ -274,36 +293,35 @@ describe('MultiSelect', () => {
       .then(() => drawRectangle(secondShape))
       .then(() => drawRectangle(thirdShape))
       .then(() => drawRectangle(fourthShape))
-      .then(() => {
-        return browser.actions()
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, thirdShape.topLeft)
           .click()
-          .perform();
-      })
+          .perform()
+      )
+      .then(() => shortSleep())
       .then(() => expect(labelSelectorHelper.getNumberOfVisiblePanes()).toBe(1))
-      .then(() => {
-        return browser.actions()
-          .sendKeys(protractor.Key.CONTROL)
+      .then(() => sendKeys(protractor.Key.CONTROL))
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, firstShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.NULL)
-          .perform();
-      })
-      .then(() => browser.sleep(1000))
+          .perform()
+      )
+      .then(() => sendKeys(protractor.Key.NULL))
+      .then(() => mediumSleep())
       .then(() => expect(labelSelectorHelper.getNumberOfVisiblePanes()).toBe(0))
-      .then(() => {
-        return browser.actions()
-          .sendKeys(protractor.Key.CONTROL)
+      .then(() => sendKeys(protractor.Key.CONTROL))
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, firstShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.NULL)
-          .perform();
-      })
-      .then(() => browser.sleep(250))
+          .perform()
+      )
+      .then(() => sendKeys(protractor.Key.NULL))
+      .then(() => mediumSleep())
       .then(() => expect(labelSelectorHelper.getNumberOfVisiblePanes()).toBe(1))
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it('should only select shapes of the same type', done => {
@@ -312,19 +330,20 @@ describe('MultiSelect', () => {
       .then(() => drawRectangle(secondShape))
       .then(() => drawPedestrian(thirdShape))
       .then(() => drawRectangle(fourthShape))
-      .then(deselectAfterDrawing)
-      .then(() => {
-        return browser.actions()
-          .sendKeys(protractor.Key.CONTROL)
+      .then(() => deselectAfterDrawing())
+      .then(() => sendKeys(protractor.Key.CONTROL))
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, firstShape.topLeft)
           .click()
           .mouseMove(viewer, secondShape.topLeft)
           .click()
           .mouseMove(viewer, thirdShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.NULL)
-          .perform();
-      })
+          .perform()
+      )
+      .then(() => sendKeys(protractor.Key.NULL))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultiSelect', 'TwoSelectedPedestrians')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -332,9 +351,7 @@ describe('MultiSelect', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultiSelect.TwoSelectedPedestrians);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   afterEach(() => {
