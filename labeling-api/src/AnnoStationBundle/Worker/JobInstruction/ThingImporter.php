@@ -166,8 +166,8 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         foreach ($groupsElement as $groupElement) {
             $originalId          = $groupElement->getAttribute('id');
             $groups[$originalId] = [
-                'lineColor' => $groupElement->getAttribute('line-color'),
-                'groupType' => $groupElement->getAttribute('type'),
+                'lineColor'      => $groupElement->getAttribute('line-color'),
+                'identifierName' => $groupElement->getAttribute('type'),
             ];
 
             $values = $xpath->query('./x:value', $groupElement);
@@ -202,7 +202,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
             $labeledThingGroup = new AnnoStationBundleModel\LabeledThingGroup(
                 $task,
                 $groupReferences[$originalId]['lineColor'],
-                $groupReferences[$originalId]['groupType']
+                $groupReferences[$originalId]['identifierName']
             );
             $labeledThingGroup->setOriginalId($originalId);
             $this->labeledThingGroupFacade->save($labeledThingGroup);
