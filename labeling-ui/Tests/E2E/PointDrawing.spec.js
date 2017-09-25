@@ -1,5 +1,10 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {initApplication, expectAllModalsToBeClosed, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
+import {
+  initApplication,
+  expectAllModalsToBeClosed,
+  bootstrapHttp,
+  bootstrapPouch,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -10,7 +15,11 @@ describe('Point drawing', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
