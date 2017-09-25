@@ -110,6 +110,13 @@ div.popup-panel {
   input[type="range"] {
     margin-top: 0.8rem;
   }
+
+  .popup-inbox {
+    .selected-shape {
+      color: $color-ut-lightgrey-1;
+      margin: 0;
+    }
+  }
 }
 
 .sidebar-left {
