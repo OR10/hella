@@ -1,6 +1,6 @@
 import PathCollisionService from '../../../../Application/Common/Services/PathCollisionService';
 
-fdescribe('PathCollisionService test', () => {
+describe('PathCollisionService test', () => {
   function createService() {
     return new PathCollisionService();
   }

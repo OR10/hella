@@ -75,7 +75,7 @@ class PathCollisionService {
       // get points that equals in both shapes
       const equalPoints = intersectWith(isEqual, connectedShape.points, movedShapeClone.points);
       if (equalPoints.length !== 0) {
-        // indices have to find to recalculate and set new points at the correct position later
+        // indices have to find to calculate and set new points at the correct position later
         const shapesIndices = [];
         equalPoints.forEach(equalPoint => {
           const connectedShapeIndex = connectedShape.points.findIndex(point => point.x === equalPoint.x && point.y === equalPoint.y);
