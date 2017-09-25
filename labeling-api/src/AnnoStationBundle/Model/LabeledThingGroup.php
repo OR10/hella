@@ -60,6 +60,7 @@ class LabeledThingGroup extends AppBundleModel\Base
     {
         $this->projectId      = $task->getProjectId();
         $this->taskId         = $task->getId();
+        $this->groupType      = $identifierName;
         $this->identifierName = $identifierName;
         $this->groupIds       = $groupIds;
         $this->lineColor      = $lineColor;
