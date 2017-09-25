@@ -1,5 +1,10 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -10,7 +15,11 @@ describe('Pedestrian drawing', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -219,38 +228,42 @@ describe('Pedestrian drawing', () => {
       });
   });
 
-  it('should correctly resize a pedestrian shape with flipping top-center and bottom-center and save the changed coordinates', done => {
-    bootstrapHttp(sharedMocks);
+  it(
+    'should correctly resize a pedestrian shape with flipping top-center and bottom-center and save the changed coordinates',
+    done => {
+      bootstrapHttp(sharedMocks);
 
-    bootstrapPouch([
-      assets.documents.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
-    ]);
+      bootstrapPouch([
+        assets.documents.PedestrianDrawing.DrawTwoPedestrians.LabeledThingInFrame.frameIndex0,
+      ]);
 
-    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
-          .mouseMove(viewer, {x: 100, y: 150}) // initial position
-          .click()
-          .mouseMove(viewer, {x: 100, y: 200}) // bottom drag handle
-          .mouseDown()
-          .mouseMove(viewer, {x: 100, y: 50}) // drag
-          .mouseUp()
-          .perform();
-      })
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'ScaleOverFixedHandle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(drawingStack => {
-        // browser.pause();
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.ScaleOverFixedHandle);
-        return browser.sleep(1000);
-      })
-      .then(() => {
-        expect(assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
-  });
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 100, y: 150}) // initial position
+            .click()
+            .mouseMove(viewer, {x: 100, y: 200}) // bottom drag handle
+            .mouseDown()
+            .mouseMove(viewer, {x: 100, y: 50}) // drag
+            .mouseUp()
+            .perform();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'ScaleOverFixedHandle')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          // browser.pause();
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.ScaleOverFixedHandle);
+          return browser.sleep(1000);
+        })
+        .then(() => {
+          expect(assets.mocks.PedestrianDrawing.ScaleOverFixedHandle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
+          done();
+        });
+    }
+  );
 
   it('should keep the pedestrian shape selected over a frame change', done => {
     bootstrapHttp(sharedMocks);
