@@ -227,7 +227,16 @@ class PathDrawingTool extends CreationTool {
    */
   _getMinHandleCountRestriction() {
     let {minHandles} = this._toolActionStruct.options;
-    minHandles = minHandles !== undefined ? minHandles : 3;
+    switch (this._pathIdentifier) {
+      case PaperPolygon.getClass():
+        minHandles = minHandles !== undefined ? minHandles : 3;
+        break;
+      case PaperPolyline.getClass():
+        minHandles = minHandles !== undefined ? minHandles : 2;
+        break;
+      default:
+        throw new Error(`Unknown path identifier "${this._pathIdentifier}"`);
+    }
 
     return minHandles;
   }
