@@ -52,10 +52,6 @@ describe('Interpolation Polygon Tests', () => {
   });
 
   describe('All modals closed', () => {
-    afterEach(() => {
-      expectAllModalsToBeClosed();
-    });
-
     it('should interpolate a Polygon when selecting the start LTIF', done => {
       bootstrapPouch([
         assets.documents.Interpolation.Polygon.LabeledThingInFrame.frameIndex0and4,
@@ -193,6 +189,10 @@ describe('Interpolation Polygon Tests', () => {
           expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
           done();
         });
+    });
+
+    afterEach(() => {
+      expectAllModalsToBeClosed();
     });
   });
 
