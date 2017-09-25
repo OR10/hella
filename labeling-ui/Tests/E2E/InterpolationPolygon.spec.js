@@ -19,7 +19,11 @@ describe('Interpolation Polygon Tests', () => {
   let goEndButton;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -57,7 +61,9 @@ describe('Interpolation Polygon Tests', () => {
         assets.documents.Interpolation.Polygon.LabeledThingInFrame.frameIndex0and4,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
@@ -123,7 +129,9 @@ describe('Interpolation Polygon Tests', () => {
         assets.documents.Interpolation.Polygon.LabeledThingInFrame.frameIndex0and4,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
@@ -194,7 +202,9 @@ describe('Interpolation Polygon Tests', () => {
         assets.documents.Interpolation.Polygon.LabeledThingInFrame.frameIndex0and4WithDifferentVertexCount,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
