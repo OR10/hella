@@ -34,11 +34,6 @@ class LabeledThingGroup extends AppBundleModel\Base
     /**
      * @CouchDB\Field(type="string")
      */
-    private $groupType;
-
-    /**
-     * @CouchDB\Field(type="string")
-     */
     private $identifierName;
 
     /**
@@ -56,12 +51,11 @@ class LabeledThingGroup extends AppBundleModel\Base
      */
     private $originalId;
 
-    public function __construct(AppBundleModel\LabelingTask $task, $lineColor, $groupType = null, $groupIds = [])
+    public function __construct(AppBundleModel\LabelingTask $task, $lineColor, $identifierName = null, $groupIds = [])
     {
         $this->projectId      = $task->getProjectId();
         $this->taskId         = $task->getId();
-        $this->groupType      = $groupType;
-        $this->identifierName = $groupType;
+        $this->identifierName = $identifierName;
         $this->groupIds       = $groupIds;
         $this->lineColor      = $lineColor;
     }
@@ -93,9 +87,9 @@ class LabeledThingGroup extends AppBundleModel\Base
     /**
      * @return mixed
      */
-    public function getGroupType()
+    public function getIdentifierName()
     {
-        return $this->groupType;
+        return $this->identifierName;
     }
 
     /**
