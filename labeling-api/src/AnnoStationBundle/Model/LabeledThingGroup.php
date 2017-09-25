@@ -34,11 +34,6 @@ class LabeledThingGroup extends AppBundleModel\Base
     /**
      * @CouchDB\Field(type="string")
      */
-    private $groupType;
-
-    /**
-     * @CouchDB\Field(type="string")
-     */
     private $identifierName;
 
     /**
@@ -60,7 +55,6 @@ class LabeledThingGroup extends AppBundleModel\Base
     {
         $this->projectId      = $task->getProjectId();
         $this->taskId         = $task->getId();
-        $this->groupType      = $identifierName;
         $this->identifierName = $identifierName;
         $this->groupIds       = $groupIds;
         $this->lineColor      = $lineColor;
@@ -95,7 +89,7 @@ class LabeledThingGroup extends AppBundleModel\Base
      */
     public function getIdentifierName()
     {
-        return $this->groupType;
+        return $this->identifierName;
     }
 
     /**
