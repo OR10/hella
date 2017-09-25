@@ -60,6 +60,10 @@ class PopupPanelController {
      */
     this._frameGateway = frameGateway;
 
+    /**
+     * @type {$timeout}
+     * @private
+     */
     this._$timeout = $timeout;
 
     /**
@@ -173,11 +177,19 @@ class PopupPanelController {
 
     this._resizeDebounced();
 
-    this.selectedObjects = [];
+    this._selectedObjects = {};
+
+    this._shapeSelectionService.afterAnySelectionChange('PopupPanelController', () => {
+      this._loadSelectedObjects();
+    });
+  }
+
+  get selectedObjects() {
+    return Object.values(this._selectedObjects);
   }
 
   _loadSelectedObjects() {
-    this.selectedObjects = [];
+    this._selectedObjects = {};
 
     this._shapeSelectionService.getAllShapes().forEach(shape => {
       this._labelStructureService.getLabelStructure(shape.labeledThingInFrame.task)
@@ -185,8 +197,11 @@ class PopupPanelController {
           return structure.getThingById(shape.labeledThingInFrame.identifierName);
         })
         .then(labelStructureObject => {
-          this.selectedObjects.push({shape, labelStructureObject});
+          if (this._selectedObjects[shape.id] === undefined) {
+            this._selectedObjects[shape.id] = {shape, labelStructureObject};
+          }
         });
+
     });
   }
 
