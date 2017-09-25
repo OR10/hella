@@ -150,6 +150,15 @@ describe('ShapeInbox', () => {
   });
 
   describe('Popup', () => {
+    const ctrlClickSecondShape = () => {
+      return browser.actions()
+        .sendKeys(protractor.Key.CONTROL)
+        .mouseMove(viewer, secondShape.topLeft) // initial position
+        .click()
+        .sendKeys(protractor.Key.NULL)
+        .perform();
+    };
+
     it('opens a popup window with the text "No shapes selected" if no shapes are selected', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => shapeInboxButton.click())
@@ -196,6 +205,91 @@ describe('ShapeInbox', () => {
         .then(() => browser.sleep(250))
         .then(() => shapeInboxPopup.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => done());
+    });
+
+    it('changes the popup text while open and selection changes', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxPopup.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
+        .then(() => {
+          return browser.actions()
+            .sendKeys(protractor.Key.CONTROL)
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .mouseMove(viewer, secondShape.topLeft) // initial position
+            .click()
+            .sendKeys(protractor.Key.NULL)
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxPopup.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => ctrlClickSecondShape())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxPopup.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1'))
+        .then(() => ctrlClickSecondShape())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxPopup.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => {
+          return browser.actions()
+            .sendKeys(protractor.Key.CONTROL)
+            .mouseMove(viewer, {x: 1, y: 1}) // initial position
+            .click()
+            .sendKeys(protractor.Key.NULL)
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxPopup.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
+        .then(() => done());
+    });
+
+    it('changes the popup text while closed and selection changes', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .sendKeys(protractor.Key.CONTROL)
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .mouseMove(viewer, secondShape.topLeft) // initial position
+            .click()
+            .sendKeys(protractor.Key.NULL)
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxPopup.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => ctrlClickSecondShape())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxPopup.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1'))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => {
+          return browser.actions()
+            .sendKeys(protractor.Key.CONTROL)
+            .mouseMove(viewer, {x: 1, y: 1}) // initial position
+            .click()
+            .sendKeys(protractor.Key.NULL)
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxPopup.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
         .then(() => done());
     });
   });
