@@ -44,11 +44,6 @@ describe('MultiSelect', () => {
     viewer = element(by.css('.layer-container'));
   });
 
-  afterEach(() => {
-    expectAllModalsToBeClosed();
-    bootstrapHttp.teardown();
-  });
-
   const firstShape = {
     topLeft: {x: 100, y: 100},
     bottomRight: {x: 200, y: 200},
@@ -340,5 +335,10 @@ describe('MultiSelect', () => {
       .then(() => {
         done();
       });
+  });
+
+  afterEach(() => {
+    expectAllModalsToBeClosed();
+    bootstrapHttp.teardown();
   });
 });
