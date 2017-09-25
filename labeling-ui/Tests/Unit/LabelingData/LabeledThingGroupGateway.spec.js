@@ -56,7 +56,7 @@ describe('LabeledThingGroupGateway', () => {
       '_id': 'e2c029002f1375ec4c10f55d4b2e71c9',
       '_rev': '1-579bff7e19f986e0dfab7a58fe7362dd',
       'type': 'AnnoStationBundle.Model.LabeledThingGroup',
-      'groupType': 'extension-sign-group',
+      'identifierName': 'extension-sign-group',
       'lineColor': '15',
       'groupIds': null,
       'classes': [],
@@ -163,7 +163,7 @@ describe('LabeledThingGroupGateway', () => {
         _rev: '1-5c6dbbf287f44c5f92420ff4c3e5d59d',
         projectId: '1ddd13ede9a21be5a63943362a015487',
         taskId: '1ddd13ede9a21be5a63943362a04382b',
-        groupType: 'lights-group',
+        identifierName: 'lights-group',
         lineColor: '10',
         type: 'AnnoStationBundle.Model.LabeledThingGroup',
         groupIds: [],
@@ -282,7 +282,7 @@ describe('LabeledThingGroupGateway', () => {
     const labeledThingGroup = new LabeledThingGroup({
       task,
       id: 'LABELED-THING-GROUP-ID',
-      groupType: 'extension-sign-group',
+      identifierName: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
       classes: [],
@@ -295,7 +295,7 @@ describe('LabeledThingGroupGateway', () => {
 
     const serializedGroup = {
       _id: 'LABELED-THING-GROUP-ID',
-      groupType: 'extension-sign-group',
+      identifierName: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
       type: 'AnnoStationBundle.Model.LabeledThingGroup',
@@ -323,7 +323,7 @@ describe('LabeledThingGroupGateway', () => {
     const labeledThingGroup = new LabeledThingGroup({
       task,
       id: 'LABELED-THING-GROUP-ID',
-      groupType: 'extension-sign-group',
+      identifierName: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
       classes: [],
@@ -335,7 +335,7 @@ describe('LabeledThingGroupGateway', () => {
 
     const serializedGroup = {
       _id: 'LABELED-THING-GROUP-ID',
-      groupType: 'extension-sign-group',
+      identifierName: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
       type: 'AnnoStationBundle.Model.LabeledThingGroup',
@@ -362,7 +362,7 @@ describe('LabeledThingGroupGateway', () => {
     const labeledThingGroup = new LabeledThingGroup({
       id: 'LABELED-THING-GROUP-ID',
       task,
-      groupType: 'extension-sign-group',
+      identifierName: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
     });
@@ -409,7 +409,7 @@ describe('LabeledThingGroupGateway', () => {
     const labeledThingGroup = new LabeledThingGroup({
       id: 'LABELED-THING-GROUP-ID',
       task,
-      groupType: 'extension-sign-group',
+      identifierName: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
     });
