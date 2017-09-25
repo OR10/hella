@@ -3,6 +3,9 @@ import {
   expectAllModalsToBeClosed,
   initApplication,
   bootstrapHttp,
+  shortSleep,
+  mediumSleep,
+  sendKeys,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -47,6 +50,7 @@ describe('Measurement Rectangle', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => toolButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100})
@@ -54,6 +58,7 @@ describe('Measurement Rectangle', () => {
           .mouseMove(viewer, {x: 400, y: 400})
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -66,6 +71,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleNotSelected')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -84,6 +90,7 @@ describe('Measurement Rectangle', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => toolButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100})
@@ -92,6 +99,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -100,6 +108,7 @@ describe('Measurement Rectangle', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
       })
       .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -108,6 +117,7 @@ describe('Measurement Rectangle', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange2);
       })
       .then(() => previousFrameButton.click())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -115,9 +125,7 @@ describe('Measurement Rectangle', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw one measurement rectangle and delete it on shape delete button click', done => {
@@ -126,6 +134,7 @@ describe('Measurement Rectangle', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => toolButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100})
@@ -134,6 +143,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -142,12 +152,12 @@ describe('Measurement Rectangle', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
       })
       .then(() => deleteShapeButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleEmpty')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -155,9 +165,7 @@ describe('Measurement Rectangle', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleEmpty);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw one measurement rectangle and delete it on delete key', done => {
@@ -165,6 +173,7 @@ describe('Measurement Rectangle', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => toolButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100})
@@ -173,6 +182,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangleFrameChange1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -180,17 +190,13 @@ describe('Measurement Rectangle', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangleFrameChange1);
       })
-      .then(() => {
-        return browser.actions()
-          .sendKeys(protractor.Key.DELETE)
-          .perform();
-      })
-      .then(() => browser.sleep(300))
+      .then(() => sendKeys(protractor.Key.DELETE))
+      .then(() => mediumSleep())
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleEmpty')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -198,9 +204,7 @@ describe('Measurement Rectangle', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMeasurementRectangleEmpty);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw multiple measurement rectangles', done => {
@@ -208,6 +212,7 @@ describe('Measurement Rectangle', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => toolButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200})
@@ -215,6 +220,7 @@ describe('Measurement Rectangle', () => {
           .mouseMove(viewer, {x: 400, y: 400})
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectangles1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -227,6 +233,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 800, y: 200})
@@ -234,6 +241,7 @@ describe('Measurement Rectangle', () => {
           .mouseMove(viewer, {x: 900, y: 600})
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectangles2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -246,6 +254,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 600})
@@ -253,6 +262,7 @@ describe('Measurement Rectangle', () => {
           .mouseMove(viewer, {x: 600, y: 500})
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectangles3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -265,6 +275,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 900, y: 500})
@@ -272,6 +283,7 @@ describe('Measurement Rectangle', () => {
           .mouseMove(viewer, {x: 800, y: 600})
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectangles4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -284,6 +296,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesNotSelected')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -310,6 +323,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 800, y: 200})
@@ -318,6 +332,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 600})
@@ -326,6 +341,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 900, y: 500})
@@ -334,6 +350,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -342,6 +359,7 @@ describe('Measurement Rectangle', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange1);
       })
       .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -350,6 +368,7 @@ describe('Measurement Rectangle', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange2);
       })
       .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -358,6 +377,7 @@ describe('Measurement Rectangle', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange3);
       })
       .then(() => previousFrameButton.click())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMultipleMeasurementRectanglesFrameChange2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -365,9 +385,7 @@ describe('Measurement Rectangle', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawMultipleMeasurementRectanglesFrameChange2);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw one measurement rectangle with multiple mouse movements', done => {
@@ -375,6 +393,7 @@ describe('Measurement Rectangle', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => toolButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200})
@@ -382,6 +401,7 @@ describe('Measurement Rectangle', () => {
           .mouseMove(viewer, {x: 400, y: 400})
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleMultipleMouseMovements1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -394,6 +414,7 @@ describe('Measurement Rectangle', () => {
           .mouseMove(viewer, {x: 900, y: 600})
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleMultipleMouseMovements2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -406,6 +427,7 @@ describe('Measurement Rectangle', () => {
           .mouseMove(viewer, {x: 600, y: 500})
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleMultipleMouseMovements3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -418,6 +440,7 @@ describe('Measurement Rectangle', () => {
           .mouseMove(viewer, {x: 50, y: 60})
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleMultipleMouseMovements4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -430,6 +453,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawMeasurementRectangleMultipleMouseMovementsNotSelected')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -445,6 +469,7 @@ describe('Measurement Rectangle', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => toolButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100})
@@ -453,6 +478,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => expect('AppBundle.Model.LabeledThingInFrame').not.toHaveMatchingTypeDocumentsInDb())
       .then(() => expect('AppBundle.Model.LabeledThing').not.toHaveMatchingTypeDocumentsInDb())
       .then(() => done());
@@ -463,6 +489,7 @@ describe('Measurement Rectangle', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => toolButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 200, y: 200})
@@ -471,6 +498,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 800, y: 200})
@@ -479,6 +507,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 600})
@@ -487,6 +516,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 900, y: 500})
@@ -495,6 +525,7 @@ describe('Measurement Rectangle', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => expect('AppBundle.Model.LabeledThingInFrame').not.toHaveMatchingTypeDocumentsInDb())
       .then(() => expect('AppBundle.Model.LabeledThing').not.toHaveMatchingTypeDocumentsInDb())
       .then(() => done());
