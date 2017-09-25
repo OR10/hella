@@ -34,6 +34,11 @@ class LabeledThingGroup extends AppBundleModel\Base
     /**
      * @CouchDB\Field(type="string")
      */
+    private $groupType;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
     private $identifierName;
 
     /**
@@ -89,7 +94,7 @@ class LabeledThingGroup extends AppBundleModel\Base
      */
     public function getIdentifierName()
     {
-        return $this->identifierName;
+        return $this->groupType;
     }
 
     /**
