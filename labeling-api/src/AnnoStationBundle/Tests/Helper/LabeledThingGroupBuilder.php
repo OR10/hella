@@ -18,7 +18,7 @@ class LabeledThingGroupBuilder
     /**
      * @var string
      */
-    private $groupType;
+    private $identifierName;
 
     private function __construct(AppBundleModel\LabelingTask $task)
     {
@@ -35,12 +35,12 @@ class LabeledThingGroupBuilder
     }
 
     /**
-     * @param $groupType
+     * @param $identifierName
      * @return $this
      */
-    public function withGroupType($groupType)
+    public function withIdentifierName($identifierName)
     {
-        $this->groupType = $groupType;
+        $this->identifierName = $identifierName;
 
         return $this;
     }
@@ -50,7 +50,7 @@ class LabeledThingGroupBuilder
      */
     public function build()
     {
-        $labeledThingGroup = new Model\LabeledThingGroup($this->labelingTask, 1, $this->groupType);
+        $labeledThingGroup = new Model\LabeledThingGroup($this->labelingTask, 1, $this->identifierName);
 
         return $labeledThingGroup;
     }

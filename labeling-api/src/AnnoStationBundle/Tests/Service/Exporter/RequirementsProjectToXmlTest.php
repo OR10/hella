@@ -233,8 +233,8 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         );
         $this->createLabeledThingInFrame($labeledThing, 11, [$cuboid5->toArray()], ['u-turn', 'germany']);
 
-        $labeledThingGroup1 = Tests\Helper\LabeledThingGroupBuilder::create($task)->withGroupType('extension-sign-group')->build();
-        $labeledThingGroup2 = Tests\Helper\LabeledThingGroupBuilder::create($task)->withGroupType('lights-group')->build();
+        $labeledThingGroup1 = Tests\Helper\LabeledThingGroupBuilder::create($task)->withIdentifierName('extension-sign-group')->build();
+        $labeledThingGroup2 = Tests\Helper\LabeledThingGroupBuilder::create($task)->withIdentifierName('lights-group')->build();
         $this->labeledThingGroupFacade->save($labeledThingGroup1);
         $this->labeledThingGroupFacade->save($labeledThingGroup2);
 

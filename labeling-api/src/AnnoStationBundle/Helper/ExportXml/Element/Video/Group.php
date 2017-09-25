@@ -56,7 +56,7 @@ class Group extends ExportXml\Element
         $group->setAttribute('id', $this->labeledThingGroup->getId());
         $group->setAttribute('start', $this->start);
         $group->setAttribute('end', $this->end);
-        $group->setAttribute('type', $this->labeledThingGroup->getGroupType());
+        $group->setAttribute('type', $this->labeledThingGroup->getIdentifierName());
         $group->setAttribute('line-color', $this->labeledThingGroup->getLineColor());
         $group->setAttribute('incomplete', ($this->incomplete) ? 'true' : 'false');
 
