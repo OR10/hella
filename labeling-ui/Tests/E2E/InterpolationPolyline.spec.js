@@ -51,11 +51,7 @@ describe('Polyline Interpolation', () => {
     goEndButton = element(by.css('.icon-selection-goend'));
   });
 
-  describe('All modals closed', () => {
-    afterEach(() => {
-      expectAllModalsToBeClosed();
-    });
-
+  describe('Supported', () => {
     it('should interpolate a Polyline when selecting the start LTIF', done => {
       bootstrapPouch([
         assets.documents.Interpolation.Polyline.LabeledThingInFrame.frameIndex0and4,
@@ -193,10 +189,14 @@ describe('Polyline Interpolation', () => {
           done();
         });
     });
+
+    afterEach(() => {
+      expectAllModalsToBeClosed();
+    });
   });
 
-  describe('Modal', () => {
-    it('should show a modal if the vertex count of shapes in different', done => {
+  describe('Unsupported', () => {
+    it('should show a modal if the vertex count of shapes in different', done => { // eslint-disable-line jasmine/missing-expect
       bootstrapPouch([
         assets.documents.Interpolation.Polygon.LabeledThingInFrame.frameIndex0and4WithDifferentVertexCount,
       ]);
