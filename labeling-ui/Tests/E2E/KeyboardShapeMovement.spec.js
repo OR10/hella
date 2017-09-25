@@ -1,5 +1,10 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -10,7 +15,11 @@ describe('Keyboard Shape Movement', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -45,17 +54,20 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 150, y: 150}) // select shape
             .click()
             .perform();
         })
+        .then(() => shortSleep())
+        .then(() => sendKeys(protractor.Key.ARROW_UP))
+        .then(() => mediumSleep())
         .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_UP)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameUp).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleUp')
@@ -63,15 +75,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleUp);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys(protractor.Key.ARROW_RIGHT))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameUp).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_RIGHT)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameRight).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleRight')
@@ -79,15 +87,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleRight);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys(protractor.Key.ARROW_DOWN))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameRight).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_DOWN)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameDown).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleDown')
@@ -95,42 +99,37 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleDown);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameDown).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_LEFT)
-            .perform();
-        })
+        .then(() => sendKeys(protractor.Key.ARROW_LEFT))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleLeft);
-          return browser.sleep(1000);
         })
         .then(() => {
           expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameLeft).toExistInPouchDb();
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 150, y: 150}) // select shape
             .click()
             .perform();
         })
+        .then(() => shortSleep())
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleShiftUp')
@@ -138,15 +137,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftUp);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftUp).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleShiftRight')
@@ -154,31 +149,23 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftRight);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftRight).toExistInPouchDb();
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL]))
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftDown);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL)
-            .perform();
-        })
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleShiftDown')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftDown);
-          return browser.sleep(1000);
-        })
         .then(() => {
           expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftDown).toExistInPouchDb();
         })
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftLeft).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleShiftLeft')
@@ -186,12 +173,8 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftLeft);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftLeft).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
   });
 
@@ -208,17 +191,20 @@ describe('Keyboard Shape Movement', () => {
     });
 
     it('should move shape by a small distance using arrow keys', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 190, y: 250}) // select shape
             .click()
             .perform();
         })
+        .then(() => shortSleep())
+        .then(() => sendKeys(protractor.Key.ARROW_UP))
+        .then(() => mediumSleep())
         .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_UP)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianUp')
@@ -226,15 +212,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianUp);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys(protractor.Key.ARROW_RIGHT))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameUp).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_RIGHT)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianRight')
@@ -242,15 +224,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianRight);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys(protractor.Key.ARROW_DOWN))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameRight).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_DOWN)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameDown).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianDown')
@@ -258,15 +236,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianDown);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys(protractor.Key.ARROW_LEFT))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameDown).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.ARROW_LEFT)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameLeft).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianLeft')
@@ -274,26 +248,25 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianLeft);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameLeft).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should move shape by a greater distance using arrow keys + shift', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 190, y: 250}) // select shape
             .click()
             .perform();
         })
+        .then(() => shortSleep())
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_UP, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftUp')
@@ -301,15 +274,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftUp);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftUp).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftRight')
@@ -317,15 +286,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftRight);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftRight).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftDown).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftDown')
@@ -333,15 +298,11 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftDown);
-          return browser.sleep(1000);
         })
+        .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL]))
+        .then(() => mediumSleep())
         .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftDown).toExistInPouchDb();
-        })
-        .then(() => {
-          return browser.actions()
-            .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL)
-            .perform();
+          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftLeft).toExistInPouchDb();
         })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'PedestrianShiftLeft')
@@ -349,12 +310,8 @@ describe('Keyboard Shape Movement', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.PedestrianShiftLeft);
-          return browser.sleep(1000);
         })
-        .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Pedestrian.StoreLabeledThingInFrameShiftLeft).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
   });
 
