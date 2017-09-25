@@ -129,7 +129,7 @@ class PathDrawingTool extends CreationTool {
    */
   onMouseDown(event) {
     const point = event.point;
-    const {minHandles, maxHandles} = this._getHandleCountRestrictions();
+    const minHandles = this._getMinHandleCountRestriction();
     const rightMouseDown = 2;
     if (this._startPosition && event.event.button === rightMouseDown) {
       if (this._path && this._path.points.length < minHandles) {
@@ -137,12 +137,6 @@ class PathDrawingTool extends CreationTool {
         this._$rootScope.$emit('drawingtool:exception', `To few points! You need to set at least ${minHandles} points to create this shape.`);
         return;
       }
-      this._complete(this._path);
-      return;
-    }
-
-    if (this._path && this._path.points.length > maxHandles) {
-      this._$rootScope.$emit('drawingtool:exception', `To many points! You are only allowed to create up to ${maxHandles} points in this shape. The shape create process was finished and the shape is created!`);
       this._complete(this._path);
       return;
     }
@@ -228,15 +222,14 @@ class PathDrawingTool extends CreationTool {
   }
 
   /**
-   * @returns {{minHandles: number, maxHandles: number}}
+   * @returns integer
    * @private
    */
-  _getHandleCountRestrictions() {
-    let {minHandles, maxHandles} = this._toolActionStruct.options;
+  _getMinHandleCountRestriction() {
+    let {minHandles} = this._toolActionStruct.options;
     minHandles = minHandles !== undefined ? minHandles : 3;
-    maxHandles = maxHandles !== undefined ? maxHandles : 15;
 
-    return {minHandles, maxHandles};
+    return minHandles;
   }
 }
 
