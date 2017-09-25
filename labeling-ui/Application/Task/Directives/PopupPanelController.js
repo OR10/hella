@@ -17,8 +17,20 @@ class PopupPanelController {
    * @param {FrameLocationGateway} frameLocationGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {$timeout} $timeout
+   * @param {ShapeSelectionService} shapeSelectionService
    */
-  constructor($scope, $window, $element, animationFrameService, drawingContextService, frameGateway, frameLocationGateway, abortablePromiseFactory, $timeout) {
+  constructor(
+    $scope,
+    $window,
+    $element,
+    animationFrameService,
+    drawingContextService,
+    frameGateway,
+    frameLocationGateway,
+    abortablePromiseFactory,
+    $timeout,
+    shapeSelectionService
+  ) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
     this._supportedImageTypes = ['sourceJpg', 'source'];
@@ -47,6 +59,12 @@ class PopupPanelController {
     this._frameGateway = frameGateway;
 
     this._$timeout = $timeout;
+
+    /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
 
     this._activeBackgroundImage = null;
 
@@ -144,6 +162,10 @@ class PopupPanelController {
     $scope.$on('sidebar.resized', () => this._resizeDebounced());
 
     this._resizeDebounced();
+  }
+
+  get selectedShapes() {
+    return this._shapeSelectionService.getAllShapes();
   }
 
   _loadBackgroundImage() {
@@ -298,6 +320,7 @@ PopupPanelController.$inject = [
   'frameLocationGateway',
   'abortablePromiseFactory',
   '$timeout',
+  'shapeSelectionService',
 ];
 
 export default PopupPanelController;

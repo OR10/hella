@@ -235,7 +235,15 @@ class MediaControlsController {
    * Toggles the shape inbox for merging shapes and copying them to other frames
    */
   toggleShapeInbox() {
-    // To be implemented
+    switch (this.popupPanelState) {
+      case 'inbox':
+        this.popupPanelOpen = !this.popupPanelOpen;
+        this.popupPanelState = '';
+        break;
+      default:
+        this.popupPanelState = 'inbox';
+        this.popupPanelOpen = true;
+    }
   }
 
   /**

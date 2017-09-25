@@ -79,4 +79,8 @@
             </label>
         </div>
     </div>
+
+    <div ng-show="vm.popupPanelState == 'inbox'" class="grid-block settings vertical">
+        <p ng-repeat="shape in vm.selectedShapes track by shape.id">{{ shape.id }}</p>
+    </div>
 </div>
