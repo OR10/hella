@@ -4,6 +4,7 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  shortSleep, mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -75,7 +76,6 @@ describe('Multiple Things', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings1);
-        return browser.sleep(200);
       })
       .then(() => {
         return browser.actions()
@@ -83,13 +83,13 @@ describe('Multiple Things', () => {
           .click()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'SelectMultipleDifferentThings2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings2);
-        return browser.sleep(200);
       })
       .then(() => {
         return browser.actions()
@@ -97,13 +97,13 @@ describe('Multiple Things', () => {
           .click()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'SelectMultipleDifferentThings3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings3);
-        return browser.sleep(200);
       })
       .then(() => {
         return browser.actions()
@@ -111,13 +111,13 @@ describe('Multiple Things', () => {
           .click()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'SelectMultipleDifferentThings4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings4);
-        return browser.sleep(200);
       })
       .then(() => {
         return browser.actions()
@@ -125,14 +125,15 @@ describe('Multiple Things', () => {
           .click()
           .perform();
       })
+      .then(() => shortSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MultipleThings', 'SelectMultipleDifferentThings5')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.SelectMultipleDifferentThings5);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('it should draw multiple different things', done => {
@@ -155,7 +156,7 @@ describe('Multiple Things', () => {
           .click(toolButton0) // Rect drawing
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 10, y: 10})
@@ -164,7 +165,7 @@ describe('Multiple Things', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       .then(() => {
         expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect1).toExistInPouchDb();
       })
@@ -173,7 +174,7 @@ describe('Multiple Things', () => {
           .click(toolButton1) // Pedestrian drawing
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 10})
@@ -182,7 +183,7 @@ describe('Multiple Things', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       .then(() => {
         expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFramePedestrian).toExistInPouchDb();
       })
@@ -191,7 +192,7 @@ describe('Multiple Things', () => {
           .click(toolButton2) // Cuboid drawing
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 500})
@@ -204,7 +205,7 @@ describe('Multiple Things', () => {
           .click()
           .perform();
       })
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       .then(() => {
         expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameCuboid).toExistInPouchDb();
       })
@@ -213,7 +214,7 @@ describe('Multiple Things', () => {
           .click(toolButton3) // Rect drawing
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 800, y: 500})
@@ -222,7 +223,7 @@ describe('Multiple Things', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       .then(() => {
         expect(assets.mocks.MultipleThings.Draw.StoreLabeledThingInFrameRect2).toExistInPouchDb();
       })
@@ -234,8 +235,8 @@ describe('Multiple Things', () => {
       // .then(() => browser.pause())
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MultipleThings.DrawMultipleDifferentThings);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   afterEach(() => {
