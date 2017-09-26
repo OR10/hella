@@ -271,7 +271,7 @@ describe('Polyline drawing', () => {
       });
   });
 
-  fit('should draw a new polyline shape', done => {
+  it('should draw a new polyline shape', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => {
         return browser.actions()
