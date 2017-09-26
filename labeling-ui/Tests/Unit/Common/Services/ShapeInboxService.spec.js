@@ -1,6 +1,6 @@
 import ShapeInboxService from 'Application/Common/Services/ShapeInboxService';
 
-fdescribe('ShapeInboxService', () => {
+describe('ShapeInboxService', () => {
   let shape1;
   let shape2;
   let shape3;
@@ -15,7 +15,6 @@ fdescribe('ShapeInboxService', () => {
     allShapes = [shape1, shape2, shape3];
     shapesOneAndThree = [shape1, shape3];
     shapesTwoAndThree = [shape2, shape3];
-
   });
 
   it('can be created', () => {
