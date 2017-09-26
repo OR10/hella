@@ -123,6 +123,13 @@ div.popup-panel {
         position: relative;
       }
     }
+
+    .shape-list-header {
+      color: $color-ut-lightgrey-2;
+      font-weight: bold;
+      border-bottom: 1px solid $color-ut-lightgrey-2;
+      margin: 1rem 0;
+    }
   }
 }
 
