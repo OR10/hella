@@ -1,6 +1,6 @@
 import ShapeInboxService from 'Application/Common/Services/ShapeInboxService';
 
-fdescribe('ShapeInboxService', () => {
+describe('ShapeInboxService', () => {
   it('can be created', () => {
     const inbox = new ShapeInboxService();
     expect(inbox).toEqual(jasmine.any(ShapeInboxService));
