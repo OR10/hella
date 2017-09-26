@@ -84,8 +84,9 @@
         <p class="shape-list-header">Selected Shapes</p>
         <p class="selected-shape" ng-show="vm.selectedObjects.length === 0">No shapes selected</p>
         <p class="selected-shape" ng-repeat="selectedObject in vm.selectedObjects track by selectedObject.shape.id">
+            <i class="icon fa fa-plus-circle"></i>
             <i class="icon icon-tool-{{selectedObject.labelStructureObject.shape}}"></i>
-            {{ selectedObject.label }}
+            <span>{{ selectedObject.label }}</span>
         </p>
 
         <p class="shape-list-header">Saved Shapes</p>

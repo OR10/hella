@@ -34,6 +34,11 @@
   font-style: normal;
 }
 
+$font-l: 20px;
+$font-m: 18px;
+$font-s: 16px;
+$font-xs: 12px;
+
 @mixin font-xl() {
   font-family: "montserrat-light", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
   font-size: 36px;
