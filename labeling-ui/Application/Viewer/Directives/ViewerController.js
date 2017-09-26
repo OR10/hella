@@ -405,6 +405,9 @@ class ViewerController {
     this._pouchDbContextService = pouchDbContextService;
 
     const groupListener = (tool, labelStructureObject) => {
+      if (this.readOnly) {
+        return;
+      }
       const shapes = this._shapeSelectionService.getAllShapes()
         .filter(
           shape => (!(shape instanceof PaperGroupRectangleMulti || shape instanceof PaperMeasurementRectangle))
