@@ -363,6 +363,12 @@ describe('ViewerController tests', () => {
         expect(controller.paperGroupShapes).toEqual([group]);
       });
 
+      it('does nothing in readOnly mode', () => {
+        controller.readOnly = true;
+        groupListener(null, labelStructureObject);
+        expect(controller.paperGroupShapes).toEqual([]);
+      });
+
       describe('storing the group', () => {
         let selectedGroup;
         let showGroupSelectorPromise;
