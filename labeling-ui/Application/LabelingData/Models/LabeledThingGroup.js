@@ -12,7 +12,7 @@ class LabeledThingGroup extends LabeledObject {
     /**
      * @type {string}
      */
-    this.type = labeledThingGroupDocument.groupType;
+    this.type = labeledThingGroupDocument.identifierName;
 
     /**
      * @type {string}
@@ -33,7 +33,7 @@ class LabeledThingGroup extends LabeledObject {
   toJSON() {
     const {type, lineColor, groupIds} = this;
     return Object.assign(super.toJSON(), {
-      groupType: type,
+      identifierName: type,
       lineColor: lineColor,
       groupIds: clone(groupIds),
     });
@@ -48,8 +48,8 @@ class LabeledThingGroup extends LabeledObject {
       classes: this.classes,
       incomplete: this.incomplete,
       task: this.task,
-      // Remapping of type => groupType
-      groupType: this.type,
+      // Remapping of type => identifierName
+      identifierName: this.type,
       lineColor: this.lineColor,
       groupIds: this.groupIds,
     });

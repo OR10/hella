@@ -70,7 +70,7 @@ class LinearPolyInterpolationEasing extends InterpolationEasing {
       return {supportsInterpolation: true, reason: ''};
     }
 
-    return {supportsInterpolation: false, reason: 'Shapes with variable vertex count can not be interpolated'};
+    return {supportsInterpolation: false, reason: 'Interpolation deactivated'};
   }
 }
 

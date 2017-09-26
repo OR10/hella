@@ -56,7 +56,7 @@ class AddIdentifierNameByGroupType extends Command\Base
             $labeledThingGroups = $labeledThingGroupFacade->getLabeledThingGroupsByTask($task);
 
             foreach ($labeledThingGroups as $labeledThingGroup) {
-                $labeledThingGroup->setIdentifierName($labeledThingGroup->getGroupType());
+                $labeledThingGroup->setIdentifierName($labeledThingGroup->getIdentifierName());
                 $labeledThingGroupFacade->save($labeledThingGroup);
                 $this->documentManager->detach($labeledThingGroup);
             }
