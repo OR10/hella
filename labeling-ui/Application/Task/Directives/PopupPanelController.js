@@ -19,6 +19,7 @@ class PopupPanelController {
    * @param {$timeout} $timeout
    * @param {LabelStructureService} labelStructureService
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {ShapeInboxService} shapeInboxService
    */
   constructor(
     $scope,
@@ -31,7 +32,8 @@ class PopupPanelController {
     abortablePromiseFactory,
     $timeout,
     labelStructureService,
-    shapeSelectionService
+    shapeSelectionService,
+    shapeInboxService
   ) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
@@ -77,6 +79,12 @@ class PopupPanelController {
      * @private
      */
     this._shapeSelectionService = shapeSelectionService;
+
+    /**
+     * @type {ShapeInboxService}
+     * @private
+     */
+    this._shapeInboxService = shapeInboxService;
 
     this._activeBackgroundImage = null;
 
@@ -198,6 +206,18 @@ class PopupPanelController {
 
   get selectedObjects() {
     return Object.values(this._selectedObjects);
+  }
+
+  get savedObjects() {
+    return this._shapeInboxService.getAllShapes();
+  }
+
+  addToInbox(shapeInformation) {
+    this._shapeInboxService.addShape(shapeInformation);
+  }
+
+  removeFromInbox(shapeInformation) {
+    this._shapeInboxService.removeShape(shapeInformation);
   }
 
   _loadSelectedObjects() {
@@ -375,6 +395,7 @@ PopupPanelController.$inject = [
   '$timeout',
   'labelStructureService',
   'shapeSelectionService',
+  'shapeInboxService',
 ];
 
 export default PopupPanelController;
