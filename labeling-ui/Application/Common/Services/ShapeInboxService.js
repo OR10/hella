@@ -6,16 +6,16 @@ class ShapeInboxService {
   /**
    * Adds a shape to the inbox
    *
-   * @param {PaperThingShape} shape
+   * @param {shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}} shapeInformation
    */
-  addShape(shape) {
-    this._shapes.set(shape.id, shape);
+  addShape(shapeInformation) {
+    this._shapes.set(shapeInformation.shape.id, shapeInformation);
   }
 
   /**
    * Adds an array of shapes to the inbox
    *
-   * @param {Array.<PaperThingShape>} shapes
+   * @param {Array.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}}>} shapes
    */
   addShapes(shapes) {
     shapes.forEach(shape => {
@@ -26,10 +26,10 @@ class ShapeInboxService {
   /**
    * Removes a shape from the inbox
    *
-   * @param {PaperThingShape} shape
+   * @param {shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}} shapeInformation
    */
-  removeShape(shape) {
-    this._shapes.delete(shape.id);
+  removeShape(shapeInformation) {
+    this._shapes.delete(shapeInformation.shape.id);
   }
 
   /**

@@ -1,6 +1,23 @@
 import ShapeInboxService from 'Application/Common/Services/ShapeInboxService';
 
-describe('ShapeInboxService', () => {
+fdescribe('ShapeInboxService', () => {
+  let shape1;
+  let shape2;
+  let shape3;
+  let allShapes;
+  let shapesOneAndThree;
+  let shapesTwoAndThree;
+
+  beforeEach(() => {
+    shape1 = {shape: {id: 'foobar'}, label: 'Rectangle #3', labelStructureObject: {}};
+    shape2 = {shape: {id: 'heinz'}, label: 'Pedestrian #1', labelStructureObject: {}};
+    shape3 = {shape: {id: 'bernddasbrot'}, label: 'Car #2', labelStructureObject: {}};
+    allShapes = [shape1, shape2, shape3];
+    shapesOneAndThree = [shape1, shape3];
+    shapesTwoAndThree = [shape2, shape3];
+
+  });
+
   it('can be created', () => {
     const inbox = new ShapeInboxService();
     expect(inbox).toEqual(jasmine.any(ShapeInboxService));
@@ -8,18 +25,15 @@ describe('ShapeInboxService', () => {
 
   describe('addShape', () => {
     it('only adds a shape once', () => {
-      const shape = {id: 'foobar'};
       const inbox = new ShapeInboxService();
 
-      inbox.addShape(shape);
-      inbox.addShape(shape);
+      inbox.addShape(shape1);
+      inbox.addShape(shape1);
 
       expect(inbox.count()).toEqual(1);
     });
 
     it('adds two different shapes', () => {
-      const shape1 = {id: 'foobar'};
-      const shape2 = {id: 'heinz'};
       const inbox = new ShapeInboxService();
 
       inbox.addShape(shape1);
@@ -31,11 +45,7 @@ describe('ShapeInboxService', () => {
 
   describe('addShapes', () => {
     it('adds multiple shapes with one call', () => {
-      const shape1 = {id: 'foobar'};
-      const shape2 = {id: 'heinz'};
-      const shape3 = {id: 'bernddasbrot'};
       const inbox = new ShapeInboxService();
-      const allShapes = [shape1, shape2, shape3];
 
       inbox.addShapes(allShapes);
 
@@ -44,11 +54,7 @@ describe('ShapeInboxService', () => {
     });
 
     it('only adds the shapes once', () => {
-      const shape1 = {id: 'foobar'};
-      const shape2 = {id: 'heinz'};
-      const shape3 = {id: 'bernddasbrot'};
       const inbox = new ShapeInboxService();
-      const allShapes = [shape1, shape2, shape3];
 
       inbox.addShapes(allShapes);
       inbox.addShapes(allShapes);
@@ -58,12 +64,7 @@ describe('ShapeInboxService', () => {
     });
 
     it('does not remove previously added shapes', () => {
-      const shape1 = {id: 'foobar'};
-      const shape2 = {id: 'heinz'};
-      const shape3 = {id: 'bernddasbrot'};
       const inbox = new ShapeInboxService();
-      const shapesTwoAndThree = [shape2, shape3];
-      const allShapes = [shape1, shape2, shape3];
 
       inbox.addShape(shape1);
       inbox.addShapes(shapesTwoAndThree);
@@ -75,40 +76,35 @@ describe('ShapeInboxService', () => {
 
   describe('removeShape', () => {
     it('does nothing if the shape is not known', () => {
-      const shape = {id: 'foobar'};
       const inbox = new ShapeInboxService();
 
-      inbox.removeShape(shape);
+      inbox.removeShape(shape1);
 
       expect(inbox.count()).toEqual(0);
     });
 
     it('removes a previously added shape', () => {
-      const shape = {id: 'foobar'};
       const inbox = new ShapeInboxService();
 
-      inbox.addShape(shape);
+      inbox.addShape(shape1);
       expect(inbox.count()).toEqual(1);
 
-      inbox.removeShape(shape);
+      inbox.removeShape(shape1);
       expect(inbox.count()).toEqual(0);
     });
 
     it('only removes a shape once', () => {
-      const shape = {id: 'foobar'};
       const inbox = new ShapeInboxService();
 
-      inbox.addShape(shape);
+      inbox.addShape(shape1);
       expect(inbox.count()).toEqual(1);
 
-      inbox.removeShape(shape);
-      inbox.removeShape(shape);
+      inbox.removeShape(shape1);
+      inbox.removeShape(shape1);
       expect(inbox.count()).toEqual(0);
     });
 
     it('removes the correct shape', () => {
-      const shape1 = {id: 'foobar'};
-      const shape2 = {id: 'heinz'};
       const inbox = new ShapeInboxService();
       const allShapesExpected = [shape2];
 
@@ -129,12 +125,7 @@ describe('ShapeInboxService', () => {
     });
 
     it('returns an array with alle the shapes', () => {
-      const shape1 = {id: 'foobar'};
-      const shape2 = {id: 'heinz'};
-      const shape3 = {id: 'bernddasbrot'};
       const inbox = new ShapeInboxService();
-      const allShapes = [shape1, shape2, shape3];
-      const shapesOneAndThree = [shape1, shape3];
 
       inbox.addShape(shape1);
       inbox.addShape(shape2);
@@ -156,9 +147,6 @@ describe('ShapeInboxService', () => {
     });
 
     it('removes all the shapes', () => {
-      const shape1 = {id: 'foobar'};
-      const shape2 = {id: 'heinz'};
-      const shape3 = {id: 'bernddasbrot'};
       const inbox = new ShapeInboxService();
 
       inbox.addShape(shape1);
