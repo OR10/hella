@@ -50,17 +50,17 @@ $font-xs: 12px;
 }
 
 @mixin font-l() {
-  @include font-s-to-l(20px);
+  @include font-s-to-l($font-l);
 }
 
 @mixin font-m() {
-  @include font-s-to-l(18px);
+  @include font-s-to-l($font-m);
 }
 
 @mixin font-s() {
-  @include font-s-to-l(16px);
+  @include font-s-to-l($font-s);
 }
 
 @mixin font-xs() {
-  @include font-s-to-l(12px);
+  @include font-s-to-l($font-xs);
 }
