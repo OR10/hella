@@ -13,6 +13,7 @@ describe('ShapeInbox', () => {
   let shapeInboxButton;
   let shapeInboxSelectedList;
   let shapeInboxSavedList;
+  let sharedMocks;
 
   const firstShape = {
     topLeft: {x: 100, y: 100},
@@ -26,7 +27,7 @@ describe('ShapeInbox', () => {
 
   beforeEach(() => {
     assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
-    bootstrapHttp([
+    sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
       assets.mocks.Shared.UserPermissions,
@@ -44,7 +45,9 @@ describe('ShapeInbox', () => {
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to3,
       assets.mocks.Shared.Thumbnails.rectangleLabeledThingsInFrame0to4,
       assets.mocks.Shared.EmptyLabeledThingGroupInFrame,
-    ]);
+    ];
+
+    bootstrapHttp(sharedMocks);
 
     bootstrapPouch([
       assets.documents.ShapeInbox.DrawTwoRectangles,
@@ -555,6 +558,42 @@ describe('ShapeInbox', () => {
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
         .then(() => shapeInboxSavedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => done());
+    });
+  });
+
+  describe('Meta Labeling', () => {
+    beforeEach(() => {
+      bootstrapHttp(sharedMocks.concat([
+        assets.mocks.MetaLabeling.Shared.Task,
+        assets.mocks.MetaLabeling.Shared.TaskConfiguration,
+        assets.mocks.MetaLabeling.Shared.RequirementsXmlFile,
+      ]));
+    });
+
+    it('does not show a badge if meta labeling is selected', done => {
+      const metaLabelingButton = element(by.css('.tool-frame-shape'));
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => metaLabelingButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxBadge.getText())
+        .then(shapeInboxCount => expect(shapeInboxCount).toEqual(''))
+        .then(() => done());
+    });
+
+    it('opens a popup window with the text "No shapes selected" if meta labeling is selected', done => {
+      const metaLabelingButton = element(by.css('.tool-frame-shape'));
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => metaLabelingButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxSelectedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => done());
     });
   });
