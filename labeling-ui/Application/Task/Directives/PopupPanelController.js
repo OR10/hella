@@ -217,6 +217,16 @@ class PopupPanelController {
     this._loadSelectedObjects();
   }
 
+  addAllToInbox() {
+    this._shapeInboxService.addShapes(this.selectedObjects);
+    this._loadSelectedObjects();
+  }
+
+  removeAllFromInbox() {
+    this._shapeInboxService.clear();
+    this._loadSelectedObjects();
+  }
+
   removeFromInbox(shapeInformation) {
     this._shapeInboxService.removeShape(shapeInformation);
     this._loadSelectedObjects();

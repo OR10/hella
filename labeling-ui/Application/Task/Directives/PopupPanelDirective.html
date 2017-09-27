@@ -81,7 +81,10 @@
     </div>
 
     <div ng-show="vm.popupPanelState == 'inbox'" class="grid-block vertical popup-inbox">
-        <p class="shape-list-header">Selected unsaved Shapes</p>
+        <p class="shape-list-header">
+            Selected unsaved Shapes
+            <i class="icon fa fa-plus-circle" ng-click="vm.addAllToInbox()" ng-show="vm.selectedObjects.length > 0"></i>
+        </p>
         <p class="selected-shape" ng-show="vm.selectedObjects.length === 0">No shapes selected</p>
         <p class="selected-shape" ng-repeat="selectedObject in vm.selectedObjects track by selectedObject.shape.id">
             <i class="icon fa fa-plus-circle" ng-click="vm.addToInbox(selectedObject)"></i>
@@ -89,7 +92,10 @@
             <span>{{ selectedObject.label }}</span>
         </p>
 
-        <p class="shape-list-header">Saved shapes</p>
+        <p class="shape-list-header">
+            Saved shapes
+            <i class="icon fa fa-minus-circle" ng-click="vm.removeAllFromInbox()" ng-show="vm.savedObjects.length > 0"></i>
+        </p>
         <p class="selected-shape" ng-show="vm.savedObjects.length === 0">No shapes saved</p>
         <p class="selected-shape" ng-repeat="selectedObject in vm.savedObjects track by selectedObject.shape.id">
             <i class="icon fa fa-minus-circle" ng-click="vm.removeFromInbox(selectedObject)"></i>
