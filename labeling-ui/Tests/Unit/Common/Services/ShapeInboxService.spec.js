@@ -1,6 +1,6 @@
 import ShapeInboxService from 'Application/Common/Services/ShapeInboxService';
 
-describe('ShapeInboxService', () => {
+fdescribe('ShapeInboxService', () => {
   let shape1;
   let shape2;
   let shape3;
@@ -165,5 +165,23 @@ describe('ShapeInboxService', () => {
     });
 
     // All other test cases can be found within the addShape and removeShape test cases
+  });
+
+  describe('hasShape', () => {
+    it('returns false if the shape is not known', () => {
+      const inbox = new ShapeInboxService();
+      expect(inbox.hasShape(shape1)).toEqual(false);
+    });
+
+    it('returns true if the shape is known', () => {
+      const inbox = new ShapeInboxService();
+
+      inbox.addShape(shape1);
+      inbox.addShape(shape3);
+
+      expect(inbox.hasShape(shape1)).toEqual(true);
+      expect(inbox.hasShape(shape2)).toEqual(false);
+      expect(inbox.hasShape(shape3)).toEqual(true);
+    });
   });
 });

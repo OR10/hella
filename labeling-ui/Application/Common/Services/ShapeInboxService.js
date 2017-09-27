@@ -33,6 +33,15 @@ class ShapeInboxService {
   }
 
   /**
+   * Checks if the inbox has the given shape
+   *
+   * @param {shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}} shapeInformation
+   */
+  hasShape(shapeInformation) {
+    return this._shapes.has(shapeInformation.shape.id);
+  }
+
+  /**
    * Returns all shapes in the inbox
    *
    * @return {Array}
