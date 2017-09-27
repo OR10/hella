@@ -169,7 +169,7 @@ class MediaControlsController {
   get selectedItemsCount() {
     // Filter PaperFrames
     const selectedShapes = this._shapeSelectionService.getAllShapes();
-    let selectedShapesFiltered = selectedShapes.filter(shape => !(shape instanceof PaperFrame));
+    const selectedShapesFiltered = selectedShapes.filter(shape => !(shape instanceof PaperFrame));
     return selectedShapesFiltered.length;
   }
 

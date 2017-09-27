@@ -1,6 +1,6 @@
 import ShapeInboxService from 'Application/Common/Services/ShapeInboxService';
 
-fdescribe('ShapeInboxService', () => {
+describe('ShapeInboxService', () => {
   let shape1;
   let shape2;
   let shape3;
