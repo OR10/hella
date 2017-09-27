@@ -425,8 +425,7 @@ gulp.task('webdriver-update', webdriverUpdate({
   webdriverManagerArgs: ['--versions.chrome=2.30'],
 }));
 
-// gulp.task('test-e2e-run', ['webdriver-update', 'copy-canteen', 'clean-e2e-logs'], next => {
-gulp.task('test-e2e-run', ['copy-canteen', 'clean-e2e-logs'], next => {
+gulp.task('test-e2e-run', ['webdriver-update', 'copy-canteen', 'clean-e2e-logs'], next => {
   runProtractor(
     {
       configFile: 'protractor.e2e.conf.js',
@@ -457,8 +456,7 @@ gulp.task('test-e2e-non-minified-run', ['webdriver-update', 'copy-canteen', 'cle
   );
 });
 
-// gulp.task('test-e2e', ['webdriver-update'], next => { // eslint-disable-line no-unused-vars
-gulp.task('test-e2e', next => { // eslint-disable-line no-unused-vars
+gulp.task('test-e2e', ['webdriver-update'], next => { // eslint-disable-line no-unused-vars
   run('clean', 'build', 'optimize', 'test-e2e-run', next);
 });
 
