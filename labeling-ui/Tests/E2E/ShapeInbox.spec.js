@@ -164,6 +164,7 @@ describe('ShapeInbox', () => {
 
     beforeEach(() => {
       shapeInboxSelectedList = element(by.css('#popup-inbox-selected .popup-inbox-list'));
+      shapeInboxSavedList = element(by.css('#popup-inbox-saved .popup-inbox-list'));
     });
 
     it('opens a popup window with the text "No shapes selected" if no shapes are selected', done => {
@@ -172,6 +173,8 @@ describe('ShapeInbox', () => {
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => done());
     });
 
@@ -192,6 +195,8 @@ describe('ShapeInbox', () => {
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => done());
     });
 
@@ -212,6 +217,8 @@ describe('ShapeInbox', () => {
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => done());
     });
 
@@ -221,6 +228,8 @@ describe('ShapeInbox', () => {
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -234,14 +243,20 @@ describe('ShapeInbox', () => {
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => ctrlClickSecondShape())
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => ctrlClickSecondShape())
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -253,6 +268,8 @@ describe('ShapeInbox', () => {
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => done());
     });
 
@@ -273,6 +290,8 @@ describe('ShapeInbox', () => {
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
 
         .then(() => shapeInboxButton.click())
         .then(() => browser.sleep(250))
@@ -282,6 +301,8 @@ describe('ShapeInbox', () => {
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => shapeInboxButton.click())
         .then(() => browser.sleep(250))
         .then(() => {
@@ -297,6 +318,8 @@ describe('ShapeInbox', () => {
         .then(() => browser.sleep(250))
         .then(() => shapeInboxSelectedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => done());
     });
   });
