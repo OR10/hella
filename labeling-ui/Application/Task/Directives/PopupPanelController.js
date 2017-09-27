@@ -205,34 +205,73 @@ class PopupPanelController {
     });
   }
 
+  /**
+   * @return {Array}
+   */
   get selectedObjects() {
     return Object.values(this._selectedObjects);
   }
 
+  /**
+   * @return {Array}
+   */
   get savedObjects() {
     return this._shapeInboxService.getAllShapes();
   }
 
+  /**
+   * @return {boolean}
+   */
+  hasSelectedObjects() {
+    return this.selectedObjects.length > 0;
+  }
+
+  hasSavedObjects() {
+    return this.savedObjects.length > 0;
+  }
+
+  /**
+   * Adds a shape to the inbox
+   *
+   * @param shapeInformation
+   */
   addToInbox(shapeInformation) {
     this._shapeInboxService.addShape(shapeInformation);
     this._loadSelectedObjects();
   }
 
+  /**
+   * Adds all selected shapes to the inbox
+   */
   addAllToInbox() {
     this._shapeInboxService.addShapes(this.selectedObjects);
     this._loadSelectedObjects();
   }
 
+  /**
+   * Clears the inbox
+   */
   removeAllFromInbox() {
     this._shapeInboxService.clear();
     this._loadSelectedObjects();
   }
 
+  /**
+   * Removes a shape from the inbox
+   *
+   * @param shapeInformation
+   */
   removeFromInbox(shapeInformation) {
     this._shapeInboxService.removeShape(shapeInformation);
     this._loadSelectedObjects();
   }
 
+  /**
+   * Load the selected objects. Looks up the name in the Task Definition and adds the information
+   * as well as a label with a unique number to the shapeInformation
+   *
+   * @private
+   */
   _loadSelectedObjects() {
     this._selectedObjects = {};
 
