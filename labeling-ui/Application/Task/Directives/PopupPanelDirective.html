@@ -90,7 +90,7 @@
         </p>
 
         <p class="shape-list-header">Saved shapes</p>
-        <p class="selected-shape" ng-show="vm.savedObjects.length === 0">No shapes selected</p>
+        <p class="selected-shape" ng-show="vm.savedObjects.length === 0">No shapes saved</p>
         <p class="selected-shape" ng-repeat="selectedObject in vm.savedObjects track by selectedObject.shape.id">
             <i class="icon fa fa-minus-circle" ng-click="vm.removeFromInbox(selectedObject)"></i>
             <i class="icon icon-tool-{{selectedObject.labelStructureObject.shape}}"></i>

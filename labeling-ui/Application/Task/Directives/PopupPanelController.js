@@ -214,10 +214,12 @@ class PopupPanelController {
 
   addToInbox(shapeInformation) {
     this._shapeInboxService.addShape(shapeInformation);
+    this._loadSelectedObjects();
   }
 
   removeFromInbox(shapeInformation) {
     this._shapeInboxService.removeShape(shapeInformation);
+    this._loadSelectedObjects();
   }
 
   _loadSelectedObjects() {
@@ -235,7 +237,11 @@ class PopupPanelController {
             }
 
             const label = `${labelStructureObject.name} #${this._selectedObjectsLabelCounter[shape.id]}`;
-            this._selectedObjects[shape.id] = {shape, label, labelStructureObject};
+            const shapeInformation = {shape, label, labelStructureObject};
+
+            if (!this._shapeInboxService.hasShape(shapeInformation)) {
+              this._selectedObjects[shape.id] = shapeInformation;
+            }
           }
         });
     });
