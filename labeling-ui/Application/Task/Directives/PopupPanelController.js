@@ -226,6 +226,9 @@ class PopupPanelController {
     return this.selectedObjects.length > 0;
   }
 
+  /**
+   * @return {boolean}
+   */
   hasSavedObjects() {
     return this.savedObjects.length > 0;
   }
