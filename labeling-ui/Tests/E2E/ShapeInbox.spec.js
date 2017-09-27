@@ -495,6 +495,68 @@ describe('ShapeInbox', () => {
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => done());
     });
+
+    it('keeps the saved shapes over a framechange with the popup open', done => {
+      const headerPlusButton = element(by.css('#popup-inbox-selected .shape-list-header .icon'));
+      const nextFrameButton = element(by.css('.next-frame-button'));
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .sendKeys(protractor.Key.CONTROL)
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .mouseMove(viewer, secondShape.topLeft) // initial position
+            .click()
+            .sendKeys(protractor.Key.NULL)
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => headerPlusButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => nextFrameButton.click())
+        .then(() => browser.sleep(500))
+        .then(() => shapeInboxSelectedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => done());
+    });
+
+    it('keeps the saved shapes over a framechange with the popup closed', done => {
+      const headerPlusButton = element(by.css('#popup-inbox-selected .shape-list-header .icon'));
+      const nextFrameButton = element(by.css('.next-frame-button'));
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .sendKeys(protractor.Key.CONTROL)
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .mouseMove(viewer, secondShape.topLeft) // initial position
+            .click()
+            .sendKeys(protractor.Key.NULL)
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => headerPlusButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => nextFrameButton.click())
+        .then(() => browser.sleep(500))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxSelectedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1\nrectangle #2'))
+        .then(() => done());
+    });
   });
 
   afterEach(() => {
