@@ -1,4 +1,5 @@
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
+import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
 
 /**
  * Controller handling the control elements below the viewer frame
@@ -166,7 +167,10 @@ class MediaControlsController {
    * @return {number}
    */
   get selectedItemsCount() {
-    return this._shapeSelectionService.count();
+    // Filter PaperFrames
+    const selectedShapes = this._shapeSelectionService.getAllShapes();
+    let selectedShapesFiltered = selectedShapes.filter(shape => !(shape instanceof PaperFrame));
+    return selectedShapesFiltered.length;
   }
 
   /**
