@@ -992,10 +992,9 @@ describe('LabelSelector (right sidebar)', () => {
           () => expect(
             labelSelectorHelper.getTitleTexts()
           ).toEqual([
-              'Time',
-              'Rain level',
-            ]
-          )
+            'Time',
+            'Rain level',
+          ])
         )
         .then(() => done());
     });
@@ -1308,7 +1307,7 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
         .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value A').click())
-        .then(() => mediumleep())
+        .then(() => mediumSleep())
         .then(
           () => expect(
             labelSelectorHelper.getAllEntryTexts()

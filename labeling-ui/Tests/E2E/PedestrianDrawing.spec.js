@@ -291,7 +291,7 @@ describe('Pedestrian drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.KeepSelectionOverFrameChange);
       })
-      .then(() => done())
+      .then(() => done());
   });
 
   it('should draw a new pedestrian shape', done => {
