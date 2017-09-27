@@ -6,12 +6,13 @@ import {
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
-describe('ShapeInbox', () => {
+fdescribe('ShapeInbox', () => {
   let assets;
   let viewer;
   let shapeInboxBadge;
-  let shapeInboxPopup;
   let shapeInboxButton;
+  let shapeInboxSelectedList;
+  let shapeInboxSavedList;
 
   const firstShape = {
     topLeft: {x: 100, y: 100},
@@ -51,8 +52,9 @@ describe('ShapeInbox', () => {
 
     viewer = element(by.css('.layer-container'));
     shapeInboxBadge = element(by.css('.task-bar .badge'));
-    shapeInboxPopup = element(by.css('.popup-inbox'));
     shapeInboxButton = element(by.css('.task-bar .icon.fa-inbox'));
+    shapeInboxSelectedList = element(by.css('#popup-inbox-selected .popup-inbox-list'));
+    shapeInboxSavedList = element(by.css('#popup-inbox-saved .popup-inbox-list'));
   });
 
 
@@ -150,9 +152,6 @@ describe('ShapeInbox', () => {
   });
 
   describe('Popup', () => {
-    let shapeInboxSelectedList;
-    let shapeInboxSavedList;
-
     const ctrlClickSecondShape = () => {
       return browser.actions()
         .sendKeys(protractor.Key.CONTROL)
@@ -161,11 +160,6 @@ describe('ShapeInbox', () => {
         .sendKeys(protractor.Key.NULL)
         .perform();
     };
-
-    beforeEach(() => {
-      shapeInboxSelectedList = element(by.css('#popup-inbox-selected .popup-inbox-list'));
-      shapeInboxSavedList = element(by.css('#popup-inbox-saved .popup-inbox-list'));
-    });
 
     it('opens a popup window with the text "No shapes selected" if no shapes are selected', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
@@ -320,6 +314,40 @@ describe('ShapeInbox', () => {
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
         .then(() => shapeInboxSavedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
+        .then(() => done());
+    });
+  });
+
+  fdescribe('Adding and removing shapes', () => {
+    let firstShapePlusButton;
+    let secondShapePlusButton;
+
+    beforeEach(() => {
+      const plusButtons = shapeInboxSelectedList.all(by.css('.selected-shape .icon.fa-plus-circle'));
+      firstShapePlusButton = plusButtons.get(0);
+      secondShapePlusButton = plusButtons.get(1);
+    });
+
+    it('moves one shape from selected shapes to saved shapes', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .sendKeys(protractor.Key.CONTROL)
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .mouseMove(viewer, secondShape.topLeft) // initial position
+            .click()
+            .sendKeys(protractor.Key.NULL)
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => secondShapePlusButton.click())
+        .then(() => shapeInboxSelectedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1'))
+        .then(() => shapeInboxSavedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #2'))
         .then(() => done());
     });
   });
