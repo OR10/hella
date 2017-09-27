@@ -187,7 +187,7 @@ class PopupPanelController {
     this._resizeDebounced();
 
     /**
-     * @type {shape: PaperShape, label: String, labelStructureObject: LabelStructureObject}
+     * @type {Object.<{shape: PaperShape, label: String, labelStructureObject: LabelStructureObject}>}
      * @private
      */
     this._selectedObjects = {};
@@ -236,7 +236,7 @@ class PopupPanelController {
   /**
    * Adds a shape to the inbox
    *
-   * @param shapeInformation
+   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
    */
   addToInbox(shapeInformation) {
     this._shapeInboxService.addShape(shapeInformation);
@@ -262,7 +262,7 @@ class PopupPanelController {
   /**
    * Removes a shape from the inbox
    *
-   * @param shapeInformation
+   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
    */
   removeFromInbox(shapeInformation) {
     this._shapeInboxService.removeShape(shapeInformation);

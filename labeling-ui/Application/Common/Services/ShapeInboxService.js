@@ -6,7 +6,7 @@ class ShapeInboxService {
   /**
    * Adds a shape to the inbox
    *
-   * @param {shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}} shapeInformation
+   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
    */
   addShape(shapeInformation) {
     this._shapes.set(shapeInformation.shape.id, shapeInformation);
@@ -15,7 +15,7 @@ class ShapeInboxService {
   /**
    * Adds an array of shapes to the inbox
    *
-   * @param {Array.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}}>} shapes
+   * @param {Array.<{shape: PaperThingShape, label: String, labelStructureObject: LabelStructureObject}>} shapes
    */
   addShapes(shapes) {
     shapes.forEach(shape => {
@@ -26,7 +26,7 @@ class ShapeInboxService {
   /**
    * Removes a shape from the inbox
    *
-   * @param {shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}} shapeInformation
+   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
    */
   removeShape(shapeInformation) {
     this._shapes.delete(shapeInformation.shape.id);
@@ -35,7 +35,7 @@ class ShapeInboxService {
   /**
    * Checks if the inbox has the given shape
    *
-   * @param {shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}} shapeInformation
+   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
    */
   hasShape(shapeInformation) {
     return this._shapes.has(shapeInformation.shape.id);
