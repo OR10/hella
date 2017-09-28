@@ -179,19 +179,27 @@ export function sendKeys(keysOrSequences) {
   );
 }
 
+function sleep(delay) {
+  return new Promise(
+    resolve => setTimeout(
+      () => resolve(),
+      delay
+    )
+  );
+}
+
 export function shortSleep() {
-  return browser.sleep(300);
+  return sleep(300);
 }
 
 export function mediumSleep() {
-  return browser.sleep(800);
+  return sleep(800);
 }
 
 export function longSleep() {
-  return browser.sleep(1800);
+  return sleep(1800);
 }
 
 export function comaLikeSleep() {
-  return browser.sleep(3000);
+  return sleep(3000);
 }
-
