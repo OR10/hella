@@ -336,28 +336,27 @@ class ImportTest extends Tests\KernelTestCase
                     ],
                 ],
                 'labeledThingGroups' => [
-
                     [
-                        'originalId' => '89e703812ce34189aa7719845c759500',
-                        'groupType' => 'empty-group',
-                        'lineColor' => '8',
-                        'labeledThingGroupInFrames' => []
+                        'originalId'                => '89e703812ce34189aa7719845c759500',
+                        'identifierName'            => 'empty-group',
+                        'lineColor'                 => '8',
+                        'labeledThingGroupInFrames' => [],
                     ],
                     [
-                        'originalId' => 'cf6a96bdee95412f3309e2a62b26bc2f',
-                        'groupType' => 'extension-sign-group',
-                        'lineColor' => '7',
+                        'originalId'                => 'cf6a96bdee95412f3309e2a62b26bc2f',
+                        'identifierName'            => 'extension-sign-group',
+                        'lineColor'                 => '7',
                         'labeledThingGroupInFrames' => [
                             [
-                                'classes' => ['position-above'],
+                                'classes'    => ['position-above'],
                                 'frameIndex' => 2,
                             ],
                             [
-                                'classes' => ['position-below'],
+                                'classes'    => ['position-below'],
                                 'frameIndex' => 0,
                             ],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'labeledFrames' => [
                     [
@@ -475,10 +474,11 @@ class ImportTest extends Tests\KernelTestCase
                     'frameIndex' => $labeledThingGroupInFrame->getFrameIndex(),
                 ];
             }, $labelingThingGroupInFrameFacade->getLabeledThingGroupInFramesForLabeledThingGroup($labeledThingGroup));
+
             return [
-                'originalId' => $labeledThingGroup->getOriginalId(),
-                'groupType' => $labeledThingGroup->getGroupType(),
-                'lineColor' => $labeledThingGroup->getLineColor(),
+                'originalId'                => $labeledThingGroup->getOriginalId(),
+                'identifierName'            => $labeledThingGroup->getIdentifierName(),
+                'lineColor'                 => $labeledThingGroup->getLineColor(),
                 'labeledThingGroupInFrames' => $labeledThingGroupInFrames,
             ];
         }, $labeledThingGroups);

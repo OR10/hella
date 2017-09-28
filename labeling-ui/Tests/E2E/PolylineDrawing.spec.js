@@ -244,6 +244,44 @@ describe('Polyline drawing', () => {
       .then(() => done());
   });
 
+  it('should snap to nearest start end point of other polyline and move other polyline', done => {
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawTwoPolylines.LabeledThingInFrame.frameIndex0,
+    ]);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 200, y: 100}) // top drag handle
+          .mouseDown()
+          .mouseMove(viewer, {x: 591, y: 99}) // drag
+          .mouseUp()
+          .mouseMove(viewer, {x: 100, y: 200}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 344, y: 350}) // drag
+          .mouseUp()
+          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 500, y: 500})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => browser.sleep(500))
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame2Snap).toExistInPouchDb();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'SnapPoint2')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.SnapPoint2);
+      })
+      .then(() => done());
+  });
+
   it('should keep the polyline shape selected over a frame change', done => {
     bootstrapPouch([
       assets.documents.PolylineDrawing.OnePolylineTwoFrames.LabeledThingInFrame.frameIndex0and1,
@@ -278,19 +316,45 @@ describe('Polyline drawing', () => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
-          .mouseMove(viewer, {x: 600, y: 100}) // initial position
+          .mouseMove(viewer, {x: 600, y: 400}) // initial position
           .mouseUp()
-          .mouseMove(viewer, {x: 600, y: 600}) // initial position
+          .mouseMove(viewer, {x: 590, y: 410}) // initial position
           .click()
-          .mouseMove(viewer, {x: 200, y: 600}) // initial position
+          .mouseMove(viewer, {x: 580, y: 420}) // initial position
           .click()
-          .mouseMove(viewer, {x: 200, y: 400}) // initial position
+          .mouseMove(viewer, {x: 570, y: 430}) // initial position
           .click()
-          .mouseMove(viewer, {x: 500, y: 400}) // initial position
+          .mouseMove(viewer, {x: 560, y: 440}) // initial position
           .click()
-          .mouseMove(viewer, {x: 500, y: 200}) // initial position
+          .mouseMove(viewer, {x: 550, y: 450}) // initial position
           .click()
-          .mouseMove(viewer, {x: 100, y: 200}) // initial position
+          .mouseMove(viewer, {x: 540, y: 460}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 530, y: 470}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 520, y: 480}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 510, y: 490}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 500, y: 500}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 490, y: 510}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 480, y: 520}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 470, y: 530}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 460, y: 540}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 450, y: 550}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 440, y: 560}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 430, y: 570}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 420, y: 580}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 410, y: 590}) // initial position
           .click()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
           .click(protractor.Button.RIGHT)
@@ -317,9 +381,10 @@ describe('Polyline drawing', () => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
-          .mouseMove(viewer, {x: 600, y: 100}) // initial position
+          .mouseMove(viewer, {x: 600, y: 400}) // initial position
           .mouseUp()
-          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .mouseMove(viewer, {x: 590, y: 410}) // initial position
+          .click()
           .perform();
       })
       .then(
@@ -331,11 +396,14 @@ describe('Polyline drawing', () => {
       })
       .then(() => {
         return browser.actions()
-          .mouseMove(viewer, {x: 600, y: 600}) // initial position
+          .mouseMove(viewer, {x: 580, y: 420}) // initial position
           .click()
-          .mouseMove(viewer, {x: 200, y: 600}) // initial position
+          .mouseMove(viewer, {x: 570, y: 430}) // initial position
           .click()
-          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .mouseMove(viewer, {x: 560, y: 440}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 550, y: 450}) // initial position
+          .click()
           .perform();
       })
       .then(
@@ -347,13 +415,14 @@ describe('Polyline drawing', () => {
       })
       .then(() => {
         return browser.actions()
-          .mouseMove(viewer, {x: 200, y: 400}) // initial position
+          .mouseMove(viewer, {x: 540, y: 460}) // initial position
           .click()
-          .mouseMove(viewer, {x: 500, y: 400}) // initial position
+          .mouseMove(viewer, {x: 530, y: 470}) // initial position
           .click()
-          .mouseMove(viewer, {x: 500, y: 200}) // initial position
+          .mouseMove(viewer, {x: 520, y: 480}) // initial position
           .click()
-          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .mouseMove(viewer, {x: 510, y: 490}) // initial position
+          .click()
           .perform();
       })
       .then(
@@ -365,7 +434,25 @@ describe('Polyline drawing', () => {
       })
       .then(() => {
         return browser.actions()
-          .mouseMove(viewer, {x: 100, y: 200}) // initial position
+          .mouseMove(viewer, {x: 500, y: 500}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 490, y: 510}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 480, y: 520}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 470, y: 530}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 460, y: 540}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 450, y: 550}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 440, y: 560}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 430, y: 570}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 420, y: 580}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 410, y: 590}) // initial position
           .click()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
           .click(protractor.Button.RIGHT)

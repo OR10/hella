@@ -12,6 +12,7 @@ class PathScaleTool extends ScalingTool {
    * @param {DrawingContext} drawingContext
    * @param {angular.$q} $q
    * @param {LoggerService} loggerService
+   * @param {PathCollisionService} pathCollisionService
    */
   constructor(drawingContext, $rootScope, $q, loggerService, pathCollisionService) {
     super(drawingContext, $rootScope, $q, loggerService);

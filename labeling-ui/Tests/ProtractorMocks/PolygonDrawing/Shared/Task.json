@@ -29,8 +29,7 @@
               "minimalHeight": 15
             },
             "polygon": {
-              "minHandles": 3,
-              "maxHandles": 15
+              "minHandles": 3
             }
           },
           "frameNumberMapping": [
