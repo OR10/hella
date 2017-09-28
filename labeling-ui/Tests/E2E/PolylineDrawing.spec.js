@@ -4,6 +4,7 @@ import {
   bootstrapHttp,
   bootstrapPouch,
   expectAllModalsToBeClosed,
+  mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -51,8 +52,8 @@ describe('Polyline drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.LoadAndDrawOnePolyline);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should load and draw two polyline shapes', done => {
@@ -67,8 +68,8 @@ describe('Polyline drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.LoadAndDrawTwoPolylines);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select a polyline shape', done => {
@@ -89,8 +90,8 @@ describe('Polyline drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.SelectOnePolyline);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select and deselect a polyline shape', done => {
@@ -117,8 +118,8 @@ describe('Polyline drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.SelectAndDeselectPolyline);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select one and then select an other polyline shape', done => {
@@ -145,8 +146,8 @@ describe('Polyline drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.SelectAnotherPolyline);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should correctly move a polyline shape and save the changed coordinates', done => {
@@ -165,6 +166,10 @@ describe('Polyline drawing', () => {
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.MoveOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'MoveOnePolyline')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -172,11 +177,7 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.MoveOnePolyline);
       })
-      .then(() => browser.sleep(500))
-      .then(() => {
-        expect(assets.mocks.PolylineDrawing.MoveOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should correctly resize a polyline shape and save the changed coordinates', done => {
@@ -199,18 +200,18 @@ describe('Polyline drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'ResizeOnePolyline')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.ResizeOnePolyline);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should snap to nearest start end point of other polyline', done => {
@@ -229,7 +230,7 @@ describe('Polyline drawing', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => {
         expect(assets.mocks.PolylineDrawing.ResizeOnePolyline.LabeledThingInFrame.putLabeledThingInFrame1Snap).toExistInPouchDb();
       })
@@ -255,20 +256,20 @@ describe('Polyline drawing', () => {
           .click()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
         return nextFrameButton.click();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'KeepSelectionOverFrameChange')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.KeepSelectionOverFrameChange);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should draw a new polyline shape', done => {
@@ -295,7 +296,11 @@ describe('Polyline drawing', () => {
           .click(protractor.Button.RIGHT)
           .perform();
       })
-      .then(() => browser.sleep(200))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolyline')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -303,11 +308,7 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolyline);
       })
-      .then(() => {
-        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw a new Polyline shape with intermediary mouse movements', done => {
@@ -370,6 +371,11 @@ describe('Polyline drawing', () => {
           .click(protractor.Button.RIGHT)
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewPolylineIntermediary4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -377,12 +383,7 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewPolylineIntermediary4);
       })
-      .then(() => browser.sleep(300))
-      .then(() => {
-        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw multiple new Polyline shapes', done => {
@@ -398,6 +399,7 @@ describe('Polyline drawing', () => {
           .click(protractor.Button.RIGHT)
           .perform();
       })
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewMultiplePolyline1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -416,6 +418,7 @@ describe('Polyline drawing', () => {
           .click(protractor.Button.RIGHT)
           .perform();
       })
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewMultiplePolyline2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -434,6 +437,13 @@ describe('Polyline drawing', () => {
           .click(protractor.Button.RIGHT)
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame2).toExistInPouchDb();
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame3).toExistInPouchDb();
+        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame4).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineDrawing', 'NewMultiplePolyline3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -441,13 +451,7 @@ describe('Polyline drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineDrawing.NewMultiplePolyline3);
       })
-      .then(() => {
-        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame2).toExistInPouchDb();
-        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame3).toExistInPouchDb();
-        expect(assets.mocks.PolylineDrawing.NewPolyline.StoreLabeledThingInFrame4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   afterEach(() => {
