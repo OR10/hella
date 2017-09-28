@@ -802,6 +802,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
           switch (true) {
             case paperShape instanceof PaperThingShape:
               this.emit('thing:update', paperShape);
+              // When you snap polylines and move them you have to update the shape by calling the thing:update explicit
+              // to store the new points
+              if (this._pathCollisionService.needsRedraw) {
+                this._pathCollisionService.shapes.forEach(shape => {
+                  this.emit('thing:update', shape);
+                });
+              }
               break;
             case paperShape instanceof PaperGroupShape:
               this.emit('group:update', paperShape);

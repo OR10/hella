@@ -1,10 +1,18 @@
+import {cloneDeep, isEqual} from 'lodash';
+
 class PathCollisionService {
   constructor() {
     /**
      * @type {Array.<PaperThingShape>}
-     * @private
+     * @public
      */
     this.shapes = [];
+
+    /**
+     * @type {boolean}
+     * @public
+     */
+    this.needsRedraw = false;
   }
 
   /**
@@ -45,6 +53,45 @@ class PathCollisionService {
       return false;
     });
     return result;
+  }
+
+  /**
+   * @param {PaperShape} moveShape
+   * @returns {Object|undefined}
+   */
+  getConnectedShapeAndIndicesForMovingShape(moveShape) {
+    this.needsRedraw = false;
+    // helper function
+    const intersectWith = (filterFunction, xs, ys) => xs.filter(x => ys.some(y => filterFunction(x, y)));
+
+    // deep clone because points will change per move
+    const movedShapeClone = cloneDeep(moveShape);
+
+    // get shapes that could be connected to the shape that will be move
+    const possibleConnectedShapes = this.shapes.filter(storedShapes => storedShapes !== movedShapeClone);
+    let returnResult = undefined;
+
+    possibleConnectedShapes.some(connectedShape => {
+      // get points that equals in both shapes
+      const equalPoints = intersectWith(isEqual, connectedShape.points, movedShapeClone.points);
+      if (equalPoints.length !== 0) {
+        // indices have to find to calculate and set new points at the correct position later
+        const shapesIndices = [];
+        equalPoints.forEach(equalPoint => {
+          const connectedShapeIndex = connectedShape.points.findIndex(point => point.x === equalPoint.x && point.y === equalPoint.y);
+          const movedShapeIndex = moveShape.points.findIndex(point => point.x === equalPoint.x && point.y === equalPoint.y);
+          if (connectedShapeIndex !== -1 && movedShapeIndex !== -1) {
+            shapesIndices.push({connectedShapeIndex: connectedShapeIndex, movedShapeIndex: movedShapeIndex});
+          }
+        });
+        // return mapped indices and the shape that has to follow moving
+        this.needsRedraw = true;
+        returnResult = {connectedShape, shapesIndices};
+        return true;
+      }
+      return false;
+    });
+    return returnResult;
   }
 
   _getShapesStartEndPointsSnapping() {
