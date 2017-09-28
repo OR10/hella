@@ -255,6 +255,9 @@ export default class LabelSelectorController {
     return this.choices[page.id] !== response.id;
   }
 
+  /**
+   * This method expand or collapse the accordions depends on the multiSelection state
+   */
   expandOrCollapseAccordionOnMutiSelection() {
     if (this.multiSelection) {
       this.accordionControl.expandAll();
