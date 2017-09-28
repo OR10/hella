@@ -1,7 +1,6 @@
 import paper from 'paper';
 import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortablePromiseRingBuffer';
 import ZoomViewerMoveTool from '../../Viewer/Tools/ZoomViewerMoveTool';
-import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
 
 /**
  * Controller of the {@link PopupPanelDirective}
@@ -279,7 +278,7 @@ class PopupPanelController {
     this._selectedObjects = {};
 
     this._shapeSelectionService.getAllShapes().forEach(shape => {
-      if (shape instanceof PaperFrame) {
+      if (shape.labeledThingInFrame === undefined) {
         return;
       }
       this._labelStructureService.getLabelStructure(shape.labeledThingInFrame.task)
