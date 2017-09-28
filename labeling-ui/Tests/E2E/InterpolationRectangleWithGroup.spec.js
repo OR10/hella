@@ -137,8 +137,8 @@ describe('Rectangle With Group Interpolation', () => {
 
   it('should interpolate a RectangleWithGroup when selecting the end LTIF', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => groupButton.click());
-    mediumSleep()
+      .then(() => groupButton.click())
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 80, y: 80}) // initial position
