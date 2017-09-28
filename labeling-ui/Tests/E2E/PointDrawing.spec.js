@@ -1,5 +1,11 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {initApplication, expectAllModalsToBeClosed, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
+import {
+  initApplication,
+  expectAllModalsToBeClosed,
+  bootstrapHttp,
+  bootstrapPouch,
+  mediumSleep,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -10,7 +16,11 @@ describe('Point drawing', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -49,8 +59,8 @@ describe('Point drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.LoadAndDrawOnePoint);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should load and draw two point shapes', done => {
@@ -67,8 +77,8 @@ describe('Point drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.LoadAndDrawTwoPoints);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select a point shape', done => {
@@ -79,21 +89,20 @@ describe('Point drawing', () => {
     ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
-          .perform();
-      })
+          .perform()
+      )
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectOnePoint')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
-
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.SelectOnePoint);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select and deselect a point shape', done => {
@@ -104,26 +113,28 @@ describe('Point drawing', () => {
     ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
-          .perform();
-      })
-      .then(() => {
-        return browser.actions()
+          .perform()
+      )
+      .then(() => mediumSleep())
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, {x: 1, y: 1})
           .click()
-          .perform();
-      })
+          .perform()
+      )
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectAndDeselectPoint')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.SelectAndDeselectPoint);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select one and then select an other point shape', done => {
@@ -134,26 +145,28 @@ describe('Point drawing', () => {
     ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
-          .perform();
-      })
-      .then(() => {
-        return browser.actions()
+          .perform()
+      )
+      .then(() => mediumSleep())
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, {x: 600, y: 100}) // initial position
           .click()
-          .perform();
-      })
+          .perform()
+      )
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'SelectAnotherPoint')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.SelectAnotherPoint);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should correctly move a point shape and save the changed coordinates', done => {
@@ -164,15 +177,19 @@ describe('Point drawing', () => {
     ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 250, y: 200}) // initial position
           .mouseUp()
           .mouseMove(viewer, {x: 1, y: 1}) // click somewhere outside to deselect element
           .click()
-          .perform();
+          .perform()
+      )
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'MoveOnePoint')
@@ -181,11 +198,7 @@ describe('Point drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.MoveOnePoint);
       })
-      .then(() => browser.sleep(500))
-      .then(() => {
-        expect(assets.mocks.PointDrawing.MoveOnePoint.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should keep the point shape selected over a frame change', done => {
@@ -196,40 +209,45 @@ describe('Point drawing', () => {
     ]);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, {x: 200, y: 100}) // initial position
           .click()
-          .perform();
-      })
-      .then(() => browser.sleep(500))
+          .perform()
+      )
+      .then(() => mediumSleep())
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
         return nextFrameButton.click();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'KeepSelectionOverFrameChange')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.KeepSelectionOverFrameChange);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should draw a new point shape', done => {
     bootstrapHttp(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
           .mouseUp()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
-          .perform();
+          .perform()
+      )
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame1).toExistInPouchDb();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewPoint')
@@ -238,20 +256,15 @@ describe('Point drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewPoint);
       })
-      .then(() => browser.sleep(800))
-      .then(() => {
-        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw multiple new point shapes', done => {
     bootstrapHttp(sharedMocks);
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-      .then(() => {
-        return browser.actions()
+      .then(
+        () => browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
           .mouseMove(viewer, {x: 400, y: 400}) // initial position
@@ -265,7 +278,14 @@ describe('Point drawing', () => {
           .mouseMove(viewer, {x: 900, y: 50}) // initial position
           .mouseUp()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
-          .perform();
+          .perform()
+      )
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame2).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame3).toExistInPouchDb();
+        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4).toExistInPouchDb();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PointDrawing', 'NewMultiplePoints')
@@ -274,14 +294,7 @@ describe('Point drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PointDrawing.NewMultiplePoints);
       })
-      .then(() => browser.sleep(500))
-      .then(() => {
-        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame2).toExistInPouchDb();
-        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame3).toExistInPouchDb();
-        expect(assets.mocks.PointDrawing.NewPoint.StoreLabeledThingInFrame4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   afterEach(() => {

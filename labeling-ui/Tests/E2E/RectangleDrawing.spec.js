@@ -1,5 +1,11 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
+  mediumSleep,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -48,8 +54,8 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawOneRectangle);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should load and draw two rectangles', done => {
@@ -66,8 +72,8 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.LoadAndDrawTwoRectangles);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select a rectangle', done => {
@@ -90,8 +96,8 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.SelectOneRectangle);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select and deselect a rectangle', done => {
@@ -120,8 +126,8 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.SelectAndDeselectRectangle);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should deselect one and select an other rectangle', done => {
@@ -150,8 +156,8 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.SelectAnotherRectangle);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should correctly move a rectangle and save the changed coordinates', done => {
@@ -172,6 +178,10 @@ describe('Rectangle drawing', () => {
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'MoveOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -179,12 +189,8 @@ describe('Rectangle drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.MoveOneRectangle);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleDrawing.MoveOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should correctly resize a rectangle and save the changed coordinates', done => {
@@ -205,6 +211,10 @@ describe('Rectangle drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'ResizeOneRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -212,12 +222,8 @@ describe('Rectangle drawing', () => {
       .then(drawingStack => {
         // browser.pause();
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.ResizeOneRectangle);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleDrawing.ResizeOneRectangle.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should correctly resize a rectangle while flipping bottomRight and topLeft', done => {
@@ -238,6 +244,10 @@ describe('Rectangle drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'ResizeFlip')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -245,12 +255,8 @@ describe('Rectangle drawing', () => {
       .then(drawingStack => {
         // browser.pause();
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.ResizeFlip);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleDrawing.ResizeFlip.StoreLabeledThingInFrame).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should keep the rectangle selected over a frame change', done => {
@@ -267,20 +273,20 @@ describe('Rectangle drawing', () => {
           .click()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
         return nextFrameButton.click();
       })
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'KeepSelectionOverFrameChange')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.KeepSelectionOverFrameChange);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should draw a new rectangle', done => {
@@ -295,19 +301,19 @@ describe('Rectangle drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangle);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw a new rectangle from top-left to bottom-right with minimal height constrains', done => {
@@ -323,19 +329,19 @@ describe('Rectangle drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleMinimalHeight);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw a new rectangle from bottom-right to top-left with minimal height constrains', done => {
@@ -351,19 +357,19 @@ describe('Rectangle drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleMinimalHeight')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleMinimalHeight);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.RectangleDrawing.NewRectangleMinimalHeight.StoreLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw a new rectangle with intermediary mouse movements', done => {
@@ -376,7 +382,7 @@ describe('Rectangle drawing', () => {
           .mouseDown()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleIntermediary1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -389,7 +395,7 @@ describe('Rectangle drawing', () => {
           .mouseMove(viewer, {x: 500, y: 400}) // intermediary position
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleIntermediary2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -403,19 +409,19 @@ describe('Rectangle drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleIntermediary3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleIntermediary3);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.RectangleDrawing.NewRectangleIntermediary.StoreLabeledThingInFrame).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw multiple new rectangles', done => {
@@ -438,21 +444,21 @@ describe('Rectangle drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewMultipleRectangles')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewMultipleRectangles);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame2).toExistInPouchDb();
-        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame3).toExistInPouchDb();
-        expect(assets.mocks.RectangleDrawing.NewRectangle.StoreLabeledThingInFrame4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw a new rectangle from top-right to bottom-left', done => {
@@ -467,19 +473,19 @@ describe('Rectangle drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleOpposite')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw a new rectangle from bottom-left to top-right', done => {
@@ -494,19 +500,19 @@ describe('Rectangle drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleDrawing', 'NewRectangleOpposite')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.RectangleDrawing.NewRectangleOpposite.StoreLabeledThingInFrame).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   afterEach(() => {

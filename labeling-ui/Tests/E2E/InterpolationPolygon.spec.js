@@ -5,12 +5,14 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  longSleep,
+  mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Interpolation Polygon Tests', () => {
+describe('Polygon Interpolation', () => {
   let assets;
   let viewer;
   let nextFrameButton;
@@ -19,7 +21,11 @@ describe('Interpolation Polygon Tests', () => {
   let goEndButton;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -47,24 +53,31 @@ describe('Interpolation Polygon Tests', () => {
     goEndButton = element(by.css('.icon-selection-goend'));
   });
 
-  describe('All modals closed', () => {
-    afterEach(() => {
-      expectAllModalsToBeClosed();
-    });
-
+  describe('Supported', () => {
     it('should interpolate a Polygon when selecting the start LTIF', done => {
       bootstrapPouch([
         assets.documents.Interpolation.Polygon.LabeledThingInFrame.frameIndex0and4,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
             .click()
             .perform();
         })
+        .then(() => mediumSleep())
         .then(() => interpolateButton.click())
+        .then(() => longSleep())
+        .then(() => {
+          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame0')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -73,7 +86,7 @@ describe('Interpolation Polygon Tests', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame0);
         })
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -82,7 +95,7 @@ describe('Interpolation Polygon Tests', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame1);
         })
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -91,7 +104,7 @@ describe('Interpolation Polygon Tests', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame2);
         })
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -100,7 +113,7 @@ describe('Interpolation Polygon Tests', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame3);
         })
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -108,14 +121,7 @@ describe('Interpolation Polygon Tests', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame4);
         })
-        .then(() => {
-          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
     });
 
     it('should interpolate a Polygon when selecting the end LTIF', done => {
@@ -123,17 +129,27 @@ describe('Interpolation Polygon Tests', () => {
         assets.documents.Interpolation.Polygon.LabeledThingInFrame.frameIndex0and4,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
             .click()
             .perform();
         })
+        .then(() => mediumSleep())
         .then(() => goEndButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(() => interpolateButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => longSleep())
+        .then(() => {
+          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame4')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -142,7 +158,7 @@ describe('Interpolation Polygon Tests', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame4);
         })
         .then(() => previousFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame3')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -151,7 +167,7 @@ describe('Interpolation Polygon Tests', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame3);
         })
         .then(() => previousFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame2')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -160,7 +176,7 @@ describe('Interpolation Polygon Tests', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame2);
         })
         .then(() => previousFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -169,7 +185,7 @@ describe('Interpolation Polygon Tests', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame1);
         })
         .then(() => previousFrameButton.click())
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPolygon', 'Frame0')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -177,35 +193,36 @@ describe('Interpolation Polygon Tests', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPolygon.Frame0);
         })
-        .then(() => {
-          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-          expect(assets.mocks.Interpolation.Polygon.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-          done();
-        });
+        .then(() => done());
+    });
+
+    afterEach(() => {
+      expectAllModalsToBeClosed();
     });
   });
 
-  describe('Modal', () => {
-    it('should show a modal if the vertex count of shapes in different', done => {
+  describe('Unsupported', () => {
+    it('should show a modal if the vertex count of shapes in different', done => { // eslint-disable-line jasmine/missing-expect
       bootstrapPouch([
         assets.documents.Interpolation.Polygon.LabeledThingInFrame.frameIndex0and4WithDifferentVertexCount,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 200, y: 100}) // Polygon in first frame
             .click()
             .perform();
         })
+        .then(() => mediumSleep())
         .then(() => interpolateButton.click())
+        .then(() => longSleep())
         .then(() => {
           expectModalToBePresent();
-          done();
-        });
+        })
+        .then(() => done());
     });
   });
 

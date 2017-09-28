@@ -11,7 +11,11 @@ describe('Cuboid exception', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -40,22 +44,25 @@ describe('Cuboid exception', () => {
         assets.documents.CuboidCreation.DrawCuboids.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
-       .then(() => {
-         return browser.actions()
-               .mouseMove(viewer, {x: 105, y: 172}) // initial position
-               .mouseDown()
-               .mouseMove(viewer, {x: 105, y: 10}) // drag
-               .mouseUp()
-               .perform();
-       })
-       .then(() => {
-         expectModalToBePresent();
-         done();
-       });
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 105, y: 172}) // initial position
+            .mouseDown()
+            .mouseMove(viewer, {x: 105, y: 10}) // drag
+            .mouseUp()
+            .perform();
+        })
+        .then(() => {
+          expectModalToBePresent();
+          done();
+        });
     });
   });
 

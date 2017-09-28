@@ -2,7 +2,7 @@ import {
   expectAllModalsToBeClosed,
   initApplication,
   bootstrapHttp,
-  bootstrapPouch,
+  bootstrapPouch, shortSleep, mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
@@ -19,28 +19,44 @@ describe('LabelSelector (right sidebar)', () => {
   let labelSelectorHelper;
 
   function clickRectangleOne() {
-    return browser.actions()
-      .mouseMove(viewer, {x: 110, y: 110})
-      .click()
-      .perform();
+    return Promise.resolve()
+      .then(
+        () => browser.actions()
+          .mouseMove(viewer, {x: 110, y: 110})
+          .click()
+          .perform()
+      )
+      .then(() => shortSleep());
   }
 
   function clickRectangleTwo() {
-    return browser.actions()
-      .mouseMove(viewer, {x: 350, y: 350})
-      .click()
-      .perform();
+    return Promise.resolve()
+      .then(
+        () => browser.actions()
+          .mouseMove(viewer, {x: 350, y: 350})
+          .click()
+          .perform()
+      )
+      .then(() => shortSleep());
   }
 
   function clickPedestrian() {
-    return browser.actions()
-      .mouseMove(viewer, {x: 429, y: 380})
-      .click()
-      .perform();
+    return Promise.resolve()
+      .then(
+        () => browser.actions()
+          .mouseMove(viewer, {x: 429, y: 380})
+          .click()
+          .perform()
+      )
+      .then(() => shortSleep());
   }
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -106,6 +122,7 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => groupButton.click())
+        .then(() => shortSleep())
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -114,7 +131,7 @@ describe('LabelSelector (right sidebar)', () => {
             .mouseUp()
             .perform();
         })
-        .then(() => browser.sleep(200))
+        .then(() => mediumSleep())
         .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(0))
         .then(() => done());
     });
@@ -136,6 +153,7 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => groupButton.click())
+        .then(() => shortSleep())
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -144,15 +162,17 @@ describe('LabelSelector (right sidebar)', () => {
             .mouseUp()
             .perform();
         })
-        .then(() => browser.sleep(200))
+        .then(() => mediumSleep())
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
-        .then(() => expect(
-          labelSelectorHelper.getAllOpenStates()
-        ).toEqual(
-          {
-            'Sign type': false,
-          }))
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllOpenStates()
+          ).toEqual(
+            {
+              'Sign type': false,
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -167,16 +187,18 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
-        .then(() => expect(
-          labelSelectorHelper.getAllOpenStates()
-        ).toEqual(
-          {
-            'Vehicle Type': false,
-            'Direction': false,
-            'Occlusion': false,
-            'Truncation': false,
-          }))
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllOpenStates()
+          ).toEqual(
+            {
+              'Vehicle Type': false,
+              'Direction': false,
+              'Occlusion': false,
+              'Truncation': false,
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -191,17 +213,20 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Direction').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllOpenStates()
-        ).toEqual(
-          {
-            'Vehicle Type': false,
-            'Direction': true,
-            'Occlusion': false,
-            'Truncation': false,
-          }))
+        .then(() => shortSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllOpenStates()
+          ).toEqual(
+            {
+              'Vehicle Type': false,
+              'Direction': true,
+              'Occlusion': false,
+              'Truncation': false,
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -216,18 +241,22 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Direction').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Direction').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllOpenStates()
-        ).toEqual(
-          {
-            'Vehicle Type': false,
-            'Direction': false,
-            'Occlusion': false,
-            'Truncation': false,
-          }))
+        .then(() => shortSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllOpenStates()
+          ).toEqual(
+            {
+              'Vehicle Type': false,
+              'Direction': false,
+              'Occlusion': false,
+              'Truncation': false,
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -242,19 +271,24 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToSingleSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Direction').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Occlusion').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllOpenStates()
-        ).toEqual(
-          {
-            'Vehicle Type': false,
-            'Direction': false,
-            'Occlusion': true,
-            'Truncation': false,
-          }))
+        .then(() => shortSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllOpenStates()
+          ).toEqual(
+            {
+              'Vehicle Type': false,
+              'Direction': false,
+              'Occlusion': true,
+              'Truncation': false,
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -269,19 +303,24 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Direction').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Occlusion').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllOpenStates()
-        ).toEqual(
-          {
-            'Vehicle Type': false,
-            'Direction': true,
-            'Occlusion': true,
-            'Truncation': false,
-          }))
+        .then(() => shortSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllOpenStates()
+          ).toEqual(
+            {
+              'Vehicle Type': false,
+              'Direction': true,
+              'Occlusion': true,
+              'Truncation': false,
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -296,21 +335,27 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Truncation').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Direction').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Occlusion').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Truncation').click())
+        .then(() => shortSleep())
         .then(() => expect(
           labelSelectorHelper.getAllOpenStates()
-        ).toEqual(
+          ).toEqual(
           {
             'Vehicle Type': false,
             'Direction': true,
             'Occlusion': true,
             'Truncation': false,
-          }))
+          }
+          )
+        )
         .then(() => done());
     });
 
@@ -325,22 +370,27 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Vehicle Type',
-          'Truck'
-        ).click())
-        .then(() => expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Vehicle Type')).toEqual(
-          {
-            'Car': false,
-            'Truck': true,
-            '2 wheeler vehicle': false,
-            'Bus': false,
-            'Misc vehicle': false,
-            'Ignore vehicle': false,
-          }
-        ))
+        .then(() => shortSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Truck'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Vehicle Type')).toEqual(
+            {
+              'Car': false,
+              'Truck': true,
+              '2 wheeler vehicle': false,
+              'Bus': false,
+              'Misc vehicle': false,
+              'Ignore vehicle': false,
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -355,13 +405,15 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Vehicle Type',
-          'Truck'
-        ).click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Truck'
+          ).click()
+        )
+        .then(() => mediumSleep())
         .then(() => expect(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesTruck).toExistInPouchDb())
         .then(() => done());
     });
@@ -377,24 +429,31 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Vehicle Type',
-          'Truck'
-        ).click())
+        .then(() => shortSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Truck'
+          ).click()
+        )
+        .then(() => mediumSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Car').click())
-        .then(() => expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Vehicle Type')).toEqual(
-          {
-            'Car': true,
-            'Truck': false,
-            '2 wheeler vehicle': false,
-            'Bus': false,
-            'Misc vehicle': false,
-            'Ignore vehicle': false,
-          }
-        ))
+        .then(() => mediumSleep())
+        .then(
+          () => expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Vehicle Type')).toEqual(
+            {
+              'Car': true,
+              'Truck': false,
+              '2 wheeler vehicle': false,
+              'Bus': false,
+              'Misc vehicle': false,
+              'Ignore vehicle': false,
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -409,15 +468,19 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Vehicle Type',
-          'Truck'
-        ).click())
+        .then(() => shortSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Truck'
+          ).click()
+        )
+        .then(() => mediumSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Car').click())
-        .then(() => browser.sleep(250))
+        .then(() => mediumSleep())
         .then(() => expect(assets.mocks.LabelSelector.BasicBehaviour.LabeledThingInFrame.putWithClassesCar).toExistInPouchDb())
         .then(() => done());
     });
@@ -444,7 +507,6 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(4))
         .then(() => done());
     });
@@ -458,15 +520,18 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
-        .then(() => expect(
-          labelSelectorHelper.getTitleTexts()
-        ).toEqual([
-          'Vehicle Type',
-          'Direction',
-          'Occlusion',
-          'Truncation',
-        ]))
+        .then(
+          () => expect(
+            labelSelectorHelper.getTitleTexts()
+          ).toEqual(
+            [
+              'Vehicle Type',
+              'Direction',
+              'Occlusion',
+              'Truncation',
+            ]
+          )
+        )
         .then(() => done());
     });
 
@@ -479,36 +544,38 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Vehicle Type': [
-              'Car',
-              'Truck',
-              '2 wheeler vehicle',
-              'Bus',
-              'Misc vehicle',
-              'Ignore vehicle',
-            ],
-            'Direction': [
-              'Right',
-              'Left',
-              'Front',
-              'Back',
-            ],
-            'Occlusion': [
-              '< 20%',
-              '20% - 80%',
-              '> 80%',
-            ],
-            'Truncation': [
-              '< 20%',
-              '20% - 80%',
-              '> 80%',
-            ],
-          }))
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Vehicle Type': [
+                'Car',
+                'Truck',
+                '2 wheeler vehicle',
+                'Bus',
+                'Misc vehicle',
+                'Ignore vehicle',
+              ],
+              'Direction': [
+                'Right',
+                'Left',
+                'Front',
+                'Back',
+              ],
+              'Occlusion': [
+                '< 20%',
+                '20% - 80%',
+                '> 80%',
+              ],
+              'Truncation': [
+                '< 20%',
+                '20% - 80%',
+                '> 80%',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -521,46 +588,53 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Vehicle Type',
-          'Ignore vehicle'
-        ).click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Vehicle Type': [
-              'Car',
-              'Truck',
-              '2 wheeler vehicle',
-              'Bus',
-              'Misc vehicle',
-              'Ignore vehicle',
-            ],
-            'Art des Ignore': [
-              'Gruppe',
-              'Einzelperson',
-            ],
-            'Direction': [
-              'Right',
-              'Left',
-              'Front',
-              'Back',
-            ],
-            'Occlusion': [
-              '< 20%',
-              '20% - 80%',
-              '> 80%',
-            ],
-            'Truncation': [
-              '< 20%',
-              '20% - 80%',
-              '> 80%',
-            ],
-          }))
+        .then(() => shortSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Ignore vehicle'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Vehicle Type': [
+                'Car',
+                'Truck',
+                '2 wheeler vehicle',
+                'Bus',
+                'Misc vehicle',
+                'Ignore vehicle',
+              ],
+              'Art des Ignore': [
+                'Gruppe',
+                'Einzelperson',
+              ],
+              'Direction': [
+                'Right',
+                'Left',
+                'Front',
+                'Back',
+              ],
+              'Occlusion': [
+                '< 20%',
+                '20% - 80%',
+                '> 80%',
+              ],
+              'Truncation': [
+                '< 20%',
+                '20% - 80%',
+                '> 80%',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -573,54 +647,64 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Vehicle Type',
-          'Ignore vehicle'
-        ).click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Art des Ignore',
-          'Gruppe'
-        ).click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Vehicle Type': [
-              'Car',
-              'Truck',
-              '2 wheeler vehicle',
-              'Bus',
-              'Misc vehicle',
-              'Ignore vehicle',
-            ],
-            'Art des Ignore': [
-              'Gruppe',
-              'Einzelperson',
-            ],
-            'Gruppengröße': [
-              'große Gruppe',
-              'kleine Gruppe',
-            ],
-            'Direction': [
-              'Right',
-              'Left',
-              'Front',
-              'Back',
-            ],
-            'Occlusion': [
-              '< 20%',
-              '20% - 80%',
-              '> 80%',
-            ],
-            'Truncation': [
-              '< 20%',
-              '20% - 80%',
-              '> 80%',
-            ],
-          }))
+        .then(() => shortSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Ignore vehicle'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Art des Ignore',
+            'Gruppe'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Vehicle Type': [
+                'Car',
+                'Truck',
+                '2 wheeler vehicle',
+                'Bus',
+                'Misc vehicle',
+                'Ignore vehicle',
+              ],
+              'Art des Ignore': [
+                'Gruppe',
+                'Einzelperson',
+              ],
+              'Gruppengröße': [
+                'große Gruppe',
+                'kleine Gruppe',
+              ],
+              'Direction': [
+                'Right',
+                'Left',
+                'Front',
+                'Back',
+              ],
+              'Occlusion': [
+                '< 20%',
+                '20% - 80%',
+                '> 80%',
+              ],
+              'Truncation': [
+                '< 20%',
+                '20% - 80%',
+                '> 80%',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -633,50 +717,63 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Vehicle Type',
-          'Ignore vehicle'
-        ).click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Art des Ignore',
-          'Gruppe'
-        ).click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Vehicle Type',
-          'Truck'
-        ).click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Vehicle Type': [
-              'Car',
-              'Truck',
-              '2 wheeler vehicle',
-              'Bus',
-              'Misc vehicle',
-              'Ignore vehicle',
-            ],
-            'Direction': [
-              'Right',
-              'Left',
-              'Front',
-              'Back',
-            ],
-            'Occlusion': [
-              '< 20%',
-              '20% - 80%',
-              '> 80%',
-            ],
-            'Truncation': [
-              '< 20%',
-              '20% - 80%',
-              '> 80%',
-            ],
-          }))
+        .then(() => shortSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Ignore vehicle'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Art des Ignore',
+            'Gruppe'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Truck'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Vehicle Type': [
+                'Car',
+                'Truck',
+                '2 wheeler vehicle',
+                'Bus',
+                'Misc vehicle',
+                'Ignore vehicle',
+              ],
+              'Direction': [
+                'Right',
+                'Left',
+                'Front',
+                'Back',
+              ],
+              'Occlusion': [
+                '< 20%',
+                '20% - 80%',
+                '> 80%',
+              ],
+              'Truncation': [
+                '< 20%',
+                '20% - 80%',
+                '> 80%',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -689,12 +786,31 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Ignore vehicle').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Art des Ignore', 'Gruppe').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Vehicle Type', 'Truck').click())
+        .then(() => shortSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Ignore vehicle'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Art des Ignore',
+            'Gruppe'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Vehicle Type',
+            'Truck'
+          ).click()
+        )
+        .then(() => mediumSleep())
         .then(() => expect(assets.mocks.LabelSelector.Legacy.LabeledThingInFrame.putWithClassesTruck).toExistInPouchDb())
         .then(() => done());
     });
@@ -731,7 +847,6 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickPedestrian())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleTexts())
         .then(titleTexts => expect(titleTexts).toEqual(pedestrianLabelTitleTexts))
         .then(done);
@@ -746,19 +861,15 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(350))
         .then(() => labelSelectorHelper.getTitleTexts())
         .then(titleTexts => expect(titleTexts).toEqual(rectangleLabelTitleTexts))
         .then(() => clickPedestrian())
-        .then(() => browser.sleep(350))
         .then(() => labelSelectorHelper.getTitleTexts())
         .then(titleTexts => expect(titleTexts).toEqual(pedestrianLabelTitleTexts))
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(350))
         .then(() => labelSelectorHelper.getTitleTexts())
         .then(titleTexts => expect(titleTexts).toEqual(rectangleLabelTitleTexts))
         .then(() => clickPedestrian())
-        .then(() => browser.sleep(350))
         .then(() => labelSelectorHelper.getTitleTexts())
         .then(titleTexts => expect(titleTexts).toEqual(pedestrianLabelTitleTexts))
         .then(done);
@@ -775,11 +886,9 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickPedestrian())
-        .then(() => browser.sleep(250))
         .then(() => toolButton0.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => clickPedestrian()) // Switch back to pedestrian to check if values were kept
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleTexts())
         .then(titleTexts => expect(titleTexts).toEqual(pedestrianLabelTitleTexts))
         .then(done);
@@ -808,7 +917,6 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(1))
         .then(() => done());
     });
@@ -822,12 +930,15 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
-        .then(() => expect(
-          labelSelectorHelper.getTitleTexts()
-        ).toEqual([
-          'Sign type',
-        ]))
+        .then(
+          () => expect(
+            labelSelectorHelper.getTitleTexts()
+          ).toEqual(
+            [
+              'Sign type',
+            ]
+          )
+        )
         .then(() => done());
     });
 
@@ -840,16 +951,18 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Sign type': [
-              'U-Turn',
-              'Speed sign',
-            ],
-          }))
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Sign type': [
+                'U-Turn',
+                'Speed sign',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -862,7 +975,6 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleTwo())
-        .then(() => browser.sleep(250))
         .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(2))
         .then(() => done());
     });
@@ -876,13 +988,14 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleTwo())
-        .then(() => browser.sleep(250))
-        .then(() => expect(
-          labelSelectorHelper.getTitleTexts()
-        ).toEqual([
-          'Time',
-          'Rain level',
-        ]))
+        .then(
+          () => expect(
+            labelSelectorHelper.getTitleTexts()
+          ).toEqual([
+            'Time',
+            'Rain level',
+          ])
+        )
         .then(() => done());
     });
 
@@ -895,21 +1008,23 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleTwo())
-        .then(() => browser.sleep(250))
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Time': [
-              'Day',
-              'Night',
-            ],
-            'Rain level': [
-              'Low',
-              'Medium',
-              'High',
-            ],
-          }))
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Time': [
+                'Day',
+                'Night',
+              ],
+              'Rain level': [
+                'Low',
+                'Medium',
+                'High',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -922,27 +1037,26 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => clickRectangleTwo())
-        .then(() => browser.sleep(250))
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => clickRectangleTwo())
-        .then(() => browser.sleep(250))
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Time': [
-              'Day',
-              'Night',
-            ],
-            'Rain level': [
-              'Low',
-              'Medium',
-              'High',
-            ],
-          }))
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Time': [
+                'Day',
+                'Night',
+              ],
+              'Rain level': [
+                'Low',
+                'Medium',
+                'High',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -955,29 +1069,34 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleTwo())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Time': [
-              'Day',
-              'Night',
-            ],
-            'Street lights': [
-              'Neon lights',
-              'Halogen lights',
-              'Xenon lights',
-            ],
-            'Rain level': [
-              'Low',
-              'Medium',
-              'High',
-            ],
-          }))
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Time': [
+                'Day',
+                'Night',
+              ],
+              'Street lights': [
+                'Neon lights',
+                'Halogen lights',
+                'Xenon lights',
+              ],
+              'Rain level': [
+                'Low',
+                'Medium',
+                'High',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -990,37 +1109,45 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleTwo())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Street lights',
-          'Neon lights'
-        ).click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Time': [
-              'Day',
-              'Night',
-            ],
-            'Street lights': [
-              'Neon lights',
-              'Halogen lights',
-              'Xenon lights',
-            ],
-            'Lamp Color': [
-              'White',
-              'Orange',
-            ],
-            'Rain level': [
-              'Low',
-              'Medium',
-              'High',
-            ],
-          }))
+        .then(() => mediumSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Street lights',
+            'Neon lights'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Time': [
+                'Day',
+                'Night',
+              ],
+              'Street lights': [
+                'Neon lights',
+                'Halogen lights',
+                'Xenon lights',
+              ],
+              'Lamp Color': [
+                'White',
+                'Orange',
+              ],
+              'Rain level': [
+                'Low',
+                'Medium',
+                'High',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -1033,37 +1160,48 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleTwo())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Street lights',
-          'Neon lights'
-        ).click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Street lights',
-          'Xenon lights'
-        ).click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Time': [
-              'Day',
-              'Night',
-            ],
-            'Street lights': [
-              'Neon lights',
-              'Halogen lights',
-              'Xenon lights',
-            ],
-            'Rain level': [
-              'Low',
-              'Medium',
-              'High',
-            ],
-          }))
+        .then(() => mediumSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Street lights',
+            'Neon lights'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Street lights',
+            'Xenon lights'
+          ).click()
+        )
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Time': [
+                'Day',
+                'Night',
+              ],
+              'Street lights': [
+                'Neon lights',
+                'Halogen lights',
+                'Xenon lights',
+              ],
+              'Rain level': [
+                'Low',
+                'Medium',
+                'High',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -1076,29 +1214,38 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleTwo())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Street lights',
-          'Neon lights'
-        ).click())
+        .then(() => mediumSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Street lights',
+            'Neon lights'
+          ).click()
+        )
+        .then(() => mediumSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Day').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Time': [
-              'Day',
-              'Night',
-            ],
-            'Rain level': [
-              'Low',
-              'Medium',
-              'High',
-            ],
-          }))
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Time': [
+                'Day',
+                'Night',
+              ],
+              'Rain level': [
+                'Low',
+                'Medium',
+                'High',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -1111,16 +1258,21 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleTwo())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
-        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
-          'Street lights',
-          'Neon lights'
-        ).click())
+        .then(() => mediumSleep())
+        .then(
+          () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+            'Street lights',
+            'Neon lights'
+          ).click()
+        )
+        .then(() => mediumSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Day').click())
-        .then(() => browser.sleep(250))
+        .then(() => mediumSleep())
         .then(() => expect(assets.mocks.LabelSelector.RequirementsXml.LabeledThingInFrame.putRectangleTwoWithClassesDay).toExistInPouchDb())
         .then(() => done());
     });
@@ -1150,24 +1302,29 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value A').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Class A': [
-              'Value A',
-              'Value B',
-            ],
-            'Class Private A': [
-              'Value Private A',
-              'Value Private B',
-              'Value Private C',
-            ],
-          }))
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Class A': [
+                'Value A',
+                'Value B',
+              ],
+              'Class Private A': [
+                'Value Private A',
+                'Value Private B',
+                'Value Private C',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -1182,32 +1339,37 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Class A': [
-              'Value A',
-              'Value B',
-            ],
-            'Class B': [
-              'Value C',
-              'Value F',
-            ],
-            'Class D': [
-              'Value G',
-              'Value H',
-              'Value I',
-            ],
-            'Lamp Color': [
-              'White',
-              'Orange',
-            ],
-          }))
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Class A': [
+                'Value A',
+                'Value B',
+              ],
+              'Class B': [
+                'Value C',
+                'Value F',
+              ],
+              'Class D': [
+                'Value G',
+                'Value H',
+                'Value I',
+              ],
+              'Lamp Color': [
+                'White',
+                'Orange',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -1222,37 +1384,43 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
+        .then(() => mediumSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class B', 'Value F').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Class A': [
-              'Value A',
-              'Value B',
-            ],
-            'Class B': [
-              'Value C',
-              'Value F',
-            ],
-            'Class E': [
-              'Value J',
-              'Value K',
-            ],
-            'Class D': [
-              'Value G',
-              'Value H',
-              'Value I',
-            ],
-            'Lamp Color': [
-              'White',
-              'Orange',
-            ],
-          }))
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Class A': [
+                'Value A',
+                'Value B',
+              ],
+              'Class B': [
+                'Value C',
+                'Value F',
+              ],
+              'Class E': [
+                'Value J',
+                'Value K',
+              ],
+              'Class D': [
+                'Value G',
+                'Value H',
+                'Value I',
+              ],
+              'Lamp Color': [
+                'White',
+                'Orange',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -1267,38 +1435,45 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
+        .then(() => mediumSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class B', 'Value C').click())
+        .then(() => mediumSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class C', 'Value E').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Class A': [
-              'Value A',
-              'Value B',
-            ],
-            'Class B': [
-              'Value C',
-              'Value F',
-            ],
-            'Class C': [
-              'Value D',
-              'Value E',
-            ],
-            'Class D': [
-              'Value G',
-              'Value H',
-              'Value I',
-            ],
-            'Lamp Color': [
-              'White',
-              'Orange',
-            ],
-          }))
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Class A': [
+                'Value A',
+                'Value B',
+              ],
+              'Class B': [
+                'Value C',
+                'Value F',
+              ],
+              'Class C': [
+                'Value D',
+                'Value E',
+              ],
+              'Class D': [
+                'Value G',
+                'Value H',
+                'Value I',
+              ],
+              'Lamp Color': [
+                'White',
+                'Orange',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
 
@@ -1320,56 +1495,64 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Class A': [
-              'Value A',
-              'Value B',
-            ],
-            'Class B': [
-              'Value C',
-              'Value F',
-            ],
-            'Class D': [
-              'Value G',
-              'Value H',
-              'Value I',
-            ],
-            'Lamp Color': [
-              'White',
-              'Orange',
-            ],
-          }))
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Class A': [
+                'Value A',
+                'Value B',
+              ],
+              'Class B': [
+                'Value C',
+                'Value F',
+              ],
+              'Class D': [
+                'Value G',
+                'Value H',
+                'Value I',
+              ],
+              'Lamp Color': [
+                'White',
+                'Orange',
+              ],
+            }
+          )
+        )
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(250))
-        .then(() => expect(
-          labelSelectorHelper.getAllEntryTexts()
-        ).toEqual(
-          {
-            'Class A': [
-              'Value A',
-              'Value B',
-            ],
-            'Class B': [
-              'Value C',
-              'Value F',
-            ],
-            'Class D': [
-              'Value G',
-              'Value H',
-              'Value I',
-            ],
-            'Lamp Color': [
-              'White',
-              'Orange',
-            ],
-          }))
+        .then(() => mediumSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllEntryTexts()
+          ).toEqual(
+            {
+              'Class A': [
+                'Value A',
+                'Value B',
+              ],
+              'Class B': [
+                'Value C',
+                'Value F',
+              ],
+              'Class D': [
+                'Value G',
+                'Value H',
+                'Value I',
+              ],
+              'Lamp Color': [
+                'White',
+                'Orange',
+              ],
+            }
+          )
+        )
         .then(() => done());
     });
   });
@@ -1394,23 +1577,28 @@ describe('LabelSelector (right sidebar)', () => {
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
+        .then(() => mediumSleep())
         .then(() => selectedOnlyButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => {
           expect(labelSelectorHelper.getNumberOfPanes()).toBe(4);
-          expect(labelSelectorHelper.getAllOpenStates()).toEqual({
-            'Class A': true,
-            'Class B': true,
-            'Class D': true,
-            'Lamp Color': true,
-          });
-          expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Class A')).toEqual({
-            'Value B': true,
-            'Value A': false,
-          });
+          expect(labelSelectorHelper.getAllOpenStates()).toEqual(
+            {
+              'Class A': true,
+              'Class B': true,
+              'Class D': true,
+              'Lamp Color': true,
+            }
+          );
+          expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Class A')).toEqual(
+            {
+              'Value B': true,
+              'Value A': false,
+            }
+          );
         })
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B'))
         .then(element => expect(element.isDisplayed()).toBe(true))
@@ -1437,14 +1625,16 @@ describe('LabelSelector (right sidebar)', () => {
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
+        .then(() => mediumSleep())
         .then(() => selectedOnlyButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => listViewButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B'))
         .then(element => expect(element.isDisplayed()).toBe(true))
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value A'))
@@ -1486,7 +1676,6 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickPedestrian())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getLabelSelectorTitleText())
         .then(titleTexts => expect(titleTexts).toEqual(pedestrianName))
         .then(done);
@@ -1501,7 +1690,6 @@ describe('LabelSelector (right sidebar)', () => {
         }
       )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(250))
         .then(() => labelSelectorHelper.getLabelSelectorTitleText())
         .then(titleTexts => expect(titleTexts).toEqual(rectangleName))
         .then(done);

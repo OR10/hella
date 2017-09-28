@@ -113,13 +113,7 @@ export function initApplication(url, testConfig = defaultTestConfig) {
   const customBootstrap = getPouchDbCustomBootstrap(mocks.pouch);
   const extendedBrowser = new ExtendedBrowser(browser);
   return extendedBrowser.getWithCustomBootstrap(builder.url(url), undefined, customBootstrap)
-    .then(() => waitForApplicationReady())
-    .then(() => {
-      const viewer = element(by.css('.layer-container'));
-      return browser.actions()
-        .mouseMove(viewer, {x: 150, y: 150}) // Move mouse into viewer
-        .perform();
-    });
+    .then(() => waitForApplicationReady());
 }
 
 export function expectAllModalsToBeClosed() {
@@ -155,25 +149,49 @@ export function hasClassByElementFinder(elementFinder, className) {
   );
 }
 
-export function sendKey(key) {
+function _sendKey(key) {
   return browser.actions().sendKeys(key).perform();
 }
 
-export function sendKeySequences(keySequences) {
-  let promises = [];
-
-  keySequences.forEach(keySequence => {
-    if (typeof keySequence === 'string') {
-      const keys = keySequence.split('');
-      keys.forEach(key => {
-        promises.push(sendKey(key));
-      });
+export function sendKeys(keysOrSequences) {
+  let keys;
+  if (!Array.isArray(keysOrSequences)) {
+    if (typeof keysOrSequences === 'string' && keysOrSequences.length > 1) {
+      keys = keysOrSequences.split('');
     } else {
-      promises.push(sendKey(keySequence));
+      keys = [keysOrSequences];
     }
-  });
+  } else {
+    keys = keysOrSequences;
+  }
 
-  promises.push(browser.sleep(250));
-
-  return Promise.all(promises);
+  return keys.reduce(
+    (carry, key) => {
+      let nextCarry;
+      if (typeof key === 'string' && key.length > 1) {
+        nextCarry = carry.then(() => sendKeys(key));
+      } else {
+        nextCarry = carry.then(() => _sendKey(key));
+      }
+      return nextCarry;
+    },
+    Promise.resolve()
+  );
 }
+
+export function shortSleep() {
+  return browser.sleep(300);
+}
+
+export function mediumSleep() {
+  return browser.sleep(800);
+}
+
+export function longSleep() {
+  return browser.sleep(1800);
+}
+
+export function comaLikeSleep() {
+  return browser.sleep(3000);
+}
+

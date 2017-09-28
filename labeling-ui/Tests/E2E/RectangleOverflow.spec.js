@@ -1,5 +1,11 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
+  mediumSleep,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -51,7 +57,10 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TopLeftOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -59,10 +68,7 @@ describe('Rectangle viewer overflow', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftOverflow);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.Overflow).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should allow overflowing of a rectangle in the bottom-right corner', done => {
@@ -83,7 +89,10 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'BottomRightOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -91,10 +100,7 @@ describe('Rectangle viewer overflow', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightOverflow);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.Overflow).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should restrict overflowing of a rectangle in the top left corner', done => {
@@ -115,7 +121,10 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TopLeftNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -123,10 +132,7 @@ describe('Rectangle viewer overflow', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TopLeftNoOverflow);
       })
-      .then(() => {
-        expect(assets.mocks.RectangleOverflow.TopLeft.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should restrict overflowing of a rectangle in the bottom right corner', done => {
@@ -147,16 +153,19 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
+
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'BottomRightNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.BottomRightNoOverflow);
-        expect(assets.mocks.RectangleOverflow.BottomRight.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should should correctly enforce shape overflows (bottom) (TTANNO-1324)', done => {
@@ -177,16 +186,18 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'WideBottomNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.WideBottomNoOverflow);
-        expect(assets.mocks.RectangleOverflow.WideBottom.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should should correctly enforce shape overflows (top) (TTANNO-1324)', done => {
@@ -207,16 +218,18 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'WideTopNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.WideTopNoOverflow);
-        expect(assets.mocks.RectangleOverflow.WideTop.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should should correctly enforce shape overflows (left) (TTANNO-1324)', done => {
@@ -237,16 +250,18 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TallLeftNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TallLeftNoOverflow);
-        expect(assets.mocks.RectangleOverflow.TallLeft.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should should correctly enforce shape overflows (right) (TTANNO-1324)', done => {
@@ -267,16 +282,18 @@ describe('Rectangle viewer overflow', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('RectangleOverflow', 'TallRightNoOverflow')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleOverflow.TallRightNoOverflow);
-        expect(assets.mocks.RectangleOverflow.TallRight.LabeledThingInFrame.NoOverflow).toExistInPouchDb();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   afterEach(() => {

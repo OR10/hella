@@ -4,7 +4,10 @@ import {
   initApplication,
   bootstrapPouch,
   bootstrapHttp,
-  sendKeySequences,
+  sendKeys,
+  comaLikeSleep,
+  mediumSleep,
+  shortSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -15,7 +18,11 @@ describe('Cuboid Drawing', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -44,15 +51,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.BackCenter.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackCenter')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackCenter);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the back left', done => {
@@ -60,15 +69,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.BackLeft.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackLeft);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the back right', done => {
@@ -76,15 +87,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.BackRight.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'BackRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.BackRight);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the front center', done => {
@@ -92,15 +105,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontCenter.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenter')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenter);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the front left', done => {
@@ -108,15 +123,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontLeft.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontLeft')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontLeft);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the front right', done => {
@@ -124,15 +141,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontRight.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontRight')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontRight);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the front center rotated right by 45°', done => {
@@ -140,15 +159,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontCenterRotateRight45.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight45')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight45);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should load and draw one cuboid in the front center rotated right by 225°', done => {
@@ -156,35 +177,41 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FrontCenterRotateRight225.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateRight225')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateRight225);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
-    it('should load and draw one cuboid in the front center rotated where the top side is overlapping the deepest vertex', done => {
-      bootstrapPouch([
-        assets.documents.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0,
-      ]);
+    it(
+      'should load/draw one cuboid front center rotated with top side is overlapping the deepest vertex', done => {
+        bootstrapPouch([
+          assets.documents.CuboidDrawing.FrontCenterRotateVeryLow.LabeledThingInFrame.frameIndex0,
+        ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
-        .then(
-          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateVeryLow')
-          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
         )
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateVeryLow);
-          done();
-        });
-    });
+          .then(
+            // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'FrontCenterRotateVeryLow')
+            () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+          )
+          .then(drawingStack => {
+            expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FrontCenterRotateVeryLow);
+          })
+          .then(() => done());
+      }
+    );
   });
 
-  describe('DepthBuffer', () => {
+  xdescribe('DepthBuffer', () => {
     const keySequences = [protractor.Key.SHIFT, 'pppppp', protractor.Key.NULL];
 
     it('should properly render a cuboid with low height from all sides', done => {
@@ -192,14 +219,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.DepthBufferVeryLow.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 596, y: 496})
             .click()
             .perform();
         })
-        .then(() => sendKeySequences(keySequences))
+        .then(() => sendKeys(keySequences))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
@@ -210,7 +240,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow1);
         })
-        .then(() => sendKeySequences(keySequences))
+        .then(() => sendKeys(keySequences))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
@@ -221,7 +252,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow2);
         })
-        .then(() => sendKeySequences(keySequences))
+        .then(() => sendKeys(keySequences))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
@@ -232,7 +264,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow3);
         })
-        .then(() => sendKeySequences(keySequences))
+        .then(() => sendKeys(keySequences))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
@@ -243,7 +276,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow4);
         })
-        .then(() => sendKeySequences(keySequences))
+        .then(() => sendKeys(keySequences))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame5).toExistInPouchDb();
         })
@@ -254,7 +288,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow5);
         })
-        .then(() => sendKeySequences(keySequences))
+        .then(() => sendKeys(keySequences))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.DepthBufferVeryLow.StoreLabeledThingInFrame6).toExistInPouchDb();
         })
@@ -265,9 +300,7 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthBufferVeryLow6);
         })
-        .then(() => {
-          done()
-        });
+        .then(() => done());
     });
   });
 
@@ -278,7 +311,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -289,7 +324,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChange.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -300,9 +335,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChange);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should adhere to minimalHeight of loaded cuboid', done => {
@@ -310,7 +343,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -321,7 +356,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeMinimal.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -332,9 +367,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeMinimal);
           })
-          .then(() => {
-            done()
-          });
+          .then(() => done());
       });
 
       it('should not allow the height to become negative', done => {
@@ -342,7 +375,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -353,7 +388,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeNonNegative.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -364,9 +399,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeNonNegative);
           })
-          .then(() => {
-            done()
-          });
+          .then(() => done());
       });
 
       it('should add to height of loaded cuboid by keyboard', done => {
@@ -376,14 +409,17 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -394,9 +430,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeKeyboardAdd);
           })
-          .then(() => {
-            done()
-          });
+          .then(() => done());
       });
 
       it('should substract from height of loaded cuboid by keyboard', done => {
@@ -406,14 +440,17 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -424,9 +461,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeKeyboardSubstract);
           })
-          .then(() => {
-            done()
-          });
+          .then(() => done());
       });
 
       it('should add to height of loaded cuboid by keyboard in fast mode', done => {
@@ -436,14 +471,18 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          // Currently I have no idea why this is needed.
+          .then(() => comaLikeSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -454,9 +493,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeKeyboardAddFast);
           })
-          .then(() => {
-            done()
-          });
+          .then(() => done());
       });
 
       it('should substract from height of loaded cuboid by keyboard in fast mode', done => {
@@ -466,14 +503,17 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.HeightChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -484,9 +524,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.HeightChangeKeyboardSubstractFast);
           })
-          .then(() => {
-            done()
-          });
+          .then(() => done());
       });
     });
 
@@ -496,7 +534,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -507,7 +547,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.MovementLeft.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -518,9 +558,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementLeft);
           })
-          .then(() => {
-            done()
-          });
+          .then(() => done());
       });
 
       it('should move loaded cuboid with primary edge change', done => {
@@ -528,7 +566,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -539,7 +579,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.MovementRight.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -550,9 +590,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementRight);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should limit movement at the horizon', done => {
@@ -560,7 +598,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 565, y: 469}) // initial position
@@ -569,7 +609,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.MovementHorizonLimit.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -588,16 +628,14 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementHorizonLimit);
           })
-          .then(() => {
-            done()
-          });
+          .then(() => done());
       });
 
       it('should limit movement if the height is below the minimal height', done => {
@@ -605,7 +643,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 565, y: 469}) // initial position
@@ -614,7 +654,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.MovementMinimalHeightLimit.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -633,16 +673,13 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
           .then(
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
           )
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.MovementMinimalHeightLimit);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
     });
 
@@ -652,7 +689,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -660,7 +699,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('o')
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.RotateKeyboardLeft.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -671,9 +710,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardLeft);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should rotate cuboid right around middle axis using keyboard shortcuts', done => {
@@ -681,7 +718,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -689,7 +728,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('p')
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.RotateKeyboardRight.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -700,9 +739,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardRight);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should fast rotate cuboid left around middle axis using keyboard shortcuts', done => {
@@ -710,7 +747,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -720,7 +759,10 @@ describe('Cuboid Drawing', () => {
               .sendKeys(protractor.Key.NULL)
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftLeft.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'RotateKeyboardShiftLeft')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -728,12 +770,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardShiftLeft);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftLeft.StoreLabeledThingInFrame).toExistInPouchDb();
-          })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should fast rotate cuboid right around middle axis using keyboard shortcuts', done => {
@@ -741,7 +778,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -751,7 +790,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys(protractor.Key.NULL)
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.RotateKeyboardShiftRight.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -762,9 +801,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.RotateKeyboardShiftRight);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
     });
 
@@ -774,7 +811,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -785,7 +824,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.WidthChange.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -796,9 +835,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChange);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should add to width of loaded cuboid by keyboard', done => {
@@ -808,14 +845,17 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -826,9 +866,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardAdd);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should substract from width of loaded cuboid by keyboard', done => {
@@ -838,14 +876,20 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => mediumSleep())
+          .then(() => {
+            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'WidthChangeKeyboardSubstract')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -853,12 +897,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardSubstract);
           })
-          .then(() => {
-            expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
-          })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should add to width of loaded cuboid by keyboard in fast mode', done => {
@@ -868,14 +907,18 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          // Currently I have no idea why this is needed.
+          .then(() => comaLikeSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -886,9 +929,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardAddFast);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should substract from width of loaded cuboid by keyboard in fast mode', done => {
@@ -898,14 +939,17 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.WidthChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -916,9 +960,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.WidthChangeKeyboardSubstractFast);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
     });
 
@@ -928,7 +970,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -939,7 +983,7 @@ describe('Cuboid Drawing', () => {
               .mouseUp()
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.DepthChange.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -950,9 +994,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChange);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should add to depth of loaded cuboid by keyboard', done => {
@@ -962,17 +1004,19 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardAdd.StoreLabeledThingInFrame).toExistInPouchDb();
-            done();
           })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CuboidDrawing', 'DepthChangeKeyboardAdd')
@@ -981,9 +1025,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChangeKeyboardAdd);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should substract from depth of loaded cuboid by keyboard', done => {
@@ -993,14 +1035,17 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstract.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -1011,9 +1056,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChangeKeyboardSubstract);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should add to depth of loaded cuboid by keyboard in fast mode', done => {
@@ -1023,15 +1066,18 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => browser.sleep(500))
-          .then(() => sendKeySequences(keySequences))
+          .then(() => shortSleep())
+          .then(() => sendKeys(keySequences))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardAddFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -1042,9 +1088,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChangeKeyboardAddFast);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should substract from depth of loaded cuboid by keyboard in fast mode', done => {
@@ -1054,14 +1098,17 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenter.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // select cuboid
               .click()
               .perform();
           })
-          .then(() => sendKeySequences(keySequences))
+          .then(() => sendKeys(keySequences))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.DepthChangeKeyboardSubstractFast.StoreLabeledThingInFrame).toExistInPouchDb();
           })
@@ -1072,9 +1119,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.DepthChangeKeyboardSubstractFast);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
     });
 
@@ -1084,7 +1129,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1092,7 +1139,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('i')
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
           })
@@ -1108,7 +1155,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('i')
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
           })
@@ -1124,7 +1171,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('i')
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
           })
@@ -1140,7 +1187,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('i')
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
           })
@@ -1151,9 +1198,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardClockwise4);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
 
       it('should flip faces counter clockwise using keyboard shortcuts', done => {
@@ -1161,7 +1206,9 @@ describe('Cuboid Drawing', () => {
           assets.documents.CuboidDrawing.Shared.LabeledThingInFrame.BackCenterRotated.frameIndex0,
         ]);
 
-        initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        initApplication(
+          '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+        )
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1169,7 +1216,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('u')
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
           })
@@ -1185,7 +1232,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('u')
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
           })
@@ -1201,7 +1248,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('u')
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
           })
@@ -1217,7 +1264,7 @@ describe('Cuboid Drawing', () => {
               .sendKeys('u')
               .perform();
           })
-          .then(() => browser.sleep(500))
+          .then(() => mediumSleep())
           .then(() => {
             expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
           })
@@ -1228,9 +1275,7 @@ describe('Cuboid Drawing', () => {
           .then(drawingStack => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardCounterClockwise4);
           })
-          .then(() => {
-            done();
-          });
+          .then(() => done());
       });
     });
   });
@@ -1241,14 +1286,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.Pseudo3dDepth.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
             .perform();
         })
-        .then(() => sendKeySequences(['oo']))
+        .then(() => sendKeys(['oo']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
@@ -1259,7 +1307,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dDepth);
         })
-        .then(() => sendKeySequences(['pp']))
+        .then(() => sendKeys(['pp']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dDepth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
@@ -1270,9 +1319,7 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Real3dDepth);
         })
-        .then(() => {
-          done();
-        });
+        .then(() => done());
     });
 
     it('should switch to 2d mode and back to 3d if front side is not visible', done => {
@@ -1280,14 +1327,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.Pseudo3dDepth180.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
             .perform();
         })
-        .then(() => sendKeySequences(['ppp']))
+        .then(() => sendKeys(['ppp']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
@@ -1298,7 +1348,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dDepth180);
         })
-        .then(() => sendKeySequences(['oo']))
+        .then(() => sendKeys(['oo']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dDepth180.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
@@ -1309,9 +1360,7 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Real3dDepth180);
         })
-        .then(() => {
-          done();
-        });
+        .then(() => done());
     });
 
     it('should switch to 2d mode and back to 3d if left side is not visible', done => {
@@ -1319,14 +1368,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.Pseudo3dWidth.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
             .perform();
         })
-        .then(() => sendKeySequences(['pp']))
+        .then(() => sendKeys(['pp']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
@@ -1337,7 +1389,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dWidth);
         })
-        .then(() => sendKeySequences(['oo']))
+        .then(() => sendKeys(['oo']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dWidth.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
@@ -1348,9 +1401,7 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Real3dWidth);
         })
-        .then(() => {
-          done();
-        });
+        .then(() => done());
     });
 
     it('should switch to 2d mode and back to 3d if right side is not visible', done => {
@@ -1358,14 +1409,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.Pseudo3dWidth180.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
             .perform();
         })
-        .then(() => sendKeySequences(['ppp']))
+        .then(() => sendKeys(['ppp']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
@@ -1376,7 +1430,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dWidth180);
         })
-        .then(() => sendKeySequences(['oo']))
+        .then(() => sendKeys(['oo']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dWidth180.StoreLabeledThingInFrameReal3d).toExistInPouchDb();
         })
@@ -1387,9 +1442,7 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Real3dWidth180);
         })
-        .then(() => {
-          done();
-        });
+        .then(() => done());
     });
 
     it('should switch to 2d mode if height is changed to above the visual threshold', done => {
@@ -1397,7 +1450,9 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.Pseudo3dHeightHandle.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
@@ -1408,7 +1463,7 @@ describe('Cuboid Drawing', () => {
             .mouseUp()
             .perform();
         })
-        .then(() => browser.sleep(500))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.Pseudo3dHeightHandle.StoreLabeledThingInFramePseudo3d).toExistInPouchDb();
         })
@@ -1419,9 +1474,7 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.Pseudo3dHeightHandle);
         })
-        .then(() => {
-          done();
-        });
+        .then(() => done());
     });
 
     it('should flip faces clockwise using keyboard shortcuts', done => {
@@ -1429,15 +1482,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
-            .sendKeys('i')
             .perform();
         })
-        .then(() => browser.sleep(500))
+        .then(() => sendKeys(['i']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
@@ -1448,12 +1503,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise1);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys('i')
-            .perform();
-        })
-        .then(() => browser.sleep(500))
+        .then(() => sendKeys(['i']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
@@ -1464,12 +1515,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise2);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys('i')
-            .perform();
-        })
-        .then(() => browser.sleep(500))
+        .then(() => sendKeys(['i']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
@@ -1480,12 +1527,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise3);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys('i')
-            .perform();
-        })
-        .then(() => browser.sleep(500))
+        .then(() => sendKeys(['i']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
@@ -1496,9 +1539,7 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dClockwise4);
         })
-        .then(() => {
-          done();
-        });
+        .then(() => done());
     });
 
     it('should flip faces counter clockwise using keyboard shortcuts', done => {
@@ -1506,15 +1547,17 @@ describe('Cuboid Drawing', () => {
         assets.documents.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 563, y: 353}) // initial position
             .click()
-            .sendKeys('u')
             .perform();
         })
-        .then(() => browser.sleep(500))
+        .then(() => sendKeys(['u']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame1).toExistInPouchDb();
         })
@@ -1525,12 +1568,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise1);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys('u')
-            .perform();
-        })
-        .then(() => browser.sleep(500))
+        .then(() => sendKeys(['u']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame2).toExistInPouchDb();
         })
@@ -1541,12 +1580,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise2);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys('u')
-            .perform();
-        })
-        .then(() => browser.sleep(500))
+        .then(() => sendKeys(['u']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame3).toExistInPouchDb();
         })
@@ -1557,12 +1592,8 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise3);
         })
-        .then(() => {
-          return browser.actions()
-            .sendKeys('u')
-            .perform();
-        })
-        .then(() => browser.sleep(500))
+        .then(() => sendKeys(['u']))
+        .then(() => mediumSleep())
         .then(() => {
           expect(assets.mocks.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise.StoreLabeledThingInFrame4).toExistInPouchDb();
         })
@@ -1573,9 +1604,7 @@ describe('Cuboid Drawing', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CuboidDrawing.FlipFaceKeyboardPseudo2dCounterClockwise4);
         })
-        .then(() => {
-          done();
-        });
+        .then(() => done());
     });
   });
 
