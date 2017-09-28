@@ -67,7 +67,7 @@ describe('ThumbnailReelController tests', () => {
       applicationState,
       lockService,
       frameIndexService,      // frameIndexService
-      null                    // labeledThingGroupService
+      null,                   // labeledThingGroupService
     );
   }
 
@@ -130,7 +130,7 @@ describe('ThumbnailReelController tests', () => {
       frameLocationGateway.getFrameLocations.and.returnValue(frameLocationGatewayPromise);
     }
 
-    it('sends the framerange:change:after event if the framerange of a LT narrowed and start-bracket class is set', () => {
+    it('sends the action:change-start-frame-index event if the framerange of a LT narrowed and start-bracket class is set', () => {
       const dragObject = { draggable: { hasClass: () => true } };
       const reel = createController();
       setupReel(reel);
@@ -138,10 +138,10 @@ describe('ThumbnailReelController tests', () => {
       reel.handleDrop({}, dragObject, index);
       scope.$apply();
 
-      expect(rootScope.$emit).toHaveBeenCalledWith('framerange:change:after');
+      expect(rootScope.$emit).toHaveBeenCalledWith('action:change-start-frame-index', {requiredImageTypes: ['thumbnail']}, reel.selectedPaperShape, 2);
     });
 
-    it('sends the framerange:change:after event if the framerange of a LT narrowed but start-bracket class is not set', () => {
+    it('sends the action:change-end-frame-index event if the framerange of a LT narrowed but start-bracket class is not set', () => {
       const dragObject = { draggable: { hasClass: () => false } };
       const reel = createController();
       setupReel(reel);
@@ -149,7 +149,7 @@ describe('ThumbnailReelController tests', () => {
       reel.handleDrop({}, dragObject, index);
       scope.$apply();
 
-      expect(rootScope.$emit).toHaveBeenCalledWith('framerange:change:after');
+      expect(rootScope.$emit).toHaveBeenCalledWith('action:change-end-frame-index', {requiredImageTypes: ['thumbnail']}, reel.selectedPaperShape, 2);
     });
   });
 });

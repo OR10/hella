@@ -1,0 +1,94 @@
+[
+  {
+    "_id": "2d60acc62c0a43e18448442dd4fe4c88",
+    "classes": [
+      "pedestrian"
+    ],
+    "createdAt": "2017-09-22 18:55:24.000000",
+    "frameRange": {
+      "endFrameIndex": 0,
+      "startFrameIndex": 0,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "groupIds": [],
+    "incomplete": true,
+    "lastModifiedAt": "2017-09-22 18:55:25.000000",
+    "lineColor": "1",
+    "projectId": "PROJECTID-PROJECTID",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThing"
+  },
+  {
+    "_id": "2e45a728b4374ece8b8fdd6f82694370",
+    "classes": [],
+    "createdAt": "2017-09-22 18:55:25.000000",
+    "frameIndex": 0,
+    "identifierName": "legacy",
+    "incomplete": true,
+    "labeledThingId": "bf75cee703bd47e0a2360fee45b3a6cd",
+    "lastModifiedAt": "2017-09-22 18:55:25.000000",
+    "projectId": "PROJECTID-PROJECTID",
+    "shapes": [
+      {
+        "bottomRight": {
+          "x": 350,
+          "y": 450
+        },
+        "id": "adb7416268494e2fa25a568d0dc5b500",
+        "topLeft": {
+          "x": 250,
+          "y": 250
+        },
+        "type": "rectangle"
+      }
+    ],
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "_id": "a91360849de542178f6fab9b3e75a42a",
+    "classes": [],
+    "createdAt": "2017-09-22 18:55:25.000000",
+    "frameIndex": 0,
+    "identifierName": "legacy",
+    "incomplete": true,
+    "labeledThingId": "2d60acc62c0a43e18448442dd4fe4c88",
+    "lastModifiedAt": "2017-09-22 18:55:25.000000",
+    "projectId": "PROJECTID-PROJECTID",
+    "shapes": [
+      {
+        "bottomRight": {
+          "x": 200,
+          "y": 200
+        },
+        "id": "a30dcde076f34dd3bc5c0e0cfd832783",
+        "topLeft": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "rectangle"
+      }
+    ],
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "_id": "bf75cee703bd47e0a2360fee45b3a6cd",
+    "classes": [
+      "pedestrian"
+    ],
+    "createdAt": "2017-09-22 18:55:25.000000",
+    "frameRange": {
+      "endFrameIndex": 0,
+      "startFrameIndex": 0,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "groupIds": [],
+    "incomplete": true,
+    "lastModifiedAt": "2017-09-22 18:55:25.000000",
+    "lineColor": "2",
+    "projectId": "PROJECTID-PROJECTID",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThing"
+  }
+]

@@ -28,6 +28,14 @@
             </button>
         </div>
         <div class="grid-content noscroll">
+            <badge ng-click="vm.toggleShapeInbox()" label="vm.selectedItemsCount"></badge>
+            <button ng-click="vm.toggleShapeInbox()"
+                    tooltip="Open shape inbox">
+                <i class="icon fa fa-inbox"
+                   ng-class="{'toggled': vm.popupPanelOpen && vm.popupPanelState === 'inbox'}"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
             <button ng-click="vm.handleZoomClicked()"
                     tooltip="Open zoom controls">
                 <i class="icon icon-view-zoom"
@@ -47,7 +55,7 @@
                 <i class="icon icon-selection-gostart"></i>
             </button>
         </div>
-        <div class="grid-content noscroll"
+        <div class="grid-content noscroll open-bracket-button"
              ng-hide="vm.readOnly"
         >
             <button ng-show="vm.showOpenCloseBrackets()"
@@ -100,7 +108,7 @@
                 <i class="icon icon-control-forwards"></i>
             </button>
         </div>
-        <div class="grid-content noscroll"
+        <div class="grid-content noscroll close-bracket-button"
              ng-hide="vm.readOnly"
         >
             <button ng-show="vm.showOpenCloseBrackets()"

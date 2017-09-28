@@ -1,7 +1,7 @@
 {
   "_id": "{{:labeledThingGroupId}}",
   "groupIds": [],
-  "groupType": "back-lights",
+  "identifierName": "back-lights",
   "lineColor": "2",
   "type": "AnnoStationBundle.Model.LabeledThingGroup",
   "projectId": "{{:--project-id}}",

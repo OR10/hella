@@ -51,10 +51,16 @@ class CurrentUser extends Controller\Base
      * @var AnnoStationBundleFacade\Organisation
      */
     private $organisation;
+
     /**
      * @var Validation\ValidationService
      */
     private $validationService;
+
+    /**
+     * @var Service\UserRolesRebuilder
+     */
+    private $userRolesRebuilderService;
 
     /**
      * CurrentUser constructor.
@@ -65,6 +71,7 @@ class CurrentUser extends Controller\Base
      * @param AnnoStationBundleFacade\Organisation $organisation
      * @param Authentication\UserPermissions       $currentUserPermissions
      * @param Validation\ValidationService         $validationService
+     * @param Service\UserRolesRebuilder           $userRolesRebuilderService
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
@@ -72,14 +79,16 @@ class CurrentUser extends Controller\Base
         Facade\User $userFacade,
         AnnoStationBundleFacade\Organisation $organisation,
         Authentication\UserPermissions $currentUserPermissions,
-        Validation\ValidationService $validationService
+        Validation\ValidationService $validationService,
+        Service\UserRolesRebuilder $userRolesRebuilderService
     ) {
-        $this->tokenStorage           = $tokenStorage;
-        $this->userFacade             = $userFacade;
-        $this->encoderFactory         = $encoderFactory;
-        $this->currentUserPermissions = $currentUserPermissions;
-        $this->organisation           = $organisation;
-        $this->validationService      = $validationService;
+        $this->tokenStorage              = $tokenStorage;
+        $this->userFacade                = $userFacade;
+        $this->encoderFactory            = $encoderFactory;
+        $this->currentUserPermissions    = $currentUserPermissions;
+        $this->organisation              = $organisation;
+        $this->validationService         = $validationService;
+        $this->userRolesRebuilderService = $userRolesRebuilderService;
     }
 
     /**
@@ -177,6 +186,7 @@ class CurrentUser extends Controller\Base
         }
 
         $this->userFacade->updateUser($user);
+        $this->userRolesRebuilderService->rebuildForUser($user);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
