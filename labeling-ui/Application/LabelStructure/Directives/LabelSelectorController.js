@@ -423,7 +423,6 @@ export default class LabelSelectorController {
           .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
       case selectedLabeledObject instanceof LabeledThingGroupInFrame:
-        console.warn('store ltgif', selectedLabeledObject.classes);
         this._storeUpdatedLabeledThingGroupInFrame(selectedLabeledObject)
           .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
