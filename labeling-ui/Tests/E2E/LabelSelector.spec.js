@@ -105,37 +105,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => done());
     });
 
-    it('should have no panes if a group is selected', done => {
-      const groupButton = element(by.css('button.tool-group.tool-0'));
-
-      bootstrapHttp(sharedMocks.concat([
-        assets.mocks.LabelSelector.BasicBehaviour.Groups.Task,
-        assets.mocks.LabelSelector.BasicBehaviour.Groups.TaskConfiguration,
-        assets.mocks.LabelSelector.BasicBehaviour.Groups.TaskConfigurationFile,
-      ]));
-
-      initApplication(
-        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
-        {
-          viewerWidth: 1104,
-          viewerHeight: 620,
-        }
-      )
-        .then(() => groupButton.click())
-        .then(() => shortSleep())
-        .then(() => {
-          return browser.actions()
-            .mouseMove(viewer, {x: 1, y: 1}) // initial position
-            .mouseDown()
-            .mouseMove(viewer, {x: 500, y: 500}) // drag
-            .mouseUp()
-            .perform();
-        })
-        .then(() => mediumSleep())
-        .then(() => expect(labelSelectorHelper.getNumberOfPanes()).toBe(0))
-        .then(() => done());
-    });
-
     it('should have panes if first a group then another shape is selected', done => {
       const groupButton = element(by.css('button.tool-group.tool-0'));
 
