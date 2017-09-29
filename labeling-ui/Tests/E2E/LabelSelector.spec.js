@@ -1750,6 +1750,331 @@ describe('LabelSelector (right sidebar)', () => {
     });
   });
 
+  describe('Group Attributes', () => {
+    function clickGroupWithAttributes() {
+      return Promise.resolve()
+        .then(
+          () => browser.actions()
+            .mouseMove(viewer, {x: 98, y: 98})
+            .click()
+            .perform()
+        )
+        .then(() => mediumSleep());
+    }
+
+    function clickGroupWithoutAttributes() {
+      return Promise.resolve()
+        .then(
+          () => browser.actions()
+            .mouseMove(viewer, {x: 400, y: 313})
+            .click()
+            .perform()
+        )
+        .then(() => mediumSleep());
+    }
+
+    beforeEach(() => {
+      bootstrapHttp(sharedMocks.concat([
+        assets.mocks.LabelSelector.GroupAttributes.Task,
+        assets.mocks.LabelSelector.GroupAttributes.TaskConfiguration,
+        assets.mocks.LabelSelector.GroupAttributes.RequirementsXmlFile,
+      ]));
+
+      bootstrapPouch([
+        assets.documents.LabelSelector.GroupAttributes.LabeledThingGroup.GroupOne,
+        assets.documents.LabelSelector.GroupAttributes.LabeledThingGroup.GroupTwo,
+        assets.documents.LabelSelector.GroupAttributes.LabeledThingGroup.GroupThree,
+        assets.documents.LabelSelector.GroupAttributes.LabeledThing.ThingOneAndTwo,
+        assets.documents.LabelSelector.GroupAttributes.LabeledThingInFrame.frameIndex0,
+        assets.documents.LabelSelector.GroupAttributes.LabeledThingInFrame.frameIndex1,
+      ]);
+    });
+
+    it('should show empty attribute selector for group without attributes', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickGroupWithoutAttributes())
+        .then(() => labelSelectorHelper.getNumberOfPanes())
+        .then(numberOfPanes => expect(numberOfPanes).toEqual(0))
+        .then(done);
+    });
+
+    it('should show attribute selector with correct number of panes for group with attributes', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickGroupWithAttributes())
+        .then(() => labelSelectorHelper.getNumberOfPanes())
+        .then(numberOfPanes => expect(numberOfPanes).toEqual(5))
+        .then(done);
+    });
+
+    it('should show attribute selector with correct pane titles', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickGroupWithAttributes())
+        .then(() => labelSelectorHelper.getTitleTexts())
+        .then(
+          titles => expect(titles).toEqual([
+            'Distance',
+            'Target',
+            'Tank Fill Level',
+            'Cigarette Fill Level',
+            'Darkness',
+          ])
+        )
+        .then(done);
+    });
+
+    it('should show attribute selector with correct attribute content', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickGroupWithAttributes())
+        .then(() => labelSelectorHelper.getAllEntryTexts())
+        .then(
+          entries => expect(entries).toEqual({
+            'Distance': [
+              '106 Kilometers',
+              '423 Kilometers',
+            ],
+            'Target': [
+              'Chicago',
+              'Miami',
+            ],
+            'Tank Fill Level': [
+              'Full',
+              'Empty',
+            ],
+            'Cigarette Fill Level': [
+              'Full',
+              'Half a Pack',
+            ],
+            'Darkness': [
+              'yes',
+              'no',
+            ],
+          })
+        )
+        .then(done);
+    });
+
+    it('should store selected attributes with a corresponding ltgif', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickGroupWithAttributes())
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Target', 'Chicago').click())
+        .then(() => mediumSleep())
+        .then(() => {
+          expect(assets.documents.LabelSelector.GroupAttributes.LabeledThingGroupInFrame.ChicagoOnFrameIndex0).toExistInPouchDb();
+        })
+        .then(done);
+    });
+
+    it('should ghost attributes to the next frame', done => {
+      let nextFrameButton;
+
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => {
+          nextFrameButton = element(by.css('.next-frame-button'));
+        })
+        .then(() => clickGroupWithAttributes())
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Target', 'Chicago').click())
+        .then(() => mediumSleep())
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => clickGroupWithAttributes())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntrySelectionStatesByTitleText('Target'))
+        .then(selectionStates => expect(selectionStates).toEqual({
+          'Chicago': true,
+          'Miami': false,
+        }))
+        .then(done);
+    });
+
+    it('should realize ghosts if attributes are set on the next frame', done => {
+      let nextFrameButton;
+
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => {
+          nextFrameButton = element(by.css('.next-frame-button'));
+        })
+        .then(() => clickGroupWithAttributes())
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Target', 'Chicago').click())
+        .then(() => mediumSleep())
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => clickGroupWithAttributes())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Darkness', 'yes').click())
+        .then(() => mediumSleep())
+        .then(() => {
+          expect(assets.documents.LabelSelector.GroupAttributes.LabeledThingGroupInFrame.ChicagoOnFrameIndex0).toExistInPouchDb();
+          expect(assets.documents.LabelSelector.GroupAttributes.LabeledThingGroupInFrame.ChicagoAndDarknessOnFrameIndex1).toExistInPouchDb();
+        })
+        .then(done);
+    });
+
+    it('should not propagate ghost attributes backwards', done => {
+      let nextFrameButton;
+      let previousFrameButton;
+
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => {
+          nextFrameButton = element(by.css('.next-frame-button'));
+          previousFrameButton = element(by.css('.previous-frame-button'));
+        })
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => clickGroupWithAttributes())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Target', 'Chicago').click())
+        .then(() => mediumSleep())
+        .then(() => previousFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => clickGroupWithAttributes())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntrySelectionStatesByTitleText('Target'))
+        .then(selectionStates => expect(selectionStates).toEqual({
+          'Chicago': false,
+          'Miami': false,
+        }))
+        .then(done);
+    });
+
+    it('should handle nested attributes properly', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickGroupWithAttributes())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.switchToSingleSelectMode())
+        .then(() => shortSleep())
+        .then(() => labelSelectorHelper.getTitleTexts())
+        .then(
+          titles => expect(titles).toEqual([
+            'Distance',
+            'Target',
+            'Tank Fill Level',
+            'Cigarette Fill Level',
+            'Darkness',
+          ])
+        )
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Darkness').click())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Darkness', 'yes').click())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getTitleTexts())
+        .then(
+          titles => expect(titles).toEqual([
+            'Distance',
+            'Target',
+            'Tank Fill Level',
+            'Cigarette Fill Level',
+            'Darkness',
+            'Wearing Sunglasses',
+          ])
+        )
+        .then(done);
+    });
+
+    it('should mark fully labeled ltgifs as complete', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickGroupWithAttributes())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Distance',
+          '106 Kilometers'
+        ).click())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Target', 'Chicago').click())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Tank Fill Level',
+          'Full'
+        ).click())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Cigarette Fill Level',
+          'Half a Pack'
+        ).click())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Darkness', 'yes').click())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Wearing Sunglasses',
+          'yes'
+        ).click())
+        .then(() => mediumSleep())
+        .then(() => {
+          expect(assets.documents.LabelSelector.GroupAttributes.LabeledThingGroupInFrame.CompletedOnFrameIndex0).toExistInPouchDb();
+        })
+        .then(done);
+    });
+  });
+
   afterEach(() => {
     expectAllModalsToBeClosed();
     bootstrapHttp.teardown();
