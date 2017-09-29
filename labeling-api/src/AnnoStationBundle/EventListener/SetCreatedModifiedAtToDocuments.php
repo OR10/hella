@@ -30,7 +30,7 @@ class SetCreatedModifiedAtToDocuments implements EventSubscriber
     {
         $doc = $args->getDocument();
 
-        if (method_exists($doc, 'setCreatedAt')) {
+        if (method_exists($doc, 'setCreatedAt') && method_exists($doc, 'getCreatedAt') && $doc->getCreatedAt() === null) {
             $doc->setCreatedAt($this->systemTimeProvider->getDateTime('now', new \DateTimeZone('UTC')));
         }
     }
