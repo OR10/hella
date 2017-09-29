@@ -38,6 +38,8 @@ describe('ViewerController tests', () => {
   let labeledThingInFrameGateway;
   let thingLayerScopeView;
   let labeledThingGateway;
+  let inProgressService;
+  let pouchDbContextService;
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
@@ -101,7 +103,7 @@ describe('ViewerController tests', () => {
     window = jasmine.createSpyObj('$window', ['addEventListener', 'removeEventListener']);
     window.document = jasmine.createSpyObj('window.document', ['addEventListener']);
     keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey']);
-    pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on']);
+    pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on', 'stopReplicationsForContext']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
     imagePreloader = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
     shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes']);
@@ -116,6 +118,8 @@ describe('ViewerController tests', () => {
     labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['listLabeledThingInFrame', 'getLabeledThingInFrame']);
     thingLayerScopeView = jasmine.createSpyObj('thinglayer.withScope().view', ['update']);
     labeledThingGateway = jasmine.createSpyObj('LabeledThingGateway', ['assignLabeledThingsToLabeledThingGroup']);
+    inProgressService = jasmine.createSpyObj('inProgressService', ['start', 'end']);
+    pouchDbContextService = jasmine.createSpyObj('PouchDbContextService', ['provideContextForTaskId']);
   });
 
   beforeEach(() => {
@@ -175,7 +179,7 @@ describe('ViewerController tests', () => {
       null, // $state,
       viewerMouseCursorService,
       null, // labeledThingGroupService,
-      null, // inProgressService,
+      inProgressService,
       pouchDbSyncManager,
       imagePreloader,
       shapeSelectionService,
@@ -183,6 +187,9 @@ describe('ViewerController tests', () => {
       hierarchyCreationService,
       groupCreationService,
       groupSelectionDialogFactory,
+      null,
+      null,
+      pouchDbContextService
     );
 
     controller.framePosition.lock = lockService;
@@ -358,6 +365,12 @@ describe('ViewerController tests', () => {
         expect(controller.paperGroupShapes).toEqual([group]);
       });
 
+      it('does nothing in readOnly mode', () => {
+        controller.readOnly = true;
+        groupListener(null, labelStructureObject);
+        expect(controller.paperGroupShapes).toEqual([]);
+      });
+
       describe('storing the group', () => {
         let selectedGroup;
         let showGroupSelectorPromise;
@@ -504,6 +517,16 @@ describe('ViewerController tests', () => {
 
       expect(window.removeEventListener).toHaveBeenCalledWith('resize', undefined);
       expect(window.removeEventListener).toHaveBeenCalledWith('visibilitychange', jasmine.any(Function));
+    });
+  });
+
+  describe('unauthorized access', () => {
+    it('stop replication', () => {
+      createController();
+
+      scope.$emit('pouchdb:replication:unauthorized');
+
+      expect(pouchDbSyncManager.stopReplicationsForContext).toHaveBeenCalled();
     });
   });
 });

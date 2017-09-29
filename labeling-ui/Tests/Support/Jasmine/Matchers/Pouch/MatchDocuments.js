@@ -31,7 +31,7 @@ function getType(template, depth) {
     return 'AppBundle.Model.FrameIndexRange';
   } else if (depth === 0 && template.timeInSeconds !== undefined) {
     return 'AppBundle.Model.TaskTimer';
-  } else if (depth === 0 && template.groupType !== undefined) {
+  } else if (depth === 0 && template.identifierName !== undefined) {
     return 'AnnoStationBundle.Model.LabeledThingGroup';
   } else if (depth === 0 && template.lineColor !== undefined && template.frameRange !== undefined) {
     return 'AppBundle.Model.LabeledThing';

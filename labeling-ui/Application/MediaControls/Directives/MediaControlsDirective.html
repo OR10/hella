@@ -28,6 +28,14 @@
             </button>
         </div>
         <div class="grid-content noscroll">
+            <badge ng-click="vm.toggleShapeInbox()" label="vm.selectedItemsCount"></badge>
+            <button ng-click="vm.toggleShapeInbox()"
+                    tooltip="Open shape inbox">
+                <i class="icon fa fa-inbox"
+                   ng-class="{'toggled': vm.popupPanelOpen && vm.popupPanelState === 'inbox'}"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
             <button ng-click="vm.handleZoomClicked()"
                     tooltip="Open zoom controls">
                 <i class="icon icon-view-zoom"

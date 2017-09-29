@@ -149,23 +149,57 @@ export function hasClassByElementFinder(elementFinder, className) {
   );
 }
 
-export function sendKey(key) {
+function _sendKey(key) {
   return browser.actions().sendKeys(key).perform();
 }
 
-export function sendKeySequences(keySequences) {
-  let promises = [];
-
-  keySequences.forEach(keySequence => {
-    if (typeof keySequence === 'string') {
-      const keys = keySequence.split('');
-      keys.forEach(key => {
-        promises.push(sendKey(key));
-      });
+export function sendKeys(keysOrSequences) {
+  let keys;
+  if (!Array.isArray(keysOrSequences)) {
+    if (typeof keysOrSequences === 'string' && keysOrSequences.length > 1) {
+      keys = keysOrSequences.split('');
     } else {
-      promises.push(sendKey(keySequence));
+      keys = [keysOrSequences];
     }
-  });
+  } else {
+    keys = keysOrSequences;
+  }
 
-  return Promise.all(promises);
+  return keys.reduce(
+    (carry, key) => {
+      let nextCarry;
+      if (typeof key === 'string' && key.length > 1) {
+        nextCarry = carry.then(() => sendKeys(key));
+      } else {
+        nextCarry = carry.then(() => _sendKey(key));
+      }
+      return nextCarry;
+    },
+    Promise.resolve()
+  );
+}
+
+function sleep(delay) {
+  return new Promise(
+    resolve => setTimeout(
+      () => resolve(),
+      delay
+    )
+  );
+}
+
+export function shortSleep() {
+  return sleep(300);
+}
+
+export function mediumSleep() {
+  return sleep(800);
+}
+
+export function longSleep() {
+  return sleep(1800);
+}
+
+export function comaLikeSleep() {
+  return sleep(3000);
 }

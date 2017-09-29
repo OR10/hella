@@ -78,6 +78,8 @@ class ViewerController {
    * @param {GroupCreationService} groupCreationService
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    * @param {PathCollisionService} pathCollisionService
+   * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
+   * @param {PouchDbContextService} pouchDbContextService
    */
   constructor(
     $scope,
@@ -120,6 +122,8 @@ class ViewerController {
     groupCreationService,
     groupSelectionDialogFactory,
     pathCollisionService,
+    labeledThingReferentialCheckService,
+    pouchDbContextService,
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -388,7 +392,22 @@ class ViewerController {
      */
     this._pathCollisionService = pathCollisionService;
 
+    /**
+     * @type {LabeledThingReferentialCheckService}
+     * @private
+     */
+    this._labeledThingReferentialCheckService = labeledThingReferentialCheckService;
+
+    /**
+     * @type {PouchDbContextService}
+     * @private
+     */
+    this._pouchDbContextService = pouchDbContextService;
+
     const groupListener = (tool, labelStructureObject) => {
+      if (this.readOnly) {
+        return;
+      }
       const shapes = this._shapeSelectionService.getAllShapes()
         .filter(
           shape => (!(shape instanceof PaperGroupRectangleMulti || shape instanceof PaperMeasurementRectangle))
@@ -601,6 +620,10 @@ class ViewerController {
      */
     let unauthorizedAccessModalOpen = false;
     $rootScope.$on('pouchdb:replication:unauthorized', () => {
+      this._inProgressService.end();
+      const context = this._pouchDbContextService.provideContextForTaskId(this.task.id);
+      this._pouchDbSyncManager.stopReplicationsForContext(context);
+
       if (unauthorizedAccessModalOpen === true) {
         this._logger.log('pouchdb:replication:unauthorized', 'Unauthorized event already handled, skipping dialog');
         return;
@@ -982,6 +1005,7 @@ class ViewerController {
       this._shapeSelectionService,
       this._groupSelectionDialogFactory,
       this._pathCollisionService,
+      this._labeledThingReferentialCheckService,
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1864,6 +1888,8 @@ ViewerController.$inject = [
   'groupCreationService',
   'groupSelectionDialogFactory',
   'pathCollisionService',
+  'labeledThingReferentialCheckService',
+  'pouchDbContextService',
 ];
 
 export default ViewerController;

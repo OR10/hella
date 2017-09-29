@@ -1,4 +1,10 @@
-import {expectAllModalsToBeClosed, initApplication, bootstrapHttp} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  shortSleep,
+  mediumSleep,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 import {cloneDeep} from 'lodash';
@@ -80,12 +86,19 @@ describe('Class Ghosting', () => {
           return labelSelectorHelper.getTitleClickTargetFinderByTitleText('Sign type').click();
         }
       })
-      .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Sign type', 'Speed sign').click());
+      .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+        'Sign type',
+        'Speed sign'
+      ).click());
   }
 
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -119,11 +132,11 @@ describe('Class Ghosting', () => {
   it('should set attribute on non ghosts', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => createRectangle())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => selectUTurnEntry())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => expectUTurnEntrySelected())
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
       .then(() => expect(createLtifFromTemplate(0, ['u-turn'])).toExistInPouchDb())
       .then(() => done());
   });
@@ -131,13 +144,13 @@ describe('Class Ghosting', () => {
   it('should transfer attributes to shape ghosts', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => createRectangle())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => selectUTurnEntry())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(() => expectUTurnEntrySelected())
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
       .then(() => expect(createLtifFromTemplate(0, ['u-turn'])).toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(1, [])).not.toExistInPouchDb())
       .then(() => done());
@@ -146,17 +159,17 @@ describe('Class Ghosting', () => {
   it('should create ghosts classes on manifested ghosts', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => createRectangle())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => selectUTurnEntry())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(() => moveRectangle())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => expectUTurnEntrySelected())
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
       .then(() => expect(createLtifFromTemplate(0, ['u-turn'])).toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(1, [])).not.toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(2, [], {x: 550, y: 350}, {x: 650, y: 450})).toExistInPouchDb())
@@ -166,28 +179,28 @@ describe('Class Ghosting', () => {
   it('should propagate class changes through ghost classes onto saved labeled thing in frame', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => createRectangle())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => selectUTurnEntry())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(() => moveRectangle())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
       .then(() => expect(createLtifFromTemplate(0, ['u-turn'])).toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(1, [])).not.toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(2, [], {x: 550, y: 350}, {x: 650, y: 450})).toExistInPouchDb())
       .then(() => selectSpeedSignEntry())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
       .then(() => expectSpeedSignEntrySelected())
       .then(() => expect(createLtifFromTemplate(0, ['speed-sign'])).toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(1, [])).not.toExistInPouchDb())
@@ -198,24 +211,24 @@ describe('Class Ghosting', () => {
   it('should propagate class changes of ltif created from ghost onto saved labeled thing in frame', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => createRectangle())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => selectUTurnEntry())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(() => moveRectangle())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
       .then(() => expect(createLtifFromTemplate(0, ['u-turn'])).toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(1, [])).not.toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(2, [], {x: 550, y: 350}, {x: 650, y: 450})).toExistInPouchDb())
       .then(() => selectSpeedSignEntry())
-      .then(() => browser.sleep(300))
+      .then(() => shortSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(1000))
+      .then(() => mediumSleep())
       .then(() => expectSpeedSignEntrySelected())
       .then(() => expect(createLtifFromTemplate(0, ['u-turn'])).toExistInPouchDb())
       .then(() => expect(createLtifFromTemplate(1, ['speed-sign'])).toExistInPouchDb())

@@ -1,4 +1,5 @@
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
+import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
 
 /**
  * Controller handling the control elements below the viewer frame
@@ -27,6 +28,7 @@ class MediaControlsController {
    * @param {ModalService} modalService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
+   * @param {ShapeSelectionService} shapeSelectionService
    */
   constructor($scope,
               $rootScope,
@@ -40,7 +42,8 @@ class MediaControlsController {
               applicationState,
               modalService,
               keyboardShortcutService,
-              viewerMouseCursorService) {
+              viewerMouseCursorService,
+              shapeSelectionService) {
     /**
      * @type {angular.$rootScope}
      */
@@ -130,6 +133,12 @@ class MediaControlsController {
     this.fpsInputVisible = false;
 
     /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
+
+    /**
      * @type {boolean}
      */
     this.currentToolSupportsDefaultShapeCreation = true;
@@ -152,6 +161,16 @@ class MediaControlsController {
     this._applicationState.$watch('mediaControls.isDisabled', disabled => this.mediaControlsDisabled = disabled);
 
     this._registerHotkeys();
+  }
+
+  /**
+   * @return {number}
+   */
+  get selectedItemsCount() {
+    // Filter PaperFrames
+    const selectedShapes = this._shapeSelectionService.getAllShapes();
+    const selectedShapesFiltered = selectedShapes.filter(shape => !(shape instanceof PaperFrame));
+    return selectedShapesFiltered.length;
   }
 
   /**
@@ -181,8 +200,7 @@ class MediaControlsController {
       return;
     }
 
-    selectedLabeledThing.frameRange.startFrameIndex = framePosition;
-    this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
+    this._$rootScope.$emit('action:change-start-frame-index', this.task, this.selectedPaperShape, framePosition);
   }
 
   /**
@@ -217,6 +235,21 @@ class MediaControlsController {
   }
 
   /**
+   * Toggles the shape inbox for merging shapes and copying them to other frames
+   */
+  toggleShapeInbox() {
+    switch (this.popupPanelState) {
+      case 'inbox':
+        this.popupPanelOpen = !this.popupPanelOpen;
+        this.popupPanelState = '';
+        break;
+      default:
+        this.popupPanelState = 'inbox';
+        this.popupPanelOpen = true;
+    }
+  }
+
+  /**
    * Jump to the `endFrameIndex` of the selected {@link LabeledThing}
    */
   handleGotoCloseBracketClicked() {
@@ -238,8 +271,7 @@ class MediaControlsController {
       return;
     }
 
-    selectedLabeledThing.frameRange.endFrameIndex = framePosition;
-    this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
+    this._$rootScope.$emit('action:change-end-frame-index', this.task, this.selectedPaperShape, framePosition);
   }
 
   /**
@@ -504,6 +536,7 @@ MediaControlsController.$inject = [
   'modalService',
   'keyboardShortcutService',
   'viewerMouseCursorService',
+  'shapeSelectionService',
 ];
 
 export default MediaControlsController;

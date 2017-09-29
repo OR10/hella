@@ -73,7 +73,7 @@ describe('LabeledThingGroupGateway', () => {
       '_id': 'e2c029002f1375ec4c10f55d4b2e71c9',
       '_rev': '1-579bff7e19f986e0dfab7a58fe7362dd',
       'type': 'AnnoStationBundle.Model.LabeledThingGroup',
-      'groupType': 'extension-sign-group',
+      'identifierName': 'extension-sign-group',
       'lineColor': '15',
       'groupIds': null,
       'classes': [],
@@ -121,7 +121,6 @@ describe('LabeledThingGroupGateway', () => {
 
       $provide.value('pouchDbContextService', pouchDbContextServiceMock);
       $provide.value('ghostingService', ghostingServiceMock);
-      // $provide.value('applicationConfig', mockConfig);
     });
 
     inject($injector => {
@@ -356,6 +355,17 @@ describe('LabeledThingGroupGateway', () => {
         'id-3',
       ];
 
+      labeledThingGroupDocument = {
+        _id: '3224971765fa4f728ea25009576db0bc',
+        _rev: '1-5c6dbbf287f44c5f92420ff4c3e5d59d',
+        projectId: '1ddd13ede9a21be5a63943362a015487',
+        taskId: '1ddd13ede9a21be5a63943362a04382b',
+        identifierName: 'lights-group',
+        lineColor: '10',
+        type: 'AnnoStationBundle.Model.LabeledThingGroup',
+        groupIds: [],
+      };
+
       pouchDbContext.allDocs.and.returnValue($q.resolve({
         offset: 0,
         total_rows: 1,
@@ -458,6 +468,45 @@ describe('LabeledThingGroupGateway', () => {
     });
   });
 
+  it('should delete a labeled thing group', () => {
+    const task = createTask();
+
+    const labeledThingGroup = new LabeledThingGroup({
+      task,
+      id: 'LABELED-THING-GROUP-ID',
+      identifierName: 'extension-sign-group',
+      lineColor: 1,
+      groupIds: [],
+      classes: [],
+      incomplete: true,
+      createdAt: '2017-09-05 16:11:56.000000',
+      lastModifiedAt: '2017-09-05 16:11:56.000000',
+    });
+    spyOn(labeledThingGroup, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
+
+
+    const serializedGroup = {
+      _id: 'LABELED-THING-GROUP-ID',
+      identifierName: 'extension-sign-group',
+      lineColor: 1,
+      groupIds: [],
+      type: 'AnnoStationBundle.Model.LabeledThingGroup',
+      classes: [],
+      incomplete: true,
+      createdAt: '2017-09-05 16:11:56.000000',
+      lastModifiedAt: '2017-09-05 16:11:56.000000',
+      taskId: task.id,
+      projectId: task.projectId,
+    };
+
+    groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+
+    $rootScope.$apply();
+
+    expect(pouchDbContext.remove)
+      .toHaveBeenCalledWith(serializedGroup);
+  });
+
   it('should create a labeled thing group', () => {
     spyOn(couchDbModelDeserializer, 'deserializeLabeledThingGroup').and.callThrough();
 
@@ -466,7 +515,7 @@ describe('LabeledThingGroupGateway', () => {
     const labeledThingGroup = new LabeledThingGroup({
       task,
       id: 'LABELED-THING-GROUP-ID',
-      groupType: 'extension-sign-group',
+      identifierName: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
       classes: [],
@@ -478,7 +527,7 @@ describe('LabeledThingGroupGateway', () => {
 
     const serializedGroup = {
       _id: 'LABELED-THING-GROUP-ID',
-      groupType: 'extension-sign-group',
+      identifierName: 'extension-sign-group',
       lineColor: 1,
       groupIds: [],
       type: 'AnnoStationBundle.Model.LabeledThingGroup',

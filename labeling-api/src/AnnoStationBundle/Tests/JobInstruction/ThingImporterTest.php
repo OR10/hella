@@ -228,9 +228,9 @@ class ThingImporterTest extends Tests\KernelTestCase
                 __DIR__ . '/../Resources/Exports/rectangle_meta.xml',
                 [
                     [
-                        'groupType'  => 'extension-sign-group',
-                        'lineColor'  => 6,
-                        'originalId' => 'f516e810-2ddc-4f8f-8d9a-49c5b19f769c',
+                        'identifierName' => 'extension-sign-group',
+                        'lineColor'      => 6,
+                        'originalId'     => 'f516e810-2ddc-4f8f-8d9a-49c5b19f769c',
                     ],
                 ],
             ],
@@ -373,7 +373,7 @@ class ThingImporterTest extends Tests\KernelTestCase
         foreach ($labeledThingGroupIds as $index => $labeledThingGroupId) {
             $expectedLabeledFrameData = $expectedData[$index];
             $labeledThingGroup        = $labeledThingGroupFacadeFacade->find($labeledThingGroupId);
-            $this->assertEquals($expectedLabeledFrameData['groupType'], $labeledThingGroup->getGroupType());
+            $this->assertEquals($expectedLabeledFrameData['identifierName'], $labeledThingGroup->getIdentifierName());
             $this->assertEquals($expectedLabeledFrameData['lineColor'], $labeledThingGroup->getLineColor());
             $this->assertEquals($expectedLabeledFrameData['originalId'], $labeledThingGroup->getOriginalId());
         }

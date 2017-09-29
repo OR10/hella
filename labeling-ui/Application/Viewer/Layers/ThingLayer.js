@@ -42,6 +42,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    * @param {PathCollisionService} pathCollisionService
+   * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
    */
   constructor(
     width,
@@ -63,6 +64,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     shapeSelectionService,
     groupSelectionDialogFactory,
     pathCollisionService,
+    labeledThingReferentialCheckService
   ) {
     super(width, height, $scope, drawingContext);
 
@@ -193,6 +195,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._pathCollisionService = pathCollisionService;
+
+    /**
+     * @type {LabeledThingReferentialCheckService}
+     * @private
+     */
+    this._labeledThingReferentialCheckService = labeledThingReferentialCheckService;
 
     $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
       const oldSet = new Set(oldPaperGroupShapes);
@@ -366,6 +374,120 @@ class ThingLayer extends PanAndZoomPaperLayer {
               }
             );
           });
+      }
+    );
+
+    ThingLayer.deregisterChangeStartFrameIndexListener();
+    ThingLayer.deregisterChangeStartFrameIndexListener = $scope.$root.$on(
+      'action:change-start-frame-index',
+      (event, task, shape, frameIndex) => {
+        if (this.selectedPaperShape instanceof PaperGroupShape) {
+          throw new Error('Cannot change the frame range of groups!');
+        }
+
+        const labeledThingInFrame = shape.labeledThingInFrame;
+        const labeledThing = labeledThingInFrame.labeledThing;
+        const frameRange = labeledThingInFrame.labeledThing.frameRange;
+        const endFrameIndex = labeledThingInFrame.labeledThing.frameRange.endFrameIndex;
+
+        if (frameIndex <= frameRange.endFrameIndex) {
+          const oldStartFrameIndex = frameRange.startFrameIndex;
+
+          this._labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange(
+            task,
+            labeledThing,
+            frameIndex,
+            endFrameIndex
+          ).then(isLabeledThingInFrameRange => {
+            if (isLabeledThingInFrameRange === true) {
+              frameRange.startFrameIndex = frameIndex;
+              // Synchronize operations on this LabeledThing
+              this._labeledThingGateway.saveLabeledThing(labeledThing).then(() => {
+                // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
+                if (frameIndex > oldStartFrameIndex) {
+                  this._updateLabeledThingInFrames(shape);
+                  this._$scope.$root.$emit('framerange:change:after');
+                }
+              });
+            } else {
+              this._modalService.info(
+                {
+                  title: 'Warning',
+                  headline: 'Frame-Range without any shape.',
+                  message: 'Inside the new frame-range are no shapes and this will delete this object. ',
+                  confirmButtonText: 'Delete this shape',
+                  cancelButtonText: 'Cancel',
+                },
+                () => {
+                  this._$scope.$root.$emit('action:delete-shape', task, shape);
+                },
+                () => {
+                  // @TODO restore Open Bracket
+                },
+                {
+                  abortable: true,
+                }
+              );
+            }
+          });
+        }
+      }
+    );
+
+    ThingLayer.deregisterChangeEndFrameIndexListener();
+    ThingLayer.deregisterChangeEndFrameIndexListener = $scope.$root.$on(
+      'action:change-end-frame-index',
+      (event, task, shape, frameIndex) => {
+        if (this.selectedPaperShape instanceof PaperGroupShape) {
+          throw new Error('Cannot change the frame range of groups!');
+        }
+
+        const labeledThingInFrame = shape.labeledThingInFrame;
+        const labeledThing = labeledThingInFrame.labeledThing;
+        const frameRange = labeledThingInFrame.labeledThing.frameRange;
+        const startFrameIndex = labeledThingInFrame.labeledThing.frameRange.startFrameIndex;
+
+        if (frameIndex >= frameRange.startFrameIndex) {
+          const oldEndFrameIndex = frameRange.endFrameIndex;
+
+          this._labeledThingReferentialCheckService.isAtLeastOneLabeledThingInFrameInRange(
+            task,
+            labeledThing,
+            startFrameIndex,
+            frameIndex
+          ).then(isLabeledThingInFrameRange => {
+            if (isLabeledThingInFrameRange === true) {
+              frameRange.endFrameIndex = frameIndex;
+              // Synchronize operations on this LabeledThing
+              this._labeledThingGateway.saveLabeledThing(labeledThing).then(() => {
+                // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
+                if (frameIndex < oldEndFrameIndex) {
+                  this._updateLabeledThingInFrames(shape);
+                  this._$scope.$root.$emit('framerange:change:after');
+                }
+              });
+            } else {
+              this._modalService.info(
+                {
+                  title: 'Warning',
+                  headline: 'Frame-Range without any shape.',
+                  message: 'Inside the new frame-range are no shapes and this will delete this object. ',
+                  confirmButtonText: 'Delete this shape',
+                  cancelButtonText: 'Cancel',
+                },
+                () => {
+                  this._$scope.$root.$emit('action:delete-shape', task, shape);
+                },
+                () => {
+                  // @TODO restore Close Bracket
+                },
+                {
+                  abortable: true,
+                }
+              );
+            }
+          });
+        }
       }
     );
   }
@@ -684,6 +806,13 @@ class ThingLayer extends PanAndZoomPaperLayer {
           switch (true) {
             case paperShape instanceof PaperThingShape:
               this.emit('thing:update', paperShape);
+              // When you snap polylines and move them you have to update the shape by calling the thing:update explicit
+              // to store the new points
+              if (this._pathCollisionService.needsRedraw) {
+                this._pathCollisionService.shapes.forEach(shape => {
+                  this.emit('thing:update', shape);
+                });
+              }
               break;
             case paperShape instanceof PaperGroupShape:
               this.emit('group:update', paperShape);
@@ -1043,6 +1172,10 @@ ThingLayer.deregisterNewDefaultShapeEventListener = () => {
 ThingLayer.deregisterUnassignGroupFromShapeEventListener = () => {
 };
 ThingLayer.deregisterAskAndDeleteEventListener = () => {
+};
+ThingLayer.deregisterChangeStartFrameIndexListener = () => {
+};
+ThingLayer.deregisterChangeEndFrameIndexListener = () => {
 };
 
 export default ThingLayer;

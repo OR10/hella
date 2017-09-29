@@ -4,6 +4,7 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -15,7 +16,11 @@ describe('Polygon drawing', () => {
   let viewer;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -54,8 +59,8 @@ describe('Polygon drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.LoadAndDrawOnePolygon);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should load and draw two polygon shapes', done => {
@@ -72,8 +77,8 @@ describe('Polygon drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.LoadAndDrawTwoPolygons);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select a polygon shape', done => {
@@ -90,14 +95,15 @@ describe('Polygon drawing', () => {
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'SelectOnePolygon')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.SelectOnePolygon);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select and deselect a polygon shape', done => {
@@ -126,8 +132,8 @@ describe('Polygon drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.SelectAndDeselectPolygon);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should select one and then select an other polygon shape', done => {
@@ -156,8 +162,8 @@ describe('Polygon drawing', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.SelectAnotherPolygon);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should correctly move a polygon shape and save the changed coordinates', done => {
@@ -178,6 +184,10 @@ describe('Polygon drawing', () => {
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.MoveOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'MoveOnePolygon')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -185,11 +195,7 @@ describe('Polygon drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.MoveOnePolygon);
       })
-      .then(() => browser.sleep(500))
-      .then(() => {
-        expect(assets.mocks.PolygonDrawing.MoveOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should correctly resize a polygon shape and save the changed coordinates', done => {
@@ -214,18 +220,18 @@ describe('Polygon drawing', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'ResizeOnePolygon')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.ResizeOnePolygon);
-        return browser.sleep(1000);
       })
-      .then(() => {
-        expect(assets.mocks.PolygonDrawing.ResizeOnePolygon.LabeledThingInFrame.putLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should keep the polygon shape selected over a frame change', done => {
@@ -242,20 +248,20 @@ describe('Polygon drawing', () => {
           .click()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => {
         const nextFrameButton = element(by.css('.next-frame-button'));
         return nextFrameButton.click();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'KeepSelectionOverFrameChange')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.KeepSelectionOverFrameChange);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should draw a new polygon shape', done => {
@@ -266,23 +272,54 @@ describe('Polygon drawing', () => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
-          .mouseMove(viewer, {x: 600, y: 100}) // initial position
+          .mouseMove(viewer, {x: 600, y: 400}) // initial position
           .mouseUp()
-          .mouseMove(viewer, {x: 600, y: 600}) // initial position
+          .mouseMove(viewer, {x: 590, y: 410}) // initial position
           .click()
-          .mouseMove(viewer, {x: 200, y: 600}) // initial position
+          .mouseMove(viewer, {x: 580, y: 420}) // initial position
           .click()
-          .mouseMove(viewer, {x: 200, y: 400}) // initial position
+          .mouseMove(viewer, {x: 570, y: 430}) // initial position
           .click()
-          .mouseMove(viewer, {x: 500, y: 400}) // initial position
+          .mouseMove(viewer, {x: 560, y: 440}) // initial position
           .click()
-          .mouseMove(viewer, {x: 500, y: 200}) // initial position
+          .mouseMove(viewer, {x: 550, y: 450}) // initial position
           .click()
-          .mouseMove(viewer, {x: 100, y: 200}) // initial position
+          .mouseMove(viewer, {x: 540, y: 460}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 530, y: 470}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 520, y: 480}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 510, y: 490}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 500, y: 500}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 490, y: 510}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 480, y: 520}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 470, y: 530}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 460, y: 540}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 450, y: 550}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 440, y: 560}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 430, y: 570}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 420, y: 580}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 410, y: 590}) // initial position
           .click()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
           .click(protractor.Button.RIGHT)
           .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1).toExistInPouchDb();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygon')
@@ -291,12 +328,7 @@ describe('Polygon drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygon);
       })
-      .then(() => browser.sleep(500))
-      .then(() => {
-        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw a new polygon shape with intermediary mouse movements', done => {
@@ -307,11 +339,13 @@ describe('Polygon drawing', () => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100}) // initial position
           .mouseDown()
-          .mouseMove(viewer, {x: 600, y: 100}) // initial position
+          .mouseMove(viewer, {x: 600, y: 400}) // initial position
           .mouseUp()
-          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .mouseMove(viewer, {x: 590, y: 410}) // initial position
+          .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -321,13 +355,17 @@ describe('Polygon drawing', () => {
       })
       .then(() => {
         return browser.actions()
-          .mouseMove(viewer, {x: 600, y: 600}) // initial position
+          .mouseMove(viewer, {x: 580, y: 420}) // initial position
           .click()
-          .mouseMove(viewer, {x: 200, y: 600}) // initial position
+          .mouseMove(viewer, {x: 570, y: 430}) // initial position
           .click()
-          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .mouseMove(viewer, {x: 560, y: 440}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 550, y: 450}) // initial position
+          .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -337,15 +375,35 @@ describe('Polygon drawing', () => {
       })
       .then(() => {
         return browser.actions()
-          .mouseMove(viewer, {x: 200, y: 400}) // initial position
+          .mouseMove(viewer, {x: 540, y: 460}) // initial position
           .click()
-          .mouseMove(viewer, {x: 500, y: 400}) // initial position
+          .mouseMove(viewer, {x: 530, y: 470}) // initial position
           .click()
-          .mouseMove(viewer, {x: 500, y: 200}) // initial position
+          .mouseMove(viewer, {x: 520, y: 480}) // initial position
           .click()
-          .mouseMove(viewer, {x: 400, y: 400}) // initial position
+          .mouseMove(viewer, {x: 510, y: 490}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 500, y: 500}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 490, y: 510}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 480, y: 520}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 470, y: 530}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 460, y: 540}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 450, y: 550}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 440, y: 560}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 430, y: 570}) // initial position
+          .click()
+          .mouseMove(viewer, {x: 420, y: 580}) // initial position
+          .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -355,11 +413,16 @@ describe('Polygon drawing', () => {
       })
       .then(() => {
         return browser.actions()
-          .mouseMove(viewer, {x: 100, y: 200}) // initial position
+          .mouseMove(viewer, {x: 410, y: 590}) // initial position
           .click()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
           .click(protractor.Button.RIGHT)
           .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1).toExistInPouchDb();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewPolygonIntermediary4')
@@ -368,12 +431,7 @@ describe('Polygon drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewPolygonIntermediary4);
       })
-      .then(() => browser.sleep(500))
-      .then(() => {
-        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame1).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw multiple new polygon shapes', done => {
@@ -391,6 +449,7 @@ describe('Polygon drawing', () => {
           .click(protractor.Button.RIGHT)
           .perform();
       })
+      .then(() => mediumSleep())
       // .then(() => dumpAllRequestsMade(bootstrapHttp))
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewMultiplePolygon1')
@@ -410,6 +469,7 @@ describe('Polygon drawing', () => {
           .click(protractor.Button.RIGHT)
           .perform();
       })
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewMultiplePolygon2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -428,6 +488,13 @@ describe('Polygon drawing', () => {
           .click(protractor.Button.RIGHT)
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame2).toExistInPouchDb();
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame3).toExistInPouchDb();
+        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame4).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonDrawing', 'NewMultiplePolygon3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -435,14 +502,7 @@ describe('Polygon drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonDrawing.NewMultiplePolygon3);
       })
-      .then(() => browser.sleep(800))
-      .then(() => {
-        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame2).toExistInPouchDb();
-        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame3).toExistInPouchDb();
-        expect(assets.mocks.PolygonDrawing.NewPolygon.StoreLabeledThingInFrame4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   afterEach(() => {

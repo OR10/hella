@@ -191,6 +191,7 @@ export default class LabelSelectorController {
           return this._clearLabelSelector();
         }
         this._startWithFirstPageOfLabelSelector();
+        this.expandOrCollapseAccordionOnMutiSelection();
       }
     );
 
@@ -261,6 +262,19 @@ export default class LabelSelectorController {
    */
   hideWhenItemIsNotSelected(page, response) {
     return this.choices[page.id] !== response.id;
+  }
+
+  /**
+   * This method expand or collapse the accordions depends on the multiSelection state
+   */
+  expandOrCollapseAccordionOnMutiSelection() {
+    if (this.multiSelection) {
+      this.accordionControl.expandAll();
+      this.selectedOnlyAccordionControl.expandAll();
+    } else {
+      this.accordionControl.collapseAll();
+      this.selectedOnlyAccordionControl.collapseAll();
+    }
   }
 
   /**

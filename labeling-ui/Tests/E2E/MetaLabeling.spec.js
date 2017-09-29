@@ -3,6 +3,8 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  shortSleep,
+  mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
@@ -21,14 +23,21 @@ describe('Metalabeling', () => {
   let labelSelectorHelper;
 
   function clickRectangleOne() {
-    return browser.actions()
-      .mouseMove(viewer, {x: 110, y: 110})
-      .click()
-      .perform();
+    return Promise.resolve()
+      .then(() => browser.actions()
+        .mouseMove(viewer, {x: 110, y: 110})
+        .click()
+        .perform()
+      )
+      .then(() => shortSleep());
   }
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -67,13 +76,17 @@ describe('Metalabeling', () => {
     });
 
     it('should show incomplete object if meta labeling is activated and frame one is not labeled', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
-        // For some reason, when having a lot of tests beforehand, getText returns an empty string. Do a click before that
-        // and then read the text. This seems to fix it
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+      // For some reason, when having a lot of tests beforehand, getText returns an empty string. Do a click before that
+      // and then read the text. This seems to fix it
         .then(() => metaLabelingButton.click())
+        .then(() => shortSleep())
         .then(() => incompleteBadge.getText())
         // Two incomplete shapes + One incomplete/not existent frame
         .then(incompleteCount => expect(incompleteCount).toEqual('3'))
@@ -81,31 +94,36 @@ describe('Metalabeling', () => {
     });
 
     it('updates the incomplete number when completing the meta labeling', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => metaLabelingButton.click())
-        .then(() => browser.sleep(150))
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Day').click())
-        .then(() => browser.sleep(150))
+        .then(() => mediumSleep())
         .then(() => incompleteBadge.getText())
         .then(incompleteCount => expect(incompleteCount).toEqual('2'))
         .then(() => done());
     });
 
     it('should show the correct labels before and after switching to meta labeling', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => clickRectangleOne())
-        .then(() => browser.sleep(150))
         .then(() => labelSelectorHelper.getTitleTexts())
         .then(titleTexts => expect(titleTexts).toEqual(['Sign type']))
         .then(() => metaLabelingButton.click())
-        .then(() => browser.sleep(150))
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleTexts())
         .then(titleTexts => expect(titleTexts).toEqual(['Time']))
         .then(() => done());
@@ -122,10 +140,13 @@ describe('Metalabeling', () => {
     });
 
     it('is not incomplete if Metalabeling is not active (no shapes exist)', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => incompleteBadge.getText())
         .then(incompleteCount => expect(incompleteCount).toEqual(''))
         .then(done);
@@ -136,10 +157,13 @@ describe('Metalabeling', () => {
         assets.documents.MetaLabeling.Shared.LabeledThingInFrame.frameIndex0,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling', {
-        viewerWidth: 1104,
-        viewerHeight: 620,
-      })
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
         .then(() => incompleteBadge.getText())
         .then(incompleteCount => expect(incompleteCount).toEqual('2'))
         .then(done);

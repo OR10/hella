@@ -9,6 +9,8 @@ import taskTemplate from './Views/task.html!';
 import LabelStructureService from './Services/LabelStructureService';
 import LabelStructureDataService from './Services/LabelStructureDataService';
 
+import LabeledThingReferentialCheckService from './Services/LabeledThingReferentialCheckService';
+
 import TaskDescriptionDirective from './Directives/TaskDescriptionDirective';
 import PopupPanelDirective from './Directives/PopupPanelDirective';
 import ToolSelectorDirective from './Directives/ToolSelectorDirective';
@@ -31,6 +33,7 @@ class TaskModule extends Module {
     this.module.service('frameIndexService', FrameIndexService);
     this.module.service('labelStructureService', LabelStructureService);
     this.module.service('labelStructureDataService', LabelStructureDataService);
+    this.module.service('labeledThingReferentialCheckService', LabeledThingReferentialCheckService);
     this.registerDirective('taskDescription', TaskDescriptionDirective);
     this.registerDirective('popupPanel', PopupPanelDirective);
     this.registerDirective('toolSelector', ToolSelectorDirective);

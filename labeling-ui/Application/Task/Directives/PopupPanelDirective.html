@@ -79,4 +79,36 @@
             </label>
         </div>
     </div>
+
+    <div ng-show="vm.popupPanelState == 'inbox'" class="grid-block vertical popup-inbox">
+        <div id="popup-inbox-selected">
+            <p class="shape-list-header">
+                Selected unsaved Shapes
+                <i class="icon fa fa-plus-circle" ng-click="vm.addAllToInbox()" ng-show="vm.hasSelectedObjects()"></i>
+            </p>
+            <div class="popup-inbox-list">
+                <p class="selected-shape" ng-show="!vm.hasSelectedObjects()">No shapes selected</p>
+                <p class="selected-shape" ng-repeat="selectedObject in vm.selectedObjects track by selectedObject.shape.id">
+                    <i class="icon fa fa-plus-circle" ng-click="vm.addToInbox(selectedObject)"></i>
+                    <i class="icon icon-tool-{{ selectedObject.labelStructureObject.shape }}"></i>
+                    <span>{{ selectedObject.label }}</span>
+                </p>
+            </div>
+        </div>
+
+        <div id="popup-inbox-saved">
+            <p class="shape-list-header">
+                Saved shapes
+                <i class="icon fa fa-minus-circle" ng-click="vm.removeAllFromInbox()" ng-show="vm.hasSavedObjects()"></i>
+            </p>
+            <div class="popup-inbox-list">
+                <p class="selected-shape" ng-show="!vm.hasSavedObjects()">No shapes saved</p>
+                <p class="selected-shape" ng-repeat="selectedObject in vm.savedObjects track by selectedObject.shape.id">
+                    <i class="icon fa fa-minus-circle" ng-click="vm.removeFromInbox(selectedObject)"></i>
+                    <i class="icon icon-tool-{{ selectedObject.labelStructureObject.shape }}"></i>
+                    <span>{{ selectedObject.label }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>

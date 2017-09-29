@@ -4,6 +4,10 @@ import {
   bootstrapHttp,
   bootstrapPouch,
   expectAllModalsToBeClosed,
+  mediumSleep,
+  shortSleep,
+  longSleep,
+  sendKeys,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
@@ -48,15 +52,10 @@ describe('Group Creation', () => {
 
     viewer = element(by.css('.layer-container'));
     groupButton = element(by.css('button.tool-group.tool-0'));
-
     labelSelector = element(by.css('label-selector'));
     labelSelectorHelper = new LabelSelectorHelper(labelSelector);
   });
 
-  afterEach(() => {
-    bootstrapHttp.teardown();
-    bootstrapPouch.teardown();
-  });
 
   it('does not create a group', done => {
     bootstrapHttp(sharedMocks);
@@ -73,7 +72,11 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateNoGroup')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -81,11 +84,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateNoGroup);
       })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).not.toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('creates a group around 1 rectangle', done => {
@@ -103,12 +102,10 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => mediumSleep())
       .then(() => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
-        done();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithOneRectangle')
@@ -116,7 +113,8 @@ describe('Group Creation', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithOneRectangle);
-      });
+      })
+      .then(() => done());
   });
 
   it('creates a group around 2 rectangles', done => {
@@ -126,6 +124,7 @@ describe('Group Creation', () => {
     ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -134,8 +133,11 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoRectangles')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -143,11 +145,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoRectangles);
       })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('creates a group around 2 point shapes', done => {
@@ -157,6 +155,7 @@ describe('Group Creation', () => {
     ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -165,8 +164,11 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoPoints')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -174,11 +176,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoPoints);
       })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingPoint).toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('creates two groups with four different shapes', done => {
@@ -190,6 +188,7 @@ describe('Group Creation', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -198,7 +197,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 263, y: 50}) // initial position
@@ -207,8 +206,12 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint).toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateTwoGroupsWithFourShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -216,12 +219,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateTwoGroupsWithFourShapes);
       })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing).toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint).toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('creates three groups with four different shapes', done => {
@@ -233,6 +231,7 @@ describe('Group Creation', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -241,7 +240,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 263, y: 50}) // initial position
@@ -250,7 +249,7 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -259,12 +258,11 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => {
         expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame1.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.MultipleGroups.LabeledThingInFrame2.StoreLabeledThingPoint).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).toExistInPouchDb();
-        done();
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateThreeGroupsWithFourShapes')
@@ -293,18 +291,19 @@ describe('Group Creation', () => {
     };
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => sendKeys(protractor.Key.CONTROL))
       .then(() => {
         return browser.actions()
-          .sendKeys(protractor.Key.CONTROL)
           .mouseMove(viewer, firstShape.topLeft)
           .click()
           .mouseMove(viewer, secondShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.NULL)
           .perform();
       })
+      .then(() => mediumSleep())
+      .then(() => sendKeys(protractor.Key.NULL))
       .then(() => groupButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateGroupMultiselectedShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -312,9 +311,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateGroupMultiselectedShapes);
       })
-      .then(() => {
-        done();
-      });
+      .then(() => done());
   });
 
   it('creates and deletes a group around multiselected shapes', done => {
@@ -334,31 +331,27 @@ describe('Group Creation', () => {
     };
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => sendKeys(protractor.Key.CONTROL))
       .then(() => {
         return browser.actions()
-          .sendKeys(protractor.Key.CONTROL)
           .mouseMove(viewer, firstShape.topLeft)
           .click()
           .mouseMove(viewer, secondShape.topLeft)
           .click()
-          .sendKeys(protractor.Key.NULL)
           .perform();
       })
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
+      .then(() => sendKeys(protractor.Key.NULL))
       .then(() => groupButton.click())
-      .then(() => browser.sleep(800))
-      .then(() => {
-        return browser.actions()
-          .sendKeys(protractor.Key.DELETE)
-          .perform();
-      })
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
+      .then(() => sendKeys(protractor.Key.DELETE))
+      .then(() => mediumSleep())
       .then(() => element(by.cssContainingText('option', 'Delete the object itself')).click())
       .then(() => {
         const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateAndDeleteGroupMultiselectedShapes')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -386,13 +379,13 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => element(by.cssContainingText('option', 'Front lights')).click())
       .then(() => {
         const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       .then(() => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupFrontLights).toExistInPouchDb();
@@ -416,6 +409,7 @@ describe('Group Creation', () => {
     ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -424,20 +418,19 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => element(by.cssContainingText('option', 'Please make a selection')).click())
       .then(() => {
         const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(1000))
+      .then(() => longSleep())
       .then(() => element(by.cssContainingText('option', 'Back lights')).click())
       .then(() => {
         const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(250))
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => mediumSleep())
       .then(() => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroupBackLights).toExistInPouchDb();
@@ -461,6 +454,7 @@ describe('Group Creation', () => {
     ]);
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -469,14 +463,17 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => element(by.cssContainingText('option', 'Front lights')).click())
       .then(() => {
         const cancelButton = element(by.css('.modal-button-cancel'));
         return cancelButton.click();
       })
-      .then(() => browser.sleep(250))
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateNoGroup')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -484,11 +481,7 @@ describe('Group Creation', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateNoGroup);
       })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).not.toExistInPouchDb();
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('does not create a group by select a measurement rectangle and click the group button', done => {
@@ -498,6 +491,7 @@ describe('Group Creation', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => toolButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100})
@@ -506,19 +500,19 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => groupButton.click())
-      .then(() => browser.sleep(250))
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
+      })
       .then(
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangle);
       })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('does not create a group around measurement rectangle', done => {
@@ -528,6 +522,7 @@ describe('Group Creation', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => toolButton.click())
+      .then(() => shortSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 100, y: 100})
@@ -539,7 +534,9 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => groupButton.click())
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 1, y: 1}) // initial position
@@ -548,18 +545,17 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
-      // .then(() => dumpAllRequestsMade(bootstrapHttp))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
+      })
       .then(
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.MeasurementRectangle.DrawOneMeasurementRectangle);
       })
-      .then(() => {
-        expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('does remove ltgifs outside of lt frame range', done => {
@@ -574,7 +570,7 @@ describe('Group Creation', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => rectangleToolButton.click())
-      .then(() => browser.sleep(250))
+      .then(() => shortSleep())
       .then(() => {
         // Create Rectangle
         return browser.actions()
@@ -584,9 +580,9 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       .then(() => {
         // Move Rectangle
         return browser.actions()
@@ -596,28 +592,28 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       // Create group
       .then(() => groupButton.click())
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       .then(() => {
         // Acknowledge modal
         const confirmButton = element(by.css('.modal-button-confirm'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       // Label Group on frameIndex 1
       .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText(
         'Position of the extension sign'
       ).click())
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
         'Position of the extension sign',
         'Above'
       ).click())
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       .then(() => {
         // Select rectangle again
         return browser.actions()
@@ -626,14 +622,16 @@ describe('Group Creation', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(250))
+      .then(() => mediumSleep())
       .then(() => closeBracketButton.click())
-      .then(() => browser.sleep(800))
+      .then(() => mediumSleep())
       .then(() => expect(assets.mocks.GroupCreation.GroupAttributes.StoredLabeledThingGroupInFrame).not.toExistInPouchDb())
       .then(() => done());
   });
 
   afterEach(() => {
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
     expectAllModalsToBeClosed();
   });
 });

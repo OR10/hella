@@ -291,13 +291,12 @@ class LabeledThingGateway {
     const labeledThingDocument = this._couchDbModelSerializer.serialize(labeledThing);
 
     // @TODO: What about error handling here? No global handling is possible this easily?
-    //       Monkey-patch pouchdb? Fix error handling at usage point?
-    const synchronizedPromise = this._packagingExecutor.execute('labeledThing', () => {
+    //        Monkey-patch pouchdb? Fix error handling at usage point?
+    // @TODO: is the return value (couchdb-document) correct for the implemented interface here?
+    return this._packagingExecutor.execute('labeledThing', () => {
       this._injectRevisionOrFailSilently(labeledThingDocument);
 
-      const ltPromise = dbContext.remove(labeledThingDocument);
-
-      const ltifPromise = this._getAssociatedLabeledThingsInFrames(task, labeledThing)
+      return this._getAssociatedLabeledThingsInFrames(task, labeledThing)
         .then(documents => {
           // Mark found documents as deleted
           return documents.rows.map(document => {
@@ -311,14 +310,10 @@ class LabeledThingGateway {
         .then(updatedDocs => {
           // Bulk update as deleted marked documents
           return dbContext.bulkDocs(updatedDocs);
+        }).then(() => {
+          return dbContext.remove(labeledThingDocument);
         });
-
-      // Return promise of the deletion of lt and associated ltifs
-      return this._$q.all([ltPromise, ltifPromise]);
     });
-
-    // @TODO: is the return value (couchdb-document) correct for the implemented interface here?
-    return synchronizedPromise;
   }
 
   /**

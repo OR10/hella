@@ -1,10 +1,17 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
+  mediumSleep,
+  longSleep,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Interpolation RectangleWithGroup Tests', () => {
+describe('Rectangle With Group Interpolation', () => {
   let assets;
   let viewer;
   let groupButton;
@@ -14,7 +21,11 @@ describe('Interpolation RectangleWithGroup Tests', () => {
   let goEndButton;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -52,6 +63,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
   it('should interpolate a RectangleWithGroup when selecting the start LTIF', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 80, y: 80}) // initial position
@@ -60,13 +72,23 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // RectangleWithGroup in first frame
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => interpolateButton.click())
+      .then(() => longSleep())
+      .then(() => {
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -75,7 +97,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame0);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -84,7 +106,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame1);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -93,7 +115,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame2);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -102,7 +124,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame3);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -110,19 +132,13 @@ describe('Interpolation RectangleWithGroup Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame4);
       })
-      .then(() => {
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should interpolate a RectangleWithGroup when selecting the end LTIF', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 80, y: 80}) // initial position
@@ -131,15 +147,25 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // RectangleWithGroup in first frame
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => goEndButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => interpolateButton.click())
+      .then(() => longSleep())
+      .then(() => {
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -148,7 +174,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame4);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -157,7 +183,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame3);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -166,7 +192,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame2);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -175,7 +201,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame1);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame0Backwards')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -183,19 +209,13 @@ describe('Interpolation RectangleWithGroup Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame0Backwards);
       })
-      .then(() => {
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should interpolate both rectangles within a RectangleWithGroup when selecting the start LTIF', done => {
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => groupButton.click())
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 80, y: 80}) // initial position
@@ -204,20 +224,32 @@ describe('Interpolation RectangleWithGroup Tests', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // First RectangleWithGroup in first frame
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => interpolateButton.click())
+      .then(() => longSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 350, y: 150}) // Second RectangleWithGroup in first frame
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => interpolateButton.click())
+      .then(() => longSleep())
+      .then(() => {
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame0BothInterpolated')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -226,7 +258,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame0BothInterpolated);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame1BothInterpolated')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -235,7 +267,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame1BothInterpolated);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame2BothInterpolated')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -244,7 +276,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame2BothInterpolated);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame3BothInterpolated')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -253,7 +285,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame3BothInterpolated);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangleWithGroup', 'Frame4BothInterpolated')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -261,14 +293,7 @@ describe('Interpolation RectangleWithGroup Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangleWithGroup.Frame4BothInterpolated);
       })
-      .then(() => {
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.RectangleWithGroup.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   afterEach(() => {

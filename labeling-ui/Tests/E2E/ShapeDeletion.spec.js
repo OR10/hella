@@ -1,5 +1,12 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
+  mediumSleep,
+  shortSleep,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
@@ -58,13 +65,18 @@ describe('Shape deletion (TTANNO-1474)', () => {
           .click()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => deleteShapeButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeDeletion', 'RectangleAfter')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -72,11 +84,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(() => {
-        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should delete a Pedestrian', done => {
@@ -102,13 +110,14 @@ describe('Shape deletion (TTANNO-1474)', () => {
           .click()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => deleteShapeButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeDeletion', 'Empty')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -119,8 +128,8 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(() => {
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
         expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should delete a Polygon', done => {
@@ -146,13 +155,18 @@ describe('Shape deletion (TTANNO-1474)', () => {
           .click()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => deleteShapeButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeDeletion', 'Empty')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -160,11 +174,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(() => {
-        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should delete a Polyline', done => {
@@ -190,13 +200,18 @@ describe('Shape deletion (TTANNO-1474)', () => {
           .click()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => deleteShapeButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeDeletion', 'Empty')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -204,11 +219,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(() => {
-        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should delete a Point', done => {
@@ -234,13 +245,18 @@ describe('Shape deletion (TTANNO-1474)', () => {
           .click()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => deleteShapeButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeDeletion', 'Empty')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -248,11 +264,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(() => {
-        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should delete a Cuboid', done => {
@@ -279,13 +291,18 @@ describe('Shape deletion (TTANNO-1474)', () => {
           .click()
           .perform();
       })
+      .then(() => shortSleep())
       .then(() => deleteShapeButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         const confirmButton = element(by.css('#modal-confirm-button'));
         return confirmButton.click();
       })
-      .then(() => browser.sleep(600))
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeDeletion', 'Empty')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -293,11 +310,7 @@ describe('Shape deletion (TTANNO-1474)', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeDeletion.Empty);
       })
-      .then(() => {
-        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        expect(assets.mocks.ShapeDeletion.Shared.DeleteLabeledThing).not.toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   afterEach(() => {

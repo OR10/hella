@@ -117,14 +117,8 @@ class PathTransformationTool extends TransformationTool {
    */
   _addVertexToShape(point) {
     const {shape} = this._toolActionStruct;
-    const shapePoints = shape.points.map(shapePoint => new paper.Point(shapePoint));
-    const {maxHandles = 15} = this._toolActionStruct.options;
-
-    if (shapePoints.length >= maxHandles) {
-      return;
-    }
-
     const index = this._getInsertionIndexForPoint(point);
+
     shape.addPoint(point, index);
     this._complete(shape);
   }

@@ -17,8 +17,24 @@ class PopupPanelController {
    * @param {FrameLocationGateway} frameLocationGateway
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {$timeout} $timeout
+   * @param {LabelStructureService} labelStructureService
+   * @param {ShapeSelectionService} shapeSelectionService
+   * @param {ShapeInboxService} shapeInboxService
    */
-  constructor($scope, $window, $element, animationFrameService, drawingContextService, frameGateway, frameLocationGateway, abortablePromiseFactory, $timeout) {
+  constructor(
+    $scope,
+    $window,
+    $element,
+    animationFrameService,
+    drawingContextService,
+    frameGateway,
+    frameLocationGateway,
+    abortablePromiseFactory,
+    $timeout,
+    labelStructureService,
+    shapeSelectionService,
+    shapeInboxService
+  ) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
     this._supportedImageTypes = ['sourceJpg', 'source'];
@@ -46,7 +62,29 @@ class PopupPanelController {
      */
     this._frameGateway = frameGateway;
 
+    /**
+     * @type {$timeout}
+     * @private
+     */
     this._$timeout = $timeout;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
+
+    /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
+
+    /**
+     * @type {ShapeInboxService}
+     * @private
+     */
+    this._shapeInboxService = shapeInboxService;
 
     this._activeBackgroundImage = null;
 
@@ -105,6 +143,8 @@ class PopupPanelController {
         this._$timeout(() => {
           this._resizeDebounced();
         }, 0);
+      } else if (open && newState === 'inbox') {
+        this._loadSelectedObjects();
       }
     });
 
@@ -144,6 +184,122 @@ class PopupPanelController {
     $scope.$on('sidebar.resized', () => this._resizeDebounced());
 
     this._resizeDebounced();
+
+    /**
+     * @type {Object.<{shape: PaperShape, label: String, labelStructureObject: LabelStructureObject}>}
+     * @private
+     */
+    this._selectedObjects = {};
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this._selectedObjectsCounter = 1;
+
+    this._selectedObjectsLabelCounter = {};
+
+    this._shapeSelectionService.afterAnySelectionChange('PopupPanelController', () => {
+      this._loadSelectedObjects();
+    });
+  }
+
+  /**
+   * @return {Array}
+   */
+  get selectedObjects() {
+    return Object.values(this._selectedObjects);
+  }
+
+  /**
+   * @return {Array}
+   */
+  get savedObjects() {
+    return this._shapeInboxService.getAllShapes();
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasSelectedObjects() {
+    return this.selectedObjects.length > 0;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasSavedObjects() {
+    return this.savedObjects.length > 0;
+  }
+
+  /**
+   * Adds a shape to the inbox
+   *
+   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
+   */
+  addToInbox(shapeInformation) {
+    this._shapeInboxService.addShape(shapeInformation);
+    this._loadSelectedObjects();
+  }
+
+  /**
+   * Adds all selected shapes to the inbox
+   */
+  addAllToInbox() {
+    this._shapeInboxService.addShapes(this.selectedObjects);
+    this._loadSelectedObjects();
+  }
+
+  /**
+   * Clears the inbox
+   */
+  removeAllFromInbox() {
+    this._shapeInboxService.clear();
+    this._loadSelectedObjects();
+  }
+
+  /**
+   * Removes a shape from the inbox
+   *
+   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
+   */
+  removeFromInbox(shapeInformation) {
+    this._shapeInboxService.removeShape(shapeInformation);
+    this._loadSelectedObjects();
+  }
+
+  /**
+   * Load the selected objects. Looks up the name in the Task Definition and adds the information
+   * as well as a label with a unique number to the shapeInformation
+   *
+   * @private
+   */
+  _loadSelectedObjects() {
+    this._selectedObjects = {};
+
+    this._shapeSelectionService.getAllShapes().forEach(shape => {
+      if (shape.labeledThingInFrame === undefined) {
+        return;
+      }
+      this._labelStructureService.getLabelStructure(shape.labeledThingInFrame.task)
+        .then(structure => {
+          return structure.getThingById(shape.labeledThingInFrame.identifierName);
+        })
+        .then(labelStructureObject => {
+          if (this._selectedObjects[shape.id] === undefined) {
+            if (this._selectedObjectsLabelCounter[shape.id] === undefined) {
+              this._selectedObjectsLabelCounter[shape.id] = this._selectedObjectsCounter++;
+            }
+
+            const label = `${labelStructureObject.name} #${this._selectedObjectsLabelCounter[shape.id]}`;
+            const shapeInformation = {shape, label, labelStructureObject};
+
+            if (!this._shapeInboxService.hasShape(shapeInformation)) {
+              this._selectedObjects[shape.id] = shapeInformation;
+            }
+          }
+        });
+    });
   }
 
   _loadBackgroundImage() {
@@ -298,6 +454,9 @@ PopupPanelController.$inject = [
   'frameLocationGateway',
   'abortablePromiseFactory',
   '$timeout',
+  'labelStructureService',
+  'shapeSelectionService',
+  'shapeInboxService',
 ];
 
 export default PopupPanelController;
