@@ -99,6 +99,12 @@ describe('GhostingService', () => {
     function resolveViewQuery(startkey, endkey, docs) {
       rootScope.$apply();
       const key = _encodeStartAndEndKey(startkey, endkey);
+
+      if (viewResponseDeferreds[key] === undefined) {
+        throw new Error('View with the given start and and keys was not queried: ' + key + '\n\n'
+          + 'The following views were queried: \n' + Object.keys(viewResponseDeferreds).join('\n'));
+      }
+
       viewResponseDeferreds[key].resolve({
         offset: 0,
         total_rows: docs.length,
