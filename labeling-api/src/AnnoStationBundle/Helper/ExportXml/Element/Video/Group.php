@@ -60,6 +60,26 @@ class Group extends ExportXml\Element
         $group->setAttribute('line-color', $this->labeledThingGroup->getLineColor());
         $group->setAttribute('incomplete', ($this->incomplete) ? 'true' : 'false');
 
+        $createdByUserId = $this->labeledThingGroup->getCreatedByUserId();
+        if ($createdByUserId !== null) {
+            $createdBy = $document->createElementNS(
+                $this->namespace,
+                'created-by',
+                $this->labeledThingGroup->getCreatedByUserId()
+            );
+            $group->appendChild($createdBy);
+        }
+
+        $createdAtDate = $this->labeledThingGroup->getCreatedAt();
+        if ($createdAtDate instanceof \DateTime) {
+            $createdAt = $document->createElementNS(
+                $this->namespace,
+                'created-at',
+                $this->labeledThingGroup->getCreatedAt()->format('c')
+            );
+            $group->appendChild($createdAt);
+        }
+
         foreach ($this->values as $value) {
             $valueElement = $document->createElementNS($this->namespace, 'value');
             $valueElement->setAttribute('id', $value['value']);
