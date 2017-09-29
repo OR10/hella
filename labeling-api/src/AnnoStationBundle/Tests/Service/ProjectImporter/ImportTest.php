@@ -129,26 +129,34 @@ class ImportTest extends Tests\KernelTestCase
                     [
                         'frameRange' => new Model\FrameIndexRange(0, 3),
                         'incomplete' => false,
-                        'lineColor' => '2',
+                        'lineColor'  => '2',
                         'originalId' => '936f01d0baf669cc0daad101ca8fbfdd',
+                        'createdBy'  => 'ffa2a4a7f72e5765eb5d1b09d4009335',
+                        'createdAt'  => new \DateTime('2017-09-29 10:00:00', new \DateTimeZone('UTC')),
                     ],
                     [
                         'frameRange' => new Model\FrameIndexRange(0, 0),
                         'incomplete' => false,
-                        'lineColor' => '5',
+                        'lineColor'  => '5',
                         'originalId' => '936f01d0baf669cc0daad101ca8fe155',
+                        'createdBy'  => 'ffa2a4a7f72e5765eb5d1b09d4009335',
+                        'createdAt'  => new \DateTime('2017-09-29 10:00:00', new \DateTimeZone('UTC')),
                     ],
                     [
                         'frameRange' => new Model\FrameIndexRange(0, 2),
                         'incomplete' => false,
-                        'lineColor' => '3',
+                        'lineColor'  => '3',
                         'originalId' => '936f01d0baf669cc0daad101ca8fe323',
+                        'createdBy'  => 'ffa2a4a7f72e5765eb5d1b09d4009335',
+                        'createdAt'  => new \DateTime('2017-09-29 10:00:00', new \DateTimeZone('UTC')),
                     ],
                     [
                         'frameRange' => new Model\FrameIndexRange(0, 0),
                         'incomplete' => false,
-                        'lineColor' => '4',
+                        'lineColor'  => '4',
                         'originalId' => '936f01d0baf669cc0daad101ca8ffc16',
+                        'createdBy'  => 'ffa2a4a7f72e5765eb5d1b09d4009335',
+                        'createdAt'  => new \DateTime('2017-09-29 10:00:00', new \DateTimeZone('UTC')),
                     ],
                 ],
                 'labeledThingsInFrames' => [
@@ -341,6 +349,8 @@ class ImportTest extends Tests\KernelTestCase
                         'identifierName'            => 'empty-group',
                         'lineColor'                 => '8',
                         'labeledThingGroupInFrames' => [],
+                        'createdBy'                 => 'ffa2a4a7f72e5765eb5d1b09d4009335',
+                        'createdAt'                 => new \DateTime('2017-09-29 10:00:00', new \DateTimeZone('UTC')),
                     ],
                     [
                         'originalId'                => 'cf6a96bdee95412f3309e2a62b26bc2f',
@@ -356,6 +366,8 @@ class ImportTest extends Tests\KernelTestCase
                                 'frameIndex' => 0,
                             ],
                         ],
+                        'createdBy'                 => 'ffa2a4a7f72e5765eb5d1b09d4009335',
+                        'createdAt'                 => new \DateTime('2017-09-29 10:00:00', new \DateTimeZone('UTC')),
                     ],
                 ],
                 'labeledFrames' => [
@@ -439,8 +451,10 @@ class ImportTest extends Tests\KernelTestCase
             return [
                 'frameRange' => $labeledThing->getFrameRange(),
                 'incomplete' => $labeledThing->getIncomplete(),
-                'lineColor' => $labeledThing->getLineColor(),
+                'lineColor'  => $labeledThing->getLineColor(),
                 'originalId' => $labeledThing->getOriginalId(),
+                'createdBy'  => $labeledThing->getCreatedByUserId(),
+                'createdAt'  => $labeledThing->getCreatedAt(),
             ];
         }, $labeledThings);
 
@@ -452,13 +466,13 @@ class ImportTest extends Tests\KernelTestCase
             $labeledThing = $labelingThingFacade->find($labeledThingInFrame->getLabeledThingId());
             return [
                 'originalLabeledThingId' => $labeledThing->getOriginalId(),
-                'frameIndex' => $labeledThingInFrame->getFrameIndex(),
-                'classes' => $labeledThingInFrame->getClasses(),
-                'ghostClasses' => $labeledThingInFrame->getGhostClasses(),
-                'shapes' => $labeledThingInFrame->getShapes(),
-                'incomplete' => $labeledThingInFrame->getIncomplete(),
-                'identifierName' => $labeledThingInFrame->getIdentifierName(),
-                'ghost' => $labeledThingInFrame->isGhost(),
+                'frameIndex'             => $labeledThingInFrame->getFrameIndex(),
+                'classes'                => $labeledThingInFrame->getClasses(),
+                'ghostClasses'           => $labeledThingInFrame->getGhostClasses(),
+                'shapes'                 => $labeledThingInFrame->getShapes(),
+                'incomplete'             => $labeledThingInFrame->getIncomplete(),
+                'identifierName'         => $labeledThingInFrame->getIdentifierName(),
+                'ghost'                  => $labeledThingInFrame->isGhost(),
             ];
         }, $labeledThingInFrames);
 
@@ -480,6 +494,8 @@ class ImportTest extends Tests\KernelTestCase
                 'identifierName'            => $labeledThingGroup->getIdentifierName(),
                 'lineColor'                 => $labeledThingGroup->getLineColor(),
                 'labeledThingGroupInFrames' => $labeledThingGroupInFrames,
+                'createdBy'                 => $labeledThingGroup->getCreatedByUserId(),
+                'createdAt'                 => $labeledThingGroup->getCreatedAt(),
             ];
         }, $labeledThingGroups);
         $this->assertEquals($expectedLabeledThingGroups, $actualLabeledThingGroups);
@@ -488,10 +504,10 @@ class ImportTest extends Tests\KernelTestCase
 
         $actualLabeledFrames = array_map(function (Model\LabeledFrame $labeledFrame) {
             return [
-                'frameIndex' => $labeledFrame->getFrameIndex(),
-                'classes' => $labeledFrame->getClasses(),
+                'frameIndex'   => $labeledFrame->getFrameIndex(),
+                'classes'      => $labeledFrame->getClasses(),
                 'ghostClasses' => $labeledFrame->getGhostClasses(),
-                'incomplete' => $labeledFrame->getIncomplete(),
+                'incomplete'   => $labeledFrame->getIncomplete(),
             ];
         }, $labeledFrames);
         $this->assertEquals($expectedLabeledFrames, $actualLabeledFrames);
