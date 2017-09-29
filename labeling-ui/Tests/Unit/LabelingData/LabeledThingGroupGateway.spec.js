@@ -5,7 +5,6 @@ import {cloneDeep} from 'lodash';
 
 import Common from 'Application/Common/Common';
 
-import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 import LabeledThingGroup from 'Application/LabelingData/Models/LabeledThingGroup';
 
 import LabeledThingGroupGateway from 'Application/LabelingData/Gateways/LabeledThingGroupGateway';
@@ -471,7 +470,7 @@ describe('LabeledThingGroupGateway', () => {
   it('should delete a labeled thing group', () => {
     const task = createTask();
 
-    const labeledThingGroup = new LabeledThingGroup({
+    const labeledThingGroupToDelete = new LabeledThingGroup({
       task,
       id: 'LABELED-THING-GROUP-ID',
       identifierName: 'extension-sign-group',
@@ -482,7 +481,7 @@ describe('LabeledThingGroupGateway', () => {
       createdAt: '2017-09-05 16:11:56.000000',
       lastModifiedAt: '2017-09-05 16:11:56.000000',
     });
-    spyOn(labeledThingGroup, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
+    spyOn(labeledThingGroupToDelete, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
 
 
     const serializedGroup = {
@@ -499,7 +498,7 @@ describe('LabeledThingGroupGateway', () => {
       projectId: task.projectId,
     };
 
-    groupGateway.deleteLabeledThingGroup(labeledThingGroup);
+    groupGateway.deleteLabeledThingGroup(labeledThingGroupToDelete);
 
     $rootScope.$apply();
 
@@ -512,7 +511,7 @@ describe('LabeledThingGroupGateway', () => {
 
     const task = createTask();
 
-    const labeledThingGroup = new LabeledThingGroup({
+    const labeledThingGroupToCreate = new LabeledThingGroup({
       task,
       id: 'LABELED-THING-GROUP-ID',
       identifierName: 'extension-sign-group',
@@ -523,7 +522,7 @@ describe('LabeledThingGroupGateway', () => {
       createdAt: '2017-09-05 16:11:56.000000',
       lastModifiedAt: '2017-09-05 16:11:56.000000',
     });
-    spyOn(labeledThingGroup, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
+    spyOn(labeledThingGroupToCreate, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
 
     const serializedGroup = {
       _id: 'LABELED-THING-GROUP-ID',
@@ -539,7 +538,7 @@ describe('LabeledThingGroupGateway', () => {
       lastModifiedAt: '2017-09-05 16:11:56.000000',
     };
 
-    groupGateway.createLabeledThingGroup(task, labeledThingGroup);
+    groupGateway.createLabeledThingGroup(task, labeledThingGroupToCreate);
 
     $rootScope.$apply();
 

@@ -134,7 +134,7 @@ describe('GhostingService', () => {
       );
 
       couchDbModelDeserializerMock.deserializeLabeledThingGroupInFrame.and.callFake(
-        (ltgifDocument, ltg) => {
+        ltgifDocument => {
           switch (ltgifDocument._id) {
             case labeledThingGroupInFrameDocument._id:
               return labeledThingGroupInFrame;
