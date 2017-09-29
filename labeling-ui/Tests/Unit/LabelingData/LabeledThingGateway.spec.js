@@ -423,7 +423,7 @@ describe('LabeledThingGateway', () => {
   it('should assign labeled things to a labeled thing group', () => {
     const task = taskFrontendModel;
 
-    spyOn(gateway, 'saveLabeledThing').and.callThrough();
+    spyOn(gateway, '_saveLabeledThingWithoutPackagingExecutor').and.callThrough();
 
     const labeledThingGroup = new LabeledThingGroup({
       id: 'LABELED-THING-GROUP-ID',
@@ -465,7 +465,7 @@ describe('LabeledThingGateway', () => {
 
     $rootScope.$apply();
 
-    const storedLabeledThing = gateway.saveLabeledThing.calls.mostRecent().args[0];
+    const storedLabeledThing = gateway._saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
     const storedLabeledThingDocument = storedLabeledThing.toJSON();
     delete storedLabeledThingDocument.createdAt;
     delete storedLabeledThingDocument.lastModifiedAt;
@@ -480,7 +480,7 @@ describe('LabeledThingGateway', () => {
   it('should unassign labeled things from a labeled thing group', () => {
     const task = taskFrontendModel;
 
-    spyOn(gateway, 'saveLabeledThing').and.callThrough();
+    spyOn(gateway, '_saveLabeledThingWithoutPackagingExecutor').and.callThrough();
 
     const labeledThingGroup = new LabeledThingGroup({
       id: 'LABELED-THING-GROUP-ID',
@@ -520,7 +520,7 @@ describe('LabeledThingGateway', () => {
 
     $rootScope.$apply();
 
-    const storedLabeledThing = gateway.saveLabeledThing.calls.mostRecent().args[0];
+    const storedLabeledThing = gateway._saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
     const storedLabeledThingDocument = storedLabeledThing.toJSON();
     delete storedLabeledThingDocument.createdAt;
     delete storedLabeledThingDocument.lastModifiedAt;

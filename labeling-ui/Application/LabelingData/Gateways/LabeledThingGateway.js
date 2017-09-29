@@ -178,7 +178,7 @@ class LabeledThingGateway {
    *
    * @param {LabeledThing} labeledThing
    * @returns {LabeledThing}
-   * @private
+   * @protected
    */
   _saveLabeledThingWithoutPackagingExecutor(labeledThing) {
     const task = labeledThing.task;
