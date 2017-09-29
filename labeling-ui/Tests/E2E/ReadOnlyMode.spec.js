@@ -1,5 +1,11 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
+  shortSleep,
+} from '../Support/Protractor/Helpers';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -51,21 +57,21 @@ describe('ReadOnly Mode', () => {
     it('should not show handles', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoShapeHandles')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoShapeHandles);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should not be movable by mouse', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 150, y: 350})
@@ -74,21 +80,21 @@ describe('ReadOnly Mode', () => {
             .mouseUp()
             .perform();
         })
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoShapeMovement')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoShapeMovement);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should not be movable by keyboard', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.ARROW_UP)
@@ -101,21 +107,21 @@ describe('ReadOnly Mode', () => {
             .sendKeys(protractor.Key.SHIFT, protractor.Key.ARROW_RIGHT, protractor.Key.NULL)
             .perform();
         })
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoShapeMovement')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoShapeMovement);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should not be resizable', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 204, y: 428}) // Bottom right corner
@@ -124,21 +130,21 @@ describe('ReadOnly Mode', () => {
             .mouseUp()
             .perform();
         })
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoShapeResize')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoShapeResize);
-          done();
-        });
+        })
+        .then(() => done());
     });
 
     it('should not be removable by mouse', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(() => {
           const deleteShapeButton = element(by.css('#delete-shape-button'));
           return expect(deleteShapeButton.isDisplayed()).toBeFalsy();
@@ -149,13 +155,13 @@ describe('ReadOnly Mode', () => {
     it('should not be removable by keyboard', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.DELETE)
             .perform();
         })
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(() => expectAllModalsToBeClosed())
         .then(() => done());
     });
@@ -163,7 +169,7 @@ describe('ReadOnly Mode', () => {
     it('should not be interpolatable by mouse', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(() => {
           const interpolateShapeButton = element(by.css('#interpolate-shape-button'));
           return expect(interpolateShapeButton.isDisplayed()).toBeFalsy();
@@ -174,13 +180,13 @@ describe('ReadOnly Mode', () => {
     it('should not be interpolatable by keyboard', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => clickRectangle())
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(() => {
           return browser.actions()
             .sendKeys('t') // Interpolation shortcut
             .perform();
         })
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(() => expectAllModalsToBeClosed()) // Error modal regarding non mocked request
         .then(() => done());
     });
@@ -198,7 +204,7 @@ describe('ReadOnly Mode', () => {
             .click(toolButton0) // Rect drawing
             .perform();
         })
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, {x: 204, y: 428})
@@ -207,15 +213,15 @@ describe('ReadOnly Mode', () => {
             .mouseUp()
             .perform();
         })
-        .then(() => browser.sleep(200))
+        .then(() => shortSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ReadOnlyMode', 'NoDrawingPossible')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ReadOnlyMode.NoDrawingPossible);
-          done();
-        });
+        })
+        .then(() => done());
     });
   });
 
@@ -241,7 +247,7 @@ describe('ReadOnly Mode', () => {
             .click()
             .perform();
         })
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Sign type').click())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Sign type', 'U-Turn').click())
         .then(() => expect(labelSelectorHelper.getEntrySelectionStatesByTitleText('Sign type')).toEqual(

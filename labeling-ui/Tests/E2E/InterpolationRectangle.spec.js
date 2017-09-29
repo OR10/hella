@@ -1,10 +1,17 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import { expectAllModalsToBeClosed, initApplication, bootstrapHttp, bootstrapPouch } from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  initApplication,
+  bootstrapHttp,
+  bootstrapPouch,
+  mediumSleep,
+  longSleep,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Interpolation Rectangle Tests', () => {
+describe('Rectangle Interpolation', () => {
   let assets;
   let viewer;
   let nextFrameButton;
@@ -13,7 +20,11 @@ describe('Interpolation Rectangle Tests', () => {
   let goEndButton;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -53,7 +64,16 @@ describe('Interpolation Rectangle Tests', () => {
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => interpolateButton.click())
+      .then(() => longSleep())
+      .then(() => {
+        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -62,7 +82,7 @@ describe('Interpolation Rectangle Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame0);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -71,7 +91,7 @@ describe('Interpolation Rectangle Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame1);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -80,7 +100,7 @@ describe('Interpolation Rectangle Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame2);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -89,7 +109,7 @@ describe('Interpolation Rectangle Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame3);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -97,14 +117,7 @@ describe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame4);
       })
-      .then(() => {
-        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should interpolate a Rectangle when selecting the end LTIF', done => {
@@ -120,8 +133,16 @@ describe('Interpolation Rectangle Tests', () => {
           .perform();
       })
       .then(() => goEndButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => interpolateButton.click())
+      .then(() => longSleep())
+      .then(() => {
+        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -130,7 +151,7 @@ describe('Interpolation Rectangle Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame4);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -139,7 +160,7 @@ describe('Interpolation Rectangle Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame3);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -148,7 +169,7 @@ describe('Interpolation Rectangle Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame2);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -157,7 +178,7 @@ describe('Interpolation Rectangle Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame1);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -165,14 +186,7 @@ describe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.Frame0);
       })
-      .then(() => {
-        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Rectangle.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should draw and interpolate a new rectangle', done => {
@@ -185,17 +199,17 @@ describe('Interpolation Rectangle Tests', () => {
           .mouseUp()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150}) // Rectangle in first frame
           .click()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => nextFrameButton.click())
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => {
         return browser.actions()
           .mouseMove(viewer, {x: 150, y: 150})
@@ -205,8 +219,14 @@ describe('Interpolation Rectangle Tests', () => {
           .click()
           .perform();
       })
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => interpolateButton.click())
+      .then(() => longSleep())
+      .then(() => {
+        expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex2).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'DrawFrame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -215,7 +235,7 @@ describe('Interpolation Rectangle Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.DrawFrame2);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'DrawFrame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -224,7 +244,7 @@ describe('Interpolation Rectangle Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.DrawFrame1);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationRectangle', 'DrawFrame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -232,12 +252,7 @@ describe('Interpolation Rectangle Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationRectangle.DrawFrame0);
       })
-      .then(() => {
-        expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Rectangle.Draw.frameIndex2).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   afterEach(() => {

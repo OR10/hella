@@ -4,6 +4,8 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  longSleep,
+  mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -18,7 +20,11 @@ describe('Interpolation Pedestrian Tests', () => {
   let goEndButton;
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     bootstrapHttp([
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -58,7 +64,16 @@ describe('Interpolation Pedestrian Tests', () => {
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => interpolateButton.click())
+      .then(() => longSleep())
+      .then(() => {
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -67,7 +82,7 @@ describe('Interpolation Pedestrian Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame0);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -76,7 +91,7 @@ describe('Interpolation Pedestrian Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame1);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -85,7 +100,7 @@ describe('Interpolation Pedestrian Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame2);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -94,7 +109,7 @@ describe('Interpolation Pedestrian Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame3);
       })
       .then(() => nextFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -102,14 +117,7 @@ describe('Interpolation Pedestrian Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame4);
       })
-      .then(() => {
-        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   it('should interpolate a Pedestrian when selecting the end LTIF', done => {
@@ -120,9 +128,18 @@ describe('Interpolation Pedestrian Tests', () => {
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => goEndButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(() => interpolateButton.click())
+      .then(() => longSleep())
+      .then(() => {
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
+      })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame4')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -131,7 +148,7 @@ describe('Interpolation Pedestrian Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame4);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame3')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -140,7 +157,7 @@ describe('Interpolation Pedestrian Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame3);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame2')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -149,7 +166,7 @@ describe('Interpolation Pedestrian Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame2);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame1')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -158,7 +175,7 @@ describe('Interpolation Pedestrian Tests', () => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame1);
       })
       .then(() => previousFrameButton.click())
-      .then(() => browser.sleep(500))
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPedestrian', 'Frame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -166,14 +183,7 @@ describe('Interpolation Pedestrian Tests', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPedestrian.Frame0);
       })
-      .then(() => {
-        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex1).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex2).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex3).toExistInPouchDb();
-        expect(assets.mocks.Interpolation.Pedestrian.StoreLabeledThingInFrame.frameIndex4).toExistInPouchDb();
-        done();
-      });
+      .then(() => done());
   });
 
   afterEach(() => {

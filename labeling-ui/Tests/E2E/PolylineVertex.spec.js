@@ -4,6 +4,7 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -122,6 +123,7 @@ describe('Polyline vertex', () => {
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineVertex', 'AddNewVertexToPolygon'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -143,6 +145,7 @@ describe('Polyline vertex', () => {
       .then(() => clickAtPositionOne())
       .then(() => clickAtPositionTwo())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineVertex', 'AddTwoNewVerticesToPolygon'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -165,6 +168,7 @@ describe('Polyline vertex', () => {
       .then(() => clickAtPositionTwo())
       .then(() => clickAtPositionThree())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineVertex', 'AddThreeNewVerticesToPolygon'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -188,6 +192,7 @@ describe('Polyline vertex', () => {
       .then(() => clickAtPositionThree())
       .then(() => clickAtBottomVertexOfFirstPolyline())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineVertex', 'AddThreeNewVerticesToPolygonAndDeleteOne'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -212,6 +217,7 @@ describe('Polyline vertex', () => {
       .then(() => clickAtBottomVertexOfFirstPolyline())
       .then(() => clickAtPositionOne())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineVertex', 'AddThreeNewVerticesToPolygonAndDeleteTwo'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -236,6 +242,7 @@ describe('Polyline vertex', () => {
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionTwo())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineVertex', 'AddNewVerticesToTwoPolygons1'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -268,6 +275,7 @@ describe('Polyline vertex', () => {
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineVertex', 'AddNewVerticesToTwoPolygons2'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -305,6 +313,7 @@ describe('Polyline vertex', () => {
       .then(() => clickAtBottomVertexOfFirstPolyline())
       .then(() => clickAtTopVertexOfFirstPolyline())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineVertex', 'AddNewVerticesToTwoPolygons3'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
