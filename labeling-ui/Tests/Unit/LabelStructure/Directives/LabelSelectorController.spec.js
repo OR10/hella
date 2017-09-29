@@ -82,7 +82,7 @@ describe('LabelSelectorController tests', () => {
       });
     });
 
-    it('returns false if selectedPaperShape is type of PaperMeasurementRectangle', () => {
+    it('return false if selectedPaperShape is type of PaperMeasurementRectangle', () => {
       setupPaperJs();
       const controller = createController();
       const topLeft = {x: 1, y: 1};

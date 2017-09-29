@@ -7,6 +7,7 @@ import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
 import PaperMeasurementRectangle from 'Application/Viewer/Shapes/PaperMeasurementRectangle';
 import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
 import LabeledThingGroupInFrame from '../../LabelingData/Models/LabeledThingGroupInFrame';
+import PaperVirtualShape from '../../Viewer/Shapes/PaperVirtualShape';
 
 /**
  * @property {string} labeledObjectType
@@ -281,9 +282,11 @@ export default class LabelSelectorController {
    * @returns {boolean}
    */
   show() {
-    const hasPaperShape = (this.selectedPaperShape !== undefined && this.selectedPaperShape !== null);
+    const selectedShape = this.selectedPaperShape;
+    const hasPaperShape = (selectedShape !== undefined && selectedShape !== null);
     const hasAtMostOneSelectedShape = (this._shapeSelectionService.count() <= 1);
-    return hasPaperShape && hasAtMostOneSelectedShape;
+    const isVirtualShape = selectedShape instanceof PaperVirtualShape;
+    return hasPaperShape && hasAtMostOneSelectedShape && !isVirtualShape;
   }
 
   /**
