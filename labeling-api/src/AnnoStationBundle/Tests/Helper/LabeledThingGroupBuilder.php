@@ -20,6 +20,11 @@ class LabeledThingGroupBuilder
      */
     private $identifierName;
 
+    /**
+     * @var string
+     */
+    private $createdByUserId;
+
     private function __construct(AppBundleModel\LabelingTask $task)
     {
         $this->labelingTask = $task;
@@ -46,11 +51,27 @@ class LabeledThingGroupBuilder
     }
 
     /**
+     * @param $userId
+     * @return $this
+     */
+    public function withCreatedByUserId($userId) {
+        $this->createdByUserId = $userId;
+
+        return $this;
+    }
+
+    /**
      * @return Model\LabeledThingGroup
      */
     public function build()
     {
-        $labeledThingGroup = new Model\LabeledThingGroup($this->labelingTask, 1, $this->identifierName);
+        $labeledThingGroup = new Model\LabeledThingGroup(
+            $this->labelingTask,
+            1,
+            $this->identifierName,
+            [],
+            $this->createdByUserId
+        );
 
         return $labeledThingGroup;
     }

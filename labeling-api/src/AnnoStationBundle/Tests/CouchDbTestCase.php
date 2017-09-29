@@ -123,7 +123,7 @@ class CouchDbTestCase extends Tests\WebTestCase
 
     protected function createLabeledThing(Model\LabelingTask $task, $id = null)
     {
-        $labeledThing = Model\LabeledThing::create($task);
+        $labeledThing = Model\LabeledThing::create($task, 1, 'some-user-foobar-123-id');
 
         if ($id !== null) {
             $labeledThing->setId($id);
