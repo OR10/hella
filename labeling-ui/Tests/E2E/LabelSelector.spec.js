@@ -261,7 +261,35 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => done());
     });
 
-    it('should allow multiple open panes in multi-select mode', done => {
+    it('should open up all panes in multi-select mode', done => {
+      bootstrapHttp(sharedMocks);
+
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickRectangleOne())
+        .then(() => labelSelectorHelper.switchToMultiSelectMode())
+        .then(() => shortSleep())
+        .then(
+          () => expect(
+            labelSelectorHelper.getAllOpenStates()
+          ).toEqual(
+            {
+              'Vehicle Type': true,
+              'Direction': true,
+              'Occlusion': true,
+              'Truncation': true,
+            }
+          )
+        )
+        .then(() => done());
+    });
+
+    it('should allow panes to be explicitly closed in multi-select mode', done => {
       bootstrapHttp(sharedMocks);
 
       initApplication(
@@ -283,46 +311,11 @@ describe('LabelSelector (right sidebar)', () => {
             labelSelectorHelper.getAllOpenStates()
           ).toEqual(
             {
-              'Vehicle Type': false,
-              'Direction': true,
-              'Occlusion': true,
-              'Truncation': false,
+              'Vehicle Type': true,
+              'Direction': false,
+              'Occlusion': false,
+              'Truncation': true,
             }
-          )
-        )
-        .then(() => done());
-    });
-
-    it('should close clicked open open panes in multi-select mode', done => {
-      bootstrapHttp(sharedMocks);
-
-      initApplication(
-        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
-        {
-          viewerWidth: 1104,
-          viewerHeight: 620,
-        }
-      )
-        .then(() => clickRectangleOne())
-        .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Truncation').click())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Direction').click())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Occlusion').click())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Truncation').click())
-        .then(() => shortSleep())
-        .then(() => expect(
-          labelSelectorHelper.getAllOpenStates()
-          ).toEqual(
-          {
-            'Vehicle Type': false,
-            'Direction': true,
-            'Occlusion': true,
-            'Truncation': false,
-          }
           )
         )
         .then(() => done());
@@ -400,8 +393,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => shortSleep())
         .then(
           () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
             'Vehicle Type',
@@ -438,8 +429,6 @@ describe('LabelSelector (right sidebar)', () => {
       )
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
         .then(() => shortSleep())
         .then(
           () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
@@ -559,8 +548,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => shortSleep())
         .then(
           () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
             'Vehicle Type',
@@ -617,8 +604,6 @@ describe('LabelSelector (right sidebar)', () => {
       )
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
         .then(() => shortSleep())
         .then(
           () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
@@ -688,8 +673,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
-        .then(() => shortSleep())
         .then(
           () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
             'Vehicle Type',
@@ -756,8 +739,6 @@ describe('LabelSelector (right sidebar)', () => {
       )
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Vehicle Type').click())
         .then(() => shortSleep())
         .then(
           () => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
@@ -1040,8 +1021,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => clickRectangleTwo())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
-        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
         .then(() => mediumSleep())
         .then(
@@ -1079,8 +1058,6 @@ describe('LabelSelector (right sidebar)', () => {
       )
         .then(() => clickRectangleTwo())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
         .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
         .then(() => mediumSleep())
@@ -1130,8 +1107,6 @@ describe('LabelSelector (right sidebar)', () => {
       )
         .then(() => clickRectangleTwo())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
         .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
         .then(() => mediumSleep())
@@ -1185,8 +1160,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => clickRectangleTwo())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
-        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
         .then(() => mediumSleep())
         .then(
@@ -1228,8 +1201,6 @@ describe('LabelSelector (right sidebar)', () => {
       )
         .then(() => clickRectangleTwo())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Time').click())
         .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Time', 'Night').click())
         .then(() => mediumSleep())
@@ -1273,8 +1244,6 @@ describe('LabelSelector (right sidebar)', () => {
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
         .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
-        .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value A').click())
         .then(() => mediumSleep())
         .then(
@@ -1309,8 +1278,6 @@ describe('LabelSelector (right sidebar)', () => {
       )
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
         .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
         .then(() => mediumSleep())
@@ -1354,8 +1321,6 @@ describe('LabelSelector (right sidebar)', () => {
       )
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
         .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
         .then(() => mediumSleep())
@@ -1405,8 +1370,6 @@ describe('LabelSelector (right sidebar)', () => {
       )
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
         .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
         .then(() => mediumSleep())
@@ -1465,8 +1428,6 @@ describe('LabelSelector (right sidebar)', () => {
       )
         .then(() => clickRectangleOne())
         .then(() => labelSelectorHelper.switchToMultiSelectMode())
-        .then(() => shortSleep())
-        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText('Class A').click())
         .then(() => shortSleep())
         .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText('Class A', 'Value B').click())
         .then(() => mediumSleep())
