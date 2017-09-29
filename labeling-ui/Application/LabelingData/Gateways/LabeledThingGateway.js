@@ -408,12 +408,16 @@ class LabeledThingGateway {
   _getAssociatedLabeledThingsInFrames(task, labeledThing) {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName(
-      'labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
-      include_docs: true,
-      startkey: [labeledThing.id, 0],
-      endkey: [labeledThing.id, {}],
-    });
+    return dbContext.query(
+      this._pouchDbViewService.getDesignDocumentViewName(
+        'labeledThingInFrameByLabeledThingIdAndFrameIndex'
+      ),
+      {
+        include_docs: true,
+        startkey: [labeledThing.id, 0],
+        endkey: [labeledThing.id, {}],
+      }
+    );
   }
 }
 
