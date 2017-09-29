@@ -1646,10 +1646,36 @@ describe('LabelSelector (right sidebar)', () => {
   describe('LabelSelector Dynamic Title', () => {
     let pedestrianName;
     let rectangleName;
+    let rectangleGroupOneName;
+    let pedestrianGroupTwoName;
+
+    function clickRectangleGroupOne() {
+      return Promise.resolve()
+        .then(
+          () => browser.actions()
+            .mouseMove(viewer, {x: 98, y: 98})
+            .click()
+            .perform()
+        )
+        .then(() => mediumSleep());
+    }
+
+    function clickPedestrianGroupTwo() {
+      return Promise.resolve()
+        .then(
+          () => browser.actions()
+            .mouseMove(viewer, {x: 400, y: 313})
+            .click()
+            .perform()
+        )
+        .then(() => mediumSleep());
+    }
 
     beforeEach(() => {
       pedestrianName = 'Blub';
       rectangleName = 'Traffic Sign';
+      rectangleGroupOneName = 'The Blues Brothers';
+      pedestrianGroupTwoName = 'Peter, Paul and Mary';
     });
 
     beforeEach(() => {
@@ -1695,7 +1721,33 @@ describe('LabelSelector (right sidebar)', () => {
         .then(done);
     });
 
-    // @TODO: add tests for groupnames here, once TTANNO-1792 is implemented
+    it('should show the name of the rectangle group', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickRectangleGroupOne())
+        .then(() => labelSelectorHelper.getLabelSelectorTitleText())
+        .then(titleTexts => expect(titleTexts).toEqual(rectangleGroupOneName))
+        .then(done);
+    });
+
+    it('should show the name of the pedestrian group', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling',
+        {
+          viewerWidth: 1104,
+          viewerHeight: 620,
+        }
+      )
+        .then(() => clickPedestrianGroupTwo())
+        .then(() => labelSelectorHelper.getLabelSelectorTitleText())
+        .then(titleTexts => expect(titleTexts).toEqual(pedestrianGroupTwoName))
+        .then(done);
+    });
   });
 
   afterEach(() => {
