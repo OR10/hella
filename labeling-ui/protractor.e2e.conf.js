@@ -109,7 +109,8 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
   // Code to stop browserstack local after end of test
   exports.config.afterLaunch = () => {
     return new Promise(resolve => {
-      exports.bs_local.stop(resolve);
+      console.log('Stopping browserstack');
+      exports.bs_local.stop(() => resolve());
     });
   };
 } else {
