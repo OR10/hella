@@ -7,8 +7,9 @@ class HierarchyCreationService {
   /**
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
+   * @param {CurrentUserService} currentUserService
    */
-  constructor(entityIdService, entityColorService) {
+  constructor(entityIdService, entityColorService, currentUserService) {
     /**
      * @type {EntityIdService}
      * @private
@@ -20,6 +21,12 @@ class HierarchyCreationService {
      * @private
      */
     this._entityColorService = entityColorService;
+
+    /**
+     * @type {CurrentUserService}
+     * @private
+     */
+    this._currentUserService = currentUserService;
   }
 
   /**
@@ -46,6 +53,7 @@ class HierarchyCreationService {
         startFrameIndex: framePosition.position,
         endFrameIndex: framePosition.position,
       },
+      createdByUserId: this._currentUserService.get().id,
     });
 
     const newLabeledThingInFrame = new LabeledThingInFrame({
@@ -78,6 +86,7 @@ class HierarchyCreationService {
       lineColor: this._entityColorService.getColorId(),
       identifierName: creationToolActionStruct.requirementsThingOrGroupId,
       groupIds: [],
+      createdByUserId: this._currentUserService.get().id,
     });
 
     const newLabeledThingGroupInFrame = new LabeledThingGroupInFrame({
@@ -94,6 +103,7 @@ class HierarchyCreationService {
 HierarchyCreationService.$inject = [
   'entityIdService',
   'entityColorService',
+  'currentUserService',
 ];
 
 export default HierarchyCreationService;
