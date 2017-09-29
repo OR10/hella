@@ -189,15 +189,15 @@ function sleep(delay) {
 }
 
 export function shortSleep() {
-  return sleep(300);
+  return sleep(100);
 }
 
 export function mediumSleep() {
-  return sleep(800);
+  return sleep(400);
 }
 
 export function longSleep() {
-  return sleep(1800);
+  return sleep(600);
 }
 
 export function comaLikeSleep() {
