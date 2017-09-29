@@ -6,7 +6,7 @@
 // @match       https://weblabel.hella-aglaia.com/labeling/*
 // ==/UserScript==
 
-(function () { // eslint-disable-line func-names
+(function() { // eslint-disable-line func-names
   const databaseMapping = {
     'localhost:54321': `http://192.168.222.20:5984/_utils/database.html?{{database}}`,
     'weblabel.hella-aglaia.com': `http://localhost:15894/_utils/database.html?{{database}}`,
