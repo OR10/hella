@@ -9,7 +9,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 import {cloneDeep} from 'lodash';
 
-describe('Class Ghosting', () => {
+fdescribe('Class Ghosting', () => {
   let assets;
   let sharedMocks;
   let viewer;
