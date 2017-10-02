@@ -2,8 +2,9 @@ class ShapeMergeService {
   /**
    * @param {$q} $q
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledThingGateway} labeledThingGateway
    */
-  constructor($q, labeledThingInFrameGateway) {
+  constructor($q, labeledThingInFrameGateway, labeledThingGateway) {
     /**
      * @type {$q}
      * @private
@@ -15,6 +16,12 @@ class ShapeMergeService {
      * @private
      */
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
+
+    /**
+     * @type {LabeledThingGateway}
+     * @private
+     */
+    this._labeledThingGateway = labeledThingGateway;
   }
 
   /**
@@ -27,14 +34,35 @@ class ShapeMergeService {
     const newFrameRange = this._calculcateFrameRange(shapes);
     rootLabeledThing.frameRange = Object.assign({}, rootLabeledThing.frameRange, newFrameRange);
 
+    const labeledThings = [];
     const promises = [];
 
     shapes.forEach(shape => {
+      labeledThings.push(shape.labeledThingInFrame.labeledThing);
       shape.labeledThingInFrame.labeledThing = rootLabeledThing;
       shape.labeledThingInFrame.classes = rootShape.labeledThingInFrame.classes;
 
       const shapePromise =  this._labeledThingInFrameGateway.saveLabeledThingInFrame(shape.labeledThingInFrame);
       promises.push(shapePromise);
+    });
+
+    this._$q.all(promises).then(() => {
+      const ltPromises = [];
+
+      labeledThings.forEach(labeledThing => {
+        const ltifPromise = this._labeledThingGateway.getAssociatedLabeledThingsInFrames(labeledThing)
+          .then(labeledThingsInFrame => {
+            if (labeledThingsInFrame.rows.length === 0) {
+              return this._labeledThingGateway.deleteLabeledThing(labeledThing);
+            } else {
+              return this._$q.resolve();
+            }
+          });
+
+        ltPromises.push(ltifPromise);
+      });
+
+      return this._$q.all(ltPromises);
     });
 
     return this._$q.all(promises);
@@ -73,6 +101,7 @@ class ShapeMergeService {
 ShapeMergeService.$inject = [
   '$q',
   'labeledThingInFrameGateway',
+  'labeledThingGateway',
 ];
 
 export default ShapeMergeService;

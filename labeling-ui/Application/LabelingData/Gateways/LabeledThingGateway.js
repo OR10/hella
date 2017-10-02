@@ -248,6 +248,15 @@ class LabeledThingGateway {
       endkey: [labeledThing.id, {}],
     });
   }
+
+  /**
+   * @param {LabeledThing} labeledThing
+   * @return {Array.<LabeledThingInFrame>}
+   */
+  getAssociatedLabeledThingsInFrames(labeledThing) {
+    const task = labeledThing.task;
+    return this._getAssociatedLabeledThingsInFrames(task, labeledThing);
+  }
 }
 
 LabeledThingGateway.$inject = [
