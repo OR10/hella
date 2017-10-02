@@ -112,8 +112,8 @@
         </div>
 
         <div class="popup-inbox-actions">
-            <p class="popup-inbox-action" ng-disabled="!vm.hasMergableObjects()">
-                <i class="icon fa fa-compress" ng-click="vm.mergeShapes()"></i>
+            <p class="popup-inbox-action" ng-disabled="!vm.hasMergableObjects()" ng-click="vm.mergeShapes()">
+                <i class="icon fa fa-compress"></i>
                 Merge
             </p>
             <p class="popup-inbox-action" ng-disabled="!vm.hasSavedObjects()" ng-click="vm.removeAllFromInbox()">

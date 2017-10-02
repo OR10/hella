@@ -238,8 +238,6 @@ class PopupPanelController {
       const rootShapeFrameIndex = rootShape.labeledThingInFrame.frameIndex;
       const rootShapeConstructor = rootShape.constructor;
 
-      console.log('rootFrameIndex:', rootShapeFrameIndex);
-
       let mergable = true;
       this.savedObjects.forEach(object => {
         if (object.shape === rootShape) {
@@ -256,6 +254,25 @@ class PopupPanelController {
     }
 
     return false;
+  }
+
+  mergeShapes() {
+    const rootShape = this.savedObjects[0].shape;
+    const rootShapeFrameIndex = rootShape.labeledThingInFrame.frameIndex;
+    const rootShapeConstructor = rootShape.constructor;
+
+    const shapes = this.savedObjects.map(object => object.shape);
+    const mergableShapes = shapes.filter(shape => {
+      if (shape === rootShape) {
+        return true;
+      }
+      const hasDifferentFrameIndex = (rootShapeFrameIndex !== shape.labeledThingInFrame.frameIndex);
+      const isOfSameType = (rootShapeConstructor === shape.constructor);
+
+      return hasDifferentFrameIndex && isOfSameType;
+    });
+
+    console.log(mergableShapes);
   }
 
   /**
