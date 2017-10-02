@@ -112,7 +112,7 @@
         </div>
 
         <div class="popup-inbox-actions">
-            <p class="popup-inbox-action">
+            <p class="popup-inbox-action" ng-disabled="!vm.hasMergableObjects()">
                 <i class="icon fa fa-compress" ng-click="vm.mergeShapes()"></i>
                 Merge
             </p>

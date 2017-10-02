@@ -232,6 +232,32 @@ class PopupPanelController {
     return this.savedObjects.length > 0;
   }
 
+  hasMergableObjects() {
+    if (this.savedObjects.length > 1) {
+      const rootShape = this.savedObjects[0].shape;
+      const rootShapeFrameIndex = rootShape.labeledThingInFrame.frameIndex;
+      const rootShapeConstructor = rootShape.constructor;
+
+      console.log('rootFrameIndex:', rootShapeFrameIndex);
+
+      let mergable = true;
+      this.savedObjects.forEach(object => {
+        if (object.shape === rootShape) {
+          return;
+        }
+        const hasDifferentFrameIndex = (rootShapeFrameIndex !== object.shape.labeledThingInFrame.frameIndex);
+        const isOfSameType = (rootShapeConstructor === object.shape.constructor);
+
+        mergable &= hasDifferentFrameIndex;
+        mergable &= isOfSameType;
+      });
+
+      return mergable;
+    }
+
+    return false;
+  }
+
   /**
    * Adds a shape to the inbox
    *
