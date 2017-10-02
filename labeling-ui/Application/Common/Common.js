@@ -58,6 +58,7 @@ import ReplicationStateService from './Services/ReplicationStateService';
 import TaskReplicationService from './Services/TaskReplicationService';
 import ShapeSelectionService from './Services/ShapeSelectionService';
 import ShapeInboxService from './Services/ShapeInboxService';
+import ShapeMergeService from './Services/ShapeMergeService';
 import PathCollisionService from './Services/PathCollisionService';
 import ToolSelectorListenerService from './Services/ToolSelectorListenerService';
 import GroupCreationService from './Services/GroupCreationService';
@@ -142,6 +143,7 @@ class Common extends Module {
     this.module.service('taskReplicationService', TaskReplicationService);
     this.module.service('shapeSelectionService', ShapeSelectionService);
     this.module.service('shapeInboxService', ShapeInboxService);
+    this.module.service('shapeMergeService', ShapeMergeService);
     this.module.service('pathCollisionService', PathCollisionService);
     this.module.service('toolSelectorListenerService', ToolSelectorListenerService);
 

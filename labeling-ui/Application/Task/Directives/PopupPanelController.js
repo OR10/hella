@@ -20,6 +20,7 @@ class PopupPanelController {
    * @param {LabelStructureService} labelStructureService
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ShapeInboxService} shapeInboxService
+   * @param {ShapeMergeService} shapeMergeService
    */
   constructor(
     $scope,
@@ -33,7 +34,8 @@ class PopupPanelController {
     $timeout,
     labelStructureService,
     shapeSelectionService,
-    shapeInboxService
+    shapeInboxService,
+    shapeMergeService
   ) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
@@ -85,6 +87,12 @@ class PopupPanelController {
      * @private
      */
     this._shapeInboxService = shapeInboxService;
+
+    /**
+     * @type {ShapeMergeService}
+     * @private
+     */
+    this._shapeMergeService = shapeMergeService;
 
     this._activeBackgroundImage = null;
 
@@ -272,7 +280,7 @@ class PopupPanelController {
       return hasDifferentFrameIndex && isOfSameType;
     });
 
-    console.log(mergableShapes);
+    this._shapeMergeService.mergeShapes(mergableShapes);
   }
 
   /**
@@ -500,6 +508,7 @@ PopupPanelController.$inject = [
   'labelStructureService',
   'shapeSelectionService',
   'shapeInboxService',
+  'shapeMergeService',
 ];
 
 export default PopupPanelController;
