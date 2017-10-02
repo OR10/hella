@@ -110,5 +110,19 @@
                 </p>
             </div>
         </div>
+
+        <div class="popup-inbox-actions">
+            <p class="popup-inbox-action">
+                <i class="icon fa fa-compress" ng-click="vm.mergeShapes()"></i>
+                Merge
+            </p>
+            <p class="popup-inbox-action" ng-disabled="!vm.hasSavedObjects()" ng-click="vm.removeAllFromInbox()">
+                <i class="icon fa fa-trash-o"></i>
+                Empty
+            </p>
+            <p class="popup-inbox-action">
+                <!--One more action possible-->
+            </p>
+        </div>
     </div>
 </div>
