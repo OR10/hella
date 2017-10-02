@@ -87,5 +87,17 @@ fdescribe('ShapeMergeService', () => {
       service.mergeShapes(mergableShapes).then(done);
       rootScope.$apply();
     });
+
+    it('transfers the classes', () => {
+      const classes = ['one', 'two', 'three'];
+      secondLabeledThingInFrame.classes = classes;
+      const shapes = [secondShape, thirdShape, firstShape];
+
+      service.mergeShapes(shapes);
+
+      expect(firstLabeledThingInFrame.classes).toBe(classes);
+      expect(secondLabeledThingInFrame.classes).toBe(classes);
+      expect(thirdLabeledThingInFrame.classes).toBe(classes);
+    });
   });
 });

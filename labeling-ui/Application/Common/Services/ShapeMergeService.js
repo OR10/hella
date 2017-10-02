@@ -25,6 +25,8 @@ class ShapeMergeService {
 
     shapes.forEach(shape => {
       shape.labeledThingInFrame.labeledThing = rootLabeledThing;
+      shape.labeledThingInFrame.classes = rootShape.labeledThingInFrame.classes;
+
       const shapePromise =  this._labeledThingInFrameGateway.saveLabeledThingInFrame(shape.labeledThingInFrame);
       promises.push(shapePromise);
     });
