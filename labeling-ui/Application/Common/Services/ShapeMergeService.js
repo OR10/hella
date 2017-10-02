@@ -17,9 +17,15 @@ class ShapeMergeService {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
   }
 
+  /**
+   * @param {Array.<PaperThingShape>} shapes
+   * @return {Promise}
+   */
   mergeShapes(shapes) {
     const rootShape = shapes[0];
     const rootLabeledThing = rootShape.labeledThingInFrame.labeledThing;
+    const newFrameRange = this._calculcateFrameRange(shapes);
+    rootLabeledThing.frameRange = Object.assign({}, rootLabeledThing.frameRange, newFrameRange);
 
     const promises = [];
 
@@ -32,6 +38,35 @@ class ShapeMergeService {
     });
 
     return this._$q.all(promises);
+  }
+
+  /**
+   * Calculates the new frame range for the merged LT
+   *
+   * @param shapes
+   * @return {{startFrameIndex: number, endFrameIndex: number}}
+   * @private
+   */
+  _calculcateFrameRange(shapes) {
+    let startFrameIndex = 0;
+    let endFrameIndex = 0;
+
+    shapes.forEach(shape => {
+      const labeledThing = shape.labeledThingInFrame.labeledThing;
+
+      if (labeledThing.frameRange.startFrameIndex < startFrameIndex) {
+        startFrameIndex = labeledThing.frameRange.startFrameIndex;
+      }
+
+      if (labeledThing.frameRange.endFrameIndex > endFrameIndex) {
+        endFrameIndex = labeledThing.frameRange.endFrameIndex;
+      }
+    });
+
+    return {
+      startFrameIndex,
+      endFrameIndex,
+    };
   }
 }
 

@@ -280,7 +280,7 @@ class PopupPanelController {
       return hasDifferentFrameIndex && isOfSameType;
     });
 
-    this._shapeMergeService.mergeShapes(mergableShapes);
+    this._shapeMergeService.mergeShapes(mergableShapes).then(() => this.removeAllFromInbox());
   }
 
   /**

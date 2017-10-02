@@ -37,6 +37,9 @@ fdescribe('ShapeMergeService', () => {
   });
 
   describe('mergeShapes', () => {
+    let firstFrameRange;
+    let secondFrameRange;
+    let thirdFrameRange;
     let firstLabeledThing;
     let secondLabeledThing;
     let thirdLabeledThing;
@@ -49,9 +52,13 @@ fdescribe('ShapeMergeService', () => {
     let mergableShapes;
 
     beforeEach(() => {
-      firstLabeledThing = {ltid: 1};
-      secondLabeledThing = {ltid: 2};
-      thirdLabeledThing = {ltid: 3};
+      firstFrameRange = {startFrameIndex: 0, endFrameIndex: 0};
+      secondFrameRange = {startFrameIndex: 3, endFrameIndex: 3};
+      thirdFrameRange = {startFrameIndex: 7, endFrameIndex: 7};
+
+      firstLabeledThing = {ltid: 1, frameRange: firstFrameRange};
+      secondLabeledThing = {ltid: 2, frameRange: secondFrameRange};
+      thirdLabeledThing = {ltid: 3, frameRange: thirdFrameRange};
 
       firstLabeledThingInFrame = {litfid: 1, labeledThing: firstLabeledThing};
       secondLabeledThingInFrame = {litfid: 1, labeledThing: secondLabeledThing};
@@ -98,6 +105,13 @@ fdescribe('ShapeMergeService', () => {
       expect(firstLabeledThingInFrame.classes).toBe(classes);
       expect(secondLabeledThingInFrame.classes).toBe(classes);
       expect(thirdLabeledThingInFrame.classes).toBe(classes);
+    });
+
+    it('updates the frameRange of the LabeledThing', () => {
+      service.mergeShapes(mergableShapes);
+
+      const expectedFrameRange = {startFrameIndex: 0, endFrameIndex: 7};
+      expect(firstLabeledThing.frameRange).toEqual(expectedFrameRange);
     });
   });
 });
