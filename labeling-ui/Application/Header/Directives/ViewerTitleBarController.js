@@ -332,6 +332,9 @@ class ViewerTitleBarController {
     this._$rootScope.$on('shape:add:after', () => {
       this.refreshIncompleteCount();
     });
+    this._$rootScope.$on('shape:merge:after', () => {
+      this.refreshIncompleteCount();
+    });
   }
 
   /**

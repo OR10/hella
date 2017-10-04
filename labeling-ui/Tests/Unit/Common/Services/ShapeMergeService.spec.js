@@ -118,6 +118,18 @@ fdescribe('ShapeMergeService', () => {
       expect(thirdLabeledThingInFrame.classes).toBe(classes);
     });
 
+    it('transfers the incomplete state', () => {
+      firstLabeledThingInFrame.incomplete = true;
+      secondLabeledThingInFrame.incomplete = false;
+      thirdLabeledThingInFrame.incomplete = false;
+
+      service.mergeShapes(mergableShapes);
+
+      expect(firstLabeledThingInFrame.incomplete).toBe(true);
+      expect(secondLabeledThingInFrame.incomplete).toBe(true);
+      expect(thirdLabeledThingInFrame.incomplete).toBe(true);
+    });
+
     it('updates the frameRange of the LabeledThing', () => {
       service.mergeShapes(mergableShapes);
 

@@ -48,6 +48,7 @@ class ShapeMergeService {
       labeledThings.push(shape.labeledThingInFrame.labeledThing);
       shape.labeledThingInFrame.labeledThing = rootLabeledThing;
       shape.labeledThingInFrame.classes = rootShape.labeledThingInFrame.classes;
+      shape.labeledThingInFrame.incomplete = rootShape.labeledThingInFrame.incomplete;
 
       const shapePromise =  this._labeledThingInFrameGateway.saveLabeledThingInFrame(shape.labeledThingInFrame);
       promises.push(shapePromise);
