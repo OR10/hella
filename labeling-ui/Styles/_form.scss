@@ -7,7 +7,7 @@ fieldset {
   }
 }
 
-select, input, textarea {
+input, textarea {
   color: $color-ut-midgrey-3;
   border:none;
   padding: 0;
@@ -18,11 +18,16 @@ select, input, textarea {
     border: 2px solid orangered !important;
   }
 }
-select:hover {
-  background-color:transparent !important;
-}
-select:focus {
-  background-color:transparent !important;
+select {
+  color: $color-ut-darkgrey-2;
+  border: 1px solid $color-ut-darkgrey-2;
+  padding: 4px;
+  background-color: $color-ut-yellow !important;
+  margin: 0;
+  height: 28px;
+  &.error {
+    border: 2px solid orangered !important;
+  }
 }
 
 form{
