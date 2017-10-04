@@ -13,6 +13,7 @@ class LabeledThingInFrameGateway {
    * @param {GhostingService} ghostingService
    * @param {PouchDbViewService} pouchDbViewService
    * @param {LabelStructureService} labelStructureService
+   * @param {CurrentUserService} currentUserService
    */
   constructor($q,
               pouchDbContextService,
@@ -23,7 +24,9 @@ class LabeledThingInFrameGateway {
               labeledThingGateway,
               ghostingService,
               pouchDbViewService,
-              labelStructureService) {
+              labelStructureService,
+              currentUserService
+  ) {
     /**
      * @type {$q}
      * @private
@@ -83,6 +86,12 @@ class LabeledThingInFrameGateway {
      * @private
      */
     this._labelStructureService = labelStructureService;
+
+    /**
+     * @type {CurrentUserService}
+     * @private
+     */
+    this._currentUserService = currentUserService;
   }
 
   /**
@@ -278,6 +287,7 @@ class LabeledThingInFrameGateway {
               const isLabeledThingIncomplete = (response.rows[0].value > 0);
               const serializedLabeledThing = this._couchDbModelSerializer.serialize(storedLabeledThing);
               serializedLabeledThing.incomplete = isLabeledThingIncomplete;
+              serializedLabeledThing.lastModifiedByUserId = this._currentUserService.get().id;
 
               this._injectRevisionOrFailSilently(serializedLabeledThing);
 
@@ -319,6 +329,7 @@ LabeledThingInFrameGateway.$inject = [
   'ghostingService',
   'pouchDbViewService',
   'labelStructureService',
+  'currentUserService',
 ];
 
 export default LabeledThingInFrameGateway;
