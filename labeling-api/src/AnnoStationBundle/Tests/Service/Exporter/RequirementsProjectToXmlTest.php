@@ -236,10 +236,12 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $labeledThingGroup1 = Tests\Helper\LabeledThingGroupBuilder::create($task)
             ->withIdentifierName('extension-sign-group')
             ->withCreatedByUserId('some-user-foobar-123-id')
+            ->withLastModifiedUserId('some-user-foobar-789-id')
             ->build();
         $labeledThingGroup2 = Tests\Helper\LabeledThingGroupBuilder::create($task)
             ->withIdentifierName('lights-group')
             ->withCreatedByUserId('some-user-foobar-123-id')
+            ->withLastModifiedUserId('some-user-foobar-789-id')
             ->build();
         $this->labeledThingGroupFacade->save($labeledThingGroup1);
         $this->labeledThingGroupFacade->save($labeledThingGroup2);

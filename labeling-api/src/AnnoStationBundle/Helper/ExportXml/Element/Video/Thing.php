@@ -98,6 +98,26 @@ class Thing extends ExportXml\Element
             );
             $thing->appendChild($createdAt);
         }
+        
+        $lastModifiedByUserId = $this->labeledThing->getlastModifiedByUserId();
+        if ($lastModifiedByUserId !== null) {
+            $lastModifiedBy = $document->createElementNS(
+                $this->namespace,
+                'last-modified-by',
+                $this->labeledThing->getlastModifiedByUserId()
+            );
+            $thing->appendChild($lastModifiedBy);
+        }
+
+        $lastModifiedAtDate = $this->labeledThing->getlastModifiedAt();
+        if ($lastModifiedAtDate instanceof \DateTime) {
+            $lastModifiedAt = $document->createElementNS(
+                $this->namespace,
+                'last-modified-at',
+                $this->labeledThing->getlastModifiedAt()->format('c')
+            );
+            $thing->appendChild($lastModifiedAt);
+        }
 
         $thing->appendChild($this->references->getElement($document));
 

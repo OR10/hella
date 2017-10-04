@@ -111,6 +111,8 @@ grammar {
     FrameRangeAttributes,
     element e:created-by {text}?,
     element e:created-at {text}?,
+    element e:last-modified-by {text}?,
+    element e:last-modified-at {text}?,
     References,
     Shape+,
     Value*
@@ -221,6 +223,8 @@ grammar {
     attribute incomplete {text}?,
     element e:created-by {text}?,
     element e:created-at {text}?,
+    element e:last-modified-by {text}?,
+    element e:last-modified-at {text}?,
     Value*
   }
 # </group>

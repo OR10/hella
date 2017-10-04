@@ -80,6 +80,26 @@ class Group extends ExportXml\Element
             $group->appendChild($createdAt);
         }
 
+        $lastModifiedByUserId = $this->labeledThingGroup->getLastModifiedByUserId();
+        if ($lastModifiedByUserId !== null) {
+            $lastModified = $document->createElementNS(
+                $this->namespace,
+                'last-modified-by',
+                $this->labeledThingGroup->getLastModifiedByUserId()
+            );
+            $group->appendChild($lastModified);
+        }
+
+        $lastModifiedAtDate = $this->labeledThingGroup->getLastModifiedAt();
+        if ($lastModifiedAtDate instanceof \DateTime) {
+            $lastModifiedAt = $document->createElementNS(
+                $this->namespace,
+                'last-modified-at',
+                $this->labeledThingGroup->getLastModifiedAt()->format('c')
+            );
+            $group->appendChild($lastModifiedAt);
+        }
+
         foreach ($this->values as $value) {
             $valueElement = $document->createElementNS($this->namespace, 'value');
             $valueElement->setAttribute('id', $value['value']);
