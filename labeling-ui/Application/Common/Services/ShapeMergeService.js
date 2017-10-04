@@ -3,8 +3,9 @@ class ShapeMergeService {
    * @param {$q} $q
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
+   * @param {DrawingContext} drawingContext
    */
-  constructor($q, labeledThingInFrameGateway, labeledThingGateway) {
+  constructor($q, labeledThingInFrameGateway, labeledThingGateway, drawingContext) {
     /**
      * @type {$q}
      * @private
@@ -22,6 +23,12 @@ class ShapeMergeService {
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {DrawingContext}
+     * @private
+     */
+    this._drawingContext = drawingContext;
   }
 
   /**
@@ -57,6 +64,9 @@ class ShapeMergeService {
             } else {
               return this._$q.resolve();
             }
+          })
+          .then(() => {
+            this._drawingContext.withScope(scope => scope.view.update());
           });
 
         ltPromises.push(ltifPromise);
@@ -102,6 +112,7 @@ ShapeMergeService.$inject = [
   '$q',
   'labeledThingInFrameGateway',
   'labeledThingGateway',
+  'drawingContext',
 ];
 
 export default ShapeMergeService;

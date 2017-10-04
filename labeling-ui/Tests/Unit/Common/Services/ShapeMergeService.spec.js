@@ -22,6 +22,19 @@ fdescribe('ShapeMergeService', () => {
    */
   let rootScope;
 
+  /**
+   * @type {LabeledThingGateway}
+   */
+  let labeledThingGateway;
+
+  /**
+   * @type {DrawingContext}
+   */
+  let drawingContext;
+
+  let viewerScope;
+  let view;
+
   beforeEach(inject(($rootScope, $q) => {
     rootScope = $rootScope;
     angularQ = $q;
@@ -29,7 +42,14 @@ fdescribe('ShapeMergeService', () => {
 
   beforeEach(() => {
     labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['saveLabeledThingInFrame']);
-    service = new ShapeMergeService(angularQ, labeledThingInFrameGateway);
+    labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['getAssociatedLabeledThingsInFrames', 'deleteLabeledThing']);
+    drawingContext = jasmine.createSpyObj('drawingContext', ['withScope']);
+    view = jasmine.createSpyObj('view', ['update']);
+    viewerScope = {view};
+
+    drawingContext.withScope.and.callFake(callback => callback(viewerScope));
+
+    service = new ShapeMergeService(angularQ, labeledThingInFrameGateway, labeledThingGateway, drawingContext);
   });
 
   it('can be created', () => {
@@ -50,6 +70,7 @@ fdescribe('ShapeMergeService', () => {
     let secondShape;
     let thirdShape;
     let mergableShapes;
+    let associatedLabeledThingsInFrame;
 
     beforeEach(() => {
       firstFrameRange = {startFrameIndex: 0, endFrameIndex: 0};
@@ -69,6 +90,8 @@ fdescribe('ShapeMergeService', () => {
       thirdShape = {labeledThingInFrame: thirdLabeledThingInFrame};
 
       mergableShapes = [firstShape, secondShape, thirdShape];
+
+      associatedLabeledThingsInFrame = {rows: []};
     });
 
     it('sets the LabeledThing of the root shape on all elements', () => {
@@ -90,6 +113,8 @@ fdescribe('ShapeMergeService', () => {
 
     it('returns a promise', done => {
       labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
+      labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(associatedLabeledThingsInFrame));
+      labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
       service.mergeShapes(mergableShapes).then(done);
       rootScope.$apply();
@@ -112,6 +137,18 @@ fdescribe('ShapeMergeService', () => {
 
       const expectedFrameRange = {startFrameIndex: 0, endFrameIndex: 7};
       expect(firstLabeledThing.frameRange).toEqual(expectedFrameRange);
+    });
+
+    it('updates the view after merging', done => {
+      labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
+      labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(associatedLabeledThingsInFrame));
+      labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
+
+      view.update.and.callFake(done);
+
+      service.mergeShapes(mergableShapes);
+      expect(view.update).not.toHaveBeenCalled();
+      rootScope.$apply();
     });
   });
 });
