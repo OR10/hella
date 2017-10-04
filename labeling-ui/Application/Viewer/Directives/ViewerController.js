@@ -737,10 +737,13 @@ class ViewerController {
       this._debouncedOnThingUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
-    $rootScope.$on('framerange:change:after', () => {
+    const reloadFrame = () => {
       this._debouncedOnThingUpdate.triggerImmediately()
         .then(() => this._handleFrameChange(this._currentFrameIndex));
-    });
+    };
+
+    $rootScope.$on('framerange:change:after', reloadFrame);
+    $rootScope.$on('shape:merge:after', reloadFrame);
 
     $rootScope.$on('shape:delete:after', () => {
       this._applicationState.disableAll();

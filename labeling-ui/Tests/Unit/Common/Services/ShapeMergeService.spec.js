@@ -125,7 +125,7 @@ fdescribe('ShapeMergeService', () => {
       expect(firstLabeledThing.frameRange).toEqual(expectedFrameRange);
     });
 
-    it('emits shape:delete:after if labeledthings have been deleted', done => {
+    it('emits shape:merge:after if labeledthings have been deleted', done => {
         spyOn(rootScope, '$emit');
 
         labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
@@ -133,14 +133,14 @@ fdescribe('ShapeMergeService', () => {
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
         service.mergeShapes(mergableShapes).then(() => {
-          expect(rootScope.$emit).toHaveBeenCalledWith('shape:delete:after');
+          expect(rootScope.$emit).toHaveBeenCalledWith('shape:merge:after');
           expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalled();
           done();
         });
         rootScope.$apply();
     });
 
-    it('emits shape:delete:after even if no labeledthings have been removed', done => {
+    it('emits shape:merge:after even if no labeledthings have been removed', done => {
       spyOn(rootScope, '$emit');
 
       associatedLabeledThingsInFrame = {rows: [1]};
@@ -150,7 +150,7 @@ fdescribe('ShapeMergeService', () => {
       labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
       service.mergeShapes(mergableShapes).then(() => {
-        expect(rootScope.$emit).toHaveBeenCalledWith('shape:delete:after');
+        expect(rootScope.$emit).toHaveBeenCalledWith('shape:merge:after');
         expect(labeledThingGateway.deleteLabeledThing).not.toHaveBeenCalled();
         done();
       });

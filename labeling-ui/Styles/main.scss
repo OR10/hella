@@ -157,7 +157,9 @@ div.popup-panel {
     width: 100%;
     display: flex;
     flex-flow: row;
-    padding: 2px 5px;
+    padding: 4px 8px 2px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
   }
 
   .popup-inbox-action {

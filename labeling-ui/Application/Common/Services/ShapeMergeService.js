@@ -66,7 +66,7 @@ class ShapeMergeService {
             }
           })
           .then(() => {
-            this._$rootScope.$emit('shape:delete:after');
+            this._$rootScope.$emit('shape:merge:after');
           });
 
         ltPromises.push(ltifPromise);
