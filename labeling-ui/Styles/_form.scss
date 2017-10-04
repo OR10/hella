@@ -19,10 +19,10 @@ input, textarea {
   }
 }
 select {
-  color: $color-ut-midgrey-3;
+  color: $color-ut-darkgrey-2;
   border: 1px solid $color-ut-darkgrey-2;
   padding: 4px;
-  background-color:$color-ut-lightgrey-4 !important;
+  background-color: $color-ut-yellow !important;
   margin: 0;
   height: 28px;
   &.error {
