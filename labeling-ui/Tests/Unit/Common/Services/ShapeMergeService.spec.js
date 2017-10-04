@@ -27,14 +27,6 @@ fdescribe('ShapeMergeService', () => {
    */
   let labeledThingGateway;
 
-  /**
-   * @type {DrawingContext}
-   */
-  let drawingContext;
-
-  let viewerScope;
-  let view;
-
   beforeEach(inject(($rootScope, $q) => {
     rootScope = $rootScope;
     angularQ = $q;
@@ -43,13 +35,7 @@ fdescribe('ShapeMergeService', () => {
   beforeEach(() => {
     labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['saveLabeledThingInFrame']);
     labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['getAssociatedLabeledThingsInFrames', 'deleteLabeledThing']);
-    drawingContext = jasmine.createSpyObj('drawingContext', ['withScope']);
-    view = jasmine.createSpyObj('view', ['update']);
-    viewerScope = {view};
-
-    drawingContext.withScope.and.callFake(callback => callback(viewerScope));
-
-    service = new ShapeMergeService(angularQ, labeledThingInFrameGateway, labeledThingGateway, drawingContext);
+    service = new ShapeMergeService(rootScope, angularQ, labeledThingInFrameGateway, labeledThingGateway);
   });
 
   it('can be created', () => {
@@ -139,16 +125,48 @@ fdescribe('ShapeMergeService', () => {
       expect(firstLabeledThing.frameRange).toEqual(expectedFrameRange);
     });
 
-    it('updates the view after merging', done => {
+    it('emits shape:delete:after if labeledthings have been deleted', done => {
+        spyOn(rootScope, '$emit');
+
+        labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
+        labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(associatedLabeledThingsInFrame));
+        labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
+
+        service.mergeShapes(mergableShapes).then(() => {
+          expect(rootScope.$emit).toHaveBeenCalledWith('shape:delete:after');
+          expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalled();
+          done();
+        });
+        rootScope.$apply();
+    });
+
+    it('emits shape:delete:after even if no labeledthings have been removed', done => {
+      spyOn(rootScope, '$emit');
+
+      associatedLabeledThingsInFrame = {rows: [1]};
+
       labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
       labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(associatedLabeledThingsInFrame));
       labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
-      view.update.and.callFake(done);
-
-      service.mergeShapes(mergableShapes);
-      expect(view.update).not.toHaveBeenCalled();
+      service.mergeShapes(mergableShapes).then(() => {
+        expect(rootScope.$emit).toHaveBeenCalledWith('shape:delete:after');
+        expect(labeledThingGateway.deleteLabeledThing).not.toHaveBeenCalled();
+        done();
+      });
       rootScope.$apply();
     });
+
+    // it('updates the view after merging', done => {
+    //   labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
+    //   labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(associatedLabeledThingsInFrame));
+    //   labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
+    //
+    //   view.update.and.callFake(done);
+    //
+    //   service.mergeShapes(mergableShapes);
+    //   expect(view.update).not.toHaveBeenCalled();
+    //   rootScope.$apply();
+    // });
   });
 });

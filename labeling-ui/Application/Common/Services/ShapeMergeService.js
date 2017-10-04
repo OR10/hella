@@ -1,11 +1,17 @@
 class ShapeMergeService {
   /**
-   * @param {$q} $q
+   * @param {$rootScope} $rootScope
+   * @param {$r} $q
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
-   * @param {DrawingContext} drawingContext
    */
-  constructor($q, labeledThingInFrameGateway, labeledThingGateway, drawingContext) {
+  constructor($rootScope, $q, labeledThingInFrameGateway, labeledThingGateway) {
+    /**
+     * @type {$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
+
     /**
      * @type {$q}
      * @private
@@ -23,12 +29,6 @@ class ShapeMergeService {
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
-
-    /**
-     * @type {DrawingContext}
-     * @private
-     */
-    this._drawingContext = drawingContext;
   }
 
   /**
@@ -53,7 +53,7 @@ class ShapeMergeService {
       promises.push(shapePromise);
     });
 
-    this._$q.all(promises).then(() => {
+    return this._$q.all(promises).then(() => {
       const ltPromises = [];
 
       labeledThings.forEach(labeledThing => {
@@ -66,7 +66,7 @@ class ShapeMergeService {
             }
           })
           .then(() => {
-            this._drawingContext.withScope(scope => scope.view.update());
+            this._$rootScope.$emit('shape:delete:after');
           });
 
         ltPromises.push(ltifPromise);
@@ -74,8 +74,6 @@ class ShapeMergeService {
 
       return this._$q.all(ltPromises);
     });
-
-    return this._$q.all(promises);
   }
 
   /**
@@ -109,10 +107,10 @@ class ShapeMergeService {
 }
 
 ShapeMergeService.$inject = [
+  '$rootScope',
   '$q',
   'labeledThingInFrameGateway',
   'labeledThingGateway',
-  'drawingContext',
 ];
 
 export default ShapeMergeService;
