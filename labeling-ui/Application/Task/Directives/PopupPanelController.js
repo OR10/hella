@@ -332,6 +332,11 @@ class PopupPanelController {
       if (shape.labeledThingInFrame === undefined) {
         return;
       }
+
+      if (shape.labeledThingInFrame.ghost) {
+        return;
+      }
+
       this._labelStructureService.getLabelStructure(shape.labeledThingInFrame.task)
         .then(structure => {
           return structure.getThingById(shape.labeledThingInFrame.identifierName);
