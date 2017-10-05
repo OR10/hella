@@ -56,6 +56,11 @@ class LabeledThingGroup extends AppBundleModel\Base
      */
     private $createdByUserId;
 
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    private $lastModifiedByUserId;
+
     public function __construct(
         AppBundleModel\LabelingTask $task,
         $lineColor,
@@ -157,5 +162,21 @@ class LabeledThingGroup extends AppBundleModel\Base
     public function getCreatedByUserId()
     {
         return $this->createdByUserId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastModifiedByUserId()
+    {
+        return $this->lastModifiedByUserId;
+    }
+
+    /**
+     * @param mixed $lastModifiedByUserId
+     */
+    public function setLastModifiedByUserId($lastModifiedByUserId)
+    {
+        $this->lastModifiedByUserId = $lastModifiedByUserId;
     }
 }

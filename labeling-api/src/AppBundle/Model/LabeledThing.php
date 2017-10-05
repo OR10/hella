@@ -70,6 +70,11 @@ class LabeledThing extends Base
     private $createdByUserId;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $lastModifiedByUserId;
+
+    /**
      * @param LabelingTask $task
      * @param int          $lineColor
      * @param null         $createdByUserId
@@ -284,5 +289,21 @@ class LabeledThing extends Base
     public function getCreatedByUserId()
     {
         return $this->createdByUserId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastModifiedByUserId()
+    {
+        return $this->lastModifiedByUserId;
+    }
+
+    /**
+     * @param mixed $lastModifiedByUserId
+     */
+    public function setLastModifiedByUserId($lastModifiedByUserId)
+    {
+        $this->lastModifiedByUserId = $lastModifiedByUserId;
     }
 }

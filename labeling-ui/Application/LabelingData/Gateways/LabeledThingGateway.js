@@ -10,6 +10,7 @@ class LabeledThingGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    * @param {PouchDbViewService} pouchDbViewService
+   * @param {CurrentUserService} currentUserService
    */
   constructor(
     $q,
@@ -18,7 +19,8 @@ class LabeledThingGateway {
     couchDbModelSerializer,
     couchDbModelDeserializer,
     revisionManager,
-    pouchDbViewService
+    pouchDbViewService,
+    currentUserService
   ) {
     /**
      * @type {angular.$q}
@@ -67,6 +69,12 @@ class LabeledThingGateway {
      * @private
      */
     this._pouchDbViewService = pouchDbViewService;
+
+    /**
+     * @type {CurrentUserService}
+     * @private
+     */
+    this._currentUserService = currentUserService;
   }
 
   /**
@@ -86,6 +94,7 @@ class LabeledThingGateway {
       return this._$q.resolve()
         .then(() => this._isLabeledThingIncomplete(dbContext, labeledThing))
         .then(isIncomplete => {
+          serializedLabeledThing.lastModifiedByUserId = this._currentUserService.get().id;
           serializedLabeledThing.incomplete = isIncomplete;
           return dbContext.put(serializedLabeledThing);
         })
@@ -267,6 +276,7 @@ LabeledThingGateway.$inject = [
   'couchDbModelDeserializer',
   'revisionManager',
   'pouchDbViewService',
+  'currentUserService',
 ];
 
 export default LabeledThingGateway;

@@ -99,6 +99,7 @@ describe('LabeledThingGateway', () => {
           $rootScope = $injector.get('$rootScope');
           angularQ = $injector.get('$q');
           gateway = $injector.instantiate(LabeledThingGateway);
+          spyOn(gateway._currentUserService, 'get').and.returnValue({id: 'ffa2a4a7f72e5765eb5d1b09d40094e5'});
           revisionManager = $injector.get('revisionManager');
           couchDbModelSerializer = $injector.get('couchDbModelSerializer');
           couchDbModelDeserializer = $injector.get('couchDbModelDeserializer');

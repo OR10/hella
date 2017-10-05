@@ -28,6 +28,11 @@ class LabeledThingGroup extends LabeledObject {
      * @type {String}
      */
     this.createdByUserId = labeledThingGroupDocument.createdByUserId;
+
+    /**
+     * @type {String}
+     */
+    this.lastModifiedByUserId = labeledThingGroupDocument.lastModifiedByUserId;
   }
 
   /**
@@ -36,12 +41,13 @@ class LabeledThingGroup extends LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {type, lineColor, groupIds, createdByUserId} = this;
+    const {type, lineColor, groupIds, createdByUserId, lastModifiedByUserId} = this;
     return Object.assign(super.toJSON(), {
       identifierName: type,
       lineColor: lineColor,
       groupIds: clone(groupIds),
       createdByUserId,
+      lastModifiedByUserId,
     });
   }
 
@@ -59,6 +65,7 @@ class LabeledThingGroup extends LabeledObject {
       lineColor: this.lineColor,
       groupIds: this.groupIds,
       createdByUserId: this.createdByUserId,
+      lastModifiedByUserId: this.lastModifiedByUserId,
     });
   }
 }
