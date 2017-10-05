@@ -262,9 +262,14 @@ class LabeledThingGateway {
    * @param {LabeledThing} labeledThing
    * @return {Array.<LabeledThingInFrame>}
    */
-  getAssociatedLabeledThingsInFrames(labeledThing) {
-    const task = labeledThing.task;
-    return this._getAssociatedLabeledThingsInFrames(task, labeledThing);
+  hasAssociatedLabeledThingsInFrames(labeledThing) {
+    return this._packagingExecutor.execute('labeledThing', () => {
+      const task = labeledThing.task;
+      return this._getAssociatedLabeledThingsInFrames(task, labeledThing)
+        .then(labeledThingsInFrame => {
+          return (labeledThingsInFrame.rows.length === 0);
+        });
+    });
   }
 }
 

@@ -58,9 +58,9 @@ class ShapeMergeService {
       const ltPromises = [];
 
       labeledThings.forEach(labeledThing => {
-        const ltifPromise = this._labeledThingGateway.getAssociatedLabeledThingsInFrames(labeledThing)
-          .then(labeledThingsInFrame => {
-            if (labeledThingsInFrame.rows.length === 0) {
+        const ltifPromise = this._labeledThingGateway.hasAssociatedLabeledThingsInFrames(labeledThing)
+          .then(haslabeledThingsInFrame => {
+            if (haslabeledThingsInFrame) {
               return this._labeledThingGateway.deleteLabeledThing(labeledThing);
             } else {
               return this._$q.resolve();
