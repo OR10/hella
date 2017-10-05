@@ -131,6 +131,7 @@ describe('LabeledThingGroupGateway', () => {
       revisionManager = $injector.get('revisionManager');
       pouchDbViewService = $injector.get('pouchDbViewService');
       groupGateway = $injector.instantiate(LabeledThingGroupGateway);
+      spyOn(groupGateway._currentUserService, 'get').and.returnValue({id: 'ffa2a4a7f72e5765eb5d1b09d40094e5'});
     });
   });
 
@@ -480,6 +481,8 @@ describe('LabeledThingGroupGateway', () => {
       incomplete: true,
       createdAt: '2017-09-05 16:11:56.000000',
       lastModifiedAt: '2017-09-05 16:11:56.000000',
+      createdByUserId: 'ffa2a4a7f72e5765eb5d1b09d40094e5',
+      lastModifiedByUserId: 'ffa2a4a7f72e5765eb5d1b09d40094e5',
     });
     spyOn(labeledThingGroupToDelete, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
 
@@ -496,6 +499,8 @@ describe('LabeledThingGroupGateway', () => {
       lastModifiedAt: '2017-09-05 16:11:56.000000',
       taskId: task.id,
       projectId: task.projectId,
+      createdByUserId: 'ffa2a4a7f72e5765eb5d1b09d40094e5',
+      lastModifiedByUserId: 'ffa2a4a7f72e5765eb5d1b09d40094e5',
     };
 
     groupGateway.deleteLabeledThingGroup(labeledThingGroupToDelete);
@@ -521,6 +526,8 @@ describe('LabeledThingGroupGateway', () => {
       incomplete: true,
       createdAt: '2017-09-05 16:11:56.000000',
       lastModifiedAt: '2017-09-05 16:11:56.000000',
+      createdByUserId: 'ffa2a4a7f72e5765eb5d1b09d40094e5',
+      lastModifiedByUserId: 'ffa2a4a7f72e5765eb5d1b09d40094e5',
     });
     spyOn(labeledThingGroupToCreate, '_getCurrentDate').and.returnValue('2017-09-05 16:11:56.000000');
 
@@ -536,6 +543,8 @@ describe('LabeledThingGroupGateway', () => {
       projectId: task.projectId,
       createdAt: '2017-09-05 16:11:56.000000',
       lastModifiedAt: '2017-09-05 16:11:56.000000',
+      createdByUserId: 'ffa2a4a7f72e5765eb5d1b09d40094e5',
+      lastModifiedByUserId: 'ffa2a4a7f72e5765eb5d1b09d40094e5',
     };
 
     groupGateway.createLabeledThingGroup(task, labeledThingGroupToCreate);

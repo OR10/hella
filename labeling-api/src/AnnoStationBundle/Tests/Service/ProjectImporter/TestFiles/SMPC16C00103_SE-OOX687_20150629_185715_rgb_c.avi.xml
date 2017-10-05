@@ -32,12 +32,18 @@
       <value id="germany" class="country" start="22" end="660"/>
     </frame-labeling>
     <group id="cf6a96bdee95412f3309e2a62b26bc2f" start="22" end="88" type="extension-sign-group" line-color="7" incomplete="false">
+      <created-by>ffa2a4a7f72e5765eb5d1b09d4009335</created-by>
+      <created-at>2017-09-29T10:00:00+0000</created-at>
       <value id="position-below" class="extension-position" start="22" end="44"/>
       <value id="position-above" class="extension-position" start="66" end="88"/>
     </group>
     <group id="89e703812ce34189aa7719845c759500" start="44" end="22" type="empty-group" line-color="8" incomplete="false">
+      <created-by>ffa2a4a7f72e5765eb5d1b09d4009335</created-by>
+      <created-at>2017-09-29T10:00:00+0000</created-at>
     </group>
     <thing id="936f01d0baf669cc0daad101ca8fbfdd" start="22" end="88" line-color="2" type="sign">
+      <created-by>ffa2a4a7f72e5765eb5d1b09d4009335</created-by>
+      <created-at>2017-09-29T10:00:00+0000</created-at>
       <references>
         <task id="936f01d0baf669cc0daad101ca8f720d"/>
         <group ref="cf6a96bdee95412f3309e2a62b26bc2f"/>
@@ -94,6 +100,8 @@
       <value id="germany" start="22" end="88"/>
     </thing>
     <thing id="936f01d0baf669cc0daad101ca8fe155" start="22" end="22" line-color="5" type="time-range-sign">
+      <created-by>ffa2a4a7f72e5765eb5d1b09d4009335</created-by>
+      <created-at>2017-09-29T10:00:00+0000</created-at>
       <references>
         <task id="936f01d0baf669cc0daad101ca8f720d"/>
         <group ref="89e703812ce34189aa7719845c759500"/>
@@ -112,6 +120,8 @@
       <value id="time-limit-end-8" start="22" end="22"/>
     </thing>
     <thing id="936f01d0baf669cc0daad101ca8fe323" start="22" end="66" line-color="3" type="person">
+      <created-by>ffa2a4a7f72e5765eb5d1b09d4009335</created-by>
+      <created-at>2017-09-29T10:00:00+0000</created-at>
       <references>
         <task id="936f01d0baf669cc0daad101ca8f720d"/>
       </references>
@@ -133,6 +143,8 @@
       <value id="hat-no" start="66" end="66"/>
     </thing>
     <thing id="936f01d0baf669cc0daad101ca8ffc16" start="22" end="22" line-color="4" type="lane">
+      <created-by>ffa2a4a7f72e5765eb5d1b09d4009335</created-by>
+      <created-at>2017-09-29T10:00:00+0000</created-at>
       <references>
         <task id="936f01d0baf669cc0daad101ca8f720d"/>
       </references>

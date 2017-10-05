@@ -79,6 +79,46 @@ class Thing extends ExportXml\Element
             $thing->setAttribute('incomplete', 'true');
         }
 
+        $createdByUserId = $this->labeledThing->getCreatedByUserId();
+        if ($createdByUserId !== null) {
+            $createdBy = $document->createElementNS(
+                $this->namespace,
+                'created-by',
+                $this->labeledThing->getCreatedByUserId()
+            );
+            $thing->appendChild($createdBy);
+        }
+
+        $createdAtDate = $this->labeledThing->getCreatedAt();
+        if ($createdAtDate instanceof \DateTime) {
+            $createdAt = $document->createElementNS(
+                $this->namespace,
+                'created-at',
+                $this->labeledThing->getCreatedAt()->format('c')
+            );
+            $thing->appendChild($createdAt);
+        }
+        
+        $lastModifiedByUserId = $this->labeledThing->getlastModifiedByUserId();
+        if ($lastModifiedByUserId !== null) {
+            $lastModifiedBy = $document->createElementNS(
+                $this->namespace,
+                'last-modified-by',
+                $this->labeledThing->getlastModifiedByUserId()
+            );
+            $thing->appendChild($lastModifiedBy);
+        }
+
+        $lastModifiedAtDate = $this->labeledThing->getlastModifiedAt();
+        if ($lastModifiedAtDate instanceof \DateTime) {
+            $lastModifiedAt = $document->createElementNS(
+                $this->namespace,
+                'last-modified-at',
+                $this->labeledThing->getlastModifiedAt()->format('c')
+            );
+            $thing->appendChild($lastModifiedAt);
+        }
+
         $thing->appendChild($this->references->getElement($document));
 
         foreach ($this->shapes as $shape) {

@@ -170,6 +170,19 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                 'identifierName' => $groupElement->getAttribute('type'),
             ];
 
+            $createdByUserId      = null;
+            $createdByUserIdQuery = $xpath->query('./x:created-by', $groupElement);
+            if ($createdByUserIdQuery->length === 1) {
+                $groups[$originalId]['createdByUserId'] = $createdByUserIdQuery->item(0)->nodeValue;
+            }
+
+            $createdAt      = null;
+            $createdAtQuery = $xpath->query('./x:created-at', $groupElement);
+            if ($createdAtQuery->length === 1) {
+                $groups[$originalId]['createdAt'] = new \DateTime($createdAtQuery->item(0)->nodeValue);
+            }
+
+
             $values = $xpath->query('./x:value', $groupElement);
             foreach ($values as $value) {
                 $id = $value->getAttribute('id');
@@ -199,12 +212,23 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         }
 
         if (!isset($this->labeledThingGroupCache[$task->getId()][$originalId])) {
+            $createdByUserId = null;
+            if (isset($groupReferences[$originalId]['createdByUserId'])) {
+                $createdByUserId = $groupReferences[$originalId]['createdByUserId'];
+            }
             $labeledThingGroup = new AnnoStationBundleModel\LabeledThingGroup(
                 $task,
                 $groupReferences[$originalId]['lineColor'],
-                $groupReferences[$originalId]['identifierName']
+                $groupReferences[$originalId]['identifierName'],
+                [],
+                $createdByUserId
             );
             $labeledThingGroup->setOriginalId($originalId);
+
+            if (isset($groupReferences[$originalId]['createdAt'])) {
+                $labeledThingGroup->setCreatedAt($groupReferences[$originalId]['createdAt']);
+            }
+
             $this->labeledThingGroupFacade->save($labeledThingGroup);
 
             if (isset($groupReferences[$originalId]['values'])) {
@@ -247,7 +271,23 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
             } else {
                 $groups = $xpath->query('./x:references/x:group', $thingElement);
 
-                $labeledThing = new Model\LabeledThing($task, $thingElement->getAttribute('line-color'));
+                $createdByUserId      = null;
+                $createdByUserIdQuery = $xpath->query('./x:created-by', $thingElement);
+                if ($createdByUserIdQuery->length === 1) {
+                    $createdByUserId = $createdByUserIdQuery->item(0)->nodeValue;
+                }
+
+                $createdAt      = null;
+                $createdAtQuery = $xpath->query('./x:created-at', $thingElement);
+                if ($createdAtQuery->length === 1) {
+                    $createdAt = new \DateTime($createdAtQuery->item(0)->nodeValue);
+                }
+
+                $labeledThing = new Model\LabeledThing(
+                    $task,
+                    $thingElement->getAttribute('line-color'),
+                    $createdByUserId
+                );
                 $labeledThing->setImportLineNo($thingElement->getLineNo());
                 $labeledThing->setOriginalId($originalId);
                 $labeledThing->setFrameRange(
@@ -256,6 +296,8 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                         $frameMapping[$end]
                     )
                 );
+                $labeledThing->setCreatedAt($createdAt);
+
                 $groupIds = [];
                 foreach ($groups as $group) {
                     $originalLabeledThingGroupId = $group->getAttribute('ref');

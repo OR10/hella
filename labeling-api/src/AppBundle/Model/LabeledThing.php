@@ -65,29 +65,42 @@ class LabeledThing extends Base
     private $importLineNo;
 
     /**
+     * @CouchDB\Field(type="string")
+     */
+    private $createdByUserId;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    private $lastModifiedByUserId;
+
+    /**
      * @param LabelingTask $task
-     * @param $lineColor
+     * @param int          $lineColor
+     * @param null         $createdByUserId
      *
      * @return LabeledThing
      */
-    public static function create(LabelingTask $task, $lineColor = 1)
+    public static function create(LabelingTask $task, $lineColor = 1, $createdByUserId = null)
     {
-        return new static($task, $lineColor);
+        return new static($task, $lineColor, $createdByUserId);
     }
 
     /**
      * @param LabelingTask $task
-     * @param $lineColor
+     * @param int          $lineColor
+     * @param null         $createdByUserId
      */
-    public function __construct(LabelingTask $task, $lineColor = 1)
+    public function __construct(LabelingTask $task, $lineColor = 1, $createdByUserId = null)
     {
-        $this->taskId     = $task->getId();
-        $this->projectId  = $task->getProjectId();
-        $this->frameRange = new FrameIndexRange(
+        $this->taskId          = $task->getId();
+        $this->projectId       = $task->getProjectId();
+        $this->frameRange      = new FrameIndexRange(
             min(array_keys($task->getFrameNumberMapping())),
             max(array_keys($task->getFrameNumberMapping()))
         );
-        $this->lineColor  = $lineColor;
+        $this->lineColor       = $lineColor;
+        $this->createdByUserId = $createdByUserId;
     }
 
     /**
@@ -268,5 +281,29 @@ class LabeledThing extends Base
     public function setImportLineNo($importLineNo)
     {
         $this->importLineNo = $importLineNo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedByUserId()
+    {
+        return $this->createdByUserId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastModifiedByUserId()
+    {
+        return $this->lastModifiedByUserId;
+    }
+
+    /**
+     * @param mixed $lastModifiedByUserId
+     */
+    public function setLastModifiedByUserId($lastModifiedByUserId)
+    {
+        $this->lastModifiedByUserId = $lastModifiedByUserId;
     }
 }

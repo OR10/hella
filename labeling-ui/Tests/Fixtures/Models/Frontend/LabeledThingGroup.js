@@ -12,5 +12,7 @@ export default new LabeledThingGroup({
   "classes": [],
   "incomplete": true,
   "createdAt": "2017-09-05 16:11:56.000000",
-  "lastModifiedAt": "2017-09-05 16:11:56.000000"
+  "lastModifiedAt": "2017-09-05 16:11:56.000000",
+  "createdByUserId": "ffa2a4a7f72e5765eb5d1b09d40094e5",
+  "lastModifiedByUserId": "ffa2a4a7f72e5765eb5d1b09d40094e5"
 });

@@ -33,7 +33,7 @@ abstract class Base
     }
 
     /**
-     * @return mixed
+     * @return null|\DateTime
      */
     public function getCreatedAt()
     {

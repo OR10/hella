@@ -15,6 +15,7 @@ class LabeledThingGroupGateway {
    * @param {EntityIdService} entityIdService
    * @param {PouchDbViewService} pouchDbViewService
    * @param {GhostingService} ghostingService
+   * @param {CurrentUserService} currentUserService
    */
   constructor(
     $q,
@@ -26,7 +27,8 @@ class LabeledThingGroupGateway {
     abortablePromiseFactory,
     entityIdService,
     pouchDbViewService,
-    ghostingService
+    ghostingService,
+    currentUserService
   ) {
     /**
      * @type {angular.$q}
@@ -93,6 +95,12 @@ class LabeledThingGroupGateway {
      * @private
      */
     this._ghostingService = ghostingService;
+
+    /**
+     * @type {CurrentUserService}
+     * @private
+     */
+    this._currentUserService = currentUserService;
   }
 
   /**
@@ -411,6 +419,7 @@ class LabeledThingGroupGateway {
       'labeledThingGroup',
       () => {
         this._injectRevisionOrFailSilently(serializedLabeledThingGroup);
+        serializedLabeledThingGroup.lastModifiedByUserId = this._currentUserService.get().id;
         return dbContext.put(serializedLabeledThingGroup);
       }
     )
@@ -475,6 +484,7 @@ LabeledThingGroupGateway.$inject = [
   'entityIdService',
   'pouchDbViewService',
   'ghostingService',
+  'currentUserService',
 ];
 
 export default LabeledThingGroupGateway;

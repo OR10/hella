@@ -168,6 +168,26 @@
             <attribute name="type"/>
             <ref name="FrameRangeAttributes"/>
             <optional>
+                <element name="e:last-modified-by">
+                    <text/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:last-modified-at">
+                    <text/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:created-by">
+                    <text/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:created-at">
+                    <text/>
+                </element>
+            </optional>
+            <optional>
                 <ref name="References"/>
             </optional>
             <oneOrMore>
@@ -383,6 +403,26 @@
             </optional>
             <optional>
                 <attribute name="incomplete"/>
+            </optional>
+            <optional>
+                <element name="e:last-modified-by">
+                    <text/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:last-modified-at">
+                    <text/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:created-by">
+                    <text/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:created-at">
+                    <text/>
+                </element>
             </optional>
             <zeroOrMore>
                 <ref name="Value"/>

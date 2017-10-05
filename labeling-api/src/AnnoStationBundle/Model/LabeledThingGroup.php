@@ -51,13 +51,29 @@ class LabeledThingGroup extends AppBundleModel\Base
      */
     private $originalId;
 
-    public function __construct(AppBundleModel\LabelingTask $task, $lineColor, $identifierName = null, $groupIds = [])
-    {
-        $this->projectId      = $task->getProjectId();
-        $this->taskId         = $task->getId();
-        $this->identifierName = $identifierName;
-        $this->groupIds       = $groupIds;
-        $this->lineColor      = $lineColor;
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    private $createdByUserId;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    private $lastModifiedByUserId;
+
+    public function __construct(
+        AppBundleModel\LabelingTask $task,
+        $lineColor,
+        $identifierName = null,
+        $groupIds = [],
+        $createdByUserId = null
+    ) {
+        $this->projectId       = $task->getProjectId();
+        $this->taskId          = $task->getId();
+        $this->identifierName  = $identifierName;
+        $this->groupIds        = $groupIds;
+        $this->lineColor       = $lineColor;
+        $this->createdByUserId = $createdByUserId;
     }
 
     /**
@@ -138,5 +154,29 @@ class LabeledThingGroup extends AppBundleModel\Base
     public function setIdentifierName($identifierName)
     {
         $this->identifierName = $identifierName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedByUserId()
+    {
+        return $this->createdByUserId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastModifiedByUserId()
+    {
+        return $this->lastModifiedByUserId;
+    }
+
+    /**
+     * @param mixed $lastModifiedByUserId
+     */
+    public function setLastModifiedByUserId($lastModifiedByUserId)
+    {
+        $this->lastModifiedByUserId = $lastModifiedByUserId;
     }
 }

@@ -38,13 +38,25 @@
       <value id="sun" class="weather" start="76" end="100"/>
     </frame-labeling>
     <group id="" start="1" end="21" type="extension-sign-group" line-color="1" incomplete="true">
+      <created-by>some-user-foobar-123-id</created-by>
+      <created-at>2017-03-10T10:00:00+00:00</created-at>
+      <last-modified-by>some-user-foobar-789-id</last-modified-by>
+      <last-modified-at>2017-03-10T10:00:00+00:00</last-modified-at>
       <value id="position-below" class="extension-position" start="2" end="21"/>
     </group>
     <group id="" start="1" end="21" type="lights-group" line-color="1" incomplete="true">
+      <created-by>some-user-foobar-123-id</created-by>
+      <created-at>2017-03-10T10:00:00+00:00</created-at>
+      <last-modified-by>some-user-foobar-789-id</last-modified-by>
+      <last-modified-at>2017-03-10T10:00:00+00:00</last-modified-at>
       <value id="red" class="color" start="11" end="15"/>
       <value id="blue" class="color" start="16" end="21"/>
     </group>
     <thing id="e363906c1c4a5a5bd01e8902467d1426" start="1" end="100" line-color="1" type="fooobar" incomplete="true">
+      <created-by>some-user-foobar-123-id</created-by>
+      <created-at>2017-03-10T10:00:00+00:00</created-at>
+      <last-modified-by>some-user-foobar-789-id</last-modified-by>
+      <last-modified-at>2017-03-10T10:00:00+00:00</last-modified-at>
       <references>
         <task id=""/>
       </references>
@@ -95,6 +107,10 @@
       <value id="germany" class="country" start="12" end="12"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e890246819813" start="1" end="1" line-color="1" type="fooobar" incomplete="true">
+      <created-by>some-user-foobar-123-id</created-by>
+      <created-at>2017-03-10T10:00:00+00:00</created-at>
+      <last-modified-by>some-user-foobar-789-id</last-modified-by>
+      <last-modified-at>2017-03-10T10:00:00+00:00</last-modified-at>
       <references>
         <task id=""/>
         <group ref=""/>
@@ -110,6 +126,10 @@
       <value id="spain" class="country" start="1" end="1"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e89024681a191" start="1" end="21" line-color="1" type="fooobar" incomplete="true">
+      <created-by>some-user-foobar-123-id</created-by>
+      <created-at>2017-03-10T10:00:00+00:00</created-at>
+      <last-modified-by>some-user-foobar-789-id</last-modified-by>
+      <last-modified-at>2017-03-10T10:00:00+00:00</last-modified-at>
       <references>
         <task id=""/>
         <group ref=""/>
@@ -125,6 +145,10 @@
       <value id="spain" class="country" start="2" end="21"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e89024681abcd" start="2" end="2" line-color="1" type="fooobar" incomplete="true">
+      <created-by>some-user-foobar-123-id</created-by>
+      <created-at>2017-03-10T10:00:00+00:00</created-at>
+      <last-modified-by>some-user-foobar-789-id</last-modified-by>
+      <last-modified-at>2017-03-10T10:00:00+00:00</last-modified-at>
       <references>
         <task id=""/>
       </references>
@@ -137,6 +161,10 @@
       <value id="lane-yes" class="is-lane" start="2" end="2"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e89024681abce" start="2" end="2" line-color="1" type="fooobar" incomplete="true">
+      <created-by>some-user-foobar-123-id</created-by>
+      <created-at>2017-03-10T10:00:00+00:00</created-at>
+      <last-modified-by>some-user-foobar-789-id</last-modified-by>
+      <last-modified-at>2017-03-10T10:00:00+00:00</last-modified-at>
       <references>
         <task id=""/>
       </references>
@@ -149,6 +177,10 @@
       <value id="lane-open-no" class="is-lane-open" start="2" end="2"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01e89024681abcf" start="2" end="2" line-color="1" type="fooobar" incomplete="true">
+      <created-by>some-user-foobar-123-id</created-by>
+      <created-at>2017-03-10T10:00:00+00:00</created-at>
+      <last-modified-by>some-user-foobar-789-id</last-modified-by>
+      <last-modified-at>2017-03-10T10:00:00+00:00</last-modified-at>
       <references>
         <task id=""/>
       </references>
@@ -160,6 +192,10 @@
       <value id="lightsource-yes" class="is-lightsource" start="2" end="2"/>
     </thing>
     <thing id="e363906c1c4a5a5bd01easdasdasdasdasd" start="2" end="2" line-color="1" type="fooobar" incomplete="true">
+      <created-by>some-user-foobar-123-id</created-by>
+      <created-at>2017-03-10T10:00:00+00:00</created-at>
+      <last-modified-by>some-user-foobar-789-id</last-modified-by>
+      <last-modified-at>2017-03-10T10:00:00+00:00</last-modified-at>
       <references>
         <task id=""/>
       </references>
