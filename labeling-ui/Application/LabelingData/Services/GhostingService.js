@@ -269,7 +269,7 @@ class GhostingService {
    *
    * @param {LabeledThingGroup} labeledThingGroup
    * @param {number} frameIndex
-   * @results {Promise.<LabeledThingGroupInFrame|undefined>}
+   * @returns {Promise.<LabeledThingGroupInFrame|undefined>}
    * @private
    */
   _getPreviousLabeledThingGroupInFrameForLabeledThinGroupAndFrameIndex(labeledThingGroup, frameIndex) {
