@@ -25,10 +25,7 @@ class ThumbnailController {
   constructor(
     $scope,
     $element,
-    paperShapeFactory,
-    drawingContextService,
     frameGateway,
-    animationFrameService,
     logger,
     frameIndexService
   ) {
@@ -47,22 +44,10 @@ class ThumbnailController {
     this.currentFrameIndex = this.framePosition.position;
 
     /**
-     * @type {DrawingContext}
-     * @private
-     */
-    this._context = drawingContextService.createContext();
-
-    /**
      * @type {jQuery}
      * @private
      */
     this._$imageContainer = $element.find('.thumbnail-image-container');
-
-    /**
-     * @type {PaperShapeFactory}
-     * @private
-     */
-    this._paperShapeFactory = paperShapeFactory;
 
     /**
      * @type {FrameGateway}
@@ -226,10 +211,7 @@ class ThumbnailController {
 ThumbnailController.$inject = [
   '$scope',
   '$element',
-  'paperShapeFactory',
-  'drawingContextService',
   'frameGateway',
-  'animationFrameService',
   'loggerService',
   'frameIndexService',
 ];
