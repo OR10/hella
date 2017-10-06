@@ -264,7 +264,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
       }
 
       if (viewModel.paperThingShapes !== undefined) {
-        this._pathCollisionService.setShapes(viewModel.paperThingShapes.filter(shape => shape instanceof PaperPolyline && shape !== newShape));
+        this._pathCollisionService.setShapes(
+          viewModel.paperThingShapes.filter(
+            shape => shape instanceof PaperPolyline && shape !== newShape
+          )
+        );
       }
 
       this._applyHiddenLabeledThingsInFrameFilter();
@@ -316,7 +320,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         }
 
         this._applicationState.disableAll();
-        this._labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], group)
+        this._labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], group)
           .then(() => this._deleteAfterAction())
           .catch(() => this._onDeletionError());
       }
@@ -551,7 +555,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._applicationState.disableAll();
 
-    this._labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
+    this._labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
       .then(() => {
         return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
       })

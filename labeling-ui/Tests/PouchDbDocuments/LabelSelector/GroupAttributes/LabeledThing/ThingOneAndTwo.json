@@ -1,0 +1,36 @@
+[
+  {
+    "classes": [],
+    "frameRange": {
+      "startFrameIndex": 0,
+      "endFrameIndex": 1,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "incomplete": true,
+    "lineColor": 6,
+    "taskId": "TASKID-TASKID",
+    "groupIds": [
+      "group-one",
+      "group-three"
+    ],
+    "_id": "LABELED-THING-ID-1",
+    "type": "AppBundle.Model.LabeledThing"
+  },
+  {
+    "classes": [],
+    "frameRange": {
+      "startFrameIndex": 0,
+      "endFrameIndex": 1,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "incomplete": true,
+    "lineColor": 16,
+    "taskId": "TASKID-TASKID",
+    "groupIds": [
+      "group-two",
+      "group-three"
+    ],
+    "_id": "LABELED-THING-ID-2",
+    "type": "AppBundle.Model.LabeledThing"
+  }
+]
