@@ -65,15 +65,15 @@ class ShapeMergeService {
             } else {
               return this._$q.resolve();
             }
-          })
-          .then(() => {
-            this._$rootScope.$emit('shape:merge:after');
           });
 
         ltPromises.push(ltifPromise);
       });
 
-      return this._$q.all(ltPromises);
+      return this._$q.all(ltPromises)
+        .then(() => {
+          this._$rootScope.$emit('shape:merge:after');
+        });
     });
   }
 
