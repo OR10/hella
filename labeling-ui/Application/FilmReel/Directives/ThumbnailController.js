@@ -22,14 +22,16 @@ class ThumbnailController {
    * @param {LoggerService} logger
    * @param {FrameIndexService} frameIndexService
    */
-  constructor($scope,
-              $element,
-              paperShapeFactory,
-              drawingContextService,
-              frameGateway,
-              animationFrameService,
-              logger,
-              frameIndexService) {
+  constructor(
+    $scope,
+    $element,
+    paperShapeFactory,
+    drawingContextService,
+    frameGateway,
+    animationFrameService,
+    logger,
+    frameIndexService
+  ) {
     /**
      * Flag to indicate whether the frame number is shown or not
      *
