@@ -366,7 +366,11 @@ class ViewerTitleBarController {
             })
             .then(() => resolve());
         },
-        () => resolve()
+        () => {
+          this._reinitializeContinuousReplication();
+
+          resolve();
+        }
       );
     });
   }
