@@ -7,7 +7,7 @@ import AbortablePromise from 'Application/Common/Support/AbortablePromise';
 
 const AnnoStationUnitTestModule = annoStationUnitTestModuleCreator(ApplicationModule);
 
-fdescribe('ThumbnailDirective', () => {
+describe('ThumbnailDirective', () => {
   let angularQ;
   let rootScope;
   let compile;
@@ -102,6 +102,128 @@ fdescribe('ThumbnailDirective', () => {
   it('should be renderable', () => {
     renderThumbnailDirective();
     expect(element.prop('tagName')).toEqual('THUMBNAIL');
+  });
+
+  it('should request the image based on the given location', () => {
+    const location = 'The ultimate location for an image file';
+    renderThumbnailDirective(undefined, undefined, location, undefined, undefined, undefined, undefined);
+    expect(frameGatewayMock.getImage).toHaveBeenCalledWith(location);
+  });
+
+  it('should render the image-element provided by the frame gateway to its container', () => {
+    const image = new Image();
+    image.setAttribute('id', 'some-readable-and-findable-id');
+    frameGatewayMock.getImage.and.returnValue(
+      createAbortablePromise(angularQ.resolve(image))
+    );
+
+    renderThumbnailDirective();
+
+    rootScope.$apply();
+
+    const $imageElement = element.find('.thumbnail-image-container > img');
+    expect($imageElement.length).toEqual(1);
+    expect($imageElement.get(0)).toBe(image);
+  });
+
+  it('should load image on change of location attribute', () => {
+    const firstLocation = 'The ultimate first location for an image file';
+    const secondLocation = 'The ultimate and even better location for another image file';
+    renderThumbnailDirective(undefined, undefined, firstLocation, undefined, undefined, undefined, undefined);
+
+    rootScope.$apply();
+
+    scope.location = secondLocation;
+
+    rootScope.$apply();
+
+    expect(frameGatewayMock.getImage).toHaveBeenCalledWith(secondLocation);
+  });
+
+  it('should replace image on change of location attribute', () => {
+    const firstLocation = 'The ultimate first location for an image file';
+    const secondLocation = 'The ultimate and even better location for another image file';
+
+    const firstImage = new Image();
+    firstImage.setAttribute('id', 'some-readable-and-findable-id');
+
+    const secondImage = new Image();
+    secondImage.setAttribute('id', 'another-cool-and-unique-id-for-an-image');
+
+    frameGatewayMock.getImage.and.returnValue(
+      createAbortablePromise(angularQ.resolve(firstImage))
+    );
+
+    renderThumbnailDirective(undefined, undefined, firstLocation, undefined, undefined, undefined, undefined);
+
+    rootScope.$apply();
+
+    scope.location = secondLocation;
+    frameGatewayMock.getImage.and.returnValue(
+      createAbortablePromise(angularQ.resolve(secondImage))
+    );
+
+    rootScope.$apply();
+
+    const $imageElement = element.find('.thumbnail-image-container > img');
+    expect($imageElement.length).toEqual(1);
+    expect($imageElement.get(0)).toBe(secondImage);
+  });
+
+  it('should have no displayed image if location is null', () => {
+    renderThumbnailDirective(undefined, undefined, null, undefined, undefined, undefined, undefined);
+
+    rootScope.$apply();
+
+    const $imageElement = element.find('.thumbnail-image-container > img');
+    expect($imageElement.length).toEqual(0);
+  });
+
+  it('should remove but not load another image if location is changed to null', () => {
+    const image = new Image();
+    image.setAttribute('id', 'some-readable-and-findable-id');
+    frameGatewayMock.getImage.and.returnValue(
+      createAbortablePromise(angularQ.resolve(image))
+    );
+
+    renderThumbnailDirective();
+
+    rootScope.$apply();
+
+    scope.location = null;
+
+    rootScope.$apply();
+
+    const $imageElement = element.find('.thumbnail-image-container > img');
+    expect($imageElement.length).toEqual(0);
+  });
+
+  it('should abort loading promise if location change occurs during image loading', () => {
+    const secondLocation = 'some awesome location';
+    const secondImage = new Image();
+    secondImage.setAttribute('id', 'another-cool-and-unique-id-for-an-image');
+
+    const firstImageLoadPromise = createAbortablePromise(angularQ.defer().promise);
+    spyOn(firstImageLoadPromise, 'abort').and.callThrough();
+
+    frameGatewayMock.getImage.and.returnValue(
+      firstImageLoadPromise
+    );
+
+    renderThumbnailDirective();
+
+    rootScope.$apply();
+
+    expect(firstImageLoadPromise.abort).not.toHaveBeenCalled();
+
+    scope.location = secondLocation;
+    frameGatewayMock.getImage.and.returnValue(
+      createAbortablePromise(angularQ.resolve(secondImage))
+    );
+
+    rootScope.$apply();
+
+    expect(firstImageLoadPromise.abort).toHaveBeenCalled();
   });
 });
 
