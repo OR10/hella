@@ -280,7 +280,7 @@ class GhostingService {
     // The first frame can never have a previous ltgif
     // Moreover querying it would not work as we are querying from 0 to -1 ;)
     if (frameIndex === 0) {
-      return undefined;
+      return this._$q.resolve(undefined);
     }
 
     return this._$q.resolve()
