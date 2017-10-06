@@ -4,10 +4,8 @@ import AbortablePromiseRingBuffer from 'Application/Common/Support/AbortableProm
  * Controller managing the display of a single ThumbnailImage
  *
  * @property {FrameLocation} location
- * @property {Filters} filters
  * @property {bool} isCurrent
  * @property {FramePosition} framePosition
- * @property {LabeledThingInFrame|null} labeledThingInFrame
  * @property {{width: int, height: int}} labeledThingViewport
  * @property {{width: in, height: int}} dimensions
  */
@@ -15,10 +13,7 @@ class ThumbnailController {
   /**
    * @param {$rootScope.Scope} $scope
    * @param {jQuery} $element
-   * @param {PaperShapeFactory} paperShapeFactory
-   * @param {DrawingContextService} drawingContextService
    * @param {FrameGateway} frameGateway
-   * @param {AnimationFrameService} animationFrameService
    * @param {LoggerService} logger
    * @param {FrameIndexService} frameIndexService
    */
