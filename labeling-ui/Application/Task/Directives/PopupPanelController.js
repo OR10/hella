@@ -9,6 +9,7 @@ class PopupPanelController {
   /**
    *
    * @param {$rootScope.Scope} $scope
+   * @param {$q} $q
    * @param {angular.$window} $window
    * @param {angular.$element} $element
    * @param {AnimationFrameService} animationFrameService
@@ -21,9 +22,11 @@ class PopupPanelController {
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ShapeInboxService} shapeInboxService
    * @param {ShapeMergeService} shapeMergeService
+   * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    */
   constructor(
     $scope,
+    $q,
     $window,
     $element,
     animationFrameService,
@@ -35,11 +38,18 @@ class PopupPanelController {
     labelStructureService,
     shapeSelectionService,
     shapeInboxService,
-    shapeMergeService
+    shapeMergeService,
+    labeledThingInFrameGateway
   ) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
     this._supportedImageTypes = ['sourceJpg', 'source'];
+
+    /**
+     * @type {$q}
+     * @private
+     */
+    this._$q = $q;
 
     /**
      * @type {AbortablePromiseFactory}
@@ -93,6 +103,12 @@ class PopupPanelController {
      * @private
      */
     this._shapeMergeService = shapeMergeService;
+
+    /**
+     * @type {LabeledThingGateway}
+     * @private
+     */
+    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     this._activeBackgroundImage = null;
 
@@ -210,6 +226,8 @@ class PopupPanelController {
     this._shapeSelectionService.afterAnySelectionChange('PopupPanelController', () => {
       this._loadSelectedObjects();
     });
+
+    this.hasMergableObjects = false;
   }
 
   /**
@@ -240,15 +258,27 @@ class PopupPanelController {
     return this.savedObjects.length > 0;
   }
 
-  hasMergableObjects() {
+  /**
+   * Check if shapes in inbox can be merged. Conditions are:
+   *  - All shapes are on different frames
+   *  - The root shape does not have LTIFs on any frame of the other objects
+   *  - All shapes are of the same type
+   *
+   * @private
+   */
+  _calculateMergableObjects() {
     if (this.savedObjects.length > 1) {
       const rootShape = this.savedObjects[0].shape;
       const rootShapeFrameIndex = rootShape.labeledThingInFrame.frameIndex;
       const rootShapeConstructor = rootShape.constructor;
+      const rootLabeledThing = rootShape.labeledThingInFrame.labeledThing;
 
+      let promises = [];
       let mergable = true;
+
       this.savedObjects.forEach(object => {
-        if (object.shape === rootShape) {
+        // Do nothing if the current object is the rootObject or if the shapes are already unmergable
+        if (object.shape === rootShape || !mergable) {
           return;
         }
         const hasDifferentFrameIndex = (rootShapeFrameIndex !== object.shape.labeledThingInFrame.frameIndex);
@@ -256,12 +286,37 @@ class PopupPanelController {
 
         mergable &= hasDifferentFrameIndex;
         mergable &= isOfSameType;
+
+        // Only check for litfs on the frame of the current object, if the shapes are still mergable
+        if (mergable) {
+          const hasLtifPromise = this._labeledThingInFrameGateway.hasLabeledThingInFrameOnFrame(rootLabeledThing, object.shape.labeledThingInFrame.frameIndex);
+          promises.push(hasLtifPromise);
+        }
       });
 
-      return mergable;
-    }
+      // Cancel promises, if shapes are already unmergable
+      if (!mergable) {
+        promises = [];
+      }
 
-    return false;
+      this._$q.all(promises)
+        .then(hasLtifArray => {
+          const rootObjecthasLtifOnAnyOtherFrameOfSavedObject = hasLtifArray.reduce((result, hasLtifOnObjectFrame) => {
+            if (hasLtifOnObjectFrame || result) {
+              return true;
+            }
+            return false;
+          }, false);
+
+          if(rootObjecthasLtifOnAnyOtherFrameOfSavedObject) {
+            this.hasMergableObjects = false;
+          } else {
+            this.hasMergableObjects = mergable;
+          }
+        });
+    } else {
+      this.hasMergableObjects = false;
+    }
   }
 
   mergeShapes() {
@@ -354,7 +409,8 @@ class PopupPanelController {
               this._selectedObjects[shape.id] = shapeInformation;
             }
           }
-        });
+        })
+        .then(() => this._calculateMergableObjects());
     });
   }
 
@@ -502,6 +558,7 @@ class PopupPanelController {
 
 PopupPanelController.$inject = [
   '$scope',
+  '$q',
   '$window',
   '$element',
   'animationFrameService',
@@ -514,6 +571,7 @@ PopupPanelController.$inject = [
   'shapeSelectionService',
   'shapeInboxService',
   'shapeMergeService',
+  'labeledThingInFrameGateway',
 ];
 
 export default PopupPanelController;
