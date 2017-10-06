@@ -239,7 +239,7 @@ describe('ThumbnailDirective', () => {
 
     const $imageElement = element.find('.thumbnail-image-container > img');
     expect($imageElement.attr('width')).toEqual('100%');
-    expect($imageElement.attr('height')).toEqual('100%')
+    expect($imageElement.attr('height')).toEqual('100%');
   });
 });
 
