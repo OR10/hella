@@ -52,9 +52,11 @@ class ThumbnailController {
      */
     this._context = drawingContextService.createContext();
 
-    const $canvas = $element.find('canvas');
-    this._context.setup($canvas.get(0));
-
+    /**
+     * @type {jQuery}
+     * @private
+     */
+    this._$imageContainer = $element.find('.thumbnail-image-container');
 
     /**
      * @type {PaperShapeFactory}
@@ -74,20 +76,6 @@ class ThumbnailController {
      */
     this._frameIndexService = frameIndexService;
 
-    this._context.withScope(scope => {
-      /**
-       * @type {paper.Layer}
-       * @private
-       */
-      this._backgroundLayer = new scope.Layer();
-
-      /**
-       * @type {paper.Layer}
-       * @private
-       */
-      this._thingLayer = new scope.Layer();
-    });
-
     /**
      * The currently displayed background image as `HTMLImageElement`
      *
@@ -100,7 +88,7 @@ class ThumbnailController {
      * @type {AbortablePromiseRingBuffer}
      * @private
      */
-    this._frameLocationsBuffer = new AbortablePromiseRingBuffer(1);
+    this._imageLoadBuffer = new AbortablePromiseRingBuffer(1);
 
     /**
      * @type {HTMLElement}
@@ -128,9 +116,6 @@ class ThumbnailController {
      */
     this._imagePromise = null;
 
-    this._drawBackgroundLayerDebounced = animationFrameService.debounce(redraw => this._drawBackgroundLayer(redraw));
-    this._drawThingLayerDebounced = animationFrameService.debounce(redraw => this._drawThingLayer(redraw));
-
     $scope.$watch('vm.currentFrameIndex', newFrameIndex => {
       const numericalFrameIndex = Number.parseInt(newFrameIndex, 10);
       this.framePosition.goto(numericalFrameIndex);
@@ -140,7 +125,7 @@ class ThumbnailController {
     $scope.$watch('vm.dimensions', newDimensions => {
       const {width, height} = newDimensions;
 
-      logger.groupStart('thumbnail:dimensions', `Thumbnail (${$canvas.attr('id')}): vm.dimensions changed`);
+      logger.groupStart('thumbnail:dimensions', `Thumbnail: vm.dimensions changed`);
       logger.log('thumbnail:dimensions', `new    dimensions: ${width}x${height}`);
 
       // Original video width and height
@@ -151,151 +136,44 @@ class ThumbnailController {
 
       logger.log('thumbnail:dimensions', `fitted dimensions: ${fittedWidth}x${fittedHeight}`);
 
-      const canvasWidth = fittedWidth <= width ? fittedWidth : width;
-      const canvasHeight = fittedWidth <= width ? height : fittedHeight;
-      logger.log('thumbnail:dimensions', `canvas dimensions: ${canvasWidth}x${canvasHeight}`);
+      const containerWidth = fittedWidth <= width ? fittedWidth : width;
+      const containerHeight = fittedWidth <= width ? height : fittedHeight;
+      logger.log('thumbnail:dimensions', `new dimensions: ${containerWidth}x${containerHeight}`);
 
       logger.groupEnd('thumbnail:dimensions');
 
-      this._context.withScope(scope => {
-        scope.view.viewSize = new scope.Size(
-          canvasWidth, canvasHeight
-        );
-
-        scope.view.update();
-      });
-
-      this._drawBackgroundLayerDebounced();
-      this._drawThingLayerDebounced();
+      this._$imageContainer.attr(
+        'style',
+        `
+          width: ${containerWidth}px;
+          height: ${containerHeight}px;
+        `
+      );
     });
 
     // Update rendered thumbnail once the location changes
     $scope.$watch('vm.location', newLocation => {
+      // If a new location is to loaded any currently running load cycle can be aborted
+      if (this._imagePromise) {
+        this._imagePromise.abort();
+      }
+
+      this._removeBackgroundImage();
+
+      // If no new image is needed, we simply do not add one.
       if (newLocation === null) {
-        this._activeBackgroundImage = null;
-
-        if (this._imagePromise) {
-          this._imagePromise.abort();
-        }
-
-        this._drawBackgroundLayerDebounced();
         return;
       }
 
       this.currentFrameIndex = this.framePosition.position;
 
-      this._imagePromise = this._frameLocationsBuffer.add(
+      this._imagePromise = this._imageLoadBuffer.add(
         this._frameGateway.getImage(newLocation)
       );
 
-      this._imagePromise.then(image => {
-        this._activeBackgroundImage = image;
-        this._drawBackgroundLayerDebounced();
-      });
-    });
-
-    // Update rendered thing layer the labeledThingInFrame changes
-    $scope.$watch('vm.labeledThingInFrame', () => {
-      this._drawThingLayerDebounced();
-    });
-
-    // Update filters upon change
-    $scope.$watchCollection('vm.filters.filters', () => this._drawBackgroundLayerDebounced());
-  }
-
-  /**
-   * Apply all given filters to a given RasterImage
-   *
-   * @param {paper.Raster} rasterImage
-   * @param {Filters} filters
-   * @private
-   */
-  _applyFilters(rasterImage, filters) {
-    this._context.withScope(scope => {
-      const originalImageData = rasterImage.getImageData(
-        new scope.Rectangle(0, 0, rasterImage.width, rasterImage.height)
+      this._imagePromise.then(
+        image => this._setBackroundImage(image)
       );
-      const filteredImageData = filters.filters.reduce(
-        (imageData, filter) => filter.manipulate(imageData),
-        originalImageData
-      );
-      rasterImage.setImageData(filteredImageData, new scope.Point(0, 0));
-    });
-  }
-
-  /**
-   * Draw the currently active Background Image
-   *
-   * @param {boolean?} redraw
-   * @private
-   */
-  _drawBackgroundLayer(redraw = true) {
-    const image = this._activeBackgroundImage;
-
-    this._context.withScope(() => {
-      this._backgroundLayer.activate();
-      this._backgroundLayer.removeChildren();
-    });
-
-    if (image === null) {
-      if (redraw) {
-        this._context.withScope(scope => scope.view.update());
-      }
-      return;
-    }
-
-    this._context.withScope(scope => {
-      const zoom = scope.view.size.width / image.width;
-
-      const rasterImage = new scope.Raster(
-        image,
-        new scope.Point(image.width / 2, image.height / 2)
-      );
-      this._applyFilters(rasterImage, this.filters);
-
-      this._backgroundLayer.scale(zoom, new scope.Point(0, 0));
-
-      if (redraw) {
-        scope.view.draw();
-      }
-    });
-  }
-
-  /**
-   * Draw the {@link LabeledThingInFrame} if one is available
-   *
-   * The drawing operation correctly scales the {@link LabeledThingInFrame} to properly fit
-   * into the thumbnail
-   *
-   * @param {boolean?} redraw
-   *
-   * @private
-   */
-  _drawThingLayer(redraw = true) {
-    this._context.withScope(() => {
-      this._thingLayer.activate();
-      this._thingLayer.removeChildren();
-    });
-
-    if (this.labeledThingInFrame === null) {
-      if (redraw) {
-        this._context.withScope(scope => scope.view.update());
-      }
-      return;
-    }
-
-    this._context.withScope(scope => {
-      const viewportScaleX = scope.view.viewSize.width / this.labeledThingViewport.width;
-
-      this.labeledThingInFrame.shapes.forEach(
-        shape => this._paperShapeFactory.createPaperThingShape(this.labeledThingInFrame, shape, this.video)
-      );
-
-      this._thingLayer.scale(viewportScaleX, new scope.Point(0, 0));
-
-      if (redraw) {
-        scope.view.update();
-      }
     });
   }
 
@@ -315,6 +193,33 @@ class ThumbnailController {
    */
   get frameIndexLimits() {
     return this._frameIndexService.getFrameIndexLimits();
+  }
+
+  /**
+   * Remove a currently set background image of the thumbnail
+   *
+   * @private
+   */
+  _removeBackgroundImage() {
+    if (this._activeBackgroundImage !== null) {
+      this._$imageContainer.empty();
+    }
+
+    this._activeBackgroundImage = null;
+  }
+
+  /**
+   * Set the given `HTMLImageElement` as new background image
+   *
+   * @param {HTMLImageElement} image
+   * @private
+   */
+  _setBackroundImage(image) {
+    image.setAttribute('width', '100%');
+    image.setAttribute('height', '100%');
+
+    this._activeBackgroundImage = image;
+    this._$imageContainer.append(image);
   }
 }
 
