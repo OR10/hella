@@ -29,6 +29,9 @@ labeling_api::params::couchdb_path_external: 'couchdb'
 labeling_api::params::fos_user_bundle_to_couchdb_sync_enabled: true
 labeling_api::letsencrypt: true
 
+labeling_api::app::hostnames:
+  - labeltool.crosscan.com
+
 labeling_api::documentation_host: false
 
 labeling_api::couch::max_open_files: 65535
