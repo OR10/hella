@@ -82,18 +82,6 @@ class ThumbnailController {
     this._$element = $element;
 
     /**
-     * @type {HTMLElement}
-     * @private
-     */
-    this._frameRangeElement = $element.find('.thumbnail-frame-range');
-
-    /**
-     * @type {bool}
-     * @private
-     */
-    this._editMode = false;
-
-    /**
      * Promise representing the state of the latest image request
      *
      * @type {AbortablePromise|null}
