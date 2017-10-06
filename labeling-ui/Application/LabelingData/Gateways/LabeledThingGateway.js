@@ -267,7 +267,7 @@ class LabeledThingGateway {
       const task = labeledThing.task;
       return this._getAssociatedLabeledThingsInFrames(task, labeledThing)
         .then(labeledThingsInFrame => {
-          return (labeledThingsInFrame.rows.length === 0);
+          return (labeledThingsInFrame.rows.length > 0);
         });
     });
   }
