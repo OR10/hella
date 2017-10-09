@@ -41,12 +41,42 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
      */
     private $documentManager;
 
+    /**
+     * @var string
+     */
+    private $deletedObjectsDir;
+
+    /**
+     * @var string
+     */
+    private $couchDbUser;
+
+    /**
+     * @var string
+     */
+    private $couchDbPassword;
+
+    /**
+     * @var string
+     */
+    private $couchDbHost;
+
+    /**
+     * @var string
+     */
+    private $couchDbPort;
+
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         LabeledThing\FacadeInterface $labeledThingFacadeFactory,
         LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory,
         LabeledThingGroup\FacadeInterface $labeledThingGroupFacadeFactory,
-        CouchDB\DocumentManager $documentManager
+        CouchDB\DocumentManager $documentManager,
+        $deletedObjectsDir,
+        $couchDbUser,
+        $couchDbPassword,
+        $couchDbHost,
+        $couchDbPort
     ) {
         parent::__construct();
         $this->labelingTaskFacade               = $labelingTaskFacade;
@@ -54,13 +84,17 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
         $this->labeledThingFacadeFactory        = $labeledThingFacadeFactory;
         $this->labeledThingGroupFacadeFactory   = $labeledThingGroupFacadeFactory;
         $this->documentManager                  = $documentManager;
+        $this->deletedObjectsDir                = $deletedObjectsDir;
+        $this->couchDbUser                      = $couchDbUser;
+        $this->couchDbPassword                  = $couchDbPassword;
+        $this->couchDbHost                      = $couchDbHost;
+        $this->couchDbPort                      = $couchDbPort;
     }
 
     protected function configure()
     {
         $this->setName('annostation:delete-invalid-ltif-lt-and-ltg-references')
             ->setDescription('Delete all LTIF with an invalid LT reference and LT with an invalid LTG OR no assigned LTIF reference')
-            ->addArgument('logFilePath', InputArgument::REQUIRED)
             ->addArgument('taskId', InputArgument::OPTIONAL)
             ->addOption('dryRun');
     }
@@ -68,7 +102,6 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
     {
         $dryRun               = $input->getOption('dryRun');
-        $logFilePath          = $input->getArgument('logFilePath');
         $deletedLtifDocs      = 0;
         $deletedLtgReferences = 0;
         $deletedLtDocs        = 0;
@@ -103,7 +136,6 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
             $deletedLtgReferences += $this->removeInvalidLabeledThingGroupReferences(
                 $task,
                 $labeledThings,
-                $logFilePath,
                 $dryRun
             );
 
@@ -117,15 +149,12 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
             $deletedLtDocs += $this->removeLabeledThingWithoutAnyLabeledThingInFrameRelation(
                 $labeledThings,
                 $task,
-                $logFilePath,
                 $dryRun
             );
 
             $this->deleteLabeledThingInFrames(
                 $invalidLabeledThingsInFrames,
-                $task->getFrameNumberMapping(),
-                $dryRun,
-                $logFilePath
+                $dryRun
             );
             $deletedLtifDocs += count($invalidLabeledThingsInFrames);
             $progressBar->setMessage($deletedLtifDocs, 'deletedLtifDocs');
@@ -142,14 +171,12 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
     /**
      * @param                    $labeledThings
      * @param Model\LabelingTask $task
-     * @param                    $logFilePath
      * @param                    $dryRun
      * @return int
      */
     private function removeLabeledThingWithoutAnyLabeledThingInFrameRelation(
       $labeledThings,
       Model\LabelingTask $task,
-      $logFilePath,
       $dryRun
     ){
         $labeledThingFacade        = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
@@ -160,22 +187,9 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
         $removedLabeledThings = 0;
         foreach($labeledThings as $labeledThing) {
             if (empty($labeledThingFacade->getLabeledThingInFrames($labeledThing))) {
-                file_put_contents(
-                    $logFilePath,
-                    sprintf(
-                        "%s;%s;%s;%s;%s-%s%s",
-                        'invalid_empty_lt',
-                        $labeledThing->getProjectId(),
-                        $labeledThing->getTaskId(),
-                        $labeledThing->getId(),
-                        $labeledThing->getFrameRange()->getStartFrameIndex(),
-                        $labeledThing->getFrameRange()->getEndFrameIndex(),
-                        "\n"
-                    ),
-                    FILE_APPEND
-                );
                 $removedLabeledThings++;
                 if (!$dryRun) {
+                    $this->backupAndLogDocument($labeledThing);
                     $labeledThingFacade->delete($labeledThing);
                 }
             }
@@ -187,14 +201,12 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
     /**
      * @param Model\LabelingTask   $task
      * @param Model\LabeledThing[] $labeledThings
-     * @param                      $logFilePath
      * @param                      $dryRun
      * @return int
      */
     private function removeInvalidLabeledThingGroupReferences(
         Model\LabelingTask $task,
         $labeledThings,
-        $logFilePath,
         $dryRun
     ) {
         $labeledThingGroupFacade   = $this->labeledThingGroupFacadeFactory->getFacadeByProjectIdAndTaskId(
@@ -211,20 +223,7 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
             foreach ($labeledThing->getGroupIds() as $groupId) {
 
                 if (!$labeledThingGroupFacade->find($groupId) instanceof AnnoStationBundleModel\LabeledThingGroup) {
-                    file_put_contents(
-                        $logFilePath,
-                        sprintf(
-                            "%s;%s;%s;%s;%s-%s%s",
-                            'invalid_ltg_reference',
-                            $labeledThing->getProjectId(),
-                            $labeledThing->getTaskId(),
-                            $labeledThing->getId(),
-                            $labeledThing->getFrameRange()->getStartFrameIndex(),
-                            $labeledThing->getFrameRange()->getEndFrameIndex(),
-                            "\n"
-                        ),
-                        FILE_APPEND
-                    );
+                    $this->backupAndLogDocument($labeledThing);
                     $key = array_search($groupId, $newGroup);
                     unset($newGroup[$key]);
                     $numberOfDeletedReferences++;
@@ -272,9 +271,8 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
     /**
      * @param Model\LabeledThingInFrame[] $labeledThingInFrames
      * @param                             $dryRun
-     * @param                             $logFilePath
      */
-    private function deleteLabeledThingInFrames($labeledThingInFrames, $frameNumberMapping, $dryRun, $logFilePath)
+    private function deleteLabeledThingInFrames($labeledThingInFrames, $dryRun)
     {
         foreach ($labeledThingInFrames as $labeledThingInFrame) {
             $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
@@ -282,21 +280,103 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
                 $labeledThingInFrame->getTaskId()
             );
             if (!$dryRun) {
+                $this->backupAndLogDocument($labeledThingInFrame);
                 $labeledThingInFrameFacade->delete([$labeledThingInFrame]);
             }
+        }
+    }
+
+    /**
+     * @param Model\LabeledThing|Model\LabeledThingInFrame|Model\LabelingGroup $object
+     */
+    private function backupAndLogDocument($object)
+    {
+        file_put_contents(
+            sprintf(
+                '%s/%s.json',
+                $this->getDirectoryPath($object->getProjectId(), $object->getTaskId()),
+                $object->getId()
+            ),
+            $this->getRawDocument($object->getProjectId(), $object->getTaskId(), $object->getId())
+        );
+        $this->logId($object->getId(), $object->getProjectId(), $object->getTaskId());
+    }
+
+    /**
+     * @param $projectId
+     * @param $taskId
+     * @param $documentId
+     *
+     * @return bool|string
+     */
+    private function getRawDocument($projectId, $taskId, $documentId)
+    {
+        return file_get_contents(
+            sprintf(
+                'http://%s:%s@%s:%s/taskdb-project-%s-task-%s/%s',
+                $this->couchDbUser,
+                $this->couchDbPassword,
+                $this->couchDbHost,
+                $this->couchDbPort,
+                $projectId,
+                $taskId,
+                $documentId
+            )
+        );
+    }
+
+    /**
+     * @param $projectId
+     * @param $taskId
+     *
+     * @return string
+     */
+    private function getDirectoryPath($projectId, $taskId)
+    {
+        $date = new \DateTime('now', new \DateTimeZone('UTC'));
+
+        $directoryPathName = sprintf(
+            '%s/files/%s-project-%s-task-%s',
+            $this->deletedObjectsDir,
+            $date->format('d-m-Y'),
+            $projectId,
+            $taskId
+        );
+
+        if (!is_dir($directoryPathName)) {
+            mkdir($directoryPathName);
+        }
+
+        return $directoryPathName;
+    }
+
+    /**
+     * @param $id
+     * @param $projectId
+     * @param $taskId
+     */
+    private function logId($id, $projectId, $taskId)
+    {
+        $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        $file = $this->deletedObjectsDir . '/logs/deleted.txt';
+        if (!is_file($file)) {
             file_put_contents(
-                $logFilePath,
-                sprintf(
-                    "%s;%s;%s;%s%s",
-                    'Invalid_ltif_reference',
-                    $labeledThingInFrame->getProjectId(),
-                    $labeledThingInFrame->getTaskId(),
-                    $frameNumberMapping[$labeledThingInFrame->getFrameIndex()],
-                    "\n"
-                ),
-                FILE_APPEND
+                $file,
+                "date;id;projectId;taskId\n"
             );
         }
+        file_put_contents(
+            $file,
+            sprintf(
+                "%s;%s;%s;%s%s",
+                $date->format('c'),
+                $id,
+                $projectId,
+                $taskId,
+                "\n"
+            ),
+            FILE_APPEND
+        );
     }
 
     /**

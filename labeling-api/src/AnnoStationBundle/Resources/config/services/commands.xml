@@ -143,6 +143,11 @@
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+            <argument>%deleted_objects_dir%</argument>
+            <argument>%couchdb_user%</argument>
+            <argument>%couchdb_password%</argument>
+            <argument>%couchdb_host%</argument>
+            <argument>%couchdb_port%</argument>
             <tag name="console.command"/>
         </service>
 
