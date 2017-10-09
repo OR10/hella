@@ -1,7 +1,7 @@
 import { inject } from 'angular-mocks';
 import ShapeMergeService from 'Application/Common/Services/ShapeMergeService';
 
-fdescribe('ShapeMergeService', () => {
+describe('ShapeMergeService', () => {
   /**
    * @type {ShapeMergeService}
    */
