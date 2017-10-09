@@ -2,9 +2,11 @@ couchdb::bind_address: 127.0.0.1
 annostation_base::nodejs: true
 
 letsencrypt::email: chh@crosscan.com
+annostation_letsencrypt::existingVhosts:
+    - labeling_api-redirect
+    - labeling_api_cdn-redirect
 annostation_letsencrypt::domains:
     - labeltool.crosscan.com
-annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
 labeling_api::app::sslCertFile: '/etc/letsencrypt/live/labeltool.crosscan.com/fullchain.pem'
 labeling_api::app::sslKeyFile: '/etc/letsencrypt/live/labeltool.crosscan.com/privkey.pem'
 labeling_api::cdn::sslCertFile: '/etc/letsencrypt/live/labeltool.crosscan.com/fullchain.pem'
@@ -26,6 +28,9 @@ labeling_api::params::couchdb_port_external: '443'
 labeling_api::params::couchdb_path_external: 'couchdb'
 labeling_api::params::fos_user_bundle_to_couchdb_sync_enabled: true
 labeling_api::letsencrypt: true
+
+labeling_api::app::hostnames:
+  - labeltool.crosscan.com
 
 labeling_api::documentation_host: false
 

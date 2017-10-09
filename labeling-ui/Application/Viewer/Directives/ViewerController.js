@@ -1568,7 +1568,7 @@ class ViewerController {
       shape.labeledThingInFrame.labeledThing.groupIds.push(labeledThingGroup.id);
     }
 
-    return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup)
+    return this._labeledThingGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup)
       .catch(() => {
         this._modalService.info(
           {
@@ -1606,7 +1606,7 @@ class ViewerController {
 
         paperGroupShape.labeledThingGroupInFrame.labeledThingGroup = labeledThingGroup;
 
-        return this._labeledThingGroupGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup);
+        return this._labeledThingGateway.assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup);
       })
       .catch(error => {
         if (error.cancelledGroupCreation) {

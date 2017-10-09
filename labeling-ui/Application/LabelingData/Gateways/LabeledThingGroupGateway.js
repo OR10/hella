@@ -12,9 +12,9 @@ class LabeledThingGroupGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    * @param {AbortablePromiseFactory} abortablePromiseFactory
-   * @param {LabeledThingGateway} labeledThingGateway
    * @param {EntityIdService} entityIdService
    * @param {PouchDbViewService} pouchDbViewService
+   * @param {GhostingService} ghostingService
    * @param {CurrentUserService} currentUserService
    */
   constructor(
@@ -25,9 +25,9 @@ class LabeledThingGroupGateway {
     couchDbModelDeserializer,
     revisionManager,
     abortablePromiseFactory,
-    labeledThingGateway,
     entityIdService,
     pouchDbViewService,
+    ghostingService,
     currentUserService
   ) {
     /**
@@ -79,12 +79,6 @@ class LabeledThingGroupGateway {
     this._abortablePromiseFactory = abortablePromiseFactory;
 
     /**
-     * @type {LabeledThingGateway}
-     * @private
-     */
-    this._labeledThingGateway = labeledThingGateway;
-
-    /**
      * @type {EntityIdService}
      * @private
      */
@@ -97,10 +91,75 @@ class LabeledThingGroupGateway {
     this._pouchDbViewService = pouchDbViewService;
 
     /**
+     * @type {GhostingService}
+     * @private
+     */
+    this._ghostingService = ghostingService;
+
+    /**
      * @type {CurrentUserService}
      * @private
      */
     this._currentUserService = currentUserService;
+  }
+
+  /**
+   * Get the ids of LabeledThingGroups, which are present on a certain frameIndex of the given task
+   *
+   * @param {number} frameIndex
+   * @param {Task} task
+   * @return {Promise.<string[]>}
+   * @private
+   */
+  _getLabeledThingGroupIdsOnFrameForTask(frameIndex, task) {
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    return dbContext.query(
+      this._pouchDbViewService.getDesignDocumentViewName(
+        'labeledThingGroupOnFrameByTaskIdAndFrameIndex'
+      ),
+      {
+        key: [taskId, frameIndex],
+      }
+    )
+      .then(response => response.rows.map(row => row.value))
+      .then(ids => uniq(ids));
+  }
+
+  /**
+   * Retrieve all LabeledThingGroups which are present on a certain frameIndex for the given task
+   *
+   * @param {number} frameIndex
+   * @param {Task} task
+   * @return {Promise.<LabeledThingGroup[]>}
+   * @private
+   */
+  _getLabeledThingGroupsOnFrameForTask(frameIndex, task) {
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    return this._getLabeledThingGroupIdsOnFrameForTask(frameIndex, task)
+      .then(labeledThingGroupIds => {
+        const promises = [];
+
+        labeledThingGroupIds.forEach(labeledThingGroupId => {
+          promises.push(dbContext.get(labeledThingGroupId));
+        });
+
+        return this._$q.all(promises);
+      })
+      .then(labeledThingGroupDocuments => {
+        labeledThingGroupDocuments.forEach(
+          labeledThingGroupDocument => this._revisionManager.extractRevision(labeledThingGroupDocument)
+        );
+
+        return labeledThingGroupDocuments.map(
+          labeledThingGroupDocument => this._couchDbModelDeserializer.deserializeLabeledThingGroup(
+            labeledThingGroupDocument,
+            task
+          )
+        );
+      });
   }
 
   /**
@@ -111,49 +170,61 @@ class LabeledThingGroupGateway {
    * @return {AbortablePromise}
    */
   getLabeledThingGroupsInFrameForFrameIndex(task, frameIndex) {
-    const taskId = task.id;
-    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
-
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute('labeledThingGroup', () => {
-      return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupOnFrameByTaskIdAndFrameIndex'), {
-        key: [taskId, frameIndex],
-      })
-        .then(response => response.rows.map(row => row.value))
-        .then(labeledThingGroupIds => {
-          // TODO: Move to pouchdb reduce function
-          // Filter duplicate labeledThingGroupIds
-          const uniqueLabeledThingGroupIds = uniq(labeledThingGroupIds);
-          const promises = [];
+      return this._getLabeledThingGroupsOnFrameForTask(frameIndex, task)
+        .then(
+          labeledThingGroups => this._ghostingService.calculateClassGhostsForLabeledThingGroupsAndFrameIndex(
+            labeledThingGroups,
+            frameIndex
+          )
+        );
+    });
+  }
 
-          uniqueLabeledThingGroupIds.forEach(labeledThingGroupId => {
-            promises.push(dbContext.get(labeledThingGroupId));
-          });
+  /**
+   * Determine the frameRange for a specific {@link LabeledThingGroup}
+   *
+   * The `frameIndexRange` is calculated by looking at all associated {@link LabeledThing} frameRanges and determining
+   * the maximum span of overlapping frames.
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @returns {Promise.<{startFrameIndex: number, endFrameIndex: number}>}
+   */
+  getFrameIndexRangeForLabeledThingGroup(labeledThingGroup) {
+    const task = labeledThingGroup.task;
+    const taskId = task.id;
+    const groupId = labeledThingGroup.id;
 
-          return this._$q.all([uniqueLabeledThingGroupIds, this._$q.all(promises)]);
-        })
-        .then(([labeledThingGroupIds, labeledThingGroupDocuments]) => {
-          const labeledThingGroups = labeledThingGroupDocuments.map(labeledThingGroupDocument => {
-            this._revisionManager.extractRevision(labeledThingGroupDocument);
-            return this._couchDbModelDeserializer.deserializeLabeledThingGroup(labeledThingGroupDocument, task);
-          });
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
 
-          const labeledThingGroupsInFrame = labeledThingGroupIds.map(labeledThingGroupId => {
-            const assignedLabeledThingGroup = labeledThingGroups.find(labeledThingGroup => labeledThingGroup.id === labeledThingGroupId);
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return this._$q.resolve()
+        .then(
+          () => dbContext.query(
+            this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupFrameRange'),
+            {
+              include_docs: false,
+              key: [groupId],
+              group: true,
+              group_level: 1,
+            }
+          )
+        )
+        .then(result => {
+          if (result.rows.length === 0) {
+            return this._$q.reject(
+              `The group ${groupId} does not have a frameRange, as it is not associated with any LabeledThing.`
+            );
+          }
 
-            const dbDocument = {
-              id: this._entityIdService.getUniqueId(),
-              classes: [],
-              labeledThingGroup: assignedLabeledThingGroup,
-              frameIndex,
-              labeledThingGroupId,
-            };
-            // TODO: If the labeledThingGroupInFrame documents are no longer generated, we need to extract revision here
-            return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(dbDocument, assignedLabeledThingGroup);
-          });
+          const row = result.rows[0];
 
-          return labeledThingGroupsInFrame;
+          return {
+            startFrameIndex: row.value[0],
+            endFrameIndex: row.value[1],
+          };
         });
     });
   }
@@ -188,6 +259,51 @@ class LabeledThingGroupGateway {
   }
 
   /**
+   * Delete a bunch of {@link LabeledThingGroupInFrame} entities
+   *
+   * If one or more documents could not be deleted the promise is rejected
+   *
+   * The operation is NOT atomic or transactional.
+   *
+   * @param {Task} task
+   * @param {LabeledThingGroupInFrame[]} ltgifs
+   * @returns {Promise.<Array>}
+   * @private
+   */
+  _deleteLabeledThingGroupInFrames(task, ltgifs) {
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    if (ltgifs.length === 0) {
+      return [];
+    }
+
+    return this._$q.resolve()
+      .then(() => {
+        const bulkDocumentActions = ltgifs.map(
+          ltgif => ({
+            _id: ltgif.id,
+            _rev: this._revisionManager.getRevision(ltgif.id),
+            _deleted: true,
+          })
+        );
+
+        return dbContext.bulkDocs(bulkDocumentActions);
+      })
+      .then(results => {
+        const oneOrMoreBulkOperationsFailed = results.reduce(
+          (carry, result) => carry || result.ok !== true,
+          false
+        );
+
+        if (oneOrMoreBulkOperationsFailed) {
+          return this._$q.reject(`Removal of LTGIFs failed: ${JSON.stringify(results)}`);
+        }
+
+        return true;
+      });
+  }
+
+  /**
    * Deletes a labeled thing group with the given id.
    *
    * @param {LabeledThingGroup} labeledThingGroup
@@ -203,12 +319,86 @@ class LabeledThingGroupGateway {
     return this._packagingExecutor.execute('labeledThingGroup', () => {
       this._injectRevisionOrFailSilently(labeledThingGroupDocument);
 
-      return dbContext.remove(labeledThingGroupDocument)
-        .then(result => result.ok === true)
-        .catch(() => {
-          throw new Error('Received malformed response when deleting labeled thing group.');
+      return this._$q.resolve()
+        .then(() => this._getAssociatedLTGIFsForLTG(labeledThingGroup))
+        .then(ltgifs => this._deleteLabeledThingGroupInFrames(task, ltgifs))
+        .then(() => dbContext.remove(labeledThingGroupDocument))
+        .then(result => {
+          if (result.ok !== true) {
+            return this._$q.reject(`Error deleting ${labeledThingGroupDocument._id}: ${result.error}`);
+          }
+
+          return true;
         });
     });
+  }
+
+  /**
+   * Remove all ltgifs of a given ltg, which are outside of the given frameIndexRange
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @param {{startFrameIndex: number, endFrameIndex: number}} frameIndexRange
+   * @return {Promise}
+   */
+  deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(labeledThingGroup, frameIndexRange) {
+    const task = labeledThingGroup.task;
+
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return this._$q.resolve()
+        .then(
+          () => this._getAssociatedLTGIFsForLTG(labeledThingGroup)
+        )
+        .then(ltgifs => {
+          const ltgifsNotInFrameRange = ltgifs.filter(
+            ltgif => ltgif.frameIndex < frameIndexRange.startFrameIndex || ltgif.frameIndex > frameIndexRange.endFrameIndex
+          );
+
+          if (ltgifsNotInFrameRange.length === 0) {
+            // We do not have anything to delete
+            return true;
+          }
+
+          return this._deleteLabeledThingGroupInFrames(task, ltgifsNotInFrameRange);
+        });
+    });
+  }
+
+  /**
+   * Retrieve all {@link LabeledThingGroupInFrame} objects associated with a certain
+   * {@link LabeledThingGroup}
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @returns {Promise.<LabeledThingGroupInFrame[]>}
+   * @private
+   */
+  _getAssociatedLTGIFsForLTG(labeledThingGroup) {
+    const task = labeledThingGroup.task;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    return this._$q.resolve()
+      .then(
+        () => dbContext.query(
+          this._pouchDbViewService.getDesignDocumentViewName(
+            'labeledThingGroupInFrameByLabeledThingGroupIdAndFrameIndex'),
+          {
+            include_docs: true,
+            startkey: [labeledThingGroup.id, 0],
+            endkey: [labeledThingGroup.id, {}],
+          }
+        )
+      )
+      .then(result => {
+        if (result.rows.length === 0) {
+          return [];
+        }
+
+        return result.rows.map(
+          row => this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(
+            row.doc,
+            labeledThingGroup
+          )
+        );
+      });
   }
 
   /**
@@ -243,58 +433,27 @@ class LabeledThingGroupGateway {
   }
 
   /**
-   * Assign the given labeled thing to the given group.
-   *
-   * @param {Array.<LabeledThing>} labeledThings
-   * @param {LabeledThingGroup} labeledThingGroup
+   * @param {LabeledThingGroupInFrame} ltgif
    */
-  assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
-    const modifiedLabeledThings = labeledThings.map(labeledThing => {
-      if (labeledThing.groupIds.indexOf(labeledThingGroup.id) === -1) {
-        labeledThing.groupIds.push(labeledThingGroup.id);
-      }
-      return labeledThing;
-    });
+  saveLabeledThingGroupInFrame(ltgif) {
+    const ltg = ltgif.labeledThingGroup;
+    const task = ltg.task;
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+    const serializedLtgif = this._couchDbModelSerializer.serialize(ltgif);
 
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThingGroup',
       () => {
-        const promises = [];
-
-        modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
-        });
-
-        return this._abortablePromiseFactory(this._$q.all(promises));
-      }
-    );
-  }
-
-  /**
-   * Remove group assignment from the labeled thing
-   *
-   * @param {Array.<LabeledThing>} labeledThings
-   * @param {LabeledThingGroup} labeledThingGroup
-   */
-  unassignLabeledThingsFromLabeledThingGroup(labeledThings, labeledThingGroup) {
-    const modifiedLabeledThings = labeledThings.map(labeledThing => {
-      const index = labeledThing.groupIds.indexOf(labeledThingGroup.id);
-      if (index !== -1) {
-        labeledThing.groupIds.splice(index, 1);
-      }
-      return labeledThing;
-    });
-
-    return this._packagingExecutor.execute(
-      'labeledThingGroup',
-      () => {
-        const promises = [];
-
-        modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._labeledThingGateway.saveLabeledThing(labeledThing));
-        });
-
-        return this._abortablePromiseFactory(this._$q.all(promises));
+        this._injectRevisionOrFailSilently(serializedLtgif);
+        return dbContext.put(serializedLtgif)
+          .then(response => dbContext.get(response.id))
+          .then(readDocument => {
+            this._revisionManager.extractRevision(readDocument);
+            return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(readDocument, ltg);
+          });
       }
     );
   }
@@ -322,9 +481,9 @@ LabeledThingGroupGateway.$inject = [
   'couchDbModelDeserializer',
   'revisionManager',
   'abortablePromiseFactory',
-  'labeledThingGateway',
   'entityIdService',
   'pouchDbViewService',
+  'ghostingService',
   'currentUserService',
 ];
 

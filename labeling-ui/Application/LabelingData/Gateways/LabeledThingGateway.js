@@ -10,6 +10,7 @@ class LabeledThingGateway {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    * @param {PouchDbViewService} pouchDbViewService
+   * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {CurrentUserService} currentUserService
    */
   constructor(
@@ -20,6 +21,7 @@ class LabeledThingGateway {
     couchDbModelDeserializer,
     revisionManager,
     pouchDbViewService,
+    labeledThingGroupGateway,
     currentUserService
   ) {
     /**
@@ -71,6 +73,12 @@ class LabeledThingGateway {
     this._pouchDbViewService = pouchDbViewService;
 
     /**
+     * @type {LabeledThingGroupGateway}
+     * @private
+     */
+    this._labeledThingGroupGateway = labeledThingGroupGateway;
+
+    /**
      * @type {CurrentUserService}
      * @private
      */
@@ -79,65 +87,164 @@ class LabeledThingGateway {
 
   /**
    * @param {LabeledThing} labeledThing
-   * @return {AbortablePromise.<LabeledThing|Error>}
+   * @returns {Promise}
+   * @private
    */
-  saveLabeledThing(labeledThing) {
+  _deleteLtifsOutsideOfLtFrameRange(labeledThing) {
+    const task = labeledThing.task;
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+
+    return this._$q.resolve()
+      .then(() => {
+        return this._getAssociatedLabeledThingsInFrames(task, labeledThing);
+      })
+      .then(documents => {
+        return documents.rows.filter(document => {
+          return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
+            document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
+        });
+      })
+      .then(rows => {
+        // Mark filtered documents as deleted
+        const bulkActionDocuments = rows.map(
+          row => ({
+            _id: row.doc._id,
+            _rev: row.doc._rev,
+            _deleted: true,
+          })
+        );
+
+        // Bulk update as deleted marked documents
+        return dbContext.bulkDocs(bulkActionDocuments);
+      })
+      .then(results => {
+        const oneOrMoreBulkOperationsFailed = results.reduce(
+          (carry, result) => carry || result.ok !== true,
+          false
+        );
+
+        if (oneOrMoreBulkOperationsFailed) {
+          return this._$q.reject(`Removal of LTIFs failed: ${JSON.stringify(results)}`);
+        }
+
+        return true;
+      });
+  }
+
+  /**
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @returns {Promise}
+   * @private
+   */
+  _deleteLtgifsOutsideOfLtgFrameRange(labeledThingGroup) {
+    return this._$q.resolve()
+      .then(
+        () => this._labeledThingGroupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup)
+      )
+      .then(
+        frameIndexRange => this._labeledThingGroupGateway.deleteLabeledThingGroupsInFrameOutsideOfFrameIndexRange(
+          labeledThingGroup,
+          frameIndexRange
+        )
+      );
+  }
+
+  /**
+   * @param {LabeledThing} labeledThing
+   * @returns {Promise}
+   * @private
+   */
+  _deleteLtgifsOutsideOfLtgsFrameRangesByLabeledThing(labeledThing) {
+    const task = labeledThing.task;
+
+    const groupIds = labeledThing.groupIds;
+
+    return this._$q.resolve()
+      .then(
+        () => this._labeledThingGroupGateway.getLabeledThingGroupsByIds(task, groupIds)
+      )
+      .then(
+        labeledThingGroups => this._$q.all(
+          labeledThingGroups.map(
+            labeledThingGroup => this._deleteLtgifsOutsideOfLtgFrameRange(labeledThingGroup)
+          )
+        )
+      );
+  }
+
+  /**
+   * Save a {@link LabeledThing} without using the packaging executor
+   *
+   * This method is supposed to be only called internally. Its execution should always be executed inside a
+   * `labeledThing` based packaging executor queue.
+   *
+   * The method handles the removal of {@link LabeledThingInFrame} objects, as well as {@link LabeledThingGroupInFrame}
+   * objects, which are no longer valid due the `new` frameRange of the given `LabeledThing` as part of the update.
+   *
+   * The updated {@link LabeledThing} object is returned on success.
+   *
+   * @param {LabeledThing} labeledThing
+   * @returns {LabeledThing}
+   * @protected
+   */
+  _saveLabeledThingWithoutPackagingExecutor(labeledThing) {
     const task = labeledThing.task;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);
     let readLabeledThing = null;
 
+    this._injectRevisionOrFailSilently(serializedLabeledThing);
+    return this._$q.resolve()
+      .then(() => this._isLabeledThingIncomplete(dbContext, labeledThing))
+      .then(isIncomplete => {
+        serializedLabeledThing.lastModifiedByUserId = this._currentUserService.get().id;
+        serializedLabeledThing.incomplete = isIncomplete;
+        return dbContext.put(serializedLabeledThing);
+      })
+      .then(dbResponse => {
+        return dbContext.get(dbResponse.id);
+      })
+      .then(readLabeledThingDocument => {
+        this._revisionManager.extractRevision(readLabeledThingDocument);
+        readLabeledThing = this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThingDocument, task);
+      })
+      .then(() => {
+        return this._$q.all([
+          this._deleteLtifsOutsideOfLtFrameRange(readLabeledThing),
+          this._deleteLtgifsOutsideOfLtgsFrameRangesByLabeledThing(labeledThing),
+        ]);
+      })
+      .then(() => {
+        return readLabeledThing;
+      });
+  }
+
+  /**
+   * @param {LabeledThing} labeledThing
+   * @return {AbortablePromise.<LabeledThing|Error>}
+   */
+  saveLabeledThing(labeledThing) {
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
-    return this._packagingExecutor.execute('labeledThing', () => {
-      this._injectRevisionOrFailSilently(serializedLabeledThing);
-      return this._$q.resolve()
-        .then(() => this._isLabeledThingIncomplete(dbContext, labeledThing))
-        .then(isIncomplete => {
-          serializedLabeledThing.lastModifiedByUserId = this._currentUserService.get().id;
-          serializedLabeledThing.incomplete = isIncomplete;
-          return dbContext.put(serializedLabeledThing);
-        })
-        .then(dbResponse => {
-          return dbContext.get(dbResponse.id);
-        })
-        .then(readLabeledThingDocument => {
-          this._revisionManager.extractRevision(readLabeledThingDocument);
-          readLabeledThing = this._couchDbModelDeserializer.deserializeLabeledThing(readLabeledThingDocument, task);
-        })
-        .then(() => {
-          return this._getAssociatedLabeledThingsInFrames(task, readLabeledThing);
-        })
-        .then(documents => {
-          return documents.rows.filter(document => {
-            return (document.doc.frameIndex < labeledThing.frameRange.startFrameIndex ||
-              document.doc.frameIndex > labeledThing.frameRange.endFrameIndex);
-          });
-        })
-        .then(toBeDeletedDocuments => {
-          // Mark filtered documents as deleted
-          const docs = toBeDeletedDocuments.map(document => {
-            const doc = document.doc;
-            doc._deleted = true;
-            return doc;
-          });
-
-          // Bulk update as deleted marked documents
-          return dbContext.bulkDocs(docs);
-        })
-        .then(() => {
-          return readLabeledThing;
-        });
-    });
+    return this._packagingExecutor.execute(
+      'labeledThing',
+      () => this._saveLabeledThingWithoutPackagingExecutor(labeledThing)
+    );
   }
 
   _isLabeledThingIncomplete(dbContext, labeledThing) {
-    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
-      group: true,
-      group_level: 1,
-      startkey: [labeledThing.id, labeledThing.frameRange.startFrameIndex],
-      endkey: [labeledThing.id, labeledThing.frameRange.endFrameIndex],
-    }).then(response => {
+    return dbContext.query(
+      this._pouchDbViewService.getDesignDocumentViewName(
+        'labeledThingInFrameByLabeledThingIdAndIncomplete'
+      ),
+      {
+        group: true,
+        group_level: 1,
+        startkey: [labeledThing.id, labeledThing.frameRange.startFrameIndex],
+        endkey: [labeledThing.id, labeledThing.frameRange.endFrameIndex],
+      }
+    ).then(response => {
       if (response.rows.length === 0) {
         // New LabeledThings has no LabeledThingsInFrames.
         return true;
@@ -244,6 +351,65 @@ class LabeledThingGateway {
   }
 
   /**
+   * Assign the given list of {@link LabeledThing}s to a {@link LabeledThingGroup}.
+   *
+   * @param {LabeledThing[]} labeledThings
+   * @param {LabeledThingGroup} labeledThingGroup
+   */
+  assignLabeledThingsToLabeledThingGroup(labeledThings, labeledThingGroup) {
+    const modifiedLabeledThings = labeledThings.map(labeledThing => {
+      if (labeledThing.groupIds.indexOf(labeledThingGroup.id) === -1) {
+        labeledThing.groupIds.push(labeledThingGroup.id);
+      }
+      return labeledThing;
+    });
+
+    return this._packagingExecutor.execute(
+      // It is important to put this into the `labeledThing` queue not the `labeledThingGroup` queue!
+      'labeledThing',
+      () => {
+        const promises = [];
+
+        modifiedLabeledThings.forEach(labeledThing => {
+          promises.push(this._saveLabeledThingWithoutPackagingExecutor(labeledThing));
+        });
+
+        return this._$q.all(promises);
+      }
+    );
+  }
+
+  /**
+   * Remove assignment of a {@link LabeledThingGroup} from a list of {@link LabeledThing}s.
+   *
+   * @param {LabeledThing[]} labeledThings
+   * @param {LabeledThingGroup} labeledThingGroup
+   */
+  unassignLabeledThingsFromLabeledThingGroup(labeledThings, labeledThingGroup) {
+    const modifiedLabeledThings = labeledThings.map(labeledThing => {
+      const index = labeledThing.groupIds.indexOf(labeledThingGroup.id);
+      if (index !== -1) {
+        labeledThing.groupIds.splice(index, 1);
+      }
+      return labeledThing;
+    });
+
+    return this._packagingExecutor.execute(
+      // It is important to put this into the `labeledThing` queue not the `labeledThingGroup` queue!
+      'labeledThing',
+      () => {
+        const promises = [];
+
+        modifiedLabeledThings.forEach(labeledThing => {
+          promises.push(this._saveLabeledThingWithoutPackagingExecutor(labeledThing));
+        });
+
+        return this._$q.all(promises);
+      }
+    );
+  }
+
+  /**
    * @param {Task} task
    * @param {LabeledThing} labeledThing
    * @private
@@ -251,11 +417,16 @@ class LabeledThingGateway {
   _getAssociatedLabeledThingsInFrames(task, labeledThing) {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
-    return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndFrameIndex'), {
-      include_docs: true,
-      startkey: [labeledThing.id, 0],
-      endkey: [labeledThing.id, {}],
-    });
+    return dbContext.query(
+      this._pouchDbViewService.getDesignDocumentViewName(
+        'labeledThingInFrameByLabeledThingIdAndFrameIndex'
+      ),
+      {
+        include_docs: true,
+        startkey: [labeledThing.id, 0],
+        endkey: [labeledThing.id, {}],
+      }
+    );
   }
 
   /**
@@ -281,6 +452,7 @@ LabeledThingGateway.$inject = [
   'couchDbModelDeserializer',
   'revisionManager',
   'pouchDbViewService',
+  'labeledThingGroupGateway',
   'currentUserService',
 ];
 
