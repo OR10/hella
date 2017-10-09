@@ -452,7 +452,7 @@ class LabeledThingGateway {
       const task = labeledThing.task;
       return this._getAssociatedLabeledThingsInFrames(task, labeledThing)
         .then(labeledThingsInFrame => {
-          return labeledThingsInFrame.map(labeledThingInFrame => this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame, labeledThing));
+          return labeledThingsInFrame.rows.map(labeledThingInFrame => this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame.doc, labeledThing));
         });
     });
   }

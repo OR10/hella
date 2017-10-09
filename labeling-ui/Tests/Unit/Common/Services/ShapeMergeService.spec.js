@@ -244,5 +244,19 @@ describe('ShapeMergeService', () => {
       expect(thirdLabeledThingInFrame.labeledThing).toBe(thirdLabeledThing);
       expect(fourthLabeledThingInFrame.labeledThing).toBe(thirdLabeledThing);
     });
+
+    it('can merge two shapes, if both only haven shapes on the same frame', () => {
+      const shapes = [secondShape, firstShape];
+
+      service.mergeShapes(shapes);
+      rootScope.$apply();
+
+      expect(secondLabeledThingInFrame.labeledThing).toBe(secondLabeledThing);
+      expect(firstLabeledThingInFrame.labeledThing).toBe(secondLabeledThing);
+      expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledTimes(1);
+      expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(firstLabeledThingInFrame);
+      expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledTimes(1);
+      expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(firstLabeledThing);
+    });
   });
 });

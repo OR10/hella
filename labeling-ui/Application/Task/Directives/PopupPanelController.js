@@ -269,11 +269,8 @@ class PopupPanelController {
   _calculateMergableObjects() {
     if (this.savedObjects.length > 1) {
       const rootShape = this.savedObjects[0].shape;
-      const rootShapeFrameIndex = rootShape.labeledThingInFrame.frameIndex;
       const rootShapeConstructor = rootShape.constructor;
-      const rootLabeledThing = rootShape.labeledThingInFrame.labeledThing;
 
-      let promises = [];
       let mergable = true;
 
       this.savedObjects.forEach(object => {
@@ -281,39 +278,12 @@ class PopupPanelController {
         if (object.shape === rootShape || !mergable) {
           return;
         }
-        const hasDifferentFrameIndex = (rootShapeFrameIndex !== object.shape.labeledThingInFrame.frameIndex);
         const isOfSameType = (rootShapeConstructor === object.shape.constructor);
 
-        mergable &= hasDifferentFrameIndex;
         mergable &= isOfSameType;
-
-        // Only check for litfs on the frame of the current object, if the shapes are still mergable
-        if (mergable) {
-          const hasLtifPromise = this._labeledThingInFrameGateway.hasLabeledThingInFrameOnFrame(rootLabeledThing, object.shape.labeledThingInFrame.frameIndex);
-          promises.push(hasLtifPromise);
-        }
       });
 
-      // Cancel promises, if shapes are already unmergable
-      if (!mergable) {
-        promises = [];
-      }
-
-      this._$q.all(promises)
-        .then(hasLtifArray => {
-          const rootObjecthasLtifOnAnyOtherFrameOfSavedObject = hasLtifArray.reduce((result, hasLtifOnObjectFrame) => {
-            if (hasLtifOnObjectFrame || result) {
-              return true;
-            }
-            return false;
-          }, false);
-
-          if(rootObjecthasLtifOnAnyOtherFrameOfSavedObject) {
-            this.hasMergableObjects = false;
-          } else {
-            this.hasMergableObjects = mergable;
-          }
-        });
+      this.hasMergableObjects = mergable;
     } else {
       this.hasMergableObjects = false;
     }
@@ -321,7 +291,6 @@ class PopupPanelController {
 
   mergeShapes() {
     const rootShape = this.savedObjects[0].shape;
-    const rootShapeFrameIndex = rootShape.labeledThingInFrame.frameIndex;
     const rootShapeConstructor = rootShape.constructor;
 
     const shapes = this.savedObjects.map(object => object.shape);
@@ -329,10 +298,9 @@ class PopupPanelController {
       if (shape === rootShape) {
         return true;
       }
-      const hasDifferentFrameIndex = (rootShapeFrameIndex !== shape.labeledThingInFrame.frameIndex);
       const isOfSameType = (rootShapeConstructor === shape.constructor);
 
-      return hasDifferentFrameIndex && isOfSameType;
+      return isOfSameType;
     });
 
     this._shapeMergeService.mergeShapes(mergableShapes).then(() => this.removeAllFromInbox());
