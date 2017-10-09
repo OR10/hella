@@ -34,7 +34,7 @@ fdescribe('ShapeMergeService', () => {
 
   beforeEach(() => {
     labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['saveLabeledThingInFrame']);
-    labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['getAssociatedLabeledThingsInFrames', 'deleteLabeledThing', 'hasAssociatedLabeledThingsInFrames']);
+    labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['deleteLabeledThing', 'hasAssociatedLabeledThingsInFrames']);
     service = new ShapeMergeService(rootScope, angularQ, labeledThingInFrameGateway, labeledThingGateway);
   });
 
@@ -56,7 +56,6 @@ fdescribe('ShapeMergeService', () => {
     let secondShape;
     let thirdShape;
     let mergableShapes;
-    let associatedLabeledThingsInFrame;
 
     beforeEach(() => {
       firstFrameRange = {startFrameIndex: 0, endFrameIndex: 0};
@@ -76,8 +75,6 @@ fdescribe('ShapeMergeService', () => {
       thirdShape = {labeledThingInFrame: thirdLabeledThingInFrame};
 
       mergableShapes = [firstShape, secondShape, thirdShape];
-
-      associatedLabeledThingsInFrame = {rows: []};
     });
 
     it('sets the LabeledThing of the root shape on all elements', () => {
@@ -137,16 +134,18 @@ fdescribe('ShapeMergeService', () => {
       expect(firstLabeledThing.frameRange).toEqual(expectedFrameRange);
     });
 
-    it('emits shape:merge:after if labeledthings have been deleted', done => {
+    it('emits shape:merge:after and deletes all labeledthings besides the root', done => {
         spyOn(rootScope, '$emit');
 
         labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
-      labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(false));
+        labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(false));
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
         service.mergeShapes(mergableShapes).then(() => {
           expect(rootScope.$emit).toHaveBeenCalledWith('shape:merge:after');
-          expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalled();
+          expect(labeledThingGateway.deleteLabeledThing).not.toHaveBeenCalledWith(firstLabeledThing);
+          expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(secondLabeledThing);
+          expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(thirdLabeledThing);
           done();
         });
         rootScope.$apply();
