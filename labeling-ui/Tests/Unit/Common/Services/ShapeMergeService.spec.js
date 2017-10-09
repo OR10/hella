@@ -63,10 +63,10 @@ fdescribe('ShapeMergeService', () => {
     secondLabeledThing = {ltid: 2, frameRange: secondFrameRange};
     thirdLabeledThing = {ltid: 3, frameRange: thirdFrameRange};
 
-    firstLabeledThingInFrame = {litfid: 1, labeledThing: firstLabeledThing};
-    secondLabeledThingInFrame = {litfid: 2, labeledThing: secondLabeledThing};
-    thirdLabeledThingInFrame = {litfid: 3, labeledThing: thirdLabeledThing};
-    fourthLabeledThingInFrame = {litfid: 4, labeledThing: thirdLabeledThing};
+    firstLabeledThingInFrame = {litfid: 1, labeledThing: firstLabeledThing, frameIndex: 0};
+    secondLabeledThingInFrame = {litfid: 2, labeledThing: secondLabeledThing, frameIndex: 1};
+    thirdLabeledThingInFrame = {litfid: 3, labeledThing: thirdLabeledThing, frameIndex: 2};
+    fourthLabeledThingInFrame = {litfid: 4, labeledThing: thirdLabeledThing, frameIndex: 3};
 
     firstShape = {labeledThingInFrame: firstLabeledThingInFrame};
     secondShape = {labeledThingInFrame: secondLabeledThingInFrame};
@@ -231,7 +231,18 @@ fdescribe('ShapeMergeService', () => {
     });
 
     it('makes sure there are no two ltifs on the same frame, using root as the higher priority ltifs', () => {
+      firstLabeledThingInFrame.frameIndex = 0;
+      secondLabeledThingInFrame.frameIndex = 1;
+      thirdLabeledThingInFrame.frameIndex = 0;
+      fourthLabeledThingInFrame.frameIndex = 1;
 
+      service.mergeShapes(mergableShapes);
+      rootScope.$apply();
+
+      expect(firstLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
+      expect(secondLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
+      expect(thirdLabeledThingInFrame.labeledThing).toBe(thirdLabeledThing);
+      expect(fourthLabeledThingInFrame.labeledThing).toBe(thirdLabeledThing);
     });
   });
 });

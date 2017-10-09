@@ -47,7 +47,9 @@ class ShapeMergeService {
     return labeledThings;
   }
 
-  _moveLabeledThingsInFrame(labeledThings, rootShape) {
+  _moveLabeledThingsInFrame(labeledThings, rootShape, rootLabeledThingsInFrame) {
+    const rootFrames = rootLabeledThingsInFrame.map(labeledThingInFrame => labeledThingInFrame.frameIndex);
+
     const rootLabeledThing = rootShape.labeledThingInFrame.labeledThing;
     const promises = [];
 
@@ -57,11 +59,18 @@ class ShapeMergeService {
           const ltifPromises = [];
 
           labeledThingsInFrame.forEach(labeledThingInFrame => {
+            const rootAlreadyHasLabeledThingInFrameOnFrame = rootFrames.includes(labeledThingInFrame.frameIndex);
+
+            if (rootAlreadyHasLabeledThingInFrameOnFrame) {
+              return;
+            }
+
             labeledThingInFrame.labeledThing = rootLabeledThing;
             labeledThingInFrame.classes = rootShape.labeledThingInFrame.classes;
             labeledThingInFrame.incomplete = rootShape.labeledThingInFrame.incomplete;
             const ltifPromise = this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
             ltifPromises.push(ltifPromise);
+            rootFrames.push(labeledThingInFrame.frameIndex);
           });
 
           return this._$q.all(ltifPromises);
@@ -86,7 +95,10 @@ class ShapeMergeService {
 
     const labeledThings = this._filterLabeledThings(shapes, rootLabeledThing);
 
-    return this._moveLabeledThingsInFrame(labeledThings, rootShape)
+    return this._labeledThingGateway.getAssociatedLabeledThingsInFrames(rootLabeledThing)
+      .then(rootLabeledThingsInFrame => {
+        return this._moveLabeledThingsInFrame(labeledThings, rootShape, rootLabeledThingsInFrame);
+      })
       .then(() => {
         this._$rootScope.$emit('shape:merge:after');
       });
