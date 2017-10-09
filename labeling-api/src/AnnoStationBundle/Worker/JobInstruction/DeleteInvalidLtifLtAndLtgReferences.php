@@ -246,8 +246,8 @@ class DeleteInvalidLtifLtAndLtgReferences extends WorkerPoolBundle\JobInstructio
     ) {
         file_put_contents(
             sprintf(
-                '%s/%s.json',
-                $this->getDirectoryPath($object->getProjectId(), $object->getTaskId()),
+                '%s/files/%s.json',
+                $this->deletedObjectsDir,
                 $object->getId()
             ),
             $this->getRawDocument($object->getProjectId(), $object->getTaskId(), $object->getId())
@@ -282,33 +282,6 @@ class DeleteInvalidLtifLtAndLtgReferences extends WorkerPoolBundle\JobInstructio
     }
 
     /**
-     * @param $projectId
-     * @param $taskId
-     *
-     * @return string
-     */
-    private function getDirectoryPath(
-        $projectId,
-        $taskId
-    ) {
-        $date = new \DateTime('now', new \DateTimeZone('UTC'));
-
-        $directoryPathName = sprintf(
-            '%s/files/%s-project-%s-task-%s',
-            $this->deletedObjectsDir,
-            $date->format('d-m-Y'),
-            $projectId,
-            $taskId
-        );
-
-        if (!is_dir($directoryPathName)) {
-            mkdir($directoryPathName);
-        }
-
-        return $directoryPathName;
-    }
-
-    /**
      * @param $id
      * @param $projectId
      * @param $taskId
@@ -319,15 +292,23 @@ class DeleteInvalidLtifLtAndLtgReferences extends WorkerPoolBundle\JobInstructio
         $taskId
     ) {
         $date = new \DateTime('now', new \DateTimeZone('UTC'));
-        $file = $this->deletedObjectsDir . '/logs/deleted.txt';
-        if (!is_file($file)) {
+        $logFilePath = sprintf(
+            '%s/logs/%s-project-%s-task-%s',
+            $this->deletedObjectsDir,
+            $date->format('Y-m-d'),
+            $projectId,
+            $taskId
+        );
+
+        if (!is_file($logFilePath)) {
             file_put_contents(
-                $file,
+                $logFilePath,
                 "date;id;projectId;taskId\n"
             );
         }
+
         file_put_contents(
-            $file,
+            $logFilePath,
             sprintf(
                 "%s;%s;%s;%s%s",
                 $date->format('c'),
