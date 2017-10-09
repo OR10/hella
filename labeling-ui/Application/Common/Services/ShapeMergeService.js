@@ -71,7 +71,7 @@ class ShapeMergeService {
       promises.push(ltPromise);
     });
 
-    return promises;
+    return this._$q.all(promises);
   }
 
   /**
@@ -85,10 +85,8 @@ class ShapeMergeService {
     rootLabeledThing.frameRange = Object.assign({}, rootLabeledThing.frameRange, newFrameRange);
 
     const labeledThings = this._filterLabeledThings(shapes, rootLabeledThing);
-    const promises = this._moveLabeledThingsInFrame(labeledThings, rootShape);
 
-
-    return this._$q.all(promises)
+    return this._moveLabeledThingsInFrame(labeledThings, rootShape)
       .then(() => {
         this._$rootScope.$emit('shape:merge:after');
       });
