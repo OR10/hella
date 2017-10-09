@@ -31,18 +31,8 @@ class ShapeMergeService {
     this._labeledThingGateway = labeledThingGateway;
   }
 
-  /**
-   * @param {Array.<PaperThingShape>} shapes
-   * @return {Promise}
-   */
-  mergeShapes(shapes) {
-    const rootShape = shapes[0];
-    const rootLabeledThing = rootShape.labeledThingInFrame.labeledThing;
-    const newFrameRange = this._calculcateFrameRange(shapes);
-    rootLabeledThing.frameRange = Object.assign({}, rootLabeledThing.frameRange, newFrameRange);
-
+  _filterLabeledThings(shapes, rootLabeledThing) {
     const labeledThings = [];
-    const promises = [];
 
     shapes.forEach(shape => {
       const currentLabeledThing = shape.labeledThingInFrame.labeledThing;
@@ -54,8 +44,15 @@ class ShapeMergeService {
       }
     });
 
+    return labeledThings;
+  }
+
+  _moveLabeledThingsInFrame(labeledThings, rootShape) {
+    const rootLabeledThing = rootShape.labeledThingInFrame.labeledThing;
+    const promises = [];
+
     labeledThings.forEach(labeledThing => {
-      const foo = this._labeledThingGateway.getAssociatedLabeledThingsInFrames(labeledThing)
+      const ltPromise = this._labeledThingGateway.getAssociatedLabeledThingsInFrames(labeledThing)
         .then(labeledThingsInFrame => {
           const ltifPromises = [];
 
@@ -71,8 +68,25 @@ class ShapeMergeService {
         })
         .then(() => this._labeledThingGateway.deleteLabeledThing(labeledThing));
 
-      promises.push(foo);
+      promises.push(ltPromise);
     });
+
+    return promises;
+  }
+
+  /**
+   * @param {Array.<PaperThingShape>} shapes
+   * @return {Promise}
+   */
+  mergeShapes(shapes) {
+    const rootShape = shapes[0];
+    const rootLabeledThing = rootShape.labeledThingInFrame.labeledThing;
+    const newFrameRange = this._calculcateFrameRange(shapes);
+    rootLabeledThing.frameRange = Object.assign({}, rootLabeledThing.frameRange, newFrameRange);
+
+    const labeledThings = this._filterLabeledThings(shapes, rootLabeledThing);
+    const promises = this._moveLabeledThingsInFrame(labeledThings, rootShape);
+
 
     return this._$q.all(promises)
       .then(() => {
