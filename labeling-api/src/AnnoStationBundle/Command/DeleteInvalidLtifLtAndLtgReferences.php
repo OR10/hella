@@ -42,7 +42,9 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
     {
+        $priority = WorkerPool\Facade::LOW_PRIO;
         if ($input->getArgument('taskId') !== null) {
+            $priority = WorkerPool\Facade::HIGH_PRIO;
             $tasks = [$this->labelingTaskFacade->find($input->getArgument('taskId'))];
         } else {
             $tasks = $this->labelingTaskFacade->findAll();
@@ -50,7 +52,7 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
 
         foreach ($tasks as $task) {
             $job = new Jobs\DeleteInvalidLtifLtAndLtgReferences($task->getId());
-            $this->amqpFacade->addJob($job, WorkerPool\Facade::HIGH_PRIO);
+            $this->amqpFacade->addJob($job, $priority);
         }
     }
 }
