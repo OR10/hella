@@ -8,6 +8,7 @@ describe('PopupPanelController', () => {
   let controller;
   let element;
   let scope;
+  let angularQ;
   let context;
   let drawingContextService;
   let drawingScope;
@@ -17,9 +18,10 @@ describe('PopupPanelController', () => {
   let shapeSelectionService;
   let shapeInboxService;
 
-  beforeEach(inject(($compile, $rootScope) => {
+  beforeEach(inject(($compile, $rootScope, $q) => {
     scope = $rootScope.$new();
     element = $compile('<div></div>')(scope);
+    angularQ = $q;
 
     context = jasmine.createSpyObj('context', ['setup', 'withScope']);
     drawingContextService = jasmine.createSpyObj('drawingContextService', ['createContext']);
@@ -38,6 +40,7 @@ describe('PopupPanelController', () => {
   beforeEach(() => {
     controller = new PopupPanelController(
       scope,
+      angularQ,
       window,
       element,
       animationFrameService,
