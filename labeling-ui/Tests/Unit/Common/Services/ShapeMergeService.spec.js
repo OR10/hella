@@ -1,7 +1,7 @@
 import { inject } from 'angular-mocks';
 import ShapeMergeService from 'Application/Common/Services/ShapeMergeService';
 
-describe('ShapeMergeService', () => {
+fdescribe('ShapeMergeService', () => {
   /**
    * @type {ShapeMergeService}
    */
@@ -34,7 +34,7 @@ describe('ShapeMergeService', () => {
 
   beforeEach(() => {
     labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['saveLabeledThingInFrame']);
-    labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['getAssociatedLabeledThingsInFrames', 'deleteLabeledThing']);
+    labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['getAssociatedLabeledThingsInFrames', 'deleteLabeledThing', 'hasAssociatedLabeledThingsInFrames']);
     service = new ShapeMergeService(rootScope, angularQ, labeledThingInFrameGateway, labeledThingGateway);
   });
 
@@ -99,7 +99,7 @@ describe('ShapeMergeService', () => {
 
     it('returns a promise', done => {
       labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
-      labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(associatedLabeledThingsInFrame));
+      labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(true));
       labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
       service.mergeShapes(mergableShapes).then(done);
@@ -141,7 +141,7 @@ describe('ShapeMergeService', () => {
         spyOn(rootScope, '$emit');
 
         labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
-        labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(associatedLabeledThingsInFrame));
+      labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(false));
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
         service.mergeShapes(mergableShapes).then(() => {
@@ -155,10 +155,8 @@ describe('ShapeMergeService', () => {
     it('emits shape:merge:after even if no labeledthings have been removed', done => {
       spyOn(rootScope, '$emit');
 
-      associatedLabeledThingsInFrame = {rows: [1]};
-
       labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
-      labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(associatedLabeledThingsInFrame));
+      labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(true));
       labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
       service.mergeShapes(mergableShapes).then(() => {
