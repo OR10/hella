@@ -27,6 +27,22 @@ fdescribe('ShapeMergeService', () => {
    */
   let labeledThingGateway;
 
+  let firstFrameRange;
+  let secondFrameRange;
+  let thirdFrameRange;
+  let firstLabeledThing;
+  let secondLabeledThing;
+  let thirdLabeledThing;
+  let firstLabeledThingInFrame;
+  let secondLabeledThingInFrame;
+  let thirdLabeledThingInFrame;
+  let fourthLabeledThingInFrame;
+  let firstShape;
+  let secondShape;
+  let thirdShape;
+  let fourthShape;
+  let mergableShapes;
+
   beforeEach(inject(($rootScope, $q) => {
     rootScope = $rootScope;
     angularQ = $q;
@@ -34,8 +50,51 @@ fdescribe('ShapeMergeService', () => {
 
   beforeEach(() => {
     labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['saveLabeledThingInFrame']);
-    labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['deleteLabeledThing', 'hasAssociatedLabeledThingsInFrames']);
+    labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['deleteLabeledThing', 'hasAssociatedLabeledThingsInFrames', 'getAssociatedLabeledThingsInFrames']);
     service = new ShapeMergeService(rootScope, angularQ, labeledThingInFrameGateway, labeledThingGateway);
+  });
+
+  beforeEach(() => {
+    firstFrameRange = {startFrameIndex: 0, endFrameIndex: 0};
+    secondFrameRange = {startFrameIndex: 3, endFrameIndex: 3};
+    thirdFrameRange = {startFrameIndex: 7, endFrameIndex: 7};
+
+    firstLabeledThing = {ltid: 1, frameRange: firstFrameRange};
+    secondLabeledThing = {ltid: 2, frameRange: secondFrameRange};
+    thirdLabeledThing = {ltid: 3, frameRange: thirdFrameRange};
+
+    firstLabeledThingInFrame = {litfid: 1, labeledThing: firstLabeledThing};
+    secondLabeledThingInFrame = {litfid: 2, labeledThing: secondLabeledThing};
+    thirdLabeledThingInFrame = {litfid: 3, labeledThing: thirdLabeledThing};
+    fourthLabeledThingInFrame = {litfid: 4, labeledThing: thirdLabeledThing};
+
+    firstShape = {labeledThingInFrame: firstLabeledThingInFrame};
+    secondShape = {labeledThingInFrame: secondLabeledThingInFrame};
+    thirdShape = {labeledThingInFrame: thirdLabeledThingInFrame};
+    fourthShape = {labeledThingInFrame: fourthLabeledThingInFrame};
+
+    mergableShapes = [firstShape, secondShape, thirdShape];
+  });
+
+  beforeEach(() => {
+    labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
+    labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
+
+    labeledThingGateway.getAssociatedLabeledThingsInFrames.and.callFake(labeledThing => {
+      switch(labeledThing) {
+        case firstLabeledThing:
+          return angularQ.resolve([firstLabeledThingInFrame]);
+
+        case secondLabeledThing:
+          return angularQ.resolve([secondLabeledThingInFrame]);
+
+        case thirdLabeledThing:
+          return angularQ.resolve([thirdLabeledThingInFrame, fourthLabeledThingInFrame]);
+
+        default:
+          return [];
+      }
+    });
   });
 
   it('can be created', () => {
@@ -43,42 +102,9 @@ fdescribe('ShapeMergeService', () => {
   });
 
   describe('mergeShapes', () => {
-    let firstFrameRange;
-    let secondFrameRange;
-    let thirdFrameRange;
-    let firstLabeledThing;
-    let secondLabeledThing;
-    let thirdLabeledThing;
-    let firstLabeledThingInFrame;
-    let secondLabeledThingInFrame;
-    let thirdLabeledThingInFrame;
-    let firstShape;
-    let secondShape;
-    let thirdShape;
-    let mergableShapes;
-
-    beforeEach(() => {
-      firstFrameRange = {startFrameIndex: 0, endFrameIndex: 0};
-      secondFrameRange = {startFrameIndex: 3, endFrameIndex: 3};
-      thirdFrameRange = {startFrameIndex: 7, endFrameIndex: 7};
-
-      firstLabeledThing = {ltid: 1, frameRange: firstFrameRange};
-      secondLabeledThing = {ltid: 2, frameRange: secondFrameRange};
-      thirdLabeledThing = {ltid: 3, frameRange: thirdFrameRange};
-
-      firstLabeledThingInFrame = {litfid: 1, labeledThing: firstLabeledThing};
-      secondLabeledThingInFrame = {litfid: 1, labeledThing: secondLabeledThing};
-      thirdLabeledThingInFrame = {litfid: 1, labeledThing: thirdLabeledThing};
-
-      firstShape = {labeledThingInFrame: firstLabeledThingInFrame};
-      secondShape = {labeledThingInFrame: secondLabeledThingInFrame};
-      thirdShape = {labeledThingInFrame: thirdLabeledThingInFrame};
-
-      mergableShapes = [firstShape, secondShape, thirdShape];
-    });
-
     it('sets the LabeledThing of the root shape on all elements', () => {
       service.mergeShapes(mergableShapes);
+      rootScope.$apply();
 
       expect(firstLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
       expect(secondLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
@@ -87,17 +113,17 @@ fdescribe('ShapeMergeService', () => {
 
     it('stores the ltifs', () => {
       service.mergeShapes(mergableShapes);
+      rootScope.$apply();
 
       expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledTimes(3);
-      expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(firstLabeledThingInFrame);
+      expect(labeledThingInFrameGateway.saveLabeledThingInFrame).not.toHaveBeenCalledWith(firstLabeledThingInFrame);
       expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(secondLabeledThingInFrame);
       expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(thirdLabeledThingInFrame);
+      expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(fourthLabeledThingInFrame);
     });
 
     it('returns a promise', done => {
-      labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
       labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(true));
-      labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
       service.mergeShapes(mergableShapes).then(done);
       rootScope.$apply();
@@ -109,6 +135,7 @@ fdescribe('ShapeMergeService', () => {
       const shapes = [secondShape, thirdShape, firstShape];
 
       service.mergeShapes(shapes);
+      rootScope.$apply();
 
       expect(firstLabeledThingInFrame.classes).toBe(classes);
       expect(secondLabeledThingInFrame.classes).toBe(classes);
@@ -121,6 +148,7 @@ fdescribe('ShapeMergeService', () => {
       thirdLabeledThingInFrame.incomplete = false;
 
       service.mergeShapes(mergableShapes);
+      rootScope.$apply();
 
       expect(firstLabeledThingInFrame.incomplete).toBe(true);
       expect(secondLabeledThingInFrame.incomplete).toBe(true);
@@ -134,48 +162,76 @@ fdescribe('ShapeMergeService', () => {
       expect(firstLabeledThing.frameRange).toEqual(expectedFrameRange);
     });
 
-    it('emits shape:merge:after and deletes all labeledthings besides the root', done => {
-        spyOn(rootScope, '$emit');
-
-        labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
-        labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(false));
-        labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-
-        service.mergeShapes(mergableShapes).then(() => {
-          expect(rootScope.$emit).toHaveBeenCalledWith('shape:merge:after');
-          expect(labeledThingGateway.deleteLabeledThing).not.toHaveBeenCalledWith(firstLabeledThing);
-          expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(secondLabeledThing);
-          expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(thirdLabeledThing);
-          done();
-        });
-        rootScope.$apply();
-    });
-
-    it('emits shape:merge:after even if no labeledthings have been removed', done => {
+    it('emits shape:merge:after', done => {
       spyOn(rootScope, '$emit');
 
-      labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
       labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(true));
-      labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
       service.mergeShapes(mergableShapes).then(() => {
         expect(rootScope.$emit).toHaveBeenCalledWith('shape:merge:after');
-        expect(labeledThingGateway.deleteLabeledThing).not.toHaveBeenCalled();
         done();
       });
       rootScope.$apply();
     });
 
-    // it('updates the view after merging', done => {
-    //   labeledThingInFrameGateway.saveLabeledThingInFrame.and.returnValue(angularQ.resolve());
-    //   labeledThingGateway.getAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(associatedLabeledThingsInFrame));
-    //   labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-    //
-    //   view.update.and.callFake(done);
-    //
-    //   service.mergeShapes(mergableShapes);
-    //   expect(view.update).not.toHaveBeenCalled();
-    //   rootScope.$apply();
-    // });
+    it('moves all the ltifs to the root object and deletes the other lts only once', done => {
+      labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(false));
+
+      // make sure LT3 is available two times for this test
+      mergableShapes.push(fourthShape);
+
+      service.mergeShapes(mergableShapes).then(() => {
+        expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledTimes(2);
+        expect(labeledThingGateway.deleteLabeledThing).not.toHaveBeenCalledWith(firstLabeledThing);
+        expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(secondLabeledThing);
+        expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(thirdLabeledThing);
+
+        expect(firstLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
+        expect(secondLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
+        expect(thirdLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
+        expect(fourthLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
+
+        expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledTimes(3);
+        expect(labeledThingInFrameGateway.saveLabeledThingInFrame).not.toHaveBeenCalledWith(firstLabeledThingInFrame);
+        expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(secondLabeledThingInFrame);
+        expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(thirdLabeledThingInFrame);
+        expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(fourthLabeledThingInFrame);
+
+        done();
+      });
+
+      rootScope.$apply();
+    });
+
+    it('moves all the ltifs to the root object and deletes the other lts', done => {
+      labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(false));
+
+      // fourthShape is not part of mergableShapes, but part of thirdLabeledThing and shoule be moved aswell
+      service.mergeShapes(mergableShapes).then(() => {
+        expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledTimes(2);
+        expect(labeledThingGateway.deleteLabeledThing).not.toHaveBeenCalledWith(firstLabeledThing);
+        expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(secondLabeledThing);
+        expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(thirdLabeledThing);
+
+        expect(firstLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
+        expect(secondLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
+        expect(thirdLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
+        expect(fourthLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
+
+        expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledTimes(3);
+        expect(labeledThingInFrameGateway.saveLabeledThingInFrame).not.toHaveBeenCalledWith(firstLabeledThingInFrame);
+        expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(secondLabeledThingInFrame);
+        expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(thirdLabeledThingInFrame);
+        expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(fourthLabeledThingInFrame);
+
+        done();
+      });
+
+      rootScope.$apply();
+    });
+
+    it('makes sure there are no two ltifs on the same frame, using root as the higher priority ltifs', () => {
+
+    });
   });
 });

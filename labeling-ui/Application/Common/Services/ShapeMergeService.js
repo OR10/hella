@@ -45,36 +45,39 @@ class ShapeMergeService {
     const promises = [];
 
     shapes.forEach(shape => {
-      labeledThings.push(shape.labeledThingInFrame.labeledThing);
-      shape.labeledThingInFrame.labeledThing = rootLabeledThing;
-      shape.labeledThingInFrame.classes = rootShape.labeledThingInFrame.classes;
-      shape.labeledThingInFrame.incomplete = rootShape.labeledThingInFrame.incomplete;
+      const currentLabeledThing = shape.labeledThingInFrame.labeledThing;
+      const isNotRootLabeledThing = currentLabeledThing !== rootLabeledThing;
+      const labeledThingNotStored = labeledThings.findIndex(labeledThing => labeledThing === currentLabeledThing) === -1;
 
-      const shapePromise =  this._labeledThingInFrameGateway.saveLabeledThingInFrame(shape.labeledThingInFrame);
-      promises.push(shapePromise);
+      if (isNotRootLabeledThing && labeledThingNotStored) {
+        labeledThings.push(currentLabeledThing);
+      }
     });
 
-    return this._$q.all(promises).then(() => {
-      const ltPromises = [];
+    labeledThings.forEach(labeledThing => {
+      const foo = this._labeledThingGateway.getAssociatedLabeledThingsInFrames(labeledThing)
+        .then(labeledThingsInFrame => {
+          const ltifPromises = [];
 
-      labeledThings.forEach(labeledThing => {
-        const ltifPromise = this._labeledThingGateway.hasAssociatedLabeledThingsInFrames(labeledThing)
-          .then(haslabeledThingsInFrame => {
-            if (!haslabeledThingsInFrame) {
-              return this._labeledThingGateway.deleteLabeledThing(labeledThing);
-            } else {
-              return this._$q.resolve();
-            }
+          labeledThingsInFrame.forEach(labeledThingInFrame => {
+            labeledThingInFrame.labeledThing = rootLabeledThing;
+            labeledThingInFrame.classes = rootShape.labeledThingInFrame.classes;
+            labeledThingInFrame.incomplete = rootShape.labeledThingInFrame.incomplete;
+            const ltifPromise = this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
+            ltifPromises.push(ltifPromise);
           });
 
-        ltPromises.push(ltifPromise);
-      });
+          return this._$q.all(ltifPromises);
+        })
+        .then(() => this._labeledThingGateway.deleteLabeledThing(labeledThing));
 
-      return this._$q.all(ltPromises)
-        .then(() => {
-          this._$rootScope.$emit('shape:merge:after');
-        });
+      promises.push(foo);
     });
+
+    return this._$q.all(promises)
+      .then(() => {
+        this._$rootScope.$emit('shape:merge:after');
+      });
   }
 
   /**
