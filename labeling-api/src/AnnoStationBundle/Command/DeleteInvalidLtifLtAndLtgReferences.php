@@ -37,8 +37,7 @@ class DeleteInvalidLtifLtAndLtgReferences extends Base
             ->setDescription(
                 'Delete all LTIF with an invalid LT reference and LT with an invalid LTG OR no assigned LTIF reference'
             )
-            ->addArgument('taskId', InputArgument::OPTIONAL)
-            ->addOption('dryRun');
+            ->addArgument('taskId', InputArgument::OPTIONAL);
     }
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
