@@ -370,18 +370,32 @@ class MediaControlsController {
     const labeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
     const labeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
 
-    this._applicationState.disableAll();
-    this._applicationState.viewer.work();
-    this._cutService.cutShape(labeledThing, labeledThingInFrame, this.framePosition.position).then(
+    this._modalService.info(
+      {
+        title: 'Cut Shape',
+        headline: 'Do you really want to cut the shape here?',
+        confirmButtonText: 'Yes',
+      },
       () => {
-        this._applicationState.viewer.finish();
-        this._applicationState.enableAll();
-        this._$rootScope.$emit('framerange:change:after');
-      })
-      .catch(() => {
-        this._applicationState.viewer.finish();
-        this._applicationState.enableAll();
-      });
+        this._applicationState.disableAll();
+        this._applicationState.viewer.work();
+        this._cutService.cutShape(labeledThing, labeledThingInFrame, this.framePosition.position).then(
+          () => {
+            this._applicationState.viewer.finish();
+            this._applicationState.enableAll();
+            this._$rootScope.$emit('framerange:change:after');
+          })
+          .catch(() => {
+            this._applicationState.viewer.finish();
+            this._applicationState.enableAll();
+          });
+      },
+      undefined,
+      {
+        warning: false,
+        abortable: true,
+      }
+    );
   }
 
   handlePlay() {
