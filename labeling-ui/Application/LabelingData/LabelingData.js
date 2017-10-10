@@ -7,6 +7,7 @@ import Module from '../Module';
 import InterpolationService from './Services/InterpolationService';
 import CacheService from './Services/CacheService';
 import GhostingService from './Services/GhostingService';
+import CutService from './Services/CutService';
 
 import LabeledThingGateway from './Gateways/LabeledThingGateway';
 import LabeledThingInFrameGateway from './Gateways/LabeledThingInFrameGateway';
@@ -32,6 +33,8 @@ class LabelingData extends Module {
     this.module.service('cacheService', CacheService);
 
     this.module.service('ghostingService', GhostingService);
+
+    this.module.service('cutService', CutService);
 
     this.module.service('labeledThingInFrameGateway', LabeledThingInFrameGateway);
     this.module.service('labeledThingGateway', LabeledThingGateway);
