@@ -29,6 +29,7 @@ class MediaControlsController {
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {CutService} cutService
    */
   constructor($scope,
               $rootScope,
@@ -43,7 +44,8 @@ class MediaControlsController {
               modalService,
               keyboardShortcutService,
               viewerMouseCursorService,
-              shapeSelectionService) {
+              shapeSelectionService,
+              cutService) {
     /**
      * @type {angular.$rootScope}
      */
@@ -137,6 +139,12 @@ class MediaControlsController {
      * @private
      */
     this._shapeSelectionService = shapeSelectionService;
+
+    /**
+     * @type {CutService}
+     * @private
+     */
+    this._cutService = cutService;
 
     /**
      * @type {boolean}
@@ -355,6 +363,27 @@ class MediaControlsController {
     this._$rootScope.$emit('action:ask-and-delete-shape', this.task, this.selectedPaperShape);
   }
 
+  handleCutShape() {
+    if (this.selectedPaperShape === null || this.selectedPaperShape.constructor.name === 'PaperGroupRectangleMulti' || this.selectedPaperShape.constructor.name === 'PaperMeasurementRectangle') {
+      return;
+    }
+    const labeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+    const labeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
+
+    this._applicationState.disableAll();
+    this._applicationState.viewer.work();
+    this._cutService.cutShape(labeledThing, labeledThingInFrame, this.framePosition.position).then(
+      () => {
+        this._applicationState.viewer.finish();
+        this._applicationState.enableAll();
+        this._$rootScope.$emit('framerange:change:after');
+      })
+      .catch(() => {
+        this._applicationState.viewer.finish();
+        this._applicationState.enableAll();
+      });
+  }
+
   handlePlay() {
     this.playing = true;
     this.playbackDirection = 'forwards';
@@ -537,6 +566,7 @@ MediaControlsController.$inject = [
   'keyboardShortcutService',
   'viewerMouseCursorService',
   'shapeSelectionService',
+  'cutService'
 ];
 
 export default MediaControlsController;

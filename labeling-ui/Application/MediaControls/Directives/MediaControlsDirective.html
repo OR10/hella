@@ -141,6 +141,15 @@
         </div>
         <div class="grid-content noscroll">
             <button ng-hide="vm.selectedPaperShape === null"
+                    ng-click="vm.handleCutShape()"
+                    tooltip="Cut the active shape here">
+                <i class="icon fa fa-scissors"
+                   ng-class="{'toggled': vm.hideLabeledThingsInFrame}"
+                ></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button ng-hide="vm.selectedPaperShape === null"
                     ng-click="vm.handleHideLabeledThingsInFrameToggle()"
                     tooltip="Toggle hiding all, but the active shape">
                 <i class="icon icon-selection-off"
