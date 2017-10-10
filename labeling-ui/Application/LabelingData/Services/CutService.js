@@ -137,7 +137,7 @@ class CutService {
           task,
           labeledThing.frameRange.startFrameIndex,
           0,
-          frameIndex - 1
+          frameIndex
         );
       })
       .then(ltifs => {
