@@ -105,6 +105,7 @@
                 <p class="selected-shape" ng-show="!vm.hasSavedObjects()">No shapes saved</p>
                 <p class="selected-shape" ng-repeat="selectedObject in vm.savedObjects track by selectedObject.shape.id">
                     <i class="icon fa fa-minus-circle" ng-click="vm.removeFromInbox(selectedObject)"></i>
+                    <i class="icon fa fa-share" ng-click="vm.reselectFromInbox(selectedObject)"></i>
                     <i class="icon icon-tool-{{ selectedObject.labelStructureObject.shape }}"></i>
                     <span>{{ selectedObject.label }}</span>
                 </p>
