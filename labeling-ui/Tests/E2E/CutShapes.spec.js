@@ -2,6 +2,7 @@ import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager'
 import {
   initApplication,
   expectAllModalsToBeClosed,
+  expectModalToBePresent,
   bootstrapHttp,
   bootstrapPouch,
   mediumSleep,
@@ -10,7 +11,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-fdescribe('Cut shapes', () => {
+describe('Cut shapes', () => {
   let assets;
   let viewer;
   let cutShapeButton;
@@ -82,16 +83,155 @@ fdescribe('Cut shapes', () => {
       })
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CutShapes', 'DrawOneRectangle')
-         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CutShapes.DrawOneRectangle);
       })
-      .then(() => done());
+      .then(() => {
+        expectAllModalsToBeClosed();
+        done();
+      });
+  });
+
+  it('should not cut a shape on the first LT frame range', done => {
+    bootstrapPouch([
+      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex0_3,
+    ]);
+
+    initApplication(
+      '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 110, y: 110})
+          .click()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => cutShapeButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        const confirmButton = element(by.css('#modal-confirm-button'));
+        return confirmButton.click();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        expectModalToBePresent();
+        done();
+      });
+  });
+
+  it('should not cut a shape outside LT frame range', done => {
+    bootstrapPouch([
+      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex0_3,
+    ]);
+
+    const nextFrameButton = element(by.css('.next-frame-button'));
+
+    initApplication(
+      '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 110, y: 110})
+          .click()
+          .perform();
+      })
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => cutShapeButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        const confirmButton = element(by.css('#modal-confirm-button'));
+        return confirmButton.click();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        expectModalToBePresent();
+        done();
+      });
+  });
+
+  it('should not cut a shape if no more shapes remaining on the left side', done => {
+    bootstrapPouch([
+      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex1,
+    ]);
+
+    const nextFrameButton = element(by.css('.next-frame-button'));
+    const previousFrameButton = element(by.css('.previous-frame-button'));
+    const openBracketButton = element(by.css('.open-bracket-button'));
+
+    initApplication(
+      '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 160, y: 160})
+          .click()
+          .perform();
+      })
+      .then(() => previousFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => openBracketButton.click())
+      .then(() => mediumSleep())
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => cutShapeButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        const confirmButton = element(by.css('#modal-confirm-button'));
+        return confirmButton.click();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        expectModalToBePresent();
+        done();
+      });
+  });
+
+  it('should not cut a shape if no more shapes remaining on the right side', done => {
+    bootstrapPouch([
+      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex1,
+    ]);
+
+    const nextFrameButton = element(by.css('.next-frame-button'));
+    const previousFrameButton = element(by.css('.previous-frame-button'));
+    const closeBracketButton = element(by.css('.close-bracket-button'));
+
+    initApplication(
+      '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 160, y: 160})
+          .click()
+          .perform();
+      })
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => closeBracketButton.click())
+      .then(() => mediumSleep())
+      .then(() => cutShapeButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        const confirmButton = element(by.css('#modal-confirm-button'));
+        return confirmButton.click();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        expectModalToBePresent();
+        done();
+      });
   });
 
   afterEach(() => {
-    expectAllModalsToBeClosed();
     bootstrapHttp.teardown();
     bootstrapPouch.teardown();
   });
