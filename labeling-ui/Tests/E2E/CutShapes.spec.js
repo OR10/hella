@@ -230,6 +230,31 @@ describe('Cut shapes', () => {
       });
   });
 
+  it('should not show the cut a shape button if the selected PaperShape is not a type of PaperThingShape', done => {
+    bootstrapPouch([
+      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex1,
+    ]);
+
+    const iconToolMeasurementRectangle = element(by.css('.icon-tool-measurement-rectangle'));
+
+    initApplication(
+      '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => iconToolMeasurementRectangle.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 110, y: 110}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 210, y: 210}) // drag
+          .mouseUp()
+          .perform();
+      })
+      .then(() => {
+        expect(element(by.css('.cut-shape-button')).isPresent()).toBe(false);
+      })
+      .then(() => done());
+  });
+
   afterEach(() => {
     bootstrapHttp.teardown();
     bootstrapPouch.teardown();
