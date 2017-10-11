@@ -3,6 +3,7 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  dumpAllRequestsMade,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
@@ -53,7 +54,7 @@ fdescribe('ShapeMerging', () => {
     bootstrapHttp(sharedMocks);
 
     bootstrapPouch([
-      assets.documents.ShapeInbox.DrawTwoRectangles,
+      assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.DrawTwoRectanglesOnOneFrame,
     ]);
 
     viewer = element(by.css('.layer-container'));
@@ -64,8 +65,8 @@ fdescribe('ShapeMerging', () => {
   });
 
   describe('Modal window', () => {
-    describe('merges two shapes on the same frame', () => {
-      it('using the first clicked shape as root', done => {
+    describe('merging two shapes on the same frame', () => {
+      it('uses the first clicked shape as root', done => {
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
             return browser.actions()
@@ -88,6 +89,13 @@ fdescribe('ShapeMerging', () => {
           .then(() => browser.sleep(250))
           .then(() => browser.sleep(250))
           .then(() => shapeInboxButton.click())
+          // .then(() => dumpAllRequestsMade())
+          .then(() => {
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThing).toExistInPouchDb();
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThingInFrame).toExistInPouchDb();
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.DeleteLabeledThing).not.toExistInPouchDb();
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.DeleteLabeledThingInFrame).not.toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeMerging', 'MergeTwoShapesOnOneFrame1')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -98,7 +106,7 @@ fdescribe('ShapeMerging', () => {
           .then(() => done());
       });
 
-      it('using the second shape', done => {
+      it('uses the second shape', done => {
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
             return browser.actions()
@@ -133,5 +141,11 @@ fdescribe('ShapeMerging', () => {
           .then(() => done());
       });
     });
+  });
+
+  afterEach(() => {
+    expectAllModalsToBeClosed();
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
   });
 });
