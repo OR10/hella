@@ -101,20 +101,27 @@ class ShapeMergeService {
    * @param {Array.<PaperThingShape>} shapes
    * @return {Promise}
    */
-  mergeShapes(shapes) {
+  mergeShapes(objects) {
     const deferred = this._$q.defer();
-    this._showSelectionModal(shapes, deferred);
+    this._showSelectionModal(objects, deferred);
     return deferred.promise;
   }
 
-  _showSelectionModal(shapes, deferred) {
+  _showSelectionModal(objects, deferred) {
     const confirmCallback = shapeId => {
-      this._mergeShapesWithRootShapeId(shapeId, shapes, deferred);
+      this._mergeShapesWithRootShapeId(shapeId, objects, deferred);
     };
 
     const abortCallback = () => {
       deferred.reject();
     };
+
+    const shapes = objects.map(object => {
+      return {
+        id: object.shape.id,
+        name: object.label,
+      }
+    });
 
     this._modalService.show(
       new this._SelectionDialog(
@@ -132,9 +139,10 @@ class ShapeMergeService {
     );
   }
 
-  _mergeShapesWithRootShapeId(shapeId, shapes, deferred) {
+  _mergeShapesWithRootShapeId(shapeId, objects, deferred) {
     if (shapeId) {
-      const rootShape = shapes[shapeId];
+      const shapes = objects.map(object => object.shape);
+      const rootShape = shapes.find(shape => shape.id === shapeId);
       const rootLabeledThing = rootShape.labeledThingInFrame.labeledThing;
       const newFrameRange = this._calculcateFrameRange(shapes);
       rootLabeledThing.frameRange = Object.assign({}, rootLabeledThing.frameRange, newFrameRange);
@@ -150,7 +158,7 @@ class ShapeMergeService {
           deferred.resolve();
         });
     } else {
-      this._showSelectionModal(shapes, deferred);
+      this._showSelectionModal(objects, deferred);
     }
   }
 

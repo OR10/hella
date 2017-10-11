@@ -293,8 +293,9 @@ class PopupPanelController {
     const rootShape = this.savedObjects[0].shape;
     const rootShapeConstructor = rootShape.constructor;
 
-    const shapes = this.savedObjects.map(object => object.shape);
-    const mergableShapes = shapes.filter(shape => {
+    // const shapes = this.savedObjects.map(object => object.shape);
+    const mergableShapes = this.savedObjects.filter(object => {
+      const shape = object.shape;
       if (shape === rootShape) {
         return true;
       }
