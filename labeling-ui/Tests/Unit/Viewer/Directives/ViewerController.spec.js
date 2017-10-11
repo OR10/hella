@@ -83,7 +83,8 @@ describe('ViewerController tests', () => {
 
   beforeEach(() => {
     abortablePromise = angularQ.resolve();
-    abortablePromise.aborted = () => {};
+    abortablePromise.aborted = () => {
+    };
     abortablePromise.then = () => abortablePromise;
 
     debouncerService = jasmine.createSpyObj('debouncerService', ['multiplexDebounce']);
@@ -108,14 +109,23 @@ describe('ViewerController tests', () => {
     imagePreloader = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
     shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes']);
     toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener', 'removeAllListeners']);
-    hierarchyCreationService = jasmine.createSpyObj('hierarchyCreationService', ['createLabeledThingGroupInFrameWithHierarchy']);
+    hierarchyCreationService = jasmine.createSpyObj(
+      'hierarchyCreationService',
+      ['createLabeledThingGroupInFrameWithHierarchy']
+    );
     paperShapeFactory = jasmine.createSpyObj('paperShapeFactory', ['createPaperGroupShape']);
     groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
     groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
-    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['createLabeledThingGroup', 'assignLabeledThingsToLabeledThingGroup', 'getLabeledThingGroupsInFrameForFrameIndex']);
+    labeledThingGroupGateway = jasmine.createSpyObj(
+      'labeledThingGroupGateway',
+      ['createLabeledThingGroup', 'assignLabeledThingsToLabeledThingGroup', 'getLabeledThingGroupsInFrameForFrameIndex']
+    );
     groupCreationService = jasmine.createSpyObj('groupCreationService', ['showGroupSelector']);
     lockService = jasmine.createSpyObj('lockService', ['acquire']);
-    labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['listLabeledThingInFrame', 'getLabeledThingInFrame']);
+    labeledThingInFrameGateway = jasmine.createSpyObj(
+      'labeledThingInFrameGateway',
+      ['listLabeledThingInFrame', 'getLabeledThingInFrame']
+    );
     thingLayerScopeView = jasmine.createSpyObj('thinglayer.withScope().view', ['update']);
     labeledThingGateway = jasmine.createSpyObj('LabeledThingGateway', ['assignLabeledThingsToLabeledThingGroup']);
     inProgressService = jasmine.createSpyObj('inProgressService', ['start', 'end']);
@@ -266,15 +276,16 @@ describe('ViewerController tests', () => {
         }
       });
 
-      animationFrameService.debounce.and.returnValue(() => {});
+      animationFrameService.debounce.and.returnValue(() => {
+      });
     });
 
     beforeEach(() => {
       thingLayerContext = jasmine.createSpyObj('thingLayerContext', ['withScope']);
       labelStructureObject = {id: 'lso-id'};
-      lt = { id: 'labeled-thing-id', groupIds: [] };
-      ltif = { labeledThing: lt };
-      shapes = [{some: 'shape', labeledThingInFrame: ltif }];
+      lt = {id: 'labeled-thing-id', groupIds: []};
+      ltif = {labeledThing: lt};
+      shapes = [{some: 'shape', labeledThingInFrame: ltif}];
       ltg = {id: 'labeled-thing-group', labeled: 'thing-group'};
       ltgif = {group: 'id', labeledThingGroup: ltg};
       group = jasmine.createSpyObj('PaperGroupRectangleMulti', ['sendToBack', 'select', 'update']);
@@ -342,7 +353,8 @@ describe('ViewerController tests', () => {
       it('creates a group around the selected shapes if there is at least one selected shape', () => {
         groupListener(null, labelStructureObject);
 
-        expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).toHaveBeenCalledWith(jasmine.any(GroupToolActionStruct));
+        expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy)
+          .toHaveBeenCalledWith(jasmine.any(GroupToolActionStruct));
         expect(paperShapeFactory.createPaperGroupShape).toHaveBeenCalledWith(ltgif, shapes);
         expect(group.sendToBack).toHaveBeenCalled();
         expect(thingLayerContext.withScope).toHaveBeenCalled();
@@ -378,7 +390,7 @@ describe('ViewerController tests', () => {
         let assignLtToLtgPromise;
 
         beforeEach(() => {
-          selectedGroup = { id: 'selected-group-id' };
+          selectedGroup = {id: 'selected-group-id'};
           showGroupSelectorPromise = angularQ.resolve(selectedGroup);
           createLabeledThingGroupPromise = angularQ.resolve(ltg);
           assignLtToLtgPromise = angularQ.resolve();
@@ -387,7 +399,7 @@ describe('ViewerController tests', () => {
           groupCreationService.showGroupSelector.and.returnValue(showGroupSelectorPromise);
           labeledThingGroupGateway.createLabeledThingGroup.and.returnValue(createLabeledThingGroupPromise);
           labeledThingGateway.assignLabeledThingsToLabeledThingGroup.and.returnValue(assignLtToLtgPromise);
-          scope.vm = { filters: { filters: [] } };
+          scope.vm = {filters: {filters: []}};
           group.labeledThingInFrame = ltif;
         });
 
@@ -420,26 +432,26 @@ describe('ViewerController tests', () => {
     describe('group creation multi', () => {
       beforeEach(() => {
         shapes =
-        [
-          {
-            labeledThingInFrame: {
-              id: '4711',
-              labeledThing: {
-                id: 'lt1',
-                groupIds: ['1', '2'],
+          [
+            {
+              labeledThingInFrame: {
+                id: '4711',
+                labeledThing: {
+                  id: 'lt1',
+                  groupIds: ['1', '2'],
+                },
               },
             },
-          },
-          {
-            labeledThingInFrame: {
-              id: '4711',
-              labeledThing: {
-                id: 'lt1',
-                groupIds: [],
+            {
+              labeledThingInFrame: {
+                id: '4711',
+                labeledThing: {
+                  id: 'lt1',
+                  groupIds: [],
+                },
               },
             },
-          },
-        ];
+          ];
         controller._thingLayerContext = thingLayerContext;
         group.labeledThingGroupInFrame = ltgif;
         thingLayerContext.withScope.and.callFake(callback => callback());
