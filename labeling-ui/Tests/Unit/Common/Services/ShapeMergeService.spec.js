@@ -42,6 +42,10 @@ describe('ShapeMergeService', () => {
   let thirdShape;
   let fourthShape;
   let mergableShapes;
+  let modalService;
+  let selectionDialog;
+  let selectionDialogConfirmCallback;
+  let selectionDialogAbortCallback;
 
   beforeEach(inject(($rootScope, $q) => {
     rootScope = $rootScope;
@@ -51,7 +55,14 @@ describe('ShapeMergeService', () => {
   beforeEach(() => {
     labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['saveLabeledThingInFrame']);
     labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['deleteLabeledThing', 'hasAssociatedLabeledThingsInFrames', 'getAssociatedLabeledThingsInFrames']);
-    service = new ShapeMergeService(rootScope, angularQ, labeledThingInFrameGateway, labeledThingGateway);
+
+    modalService = jasmine.createSpyObj('modalService', ['show']);
+    selectionDialog = (config, confirmCallback, abortCallback) => {
+      selectionDialogConfirmCallback = confirmCallback;
+      selectionDialogAbortCallback = abortCallback;
+    };
+
+    service = new ShapeMergeService(rootScope, angularQ, labeledThingInFrameGateway, labeledThingGateway, modalService, selectionDialog);
   });
 
   beforeEach(() => {
@@ -257,6 +268,51 @@ describe('ShapeMergeService', () => {
       expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledWith(firstLabeledThingInFrame);
       expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledTimes(1);
       expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(firstLabeledThing);
+    });
+
+    describe('Selection modal', () => {
+      it('shows a selection modal before merging', () => {
+        service.mergeShapes(mergableShapes);
+
+        expect(modalService.show).toHaveBeenCalledTimes(1);
+      });
+
+      it('shows the selection modal once more if no root shape was selected', done => {
+        service.mergeShapes(mergableShapes).then(() => {
+          done.fail('This should not have happened');
+        });
+
+        selectionDialogConfirmCallback(undefined);
+
+        expect(modalService.show).toHaveBeenCalledTimes(2);
+        done();
+      });
+
+      it('rejects the merging', done => {
+        service.mergeShapes(mergableShapes).catch(() => {
+          expect(modalService.show).toHaveBeenCalledTimes(1);
+          done();
+        });
+
+        selectionDialogAbortCallback();
+        rootScope.$apply();
+      });
+
+      it('merges the shape with a different root shape', () => {
+        service.mergeShapes(mergableShapes);
+        selectionDialogConfirmCallback("1");
+        rootScope.$apply();
+
+        expect(firstLabeledThingInFrame.labeledThing).toBe(secondLabeledThing);
+        expect(secondLabeledThingInFrame.labeledThing).toBe(secondLabeledThing);
+        expect(thirdLabeledThingInFrame.labeledThing).toBe(secondLabeledThing);
+        expect(fourthLabeledThingInFrame.labeledThing).toBe(secondLabeledThing);
+
+        expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledTimes(2);
+        expect(labeledThingGateway.deleteLabeledThing).not.toHaveBeenCalledWith(secondLabeledThing);
+        expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(firstLabeledThing);
+        expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledWith(thirdLabeledThing);
+      });
     });
   });
 });

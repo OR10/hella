@@ -4,8 +4,10 @@ class ShapeMergeService {
    * @param {$r} $q
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
+   * @param {ModalService} modalService
+   * @param {SelectionDialog} SelectionDialog
    */
-  constructor($rootScope, $q, labeledThingInFrameGateway, labeledThingGateway) {
+  constructor($rootScope, $q, labeledThingInFrameGateway, labeledThingGateway, modalService, SelectionDialog) {
     /**
      * @type {$rootScope}
      * @private
@@ -29,6 +31,18 @@ class ShapeMergeService {
      * @private
      */
     this._labeledThingGateway = labeledThingGateway;
+
+    /**
+     * @type {ModalService}
+     * @private
+     */
+    this._modalService = modalService;
+
+    /**
+     * @type {SelectionDialog}
+     * @private
+     */
+    this._SelectionDialog = SelectionDialog;
   }
 
   _filterLabeledThings(shapes, rootLabeledThing) {
@@ -88,20 +102,56 @@ class ShapeMergeService {
    * @return {Promise}
    */
   mergeShapes(shapes) {
-    const rootShape = shapes[0];
-    const rootLabeledThing = rootShape.labeledThingInFrame.labeledThing;
-    const newFrameRange = this._calculcateFrameRange(shapes);
-    rootLabeledThing.frameRange = Object.assign({}, rootLabeledThing.frameRange, newFrameRange);
+    const deferred = this._$q.defer();
+    this._showSelectionModal(shapes, deferred);
+    return deferred.promise;
+  }
 
-    const labeledThings = this._filterLabeledThings(shapes, rootLabeledThing);
+  _showSelectionModal(shapes, deferred) {
+    const confirmCallback = shapeId => {
+      this._mergeShapesWithRootShapeId(shapeId, shapes, deferred);
+    };
 
-    return this._labeledThingGateway.getAssociatedLabeledThingsInFrames(rootLabeledThing)
-      .then(rootLabeledThingsInFrame => {
-        return this._moveLabeledThingsInFrame(labeledThings, rootShape, rootLabeledThingsInFrame);
-      })
-      .then(() => {
-        this._$rootScope.$emit('shape:merge:after');
-      });
+    const abortCallback = () => {
+      deferred.reject();
+    };
+
+    this._modalService.show(
+      new this._SelectionDialog(
+        {
+          title: 'Select Target Shape',
+          headline: `Please select the shape you want to merge all the other shapes into.`,
+          message: 'The following shapes are available:',
+          confirmButtonText: 'Accept and Merge',
+          data: shapes,
+        },
+        confirmCallback,
+        abortCallback,
+        { selected: shapes[0].id }
+      )
+    );
+  }
+
+  _mergeShapesWithRootShapeId(shapeId, shapes, deferred) {
+    if (shapeId) {
+      const rootShape = shapes[shapeId];
+      const rootLabeledThing = rootShape.labeledThingInFrame.labeledThing;
+      const newFrameRange = this._calculcateFrameRange(shapes);
+      rootLabeledThing.frameRange = Object.assign({}, rootLabeledThing.frameRange, newFrameRange);
+
+      const labeledThings = this._filterLabeledThings(shapes, rootLabeledThing);
+
+      this._labeledThingGateway.getAssociatedLabeledThingsInFrames(rootLabeledThing)
+        .then(rootLabeledThingsInFrame => {
+          return this._moveLabeledThingsInFrame(labeledThings, rootShape, rootLabeledThingsInFrame);
+        })
+        .then(() => {
+          this._$rootScope.$emit('shape:merge:after');
+          deferred.resolve();
+        });
+    } else {
+      this._showSelectionModal(shapes, deferred);
+    }
   }
 
   /**
@@ -139,6 +189,8 @@ ShapeMergeService.$inject = [
   '$q',
   'labeledThingInFrameGateway',
   'labeledThingGateway',
+  'modalService',
+  'SelectionDialog',
 ];
 
 export default ShapeMergeService;
