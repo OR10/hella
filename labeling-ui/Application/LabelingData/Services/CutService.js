@@ -125,10 +125,10 @@ class CutService {
     return this._$q.resolve()
       .then(() => {
         if (labeledThing.frameRange.startFrameIndex === frameIndex) {
-          return this._$q.reject();
+          return this._$q.reject('You can not cut the shape on the first frame range');
         }
         if (labeledThing.frameRange.startFrameIndex > frameIndex || labeledThing.frameRange.endFrameIndex < frameIndex) {
-          return this._$q.reject();
+          return this._$q.reject('You can not cut the shape outside the frame range');
         }
         return this._$q.resolve();
       })
@@ -142,7 +142,20 @@ class CutService {
       })
       .then(ltifs => {
         if (ltifs.length === 0) {
-          return this._$q.reject();
+          return this._$q.reject('You can not cut the shape here because there are no more shapes remaining on the left side');
+        }
+        return this._$q.resolve();
+      }).then(() => {
+        return this._labeledThingInFrameGateway.listLabeledThingInFrame(
+          task,
+          frameIndex,
+          0,
+          labeledThing.frameRange.endFrameIndex
+        );
+      })
+      .then(ltifs => {
+        if (ltifs.length === 0) {
+          return this._$q.reject('You can not cut the shape here because there are no more shapes remaining on the right side');
         }
         return this._$q.resolve();
       });
