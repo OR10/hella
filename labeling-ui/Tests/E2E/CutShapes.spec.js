@@ -50,7 +50,7 @@ describe('Cut shapes', () => {
 
   it('should cut a shape', done => {
     bootstrapPouch([
-      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex0_3,
+      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex0to3,
     ]);
 
     const nextFrameButton = element(by.css('.next-frame-button'));
@@ -100,7 +100,7 @@ describe('Cut shapes', () => {
 
   it('should not cut a shape on the first LT frame range', done => {
     bootstrapPouch([
-      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex0_3,
+      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex0to3,
     ]);
 
     initApplication(
@@ -127,7 +127,7 @@ describe('Cut shapes', () => {
 
   it('should not cut a shape outside LT frame range', done => {
     bootstrapPouch([
-      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex0_3,
+      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex0to3,
     ]);
 
     const nextFrameButton = element(by.css('.next-frame-button'));
