@@ -3,7 +3,6 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
-  dumpAllRequestsMade,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
@@ -53,10 +52,6 @@ fdescribe('ShapeMerging', () => {
 
     bootstrapHttp(sharedMocks);
 
-    bootstrapPouch([
-      assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.DrawTwoRectanglesOnOneFrame,
-    ]);
-
     viewer = element(by.css('.layer-container'));
     shapeInboxButton = element(by.css('.task-bar .icon.fa-inbox'));
     headerPlusButton = element(by.css('#popup-inbox-selected .shape-list-header .icon'));
@@ -66,6 +61,12 @@ fdescribe('ShapeMerging', () => {
 
   describe('Modal window', () => {
     describe('merging two shapes on the same frame', () => {
+      beforeEach(() => {
+        bootstrapPouch([
+          assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.DrawTwoRectanglesOnOneFrame,
+        ]);
+      });
+
       it('uses the first clicked shape as root', done => {
         initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
           .then(() => {
@@ -89,12 +90,11 @@ fdescribe('ShapeMerging', () => {
           .then(() => browser.sleep(250))
           .then(() => browser.sleep(250))
           .then(() => shapeInboxButton.click())
-          // .then(() => dumpAllRequestsMade())
           .then(() => {
-            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThing).toExistInPouchDb();
-            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThingInFrame).toExistInPouchDb();
-            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.DeleteLabeledThing).not.toExistInPouchDb();
-            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.DeleteLabeledThingInFrame).not.toExistInPouchDb();
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThing1).toExistInPouchDb();
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThingInFrame1).toExistInPouchDb();
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThing2).not.toExistInPouchDb();
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThingInFrame2).not.toExistInPouchDb();
           })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeMerging', 'MergeTwoShapesOnOneFrame1')
@@ -131,6 +131,12 @@ fdescribe('ShapeMerging', () => {
           .then(() => browser.sleep(250))
           .then(() => browser.sleep(250))
           .then(() => shapeInboxButton.click())
+          .then(() => {
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThing1).not.toExistInPouchDb();
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThingInFrame1).not.toExistInPouchDb();
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThing2).toExistInPouchDb();
+            expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThingInFrame2).toExistInPouchDb();
+          })
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeMerging', 'MergeTwoShapesOnOneFrame2')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()

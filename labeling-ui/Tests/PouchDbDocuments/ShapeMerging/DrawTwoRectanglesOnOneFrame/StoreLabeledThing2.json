@@ -13,7 +13,7 @@
   },
   "groupIds": [],
   "incomplete": true,
-  "lineColor": "1",
+  "lineColor": "2",
   "projectId": "{{:--project-id}}",
   "taskId": "{{:--task-id}}",
   "type": "AppBundle.Model.LabeledThing"
