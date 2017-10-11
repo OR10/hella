@@ -84,6 +84,7 @@ import 'ng-flow/dist/ng-flow';
 import 'angular-hotkeys';
 
 import CapitalizeFilter from './Filters/CapitalizeFilter';
+import RootScopeEventRegistrationService from './Services/RootScopeEventRegistrationService';
 
 class Common extends Module {
   /**
@@ -144,6 +145,7 @@ class Common extends Module {
     this.module.service('shapeInboxService', ShapeInboxService);
     this.module.service('pathCollisionService', PathCollisionService);
     this.module.service('toolSelectorListenerService', ToolSelectorListenerService);
+    this.module.service('rootScopeEventRegistrationService', RootScopeEventRegistrationService);
 
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
