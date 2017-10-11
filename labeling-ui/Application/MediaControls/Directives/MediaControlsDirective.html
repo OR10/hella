@@ -140,7 +140,8 @@
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-hide="vm.selectedPaperShape === null"
+            <button id="cut-shape-button"
+                    ng-hide="vm.selectedPaperShape === null"
                     ng-click="vm.handleCutShape()"
                     tooltip="Cut the active shape here">
                 <i class="icon fa fa-scissors"
