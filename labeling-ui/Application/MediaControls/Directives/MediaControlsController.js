@@ -595,7 +595,7 @@ MediaControlsController.$inject = [
   'keyboardShortcutService',
   'viewerMouseCursorService',
   'shapeSelectionService',
-  'cutService'
+  'cutService',
 ];
 
 export default MediaControlsController;

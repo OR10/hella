@@ -201,7 +201,6 @@ describe('Cut shapes', () => {
     ]);
 
     const nextFrameButton = element(by.css('.next-frame-button'));
-    const previousFrameButton = element(by.css('.previous-frame-button'));
     const closeBracketButton = element(by.css('.close-bracket-button'));
 
     initApplication(

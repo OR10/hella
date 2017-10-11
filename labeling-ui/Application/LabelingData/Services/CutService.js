@@ -1,5 +1,3 @@
-import {clone} from 'lodash';
-
 import LabeledThing from 'Application/LabelingData/Models/LabeledThing';
 
 class CutService {
