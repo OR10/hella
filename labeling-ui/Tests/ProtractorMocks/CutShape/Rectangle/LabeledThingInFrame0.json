@@ -1,0 +1,28 @@
+{
+  "classes": [],
+  "frameIndex": 0,
+  "incomplete": true,
+  "labeledThingId": "{{:--labeled-thing-id}}",
+  "identifierName": "legacy",
+  "shapes": [
+    {
+      "bottomRight": {
+        "x": 200,
+        "y": 200
+      },
+      "id": "SHAPE-ID-1",
+      "topLeft": {
+        "x": 100,
+        "y": 100
+      },
+      "type": "rectangle"
+    }
+  ],
+  "_id": "LABELED-THING-IN-FRAME-ID-1",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}",
+  "projectId": "PROJECTID-PROJECTID",
+  "taskId": "TASKID-TASKID",
+  "type": "AppBundle.Model.LabeledThingInFrame"
+}

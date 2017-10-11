@@ -1,8 +1,7 @@
 [
   {
-    "classes": [
-      "pedestrian"
-    ],
+    "classes": [],
+    "groupIds": [],
     "frameRange": {
       "startFrameIndex": 1,
       "endFrameIndex": 1,

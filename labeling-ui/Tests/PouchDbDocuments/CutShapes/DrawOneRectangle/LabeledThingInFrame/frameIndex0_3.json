@@ -1,15 +1,14 @@
 [
   {
-    "classes": [
-      "pedestrian"
-    ],
+    "classes": [],
+    "groupIds": [],
     "frameRange": {
       "startFrameIndex": 0,
       "endFrameIndex": 3,
       "type": "AppBundle.Model.FrameIndexRange"
     },
     "incomplete": true,
-    "lineColor": 6,
+    "lineColor": "6",
     "taskId": "TASKID-TASKID",
     "_id": "LABELED-THING-ID-1",
     "type": "AppBundle.Model.LabeledThing"

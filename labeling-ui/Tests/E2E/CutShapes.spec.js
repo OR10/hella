@@ -88,6 +88,10 @@ describe('Cut shapes', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CutShapes.DrawOneRectangle);
       })
+      .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThing0to1).toExistInPouchDb())
+      .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThing2to3).toExistInPouchDb())
+      .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThingInFrame0).toExistInPouchDb())
+      .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThingInFrame2).toExistInPouchDb())
       .then(() => {
         expectAllModalsToBeClosed();
         done();
