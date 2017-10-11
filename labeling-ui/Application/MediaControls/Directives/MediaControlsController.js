@@ -385,9 +385,24 @@ class MediaControlsController {
             this._applicationState.enableAll();
             this._$rootScope.$emit('framerange:change:after');
           })
-          .catch(() => {
+          .catch(error => {
             this._applicationState.viewer.finish();
             this._applicationState.enableAll();
+            this._modalService.info(
+              {
+                title: 'Cutting error',
+                headline: error,
+                confirmButtonText: 'Understood',
+              },
+              undefined,
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+
+            throw error;
           });
       },
       undefined,
