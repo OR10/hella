@@ -274,6 +274,84 @@ fdescribe('ShapeMerging', () => {
     });
   });
 
+  describe('merging two shapes on three frames', () => {
+    beforeEach(() => {
+      bootstrapPouch([
+        assets.documents.ShapeMerging.DrawFourRectanglesOnThreeFrames.DrawFourRectanglesOnThreeFrames,
+      ]);
+    });
+
+    it('moves all shapes into one labeled thing', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, secondShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => headerPlusButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => nextFrameButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => browser.sleep(250))
+        .then(() => headerPlusButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => nextFrameButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => mergeButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => element(by.cssContainingText('option', 'rectangle #2')).click())
+        .then(() => browser.sleep(250))
+        .then(() => modalConfirmButton.click())
+        .then(() => browser.sleep(250))
+        .then(() => browser.sleep(250))
+        .then(() => shapeInboxButton.click())
+        .then(() => {
+          expect(assets.documents.ShapeMerging.DrawFourRectanglesOnThreeFrames.StoreLabeledThing).toExistInPouchDb();
+          expect(assets.documents.ShapeMerging.DrawFourRectanglesOnThreeFrames.StoreLabeledThingInFrame1).toExistInPouchDb();
+          expect(assets.documents.ShapeMerging.DrawFourRectanglesOnThreeFrames.StoreLabeledThingInFrame2).toExistInPouchDb();
+          expect(assets.documents.ShapeMerging.DrawFourRectanglesOnThreeFrames.StoreLabeledThingInFrame3).toExistInPouchDb();
+          expect(assets.documents.ShapeMerging.DrawFourRectanglesOnThreeFrames.DeleteLabeledThingInFrame).not.toExistInPouchDb();
+          expect(assets.documents.ShapeMerging.DrawFourRectanglesOnThreeFrames.DeleteLabeledThing).not.toExistInPouchDb();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeMerging', 'MergeFourShapesOnThreeFramesFrame2')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeMerging.MergeFourShapesOnThreeFramesFrame2);
+        })
+        .then(() => previousFrameButton.click())
+        .then(() => browser.sleep(250))
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeMerging', 'MergeFourShapesOnThreeFramesFrame1')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeMerging.MergeFourShapesOnThreeFramesFrame1);
+        })
+        .then(() => previousFrameButton.click())
+        .then(() => browser.sleep(250))
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeMerging', 'MergeFourShapesOnThreeFramesFrame0')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeMerging.MergeFourShapesOnThreeFramesFrame0);
+        })
+        .then(() => done());
+    });
+  });
+
   afterEach(() => {
     expectAllModalsToBeClosed();
     bootstrapHttp.teardown();
