@@ -1,5 +1,6 @@
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
 import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
+import PaperVirtualShape from '../../Viewer/Shapes/PaperVirtualShape';
 
 /**
  * Controller handling the control elements below the viewer frame
@@ -363,8 +364,20 @@ class MediaControlsController {
     this._$rootScope.$emit('action:ask-and-delete-shape', this.task, this.selectedPaperShape);
   }
 
+  /**
+   *
+   * @param shape
+   * @returns {boolean}
+   */
+  isPaperThingShape(shape) {
+    return shape instanceof PaperThingShape;
+  }
+
+  /**
+   *
+   */
   handleCutShape() {
-    if (this.selectedPaperShape === null || this.selectedPaperShape.constructor.name === 'PaperGroupRectangleMulti' || this.selectedPaperShape.constructor.name === 'PaperMeasurementRectangle') {
+    if (this.selectedPaperShape === null) {
       return;
     }
     const labeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
