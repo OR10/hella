@@ -413,8 +413,16 @@ class ViewerController {
           shape => (!(shape instanceof PaperGroupRectangleMulti || shape instanceof PaperMeasurementRectangle))
         );
       if (shapes.length > 0) {
-        const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
-        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
+        const struct = new GroupToolActionStruct(
+          {},
+          this.viewport,
+          this.task,
+          labelStructureObject.id,
+          this.framePosition
+        );
+        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(
+          struct
+        );
         if (shapes.length === 2) {
           const firstLabeledThing = shapes[0].labeledThingInFrame.labeledThing;
           const secondLabeledThing = shapes[1].labeledThingInFrame.labeledThing;
@@ -454,8 +462,12 @@ class ViewerController {
                 } else {
                   // add to selected group
                   this._thingLayerContext.withScope(() => {
-                    const toAddShape = shapes.find(candidate => !candidate.labeledThingInFrame.labeledThing.groupIds.includes(group.id));
-                    const groupShape = this.paperGroupShapes.find(pgs => pgs.labeledThingGroupInFrame.labeledThingGroup.id === group.id);
+                    const toAddShape = shapes.find(
+                      candidate => !candidate.labeledThingInFrame.labeledThing.groupIds.includes(group.id)
+                    );
+                    const groupShape = this.paperGroupShapes.find(
+                      pgs => pgs.labeledThingGroupInFrame.labeledThingGroup.id === group.id
+                    );
                     groupShape.addShape(toAddShape);
                     this._updateGroup(group, toAddShape);
                     this._handleGroupAddAfterActions(groupShape);
@@ -467,24 +479,24 @@ class ViewerController {
                 this._shapeSelectionService.clear();
               }
             )
-            .then(selectionDialog => {
-              this._modalService.show(selectionDialog);
-            })
-            .catch(() => {
-              this._modalService.info(
-                {
-                  title: 'Error retrieving group correlation',
-                  headline: 'The list of corresponding groups to the selected labeled thing could not be loaded. Please try again or inform your label manager if the problem persists.',
-                  confirmButtonText: 'Understood',
-                },
-                undefined,
-                undefined,
-                {
-                  warning: true,
-                  abortable: false,
-                }
-              );
-            });
+              .then(selectionDialog => {
+                this._modalService.show(selectionDialog);
+              })
+              .catch(() => {
+                this._modalService.info(
+                  {
+                    title: 'Error retrieving group correlation',
+                    headline: 'The list of corresponding groups to the selected labeled thing could not be loaded. Please try again or inform your label manager if the problem persists.',
+                    confirmButtonText: 'Understood',
+                  },
+                  undefined,
+                  undefined,
+                  {
+                    warning: true,
+                    abortable: false,
+                  }
+                );
+              });
           }
         } else {
           this._thingLayerContext.withScope(() => {
