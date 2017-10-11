@@ -11,6 +11,7 @@ class PopupPanelController {
    * @param {$rootScope.Scope} $scope
    * @param {angular.$window} $window
    * @param {angular.$element} $element
+   * @param {$rootScope} $rootScope
    * @param {AnimationFrameService} animationFrameService
    * @param {DrawingContextService} drawingContextService
    * @param {FrameGateway} frameGateway
@@ -25,6 +26,7 @@ class PopupPanelController {
     $scope,
     $window,
     $element,
+    $rootScope,
     animationFrameService,
     drawingContextService,
     frameGateway,
@@ -38,6 +40,12 @@ class PopupPanelController {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
     this._supportedImageTypes = ['sourceJpg', 'source'];
+
+    /**
+     * @type {$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
 
     /**
      * @type {AbortablePromiseFactory}
@@ -448,6 +456,7 @@ PopupPanelController.$inject = [
   '$scope',
   '$window',
   '$element',
+  '$rootScope',
   'animationFrameService',
   'drawingContextService',
   'frameGateway',
