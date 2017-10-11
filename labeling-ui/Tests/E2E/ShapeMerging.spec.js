@@ -7,7 +7,7 @@ import {
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
 
-fdescribe('ShapeMerging', () => {
+describe('ShapeMerging', () => {
   let assets;
   let viewer;
   let sharedMocks;
