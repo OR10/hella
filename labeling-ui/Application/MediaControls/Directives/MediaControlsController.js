@@ -372,9 +372,6 @@ class MediaControlsController {
     return shape instanceof PaperThingShape;
   }
 
-  /**
-   *
-   */
   handleCutShape() {
     if (this.selectedPaperShape === null) {
       return;
