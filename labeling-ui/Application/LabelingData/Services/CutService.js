@@ -47,9 +47,9 @@ class CutService {
   }
 
   /**
-   * @param labeledThing
-   * @param labeledThingInFrame
-   * @param frameIndex
+   * @param {LabeledThing} labeledThing
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @param {Integer} frameIndex
    */
   cutShape(labeledThing, labeledThingInFrame, frameIndex) {
     const task = labeledThingInFrame.task;
@@ -114,9 +114,9 @@ class CutService {
   }
 
   /**
-   * @param task
-   * @param labeledThing
-   * @param frameIndex
+   * @param {Task} task
+   * @param {LabeledThing} labeledThing
+   * @param {Integer} frameIndex
    * @private
    */
   _preconditionFulfilled(task, labeledThing, frameIndex) {
