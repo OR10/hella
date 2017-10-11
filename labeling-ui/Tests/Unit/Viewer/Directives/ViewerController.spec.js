@@ -40,6 +40,7 @@ describe('ViewerController tests', () => {
   let labeledThingGateway;
   let inProgressService;
   let pouchDbContextService;
+  let rootScopeEventRegistrationService;
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
@@ -130,6 +131,24 @@ describe('ViewerController tests', () => {
     labeledThingGateway = jasmine.createSpyObj('LabeledThingGateway', ['assignLabeledThingsToLabeledThingGroup']);
     inProgressService = jasmine.createSpyObj('inProgressService', ['start', 'end']);
     pouchDbContextService = jasmine.createSpyObj('PouchDbContextService', ['provideContextForTaskId']);
+
+    let registeredRootEvents = [];
+    rootScopeEventRegistrationService = jasmine.createSpyObj(
+      'RootScopeEventRegistrationService',
+      ['register', 'deregister']
+    );
+
+    rootScopeEventRegistrationService.register.and.callFake(
+      (identifier, event, handler) => registeredRootEvents.push(
+        rootScope.$on(event, handler)
+      )
+    );
+    rootScopeEventRegistrationService.deregister.and.callFake(
+      () => {
+        registeredRootEvents.forEach(deregister => deregister());
+        registeredRootEvents = [];
+      }
+    );
   });
 
   beforeEach(() => {
@@ -199,7 +218,8 @@ describe('ViewerController tests', () => {
       groupSelectionDialogFactory,
       null,
       null,
-      pouchDbContextService
+      pouchDbContextService,
+      rootScopeEventRegistrationService
     );
 
     controller.framePosition.lock = lockService;
