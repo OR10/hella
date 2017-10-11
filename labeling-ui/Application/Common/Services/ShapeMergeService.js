@@ -120,7 +120,7 @@ class ShapeMergeService {
       return {
         id: object.shape.id,
         name: object.label,
-      }
+      };
     });
 
     this._modalService.show(
