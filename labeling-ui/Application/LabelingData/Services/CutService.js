@@ -61,8 +61,8 @@ class CutService {
       incomplete: true,
       task: task,
       frameRange: {
-        startFrameIndex: frameIndex,
-        endFrameIndex: labeledThing.frameRange.endFrameIndex,
+        startFrameIndex: labeledThing.frameRange.startFrameIndex,
+        endFrameIndex: frameIndex - 1,
       },
     });
 
@@ -77,26 +77,15 @@ class CutService {
       .then(() => {
         return this._labeledThingInFrameGateway.listLabeledThingInFrame(
           task,
-          frameIndex,
+          labeledThing.frameRange.startFrameIndex,
           0,
-          labeledThing.frameRange.endFrameIndex
+          frameIndex - labeledThing.frameRange.startFrameIndex
         );
       })
       .then(ltifs => {
         const promises = [];
-        let ghostInherited = false;
         ltifs.forEach(ltif => {
-          if (ltif._labeledThing.id === labeledThing.id) {
-            if (!ghostInherited && ltif.classes.length === 0) {
-              if (previousLabeledThingInFrame.classes.length > 0) {
-                ltif.classes = previousLabeledThingInFrame.classes;
-              }
-              if (previousLabeledThingInFrame.ghostClasses !== null && previousLabeledThingInFrame.ghostClasses.length > 0) {
-                ltif.classes = previousLabeledThingInFrame.ghostClasses;
-              }
-              ghostInherited = true;
-            }
-
+          if (!ltif.ghost && ltif._labeledThing.id === labeledThing.id) {
             ltif._labeledThing = newLabeledThing;
             promises.push(this._labeledThingInFrameGateway.saveLabeledThingInFrame(ltif));
           }
@@ -105,7 +94,18 @@ class CutService {
         return this._$q.all(promises);
       })
       .then(() => {
-        labeledThing.frameRange.endFrameIndex = frameIndex - 1;
+        return this._labeledThingInFrameGateway.getLabeledThingInFrame(task, frameIndex, labeledThing);
+      })
+      .then(cutPointLabeledThingInFrames => {
+        const cutPointLabeledThingInFrame = cutPointLabeledThingInFrames[0];
+        if (cutPointLabeledThingInFrame.ghost) {
+          cutPointLabeledThingInFrame.ghostBust(this._entityIdService.getUniqueId(), frameIndex);
+        }
+        cutPointLabeledThingInFrame.classes = previousLabeledThingInFrame.extractClassList();
+        return this._labeledThingInFrameGateway.saveLabeledThingInFrame(cutPointLabeledThingInFrame);
+      })
+      .then(() => {
+        labeledThing.frameRange.startFrameIndex = frameIndex;
         return this._labeledThingGateway.saveLabeledThing(labeledThing);
       })
       .then(() => {
