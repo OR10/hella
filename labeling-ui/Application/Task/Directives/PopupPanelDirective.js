@@ -20,6 +20,7 @@ class PopupPanelDirective {
       freezeThumbnails: '=',
       fps: '=',
       frameSkip: '=',
+      selectedPaperShape: '=',
     };
 
     this.template = popupPanelTemplate;
