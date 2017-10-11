@@ -80,6 +80,7 @@ class ViewerController {
    * @param {PathCollisionService} pathCollisionService
    * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
    * @param {PouchDbContextService} pouchDbContextService
+   * @param {RootScopeEventRegistrationService} rootScopeEventRegistrationService
    */
   constructor(
     $scope,
@@ -124,6 +125,7 @@ class ViewerController {
     pathCollisionService,
     labeledThingReferentialCheckService,
     pouchDbContextService,
+    rootScopeEventRegistrationService
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -404,6 +406,12 @@ class ViewerController {
      */
     this._pouchDbContextService = pouchDbContextService;
 
+    /**
+     * @type {RootScopeEventRegistrationService}
+     * @private
+     */
+    this._rootScopeEventRegistrationService = rootScopeEventRegistrationService;
+
     const groupListener = (tool, labelStructureObject) => {
       if (this.readOnly) {
         return;
@@ -631,7 +639,7 @@ class ViewerController {
      * Inform the user about authoriztion loss with the couchdb.
      */
     let unauthorizedAccessModalOpen = false;
-    $rootScope.$on('pouchdb:replication:unauthorized', () => {
+    this._rootScopeEventRegistrationService.register(this, 'pouchdb:replication:unauthorized', () => {
       this._inProgressService.end();
       const context = this._pouchDbContextService.provideContextForTaskId(this.task.id);
       this._pouchDbSyncManager.stopReplicationsForContext(context);
@@ -687,6 +695,8 @@ class ViewerController {
         $window.removeEventListener('resize', this._resizeDebounced);
         $window.removeEventListener('visibilitychange', onVisibilityChange);
         this._toolSelectorListenerService.removeAllListeners();
+        this._rootScopeEventRegistrationService.deregister(this);
+        this._rootScopeEventRegistrationService.deregister(this.thingLayer);
       }
     );
 
@@ -749,12 +759,12 @@ class ViewerController {
       this._debouncedOnThingUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
-    $rootScope.$on('framerange:change:after', () => {
+    this._rootScopeEventRegistrationService.register(this, 'framerange:change:after', () => {
       this._debouncedOnThingUpdate.triggerImmediately()
         .then(() => this._handleFrameChange(this._currentFrameIndex));
     });
 
-    $rootScope.$on('shape:delete:after', () => {
+    this._rootScopeEventRegistrationService.register(this, 'shape:delete:after', () => {
       this._applicationState.disableAll();
       this._$q.all([
         this._loadLabeledThingsInFrame(this._currentFrameIndex),
@@ -887,7 +897,7 @@ class ViewerController {
 
     // TODO: look for a better position for this kind of handling?!
     // Handle the change from thing to meta labeling here.
-    this._$rootScope.$on('label-structure-type:change', (event, labeledFrame) => {
+    this._rootScopeEventRegistrationService.register(this, 'label-structure-type:change', (event, labeledFrame) => {
       this._thingLayerContext.withScope(() => {
         this.selectedPaperShape = new PaperFrame(labeledFrame);
       });
@@ -1018,6 +1028,7 @@ class ViewerController {
       this._groupSelectionDialogFactory,
       this._pathCollisionService,
       this._labeledThingReferentialCheckService,
+      this._rootScopeEventRegistrationService
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1902,6 +1913,7 @@ ViewerController.$inject = [
   'pathCollisionService',
   'labeledThingReferentialCheckService',
   'pouchDbContextService',
+  'rootScopeEventRegistrationService',
 ];
 
 export default ViewerController;
