@@ -94,6 +94,10 @@ class PopupPanelController {
      */
     this._shapeInboxService = shapeInboxService;
 
+    /**
+     * @type {HTMLImageElement|null}
+     * @private
+     */
     this._activeBackgroundImage = null;
 
     /**
@@ -269,7 +273,7 @@ class PopupPanelController {
   /**
    * Removes a shape from the inbox
    *
-   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
+   * @param {{shape: PaperThingShape, label: string, labelStructureObject: LabelStructureObject}} shapeInformation
    */
   removeFromInbox(shapeInformation) {
     this._shapeInboxService.removeShape(shapeInformation);
