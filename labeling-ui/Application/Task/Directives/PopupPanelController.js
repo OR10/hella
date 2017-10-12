@@ -293,9 +293,7 @@ class PopupPanelController {
     this.selectedPaperShape = shapeInformation.shape;
     this._loadSelectedObjects();
 
-    this._$rootScope.$evalAsync(() => {
-      this._$rootScope.$emit('framerange:change:after');
-    });
+    this._$rootScope.$emit('action:reload-frame');
   }
 
   /**

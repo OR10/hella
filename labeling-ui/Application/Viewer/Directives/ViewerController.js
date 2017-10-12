@@ -800,6 +800,11 @@ class ViewerController {
         });
     });
 
+    this._rootScopeEventRegistrationService.register(this, 'action:reload-frame', () => {
+      this._debouncedOnThingUpdate.triggerImmediately()
+        .then(() => this._handleFrameChange(this._currentFrameIndex));
+    });
+
     $scope.$watch(
       'vm.playing', (playingNow, playingBefore) => {
         if (playingNow === playingBefore) {
