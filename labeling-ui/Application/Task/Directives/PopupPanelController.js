@@ -281,6 +281,24 @@ class PopupPanelController {
   }
 
   /**
+   * Gets a shape from the inbox and reselects it
+   *
+   * The shape will afterwards be removed from the inbox, as it is selected again.
+   *
+   * @param {{shape: PaperThingShape, label: string, labelStructureObject: LabelStructureObject}} shapeInformation
+   */
+  reselectFromInbox(shapeInformation) {
+    this._shapeInboxService.removeShape(shapeInformation);
+    this._shapeSelectionService.setSelectedShape(shapeInformation.shape);
+    this.selectedPaperShape = shapeInformation.shape;
+    this._loadSelectedObjects();
+
+    this._$rootScope.$evalAsync(() => {
+      this._$rootScope.$emit('framerange:change:after');
+    });
+  }
+
+  /**
    * Load the selected objects. Looks up the name in the Task Definition and adds the information
    * as well as a label with a unique number to the shapeInformation
    *
