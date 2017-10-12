@@ -3,6 +3,7 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  shortSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
@@ -83,16 +84,16 @@ describe('ShapeMerging', () => {
               .sendKeys(protractor.Key.NULL)
               .perform();
           })
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => shapeInboxButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => headerPlusButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => mergeButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => modalConfirmButton.click())
-          .then(() => browser.sleep(250))
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
+          .then(() => shortSleep())
           .then(() => shapeInboxButton.click())
           .then(() => {
             expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThing1).toExistInPouchDb();
@@ -122,18 +123,18 @@ describe('ShapeMerging', () => {
               .sendKeys(protractor.Key.NULL)
               .perform();
           })
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => shapeInboxButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => headerPlusButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => mergeButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => element(by.cssContainingText('option', 'rectangle #2')).click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => modalConfirmButton.click())
-          .then(() => browser.sleep(250))
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
+          .then(() => shortSleep())
           .then(() => shapeInboxButton.click())
           .then(() => {
             expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnOneFrame.StoreLabeledThing1).not.toExistInPouchDb();
@@ -167,27 +168,27 @@ describe('ShapeMerging', () => {
               .click()
               .perform();
           })
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => shapeInboxButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => headerPlusButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => nextFrameButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, firstShape.topLeft) // initial position
               .click()
               .perform();
           })
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => headerPlusButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => mergeButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => modalConfirmButton.click())
-          .then(() => browser.sleep(250))
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
+          .then(() => shortSleep())
           .then(() => shapeInboxButton.click())
           .then(() => {
             expect(assets.documents.ShapeMerging.DrawTwoRectanglesOnTwoFrames.DeleteLabeledThing1).not.toExistInPouchDb();
@@ -203,7 +204,7 @@ describe('ShapeMerging', () => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeMerging.MergeTwoShapesOnTwoFrames1Frame1);
           })
           .then(() => previousFrameButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeMerging', 'MergeTwoShapesOnTwoFrames1Frame0')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -222,29 +223,29 @@ describe('ShapeMerging', () => {
               .click()
               .perform();
           })
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => shapeInboxButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => headerPlusButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => nextFrameButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => {
             return browser.actions()
               .mouseMove(viewer, firstShape.topLeft) // initial position
               .click()
               .perform();
           })
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => headerPlusButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => mergeButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => element(by.cssContainingText('option', 'rectangle #2')).click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(() => modalConfirmButton.click())
-          .then(() => browser.sleep(250))
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
+          .then(() => shortSleep())
           .then(() => shapeInboxButton.click())
 
           .then(() => {
@@ -261,7 +262,7 @@ describe('ShapeMerging', () => {
             expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeMerging.MergeTwoShapesOnTwoFrames2Frame1);
           })
           .then(() => previousFrameButton.click())
-          .then(() => browser.sleep(250))
+          .then(() => shortSleep())
           .then(
             // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeMerging', 'MergeTwoShapesOnTwoFrames2Frame0')
             () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -289,31 +290,31 @@ describe('ShapeMerging', () => {
             .click()
             .perform();
         })
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => shapeInboxButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => headerPlusButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, firstShape.topLeft) // initial position
             .click()
             .perform();
         })
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => headerPlusButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => nextFrameButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => mergeButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => element(by.cssContainingText('option', 'rectangle #2')).click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(() => modalConfirmButton.click())
-        .then(() => browser.sleep(250))
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
+        .then(() => shortSleep())
         .then(() => shapeInboxButton.click())
         .then(() => {
           expect(assets.documents.ShapeMerging.DrawFourRectanglesOnThreeFrames.StoreLabeledThing).toExistInPouchDb();
@@ -331,7 +332,7 @@ describe('ShapeMerging', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeMerging.MergeFourShapesOnThreeFramesFrame2);
         })
         .then(() => previousFrameButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeMerging', 'MergeFourShapesOnThreeFramesFrame1')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
@@ -340,7 +341,7 @@ describe('ShapeMerging', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeMerging.MergeFourShapesOnThreeFramesFrame1);
         })
         .then(() => previousFrameButton.click())
-        .then(() => browser.sleep(250))
+        .then(() => shortSleep())
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeMerging', 'MergeFourShapesOnThreeFramesFrame0')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
