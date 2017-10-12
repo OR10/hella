@@ -41,6 +41,10 @@ describe('ShapeMergeService', () => {
   let secondShape;
   let thirdShape;
   let fourthShape;
+  let firstObject;
+  let secondObject;
+  let thirdObject;
+  let fourthObject;
   let mergableShapes;
   let modalService;
   let selectionDialog;
@@ -79,12 +83,17 @@ describe('ShapeMergeService', () => {
     thirdLabeledThingInFrame = {litfid: 3, labeledThing: thirdLabeledThing, frameIndex: 2};
     fourthLabeledThingInFrame = {litfid: 4, labeledThing: thirdLabeledThing, frameIndex: 3};
 
-    firstShape = {labeledThingInFrame: firstLabeledThingInFrame};
-    secondShape = {labeledThingInFrame: secondLabeledThingInFrame};
-    thirdShape = {labeledThingInFrame: thirdLabeledThingInFrame};
-    fourthShape = {labeledThingInFrame: fourthLabeledThingInFrame};
+    firstShape = {id: '1', labeledThingInFrame: firstLabeledThingInFrame};
+    secondShape = {id: '2', labeledThingInFrame: secondLabeledThingInFrame};
+    thirdShape = {id: '3', labeledThingInFrame: thirdLabeledThingInFrame};
+    fourthShape = {id: '4', labeledThingInFrame: fourthLabeledThingInFrame};
 
-    mergableShapes = [firstShape, secondShape, thirdShape];
+    firstObject = {shape: firstShape};
+    secondObject = {shape: secondShape};
+    thirdObject = {shape: thirdShape};
+    fourthObject = {shape: fourthShape};
+
+    mergableShapes = [firstObject, secondObject, thirdObject];
   });
 
   beforeEach(() => {
@@ -115,7 +124,7 @@ describe('ShapeMergeService', () => {
   describe('mergeShapes', () => {
     it('sets the LabeledThing of the root shape on all elements', () => {
       service.mergeShapes(mergableShapes);
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(firstShape.id);
       rootScope.$apply();
 
       expect(firstLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
@@ -125,7 +134,7 @@ describe('ShapeMergeService', () => {
 
     it('stores the ltifs', () => {
       service.mergeShapes(mergableShapes);
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(firstShape.id);
       rootScope.$apply();
 
       expect(labeledThingInFrameGateway.saveLabeledThingInFrame).toHaveBeenCalledTimes(3);
@@ -139,17 +148,17 @@ describe('ShapeMergeService', () => {
       labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(true));
 
       service.mergeShapes(mergableShapes).then(done);
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(firstShape.id);
       rootScope.$apply();
     });
 
     it('transfers the classes', () => {
       const classes = ['one', 'two', 'three'];
       secondLabeledThingInFrame.classes = classes;
-      const shapes = [secondShape, thirdShape, firstShape];
+      const shapes = [secondObject, thirdObject, firstObject];
 
       service.mergeShapes(shapes);
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(secondShape.id);
       rootScope.$apply();
 
       expect(firstLabeledThingInFrame.classes).toBe(classes);
@@ -163,7 +172,7 @@ describe('ShapeMergeService', () => {
       thirdLabeledThingInFrame.incomplete = false;
 
       service.mergeShapes(mergableShapes);
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(firstShape.id);
       rootScope.$apply();
 
       expect(firstLabeledThingInFrame.incomplete).toBe(true);
@@ -173,7 +182,7 @@ describe('ShapeMergeService', () => {
 
     it('updates the frameRange of the LabeledThing', () => {
       service.mergeShapes(mergableShapes);
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(firstShape.id);
 
       const expectedFrameRange = {startFrameIndex: 0, endFrameIndex: 7};
       expect(firstLabeledThing.frameRange).toEqual(expectedFrameRange);
@@ -189,7 +198,7 @@ describe('ShapeMergeService', () => {
         done();
       });
 
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(firstShape.id);
       rootScope.$apply();
     });
 
@@ -197,7 +206,7 @@ describe('ShapeMergeService', () => {
       labeledThingGateway.hasAssociatedLabeledThingsInFrames.and.returnValue(angularQ.resolve(false));
 
       // make sure LT3 is available two times for this test
-      mergableShapes.push(fourthShape);
+      mergableShapes.push(fourthObject);
 
       service.mergeShapes(mergableShapes).then(() => {
         expect(labeledThingGateway.deleteLabeledThing).toHaveBeenCalledTimes(2);
@@ -219,7 +228,7 @@ describe('ShapeMergeService', () => {
         done();
       });
 
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(firstShape.id);
 
       rootScope.$apply();
     });
@@ -248,7 +257,7 @@ describe('ShapeMergeService', () => {
         done();
       });
 
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(firstShape.id);
 
       rootScope.$apply();
     });
@@ -260,7 +269,7 @@ describe('ShapeMergeService', () => {
       fourthLabeledThingInFrame.frameIndex = 1;
 
       service.mergeShapes(mergableShapes);
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(firstShape.id);
       rootScope.$apply();
 
       expect(firstLabeledThingInFrame.labeledThing).toBe(firstLabeledThing);
@@ -269,11 +278,11 @@ describe('ShapeMergeService', () => {
       expect(fourthLabeledThingInFrame.labeledThing).toBe(thirdLabeledThing);
     });
 
-    it('can merge two shapes, if both only haven shapes on the same frame', () => {
-      const shapes = [secondShape, firstShape];
+    it('can merge two shapes, if both only have shapes on the same frame', () => {
+      const shapes = [secondObject, firstObject];
 
       service.mergeShapes(shapes);
-      selectionDialogConfirmCallback('0');
+      selectionDialogConfirmCallback(secondShape.id);
       rootScope.$apply();
 
       expect(secondLabeledThingInFrame.labeledThing).toBe(secondLabeledThing);
@@ -314,7 +323,7 @@ describe('ShapeMergeService', () => {
 
       it('merges the shape with a different root shape', () => {
         service.mergeShapes(mergableShapes);
-        selectionDialogConfirmCallback('1');
+        selectionDialogConfirmCallback(secondShape.id);
         rootScope.$apply();
 
         expect(firstLabeledThingInFrame.labeledThing).toBe(secondLabeledThing);
