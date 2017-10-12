@@ -1352,23 +1352,28 @@ class ViewerController {
    * @private
    */
   _fetchGhostedLabeledThingInFrame(frameIndex) {
-    if (this.selectedPaperShape === null) {
+    let selectedPaperShape = this._shapeSelectionService.getSelectedShape();
+    if (selectedPaperShape === null || selectedPaperShape === undefined) {
+      selectedPaperShape = this.selectedPaperShape;
+    }
+
+    if (selectedPaperShape === null) {
       return Promise.resolve(null);
     }
 
-    if (this.selectedPaperShape instanceof PaperGroupShape) {
+    if (selectedPaperShape instanceof PaperGroupShape) {
       return Promise.resolve(null);
     }
 
-    if (this.selectedPaperShape instanceof PaperFrame) {
+    if (selectedPaperShape instanceof PaperFrame) {
       return Promise.resolve(null);
     }
 
-    if (this.selectedPaperShape instanceof PaperVirtualShape) {
+    if (selectedPaperShape instanceof PaperVirtualShape) {
       return Promise.resolve(null);
     }
 
-    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+    const selectedLabeledThing = selectedPaperShape.labeledThingInFrame.labeledThing;
 
     return this._ghostedLabeledThingInFrameBuffer.add(
       this._labeledThingInFrameGateway.getLabeledThingInFrame(
