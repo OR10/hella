@@ -108,7 +108,7 @@ describe('ViewerController tests', () => {
     pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on', 'stopReplicationsForContext']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
     imagePreloader = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
-    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes']);
+    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes', 'getSelectedShape']);
     toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener', 'removeAllListeners']);
     hierarchyCreationService = jasmine.createSpyObj(
       'hierarchyCreationService',

@@ -8,6 +8,7 @@ describe('PopupPanelController', () => {
   let controller;
   let element;
   let scope;
+  let rootScope;
   let context;
   let drawingContextService;
   let drawingScope;
@@ -18,6 +19,7 @@ describe('PopupPanelController', () => {
   let shapeInboxService;
 
   beforeEach(inject(($compile, $rootScope) => {
+    rootScope = $rootScope;
     scope = $rootScope.$new();
     element = $compile('<div></div>')(scope);
 
@@ -40,6 +42,7 @@ describe('PopupPanelController', () => {
       scope,
       window,
       element,
+      rootScope,
       animationFrameService,
       drawingContextService,
       null, // frameGateway,
