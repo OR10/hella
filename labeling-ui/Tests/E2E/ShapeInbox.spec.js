@@ -781,6 +781,51 @@ describe('ShapeInbox', () => {
         })
         .then(() => done());
     });
+
+    it('reselect shape on another frame, move and store it', done => {
+      const nextFrameButton = element(by.css('.next-frame-button'));
+
+      const dragPoint = {x: firstShape.topLeft.x + 10, y: firstShape.topLeft.y + 10};
+      const dragTarget = {x: dragPoint.x + 100, y: dragPoint.y + 100};
+
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
+        .then(() => shapeInboxButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 2, y: 2})
+            .click()
+            .perform();
+        })
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => element(by.css('#popup-inbox-saved .popup-inbox-list p .fa-share')).click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, dragPoint)
+            .mouseDown()
+            .mouseMove(viewer, dragTarget)
+            .mouseUp()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => {
+          expect(assets.documents.ShapeInbox.MoveReselectedRectangle).toExistInPouchDb();
+        })
+        .then(() => done());
+    });
   });
 
   afterEach(() => {
