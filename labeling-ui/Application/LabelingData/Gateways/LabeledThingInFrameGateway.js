@@ -148,6 +148,7 @@ class LabeledThingInFrameGateway {
    * @param {LabeledThing} labeledThing
    * @param {int?} offset
    * @param {int?} limit
+   * @return {AbortablePromise<LabeledThingInFrame>|Error}
    */
   getLabeledThingInFrame(task, frameIndex, labeledThing, offset = 0, limit = 1) {
     const startkey = [labeledThing.id, labeledThing.frameRange.startFrameIndex];
@@ -185,6 +186,22 @@ class LabeledThingInFrameGateway {
         })
         .then(labeledThingsInFrameWithShapeGhosts => this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrameWithShapeGhosts));
     });
+  }
+
+  /**
+   * Checks whether a specific {@link LabeledThing} has at least one non-ghost {@link LabeledThingInFrame}
+   * on the given `frameIndex`
+   *
+   * @param labeledThing
+   * @param frameIndex
+   * @return {AbortablePromise<LabeledThingInFrame>|Error}
+   */
+  hasLabeledThingInFrameOnFrame(labeledThing, frameIndex) {
+    return this.getLabeledThingInFrame(labeledThing.task, frameIndex, labeledThing)
+      .then(ltifs => {
+        const ltifsWithoutGhosts = ltifs.filter(shape => !shape.ghost);
+        return ltifsWithoutGhosts.length > 0;
+      });
   }
 
   /**

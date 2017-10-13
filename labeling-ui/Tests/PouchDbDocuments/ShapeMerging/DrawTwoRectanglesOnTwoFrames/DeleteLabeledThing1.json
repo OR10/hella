@@ -1,0 +1,20 @@
+{
+  "_id": "2d60acc62c0a43e18448442dd4fe4c88",
+  "_rev": "{{:--revision}}",
+  "classes": [
+    "pedestrian"
+  ],
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}",
+  "frameRange": {
+    "endFrameIndex": 1,
+    "startFrameIndex": 1,
+    "type": "AppBundle.Model.FrameIndexRange"
+  },
+  "groupIds": [],
+  "incomplete": true,
+  "lineColor": "1",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "type": "AppBundle.Model.LabeledThing"
+}

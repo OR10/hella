@@ -759,10 +759,13 @@ class ViewerController {
       this._debouncedOnThingUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
-    this._rootScopeEventRegistrationService.register(this, 'framerange:change:after', () => {
+    const reloadFrame = () => {
       this._debouncedOnThingUpdate.triggerImmediately()
         .then(() => this._handleFrameChange(this._currentFrameIndex));
-    });
+    };
+
+    this._rootScopeEventRegistrationService.register(this, 'framerange:change:after', () => reloadFrame());
+    this._rootScopeEventRegistrationService.register(this, 'shape:merge:after', () => reloadFrame());
 
     this._rootScopeEventRegistrationService.register(this, 'shape:delete:after', () => {
       this._applicationState.disableAll();
