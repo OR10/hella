@@ -6,13 +6,19 @@ describe('MediaControlsController test suite', () => {
    */
   let controller;
 
+  /**
+   * @type {ShapeInboxService}
+   */
+  let shapeInboxService;
+
   beforeEach(() => {
     const scope = jasmine.createSpyObj('$scope', ['$watchGroup']);
     const rootScope = jasmine.createSpyObj('$rootScope', ['$on']);
     const applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
     const keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey']);
+    shapeInboxService = jasmine.createSpyObj('shapeInboxService', ['count']);
 
-    controller = new MediaControlsController(scope, rootScope, null, null, null, null, null, null, null, applicationState, null, keyboardShortcutService);
+    controller = new MediaControlsController(scope, rootScope, null, null, null, null, null, null, null, applicationState, null, keyboardShortcutService, null, shapeInboxService);
   });
 
   it('should be instantiable', () => {
@@ -138,6 +144,17 @@ describe('MediaControlsController test suite', () => {
       const actual = controller.playButtonForFrame();
       expect(actual).toBe(false);
       expect(controller.selectedPaperShape.playInFrameRange).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('selectedItemsCount', () => {
+    it('simply returns the count of the shapeInboxService', () => {
+      const countReturn = {};
+      shapeInboxService.count.and.returnValue(countReturn);
+
+      const selectedItemsCount = controller.selectedItemsCount;
+
+      expect(selectedItemsCount).toBe(countReturn);
     });
   });
 });

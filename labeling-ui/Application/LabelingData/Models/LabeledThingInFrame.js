@@ -105,6 +105,15 @@ class LabeledThingInFrame extends LabeledObject {
   }
 
   /**
+   * Change the associated {@link LabeledThing}
+   *
+   * @param {LabeledThing} labeledThing
+   */
+  set labeledThing(labeledThing) {
+    this._labeledThing = labeledThing;
+  }
+
+  /**
    * Store a new set of labels.
    *
    * The setter ensures that a unique set of labels is stored
