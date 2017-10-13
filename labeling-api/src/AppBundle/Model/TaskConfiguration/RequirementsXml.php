@@ -65,6 +65,16 @@ class RequirementsXml extends Model\Base implements TaskConfiguration
      */
     private $hashes;
 
+    /**
+     * @var \DOMDocument|null
+     */
+    private $document;
+
+    /**
+     * @var \DOMXPath|null
+     */
+    private $xpath;
+
     public function __construct(
         AnnoStationBundleModel\Organisation $organisation,
         $name,
@@ -107,6 +117,12 @@ class RequirementsXml extends Model\Base implements TaskConfiguration
             $binaryData,
             $contentType
         );
+
+        /*
+         * Lazy initialization
+         */
+        $this->document = null;
+        $this->xpath = null;
     }
 
     public function getRawData()
@@ -118,6 +134,35 @@ class RequirementsXml extends Model\Base implements TaskConfiguration
         }
 
         throw new \RuntimeException('Broken Configuration document: missing attachment');
+    }
+
+    /**
+     * Retrieve the DOMDocument for this requirements file
+     *
+     * @return \DOMDocument
+     */
+    public function getDomDocument(): \DOMDocument
+    {
+        if ($this->document === null) {
+            $this->document = new \DOMDocument();
+            $this->document->loadXML($this->getRawData());
+        }
+
+        return $this->document;
+    }
+
+    /**
+     * Retrieve a preconfigured xpath query object for this requirements document
+     *
+     * @return \DOMXPath
+     */
+    public function getXpathQuery(): \DOMXPath
+    {
+        $document = $this->getDomDocument();
+        $xpath    = new \DOMXPath($document);
+        $xpath->registerNamespace('r', "http://weblabel.hella-aglaia.com/schema/requirements");
+
+        return $xpath;
     }
 
     public function getContentType()
