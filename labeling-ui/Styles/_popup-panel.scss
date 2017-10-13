@@ -1,3 +1,28 @@
+popup-panel {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 300px;
+  //transform: translateY(0%);
+}
+
+popup-panel.ng-hide {
+  //transform: translateY(100%);
+}
+
+popup-panel.ng-hide-add {
+  //transition: all linear 0.15s;
+}
+
+popup-panel.ng-hide-remove {
+  //transition: all linear 0.15s;
+}
+
+.popup-panel button {
+  background-color: $color-ut-midgrey-3;
+}
+
 div.popup-panel {
   font-size: 16px;
   padding-left: 1rem;
