@@ -10,8 +10,6 @@ class ThumbnailDirective {
       isCurrent: '=',
       framePosition: '=',
       location: '=',
-      filters: '=',
-      labeledThingInFrame: '=',
       labeledThingViewport: '=',
       dimensions: '=',
       video: '=',
