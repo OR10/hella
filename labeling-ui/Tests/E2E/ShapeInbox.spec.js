@@ -783,6 +783,161 @@ describe('ShapeInbox', () => {
     });
   });
 
+  describe('Jumping to a shape', () => {
+    const jumpToButton = element(by.css('#popup-inbox-saved .popup-inbox-list p .fa-map-marker'));
+    const nextFrameButton = element(by.css('.next-frame-button'));
+
+    it('selects the shape if on the same frame', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => shapeInboxButton.click())
+        .then(() => shortSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 1, y: 1})
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeInbox', 'JumpToShapeSameFrameDeselected')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeInbox.JumpToShapeSameFrameDeselected);
+        })
+        .then(() => jumpToButton.click())
+        .then(() => shortSleep())
+
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeInbox', 'JumpToShapeSameFrameSelected')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeInbox.JumpToShapeSameFrameSelected);
+        })
+        .then(() => done());
+    });
+
+    it('selects the shape if on another frame', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => shapeInboxButton.click())
+        .then(() => shortSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 1, y: 1})
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => jumpToButton.click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeInbox', 'JumpToShapeSameFrameSelected')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeInbox.JumpToShapeSameFrameSelected);
+        })
+        .then(() => done());
+    });
+
+    it('selects the shape if on another frame and different shape selected', done => {
+      const thirdShape = {
+        topLeft: {x: 450, y: 250},
+        bottomRight: {x: 550, y: 450},
+      };
+
+      bootstrapPouch([
+        assets.documents.ShapeInbox.DrawTwoRectangles,
+        assets.documents.ShapeInbox.DrawOneRectangleOnFrameTwo,
+      ]);
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => shapeInboxButton.click())
+        .then(() => shortSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, thirdShape.topLeft)
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => jumpToButton.click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeInbox', 'JumpToShapeSameFrameSelected')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeInbox.JumpToShapeSameFrameSelected);
+        })
+        .then(() => done());
+    });
+
+    it('selects the shape if on same frame but different shape selected', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => shapeInboxButton.click())
+        .then(() => shortSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, secondShape.topLeft)
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => jumpToButton.click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeInbox', 'JumpToShapeSameFrameSelected')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeInbox.JumpToShapeSameFrameSelected);
+        })
+        .then(() => done());
+    });
+  });
+
   afterEach(() => {
     expectAllModalsToBeClosed();
     bootstrapHttp.teardown();
