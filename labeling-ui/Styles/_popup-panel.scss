@@ -4,19 +4,6 @@ popup-panel {
   bottom: 0;
   z-index: 3;
   width: 300px;
-  //transform: translateY(0%);
-}
-
-popup-panel.ng-hide {
-  //transform: translateY(100%);
-}
-
-popup-panel.ng-hide-add {
-  //transition: all linear 0.15s;
-}
-
-popup-panel.ng-hide-remove {
-  //transition: all linear 0.15s;
 }
 
 .popup-panel button {
