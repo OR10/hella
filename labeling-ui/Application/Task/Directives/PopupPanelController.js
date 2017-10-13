@@ -23,6 +23,7 @@ class PopupPanelController {
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ShapeInboxService} shapeInboxService
    * @param {ShapeMergeService} shapeMergeService
+   * @param {ApplicationState} applicationState
    */
   constructor(
     $scope,
@@ -39,7 +40,8 @@ class PopupPanelController {
     labelStructureService,
     shapeSelectionService,
     shapeInboxService,
-    shapeMergeService
+    shapeMergeService,
+    applicationState
   ) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
@@ -115,6 +117,12 @@ class PopupPanelController {
      * @private
      */
     this._shapeMergeService = shapeMergeService;
+
+    /**
+     * @type {ApplicationState}
+     * @private
+     */
+    this._applicationState = applicationState;
 
     /**
      * @type {DrawingContext}
@@ -363,6 +371,39 @@ class PopupPanelController {
     this._$rootScope.$emit('action:reload-frame');
   }
 
+  jumpToShape(shapeInformation) {
+    const shape = shapeInformation.shape;
+    const frameIndex = shape.labeledThingInFrame.frameIndex;
+
+    this.selectedPaperShape = null;
+    this._shapeSelectionService.clear();
+
+    if (frameIndex === this.framePosition.position) {
+      this._jumpToShape(shape);
+    } else {
+      this._jumpToFrameAndShape(frameIndex, shape);
+    }
+  }
+
+  _jumpToFrameAndShape(frameIndex, shape) {
+    this._applicationState.disableAll();
+    this._applicationState.viewer.work();
+    
+    this.framePosition.afterFrameChangeOnce('jumpToShape', () => {
+      this._jumpToShape(shape);
+
+      this._applicationState.viewer.finish();
+      this._applicationState.enableAll();
+    });
+
+    this.framePosition.goto(frameIndex);
+  }
+
+  _jumpToShape(shape) {
+    this._shapeSelectionService.setSelectedShape(shape);
+    this.selectedPaperShape = shape;
+  }
+
   /**
    * Load the selected objects. Looks up the name in the Task Definition and adds the information
    * as well as a label with a unique number to the shapeInformation
@@ -561,6 +602,7 @@ PopupPanelController.$inject = [
   'shapeSelectionService',
   'shapeInboxService',
   'shapeMergeService',
+  'applicationState',
 ];
 
 export default PopupPanelController;
