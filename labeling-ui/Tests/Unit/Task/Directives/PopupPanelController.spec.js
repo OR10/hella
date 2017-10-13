@@ -22,6 +22,7 @@ describe('PopupPanelController', () => {
   let controller;
   let element;
   let scope;
+  let rootScope;
   let angularQ;
   let context;
   let drawingContextService;
@@ -41,6 +42,7 @@ describe('PopupPanelController', () => {
   }
 
   beforeEach(inject(($compile, $rootScope, $q) => {
+    rootScope = $rootScope;
     scope = $rootScope.$new();
     element = $compile('<div></div>')(scope);
     angularQ = $q;
@@ -71,6 +73,7 @@ describe('PopupPanelController', () => {
       angularQ,
       window,
       element,
+      rootScope,
       animationFrameService,
       drawingContextService,
       null, // frameGateway,

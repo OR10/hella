@@ -31,6 +31,7 @@ describe('ThingLayer', () => {
   let shapeSelectionService;
   let groupSelectionDialogFactory;
   let pathCollisionService;
+  let rootScopeEventRegistrationService;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -96,6 +97,24 @@ describe('ThingLayer', () => {
     groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
 
     pathCollisionService = jasmine.createSpyObj('PathCollisionService', ['setShapes']);
+
+    let registeredRootEvents = [];
+    rootScopeEventRegistrationService = jasmine.createSpyObj(
+      'RootScopeEventRegistrationService',
+      ['register', 'deregister']
+    );
+
+    rootScopeEventRegistrationService.register.and.callFake(
+      (identifier, event, handler) => registeredRootEvents.push(
+        rootScope.$on(event, handler)
+      )
+    );
+    rootScopeEventRegistrationService.deregister.and.callFake(
+      () => {
+        registeredRootEvents.forEach(deregister => deregister());
+        registeredRootEvents = [];
+      }
+    );
   });
 
   function createThingLayerInstance() {
@@ -120,7 +139,9 @@ describe('ThingLayer', () => {
       labeledThingGroupGateway,
       shapeSelectionService,
       groupSelectionDialogFactory,
-      pathCollisionService
+      pathCollisionService,
+      null,
+      rootScopeEventRegistrationService
     );
   }
 

@@ -3,10 +3,13 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
-  shortSleep,
   mediumSleep,
+  shortSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
+
+import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
+const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('ShapeInbox', () => {
   let assets;
@@ -635,6 +638,192 @@ describe('ShapeInbox', () => {
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes selected'))
         .then(() => shapeInboxSavedList.getText())
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
+        .then(() => done());
+    });
+  });
+
+  describe('Shape Reselection', () => {
+    it('show reselection button for shapes added to inbox', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
+        .then(() => shapeInboxButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft)
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          expect(
+            element(by.css('#popup-inbox-saved .popup-inbox-list p .fa-share'))
+              .isPresent()
+          )
+            .toBeTruthy();
+        })
+        .then(() => done());
+    });
+
+    it('show reselection button for multiple shapes added to inbox', done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
+        .then(() => shapeInboxButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft)
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, secondShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => element.all(by.css('#popup-inbox-saved .popup-inbox-list p .fa-share')).count())
+        .then(elementCount => expect(elementCount).toEqual(2))
+        .then(() => done());
+    });
+
+    it('reselect shape on another frame', done => {
+      const nextFrameButton = element(by.css('.next-frame-button'));
+
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
+        .then(() => shapeInboxButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 2, y: 2})
+            .click()
+            .perform();
+        })
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => element(by.css('#popup-inbox-saved .popup-inbox-list p .fa-share')).click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeInbox', 'SimpleReselect')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeInbox.SimpleReselect);
+        })
+        .then(() => done());
+    });
+
+    it('switch shapes by reselection', done => {
+      const nextFrameButton = element(by.css('.next-frame-button'));
+
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
+        .then(() => shapeInboxButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, secondShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 2, y: 2})
+            .click()
+            .perform();
+        })
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => element.all(by.css('#popup-inbox-saved .popup-inbox-list p .fa-share')).get(0).click())
+        .then(() => mediumSleep())
+        .then(() => element.all(by.css('#popup-inbox-saved .popup-inbox-list p .fa-share')).get(0).click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeInbox', 'ReselectDifferentShapes')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeInbox.ReselectDifferentShapes);
+        })
+        .then(() => done());
+    });
+
+    it('reselect shape on another frame, move and store it', done => {
+      const nextFrameButton = element(by.css('.next-frame-button'));
+
+      const dragPoint = {x: firstShape.topLeft.x + 10, y: firstShape.topLeft.y + 10};
+      const dragTarget = {x: dragPoint.x + 100, y: dragPoint.y + 100};
+
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
+        .then(() => shapeInboxButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 2, y: 2})
+            .click()
+            .perform();
+        })
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => element(by.css('#popup-inbox-saved .popup-inbox-list p .fa-share')).click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, dragPoint)
+            .mouseDown()
+            .mouseMove(viewer, dragTarget)
+            .mouseUp()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => {
+          expect(assets.documents.ShapeInbox.MoveReselectedRectangle).toExistInPouchDb();
+        })
         .then(() => done());
     });
   });

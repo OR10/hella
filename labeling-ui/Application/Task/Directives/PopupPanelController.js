@@ -12,6 +12,7 @@ class PopupPanelController {
    * @param {$q} $q
    * @param {angular.$window} $window
    * @param {angular.$element} $element
+   * @param {$rootScope} $rootScope
    * @param {AnimationFrameService} animationFrameService
    * @param {DrawingContextService} drawingContextService
    * @param {FrameGateway} frameGateway
@@ -28,6 +29,7 @@ class PopupPanelController {
     $q,
     $window,
     $element,
+    $rootScope,
     animationFrameService,
     drawingContextService,
     frameGateway,
@@ -42,6 +44,12 @@ class PopupPanelController {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
     this._supportedImageTypes = ['sourceJpg', 'source'];
+
+    /**
+     * @type {$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
 
     /**
      * @type {$q}
@@ -97,12 +105,16 @@ class PopupPanelController {
     this._shapeInboxService = shapeInboxService;
 
     /**
+     * @type {HTMLImageElement|null}
+     * @private
+     */
+    this._activeBackgroundImage = null;
+
+    /**
      * @type {ShapeMergeService}
      * @private
      */
     this._shapeMergeService = shapeMergeService;
-
-    this._activeBackgroundImage = null;
 
     /**
      * @type {DrawingContext}
@@ -328,11 +340,27 @@ class PopupPanelController {
   /**
    * Removes a shape from the inbox
    *
-   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
+   * @param {{shape: PaperThingShape, label: string, labelStructureObject: LabelStructureObject}} shapeInformation
    */
   removeFromInbox(shapeInformation) {
     this._shapeInboxService.removeShape(shapeInformation);
     this._loadSelectedObjects();
+  }
+
+  /**
+   * Gets a shape from the inbox and reselects it
+   *
+   * The shape will afterwards be removed from the inbox, as it is selected again.
+   *
+   * @param {{shape: PaperThingShape, label: string, labelStructureObject: LabelStructureObject}} shapeInformation
+   */
+  reselectFromInbox(shapeInformation) {
+    this._shapeInboxService.removeShape(shapeInformation);
+    this._shapeSelectionService.setSelectedShape(shapeInformation.shape);
+    this.selectedPaperShape = shapeInformation.shape;
+    this._loadSelectedObjects();
+
+    this._$rootScope.$emit('action:reload-frame');
   }
 
   /**
@@ -522,6 +550,7 @@ PopupPanelController.$inject = [
   '$q',
   '$window',
   '$element',
+  '$rootScope',
   'animationFrameService',
   'drawingContextService',
   'frameGateway',

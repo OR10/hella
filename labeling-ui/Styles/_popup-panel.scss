@@ -1,0 +1,133 @@
+popup-panel {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 300px;
+}
+
+.popup-panel button {
+  background-color: $color-ut-midgrey-3;
+}
+
+div.popup-panel {
+  font-size: 16px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: $color-ut-midgrey-3;
+  border-top: 2px solid $color-ut-darkgrey-1;
+  flex: 0;
+
+  .zoom {
+    .zoom-controls {
+      padding: 2rem 0;
+
+      button {
+        overflow: hidden;
+      }
+    }
+  }
+
+  .settings {
+    padding: 2rem 0;
+
+    .grid-block {
+      margin-bottom: 10px;
+
+      .grid-content {
+        overflow: hidden;
+      }
+    }
+  }
+
+  .grid-block:last-child {
+    margin-bottom: 0;
+  }
+
+  input[type="range"] {
+    margin-top: 0.8rem;
+  }
+
+  .popup-inbox {
+    padding-bottom: 2.5rem;
+
+    .icon {
+      // Not using the font size mixin here, since this would override the font face for fontawesome icons
+      font-size: $font-m;
+      color: $color-ut-lightgrey-1;
+      top: 2px;
+      position: relative;
+    }
+
+    .icon.fa {
+      float: right;
+      top: 5px;
+      margin-left: 4px;
+    }
+
+    .selected-shape {
+      color: $color-ut-lightgrey-1;
+      margin: 0;
+
+      span {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding-right: 0;
+      }
+    }
+
+    .shape-list-header {
+      color: $color-ut-lightgrey-2;
+      font-weight: bold;
+      border-bottom: 1px solid $color-ut-lightgrey-2;
+      margin: 1rem 0;
+    }
+  }
+
+  .popup-inbox-actions {
+    font-size: $font-s;
+    color: $color-ut-lightgrey-1;
+    position: absolute;
+    bottom: 0;
+    background-color: $color-ut-darkgrey-1;
+    border-top: $color-ut-darkgrey-2;
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    padding: 4px 8px 2px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  .popup-inbox-action {
+    margin: 0;
+    flex: 1;
+
+    &[disabled] {
+      color: $color-ut-midgrey-3 !important;
+
+      .icon.fa {
+        color: $color-ut-midgrey-3 !important;
+      }
+    }
+
+    &:not([disabled]) {
+      &:hover {
+        color: darken($color-ut-lightgrey-1, 30%) !important;
+        cursor: pointer;
+
+        .icon.fa {
+          color: darken($color-ut-lightgrey-1, 30%) !important;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .icon.fa {
+      float: left;
+      top: 5px;
+      margin-right: 5px;
+    }
+  }
+}

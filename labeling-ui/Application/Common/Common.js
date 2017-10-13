@@ -85,6 +85,7 @@ import 'ng-flow/dist/ng-flow';
 import 'angular-hotkeys';
 
 import CapitalizeFilter from './Filters/CapitalizeFilter';
+import RootScopeEventRegistrationService from './Services/RootScopeEventRegistrationService';
 
 class Common extends Module {
   /**
@@ -146,6 +147,7 @@ class Common extends Module {
     this.module.service('shapeMergeService', ShapeMergeService);
     this.module.service('pathCollisionService', PathCollisionService);
     this.module.service('toolSelectorListenerService', ToolSelectorListenerService);
+    this.module.service('rootScopeEventRegistrationService', RootScopeEventRegistrationService);
 
     this.module.provider('bufferedHttp', BufferedHttpProvider);
     this.module.provider('abortablePromiseFactory', AbortablePromiseFactoryProvider);
@@ -199,104 +201,106 @@ class Common extends Module {
         },
       ]);
 
-    this.module.run(['$rootScope', '$state', '$location', 'modalService', 'inProgressService', ($rootScope, $state, $location, modalService, inProgressService) => {
-      $rootScope.$on('readOnlyError', () => {
-        modalService.info(
-          {
-            title: 'Read only',
-            headline: 'This task is read only',
-            message: 'This task is marked as read only. This is either because of the tasks being marked as finished or because of the task being worked on by another person. You are not allowed to make any changes!',
-            confirmButtonText: 'Reload page',
-          },
-          () => window.location.reload(),
-          undefined,
-          {
-            abortable: false,
-            warning: true,
-          }
-        );
-      });
+    this.module.run(
+      ['$rootScope', '$state', '$location', 'modalService', 'inProgressService',
+        ($rootScope, $state, $location, modalService, inProgressService) => {
+          $rootScope.$on('readOnlyError', () => {
+            modalService.info(
+              {
+                title: 'Read only',
+                headline: 'This task is read only',
+                message: 'This task is marked as read only. This is either because of the tasks being marked as finished or because of the task being worked on by another person. You are not allowed to make any changes!',
+                confirmButtonText: 'Reload page',
+              },
+              () => window.location.reload(),
+              undefined,
+              {
+                abortable: false,
+                warning: true,
+              }
+            );
+          });
 
-      $rootScope.$on('serverError', () => {
-        modalService.info(
-          {
-            title: 'Server Error (5xx)',
-            headline: 'There was an error with the application!',
-            message: 'Please reload the page or go back to the main page.',
-            confirmButtonText: 'Go to main page',
-            cancelButtonText: 'Reload page',
-          },
-          () => $location.path('/'),
-          () => window.location.reload(),
-          {
-            warning: true,
-          }
-        );
-      });
+          $rootScope.$on('serverError', () => {
+            modalService.info(
+              {
+                title: 'Server Error (5xx)',
+                headline: 'There was an error with the application!',
+                message: 'Please reload the page or go back to the main page.',
+                confirmButtonText: 'Go to main page',
+                cancelButtonText: 'Reload page',
+              },
+              () => $location.path('/'),
+              () => window.location.reload(),
+              {
+                warning: true,
+              }
+            );
+          });
 
-      $rootScope.$on('clientError', () => {
-        modalService.info(
-          {
-            title: 'Client Error (4xx)',
-            headline: 'There was an error with the application!',
-            message: 'Please reload the page or go back to the main page.',
-            confirmButtonText: 'Go to main page',
-            cancelButtonText: 'Reload page',
-          },
-          () => $location.path('/'),
-          () => window.location.reload(),
-          {
-            warning: true,
-          }
-        );
-      });
+          $rootScope.$on('clientError', () => {
+            modalService.info(
+              {
+                title: 'Client Error (4xx)',
+                headline: 'There was an error with the application!',
+                message: 'Please reload the page or go back to the main page.',
+                confirmButtonText: 'Go to main page',
+                cancelButtonText: 'Reload page',
+              },
+              () => $location.path('/'),
+              () => window.location.reload(),
+              {
+                warning: true,
+              }
+            );
+          });
 
-      $rootScope.$on('revisionError', () => {
-        modalService.info(
-          {
-            title: 'Revision Error (409)',
-            headline: 'There was an error with the application!',
-            message: 'Please reload the page and contact your Label Manager about this error.',
-            confirmButtonText: 'Reload Page',
-          },
-          () => window.location.reload(),
-          undefined,
-          {
-            warning: true,
-            abortable: false,
-          }
-        );
-      });
+          $rootScope.$on('revisionError', () => {
+            modalService.info(
+              {
+                title: 'Revision Error (409)',
+                headline: 'There was an error with the application!',
+                message: 'Please reload the page and contact your Label Manager about this error.',
+                confirmButtonText: 'Reload Page',
+              },
+              () => window.location.reload(),
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+          });
 
-      $rootScope.$on('httpInterrupted', () => {
-        modalService.info(
-          {
-            title: 'Http Connection Error',
-            headline: 'There was an error with the application!',
-            message: 'Please reload the page and contact your Label Manager about this error.',
-            confirmButtonText: 'Reload Page',
-          },
-          () => window.location.reload(),
-          undefined,
-          {
-            warning: true,
-            abortable: false,
-          }
-        );
-      });
+          $rootScope.$on('httpInterrupted', () => {
+            modalService.info(
+              {
+                title: 'Http Connection Error',
+                headline: 'There was an error with the application!',
+                message: 'Please reload the page and contact your Label Manager about this error.',
+                confirmButtonText: 'Reload Page',
+              },
+              () => window.location.reload(),
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+          });
 
-      $rootScope.$on('unauthorized', () => {
-        const targetUrl = encodeURIComponent(window.location.pathname + window.location.hash);
-        window.location.assign(`/login?targetUrl=${targetUrl}`);
-      });
+          $rootScope.$on('unauthorized', () => {
+            const targetUrl = encodeURIComponent(window.location.pathname + window.location.hash);
+            window.location.assign(`/login?targetUrl=${targetUrl}`);
+          });
 
-      $rootScope.$on('$stateChangeStart', (event, to, params) => {
-        if (to.redirectTo && inProgressService.noActiveNavigationInterceptor()) {
-          event.preventDefault();
-          $state.go(to.redirectTo, params, {location: 'replace'});
-        }
-      });
-    }]);
+          $rootScope.$on('$stateChangeStart', (event, to, params) => {
+            if (to.redirectTo && inProgressService.noActiveNavigationInterceptor()) {
+              event.preventDefault();
+              $state.go(to.redirectTo, params, {location: 'replace'});
+            }
+          });
+        }]);
   }
 }
 

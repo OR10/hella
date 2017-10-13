@@ -40,6 +40,7 @@ describe('ViewerController tests', () => {
   let labeledThingGateway;
   let inProgressService;
   let pouchDbContextService;
+  let rootScopeEventRegistrationService;
 
   // Extend the original class, because there are variables that are implictly set by angular which are already
   // used in the constructor (task e.g.)
@@ -83,7 +84,8 @@ describe('ViewerController tests', () => {
 
   beforeEach(() => {
     abortablePromise = angularQ.resolve();
-    abortablePromise.aborted = () => {};
+    abortablePromise.aborted = () => {
+    };
     abortablePromise.then = () => abortablePromise;
 
     debouncerService = jasmine.createSpyObj('debouncerService', ['multiplexDebounce']);
@@ -106,20 +108,47 @@ describe('ViewerController tests', () => {
     pouchDbSyncManager = jasmine.createSpyObj('pouchDbSyncManager', ['on', 'stopReplicationsForContext']);
     applicationState = jasmine.createSpyObj('applicationState', ['$watch']);
     imagePreloader = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
-    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes']);
+    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count', 'clear', 'getAllShapes', 'getSelectedShape']);
     toolSelectorListener = jasmine.createSpyObj('toolSelectorListener', ['addListener', 'removeAllListeners']);
-    hierarchyCreationService = jasmine.createSpyObj('hierarchyCreationService', ['createLabeledThingGroupInFrameWithHierarchy']);
+    hierarchyCreationService = jasmine.createSpyObj(
+      'hierarchyCreationService',
+      ['createLabeledThingGroupInFrameWithHierarchy']
+    );
     paperShapeFactory = jasmine.createSpyObj('paperShapeFactory', ['createPaperGroupShape']);
     groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
     groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
-    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['createLabeledThingGroup', 'assignLabeledThingsToLabeledThingGroup', 'getLabeledThingGroupsInFrameForFrameIndex']);
+    labeledThingGroupGateway = jasmine.createSpyObj(
+      'labeledThingGroupGateway',
+      ['createLabeledThingGroup', 'assignLabeledThingsToLabeledThingGroup', 'getLabeledThingGroupsInFrameForFrameIndex']
+    );
     groupCreationService = jasmine.createSpyObj('groupCreationService', ['showGroupSelector']);
     lockService = jasmine.createSpyObj('lockService', ['acquire']);
-    labeledThingInFrameGateway = jasmine.createSpyObj('labeledThingInFrameGateway', ['listLabeledThingInFrame', 'getLabeledThingInFrame']);
+    labeledThingInFrameGateway = jasmine.createSpyObj(
+      'labeledThingInFrameGateway',
+      ['listLabeledThingInFrame', 'getLabeledThingInFrame']
+    );
     thingLayerScopeView = jasmine.createSpyObj('thinglayer.withScope().view', ['update']);
     labeledThingGateway = jasmine.createSpyObj('LabeledThingGateway', ['assignLabeledThingsToLabeledThingGroup']);
     inProgressService = jasmine.createSpyObj('inProgressService', ['start', 'end']);
     pouchDbContextService = jasmine.createSpyObj('PouchDbContextService', ['provideContextForTaskId']);
+
+    let registeredRootEvents = [];
+    rootScopeEventRegistrationService = jasmine.createSpyObj(
+      'RootScopeEventRegistrationService',
+      ['register', 'deregister']
+    );
+
+    rootScopeEventRegistrationService.register.and.callFake(
+      (identifier, event, handler) => registeredRootEvents.push(
+        rootScope.$on(event, handler)
+      )
+    );
+    rootScopeEventRegistrationService.deregister.and.callFake(
+      () => {
+        registeredRootEvents.forEach(deregister => deregister());
+        registeredRootEvents = [];
+      }
+    );
   });
 
   beforeEach(() => {
@@ -189,7 +218,8 @@ describe('ViewerController tests', () => {
       groupSelectionDialogFactory,
       null,
       null,
-      pouchDbContextService
+      pouchDbContextService,
+      rootScopeEventRegistrationService
     );
 
     controller.framePosition.lock = lockService;
@@ -266,15 +296,16 @@ describe('ViewerController tests', () => {
         }
       });
 
-      animationFrameService.debounce.and.returnValue(() => {});
+      animationFrameService.debounce.and.returnValue(() => {
+      });
     });
 
     beforeEach(() => {
       thingLayerContext = jasmine.createSpyObj('thingLayerContext', ['withScope']);
       labelStructureObject = {id: 'lso-id'};
-      lt = { id: 'labeled-thing-id', groupIds: [] };
-      ltif = { labeledThing: lt };
-      shapes = [{some: 'shape', labeledThingInFrame: ltif }];
+      lt = {id: 'labeled-thing-id', groupIds: []};
+      ltif = {labeledThing: lt};
+      shapes = [{some: 'shape', labeledThingInFrame: ltif}];
       ltg = {id: 'labeled-thing-group', labeled: 'thing-group'};
       ltgif = {group: 'id', labeledThingGroup: ltg};
       group = jasmine.createSpyObj('PaperGroupRectangleMulti', ['sendToBack', 'select', 'update']);
@@ -342,7 +373,8 @@ describe('ViewerController tests', () => {
       it('creates a group around the selected shapes if there is at least one selected shape', () => {
         groupListener(null, labelStructureObject);
 
-        expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy).toHaveBeenCalledWith(jasmine.any(GroupToolActionStruct));
+        expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy)
+          .toHaveBeenCalledWith(jasmine.any(GroupToolActionStruct));
         expect(paperShapeFactory.createPaperGroupShape).toHaveBeenCalledWith(ltgif, shapes);
         expect(group.sendToBack).toHaveBeenCalled();
         expect(thingLayerContext.withScope).toHaveBeenCalled();
@@ -378,7 +410,7 @@ describe('ViewerController tests', () => {
         let assignLtToLtgPromise;
 
         beforeEach(() => {
-          selectedGroup = { id: 'selected-group-id' };
+          selectedGroup = {id: 'selected-group-id'};
           showGroupSelectorPromise = angularQ.resolve(selectedGroup);
           createLabeledThingGroupPromise = angularQ.resolve(ltg);
           assignLtToLtgPromise = angularQ.resolve();
@@ -387,7 +419,7 @@ describe('ViewerController tests', () => {
           groupCreationService.showGroupSelector.and.returnValue(showGroupSelectorPromise);
           labeledThingGroupGateway.createLabeledThingGroup.and.returnValue(createLabeledThingGroupPromise);
           labeledThingGateway.assignLabeledThingsToLabeledThingGroup.and.returnValue(assignLtToLtgPromise);
-          scope.vm = { filters: { filters: [] } };
+          scope.vm = {filters: {filters: []}};
           group.labeledThingInFrame = ltif;
         });
 
@@ -419,8 +451,7 @@ describe('ViewerController tests', () => {
 
     describe('group creation multi', () => {
       beforeEach(() => {
-        shapes =
-        [
+        shapes = [
           {
             labeledThingInFrame: {
               id: '4711',
