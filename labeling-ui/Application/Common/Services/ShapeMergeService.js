@@ -80,7 +80,7 @@ class ShapeMergeService {
             }
 
             labeledThingInFrame.labeledThing = rootLabeledThing;
-            labeledThingInFrame.classes = rootShape.labeledThingInFrame.classes;
+            labeledThingInFrame.classes = rootShape.labeledThingInFrame.extractClassList();
             labeledThingInFrame.incomplete = rootShape.labeledThingInFrame.incomplete;
             const ltifPromise = this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame);
             ltifPromises.push(ltifPromise);

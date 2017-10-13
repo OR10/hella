@@ -50,6 +50,7 @@ describe('ShapeMergeService', () => {
   let selectionDialog;
   let selectionDialogConfirmCallback;
   let selectionDialogAbortCallback;
+  let extractClassList;
 
   beforeEach(inject(($rootScope, $q) => {
     rootScope = $rootScope;
@@ -70,6 +71,12 @@ describe('ShapeMergeService', () => {
   });
 
   beforeEach(() => {
+    extractClassList = jasmine.createSpy('LabeledObject.extractClassList()');
+    // Do not use arrow function here, otherwise this would not be the current ltif
+    extractClassList.and.callFake(function() {
+      return this.classes;
+    });
+
     firstFrameRange = {startFrameIndex: 0, endFrameIndex: 0};
     secondFrameRange = {startFrameIndex: 3, endFrameIndex: 3};
     thirdFrameRange = {startFrameIndex: 7, endFrameIndex: 7};
@@ -78,10 +85,10 @@ describe('ShapeMergeService', () => {
     secondLabeledThing = {ltid: 2, frameRange: secondFrameRange};
     thirdLabeledThing = {ltid: 3, frameRange: thirdFrameRange};
 
-    firstLabeledThingInFrame = {litfid: 1, labeledThing: firstLabeledThing, frameIndex: 0};
-    secondLabeledThingInFrame = {litfid: 2, labeledThing: secondLabeledThing, frameIndex: 1};
-    thirdLabeledThingInFrame = {litfid: 3, labeledThing: thirdLabeledThing, frameIndex: 2};
-    fourthLabeledThingInFrame = {litfid: 4, labeledThing: thirdLabeledThing, frameIndex: 3};
+    firstLabeledThingInFrame = {litfid: 1, labeledThing: firstLabeledThing, frameIndex: 0, extractClassList: extractClassList};
+    secondLabeledThingInFrame = {litfid: 2, labeledThing: secondLabeledThing, frameIndex: 1, extractClassList: extractClassList};
+    thirdLabeledThingInFrame = {litfid: 3, labeledThing: thirdLabeledThing, frameIndex: 2, extractClassList: extractClassList};
+    fourthLabeledThingInFrame = {litfid: 4, labeledThing: thirdLabeledThing, frameIndex: 3, fourthExtractClassList: extractClassList};
 
     firstShape = {id: '1', labeledThingInFrame: firstLabeledThingInFrame};
     secondShape = {id: '2', labeledThingInFrame: secondLabeledThingInFrame};
@@ -164,6 +171,7 @@ describe('ShapeMergeService', () => {
       expect(firstLabeledThingInFrame.classes).toBe(classes);
       expect(secondLabeledThingInFrame.classes).toBe(classes);
       expect(thirdLabeledThingInFrame.classes).toBe(classes);
+      expect(extractClassList).toHaveBeenCalledTimes(3);
     });
 
     it('transfers the incomplete state', () => {
