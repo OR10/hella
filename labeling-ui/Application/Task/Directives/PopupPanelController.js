@@ -371,6 +371,11 @@ class PopupPanelController {
     this._$rootScope.$emit('action:reload-frame');
   }
 
+  /**
+   * Jumps to a specific shape
+   *
+   * @param {{shape: PaperThingShape, label: string, labelStructureObject: LabelStructureObject}} shapeInformation
+   */
   jumpToShape(shapeInformation) {
     const shape = shapeInformation.shape;
     const frameIndex = shape.labeledThingInFrame.frameIndex;
@@ -379,18 +384,25 @@ class PopupPanelController {
     this._shapeSelectionService.clear();
 
     if (frameIndex === this.framePosition.position) {
-      this._jumpToShape(shape);
+      this._selectShape(shape);
     } else {
       this._jumpToFrameAndShape(frameIndex, shape);
     }
   }
 
+  /**
+   * Jumps to a specific shape on a specific frame
+   *
+   * @param {Number} frameIndex
+   * @param {PaperThingShape} shape
+   * @private
+   */
   _jumpToFrameAndShape(frameIndex, shape) {
     this._applicationState.disableAll();
     this._applicationState.viewer.work();
-    
+
     this.framePosition.afterFrameChangeOnce('jumpToShape', () => {
-      this._jumpToShape(shape);
+      this._selectShape(shape);
 
       this._applicationState.viewer.finish();
       this._applicationState.enableAll();
@@ -399,7 +411,13 @@ class PopupPanelController {
     this.framePosition.goto(frameIndex);
   }
 
-  _jumpToShape(shape) {
+  /**
+   * Selects a specific shape
+   *
+   * @param {PaperThingShape} shape
+   * @private
+   */
+  _selectShape(shape) {
     this._shapeSelectionService.setSelectedShape(shape);
     this.selectedPaperShape = shape;
   }
