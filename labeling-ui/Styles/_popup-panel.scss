@@ -75,6 +75,7 @@ div.popup-panel {
     .icon.fa {
       float: right;
       top: 5px;
+      margin-left: 4px;
     }
 
     .selected-shape {
@@ -137,9 +138,9 @@ div.popup-panel {
     }
 
     .icon.fa {
-      float: right;
+      float: left;
       top: 5px;
-      margin-left: 4px;
+      margin-right: 5px;
     }
   }
 }
