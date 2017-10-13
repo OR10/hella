@@ -31,6 +31,7 @@ describe('ThingLayer', () => {
   let shapeSelectionService;
   let groupSelectionDialogFactory;
   let pathCollisionService;
+  let rootScopeEventRegistrationService;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -78,20 +79,42 @@ describe('ThingLayer', () => {
 
     modalService = jasmine.createSpyObj('modalService', ['show', 'info']);
 
-    labeledThingGateway = jasmine.createSpyObj('labeledThingGateway', ['deleteLabeledThing']);
+    labeledThingGateway = jasmine.createSpyObj(
+      'labeledThingGateway',
+      [
+        'deleteLabeledThing',
+        'unassignLabeledThingsFromLabeledThingGroup',
+      ]
+    );
     labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
-    labeledThingGroupGateway = jasmine.createSpyObj(
-      'labeledThingGroupGateway',
-      ['unassignLabeledThingsFromLabeledThingGroup', 'deleteLabeledThingGroup']
+    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['deleteLabeledThingGroup']
     );
     labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.resolve());
-    labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+    labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
     groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
     groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
 
     pathCollisionService = jasmine.createSpyObj('PathCollisionService', ['setShapes']);
+
+    let registeredRootEvents = [];
+    rootScopeEventRegistrationService = jasmine.createSpyObj(
+      'RootScopeEventRegistrationService',
+      ['register', 'deregister']
+    );
+
+    rootScopeEventRegistrationService.register.and.callFake(
+      (identifier, event, handler) => registeredRootEvents.push(
+        rootScope.$on(event, handler)
+      )
+    );
+    rootScopeEventRegistrationService.deregister.and.callFake(
+      () => {
+        registeredRootEvents.forEach(deregister => deregister());
+        registeredRootEvents = [];
+      }
+    );
   });
 
   function createThingLayerInstance() {
@@ -116,7 +139,9 @@ describe('ThingLayer', () => {
       labeledThingGroupGateway,
       shapeSelectionService,
       groupSelectionDialogFactory,
-      pathCollisionService
+      pathCollisionService,
+      null,
+      rootScopeEventRegistrationService
     );
   }
 
@@ -1026,7 +1051,7 @@ describe('ThingLayer', () => {
 
       it('Delete shape from group and delete group when it has only one shape in it', () => {
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-        labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
@@ -1060,7 +1085,7 @@ describe('ThingLayer', () => {
         paperShapeKeep.select = jasmine.createSpy('paperShapeSelect');
 
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-        labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
@@ -1093,7 +1118,7 @@ describe('ThingLayer', () => {
       });
 
       it('Delete group', () => {
-        labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
@@ -1277,7 +1302,7 @@ describe('ThingLayer', () => {
 
     it('should set application state to enabled when finished', () => {
       const deferred = angularQ.defer();
-      labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup
+      labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup
         .and.returnValue(deferred.promise);
 
       rootScope.$emit('action:unassign-group-from-shape', task, paperShape, labeledThingGroup);
@@ -1293,7 +1318,7 @@ describe('ThingLayer', () => {
     it('should set application state to enabled if it fails', () => {
       const error = new Error('It is quite dark in here. Anyone got a match?');
       const deferred = angularQ.defer();
-      labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup
+      labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup
         .and.returnValue(deferred.promise);
 
       rootScope.$emit('action:unassign-group-from-shape', task, paperShape, labeledThingGroup);
@@ -1310,7 +1335,7 @@ describe('ThingLayer', () => {
       rootScope.$emit('action:unassign-group-from-shape', task, paperShape, labeledThingGroup);
       rootScope.$apply();
 
-      expect(labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup)
+      expect(labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup)
         .toHaveBeenCalledWith([paperShape.labeledThingInFrame.labeledThing], labeledThingGroup);
     });
   });

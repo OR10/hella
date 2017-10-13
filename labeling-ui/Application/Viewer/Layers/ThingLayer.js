@@ -43,6 +43,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {GroupSelectionDialogFactory} groupSelectionDialogFactory
    * @param {PathCollisionService} pathCollisionService
    * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
+   * @param {RootScopeEventRegistrationService} rootScopeEventRegistrationService
    */
   constructor(
     width,
@@ -64,7 +65,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
     shapeSelectionService,
     groupSelectionDialogFactory,
     pathCollisionService,
-    labeledThingReferentialCheckService
+    labeledThingReferentialCheckService,
+    rootScopeEventRegistrationService,
   ) {
     super(width, height, $scope, drawingContext);
 
@@ -115,6 +117,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._groupSelectionDialogFactory = groupSelectionDialogFactory;
+
+    /**
+     * @type {RootScopeEventRegistrationService}
+     * @private
+     */
+    this._rootScopeEventRegistrationService = rootScopeEventRegistrationService;
 
     /**
      * @type {Tool|null}
@@ -264,7 +272,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
       }
 
       if (viewModel.paperThingShapes !== undefined) {
-        this._pathCollisionService.setShapes(viewModel.paperThingShapes.filter(shape => shape instanceof PaperPolyline && shape !== newShape));
+        this._pathCollisionService.setShapes(
+          viewModel.paperThingShapes.filter(
+            shape => shape instanceof PaperPolyline && shape !== newShape
+          )
+        );
       }
 
       this._applyHiddenLabeledThingsInFrameFilter();
@@ -277,8 +289,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._invokeActiveTool();
     });
 
-    ThingLayer.deregisterNewDefaultShapeEventListener();
-    ThingLayer.deregisterNewDefaultShapeEventListener = $scope.$root.$on('action:create-new-default-shape', () => {
+    this._rootScopeEventRegistrationService.register(this, 'action:create-new-default-shape', () => {
       if (this._selectedLabelStructureObject === null) {
         return;
       }
@@ -286,8 +297,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._invokeDefaultShapeCreation();
     });
 
-    ThingLayer.deregisterDeleteEventListener();
-    ThingLayer.deregisterDeleteEventListener = $scope.$root.$on('action:delete-shape', (event, task, shape) => {
+    this._rootScopeEventRegistrationService.register(this, 'action:delete-shape', (event, task, shape) => {
       switch (true) {
         case shape instanceof PaperThingShape:
           this._deleteThingShape(shape);
@@ -303,8 +313,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       }
     });
 
-    ThingLayer.deregisterUnassignGroupFromShapeEventListener();
-    ThingLayer.deregisterUnassignGroupFromShapeEventListener = $scope.$root.$on(
+    this._rootScopeEventRegistrationService.register(
+      this,
       'action:unassign-group-from-shape',
       (event, task, shape, group) => {
         let labeledThing = undefined;
@@ -316,14 +326,14 @@ class ThingLayer extends PanAndZoomPaperLayer {
         }
 
         this._applicationState.disableAll();
-        this._labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], group)
+        this._labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], group)
           .then(() => this._deleteAfterAction())
           .catch(() => this._onDeletionError());
       }
     );
 
-    ThingLayer.deregisterAskAndDeleteEventListener();
-    ThingLayer.deregisterAskAndDeleteEventListener = $scope.$root.$on(
+    this._rootScopeEventRegistrationService.register(
+      this,
       'action:ask-and-delete-shape',
       (event, task, shape) => {
         let groupIds = [];
@@ -373,8 +383,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       }
     );
 
-    ThingLayer.deregisterChangeStartFrameIndexListener();
-    ThingLayer.deregisterChangeStartFrameIndexListener = $scope.$root.$on(
+    this._rootScopeEventRegistrationService.register(
+      this,
       'action:change-start-frame-index',
       (event, task, shape, frameIndex) => {
         if (this.selectedPaperShape instanceof PaperGroupShape) {
@@ -430,8 +440,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       }
     );
 
-    ThingLayer.deregisterChangeEndFrameIndexListener();
-    ThingLayer.deregisterChangeEndFrameIndexListener = $scope.$root.$on(
+    this._rootScopeEventRegistrationService.register(
+      this,
       'action:change-end-frame-index',
       (event, task, shape, frameIndex) => {
         if (this.selectedPaperShape instanceof PaperGroupShape) {
@@ -551,7 +561,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
     this._applicationState.disableAll();
 
-    this._labeledThingGroupGateway.unassignLabeledThingsFromLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
+    this._labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
       .then(() => {
         return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
       })
@@ -1160,18 +1170,5 @@ class ThingLayer extends PanAndZoomPaperLayer {
     });
   }
 }
-
-ThingLayer.deregisterDeleteEventListener = () => {
-};
-ThingLayer.deregisterNewDefaultShapeEventListener = () => {
-};
-ThingLayer.deregisterUnassignGroupFromShapeEventListener = () => {
-};
-ThingLayer.deregisterAskAndDeleteEventListener = () => {
-};
-ThingLayer.deregisterChangeStartFrameIndexListener = () => {
-};
-ThingLayer.deregisterChangeEndFrameIndexListener = () => {
-};
 
 export default ThingLayer;

@@ -29,7 +29,8 @@ php::extensions:
   zip: {}
 
 letsencrypt::email: chh@crosscan.com
-annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
+annostation_letsencrypt::existingVhosts:
+    - labeling_api-redirect
 annostation_letsencrypt::domains:
     - video-labeling.com
 labeling_api::app::sslCertFile: '/etc/letsencrypt/live/video-labeling.com/fullchain.pem'

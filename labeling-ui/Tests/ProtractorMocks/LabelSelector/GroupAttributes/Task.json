@@ -1,0 +1,105 @@
+{
+  "request": {
+    "path": "/api/v1/task/TASKID-TASKID",
+    "method": "GET"
+  },
+  "response": {
+    "data": {
+      "result": {
+        "task": {
+          "assignmentHistory": [
+            {
+              "userId": "user-id-1",
+              "assignedAt": "1470132376",
+              "phase": "labeling",
+              "status": "in_progress"
+            }
+          ],
+          "descriptionText": "How is the view on the person? Which side does one see from the person and from which side is the person entering the screen?",
+          "descriptionTitle": "Identify the person",
+          "drawingTool": "rectangle",
+          "drawingOptions": "rectangle",
+          "frameNumberMapping": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "id": "TASKID-TASKID",
+          "labelInstruction": "vehicle",
+          "labelStructure": null,
+          "labelStructureUi": null,
+          "metadata": {
+            "frameRange": {
+              "startFrameNumber": 1,
+              "endFrameNumber": 5
+            },
+            "frameSkip": 1,
+            "startFrameNumber": 1
+          },
+          "minimalVisibleShapeOverflow": null,
+          "predefinedClasses": [
+            "pedestrian"
+          ],
+          "projectId": "PROJECTID-PROJECTID",
+          "readOnly": false,
+          "reopen": false,
+          "requiredImageTypes": [
+            "sourceJpg",
+            "thumbnail"
+          ],
+          "rev": "3-f5f607d02b030a04c2c01dbe80957ece",
+          "status": {
+            "labeling": "in_progress"
+          },
+          "taskConfigurationId": "TASK-CONFIGURATION-1",
+          "taskType": "object-labeling",
+          "userId": null,
+          "videoId": "VIDEOID-VIDEOID"
+        },
+        "users": {
+          "user-id-1": {
+            "id": "user-id-1",
+            "username": "user",
+            "email": "user@example.com",
+            "enabled": true,
+            "lastLogin": "2016-08-02T11:25:43+0200",
+            "locked": false,
+            "roles": [
+              "ROLE_LABELER",
+              "ROLE_USER"
+            ]
+          },
+          "user-id-2": {
+            "id": "user-id-2",
+            "username": "super_admin",
+            "email": "super_admin@example.com",
+            "enabled": true,
+            "lastLogin": "2016-08-02T11:25:43+0200",
+            "locked": false,
+            "roles": [
+              "ROLE_SUPER_ADMIN",
+              "ROLE_LABEL_MANAGER",
+              "ROLE_LABELER",
+              "ROLE_USER"
+            ]
+          },
+          "user-id-3": {
+            "id": "user-id-3",
+            "username": "label_manager",
+            "email": "label_manager@example.com",
+            "enabled": true,
+            "lastLogin": "2016-08-02T11:25:43+0200",
+            "locked": false,
+            "roles": [
+              "ROLE_LABEL_MANAGER",
+              "ROLE_LABELER",
+              "ROLE_USER"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -6,6 +6,7 @@
         <option name="HTML_SPACE_INSIDE_EMPTY_TAG" value="true" />
         <option name="HTML_DO_NOT_INDENT_CHILDREN_OF" value="" />
         <JSCodeStyleSettings>
+          <option name="SPACE_BEFORE_FUNCTION_LEFT_PARENTH" value="false" />
           <option name="USE_DOUBLE_QUOTES" value="false" />
           <option name="FORCE_QUOTE_STYlE" value="true" />
         </JSCodeStyleSettings>

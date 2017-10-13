@@ -1,0 +1,15 @@
+{
+  "_id": "{{:--id}}",
+  "_rev": "{{:--revision}}",
+  "type": "AnnoStationBundle.Model.LabeledThingGroupInFrame",
+  "classes": [
+    "position-above"
+  ],
+  "frameIndex": 1,
+  "incomplete": "{{:--incomplete}}",
+  "labeledThingGroupId": "{{:--labeledThingGroupId}}",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
+}

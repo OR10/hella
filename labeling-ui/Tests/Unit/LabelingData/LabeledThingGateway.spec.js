@@ -14,6 +14,8 @@ import labeledThingCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThing
 import labeledThingInFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThingInFrame';
 import labeledThingFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThing';
 import taskFrontendModel from 'Tests/Fixtures/Models/Frontend/Task';
+import LabeledThingGroup from '../../../Application/LabelingData/Models/LabeledThingGroup';
+import LabeledThing from '../../../Application/LabelingData/Models/LabeledThing';
 
 describe('LabeledThingGateway', () => {
   let $rootScope;
@@ -99,6 +101,7 @@ describe('LabeledThingGateway', () => {
           $rootScope = $injector.get('$rootScope');
           angularQ = $injector.get('$q');
           gateway = $injector.instantiate(LabeledThingGateway);
+          spyOn(gateway._currentUserService, 'get').and.returnValue({id: 'ffa2a4a7f72e5765eb5d1b09d40094e5'});
           revisionManager = $injector.get('revisionManager');
           couchDbModelSerializer = $injector.get('couchDbModelSerializer');
           couchDbModelDeserializer = $injector.get('couchDbModelDeserializer');
@@ -418,10 +421,116 @@ describe('LabeledThingGateway', () => {
     expect(resolveSpy).toHaveBeenCalled();
   });
 
-  // @TODO: Needs to be implemented as soon as incomplete calculation was moved to the frontend.
-  // Currently the incomplete information is not calculated at all.
-  xit('should receive the labeled thing incomplete count', done => {
-    done();
+  it('should assign labeled things to a labeled thing group', () => {
+    const task = taskFrontendModel;
+
+    spyOn(gateway, '_saveLabeledThingWithoutPackagingExecutor').and.callThrough();
+
+    const labeledThingGroup = new LabeledThingGroup({
+      id: 'LABELED-THING-GROUP-ID',
+      task,
+      groupType: 'extension-sign-group',
+      lineColor: 1,
+      groupIds: [],
+    });
+
+    const labeledThing = new LabeledThing({
+      id: 'LABELED-THING-ID',
+      frameRange: {
+        startFrameIndex: 0,
+        endFrameIndex: 3,
+      },
+      groupIds: [],
+      classes: ['foo', 'bar', 'baz'],
+      incomplete: false,
+      lineColor: 8,
+      task,
+    });
+
+    const labeledThingCalled = new LabeledThing({
+      id: 'LABELED-THING-ID',
+      frameRange: {
+        startFrameIndex: 0,
+        endFrameIndex: 3,
+      },
+      groupIds: ['LABELED-THING-GROUP-ID'],
+      classes: ['foo', 'bar', 'baz'],
+      incomplete: false,
+      taskId: 'TASK-ID',
+      projectId: 'PROJECT-ID',
+      lineColor: 8,
+      task,
+    });
+
+    gateway.assignLabeledThingsToLabeledThingGroup([labeledThing], labeledThingGroup);
+
+    $rootScope.$apply();
+
+    const storedLabeledThing = gateway._saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
+    const storedLabeledThingDocument = storedLabeledThing.toJSON();
+    delete storedLabeledThingDocument.createdAt;
+    delete storedLabeledThingDocument.lastModifiedAt;
+
+    const labeledThingCalledDocument = labeledThingCalled.toJSON();
+    delete labeledThingCalledDocument.createdAt;
+    delete labeledThingCalledDocument.lastModifiedAt;
+
+    expect(storedLabeledThingDocument).toEqual(labeledThingCalledDocument);
+  });
+
+  it('should unassign labeled things from a labeled thing group', () => {
+    const task = taskFrontendModel;
+
+    spyOn(gateway, '_saveLabeledThingWithoutPackagingExecutor').and.callThrough();
+
+    const labeledThingGroup = new LabeledThingGroup({
+      id: 'LABELED-THING-GROUP-ID',
+      task,
+      groupType: 'extension-sign-group',
+      lineColor: 1,
+      groupIds: [],
+    });
+
+    const labeledThing = new LabeledThing({
+      id: 'LABELED-THING-ID',
+      frameRange: {
+        startFrameIndex: 0,
+        endFrameIndex: 3,
+      },
+      groupIds: ['LABELED-THING-GROUP-ID'],
+      classes: ['foo', 'bar', 'baz'],
+      incomplete: false,
+      lineColor: 8,
+      task,
+    });
+
+    const labeledThingCalled = new LabeledThing({
+      id: 'LABELED-THING-ID',
+      frameRange: {
+        startFrameIndex: 0,
+        endFrameIndex: 3,
+      },
+      groupIds: [],
+      classes: ['foo', 'bar', 'baz'],
+      incomplete: false,
+      lineColor: 8,
+      task,
+    });
+
+    gateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], labeledThingGroup);
+
+    $rootScope.$apply();
+
+    const storedLabeledThing = gateway._saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
+    const storedLabeledThingDocument = storedLabeledThing.toJSON();
+    delete storedLabeledThingDocument.createdAt;
+    delete storedLabeledThingDocument.lastModifiedAt;
+
+    const labeledThingCalledDocument = labeledThingCalled.toJSON();
+    delete labeledThingCalledDocument.createdAt;
+    delete labeledThingCalledDocument.lastModifiedAt;
+
+    expect(storedLabeledThingDocument).toEqual(labeledThingCalledDocument);
   });
 
   afterEach(done => {

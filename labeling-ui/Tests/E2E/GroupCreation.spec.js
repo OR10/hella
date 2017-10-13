@@ -10,6 +10,7 @@ import {
   sendKeys,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
+import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
@@ -18,6 +19,8 @@ describe('Group Creation', () => {
   let sharedMocks;
   let viewer;
   let groupButton;
+  let labelSelector;
+  let labelSelectorHelper;
 
   beforeEach(() => {
     assets = new AssetHelper(
@@ -49,12 +52,10 @@ describe('Group Creation', () => {
 
     viewer = element(by.css('.layer-container'));
     groupButton = element(by.css('button.tool-group.tool-0'));
+    labelSelector = element(by.css('label-selector'));
+    labelSelectorHelper = new LabelSelectorHelper(labelSelector);
   });
 
-  afterEach(() => {
-    bootstrapHttp.teardown();
-    bootstrapPouch.teardown();
-  });
 
   it('does not create a group', done => {
     bootstrapHttp(sharedMocks);
@@ -557,7 +558,80 @@ describe('Group Creation', () => {
       .then(() => done());
   });
 
+  it('does remove ltgifs outside of lt frame range', done => {
+    bootstrapHttp(sharedMocks.concat([
+      assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
+    ]));
+
+    const rectangleToolButton = element(by.css('button.tool-button.tool-rectangle'));
+    const nextFrameButton = element(by.css('.next-frame-button > button'));
+    const previousFrameButton = element(by.css('.previous-frame-button > button'));
+    const closeBracketButton = element(by.css('.close-bracket-button > button'));
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => rectangleToolButton.click())
+      .then(() => shortSleep())
+      .then(() => {
+        // Create Rectangle
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        // Move Rectangle
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      // Create group
+      .then(() => groupButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        // Acknowledge modal
+        const confirmButton = element(by.css('.modal-button-confirm'));
+        return confirmButton.click();
+      })
+      .then(() => mediumSleep())
+      // Label Group on frameIndex 1
+      .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText(
+        'Position of the extension sign'
+      ).click())
+      .then(() => mediumSleep())
+      .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+        'Position of the extension sign',
+        'Above'
+      ).click())
+      .then(() => mediumSleep())
+      .then(() => previousFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        // Select rectangle again
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200})
+          .mouseDown()
+          .mouseUp()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => closeBracketButton.click())
+      .then(() => mediumSleep())
+      .then(() => expect(assets.mocks.GroupCreation.GroupAttributes.StoredLabeledThingGroupInFrame).not.toExistInPouchDb())
+      .then(() => done());
+  });
+
   afterEach(() => {
+    bootstrapHttp.teardown();
+    bootstrapPouch.teardown();
     expectAllModalsToBeClosed();
   });
 });

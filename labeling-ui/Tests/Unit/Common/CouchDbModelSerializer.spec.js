@@ -11,6 +11,8 @@ import LabeledThingCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThing
 import LabeledThingFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThing';
 import LabeledThingGroupCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroup';
 import LabeledThingGroupFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThingGroup';
+import LabeledThingGroupInFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledThingGroupInFrame';
+import LabeledThingGroupInFrameFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledThingGroupInFrame';
 import LabeledFrameCouchDbModel from 'Tests/Fixtures/Models/CouchDb/LabeledFrame';
 import LabeledFrameFrontendModel from 'Tests/Fixtures/Models/Frontend/LabeledFrame';
 
@@ -36,6 +38,7 @@ describe('CouchDbModelSerializer', () => {
   using([
     [LabeledThingFrontendModel, LabeledThingCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING],
     [LabeledThingGroupFrontendModel, LabeledThingGroupCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP],
+    [LabeledThingGroupInFrameFrontendModel, LabeledThingGroupInFrameCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP_IN_FRAME],
     [LabeledFrameFrontendModel, LabeledFrameCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_FRAME],
   ], (frontendModel, couchDbModel) => {
     it('serialize model by guessing its type', () => {
@@ -52,6 +55,7 @@ describe('CouchDbModelSerializer', () => {
   using([
     [LabeledThingFrontendModel, LabeledThingCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING],
     [LabeledThingGroupFrontendModel, LabeledThingGroupCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP],
+    [LabeledThingGroupInFrameFrontendModel, LabeledThingGroupInFrameCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_THING_GROUP_IN_FRAME],
     [FrameRangeFrontendModel, FrameRangeCouchDbModel, CouchDbModelSerializer.TYPE_FRAME_RANGE],
     [LabeledFrameFrontendModel, LabeledFrameCouchDbModel, CouchDbModelSerializer.TYPE_LABELED_FRAME],
   ], (frontendModel, couchDbModel, type) => {

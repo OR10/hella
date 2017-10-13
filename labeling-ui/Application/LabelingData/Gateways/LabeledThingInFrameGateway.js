@@ -13,6 +13,7 @@ class LabeledThingInFrameGateway {
    * @param {GhostingService} ghostingService
    * @param {PouchDbViewService} pouchDbViewService
    * @param {LabelStructureService} labelStructureService
+   * @param {CurrentUserService} currentUserService
    */
   constructor($q,
               pouchDbContextService,
@@ -23,7 +24,9 @@ class LabeledThingInFrameGateway {
               labeledThingGateway,
               ghostingService,
               pouchDbViewService,
-              labelStructureService) {
+              labelStructureService,
+              currentUserService
+  ) {
     /**
      * @type {$q}
      * @private
@@ -83,6 +86,12 @@ class LabeledThingInFrameGateway {
      * @private
      */
     this._labelStructureService = labelStructureService;
+
+    /**
+     * @type {CurrentUserService}
+     * @private
+     */
+    this._currentUserService = currentUserService;
   }
 
   /**
@@ -139,6 +148,7 @@ class LabeledThingInFrameGateway {
    * @param {LabeledThing} labeledThing
    * @param {int?} offset
    * @param {int?} limit
+   * @return {AbortablePromise<LabeledThingInFrame>|Error}
    */
   getLabeledThingInFrame(task, frameIndex, labeledThing, offset = 0, limit = 1) {
     const startkey = [labeledThing.id, labeledThing.frameRange.startFrameIndex];
@@ -176,6 +186,22 @@ class LabeledThingInFrameGateway {
         })
         .then(labeledThingsInFrameWithShapeGhosts => this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrameWithShapeGhosts));
     });
+  }
+
+  /**
+   * Checks whether a specific {@link LabeledThing} has at least one non-ghost {@link LabeledThingInFrame}
+   * on the given `frameIndex`
+   *
+   * @param labeledThing
+   * @param frameIndex
+   * @return {AbortablePromise<LabeledThingInFrame>|Error}
+   */
+  hasLabeledThingInFrameOnFrame(labeledThing, frameIndex) {
+    return this.getLabeledThingInFrame(labeledThing.task, frameIndex, labeledThing)
+      .then(ltifs => {
+        const ltifsWithoutGhosts = ltifs.filter(shape => !shape.ghost);
+        return ltifsWithoutGhosts.length > 0;
+      });
   }
 
   /**
@@ -278,6 +304,7 @@ class LabeledThingInFrameGateway {
               const isLabeledThingIncomplete = (response.rows[0].value > 0);
               const serializedLabeledThing = this._couchDbModelSerializer.serialize(storedLabeledThing);
               serializedLabeledThing.incomplete = isLabeledThingIncomplete;
+              serializedLabeledThing.lastModifiedByUserId = this._currentUserService.get().id;
 
               this._injectRevisionOrFailSilently(serializedLabeledThing);
 
@@ -319,6 +346,7 @@ LabeledThingInFrameGateway.$inject = [
   'ghostingService',
   'pouchDbViewService',
   'labelStructureService',
+  'currentUserService',
 ];
 
 export default LabeledThingInFrameGateway;

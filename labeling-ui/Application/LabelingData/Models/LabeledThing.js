@@ -8,7 +8,7 @@ import LabeledObject from './LabeledObject';
  */
 class LabeledThing extends LabeledObject {
   /**
-   * @param {{id: string, classes: Array.<string>, incomplete: boolean, task: Task, frameRange: FrameRange, lineColor: string, projectId: string, groupIds: Array.<string>, createdByUserId: string}} labeledThing
+   * @param {{id: string, classes: Array.<string>, incomplete: boolean, task: Task, frameRange: FrameRange, lineColor: string, projectId: string, groupIds: Array.<string>, createdByUserId: string, lastModifiedByUserId: string}} labeledThing
    */
   constructor(labeledThing) {
     super(labeledThing);
@@ -35,6 +35,11 @@ class LabeledThing extends LabeledObject {
      * @type {String}
      */
     this.createdByUserId = labeledThing.createdByUserId;
+
+    /**
+     * @type {String}
+     */
+    this.lastModifiedByUserId = labeledThing.lastModifiedByUserId;
   }
 
   /**
@@ -51,12 +56,13 @@ class LabeledThing extends LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {frameRange, lineColor, groupIds, createdByUserId} = this;
+    const {frameRange, lineColor, groupIds, createdByUserId, lastModifiedByUserId} = this;
     return Object.assign(super.toJSON(), {
       lineColor,
       groupIds,
       frameRange: cloneDeep(frameRange),
       createdByUserId,
+      lastModifiedByUserId,
     });
   }
 

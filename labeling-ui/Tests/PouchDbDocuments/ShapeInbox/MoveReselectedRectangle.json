@@ -1,0 +1,28 @@
+{
+  "_id": "{{:--id}}",
+  "_rev": "{{:--rev}}",
+  "classes": [],
+  "createdAt": "{{:--created-at}}",
+  "frameIndex": 1,
+  "identifierName": "legacy",
+  "incomplete": true,
+  "labeledThingId": "2d60acc62c0a43e18448442dd4fe4c88",
+  "lastModifiedAt": "{{:--last-modified-at}}",
+  "projectId": "PROJECTID-PROJECTID",
+  "shapes": [
+    {
+      "bottomRight": {
+        "x": 300,
+        "y": 300
+      },
+      "id": "{{:--shape-id}}",
+      "topLeft": {
+        "x": 200,
+        "y": 200
+      },
+      "type": "rectangle"
+    }
+  ],
+  "taskId": "TASKID-TASKID",
+  "type": "AppBundle.Model.LabeledThingInFrame"
+}

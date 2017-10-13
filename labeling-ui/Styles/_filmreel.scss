@@ -1,6 +1,6 @@
 .viewer-film-reel-container {
   frame-number-input {
-    color: $color-ut-lightgrey-4;
+    color: $color-ut-lightgrey-2;
   }
 
   .thumbnail-reel-list {
@@ -41,6 +41,7 @@
           background-color: $color-ut-midgrey-3;
           padding: 5px 10px;
           margin-bottom: 11px;
+          color: $color-ut-lightgrey-4;
 
           .divider {
             font-weight: bold;
@@ -50,10 +51,6 @@
           .divider:before {
             display: inline;
             content: '/';
-          }
-
-          .divider, .endFrameNumber {
-            color: darkgray;
           }
         }
       }

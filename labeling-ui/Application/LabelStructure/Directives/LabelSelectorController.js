@@ -4,8 +4,9 @@ import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInF
 
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
 import PaperGroupShape from 'Application/Viewer/Shapes/PaperGroupShape';
-import PaperMeasurementRectangle from 'Application/Viewer/Shapes/PaperMeasurementRectangle';
 import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
+import LabeledThingGroupInFrame from '../../LabelingData/Models/LabeledThingGroupInFrame';
+import PaperVirtualShape from '../../Viewer/Shapes/PaperVirtualShape';
 
 /**
  * @property {string} labeledObjectType
@@ -27,6 +28,7 @@ export default class LabelSelectorController {
    * @param {LabeledFrameGateway} labeledFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
+   * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {EntityIdService} entityIdService
    * @param {ModalService} modalService
    * @param {ApplicationState} applicationState
@@ -42,6 +44,7 @@ export default class LabelSelectorController {
     labeledFrameGateway,
     labeledThingGateway,
     labeledThingInFrameGateway,
+    labeledThingGroupGateway,
     entityIdService,
     modalService,
     applicationState,
@@ -104,6 +107,12 @@ export default class LabelSelectorController {
     this._labeledThingInFrameGateway = labeledThingInFrameGateway;
 
     /**
+     * @type {LabeledThingGroupGateway}
+     * @private
+     */
+    this._labeledThingGroupGateway = labeledThingGroupGateway;
+
+    /**
      * @type {EntityIdService}
      * @private
      */
@@ -160,7 +169,7 @@ export default class LabelSelectorController {
 
 
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
-      if (newSelectedPaperShape === null || newSelectedPaperShape instanceof PaperGroupShape) {
+      if (newSelectedPaperShape === null) {
         return this._clearLabelSelector();
       }
       // TODO: Find the root caus why the selectedLabelStructureObject here is different from the one in the
@@ -272,11 +281,11 @@ export default class LabelSelectorController {
    * @returns {boolean}
    */
   show() {
-    const hasPaperShape = (this.selectedPaperShape !== undefined && this.selectedPaperShape !== null);
+    const selectedShape = this.selectedPaperShape;
+    const hasPaperShape = (selectedShape !== undefined && selectedShape !== null);
     const hasAtMostOneSelectedShape = (this._shapeSelectionService.count() <= 1);
-    const selectedPaperShapeIsNotGroupShape = !(this.selectedPaperShape instanceof PaperGroupShape);
-    const selectedPaperShapeIsNotMeasurementRectangle = !(this.selectedPaperShape instanceof PaperMeasurementRectangle);
-    return hasPaperShape && hasAtMostOneSelectedShape && selectedPaperShapeIsNotGroupShape && selectedPaperShapeIsNotMeasurementRectangle;
+    const isVirtualShape = selectedShape instanceof PaperVirtualShape;
+    return hasPaperShape && hasAtMostOneSelectedShape && !isVirtualShape;
   }
 
   /**
@@ -412,6 +421,10 @@ export default class LabelSelectorController {
         this._storeUpdatedLabeledFrame(selectedLabeledObject)
           .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
         break;
+      case selectedLabeledObject instanceof LabeledThingGroupInFrame:
+        this._storeUpdatedLabeledThingGroupInFrame(selectedLabeledObject)
+          .then(() => this._$rootScope.$emit('shape:class-update:after', selectedLabeledObject.classes));
+        break;
       default:
         throw new Error(`Unknown labeledObject type: Unable to send updates to the backend.`);
     }
@@ -456,6 +469,15 @@ export default class LabelSelectorController {
       this.framePosition.position,
       labeledFrame
     );
+  }
+
+  /**
+   * @param {LabeledThingGroupInFrame} labeledThingGroupInFrame
+   * @private
+   */
+  _storeUpdatedLabeledThingGroupInFrame(labeledThingGroupInFrame) {
+    labeledThingGroupInFrame.incomplete = !this._isCompleted();
+    return this._labeledThingGroupGateway.saveLabeledThingGroupInFrame(labeledThingGroupInFrame);
   }
 
   /**
@@ -574,6 +596,7 @@ LabelSelectorController.$inject = [
   'labeledFrameGateway',
   'labeledThingGateway',
   'labeledThingInFrameGateway',
+  'labeledThingGroupGateway',
   'entityIdService',
   'modalService',
   'applicationState',

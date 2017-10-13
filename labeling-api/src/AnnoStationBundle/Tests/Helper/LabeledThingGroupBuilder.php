@@ -25,6 +25,11 @@ class LabeledThingGroupBuilder
      */
     private $createdByUserId;
 
+    /**
+     * @var string
+     */
+    private $lastModifiedUserId;
+
     private function __construct(AppBundleModel\LabelingTask $task)
     {
         $this->labelingTask = $task;
@@ -61,6 +66,17 @@ class LabeledThingGroupBuilder
     }
 
     /**
+     * @param $userId
+     * @return $this
+     */
+    public function withLastModifiedUserId($userId)
+    {
+        $this->lastModifiedUserId = $userId;
+
+        return $this;
+    }
+
+    /**
      * @return Model\LabeledThingGroup
      */
     public function build()
@@ -72,6 +88,8 @@ class LabeledThingGroupBuilder
             [],
             $this->createdByUserId
         );
+
+        $labeledThingGroup->setLastModifiedByUserId($this->lastModifiedUserId);
 
         return $labeledThingGroup;
     }
