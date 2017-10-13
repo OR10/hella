@@ -1,5 +1,19 @@
 import {inject} from 'angular-mocks';
 import PopupPanelController from 'Application/Task/Directives/PopupPanelController';
+import AbortablePromise from 'Application/Common/Support/AbortablePromise';
+
+const taskMock = {
+  requiredImageTypes: ['source'],
+};
+
+const framePositionMock = {
+  position: 0,
+};
+
+class PopupPanelControllerTestable extends PopupPanelController {}
+
+PopupPanelControllerTestable.prototype.task = taskMock;
+PopupPanelControllerTestable.prototype.framePosition = framePositionMock;
 
 describe('PopupPanelController', () => {
   /**
@@ -8,6 +22,7 @@ describe('PopupPanelController', () => {
   let controller;
   let element;
   let scope;
+  let angularQ;
   let context;
   let drawingContextService;
   let drawingScope;
@@ -16,10 +31,19 @@ describe('PopupPanelController', () => {
   let resizeDebounced;
   let shapeSelectionService;
   let shapeInboxService;
+  let frameLocationGateway;
+  let labelStructureService;
+  let labelStructure;
+  let shapeMergeService;
 
-  beforeEach(inject(($compile, $rootScope) => {
+  function createAbortablePromise(inputPromise) {
+    return new AbortablePromise(angularQ, inputPromise, angularQ.defer());
+  }
+
+  beforeEach(inject(($compile, $rootScope, $q) => {
     scope = $rootScope.$new();
     element = $compile('<div></div>')(scope);
+    angularQ = $q;
 
     context = jasmine.createSpyObj('context', ['setup', 'withScope']);
     drawingContextService = jasmine.createSpyObj('drawingContextService', ['createContext']);
@@ -28,27 +52,35 @@ describe('PopupPanelController', () => {
     window = jasmine.createSpyObj('$window', ['addEventListener']);
     resizeDebounced = jasmine.createSpy('resizeDebounced');
     shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['afterAnySelectionChange', 'getAllShapes']);
-    shapeInboxService = jasmine.createSpyObj('shapeInboxService', ['getAllShapes', 'addShape', 'addShapes', 'clear', 'removeShape']);
+    shapeInboxService = jasmine.createSpyObj('shapeInboxService', ['getAllShapes', 'addShape', 'addShapes', 'clear', 'removeShape', 'hasShape']);
+    frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
+    labelStructureService = jasmine.createSpyObj('labelStructureService', ['getLabelStructure']);
+    labelStructure = jasmine.createSpyObj('labelStructure', ['getThingById']);
+    shapeMergeService = jasmine.createSpyObj('shapeMergeService', ['mergeShapes']);
 
     drawingContextService.createContext.and.returnValue(context);
     context.withScope.and.callFake(callback => callback(drawingScope));
     animationFrameService.debounce.and.returnValue(resizeDebounced);
+    frameLocationGateway.getFrameLocations.and.returnValue(createAbortablePromise(angularQ.reject()));
+    labelStructureService.getLabelStructure.and.returnValue(angularQ.resolve(labelStructure));
   }));
 
   beforeEach(() => {
-    controller = new PopupPanelController(
+    controller = new PopupPanelControllerTestable(
       scope,
+      angularQ,
       window,
       element,
       animationFrameService,
       drawingContextService,
       null, // frameGateway,
-      null, // frameLocationGateway,
+      frameLocationGateway,
       null, // abortablePromiseFactory,
       null, // $timeout,
-      null, // labelStructureService,
+      labelStructureService,
       shapeSelectionService,
-      shapeInboxService
+      shapeInboxService,
+      shapeMergeService
     );
   });
 
@@ -122,6 +154,114 @@ describe('PopupPanelController', () => {
       expect(shapeInboxService.addShape).toHaveBeenCalledWith(shape);
       expect(shapeSelectionService.getAllShapes).toHaveBeenCalled();
     });
+
+    it('recalculates the selectedObjects', () => {
+      const shape = {id: '1', labeledThingInFrame: {}};
+      const labelStructureObject = {name: 'Bernd das Brot'};
+      labelStructure.getThingById.and.returnValue(labelStructureObject);
+      shapeSelectionService.getAllShapes.and.returnValue([shape]);
+      shapeInboxService.hasShape.and.returnValue(false);
+      shapeInboxService.getAllShapes.and.returnValue([]);
+
+      controller.addToInbox(shape);
+      scope.$apply();
+
+      const expectedSelectedObjects = [
+        {
+          shape: shape,
+          labelStructureObject: labelStructureObject,
+          label: 'Bernd das Brot #1',
+        },
+      ];
+
+      expect(controller.selectedObjects).toEqual(expectedSelectedObjects);
+    });
+
+    it('recalculates the selectedObjects, emptying the selected objects', () => {
+      const shape = {id: '1', labeledThingInFrame: {}};
+      const labelStructureObject = {name: 'Bernd das Brot'};
+
+      controller._selectedObjects = [
+        {
+          shape: shape,
+          labelStructureObject: labelStructureObject,
+          label: 'Bernd das Brot #1',
+        },
+      ];
+
+      labelStructure.getThingById.and.returnValue(labelStructureObject);
+      shapeSelectionService.getAllShapes.and.returnValue([shape]);
+      shapeInboxService.hasShape.and.returnValue(true);
+      shapeInboxService.getAllShapes.and.returnValue([]);
+
+      controller.addToInbox(shape);
+      scope.$apply();
+
+      expect(controller.selectedObjects).toEqual([]);
+    });
+
+    it('only adds shapes with the same id once to the selectedObjects', () => {
+      const firstShape = {id: '1', labeledThingInFrame: {hello: 'there'}};
+      const secondShape = {id: '1', labeledThingInFrame: {}};
+
+      const labelStructureObject = {name: 'Bernd das Brot'};
+      labelStructure.getThingById.and.returnValue(labelStructureObject);
+      shapeSelectionService.getAllShapes.and.returnValue([firstShape, secondShape]);
+      shapeInboxService.hasShape.and.returnValue(false);
+      shapeInboxService.getAllShapes.and.returnValue([]);
+
+      controller.addToInbox(firstShape);
+      scope.$apply();
+      controller.addToInbox(secondShape);
+      scope.$apply();
+
+      const expectedSelectedObjects = [
+        {
+          shape: firstShape,
+          labelStructureObject: labelStructureObject,
+          label: 'Bernd das Brot #1',
+        },
+      ];
+
+      expect(controller.selectedObjects).toEqual(expectedSelectedObjects);
+    });
+
+    it('updates whether the selected shapes are mergable (result: true)', () => {
+      const firstShape = {};
+      const secondShape = {};
+      const firstShapeInformation = {id: '1', labeledThingInFrame: {hello: 'there'}, shape: firstShape};
+      const secondShapeInformation = {id: '1', labeledThingInFrame: {}, shape: secondShape};
+
+      const labelStructureObject = {name: 'Bernd das Brot'};
+      labelStructure.getThingById.and.returnValue(labelStructureObject);
+      shapeSelectionService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
+      shapeInboxService.hasShape.and.returnValue(false);
+      shapeInboxService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
+
+      controller.addToInbox(firstShapeInformation);
+      scope.$apply();
+
+      expect(controller.hasMergableObjects).toEqual(true);
+    });
+
+    it('updates whether the selected shapes are mergable (result: false)', () => {
+      const firstShape = {};
+      const secondShape = [];
+      const firstShapeInformation = {id: '1', labeledThingInFrame: {hello: 'there'}, shape: firstShape};
+      const secondShapeInformation = {id: '1', labeledThingInFrame: {}, shape: secondShape};
+
+      const labelStructureObject = {name: 'Bernd das Brot'};
+      labelStructure.getThingById.and.returnValue(labelStructureObject);
+      shapeSelectionService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
+      shapeInboxService.hasShape.and.returnValue(false);
+      shapeInboxService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
+
+      controller.hasMergableObjects = true;
+      controller.addToInbox(firstShapeInformation);
+      scope.$apply();
+
+      expect(controller.hasMergableObjects).toEqual(false);
+    });
   });
 
   describe('addAllToInbox', () => {
@@ -133,6 +273,36 @@ describe('PopupPanelController', () => {
 
       expect(shapeInboxService.addShapes).toHaveBeenCalledWith(['shape', 'dasbrot']);
       expect(shapeSelectionService.getAllShapes).toHaveBeenCalled();
+    });
+
+    it('adds all shapes to selectedObjects', () => {
+      const firstShape = {id: '1', labeledThingInFrame: {hello: 'there'}};
+      const secondShape = {id: '2', labeledThingInFrame: {}};
+      const labelStructureObject = {name: 'Bernd das Brot'};
+
+      labelStructure.getThingById.and.returnValue(labelStructureObject);
+      shapeSelectionService.getAllShapes.and.returnValue([firstShape, secondShape]);
+      shapeInboxService.hasShape.and.returnValue(false);
+      shapeInboxService.getAllShapes.and.returnValue([]);
+
+      controller.addAllToInbox();
+      scope.$apply();
+
+      const expectedSelectedObjects = [
+        {
+          shape: firstShape,
+          labelStructureObject: labelStructureObject,
+          label: 'Bernd das Brot #1',
+        },
+        {
+          shape: secondShape,
+          labelStructureObject: labelStructureObject,
+          label: 'Bernd das Brot #2',
+        },
+      ];
+
+      expect(controller.selectedObjects).toEqual(expectedSelectedObjects);
+      expect(controller.savedObjects).toEqual([]);
     });
   });
 
@@ -156,6 +326,33 @@ describe('PopupPanelController', () => {
 
       expect(shapeInboxService.removeShape).toHaveBeenCalledWith(shape);
       expect(shapeSelectionService.getAllShapes).toHaveBeenCalled();
+    });
+  });
+
+  describe('mergeShapes', () => {
+    it('sends all the shapes to the merge service, which are of same type', () => {
+      const firstShapeInformation = {shape: {}};
+      const secondShapeInformation = {shape: []};
+      const thirdShapeInformation = {shape: {}};
+      shapeInboxService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation, thirdShapeInformation]);
+      shapeMergeService.mergeShapes.and.returnValue(angularQ.resolve());
+
+      controller.mergeShapes();
+
+      expect(shapeMergeService.mergeShapes).toHaveBeenCalledWith([firstShapeInformation, thirdShapeInformation]);
+    });
+
+    it('removes all the shapes from the inbox if merge was successful', () => {
+      const firstShapeInformation = {shape: {}};
+      const secondShapeInformation = {shape: {}};
+      shapeInboxService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
+      shapeMergeService.mergeShapes.and.returnValue(angularQ.resolve());
+      shapeSelectionService.getAllShapes.and.returnValue([]);
+
+      controller.mergeShapes();
+      scope.$apply();
+
+      expect(shapeInboxService.clear).toHaveBeenCalled();
     });
   });
 });

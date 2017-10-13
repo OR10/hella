@@ -1,7 +1,7 @@
 class annostation_letsencrypt(
     $webroot = '/var/www/letsencrypt',
     $domains = [],
-    $existingVhost = undef,
+    $existingVhosts = undef,
 ) {
     include ::letsencrypt
 
@@ -9,7 +9,7 @@ class annostation_letsencrypt(
         ensure => directory,
     }
 
-    if !$existingVhost {
+    if !$existingVhosts {
         annostation_base::nginx_vhost { 'letsencrypt':
             serverNames       => $domains,
             vhostDir          => $webroot,
@@ -18,18 +18,22 @@ class annostation_letsencrypt(
             require           => File[$webroot],
         }
 
-        $_vhost = 'letsencrypt'
+        $_vhosts = ['letsencrypt']
     } else {
-        $_vhost = $existingVhost
+        $_vhosts = $existingVhosts
     }
 
-    nginx::resource::location { '~ /.well-known/acme-challenge/(.*)':
-        vhost               => $_vhost,
-        www_root            => $webroot,
-        location_cfg_append => {
-            default_type => 'text/plain',
-        },
-        require             => File[$webroot],
+    $_vhosts.each |$_vhost| {
+        nginx::resource::location { "${_vhost}_acme-challenge":
+            ensure              => present,
+            vhost               => $_vhost,
+            www_root            => $webroot,
+            location_cfg_append => {
+                default_type => 'text/plain',
+            },
+            require             => File[$webroot],
+            location            => '~ /.well-known/acme-challenge/(.*)',
+        }
     }
 
     $domains.each |$domain| {

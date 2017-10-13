@@ -33,7 +33,9 @@ annostation_base::nodejs::nvmHomeDir: '/var/www'
 annostation_base::nodejs::nvmDir: '/var/www/.nvm'
 
 letsencrypt::email: chh@crosscan.com
-annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
+annostation_letsencrypt::existingVhosts:
+    - labeling_api-redirect
+    - labeling_api_cdn-redirect
 annostation_letsencrypt::domains:
     - weblabel.hella-aglaia.com
     - weblabel-cdn.hella-aglaia.com

@@ -35,7 +35,8 @@ supervisord::service_enable: true
 supervisord::service_ensure: running
 
 letsencrypt::email: chh@crosscan.com
-annostation_letsencrypt::existingVhost: 'labeling_api-redirect'
+annostation_letsencrypt::existingVhosts:
+    - labeling_api-redirect
 annostation_letsencrypt::domains:
     - weblabel-demo.hella-aglaia.com
 labeling_api::app::sslCertFile: '/etc/letsencrypt/live/weblabel-demo.hella-aglaia.com/fullchain.pem'

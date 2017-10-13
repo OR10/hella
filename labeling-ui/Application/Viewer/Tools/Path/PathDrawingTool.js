@@ -134,7 +134,7 @@ class PathDrawingTool extends CreationTool {
     if (this._startPosition && event.event.button === rightMouseDown) {
       if (this._path && this._path.points.length < minHandles) {
         this._path.remove();
-        this._$rootScope.$emit('drawingtool:exception', `To few points! You need to set at least ${minHandles} points to create this shape.`);
+        this._reject(new NotModifiedError(`To few points! You need to set at least ${minHandles} points to create this shape.`));
         return;
       }
       this._complete(this._path);

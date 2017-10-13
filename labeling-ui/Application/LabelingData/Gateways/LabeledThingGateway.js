@@ -428,6 +428,34 @@ class LabeledThingGateway {
       }
     );
   }
+
+  /**
+   * @param {LabeledThing} labeledThing
+   * @return {boolean}
+   */
+  hasAssociatedLabeledThingsInFrames(labeledThing) {
+    return this._packagingExecutor.execute('labeledThing', () => {
+      const task = labeledThing.task;
+      return this._getAssociatedLabeledThingsInFrames(task, labeledThing)
+        .then(labeledThingsInFrame => {
+          return (labeledThingsInFrame.rows.length > 0);
+        });
+    });
+  }
+
+  /**
+   * @param {LabeledThing} labeledThing
+   * @return {Array.<LabeledThingInFrame>}
+   */
+  getAssociatedLabeledThingsInFrames(labeledThing) {
+    return this._packagingExecutor.execute('labeledThing', () => {
+      const task = labeledThing.task;
+      return this._getAssociatedLabeledThingsInFrames(task, labeledThing)
+        .then(labeledThingsInFrame => {
+          return labeledThingsInFrame.rows.map(labeledThingInFrame => this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame.doc, labeledThing));
+        });
+    });
+  }
 }
 
 LabeledThingGateway.$inject = [
