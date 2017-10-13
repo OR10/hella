@@ -1,4 +1,3 @@
-import {inject} from 'angular-mocks';
 import RootScopeEventRegistrationService from '../../../Application/Common/Services/RootScopeEventRegistrationService';
 
 describe('RootScopeEventRegistrationService', () => {
@@ -116,7 +115,7 @@ describe('RootScopeEventRegistrationService', () => {
 
     const deregisterFunctionForSomeEvent = jasmine.createSpy('deregister someEvent');
     const deregisterFunctionForSomeOtherEvent = jasmine.createSpy('deregister someOtherEvent');
-    rootScopeMock.$on.and.callFake((eventName, handler) => {
+    rootScopeMock.$on.and.callFake(eventName => {
       switch (true) {
         case eventName === someEvent:
           return deregisterFunctionForSomeEvent;

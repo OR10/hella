@@ -451,27 +451,26 @@ describe('ViewerController tests', () => {
 
     describe('group creation multi', () => {
       beforeEach(() => {
-        shapes =
-          [
-            {
-              labeledThingInFrame: {
-                id: '4711',
-                labeledThing: {
-                  id: 'lt1',
-                  groupIds: ['1', '2'],
-                },
+        shapes = [
+          {
+            labeledThingInFrame: {
+              id: '4711',
+              labeledThing: {
+                id: 'lt1',
+                groupIds: ['1', '2'],
               },
             },
-            {
-              labeledThingInFrame: {
-                id: '4711',
-                labeledThing: {
-                  id: 'lt1',
-                  groupIds: [],
-                },
+          },
+          {
+            labeledThingInFrame: {
+              id: '4711',
+              labeledThing: {
+                id: 'lt1',
+                groupIds: [],
               },
             },
-          ];
+          },
+        ];
         controller._thingLayerContext = thingLayerContext;
         group.labeledThingGroupInFrame = ltgif;
         thingLayerContext.withScope.and.callFake(callback => callback());
