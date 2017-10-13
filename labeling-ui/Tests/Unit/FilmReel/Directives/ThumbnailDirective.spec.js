@@ -24,14 +24,15 @@ describe('ThumbnailDirective', () => {
   }
 
   function renderThumbnailDirective(
-    dimensionsWidth = 192,
-    dimensionsHeight = 108,
     location = 'http://example.com/some/nice/thumbnail.jpg',
-    isCurrent = true,
-    frameIndexPosition = 423,
-    viewportWidth = 1920,
-    viewportHeight = 1080
   ) {
+    const dimensionsWidth = 192;
+    const dimensionsHeight = 108;
+    const isCurrent = true;
+    const frameIndexPosition = 423;
+    const viewportWidth = 1920;
+    const viewportHeight = 1080;
+
     scope = rootScope.$new();
     scope.dimensions = {
       width: dimensionsWidth,
@@ -106,7 +107,7 @@ describe('ThumbnailDirective', () => {
 
   it('should request the image based on the given location', () => {
     const location = 'The ultimate location for an image file';
-    renderThumbnailDirective(undefined, undefined, location, undefined, undefined, undefined, undefined);
+    renderThumbnailDirective(location);
     expect(frameGatewayMock.getImage).toHaveBeenCalledWith(location);
   });
 
@@ -129,7 +130,7 @@ describe('ThumbnailDirective', () => {
   it('should load image on change of location attribute', () => {
     const firstLocation = 'The ultimate first location for an image file';
     const secondLocation = 'The ultimate and even better location for another image file';
-    renderThumbnailDirective(undefined, undefined, firstLocation, undefined, undefined, undefined, undefined);
+    renderThumbnailDirective(firstLocation);
 
     rootScope.$apply();
 
@@ -154,7 +155,7 @@ describe('ThumbnailDirective', () => {
       createAbortablePromise(angularQ.resolve(firstImage))
     );
 
-    renderThumbnailDirective(undefined, undefined, firstLocation, undefined, undefined, undefined, undefined);
+    renderThumbnailDirective(firstLocation);
 
     rootScope.$apply();
 
@@ -171,7 +172,7 @@ describe('ThumbnailDirective', () => {
   });
 
   it('should have no displayed image if location is null', () => {
-    renderThumbnailDirective(undefined, undefined, null, undefined, undefined, undefined, undefined);
+    renderThumbnailDirective(null);
 
     rootScope.$apply();
 
