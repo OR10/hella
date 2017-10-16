@@ -8,6 +8,8 @@ const taskMock = {
 
 const framePositionMock = {
   position: 0,
+  afterFrameChangeOnce: jasmine.createSpy('framePosition.afterFrameChangeOnce()'),
+  goto: jasmine.createSpy('framePosition.goto'),
 };
 
 class PopupPanelControllerTestable extends PopupPanelController {}
@@ -36,6 +38,7 @@ describe('PopupPanelController', () => {
   let labelStructureService;
   let labelStructure;
   let shapeMergeService;
+  let applicationState;
 
   function createAbortablePromise(inputPromise) {
     return new AbortablePromise(angularQ, inputPromise, angularQ.defer());
@@ -53,12 +56,13 @@ describe('PopupPanelController', () => {
     animationFrameService = jasmine.createSpyObj('animationFrameService', ['debounce']);
     window = jasmine.createSpyObj('$window', ['addEventListener']);
     resizeDebounced = jasmine.createSpy('resizeDebounced');
-    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['afterAnySelectionChange', 'getAllShapes']);
+    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['afterAnySelectionChange', 'getAllShapes', 'setSelectedShape', 'clear']);
     shapeInboxService = jasmine.createSpyObj('shapeInboxService', ['getAllShapes', 'addShape', 'addShapes', 'clear', 'removeShape', 'hasShape']);
     frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
     labelStructureService = jasmine.createSpyObj('labelStructureService', ['getLabelStructure']);
     labelStructure = jasmine.createSpyObj('labelStructure', ['getThingById']);
     shapeMergeService = jasmine.createSpyObj('shapeMergeService', ['mergeShapes']);
+    applicationState = jasmine.createSpyObj('applicationState', ['disableAll', 'enableAll']);
 
     drawingContextService.createContext.and.returnValue(context);
     context.withScope.and.callFake(callback => callback(drawingScope));
@@ -83,7 +87,8 @@ describe('PopupPanelController', () => {
       labelStructureService,
       shapeSelectionService,
       shapeInboxService,
-      shapeMergeService
+      shapeMergeService,
+      applicationState
     );
   });
 
@@ -120,7 +125,7 @@ describe('PopupPanelController', () => {
     });
   });
 
-  describe('hasSelectedObjects', () => {
+  describe('hasSelectedObjects()', () => {
     it('returns false by default', () => {
       const hasSelectedObjects = controller.hasSelectedObjects();
       expect(hasSelectedObjects).toEqual(false);
@@ -133,7 +138,7 @@ describe('PopupPanelController', () => {
     });
   });
 
-  describe('hasSavedObjects', () => {
+  describe('hasSavedObjects()', () => {
     it('returns false by if shapeInboxService has no shapes', () => {
       shapeInboxService.getAllShapes.and.returnValue([]);
       const hasSavedObjects = controller.hasSavedObjects();
@@ -147,7 +152,7 @@ describe('PopupPanelController', () => {
     });
   });
 
-  describe('addToInbox', () => {
+  describe('addToInbox()', () => {
     it('passes the shape to the shapeInboxService', () => {
       shapeSelectionService.getAllShapes.and.returnValue([]);
       const shape = {iama: 'shape'};
@@ -267,7 +272,7 @@ describe('PopupPanelController', () => {
     });
   });
 
-  describe('addAllToInbox', () => {
+  describe('addAllToInbox()', () => {
     it('passes the shapes to the shapeInboxService', () => {
       shapeSelectionService.getAllShapes.and.returnValue([]);
       controller._selectedObjects = {iama: 'shape', bernd: 'dasbrot'};
@@ -309,7 +314,7 @@ describe('PopupPanelController', () => {
     });
   });
 
-  describe('removeAllFromInbox', () => {
+  describe('removeAllFromInbox()', () => {
     it('it clears the shapeInboxService', () => {
       shapeSelectionService.getAllShapes.and.returnValue([]);
 
@@ -320,7 +325,7 @@ describe('PopupPanelController', () => {
     });
   });
 
-  describe('removeFromInbox', () => {
+  describe('removeFromInbox()', () => {
     it('passes the shape to the shapeInboxService', () => {
       shapeSelectionService.getAllShapes.and.returnValue([]);
       const shape = {iama: 'shape'};
@@ -332,7 +337,7 @@ describe('PopupPanelController', () => {
     });
   });
 
-  describe('mergeShapes', () => {
+  describe('mergeShapes()', () => {
     it('sends all the shapes to the merge service, which are of same type', () => {
       const firstShapeInformation = {shape: {}};
       const secondShapeInformation = {shape: []};
@@ -356,6 +361,78 @@ describe('PopupPanelController', () => {
       scope.$apply();
 
       expect(shapeInboxService.clear).toHaveBeenCalled();
+    });
+  });
+
+  describe('jumpToShape()', () => {
+    let frameIndex;
+    let labeledThingInFrame;
+    let shape;
+    let shapeInformation;
+    let viewer;
+
+    beforeEach(() => {
+      frameIndex = 5;
+      labeledThingInFrame = {frameIndex: 5};
+      shape = { id: 'bernd-das-brot', labeledThingInFrame };
+      shapeInformation = {shape};
+
+      viewer = jasmine.createSpyObj('viewer', ['work', 'finish']);
+      applicationState.viewer = viewer;
+    });
+
+    it('only selects the shape if the shape already is on the current frame', () => {
+      const originalFramePossiton = controller.framePosition.position;
+      controller.framePosition.position = frameIndex;
+
+      controller.jumpToShape(shapeInformation);
+
+      expect(controller.selectedPaperShape).toBe(shape);
+      expect(shapeSelectionService.setSelectedShape).toHaveBeenCalledWith(shape);
+      expect(framePositionMock.goto).not.toHaveBeenCalled();
+      expect(framePositionMock.afterFrameChangeOnce).not.toHaveBeenCalled();
+
+      controller.framePosition.position = originalFramePossiton;
+    });
+
+    it('clears the selection before selecting a new shape', () => {
+      controller.jumpToShape(shapeInformation);
+
+      expect(framePositionMock.afterFrameChangeOnce).toHaveBeenCalled();
+      expect(shapeSelectionService.clear).toHaveBeenCalled();
+    });
+
+    it('enables and disables the viewer', () => {
+      let afterFrameChangeOnce;
+      framePositionMock.afterFrameChangeOnce.and.callFake((name, callback) => afterFrameChangeOnce = callback);
+
+      controller.jumpToShape(shapeInformation);
+
+      expect(applicationState.viewer.work).toHaveBeenCalled();
+      expect(applicationState.disableAll).toHaveBeenCalled();
+
+      expect(applicationState.viewer.finish).not.toHaveBeenCalled();
+      expect(applicationState.enableAll).not.toHaveBeenCalled();
+
+      afterFrameChangeOnce();
+
+      expect(applicationState.viewer.finish).toHaveBeenCalled();
+      expect(applicationState.enableAll).toHaveBeenCalled();
+    });
+
+    it('selects the shape after the frame change of shape is on a different frame than the current frame', () => {
+      let afterFrameChangeOnce;
+      framePositionMock.afterFrameChangeOnce.and.callFake((name, callback) => afterFrameChangeOnce = callback);
+
+      controller.jumpToShape(shapeInformation);
+
+      expect(shapeSelectionService.setSelectedShape).not.toHaveBeenCalled();
+      expect(controller.selectedPaperShape).toBeNull();
+
+      afterFrameChangeOnce();
+
+      expect(shapeSelectionService.setSelectedShape).toHaveBeenCalledWith(shape);
+      expect(controller.selectedPaperShape).toBe(shape);
     });
   });
 });
