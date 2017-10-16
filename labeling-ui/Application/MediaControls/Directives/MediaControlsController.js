@@ -29,6 +29,7 @@ class MediaControlsController {
    * @param {ViewerMouseCursorService} viewerMouseCursorService
    * @param {CutService} cutService
    * @param {ShapeInboxService} shapeInboxService
+   * @param {ShapeSelectionService} shapeSelectionService
    */
   constructor($scope,
               $rootScope,
@@ -44,7 +45,8 @@ class MediaControlsController {
               keyboardShortcutService,
               viewerMouseCursorService,
               cutService,
-              shapeInboxService) {
+              shapeInboxService,
+              shapeSelectionService) {
     /**
      * @type {angular.$rootScope}
      */
@@ -144,6 +146,12 @@ class MediaControlsController {
      * @private
      */
     this._cutService = cutService;
+
+    /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
 
     /**
      * @type {boolean}
@@ -372,8 +380,8 @@ class MediaControlsController {
     if (this.selectedPaperShape === null) {
       return;
     }
-    const labeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
-    const labeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
+    const labeledThing = this._shapeSelectionService.getSelectedShape().labeledThingInFrame.labeledThing;
+    const labeledThingInFrame = this._shapeSelectionService.getSelectedShape().labeledThingInFrame;
 
     this._modalService.info(
       {
@@ -601,6 +609,7 @@ MediaControlsController.$inject = [
   'viewerMouseCursorService',
   'cutService',
   'shapeInboxService',
+  'shapeSelectionService',
 ];
 
 export default MediaControlsController;
