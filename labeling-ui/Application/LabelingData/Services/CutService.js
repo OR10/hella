@@ -85,8 +85,8 @@ class CutService {
       .then(ltifs => {
         const promises = [];
         ltifs.forEach(ltif => {
-          if (!ltif.ghost && ltif._labeledThing.id === labeledThing.id) {
-            ltif._labeledThing = newLabeledThing;
+          if (!ltif.ghost && ltif.labeledThing.id === labeledThing.id) {
+            ltif.labeledThing = newLabeledThing;
             promises.push(this._labeledThingInFrameGateway.saveLabeledThingInFrame(ltif));
           }
         });
