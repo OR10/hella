@@ -165,7 +165,7 @@ class ViewerTitleBarController {
         const start = this._frameIndexService.getFrameNumber(newValues[0]);
         const end = this._frameIndexService.getFrameNumber(newValues[1]);
         if (start && end) {
-          this.shapeFrameRange = `Start: ${start} End: ${end}`;
+          this.shapeFrameRange = `${start}-${end}`;
         } else {
           this.shapeFrameRange = null;
         }
