@@ -80,6 +80,7 @@ class ViewerController {
    * @param {PathCollisionService} pathCollisionService
    * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
    * @param {PouchDbContextService} pouchDbContextService
+   * @param {RootScopeEventRegistrationService} rootScopeEventRegistrationService
    */
   constructor(
     $scope,
@@ -124,6 +125,7 @@ class ViewerController {
     pathCollisionService,
     labeledThingReferentialCheckService,
     pouchDbContextService,
+    rootScopeEventRegistrationService
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -404,6 +406,12 @@ class ViewerController {
      */
     this._pouchDbContextService = pouchDbContextService;
 
+    /**
+     * @type {RootScopeEventRegistrationService}
+     * @private
+     */
+    this._rootScopeEventRegistrationService = rootScopeEventRegistrationService;
+
     const groupListener = (tool, labelStructureObject) => {
       if (this.readOnly) {
         return;
@@ -413,8 +421,16 @@ class ViewerController {
           shape => (!(shape instanceof PaperGroupRectangleMulti || shape instanceof PaperMeasurementRectangle))
         );
       if (shapes.length > 0) {
-        const struct = new GroupToolActionStruct({}, this.viewport, this.task, labelStructureObject.id, this.framePosition);
-        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(struct);
+        const struct = new GroupToolActionStruct(
+          {},
+          this.viewport,
+          this.task,
+          labelStructureObject.id,
+          this.framePosition
+        );
+        const labeledThingInGroupFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(
+          struct
+        );
         if (shapes.length === 2) {
           const firstLabeledThing = shapes[0].labeledThingInFrame.labeledThing;
           const secondLabeledThing = shapes[1].labeledThingInFrame.labeledThing;
@@ -454,8 +470,12 @@ class ViewerController {
                 } else {
                   // add to selected group
                   this._thingLayerContext.withScope(() => {
-                    const toAddShape = shapes.find(candidate => !candidate.labeledThingInFrame.labeledThing.groupIds.includes(group.id));
-                    const groupShape = this.paperGroupShapes.find(pgs => pgs.labeledThingGroupInFrame.labeledThingGroup.id === group.id);
+                    const toAddShape = shapes.find(
+                      candidate => !candidate.labeledThingInFrame.labeledThing.groupIds.includes(group.id)
+                    );
+                    const groupShape = this.paperGroupShapes.find(
+                      pgs => pgs.labeledThingGroupInFrame.labeledThingGroup.id === group.id
+                    );
                     groupShape.addShape(toAddShape);
                     this._updateGroup(group, toAddShape);
                     this._handleGroupAddAfterActions(groupShape);
@@ -467,24 +487,24 @@ class ViewerController {
                 this._shapeSelectionService.clear();
               }
             )
-            .then(selectionDialog => {
-              this._modalService.show(selectionDialog);
-            })
-            .catch(() => {
-              this._modalService.info(
-                {
-                  title: 'Error retrieving group correlation',
-                  headline: 'The list of corresponding groups to the selected labeled thing could not be loaded. Please try again or inform your label manager if the problem persists.',
-                  confirmButtonText: 'Understood',
-                },
-                undefined,
-                undefined,
-                {
-                  warning: true,
-                  abortable: false,
-                }
-              );
-            });
+              .then(selectionDialog => {
+                this._modalService.show(selectionDialog);
+              })
+              .catch(() => {
+                this._modalService.info(
+                  {
+                    title: 'Error retrieving group correlation',
+                    headline: 'The list of corresponding groups to the selected labeled thing could not be loaded. Please try again or inform your label manager if the problem persists.',
+                    confirmButtonText: 'Understood',
+                  },
+                  undefined,
+                  undefined,
+                  {
+                    warning: true,
+                    abortable: false,
+                  }
+                );
+              });
           }
         } else {
           this._thingLayerContext.withScope(() => {
@@ -619,7 +639,7 @@ class ViewerController {
      * Inform the user about authoriztion loss with the couchdb.
      */
     let unauthorizedAccessModalOpen = false;
-    $rootScope.$on('pouchdb:replication:unauthorized', () => {
+    this._rootScopeEventRegistrationService.register(this, 'pouchdb:replication:unauthorized', () => {
       this._inProgressService.end();
       const context = this._pouchDbContextService.provideContextForTaskId(this.task.id);
       this._pouchDbSyncManager.stopReplicationsForContext(context);
@@ -675,6 +695,8 @@ class ViewerController {
         $window.removeEventListener('resize', this._resizeDebounced);
         $window.removeEventListener('visibilitychange', onVisibilityChange);
         this._toolSelectorListenerService.removeAllListeners();
+        this._rootScopeEventRegistrationService.deregister(this);
+        this._rootScopeEventRegistrationService.deregister(this.thingLayer);
       }
     );
 
@@ -737,12 +759,15 @@ class ViewerController {
       this._debouncedOnThingUpdate.triggerImmediately().then(() => this._handleFrameChange(newPosition));
     });
 
-    $rootScope.$on('framerange:change:after', () => {
+    const reloadFrame = () => {
       this._debouncedOnThingUpdate.triggerImmediately()
         .then(() => this._handleFrameChange(this._currentFrameIndex));
-    });
+    };
 
-    $rootScope.$on('shape:delete:after', () => {
+    this._rootScopeEventRegistrationService.register(this, 'framerange:change:after', () => reloadFrame());
+    this._rootScopeEventRegistrationService.register(this, 'shape:merge:after', () => reloadFrame());
+
+    this._rootScopeEventRegistrationService.register(this, 'shape:delete:after', () => {
       this._applicationState.disableAll();
       this._$q.all([
         this._loadLabeledThingsInFrame(this._currentFrameIndex),
@@ -776,6 +801,11 @@ class ViewerController {
             }
           );
         });
+    });
+
+    this._rootScopeEventRegistrationService.register(this, 'action:reload-frame', () => {
+      this._debouncedOnThingUpdate.triggerImmediately()
+        .then(() => this._handleFrameChange(this._currentFrameIndex));
     });
 
     $scope.$watch(
@@ -875,7 +905,7 @@ class ViewerController {
 
     // TODO: look for a better position for this kind of handling?!
     // Handle the change from thing to meta labeling here.
-    this._$rootScope.$on('label-structure-type:change', (event, labeledFrame) => {
+    this._rootScopeEventRegistrationService.register(this, 'label-structure-type:change', (event, labeledFrame) => {
       this._thingLayerContext.withScope(() => {
         this.selectedPaperShape = new PaperFrame(labeledFrame);
       });
@@ -1006,6 +1036,7 @@ class ViewerController {
       this._groupSelectionDialogFactory,
       this._pathCollisionService,
       this._labeledThingReferentialCheckService,
+      this._rootScopeEventRegistrationService
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1329,23 +1360,28 @@ class ViewerController {
    * @private
    */
   _fetchGhostedLabeledThingInFrame(frameIndex) {
-    if (this.selectedPaperShape === null) {
+    let selectedPaperShape = this._shapeSelectionService.getSelectedShape();
+    if (selectedPaperShape === null || selectedPaperShape === undefined) {
+      selectedPaperShape = this.selectedPaperShape;
+    }
+
+    if (selectedPaperShape === null) {
       return Promise.resolve(null);
     }
 
-    if (this.selectedPaperShape instanceof PaperGroupShape) {
+    if (selectedPaperShape instanceof PaperGroupShape) {
       return Promise.resolve(null);
     }
 
-    if (this.selectedPaperShape instanceof PaperFrame) {
+    if (selectedPaperShape instanceof PaperFrame) {
       return Promise.resolve(null);
     }
 
-    if (this.selectedPaperShape instanceof PaperVirtualShape) {
+    if (selectedPaperShape instanceof PaperVirtualShape) {
       return Promise.resolve(null);
     }
 
-    const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
+    const selectedLabeledThing = selectedPaperShape.labeledThingInFrame.labeledThing;
 
     return this._ghostedLabeledThingInFrameBuffer.add(
       this._labeledThingInFrameGateway.getLabeledThingInFrame(
@@ -1890,6 +1926,7 @@ ViewerController.$inject = [
   'pathCollisionService',
   'labeledThingReferentialCheckService',
   'pouchDbContextService',
+  'rootScopeEventRegistrationService',
 ];
 
 export default ViewerController;
