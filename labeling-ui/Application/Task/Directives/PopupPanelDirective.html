@@ -84,12 +84,21 @@
         <div id="popup-inbox-selected">
             <p class="shape-list-header">
                 Selected unsaved Shapes
-                <i class="icon fa fa-plus-circle" ng-click="vm.addAllToInbox()" ng-show="vm.hasSelectedObjects()"></i>
+                <i class="icon fa fa-plus-circle"
+                   ng-click="vm.addAllToInbox()"
+                   ng-show="vm.hasSelectedObjects()"
+                   tooltip="Add all selected Shapes to inbox"
+                   tooltip-position="up"
+                ></i>
             </p>
             <div class="popup-inbox-list">
                 <p class="selected-shape" ng-show="!vm.hasSelectedObjects()">No shapes selected</p>
                 <p class="selected-shape" ng-repeat="selectedObject in vm.selectedObjects track by selectedObject.shape.id">
-                    <i class="icon fa fa-plus-circle" ng-click="vm.addToInbox(selectedObject)"></i>
+                    <i class="icon fa fa-plus-circle"
+                       ng-click="vm.addToInbox(selectedObject)"
+                       tooltip="Add this object to the inbox"
+                       tooltip-position="up"
+                    ></i>
                     <i class="icon icon-tool-{{ selectedObject.labelStructureObject.shape }}"></i>
                     <span>{{ selectedObject.label }}</span>
                 </p>
@@ -99,14 +108,31 @@
         <div id="popup-inbox-saved">
             <p class="shape-list-header">
                 Saved shapes
-                <i class="icon fa fa-minus-circle" ng-click="vm.removeAllFromInbox()" ng-show="vm.hasSavedObjects()"></i>
+                <i class="icon fa fa-minus-circle"
+                   ng-click="vm.removeAllFromInbox()"
+                   ng-show="vm.hasSavedObjects()"
+                   tooltip="Remove all shapes from the inbox"
+                   tooltip-position="up"
+                ></i>
             </p>
             <div class="popup-inbox-list">
                 <p class="selected-shape" ng-show="!vm.hasSavedObjects()">No shapes saved</p>
                 <p class="selected-shape" ng-repeat="selectedObject in vm.savedObjects track by selectedObject.shape.id">
-                    <i class="icon fa fa-minus-circle" ng-click="vm.removeFromInbox(selectedObject)"></i>
-                    <i class="icon fa fa-map-marker" ng-click="vm.jumpToShape(selectedObject)"></i>
-                    <i class="icon fa fa-share" ng-click="vm.reselectFromInbox(selectedObject)"></i>
+                    <i class="icon fa fa-minus-circle"
+                       ng-click="vm.removeFromInbox(selectedObject)"
+                       tooltip="Remove this object from the inbox"
+                       tooltip-position="up"
+                    ></i>
+                    <i class="icon fa fa-map-marker"
+                       ng-click="vm.jumpToShape(selectedObject)"
+                       tooltip="Jump to this object and select it"
+                       tooltip-position="up"
+                    ></i>
+                    <i class="icon fa fa-share"
+                       ng-click="vm.reselectFromInbox(selectedObject)"
+                       tooltip="Reselect this object injecting it into the current frame"
+                       tooltip-position="up"
+                    ></i>
                     <i class="icon icon-tool-{{ selectedObject.labelStructureObject.shape }}"></i>
                     <span>{{ selectedObject.label }}</span>
                 </p>
