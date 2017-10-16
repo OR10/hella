@@ -1,0 +1,121 @@
+[
+  {
+    "classes": [],
+    "groupIds": ["LABELED-THING-GROUP-ID"],
+    "frameRange": {
+      "startFrameIndex": 0,
+      "endFrameIndex": 3,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "incomplete": true,
+    "lineColor": "6",
+    "taskId": "TASKID-TASKID",
+    "_id": "LABELED-THING-ID-1",
+    "type": "AppBundle.Model.LabeledThing"
+  },
+  {
+    "classes": [],
+    "frameIndex": 0,
+    "incomplete": true,
+    "labeledThingId": "LABELED-THING-ID-1",
+    "identifierName": "legacy",
+    "shapes": [
+      {
+        "bottomRight": {
+          "x": 200,
+          "y": 200
+        },
+        "id": "SHAPE-ID-1",
+        "topLeft": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "rectangle"
+      }
+    ],
+    "_id": "LABELED-THING-IN-FRAME-ID-1",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "classes": [],
+    "frameIndex": 1,
+    "incomplete": true,
+    "labeledThingId": "LABELED-THING-ID-1",
+    "identifierName": "legacy",
+    "shapes": [
+      {
+        "bottomRight": {
+          "x": 250,
+          "y": 250
+        },
+        "id": "SHAPE-ID-1",
+        "topLeft": {
+          "x": 150,
+          "y": 150
+        },
+        "type": "rectangle"
+      }
+    ],
+    "_id": "LABELED-THING-IN-FRAME-ID-2",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "classes": [],
+    "frameIndex": 2,
+    "incomplete": true,
+    "labeledThingId": "LABELED-THING-ID-1",
+    "identifierName": "legacy",
+    "shapes": [
+      {
+        "bottomRight": {
+          "x": 300,
+          "y": 300
+        },
+        "id": "SHAPE-ID-1",
+        "topLeft": {
+          "x": 200,
+          "y": 200
+        },
+        "type": "rectangle"
+      }
+    ],
+    "_id": "LABELED-THING-IN-FRAME-ID-3",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "classes": [],
+    "frameIndex": 3,
+    "incomplete": true,
+    "labeledThingId": "LABELED-THING-ID-1",
+    "identifierName": "legacy",
+    "shapes": [
+      {
+        "bottomRight": {
+          "x": 350,
+          "y": 350
+        },
+        "id": "SHAPE-ID-1",
+        "topLeft": {
+          "x": 250,
+          "y": 250
+        },
+        "type": "rectangle"
+      }
+    ],
+    "_id": "LABELED-THING-IN-FRAME-ID-4",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "_id": "LABELED-THING-GROUP-ID",
+    "taskId": "TASKID-TASKID",
+    "identifierName": "extension-sign-group",
+    "lineColor": "1",
+    "type": "AnnoStationBundle.Model.LabeledThingGroup",
+    "groupIds": [
+    ]
+  }
+]
