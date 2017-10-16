@@ -8,6 +8,7 @@ use AnnoStationBundle\Controller;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Worker\Jobs;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -15,6 +16,8 @@ use FOS\RestBundle\Controller\Annotations\Version;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use crosscan\WorkerPool;
+use crosscan\WorkerPool\AMQP;
 
 /**
  * @Version("v1")
@@ -61,6 +64,11 @@ class Status extends Controller\Base
     private $userPermissions;
 
     /**
+     * @var AMQP\FacadeAMQP
+     */
+    private $amqpFacade;
+
+    /**
      * @param Facade\LabelingTask                           $labelingTaskFacade
      * @param Storage\TokenStorage                          $tokenStorage
      * @param Facade\Project                                $projectFacade
@@ -68,6 +76,7 @@ class Status extends Controller\Base
      * @param Service\Authorization                         $authorizationService
      * @param Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
      * @param Authentication\UserPermissions                $userPermissions
+     * @param AMQP\FacadeAMQP                               $amqpFacade
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
@@ -76,7 +85,8 @@ class Status extends Controller\Base
         Facade\LabeledThing $labeledThingFacade,
         Service\Authorization $authorizationService,
         Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService,
-        Authentication\UserPermissions $userPermissions
+        Authentication\UserPermissions $userPermissions,
+        AMQP\FacadeAMQP $amqpFacade
     ) {
         $this->labelingTaskFacade                = $labelingTaskFacade;
         $this->tokenStorage                      = $tokenStorage;
@@ -85,6 +95,7 @@ class Status extends Controller\Base
         $this->databaseSecurityPermissionService = $databaseSecurityPermissionService;
         $this->labeledThingFacade                = $labeledThingFacade;
         $this->userPermissions                   = $userPermissions;
+        $this->amqpFacade                        = $amqpFacade;
     }
 
     /**
@@ -140,6 +151,9 @@ class Status extends Controller\Base
         }
 
         $this->labelingTaskFacade->save($task);
+
+        $job = new Jobs\DeleteInvalidLtifLtAndLtgReferences($task->getId());
+        $this->amqpFacade->addJob($job, WorkerPool\Facade::HIGH_PRIO);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }

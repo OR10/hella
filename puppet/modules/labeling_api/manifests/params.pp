@@ -1,6 +1,7 @@
 class labeling_api::params(
   $config_dir = undef,
   $cache_dir = undef,
+  $deleted_objects_dir = undef,
 
   $configure_nginx = true,
   $prepare_test_environment = false,
