@@ -47,17 +47,17 @@ class labeling_api::common(
 
   file { "${deletedObjectsDir}":
     ensure => 'directory',
-    mode   => "777",
+    mode   => "766",
   }
 
   file { "${deletedObjectsDir}/logs":
     ensure => 'directory',
-    mode   => "777",
+    mode   => "766",
   }
 
   file { "${deletedObjectsDir}/files":
     ensure => 'directory',
-    mode   => "777",
+    mode   => "766",
   }
 
   if $sslCert {
