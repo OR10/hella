@@ -455,6 +455,11 @@ class TaskCreator
             $minimalVisibleShapeOverflow = $taskConfigurationJson['minimalVisibleShapeOverflow'];
         } elseif ($taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml) {
             $taskType = Model\LabelingTask::TYPE_OBJECT_LABELING;
+            $xpath = $taskConfiguration->getXpathQuery();
+            $minimalVisibleShapeOverflowResult = $xpath->evaluate('/r:requirements/r:options/r:minimal-visible-shape-overflow/text()');
+            if ($minimalVisibleShapeOverflowResult !== false && $minimalVisibleShapeOverflowResult->length === 1) {
+                $minimalVisibleShapeOverflow = (int)$minimalVisibleShapeOverflowResult->item(0)->nodeValue;
+            }
         } else {
             $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction(
                 $taskType,

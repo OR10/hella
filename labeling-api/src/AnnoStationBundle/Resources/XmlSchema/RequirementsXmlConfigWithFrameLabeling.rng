@@ -15,6 +15,9 @@
             <interleave>
                 <ref name="Metadata"/>
                 <optional>
+                    <ref name="Options"/>
+                </optional>
+                <optional>
                     <ref name="Frame"/>
                 </optional>
                 <zeroOrMore>
@@ -34,6 +37,15 @@
             <element name="r:export-postfix">
                 <text/>
             </element>
+        </element>
+    </define>
+    <define name="Options">
+        <element name="r:options">
+            <optional>
+                <element name="r:minimal-visible-shape-overflow">
+                    <text/>
+                </element>
+            </optional>
         </element>
     </define>
     <define name="Frame">
