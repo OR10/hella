@@ -81,17 +81,50 @@ describe('Cut shapes', () => {
           .click()
           .perform();
       })
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CutShapes', 'DrawOneRectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CutShapes.DrawOneRectangle);
-      })
       .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThing0to1).toExistInPouchDb())
       .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThing2to3).toExistInPouchDb())
       .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThingInFrame0).toExistInPouchDb())
       .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThingInFrame2).toExistInPouchDb())
+      .then(() => {
+        expectAllModalsToBeClosed();
+        done();
+      });
+  });
+
+  it('should select the correct shape after cutting', done => {
+    bootstrapPouch([
+      assets.documents.CutShapes.DrawOneRectangle.LabeledThingInFrame.frameIndex0to3,
+    ]);
+
+    const nextFrameButton = element(by.css('.next-frame-button'));
+
+    initApplication(
+      '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 260, y: 260})
+          .click()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => cutShapeButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        const confirmButton = element(by.css('#modal-confirm-button'));
+        return confirmButton.click();
+      })
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('CutShapes', 'SelectedCuttedShape')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.CutShapes.SelectedCuttedShape);
+      })
       .then(() => {
         expectAllModalsToBeClosed();
         done();
