@@ -27,7 +27,9 @@ class MediaControlsController {
    * @param {ModalService} modalService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
+   * @param {CutService} cutService
    * @param {ShapeInboxService} shapeInboxService
+   * @param {ShapeSelectionService} shapeSelectionService
    */
   constructor($scope,
               $rootScope,
@@ -42,7 +44,9 @@ class MediaControlsController {
               modalService,
               keyboardShortcutService,
               viewerMouseCursorService,
-              shapeInboxService) {
+              cutService,
+              shapeInboxService,
+              shapeSelectionService) {
     /**
      * @type {angular.$rootScope}
      */
@@ -136,6 +140,18 @@ class MediaControlsController {
      * @private
      */
     this._shapeInboxService = shapeInboxService;
+
+    /**
+     * @type {CutService}
+     * @private
+     */
+    this._cutService = cutService;
+
+    /**
+     * @type {ShapeSelectionService}
+     * @private
+     */
+    this._shapeSelectionService = shapeSelectionService;
 
     /**
      * @type {boolean}
@@ -351,6 +367,65 @@ class MediaControlsController {
     this._$rootScope.$emit('action:ask-and-delete-shape', this.task, this.selectedPaperShape);
   }
 
+  /**
+   *
+   * @param shape
+   * @returns {boolean}
+   */
+  isPaperThingShape(shape) {
+    return shape instanceof PaperThingShape;
+  }
+
+  handleCutShape() {
+    if (this.selectedPaperShape === null) {
+      return;
+    }
+    const labeledThing = this._shapeSelectionService.getSelectedShape().labeledThingInFrame.labeledThing;
+    const labeledThingInFrame = this._shapeSelectionService.getSelectedShape().labeledThingInFrame;
+
+    this._modalService.info(
+      {
+        title: 'Cut Shape',
+        headline: 'Do you really want to cut the shape here?',
+        confirmButtonText: 'Yes',
+      },
+      () => {
+        this._applicationState.disableAll();
+        this._applicationState.viewer.work();
+        this._cutService.cutShape(labeledThing, labeledThingInFrame, this.framePosition.position).then(
+          () => {
+            this._applicationState.viewer.finish();
+            this._applicationState.enableAll();
+            this._$rootScope.$emit('framerange:change:after');
+          })
+          .catch(error => {
+            this._applicationState.viewer.finish();
+            this._applicationState.enableAll();
+            this._modalService.info(
+              {
+                title: 'Cutting error',
+                headline: error,
+                confirmButtonText: 'Understood',
+              },
+              undefined,
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+
+            throw error;
+          });
+      },
+      undefined,
+      {
+        warning: false,
+        abortable: true,
+      }
+    );
+  }
+
   handlePlay() {
     this.playing = true;
     this.playbackDirection = 'forwards';
@@ -532,7 +607,9 @@ MediaControlsController.$inject = [
   'modalService',
   'keyboardShortcutService',
   'viewerMouseCursorService',
+  'cutService',
   'shapeInboxService',
+  'shapeSelectionService',
 ];
 
 export default MediaControlsController;

@@ -18,7 +18,7 @@ describe('MediaControlsController test suite', () => {
     const keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey']);
     shapeInboxService = jasmine.createSpyObj('shapeInboxService', ['count']);
 
-    controller = new MediaControlsController(scope, rootScope, null, null, null, null, null, null, null, applicationState, null, keyboardShortcutService, null, shapeInboxService);
+    controller = new MediaControlsController(scope, rootScope, null, null, null, null, null, null, null, applicationState, null, keyboardShortcutService, null, null, shapeInboxService);
   });
 
   it('should be instantiable', () => {

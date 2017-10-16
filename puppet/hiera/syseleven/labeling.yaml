@@ -55,6 +55,7 @@ labeling_api::common::sslCert: 'anno.crosscan.com'
 
 labeling_api::params::config_dir: '/etc/AnnoStation/labeling-api'
 labeling_api::params::cache_dir: '/var/cache/labeling_api'
+labeling_api::params::deleted_objects_dir: '/var/labeling_api_deleted_objects'
 labeling_api::params::database_name: 'labeling_api'
 labeling_api::params::database_name_read_only: 'labeling_api_read_only'
 labeling_api::params::database_user: 'labeling_api'

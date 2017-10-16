@@ -10,6 +10,7 @@
  */
 class labeling_api::common(
   $cacheDir = $labeling_api::params::cache_dir,
+  $deletedObjectsDir = $labeling_api::params::deleted_objects_dir,
   $frameCdnDir = $labeling_api::params::frame_cdn_dir,
   $videoCdnDir = $labeling_api::params::video_cdn_dir,
   $sslCert = undef,
@@ -42,6 +43,21 @@ class labeling_api::common(
   file { $cacheDir:
     ensure => 'directory',
     mode   => "777",
+  }
+
+  file { "${deletedObjectsDir}":
+    ensure => 'directory',
+    mode   => "766",
+  }
+
+  file { "${deletedObjectsDir}/logs":
+    ensure => 'directory',
+    mode   => "766",
+  }
+
+  file { "${deletedObjectsDir}/files":
+    ensure => 'directory',
+    mode   => "766",
   }
 
   if $sslCert {
