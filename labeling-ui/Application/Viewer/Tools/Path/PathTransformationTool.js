@@ -59,7 +59,7 @@ class PathTransformationTool extends TransformationTool {
   /**
    * @param {paper.Event} event
    */
-  onMouseDown(event) {
+  onMouseUp(event) {
     const point = event.point;
     const selectedShape = this._toolActionStruct.shape;
     const [hitShape, hitHandle = null] = this._getHitShapeAndHandle(point);
