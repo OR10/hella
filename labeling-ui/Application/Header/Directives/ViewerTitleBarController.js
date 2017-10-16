@@ -147,12 +147,30 @@ class ViewerTitleBarController {
     this.shapeBounds = null;
 
     /**
+     * @type {string}
+     */
+    this.shapeFrameRange = null;
+
+    /**
      * @type {{lowerLimit, upperLimit}|{lowerLimit: number, upperLimit: number}}
      */
     this.frameNumberLimits = this._frameIndexService.getFrameNumberLimits();
 
     this.refreshIncompleteCount();
     this._registerOnEvents();
+
+    $scope.$watchGroup(
+      ['vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex', 'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameIndex'],
+      newValues => {
+        const start = this._frameIndexService.getFrameNumber(newValues[0]);
+        const end = this._frameIndexService.getFrameNumber(newValues[1]);
+        if (start && end) {
+          this.shapeFrameRange = `Start: ${start} End: ${end}`;
+        } else {
+          this.shapeFrameRange = null;
+        }
+      }
+    );
 
     $scope.$watchGroup(['vm.selectedPaperShape.bounds.width', 'vm.selectedPaperShape.bounds.height'], newValues => {
       const width = newValues[0];

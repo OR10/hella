@@ -13,6 +13,9 @@
                 frame-number-limits="vm.frameNumberLimits"
                 label-instruction="vm.task.labelInstruction"
     ></task-title>
+    <div class="grid-block text-center noscroll" ng-show="vm.shapeFrameRange">
+        <span class="align-self-center">{{vm.shapeFrameRange}}</span>
+    </div>
     <div class="grid-block text-center noscroll" ng-show="vm.shapeBounds">
         <span class="align-self-center">{{vm.shapeBounds}}</span>
     </div>
