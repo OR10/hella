@@ -78,6 +78,20 @@ describe('Polygon vertex', () => {
       .perform();
   }
 
+  function mouseDownAtPositionOne() {
+    return browser.actions()
+      .mouseMove(viewer, {x: 300, y: 50}) // initial position
+      .mouseDown()
+      .perform();
+  }
+
+  function mouseUpAtPositionOne() {
+    return browser.actions()
+      .mouseMove(viewer, {x: 300, y: 50}) // initial position
+      .mouseUp()
+      .perform();
+  }
+
   function clickAtPositionTwo() {
     return browser.actions()
       .mouseMove(viewer, {x: 900, y: 590}) // initial position
@@ -130,6 +144,74 @@ describe('Polygon vertex', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.AddNewVertexToPolygon);
+        done();
+      });
+  });
+
+  it('should add a new vertex to a polygon on mouseup not mousedown (TTANNO-2137)', done => {
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => selectFirstPolygon())
+      .then(() => mediumSleep())
+      .then(() => pressDownAltKey())
+      .then(() => mouseDownAtPositionOne())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'MouseDownOnNewVertexOfPolygon'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.MouseDownOnNewVertexOfPolygon);
+      })
+      .then(() => mouseUpAtPositionOne())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddNewVertexToPolygon'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.AddNewVertexToPolygon);
+        done();
+      });
+  });
+
+  it('should add and remove new vertex to/from a polygon on mouseup not mousedown (TTANNO-2137)', done => {
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => selectFirstPolygon())
+      .then(() => mediumSleep())
+      .then(() => pressDownAltKey())
+      .then(() => mouseDownAtPositionOne())
+      .then(() => mediumSleep())
+      .then(() => mouseUpAtPositionOne())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(() => pressDownAltKey())
+      .then(() => mouseDownAtPositionOne())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddNewVertexToPolygon'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.AddNewVertexToPolygon);
+      })
+      .then(() => mouseUpAtPositionOne())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'MouseDownOnNewVertexOfPolygon'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.MouseDownOnNewVertexOfPolygon);
         done();
       });
   });
