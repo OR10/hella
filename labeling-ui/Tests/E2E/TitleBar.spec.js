@@ -58,8 +58,18 @@ describe('Title Bar', () => {
       .then(() => mediumSleep())
       .then(() => {
         expect(shapeFrameRange.getText()).toBe('1-4');
-        done();
-      });
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 255, y: 255})
+          .click()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(shapeFrameRange.getText()).toBe('1-1');
+      })
+      .then(() => done());
   });
 
   it('should display the frame index range for labeled thing groups', done => {
@@ -78,8 +88,18 @@ describe('Title Bar', () => {
       .then(() => mediumSleep())
       .then(() => {
         expect(shapeFrameRange.getText()).toBe('1-4');
-        done();
-      });
+      })
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 250, y: 235})
+          .click()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(shapeFrameRange.getText()).toBe('1-1');
+      })
+      .then(() => done());
   });
 
   afterEach(() => {
