@@ -105,10 +105,25 @@
                 <p class="selected-shape" ng-show="!vm.hasSavedObjects()">No shapes saved</p>
                 <p class="selected-shape" ng-repeat="selectedObject in vm.savedObjects track by selectedObject.shape.id">
                     <i class="icon fa fa-minus-circle" ng-click="vm.removeFromInbox(selectedObject)"></i>
+                    <i class="icon fa fa-share" ng-click="vm.reselectFromInbox(selectedObject)"></i>
                     <i class="icon icon-tool-{{ selectedObject.labelStructureObject.shape }}"></i>
                     <span>{{ selectedObject.label }}</span>
                 </p>
             </div>
+        </div>
+
+        <div class="popup-inbox-actions">
+            <p class="popup-inbox-action" ng-disabled="!vm.hasMergableObjects" ng-click="vm.mergeShapes()">
+                <i class="icon fa fa-compress"></i>
+                Merge
+            </p>
+            <p class="popup-inbox-action" ng-disabled="!vm.hasSavedObjects()" ng-click="vm.removeAllFromInbox()">
+                <i class="icon fa fa-trash-o"></i>
+                Empty
+            </p>
+            <p class="popup-inbox-action">
+                <!--One more action possible-->
+            </p>
         </div>
     </div>
 </div>

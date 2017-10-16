@@ -1,5 +1,4 @@
 import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
-import PaperFrame from 'Application/Viewer/Shapes/PaperFrame';
 
 /**
  * Controller handling the control elements below the viewer frame
@@ -28,8 +27,8 @@ class MediaControlsController {
    * @param {ModalService} modalService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {ViewerMouseCursorService} viewerMouseCursorService
-   * @param {ShapeSelectionService} shapeSelectionService
    * @param {CutService} cutService
+   * @param {ShapeInboxService} shapeInboxService
    */
   constructor($scope,
               $rootScope,
@@ -44,8 +43,8 @@ class MediaControlsController {
               modalService,
               keyboardShortcutService,
               viewerMouseCursorService,
-              shapeSelectionService,
-              cutService) {
+              cutService,
+              shapeInboxService) {
     /**
      * @type {angular.$rootScope}
      */
@@ -135,10 +134,10 @@ class MediaControlsController {
     this.fpsInputVisible = false;
 
     /**
-     * @type {ShapeSelectionService}
+     * @type {ShapeInboxService}
      * @private
      */
-    this._shapeSelectionService = shapeSelectionService;
+    this._shapeInboxService = shapeInboxService;
 
     /**
      * @type {CutService}
@@ -175,10 +174,7 @@ class MediaControlsController {
    * @return {number}
    */
   get selectedItemsCount() {
-    // Filter PaperFrames
-    const selectedShapes = this._shapeSelectionService.getAllShapes();
-    const selectedShapesFiltered = selectedShapes.filter(shape => !(shape instanceof PaperFrame));
-    return selectedShapesFiltered.length;
+    return this._shapeInboxService.count();
   }
 
   /**
@@ -603,8 +599,8 @@ MediaControlsController.$inject = [
   'modalService',
   'keyboardShortcutService',
   'viewerMouseCursorService',
-  'shapeSelectionService',
   'cutService',
+  'shapeInboxService',
 ];
 
 export default MediaControlsController;

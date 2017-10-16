@@ -9,8 +9,10 @@ class PopupPanelController {
   /**
    *
    * @param {$rootScope.Scope} $scope
+   * @param {$q} $q
    * @param {angular.$window} $window
    * @param {angular.$element} $element
+   * @param {$rootScope} $rootScope
    * @param {AnimationFrameService} animationFrameService
    * @param {DrawingContextService} drawingContextService
    * @param {FrameGateway} frameGateway
@@ -20,11 +22,14 @@ class PopupPanelController {
    * @param {LabelStructureService} labelStructureService
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ShapeInboxService} shapeInboxService
+   * @param {ShapeMergeService} shapeMergeService
    */
   constructor(
     $scope,
+    $q,
     $window,
     $element,
+    $rootScope,
     animationFrameService,
     drawingContextService,
     frameGateway,
@@ -33,11 +38,24 @@ class PopupPanelController {
     $timeout,
     labelStructureService,
     shapeSelectionService,
-    shapeInboxService
+    shapeInboxService,
+    shapeMergeService
   ) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
     this._supportedImageTypes = ['sourceJpg', 'source'];
+
+    /**
+     * @type {$rootScope}
+     * @private
+     */
+    this._$rootScope = $rootScope;
+
+    /**
+     * @type {$q}
+     * @private
+     */
+    this._$q = $q;
 
     /**
      * @type {AbortablePromiseFactory}
@@ -86,7 +104,17 @@ class PopupPanelController {
      */
     this._shapeInboxService = shapeInboxService;
 
+    /**
+     * @type {HTMLImageElement|null}
+     * @private
+     */
     this._activeBackgroundImage = null;
+
+    /**
+     * @type {ShapeMergeService}
+     * @private
+     */
+    this._shapeMergeService = shapeMergeService;
 
     /**
      * @type {DrawingContext}
@@ -202,6 +230,8 @@ class PopupPanelController {
     this._shapeSelectionService.afterAnySelectionChange('PopupPanelController', () => {
       this._loadSelectedObjects();
     });
+
+    this.hasMergableObjects = false;
   }
 
   /**
@@ -233,6 +263,55 @@ class PopupPanelController {
   }
 
   /**
+   * Check if shapes in inbox can be merged. Conditions are:
+   *  - All shapes are on different frames
+   *  - The root shape does not have LTIFs on any frame of the other objects
+   *  - All shapes are of the same type
+   *
+   * @private
+   */
+  _calculateMergableObjects() {
+    if (this.savedObjects.length > 1) {
+      const rootShape = this.savedObjects[0].shape;
+      const rootShapeConstructor = rootShape.constructor;
+
+      let mergable = true;
+
+      this.savedObjects.forEach(object => {
+        // Do nothing if the current object is the rootObject or if the shapes are already unmergable
+        if (object.shape === rootShape || !mergable) {
+          return;
+        }
+        const isOfSameType = (rootShapeConstructor === object.shape.constructor);
+
+        mergable &= isOfSameType;
+      });
+
+      this.hasMergableObjects = !!mergable;
+    } else {
+      this.hasMergableObjects = false;
+    }
+  }
+
+  mergeShapes() {
+    const rootShape = this.savedObjects[0].shape;
+    const rootShapeConstructor = rootShape.constructor;
+
+    // const shapes = this.savedObjects.map(object => object.shape);
+    const mergableShapes = this.savedObjects.filter(object => {
+      const shape = object.shape;
+      if (shape === rootShape) {
+        return true;
+      }
+      const isOfSameType = (rootShapeConstructor === shape.constructor);
+
+      return isOfSameType;
+    });
+
+    this._shapeMergeService.mergeShapes(mergableShapes).then(() => this.removeAllFromInbox());
+  }
+
+  /**
    * Adds a shape to the inbox
    *
    * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
@@ -261,11 +340,27 @@ class PopupPanelController {
   /**
    * Removes a shape from the inbox
    *
-   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
+   * @param {{shape: PaperThingShape, label: string, labelStructureObject: LabelStructureObject}} shapeInformation
    */
   removeFromInbox(shapeInformation) {
     this._shapeInboxService.removeShape(shapeInformation);
     this._loadSelectedObjects();
+  }
+
+  /**
+   * Gets a shape from the inbox and reselects it
+   *
+   * The shape will afterwards be removed from the inbox, as it is selected again.
+   *
+   * @param {{shape: PaperThingShape, label: string, labelStructureObject: LabelStructureObject}} shapeInformation
+   */
+  reselectFromInbox(shapeInformation) {
+    this._shapeInboxService.removeShape(shapeInformation);
+    this._shapeSelectionService.setSelectedShape(shapeInformation.shape);
+    this.selectedPaperShape = shapeInformation.shape;
+    this._loadSelectedObjects();
+
+    this._$rootScope.$emit('action:reload-frame');
   }
 
   /**
@@ -281,6 +376,11 @@ class PopupPanelController {
       if (shape.labeledThingInFrame === undefined) {
         return;
       }
+
+      if (shape.labeledThingInFrame.ghost) {
+        return;
+      }
+
       this._labelStructureService.getLabelStructure(shape.labeledThingInFrame.task)
         .then(structure => {
           return structure.getThingById(shape.labeledThingInFrame.identifierName);
@@ -298,7 +398,8 @@ class PopupPanelController {
               this._selectedObjects[shape.id] = shapeInformation;
             }
           }
-        });
+        })
+        .then(() => this._calculateMergableObjects());
     });
   }
 
@@ -446,8 +547,10 @@ class PopupPanelController {
 
 PopupPanelController.$inject = [
   '$scope',
+  '$q',
   '$window',
   '$element',
+  '$rootScope',
   'animationFrameService',
   'drawingContextService',
   'frameGateway',
@@ -457,6 +560,7 @@ PopupPanelController.$inject = [
   'labelStructureService',
   'shapeSelectionService',
   'shapeInboxService',
+  'shapeMergeService',
 ];
 
 export default PopupPanelController;
