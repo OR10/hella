@@ -14,6 +14,7 @@ class ViewerTitleBarController {
    * @param labeledThingGateway
    * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledFrameGateway} labeledFrameGateway
+   * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {FrameIndexService} frameIndexService
    * @param {PouchDbSyncManager} pouchDbSyncManager
    * @param {PouchDbContextService} pouchDbContextService
@@ -32,6 +33,7 @@ class ViewerTitleBarController {
               labeledThingGateway,
               labeledThingInFrameGateway,
               labeledFrameGateway,
+              labeledThingGroupGateway,
               frameIndexService,
               pouchDbSyncManager,
               pouchDbContextService,
@@ -100,6 +102,12 @@ class ViewerTitleBarController {
     this._labeledFrameGateway = labeledFrameGateway;
 
     /**
+     * @type {LabeledThingGroupGateway}
+     * @protected
+     */
+    this._labeledThingGroupGateway = labeledThingGroupGateway;
+
+    /**
      * @type {FrameIndexService}
      * @private
      */
@@ -158,6 +166,17 @@ class ViewerTitleBarController {
 
     this.refreshIncompleteCount();
     this._registerOnEvents();
+
+    $scope.$watch(
+      'vm.selectedPaperShape.labeledThingGroupInFrame.labeledThingGroup',
+      labeledThingGroup => {
+        this._labeledThingGroupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup).then(frameIndex => {
+          const start = this._frameIndexService.getFrameNumber(frameIndex.startFrameIndex);
+          const end = this._frameIndexService.getFrameNumber(frameIndex.endFrameIndex);
+          this.shapeFrameRange = `${start}-${end}`;
+        });
+      }
+    );
 
     $scope.$watchGroup(
       ['vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.startFrameIndex', 'vm.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange.endFrameIndex'],
@@ -522,6 +541,7 @@ ViewerTitleBarController.$inject = [
   'labeledThingGateway',
   'labeledThingInFrameGateway',
   'labeledFrameGateway',
+  'labeledThingGroupGateway',
   'frameIndexService',
   'pouchDbSyncManager',
   'pouchDbContextService',
