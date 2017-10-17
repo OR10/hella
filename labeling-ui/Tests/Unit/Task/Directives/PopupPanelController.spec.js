@@ -288,6 +288,20 @@ describe('PopupPanelController', () => {
       expect(controller.hasMergableObjects).toEqual(false);
     });
 
+    it('updates whether the selected shapes are mergable (result: false, different thing types) (TTANNO-2154)', () => {
+      const firstShape = {
+        labeledThingInFrame: {
+          identifierName: 'companion-cube',
+        },
+      };
+      const secondShape = {
+        labeledThingInFrame: {
+          identifierName: 'portal-gun',
+        },
+      };
+      const firstShapeInformation = {id: '1', labeledThingInFrame: firstShape.labeledThingInFrame, shape: firstShape};
+      const secondShapeInformation = {id: '1', labeledThingInFrame: secondShape.labeledThingInFrame, shape: secondShape};
+
       const labelStructureObject = {name: 'Bernd das Brot'};
       labelStructure.getThingById.and.returnValue(labelStructureObject);
       shapeSelectionService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
