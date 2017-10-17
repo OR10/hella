@@ -104,7 +104,6 @@ class PaperPoint extends PaperThingShape {
           selected: false,
           strokeWidth: 2,
           strokeScaling: false,
-          dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
         })
       );
     });
