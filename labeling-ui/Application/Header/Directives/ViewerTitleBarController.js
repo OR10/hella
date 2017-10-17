@@ -170,6 +170,9 @@ class ViewerTitleBarController {
     $scope.$watch(
       'vm.selectedPaperShape.labeledThingGroupInFrame.labeledThingGroup',
       labeledThingGroup => {
+        if (labeledThingGroup === undefined) {
+          return;
+        }
         this._labeledThingGroupGateway.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup).then(frameIndex => {
           const start = this._frameIndexService.getFrameNumber(frameIndex.startFrameIndex);
           const end = this._frameIndexService.getFrameNumber(frameIndex.endFrameIndex);
