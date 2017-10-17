@@ -26,6 +26,7 @@ describe('ViewerTitleBarController tests', () => {
       null, // labeledThingGateway
       null, // labeledThingInFrameGateway
       null, // labeledFrameGateway
+      null, // labeledThingGroupGateway
       frameIndexService, // frameIndexService
       null, // pouchDbSyncManager
       null, // pouchDbContextService
