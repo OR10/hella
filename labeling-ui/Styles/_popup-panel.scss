@@ -100,10 +100,13 @@ div.popup-panel {
     border-top-right-radius: 10px;
   }
 
+  .popup-inbox-spacer,
   .popup-inbox-action {
     margin: 0;
     flex: 1;
+  }
 
+  .popup-inbox-action {
     &[disabled] {
       color: $color-ut-midgrey-3 !important;
 
