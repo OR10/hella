@@ -4,6 +4,7 @@ import {
   initApplication,
   bootstrapHttp,
   bootstrapPouch,
+  mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -77,6 +78,20 @@ describe('Polygon vertex', () => {
       .perform();
   }
 
+  function mouseDownAtPositionOne() {
+    return browser.actions()
+      .mouseMove(viewer, {x: 300, y: 50}) // initial position
+      .mouseDown()
+      .perform();
+  }
+
+  function mouseUpAtPositionOne() {
+    return browser.actions()
+      .mouseMove(viewer, {x: 300, y: 50}) // initial position
+      .mouseUp()
+      .perform();
+  }
+
   function clickAtPositionTwo() {
     return browser.actions()
       .mouseMove(viewer, {x: 900, y: 590}) // initial position
@@ -122,12 +137,81 @@ describe('Polygon vertex', () => {
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddNewVertexToPolygon'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.AddNewVertexToPolygon);
+        done();
+      });
+  });
+
+  it('should add a new vertex to a polygon on mouseup not mousedown (TTANNO-2137)', done => {
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => selectFirstPolygon())
+      .then(() => mediumSleep())
+      .then(() => pressDownAltKey())
+      .then(() => mouseDownAtPositionOne())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'MouseDownOnNewVertexOfPolygon'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.MouseDownOnNewVertexOfPolygon);
+      })
+      .then(() => mouseUpAtPositionOne())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddNewVertexToPolygon'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.AddNewVertexToPolygon);
+        done();
+      });
+  });
+
+  it('should add and remove new vertex to/from a polygon on mouseup not mousedown (TTANNO-2137)', done => {
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => selectFirstPolygon())
+      .then(() => mediumSleep())
+      .then(() => pressDownAltKey())
+      .then(() => mouseDownAtPositionOne())
+      .then(() => mediumSleep())
+      .then(() => mouseUpAtPositionOne())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(() => pressDownAltKey())
+      .then(() => mouseDownAtPositionOne())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddNewVertexToPolygon'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.AddNewVertexToPolygon);
+      })
+      .then(() => mouseUpAtPositionOne())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'MouseDownOnNewVertexOfPolygon'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.MouseDownOnNewVertexOfPolygon);
         done();
       });
   });
@@ -141,8 +225,10 @@ describe('Polygon vertex', () => {
       .then(() => selectFirstPolygon())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
+      .then(() => mediumSleep())
       .then(() => clickAtPositionTwo())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddTwoNewVerticesToPolygon'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -162,9 +248,12 @@ describe('Polygon vertex', () => {
       .then(() => selectFirstPolygon())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
+      .then(() => mediumSleep())
       .then(() => clickAtPositionTwo())
+      .then(() => mediumSleep())
       .then(() => clickAtPositionThree())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddThreeNewVerticesToPolygon'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -184,10 +273,14 @@ describe('Polygon vertex', () => {
       .then(() => selectFirstPolygon())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
+      .then(() => mediumSleep())
       .then(() => clickAtPositionTwo())
+      .then(() => mediumSleep())
       .then(() => clickAtPositionThree())
+      .then(() => mediumSleep())
       .then(() => clickAtBottomVertexOfFirstPolygon())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddThreeNewVerticesToPolygonAndDeleteOne'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -207,11 +300,16 @@ describe('Polygon vertex', () => {
       .then(() => selectFirstPolygon())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
+      .then(() => mediumSleep())
       .then(() => clickAtPositionTwo())
+      .then(() => mediumSleep())
       .then(() => clickAtPositionThree())
+      .then(() => mediumSleep())
       .then(() => clickAtBottomVertexOfFirstPolygon())
+      .then(() => mediumSleep())
       .then(() => clickAtPositionOne())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddThreeNewVerticesToPolygonAndDeleteTwo'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -232,10 +330,13 @@ describe('Polygon vertex', () => {
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionThree())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(() => selectSecondPolygon())
+      .then(() => mediumSleep())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionTwo())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddNewVerticesToTwoPolygons1'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -256,18 +357,25 @@ describe('Polygon vertex', () => {
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionThree())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(() => selectSecondPolygon())
+      .then(() => mediumSleep())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionTwo())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(() => selectFirstPolygon())
+      .then(() => mediumSleep())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionFour())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(() => selectSecondPolygon())
+      .then(() => mediumSleep())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddNewVerticesToTwoPolygons2'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
@@ -285,26 +393,37 @@ describe('Polygon vertex', () => {
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => selectFirstPolygon())
+      .then(() => mediumSleep())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionThree())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(() => selectSecondPolygon())
+      .then(() => mediumSleep())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionTwo())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(() => selectFirstPolygon())
+      .then(() => mediumSleep())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionFour())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(() => selectSecondPolygon())
+      .then(() => mediumSleep())
       .then(() => pressDownAltKey())
       .then(() => clickAtPositionOne())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(() => selectFirstPolygon())
+      .then(() => mediumSleep())
       .then(() => pressDownAltKey())
       .then(() => clickAtBottomVertexOfFirstPolygon())
+      .then(() => mediumSleep())
       .then(() => clickAtTopVertexOfFirstPolygon())
       .then(() => releaseAltKey())
+      .then(() => mediumSleep())
       .then(
         // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'AddNewVerticesToTwoPolygons3'),
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
