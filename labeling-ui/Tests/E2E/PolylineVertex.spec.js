@@ -186,7 +186,7 @@ describe('Polyline vertex', () => {
       });
   });
 
-  fit('should not be able to remove 3rd vertex of a polyline (TTANNO-2158)', done => {
+  it('should not be able to remove 3rd vertex of a polyline (TTANNO-2158)', done => {
     bootstrapPouch([
       assets.documents.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
     ]);
@@ -211,7 +211,7 @@ describe('Polyline vertex', () => {
       });
   });
 
-  fit('should not be able to remove the 2 base vertices of a polyline (TTANNO-2158)', done => {
+  it('should not be able to remove the 2 base vertices of a polyline (TTANNO-2158)', done => {
     bootstrapPouch([
       assets.documents.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
     ]);
