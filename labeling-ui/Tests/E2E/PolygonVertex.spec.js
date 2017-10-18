@@ -148,6 +148,31 @@ describe('Polygon vertex', () => {
       });
   });
 
+  it('should not be able to remove any of the 3 base vertices of a polygon (TTANNO-2158)', done => {
+    bootstrapPouch([
+      assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,
+    ]);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => selectFirstPolygon())
+      .then(() => pressDownAltKey())
+      .then(() => clickAtTopVertexOfFirstPolygon())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(() => pressDownAltKey())
+      .then(() => clickAtBottomVertexOfFirstPolygon())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolygonVertex', 'MinHandlesThree'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolygonVertex.MinHandlesThree);
+        done();
+      });
+  });
+
   it('should add a new vertex to a polygon on mouseup not mousedown (TTANNO-2137)', done => {
     bootstrapPouch([
       assets.documents.PolygonDrawing.DrawOnePolygon.LabeledThingInFrame.frameIndex0,

@@ -1,6 +1,7 @@
 import paper from 'paper';
 import {Vector2} from 'three-math';
 import TransformationTool from '../TransformationTool';
+import PaperPolyline from '../../Shapes/PaperPolyline';
 
 /**
  * A Tool for scaling annotation shapes
@@ -80,6 +81,25 @@ class PathTransformationTool extends TransformationTool {
   }
 
   /**
+   * @returns integer
+   * @private
+   */
+  _getMinHandleCountRestriction() {
+    let {minHandles} = this._toolActionStruct.options;
+    const selectedShape = this._toolActionStruct.shape;
+
+    switch (true) {
+      case selectedShape instanceof PaperPolyline:
+        minHandles = minHandles !== undefined ? minHandles : 2;
+        break;
+      default:
+        minHandles = minHandles !== undefined ? minHandles : 3;
+    }
+
+    return minHandles;
+  }
+
+  /**
    * Remove the vertex located at the handle position from the shape
    *
    * @param {Handle} handle
@@ -90,7 +110,7 @@ class PathTransformationTool extends TransformationTool {
     const shapePoints = shape.points.map(point => new paper.Point(point));
     const handleCenter = handle.position;
 
-    const {minHandles = 3} = this._toolActionStruct.options;
+    const minHandles = this._getMinHandleCountRestriction();
 
     if (shapePoints.length <= minHandles) {
       return;
