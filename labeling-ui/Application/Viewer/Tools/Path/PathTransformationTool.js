@@ -86,7 +86,7 @@ class PathTransformationTool extends TransformationTool {
    */
   _getMinHandleCountRestriction() {
     let {minHandles} = this._toolActionStruct.options;
-    let selectedShape = this._toolActionStruct.shape;
+    const selectedShape = this._toolActionStruct.shape;
 
     switch (true) {
       case selectedShape instanceof PaperPolyline:
