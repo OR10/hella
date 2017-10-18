@@ -70,10 +70,17 @@ function execReturn(command, next) {
 function runProtractor(protractorConfig, protractorServerConfig, testFiles, next) {
   const augmentedProtractorConfig = Object.assign({}, protractorConfig);
 
-  if (typeof process.env.BROWSERSTACK_USER !== 'undefined') {
-    augmentedProtractorConfig.args.push('--seleniumAddress', 'http://hub-cloud.browserstack.com/wd/hub');
-  } else if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
-    augmentedProtractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
+  switch (process.env.TEST_ENV) {
+    case 'browserstack':
+      augmentedProtractorConfig.args.push('--seleniumAddress', 'http://hub-cloud.browserstack.com/wd/hub');
+      break;
+
+    case 'selenium':
+      augmentedProtractorConfig.args.push('--seleniumAddress', 'http://' + process.env.PROTRACTOR_SELENIUM_GRID + ':4444/wd/hub');
+      break;
+
+    default:
+      // Nothing to be done here yet
   }
 
   if (typeof process.env.EXTERNAL_IP_ADDRESS !== 'undefined') {
