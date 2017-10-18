@@ -83,51 +83,67 @@ div.popup-panel {
       border-bottom: 1px solid $color-ut-lightgrey-2;
       margin: 1rem 0;
     }
-  }
 
-  .popup-inbox-actions {
-    font-size: $font-s;
-    color: $color-ut-lightgrey-1;
-    position: absolute;
-    bottom: 0;
-    background-color: $color-ut-darkgrey-1;
-    border-top: $color-ut-darkgrey-2;
-    width: 100%;
-    display: flex;
-    flex-flow: row;
-    padding: 4px 8px 2px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-  }
-
-  .popup-inbox-action {
-    margin: 0;
-    flex: 1;
-
-    &[disabled] {
-      color: $color-ut-midgrey-3 !important;
-
-      .icon.fa {
-        color: $color-ut-midgrey-3 !important;
-      }
+    button {
+      background-color: transparent;
+      font-size: 1rem;
+      color: #E8EDF3;
+      padding: 0;
     }
 
-    &:not([disabled]) {
-      &:hover {
-        color: darken($color-ut-lightgrey-1, 30%) !important;
-        cursor: pointer;
+    .popup-inbox-spacer,
+    .popup-inbox-action {
+      margin: 0;
+      flex: 1;
+    }
+
+    .popup-inbox-actions {
+      font-size: $font-s;
+      color: $color-ut-lightgrey-1;
+      position: absolute;
+      bottom: 0;
+      background-color: $color-ut-darkgrey-1;
+      border-top: $color-ut-darkgrey-2;
+      width: 100%;
+      display: flex;
+      flex-flow: row;
+      padding: 4px 8px 2px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    .popup-inbox-action {
+      margin: 0 0 10px 0;
+      flex: 1;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+
+      &[disabled] {
+        color: $color-ut-midgrey-3 !important;
 
         .icon.fa {
-          color: darken($color-ut-lightgrey-1, 30%) !important;
-          cursor: pointer;
+          color: $color-ut-midgrey-3 !important;
         }
       }
-    }
 
-    .icon.fa {
-      float: left;
-      top: 5px;
-      margin-right: 5px;
+      &:not([disabled]) {
+        &:hover {
+          color: darken($color-ut-lightgrey-1, 30%) !important;
+
+          .icon.fa {
+            color: darken($color-ut-lightgrey-1, 30%) !important;
+          }
+        }
+      }
+
+      span {
+        margin-bottom: -10px;
+      }
+
+      .icon.fa {
+        margin-right: 5px;
+      }
     }
   }
 }

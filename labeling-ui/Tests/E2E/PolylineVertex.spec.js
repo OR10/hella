@@ -99,6 +99,13 @@ describe('Polyline vertex', () => {
       .perform();
   }
 
+  function clickAtPositionFive() {
+    return browser.actions()
+      .mouseMove(viewer, {x: 300, y: 200}) // initial position
+      .click()
+      .perform();
+  }
+
   function clickAtBottomVertexOfFirstPolyline() {
     return browser.actions()
       .mouseMove(viewer, {x: 200, y: 300}) // initial position
@@ -175,6 +182,60 @@ describe('Polyline vertex', () => {
       )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineVertex.AddThreeNewVerticesToPolygon);
+        done();
+      });
+  });
+
+  it('should not be able to remove 3rd vertex of a polyline (TTANNO-2158)', done => {
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
+    ]);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => selectFirstPolyline())
+      .then(() => pressDownAltKey())
+      .then(() => clickAtTopVertexOfFirstPolyline())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(() => pressDownAltKey())
+      .then(() => clickAtBottomVertexOfFirstPolyline())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineVertex', 'MinHandlesTwo'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineVertex.MinHandlesTwo);
+        done();
+      });
+  });
+
+  it('should not be able to remove the 2 base vertices of a polyline (TTANNO-2158)', done => {
+    bootstrapPouch([
+      assets.documents.PolylineDrawing.DrawOnePolyline.LabeledThingInFrame.frameIndex0,
+    ]);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => selectFirstPolyline())
+      .then(() => pressDownAltKey())
+      .then(() => clickAtTopVertexOfFirstPolyline())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(() => pressDownAltKey())
+      .then(() => clickAtBottomVertexOfFirstPolyline())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(() => pressDownAltKey())
+      .then(() => clickAtPositionFive())
+      .then(() => releaseAltKey())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PolylineVertex', 'MinHandlesTwo'),
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PolylineVertex.MinHandlesTwo);
         done();
       });
   });
