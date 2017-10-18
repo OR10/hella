@@ -282,6 +282,8 @@ class PopupPanelController {
     if (this.savedObjects.length > 1) {
       const rootShape = this.savedObjects[0].shape;
       const rootShapeConstructor = rootShape.constructor;
+      const rootShapeLtif = rootShape.labeledThingInFrame;
+      const rootShapeIdentifierName = rootShapeLtif.identifierName;
 
       let mergable = true;
 
@@ -290,9 +292,10 @@ class PopupPanelController {
         if (object.shape === rootShape || !mergable) {
           return;
         }
-        const isOfSameType = (rootShapeConstructor === object.shape.constructor);
+        const isOfSameShapeType = (rootShapeConstructor === object.shape.constructor);
+        const isOfSameThingType = (rootShapeIdentifierName === object.shape.labeledThingInFrame.identifierName);
 
-        mergable &= isOfSameType;
+        mergable &= isOfSameShapeType && isOfSameThingType;
       });
 
       this.hasMergableObjects = !!mergable;
