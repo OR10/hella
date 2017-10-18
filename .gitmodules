@@ -34,9 +34,6 @@
 [submodule "labeling-api/ant"]
 	path = labeling-api/ant
 	url = git://github.com/jdworschak/build-commons.git
-[submodule "labeling-api/puppet/vendor/rabbitmq"]
-	path = puppet/vendor/rabbitmq
-	url = git@github.crosscan.com:infrastructure/puppet_rabbitmq.git
 [submodule "labeling-api/puppet/vendor/supervisord"]
 	path = puppet/vendor/supervisord
 	url = git://github.com/ajcrowe/puppet-supervisord.git
