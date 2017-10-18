@@ -13,11 +13,13 @@ const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 describe('FrameIndex Change', () => {
   let assets;
   let sharedMocks;
+  let viewer;
   let defaultShapeCreationButton;
   let jumpToPreviousFrameButton;
   let jumpToNextFrameButton;
   let setOpenBracketButton;
   let setCloseBracketButton;
+
   beforeEach(() => {
     assets = new AssetHelper(
       `${__dirname}/../Fixtures`,
@@ -44,6 +46,7 @@ describe('FrameIndex Change', () => {
       assets.mocks.DefaultShapeCreation.Shared.StoreLabeledThing,
     ];
 
+    viewer = element(by.css('.layer-container'));
     defaultShapeCreationButton = element(by.css('#default-shape-creation-button'));
     jumpToPreviousFrameButton = element(by.css('.previous-frame-button'));
     jumpToNextFrameButton = element(by.css('.next-frame-button'));
@@ -121,6 +124,47 @@ describe('FrameIndex Change', () => {
       .then(() => mediumSleep())
       .then(() => {
         expectModalToBePresent();
+      })
+      .then(() => done());
+  });
+
+  it('should switch back to ghost, if current frame is removed from frame range (TTANNO-2156)', done => {
+    const frameRangeEndBracketHandle = element(by.css('.frame-range-bracket.end-bracket > .bracket-drag-handle'));
+
+    bootstrapHttp(sharedMocks.concat([
+      assets.mocks.DefaultShapeCreation.Rectangle.Task,
+    ]));
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => defaultShapeCreationButton.click())
+      .then(() => mediumSleep())
+      .then(() => jumpToNextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        // Move the default shape +100, +100
+        return browser.actions()
+          .mouseMove(viewer, {x: 512, y: 310})
+          .mouseDown()
+          .mouseMove(viewer, {x: 512 + 100, y: 310 + 100})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => element.all(by.css('.frame-range-bracket-space')))
+      .then(frameRangeBracketSpaces => {
+        return browser.actions()
+          .mouseMove(frameRangeEndBracketHandle)
+          .mouseDown()
+          .mouseMove(frameRangeBracketSpaces[3])
+          .mouseUp()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        // return canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeFrameIndexModifier', 'BackToGhost');
+        return canvasInstructionLogManager.getAnnotationCanvasLogs();
+      })
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeFrameIndexModifier.BackToGhost);
       })
       .then(() => done());
   });
