@@ -18,5 +18,6 @@
   "projectId": "{{:--project-id}}",
   "_rev": "{{:--revision}}",
   "createdAt": "{{:--created-at}}",
-  "lastModifiedAt": "{{:--last-modified-at}}"
+  "lastModifiedAt": "{{:--last-modified-at}}",
+  "lastModifiedByUserId": "user-id-1"
 }

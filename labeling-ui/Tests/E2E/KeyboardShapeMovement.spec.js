@@ -154,16 +154,16 @@ describe('Keyboard Shape Movement', () => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftRight);
         })
         .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_DOWN, protractor.Key.NULL]))
-        .then(drawingStack => {
-          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftDown);
-        })
         .then(() => mediumSleep())
+        .then(() => {
+          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftDown).toExistInPouchDb();
+        })
         .then(
           // () => canvasInstructionLogManager.getAnnotationCanvasLogs('KeyboardShapeMovement', 'RectangleShiftDown')
           () => canvasInstructionLogManager.getAnnotationCanvasLogs()
         )
-        .then(() => {
-          expect(assets.mocks.KeyboardShapeMovement.Rectangle.StoreLabeledThingInFrameShiftDown).toExistInPouchDb();
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.KeyboardShapeMovement.RectangleShiftDown);
         })
         .then(() => sendKeys([protractor.Key.SHIFT, protractor.Key.ARROW_LEFT, protractor.Key.NULL]))
         .then(() => mediumSleep())
