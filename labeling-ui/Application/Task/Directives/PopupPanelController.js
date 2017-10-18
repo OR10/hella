@@ -24,6 +24,7 @@ class PopupPanelController {
    * @param {ShapeInboxService} shapeInboxService
    * @param {ShapeMergeService} shapeMergeService
    * @param {ApplicationState} applicationState
+   * @param {RootScopeEventRegistrationService} rootScopeEventRegistrationService
    */
   constructor(
     $scope,
@@ -41,7 +42,8 @@ class PopupPanelController {
     shapeSelectionService,
     shapeInboxService,
     shapeMergeService,
-    applicationState
+    applicationState,
+    rootScopeEventRegistrationService
   ) {
     this._minimapContainer = $element.find('.minimap-container');
     this._minimap = $element.find('.minimap');
@@ -123,6 +125,12 @@ class PopupPanelController {
      * @private
      */
     this._applicationState = applicationState;
+
+    /**
+     * @type {RootScopeEventRegistrationService}
+     * @private
+     */
+    this._rootScopeEventRegistrationService = rootScopeEventRegistrationService;
 
     /**
      * @type {DrawingContext}
@@ -235,9 +243,8 @@ class PopupPanelController {
 
     this._selectedObjectsLabelCounter = {};
 
-    this._shapeSelectionService.afterAnySelectionChange('PopupPanelController', () => {
-      this._loadSelectedObjects();
-    });
+    this._shapeSelectionService.afterAnySelectionChange('PopupPanelController', () => this._loadSelectedObjects());
+    this._rootScopeEventRegistrationService.register(this, 'shape:ghostbust:after', () => this._loadSelectedObjects());
 
     this.hasMergableObjects = false;
   }
@@ -624,6 +631,7 @@ PopupPanelController.$inject = [
   'shapeInboxService',
   'shapeMergeService',
   'applicationState',
+  'rootScopeEventRegistrationService',
 ];
 
 export default PopupPanelController;
