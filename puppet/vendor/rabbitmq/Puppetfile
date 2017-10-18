@@ -1,0 +1,7 @@
+forge "http://forge.puppetlabs.com"
+
+mod 'puppetlabs/stdlib'
+mod 'puppetlabs/apt'
+
+mod "crosscan/crosscan_base",
+  :git => "git@github.crosscan.com:infrastructure/puppet_crosscan_base.git"
