@@ -51,7 +51,7 @@ describe('FrameIndex Change', () => {
     setCloseBracketButton = element(by.css('.close-bracket-button'));
   });
 
-  it('should expand frame index ahead', done => {
+  it('should expand frame index ahead', done => { // eslint-disable-line jasmine/missing-expect
     bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
     ]));
@@ -68,7 +68,7 @@ describe('FrameIndex Change', () => {
       .then(() => done());
   });
 
-  it('should expand frame index backwards', done => {
+  it('should expand frame index backwards', done => { // eslint-disable-line jasmine/missing-expect
     bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
     ]));
@@ -86,7 +86,7 @@ describe('FrameIndex Change', () => {
       .then(() => done());
   });
 
-  it('should not expand frame index ahead if no more ltifs left', done => {
+  it('should not expand frame index ahead if no more ltifs left', done => { // eslint-disable-line jasmine/missing-expect
     bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
     ]));
@@ -104,7 +104,7 @@ describe('FrameIndex Change', () => {
       .then(() => done());
   });
 
-  it('should not expand frame index backwards if no more ltifs left', done => {
+  it('should not expand frame index backwards if no more ltifs left', done => { // eslint-disable-line jasmine/missing-expect
     bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
     ]));
