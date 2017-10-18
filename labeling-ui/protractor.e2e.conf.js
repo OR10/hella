@@ -69,21 +69,11 @@ exports.config = {
   specs: ['Tests/E2E/**/*.spec.js'],
 };
 
-if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
-  // CI MODE
-  // exports.config.multiCapabilities = [
-  //   {
-  //     'browserName': 'chrome',
-  //     'platform': 'WINDOWS',
-  //     'chromeOptions': {
-  //       'args': ['--no-sandbox' ]
-  //     }
-  //   },
-  // ];
-
+if (typeof process.env.BROWSERSTACK_USER !== 'undefined') {
+  // Browserstack mode
   exports.config.capabilities = {
-    'browserstack.user': 'dominikehrenberg1',
-    'browserstack.key': 'vK4saX1buKopB38pifgk',
+    'browserstack.user': process.env.BROWSERSTACK_USER,
+    'browserstack.key': process.env.BROWSERSTACK_PASS,
     'os': 'Windows',
     'os_version': '7',
     'browserName': 'Chrome',
@@ -113,6 +103,17 @@ if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
       exports.bs_local.stop(() => resolve());
     });
   };
+} else if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
+  // Local Selenium installation mode
+  exports.config.multiCapabilities = [
+    {
+      'browserName': 'chrome',
+      'platform': 'WINDOWS',
+      'chromeOptions': {
+        'args': ['--no-sandbox' ]
+      }
+    },
+  ];
 } else {
   exports.config.capabilities = {
     'browserName': 'chrome',
