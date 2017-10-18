@@ -19,9 +19,6 @@
 [submodule "labeling-api/puppet/vendor/mysql"]
 	path = puppet/vendor/mysql
 	url = git://github.com/puppetlabs/puppetlabs-mysql.git
-[submodule "labeling-api/puppet/modules/couchdb"]
-	path = puppet/vendor/couchdb
-	url = git@github.crosscan.com:infrastructure/puppet_couchdb.git
 [submodule "labeling-api/puppet/vendor/ruby"]
 	path = puppet/vendor/ruby
 	url = git://github.com/puppetlabs/puppetlabs-ruby.git
