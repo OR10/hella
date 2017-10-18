@@ -140,15 +140,15 @@
         </div>
 
         <div class="popup-inbox-actions">
-            <p class="popup-inbox-action" ng-disabled="!vm.hasMergableObjects" ng-click="vm.mergeShapes()">
+            <button class="popup-inbox-action" ng-disabled="!vm.hasMergableObjects" ng-click="vm.mergeShapes()">
                 <i class="icon fa fa-compress"></i>
-                Merge
-            </p>
-            <p class="popup-inbox-action" ng-disabled="!vm.hasSavedObjects()" ng-click="vm.removeAllFromInbox()">
+                <span>Merge</span>
+            </button>
+            <button class="popup-inbox-action" ng-disabled="!vm.hasSavedObjects()" ng-click="vm.removeAllFromInbox()">
                 <i class="icon fa fa-trash-o"></i>
-                Empty
-            </p>
-            <p class="popup-inbox-action">
+                <span>Empty</span>
+            </button>
+            <p class="popup-inbox-spacer">
                 <!--One more action possible-->
             </p>
         </div>
