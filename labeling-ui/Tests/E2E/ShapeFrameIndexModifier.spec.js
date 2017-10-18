@@ -4,6 +4,7 @@ import {
   expectModalToBePresent,
   initApplication,
   bootstrapHttp,
+  mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -56,19 +57,15 @@ describe('FrameIndex Change', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => jumpToNextFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setCloseBracketButton.click())
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Rectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         expectAllModalsToBeClosed();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should expand frame index backwards', done => {
@@ -77,21 +74,16 @@ describe('FrameIndex Change', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => jumpToNextFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => defaultShapeCreationButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => jumpToPreviousFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setOpenBracketButton.click())
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Rectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(() => browser.sleep(300))
       .then(() => {
         expectAllModalsToBeClosed();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should not expand frame index ahead if no more ltifs left', done => {
@@ -100,21 +92,16 @@ describe('FrameIndex Change', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => jumpToNextFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setCloseBracketButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setOpenBracketButton.click())
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Rectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(() => browser.sleep(300))
       .then(() => {
         expectModalToBePresent();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   it('should not expand frame index backwards if no more ltifs left', done => {
@@ -123,22 +110,18 @@ describe('FrameIndex Change', () => {
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => jumpToNextFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => defaultShapeCreationButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => jumpToPreviousFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setOpenBracketButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setCloseBracketButton.click())
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Rectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         expectModalToBePresent();
-        done();
-      });
+      })
+      .then(() => done());
   });
 });
