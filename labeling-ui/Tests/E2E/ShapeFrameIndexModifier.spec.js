@@ -9,7 +9,7 @@ import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('change frame index for shapes', () => {
+describe('FrameIndex Change', () => {
   let assets;
   let sharedMocks;
   let defaultShapeCreationButton;
