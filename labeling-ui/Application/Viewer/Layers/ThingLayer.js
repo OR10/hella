@@ -411,7 +411,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
               this._labeledThingGateway.saveLabeledThing(labeledThing).then(() => {
                 // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
                 if (frameIndex > oldStartFrameIndex) {
-                  this._updateLabeledThingInFrames(shape);
                   this._$scope.$root.$emit('framerange:change:after');
                 }
               });
@@ -468,7 +467,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
               this._labeledThingGateway.saveLabeledThing(labeledThing).then(() => {
                 // If the frame range narrowed we might have deleted shapes, so we need to refresh our thumbnails
                 if (frameIndex < oldEndFrameIndex) {
-                  this._updateLabeledThingInFrames(shape);
                   this._$scope.$root.$emit('framerange:change:after');
                 }
               });
