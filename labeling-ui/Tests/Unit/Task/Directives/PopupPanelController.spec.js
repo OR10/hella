@@ -101,7 +101,7 @@ describe('PopupPanelController', () => {
     expect(controller).toEqual(jasmine.any(PopupPanelController));
   });
 
-  it('recalculates the selectedObjects when a shape has been ghostbusted', () => {
+  it('recalculates the selectedObjects when a shape has been ghostbusted (TTANNO-2152)', () => {
     const shape = {id: '1', labeledThingInFrame: {}};
     const labelStructureObject = {name: 'Bernd das Brot'};
     labelStructure.getThingById.and.returnValue(labelStructureObject);

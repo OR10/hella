@@ -390,7 +390,7 @@ describe('ShapeInbox', () => {
         .then(() => done());
     });
 
-    it('shows shapes that have just been ghostbusted', done => {
+    it('shows shapes that have just been ghostbusted (TTANNO-2152)', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
