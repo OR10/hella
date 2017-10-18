@@ -1,0 +1,19 @@
+FORGE
+  remote: http://forge.puppetlabs.com
+  specs:
+    puppetlabs/apt (1.4.2)
+      puppetlabs/stdlib (>= 2.2.1)
+    puppetlabs/stdlib (4.1.0)
+
+GIT
+  remote: git@github.crosscan.com:infrastructure/puppet_crosscan_base.git
+  ref: master
+  sha: 11ee12d98fe8a7348953e0be085e40ad5a4e91b7
+  specs:
+    crosscan/crosscan_base (0.0.1)
+
+DEPENDENCIES
+  crosscan/crosscan_base (>= 0)
+  puppetlabs/apt (>= 0)
+  puppetlabs/stdlib (>= 0)
+

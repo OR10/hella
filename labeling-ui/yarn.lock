@@ -4882,9 +4882,8 @@ protractor-console@^3.0.0:
     chalk "^1.1.0"
     lodash "^3.10.0"
 
-"protractor-http-mock@git+ssh://git@github.crosscan.com/crosscan/protractor-http-mock.git":
+"protractor-http-mock@file:./Crosscan/protractor-http-mock":
   version "0.9.2"
-  resolved "git+ssh://git@github.crosscan.com/crosscan/protractor-http-mock.git#9a832ac0966f3675998f851f2cb5a97e8ff243f6"
   dependencies:
     query-string "<=4.2.3"
 

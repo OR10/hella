@@ -1,0 +1,8 @@
+node_modules/
+*.sublime*
+*.log
+.DS_Store
+.grunt
+_SpecRunner.html
+tests/bundle/
+.idea/
