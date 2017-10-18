@@ -393,10 +393,10 @@ describe('ShapeInbox', () => {
     it('shows shapes that have just been ghostbusted', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
-            return browser.actions()
-              .mouseMove(viewer, firstShape.topLeft) // initial position
-              .click()
-              .perform();
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
         })
         .then(() => shortSleep())
         .then(() => shapeInboxButton.click())
