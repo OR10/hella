@@ -91,6 +91,12 @@ div.popup-panel {
       padding: 0;
     }
 
+    .popup-inbox-spacer,
+    .popup-inbox-action {
+      margin: 0;
+      flex: 1;
+    }
+
     .popup-inbox-actions {
       font-size: $font-s;
       color: $color-ut-lightgrey-1;
