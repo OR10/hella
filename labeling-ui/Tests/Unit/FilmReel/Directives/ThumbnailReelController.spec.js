@@ -61,7 +61,6 @@ describe('ThumbnailReelController tests', () => {
       promise,
       null,                   // abortablePromiseFactory
       frameLocationGateway,
-      null,                   // labeledThingInFrameGateway
       labeledThingGateway,
       animationFrameService,
       applicationState,
