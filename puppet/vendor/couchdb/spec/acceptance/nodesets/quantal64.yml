@@ -1,0 +1,12 @@
+HOSTS:
+  ubuntu-server-1210-x64:
+    roles:
+      - master
+    platform: ubuntu-12.10-amd64
+    box : quantal64-1.15
+    box_url : http://jenkins.crosscan.com/view/Alle/job/VM_Base_Image/lastSuccessfulBuild/artifact/packer_quantal_virtualbox.box
+    hypervisor : vagrant
+CONFIG:
+  log_level: debug
+  type: foss
+
