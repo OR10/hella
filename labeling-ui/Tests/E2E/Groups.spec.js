@@ -569,8 +569,6 @@ describe('Groups', () => {
     ]));
 
     const rectangleToolButton = element(by.css('button.tool-button.tool-rectangle'));
-    const nextFrameButton = element(by.css('.next-frame-button > button'));
-    const previousFrameButton = element(by.css('.previous-frame-button > button'));
     const closeBracketButton = element(by.css('.close-bracket-button > button'));
 
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
