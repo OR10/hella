@@ -381,15 +381,14 @@ describe('ViewerController tests', () => {
         expect(groupCreationService.showGroupSelector).toHaveBeenCalled();
       });
 
-      it('clears all selected paper shapes and selects the group', () => {
+      it('clears all selected paper shapes', () => {
         groupListener(null, labelStructureObject);
-        expect(group.select).toHaveBeenCalled();
         expect(shapeSelectionService.clear).toHaveBeenCalled();
       });
 
-      it('sets the group shape as selected paper shape', () => {
+      it('does not directly select the group', () => {
         groupListener(null, labelStructureObject);
-        expect(controller.selectedPaperShape).toBe(group);
+        expect(controller.selectedPaperShape).toBe(null);
       });
 
       it('adds the group shape to the known paperGroupShapes', () => {
@@ -438,6 +437,13 @@ describe('ViewerController tests', () => {
 
           expect(group.update).toHaveBeenCalled();
           expect(thingLayerScopeView.update).toHaveBeenCalled();
+        });
+
+        it('should select the group after storage', () => {
+          groupListener(null, labelStructureObject);
+          scope.$apply();
+
+          expect(controller.selectedPaperShape).toBe(group);
         });
 
         it('sets the current frame position as bookmarkedFrameIndex', () => {
