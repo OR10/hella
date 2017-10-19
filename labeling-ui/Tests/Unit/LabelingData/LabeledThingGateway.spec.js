@@ -517,7 +517,67 @@ describe('LabeledThingGateway', () => {
       task,
     });
 
-    gateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], labeledThingGroup);
+    gateway.unassignLabeledThingGroupFromLabeledThings([labeledThing], labeledThingGroup);
+
+    $rootScope.$apply();
+
+    const storedLabeledThing = gateway._saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
+    const storedLabeledThingDocument = storedLabeledThing.toJSON();
+    delete storedLabeledThingDocument.createdAt;
+    delete storedLabeledThingDocument.lastModifiedAt;
+
+    const labeledThingCalledDocument = labeledThingCalled.toJSON();
+    delete labeledThingCalledDocument.createdAt;
+    delete labeledThingCalledDocument.lastModifiedAt;
+
+    expect(storedLabeledThingDocument).toEqual(labeledThingCalledDocument);
+  });
+
+  it('should unassign all labeled things from a labeled thing group', () => {
+    const task = taskFrontendModel;
+
+    spyOn(gateway, '_saveLabeledThingWithoutPackagingExecutor').and.callThrough();
+
+    const labeledThingGroup = new LabeledThingGroup({
+      id: 'LABELED-THING-GROUP-ID',
+      task,
+      groupType: 'extension-sign-group',
+      lineColor: 1,
+      groupIds: [],
+    });
+
+    const labeledThing = {
+      _id: 'LABELED-THING-ID',
+      frameRange: {
+        startFrameIndex: 0,
+        endFrameIndex: 3,
+      },
+      groupIds: ['LABELED-THING-GROUP-ID'],
+      classes: ['foo', 'bar', 'baz'],
+      incomplete: false,
+      lineColor: 8,
+      projectId: 'PROJECTID-PROJECTID',
+    };
+
+    const labeledThingCalled = new LabeledThing({
+      id: 'LABELED-THING-ID',
+      frameRange: {
+        startFrameIndex: 0,
+        endFrameIndex: 3,
+      },
+      groupIds: [],
+      classes: ['foo', 'bar', 'baz'],
+      incomplete: false,
+      lineColor: 8,
+      task,
+    });
+
+    const pouchResult = {
+      rows: [{doc: labeledThing}],
+    };
+
+    spyOn(pouchDbHelper.database, 'query').and.returnValue(angularQ.resolve(pouchResult));
+    gateway.unassignLabeledThingGroupFromAllLabeledThings(labeledThingGroup);
 
     $rootScope.$apply();
 
