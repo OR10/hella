@@ -344,6 +344,8 @@ class TaskController {
       if (newPosition !== oldPosition || newShape !== oldShape || $location.hash() === '') {
         if (newShape && newShape.labeledThingInFrame && newShape.labeledThingInFrame.id !== null) {
           $location.hash(`${newPosition}/${newShape.labeledThingInFrame.id}`);
+        } else if (newShape && newShape.labeledThingGroupInFrame && newShape.labeledThingGroupInFrame.id !== null) {
+          $location.hash(`${newPosition}/${newShape.labeledThingGroupInFrame.id}`);
         } else {
           $location.hash(`${newPosition}`);
         }
@@ -455,8 +457,16 @@ class TaskController {
       const shape = this.paperThingShapes.find(element => {
         return match === element.labeledThingInFrame.id;
       });
+
+      const group = this.paperGroupShapes.find(element => {
+        return match === element.labeledThingGroupInFrame.id;
+      });
+
       if (shape) {
         this.selectedPaperShape = shape;
+        this.thingLayer.update();
+      } else if (group) {
+        this.selectedPaperShape = group;
         this.thingLayer.update();
       }
     });
