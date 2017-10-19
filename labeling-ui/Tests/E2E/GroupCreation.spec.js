@@ -7,8 +7,8 @@ import {
   mediumSleep,
   shortSleep,
   longSleep,
-  sendKeys,
-} from '../Support/Protractor/Helpers';
+  sendKeys, dumpAllRequestsMade,
+} from '../Support/Protractor/Helpers'
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
@@ -627,6 +627,50 @@ describe('Group Creation', () => {
       .then(() => mediumSleep())
       .then(() => expect(assets.mocks.GroupCreation.GroupAttributes.StoredLabeledThingGroupInFrame).not.toExistInPouchDb())
       .then(() => done());
+  });
+
+  fdescribe('Group deletion', () => {
+    const nextFrameButton = element(by.css('.next-frame-button'));
+    const previousFrameButton = element(by.css('.previous-frame-button'));
+
+    it('removes all group references on LabeledThings when deleting a group (TTANNO-2165)', done => {
+      bootstrapHttp(sharedMocks);
+      bootstrapPouch([
+        assets.documents.GroupCreation.GroupDeletion.GroupOnTwoFrames,
+      ]);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 190, y: 90})
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => sendKeys(protractor.Key.DELETE))
+        .then(() => shortSleep())
+        .then(() => element(by.cssContainingText('option', 'Delete the object itself')).click())
+        .then(() => {
+          const confirmButton = element(by.css('.modal-button-confirm'));
+          return confirmButton.click();
+        })
+        .then(() => shortSleep())
+        .then(() => {
+          // expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
+          expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
+          expect(assets.documents.GroupCreation.GroupDeletion.StoreLabeledThing1).toExistInPouchDb();
+          expect(assets.documents.GroupCreation.GroupDeletion.StoreLabeledThing2).toExistInPouchDb();
+        })
+        // .then(
+        //   // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoRectangles')
+        //   () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        // )
+        // .then(drawingStack => {
+        //   expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoRectangles);
+        // })
+        .then(() => done());
+    });
   });
 
   afterEach(() => {
