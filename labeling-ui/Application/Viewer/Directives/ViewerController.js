@@ -1456,11 +1456,15 @@ class ViewerController {
     const labeledThingInFrame = shape.labeledThingInFrame;
     const labeledThing = labeledThingInFrame.labeledThing;
 
+    let ghostBusted = false;
+
     if (labeledThingInFrame.ghost) {
       labeledThingInFrame.ghostBust(
         this._entityIdService.getUniqueId(),
         frameIndex
       );
+
+      ghostBusted = true;
     }
 
     let frameRangeUpdated = false;
@@ -1483,22 +1487,28 @@ class ViewerController {
     //       Possible solution only store paperShapes in labeledThingsInFrame instead of json structures
     labeledThingInFrame.shapes[0] = shape.toJSON();
 
-    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame).catch(() => {
-      this._modalService.info(
-        {
-          title: 'Error',
-          headline: `There was an error updating the shape`,
-          message: `The shape could not be saved. Please contact the Label Manager and reload the page to continue with the labeling process!`,
-          confirmButtonText: 'Reload',
-        },
-        () => window.location.reload(),
-        undefined,
-        {
-          warning: true,
-          abortable: false,
+    this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame)
+      .catch(() => {
+        this._modalService.info(
+          {
+            title: 'Error',
+            headline: `There was an error updating the shape`,
+            message: `The shape could not be saved. Please contact the Label Manager and reload the page to continue with the labeling process!`,
+            confirmButtonText: 'Reload',
+          },
+          () => window.location.reload(),
+          undefined,
+          {
+            warning: true,
+            abortable: false,
+          }
+        );
+      })
+      .then(() => {
+        if (ghostBusted) {
+          this._$rootScope.$emit('shape:ghostbust:after');
         }
-      );
-    });
+      });
   }
 
   /**
