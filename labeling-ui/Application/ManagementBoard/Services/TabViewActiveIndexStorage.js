@@ -1,39 +1,54 @@
 class TabViewActiveIndexStorage {
-  constructor() {
+  /**
+   * @param {LoggerService} loggerService
+   */
+  constructor(loggerService) {
     /**
      * Map holding a `TabView` instance to index association.
      *
-     * @type {WeakMap}
+     * @type {Map}
      * @private
      */
-    this._indexMap = new WeakMap();
+    this._indexMap = new Map();
+
+    /**
+     * @type {LoggerService}
+     * @private
+     */
+    this._logger = loggerService;
   }
 
   /**
-   * @param {TabViewController} tabView
+   * @param {string} tabViewIdentifier
    * @param {number} index
    */
-  storeActiveIndex(tabView, index) {
-    this._indexMap.set(tabView, index);
+  storeActiveIndex(tabViewIdentifier, index) {
+    this._indexMap.set(tabViewIdentifier, index);
+    this._logger.log('tabViewActiveIndexStorage:save', 'Stored active Index:', tabViewIdentifier, index);
   }
 
   /**
-   * @param {TabViewController} tabView
+   * @param {string} tabViewIdentifier
    * @returns {number|undefined}
    */
-  retrieveActiveIndex(tabView) {
-    return this._indexMap.get(tabView);
+  retrieveActiveIndex(tabViewIdentifier) {
+    const loadedIndex = this._indexMap.get(tabViewIdentifier);
+    this._logger.log('tabViewActiveIndexStorage:load', 'Loaded active Index:', tabViewIdentifier, loadedIndex);
+    return loadedIndex;
   }
 
   /**
-   * @param {TabViewController} tabView
+   * @param {string} tabViewIdentifier
    * @results {boolean}
    */
-  clearActiveIndex(tabView) {
-    return this._indexMap.delete(tabView);
+  clearActiveIndex(tabViewIdentifier) {
+    this._logger.log('tabViewActiveIndexStorage:clear', 'Cleared active Index:', tabViewIdentifier);
+    return this._indexMap.delete(tabViewIdentifier);
   }
 }
 
-TabViewActiveIndexStorage.$inject = [];
+TabViewActiveIndexStorage.$inject = [
+  'loggerService',
+];
 
 export default TabViewActiveIndexStorage;
