@@ -5,7 +5,7 @@ import annoStationUnitTestModuleCreator from 'Tests/Support/AnnoStationUnitTestM
 
 const AnnoStationUnitTestModule = annoStationUnitTestModuleCreator(ApplicationModule);
 
-describe('Organisation-Picker Directive Test Suite', () => {
+describe('Organisation-Picker', () => {
   let rootScope;
   let compile;
   let element;
