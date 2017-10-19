@@ -457,11 +457,11 @@ class TaskController {
       const shape = this.paperThingShapes.find(element => {
         return match === element.labeledThingInFrame.id;
       });
+
       const group = this.paperGroupShapes.find(element => {
         return match === element.labeledThingGroupInFrame.id;
       });
-      console.log(shape);
-      console.log(group);
+
       if (shape) {
         this.selectedPaperShape = shape;
         this.thingLayer.update();
