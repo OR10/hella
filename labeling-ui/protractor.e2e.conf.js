@@ -1,4 +1,5 @@
 require('babel-core/register');
+const browserstack = require('browserstack-local');
 
 // We don't have SystemJS available here so we can't use 'import'
 const ImageDiffReporter = require('./Tests/Support/Jasmine/Reporters/ImageDiffReporter').default;
@@ -68,26 +69,65 @@ exports.config = {
   specs: ['Tests/E2E/**/*.spec.js'],
 };
 
-if (typeof process.env.PROTRACTOR_SELENIUM_GRID !== 'undefined') {
-  // CI MODE
-  exports.config.multiCapabilities = [
-    {
-      'browserName': 'chrome',
-      'platform': 'WINDOWS',
-      'chromeOptions': {
-        'args': ['--no-sandbox' ]
-      }
-    },
-  ];
-} else {
-  exports.config.capabilities = {
-    'browserName': 'chrome',
-    'chromeOptions': {
-      'binary': '/Applications/Chromium.app/Contents/MacOS/Chromium',
-    },
-  };
+switch(process.env.TEST_ENV) {
+  case 'browserstack':
+    // Browserstack mode
+    exports.config.capabilities = {
+      'browserstack.user': process.env.BROWSERSTACK_USER,
+      'browserstack.key': process.env.BROWSERSTACK_PASS,
+      'os': 'Windows',
+      'os_version': '7',
+      'browserName': 'Chrome',
+      'browser_version': '61.0',
+      'resolution': '1920x1200',
+      'browserstack.local': true,
+    };
 
-  if (process.env.HEADLESS === 'true') {
-    exports.config.capabilities.chromeOptions.args = [ '--headless', '--window-size=1920,1080' ];
-  }
+    // Code to start browserstack local before start of test
+    exports.config.beforeLaunch = () => {
+      console.log("Connecting local");
+      return new Promise((resolve, reject) => {
+        exports.bs_local = new browserstack.Local();
+        exports.bs_local.start({'key': exports.config.capabilities['browserstack.key'] }, error => {
+          if (error) return reject(error.message);
+          console.log('Connected. Now testing...');
+
+          resolve();
+        });
+      });
+    };
+
+    // Code to stop browserstack local after end of test
+    exports.config.afterLaunch = () => {
+      return new Promise(resolve => {
+        console.log('Stopping browserstack');
+        exports.bs_local.stop(() => resolve());
+      });
+    };
+    break;
+
+  case 'selenium':
+    // Local Selenium installation mode
+    exports.config.multiCapabilities = [
+      {
+        'browserName': 'chrome',
+        'platform': 'WINDOWS',
+        'chromeOptions': {
+          'args': ['--no-sandbox' ]
+        }
+      },
+    ];
+    break;
+
+  default:
+    exports.config.capabilities = {
+      'browserName': 'chrome',
+      'chromeOptions': {
+        'binary': '/Applications/Chromium.app/Contents/MacOS/Chromium',
+      },
+    };
+
+    if (process.env.HEADLESS === 'true') {
+      exports.config.capabilities.chromeOptions.args = [ '--headless', '--window-size=1920,1080' ];
+    }
 }

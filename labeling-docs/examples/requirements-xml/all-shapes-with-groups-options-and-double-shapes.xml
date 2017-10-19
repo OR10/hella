@@ -5,7 +5,6 @@
     </metadata>
     <options>
         <minimal-visible-shape-overflow>30</minimal-visible-shape-overflow>
-        <minimal-height>40</minimal-height>
     </options>
     <thing id="sign" shape="cuboid" name="Traffic Sign">
         <class id="sign-type" name="Sign type">
@@ -20,6 +19,12 @@
             <value id="hat-no" name="no"/>
         </class>
     </thing>
+    <thing id="cyclist" shape="pedestrian" name="Cyclist">
+        <class id="cyclist-has-hat" name="Hat">
+            <value id="cyclist-hat-yes" name="yes"/>
+            <value id="cyclist-hat-no" name="no"/>
+        </class>
+    </thing>
     <thing id="time-range-sign" shape="rectangle" name="Time Range Sign">
         <class id="speed" name="Speed">
             <value id="10" name="10"/>
@@ -27,6 +32,12 @@
             <value id="30" name="30"/>
             <value id="40" name="40"/>
             <value id="50" name="50"/>
+        </class>
+    </thing>
+    <thing id="ignore-area" shape="rectangle" name="Ignore Area">
+        <class id="ignore-pedestrian" name="Pedestrian?">
+            <value id="ignore-pedestrian-true" name="Yes!"/>
+            <value id="ignore-pedestrian-false" name="No!"/>
         </class>
     </thing>
     <thing id="lane" shape="polygon" name="Lane">

@@ -31,22 +31,24 @@ class MediaControlsController {
    * @param {ShapeInboxService} shapeInboxService
    * @param {ShapeSelectionService} shapeSelectionService
    */
-  constructor($scope,
-              $rootScope,
-              labeledThingInFrameGateway,
-              labeledThingGateway,
-              labeledThingGroupGateway,
-              interpolationService,
-              entityIdService,
-              logger,
-              $q,
-              applicationState,
-              modalService,
-              keyboardShortcutService,
-              viewerMouseCursorService,
-              cutService,
-              shapeInboxService,
-              shapeSelectionService) {
+  constructor(
+    $scope,
+    $rootScope,
+    labeledThingInFrameGateway,
+    labeledThingGateway,
+    labeledThingGroupGateway,
+    interpolationService,
+    entityIdService,
+    logger,
+    $q,
+    applicationState,
+    modalService,
+    keyboardShortcutService,
+    viewerMouseCursorService,
+    cutService,
+    shapeInboxService,
+    shapeSelectionService
+  ) {
     /**
      * @type {angular.$rootScope}
      */
@@ -589,7 +591,17 @@ class MediaControlsController {
    * @return {boolean}
    */
   canSelectedPaperShapeBeInterpolated() {
-    return !(this.readOnly === true || this.selectedPaperShape === null) && this.selectedPaperShape.canBeInterpolated();
+    const isReadOnly = this.readOnly === true;
+    const shapeIsSelected = this.selectedPaperShape !== null;
+    const shapeIsAThing = shapeIsSelected && this.selectedPaperShape instanceof PaperThingShape;
+    const saysItCanBeInterpolated = shapeIsSelected && this.selectedPaperShape.canBeInterpolated();
+
+    return (
+      !isReadOnly &&
+      shapeIsSelected &&
+      shapeIsAThing &&
+      saysItCanBeInterpolated
+    );
   }
 }
 

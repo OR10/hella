@@ -39,6 +39,8 @@ describe('PopupPanelController', () => {
   let labelStructure;
   let shapeMergeService;
   let applicationState;
+  let rootScopeEventRegistrationService;
+  let ghostBustListener;
 
   function createAbortablePromise(inputPromise) {
     return new AbortablePromise(angularQ, inputPromise, angularQ.defer());
@@ -63,12 +65,14 @@ describe('PopupPanelController', () => {
     labelStructure = jasmine.createSpyObj('labelStructure', ['getThingById']);
     shapeMergeService = jasmine.createSpyObj('shapeMergeService', ['mergeShapes']);
     applicationState = jasmine.createSpyObj('applicationState', ['disableAll', 'enableAll']);
+    rootScopeEventRegistrationService = jasmine.createSpyObj('rootScopeEventRegistrationService', ['register']);
 
     drawingContextService.createContext.and.returnValue(context);
     context.withScope.and.callFake(callback => callback(drawingScope));
     animationFrameService.debounce.and.returnValue(resizeDebounced);
     frameLocationGateway.getFrameLocations.and.returnValue(createAbortablePromise(angularQ.reject()));
     labelStructureService.getLabelStructure.and.returnValue(angularQ.resolve(labelStructure));
+    rootScopeEventRegistrationService.register.and.callFake((listenerScope, eventName, listener) => ghostBustListener = listener);
   }));
 
   beforeEach(() => {
@@ -88,12 +92,35 @@ describe('PopupPanelController', () => {
       shapeSelectionService,
       shapeInboxService,
       shapeMergeService,
-      applicationState
+      applicationState,
+      rootScopeEventRegistrationService
     );
   });
 
   it('can be created', () => {
     expect(controller).toEqual(jasmine.any(PopupPanelController));
+  });
+
+  it('recalculates the selectedObjects when a shape has been ghostbusted (TTANNO-2152)', () => {
+    const shape = {id: '1', labeledThingInFrame: {}};
+    const labelStructureObject = {name: 'Bernd das Brot'};
+    labelStructure.getThingById.and.returnValue(labelStructureObject);
+    shapeSelectionService.getAllShapes.and.returnValue([shape]);
+    shapeInboxService.hasShape.and.returnValue(false);
+    shapeInboxService.getAllShapes.and.returnValue([]);
+
+    ghostBustListener();
+    scope.$apply();
+
+    const expectedSelectedObjects = [
+      {
+        shape: shape,
+        labelStructureObject: labelStructureObject,
+        label: 'Bernd das Brot #1',
+      },
+    ];
+
+    expect(controller.selectedObjects).toEqual(expectedSelectedObjects);
   });
 
   describe('selectedObjects', () => {
@@ -235,10 +262,18 @@ describe('PopupPanelController', () => {
     });
 
     it('updates whether the selected shapes are mergable (result: true)', () => {
-      const firstShape = {};
-      const secondShape = {};
-      const firstShapeInformation = {id: '1', labeledThingInFrame: {hello: 'there'}, shape: firstShape};
-      const secondShapeInformation = {id: '1', labeledThingInFrame: {}, shape: secondShape};
+      const firstShape = {
+        labeledThingInFrame: {
+          identifierName: 'portal-gun',
+        },
+      };
+      const secondShape = {
+        labeledThingInFrame: {
+          identifierName: 'portal-gun',
+        },
+      };
+      const firstShapeInformation = {id: '1', labeledThingInFrame: firstShape.labeledThingInFrame, shape: firstShape};
+      const secondShapeInformation = {id: '1', labeledThingInFrame: secondShape.labeledThingInFrame, shape: secondShape};
 
       const labelStructureObject = {name: 'Bernd das Brot'};
       labelStructure.getThingById.and.returnValue(labelStructureObject);
@@ -252,11 +287,47 @@ describe('PopupPanelController', () => {
       expect(controller.hasMergableObjects).toEqual(true);
     });
 
-    it('updates whether the selected shapes are mergable (result: false)', () => {
-      const firstShape = {};
-      const secondShape = [];
-      const firstShapeInformation = {id: '1', labeledThingInFrame: {hello: 'there'}, shape: firstShape};
-      const secondShapeInformation = {id: '1', labeledThingInFrame: {}, shape: secondShape};
+    it('updates whether the selected shapes are mergable (result: false, different constructors)', () => {
+      const firstShape = {
+        labeledThingInFrame: {
+          identifierName: 'portal-gun',
+        },
+      };
+      const secondShape = function() {
+        // Noop
+      };
+      secondShape.labeledThingInFrame = {
+        identifierName: 'portal-gun',
+      };
+      const firstShapeInformation = {id: '1', labeledThingInFrame: firstShape.labeledThingInFrame, shape: firstShape};
+      const secondShapeInformation = {id: '1', labeledThingInFrame: secondShape.labeledThingInFrame, shape: secondShape};
+
+      const labelStructureObject = {name: 'Bernd das Brot'};
+      labelStructure.getThingById.and.returnValue(labelStructureObject);
+      shapeSelectionService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
+      shapeInboxService.hasShape.and.returnValue(false);
+      shapeInboxService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
+
+      controller.hasMergableObjects = true;
+      controller.addToInbox(firstShapeInformation);
+      scope.$apply();
+
+      expect(controller.hasMergableObjects).toEqual(false);
+    });
+
+    it('updates whether the selected shapes are mergable (result: false, different thing types) (TTANNO-2154)', () => {
+      const firstShape = {
+        labeledThingInFrame: {
+          identifierName: 'companion-cube',
+        },
+      };
+      const secondShape = {
+        labeledThingInFrame: {
+          identifierName: 'portal-gun',
+        },
+      };
+      const firstShapeInformation = {id: '1', labeledThingInFrame: firstShape.labeledThingInFrame, shape: firstShape};
+      const secondShapeInformation = {id: '1', labeledThingInFrame: secondShape.labeledThingInFrame, shape: secondShape};
 
       const labelStructureObject = {name: 'Bernd das Brot'};
       labelStructure.getThingById.and.returnValue(labelStructureObject);

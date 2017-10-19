@@ -46,6 +46,11 @@
                     <text/>
                 </element>
             </optional>
+            <optional>
+                <element name="r:minimal-height">
+                    <text/>
+                </element>
+            </optional>
         </element>
     </define>
     <define name="Frame">

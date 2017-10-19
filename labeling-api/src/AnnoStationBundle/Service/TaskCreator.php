@@ -460,6 +460,12 @@ class TaskCreator
             if ($minimalVisibleShapeOverflowResult !== false && $minimalVisibleShapeOverflowResult->length === 1) {
                 $minimalVisibleShapeOverflow = (int)$minimalVisibleShapeOverflowResult->item(0)->nodeValue;
             }
+            $minimalHeightResult = $xpath->evaluate('/r:requirements/r:options/r:minimal-height/text()');
+            if ($minimalHeightResult !== false && $minimalHeightResult->length === 1) {
+                $drawingToolOptions['rectangle']['minimalHeight']  = (int) $minimalHeightResult->item(0)->nodeValue;
+                $drawingToolOptions['pedestrian']['minimalHeight'] = (int) $minimalHeightResult->item(0)->nodeValue;
+                $drawingToolOptions['cuboid']['minimalHeight']     = (int) $minimalHeightResult->item(0)->nodeValue;
+            }
         } else {
             $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction(
                 $taskType,

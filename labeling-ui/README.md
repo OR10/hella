@@ -56,6 +56,10 @@ PORT="12345" gulp serve
 ```
 
 ### E2E-Tests
+
+There are three ways to run the E2E Tests: Locally, on Browserstack and on a Selenium hub.
+
+#### Prerequisites for running the E2E tests locally
 Running the E2E tests requires Chromium. Use version `61.0.3154.0`.
 
 Download here:
@@ -78,6 +82,16 @@ gulp test-e2e-run
 #### Running the tests (headless-mode):
 ```
 HEADLESS=true gulp test-e2e-run
+```
+
+#### Running the on Browserstack
+```
+TEST_ENV=browserstack BROWSERSTACK_USER=<your_bs_user> BROWSERSTACK_PASS=<your_bs_pass> gulp-test-e2e[-run]
+```
+
+#### Running the on a Selenium Node / grid
+```
+TEST_ENV=selenium PROTRACTOR_SELENIUM_GRID=<adress_of_your_grid_wo_http> gulp-test-e2e[-run]
 ```
 
 ### Unit Tests: MacOS
