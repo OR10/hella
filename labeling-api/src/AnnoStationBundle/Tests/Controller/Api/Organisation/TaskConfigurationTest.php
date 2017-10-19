@@ -41,6 +41,30 @@ class TaskConfigurationTest extends Tests\WebTestCase
         $this->assertEquals(406, $requestWrapper->getResponse()->getStatusCode());
     }
 
+    public function testFilenameWithSpacesReplacement()
+    {
+        $requestWrapper = $this->createRequest(
+            '/api/v1/organisation/%s/taskConfiguration/requirements',
+            [$this->organisation->getId()]
+        )
+            ->setMethod(HttpFoundation\Request::METHOD_POST)
+            ->withCredentialsFromUsername($this->labelManager)
+            ->setJsonBody(['name' => 'some_config'])
+            ->setFiles(
+                [
+                    'file' => new HttpFoundation\File\UploadedFile(
+                        __DIR__ . '/../../../Resources/TaskConfigurations/requirements meta thinglabeling.xml',
+                        'requirements meta thinglabeling.xml'
+                    ),
+                ]
+            )
+            ->execute();
+
+        $response = json_decode($requestWrapper->getResponse()->getContent(), true);
+
+        $this->assertEquals($response['result']['filename'], 'requirements_meta_thinglabeling.xml');
+    }
+
     protected function setUpImplementation()
     {
         $organisationFacade = $this->getAnnostationService('database.facade.organisation');
