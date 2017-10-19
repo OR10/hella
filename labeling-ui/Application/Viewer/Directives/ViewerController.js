@@ -1109,9 +1109,6 @@ class ViewerController {
     if (!this.paperGroupShapes.includes(group)) {
       this.paperGroupShapes.push(group);
     }
-    this._shapeSelectionService.clear();
-    this.selectedPaperShape = group;
-    group.select();
   }
 
   _resize() {
@@ -1621,6 +1618,11 @@ class ViewerController {
   }
 
   _storeGroup(paperGroupShape, shapesInGroup) {
+    this._thingLayerContext.withScope(() => {
+      this.selectedPaperShape = null;
+      this._shapeSelectionService.clear();
+    });
+
     this._groupCreationService.showGroupSelector()
       .then(selectedGroup => {
         paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.type = selectedGroup.id;
@@ -1663,6 +1665,10 @@ class ViewerController {
       })
       .then(() => {
         this._updateAllGroupDimensions();
+        this._thingLayerContext.withScope(() => {
+          this._shapeSelectionService.clear();
+          this.selectedPaperShape = paperGroupShape;
+        });
         this._$rootScope.$emit('shape:add:after', paperGroupShape);
       });
 
