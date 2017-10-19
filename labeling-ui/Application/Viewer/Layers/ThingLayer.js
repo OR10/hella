@@ -326,7 +326,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
         }
 
         this._applicationState.disableAll();
-        this._labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], group)
+        this._labeledThingGateway.unassignLabeledThingGroupFromLabeledThings([labeledThing], group)
           .then(() => this._deleteAfterAction())
           .catch(() => this._onDeletionError());
       }
@@ -552,17 +552,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
   _deleteGroupShape(shape) {
     const viewModel = this._$scope.vm;
     const labeledThingGroup = shape.labeledThingGroupInFrame.labeledThingGroup;
-    const relatedThingShapes = viewModel.paperThingShapes.filter(
-      thingShape => thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(labeledThingGroup.id) !== -1
-    );
-    const relatedLabeledThings = relatedThingShapes.map(thingShape => thingShape.labeledThingInFrame.labeledThing);
 
     this._applicationState.disableAll();
 
-    this._labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup(relatedLabeledThings, labeledThingGroup)
-      .then(() => {
-        return this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup);
-      })
+    this._labeledThingGateway.unassignLabeledThingGroupFromAllLabeledThings(labeledThingGroup)
+      .then(() => this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup))
       .then(() => {
         this._shapeSelectionService.removeShape(shape);
         shape.remove();

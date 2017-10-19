@@ -629,6 +629,58 @@ describe('Group Creation', () => {
       .then(() => done());
   });
 
+  describe('Group deletion', () => {
+    const nextFrameButton = element(by.css('.next-frame-button'));
+    const previousFrameButton = element(by.css('.previous-frame-button'));
+
+    it('removes all group references on LabeledThings when deleting a group (TTANNO-2165)', done => {
+      bootstrapHttp(sharedMocks);
+      bootstrapPouch([
+        assets.documents.GroupCreation.GroupDeletion.GroupOnTwoFrames,
+      ]);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 190, y: 90})
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => sendKeys(protractor.Key.DELETE))
+        .then(() => shortSleep())
+        .then(() => element(by.cssContainingText('option', 'Delete the object itself')).click())
+        .then(() => {
+          const confirmButton = element(by.css('.modal-button-confirm'));
+          return confirmButton.click();
+        })
+        .then(() => shortSleep())
+        .then(() => {
+          expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
+          expect(assets.documents.GroupCreation.GroupDeletion.StoreLabeledThing1).toExistInPouchDb();
+          expect(assets.documents.GroupCreation.GroupDeletion.StoreLabeledThing2).toExistInPouchDb();
+        })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'DeleteGroupInTwoFramesFrame2')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.DeleteGroupInTwoFramesFrame2);
+        })
+        .then(() => previousFrameButton.click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'DeleteGroupInTwoFramesFrame1')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.DeleteGroupInTwoFramesFrame1);
+        })
+        .then(() => done());
+    });
+  });
+
   afterEach(() => {
     bootstrapHttp.teardown();
     bootstrapPouch.teardown();

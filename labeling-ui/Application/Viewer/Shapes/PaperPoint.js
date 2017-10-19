@@ -180,11 +180,11 @@ class PaperPoint extends PaperThingShape {
    * @returns {{width: number, height: number}}
    */
   get bounds() {
-    const x = this._centerPoint.x - PaperPoint.RADIUS;
-    const y = this._centerPoint.y - PaperPoint.RADIUS;
+    const x = this._centerPoint.x - PaperPoint.RADIUS - PaperPoint.CROSSHAIR_OVERFLOW;
+    const y = this._centerPoint.y - PaperPoint.RADIUS - PaperPoint.CROSSHAIR_OVERFLOW;
     return {
-      width: PaperPoint.DIAMETER,
-      height: PaperPoint.DIAMETER,
+      width: PaperPoint.DIAMETER + (PaperPoint.CROSSHAIR_OVERFLOW * 2),
+      height: PaperPoint.DIAMETER + (PaperPoint.CROSSHAIR_OVERFLOW * 2),
       x: x,
       y: y,
       point: this._centerPoint,
