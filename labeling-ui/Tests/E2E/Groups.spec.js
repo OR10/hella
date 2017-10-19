@@ -14,7 +14,7 @@ import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('Group Creation', () => {
+describe('Groups', () => {
   let assets;
   let sharedMocks;
   let viewer;
