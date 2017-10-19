@@ -222,6 +222,15 @@ PouchDbViewService.VIEWS = {
       }
     },
   },
+  'labeledThingByLabeledThingGroupId': {
+    map: function(doc) {
+      if (doc.type === 'AppBundle.Model.LabeledThing') {
+        doc.groupIds.forEach(groupId => {
+          emit([groupId], doc._id);
+        });
+      }
+    },
+  },
   'labeledThingGroupInFrameByLabeledThingGroupIdAndFrameIndex': {
     map: function(doc) {
       if (doc.type === 'AnnoStationBundle.Model.LabeledThingGroupInFrame') {

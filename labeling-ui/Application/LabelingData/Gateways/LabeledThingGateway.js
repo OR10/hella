@@ -221,6 +221,45 @@ class LabeledThingGateway {
   }
 
   /**
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @private
+   */
+  _getAssociatedLabeledThingsForLabeledThingGroup(labeledThingGroup) {
+    const task = labeledThingGroup.task;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    return dbContext.query(
+      this._pouchDbViewService.getDesignDocumentViewName(
+        'labeledThingByLabeledThingGroupId'),
+      {
+        include_docs: true,
+        key: [labeledThingGroup.id],
+      }
+    )
+      .then(result => {
+        return result.rows.map(
+          row => this._couchDbModelDeserializer.deserializeLabeledThing(
+            row.doc,
+            task
+          )
+        );
+      });
+  }
+
+  /**
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @return {AbortablePromise.<LabeledThing[]>}
+   */
+  unassignLabeledThingGroupFromAllLabeledThings(labeledThingGroup) {
+    return this._packagingExecutor.execute('labeledThing', () => {
+      return this._$q.resolve()
+        .then(() => this._getAssociatedLabeledThingsForLabeledThingGroup(labeledThingGroup))
+        .then(labeledThings => this._unassignLabeledThingGroupFromLabeledThingsWithoutPackagingExecutor(labeledThings, labeledThingGroup));
+    });
+  }
+
+  /**
    * @param {LabeledThing} labeledThing
    * @return {AbortablePromise.<LabeledThing|Error>}
    */
@@ -384,8 +423,26 @@ class LabeledThingGateway {
    *
    * @param {LabeledThing[]} labeledThings
    * @param {LabeledThingGroup} labeledThingGroup
+   * @return {AbortablePromise.<LabeledThing[]>}
    */
-  unassignLabeledThingsFromLabeledThingGroup(labeledThings, labeledThingGroup) {
+  unassignLabeledThingGroupFromLabeledThings(labeledThings, labeledThingGroup) {
+    return this._packagingExecutor.execute(
+      // It is important to put this into the `labeledThing` queue not the `labeledThingGroup` queue!
+      'labeledThing',
+      () => {
+      return this._unassignLabeledThingGroupFromLabeledThingsWithoutPackagingExecutor(labeledThings, labeledThingGroup);
+      }
+    );
+  }
+
+  /**
+   * Remove assignment of a {@link LabeledThingGroup} from a list of {@link LabeledThing}s.
+   *
+   * @param {LabeledThing[]} labeledThings
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @return {AbortablePromise.<LabeledThing[]>}
+   */
+  _unassignLabeledThingGroupFromLabeledThingsWithoutPackagingExecutor(labeledThings, labeledThingGroup) {
     const modifiedLabeledThings = labeledThings.map(labeledThing => {
       const index = labeledThing.groupIds.indexOf(labeledThingGroup.id);
       if (index !== -1) {
@@ -394,19 +451,13 @@ class LabeledThingGateway {
       return labeledThing;
     });
 
-    return this._packagingExecutor.execute(
-      // It is important to put this into the `labeledThing` queue not the `labeledThingGroup` queue!
-      'labeledThing',
-      () => {
-        const promises = [];
+    const promises = [];
 
-        modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._saveLabeledThingWithoutPackagingExecutor(labeledThing));
-        });
+    modifiedLabeledThings.forEach(labeledThing => {
+      promises.push(this._saveLabeledThingWithoutPackagingExecutor(labeledThing));
+    });
 
-        return this._$q.all(promises);
-      }
-    );
+    return this._$q.all(promises);
   }
 
   /**

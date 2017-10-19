@@ -517,7 +517,7 @@ describe('LabeledThingGateway', () => {
       task,
     });
 
-    gateway.unassignLabeledThingsFromLabeledThingGroup([labeledThing], labeledThingGroup);
+    gateway.unassignLabeledThingGroupFromLabeledThings([labeledThing], labeledThingGroup);
 
     $rootScope.$apply();
 
