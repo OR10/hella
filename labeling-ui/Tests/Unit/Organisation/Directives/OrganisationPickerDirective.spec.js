@@ -72,4 +72,15 @@ describe('Organisation-Picker', () => {
     const organisationElement = element.find('select');
     expect(organisationElement.val()).toEqual('?');
   });
+
+  it('change the selected organization in dropdown', () => {
+    renderDirective();
+
+    const organisationElement = element.find('select');
+    expect(organisationElement.val()).toEqual('1');
+
+    organisationElement.val(2).change();
+    expect(organisationRoutingServiceMock.transistionToNewOrganisation).toHaveBeenCalledWith(2);
+    expect(organisationElement.val()).toEqual('2');
+  });
 });
