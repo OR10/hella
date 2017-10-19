@@ -13,7 +13,7 @@ class TabViewController {
     this.tabs = [];
 
     $scope.$watch('vm.activeIndex', newValue => {
-      const tabToActivate = this.tabs.find(tab => tab.header === newValue);
+      const tabToActivate = this.tabs.find((tab, index) => index === newValue);
       if (tabToActivate !== undefined && tabToActivate !== null) {
         this.activateTab(tabToActivate);
       }
@@ -44,6 +44,10 @@ class TabViewController {
   activateTab(tabToActivate) {
     this.tabs.forEach(tab => tab.deactivate());
     tabToActivate.activate();
+
+    this.activeIndex = this.tabs.findIndex(
+      candidate => candidate === tabToActivate
+    );
   }
 }
 
