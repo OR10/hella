@@ -629,7 +629,7 @@ describe('Group Creation', () => {
       .then(() => done());
   });
 
-  fdescribe('Group deletion', () => {
+  describe('Group deletion', () => {
     const nextFrameButton = element(by.css('.next-frame-button'));
     const previousFrameButton = element(by.css('.previous-frame-button'));
 
@@ -657,18 +657,26 @@ describe('Group Creation', () => {
         })
         .then(() => shortSleep())
         .then(() => {
-          // expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThing).toExistInPouchDb();
           expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
           expect(assets.documents.GroupCreation.GroupDeletion.StoreLabeledThing1).toExistInPouchDb();
           expect(assets.documents.GroupCreation.GroupDeletion.StoreLabeledThing2).toExistInPouchDb();
         })
-        // .then(
-        //   // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'CreateOneGroupWithTwoRectangles')
-        //   () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
-        // )
-        // .then(drawingStack => {
-        //   expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.CreateOneGroupWithTwoRectangles);
-        // })
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'DeleteGroupInTwoFramesFrame2')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.DeleteGroupInTwoFramesFrame2);
+        })
+        .then(() => previousFrameButton.click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'DeleteGroupInTwoFramesFrame1')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.DeleteGroupInTwoFramesFrame1);
+        })
         .then(() => done());
     });
   });
