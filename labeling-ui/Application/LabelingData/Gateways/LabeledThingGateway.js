@@ -430,7 +430,7 @@ class LabeledThingGateway {
       // It is important to put this into the `labeledThing` queue not the `labeledThingGroup` queue!
       'labeledThing',
       () => {
-      return this._unassignLabeledThingGroupFromLabeledThingsWithoutPackagingExecutor(labeledThings, labeledThingGroup);
+        return this._unassignLabeledThingGroupFromLabeledThingsWithoutPackagingExecutor(labeledThings, labeledThingGroup);
       }
     );
   }

@@ -7,8 +7,8 @@ import {
   mediumSleep,
   shortSleep,
   longSleep,
-  sendKeys, dumpAllRequestsMade,
-} from '../Support/Protractor/Helpers'
+  sendKeys,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
