@@ -84,6 +84,7 @@ describe('ThingLayer', () => {
       [
         'deleteLabeledThing',
         'unassignLabeledThingGroupFromLabeledThings',
+        'unassignLabeledThingGroupFromAllLabeledThings',
       ]
     );
     labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
@@ -1051,7 +1052,7 @@ describe('ThingLayer', () => {
 
       it('Delete shape from group and delete group when it has only one shape in it', () => {
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-        labeledThingGateway.unassignLabeledThingGroupFromLabeledThings.and.returnValue(angularQ.resolve());
+        labeledThingGateway.unassignLabeledThingGroupFromAllLabeledThings.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
@@ -1106,6 +1107,7 @@ describe('ThingLayer', () => {
     describe('PaperGroupShape', () => {
       it('shows modal window on error', () => {
         const error = new Error('Help! Help! I am caught in a big whale!');
+        labeledThingGateway.unassignLabeledThingGroupFromAllLabeledThings.and.returnValue(angularQ.resolve());
         labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.reject(error));
         angularScope.vm.paperThingShapes = [];
         const pgs = new PaperGroupShape({labeledThingGroup: {id: 1}});
@@ -1118,7 +1120,7 @@ describe('ThingLayer', () => {
       });
 
       it('Delete group', () => {
-        labeledThingGateway.unassignLabeledThingGroupFromLabeledThings.and.returnValue(angularQ.resolve());
+        labeledThingGateway.unassignLabeledThingGroupFromAllLabeledThings.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
