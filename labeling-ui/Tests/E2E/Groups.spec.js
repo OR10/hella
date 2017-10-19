@@ -21,6 +21,8 @@ describe('Group Creation', () => {
   let groupButton;
   let labelSelector;
   let labelSelectorHelper;
+  let nextFrameButton;
+  let previousFrameButton;
 
   beforeEach(() => {
     assets = new AssetHelper(
@@ -54,6 +56,9 @@ describe('Group Creation', () => {
     groupButton = element(by.css('button.tool-group.tool-0'));
     labelSelector = element(by.css('label-selector'));
     labelSelectorHelper = new LabelSelectorHelper(labelSelector);
+
+    nextFrameButton = element(by.css('.next-frame-button'));
+    previousFrameButton = element(by.css('.previous-frame-button'));
   });
 
 
@@ -630,13 +635,10 @@ describe('Group Creation', () => {
   });
 
   describe('Group deletion', () => {
-    const nextFrameButton = element(by.css('.next-frame-button'));
-    const previousFrameButton = element(by.css('.previous-frame-button'));
-
     it('removes all group references on LabeledThings when deleting a group (TTANNO-2165)', done => {
       bootstrapHttp(sharedMocks);
       bootstrapPouch([
-        assets.documents.GroupCreation.GroupDeletion.GroupOnTwoFrames,
+        assets.documents.GroupCreation.GroupOnTwoFrames,
       ]);
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => nextFrameButton.click())
@@ -676,6 +678,48 @@ describe('Group Creation', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.DeleteGroupInTwoFramesFrame1);
+        })
+        .then(() => done());
+    });
+  });
+
+  describe('Group Selection', () => {
+    it('keeps the selection on frame change', done => {
+      bootstrapHttp(sharedMocks);
+      bootstrapPouch([
+        assets.documents.GroupCreation.GroupOnTwoFrames,
+      ]);
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 190, y: 90})
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => labelSelectorHelper.getLabelSelectorTitleText())
+        .then(titleTexts => expect(titleTexts).toEqual('Sign with extension'))
+        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(['Position of the extension sign']))
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'GroupSelectionStaysOnFrameChangeFrame2')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.GroupSelectionStaysOnFrameChangeFrame2);
+        })
+        .then(() => previousFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getLabelSelectorTitleText())
+        .then(titleTexts => expect(titleTexts).toEqual('Sign with extension'))
+        .then(() => expect(labelSelectorHelper.getTitleTexts()).toEqual(['Position of the extension sign']))
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'GroupSelectionStaysOnFrameChangeFrame1')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.GroupSelectionStaysOnFrameChangeFrame1);
         })
         .then(() => done());
     });
