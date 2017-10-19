@@ -11,6 +11,6 @@
             <span ui-sref="labeling.user.profile">{{ vm.user.username }}</span>
         </div>
         <div class="page-header__user-info__line user-role" tooltip="{{ vm.roles }}">{{ vm.user.roles | singleRole | readableRole }}</div>
-        <div class="page-header__user-info__line user-organisation">{{ vm.activeOrganisation.name }}</div>
+        <div class="page-header__user-info organisation-picker"><organisation-picker></organisation-picker></div>
     </div>
 </div>

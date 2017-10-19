@@ -99,35 +99,4 @@ describe('PageTitle Directive Test Suite', () => {
     const usernameElement = element.find('div.page-header__user-info__line.user-organisation');
     expect(usernameElement.text()).toEqual('');
   });
-
-  describe('has organisations', () => {
-    const organizationName = 'Unit Test Organization';
-    const firstOrganization = {id: 1, name: 'Egal'};
-    const secondOrganization = {id: 2, name: organizationName};
-
-    beforeEach(() => {
-      currentUserServiceMock.getOrganisations.and.returnValue([
-        firstOrganization,
-        secondOrganization,
-      ]);
-    });
-
-    it('renders the correct organization', () => {
-      organisationServiceMock.get.and.returnValue(2);
-
-      renderDirective();
-
-      const usernameElement = element.find('div.page-header__user-info__line.user-organisation');
-      expect(usernameElement.text()).toEqual(organizationName);
-    });
-
-    it('does not render the organisation if user is not in the active organisation', () => {
-      organisationServiceMock.get.and.returnValue(3);
-
-      renderDirective();
-
-      const usernameElement = element.find('div.page-header__user-info__line.user-organisation');
-      expect(usernameElement.text()).toEqual('');
-    });
-  });
 });
