@@ -454,8 +454,8 @@ class ViewerController {
               labeledThingInGroupFrame.labeledThingGroup.type,
               {
                 title: 'Add shape to group',
-                headline: 'The selected shape can add into your choosen group or create a complete new group around both shapes',
-                message: 'Please select a group in which you want to add the selected shape or choose \'Create new group\'!',
+                headline: 'The selected shape can be added to your currently selected group or create a complete new one around all shapes',
+                message: 'Please select the group to which you want to add the selected shape or choose \'Create new group\'!',
                 confirmButtonText: 'Add',
                 defaultSelection: 'Create new group',
               },
