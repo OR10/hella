@@ -40,7 +40,14 @@ class PaginationActivePageStorage {
    * @returns {{itemsPerPage: number, totalRows: number, page: number}|undefined}
    */
   retrieveActivePage(identifier) {
-    return this._storage.get(identifier);
+    const storedInformation = this._storage.get(identifier);
+    this._logger.log(
+      'paginationActivePageStorage:load',
+      `Retrieved active page for identifier ${identifier}:`,
+      storedInformation
+    );
+
+    return storedInformation;
   }
 }
 
