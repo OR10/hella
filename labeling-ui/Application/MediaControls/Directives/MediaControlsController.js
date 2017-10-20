@@ -325,39 +325,63 @@ class MediaControlsController {
    */
   handleInterpolation() {
     if (this.selectedPaperShape) {
-      const selectedLabeledThing = this.selectedPaperShape.labeledThingInFrame.labeledThing;
       this._applicationState.disableAll();
       this._applicationState.viewer.work();
-      this._interpolationService.interpolate(this.task, selectedLabeledThing)
-        .then(
-          () => {
-            this._applicationState.viewer.finish();
-            this._applicationState.enableAll();
-          }
-        )
-        .catch(
-          error => {
-            this._applicationState.viewer.finish();
-            this._applicationState.enableAll();
 
-            this._modalService.info(
-              {
-                title: 'Interpolation error',
-                headline: 'There was an error with the interpolation. Please try again.',
-                confirmButtonText: 'Understood',
-              },
-              undefined,
-              undefined,
-              {
-                warning: true,
-                abortable: false,
-              }
-            );
+      const selectedLabeledThingInFrame = this.selectedPaperShape.labeledThingInFrame;
+      const selectedLabeledThing = selectedLabeledThingInFrame.labeledThing;
 
-            throw error;
-          }
-        );
-      // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
+      if (selectedLabeledThingInFrame.ghost === true) {
+        selectedLabeledThingInFrame.ghostBust(this._entityIdService.getUniqueId(), selectedLabeledThingInFrame.frameIndex);
+      }
+      let frameRangeUpdated = false;
+
+      if (selectedLabeledThingInFrame.frameIndex > selectedLabeledThing.frameRange.endFrameIndex) {
+        selectedLabeledThing.frameRange.endFrameIndex = selectedLabeledThingInFrame.frameIndex;
+        frameRangeUpdated = true;
+      }
+
+      if (selectedLabeledThingInFrame.frameIndex < selectedLabeledThing.frameRange.startFrameIndex) {
+        selectedLabeledThing.frameRange.startFrameIndex = selectedLabeledThingInFrame.frameIndex;
+        frameRangeUpdated = true;
+      }
+
+      if (frameRangeUpdated) {
+        this._labeledThingGateway.saveLabeledThing(selectedLabeledThing);
+      }
+
+      this._labeledThingInFrameGateway.saveLabeledThingInFrame(selectedLabeledThingInFrame).then(labeledThingInFrame => {
+        this._interpolationService.interpolate(this.task, labeledThingInFrame.labeledThing)
+          .then(
+            () => {
+              this._applicationState.viewer.finish();
+              this._applicationState.enableAll();
+            }
+          )
+          .catch(
+            error => {
+              this._applicationState.viewer.finish();
+              this._applicationState.enableAll();
+
+              this._modalService.info(
+                {
+                  title: 'Interpolation error',
+                  headline: 'There was an error with the interpolation. Please try again.',
+                  confirmButtonText: 'Understood',
+                },
+                undefined,
+                undefined,
+                {
+                  warning: true,
+                  abortable: false,
+                }
+              );
+
+              throw error;
+            }
+          );
+        // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
+      });
     }
   }
 
