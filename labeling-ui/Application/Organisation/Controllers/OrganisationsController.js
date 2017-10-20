@@ -11,7 +11,7 @@ class OrganisationsController {
         return;
       }
       switch (newValue) {
-        case 'new':
+        case OrganisationsController.NEW_TAB_INDEX:
           this._$state.go('labeling.organisation-management.detail', {organisationId: OrganisationsController.NEW});
           break;
         default:
@@ -31,17 +31,17 @@ class OrganisationsController {
 
   handleRouteAndPermissions(route) {
     if (route === undefined) {
-      return OrganisationsController.MANAGE;
+      return OrganisationsController.MANAGE_TAB_INDEX;
     }
     if (route === OrganisationsController.NEW && this.userPermissions.canCreateOrganisation === true) {
-      return OrganisationsController.NEW;
+      return OrganisationsController.NEW_TAB_INDEX;
     }
     if (this.userPermissions.canEditOrganisation === true) {
       this.organisationId = route;
-      return OrganisationsController.EDIT;
+      return OrganisationsController.EDIT_TAB_INDEX;
     }
     this.organisationId = undefined;
-    return OrganisationsController.MANAGE;
+    return OrganisationsController.MANAGE_TAB_INDEX;
   }
 }
 
@@ -55,5 +55,10 @@ OrganisationsController.$inject = [
 OrganisationsController.MANAGE = 'manage';
 OrganisationsController.EDIT = 'edit';
 OrganisationsController.NEW = 'new';
+
+OrganisationsController.NEW_TAB_INDEX = 0;
+OrganisationsController.MANAGE_TAB_INDEX = 1;
+OrganisationsController.EDIT_TAB_INDEX = 2;
+
 
 export default OrganisationsController;

@@ -40,13 +40,13 @@ class LabelingGroupsController {
 
     switch ($stateParams.groupId) {
       case undefined:
-        this.activeTab = 'manage';
+        this.activeTab = LabelingGroupsController.MANAGE_TAB_INDEX;
         break;
       case 'new':
-        this.activeTab = 'new';
+        this.activeTab = LabelingGroupsController.NEW_TAB_INDEX;
         break;
       default:
-        this.activeTab = 'edit';
+        this.activeTab = LabelingGroupsController.EDIT_TAB_INDEX;
         this.groupId = $stateParams.groupId;
     }
 
@@ -60,7 +60,7 @@ class LabelingGroupsController {
         return;
       }
       switch (newValue) {
-        case 'new':
+        case LabelingGroupsController.NEW_TAB_INDEX:
           this._$state.go('labeling.labeling-groups.detail', {groupId: 'new'});
           break;
         default:
@@ -69,6 +69,10 @@ class LabelingGroupsController {
     });
   }
 }
+
+LabelingGroupsController.NEW_TAB_INDEX = 0;
+LabelingGroupsController.MANAGE_TAB_INDEX = 1;
+LabelingGroupsController.EDIT_TAB_INDEX = 2;
 
 LabelingGroupsController.$inject = [
   '$scope',
