@@ -12,6 +12,7 @@ import TabDirective from './Directives/TabDirective';
 
 import PaginationTableDirective from './Directives/PaginationTableDirective';
 import PaginationControlsDirective from './Directives/PaginationControlsDirective';
+import PaginationActivePageStorage from './Services/PaginationActivePageStorage';
 
 import BackLinkDirective from './Directives/BackLinkDirective';
 
@@ -272,6 +273,7 @@ class ManagementBoard extends Module {
     this.module.service('systemGateway', SystemGateway);
     this.module.service('uploadGateway', UploadGateway);
     this.module.service('uploadService', UploadService);
+    this.module.service('paginationActivePageStorage', PaginationActivePageStorage);
 
     this.registerDirective('backLink', BackLinkDirective);
     this.registerDirective('tabView', TabViewDirective);
