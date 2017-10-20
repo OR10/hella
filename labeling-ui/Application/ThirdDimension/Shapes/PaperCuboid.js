@@ -71,6 +71,7 @@ class PaperCuboid extends PaperThingShape {
    * @private
    */
   _drawCuboid() {
+    super._drawShape(this._drawHandles);
     this._projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
     this.removeChildren();
@@ -125,6 +126,16 @@ class PaperCuboid extends PaperThingShape {
         return null;
       }
 
+      let dashArray = PaperShape.LINE;
+
+      if (hidden) {
+        dashArray = PaperShape.DASH;
+      }
+
+      if (this.labeledThingInFrame.ghost && !hidden) {
+        dashArray = PaperShape.DOT;
+      }
+
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
         to: this._vectorToPaperPoint(to),
@@ -132,7 +143,7 @@ class PaperCuboid extends PaperThingShape {
         selected: false,
         strokeWidth: 2,
         strokeScaling: false,
-        dashArray: hidden ? PaperShape.DASH : PaperShape.LINE,
+        dashArray: dashArray,
       });
     })
       .filter(edge => edge !== null);

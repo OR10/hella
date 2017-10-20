@@ -62,6 +62,12 @@ class PaperShape extends paper.Group {
      * @private
      */
     this._isSelected = false;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._lastDrawHandlesState = true;
   }
 
   get id() {
@@ -139,6 +145,17 @@ class PaperShape extends paper.Group {
   }
 
   /**
+   * Recreate internal shape structure
+   */
+  redrawShape() {
+    this._drawShape(this._lastDrawHandlesState);
+  }
+
+  _drawShape(drawHandles = true) {
+    this._lastDrawHandlesState = drawHandles;
+  }
+
+  /**
    * @abstract
    * @method PaperShape#toJSON
    */
@@ -151,11 +168,6 @@ class PaperShape extends paper.Group {
   /**
    * @abstract
    * @method PaperShape#deselect
-   */
-
-  /**
-   * @abstract
-   * @method PaperShape#_drawShape
    */
 
   /**
@@ -173,7 +185,9 @@ class PaperShape extends paper.Group {
    * @method PaperShape#getCursor
    */
 }
+
 PaperShape.DASH = [10, 4];
+PaperShape.DOT = [2, 4];
 PaperShape.LINE = [];
 
 export default PaperShape;
