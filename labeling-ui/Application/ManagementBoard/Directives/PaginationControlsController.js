@@ -5,8 +5,11 @@ class PaginationControlsController {
   }
 
   jumpToPage(page) {
-    this._paginationTableController._triggerPageUpdate(page);
-    this.currentPage = page;
+    this._paginationTableController.triggerPageUpdate(page);
+  }
+
+  isPageActive(page) {
+    return this._paginationTableController.isPageActive(page);
   }
 
   _setPaginationTableController(paginationTableController) {

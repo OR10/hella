@@ -3,6 +3,11 @@ class PaginationTableController {
     this._$scope = $scope;
 
     this._triggerPageUpdate(1);
+    /**
+     * @type {number}
+     * @private
+     */
+    this._activePage = 1;
   }
 
   _triggerPageUpdate(page) {
@@ -11,6 +16,16 @@ class PaginationTableController {
       totalRows: parseInt(this.totalRows, 10),
       page,
     });
+
+    this._activePage = page;
+  /**
+   * @param {number} page
+   * @returns {boolean}
+   */
+  isPageActive(page) {
+    return page === this._activePage;
+  }
+
   }
 }
 
