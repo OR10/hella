@@ -1,6 +1,6 @@
 import PaginationActivePageStorage from '../../../../Application/ManagementBoard/Services/PaginationActivePageStorage';
 
-fdescribe('PaginationActivePageStorage', () => {
+describe('PaginationActivePageStorage', () => {
   let loggerMock;
 
   beforeEach(() => {
