@@ -3,7 +3,6 @@ import TabViewController from '../../../../Application/ManagementBoard/Directive
 
 describe('TabViewController', () => {
   let rootScope;
-  let angularQ;
   let scope;
   let vm;
   let tabViewActiveIndexStorageMock;
@@ -21,13 +20,12 @@ describe('TabViewController', () => {
     return tabControllerMock;
   }
 
-  function transferVmToController(vm, controller) {
-    Object.keys(vm).forEach(key => controller[key] = vm[key]);
+  function transferVmToController(viewModel, controller) {
+    Object.keys(viewModel).forEach(key => controller[key] = viewModel[key]);
   }
 
-  beforeEach(inject(($rootScope, $q) => {
+  beforeEach(inject($rootScope => {
     rootScope = $rootScope;
-    angularQ = $q;
   }));
 
   beforeEach(() => {
