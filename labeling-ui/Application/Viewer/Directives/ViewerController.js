@@ -1344,10 +1344,6 @@ class ViewerController {
       }
     );
 
-    if (this.selectedPaperShape instanceof PaperGroupShape) {
-      this.selectedPaperShape = null;
-    }
-
     this.paperGroupShapes = this.paperGroupShapes.concat(newPaperGroupShapes);
   }
 
