@@ -9,6 +9,7 @@
     </div>
     <table class="table hover table-background-even-odd view-list-table"
            pagination-table
+           storage-identifier="task-list-for-project-{{vm.projectId}}-with-status-{{vm.taskStatus}}-and-phase-{{vm.taskPhase}}"
            total-rows="vm.totalRows"
            items-per-page="100"
            on-page-update="vm.updatePage(page, itemsPerPage)">

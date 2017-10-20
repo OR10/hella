@@ -10,6 +10,7 @@
 
     <table class="table hover view-list-table"
            pagination-table
+           storage-identifier="project-list-with-status-{{vm.projectStatus}}"
            total-rows="vm.totalRows"
            items-per-page="100"
            on-page-update="vm.updatePage(page, itemsPerPage)">
