@@ -29,7 +29,7 @@ class TabViewController {
       }
 
       if (newValue !== undefined) {
-        this.saveStoredIndex(newValue);
+        this._saveStoredIndex(newValue);
       }
     });
   }
@@ -75,8 +75,9 @@ class TabViewController {
 
   /**
    * @param {number} index
+   * @private
    */
-  saveStoredIndex(index) {
+  _saveStoredIndex(index) {
     if (this.storageIdentifier !== undefined) {
       this._activeIndexStorage.storeActiveIndex(this.storageIdentifier, index);
     }
