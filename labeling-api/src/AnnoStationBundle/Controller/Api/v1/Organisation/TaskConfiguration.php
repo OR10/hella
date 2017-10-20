@@ -218,7 +218,7 @@ class TaskConfiguration extends Controller\Base
         $taskConfiguration = new TaskConfigurationModel\RequirementsXml(
             $organisation,
             $name,
-            $file->getClientOriginalName(),
+            str_replace(' ', '_', $file->getClientOriginalName()),
             $file->getMimeType(),
             $xmlData,
             $user->getId(),

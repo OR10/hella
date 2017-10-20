@@ -18,7 +18,7 @@ class ThumbnailReelControllerTestable extends ThumbnailReelController {
               applicationState,
               lockService,
               frameIndexService,
-              labeledThingGroupService) {
+              labeledThingGroupGateway) {
     super($scope,
       $rootScope,
       $window,
@@ -32,7 +32,7 @@ class ThumbnailReelControllerTestable extends ThumbnailReelController {
       applicationState,
       lockService,
       frameIndexService,
-      labeledThingGroupService);
+      labeledThingGroupGateway);
   }
 }
 
@@ -61,13 +61,12 @@ describe('ThumbnailReelController tests', () => {
       promise,
       null,                   // abortablePromiseFactory
       frameLocationGateway,
-      null,                   // labeledThingInFrameGateway
       labeledThingGateway,
       animationFrameService,
       applicationState,
       lockService,
       frameIndexService,      // frameIndexService
-      null,                   // labeledThingGroupService
+      null,                   // labeledThingGroupGateway
     );
   }
 

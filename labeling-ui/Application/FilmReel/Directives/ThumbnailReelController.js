@@ -15,35 +15,36 @@ import PaperVirtualShape from '../../Viewer/Shapes/PaperVirtualShape';
 class ThumbnailReelController {
   /**
    * @param {$rootScope.Scope} $scope
+   * @param {$rootScope} $rootScope
    * @param {window} $window
    * @param {HTMLElement} $element
    * @param {$q} $q
    * @param {AbortablePromiseFactory} abortablePromiseFactory
    * @param {FrameLocationGateway} frameLocationGateway
-   * @param {LabeledThingInFrameGateway} labeledThingInFrameGateway
    * @param {LabeledThingGateway} labeledThingGateway
    * @param {AnimationFrameService} animationFrameService
    * @param {Object} applicationState
    * @param {LockService} lockService
    * @param {FrameIndexService} frameIndexService
-   * @param {LabeledThingGroupService} labeledThingGroupService
+   * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    */
-  constructor($scope,
-              $rootScope,
-              $window,
-              $element,
-              $q,
-              abortablePromiseFactory,
-              frameLocationGateway,
-              labeledThingInFrameGateway,
-              labeledThingGateway,
-              animationFrameService,
-              applicationState,
-              lockService,
-              frameIndexService,
-              labeledThingGroupService) {
+  constructor(
+    $scope,
+    $rootScope,
+    $window,
+    $element,
+    $q,
+    abortablePromiseFactory,
+    frameLocationGateway,
+    labeledThingGateway,
+    animationFrameService,
+    applicationState,
+    lockService,
+    frameIndexService,
+    labeledThingGroupGateway
+  ) {
     /**
-     * @type {Array.<{location: FrameLocation|null, labeledThingInFrame: labeledThingInFrame|null}>}
+     * @type {Array.<{location: FrameLocation|null}>}
      */
     this.thumbnails = [];
 
@@ -83,10 +84,10 @@ class ThumbnailReelController {
     this._frameIndexService = frameIndexService;
 
     /**
-     * @type {LabeledThingGroupService}
+     * @type {LabeledThingGroupGateway}
      * @private
      */
-    this._labeledThingGroupService = labeledThingGroupService;
+    this._labeledThingGroupGateway = labeledThingGroupGateway;
 
     /**
      * Count of thumbnails shown on the page
@@ -142,12 +143,6 @@ class ThumbnailReelController {
     this._frameLocationGateway = frameLocationGateway;
 
     /**
-     * @type {LabeledThingInFrameGateway}
-     * @private
-     */
-    this._labeledThingInFrameGateway = labeledThingInFrameGateway;
-
-    /**
      * @type {LabeledThingGateway}
      * @private
      */
@@ -159,9 +154,19 @@ class ThumbnailReelController {
     this._frameLocationsBuffer = new AbortablePromiseRingBuffer(1);
 
     /**
-     * @type {AbortablePromiseRingBuffer}
+     * @type {boolean}
+     * @private
      */
-    this._labeledThingInFrameBuffer = new AbortablePromiseRingBuffer(1);
+    this._frameRangeIsLoading = false;
+
+    /**
+     * @type {{startFrameIndex: number, endFrameIndex: number}}
+     * @private
+     */
+    this._selectedPaperShapeFrameRange = {
+      startFrameIndex: 0,
+      endFrameIndex: 0,
+    };
 
     /**
      * @type {boolean}
@@ -204,53 +209,32 @@ class ThumbnailReelController {
         if (playingBefore) {
           this._applicationState.thumbnails.enable();
           this._updateThumbnailData();
-          if (this.selectedPaperShape !== null) {
-            switch (true) {
-              case this.selectedPaperShape instanceof PaperThingShape:
-                this._updateLabeledThingInFrames(this.selectedPaperShape);
-                break;
-              case this.selectedPaperShape instanceof PaperGroupShape:
-                this._updateLabeledThingGroupsInFrame(this.selectedPaperShape);
-                break;
-              case this.selectedPaperShape instanceof PaperFrame:
-                this._updateLabeledFrame(this.selectedPaperShape);
-                break;
-              default:
-                throw new Error('Cannot update thumbnails for unknown shape type');
-            }
-          }
         }
       }
     });
 
-    // @TODO: Only supports single shaped LabeledThingInFrames at the moment.
-    //        Some sort of watchGroupCollection would be needed to fix this.
-    $scope.$watch('vm.selectedPaperShape', newPaperShape => this._paperShapeUpdated(newPaperShape));
-    $rootScope.$on('shape:add:after', (event, newPaperShape) => this._paperShapeUpdated(newPaperShape));
+    $scope.$watch('vm.selectedPaperShape', newSelectedPaperShape => {
+      if (!newSelectedPaperShape) {
+        this._selectedPaperShapeFrameRange = {
+          startFrameIndex: 0,
+          endFrameIndex: 0,
+        };
+        this._frameRangeIsLoading = false;
+        return;
+      }
+
+      this._frameRangeIsLoading = true;
+      this._$q.resolve()
+        .then(() => this._loadFrameRange())
+        .then(frameRange => {
+          this._selectedPaperShapeFrameRange = frameRange;
+          this._frameRangeIsLoading = false;
+        });
+    });
 
     this.handleDrop = this.handleDrop.bind(this);
     this.onBracketDragStart = this.onBracketDragStart.bind(this);
     this.onBracketDragStop = this.onBracketDragStop.bind(this);
-  }
-
-  /**
-   * Callback when the shape has changed. Possible reasons: Selected Paper Shape has changed or new shape
-   * has been created
-   *
-   * @param newPaperShape
-   * @private
-   */
-  _paperShapeUpdated(newPaperShape) {
-    switch (true) {
-      case newPaperShape instanceof PaperThingShape:
-        this._updateLabeledThingInFrames(newPaperShape);
-        break;
-      case newPaperShape instanceof PaperGroupShape:
-        this._updateLabeledThingGroupsInFrame(newPaperShape);
-        break;
-      default:
-        this._clearThumbnailShapes();
-    }
   }
 
   _recalculateViewSize() {
@@ -268,92 +252,13 @@ class ThumbnailReelController {
 
     this._thumbnailLookahead = Math.floor(this.thumbnailCount / 2);
 
-    this.thumbnails = new Array(this.thumbnailCount).fill({location: null, labeledThingInFrame: null});
+    this.thumbnails = new Array(this.thumbnailCount).fill({location: null});
 
-    switch (true) {
-      case this.selectedPaperShape instanceof PaperThingShape:
-        this._updateLabeledThingInFrames(this.selectedPaperShape)
-          .then(() => this._updateThumbnailData());
-        break;
-      case this.selectedPaperShape instanceof PaperGroupShape:
-        this._updateLabeledThingGroupsInFrame(this.selectedPaperShape)
-          .then(() => this._updateThumbnailData());
-        break;
-      default:
-        this._updateThumbnailData();
-    }
+    this._updateThumbnailData();
 
     this._$scope.$apply(
       () => this.thumbnailDimensions = {width: thumbnailWidth, height: thumbnailHeight}
     );
-  }
-
-  /**
-   * @param {PaperThingShape} paperThingShape
-   * @returns {Promise}
-   * @private
-   */
-  _updateLabeledThingInFrames(paperThingShape) {
-    if (!paperThingShape) {
-      this._clearThumbnailShapes();
-      return Promise.resolve();
-    }
-
-    return this._lockService.acquire(paperThingShape.labeledThingInFrame.labeledThing.id, release => {
-      this._labeledThingInFrameBuffer.add(this._loadLabeledThingsInFrame(this.framePosition))
-        .then(labeledThingsInFrame => {
-          labeledThingsInFrame.forEach(
-            (labeledThingInFrame, index) => {
-              const thumbnail = this.thumbnails[index];
-              // TODO: Sometimes thumbnail is undefined
-              const location = thumbnail.location;
-              this.thumbnails[index] = {location, labeledThingInFrame};
-            }
-          );
-        });
-      release();
-    });
-  }
-
-  /**
-   * @private
-   */
-  _clearThumbnailShapes() {
-    // Clear all thumbnail shape previews
-    this.thumbnails.forEach(
-      (thumbnail, index) => {
-        const location = thumbnail.location;
-        const labeledThingInFrame = null;
-        this.thumbnails[index] = {location, labeledThingInFrame};
-      }
-    );
-  }
-
-  /**
-   * @param {PaperGroupShape} paperGroupShape
-   * @returns {Promise}
-   * @private
-   */
-  _updateLabeledThingGroupsInFrame() {
-    // Clear all thumbnail shape previews
-    this.thumbnails.forEach(
-      (thumbnail, index) => {
-        const location = thumbnail.location;
-        const labeledThingInFrame = null;
-        this.thumbnails[index] = {location, labeledThingInFrame};
-      }
-    );
-    return Promise.resolve();
-  }
-
-  /**
-   * @param {PaperFrame} paperFrame
-   * @returns {Promise}
-   * @private
-   */
-  _updateLabeledFrame() {
-    // Clear all thumbnail shape previews
-    this._clearThumbnailShapes();
   }
 
   /**
@@ -368,8 +273,7 @@ class ThumbnailReelController {
           (location, index) => {
             const thumbnail = this.thumbnails[index];
             if (thumbnail) {
-              const labeledThingInFrame = thumbnail.labeledThingInFrame;
-              this.thumbnails[index] = {location, labeledThingInFrame};
+              this.thumbnails[index] = {location};
             }
           }
         )
@@ -443,52 +347,18 @@ class ThumbnailReelController {
       .then(locations => this._fillPositionalArrayWithResults(framePosition, lowerLimit, locations));
   }
 
-  /**
-   * Load all {@link PaperShape} elements which are associated with the
-   * currently selected {@link PaperShape}.
-   *
-   * Those {@link PaperShape} objects are used by the underlying {@link ThumbnailDirective}s to
-   * display appropriate shapes.
-   *
-   * @param framePosition
-   * @return {AbortablePromise}
-   * @private
-   */
-  _loadLabeledThingsInFrame(framePosition) {
-    // TODO: load labeledThingGroups for thumbnails
-    // Currently Do not load shapes if paperGroup is selected
-    if (this.selectedPaperShape instanceof PaperGroupShape) {
-      return this._abortablePromiseFactory(this._$q.resolve(new Array(this.thumbnailCount).fill(null)));
-    }
-
-    if (!this.selectedPaperShape) {
-      return this._abortablePromiseFactory(this._$q.resolve(new Array(this.thumbnailCount).fill(null)));
-    }
-
-    const {lowerLimit, count} = this._calculateLowerAndUpperLimitByPosition(framePosition);
-    return this._labeledThingInFrameGateway.getLabeledThingInFrame(
-      this.task,
-      lowerLimit,
-      this.selectedPaperShape.labeledThingInFrame.labeledThing,
-      0,
-      count
-    ).then(
-      labeledThingInFrames => this._fillPositionalArrayWithResults(framePosition, lowerLimit, labeledThingInFrames)
-    );
-  }
-
   isCurrentThumbnail(index) {
     return (this.thumbnailCount - 1) / index === 2;
   }
 
   thumbnailSpacerInFrameRange(index) {
-    if (!this.selectedPaperShape) {
+    if (!this.selectedPaperShape || this._frameRangeIsLoading) {
       return false;
     }
 
     const currentFramePosition = this.framePosition.position - this._thumbnailLookahead + index;
 
-    const frameRange = this._getFrameRange();
+    const frameRange = this._selectedPaperShapeFrameRange;
 
     // Start frame brackets are placed in a spacer element "before" the actual frame so an offset of 1 is required here
     return currentFramePosition + 1 > frameRange.startFrameIndex
@@ -496,7 +366,7 @@ class ThumbnailReelController {
   }
 
   thumbnailInFrameRange(index) {
-    if (!this.selectedPaperShape || index < 0) {
+    if (!this.selectedPaperShape || index < 0 || this._frameRangeIsLoading) {
       return false;
     }
 
@@ -506,18 +376,18 @@ class ThumbnailReelController {
       return false;
     }
 
-    const frameRange = this._getFrameRange();
+    const frameRange = this._selectedPaperShapeFrameRange;
 
     return frameRange.startFrameIndex <= thumbnail.location.frameIndex
       && frameRange.endFrameIndex >= thumbnail.location.frameIndex;
   }
 
   placeStartBracket(index) {
-    if (!this.selectedPaperShape) {
+    if (!this.selectedPaperShape || this._frameRangeIsLoading) {
       return false;
     }
 
-    const startFrameIndex = this._getFrameRange().startFrameIndex;
+    const startFrameIndex = this._selectedPaperShapeFrameRange.startFrameIndex;
 
     if (index < 0) {
       return startFrameIndex === this.framePosition.position - this._thumbnailLookahead;
@@ -529,11 +399,11 @@ class ThumbnailReelController {
   }
 
   placeEndBracket(index) {
-    if (!this.selectedPaperShape || index < 0) {
+    if (!this.selectedPaperShape || index < 0 || this._frameRangeIsLoading) {
       return false;
     }
 
-    const endFrameIndex = this._getFrameRange().endFrameIndex;
+    const endFrameIndex = this._selectedPaperShapeFrameRange.endFrameIndex;
     const thumbnail = this.thumbnails[index];
 
     return thumbnail.location && thumbnail.location.frameIndex === endFrameIndex;
@@ -543,18 +413,24 @@ class ThumbnailReelController {
    * @return {FrameRange}
    * @private
    */
-  _getFrameRange() {
+  _loadFrameRange() {
     switch (true) {
       case this.selectedPaperShape instanceof PaperThingShape:
-        return this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange;
+        return this._$q.resolve(
+          this.selectedPaperShape.labeledThingInFrame.labeledThing.frameRange
+        );
       case this.selectedPaperShape instanceof PaperGroupShape:
-        return this._labeledThingGroupService.getFrameRangeFromShapesForGroup(this.paperThingShapes, this.selectedPaperShape, this.framePosition.position);
+        const selectedLabeledThingGroupInFrame = this.selectedPaperShape.labeledThingGroupInFrame;
+        const selectedLabeledThingGroup = selectedLabeledThingGroupInFrame.labeledThingGroup;
+        return this._labeledThingGroupGateway.getFrameIndexRangeForLabeledThingGroup(selectedLabeledThingGroup);
       case this.selectedPaperShape instanceof PaperFrame:
       case this.selectedPaperShape instanceof PaperVirtualShape:
-        return {
-          startFrameIndex: 0,
-          endFrameIndex: this.task.frameNumberMapping.length - 1,
-        };
+        return this._$q.resolve(
+          {
+            startFrameIndex: 0,
+            endFrameIndex: this.task.frameNumberMapping.length - 1,
+          }
+        );
       default:
         throw new Error('Cannot get frame range of unknown shape type');
     }
@@ -636,13 +512,12 @@ ThumbnailReelController.$inject = [
   '$q',
   'abortablePromiseFactory',
   'frameLocationGateway',
-  'labeledThingInFrameGateway',
   'labeledThingGateway',
   'animationFrameService',
   'applicationState',
   'lockService',
   'frameIndexService',
-  'labeledThingGroupService',
+  'labeledThingGroupGateway',
 ];
 
 export default ThumbnailReelController;

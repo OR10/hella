@@ -83,7 +83,8 @@ describe('ThingLayer', () => {
       'labeledThingGateway',
       [
         'deleteLabeledThing',
-        'unassignLabeledThingsFromLabeledThingGroup',
+        'unassignLabeledThingGroupFromLabeledThings',
+        'unassignLabeledThingGroupFromAllLabeledThings',
       ]
     );
     labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
@@ -91,7 +92,7 @@ describe('ThingLayer', () => {
     labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['deleteLabeledThingGroup']
     );
     labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.resolve());
-    labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+    labeledThingGateway.unassignLabeledThingGroupFromLabeledThings.and.returnValue(angularQ.resolve());
 
     groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
     groupSelectionDialogFactory.createAsync.and.returnValue(angularQ.resolve());
@@ -1051,7 +1052,7 @@ describe('ThingLayer', () => {
 
       it('Delete shape from group and delete group when it has only one shape in it', () => {
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-        labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGateway.unassignLabeledThingGroupFromAllLabeledThings.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
@@ -1085,7 +1086,7 @@ describe('ThingLayer', () => {
         paperShapeKeep.select = jasmine.createSpy('paperShapeSelect');
 
         labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
-        labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGateway.unassignLabeledThingGroupFromLabeledThings.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
@@ -1106,6 +1107,7 @@ describe('ThingLayer', () => {
     describe('PaperGroupShape', () => {
       it('shows modal window on error', () => {
         const error = new Error('Help! Help! I am caught in a big whale!');
+        labeledThingGateway.unassignLabeledThingGroupFromAllLabeledThings.and.returnValue(angularQ.resolve());
         labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.reject(error));
         angularScope.vm.paperThingShapes = [];
         const pgs = new PaperGroupShape({labeledThingGroup: {id: 1}});
@@ -1118,7 +1120,7 @@ describe('ThingLayer', () => {
       });
 
       it('Delete group', () => {
-        labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup.and.returnValue(angularQ.resolve());
+        labeledThingGateway.unassignLabeledThingGroupFromAllLabeledThings.and.returnValue(angularQ.resolve());
 
         rootScope.$apply();
 
@@ -1302,7 +1304,7 @@ describe('ThingLayer', () => {
 
     it('should set application state to enabled when finished', () => {
       const deferred = angularQ.defer();
-      labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup
+      labeledThingGateway.unassignLabeledThingGroupFromLabeledThings
         .and.returnValue(deferred.promise);
 
       rootScope.$emit('action:unassign-group-from-shape', task, paperShape, labeledThingGroup);
@@ -1318,7 +1320,7 @@ describe('ThingLayer', () => {
     it('should set application state to enabled if it fails', () => {
       const error = new Error('It is quite dark in here. Anyone got a match?');
       const deferred = angularQ.defer();
-      labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup
+      labeledThingGateway.unassignLabeledThingGroupFromLabeledThings
         .and.returnValue(deferred.promise);
 
       rootScope.$emit('action:unassign-group-from-shape', task, paperShape, labeledThingGroup);
@@ -1335,7 +1337,7 @@ describe('ThingLayer', () => {
       rootScope.$emit('action:unassign-group-from-shape', task, paperShape, labeledThingGroup);
       rootScope.$apply();
 
-      expect(labeledThingGateway.unassignLabeledThingsFromLabeledThingGroup)
+      expect(labeledThingGateway.unassignLabeledThingGroupFromLabeledThings)
         .toHaveBeenCalledWith([paperShape.labeledThingInFrame.labeledThing], labeledThingGroup);
     });
   });

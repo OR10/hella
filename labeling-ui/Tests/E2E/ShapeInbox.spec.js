@@ -25,6 +25,7 @@ describe('ShapeInbox', () => {
   let secondMinusButton;
   let headerPlusButton;
   let headerMinusButton;
+  let nextFrameButton;
 
   const firstShape = {
     topLeft: {x: 100, y: 100},
@@ -81,6 +82,8 @@ describe('ShapeInbox', () => {
 
     firstMinusButton = minusButtons.get(0);
     secondMinusButton = minusButtons.get(1);
+
+    nextFrameButton = element(by.css('.next-frame-button'));
   });
 
 
@@ -386,6 +389,32 @@ describe('ShapeInbox', () => {
         .then(shapeInboxText => expect(shapeInboxText).toEqual('No shapes saved'))
         .then(() => done());
     });
+
+    it('shows shapes that have just been ghostbusted (TTANNO-2152)', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => shapeInboxButton.click())
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft) // initial position
+            .mouseDown()
+            .mouseMove(viewer, secondShape.topLeft)
+            .mouseUp()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => shapeInboxSelectedList.getText())
+        .then(shapeInboxText => expect(shapeInboxText).toEqual('rectangle #1'))
+        .then(() => done());
+    });
   });
 
   describe('Adding and removing shapes', () => {
@@ -546,8 +575,6 @@ describe('ShapeInbox', () => {
     });
 
     it('keeps the saved shapes over a framechange with the popup open', done => {
-      const nextFrameButton = element(by.css('.next-frame-button'));
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -574,8 +601,6 @@ describe('ShapeInbox', () => {
     });
 
     it('keeps the saved shapes over a framechange with the popup closed', done => {
-      const nextFrameButton = element(by.css('.next-frame-button'));
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => {
           return browser.actions()
@@ -698,8 +723,6 @@ describe('ShapeInbox', () => {
     });
 
     it('reselect shape on another frame', done => {
-      const nextFrameButton = element(by.css('.next-frame-button'));
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
       )
@@ -735,8 +758,6 @@ describe('ShapeInbox', () => {
     });
 
     it('switch shapes by reselection', done => {
-      const nextFrameButton = element(by.css('.next-frame-button'));
-
       initApplication(
         '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
       )
@@ -783,8 +804,6 @@ describe('ShapeInbox', () => {
     });
 
     it('reselect shape on another frame, move and store it', done => {
-      const nextFrameButton = element(by.css('.next-frame-button'));
-
       const dragPoint = {x: firstShape.topLeft.x + 10, y: firstShape.topLeft.y + 10};
       const dragTarget = {x: dragPoint.x + 100, y: dragPoint.y + 100};
 
@@ -830,7 +849,6 @@ describe('ShapeInbox', () => {
 
   describe('Jumping to a shape', () => {
     const jumpToButton = element(by.css('#popup-inbox-saved .popup-inbox-list p .fa-map-marker'));
-    const nextFrameButton = element(by.css('.next-frame-button'));
 
     it('selects the shape if on the same frame', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')

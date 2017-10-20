@@ -211,7 +211,7 @@ describe('Cuboid Drawing', () => {
     );
   });
 
-  xdescribe('DepthBuffer', () => {
+  describe('DepthBuffer', () => {
     const keySequences = [protractor.Key.SHIFT, 'pppppp', protractor.Key.NULL];
 
     it('should properly render a cuboid with low height from all sides', done => {

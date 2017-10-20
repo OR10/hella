@@ -6,6 +6,7 @@
       "endFrameIndex": 0,
       "type": "AppBundle.Model.FrameIndexRange"
     },
+    "groupIds": [],
     "incomplete": true,
     "lineColor": 6,
     "taskId": "TASKID-TASKID",
@@ -19,6 +20,7 @@
       "endFrameIndex": 0,
       "type": "AppBundle.Model.FrameIndexRange"
     },
+    "groupIds": [],
     "incomplete": true,
     "lineColor": 5,
     "taskId": "TASKID-TASKID",

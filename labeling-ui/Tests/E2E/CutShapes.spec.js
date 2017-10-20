@@ -81,6 +81,7 @@ describe('Cut shapes', () => {
           .click()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThing0to1).toExistInPouchDb())
       .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThing2to3).toExistInPouchDb())
       .then(() => expect(assets.mocks.CutShape.Rectangle.LabeledThingInFrame0).toExistInPouchDb())
@@ -286,6 +287,7 @@ describe('Cut shapes', () => {
           .mouseUp()
           .perform();
       })
+      .then(() => mediumSleep())
       .then(() => {
         expect(element(by.css('.cut-shape-button')).isPresent()).toBe(false);
       })

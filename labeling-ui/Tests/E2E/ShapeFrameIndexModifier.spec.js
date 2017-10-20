@@ -1,17 +1,25 @@
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
-import {expectAllModalsToBeClosed, expectModalToBePresent, initApplication, bootstrapHttp} from '../Support/Protractor/Helpers';
+import {
+  expectAllModalsToBeClosed,
+  expectModalToBePresent,
+  initApplication,
+  bootstrapHttp,
+  mediumSleep,
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
-describe('change frame index for shapes', () => {
+describe('FrameIndex Change', () => {
   let assets;
   let sharedMocks;
+  let viewer;
   let defaultShapeCreationButton;
   let jumpToPreviousFrameButton;
   let jumpToNextFrameButton;
   let setOpenBracketButton;
   let setCloseBracketButton;
+
   beforeEach(() => {
     assets = new AssetHelper(
       `${__dirname}/../Fixtures`,
@@ -38,6 +46,7 @@ describe('change frame index for shapes', () => {
       assets.mocks.DefaultShapeCreation.Shared.StoreLabeledThing,
     ];
 
+    viewer = element(by.css('.layer-container'));
     defaultShapeCreationButton = element(by.css('#default-shape-creation-button'));
     jumpToPreviousFrameButton = element(by.css('.previous-frame-button'));
     jumpToNextFrameButton = element(by.css('.next-frame-button'));
@@ -45,95 +54,118 @@ describe('change frame index for shapes', () => {
     setCloseBracketButton = element(by.css('.close-bracket-button'));
   });
 
-  it('should expand frame index ahead', done => {
+  it('should expand frame index ahead', done => { // eslint-disable-line jasmine/missing-expect
     bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => jumpToNextFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setCloseBracketButton.click())
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Rectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         expectAllModalsToBeClosed();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
-  it('should expand frame index backwards', done => {
+  it('should expand frame index backwards', done => { // eslint-disable-line jasmine/missing-expect
     bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => jumpToNextFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => defaultShapeCreationButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => jumpToPreviousFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setOpenBracketButton.click())
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Rectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(() => browser.sleep(300))
       .then(() => {
         expectAllModalsToBeClosed();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
-  it('should not expand frame index ahead if no more ltifs left', done => {
+  it('should not expand frame index ahead if no more ltifs left', done => { // eslint-disable-line jasmine/missing-expect
     bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => defaultShapeCreationButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => jumpToNextFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setCloseBracketButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setOpenBracketButton.click())
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Rectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(() => browser.sleep(300))
       .then(() => {
         expectModalToBePresent();
-        done();
-      });
+      })
+      .then(() => done());
   });
 
-  it('should not expand frame index backwards if no more ltifs left', done => {
+  it('should not expand frame index backwards if no more ltifs left', done => { // eslint-disable-line jasmine/missing-expect
     bootstrapHttp(sharedMocks.concat([
       assets.mocks.DefaultShapeCreation.Cuboid.Task,
     ]));
     initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
       .then(() => jumpToNextFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => defaultShapeCreationButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => jumpToPreviousFrameButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setOpenBracketButton.click())
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => setCloseBracketButton.click())
-      .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('DefaultShapeCreation', 'Rectangle')
-        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
-      )
-      .then(() => browser.sleep(300))
+      .then(() => mediumSleep())
       .then(() => {
         expectModalToBePresent();
-        done();
-      });
+      })
+      .then(() => done());
+  });
+
+  it('should switch back to ghost, if current frame is removed from frame range (TTANNO-2156)', done => {
+    const frameRangeEndBracketHandle = element(by.css('.frame-range-bracket.end-bracket > .bracket-drag-handle'));
+
+    bootstrapHttp(sharedMocks.concat([
+      assets.mocks.DefaultShapeCreation.Rectangle.Task,
+    ]));
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => defaultShapeCreationButton.click())
+      .then(() => mediumSleep())
+      .then(() => jumpToNextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        // Move the default shape +100, +100
+        return browser.actions()
+          .mouseMove(viewer, {x: 512, y: 310})
+          .mouseDown()
+          .mouseMove(viewer, {x: 512 + 100, y: 310 + 100})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => element.all(by.css('.frame-range-bracket-space')))
+      .then(frameRangeBracketSpaces => {
+        return browser.actions()
+          .mouseMove(frameRangeEndBracketHandle)
+          .mouseDown()
+          .mouseMove(frameRangeBracketSpaces[3])
+          .mouseUp()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        // return canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeFrameIndexModifier', 'BackToGhost');
+        return canvasInstructionLogManager.getAnnotationCanvasLogs();
+      })
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeFrameIndexModifier.BackToGhost);
+      })
+      .then(() => done());
   });
 });

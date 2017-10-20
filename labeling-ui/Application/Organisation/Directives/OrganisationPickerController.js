@@ -1,12 +1,10 @@
 class OrganisationPickerController {
   /**
-   * @param {$rootScope} $scope
-   * @param {$state} $state
    * @param {CurrentUserService} currentUserService
    * @param {OrganisationService} organisationService
    * @param {OrganisationRoutingService} organisationRoutingService
    */
-  constructor($scope, $state, currentUserService, organisationService, organisationRoutingService) {
+  constructor(currentUserService, organisationService, organisationRoutingService) {
     /**
      * @type {OrganisationRoutingService}
      * @private
@@ -55,8 +53,6 @@ class OrganisationPickerController {
 }
 
 OrganisationPickerController.$inject = [
-  '$scope',
-  '$state',
   'currentUserService',
   'organisationService',
   'organisationRoutingService',
