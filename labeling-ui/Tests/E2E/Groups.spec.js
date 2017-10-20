@@ -681,12 +681,16 @@ describe('Groups', () => {
     });
   });
 
-  describe('Group Selection', () => {
-    it('keeps the selection on frame change', done => {
+  describe('Frame change', () => {
+    beforeEach(() => {
       bootstrapHttp(sharedMocks);
+    });
+
+    it('keeps the selection on frame change', done => {
       bootstrapPouch([
         assets.documents.GroupCreation.GroupOnTwoFrames,
       ]);
+
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => nextFrameButton.click())
         .then(() => mediumSleep())
@@ -718,6 +722,40 @@ describe('Groups', () => {
         )
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.GroupSelectionStaysOnFrameChangeFrame1);
+        })
+        .then(() => done());
+    });
+
+    it('shows the group once a shape has been ghostbusted', done => {
+      bootstrapPouch([
+        assets.documents.GroupCreation.GroupOnOneFrame,
+      ]);
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 200, y: 100})
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 200, y: 100})
+            .mouseDown()
+            .mouseMove(viewer, {x: 400, y: 100})
+            .mouseUp()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'GroupShowsUpAfterGhostbusting')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.GroupShowsUpAfterGhostbusting);
         })
         .then(() => done());
     });
