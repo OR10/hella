@@ -54,6 +54,14 @@ class PaperGroupShape extends PaperShape {
     return false;
   }
 
+  /**
+   * @return {boolean}
+   */
+  playInFrameRange() {
+    return false;
+  }
+
+  /**
    * {@link LabeledThingGroup} associated with this `PaperGroupShape`
    *
    * @returns {LabeledThingGroup}

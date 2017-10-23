@@ -205,6 +205,10 @@ class PaperShape extends paper.Group {
    * @method PaperShape#canChangeFrameRange
    */
 
+  /**
+   * @abstract
+   * @method PaperShape#playInFrameRange
+   */
 }
 
 PaperShape.DASH = [10, 4];

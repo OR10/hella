@@ -60,6 +60,14 @@ class PaperPolyline extends PaperPath {
     return true;
   }
 
+  /**
+   * @return {boolean}
+   */
+  playInFrameRange() {
+    return true;
+  }
+
+  /**
    * @returns {string}
    */
   getClass() {

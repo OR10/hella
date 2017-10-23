@@ -299,6 +299,14 @@ class PaperPedestrian extends PaperThingShape {
     return true;
   }
 
+  /**
+   * @return {boolean}
+   */
+  playInFrameRange() {
+    return true;
+  }
+
+  /**
    * @returns {Point}
    */
   get position() {
