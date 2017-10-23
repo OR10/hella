@@ -931,6 +931,12 @@ class PaperCuboid extends PaperThingShape {
   }
 
   /**
+   * @return {boolean}
+   */
+  canBeInterpolated() {
+    return true;
+  }
+
    * Convert to JSON for Storage
    */
   toJSON() {

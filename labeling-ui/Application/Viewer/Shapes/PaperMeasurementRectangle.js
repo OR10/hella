@@ -343,6 +343,12 @@ class PaperMeasurementRectangle extends PaperVirtualShape {
   }
 
   /**
+   * @return {boolean}
+   */
+  canBeInterpolated() {
+    return false;
+  }
+
    * Fix the points of the shape to represent the right coordinates
    */
   fixOrientation() {

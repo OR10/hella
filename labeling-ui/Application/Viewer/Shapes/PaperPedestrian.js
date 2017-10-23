@@ -272,6 +272,12 @@ class PaperPedestrian extends PaperThingShape {
   }
 
   /**
+   * @return {boolean}
+   */
+  canBeInterpolated() {
+    return true;
+  }
+
    * @returns {Point}
    */
   get position() {

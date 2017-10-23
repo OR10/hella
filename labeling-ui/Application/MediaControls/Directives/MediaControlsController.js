@@ -617,13 +617,11 @@ class MediaControlsController {
   canSelectedPaperShapeBeInterpolated() {
     const isReadOnly = this.readOnly === true;
     const shapeIsSelected = this.selectedPaperShape !== null;
-    const shapeIsAThing = shapeIsSelected && this.selectedPaperShape instanceof PaperThingShape;
     const saysItCanBeInterpolated = shapeIsSelected && this.selectedPaperShape.canBeInterpolated();
 
     return (
       !isReadOnly &&
       shapeIsSelected &&
-      shapeIsAThing &&
       saysItCanBeInterpolated
     );
   }

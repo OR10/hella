@@ -184,6 +184,12 @@ class PaperShape extends paper.Group {
    * @abstract
    * @method PaperShape#getCursor
    */
+
+  /**
+   * @abstract
+   * @method PaperShape#canBeInterpolated
+   */
+
 }
 
 PaperShape.DASH = [10, 4];

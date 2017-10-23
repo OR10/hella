@@ -33,6 +33,12 @@ class PaperPolyline extends PaperPath {
   }
 
   /**
+   * @return {boolean}
+   */
+  canBeInterpolated() {
+    return true;
+  }
+
    * @returns {string}
    */
   getClass() {

@@ -242,6 +242,12 @@ class PaperPoint extends PaperThingShape {
   }
 
   /**
+   * @return {boolean}
+   */
+  canBeInterpolated() {
+    return true;
+  }
+
    * Convert to JSON for storage
    *
    * @returns {{type: string, id: String, point: {x: number, y: number}}}
