@@ -16,6 +16,7 @@ class LabeledThingGroupGateway {
    * @param {PouchDbViewService} pouchDbViewService
    * @param {GhostingService} ghostingService
    * @param {CurrentUserService} currentUserService
+   * @param {LabelStructureService} labelStructureService
    */
   constructor(
     $q,
@@ -28,7 +29,8 @@ class LabeledThingGroupGateway {
     entityIdService,
     pouchDbViewService,
     ghostingService,
-    currentUserService
+    currentUserService,
+    labelStructureService
   ) {
     /**
      * @type {angular.$q}
@@ -101,6 +103,12 @@ class LabeledThingGroupGateway {
      * @private
      */
     this._currentUserService = currentUserService;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
   }
 
   /**
@@ -433,6 +441,62 @@ class LabeledThingGroupGateway {
   }
 
   /**
+   * Calculates the incompleteness of the complete LabeledThingGroup with all LabeledThingGroupInFrames (if any)
+   * @param labeledThingGroup
+   * @private
+   */
+  _calculateThingGroupIncompleteness(labeledThingGroup) {
+    const task = labeledThingGroup.task;
+    const thingIdentifier = labeledThingGroup.type;
+
+    let ltgFrames;
+
+    // This does not work for yet unsaved groups :/
+    this.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup)
+      .then(frameRange => {
+        ltgFrames = (frameRange.endFrameIndex - frameRange.startFrameIndex) + 1;
+      })
+      .catch(() => {
+        ltgFrames = 1;
+      })
+      .then(() => this._labelStructureService.getLabelStructure(task))
+      .then(labelStructure => {
+        const labelStructureObject = labelStructure.getGroupById(thingIdentifier);
+
+        const list = labelStructure.getEnabledClassesForLabeledObjectAndClassList(
+          labelStructureObject,
+          labeledThingGroup.extractClassList()
+        );
+
+        if (list.length === 0) {
+          return false;
+        } else {
+
+          return this._getAssociatedLTGIFsForLTG(labeledThingGroup)
+            .then(labeledThingGroupInFrames => {
+              let anyLtgifIncomplete = false;
+
+              // if there are less ltgif than frames the group is on, the whole group is incomplete
+              if (labeledThingGroupInFrames.length < ltgFrames) {
+                anyLtgifIncomplete = true;
+              } else {
+                labeledThingGroupInFrames.forEach(ltg => {
+                  if (anyLtgifIncomplete || ltg.incomplete) {
+                    anyLtgifIncomplete = true;
+                  }
+                });
+              }
+
+              return anyLtgifIncomplete;
+            });
+        }
+      })
+      .then(incomplete => {
+        console.log(incomplete);
+      });
+  }
+
+  /**
    * @param {LabeledThingGroupInFrame} ltgif
    */
   saveLabeledThingGroupInFrame(ltgif) {
@@ -485,6 +549,7 @@ LabeledThingGroupGateway.$inject = [
   'pouchDbViewService',
   'ghostingService',
   'currentUserService',
+  'labelStructureService',
 ];
 
 export default LabeledThingGroupGateway;
