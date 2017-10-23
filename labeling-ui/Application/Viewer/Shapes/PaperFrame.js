@@ -60,7 +60,7 @@ class PaperFrame extends PaperShape {
   /**
    * @return {boolean}
    */
-  canBeJumpedToStartEndFrame() {
+  hasStartAndEndFrame() {
     return false;
   }
 

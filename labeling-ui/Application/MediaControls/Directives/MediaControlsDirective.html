@@ -49,7 +49,7 @@
         <div class="grid-content small-5"></div>
 
         <div class="grid-content noscroll">
-            <button ng-hide="vm.canJumpedToStartEndFrame()"
+            <button ng-hide="vm.hasStartAndEndFrame()"
                     ng-click="vm.handleGotoOpenBracketClicked()"
                     tooltip="Jump to start frame of the active shape">
                 <i class="icon icon-selection-gostart"></i>
@@ -118,7 +118,7 @@
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-hide="vm.canJumpedToStartEndFrame()"
+            <button ng-hide="vm.hasStartAndEndFrame()"
                     ng-click="vm.handleGotoCloseBracketClicked()"
                     tooltip="Jump to the end frame of the active shape">
                 <i class="icon icon-selection-goend"></i>

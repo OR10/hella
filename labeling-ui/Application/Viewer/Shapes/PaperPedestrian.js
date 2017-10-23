@@ -288,7 +288,7 @@ class PaperPedestrian extends PaperThingShape {
   /**
    * @return {boolean}
    */
-  canBeJumpedToStartEndFrame() {
+  hasStartAndEndFrame() {
     return true;
   }
 

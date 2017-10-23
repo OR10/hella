@@ -402,8 +402,8 @@ class MediaControlsController {
     return !(this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced());
   }
 
-  canJumpedToStartEndFrame() {
-    return !(this.selectedPaperShape !== null && this.selectedPaperShape.canBeJumpedToStartEndFrame());
+  hasStartAndEndFrame() {
+    return !(this.selectedPaperShape !== null && this.selectedPaperShape.hasStartAndEndFrame());
   }
 
   handleCutShape() {

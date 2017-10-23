@@ -31,7 +31,7 @@ class PaperVirtualShape extends PaperShape {
   /**
    * @return {boolean}
    */
-  canBeJumpedToStartEndFrame() {
+  hasStartAndEndFrame() {
     return false;
   }
 

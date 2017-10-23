@@ -197,7 +197,7 @@ class PaperShape extends paper.Group {
 
   /**
    * @abstract
-   * @method PaperShape#canBeJumpedToStartEndFrame
+   * @method PaperShape#hasStartAndEndFrame
    */
 
   /**

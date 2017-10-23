@@ -359,7 +359,7 @@ class PaperMeasurementRectangle extends PaperVirtualShape {
   /**
    * @return {boolean}
    */
-  canBeJumpedToStartEndFrame() {
+  hasStartAndEndFrame() {
     return false;
   }
 

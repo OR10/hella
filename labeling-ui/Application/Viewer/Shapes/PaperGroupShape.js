@@ -43,7 +43,7 @@ class PaperGroupShape extends PaperShape {
   /**
    * @return {boolean}
    */
-  canBeJumpedToStartEndFrame() {
+  hasStartAndEndFrame() {
     return false;
   }
 

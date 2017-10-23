@@ -293,7 +293,7 @@ class PaperRectangle extends PaperThingShape {
   /**
    * @return {boolean}
    */
-  canBeJumpedToStartEndFrame() {
+  hasStartAndEndFrame() {
     return true;
   }
 

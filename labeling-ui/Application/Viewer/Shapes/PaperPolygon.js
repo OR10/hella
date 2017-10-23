@@ -50,7 +50,7 @@ class PaperPolygon extends PaperPath {
   /**
    * @return {boolean}
    */
-  canBeJumpedToStartEndFrame() {
+  hasStartAndEndFrame() {
     return true;
   }
 

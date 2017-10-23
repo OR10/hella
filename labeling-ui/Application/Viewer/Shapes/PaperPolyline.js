@@ -49,7 +49,7 @@ class PaperPolyline extends PaperPath {
   /**
    * @return {boolean}
    */
-  canBeJumpedToStartEndFrame() {
+  hasStartAndEndFrame() {
     return true;
   }
 

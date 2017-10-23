@@ -947,7 +947,7 @@ class PaperCuboid extends PaperThingShape {
   /**
    * @return {boolean}
    */
-  canBeJumpedToStartEndFrame() {
+  hasStartAndEndFrame() {
     return true;
   }
 
