@@ -398,7 +398,7 @@ class MediaControlsController {
    * @param shape
    * @returns {boolean}
    */
-  canShapeSliced() {
+  canShapeBeSliced() {
     return !(this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced());
   }
 
