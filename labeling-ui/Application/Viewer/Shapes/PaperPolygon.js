@@ -1,5 +1,4 @@
 import paper from 'paper';
-import PaperShape from './PaperShape';
 import PaperPath from './PaperPath';
 
 /**

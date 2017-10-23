@@ -1,6 +1,5 @@
 import angular from 'angular';
 import paper from 'paper';
-import PaperShape from './PaperShape';
 import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
 import PaperRectangle from './PaperRectangle';
