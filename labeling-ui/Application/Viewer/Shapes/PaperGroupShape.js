@@ -41,6 +41,12 @@ class PaperGroupShape extends PaperShape {
   }
 
   /**
+   * @return {boolean}
+   */
+  canBeJumpedToStartEndFrame() {
+    return false;
+  }
+
    * {@link LabeledThingGroup} associated with this `PaperGroupShape`
    *
    * @returns {LabeledThingGroup}

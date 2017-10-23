@@ -47,6 +47,13 @@ class PaperPolygon extends PaperPath {
     return true;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeJumpedToStartEndFrame() {
+    return true;
+  }
+
    * @returns {string}
    */
   getClass() {

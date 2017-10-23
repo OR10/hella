@@ -46,6 +46,13 @@ class PaperPolyline extends PaperPath {
     return true;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeJumpedToStartEndFrame() {
+    return true;
+  }
+
    * @returns {string}
    */
   getClass() {

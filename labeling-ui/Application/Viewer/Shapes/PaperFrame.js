@@ -57,6 +57,13 @@ class PaperFrame extends PaperShape {
     return false;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeJumpedToStartEndFrame() {
+    return false;
+  }
+
    * @returns {boolean}
    */
   playInFrameRange() {

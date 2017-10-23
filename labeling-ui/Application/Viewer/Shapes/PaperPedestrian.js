@@ -285,6 +285,13 @@ class PaperPedestrian extends PaperThingShape {
     return true;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeJumpedToStartEndFrame() {
+    return true;
+  }
+
    * @returns {Point}
    */
   get position() {
