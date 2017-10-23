@@ -1506,6 +1506,10 @@ class ViewerController {
         );
       })
       .then(() => {
+        this._thingLayerContext.withScope(scope => {
+          shape.redrawShape();
+          scope.view.update();
+        });
         if (ghostBusted) {
           this._$rootScope.$emit('shape:ghostbust:after');
         }

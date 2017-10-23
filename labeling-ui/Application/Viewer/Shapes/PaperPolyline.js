@@ -1,5 +1,4 @@
 import paper from 'paper';
-import PaperShape from './PaperShape';
 import PaperPath from './PaperPath';
 /**
  * @extends PaperPath
@@ -13,20 +12,12 @@ class PaperPolyline extends PaperPath {
    */
   constructor(labeledThingInFrame, shapeId, points = [], color) {
     super(labeledThingInFrame, shapeId, points, color);
-    this._renderShape();
-  }
-
-  /**
-   * @param {Boolean} drawHandles
-   * @protected
-   */
-  _renderShape(drawHandles = true) {
-    super.drawShape(this._createShape(), drawHandles);
+    this._drawShape();
   }
 
   /**
    * @returns {paper.Path}
-   * @private
+   * @protected
    */
   _createShape() {
     return new paper.Path({
@@ -34,7 +25,7 @@ class PaperPolyline extends PaperPath {
       selected: false,
       strokeWidth: 2,
       closed: false,
-      dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
+      dashArray: this.dashArray,
       strokeScaling: false,
       fillColor: new paper.Color(0, 0, 0, 0),
       segments: this._points,

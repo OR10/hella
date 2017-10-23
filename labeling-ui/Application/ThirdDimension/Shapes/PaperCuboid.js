@@ -62,7 +62,7 @@ class PaperCuboid extends PaperThingShape {
      */
     this._cuboidInteractionResolver = new ManualUpdateCuboidInteractionResolver(this._cuboid3d);
 
-    this._drawCuboid();
+    this._drawShape();
   }
 
   /**
@@ -70,7 +70,8 @@ class PaperCuboid extends PaperThingShape {
    *
    * @private
    */
-  _drawCuboid() {
+  _drawShape() {
+    super._drawShape(this._drawHandles);
     this._projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
     this.removeChildren();
@@ -125,6 +126,16 @@ class PaperCuboid extends PaperThingShape {
         return null;
       }
 
+      let dashArray = PaperShape.LINE;
+
+      if (hidden) {
+        dashArray = PaperShape.DASH;
+      }
+
+      if (this.labeledThingInFrame.ghost && !hidden) {
+        dashArray = PaperShape.DOT;
+      }
+
       return new paper.Path.Line({
         from: this._vectorToPaperPoint(from),
         to: this._vectorToPaperPoint(to),
@@ -132,7 +143,7 @@ class PaperCuboid extends PaperThingShape {
         selected: false,
         strokeWidth: 2,
         strokeScaling: false,
-        dashArray: hidden ? PaperShape.DASH : PaperShape.LINE,
+        dashArray: dashArray,
       });
     })
       .filter(edge => edge !== null);
@@ -376,7 +387,7 @@ class PaperCuboid extends PaperThingShape {
    */
   setVertices(vertices) {
     this._cuboid3d = Cuboid3d.createFromRawVertices(vertices);
-    this._drawCuboid();
+    this._drawShape();
   }
 
   /**
@@ -407,7 +418,7 @@ class PaperCuboid extends PaperThingShape {
 
   updatePrimaryCorner() {
     this._cuboidInteractionResolver.updateData();
-    this._drawCuboid();
+    this._drawShape();
   }
 
   /**
@@ -418,7 +429,7 @@ class PaperCuboid extends PaperThingShape {
   select(drawHandles = true) {
     this._isSelected = true;
     this._drawHandles = drawHandles;
-    this._drawCuboid();
+    this._drawShape();
   }
 
   /**
@@ -426,7 +437,7 @@ class PaperCuboid extends PaperThingShape {
    */
   deselect() {
     this._isSelected = false;
-    this._drawCuboid();
+    this._drawShape();
   }
 
   /**
@@ -520,7 +531,7 @@ class PaperCuboid extends PaperThingShape {
       return;
     }
     this._cuboid3d.moveBy(movementVector);
-    this._drawCuboid();
+    this._drawShape();
 
     /*
      // Snap point calculation (does not fully work)
@@ -567,7 +578,7 @@ class PaperCuboid extends PaperThingShape {
       this._changeHorizontal(point, handleVertexIndex, CuboidInteractionResolver.WIDTH);
     }
 
-    this._drawCuboid();
+    this._drawShape();
   }
 
   /**
@@ -656,7 +667,7 @@ class PaperCuboid extends PaperThingShape {
       this._changeHorizontal(targetPoint, handleVertexIndex, CuboidInteractionResolver.WIDTH);
     }
 
-    this._drawCuboid();
+    this._drawShape();
   }
 
   rotateFaces(clockwise = true) {
@@ -675,7 +686,7 @@ class PaperCuboid extends PaperThingShape {
 
     this.updatePrimaryCorner();
     this.reduceToPseudo3dIfPossible();
-    this._drawCuboid(true);
+    this._drawShape(true);
   }
 
   _getFaceRotationMapping(clockwise) {
@@ -858,7 +869,7 @@ class PaperCuboid extends PaperThingShape {
       )
     );
 
-    this._drawCuboid();
+    this._drawShape();
   }
 
   /**
@@ -890,7 +901,7 @@ class PaperCuboid extends PaperThingShape {
     }
 
     this._cuboid3d.rotateAroundZAtPointBy(primaryCorner, radians);
-    this._drawCuboid();
+    this._drawShape();
   }
 
   /**
@@ -900,7 +911,7 @@ class PaperCuboid extends PaperThingShape {
     this._cuboid3d.manifestPredictionVertices();
     this._cuboid3d.rotateAroundZAtPointBy(this._cuboid3d.bottomCenter, radians);
     this.reduceToPseudo3dIfPossible();
-    this._drawCuboid();
+    this._drawShape();
   }
 
   /**

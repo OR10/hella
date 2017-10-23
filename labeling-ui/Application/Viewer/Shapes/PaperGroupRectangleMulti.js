@@ -25,6 +25,8 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
   }
 
   _drawShapes() {
+    super._drawShape(false);
+
     this.removeChildren();
 
     const groupRectangles = this._createGroupRectangles();

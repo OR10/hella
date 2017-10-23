@@ -49,6 +49,8 @@ class PaperGroupRectangle extends PaperGroupShape {
    * @private
    */
   _drawShape() {
+    super._drawShape(false);
+
     this.removeChildren();
 
     const shape = this._createShape();
