@@ -47,6 +47,13 @@ class PaperGroupShape extends PaperShape {
     return false;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canChangeFrameRange() {
+    return false;
+  }
+
    * {@link LabeledThingGroup} associated with this `PaperGroupShape`
    *
    * @returns {LabeledThingGroup}

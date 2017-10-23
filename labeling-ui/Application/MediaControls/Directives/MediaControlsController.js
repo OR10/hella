@@ -605,7 +605,7 @@ class MediaControlsController {
    * @return {boolean}
    */
   showOpenCloseBrackets() {
-    return !(this.selectedPaperShape === null) && this.selectedPaperShape instanceof PaperThingShape;
+    return !(this.selectedPaperShape !== null && this.selectedPaperShape.canChangeFrameRange());
   }
 
   /**

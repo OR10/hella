@@ -64,6 +64,14 @@ class PaperFrame extends PaperShape {
     return false;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canChangeFrameRange() {
+    return false;
+  }
+
+  /**
    * @returns {boolean}
    */
   playInFrameRange() {

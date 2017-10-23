@@ -35,6 +35,13 @@ class PaperVirtualShape extends PaperShape {
     return false;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canChangeFrameRange() {
+    return false;
+  }
+
   get virtualLabeledThingInFrame() {
     if (this._virtualLabeledThingInFrame === undefined) {
       throw new Error('VirtualLabeledThingInFrame needs to be set in child constructor. It is abstract!');

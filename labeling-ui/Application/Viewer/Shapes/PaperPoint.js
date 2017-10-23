@@ -262,6 +262,13 @@ class PaperPoint extends PaperThingShape {
     return true;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canChangeFrameRange() {
+    return true;
+  }
+
    * Convert to JSON for storage
    *
    * @returns {{type: string, id: String, point: {x: number, y: number}}}

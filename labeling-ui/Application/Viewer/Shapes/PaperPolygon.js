@@ -54,6 +54,13 @@ class PaperPolygon extends PaperPath {
     return true;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canChangeFrameRange() {
+    return true;
+  }
+
    * @returns {string}
    */
   getClass() {

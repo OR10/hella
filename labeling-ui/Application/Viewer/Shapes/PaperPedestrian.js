@@ -292,6 +292,13 @@ class PaperPedestrian extends PaperThingShape {
     return true;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canChangeFrameRange() {
+    return true;
+  }
+
    * @returns {Point}
    */
   get position() {

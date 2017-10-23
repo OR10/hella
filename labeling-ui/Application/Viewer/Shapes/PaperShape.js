@@ -200,6 +200,11 @@ class PaperShape extends paper.Group {
    * @method PaperShape#canBeJumpedToStartEndFrame
    */
 
+  /**
+   * @abstract
+   * @method PaperShape#canChangeFrameRange
+   */
+
 }
 
 PaperShape.DASH = [10, 4];

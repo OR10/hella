@@ -58,7 +58,7 @@
         <div class="grid-content noscroll open-bracket-button"
              ng-hide="vm.readOnly"
         >
-            <button ng-show="vm.showOpenCloseBrackets()"
+            <button ng-hide="vm.showOpenCloseBrackets()"
                     ng-click="vm.handleSetOpenBracketClicked()"
                     tooltip="Set the start frame of the active shape">
                 <i class="icon icon-selection-start"></i>
@@ -111,7 +111,7 @@
         <div class="grid-content noscroll close-bracket-button"
              ng-hide="vm.readOnly"
         >
-            <button ng-show="vm.showOpenCloseBrackets()"
+            <button ng-hide="vm.showOpenCloseBrackets()"
                     ng-click="vm.handleSetCloseBracketClicked()"
                     tooltip="Set the end frame of the active shape">
                 <i class="icon icon-selection-end"></i>
