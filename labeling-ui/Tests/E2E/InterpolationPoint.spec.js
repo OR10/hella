@@ -186,6 +186,72 @@ describe('Interpolation Point Tests', () => {
       .then(() => done());
   });
 
+  it('should interpolate a point on a selected ghost shape', done => {
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 100}) // Point in first frame
+          .click()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => interpolateButton.click())
+      .then(() => longSleep())
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 1, y: 1}) // deselect shape
+          .click()
+          .perform();
+      })
+      .then(() => {
+        expect(assets.mocks.Interpolation.Point.StoreLabeledThingInFrame.frameIndex0).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Point.StoreLabeledThingInFrame.frameIndex5).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Point.StoreLabeledThingInFrame.frameIndex6).toExistInPouchDb();
+        expect(assets.mocks.Interpolation.Point.StoreLabeledThingInFrame.frameIndex7).toExistInPouchDb();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame7')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame7);
+      })
+      .then(() => previousFrameButton.click())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame6')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame6);
+      })
+      .then(() => previousFrameButton.click())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame5')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame5);
+      })
+      .then(() => previousFrameButton.click())
+      .then(() => mediumSleep())
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame0')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame0);
+      })
+      .then(() => done());
+  });
+
   afterEach(() => {
     expectAllModalsToBeClosed();
     bootstrapHttp.teardown();

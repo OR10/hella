@@ -454,8 +454,8 @@ class ViewerController {
               labeledThingInGroupFrame.labeledThingGroup.type,
               {
                 title: 'Add shape to group',
-                headline: 'The selected shape can add into your choosen group or create a complete new group around both shapes',
-                message: 'Please select a group in which you want to add the selected shape or choose \'Create new group\'!',
+                headline: 'The selected shape can be added to your currently selected group or create a complete new one around all shapes',
+                message: 'Please select the group to which you want to add the selected shape or choose \'Create new group\'!',
                 confirmButtonText: 'Add',
                 defaultSelection: 'Create new group',
               },
@@ -808,6 +808,11 @@ class ViewerController {
         .then(() => this._handleFrameChange(this._currentFrameIndex));
     });
 
+    this._rootScopeEventRegistrationService.register(this, 'shape:ghostbust:after', () => {
+      this._debouncedOnThingUpdate.triggerImmediately()
+        .then(() => this._handleFrameChange(this._currentFrameIndex));
+    });
+
     $scope.$watch(
       'vm.playing', (playingNow, playingBefore) => {
         if (playingNow === playingBefore) {
@@ -1109,9 +1114,6 @@ class ViewerController {
     if (!this.paperGroupShapes.includes(group)) {
       this.paperGroupShapes.push(group);
     }
-    this._shapeSelectionService.clear();
-    this.selectedPaperShape = group;
-    group.select();
   }
 
   _resize() {
@@ -1346,10 +1348,6 @@ class ViewerController {
         });
       }
     );
-
-    if (this.selectedPaperShape instanceof PaperGroupShape) {
-      this.selectedPaperShape = null;
-    }
 
     this.paperGroupShapes = this.paperGroupShapes.concat(newPaperGroupShapes);
   }
@@ -1635,6 +1633,11 @@ class ViewerController {
   }
 
   _storeGroup(paperGroupShape, shapesInGroup) {
+    this._thingLayerContext.withScope(() => {
+      this.selectedPaperShape = null;
+      this._shapeSelectionService.clear();
+    });
+
     this._groupCreationService.showGroupSelector()
       .then(selectedGroup => {
         paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.type = selectedGroup.id;
@@ -1677,6 +1680,10 @@ class ViewerController {
       })
       .then(() => {
         this._updateAllGroupDimensions();
+        this._thingLayerContext.withScope(() => {
+          this._shapeSelectionService.clear();
+          this.selectedPaperShape = paperGroupShape;
+        });
         this._$rootScope.$emit('shape:add:after', paperGroupShape);
       });
 

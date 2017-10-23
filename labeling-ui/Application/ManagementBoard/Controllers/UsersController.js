@@ -36,13 +36,13 @@ class UsersController {
 
     switch ($stateParams.userId) {
       case undefined:
-        this.activeTab = 'manage';
+        this.activeTab = UsersController.MANAGE_TAB_INDEX;
         break;
       case 'new':
-        this.activeTab = 'new';
+        this.activeTab = UsersController.NEW_TAB_INDEX;
         break;
       default:
-        this.activeTab = 'edit';
+        this.activeTab = UsersController.EDIT_TAB_INDEX;
         this.userId = $stateParams.userId;
     }
 
@@ -61,7 +61,7 @@ class UsersController {
         return;
       }
       switch (newValue) {
-        case 'new':
+        case UsersController.NEW_TAB_INDEX:
           this._$state.go('labeling.users.detail', {userId: 'new'});
           break;
         default:
@@ -70,6 +70,10 @@ class UsersController {
     });
   }
 }
+
+UsersController.NEW_TAB_INDEX = 0;
+UsersController.MANAGE_TAB_INDEX = 1;
+UsersController.EDIT_TAB_INDEX = 2;
 
 UsersController.$inject = [
   '$scope',

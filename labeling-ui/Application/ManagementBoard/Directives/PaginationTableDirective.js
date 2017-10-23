@@ -7,6 +7,7 @@ class PaginationTableDirective {
       totalRows: '=',
       itemsPerPage: '@',
       onPageUpdate: '&',
+      storageIdentifier: '@?',
     };
 
     this.controller = PaginationTableController;

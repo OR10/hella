@@ -1,0 +1,63 @@
+[
+  {
+    "_id": "4bfb5b6b994549fa936872c993bd1d99",
+    "classes": [],
+    "createdAt": "2017-10-19 13:19:47.000000",
+    "createdByUserId": "user-id-1",
+    "frameRange": {
+      "endFrameIndex": 0,
+      "startFrameIndex": 0,
+      "type": "AppBundle.Model.FrameIndexRange"
+    },
+    "groupIds": [
+      "b18aa44ff7a743ef9ae8bcae94d6a212"
+    ],
+    "incomplete": true,
+    "lastModifiedAt": "2017-10-19 13:19:52.000000",
+    "lastModifiedByUserId": "user-id-1",
+    "lineColor": "1",
+    "projectId": "PROJECTID-PROJECTID",
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThing"
+  },
+  {
+    "_id": "9c5689bc9f894eb191f625a86c7c489d",
+    "classes": [],
+    "createdAt": "2017-10-19 13:19:47.000000",
+    "frameIndex": 0,
+    "identifierName": "sign",
+    "incomplete": true,
+    "labeledThingId": "4bfb5b6b994549fa936872c993bd1d99",
+    "lastModifiedAt": "2017-10-19 13:19:47.000000",
+    "projectId": "PROJECTID-PROJECTID",
+    "shapes": [
+      {
+        "bottomRight": {
+          "x": 200,
+          "y": 200
+        },
+        "id": "7852c60c807e427bb87159261fa473b3",
+        "topLeft": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "rectangle"
+      }
+    ],
+    "taskId": "TASKID-TASKID",
+    "type": "AppBundle.Model.LabeledThingInFrame"
+  },
+  {
+    "_id": "b18aa44ff7a743ef9ae8bcae94d6a212",
+    "createdAt": "2017-10-19 13:19:49.000000",
+    "createdByUserId": "user-id-1",
+    "groupIds": [],
+    "identifierName": "extension-sign-group",
+    "lastModifiedAt": "2017-10-19 13:19:49.000000",
+    "lastModifiedByUserId": "user-id-1",
+    "lineColor": "4",
+    "projectId": "PROJECTID-PROJECTID",
+    "taskId": "TASKID-TASKID",
+    "type": "AnnoStationBundle.Model.LabeledThingGroup"
+  }
+]
