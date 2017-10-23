@@ -931,41 +931,6 @@ class PaperCuboid extends PaperThingShape {
   }
 
   /**
-   * @return {boolean}
-   */
-  canBeInterpolated() {
-    return true;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  canBeSliced() {
-    return true;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  hasStartAndEndFrame() {
-    return true;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  canChangeFrameRange() {
-    return true;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  playInFrameRange() {
-    return true;
-  }
-
-  /**
    * Convert to JSON for Storage
    */
   toJSON() {

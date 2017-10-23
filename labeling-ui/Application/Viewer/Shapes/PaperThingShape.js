@@ -59,6 +59,41 @@ class PaperThingShape extends PaperShape {
 
     return dashArray;
   }
+
+  /**
+   * @return {boolean}
+   */
+  canBeInterpolated() {
+    return true;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canBeSliced() {
+    return true;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasStartAndEndFrame() {
+    return true;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canChangeFrameRange() {
+    return true;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  playInFrameRange() {
+    return true;
+  }
 }
 
 export default PaperThingShape;
