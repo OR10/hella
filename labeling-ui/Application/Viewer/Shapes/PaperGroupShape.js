@@ -33,6 +33,12 @@ class PaperGroupShape extends PaperShape {
     return false;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeSliced() {
+    return false;
+  }
 
   /**
    * {@link LabeledThingGroup} associated with this `PaperGroupShape`

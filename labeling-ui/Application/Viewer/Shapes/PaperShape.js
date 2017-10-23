@@ -190,6 +190,11 @@ class PaperShape extends paper.Group {
    * @method PaperShape#canBeInterpolated
    */
 
+  /**
+   * @abstract
+   * @method PaperShape#canBeSliced
+   */
+
 }
 
 PaperShape.DASH = [10, 4];

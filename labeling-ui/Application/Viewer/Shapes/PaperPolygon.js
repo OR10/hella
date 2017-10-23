@@ -40,6 +40,13 @@ class PaperPolygon extends PaperPath {
     return true;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeSliced() {
+    return true;
+  }
+
    * @returns {string}
    */
   getClass() {

@@ -349,6 +349,13 @@ class PaperMeasurementRectangle extends PaperVirtualShape {
     return false;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeSliced() {
+    return false;
+  }
+
    * Fix the points of the shape to represent the right coordinates
    */
   fixOrientation() {

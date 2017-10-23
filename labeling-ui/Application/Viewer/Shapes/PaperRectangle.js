@@ -283,6 +283,13 @@ class PaperRectangle extends PaperThingShape {
     return true;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeSliced() {
+    return true;
+  }
+
    * @returns {Point}
    */
   get position() {

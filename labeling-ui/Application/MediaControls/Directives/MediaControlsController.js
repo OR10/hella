@@ -394,12 +394,14 @@ class MediaControlsController {
   }
 
   /**
-   *
+   * Returns true is the selected shape is able to be sliced
    * @param shape
    * @returns {boolean}
    */
-  isPaperThingShape(shape) {
-    return shape instanceof PaperThingShape;
+  canShapeSliced() {
+    return !(this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced());
+  }
+
   }
 
   handleCutShape() {
