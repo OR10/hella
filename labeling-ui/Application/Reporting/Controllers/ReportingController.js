@@ -2,17 +2,38 @@ class ReportingController {
 
   /**
    * @param {User} user
+   * @param {TaskGateway} taskGateway
    * @param {UserPermissions} userPermissions
    * @param {Project} project
    * @param {Report} report
    */
-  constructor(user, userPermissions, project, report) {
+  constructor($state, taskGateway, user, userPermissions, project, report) {
+    /**
+     * @type {$state}
+     * @private
+     */
+    this._$state = $state;
+
+    /**
+     * @type {TaskGateway}
+     * @private
+     */
+    this._taskGateway = taskGateway;
+
     this.user = user;
     this.userPermissions = userPermissions;
     this.project = project;
     this.report = report;
 
     this.classesThingList = this._getClassesThingList(report.report.numberOfTotalClassesInLabeledThingInFrameByClasses);
+  }
+
+  goToTaskView(taskId) {
+    this._taskGateway.getTask(taskId).then(task => {
+      const phase = task.getPhase();
+      const projectId = task.projectId;
+      return this._$state.go('labeling.tasks.detail', {taskId, phase, projectId});
+    });
   }
 
   /**
@@ -58,6 +79,8 @@ class ReportingController {
 }
 
 ReportingController.$inject = [
+  '$state',
+  'taskGateway',
   'user',
   'userPermissions',
   'project',
