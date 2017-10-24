@@ -1,5 +1,3 @@
-import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
-
 /**
  * Controller handling the control elements below the viewer frame
  *
