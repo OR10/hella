@@ -157,4 +157,24 @@ describe('MediaControlsController test suite', () => {
       expect(selectedItemsCount).toBe(countReturn);
     });
   });
+
+  describe('sliceShape', () => {
+    it('canShapeBeSliced should return true if the papershape supports slicing', () => {
+      controller.selectedPaperShape = jasmine.createSpyObj('selectedPaperShape', ['canBeSliced']);
+      controller.selectedPaperShape.canBeSliced.and.returnValue(true);
+
+      const actual = controller.canShapeBeSliced();
+      expect(actual).toBe(true);
+    });
+  });
+
+  describe('hasStartAndEndFrame', () => {
+    it('hasStartAndEndFrame should return true if the papershape supports it', () => {
+      controller.selectedPaperShape = jasmine.createSpyObj('selectedPaperShape', ['hasStartAndEndFrame']);
+      controller.selectedPaperShape.hasStartAndEndFrame.and.returnValue(true);
+
+      const actual = controller.hasStartAndEndFrame();
+      expect(actual).toBe(true);
+    });
+  });
 });
