@@ -49,7 +49,7 @@
         <div class="grid-content small-5"></div>
 
         <div class="grid-content noscroll">
-            <button ng-hide="vm.hasStartAndEndFrame()"
+            <button ng-hide="!vm.hasStartAndEndFrame()"
                     ng-click="vm.handleGotoOpenBracketClicked()"
                     tooltip="Jump to start frame of the active shape">
                 <i class="icon icon-selection-gostart"></i>
@@ -141,7 +141,7 @@
         </div>
         <div class="grid-content noscroll">
             <button id="cut-shape-button"
-                    ng-hide="vm.canShapeBeSliced()"
+                    ng-hide="!vm.canShapeBeSliced()"
                     ng-click="vm.handleCutShape()"
                     tooltip="Cut the active shape here">
                 <i class="icon fa fa-scissors"

@@ -399,11 +399,11 @@ class MediaControlsController {
    * @returns {boolean}
    */
   canShapeBeSliced() {
-    return !(this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced());
+    return this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced();
   }
 
   hasStartAndEndFrame() {
-    return !(this.selectedPaperShape !== null && this.selectedPaperShape.hasStartAndEndFrame());
+    return this.selectedPaperShape !== null && this.selectedPaperShape.hasStartAndEndFrame();
   }
 
   handleCutShape() {
