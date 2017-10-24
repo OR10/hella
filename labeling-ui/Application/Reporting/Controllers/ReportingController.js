@@ -12,10 +12,15 @@ class ReportingController {
     this.project = project;
     this.report = report;
 
-    this.classesThingList = this.getClassesThingList(report.report.numberOfTotalClassesInLabeledThingInFrameByClasses);
+    this.classesThingList = this._getClassesThingList(report.report.numberOfTotalClassesInLabeledThingInFrameByClasses);
   }
 
-  getClassesThingList(objectTree) {
+  /**
+   * @param objectTree
+   * @returns {Array}
+   * @private
+   */
+  _getClassesThingList(objectTree) {
     const list = [];
 
     Object.keys(objectTree).forEach(thingKey => {
