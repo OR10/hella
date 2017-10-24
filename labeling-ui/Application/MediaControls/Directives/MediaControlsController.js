@@ -395,13 +395,16 @@ class MediaControlsController {
 
   /**
    * Returns true is the selected shape is able to be sliced
-   * @param shape
    * @returns {boolean}
    */
   canShapeBeSliced() {
     return this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced();
   }
 
+  /**
+   * Return true if the shape has start and end frames
+   * @returns {boolean}
+   */
   hasStartAndEndFrame() {
     return this.selectedPaperShape !== null && this.selectedPaperShape.hasStartAndEndFrame();
   }
