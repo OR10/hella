@@ -163,7 +163,7 @@ describe('MediaControlsController test suite', () => {
       controller.selectedPaperShape = jasmine.createSpyObj('selectedPaperShape', ['canBeSliced']);
       controller.selectedPaperShape.canBeSliced.and.returnValue(true);
 
-      const actual = controller.canShapeBeSliced();
+      const actual = controller.canBeSliced();
       expect(actual).toBe(true);
     });
   });
