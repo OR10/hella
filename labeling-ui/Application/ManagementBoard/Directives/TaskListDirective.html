@@ -37,7 +37,7 @@
             <tr>
                 <th>
                     <div class="action-header-checkbox">
-                        <input type="checkbox" ng-model="vm.isAllSelected" ng-change="vm.selectAllSelections()">
+                        <input type="checkbox" ng-model="vm.isAllSelected" ng-change="vm.toggleAllSelections()">
                     </div>
                 </th>
                 <th>Type</th>
@@ -49,7 +49,7 @@
         <tbody ng-if="vm.tasks.length > 0">
         <tr ng-repeat="task in vm.tasks track by task.id" ng-click="vm.openTask(task.id, user)">
             <td ng-click="$event.stopPropagation()">
-                <input type="checkbox" ng-model="vm.selectedTasks[task.id]" ng-change="vm.calculateAllSelectionsCheckbox()">
+                <input type="checkbox" ng-model="vm.selectedTasks[task.id]" ng-change="vm.calculateAllSelectionCheckbox()">
             </td>
             <td>
                 <i ng-if="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>

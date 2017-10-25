@@ -221,7 +221,7 @@ class TaskListController {
     return selectedTasks.length;
   }
 
-  calculateAllSelectionsCheckbox() {
+  calculateAllSelectionCheckbox() {
     if (this.tasks.length === this.numberOfSelectedTasks()) {
       this.isAllSelected = true;
     } else {
@@ -229,7 +229,7 @@ class TaskListController {
     }
   }
 
-  selectAllSelections() {
+  toggleAllSelections() {
     this.tasks.forEach(task => {
       this.selectedTasks[task.id] = this.isAllSelected;
     });
