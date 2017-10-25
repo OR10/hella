@@ -91,7 +91,7 @@ describe('TaskListController', () => {
       'task-id-6': false,
     };
 
-    expect(taskListController.numberOfSelectedTasks()).toEqual(4);
+    expect(taskListController._numberOfSelectedTasks()).toEqual(4);
   });
 
   describe('calculateAllSelectionsCheckbox', () => {
@@ -131,13 +131,13 @@ describe('TaskListController', () => {
       taskListController.isAllSelected = true;
       taskListController.toggleAllSelections();
 
-      expect(taskListController.numberOfSelectedTasks()).toEqual(6);
+      expect(taskListController._numberOfSelectedTasks()).toEqual(6);
     });
 
     it('unselect all', () => {
       taskListController._unselectAllSelections();
 
-      expect(taskListController.numberOfSelectedTasks()).toEqual(0);
+      expect(taskListController._numberOfSelectedTasks()).toEqual(0);
     });
   });
 
@@ -185,7 +185,7 @@ describe('TaskListController', () => {
 
       taskGatewayMock.moveTaskToPhase.and.returnValue(angularQ.resolve());
 
-      taskListController.moveTasksInOtherPhase(taskListController.tasks, 'in_progress');
+      taskListController._moveTasksInOtherPhase(taskListController.tasks, 'in_progress');
       expect(taskGatewayMock.moveTaskToPhase).toHaveBeenCalled();
     });
   });

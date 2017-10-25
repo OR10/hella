@@ -212,8 +212,9 @@ class TaskListController {
 
   /**
    * @returns {Number}
+   * @private
    */
-  numberOfSelectedTasks() {
+  _numberOfSelectedTasks() {
     const selectedTasks = Object.values(this.selectedTasks).filter(isSelected => {
       return isSelected;
     });
@@ -222,7 +223,7 @@ class TaskListController {
   }
 
   calculateAllSelectionCheckbox() {
-    if (this.tasks.length === this.numberOfSelectedTasks()) {
+    if (this.tasks.length === this._numberOfSelectedTasks()) {
       this.isAllSelected = true;
     } else {
       this.isAllSelected = false;
@@ -245,8 +246,9 @@ class TaskListController {
   /**
    * @param tasks
    * @returns {Promise.<*[]>}
+   * @private
    */
-  unassignUsersFromTasks(tasks) {
+  _unassignUsersFromTasks(tasks) {
     const unassignPromise = [];
 
     tasks.forEach(
@@ -263,8 +265,9 @@ class TaskListController {
   /**
    * @param tasks
    * @returns {Promise.<*[]>}
+   * @private
    */
-  flagTasks(tasks) {
+  _flagTasks(tasks) {
     const flagTasksPromise = [];
     tasks.forEach(
       task => {
@@ -281,8 +284,9 @@ class TaskListController {
    * @param tasks
    * @param phase
    * @returns {Promise.<*[]>}
+   * @private
    */
-  moveTasksInOtherPhase(tasks, phase) {
+  _moveTasksInOtherPhase(tasks, phase) {
     const flagTasksPromise = [];
     tasks.forEach(
       task => {
@@ -303,7 +307,7 @@ class TaskListController {
           return this.selectedTasks[task.id] === true && task.latestAssignee !== null;
         });
 
-        this.unassignUsersFromTasks(selectedTasks).then(() => {
+        this._unassignUsersFromTasks(selectedTasks).then(() => {
           this.updatePage(this._currentPage, this._currentItemsPerPage);
           this._unselectAllSelections();
           this.selectedAction = 'defaultSelection';
@@ -314,7 +318,7 @@ class TaskListController {
           return this.selectedTasks[task.id] === true && task.latestAssignee !== null && task.latestAssignee.username === this.user.username;
         });
 
-        this.flagTasks(selectedTasks).then(() => {
+        this._flagTasks(selectedTasks).then(() => {
           this.updatePage(this._currentPage, this._currentItemsPerPage);
           this._unselectAllSelections();
           this.selectedAction = 'defaultSelection';
@@ -344,7 +348,7 @@ class TaskListController {
             phase => {
               if (phase) {
                 this.loadingInProgress = true;
-                this.moveTasksInOtherPhase(selectedTasks, phase).then(() => this.updatePage(this._currentPage, this._currentItemsPerPage))
+                this._moveTasksInOtherPhase(selectedTasks, phase).then(() => this.updatePage(this._currentPage, this._currentItemsPerPage))
                   .then(() => {
                     this._triggerReloadAll();
                     this._unselectAllSelections();
