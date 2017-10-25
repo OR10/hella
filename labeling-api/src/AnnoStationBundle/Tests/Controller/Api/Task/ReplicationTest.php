@@ -4,12 +4,15 @@ namespace AnnoStationBundle\Tests\Controller\Api\Task;
 
 use AnnoStationBundle\Controller\Api\v1\Task\Replication;
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Service;
+use AppBundle\Database\Facade as AppBundleFacade;
 use AppBundle\Model;
 use AppBundle\View;
 use AnnoStationBundle\Tests;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;
+use FOS\UserBundle\Util;
 
 class ReplicationTest extends Tests\WebTestCase
 {
@@ -33,45 +36,6 @@ class ReplicationTest extends Tests\WebTestCase
      */
     private $video;
 
-    public function testGetReplicationForTask()
-    {
-        $response = $this->createRequest('/api/v1/task/%s/replication', [$this->task->getId()])
-            ->withCredentialsFromUsername($this->labelManager)
-            ->execute()
-            ->getResponse();
-
-        $client = static::createClient();
-
-        $databaseName        = sprintf('taskdb-project-%s-task-%s', $this->project->getId(), $this->task->getId());
-        $externalCouchDbHost = $client->getKernel()->getContainer()->getParameter('couchdb_host_external');
-        $externalCouchDbPort = $client->getKernel()->getContainer()->getParameter('couchdb_port_external');
-        $externalCouchDbPath = $client->getKernel()->getContainer()->getParameter('couchdb_path_external');
-        $username            = sprintf(
-            '%s%s',
-            Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX,
-            'label_manager'
-        );
-
-        $expectedResponse = [
-            'result' => [
-                'taskId'         => $this->task->getId(),
-                'databaseName'   => $databaseName,
-                'databaseServer' => sprintf(
-                    'http://%s:%s@%s:%s/%s',
-                    $username,
-                    'password1234',
-                    $externalCouchDbHost,
-                    $externalCouchDbPort,
-                    $externalCouchDbPath
-                ),
-                'databaseUsername' => $username,
-                'databasePassword' => 'password1234',
-            ],
-        ];
-
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
-    }
-
     public function testGetReplicationForTaskWithHttpsProtocol()
     {
         $databaseName        = sprintf('taskdb-project-%s-task-%s', $this->project->getId(), $this->task->getId());
@@ -80,18 +44,44 @@ class ReplicationTest extends Tests\WebTestCase
         $externalCouchDbPath = 'blubb';
 
         $tokenStorageMock = $this->getTokenStorageInterfaceMock();
+        $userFacadeMock = $this->getUserFacadeMock();
+        $couchdbUserFacadeMock = $this->getUserCouchDbFacadeMock();
+        $userRolesRebuilderServiceMock = $this->getUserRolesRebuilderServiceMock();
+        $tokenGeneratorMock = $this->getTokenGeneratorMock();
+
         $tokenMock = $this->getTokenMock();
         $userMock = $this->getUserMock();
 
         $tokenStorageMock->expects($this->once())
             ->method('getToken')
             ->willReturn($tokenMock);
-
         $tokenMock->expects($this->once())
             ->method('getUser')
             ->willReturn($userMock);
 
-        $replication = new Replication($tokenStorageMock, $externalCouchDbHost, $externalCouchDbPort, $externalCouchDbPath);
+        $userFacadeMock->expects($this->once())
+            ->method('saveUser')
+            ->willReturn($tokenMock);
+        $couchdbUserFacadeMock->expects($this->once())
+            ->method('updateUser')
+            ->willReturn($tokenMock);
+        $userRolesRebuilderServiceMock->expects($this->once())
+            ->method('rebuildForUser')
+            ->willReturn($tokenMock);
+        $tokenGeneratorMock->expects($this->once())
+            ->method('generateToken')
+            ->willReturn($tokenMock);
+
+        $replication = new Replication(
+            $tokenStorageMock,
+            $userFacadeMock,
+            $couchdbUserFacadeMock,
+            $userRolesRebuilderServiceMock,
+            $tokenGeneratorMock,
+            $externalCouchDbHost,
+            $externalCouchDbPort,
+            $externalCouchDbPath
+        );
 
         $plainUsername = 'label_manager';
         $username            = sprintf(
@@ -100,7 +90,7 @@ class ReplicationTest extends Tests\WebTestCase
             $plainUsername
         );
 
-        $userMock->expects($this->once())
+        $userMock->expects($this->atLeastOnce())
             ->method('getUsername')
             ->willReturn($plainUsername);
 
@@ -146,7 +136,7 @@ class ReplicationTest extends Tests\WebTestCase
 
     private function getUserMock()
     {
-        return $this->getMockBuilder(\stdClass::class)
+        return $this->getMockBuilder(Model\User::class)
             ->setMethods(['getUsername', 'getCouchDbPassword'])
             ->getMock();
     }
@@ -154,6 +144,34 @@ class ReplicationTest extends Tests\WebTestCase
     private function getRequestMock()
     {
         return $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    private function getUserFacadeMock()
+    {
+        return $this->getMockBuilder(AppBundleFacade\User::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    private function getUserCouchDbFacadeMock()
+    {
+        return $this->getMockBuilder(AppBundleFacade\CouchDbUsers::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    private function getUserRolesRebuilderServiceMock()
+    {
+        return $this->getMockBuilder(Service\UserRolesRebuilder::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    private function getTokenGeneratorMock()
+    {
+        return $this->getMockBuilder(Util\TokenGenerator::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
