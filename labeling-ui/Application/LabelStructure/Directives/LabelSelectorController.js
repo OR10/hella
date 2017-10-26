@@ -474,8 +474,7 @@ export default class LabelSelectorController {
 
         return this._$q.all(promises);
       })
-      .then(results => {
-        console.log(results);
+      .then(() => {
         return updatedLabeledThingInFrame;
       });
 
