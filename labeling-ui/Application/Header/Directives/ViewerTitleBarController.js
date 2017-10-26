@@ -322,13 +322,17 @@ class ViewerTitleBarController {
     return this._$q.all([
       this._labeledThingGateway.getIncompleteLabeledThingCount(this.task),
       this._labeledFrameGateway.getIncompleteLabeledFrameCount(this.task),
+      this._labeledThingGroupGateway.getIncompleteLabeledThingGroupCount(this.task),
     ])
-      .then(([incompleteThingResponse, incompleteFrameResponse]) => {
+      .then(([incompleteThingResponse, incompleteFrameResponse, incompleteGroupResponse]) => {
         if (incompleteFrameResponse.count > 0) {
           return this._jumpToNextIncompleteFrame();
         }
         if (incompleteThingResponse.count > 0) {
           return this._jumpToNextIncompleteThing();
+        }
+        if(incompleteGroupResponse.count > 0) {
+          return this._jumpToNextIncompleteGroup();
         }
       })
       .then(() => this._pullChangesFromBackend())
@@ -479,6 +483,38 @@ class ViewerTitleBarController {
   }
 
   /**
+   * Load the next incomplete labeled thing group, jump to the frameIndex of this labeled thing group and select it.
+   *
+   * @return {Promise}
+   * @protected
+   */
+  _jumpToNextIncompleteGroup() {
+    return this._$q.resolve()
+      .then(() => this._labeledThingGroupGateway.getNextIncomplete(this.task))
+      .then(nextIncomplete => {
+        if (nextIncomplete.labeledThingGroup === undefined) {
+          return this._$q.resolve();
+        }
+
+        const labeledThingGroup = nextIncomplete.labeledThingGroup;
+
+        if (this.framePosition.position === nextIncomplete.frameIndex) {
+          // Incomplete Ltif is on the same frame
+          return this._selectLabeledThingGroup(labeledThingGroup);
+        }
+
+        // Change frame to ltif position and select it then.
+        return this._$q(resolve => {
+          this.framePosition.afterFrameChangeOnce('selectNextIncomplete', () => {
+            this._selectLabeledThingGroup(labeledThingGroup)
+              .then(() => resolve());
+          });
+          this.framePosition.goto(nextIncomplete.frameIndex);
+        });
+      });
+  }
+
+  /**
    * Load the next incomplete labeled frame, jump to the frameIndex of this labeled frame and enable meta labeling.
    *
    * @return {Promise}
@@ -526,6 +562,23 @@ class ViewerTitleBarController {
         });
         this.selectedPaperShape = paperThingShape;
         this.hideLabeledThingsInFrame = true;
+        this.thingLayer.update();
+        resolve();
+      });
+    });
+  }
+
+  _selectLabeledThingGroup(nextIncomplete) {
+    return this._$q(resolve => {
+      this._$timeout(() => {
+        const paperGroupShape = this.paperGroupShapes.find(paperGroupShape => {
+          return nextIncomplete.id === paperGroupShape.groupId;
+        });
+
+        this.selectedPaperShape = paperGroupShape;
+        // Do not hide, since this would also hide the groups!
+        // Explicitly unhide, since shapes might have been hidden right before that
+        this.hideLabeledThingsInFrame = false;
         this.thingLayer.update();
         resolve();
       });

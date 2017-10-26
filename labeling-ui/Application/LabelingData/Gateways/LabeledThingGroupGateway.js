@@ -555,6 +555,54 @@ class LabeledThingGroupGateway {
   }
 
   /**
+   * Returns the next incomplete labeled things in frame.
+   * The count can be specified, the default is one.
+   *
+   * @param {Task} task
+   *
+   * @returns {AbortablePromise<Array.<LabeledThingInFrame>>|Error}
+   */
+  getNextIncomplete(task) { // eslint-disable-line no-unused-vars
+    const count = 1;
+    const startkey = [task.id, true];
+    const endkey = [task.id, true];
+
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupIncomplete'), {
+        startkey,
+        endkey,
+        limit: count,
+        include_docs: true,
+      })
+        .then(incompleteDocumentResult => {
+          const ltg = incompleteDocumentResult.rows[0];
+          return this._couchDbModelDeserializer.deserializeLabeledThingGroup(ltg.doc, task);
+        })
+        .then(labeledThingGroup => {
+          const ltgifs = this._getAssociatedLTGIFsForLTG(labeledThingGroup);
+          const frameRange = this._getFrameIndexRangeForLabeledThingGroupWithoutPackagingExecutor(labeledThingGroup);
+          return this._$q.all([this._$q.resolve(labeledThingGroup), ltgifs, frameRange]);
+        })
+        .then(([labeledThingGroup, labeledThingGroupInFrames, frameRange]) => {
+          const result = {};
+
+          const firstIncompleteLabeledThingGroupInFrame = labeledThingGroupInFrames.find(ltgif => ltgif.incomplete);
+          if (firstIncompleteLabeledThingGroupInFrame !== undefined) {
+            result.frameIndex = firstIncompleteLabeledThingGroupInFrame.frameIndex;
+          } else {
+            result.frameIndex = frameRange.startFrameIndex;
+          }
+
+          result.labeledThingGroup = labeledThingGroup;
+
+          return result;
+        });
+    });
+  }
+
+  /**
    * @param {LabeledThingGroupInFrame} ltgif
    */
   saveLabeledThingGroupInFrame(ltgif) {
