@@ -62,6 +62,11 @@ describe('LabeledThingGateway', () => {
    */
   let pouchDbContextServiceMock;
 
+  /**
+   * @type {PackagingExecutor}
+   */
+  let packagingExecutor;
+
   beforeEach(done => {
     const featureFlags = {};
 
@@ -105,6 +110,7 @@ describe('LabeledThingGateway', () => {
           revisionManager = $injector.get('revisionManager');
           couchDbModelSerializer = $injector.get('couchDbModelSerializer');
           couchDbModelDeserializer = $injector.get('couchDbModelDeserializer');
+          packagingExecutor = $injector.get('packagingExecutor');
         });
       })
       .then(() => done());
@@ -593,7 +599,7 @@ describe('LabeledThingGateway', () => {
     expect(storedLabeledThingDocument).toEqual(labeledThingCalledDocument);
   });
 
-  describe('getAssociatedLabeledThingsInFrames', done => {
+  describe('getAssociatedLabeledThingsInFrames', () => {
     it('deserializes and extracts the revision of the read LabeledThingsInFrame (TTANNO-2183)', () => {
       const task = { id: 'task-id' };
       const labeledThing = { id: 'lt-1', task };
@@ -610,7 +616,7 @@ describe('LabeledThingGateway', () => {
       spyOn(revisionManager, 'extractRevision');
       spyOn(couchDbModelDeserializer, 'deserializeLabeledThingInFrame').and.callFake(ltif => ltif);
 
-      const ltifsPromise = gateway.getAssociatedLabeledThingsInFrames(labeledThing);
+      gateway.getAssociatedLabeledThingsInFrames(labeledThing);
       $rootScope.$apply();
 
       expect(revisionManager.extractRevision).toHaveBeenCalledTimes(2);
@@ -620,8 +626,16 @@ describe('LabeledThingGateway', () => {
       expect(couchDbModelDeserializer.deserializeLabeledThingInFrame).toHaveBeenCalledTimes(2);
       expect(couchDbModelDeserializer.deserializeLabeledThingInFrame).toHaveBeenCalledWith(firstLtif, labeledThing);
       expect(couchDbModelDeserializer.deserializeLabeledThingInFrame).toHaveBeenCalledWith(secondLtif, labeledThing);
+    });
 
-      ltifsPromise.then(ltifs => expect(ltifs).toEqual([firstLtif, secondLtif]));
+    it('returns what the packaging executor returns', () => {
+      const returnValue = {patentiertes: 'supergrau'};
+      spyOn(packagingExecutor, 'execute').and.returnValue(returnValue);
+
+      const ltifs = gateway.getAssociatedLabeledThingsInFrames();
+      $rootScope.$apply();
+
+      expect(ltifs).toBe(returnValue);
     });
   });
 
