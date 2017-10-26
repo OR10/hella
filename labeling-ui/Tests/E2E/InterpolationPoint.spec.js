@@ -243,11 +243,11 @@ describe('Interpolation Point Tests', () => {
       .then(() => previousFrameButton.click())
       .then(() => mediumSleep())
       .then(
-        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'Frame0')
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('InterpolationPoint', 'UnselectedFrame0')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs()
       )
       .then(drawingStack => {
-        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.Frame0);
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.InterpolationPoint.UnselectedFrame0);
       })
       .then(() => done());
   });
