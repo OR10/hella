@@ -303,9 +303,10 @@ class ViewerTitleBarController {
     return this._$q.all([
       this._labeledThingGateway.getIncompleteLabeledThingCount(task),
       this._labeledFrameGateway.getIncompleteLabeledFrameCount(task),
+      this._labeledThingGroupGateway.getIncompleteLabeledThingGroupCount(task),
     ])
-      .then(([thingIncompleteResult, frameIncompleteResult]) => {
-        return thingIncompleteResult.count + frameIncompleteResult.count;
+      .then(([thingIncompleteResult, frameIncompleteResult, groupIncompleteResult]) => {
+        return thingIncompleteResult.count + frameIncompleteResult.count + groupIncompleteResult.count;
       });
   }
 

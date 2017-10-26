@@ -530,6 +530,31 @@ class LabeledThingGroupGateway {
   }
 
   /**
+   * @param {Task} task
+   * @return {AbortablePromise.<{count: int}|Error>}
+   */
+  getIncompleteLabeledThingGroupCount(task) {
+    /**
+     * @TODO: To fully work with local pouchdb replicate the incomplete flag needs to be updated during storage
+     *        of LabeledThingsInFrame correctly.
+     */
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute(
+      'labeledThingGroup',
+      () => db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupIncomplete'), {
+        include_docs: false,
+        key: [task.id, true],
+      })
+    ).then(response => {
+      return {
+        count: response.rows.length,
+      };
+    });
+  }
+
+  /**
    * @param {LabeledThingGroupInFrame} ltgif
    */
   saveLabeledThingGroupInFrame(ltgif) {
