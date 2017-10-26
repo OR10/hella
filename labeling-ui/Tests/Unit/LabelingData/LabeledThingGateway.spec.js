@@ -593,6 +593,38 @@ describe('LabeledThingGateway', () => {
     expect(storedLabeledThingDocument).toEqual(labeledThingCalledDocument);
   });
 
+  fdescribe('getAssociatedLabeledThingsInFrames', done => {
+    it('deserializes and extracts the revision of the read LabeledThingsInFrame', () => {
+      const task = { id: 'task-id' };
+      const labeledThing = { id: 'lt-1', task };
+      const firstLtif = { _id: 'ltif-1', _rev: '1' };
+      const secondLtif = { _id: 'ltif-2', _rev: '2' };
+      const pouchResult = {
+        rows: [
+          { doc: firstLtif },
+          { doc: secondLtif },
+        ],
+      };
+
+      spyOn(pouchDbHelper.database, 'query').and.returnValue(angularQ.resolve(pouchResult));
+      spyOn(revisionManager, 'extractRevision');
+      spyOn(couchDbModelDeserializer, 'deserializeLabeledThingInFrame').and.callFake(ltif => ltif);
+
+      const ltifsPromise = gateway.getAssociatedLabeledThingsInFrames(labeledThing);
+      $rootScope.$apply();
+
+      expect(revisionManager.extractRevision).toHaveBeenCalledTimes(2);
+      expect(revisionManager.extractRevision).toHaveBeenCalledWith(firstLtif);
+      expect(revisionManager.extractRevision).toHaveBeenCalledWith(secondLtif);
+
+      expect(couchDbModelDeserializer.deserializeLabeledThingInFrame).toHaveBeenCalledTimes(2);
+      expect(couchDbModelDeserializer.deserializeLabeledThingInFrame).toHaveBeenCalledWith(firstLtif, labeledThing);
+      expect(couchDbModelDeserializer.deserializeLabeledThingInFrame).toHaveBeenCalledWith(secondLtif, labeledThing);
+
+      ltifsPromise.then(ltifs => expect(ltifs).toEqual([firstLtif, secondLtif]));
+    });
+  });
+
   afterEach(done => {
     Promise.resolve()
       .then(() => pouchDbHelper.destroy())

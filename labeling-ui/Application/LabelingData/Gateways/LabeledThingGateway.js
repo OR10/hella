@@ -503,7 +503,10 @@ class LabeledThingGateway {
       const task = labeledThing.task;
       return this._getAssociatedLabeledThingsInFrames(task, labeledThing)
         .then(labeledThingsInFrame => {
-          return labeledThingsInFrame.rows.map(labeledThingInFrame => this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame.doc, labeledThing));
+          return labeledThingsInFrame.rows.map(labeledThingInFrame => {
+            this._revisionManager.extractRevision(labeledThingInFrame.doc);
+            return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame.doc, labeledThing);
+          });
         });
     });
   }
