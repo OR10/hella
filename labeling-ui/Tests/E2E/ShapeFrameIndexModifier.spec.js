@@ -159,10 +159,10 @@ describe('FrameIndex Change', () => {
           .perform();
       })
       .then(() => mediumSleep())
-      .then(() => {
-        // return canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeFrameIndexModifier', 'BackToGhost');
-        return canvasInstructionLogManager.getAnnotationCanvasLogs();
-      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('ShapeFrameIndexModifier', 'BackToGhost')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeFrameIndexModifier.BackToGhost);
       })
