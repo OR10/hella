@@ -394,7 +394,7 @@ class PopupPanelController {
     this._loadSelectedObjects();
     this._refreshSavedObjects();
 
-    // this._$rootScope.$emit('action:reload-frame');
+    this._$rootScope.$emit('action:reload-frame');
   }
 
   /**
