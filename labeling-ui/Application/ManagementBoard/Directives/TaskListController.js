@@ -245,7 +245,7 @@ class TaskListController {
 
   /**
    * @param tasks
-   * @returns {Promise.<*[]>}
+   * @returns {AbortablePromise}
    * @private
    */
   _unassignUsersFromTasks(tasks) {
@@ -264,7 +264,7 @@ class TaskListController {
 
   /**
    * @param tasks
-   * @returns {Promise.<*[]>}
+   * @returns {AbortablePromise}
    * @private
    */
   _setFlagForTasks(tasks) {
@@ -283,7 +283,7 @@ class TaskListController {
   /**
    * @param tasks
    * @param phase
-   * @returns {Promise.<*[]>}
+   * @returns {AbortablePromise}
    * @private
    */
   _updateTasksPhase(tasks, phase) {
