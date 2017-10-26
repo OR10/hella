@@ -264,9 +264,9 @@ PaperPoint.getClass = () => {
   return 'point';
 };
 
-PaperPoint.CONTROL_SIZE = 10;
+PaperPoint.CONTROL_SIZE = 6;
 PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE = 2;
-PaperPoint.CROSSHAIR_OVERFLOW = 5;
+PaperPoint.CROSSHAIR_OVERFLOW = 3;
 PaperPoint.RADIUS = PaperPoint.CONTROL_SIZE;
 PaperPoint.DIAMETER = PaperPoint.RADIUS * 2;
 
