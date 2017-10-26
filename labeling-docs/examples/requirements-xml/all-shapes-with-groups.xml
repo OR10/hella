@@ -61,6 +61,10 @@
         </class>
     </group>
     <group id="lights-group" name="Lights">
+        <class id="lights-on-off" name="On/off">
+            <value id="lights-on" name="On"/>
+            <value id="lights-off" name="Off"/>
+        </class>
         <class id="color" name="Color">
             <value id="red" name="Red"/>
             <value id="blue" name="Blue"/>
