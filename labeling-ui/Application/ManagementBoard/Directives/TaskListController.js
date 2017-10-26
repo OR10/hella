@@ -267,7 +267,7 @@ class TaskListController {
    * @returns {Promise.<*[]>}
    * @private
    */
-  _flagTasks(tasks) {
+  _setFlagForTasks(tasks) {
     const flagTasksPromise = [];
     tasks.forEach(
       task => {
@@ -286,7 +286,7 @@ class TaskListController {
    * @returns {Promise.<*[]>}
    * @private
    */
-  _moveTasksInOtherPhase(tasks, phase) {
+  _updateTasksPhase(tasks, phase) {
     const flagTasksPromise = [];
     tasks.forEach(
       task => {
@@ -299,81 +299,91 @@ class TaskListController {
     return Promise.all(flagTasksPromise);
   }
 
+  _unassignUsers() {
+    const selectedTasks = this.tasks.filter(task => {
+      return this.selectedTasks[task.id] === true && task.latestAssignee !== null;
+    });
+
+    this._unassignUsersFromTasks(selectedTasks).then(() => {
+      this.updatePage(this._currentPage, this._currentItemsPerPage);
+      this._unselectAllSelections();
+      this.selectedAction = 'defaultSelection';
+    });
+  }
+
+  _flagTasks() {
+    const selectedTasks = this.tasks.filter(task => {
+      return this.selectedTasks[task.id] === true && task.latestAssignee !== null && task.latestAssignee.username === this.user.username;
+    });
+
+    this._setFlagForTasks(selectedTasks).then(() => {
+      this.updatePage(this._currentPage, this._currentItemsPerPage);
+      this._unselectAllSelections();
+      this.selectedAction = 'defaultSelection';
+    });
+  }
+
+  _moveTasksInOtherPhase() {
+    const selectedTasks = this.tasks.filter(task => {
+      return this.selectedTasks[task.id] === true && task.latestAssignee === null;
+    });
+
+    const selectionData = [
+      {id: 'labeling', name: 'Labeling'},
+      {id: 'review', name: 'Review'},
+      {id: 'revision', name: 'Revision'},
+      {id: 'all_phases_done', name: 'Done'},
+    ].filter(selection => selection.id !== this.taskPhase);
+
+    this._modalService.show(
+      new this._SelectionDialog(
+        {
+          title: 'Move task',
+          headline: `Please select the phase that you want this task to be moved to:`,
+          confirmButtonText: 'Move task',
+          message: '',
+          data: selectionData,
+        },
+        phase => {
+          if (phase) {
+            this.loadingInProgress = true;
+            this._updateTasksPhase(selectedTasks, phase).then(() => this.updatePage(this._currentPage, this._currentItemsPerPage))
+              .then(() => {
+                this._triggerReloadAll();
+                this._unselectAllSelections();
+                this.selectedAction = 'defaultSelection';
+              });
+          } else {
+            this._modalService.info(
+              {
+                title: 'No phase selected',
+                headline: 'You need to select a phase',
+                message: 'You need to select a phase to move this task to. Without a selected phase the task can not bei moved!',
+                confirmButtonText: 'Understood',
+              },
+              undefined,
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+          }
+        }
+      )
+    );
+  }
+
   doAction() {
-    let selectedTasks = [];
     switch (this.selectedAction) {
       case 'unassignUsers':
-        selectedTasks = this.tasks.filter(task => {
-          return this.selectedTasks[task.id] === true && task.latestAssignee !== null;
-        });
-
-        this._unassignUsersFromTasks(selectedTasks).then(() => {
-          this.updatePage(this._currentPage, this._currentItemsPerPage);
-          this._unselectAllSelections();
-          this.selectedAction = 'defaultSelection';
-        });
+        this._unassignUsers();
         break;
       case 'flagTasks':
-        selectedTasks = this.tasks.filter(task => {
-          return this.selectedTasks[task.id] === true && task.latestAssignee !== null && task.latestAssignee.username === this.user.username;
-        });
-
-        this._flagTasks(selectedTasks).then(() => {
-          this.updatePage(this._currentPage, this._currentItemsPerPage);
-          this._unselectAllSelections();
-          this.selectedAction = 'defaultSelection';
-        });
+        this._flagTasks();
         break;
       case 'moveTasksInOtherPhase':
-        selectedTasks = this.tasks.filter(task => {
-          return this.selectedTasks[task.id] === true && task.latestAssignee === null;
-        });
-
-        const selectionData = [
-          {id: 'labeling', name: 'Labeling'},
-          {id: 'review', name: 'Review'},
-          {id: 'revision', name: 'Revision'},
-          {id: 'all_phases_done', name: 'Done'},
-        ].filter(selection => selection.id !== this.taskPhase);
-
-        this._modalService.show(
-          new this._SelectionDialog(
-            {
-              title: 'Move task',
-              headline: `Please select the phase that you want this task to be moved to:`,
-              confirmButtonText: 'Move task',
-              message: '',
-              data: selectionData,
-            },
-            phase => {
-              if (phase) {
-                this.loadingInProgress = true;
-                this._moveTasksInOtherPhase(selectedTasks, phase).then(() => this.updatePage(this._currentPage, this._currentItemsPerPage))
-                  .then(() => {
-                    this._triggerReloadAll();
-                    this._unselectAllSelections();
-                    this.selectedAction = 'defaultSelection';
-                  });
-              } else {
-                this._modalService.info(
-                  {
-                    title: 'No phase selected',
-                    headline: 'You need to select a phase',
-                    message: 'You need to select a phase to move this task to. Without a selected phase the task can not bei moved!',
-                    confirmButtonText: 'Understood',
-                  },
-                  undefined,
-                  undefined,
-                  {
-                    warning: true,
-                    abortable: false,
-                  }
-                );
-              }
-            }
-          )
-        );
-
+        this._moveTasksInOtherPhase();
         break;
       default:
     }
