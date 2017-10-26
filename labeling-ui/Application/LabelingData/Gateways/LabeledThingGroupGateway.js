@@ -201,40 +201,53 @@ class LabeledThingGroupGateway {
    * @returns {Promise.<{startFrameIndex: number, endFrameIndex: number}>}
    */
   getFrameIndexRangeForLabeledThingGroup(labeledThingGroup) {
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return this._getFrameIndexRangeForLabeledThingGroupWithoutPackagingExecutor(labeledThingGroup);
+    });
+  }
+
+  /**
+   * Determine the frameRange for a specific {@link LabeledThingGroup}
+   *
+   * The `frameIndexRange` is calculated by looking at all associated {@link LabeledThing} frameRanges and determining
+   * the maximum span of overlapping frames.
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @returns {Promise.<{startFrameIndex: number, endFrameIndex: number}>}
+   */
+  _getFrameIndexRangeForLabeledThingGroupWithoutPackagingExecutor(labeledThingGroup) {
     const task = labeledThingGroup.task;
     const taskId = task.id;
     const groupId = labeledThingGroup.id;
 
     const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
 
-    return this._packagingExecutor.execute('labeledThingGroup', () => {
-      return this._$q.resolve()
-        .then(
-          () => dbContext.query(
-            this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupFrameRange'),
-            {
-              include_docs: false,
-              key: [groupId],
-              group: true,
-              group_level: 1,
-            }
-          )
-        )
-        .then(result => {
-          if (result.rows.length === 0) {
-            return this._$q.reject(
-              `The group ${groupId} does not have a frameRange, as it is not associated with any LabeledThing.`
-            );
+    return this._$q.resolve()
+      .then(
+        () => dbContext.query(
+          this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupFrameRange'),
+          {
+            include_docs: false,
+            key: [groupId],
+            group: true,
+            group_level: 1,
           }
+        )
+      )
+      .then(result => {
+        if (result.rows.length === 0) {
+          return this._$q.reject(
+            `The group ${groupId} does not have a frameRange, as it is not associated with any LabeledThing.`
+          );
+        }
 
-          const row = result.rows[0];
+        const row = result.rows[0];
 
-          return {
-            startFrameIndex: row.value[0],
-            endFrameIndex: row.value[1],
-          };
-        });
-    });
+        return {
+          startFrameIndex: row.value[0],
+          endFrameIndex: row.value[1],
+        };
+      });
   }
 
   /**
@@ -417,20 +430,36 @@ class LabeledThingGroupGateway {
    * @return {AbortablePromise}
    */
   createLabeledThingGroup(task, labeledThingGroup) {
-    const taskId = task.id;
-    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
-    const serializedLabeledThingGroup = this._couchDbModelSerializer.serialize(labeledThingGroup);
-
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThingGroup',
-      () => {
+      () => this._saveLabeledThingGroupWithoutPackagingExecutor(task, labeledThingGroup)
+    );
+  }
+
+  /**
+   * Create a labeled thing group of the given type.
+   *
+   * @param {Task} task
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @return {AbortablePromise}
+   */
+  _saveLabeledThingGroupWithoutPackagingExecutor(task, labeledThingGroup) {
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+
+    return this._$q.resolve()
+      .then(() => this._calculateThingGroupIncompleteness(labeledThingGroup))
+      .then(incomplete => {
+        labeledThingGroup.incomplete = incomplete;
+
+        const serializedLabeledThingGroup = this._couchDbModelSerializer.serialize(labeledThingGroup);
         this._injectRevisionOrFailSilently(serializedLabeledThingGroup);
         serializedLabeledThingGroup.lastModifiedByUserId = this._currentUserService.get().id;
+
         return dbContext.put(serializedLabeledThingGroup);
-      }
-    )
+      })
       .then(response => {
         return dbContext.get(response.id);
       })
@@ -439,7 +468,6 @@ class LabeledThingGroupGateway {
         return this._couchDbModelDeserializer.deserializeLabeledThingGroup(readDocument, task);
       })
       .then(document => {
-        this._calculateThingGroupIncompleteness(labeledThingGroup);
         return document;
       });
   }
@@ -456,8 +484,7 @@ class LabeledThingGroupGateway {
     let ltgFrameRange;
     let ltgFrames;
 
-    // This does not work for yet unsaved groups :/
-    this.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup)
+    return this._getFrameIndexRangeForLabeledThingGroupWithoutPackagingExecutor(labeledThingGroup)
       .then(frameRange => {
         ltgFrames = (frameRange.endFrameIndex - frameRange.startFrameIndex) + 1;
         ltgFrameRange = frameRange;
@@ -499,9 +526,6 @@ class LabeledThingGroupGateway {
               return anyLtgifIncomplete;
             });
         }
-      })
-      .then(incomplete => {
-        console.log(incomplete);
       });
   }
 
@@ -514,6 +538,8 @@ class LabeledThingGroupGateway {
     const taskId = task.id;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
     const serializedLtgif = this._couchDbModelSerializer.serialize(ltgif);
+
+    let updatedLabeledThingGroupInFrame;
 
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
@@ -528,10 +554,11 @@ class LabeledThingGroupGateway {
             return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(readDocument, ltg);
           })
           .then(document => {
-            // Does not work yet if the f.e. the first ltgif is set, but following are not (but do inherit the
-            // previous values)
-            this._calculateThingGroupIncompleteness(ltg);
-            return document;
+            updatedLabeledThingGroupInFrame = document;
+            return this._saveLabeledThingGroupWithoutPackagingExecutor(task, updatedLabeledThingGroupInFrame.labeledThingGroup);
+          })
+          .then(() => {
+            return updatedLabeledThingGroupInFrame;
           });
       }
     );

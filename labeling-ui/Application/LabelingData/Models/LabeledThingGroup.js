@@ -41,13 +41,14 @@ class LabeledThingGroup extends LabeledObject {
    * @return {Object}
    */
   toJSON() {
-    const {type, lineColor, groupIds, createdByUserId, lastModifiedByUserId} = this;
+    const {type, lineColor, groupIds, createdByUserId, lastModifiedByUserId, incomplete} = this;
     return Object.assign(super.toJSON(), {
       identifierName: type,
       lineColor: lineColor,
       groupIds: clone(groupIds),
       createdByUserId,
       lastModifiedByUserId,
+      incomplete,
     });
   }
 
