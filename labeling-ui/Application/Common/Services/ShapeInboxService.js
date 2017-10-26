@@ -1,21 +1,79 @@
 class ShapeInboxService {
-  constructor() {
-    this._shapes = new Map();
+  /**
+   *
+   * @param {angular.$q} $q
+   * @param {ShapeInboxObjectService} shapeInboxObjectService
+   * @param {ShapeInboxLabelService} shapeInboxLabelService
+   */
+  constructor($q, shapeInboxObjectService, shapeInboxLabelService) {
+    /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
+
+    /**
+     * @type {ShapeInboxObjectService}
+     * @private
+     */
+    this._shapeInboxObjectService = shapeInboxObjectService;
+
+    /**
+     * @type {ShapeInboxLabelService}
+     * @private
+     */
+    this._shapeInboxLabelService = shapeInboxLabelService;
+
+    /**
+     * @type {Set.<PaperThingShape>}
+     * @private
+     */
+    this._shapes = new Set();
   }
 
   /**
    * Adds a shape to the inbox
    *
-   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
+   * @param {PaperThingShape} shape
    */
-  addShape(shapeInformation) {
-    this._shapes.set(shapeInformation.shape.id, shapeInformation);
+  addShape(shape) {
+    this._shapes.add(shape);
+  }
+
+  /**
+   * @param {PaperThingShape} shape
+   * @param {string} newName
+   */
+  renameShape(shape, newName) {
+    const {labeledThingInFrame} = shape;
+    const {labeledThing} = labeledThingInFrame;
+
+    this._shapeInboxLabelService.setLabelForLabelThing(labeledThing, newName);
+  }
+
+  /**
+   * @param {PaperShape} shape
+   * @returns {Promise.<{shape: PaperThingShape, labelStructureObject: LabelStructureObject}>}
+   */
+  getInboxObject(shape) {
+    return this._shapeInboxObjectService.getInboxObject(shape);
+  }
+
+  /**
+   * @param {{shape: PaperThingShape, labelStructureObject: LabelStructureObject}} inboxObject
+   * @returns {string}
+   */
+  getLabelForInboxObject(inboxObject) {
+    const lso = inboxObject.labelStructureObject;
+    const labeledThing = inboxObject.shape.labeledThingInFrame.labeledThing;
+
+    return this._shapeInboxLabelService.getLabelForLabelStructureObjectAndLabeledThing(lso, labeledThing);
   }
 
   /**
    * Adds an array of shapes to the inbox
    *
-   * @param {Array.<{shape: PaperThingShape, label: String, labelStructureObject: LabelStructureObject}>} shapes
+   * @param {PaperThingShape[]} shapes
    */
   addShapes(shapes) {
     shapes.forEach(shape => {
@@ -26,28 +84,33 @@ class ShapeInboxService {
   /**
    * Removes a shape from the inbox
    *
-   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
+   * @param {PaperThingShape} shape
    */
-  removeShape(shapeInformation) {
-    this._shapes.delete(shapeInformation.shape.id);
+  removeShape(shape) {
+    this._shapes.delete(shape);
   }
 
   /**
    * Checks if the inbox has the given shape
    *
-   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
+   * @param {PaperThingShape} shape
    */
-  hasShape(shapeInformation) {
-    return this._shapes.has(shapeInformation.shape.id);
+  hasShape(shape) {
+    return this._shapes.has(shape);
   }
 
   /**
-   * Returns all shapes in the inbox
+   * Returns all shapes in the inbox as ShapeInformation structure
    *
-   * @return {Array}
+   * @return {Promise.<Array.<{shape: PaperThingShape, label: String, labelStructureObject: LabelStructureObject}>>}
    */
-  getAllShapes() {
-    return Array.from(this._shapes.values());
+  getAllShapeInformations() {
+    return this._$q.all(
+      Array.from(this._shapes.entries())
+        .map(
+          ([shape]) => this._shapeInboxObjectService.getInboxObject(shape)
+        )
+    );
   }
 
   /**
@@ -67,6 +130,10 @@ class ShapeInboxService {
   }
 }
 
-ShapeInboxService.$inject = [];
+ShapeInboxService.$inject = [
+  '$q',
+  'shapeInboxObjectService',
+  'shapeInboxLabelService',
+];
 
 export default ShapeInboxService;

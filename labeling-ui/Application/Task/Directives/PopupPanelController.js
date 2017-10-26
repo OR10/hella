@@ -22,7 +22,6 @@ class PopupPanelController {
    * @param {LabelStructureService} labelStructureService
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ShapeInboxService} shapeInboxService
-   * @param {ShapeInboxObjectService} shapeInboxObjectService
    * @param {ShapeMergeService} shapeMergeService
    * @param {ApplicationState} applicationState
    * @param {RootScopeEventRegistrationService} rootScopeEventRegistrationService
@@ -42,7 +41,6 @@ class PopupPanelController {
     labelStructureService,
     shapeSelectionService,
     shapeInboxService,
-    shapeInboxObjectService,
     shapeMergeService,
     applicationState,
     rootScopeEventRegistrationService
@@ -109,12 +107,6 @@ class PopupPanelController {
      * @private
      */
     this._shapeInboxService = shapeInboxService;
-
-    /**
-     * @type {ShapeInboxObjectService}
-     * @private
-     */
-    this._shapeInboxObjectService = shapeInboxObjectService;
 
     /**
      * @type {HTMLImageElement|null}
@@ -238,18 +230,16 @@ class PopupPanelController {
     this._resizeDebounced();
 
     /**
-     * @type {Object.<{shape: PaperShape, label: String, labelStructureObject: LabelStructureObject}>}
+     * @type {Object.<string, {shape: PaperShape, label: String, labelStructureObject: LabelStructureObject}>}
      * @private
      */
     this._selectedObjects = {};
 
     /**
-     * @type {number}
+     * @type {Array.<{shape: PaperShape, label: String, labelStructureObject: LabelStructureObject}>}
      * @private
      */
-    this._selectedObjectsCounter = 1;
-
-    this._selectedObjectsLabelCounter = {};
+    this._savedObjects = [];
 
     this._shapeSelectionService.afterAnySelectionChange('PopupPanelController', () => this._loadSelectedObjects());
     this._rootScopeEventRegistrationService.register(this, 'shape:ghostbust:after', () => this._loadSelectedObjects());
@@ -268,7 +258,12 @@ class PopupPanelController {
    * @return {Array}
    */
   get savedObjects() {
-    return this._shapeInboxService.getAllShapes();
+    return this._savedObjects;
+  }
+
+  _refreshSavedObjects() {
+    this._shapeInboxService.getAllShapeInformations()
+      .then(savedShapeInformations => this._savedObjects = savedShapeInformations);
   }
 
   /**
@@ -340,19 +335,25 @@ class PopupPanelController {
   /**
    * Adds a shape to the inbox
    *
-   * @param {Object.<{shape: {PaperThingShape}, label: {String}, labelStructureObject: {LabelStructureObject}>} shapeInformation
+   * @param {{shape: PaperThingShape, label: string, labelStructureObject: LabelStructureObject}} shapeInformation
    */
   addToInbox(shapeInformation) {
-    this._shapeInboxService.addShape(shapeInformation);
+    const {shape} = shapeInformation;
+
+    this._shapeInboxService.addShape(shape);
     this._loadSelectedObjects();
+    this._refreshSavedObjects();
   }
 
   /**
    * Adds all selected shapes to the inbox
    */
   addAllToInbox() {
-    this._shapeInboxService.addShapes(this.selectedObjects);
+    this._shapeInboxService.addShapes(
+      Object.values(this.selectedObjects).map(shapeInformation => shapeInformation.shape)
+    );
     this._loadSelectedObjects();
+    this._refreshSavedObjects();
   }
 
   /**
@@ -361,6 +362,7 @@ class PopupPanelController {
   removeAllFromInbox() {
     this._shapeInboxService.clear();
     this._loadSelectedObjects();
+    this._refreshSavedObjects();
   }
 
   /**
@@ -369,8 +371,27 @@ class PopupPanelController {
    * @param {{shape: PaperThingShape, label: string, labelStructureObject: LabelStructureObject}} shapeInformation
    */
   removeFromInbox(shapeInformation) {
-    this._shapeInboxService.removeShape(shapeInformation);
+    const {shape} = shapeInformation;
+
+    this._shapeInboxService.removeShape(shape);
     this._loadSelectedObjects();
+    this._refreshSavedObjects();
+  }
+
+  renameShape(shapeInformation, newName) {
+    const {shape} = shapeInformation;
+
+    this._shapeInboxService.renameShape(shape, newName);
+    this._loadSelectedObjects();
+    this._refreshSavedObjects();
+  }
+
+  /**
+   * @param {{shape: PaperThingShape, labelStructureObject: LabelStructureObject}} shapeInformation
+   * @returns {string}
+   */
+  getLabelForInboxObject(shapeInformation) {
+    return this._shapeInboxService.getLabelForInboxObject(shapeInformation);
   }
 
   /**
@@ -381,12 +402,15 @@ class PopupPanelController {
    * @param {{shape: PaperThingShape, label: string, labelStructureObject: LabelStructureObject}} shapeInformation
    */
   reselectFromInbox(shapeInformation) {
-    this._shapeInboxService.removeShape(shapeInformation);
-    this._shapeSelectionService.setSelectedShape(shapeInformation.shape);
-    this.selectedPaperShape = shapeInformation.shape;
-    this._loadSelectedObjects();
+    const {shape} = shapeInformation;
 
-    this._$rootScope.$emit('action:reload-frame');
+    this._shapeInboxService.removeShape(shape);
+    this._shapeSelectionService.setSelectedShape(shape);
+    this.selectedPaperShape = shape;
+    this._loadSelectedObjects();
+    this._refreshSavedObjects();
+
+    // this._$rootScope.$emit('action:reload-frame');
   }
 
   /**
@@ -459,10 +483,10 @@ class PopupPanelController {
       }
 
       this._$q.resolve()
-        .then(() => this._shapeInboxObjectService.getInboxObject(shape))
-        .then(shapeInformation => {
-          if (!this._shapeInboxService.hasShape(shapeInformation)) {
-            this._selectedObjects[shape.id] = shapeInformation;
+        .then(() => {
+          if (!this._shapeInboxService.hasShape(shape)) {
+            return this._shapeInboxService.getInboxObject(shape)
+              .then(shapeInformation => this._selectedObjects[shape.id] = shapeInformation);
           }
         })
         .then(() => this._calculateMergableObjects());
@@ -626,7 +650,6 @@ PopupPanelController.$inject = [
   'labelStructureService',
   'shapeSelectionService',
   'shapeInboxService',
-  'shapeInboxObjectService',
   'shapeMergeService',
   'applicationState',
   'rootScopeEventRegistrationService',
