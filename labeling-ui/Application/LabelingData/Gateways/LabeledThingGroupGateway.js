@@ -437,6 +437,10 @@ class LabeledThingGroupGateway {
       .then(readDocument => {
         this._revisionManager.extractRevision(readDocument);
         return this._couchDbModelDeserializer.deserializeLabeledThingGroup(readDocument, task);
+      })
+      .then(document => {
+        this._calculateThingGroupIncompleteness(labeledThingGroup);
+        return document;
       });
   }
 
@@ -449,12 +453,14 @@ class LabeledThingGroupGateway {
     const task = labeledThingGroup.task;
     const thingIdentifier = labeledThingGroup.type;
 
+    let ltgFrameRange;
     let ltgFrames;
 
     // This does not work for yet unsaved groups :/
     this.getFrameIndexRangeForLabeledThingGroup(labeledThingGroup)
       .then(frameRange => {
         ltgFrames = (frameRange.endFrameIndex - frameRange.startFrameIndex) + 1;
+        ltgFrameRange = frameRange;
       })
       .catch(() => {
         ltgFrames = 1;
@@ -471,13 +477,16 @@ class LabeledThingGroupGateway {
         if (list.length === 0) {
           return false;
         } else {
-
           return this._getAssociatedLTGIFsForLTG(labeledThingGroup)
             .then(labeledThingGroupInFrames => {
               let anyLtgifIncomplete = false;
+              
+              const ltgifOnFirstFrameOfGroup = labeledThingGroupInFrames.find(ltgif => ltgif.frameIndex === ltgFrameRange.startFrameIndex);
+              const noLtgifOnFirstFrameOfGroup = ltgifOnFirstFrameOfGroup === undefined || ltgifOnFirstFrameOfGroup.incomplete;
 
-              // if there are less ltgif than frames the group is on, the whole group is incomplete
-              if (labeledThingGroupInFrames.length < ltgFrames) {
+              // if there are less ltgif than frames the group is on, and there is no ltgif on the first frame of the
+              // group, the whole group is incomplete
+              if (labeledThingGroupInFrames.length < ltgFrames && noLtgifOnFirstFrameOfGroup) {
                 anyLtgifIncomplete = true;
               } else {
                 labeledThingGroupInFrames.forEach(ltg => {
@@ -517,6 +526,12 @@ class LabeledThingGroupGateway {
           .then(readDocument => {
             this._revisionManager.extractRevision(readDocument);
             return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(readDocument, ltg);
+          })
+          .then(document => {
+            // Does not work yet if the f.e. the first ltgif is set, but following are not (but do inherit the
+            // previous values)
+            this._calculateThingGroupIncompleteness(ltg);
+            return document;
           });
       }
     );
