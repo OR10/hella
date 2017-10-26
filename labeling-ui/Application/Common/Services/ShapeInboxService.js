@@ -96,7 +96,11 @@ class ShapeInboxService {
    * @param {PaperThingShape} shape
    */
   hasShape(shape) {
-    return this._shapes.has(shape);
+    return Array.from(this._shapes.entries())
+      .reduce(
+        (carry, [candidateShape]) => carry || candidateShape.id === shape.id,
+        false
+      );
   }
 
   /**
