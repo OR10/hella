@@ -16,6 +16,7 @@ import PopupPanelDirective from './Directives/PopupPanelDirective';
 import ToolSelectorDirective from './Directives/ToolSelectorDirective';
 import InitialDataResolver from './Resolvers/InitialDataResolver';
 import ShapeInboxObjectService from './Services/ShapeInboxObjectService';
+import ShapeInboxLabelService from './Services/ShapeInboxLabelService';
 
 /**
  * Module containing all functionality associated with a {@link Task}
@@ -36,6 +37,7 @@ class TaskModule extends Module {
     this.module.service('labelStructureDataService', LabelStructureDataService);
     this.module.service('labeledThingReferentialCheckService', LabeledThingReferentialCheckService);
     this.module.service('shapeInboxObjectService', ShapeInboxObjectService);
+    this.module.service('shapeInboxLabelService', ShapeInboxLabelService);
     this.registerDirective('taskDescription', TaskDescriptionDirective);
     this.registerDirective('popupPanel', PopupPanelDirective);
     this.registerDirective('toolSelector', ToolSelectorDirective);
