@@ -22,6 +22,7 @@ class PopupPanelController {
    * @param {LabelStructureService} labelStructureService
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {ShapeInboxService} shapeInboxService
+   * @param {ShapeInboxObjectService} shapeInboxObjectService
    * @param {ShapeMergeService} shapeMergeService
    * @param {ApplicationState} applicationState
    * @param {RootScopeEventRegistrationService} rootScopeEventRegistrationService
@@ -41,6 +42,7 @@ class PopupPanelController {
     labelStructureService,
     shapeSelectionService,
     shapeInboxService,
+    shapeInboxObjectService,
     shapeMergeService,
     applicationState,
     rootScopeEventRegistrationService
@@ -107,6 +109,12 @@ class PopupPanelController {
      * @private
      */
     this._shapeInboxService = shapeInboxService;
+
+    /**
+     * @type {ShapeInboxObjectService}
+     * @private
+     */
+    this._shapeInboxObjectService = shapeInboxObjectService;
 
     /**
      * @type {HTMLImageElement|null}
@@ -450,22 +458,11 @@ class PopupPanelController {
         return;
       }
 
-      this._labelStructureService.getLabelStructure(shape.labeledThingInFrame.task)
-        .then(structure => {
-          return structure.getThingById(shape.labeledThingInFrame.identifierName);
-        })
-        .then(labelStructureObject => {
-          if (this._selectedObjects[shape.id] === undefined) {
-            if (this._selectedObjectsLabelCounter[shape.id] === undefined) {
-              this._selectedObjectsLabelCounter[shape.id] = this._selectedObjectsCounter++;
-            }
-
-            const label = `${labelStructureObject.name} #${this._selectedObjectsLabelCounter[shape.id]}`;
-            const shapeInformation = {shape, label, labelStructureObject};
-
-            if (!this._shapeInboxService.hasShape(shapeInformation)) {
-              this._selectedObjects[shape.id] = shapeInformation;
-            }
+      this._$q.resolve()
+        .then(() => this._shapeInboxObjectService.getInboxObject(shape))
+        .then(shapeInformation => {
+          if (!this._shapeInboxService.hasShape(shapeInformation)) {
+            this._selectedObjects[shape.id] = shapeInformation;
           }
         })
         .then(() => this._calculateMergableObjects());
@@ -629,6 +626,7 @@ PopupPanelController.$inject = [
   'labelStructureService',
   'shapeSelectionService',
   'shapeInboxService',
+  'shapeInboxObjectService',
   'shapeMergeService',
   'applicationState',
   'rootScopeEventRegistrationService',
