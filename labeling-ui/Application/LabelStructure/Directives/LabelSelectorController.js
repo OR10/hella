@@ -34,6 +34,7 @@ export default class LabelSelectorController {
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {$q} $q
    */
   constructor(
     $scope,
@@ -49,7 +50,8 @@ export default class LabelSelectorController {
     modalService,
     applicationState,
     taskGateway,
-    shapeSelectionService
+    shapeSelectionService,
+    $q
   ) {
     /**
      * Pages displayed by the wizzards
@@ -166,6 +168,12 @@ export default class LabelSelectorController {
      * @private
      */
     this._shapeSelectionService = shapeSelectionService;
+
+    /**
+     * @type {$q}
+     * @private
+     */
+    this._$q = $q;
 
 
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
@@ -438,6 +446,8 @@ export default class LabelSelectorController {
    * @private
    */
   _storeUpdatedLabeledThingInFrame(labeledThingInFrame, updateAssociatedLabeledThing) {
+    let updatedLabeledThingInFrame;
+
     labeledThingInFrame.incomplete = !this._isCompleted();
     let storagePromise = Promise.resolve();
     if (updateAssociatedLabeledThing) {
@@ -446,7 +456,28 @@ export default class LabelSelectorController {
         .then(() => this._labeledThingGateway.saveLabeledThing(labeledThing));
     }
     storagePromise = storagePromise
-      .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame));
+      .then(() => this._labeledThingInFrameGateway.saveLabeledThingInFrame(labeledThingInFrame))
+      .then(storedLabeledThingInFrame => {
+        updatedLabeledThingInFrame = storedLabeledThingInFrame;
+        const storedLabeledThing = storedLabeledThingInFrame.labeledThing;
+
+        return this._labeledThingGateway.getAssociatedLabeledThingsInFrames(storedLabeledThing);
+      })
+      .then(ltifs => {
+        const promises = [];
+        const ltifsAfterThisOne = ltifs.filter(ltif => ltif.id !== updatedLabeledThingInFrame.id && ltif.frameIndex > updatedLabeledThingInFrame.frameIndex);
+
+        ltifsAfterThisOne.forEach(ltif => {
+          ltif.classes = updatedLabeledThingInFrame.extractClassList();
+          promises.push(this._labeledThingInFrameGateway.saveLabeledThingInFrame(ltif));
+        });
+
+        return this._$q.all(promises);
+      })
+      .then(results => {
+        console.log(results);
+        return updatedLabeledThingInFrame;
+      });
 
     return storagePromise;
   }
@@ -602,4 +633,5 @@ LabelSelectorController.$inject = [
   'applicationState',
   'taskGateway',
   'shapeSelectionService',
+  '$q',
 ];
