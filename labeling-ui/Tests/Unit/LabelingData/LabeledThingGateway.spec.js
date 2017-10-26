@@ -593,8 +593,8 @@ describe('LabeledThingGateway', () => {
     expect(storedLabeledThingDocument).toEqual(labeledThingCalledDocument);
   });
 
-  fdescribe('getAssociatedLabeledThingsInFrames', done => {
-    it('deserializes and extracts the revision of the read LabeledThingsInFrame', () => {
+  describe('getAssociatedLabeledThingsInFrames', done => {
+    it('deserializes and extracts the revision of the read LabeledThingsInFrame (TTANNO-2183)', () => {
       const task = { id: 'task-id' };
       const labeledThing = { id: 'lt-1', task };
       const firstLtif = { _id: 'ltif-1', _rev: '1' };
