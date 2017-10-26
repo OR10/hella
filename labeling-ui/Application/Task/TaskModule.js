@@ -17,6 +17,7 @@ import ToolSelectorDirective from './Directives/ToolSelectorDirective';
 import InitialDataResolver from './Resolvers/InitialDataResolver';
 import ShapeInboxObjectService from './Services/ShapeInboxObjectService';
 import ShapeInboxLabelService from './Services/ShapeInboxLabelService';
+import InboxShapeNameInputDirective from './Directives/InboxShapeNameInputDirective';
 
 /**
  * Module containing all functionality associated with a {@link Task}
@@ -41,6 +42,7 @@ class TaskModule extends Module {
     this.registerDirective('taskDescription', TaskDescriptionDirective);
     this.registerDirective('popupPanel', PopupPanelDirective);
     this.registerDirective('toolSelector', ToolSelectorDirective);
+    this.registerDirective('inboxShapeNameInput', InboxShapeNameInputDirective);
     this.module.filter('toFrameNumber', toFrameNumberFilterProvider);
   }
 
