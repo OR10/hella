@@ -1,5 +1,3 @@
-import {clone} from 'lodash';
-
 /**
  * Handling the creation and manipulation of ShapeInboxInformation objects
  *

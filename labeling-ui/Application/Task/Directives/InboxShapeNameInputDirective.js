@@ -16,7 +16,7 @@ class InboxShapeNameInputDirective {
     };
   }
 
-  link(scope, element, attrs, ngModel) {
+  link(scope, element, attrs) { // eslint-disable-line no-unused-vars
     // Write data to the model
     const editable = element.find('[contenteditable]');
 
