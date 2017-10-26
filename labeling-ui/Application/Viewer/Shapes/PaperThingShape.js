@@ -42,6 +42,23 @@ class PaperThingShape extends PaperShape {
     }
     return groupIds;
   }
+
+  /**
+   * @returns {Array}
+   */
+  get dashArray() {
+    let dashArray = PaperShape.LINE;
+
+    if (this._isSelected) {
+      dashArray = PaperShape.DASH;
+    }
+
+    if (this.labeledThingInFrame.ghost) {
+      dashArray = PaperShape.DOT;
+    }
+
+    return dashArray;
+  }
 }
 
 export default PaperThingShape;

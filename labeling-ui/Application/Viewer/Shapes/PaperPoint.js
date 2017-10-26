@@ -1,6 +1,5 @@
 import angular from 'angular';
 import paper from 'paper';
-import PaperShape from './PaperShape';
 import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
 import PaperRectangle from './PaperRectangle';
@@ -37,9 +36,11 @@ class PaperPoint extends PaperThingShape {
   /**
    * @param {paper.Path} shape
    * @param {Boolean} drawHandles
-   * @private
+   * @protected
    */
   _drawShape(drawHandles = true) {
+    super._drawShape(drawHandles);
+
     this.removeChildren();
 
     const outerCircleShape = this._createOuterCircleShape();
@@ -83,7 +84,7 @@ class PaperPoint extends PaperThingShape {
       strokeColor: this._color.primary,
       strokeWidth: 2,
       strokeScaling: false,
-      dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
+      dashArray: this.dashArray,
       fillColor: new paper.Color(0, 0, 0, 0),
     });
   }

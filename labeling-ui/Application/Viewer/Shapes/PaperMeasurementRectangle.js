@@ -58,6 +58,8 @@ class PaperMeasurementRectangle extends PaperVirtualShape {
    * @private
    */
   _drawShape(drawHandles = true) {
+    super._drawShape(drawHandles);
+
     this.removeChildren();
 
     const shape = this._createShape();

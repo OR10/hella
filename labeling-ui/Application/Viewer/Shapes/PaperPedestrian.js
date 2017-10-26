@@ -1,5 +1,4 @@
 import paper from 'paper';
-import PaperShape from './PaperShape';
 import PaperThingShape from './PaperThingShape';
 import RectangleHandle from './Handles/Rectangle';
 
@@ -38,6 +37,8 @@ class PaperPedestrian extends PaperThingShape {
   }
 
   _drawShape(drawHandles = true) {
+    super._drawShape(drawHandles);
+
     this.removeChildren();
 
     const centerLine = this._createCenterLine();
@@ -88,7 +89,7 @@ class PaperPedestrian extends PaperThingShape {
       strokeColor: this._color.primary,
       selected: false,
       strokeWidth: 2,
-      dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
+      dashArray: this.dashArray,
       strokeScaling: false,
       fillColor: new paper.Color(0, 0, 0, 0),
       from: new paper.Point(
