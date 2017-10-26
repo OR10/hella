@@ -378,22 +378,6 @@ class PopupPanelController {
     this._refreshSavedObjects();
   }
 
-  renameShape(shapeInformation, newName) {
-    const {shape} = shapeInformation;
-
-    this._shapeInboxService.renameShape(shape, newName);
-    this._loadSelectedObjects();
-    this._refreshSavedObjects();
-  }
-
-  /**
-   * @param {{shape: PaperThingShape, labelStructureObject: LabelStructureObject}} shapeInformation
-   * @returns {string}
-   */
-  getLabelForInboxObject(shapeInformation) {
-    return this._shapeInboxService.getLabelForInboxObject(shapeInformation);
-  }
-
   /**
    * Gets a shape from the inbox and reselects it
    *
