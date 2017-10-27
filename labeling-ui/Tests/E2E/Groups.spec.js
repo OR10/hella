@@ -763,17 +763,18 @@ describe('Groups', () => {
     });
   });
 
-  describe('Incomplete Badge', () => {
+  fdescribe('Incomplete Badge', () => {
+    const finishTaskButton = element(by.css('.badge-container button'));
     const incompleteBadge = element(by.css('.badge-container .badge'));
+    const rectangleToolButton = element(by.css('button.tool-button.tool-rectangle'));
 
-    it('shows an incomplete badge for the group', done => {
+    beforeEach(() => {
       bootstrapHttp(sharedMocks.concat([
         assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
       ]));
+    });
 
-      const rectangleToolButton = element(by.css('button.tool-button.tool-rectangle'));
-      const closeBracketButton = element(by.css('.close-bracket-button > button'));
-
+    it('shows an incomplete badge for the group', done => {
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => rectangleToolButton.click())
         .then(() => shortSleep())
@@ -799,6 +800,112 @@ describe('Groups', () => {
         .then(() => incompleteBadge.getText())
         // One incomplete shape + one incomplete group
         .then(incompleteCount => expect(incompleteCount).toEqual('2'))
+        .then(() => done());
+    });
+
+    fit('selects the group when clicking the finish badge', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => rectangleToolButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          // Create Rectangle
+          return browser.actions()
+            .mouseMove(viewer, {x: 100, y: 100})
+            .mouseDown()
+            .mouseMove(viewer, {x: 400, y: 400})
+            .mouseUp()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText(
+          'Sign type'
+        ).click())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Sign type',
+          'U-Turn'
+        ).click())
+        .then(() => mediumSleep())
+        // Create group
+        .then(() => groupButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          // Acknowledge modal
+          const confirmButton = element(by.css('.modal-button-confirm'));
+          return confirmButton.click();
+        })
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 1, y: 1})
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => finishTaskButton.click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'SelectingGroupOnFinishTaskButtonClick')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.SelectingGroupOnFinishTaskButtonClick);
+        })
+        .then(() => done());
+    });
+
+    fit('selects the group when clicking the finish badge on a different frame', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => rectangleToolButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          // Create Rectangle
+          return browser.actions()
+            .mouseMove(viewer, {x: 100, y: 100})
+            .mouseDown()
+            .mouseMove(viewer, {x: 400, y: 400})
+            .mouseUp()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText(
+          'Sign type'
+        ).click())
+        .then(() => mediumSleep())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Sign type',
+          'U-Turn'
+        ).click())
+        .then(() => mediumSleep())
+        // Create group
+        .then(() => groupButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          // Acknowledge modal
+          const confirmButton = element(by.css('.modal-button-confirm'));
+          return confirmButton.click();
+        })
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 1, y: 1})
+            .click()
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => finishTaskButton.click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupCreation', 'SelectingGroupOnFinishTaskButtonClick')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(drawingStack => {
+          expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.GroupCreation.SelectingGroupOnFinishTaskButtonClick);
+        })
         .then(() => done());
     });
   });
