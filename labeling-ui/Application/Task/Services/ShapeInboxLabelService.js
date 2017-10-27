@@ -1,14 +1,5 @@
 class ShapeInboxLabelService {
-  /**
-   * @param {angular.$q} $q
-   */
-  constructor($q) {
-    /**
-     * @type {angular.$q}
-     * @private
-     */
-    this._$q = $q;
-
+  constructor() {
     /**
      * @type {Map.<string, string>}
      * @private
@@ -76,7 +67,6 @@ class ShapeInboxLabelService {
 }
 
 ShapeInboxLabelService.$inject = [
-  '$q',
 ];
 
 export default ShapeInboxLabelService;
