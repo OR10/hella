@@ -30,7 +30,7 @@ class InboxShapeNameInputDirective {
       // Remove anything, but valid chars
       return value
         .replace(/<br( ?\/)?>/g, '') // Remove <br>s
-        .replace(/[^a-zA-Z0-9_#!"§$%&/()=? -]/g, '');
+        .replace(/[^a-zA-Z0-9_#!"§$%&/()=?.,;<>:@+* -]/g, '');
     }
 
     function onKeyDown(event) {
