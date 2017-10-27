@@ -1,4 +1,5 @@
 const {Replicator} = require('./Jobs/Replicator');
+const nano = require('nano');
 
 const {getReplicationDocumentIdName} = require('./Utils');
 
@@ -193,11 +194,22 @@ class ReplicationManager {
       const targetUrl = this.hotStandByUrl + sourceDatabase;
       const id = getReplicationDocumentIdName(sourceUrl, targetUrl);
       this.workerQueue.removeJob(id);
+      this._removeDatabaseFromHotStandBy(sourceDatabase);
     }
     const sourceUrl = this.sourceBaseUrl + sourceDatabase;
     const targetUrl = this.targetBaseUrl + targetDatabase;
     const id = getReplicationDocumentIdName(sourceUrl, targetUrl);
     this.workerQueue.removeJob(id);
+  }
+
+  /**
+   * Delete the database on the hot standby server
+   * @param database
+   * @private
+   */
+  _removeDatabaseFromHotStandBy(database) {
+      const nanoTarget = nano(this.hotStandByUrl)
+      nanoTarget.db.destroy(database, () => this.logger.logString(`DEBUG: Database deleted on hot standby: '${database}'`));
   }
 
   _registerDebugCommands() {

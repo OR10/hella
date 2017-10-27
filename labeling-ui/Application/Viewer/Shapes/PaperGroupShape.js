@@ -33,6 +33,33 @@ class PaperGroupShape extends PaperShape {
     return false;
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeSliced() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasStartAndEndFrame() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canChangeFrameRange() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  playInFrameRange() {
+    return false;
+  }
 
   /**
    * {@link LabeledThingGroup} associated with this `PaperGroupShape`

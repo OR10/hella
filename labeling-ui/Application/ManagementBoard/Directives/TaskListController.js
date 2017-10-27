@@ -77,6 +77,21 @@ class TaskListController {
     this.tasks = [];
 
     /**
+     * @type {Array}
+     */
+    this.selectedTasks = [];
+
+    /**
+     * @type {Array}
+     */
+    this.isAllSelected = false;
+
+    /**
+     * @type {String}
+     */
+    this.selectedAction = 'defaultSelection';
+
+    /**
      * @type {number}
      * @private
      */
@@ -152,80 +167,6 @@ class TaskListController {
     return this._$state.go('labeling.tasks.detail', {taskId, phase});
   }
 
-  unassignTask(taskId, assigneeId) {
-    this._taskGateway.unassignUserFromTask(taskId, assigneeId)
-      .then(() => this.updatePage(this._currentPage, this._currentItemsPerPage));
-  }
-
-  flagTask(taskId) {
-    if (this._tasksById[taskId].taskAttentionFlag) {
-      this._modalService.info(
-        {
-          title: 'Already Flagged',
-          headline: 'This task is already flagged! Please wait for the Label Manager to remove the flag.',
-          confirmButtonText: 'Understood',
-        },
-        undefined,
-        undefined,
-        {
-          abortable: false,
-        }
-      );
-      return;
-    }
-    this._taskGateway.flagTask(taskId)
-      .then(() => this.updatePage(this._currentPage, this._currentItemsPerPage));
-  }
-
-  moveTask(taskId) {
-    const selectedTask = this.tasks.find(task => task.id === taskId);
-
-    let selectionData = [
-      {id: 'labeling', name: 'Labeling'},
-      {id: 'review', name: 'Review'},
-      {id: 'revision', name: 'Revision'},
-      {id: 'all_phases_done', name: 'Done'},
-    ].filter(selection => selection.id !== selectedTask.phase);
-
-    if (!selectedTask.hasReview) {
-      selectionData = selectionData.filter(selection => selection.id !== 'review');
-    }
-
-    this._modalService.show(
-      new this._SelectionDialog(
-        {
-          title: 'Move task',
-          headline: `Please select the phase that you want this task to be moved to:`,
-          confirmButtonText: 'Move task',
-          message: '',
-          data: selectionData,
-        },
-        phase => {
-          if (phase) {
-            this.loadingInProgress = true;
-            this._taskGateway.moveTaskToPhase(taskId, phase)
-              .then(() => this._triggerReloadAll());
-          } else {
-            this._modalService.info(
-              {
-                title: 'No phase selected',
-                headline: 'You need to select a phase',
-                message: 'You need to select a phase to move this task to. Without a selected phase the task can not bei moved!',
-                confirmButtonText: 'Understood',
-              },
-              undefined,
-              undefined,
-              {
-                warning: true,
-                abortable: false,
-              }
-            );
-          }
-        }
-      )
-    );
-  }
-
   reopenTask(taskId, phase) {
     this._taskGateway.reopenTask(taskId, phase).then(() => this._triggerReloadAll());
   }
@@ -267,6 +208,185 @@ class TaskListController {
 
         this.loadingInProgress = false;
       });
+  }
+
+  /**
+   * @returns {Number}
+   * @private
+   */
+  _numberOfSelectedTasks() {
+    const selectedTasks = Object.values(this.selectedTasks).filter(isSelected => {
+      return isSelected;
+    });
+
+    return selectedTasks.length;
+  }
+
+  calculateAllSelectionCheckbox() {
+    if (this.tasks.length === this._numberOfSelectedTasks()) {
+      this.isAllSelected = true;
+    } else {
+      this.isAllSelected = false;
+    }
+  }
+
+  toggleAllSelections() {
+    this.tasks.forEach(task => {
+      this.selectedTasks[task.id] = this.isAllSelected;
+    });
+  }
+
+  _unselectAllSelections() {
+    this.isAllSelected = false;
+    this.tasks.forEach(task => {
+      this.selectedTasks[task.id] = this.isAllSelected;
+    });
+  }
+
+  /**
+   * @param tasks
+   * @returns {AbortablePromise}
+   * @private
+   */
+  _unassignUsersFromTasks(tasks) {
+    const unassignPromise = [];
+
+    tasks.forEach(
+      task => {
+        unassignPromise.push(
+          this._taskGateway.unassignUserFromTask(task.id, task.latestAssignee.id)
+        );
+      }
+    );
+
+    return Promise.all(unassignPromise);
+  }
+
+  /**
+   * @param tasks
+   * @returns {AbortablePromise}
+   * @private
+   */
+  _setFlagForTasks(tasks) {
+    const flagTasksPromise = [];
+    tasks.forEach(
+      task => {
+        flagTasksPromise.push(
+          this._taskGateway.flagTask(task.id)
+        );
+      }
+    );
+
+    return Promise.all(flagTasksPromise);
+  }
+
+  /**
+   * @param tasks
+   * @param phase
+   * @returns {AbortablePromise}
+   * @private
+   */
+  _updateTasksPhase(tasks, phase) {
+    const flagTasksPromise = [];
+    tasks.forEach(
+      task => {
+        flagTasksPromise.push(
+          this._taskGateway.moveTaskToPhase(task.id, phase)
+        );
+      }
+    );
+
+    return Promise.all(flagTasksPromise);
+  }
+
+  _unassignUsers() {
+    const selectedTasks = this.tasks.filter(task => {
+      return this.selectedTasks[task.id] === true && task.latestAssignee !== null;
+    });
+
+    this._unassignUsersFromTasks(selectedTasks).then(() => {
+      this.updatePage(this._currentPage, this._currentItemsPerPage);
+      this._unselectAllSelections();
+      this.selectedAction = 'defaultSelection';
+    });
+  }
+
+  _flagTasks() {
+    const selectedTasks = this.tasks.filter(task => {
+      return this.selectedTasks[task.id] === true && task.latestAssignee !== null && task.latestAssignee.username === this.user.username;
+    });
+
+    this._setFlagForTasks(selectedTasks).then(() => {
+      this.updatePage(this._currentPage, this._currentItemsPerPage);
+      this._unselectAllSelections();
+      this.selectedAction = 'defaultSelection';
+    });
+  }
+
+  _moveTasksInOtherPhase() {
+    const selectedTasks = this.tasks.filter(task => {
+      return this.selectedTasks[task.id] === true && task.latestAssignee === null;
+    });
+
+    const selectionData = [
+      {id: 'labeling', name: 'Labeling'},
+      {id: 'review', name: 'Review'},
+      {id: 'revision', name: 'Revision'},
+      {id: 'all_phases_done', name: 'Done'},
+    ].filter(selection => selection.id !== this.taskPhase);
+
+    this._modalService.show(
+      new this._SelectionDialog(
+        {
+          title: 'Move task',
+          headline: `Please select the phase that you want this task to be moved to:`,
+          confirmButtonText: 'Move task',
+          message: '',
+          data: selectionData,
+        },
+        phase => {
+          if (phase) {
+            this.loadingInProgress = true;
+            this._updateTasksPhase(selectedTasks, phase).then(() => this.updatePage(this._currentPage, this._currentItemsPerPage))
+              .then(() => {
+                this._triggerReloadAll();
+                this._unselectAllSelections();
+                this.selectedAction = 'defaultSelection';
+              });
+          } else {
+            this._modalService.info(
+              {
+                title: 'No phase selected',
+                headline: 'You need to select a phase',
+                message: 'You need to select a phase to move this task to. Without a selected phase the task can not bei moved!',
+                confirmButtonText: 'Understood',
+              },
+              undefined,
+              undefined,
+              {
+                warning: true,
+                abortable: false,
+              }
+            );
+          }
+        }
+      )
+    );
+  }
+
+  doAction() {
+    switch (this.selectedAction) {
+      case 'unassignUsers':
+        this._unassignUsers();
+        break;
+      case 'flagTasks':
+        this._flagTasks();
+        break;
+      case 'moveTasksInOtherPhase':
+        this._moveTasksInOtherPhase();
+        break;
+      default:
+    }
   }
 
   _triggerReloadAll() {

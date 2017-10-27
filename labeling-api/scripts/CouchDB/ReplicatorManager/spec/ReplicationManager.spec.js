@@ -15,6 +15,7 @@ describe('ReplicationManager', () => {
       adminUrl: 'http://admin:bar@127.0.0.1:5984/',
       sourceBaseUrl: 'http://admin:bar@127.0.0.1:5984/',
       targetBaseUrl: 'http://admin:bar@127.0.0.1:5984/',
+      hotStandByUrl: 'http://admin:bar@127.0.0.1:5989/',
       sourceDbRegex: '(taskdb-project-)([a-z0-9_-]+)(-task-)([a-z0-9_-]+)',
       targetDb: 'labeling_api_read_only',
     };
@@ -38,7 +39,7 @@ describe('ReplicationManager', () => {
   beforeEach(() => {
     replicatorDbMock = jasmine.createSpyObj('replicatorDb', ['insert']);
     loggerMock = jasmine.createSpyObj('Logger', ['logString']);
-    workerQueueMock = jasmine.createSpyObj('WorkerQueue', ['listenToReplicationChanges']);
+    workerQueueMock = jasmine.createSpyObj('WorkerQueue', ['listenToReplicationChanges', 'removeJob']);
     purgeServiceMock = jasmine.createSpyObj('PurgeService', ['purgeDocument']);
     debugInterfaceMock = jasmine.createSpyObj('DebugInterface', ['initialize', 'on', 'writeJson']);
 
@@ -92,6 +93,16 @@ describe('ReplicationManager', () => {
     expect(replicationManager.addOneTimeReplicationForAllDatabases).toHaveBeenCalled();
     expect(workerQueueMock.listenToReplicationChanges).toHaveBeenCalled();
     expect(replicationManager.listenToDatabaseChanges).toHaveBeenCalled();
+  });
+
+  it('should trigger deleting database from hot standby', () => {
+    const replicationManager = createReplicationManager();
+
+    replicationManager.run();
+
+    spyOn(replicationManager, '_removeDatabaseFromHotStandBy');
+    replicationManager._removeWorkerJob('taskdb-project-52f18aa62197594438469fe88001ca0d-task-52f18aa62197594438469fe8800e5ae2', 'foobar');
+    expect(replicationManager._removeDatabaseFromHotStandBy).toHaveBeenCalled();
   });
 
   afterEach(() => {

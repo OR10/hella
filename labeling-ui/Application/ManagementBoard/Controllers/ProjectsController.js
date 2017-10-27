@@ -63,7 +63,7 @@ class ProjectsController {
 
   _loadProjectCount() {
     this._projectGateway.getProjectCount()
-      .then(projectCount => this.projectCount = Object.assign({}, {todo: 0, in_progress: 0, done: 0}, projectCount));
+      .then(projectCount => this.projectCount = Object.assign({}, {todo: 0, in_progress: 0, done: 0, deleted: 0}, projectCount));
   }
   _getCampaignName() {
     this.campaignName = '';

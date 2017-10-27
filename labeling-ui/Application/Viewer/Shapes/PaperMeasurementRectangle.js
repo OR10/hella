@@ -343,6 +343,41 @@ class PaperMeasurementRectangle extends PaperVirtualShape {
   }
 
   /**
+   * @return {boolean}
+   */
+  canBeInterpolated() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canBeSliced() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasStartAndEndFrame() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canChangeFrameRange() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  playInFrameRange() {
+    return false;
+  }
+
+  /**
    * Fix the points of the shape to represent the right coordinates
    */
   fixOrientation() {
