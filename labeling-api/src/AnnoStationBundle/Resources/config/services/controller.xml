@@ -261,6 +261,10 @@
 
         <service id="annostation.labeling_api.controller.api.task.replication" class="AnnoStationBundle\Controller\Api\v1\Task\Replication">
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.couchdb_users"/>
+            <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
+            <argument type="service" id="fos_user.util.token_generator.default"/>
             <argument>%couchdb_host_external%</argument>
             <argument>%couchdb_port_external%</argument>
             <argument>%couchdb_path_external%</argument>
