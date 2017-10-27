@@ -118,7 +118,7 @@
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-hide="vm.hasStartAndEndFrame()"
+            <button ng-hide="!vm.hasStartAndEndFrame()"
                     ng-click="vm.handleGotoCloseBracketClicked()"
                     tooltip="Jump to the end frame of the active shape">
                 <i class="icon icon-selection-goend"></i>
