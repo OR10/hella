@@ -5,6 +5,7 @@ import {
   bootstrapPouch,
   mediumSleep,
   shortSleep,
+  sendKeys,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
@@ -27,6 +28,7 @@ describe('ShapeInbox', () => {
   let headerPlusButton;
   let headerMinusButton;
   let nextFrameButton;
+  let previousFrameButton;
 
   const firstShape = {
     topLeft: {x: 100, y: 100},
@@ -89,6 +91,7 @@ describe('ShapeInbox', () => {
     secondMinusButton = minusButtons.get(1);
 
     nextFrameButton = element(by.css('.next-frame-button'));
+    previousFrameButton = element(by.css('.previous-frame-button'));
   });
 
 
@@ -1056,6 +1059,403 @@ describe('ShapeInbox', () => {
         .then(drawingStack => {
           expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.ShapeInbox.JumpToShapeSameFrameSelected);
         })
+        .then(() => done());
+    });
+  });
+
+  describe('Shape Renaming', () => {
+    const selectedShapeSpan = element(by.css('#popup-inbox-selected .popup-inbox-list .selected-shape span'));
+    const savedShapeSpan = element(by.css('#popup-inbox-saved .popup-inbox-list .selected-shape span'));
+
+    function clickSelectedShapeSpan() {
+      return Promise.resolve()
+        .then(() => {
+          return browser.actions()
+            .click(selectedShapeSpan)
+            .perform();
+        })
+        .then(() => shortSleep());
+    }
+
+    function clickSavedShapeSpan() {
+      return Promise.resolve()
+        .then(() => {
+          return browser.actions()
+            .click(savedShapeSpan)
+            .perform();
+        })
+        .then(() => shortSleep());
+    }
+
+    function deselectShapes() {
+      return Promise.resolve()
+        .then(() => {
+          return browser.actions()
+            .click(viewer, {x: 1, y: 1})
+            .perform();
+        })
+        .then(() => shortSleep());
+    }
+
+    function sendStringWithEnter(keys) {
+      return Promise.resolve()
+        .then(() => sendKeys([keys, protractor.Key.ENTER]))
+        .then(() => mediumSleep());
+    }
+
+    function sendKeysWithEnter(keys) {
+      return Promise.resolve()
+        .then(() => sendKeys([...keys, protractor.Key.ENTER]))
+        .then(() => mediumSleep());
+    }
+
+    beforeEach(done => {
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
+        .then(() => shapeInboxButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft)
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => headerPlusButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, secondShape.topLeft)
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => done());
+    });
+
+    it('should display selected shape names as contenteditable element', done => {
+      Promise.resolve()
+        .then(() => selectedShapeSpan.getAttribute('contenteditable'))
+        .then(contenteditable => expect(contenteditable).toEqual('true'))
+        .then(() => done());
+    });
+
+    it('should display saved shape names as contenteditable element', done => {
+      Promise.resolve()
+        .then(() => savedShapeSpan.getAttribute('contenteditable'))
+        .then(contenteditable => expect(contenteditable).toEqual('true'))
+        .then(() => done());
+    });
+
+    it('should overwrite currently selected name if clicked', done => {
+      const newName = 'Captain Archer!';
+
+      Promise.resolve()
+        .then(() => clickSelectedShapeSpan())
+        .then(() => sendStringWithEnter(newName))
+        .then(() => expect(selectedShapeSpan.getText()).toEqual(newName))
+        .then(() => done());
+    });
+
+    it('should overwrite stored name if clicked', done => {
+      const newName = 'Captain Picard?';
+
+      Promise.resolve()
+        .then(() => clickSavedShapeSpan())
+        .then(() => sendStringWithEnter(newName))
+        .then(() => expect(savedShapeSpan.getText()).toEqual(newName))
+        .then(() => done());
+    });
+
+    it('should allow manipulation of already set name of selected shape, if cursor keys are used', done => {
+      const keys = [protractor.Key.ARROW_RIGHT, protractor.Key.BACK_SPACE, '42'];
+      const newName = 'rectangle #42';
+
+      Promise.resolve()
+        .then(() => clickSelectedShapeSpan())
+        .then(() => sendKeysWithEnter(keys))
+        .then(() => expect(selectedShapeSpan.getText()).toEqual(newName))
+        .then(() => done());
+    });
+
+    it('should allow manipulation of already set name of saved shape, if cursor keys are used', done => {
+      const keys = [protractor.Key.ARROW_RIGHT, protractor.Key.BACK_SPACE, '42'];
+      const newName = 'rectangle #42';
+
+      Promise.resolve()
+        .then(() => clickSavedShapeSpan())
+        .then(() => sendKeysWithEnter(keys))
+        .then(() => expect(savedShapeSpan.getText()).toEqual(newName))
+        .then(() => done());
+    });
+
+    it('should flip back to original string of selected shape if empty string is entered', done => {
+      const keys = [protractor.Key.BACK_SPACE];
+      const oldName = 'rectangle #2';
+
+      Promise.resolve()
+        .then(() => clickSelectedShapeSpan())
+        .then(() => sendKeysWithEnter(keys))
+        .then(() => expect(selectedShapeSpan.getText()).toEqual(oldName))
+        .then(() => done());
+    });
+
+    it('should flip back to original string of saved shape if empty string is entered', done => {
+      const keys = [protractor.Key.BACK_SPACE];
+      const oldName = 'rectangle #1';
+
+      Promise.resolve()
+        .then(() => clickSavedShapeSpan())
+        .then(() => sendKeysWithEnter(keys))
+        .then(() => expect(savedShapeSpan.getText()).toEqual(oldName))
+        .then(() => done());
+    });
+
+    it('should flip back to original string of selected shape if ESC is pressed', done => {
+      const keys = ['Captain Kirk!', protractor.Key.ESCAPE];
+      const oldName = 'rectangle #2';
+
+      Promise.resolve()
+        .then(() => clickSelectedShapeSpan())
+        .then(() => sendKeys(keys))
+        .then(() => expect(selectedShapeSpan.getText()).toEqual(oldName))
+        .then(() => done());
+    });
+
+    it('should flip back to original string of saved shape if ESC is pressed', done => {
+      const keys = ['Captain Lorca?', protractor.Key.ESCAPE];
+      const oldName = 'rectangle #1';
+
+      Promise.resolve()
+        .then(() => clickSavedShapeSpan())
+        .then(() => sendKeys(keys))
+        .then(() => expect(savedShapeSpan.getText()).toEqual(oldName))
+        .then(() => done());
+    });
+
+    it('should support a defined set of special characters for selected names', done => {
+      const characters = '.:;-_#+*!"§$%&/()=?@<>';
+
+      Promise.resolve()
+        .then(() => clickSelectedShapeSpan())
+        .then(() => sendStringWithEnter(characters))
+        .then(() => expect(selectedShapeSpan.getText()).toEqual(characters))
+        .then(() => done());
+    });
+
+    it('should support a defined set of special characters for saved names', done => {
+      const characters = '.:;-_#+*!"§$%&/()=?@<>';
+
+      Promise.resolve()
+        .then(() => clickSavedShapeSpan())
+        .then(() => sendStringWithEnter(characters))
+        .then(() => expect(savedShapeSpan.getText()).toEqual(characters))
+        .then(() => done());
+    });
+
+    it('should keep the name of selected element if it is deselected and selected again', done => {
+      const newName = 'Captain Janeway.';
+
+      Promise.resolve()
+        .then(() => clickSelectedShapeSpan())
+        .then(() => sendStringWithEnter(newName))
+        .then(() => deselectShapes())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, secondShape.topLeft)
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => expect(selectedShapeSpan.getText()).toEqual(newName))
+        .then(() => done());
+    });
+
+    it('should keep the name of a saved element when it is removed from the inbox', done => {
+      const newName = 'Captain Pike!';
+
+      Promise.resolve()
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, firstShape.topLeft)
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => clickSavedShapeSpan())
+        .then(() => sendStringWithEnter(newName))
+        .then(() => {
+          return browser.actions()
+            .click(headerMinusButton)
+            .perform();
+        })
+        .then(() => shortSleep())
+        .then(() => expect(selectedShapeSpan.getText()).toEqual(newName))
+        .then(() => done());
+    });
+
+    it(
+      'should keep the name of a saved element when it is removed from the inbox and later on selected again',
+      done => {
+        const newName = 'Captain Sisko?';
+
+        Promise.resolve()
+          .then(() => clickSavedShapeSpan())
+          .then(() => sendStringWithEnter(newName))
+          .then(() => {
+            return browser.actions()
+              .click(headerMinusButton)
+              .perform();
+          })
+          .then(() => shortSleep())
+          .then(() => {
+            return browser.actions()
+              .mouseMove(viewer, firstShape.topLeft)
+              .click()
+              .perform();
+          })
+          .then(() => mediumSleep())
+          .then(() => expect(selectedShapeSpan.getText()).toEqual(newName))
+          .then(() => done());
+      }
+    );
+
+    it('should keep the name of a selected element when popup panel is closed and reopened', done => {
+      const newName = 'Ambassador Sarek!';
+
+      Promise.resolve()
+        .then(() => clickSelectedShapeSpan())
+        .then(() => sendStringWithEnter(newName))
+        .then(() => {
+          return browser.actions()
+            .click(shapeInboxButton)
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .click(shapeInboxButton)
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => expect(selectedShapeSpan.getText()).toEqual(newName))
+        .then(() => done());
+    });
+
+    it('should keep the name of a saved element when popup panel is closed and reopened', done => {
+      const newName = 'Captain Sulu?';
+
+      Promise.resolve()
+        .then(() => clickSavedShapeSpan())
+        .then(() => sendStringWithEnter(newName))
+        .then(() => {
+          return browser.actions()
+            .click(shapeInboxButton)
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .click(shapeInboxButton)
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => expect(savedShapeSpan.getText()).toEqual(newName))
+        .then(() => done());
+    });
+
+    it('should keep the name of a saved element during frame change', done => {
+      const newName = 'Ambassador Spock';
+
+      Promise.resolve()
+        .then(() => clickSavedShapeSpan())
+        .then(() => sendStringWithEnter(newName))
+        .then(() => {
+          return browser.actions()
+            .click(nextFrameButton)
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => expect(savedShapeSpan.getText()).toEqual(newName))
+        .then(() => done());
+    });
+
+    it('should keep the name of a selected and unghosted element during frame change', done => {
+      const newName = 'Captain Riker...';
+
+      Promise.resolve()
+        .then(() => clickSelectedShapeSpan())
+        .then(() => sendStringWithEnter(newName))
+        .then(() => {
+          return browser.actions()
+            .click(nextFrameButton)
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: secondShape.topLeft.x + 10, y: secondShape.topLeft.y + 10})
+            .mouseDown()
+            .mouseMove(viewer, {x: 500, y: 300})
+            .mouseUp()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => expect(selectedShapeSpan.getText()).toEqual(newName))
+        .then(() => done());
+    });
+
+    it('should inherit name change to other frames', done => {
+      const newName = 'Commodore Wesley';
+
+      Promise.resolve()
+        .then(() => {
+          return browser.actions()
+            .click(nextFrameButton)
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: secondShape.topLeft.x + 10, y: secondShape.topLeft.y + 10})
+            .mouseDown()
+            .mouseMove(viewer, {x: 500, y: 300})
+            .mouseUp()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => deselectShapes())
+        .then(() => {
+          return browser.actions()
+            .click(previousFrameButton)
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, secondShape.topLeft)
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => clickSelectedShapeSpan())
+        .then(() => sendStringWithEnter(newName))
+        .then(() => deselectShapes())
+        .then(() => {
+          return browser.actions()
+            .click(nextFrameButton)
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => {
+          return browser.actions()
+            .mouseMove(viewer, {x: 500, y: 300})
+            .click()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => expect(selectedShapeSpan.getText()).toEqual(newName))
         .then(() => done());
     });
   });
