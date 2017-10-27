@@ -12,7 +12,8 @@ const framePositionMock = {
   goto: jasmine.createSpy('framePosition.goto'),
 };
 
-class PopupPanelControllerTestable extends PopupPanelController {}
+class PopupPanelControllerTestable extends PopupPanelController {
+}
 
 PopupPanelControllerTestable.prototype.task = taskMock;
 PopupPanelControllerTestable.prototype.framePosition = framePositionMock;
@@ -58,8 +59,16 @@ describe('PopupPanelController', () => {
     animationFrameService = jasmine.createSpyObj('animationFrameService', ['debounce']);
     window = jasmine.createSpyObj('$window', ['addEventListener']);
     resizeDebounced = jasmine.createSpy('resizeDebounced');
-    shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['afterAnySelectionChange', 'getAllShapes', 'setSelectedShape', 'clear']);
-    shapeInboxService = jasmine.createSpyObj('shapeInboxService', ['getAllShapes', 'addShape', 'addShapes', 'clear', 'removeShape', 'hasShape']);
+    shapeSelectionService = jasmine.createSpyObj(
+      'shapeSelectionService',
+      ['afterAnySelectionChange', 'getAllShapes', 'setSelectedShape', 'clear']
+    );
+    shapeInboxService = jasmine.createSpyObj(
+      'shapeInboxService',
+      ['getAllShapeInformations', 'addShape', 'addShapes', 'clear', 'removeShape', 'hasShape', 'getInboxObject']
+    );
+    shapeInboxService.getAllShapeInformations.and.returnValue(angularQ.resolve([]));
+    shapeInboxService.getInboxObject.and.returnValue(angularQ.resolve({}));
     frameLocationGateway = jasmine.createSpyObj('frameLocationGateway', ['getFrameLocations']);
     labelStructureService = jasmine.createSpyObj('labelStructureService', ['getLabelStructure']);
     labelStructure = jasmine.createSpyObj('labelStructure', ['getThingById']);
@@ -72,7 +81,11 @@ describe('PopupPanelController', () => {
     animationFrameService.debounce.and.returnValue(resizeDebounced);
     frameLocationGateway.getFrameLocations.and.returnValue(createAbortablePromise(angularQ.reject()));
     labelStructureService.getLabelStructure.and.returnValue(angularQ.resolve(labelStructure));
-    rootScopeEventRegistrationService.register.and.callFake((listenerScope, eventName, listener) => ghostBustListener = listener);
+    rootScopeEventRegistrationService.register.and.callFake((
+      listenerScope,
+      eventName,
+      listener
+    ) => ghostBustListener = listener);
   }));
 
   beforeEach(() => {
@@ -104,21 +117,22 @@ describe('PopupPanelController', () => {
   it('recalculates the selectedObjects when a shape has been ghostbusted (TTANNO-2152)', () => {
     const shape = {id: '1', labeledThingInFrame: {}};
     const labelStructureObject = {name: 'Bernd das Brot'};
+    const inboxObject = {
+      shape: shape,
+      labelStructureObject: labelStructureObject,
+      label: 'Bernd das Brot #1',
+    };
+
     labelStructure.getThingById.and.returnValue(labelStructureObject);
     shapeSelectionService.getAllShapes.and.returnValue([shape]);
     shapeInboxService.hasShape.and.returnValue(false);
-    shapeInboxService.getAllShapes.and.returnValue([]);
+    shapeInboxService.getAllShapeInformations.and.returnValue(angularQ.resolve([]));
+    shapeInboxService.getInboxObject.and.returnValue(angularQ.resolve(inboxObject));
 
     ghostBustListener();
     scope.$apply();
 
-    const expectedSelectedObjects = [
-      {
-        shape: shape,
-        labelStructureObject: labelStructureObject,
-        label: 'Bernd das Brot #1',
-      },
-    ];
+    const expectedSelectedObjects = [inboxObject];
 
     expect(controller.selectedObjects).toEqual(expectedSelectedObjects);
   });
@@ -141,14 +155,17 @@ describe('PopupPanelController', () => {
   });
 
   describe('savedObjects', () => {
-    it('simply returns getAllShapes of the shapeInboxService', () => {
+    it('returns internal copy of getAllShapeInformations of the shapeInboxService', () => {
       const allShapes = [];
-      shapeInboxService.getAllShapes.and.returnValue(allShapes);
+      shapeInboxService.getAllShapeInformations.and.returnValue(angularQ.resolve(allShapes));
+
+      controller._refreshSavedObjects();
+      rootScope.$apply();
 
       const savedObjects = controller.savedObjects;
 
       expect(savedObjects).toBe(allShapes);
-      expect(shapeInboxService.getAllShapes).toHaveBeenCalled();
+      expect(shapeInboxService.getAllShapeInformations).toHaveBeenCalled();
     });
   });
 
@@ -167,13 +184,17 @@ describe('PopupPanelController', () => {
 
   describe('hasSavedObjects()', () => {
     it('returns false by if shapeInboxService has no shapes', () => {
-      shapeInboxService.getAllShapes.and.returnValue([]);
+      shapeInboxService.getAllShapeInformations.and.returnValue(angularQ.resolve([]));
       const hasSavedObjects = controller.hasSavedObjects();
       expect(hasSavedObjects).toEqual(false);
     });
 
     it('returns true if shapeInboxService has at least one shape', () => {
-      shapeInboxService.getAllShapes.and.returnValue([1337]);
+      shapeInboxService.getAllShapeInformations.and.returnValue(angularQ.resolve([1337]));
+
+      controller._refreshSavedObjects();
+      rootScope.$apply();
+
       const hasSavedObjects = controller.hasSavedObjects();
       expect(hasSavedObjects).toEqual(true);
     });
@@ -183,8 +204,9 @@ describe('PopupPanelController', () => {
     it('passes the shape to the shapeInboxService', () => {
       shapeSelectionService.getAllShapes.and.returnValue([]);
       const shape = {iama: 'shape'};
+      const inboxObject = {shape, labelStructureObject: {}};
 
-      controller.addToInbox(shape);
+      controller.addToInbox(inboxObject);
 
       expect(shapeInboxService.addShape).toHaveBeenCalledWith(shape);
       expect(shapeSelectionService.getAllShapes).toHaveBeenCalled();
@@ -193,20 +215,20 @@ describe('PopupPanelController', () => {
     it('recalculates the selectedObjects', () => {
       const shape = {id: '1', labeledThingInFrame: {}};
       const labelStructureObject = {name: 'Bernd das Brot'};
+      const inboxObject = {
+        shape: shape,
+        labelStructureObject: labelStructureObject,
+      };
       labelStructure.getThingById.and.returnValue(labelStructureObject);
       shapeSelectionService.getAllShapes.and.returnValue([shape]);
       shapeInboxService.hasShape.and.returnValue(false);
-      shapeInboxService.getAllShapes.and.returnValue([]);
+      shapeInboxService.getInboxObject.and.returnValue(angularQ.resolve(inboxObject));
 
-      controller.addToInbox(shape);
+      controller.addToInbox(inboxObject);
       scope.$apply();
 
       const expectedSelectedObjects = [
-        {
-          shape: shape,
-          labelStructureObject: labelStructureObject,
-          label: 'Bernd das Brot #1',
-        },
+        inboxObject,
       ];
 
       expect(controller.selectedObjects).toEqual(expectedSelectedObjects);
@@ -227,38 +249,12 @@ describe('PopupPanelController', () => {
       labelStructure.getThingById.and.returnValue(labelStructureObject);
       shapeSelectionService.getAllShapes.and.returnValue([shape]);
       shapeInboxService.hasShape.and.returnValue(true);
-      shapeInboxService.getAllShapes.and.returnValue([]);
+      shapeInboxService.getAllShapeInformations.and.returnValue(angularQ.resolve([]));
 
       controller.addToInbox(shape);
       scope.$apply();
 
       expect(controller.selectedObjects).toEqual([]);
-    });
-
-    it('only adds shapes with the same id once to the selectedObjects', () => {
-      const firstShape = {id: '1', labeledThingInFrame: {hello: 'there'}};
-      const secondShape = {id: '1', labeledThingInFrame: {}};
-
-      const labelStructureObject = {name: 'Bernd das Brot'};
-      labelStructure.getThingById.and.returnValue(labelStructureObject);
-      shapeSelectionService.getAllShapes.and.returnValue([firstShape, secondShape]);
-      shapeInboxService.hasShape.and.returnValue(false);
-      shapeInboxService.getAllShapes.and.returnValue([]);
-
-      controller.addToInbox(firstShape);
-      scope.$apply();
-      controller.addToInbox(secondShape);
-      scope.$apply();
-
-      const expectedSelectedObjects = [
-        {
-          shape: firstShape,
-          labelStructureObject: labelStructureObject,
-          label: 'Bernd das Brot #1',
-        },
-      ];
-
-      expect(controller.selectedObjects).toEqual(expectedSelectedObjects);
     });
 
     it('updates whether the selected shapes are mergable (result: true)', () => {
@@ -273,13 +269,17 @@ describe('PopupPanelController', () => {
         },
       };
       const firstShapeInformation = {id: '1', labeledThingInFrame: firstShape.labeledThingInFrame, shape: firstShape};
-      const secondShapeInformation = {id: '1', labeledThingInFrame: secondShape.labeledThingInFrame, shape: secondShape};
+      const secondShapeInformation = {
+        id: '1',
+        labeledThingInFrame: secondShape.labeledThingInFrame,
+        shape: secondShape
+      };
 
       const labelStructureObject = {name: 'Bernd das Brot'};
       labelStructure.getThingById.and.returnValue(labelStructureObject);
       shapeSelectionService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
       shapeInboxService.hasShape.and.returnValue(false);
-      shapeInboxService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
+      shapeInboxService.getAllShapeInformations.and.returnValue(angularQ.resolve([firstShapeInformation, secondShapeInformation]));
 
       controller.addToInbox(firstShapeInformation);
       scope.$apply();
@@ -300,13 +300,17 @@ describe('PopupPanelController', () => {
         identifierName: 'portal-gun',
       };
       const firstShapeInformation = {id: '1', labeledThingInFrame: firstShape.labeledThingInFrame, shape: firstShape};
-      const secondShapeInformation = {id: '1', labeledThingInFrame: secondShape.labeledThingInFrame, shape: secondShape};
+      const secondShapeInformation = {
+        id: '1',
+        labeledThingInFrame: secondShape.labeledThingInFrame,
+        shape: secondShape
+      };
 
       const labelStructureObject = {name: 'Bernd das Brot'};
       labelStructure.getThingById.and.returnValue(labelStructureObject);
       shapeSelectionService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
       shapeInboxService.hasShape.and.returnValue(false);
-      shapeInboxService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
+      shapeInboxService.getAllShapeInformations.and.returnValue(angularQ.resolve([firstShapeInformation, secondShapeInformation]));
 
       controller.hasMergableObjects = true;
       controller.addToInbox(firstShapeInformation);
@@ -327,13 +331,17 @@ describe('PopupPanelController', () => {
         },
       };
       const firstShapeInformation = {id: '1', labeledThingInFrame: firstShape.labeledThingInFrame, shape: firstShape};
-      const secondShapeInformation = {id: '1', labeledThingInFrame: secondShape.labeledThingInFrame, shape: secondShape};
+      const secondShapeInformation = {
+        id: '1',
+        labeledThingInFrame: secondShape.labeledThingInFrame,
+        shape: secondShape
+      };
 
       const labelStructureObject = {name: 'Bernd das Brot'};
       labelStructure.getThingById.and.returnValue(labelStructureObject);
       shapeSelectionService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
       shapeInboxService.hasShape.and.returnValue(false);
-      shapeInboxService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
+      shapeInboxService.getAllShapeInformations.and.returnValue(angularQ.resolve([firstShapeInformation, secondShapeInformation]));
 
       controller.hasMergableObjects = true;
       controller.addToInbox(firstShapeInformation);
@@ -346,42 +354,14 @@ describe('PopupPanelController', () => {
   describe('addAllToInbox()', () => {
     it('passes the shapes to the shapeInboxService', () => {
       shapeSelectionService.getAllShapes.and.returnValue([]);
-      controller._selectedObjects = {iama: 'shape', bernd: 'dasbrot'};
+      const inboxObjectOne = {shape: {iama: 'shape'}, labelStructureObject: {}};
+      const inboxObjectTwo = {shape: {bernd: 'dasbrot'}, labelStructureObject: {}};
+      controller._selectedObjects = {iama: inboxObjectOne, bernd: inboxObjectTwo};
 
       controller.addAllToInbox();
 
-      expect(shapeInboxService.addShapes).toHaveBeenCalledWith(['shape', 'dasbrot']);
+      expect(shapeInboxService.addShapes).toHaveBeenCalledWith([inboxObjectOne.shape, inboxObjectTwo.shape]);
       expect(shapeSelectionService.getAllShapes).toHaveBeenCalled();
-    });
-
-    it('adds all shapes to selectedObjects', () => {
-      const firstShape = {id: '1', labeledThingInFrame: {hello: 'there'}};
-      const secondShape = {id: '2', labeledThingInFrame: {}};
-      const labelStructureObject = {name: 'Bernd das Brot'};
-
-      labelStructure.getThingById.and.returnValue(labelStructureObject);
-      shapeSelectionService.getAllShapes.and.returnValue([firstShape, secondShape]);
-      shapeInboxService.hasShape.and.returnValue(false);
-      shapeInboxService.getAllShapes.and.returnValue([]);
-
-      controller.addAllToInbox();
-      scope.$apply();
-
-      const expectedSelectedObjects = [
-        {
-          shape: firstShape,
-          labelStructureObject: labelStructureObject,
-          label: 'Bernd das Brot #1',
-        },
-        {
-          shape: secondShape,
-          labelStructureObject: labelStructureObject,
-          label: 'Bernd das Brot #2',
-        },
-      ];
-
-      expect(controller.selectedObjects).toEqual(expectedSelectedObjects);
-      expect(controller.savedObjects).toEqual([]);
     });
   });
 
@@ -399,39 +379,14 @@ describe('PopupPanelController', () => {
   describe('removeFromInbox()', () => {
     it('passes the shape to the shapeInboxService', () => {
       shapeSelectionService.getAllShapes.and.returnValue([]);
-      const shape = {iama: 'shape'};
 
-      controller.removeFromInbox(shape);
+      const shape = {iama: 'shape'};
+      const inboxObject = {shape, labelStructureObject: {}};
+
+      controller.removeFromInbox(inboxObject);
 
       expect(shapeInboxService.removeShape).toHaveBeenCalledWith(shape);
       expect(shapeSelectionService.getAllShapes).toHaveBeenCalled();
-    });
-  });
-
-  describe('mergeShapes()', () => {
-    it('sends all the shapes to the merge service, which are of same type', () => {
-      const firstShapeInformation = {shape: {}};
-      const secondShapeInformation = {shape: []};
-      const thirdShapeInformation = {shape: {}};
-      shapeInboxService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation, thirdShapeInformation]);
-      shapeMergeService.mergeShapes.and.returnValue(angularQ.resolve());
-
-      controller.mergeShapes();
-
-      expect(shapeMergeService.mergeShapes).toHaveBeenCalledWith([firstShapeInformation, thirdShapeInformation]);
-    });
-
-    it('removes all the shapes from the inbox if merge was successful', () => {
-      const firstShapeInformation = {shape: {}};
-      const secondShapeInformation = {shape: {}};
-      shapeInboxService.getAllShapes.and.returnValue([firstShapeInformation, secondShapeInformation]);
-      shapeMergeService.mergeShapes.and.returnValue(angularQ.resolve());
-      shapeSelectionService.getAllShapes.and.returnValue([]);
-
-      controller.mergeShapes();
-      scope.$apply();
-
-      expect(shapeInboxService.clear).toHaveBeenCalled();
     });
   });
 
@@ -445,7 +400,7 @@ describe('PopupPanelController', () => {
     beforeEach(() => {
       frameIndex = 5;
       labeledThingInFrame = {frameIndex: 5};
-      shape = { id: 'bernd-das-brot', labeledThingInFrame };
+      shape = {id: 'bernd-das-brot', labeledThingInFrame};
       shapeInformation = {shape};
 
       viewer = jasmine.createSpyObj('viewer', ['work', 'finish']);
