@@ -9,6 +9,7 @@ import {
 import AssetHelper from '../Support/Protractor/AssetHelper';
 
 import CanvasInstructionLogManager from '../Support/CanvasInstructionLogManager';
+
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
 describe('ShapeInbox', () => {
@@ -38,7 +39,11 @@ describe('ShapeInbox', () => {
   };
 
   beforeEach(() => {
-    assets = new AssetHelper(`${__dirname}/../Fixtures`, `${__dirname}/../ProtractorMocks`, `${__dirname}/../PouchDbDocuments`);
+    assets = new AssetHelper(
+      `${__dirname}/../Fixtures`,
+      `${__dirname}/../ProtractorMocks`,
+      `${__dirname}/../PouchDbDocuments`
+    );
     sharedMocks = [
       assets.mocks.Shared.TaskDb,
       assets.mocks.Shared.UserProfile,
@@ -89,14 +94,18 @@ describe('ShapeInbox', () => {
 
   describe('Badge', () => {
     it('does not show a badge if no shape is saved', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => shapeInboxBadge.getText())
         .then(shapeInboxCount => expect(shapeInboxCount).toEqual(''))
         .then(() => done());
     });
 
     it('does show a badge if one shape is selected', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, firstShape.topLeft) // initial position
@@ -110,7 +119,9 @@ describe('ShapeInbox', () => {
     });
 
     it('does not show a badge if two shapes are selected', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -128,7 +139,9 @@ describe('ShapeInbox', () => {
     });
 
     it('shows a badge if one shape is saved', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, firstShape.topLeft) // initial position
@@ -146,7 +159,9 @@ describe('ShapeInbox', () => {
     });
 
     it('shows a badge if two shapes are saved', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -168,7 +183,9 @@ describe('ShapeInbox', () => {
     });
 
     it('shows a badge if first two shapes are saved and then one is unsaved', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -192,7 +209,9 @@ describe('ShapeInbox', () => {
     });
 
     it('does not show a badge if first two shapes are svaed and then removed from inbox', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -227,7 +246,9 @@ describe('ShapeInbox', () => {
     };
 
     it('opens a popup window with the text "No shapes selected" if no shapes are selected', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => shapeInboxButton.click())
         .then(() => shortSleep())
         .then(() => shapeInboxSelectedList.getText())
@@ -238,7 +259,9 @@ describe('ShapeInbox', () => {
     });
 
     it('opens a popup with the names of the two selected shapes when clicking the inbox icon', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -260,7 +283,9 @@ describe('ShapeInbox', () => {
     });
 
     it('opens a and closes popup with the names of the two selected shapes when clicking the badge', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -290,7 +315,9 @@ describe('ShapeInbox', () => {
     });
 
     it('changes the popup text while open and selection changes', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => shapeInboxButton.click())
         .then(() => shortSleep())
         .then(() => shapeInboxSelectedList.getText())
@@ -341,7 +368,9 @@ describe('ShapeInbox', () => {
     });
 
     it('changes the popup text while closed and selection changes', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -391,7 +420,9 @@ describe('ShapeInbox', () => {
     });
 
     it('shows shapes that have just been ghostbusted (TTANNO-2152)', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, firstShape.topLeft) // initial position
@@ -419,7 +450,9 @@ describe('ShapeInbox', () => {
 
   describe('Adding and removing shapes', () => {
     it('moves one shape from selected shapes to saved shapes', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -443,7 +476,9 @@ describe('ShapeInbox', () => {
     });
 
     it('moves two shapes from selected shapes to saved shapes', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -469,7 +504,9 @@ describe('ShapeInbox', () => {
     });
 
     it('moves one shape from saved shapes to selected shapes', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -495,7 +532,9 @@ describe('ShapeInbox', () => {
     });
 
     it('moves two shapes from saved shapes to selected shapes', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -525,7 +564,9 @@ describe('ShapeInbox', () => {
     });
 
     it('adds all the shapes with one click', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -549,7 +590,9 @@ describe('ShapeInbox', () => {
     });
 
     it('removes all the shapes with one click', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -575,7 +618,9 @@ describe('ShapeInbox', () => {
     });
 
     it('keeps the saved shapes over a framechange with the popup open', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -601,7 +646,9 @@ describe('ShapeInbox', () => {
     });
 
     it('keeps the saved shapes over a framechange with the popup closed', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .sendKeys(protractor.Key.CONTROL)
@@ -643,7 +690,9 @@ describe('ShapeInbox', () => {
     it('does not show a badge if meta labeling is selected', done => {
       const metaLabelingButton = element(by.css('.tool-frame-shape'));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => metaLabelingButton.click())
         .then(() => shortSleep())
         .then(() => shapeInboxBadge.getText())
@@ -654,7 +703,9 @@ describe('ShapeInbox', () => {
     it('opens a popup window with the text "No shapes selected" if meta labeling is selected', done => {
       const metaLabelingButton = element(by.css('.tool-frame-shape'));
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => metaLabelingButton.click())
         .then(() => shortSleep())
         .then(() => shapeInboxButton.click())
@@ -851,7 +902,9 @@ describe('ShapeInbox', () => {
     const jumpToButton = element(by.css('#popup-inbox-saved .popup-inbox-list p .fa-map-marker'));
 
     it('selects the shape if on the same frame', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, firstShape.topLeft) // initial position
@@ -891,7 +944,9 @@ describe('ShapeInbox', () => {
     });
 
     it('selects the shape if on another frame', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, firstShape.topLeft) // initial position
@@ -935,7 +990,9 @@ describe('ShapeInbox', () => {
         assets.documents.ShapeInbox.DrawOneRectangleOnFrameTwo,
       ]);
 
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, firstShape.topLeft) // initial position
@@ -969,7 +1026,9 @@ describe('ShapeInbox', () => {
     });
 
     it('selects the shape if on same frame but different shape selected', done => {
-      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      initApplication(
+        '/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling'
+      )
         .then(() => {
           return browser.actions()
             .mouseMove(viewer, firstShape.topLeft) // initial position
