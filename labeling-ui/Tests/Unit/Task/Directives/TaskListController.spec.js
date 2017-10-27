@@ -185,7 +185,7 @@ describe('TaskListController', () => {
 
       taskGatewayMock.moveTaskToPhase.and.returnValue(angularQ.resolve());
 
-      taskListController._moveTasksInOtherPhase(taskListController.tasks, 'in_progress');
+      taskListController._updateTasksPhase(taskListController.tasks, 'in_progress');
       expect(taskGatewayMock.moveTaskToPhase).toHaveBeenCalled();
     });
   });
