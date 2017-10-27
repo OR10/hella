@@ -168,7 +168,7 @@
     </div>
 
     <h3 style="margin-top: 1.2rem">Time spent</h3>
-    <table class="table">
+    <table class="table hover view-list-table">
         <thead>
         <tr>
             <th>Task</th>
@@ -179,7 +179,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="(taskId, value) in vm.report.report.totalTimeByTasksAndPhases track by $index">
+        <tr ng-repeat="(taskId, value) in vm.report.report.totalTimeByTasksAndPhases track by $index" ng-click="vm.goToTaskView(taskId)">
             <td>
                 <i ng-if="vm.report.tasks[taskId].labelInstruction === 'vehicle'" class="fa fa-car"
                    tooltip="Vehicle"></i>
