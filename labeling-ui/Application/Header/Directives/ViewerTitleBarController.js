@@ -1,6 +1,9 @@
+import PaperGroupShape from '../../Viewer/Shapes/PaperGroupShape';
+
 /**
  * Controller of the {@link ViewerTitleBarDirective}
  */
+
 class ViewerTitleBarController {
   /**
    * @param {angular.$timeout} $timeout
@@ -195,6 +198,10 @@ class ViewerTitleBarController {
     );
 
     $scope.$watchGroup(['vm.selectedPaperShape.bounds.width', 'vm.selectedPaperShape.bounds.height'], newValues => {
+      if (this.selectedPaperShape === null || this.selectedPaperShape instanceof PaperGroupShape) {
+        this.shapeBounds = null;
+        return;
+      }
       const width = newValues[0];
       const height = newValues[1];
       if (width && height) {

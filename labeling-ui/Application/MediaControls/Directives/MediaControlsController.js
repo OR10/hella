@@ -1,5 +1,3 @@
-import PaperThingShape from 'Application/Viewer/Shapes/PaperThingShape';
-
 /**
  * Controller handling the control elements below the viewer frame
  *
@@ -394,12 +392,19 @@ class MediaControlsController {
   }
 
   /**
-   *
-   * @param shape
+   * Returns true is the selected shape is able to be sliced
    * @returns {boolean}
    */
-  isPaperThingShape(shape) {
-    return shape instanceof PaperThingShape;
+  canBeSliced() {
+    return this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced();
+  }
+
+  /**
+   * Return true if the shape has start and end frames
+   * @returns {boolean}
+   */
+  hasStartAndEndFrame() {
+    return this.selectedPaperShape !== null && this.selectedPaperShape.hasStartAndEndFrame();
   }
 
   handleCutShape() {
@@ -601,7 +606,7 @@ class MediaControlsController {
    * @return {boolean}
    */
   showOpenCloseBrackets() {
-    return !(this.selectedPaperShape === null) && this.selectedPaperShape instanceof PaperThingShape;
+    return !(this.selectedPaperShape !== null && this.selectedPaperShape.canChangeFrameRange());
   }
 
   /**
@@ -617,13 +622,11 @@ class MediaControlsController {
   canSelectedPaperShapeBeInterpolated() {
     const isReadOnly = this.readOnly === true;
     const shapeIsSelected = this.selectedPaperShape !== null;
-    const shapeIsAThing = shapeIsSelected && this.selectedPaperShape instanceof PaperThingShape;
     const saysItCanBeInterpolated = shapeIsSelected && this.selectedPaperShape.canBeInterpolated();
 
     return (
       !isReadOnly &&
       shapeIsSelected &&
-      shapeIsAThing &&
       saysItCanBeInterpolated
     );
   }

@@ -450,13 +450,16 @@ class ProjectListController {
     const trs = angular.element(document.querySelectorAll('.view-list-table tbody tr'));
     if (trs.length !== 0) {
       const tr = trs[index + 1];
+      if (tr.clientHeight === 0) {
+        return '46px'; // default value
+      }
       return tr.clientHeight + 'px';
     }
     return '0px';
   }
 
   /**
-   * @param {Number} progress
+   * @param {int} progress
    * @returns {String}
    */
   _getBackgroundColorForProgress(progress) {
@@ -470,7 +473,8 @@ class ProjectListController {
   }
 
   /**
-   * @param {string} projectId
+   * @param {String} projectId
+   * @param {int} taskInPreProcessingCount
    */
   assignProject(projectId, taskInPreProcessingCount) {
     this.showLoadingMask = true;
