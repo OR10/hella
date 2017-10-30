@@ -338,7 +338,7 @@ class ViewerTitleBarController {
         if (incompleteThingResponse.count > 0) {
           return this._jumpToNextIncompleteThing();
         }
-        if(incompleteGroupResponse.count > 0) {
+        if (incompleteGroupResponse.count > 0) {
           return this._jumpToNextIncompleteGroup();
         }
       })
@@ -578,8 +578,8 @@ class ViewerTitleBarController {
   _selectLabeledThingGroup(nextIncomplete) {
     return this._$q(resolve => {
       this._$timeout(() => {
-        const paperGroupShape = this.paperGroupShapes.find(paperGroupShape => {
-          return nextIncomplete.id === paperGroupShape.groupId;
+        const paperGroupShape = this.paperGroupShapes.find(pgs => {
+          return nextIncomplete.id === pgs.groupId;
         });
 
         this.selectedPaperShape = paperGroupShape;

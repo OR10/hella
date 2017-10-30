@@ -501,13 +501,15 @@ class LabeledThingGroupGateway {
           labeledThingGroup.extractClassList()
         );
 
+
+        let returnValue;
         if (list.length === 0) {
-          return false;
+          returnValue = false;
         } else {
-          return this._getAssociatedLTGIFsForLTG(labeledThingGroup)
+          returnValue = this._getAssociatedLTGIFsForLTG(labeledThingGroup)
             .then(labeledThingGroupInFrames => {
               let anyLtgifIncomplete = false;
-              
+
               const ltgifOnFirstFrameOfGroup = labeledThingGroupInFrames.find(ltgif => ltgif.frameIndex === ltgFrameRange.startFrameIndex);
               const noLtgifOnFirstFrameOfGroup = ltgifOnFirstFrameOfGroup === undefined || ltgifOnFirstFrameOfGroup.incomplete;
 
@@ -526,6 +528,8 @@ class LabeledThingGroupGateway {
               return anyLtgifIncomplete;
             });
         }
+
+        return returnValue;
       });
   }
 

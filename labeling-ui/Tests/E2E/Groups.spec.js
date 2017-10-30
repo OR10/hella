@@ -8,7 +8,7 @@ import {
   shortSleep,
   longSleep,
   sendKeys,
-} from '../Support/Protractor/Helpers'
+} from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
 import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
@@ -952,9 +952,6 @@ describe('Groups', () => {
         assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
       ]));
 
-      const rectangleToolButton = element(by.css('button.tool-button.tool-rectangle'));
-      const closeBracketButton = element(by.css('.close-bracket-button > button'));
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => rectangleToolButton.click())
         .then(() => shortSleep())
@@ -1053,7 +1050,7 @@ describe('Groups', () => {
           'Position of the extension sign',
           'Below'
         ).click())
-        .then(() => shortSleep())
+        .then(() => mediumSleep())
         .then(() => previousFrameButton.click())
         .then(() => mediumSleep())
         // Label Group on frameIndex 1
@@ -1121,7 +1118,7 @@ describe('Groups', () => {
           'Position of the extension sign',
           'Above'
         ).click())
-        .then(() => shortSleep())
+        .then(() => mediumSleep())
         .then(() => incompleteBadge.getText())
         // One incomplete shape + one incomplete group
         .then(incompleteCount => expect(incompleteCount).toEqual('1'))
