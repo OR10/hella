@@ -301,7 +301,13 @@ class LabeledThingInFrameGateway {
               });
             })
             .then(response => {
-              const isLabeledThingIncomplete = (response.rows[0].value > 0);
+              const ltifIsOnLtStartFrame = (labeledThingInFrame.frameIndex === storedLabeledThing.frameRange.startFrameIndex);
+              const ltifIsComplete = !labeledThingInFrame.incomplete;
+              const ltHasNoIncompleteLtifs = response.rows[0].value === 0;
+
+              const isLabeledThingComplete = ltHasNoIncompleteLtifs || (ltifIsOnLtStartFrame && ltifIsComplete);
+              const isLabeledThingIncomplete = !isLabeledThingComplete;
+
               const serializedLabeledThing = this._couchDbModelSerializer.serialize(storedLabeledThing);
               serializedLabeledThing.incomplete = isLabeledThingIncomplete;
               serializedLabeledThing.lastModifiedByUserId = this._currentUserService.get().id;
