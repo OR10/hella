@@ -1298,7 +1298,16 @@ class ViewerController {
     const newPaperThingShapes = labeledThingsInFrame.map(
       ltif => {
         return this._thingLayerContext.withScope(() => {
-          return this._paperShapeFactory.createPaperThingShape(ltif, ltif.shapes[0], this.video);
+          let result;
+          try {
+            result = this._paperShapeFactory.createPaperThingShape(ltif, ltif.shapes[0], this.video);
+          } catch (error) {
+            if (error.message === 'Depth buffer needs to be bigger than 8192x8192 pixels. Most likely the cuboid definition or camera calibration is broken!') {
+              this._labeledThingGateway.deleteLabeledThing(ltif.labeledThing)
+                .then(() => this._$rootScope.$emit('shape:delete:after'));
+            }
+          }
+          return result;
         });
       }
     );
