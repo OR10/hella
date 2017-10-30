@@ -7,6 +7,7 @@ import {
   mediumSleep,
 } from '../Support/Protractor/Helpers';
 import AssetHelper from '../Support/Protractor/AssetHelper';
+import LabelSelectorHelper from '../Support/Protractor/LabelSelectorHelper';
 
 const canvasInstructionLogManager = new CanvasInstructionLogManager(browser);
 
@@ -512,6 +513,71 @@ describe('Rectangle drawing', () => {
       .then(drawingStack => {
         expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.RectangleDrawing.NewRectangleOpposite);
       })
+      .then(() => done());
+  });
+
+  it('it marks the rectangle as complete if the rectangle on the first frame is completed (TTANNO-2183)', done => {
+    const labelSelector = element(by.css('label-selector'));
+    const labelSelectorHelper = new LabelSelectorHelper(labelSelector);
+    const nextFrameButton = element(by.css('.next-frame-button'));
+    const previousFrameButton = element(by.css('.previous-frame-button'));
+    const incompleteBadge = element(by.css('.badge-container .badge'));
+
+    bootstrapHttp(sharedMocks);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        // Create Rectangle
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 100})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => nextFrameButton.click())
+      .then(() => mediumSleep())
+      .then(() => {
+        // Move Rectangle
+        return browser.actions()
+          .mouseMove(viewer, {x: 200, y: 200})
+          .mouseDown()
+          .mouseMove(viewer, {x: 400, y: 400})
+          .mouseUp()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => previousFrameButton.click())
+      .then(() => mediumSleep())
+      // Label Group on frameIndex 1
+      .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText(
+        'Vehicle Type'
+      ).click())
+      .then(() => mediumSleep())
+      .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+        'Vehicle Type',
+        'Car'
+      ).click())
+      .then(() => mediumSleep())
+      .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+        'Direction',
+        'Right'
+      ).click())
+      .then(() => mediumSleep())
+      .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+        'Occlusion',
+        '< 20%'
+      ).click())
+      .then(() => mediumSleep())
+      .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+        'Truncation',
+        '< 20%'
+      ).click())
+      .then(() => mediumSleep())
+      .then(() => incompleteBadge.getText())
+      // One incomplete shape + one incomplete group
+      .then(incompleteCount => expect(incompleteCount).toEqual(''))
       .then(() => done());
   });
 
