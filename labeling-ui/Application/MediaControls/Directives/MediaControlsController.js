@@ -354,6 +354,7 @@ class MediaControlsController {
             () => {
               this._applicationState.viewer.finish();
               this._applicationState.enableAll();
+              this._$rootScope.$emit('framerange:change:after');
             }
           )
           .catch(
