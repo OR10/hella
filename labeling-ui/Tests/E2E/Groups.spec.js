@@ -763,7 +763,7 @@ describe('Groups', () => {
     });
   });
 
-  fdescribe('Incomplete Badge', () => {
+  describe('Incomplete Badge', () => {
     const finishTaskButton = element(by.css('.badge-container button'));
     const incompleteBadge = element(by.css('.badge-container .badge'));
     const rectangleToolButton = element(by.css('button.tool-button.tool-rectangle'));
@@ -1010,9 +1010,6 @@ describe('Groups', () => {
         assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
       ]));
 
-      const rectangleToolButton = element(by.css('button.tool-button.tool-rectangle'));
-      const closeBracketButton = element(by.css('.close-bracket-button > button'));
-
       initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
         .then(() => rectangleToolButton.click())
         .then(() => shortSleep())
@@ -1069,8 +1066,67 @@ describe('Groups', () => {
         // One incomplete shape + one incomplete group
         .then(incompleteCount => expect(incompleteCount).toEqual('1'))
         .then(() => {
-          expect(assets.documents.GroupCreation.GroupLabeling.SingleAttributeFrameIndex1Above).toExistInPouchDb();
+          expect(assets.documents.GroupCreation.GroupLabeling.SingleAttributeFrameIndex0Above).toExistInPouchDb();
           expect(assets.documents.GroupCreation.GroupLabeling.SingleAttributeFrameIndex1Below).toExistInPouchDb();
+        })
+        .then(() => done());
+    });
+
+    it('it does not show the incomplete badge when only the first frame is labeled', done => {
+      bootstrapHttp(sharedMocks.concat([
+        assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
+      ]));
+
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(() => rectangleToolButton.click())
+        .then(() => shortSleep())
+        .then(() => {
+          // Create Rectangle
+          return browser.actions()
+            .mouseMove(viewer, {x: 100, y: 100})
+            .mouseDown()
+            .mouseMove(viewer, {x: 400, y: 400})
+            .mouseUp()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        .then(() => nextFrameButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          // Move Rectangle
+          return browser.actions()
+            .mouseMove(viewer, {x: 200, y: 200})
+            .mouseDown()
+            .mouseMove(viewer, {x: 400, y: 400})
+            .mouseUp()
+            .perform();
+        })
+        .then(() => mediumSleep())
+        // Create group
+        .then(() => groupButton.click())
+        .then(() => mediumSleep())
+        .then(() => {
+          // Acknowledge modal
+          const confirmButton = element(by.css('.modal-button-confirm'));
+          return confirmButton.click();
+        })
+        .then(() => mediumSleep())
+        .then(() => previousFrameButton.click())
+        .then(() => mediumSleep())
+        // Label Group on frameIndex 0
+        .then(() => labelSelectorHelper.getTitleClickTargetFinderByTitleText(
+          'Position of the extension sign'
+        ).click())
+        .then(() => labelSelectorHelper.getEntryClickTargetFinderByTitleTextAndEntryText(
+          'Position of the extension sign',
+          'Above'
+        ).click())
+        .then(() => shortSleep())
+        .then(() => incompleteBadge.getText())
+        // One incomplete shape + one incomplete group
+        .then(incompleteCount => expect(incompleteCount).toEqual('1'))
+        .then(() => {
+          expect(assets.documents.GroupCreation.GroupLabeling.SingleAttributeFrameIndex0Above).toExistInPouchDb();
         })
         .then(() => done());
     });
