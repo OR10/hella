@@ -62,11 +62,21 @@ describe('LabeledThingGateway', () => {
    */
   let pouchDbContextServiceMock;
 
+  /**
+   * @type {LabeledThingGroupGateway}
+   */
+  let labelStructureService;
+
   beforeEach(done => {
     const featureFlags = {};
 
     Promise.resolve()
       .then(() => {
+        module($provide => {
+          labelStructureService = jasmine.createSpyObj('labelStructureService', ['getLabelStructure']);
+          $provide.value('labelStructureService', labelStructureService);
+        });
+
         const commonModule = new Common();
         commonModule.registerWithAngular(angular, featureFlags);
         module('AnnoStation.Common');
