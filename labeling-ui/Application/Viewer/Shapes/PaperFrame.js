@@ -51,6 +51,27 @@ class PaperFrame extends PaperShape {
   }
 
   /**
+   * @return {boolean}
+   */
+  canBeSliced() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasStartAndEndFrame() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canChangeFrameRange() {
+    return false;
+  }
+
+  /**
    * @returns {boolean}
    */
   playInFrameRange() {

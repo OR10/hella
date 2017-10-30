@@ -184,6 +184,31 @@ class PaperShape extends paper.Group {
    * @abstract
    * @method PaperShape#getCursor
    */
+
+  /**
+   * @abstract
+   * @method PaperShape#canBeInterpolated
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#canBeSliced
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#hasStartAndEndFrame
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#canChangeFrameRange
+   */
+
+  /**
+   * @abstract
+   * @method PaperShape#playInFrameRange
+   */
 }
 
 PaperShape.DASH = [10, 4];

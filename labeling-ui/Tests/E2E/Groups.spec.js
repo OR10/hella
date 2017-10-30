@@ -512,6 +512,7 @@ describe('Groups', () => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
       })
       .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
@@ -555,6 +556,7 @@ describe('Groups', () => {
         expect(assets.mocks.GroupCreation.NewGroup.StoreLabeledThingGroup).not.toExistInPouchDb();
       })
       .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('MeasurementRectangle', 'DrawOneMeasurementRectangle')
         () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
       )
       .then(drawingStack => {
