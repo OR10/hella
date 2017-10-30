@@ -354,7 +354,7 @@ class MediaControlsController {
             () => {
               this._applicationState.viewer.finish();
               this._applicationState.enableAll();
-              this._$rootScope.$emit('framerange:change:after');
+              this._$rootScope.$emit('action:reload-frame');
             }
           )
           .catch(
@@ -428,7 +428,7 @@ class MediaControlsController {
           () => {
             this._applicationState.viewer.finish();
             this._applicationState.enableAll();
-            this._$rootScope.$emit('framerange:change:after');
+            this._$rootScope.$emit('action:reload-frame');
           })
           .catch(error => {
             this._applicationState.viewer.finish();
