@@ -516,7 +516,7 @@ describe('Rectangle drawing', () => {
       .then(() => done());
   });
 
-  it('it marks the rectangle as complete if the rectangle on the first frame is completed (TTANNO-2183)', done => {
+  it('marks the rectangle as complete if the rectangle on the first frame is completed (TTANNO-2183)', done => {
     const labelSelector = element(by.css('label-selector'));
     const labelSelectorHelper = new LabelSelectorHelper(labelSelector);
     const nextFrameButton = element(by.css('.next-frame-button'));
