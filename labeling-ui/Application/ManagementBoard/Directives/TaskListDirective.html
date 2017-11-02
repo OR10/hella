@@ -18,15 +18,39 @@
          -->
         <thead ng-if="vm.tasks.length > 0">
             <tr>
+                <th class="action-header" colspan="5">
+                    <select class="action-selection" name="actionSelection" id="actionSelection"
+                            ng-model="vm.selectedAction" ng-change="vm.doAction()">
+                        <option value="defaultSelection" ng-selected="true">Select an action</option>
+                        <option value="unassignUsers"
+                                ng-if="vm.userPermissions.canChangeUserTaskAssignment && vm.taskStatus !== 'all_phases_done' && vm.taskStatus !== 'todo'">
+                            Unassign Users
+                        </option>
+                        <option value="flagTasks" ng-if="vm.userPermissions.canFlagLabelingTask && vm.taskStatus !== 'todo'">Flag Tasks</option>
+                        <option value="moveTasksInOtherPhase"
+                                ng-if="vm.userPermissions.canMoveTaskInOtherPhase && vm.taskStatus !== 'in_progress'">
+                            Move Tasks
+                        </option>
+                    </select>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <div class="action-header-checkbox">
+                        <input type="checkbox" ng-model="vm.isAllSelected" ng-change="vm.toggleAllSelections()">
+                    </div>
+                </th>
                 <th>Type</th>
                 <th>Title</th>
                 <th>Range</th>
                 <th>Assignee</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody ng-if="vm.tasks.length > 0">
         <tr ng-repeat="task in vm.tasks track by task.id" ng-click="vm.openTask(task.id, user)">
+            <td ng-click="$event.stopPropagation()">
+                <input type="checkbox" ng-model="vm.selectedTasks[task.id]" ng-change="vm.calculateAllSelectionCheckbox()">
+            </td>
             <td>
                 <i ng-if="task.labelInstruction === 'vehicle'" class="fa fa-car" tooltip="Vehicle"></i>
                 <i ng-if="task.labelInstruction === 'person'" class="fa fa-male" tooltip="Person"></i>
@@ -40,29 +64,10 @@
                 <i ng-if="task.reopen[vm.taskPhase] === true" class="fa fa-retweet" tooltip="Reopened"></i>
                 &nbsp;{{task.type}}
             </td>
-            <td>{{task.title}}</td>
+            <td>{{task.title}} <button class="fa fa-flag" ng-if="task.attentionFlag"></button></td>
             <td>{{task.range}}</td>
             <td ng-if="!task.latestAssignee.locked">{{task.latestAssignee.username}}</td>
             <td ng-if="task.latestAssignee.locked"><i tooltip="This User has been deactivated.">{{task.latestAssignee.username}}</i></td>
-            <td class="action-cell" ng-click="$event.stopPropagation()">
-                <i ng-if="task.labelDataImportInProgress == true"
-                   class="fa fa-spin fa-spinner" tooltip="Label-Data Import in progress."></i>
-                <button tooltip="Unassign user: {{task.latestAssignee.username}}"
-                        ng-if="vm.userPermissions.canChangeUserTaskAssignment && task.latestAssignee != null && task.status !== 'done'"
-                        ng-click="vm.unassignTask(task.id, task.latestAssignee.id)">
-                    <i class="fa fa-close"></i>
-                </button>
-                <button tooltip="Flag this task"
-                        ng-if="vm.userPermissions.canFlagLabelingTask && task.latestAssignee.username === vm.user.username"
-                        ng-click="vm.flagTask(task.id)">
-                    <i class="fa fa-flag" ng-class="{flagged: task.attentionFlag}"></i>
-                </button>
-                <button tooltip="Move task"
-                        ng-if="vm.userPermissions.canMoveTaskInOtherPhase && task.latestAssignee === null && task.status !== 'in_progress'"
-                        ng-click="vm.moveTask(task.id)">
-                    <i class="fa fa-random"></i>
-                </button>
-            </td>
         </tr>
         </tbody>
         <tfoot ng-if="vm.tasks.length > 0">

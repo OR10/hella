@@ -1780,7 +1780,7 @@ class ViewerController {
   _startPlaying() {
     const fps = this.fps ? parseInt(this.fps, 10) : this._applicationConfig.Viewer.framesPerSecond;
 
-    if (this.selectedPaperShape && this.playbackSpeedFactor === 1) {
+    if (this.selectedPaperShape && this.playbackSpeedFactor === 1 && this.selectedPaperShape.playInFrameRange()) {
       const startPosition = this._calculatePlaybackStartPosition();
 
       this.framePosition.goto(startPosition);

@@ -2,3 +2,20 @@ task-list{
   margin-bottom: 2em;
   display: block;
 }
+
+.action-header{
+  border-bottom: none !important;
+}
+.action-header-checkbox{
+  padding: 0 5px 0;
+  width: 26px;
+  background-color: $color-ut-lightgrey-1;
+}
+
+select.action-selection {
+  display: inline-block;
+  background-color: $color-ut-lightgrey-1 !important;
+  border: none;
+  font-size: 14px;
+  width: auto;
+}
