@@ -34,6 +34,7 @@ export default class LabelSelectorController {
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {$q} $q
    */
   constructor(
     $scope,

@@ -62,6 +62,11 @@ describe('LabeledThingGateway', () => {
    */
   let pouchDbContextServiceMock;
 
+  /**
+   * @type {PackagingExecutor}
+   */
+  let packagingExecutor;
+
   beforeEach(done => {
     const featureFlags = {};
 
@@ -105,6 +110,7 @@ describe('LabeledThingGateway', () => {
           revisionManager = $injector.get('revisionManager');
           couchDbModelSerializer = $injector.get('couchDbModelSerializer');
           couchDbModelDeserializer = $injector.get('couchDbModelDeserializer');
+          packagingExecutor = $injector.get('packagingExecutor');
         });
       })
       .then(() => done());
@@ -591,6 +597,46 @@ describe('LabeledThingGateway', () => {
     delete labeledThingCalledDocument.lastModifiedAt;
 
     expect(storedLabeledThingDocument).toEqual(labeledThingCalledDocument);
+  });
+
+  describe('getAssociatedLabeledThingsInFrames', () => {
+    it('deserializes and extracts the revision of the read LabeledThingsInFrame (TTANNO-2183)', () => {
+      const task = { id: 'task-id' };
+      const labeledThing = { id: 'lt-1', task };
+      const firstLtif = { _id: 'ltif-1', _rev: '1' };
+      const secondLtif = { _id: 'ltif-2', _rev: '2' };
+      const pouchResult = {
+        rows: [
+          { doc: firstLtif },
+          { doc: secondLtif },
+        ],
+      };
+
+      spyOn(pouchDbHelper.database, 'query').and.returnValue(angularQ.resolve(pouchResult));
+      spyOn(revisionManager, 'extractRevision');
+      spyOn(couchDbModelDeserializer, 'deserializeLabeledThingInFrame').and.callFake(ltif => ltif);
+
+      gateway.getAssociatedLabeledThingsInFrames(labeledThing);
+      $rootScope.$apply();
+
+      expect(revisionManager.extractRevision).toHaveBeenCalledTimes(2);
+      expect(revisionManager.extractRevision).toHaveBeenCalledWith(firstLtif);
+      expect(revisionManager.extractRevision).toHaveBeenCalledWith(secondLtif);
+
+      expect(couchDbModelDeserializer.deserializeLabeledThingInFrame).toHaveBeenCalledTimes(2);
+      expect(couchDbModelDeserializer.deserializeLabeledThingInFrame).toHaveBeenCalledWith(firstLtif, labeledThing);
+      expect(couchDbModelDeserializer.deserializeLabeledThingInFrame).toHaveBeenCalledWith(secondLtif, labeledThing);
+    });
+
+    it('returns what the packaging executor returns', () => {
+      const returnValue = {patentiertes: 'supergrau'};
+      spyOn(packagingExecutor, 'execute').and.returnValue(returnValue);
+
+      const ltifs = gateway.getAssociatedLabeledThingsInFrames();
+      $rootScope.$apply();
+
+      expect(ltifs).toBe(returnValue);
+    });
   });
 
   afterEach(done => {
