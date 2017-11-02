@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Helper\IncompleteClassesChecker;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Helper;
 
 class RequirementsXml extends Helper\ClassesStructure
@@ -33,6 +34,16 @@ class RequirementsXml extends Helper\ClassesStructure
     }
 
     /**
+     * @param AnnoStationBundleModel\LabeledThingGroup $labeledThingGroup
+     *
+     * @return array
+     */
+    public function getLabeledThingGroupStructure(AnnoStationBundleModel\LabeledThingGroup $labeledThingGroup)
+    {
+        return $this->getRequiredClassesForLabeledThingGroup($labeledThingGroup->getIdentifierName());
+    }
+
+    /**
      * @return array
      */
     public function getLabeledFrameStructure()
@@ -55,6 +66,35 @@ class RequirementsXml extends Helper\ClassesStructure
         );
         if ($thingClassReference !== null) {
             return $thingClassReference;
+        }
+
+        $privateClassReference = $this->findReferenceClassForExpression(
+            $xpath,
+            '//x:requirements/x:private/x:class',
+            $id
+        );
+        if ($privateClassReference !== null) {
+            return $privateClassReference;
+        }
+
+        throw new \RuntimeException('XML Reference not found ' . $id);
+    }
+
+    /**
+     * @param \DOMXPath $xpath
+     * @param           $id
+     *
+     * @return bool|\DOMElement
+     */
+    private function findReferenceClassForLabeledThingGroup(\DOMXPath $xpath, $id)
+    {
+        $thingGroupClassReference = $this->findReferenceClassForExpression(
+            $xpath,
+            '//x:requirements/x:group/x:class',
+            $id
+        );
+        if ($thingGroupClassReference !== null) {
+            return $thingGroupClassReference;
         }
 
         $privateClassReference = $this->findReferenceClassForExpression(
@@ -163,6 +203,24 @@ class RequirementsXml extends Helper\ClassesStructure
     }
 
     /**
+     * @param $identifier
+     *
+     * @return array
+     */
+    private function getRequiredClassesForLabeledThingGroup($identifier)
+    {
+        $xpath = new \DOMXPath($this->document);
+        $xpath->registerNamespace('x', 'http://weblabel.hella-aglaia.com/schema/requirements');
+
+        $classes = [];
+        foreach ($xpath->query('//x:requirements/x:group[@id="' . $identifier . '"]') as $thing) {
+            $classes = array_merge($classes, $this->getClassesForLabeledThingGroup($xpath, $thing));
+        }
+
+        return $classes;
+    }
+
+    /**
      * @param \DOMXPath $xpath
      * @param \DOMNode  $thing
      *
@@ -178,7 +236,29 @@ class RequirementsXml extends Helper\ClassesStructure
                     $classNode->getAttribute('ref')
                 );
             }
-            $classes[] = $this->getValuesFromLabeledThingInFrameNode($xpath, $classNode);
+            $classes[] = $this->getValuesFromThingLikeStructureNode($xpath, $classNode);
+        }
+
+        return $classes;
+    }
+
+    /**
+     * @param \DOMXPath $xpath
+     * @param \DOMNode  $thing
+     *
+     * @return array
+     */
+    private function getClassesForLabeledThingGroup(\DOMXPath $xpath, \DOMNode $thing)
+    {
+        $classes = [];
+        foreach ($xpath->query('x:class', $thing) as $classNode) {
+            if ($classNode->hasAttribute('ref')) {
+                $classNode = $this->findReferenceClassForLabeledThingGroup(
+                    $xpath,
+                    $classNode->getAttribute('ref')
+                );
+            }
+            $classes[] = $this->getValuesFromThingLikeStructureNode($xpath, $classNode);
         }
 
         return $classes;
@@ -190,7 +270,7 @@ class RequirementsXml extends Helper\ClassesStructure
      *
      * @return array
      */
-    private function getValuesFromLabeledThingInFrameNode(\DOMXPath $xpath, \DOMNode $classNode)
+    private function getValuesFromThingLikeStructureNode(\DOMXPath $xpath, \DOMNode $classNode)
     {
         $values = [];
         foreach ($xpath->query('x:value', $classNode) as $valueNode) {
