@@ -528,18 +528,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
         return selectedLabeledThing;
       })
       .then(() => {
-        selectedLabeledThing.groupIds.forEach(groupId => {
-          const relatedThingShapes = viewModel.paperThingShapes.filter(thingShape =>
-            thingShape.labeledThingInFrame.labeledThing.groupIds.indexOf(groupId) !== -1);
-          const shapeGroup = viewModel.paperGroupShapes.find(
-            paperGroupShape => paperGroupShape.labeledThingGroupInFrame.labeledThingGroup.id === groupId);
-
-          if (relatedThingShapes.length === 0) {
-            return this._deleteGroupShape(shapeGroup);
-          }
-        });
-      })
-      .then(() => {
         this._deleteAfterAction();
       })
       .catch(() => this._onDeletionError());
