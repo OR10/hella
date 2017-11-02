@@ -400,6 +400,7 @@ describe('ShapeInbox', () => {
         })
         .then(() => shortSleep())
         .then(() => shapeInboxButton.click())
+        .then(() => shortSleep())
         .then(() => nextFrameButton.click())
         .then(() => mediumSleep())
         .then(() => {
