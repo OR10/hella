@@ -272,7 +272,7 @@ describe('PopupPanelController', () => {
       const secondShapeInformation = {
         id: '1',
         labeledThingInFrame: secondShape.labeledThingInFrame,
-        shape: secondShape
+        shape: secondShape,
       };
 
       const labelStructureObject = {name: 'Bernd das Brot'};
@@ -293,7 +293,8 @@ describe('PopupPanelController', () => {
           identifierName: 'portal-gun',
         },
       };
-      const secondShape = function() {
+
+      const secondShape = function() {// eslint-disable-next-line func-names
         // Noop
       };
       secondShape.labeledThingInFrame = {
@@ -303,7 +304,7 @@ describe('PopupPanelController', () => {
       const secondShapeInformation = {
         id: '1',
         labeledThingInFrame: secondShape.labeledThingInFrame,
-        shape: secondShape
+        shape: secondShape,
       };
 
       const labelStructureObject = {name: 'Bernd das Brot'};
@@ -334,7 +335,7 @@ describe('PopupPanelController', () => {
       const secondShapeInformation = {
         id: '1',
         labeledThingInFrame: secondShape.labeledThingInFrame,
-        shape: secondShape
+        shape: secondShape,
       };
 
       const labelStructureObject = {name: 'Bernd das Brot'};
