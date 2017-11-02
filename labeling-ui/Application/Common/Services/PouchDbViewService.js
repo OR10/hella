@@ -194,6 +194,13 @@ PouchDbViewService.VIEWS = {
       }
     },
   },
+  'labeledThingGroupIncomplete': {
+    map: function(doc) {
+      if (doc.type === 'AnnoStationBundle.Model.LabeledThingGroup') {
+        emit([doc.taskId, doc.incomplete]);
+      }
+    },
+  },
   'labeledFrameIncomplete': {
     map: function(doc) {
       if (doc.type === 'AppBundle.Model.LabeledFrame') {

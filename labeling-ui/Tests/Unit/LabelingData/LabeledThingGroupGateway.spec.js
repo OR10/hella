@@ -38,6 +38,7 @@ describe('LabeledThingGroupGateway', () => {
   let revisionManager;
   let pouchDbViewService;
   let ghostingServiceMock;
+  let labelStructureService;
 
   let labeledThingGroup;
   let labeledThingGroupDocument;
@@ -118,8 +119,11 @@ describe('LabeledThingGroupGateway', () => {
       const pouchDbContextServiceMock = jasmine.createSpyObj('storageContextService', ['provideContextForTaskId']);
       pouchDbContextServiceMock.provideContextForTaskId.and.returnValue(pouchDbContext);
 
+      labelStructureService = jasmine.createSpyObj('labelStructureService', ['getLabelStructure']);
+
       $provide.value('pouchDbContextService', pouchDbContextServiceMock);
       $provide.value('ghostingService', ghostingServiceMock);
+      $provide.value('labelStructureService', labelStructureService);
     });
 
     inject($injector => {
@@ -132,6 +136,10 @@ describe('LabeledThingGroupGateway', () => {
       pouchDbViewService = $injector.get('pouchDbViewService');
       groupGateway = $injector.instantiate(LabeledThingGroupGateway);
       spyOn(groupGateway._currentUserService, 'get').and.returnValue({id: 'ffa2a4a7f72e5765eb5d1b09d40094e5'});
+
+      const labelStructure = jasmine.createSpyObj('labelStructureService', ['getGroupById', 'getEnabledClassesForLabeledObjectAndClassList']);
+      labelStructure.getEnabledClassesForLabeledObjectAndClassList.and.returnValue([]);
+      labelStructureService.getLabelStructure.and.returnValue($q.resolve(labelStructure));
     });
   });
 
@@ -538,7 +546,7 @@ describe('LabeledThingGroupGateway', () => {
       groupIds: [],
       type: 'AnnoStationBundle.Model.LabeledThingGroup',
       classes: [],
-      incomplete: true,
+      incomplete: false,
       taskId: task.id,
       projectId: task.projectId,
       createdAt: '2017-09-05 16:11:56.000000',

@@ -16,6 +16,7 @@ class LabeledThingGroupGateway {
    * @param {PouchDbViewService} pouchDbViewService
    * @param {GhostingService} ghostingService
    * @param {CurrentUserService} currentUserService
+   * @param {LabelStructureService} labelStructureService
    */
   constructor(
     $q,
@@ -28,7 +29,8 @@ class LabeledThingGroupGateway {
     entityIdService,
     pouchDbViewService,
     ghostingService,
-    currentUserService
+    currentUserService,
+    labelStructureService
   ) {
     /**
      * @type {angular.$q}
@@ -101,6 +103,12 @@ class LabeledThingGroupGateway {
      * @private
      */
     this._currentUserService = currentUserService;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
   }
 
   /**
@@ -193,40 +201,53 @@ class LabeledThingGroupGateway {
    * @returns {Promise.<{startFrameIndex: number, endFrameIndex: number}>}
    */
   getFrameIndexRangeForLabeledThingGroup(labeledThingGroup) {
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return this._getFrameIndexRangeForLabeledThingGroupWithoutPackagingExecutor(labeledThingGroup);
+    });
+  }
+
+  /**
+   * Determine the frameRange for a specific {@link LabeledThingGroup}
+   *
+   * The `frameIndexRange` is calculated by looking at all associated {@link LabeledThing} frameRanges and determining
+   * the maximum span of overlapping frames.
+   *
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @returns {Promise.<{startFrameIndex: number, endFrameIndex: number}>}
+   */
+  _getFrameIndexRangeForLabeledThingGroupWithoutPackagingExecutor(labeledThingGroup) {
     const task = labeledThingGroup.task;
     const taskId = task.id;
     const groupId = labeledThingGroup.id;
 
     const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
 
-    return this._packagingExecutor.execute('labeledThingGroup', () => {
-      return this._$q.resolve()
-        .then(
-          () => dbContext.query(
-            this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupFrameRange'),
-            {
-              include_docs: false,
-              key: [groupId],
-              group: true,
-              group_level: 1,
-            }
-          )
-        )
-        .then(result => {
-          if (result.rows.length === 0) {
-            return this._$q.reject(
-              `The group ${groupId} does not have a frameRange, as it is not associated with any LabeledThing.`
-            );
+    return this._$q.resolve()
+      .then(
+        () => dbContext.query(
+          this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupFrameRange'),
+          {
+            include_docs: false,
+            key: [groupId],
+            group: true,
+            group_level: 1,
           }
+        )
+      )
+      .then(result => {
+        if (result.rows.length === 0) {
+          return this._$q.reject(
+            `The group ${groupId} does not have a frameRange, as it is not associated with any LabeledThing.`
+          );
+        }
 
-          const row = result.rows[0];
+        const row = result.rows[0];
 
-          return {
-            startFrameIndex: row.value[0],
-            endFrameIndex: row.value[1],
-          };
-        });
-    });
+        return {
+          startFrameIndex: row.value[0],
+          endFrameIndex: row.value[1],
+        };
+      });
   }
 
   /**
@@ -409,27 +430,180 @@ class LabeledThingGroupGateway {
    * @return {AbortablePromise}
    */
   createLabeledThingGroup(task, labeledThingGroup) {
-    const taskId = task.id;
-    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
-    const serializedLabeledThingGroup = this._couchDbModelSerializer.serialize(labeledThingGroup);
-
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThingGroup',
-      () => {
+      () => this._saveLabeledThingGroupWithoutPackagingExecutor(task, labeledThingGroup)
+    );
+  }
+
+  /**
+   * Create a labeled thing group of the given type.
+   *
+   * @param {Task} task
+   * @param {LabeledThingGroup} labeledThingGroup
+   * @return {AbortablePromise}
+   */
+  _saveLabeledThingGroupWithoutPackagingExecutor(task, labeledThingGroup) {
+    const taskId = task.id;
+    const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
+
+    return this._$q.resolve()
+      .then(() => this._calculateThingGroupIncompleteness(labeledThingGroup))
+      .then(incomplete => {
+        labeledThingGroup.incomplete = incomplete;
+
+        const serializedLabeledThingGroup = this._couchDbModelSerializer.serialize(labeledThingGroup);
         this._injectRevisionOrFailSilently(serializedLabeledThingGroup);
         serializedLabeledThingGroup.lastModifiedByUserId = this._currentUserService.get().id;
+
         return dbContext.put(serializedLabeledThingGroup);
-      }
-    )
+      })
       .then(response => {
         return dbContext.get(response.id);
       })
       .then(readDocument => {
         this._revisionManager.extractRevision(readDocument);
         return this._couchDbModelDeserializer.deserializeLabeledThingGroup(readDocument, task);
+      })
+      .then(document => {
+        return document;
       });
+  }
+
+  /**
+   * Calculates the incompleteness of the complete LabeledThingGroup with all LabeledThingGroupInFrames (if any)
+   * @param labeledThingGroup
+   * @private
+   */
+  _calculateThingGroupIncompleteness(labeledThingGroup) {
+    const task = labeledThingGroup.task;
+    const thingIdentifier = labeledThingGroup.type;
+
+    let ltgFrameRange;
+    let ltgFrames;
+
+    return this._getFrameIndexRangeForLabeledThingGroupWithoutPackagingExecutor(labeledThingGroup)
+      .then(frameRange => {
+        ltgFrames = (frameRange.endFrameIndex - frameRange.startFrameIndex) + 1;
+        ltgFrameRange = frameRange;
+      })
+      .catch(() => {
+        ltgFrames = 1;
+      })
+      .then(() => this._labelStructureService.getLabelStructure(task))
+      .then(labelStructure => {
+        const labelStructureObject = labelStructure.getGroupById(thingIdentifier);
+
+        const list = labelStructure.getEnabledClassesForLabeledObjectAndClassList(
+          labelStructureObject,
+          labeledThingGroup.extractClassList()
+        );
+
+
+        let returnValue;
+        if (list.length === 0) {
+          returnValue = false;
+        } else {
+          returnValue = this._getAssociatedLTGIFsForLTG(labeledThingGroup)
+            .then(labeledThingGroupInFrames => {
+              let anyLtgifIncomplete = false;
+
+              const ltgifOnFirstFrameOfGroup = labeledThingGroupInFrames.find(ltgif => ltgif.frameIndex === ltgFrameRange.startFrameIndex);
+              const noLtgifOnFirstFrameOfGroup = ltgifOnFirstFrameOfGroup === undefined || ltgifOnFirstFrameOfGroup.incomplete;
+
+              // if there are less ltgif than frames the group is on, and there is no ltgif on the first frame of the
+              // group, the whole group is incomplete
+              if (labeledThingGroupInFrames.length < ltgFrames && noLtgifOnFirstFrameOfGroup) {
+                anyLtgifIncomplete = true;
+              } else {
+                labeledThingGroupInFrames.forEach(ltg => {
+                  if (anyLtgifIncomplete || ltg.incomplete) {
+                    anyLtgifIncomplete = true;
+                  }
+                });
+              }
+
+              return anyLtgifIncomplete;
+            });
+        }
+
+        return returnValue;
+      });
+  }
+
+  /**
+   * @param {Task} task
+   * @return {AbortablePromise.<{count: int}|Error>}
+   */
+  getIncompleteLabeledThingGroupCount(task) {
+    /**
+     * @TODO: To fully work with local pouchdb replicate the incomplete flag needs to be updated during storage
+     *        of LabeledThingsInFrame correctly.
+     */
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute(
+      'labeledThingGroup',
+      () => db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupIncomplete'), {
+        include_docs: false,
+        key: [task.id, true],
+      })
+    ).then(response => {
+      return {
+        count: response.rows.length,
+      };
+    });
+  }
+
+  /**
+   * Returns the next incomplete labeled things in frame.
+   * The count can be specified, the default is one.
+   *
+   * @param {Task} task
+   *
+   * @returns {AbortablePromise<Array.<LabeledThingInFrame>>|Error}
+   */
+  getNextIncomplete(task) { // eslint-disable-line no-unused-vars
+    const count = 1;
+    const startkey = [task.id, true];
+    const endkey = [task.id, true];
+
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    return this._packagingExecutor.execute('labeledThingGroup', () => {
+      return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupIncomplete'), {
+        startkey,
+        endkey,
+        limit: count,
+        include_docs: true,
+      })
+        .then(incompleteDocumentResult => {
+          const ltg = incompleteDocumentResult.rows[0];
+          return this._couchDbModelDeserializer.deserializeLabeledThingGroup(ltg.doc, task);
+        })
+        .then(labeledThingGroup => {
+          const ltgifs = this._getAssociatedLTGIFsForLTG(labeledThingGroup);
+          const frameRange = this._getFrameIndexRangeForLabeledThingGroupWithoutPackagingExecutor(labeledThingGroup);
+          return this._$q.all([this._$q.resolve(labeledThingGroup), ltgifs, frameRange]);
+        })
+        .then(([labeledThingGroup, labeledThingGroupInFrames, frameRange]) => {
+          const result = {};
+
+          const firstIncompleteLabeledThingGroupInFrame = labeledThingGroupInFrames.find(ltgif => ltgif.incomplete);
+          if (firstIncompleteLabeledThingGroupInFrame !== undefined) {
+            result.frameIndex = firstIncompleteLabeledThingGroupInFrame.frameIndex;
+          } else {
+            result.frameIndex = frameRange.startFrameIndex;
+          }
+
+          result.labeledThingGroup = labeledThingGroup;
+
+          return result;
+        });
+    });
   }
 
   /**
@@ -442,6 +616,8 @@ class LabeledThingGroupGateway {
     const dbContext = this._pouchDbContextService.provideContextForTaskId(taskId);
     const serializedLtgif = this._couchDbModelSerializer.serialize(ltgif);
 
+    let updatedLabeledThingGroupInFrame;
+
     // @TODO: What about error handling here? No global handling is possible this easily?
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
@@ -453,6 +629,13 @@ class LabeledThingGroupGateway {
           .then(readDocument => {
             this._revisionManager.extractRevision(readDocument);
             return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(readDocument, ltg);
+          })
+          .then(document => {
+            updatedLabeledThingGroupInFrame = document;
+            return this._saveLabeledThingGroupWithoutPackagingExecutor(task, updatedLabeledThingGroupInFrame.labeledThingGroup);
+          })
+          .then(() => {
+            return updatedLabeledThingGroupInFrame;
           });
       }
     );
@@ -485,6 +668,7 @@ LabeledThingGroupGateway.$inject = [
   'pouchDbViewService',
   'ghostingService',
   'currentUserService',
+  'labelStructureService',
 ];
 
 export default LabeledThingGroupGateway;
