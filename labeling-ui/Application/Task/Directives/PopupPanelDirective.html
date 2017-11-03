@@ -100,7 +100,7 @@
                        tooltip-position="up"
                     ></i>
                     <i class="icon icon-tool-{{ selectedObject.labelStructureObject.shape }}"></i>
-                    <span>{{ selectedObject.label }}</span>
+                    <inbox-shape-name-input inbox-object="selectedObject"></inbox-shape-name-input>
                 </p>
             </div>
         </div>
@@ -117,24 +117,24 @@
             </p>
             <div class="popup-inbox-list">
                 <p class="selected-shape" ng-show="!vm.hasSavedObjects()">No shapes saved</p>
-                <p class="selected-shape" ng-repeat="selectedObject in vm.savedObjects track by selectedObject.shape.id">
+                <p class="selected-shape" ng-repeat="savedObject in vm.savedObjects track by savedObject.shape.id">
                     <i class="icon fa fa-minus-circle"
-                       ng-click="vm.removeFromInbox(selectedObject)"
+                       ng-click="vm.removeFromInbox(savedObject)"
                        tooltip="Remove this object from the inbox"
                        tooltip-position="up"
                     ></i>
                     <i class="icon fa fa-map-marker"
-                       ng-click="vm.jumpToShape(selectedObject)"
+                       ng-click="vm.jumpToShape(savedObject)"
                        tooltip="Jump to this object and select it"
                        tooltip-position="up"
                     ></i>
                     <i class="icon fa fa-share"
-                       ng-click="vm.reselectFromInbox(selectedObject)"
+                       ng-click="vm.reselectFromInbox(savedObject)"
                        tooltip="Reselect this object injecting it into the current frame"
                        tooltip-position="up"
                     ></i>
-                    <i class="icon icon-tool-{{ selectedObject.labelStructureObject.shape }}"></i>
-                    <span>{{ selectedObject.label }}</span>
+                    <i class="icon icon-tool-{{ savedObject.labelStructureObject.shape }}"></i>
+                    <inbox-shape-name-input inbox-object="savedObject"></inbox-shape-name-input>
                 </p>
             </div>
         </div>
