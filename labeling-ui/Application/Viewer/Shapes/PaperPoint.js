@@ -18,6 +18,7 @@ class PaperPoint extends PaperThingShape {
   constructor(labeledThingInFrame, shapeId, centerPoint, color) {
     super(labeledThingInFrame, shapeId, color);
 
+    this.applyMatrix = false;
     /**
      * @type {boolean}
      */
@@ -31,6 +32,8 @@ class PaperPoint extends PaperThingShape {
 
     this._drawShape();
     // this._drawDebugRectangle(labeledThingInFrame, shapeId, color);
+
+    this.view.on('zoom', event => this._onViewZoomChange(event));
   }
 
   /**
@@ -53,6 +56,14 @@ class PaperPoint extends PaperThingShape {
       const handles = this._createHandles();
       this.addChildren(handles);
     }
+    this._onViewZoomChange({zoom: this.view.zoom, center: this.view.center});
+  }
+
+  _onViewZoomChange(event) {
+    this.matrix.reset();
+    const scaleFactor = 1 / event.zoom;
+    this.scale(scaleFactor);
+    this.position = this._centerPoint;
   }
 
   /**
@@ -145,18 +156,14 @@ class PaperPoint extends PaperThingShape {
    * @private
    */
   _createHandles() {
-    const handleInfo = [
-      {name: 'center', point: this._centerPoint},
-    ];
-
-    return handleInfo.map(info =>
+    return [
       new RectangleHandle(
-        info.name,
+        'point-center',
         '#ffffff',
         this._handleSize,
-        info.point
-      )
-    );
+        this._centerPoint
+      ),
+    ];
   }
 
   /**
