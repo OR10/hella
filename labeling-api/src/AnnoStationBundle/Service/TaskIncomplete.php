@@ -3,9 +3,12 @@
 namespace AnnoStationBundle\Service;
 
 use AppBundle\Model;
+use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Database\Facade\LabeledThing;
 use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
+use AnnoStationBundle\Database\Facade\LabeledThingGroup;
+use AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper;
 
@@ -35,27 +38,44 @@ class TaskIncomplete
      * @var LabeledThingInFrame\FacadeInterface
      */
     private $labeledThingInFrameFactory;
+
+    /**
+     * @var LabeledThingGroup\FacadeInterface
+     */
+    private $labeledThingGroupFactory;
+
+    /**
+     * @var LabeledThingGroupInFrame\FacadeInterface
+     */
+    private $labeledThingGroupInFrameFactory;
+
     /**
      * TaskIncomplete constructor.
      *
-     * @param Facade\LabelingTask                  $labelingTaskFacade
-     * @param Facade\TaskConfiguration             $taskConfigurationFacade
-     * @param TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
-     * @param LabeledThing\FacadeInterface         $labeledThingFactory
-     * @param LabeledThingInFrame\FacadeInterface  $labeledThingInFrameFactory
+     * @param Facade\LabelingTask                      $labelingTaskFacade
+     * @param Facade\TaskConfiguration                 $taskConfigurationFacade
+     * @param TaskConfigurationXmlConverterFactory     $configurationXmlConverterFactory
+     * @param LabeledThing\FacadeInterface             $labeledThingFactory
+     * @param LabeledThingInFrame\FacadeInterface      $labeledThingInFrameFactory
+     * @param LabeledThingGroup\FacadeInterface        $labeledThingGroupFactory
+     * @param LabeledThingGroupInFrame\FacadeInterface $labeledThingGroupInFrameFactory
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
         Facade\TaskConfiguration $taskConfigurationFacade,
         Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
         LabeledThing\FacadeInterface $labeledThingFactory,
-        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFactory
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFactory,
+        LabeledThingGroup\FacadeInterface $labeledThingGroupFactory,
+        LabeledThingGroupInFrame\FacadeInterface $labeledThingGroupInFrameFactory
     ) {
         $this->labelingTaskFacade               = $labelingTaskFacade;
         $this->taskConfigurationFacade          = $taskConfigurationFacade;
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
         $this->labeledThingFactory              = $labeledThingFactory;
         $this->labeledThingInFrameFactory       = $labeledThingInFrameFactory;
+        $this->labeledThingGroupFactory         = $labeledThingGroupFactory;
+        $this->labeledThingGroupInFrameFactory  = $labeledThingGroupInFrameFactory;
     }
 
     /**
@@ -142,25 +162,7 @@ class TaskIncomplete
 
         $labeledThing = $labeledThingFacade->find($labeledThingInFrame->getLabeledThingId());
         $task         = $this->labelingTaskFacade->find($labeledThing->getTaskId());
-
-        $taskConfiguration = null;
-        if ($task->getTaskConfigurationId() === null) {
-            $helper = new Helper\IncompleteClassesChecker\Legacy($this->labelingTaskFacade->getLabelStructure($task));
-        } else {
-            $taskConfiguration = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
-            switch ($taskConfiguration->getType()) {
-                case Model\TaskConfiguration\SimpleXml::TYPE:
-                    $helper = new Helper\IncompleteClassesChecker\SimpleXml($taskConfiguration->getRawData());
-                    break;
-                case Model\TaskConfiguration\RequirementsXml::TYPE:
-                    $helper = new Helper\IncompleteClassesChecker\RequirementsXml($taskConfiguration->getRawData());
-                    break;
-                default:
-                    $helper = new Helper\IncompleteClassesChecker\Legacy(
-                        $this->labelingTaskFacade->getLabelStructure($task)
-                    );
-            }
-        }
+        $helper       = $this->getHelper($task);
 
         if (empty($helper->getLabeledThingInFrameStructure($labeledThingInFrame))) {
             return false;
@@ -213,16 +215,123 @@ class TaskIncomplete
     }
 
     /**
-     * @param Facade\LabeledThing\FacadeInterface|Facade\LabeledThingInFrame\FacadeInterface $factory
-     * @param Model\LabeledThing|Model\LabeledThingInFrame                                   $ltOrLtif
+     * @param AnnoStationBundleModel\LabeledThingGroup $labeledThingGroup
      *
-     * @return Facade\LabeledThing|Facade\LabeledThingInFrame
+     * @return bool
      */
-    private function getFacadeByProjectAndTaskId($factory, $ltOrLtif)
+    public function isLabeledThingGroupIncomplete(AnnoStationBundleModel\LabeledThingGroup $labeledThingGroup)
+    {
+        $task   = $this->labelingTaskFacade->find($labeledThingGroup->getTaskId());
+        $helper = $this->getHelper($task);
+
+        if (empty($helper->getLabeledThingGroupStructure($labeledThingGroup))) {
+            return false;
+        }
+
+        $labeledThingGroupInFrameFacade = $this->getFacadeByProjectAndTaskId(
+            $this->labeledThingGroupInFrameFactory,
+            $labeledThingGroup
+        );
+
+        $labeledThingGroupInFrames = $labeledThingGroupInFrameFacade->getLabeledThingGroupInFramesForLabeledThingGroup($labeledThingGroup);
+
+        foreach($labeledThingGroupInFrames as $labeledThingGroupInFrame) {
+            if ($this->isLabeledThingGroupInFrameIncomplete($labeledThingGroupInFrame)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param AnnoStationBundleModel\LabeledThingGroupInFrame $labeledThingGroupInFrame
+     *
+     * @return bool
+     */
+    public function isLabeledThingGroupInFrameIncomplete(
+        AnnoStationBundleModel\LabeledThingGroupInFrame $labeledThingGroupInFrame
+    ) {
+        $labeledThingGroupFacade        = $this->getFacadeByProjectAndTaskId(
+            $this->labeledThingGroupFactory,
+            $labeledThingGroupInFrame
+        );
+        $labeledThingGroupInFrameFacade = $this->getFacadeByProjectAndTaskId(
+            $this->labeledThingGroupInFrameFactory,
+            $labeledThingGroupInFrame
+        );
+
+        $labeledThingGroup = $labeledThingGroupFacade->find(
+            $labeledThingGroupInFrame->getLabeledThingGroupId()
+        );
+        $task              = $this->labelingTaskFacade->find($labeledThingGroupInFrame->getTaskId());
+        $helper            = $this->getHelper($task);
+
+        if (empty($helper->getLabeledThingGroupStructure($labeledThingGroup))) {
+            return false;
+        }
+
+        if (empty($labeledThingGroupInFrame->getClasses())) {
+            $labeledThingGroupInFrame = $labeledThingGroupInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
+                $labeledThingGroupInFrame
+            );
+            if ($labeledThingGroupInFrame === null) {
+                return true;
+            }
+        }
+
+        $labeledThingGroup = $labeledThingGroupInFrameFacade->find(
+            $labeledThingGroupInFrame->getLabeledThingGroupId()
+        );
+        foreach ($helper->getLabeledThingGroupStructure($labeledThingGroup) as $child) {
+            if (!$this->searchStructureForClasses($labeledThingGroupInFrame->getClasses(), $child)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     *
+     * @return Helper\IncompleteClassesChecker\Legacy|Helper\IncompleteClassesChecker\RequirementsXml|Helper\IncompleteClassesChecker\SimpleXml
+     */
+    private function getHelper(Model\LabelingTask $task)
+    {
+        $taskConfiguration = null;
+        if ($task->getTaskConfigurationId() === null) {
+            $helper = new Helper\IncompleteClassesChecker\Legacy($this->labelingTaskFacade->getLabelStructure($task));
+        } else {
+            $taskConfiguration = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
+            switch ($taskConfiguration->getType()) {
+                case Model\TaskConfiguration\SimpleXml::TYPE:
+                    $helper = new Helper\IncompleteClassesChecker\SimpleXml($taskConfiguration->getRawData());
+                    break;
+                case Model\TaskConfiguration\RequirementsXml::TYPE:
+                    $helper = new Helper\IncompleteClassesChecker\RequirementsXml($taskConfiguration->getRawData());
+                    break;
+                default:
+                    $helper = new Helper\IncompleteClassesChecker\Legacy(
+                        $this->labelingTaskFacade->getLabelStructure($task)
+                    );
+            }
+        }
+
+        return $helper;
+    }
+
+    /**
+     * @param Facade\LabeledThing\FacadeInterface|Facade\LabeledThingInFrame\FacadeInterface|Facade\LabeledThingGroup\FacadeInterface|Facade\LabeledThingGroupInFrame\FacadeInterface $factory
+     * @param Model\LabeledThing|Model\LabeledThingInFrame|AnnoStationBundleModel\LabeledThingGroup|AnnoStationBundleModel\LabeledThingGroupInFrame                                                                     $model
+     *
+     * @return Facade\LabeledThing|Facade\LabeledThingInFrame|Facade\LabeledThingGroup|Facade\LabeledThingGroupInFrame
+     */
+    private function getFacadeByProjectAndTaskId($factory, $model)
     {
         return $factory->getFacadeByProjectIdAndTaskId(
-            $ltOrLtif->getProjectId(),
-            $ltOrLtif->getTaskId()
+            $model->getProjectId(),
+            $model->getTaskId()
         );
     }
 

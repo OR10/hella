@@ -240,9 +240,15 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                         $classes
                     );
 
+                    $labeledThingGroupInFrame->setIncomplete(
+                        $this->taskIncompleteService->isLabeledThingGroupInFrameIncomplete($labeledThingGroupInFrame)
+                    );
                     $this->labeledThingGroupInFrameFacade->save($labeledThingGroupInFrame);
                 }
             }
+
+            $labeledThingGroup->setIncomplete($this->taskIncompleteService->isLabeledThingGroupIncomplete($labeledThingGroup));
+            $this->labeledThingGroupFacade->save($labeledThingGroup);
 
             $this->labeledThingGroupCache[$task->getId()][$originalId] = $labeledThingGroup;
         }

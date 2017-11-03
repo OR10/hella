@@ -64,4 +64,28 @@ class LabeledThingGroupInFrame
             ->execute()
             ->toArray();
     }
+
+    /**
+     * @param Model\LabeledThingGroupInFrame $labeledThingGroupInFrame
+     *
+     * @return Model\LabeledThingGroupInFrame[]
+     */
+    public function getPreviousLabeledThingInFrameWithClasses(Model\LabeledThingGroupInFrame $labeledThingGroupInFrame)
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_labeled_thing_group_in_frame_count_by_classes_001', 'view')
+            ->onlyDocs(true)
+            ->setEndKey([$labeledThingGroupInFrame->getLabeledThingGroupId(), 0, 1])
+            ->setStartKey([$labeledThingGroupInFrame->getLabeledThingGroupId(), $labeledThingGroupInFrame->getFrameIndex(), '*'])
+            ->setLimit(1)
+            ->setDescending(true)
+            ->execute()
+            ->toArray();
+
+        if (empty($result)) {
+            return null;
+        }
+
+        return $result[0];
+    }
 }

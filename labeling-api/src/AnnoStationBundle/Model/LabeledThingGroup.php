@@ -61,6 +61,11 @@ class LabeledThingGroup extends AppBundleModel\Base
      */
     private $lastModifiedByUserId;
 
+    /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $incomplete;
+
     public function __construct(
         AppBundleModel\LabelingTask $task,
         $lineColor,
@@ -178,5 +183,13 @@ class LabeledThingGroup extends AppBundleModel\Base
     public function setLastModifiedByUserId($lastModifiedByUserId)
     {
         $this->lastModifiedByUserId = $lastModifiedByUserId;
+    }
+
+    /**
+     * @param mixed $incomplete
+     */
+    public function setIncomplete($incomplete)
+    {
+        $this->incomplete = $incomplete;
     }
 }
