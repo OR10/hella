@@ -102,15 +102,21 @@ class labeling_api::app(
     mode    => '644',
   }
 
-  file { '/etc/cron.d/couchdb-maintenance':
-    ensure  => present,
-    content => template('labeling_api/cronjob/couchdb_maintenance.erb'),
-    mode    => '644',
-  }
-
   file { '/etc/cron.d/monitoring':
     ensure  => present,
     content => template('labeling_api/cronjob/monitoring.erb'),
+    mode    => '644',
+  }
+
+  $_couchdb_url = "http://${labeling_api::params::couchdb_user}:${labeling_api::params::couchdb_password}@${labeling_api::params::couchdb_host}:${labeling_api::params::couchdb_port}"
+
+  if ($labeling_api::params::couchdb_standby_host and $labeling_api::params::couchdb_standby_port and $labeling_api::params::couchdb_standby_user and $labeling_api::params::couchdb_standby_password) {
+    $_couchdb_url_hotstandby = "http://${labeling_api::params::couchdb_standby_user}:${labeling_api::params::couchdb_standby_password}@${labeling_api::params::couchdb_standby_host}:${labeling_api::params::couchdb_standby_port}"
+  }
+
+  file { '/etc/cron.d/couchdb-maintenance':
+    ensure  => present,
+    content => template('labeling_api/cronjob/couchdb_maintenance.erb'),
     mode    => '644',
   }
 }
