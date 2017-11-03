@@ -5,4 +5,5 @@ max_dbs_open = <%= @max_dbs_open %>
 max_connections = <%= @max_http_connections %>
 
 [compactions]
-_default = [{from, "02:00"}, {to, "04:00"}]
+labeling_api = [{db_fragmentation, "10%"}, {view_fragmentation, "10%"}, {from, "02:00"}, {to, "04:00"}]
+labeling_api_read_only = [{db_fragmentation, "10%"}, {view_fragmentation, "10%"}, {from, "02:00"}, {to, "04:00"}]
