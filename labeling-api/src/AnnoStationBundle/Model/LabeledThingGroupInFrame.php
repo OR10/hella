@@ -47,6 +47,11 @@ class LabeledThingGroupInFrame extends AppBundleModel\Base
      */
     private $frameIndex;
 
+    /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $incomplete;
+
     public function __construct(AppBundleModel\LabelingTask $task, Model\LabeledThingGroup $labeledThingGroup, $frameIndex, $classes = [])
     {
         $this->projectId           = $task->getProjectId();
@@ -129,8 +134,32 @@ class LabeledThingGroupInFrame extends AppBundleModel\Base
     /**
      * @return mixed
      */
+    public function getProjectId()
+    {
+        return $this->projectId;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getTaskId()
     {
         return $this->taskId;
+    }
+
+    /**
+     * @param mixed $incomplete
+     */
+    public function setIncomplete($incomplete)
+    {
+        $this->incomplete = $incomplete;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isIncomplete()
+    {
+        return $this->incomplete;
     }
 }

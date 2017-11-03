@@ -82,6 +82,19 @@
             <value id="time-limit-end-23" name="23" />
         </class>
     </thing>
+    <group id="empty-group" name="This group is empty" />
+    <group id="lights-group" name="Lights">
+        <class id="color" name="Color">
+            <value id="red" name="Red" />
+            <value id="blue" name="Blue" />
+            <value id="rainbow" name="Rainbow" />
+        </class>
+        <class id="size" name="Size">
+            <value id="big" name="big" />
+            <value id="middle" name="middle" />
+            <value id="tiny" name="tiny" />
+        </class>
+    </group>
     <private>
         <class name="Country" id="country">
             <value id="germany" name="Germany" />

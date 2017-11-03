@@ -99,6 +99,8 @@
             <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group_in_frame"/>
         </service>
 
         <service id="annostation.labeling_api.service.label_importer.csv"
