@@ -745,7 +745,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     //        a refactoring has been done!
 
     let initialDragDistance = 8;
-    if (selectedPaperShape === null) {
+    if (selectedPaperShape !== null) {
       initialDragDistance = selectedPaperShape.initialDragDistance();
     }
 
