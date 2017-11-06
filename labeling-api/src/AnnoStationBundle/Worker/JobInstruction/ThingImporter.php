@@ -13,6 +13,7 @@ use AnnoStationBundle\Service\ProjectImporter\Facade;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AppBundle\Model;
 use Doctrine\ODM\CouchDB;
+use AnnoStationBundle\Helper;
 
 class ThingImporter extends WorkerPoolBundle\JobInstruction
 {
@@ -72,6 +73,11 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
     private $labeledThingGroupInFrameFacade;
 
     /**
+     * @var AnnoStationFacade\TaskConfiguration
+     */
+    private $taskConfigurationFacade;
+
+    /**
      * @var array
      */
     private $labeledThingGroupCache = [];
@@ -91,6 +97,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
      * @param Facade\Project                  $project
      * @param Facade\LabeledThingGroup        $labeledThingGroupFacade
      * @param Facade\LabeledThingGroupInFrame $labeledThingGroupInFrameFacade
+     * @param AnnoStationFacade\TaskConfiguration        $taskConfigurationFacade
      * @param AnnoStationFacade\LabelingTask  $labelingTaskFacade
      * @param CouchDB\DocumentManager         $documentManager
      */
@@ -102,6 +109,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         Facade\Project $project,
         Facade\LabeledThingGroup $labeledThingGroupFacade,
         Facade\LabeledThingGroupInFrame $labeledThingGroupInFrameFacade,
+        AnnoStationFacade\TaskConfiguration $taskConfigurationFacade,
         AnnoStationFacade\LabelingTask $labelingTaskFacade,
         CouchDB\DocumentManager $documentManager
     ) {
@@ -112,6 +120,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         $this->project                        = $project;
         $this->labelingTaskFacade             = $labelingTaskFacade;
         $this->labeledThingGroupFacade        = $labeledThingGroupFacade;
+        $this->taskConfigurationFacade        = $taskConfigurationFacade;
         $this->documentManager                = $documentManager;
         $this->labeledThingGroupInFrameFacade = $labeledThingGroupInFrameFacade;
     }
@@ -136,14 +145,16 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
             /** @var \DOMElement $thing */
             foreach ($things as $thing) {
                 $labeledThing = $this->getLabeledThing($thing, $xpath, $groups);
-                $values       = $this->getValues($xpath->query('./x:value', $thing));
-                $this->saveLabeledThingInFrame(
-                    $xpath,
-                    $xpath->query('./x:shape', $thing),
-                    $labeledThing,
-                    $values,
-                    $thing->getAttribute('type')
-                );
+                if ($labeledThing instanceof Model\LabeledThing) {
+                    $values = $this->getValues($xpath->query('./x:value', $thing));
+                    $this->saveLabeledThingInFrame(
+                        $xpath,
+                        $xpath->query('./x:shape', $thing),
+                        $labeledThing,
+                        $values,
+                        $thing->getAttribute('type')
+                    );
+                }
             }
             $frameLabeling = $xpath->query('./x:frame-labeling', $videoElement);
             if ($frameLabeling->length > 0) {
@@ -233,6 +244,14 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
 
             if (isset($groupReferences[$originalId]['values'])) {
                 foreach ($groupReferences[$originalId]['values'] as $startFrame => $classes) {
+                    $classes = array_values(
+                        array_filter(
+                            $classes,
+                            function ($class) use ($task) {
+                                return $this->isGroupClassTypeValid($task, $class);
+                            }
+                        )
+                    );
                     $labeledThingGroupInFrame = new AnnoStationBundleModel\LabeledThingGroupInFrame(
                         $task,
                         $labeledThingGroup,
@@ -267,11 +286,16 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         $originalId = $thingElement->getAttribute('id');
         $start      = $thingElement->getAttribute('start');
         $end        = $thingElement->getAttribute('end');
+        $identifier = $thingElement->getAttribute('type');
 
         if ($this->isStartAndEndTheSameTask($start, $end)) {
             $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
-            $frameMapping = array_flip($task->getFrameNumberMapping());
 
+            if (!$this->isThingIdentifierTypeValid($task, $identifier)) {
+                return null;
+            }
+
+            $frameMapping = array_flip($task->getFrameNumberMapping());
             if ($this->isLabeledThingInFrameElementAlreadyImported($task, $thingElement)) {
                 $labeledThing = $this->labeledThingFacade->getLabeledThingForImportedLineNo($task, $thingElement->getLineNo());
             } else {
@@ -307,8 +331,14 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                 $groupIds = [];
                 foreach ($groups as $group) {
                     $originalLabeledThingGroupId = $group->getAttribute('ref');
-                    $labeledThingGroup = $this->getLabeledThingGroup($task, $originalLabeledThingGroupId, $groupReferences);
-                    $groupIds[] = $labeledThingGroup->getId();
+                    if ($this->isGroupIdentifierTypeValid($task, $groupReferences[$originalLabeledThingGroupId]['identifierName'])) {
+                        $labeledThingGroup = $this->getLabeledThingGroup(
+                            $task,
+                            $originalLabeledThingGroupId,
+                            $groupReferences
+                        );
+                        $groupIds[]        = $labeledThingGroup->getId();
+                    }
                 }
                 $labeledThing->setGroupIds($groupIds);
 
@@ -323,16 +353,16 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
 
     /**
      * @param \DOMXPath          $xpath
-     * @param \DOMNodeList        $shapeElements
+     * @param \DOMNodeList       $shapeElements
      * @param Model\LabeledThing $labeledThing
-     * @param                    $values
+     * @param                    $classes
      * @param                    $identifier
      */
     private function saveLabeledThingInFrame(
         \DOMXPath $xpath,
         \DOMNodeList $shapeElements,
         Model\LabeledThing $labeledThing,
-        $values,
+        $classes,
         $identifier
     ) {
         /** @var \DOMElement $shapeElement */
@@ -352,6 +382,17 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                     $frameSkip
                 );
                 foreach ($frameRange as $frame) {
+                    if (isset($classes[$frame])) {
+                        $classes[$frame] = array_values(
+                            array_filter(
+                                $classes[$frame],
+                                function ($class) use ($task) {
+                                    return $this->isThingClassTypeValid($task, $class);
+                                }
+                            )
+                        );
+                    }
+
                     if ($this->isLabeledThingInFrameElementAlreadyImported($task, $shapeElement)) {
                         continue;
                     }
@@ -366,7 +407,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                     $labeledThingInFrame = new Model\LabeledThingInFrame(
                         $labeledThing,
                         $frameMapping[$frame],
-                        isset($values[$frame]) ? $values[$frame] : [],
+                        isset($classes[$frame]) ? $classes[$frame] : [],
                         $shapes
                     );
                     $labeledThingInFrame->setImportLineNo($shapeElement->getLineNo());
@@ -409,41 +450,47 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
      */
     private function saveFrameLabeling(\DOMXPath $xpath, \DOMElement $frameLabeling)
     {
-        $values              = $xpath->query('./x:value', $frameLabeling);
+        $classes              = $xpath->query('./x:value', $frameLabeling);
         $valuesByFrameNumber = [];
-        foreach ($values as $value) {
-            $id    = $value->getAttribute('id');
-            $start = $value->getAttribute('start');
-            $end   = $value->getAttribute('end');
+        foreach ($classes as $class) {
+            $id    = $class->getAttribute('id');
+            $start = $class->getAttribute('start');
+            $end   = $class->getAttribute('end');
             foreach (range($start, $end) as $frameNumber) {
                 $valuesByFrameNumber[$frameNumber][] = $id;
             }
         }
         $previousValues = [];
 
-        foreach ($valuesByFrameNumber as $frameNumber => $values) {
-            $values = array_values($values);
-            if (count(array_diff($values, $previousValues)) === 0) {
-                continue;
-            }
-
+        foreach ($valuesByFrameNumber as $frameNumber => $classes) {
             $task       = $this->labelingTaskFacade->find($this->taskIds[$frameNumber]);
             $frameIndex = array_search($frameNumber, $task->getFrameNumberMapping());
+
+            $classes = array_values(
+                array_filter(
+                    $classes,
+                    function ($class) use ($task) {
+                        return $this->isFrameClassTypeValid($task, $class);
+                    }
+                )
+            );
+            if (count(array_diff($classes, $previousValues)) === 0) {
+                continue;
+            }
 
             if ($frameIndex === false) {
                 continue;
             }
 
             if (count($this->labeledFrameFacade->findBylabelingTask($task, $frameIndex)) > 0) {
-                $previousValues = $values;
+                $previousValues = $classes;
                 continue;
             }
-
             $labeledFrame = new Model\LabeledFrame($task, $frameIndex);
-            $labeledFrame->setClasses($values);
+            $labeledFrame->setClasses($classes);
             $labeledFrame->setIncomplete($this->taskIncompleteService->isLabeledFrameIncomplete($labeledFrame));
             $this->labeledFrameFacade->save($labeledFrame);
-            $previousValues = $values;
+            $previousValues = $classes;
         }
     }
 
@@ -651,6 +698,81 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
             $task->setLabelDataImportInProgress(false);
             $this->labelingTaskFacade->save($task);
         }
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @param                    $identifier
+     *
+     * @return bool
+     */
+    private function isThingIdentifierTypeValid(Model\LabelingTask $task, $identifier)
+    {
+        $requirementsXml = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
+
+        $helper = new Helper\TaskConfiguration\RequirementsXml();
+
+        return in_array($identifier, $helper->getValidThingIdentifiers($requirementsXml));
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @param                    $class
+     *
+     * @return bool
+     */
+    private function isThingClassTypeValid(Model\LabelingTask $task, $class)
+    {
+        $requirementsXml = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
+
+        $helper = new Helper\TaskConfiguration\RequirementsXml();
+
+        return in_array($class, $helper->getValidThingClasses($requirementsXml));
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @param                    $class
+     *
+     * @return bool
+     */
+    private function isFrameClassTypeValid(Model\LabelingTask $task, $class)
+    {
+        $requirementsXml = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
+
+        $helper = new Helper\TaskConfiguration\RequirementsXml();
+
+        return in_array($class, $helper->getValidFrameClasses($requirementsXml));
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @param                    $identifier
+     *
+     * @return bool
+     */
+    private function isGroupIdentifierTypeValid(Model\LabelingTask $task, $identifier)
+    {
+        $requirementsXml = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
+
+        $helper = new Helper\TaskConfiguration\RequirementsXml();
+
+        return in_array($identifier, $helper->getValidGroupIdentifiers($requirementsXml));
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @param                    $class
+     *
+     * @return bool
+     */
+    private function isGroupClassTypeValid(Model\LabelingTask $task, $class)
+    {
+        $requirementsXml = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
+
+        $helper = new Helper\TaskConfiguration\RequirementsXml();
+
+        return in_array($class, $helper->getValidGroupClasses($requirementsXml));
     }
 
     /**

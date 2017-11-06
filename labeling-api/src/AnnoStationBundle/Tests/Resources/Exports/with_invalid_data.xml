@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export xmlns="http://weblabel.hella-aglaia.com/schema/export">
+  <metadata>
+    <annostation>
+      <hostname>vagrant</hostname>
+      <build>0</build>
+    </annostation>
+    <project id="1f3d8f5ede69b21da4f3d735d7674557" name="Metaaaa">
+      <phase>todo</phase>
+      <description/>
+      <creation-date>2017-05-18T08:31:51+02:00</creation-date>
+      <created-by-user username="superadmin" email="superadmin@example.com"/>
+      <due-date/>
+      <frame-skip>22</frame-skip>
+      <start-frame>22</start-frame>
+      <split-each>0</split-each>
+    </project>
+    <export id="1f3d8f5ede69b21da4f3d735d7680434">
+      <creation-date>2017-05-18T08:56:37+02:00</creation-date>
+      <created-by-user username="superadmin" email="superadmin@example.com"/>
+    </export>
+    <requirements id="1f3d8f5ede69b21da4f3d735d7674e83" name="Meta" filename="requirements_metalabeling.xml">
+      <sha256>8b6e9db57de6d4d18ef4b11b8ebe51a881b896301d462dfcede06297be910eda</sha256>
+    </requirements>
+  </metadata>
+  <video id="1f3d8f5ede69b21da4f3d735d75cdcd7" filename="SMPCA5152_SE-OOX687_20140402_154746_rgb_c.avi">
+    <group id="0315f0f88eef421589c20910a2952490" start="22" end="22" type="extension-sign-group" line-color="8" incomplete="false">
+      <created-by>46e51f78534eaa25cf6c3f013c0459fa</created-by>
+      <created-at>2017-11-02T08:10:11+01:00</created-at>
+      <last-modified-by>46e51f78534eaa25cf6c3f013c0459fa</last-modified-by>
+      <last-modified-at>2017-11-02T08:10:11+01:00</last-modified-at>
+      <value id="position-below" class="extension-position" start="22" end="22"/>
+      <value id="INVALID-IDENTIFIER" class="color" start="22" end="22"/>
+    </group>
+    <group id="0315f0f88eef421589c20910a2952491" start="22" end="22" type="INVALID-TYPE" line-color="8" incomplete="false">
+      <created-by>46e51f78534eaa25cf6c3f013c0459fa</created-by>
+      <created-at>2017-11-02T08:10:11+01:00</created-at>
+      <last-modified-by>46e51f78534eaa25cf6c3f013c0459fa</last-modified-by>
+      <last-modified-at>2017-11-02T08:10:11+01:00</last-modified-at>
+      <value id="position-below" class="extension-position" start="22" end="22"/>
+    </group>
+    <frame-labeling incomplete="true">
+      <references>
+        <task id="1f3d8f5ede69b21da4f3d735d7672710"/>
+      </references>
+      <value id="night" start="22" end="660"/>
+      <value id="INVALID-FRAME-IDENTIFIER" start="22" end="660"/>
+    </frame-labeling>
+    <thing id="fd4539b4-9b42-4415-b3f7-f7a15c31424a" start="22" end="22" line-color="2" type="time-range-sign">
+      <references>
+        <task id="1f3d8f5ede69b21da4f3d735d7672710"/>
+        <group ref="0315f0f88eef421589c20910a2952490"/>
+      </references>
+      <shape id="4cd89e40-c3e8-4806-a087-05ba0278046e" start="22" end="22">
+        <rectangle>
+          <top-left x="820" y="436"/>
+          <bottom-right x="968" y="583"/>
+        </rectangle>
+      </shape>
+      <value id="WITH-INVALID-VALUE-IDENTIFIER" start="22" end="22"/>
+      <value id="10" start="22" end="22"/>
+    </thing>
+    <thing id="fd4539b4-9b42-4415-b3f7-f7a15c31424b" start="22" end="22" line-color="3" type="time-range-sign">
+      <references>
+        <task id="1f3d8f5ede69b21da4f3d735d7672710"/>
+        <group ref="0315f0f88eef421589c20910a2952491"/>
+      </references>
+      <shape id="4cd89e40-c3e8-4806-a087-05ba0278046e" start="22" end="22">
+        <rectangle>
+          <top-left x="220" y="236"/>
+          <bottom-right x="268" y="283"/>
+        </rectangle>
+      </shape>
+    </thing>
+    <thing id="11b2bf9f-a484-4b8c-a5ae-401920cc860c" start="22" end="22" line-color="10" type="INVALID-THING-IDENTIFIER">
+      <references>
+        <task id="1f3d8f5ede69b21da4f3d735d7672710"/>
+        <group ref="f516e810-2ddc-4f8f-8d9a-49c5b19f769c"/>
+      </references>
+      <shape id="226fa71a-c2eb-40ac-b9e4-b171749df463" start="22" end="22">
+        <rectangle>
+          <top-left x="120" y="136"/>
+          <bottom-right x="168" y="183"/>
+        </rectangle>
+      </shape>
+      <value id="20" start="22" end="22"/>
+      <value id="30" start="22" end="22"/>
+    </thing>
+  </video>
+</export>
