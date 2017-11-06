@@ -140,3 +140,8 @@ api_monitoring:
     resource: "annostation.labeling_api.controller.api.monitoring"
     type: rest
     name_prefix: app_api_monitoring_
+
+api_organisation_project_repair:
+    resource: "annostation.labeling_api.controller.api.organisation.project.repair"
+    type: rest
+    name_prefix: app_api_organisation_project_repair_

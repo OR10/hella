@@ -33,6 +33,7 @@ class UserPermissions
         'canViewProjectsCreationTimestamp'                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER                                       ],
         'canViewProjectsAssignedLabelManager'             => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER                                       ],
         'canViewAllProjectsOfAnOrganisation'              => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                           Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],
+        'canRepairProject'                                => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER,                                                                                           ],
 
         // Label-Jobs
         'canViewTaskList'                                 => [Model\User::ROLE_SUPER_ADMIN, Model\User::ROLE_LABEL_MANAGER, Model\User::ROLE_LABELER, Model\User::ROLE_OBSERVER, Model\User::ROLE_EXTERNAL_COORDINATOR],

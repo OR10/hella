@@ -270,5 +270,12 @@
                  class="AnnoStationBundle\Controller\Api\v1\Monitoring">
             <argument type="service" id="annostation.labeling_api.database.facade.monitoring"/>
         </service>
+
+        <service id="annostation.labeling_api.controller.api.organisation.project.repair"
+                 class="AnnoStationBundle\Controller\Api\v1\Organisation\Project\Repair">
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+        </service>
     </services>
 </container>
