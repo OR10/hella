@@ -142,7 +142,7 @@ class PointDrawingTool extends CreationTool {
   }
 
   /**
-   * Start the initial drawing of a pedestrian
+   * Start the initial drawing of a point
    *
    * @param {Point} to
    * @private
