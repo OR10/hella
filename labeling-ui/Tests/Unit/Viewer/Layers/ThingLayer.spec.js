@@ -9,7 +9,7 @@ import PaperMeasurementRectangle from 'Application/Viewer/Shapes/PaperMeasuremen
 import paper from 'paper';
 import TaskFixture from '../../../Fixtures/Models/Frontend/Task';
 
-fdescribe('ThingLayer', () => {
+describe('ThingLayer', () => {
   let injector;
   let angularScope;
   let paperScope;
