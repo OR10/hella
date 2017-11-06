@@ -37,7 +37,6 @@ class PaperPoint extends PaperThingShape {
   }
 
   /**
-   * @param {paper.Path} shape
    * @param {Boolean} drawHandles
    * @protected
    */
@@ -52,10 +51,6 @@ class PaperPoint extends PaperThingShape {
     const lines = this._createCrosshairs();
     lines.forEach(line => this.addChild(line));
 
-    if (this._isSelected && drawHandles) {
-      const handles = this._createHandles();
-      this.addChildren(handles);
-    }
     this._onViewZoomChange({zoom: this.view.zoom, center: this.view.center});
   }
 
@@ -239,6 +234,13 @@ class PaperPoint extends PaperThingShape {
    */
   fixOrientation() {
     this._drawShape();
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  initialDragDistance() {
+    return 1;
   }
 
   /**

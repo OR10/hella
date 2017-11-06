@@ -26,10 +26,8 @@ class Handle extends paper.Group {
      */
     this._centerPoint = centerPoint;
 
-    // Listen for zoom in order to provide stable size of the handles but only when shape is not a point shape
-    if (this.name !== 'point-center') {
-      this.view.on('zoom', event => this._onViewZoomChange(event));
-    }
+    // Listen for zoom in order to provide stable size of the handles
+    this.view.on('zoom', event => this._onViewZoomChange(event));
   }
 
   /**
