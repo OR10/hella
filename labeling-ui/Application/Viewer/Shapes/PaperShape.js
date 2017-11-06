@@ -145,6 +145,13 @@ class PaperShape extends paper.Group {
   }
 
   /**
+   * @returns {boolean}
+   */
+  initialDragDistance() {
+    return 8;
+  }
+
+  /**
    * Recreate internal shape structure
    */
   redrawShape() {
