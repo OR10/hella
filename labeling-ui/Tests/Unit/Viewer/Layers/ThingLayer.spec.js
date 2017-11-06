@@ -9,7 +9,7 @@ import PaperMeasurementRectangle from 'Application/Viewer/Shapes/PaperMeasuremen
 import paper from 'paper';
 import TaskFixture from '../../../Fixtures/Models/Frontend/Task';
 
-describe('ThingLayer', () => {
+fdescribe('ThingLayer', () => {
   let injector;
   let angularScope;
   let paperScope;
@@ -32,6 +32,7 @@ describe('ThingLayer', () => {
   let groupSelectionDialogFactory;
   let pathCollisionService;
   let rootScopeEventRegistrationService;
+  let selectedPaperShape;
 
   beforeEach(module($provide => {
     // Service mocks
@@ -200,6 +201,11 @@ describe('ThingLayer', () => {
     const event = {type: 'mouseenter'};
 
     const selectedLabelStructureThing = {id: 'bla', shape: 'pedestrian'};
+
+    selectedPaperShape = jasmine.createSpyObj('selectedPaperShape', ['initialDragDistance']);
+    selectedPaperShape.initialDragDistance.and.returnValue(8);
+    angularScope.vm.selectedPaperShape = selectedPaperShape;
+
     thing.activateTool('multi', selectedLabelStructureThing);
 
     const promiseMock = jasmine.createSpyObj('activeTool.invoke promise mock', ['then', 'catch']);
@@ -381,6 +387,10 @@ describe('ThingLayer', () => {
           },
         });
         toolService.getTool.and.returnValue(keyboardTool);
+
+        selectedPaperShape = jasmine.createSpyObj('selectedPaperShape', ['initialDragDistance']);
+        selectedPaperShape.initialDragDistance.and.returnValue(8);
+        angularScope.vm.selectedPaperShape = selectedPaperShape;
       });
 
       it('calls abort on the MultiTool', () => {
@@ -844,6 +854,7 @@ describe('ThingLayer', () => {
         const updateView = false;
 
         thing.addPaperGroupShape(groupShape, updateView);
+
 
         expect(angularScope.vm.selectedPaperShape).toBeUndefined();
         expect(paperScope.view.update).not.toHaveBeenCalled();
