@@ -122,6 +122,13 @@
                 >
                     <i class="fa fa-trash-o icon-fa warning-color"></i>
                 </button>
+
+                <button tooltip="Repair all broken tasks in this project."
+                        ng-if="vm.userPermissions.canRepairProject && project.status != 'deleted'"
+                        ng-click="vm.repairProject(project.id)"
+                >
+                    <i class="fa fa-wrench icon-fa"></i>
+                </button>
                 <i ng-if="vm.userPermissions.canDeleteProject && project.status === 'deleted' && (project.deletedState === 'pending' || project.deletedState === 'in_progress')"
                    class="fa fa-spin fa-spinner"></i>
             </td>

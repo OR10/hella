@@ -220,6 +220,15 @@ class ProjectListController {
   }
 
   /**
+   * @param {string} projectId
+   */
+  repairProject(projectId) {
+    this.loadingInProgress = true;
+    this._projectGateway.repairProject(projectId)
+      .then(() => this._triggerReloadAll());
+  }
+
+  /**
    * @param {Object} project
    */
   goToUploadPage(project) {

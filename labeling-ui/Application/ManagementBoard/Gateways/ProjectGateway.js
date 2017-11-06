@@ -230,6 +230,16 @@ class ProjectGateway {
         throw new Error(`Failed creating the project`);
       });
   }
+
+  /**
+   * @param {string} projectId
+   * @returns {*}
+   */
+  repairProject(projectId) {
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/project/${projectId}/repair`);
+    return this._bufferedHttp.post(url);
+  }
 }
 
 ProjectGateway.$inject = [
