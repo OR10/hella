@@ -743,14 +743,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
     // @TODO: Should be handled using a proper ToolOptionStruct in the future.
     //        This is just a workaround to use the old `Task` based config options until
     //        a refactoring has been done!
-
-    let initialDragDistance = 8;
-    if (selectedPaperShape === null) {
-      initialDragDistance = selectedPaperShape.initialDragDistance();
-    }
-
     const defaultOptions = {
-      initialDragDistance: initialDragDistance,
+      initialDragDistance: 8,
       minDragDistance: 1,
       minimalHeight: 1,
     };
