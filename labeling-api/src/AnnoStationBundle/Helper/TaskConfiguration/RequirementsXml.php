@@ -8,6 +8,30 @@ class RequirementsXml
 {
     /**
      * @param TaskConfiguration\RequirementsXml $requirementsXmlTaskConfiguration
+     * @param                                   $identifier
+     *
+     * @return array
+     */
+    public function getAllowedShapeTypesForThingIdentifier(
+        TaskConfiguration\RequirementsXml $requirementsXmlTaskConfiguration,
+        $identifier
+    ) {
+        $xml = $this->loadXmlDocument($requirementsXmlTaskConfiguration->getRawData());
+        $xpath = new \DOMXPath($xml);
+        $xpath->registerNamespace('x', 'http://weblabel.hella-aglaia.com/schema/requirements');
+
+        $shapes = [];
+        $things = $xpath->query(sprintf("//x:requirements/x:thing[@shape][@id='%s']", $identifier));
+
+        foreach ($things as $thing) {
+            $shapes[] = $thing->getAttribute('shape');
+        }
+
+        return array_unique($shapes);
+    }
+
+    /**
+     * @param TaskConfiguration\RequirementsXml $requirementsXmlTaskConfiguration
      *
      * @return array
      */

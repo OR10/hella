@@ -291,7 +291,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         if ($this->isStartAndEndTheSameTask($start, $end)) {
             $task         = $this->labelingTaskFacade->find($this->taskIds[$start]);
 
-            if (!$this->isThingIdentifierTypeValid($task, $identifier)) {
+            if (!$this->isThingIdentifierTypeValidForAtLeastOneShapeType($task, $thingElement, $identifier, $xpath)) {
                 return null;
             }
 
@@ -702,17 +702,40 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
 
     /**
      * @param Model\LabelingTask $task
+     *
+     * @param \DOMElement        $thingElement
      * @param                    $identifier
+     * @param \DOMXPath          $xpath
      *
      * @return bool
      */
-    private function isThingIdentifierTypeValid(Model\LabelingTask $task, $identifier)
-    {
+    private function isThingIdentifierTypeValidForAtLeastOneShapeType(
+        Model\LabelingTask $task,
+        \DOMElement $thingElement,
+        $identifier,
+        \DOMXPath $xpath
+    ) {
         $requirementsXml = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
 
         $helper = new Helper\TaskConfiguration\RequirementsXml();
 
-        return in_array($identifier, $helper->getValidThingIdentifiers($requirementsXml));
+        $shapeWithNamespace = array_map(
+            function ($shape) {
+                return './x:shape/x:' . $shape;
+            },
+            $helper->getAllowedShapeTypesForThingIdentifier($requirementsXml, $identifier)
+        );
+
+        if (empty($shapeWithNamespace)) {
+            return false;
+        }
+
+        $shapes = $xpath->query(
+            implode('|', $shapeWithNamespace),
+            $thingElement
+        );
+
+        return $shapes->length > 0;
     }
 
     /**
