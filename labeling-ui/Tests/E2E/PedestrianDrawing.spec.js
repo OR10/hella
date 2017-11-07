@@ -376,6 +376,36 @@ describe('Pedestrian drawing', () => {
       .then(() => done());
   });
 
+  it('should not draw top and bottom on same y coordinate positions', done => {
+    bootstrapHttp(sharedMocks);
+
+    initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+      .then(() => {
+        return browser.actions()
+          .mouseMove(viewer, {x: 100, y: 50}) // initial position
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 600}) // initial position
+          .mouseUp()
+          .mouseDown()
+          .mouseMove(viewer, {x: 100, y: 50}) // initial position
+          .mouseUp()
+          .perform();
+      })
+      .then(() => mediumSleep())
+      .then(() => {
+        expect(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThing).toExistInPouchDb();
+        expect(assets.mocks.PedestrianDrawing.NewPedestrianMinimalHeight.StoreLabeledThingInFrame2).toExistInPouchDb();
+      })
+      .then(
+        // () => canvasInstructionLogManager.getAnnotationCanvasLogs('PedestrianDrawing', 'ShapeTopBottomNotOnSameYCoordinates')
+        () => canvasInstructionLogManager.getAnnotationCanvasLogs()
+      )
+      .then(drawingStack => {
+        expect(drawingStack).toEqualRenderedDrawingStack(assets.fixtures.Canvas.PedestrianDrawing.ShapeTopBottomNotOnSameYCoordinates);
+      })
+      .then(() => done());
+  });
+
   it('should draw a new pedestrian shape with intermediary mouse movements', done => {
     bootstrapHttp(sharedMocks);
 

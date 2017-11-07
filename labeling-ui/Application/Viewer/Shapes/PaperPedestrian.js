@@ -254,6 +254,10 @@ class PaperPedestrian extends PaperThingShape {
    * @private
    */
   _enforceMinHeight(point, fixPoint, minHeight) {
+    if (point === fixPoint) {
+      return fixPoint + minHeight;
+    }
+
     return Math.abs(point - fixPoint) > minHeight ? point : fixPoint + (((point - fixPoint) / Math.abs(point - fixPoint)) * minHeight);
   }
 
