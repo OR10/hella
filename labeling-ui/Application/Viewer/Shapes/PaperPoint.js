@@ -88,7 +88,7 @@ class PaperPoint extends PaperThingShape {
       radius: PaperPoint.CONTROL_SIZE,
       selected: false,
       strokeColor: this._color.primary,
-      strokeWidth: 2,
+      strokeWidth: 1,
       strokeScaling: false,
       dashArray: this.dashArray,
       fillColor: new paper.Color(0, 0, 0, 0),
@@ -109,7 +109,7 @@ class PaperPoint extends PaperThingShape {
           to: points[1],
           strokeColor: this._color.primary,
           selected: false,
-          strokeWidth: 2,
+          strokeWidth: 1,
           strokeScaling: false,
         })
       );
@@ -126,11 +126,11 @@ class PaperPoint extends PaperThingShape {
     const centerY = this._centerPoint.y;
     const shapeWidth = PaperPoint.CONTROL_SIZE + PaperPoint.CROSSHAIR_OVERFLOW * 2;
 
-    const fromLeft = new paper.Point(centerX - shapeWidth / 2, centerY);
-    const toRight = new paper.Point(centerX + shapeWidth / 2, centerY);
+    const fromLeft = new paper.Point(centerX - shapeWidth, centerY);
+    const toRight = new paper.Point(centerX + shapeWidth, centerY);
 
-    const fromTop = new paper.Point(centerX, centerY - shapeWidth / 2);
-    const toBottom = new paper.Point(centerX, centerY + shapeWidth / 2);
+    const fromTop = new paper.Point(centerX, centerY - shapeWidth);
+    const toBottom = new paper.Point(centerX, centerY + shapeWidth);
 
     return {
       leftToRight: [fromLeft, toRight],
@@ -175,11 +175,11 @@ class PaperPoint extends PaperThingShape {
    * @returns {{width: number, height: number}}
    */
   get bounds() {
-    const x = this._centerPoint.x - PaperPoint.RADIUS - PaperPoint.CROSSHAIR_OVERFLOW;
-    const y = this._centerPoint.y - PaperPoint.RADIUS - PaperPoint.CROSSHAIR_OVERFLOW;
+    const x = this._centerPoint.x - PaperPoint.RADIUS - (PaperPoint.CROSSHAIR_OVERFLOW * 2);
+    const y = this._centerPoint.y - PaperPoint.RADIUS - (PaperPoint.CROSSHAIR_OVERFLOW * 2);
     return {
-      width: PaperPoint.DIAMETER + (PaperPoint.CROSSHAIR_OVERFLOW * 2),
-      height: PaperPoint.DIAMETER + (PaperPoint.CROSSHAIR_OVERFLOW * 2),
+      width: PaperPoint.DIAMETER + (PaperPoint.CROSSHAIR_OVERFLOW * 4),
+      height: PaperPoint.DIAMETER + (PaperPoint.CROSSHAIR_OVERFLOW * 4),
       x: x,
       y: y,
       point: this._centerPoint,
