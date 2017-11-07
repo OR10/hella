@@ -1,0 +1,28 @@
+{
+  "identifierName": "legacy",
+  "frameIndex": 0,
+  "incomplete": true,
+  "labeledThingId": "{{:labeledThingId}}",
+  "shapes": [
+    {
+      "id": "{{:shapeId}}",
+      "type": "pedestrian",
+      "bottomCenter": {
+        "x": 100,
+        "y": 51
+      },
+      "topCenter": {
+        "x": 100,
+        "y": 50
+      }
+    }
+  ],
+  "classes": [],
+  "_id": "{{:labeledThingInFrameDataId}}",
+  "type": "AppBundle.Model.LabeledThingInFrame",
+  "projectId": "{{:--project-id}}",
+  "taskId": "{{:--task-id}}",
+  "_rev": "{{:--revision}}",
+  "createdAt": "{{:--created-at}}",
+  "lastModifiedAt": "{{:--last-modified-at}}"
+}
