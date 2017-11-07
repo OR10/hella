@@ -14,6 +14,7 @@ class UploadFormDirective {
       uploadPath: '@',
       uploadCompletePath: '@',
       uploadCompleteMessage: '@',
+      uploadDisplayTaskConfigurationOverwrite: '@',
     };
 
     this.template = uploadFormTemplate;

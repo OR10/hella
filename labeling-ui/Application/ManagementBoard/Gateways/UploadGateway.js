@@ -11,10 +11,10 @@ class UploadGateway {
     this._apiService = apiService;
   }
 
-  markUploadAsFinished(path) {
+  markUploadAsFinished(path, data) {
     const url = this._apiService.getApiUrl(path);
 
-    return this._bufferedHttp.post(url, undefined, undefined, 'upload')
+    return this._bufferedHttp.post(url, data, undefined, 'upload')
       .then(
         response => {
           if (response.data && response.data.result) {

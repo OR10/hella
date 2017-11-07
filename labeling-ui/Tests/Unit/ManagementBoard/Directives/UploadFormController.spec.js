@@ -14,6 +14,11 @@ describe('UploadFormController test suite', () => {
   let uploadGateway;
 
   /**
+   * @type {TaskConfigurationGateway}
+   */
+  let taskConfigurationGateway;
+
+  /**
    * @type {OrganisationService}
    */
   let organisationService;
@@ -70,14 +75,18 @@ describe('UploadFormController test suite', () => {
 
   beforeEach(() => {
     uploadGateway = jasmine.createSpyObj('uploadGateway', ['getApiUrl', 'markUploadAsFinished']);
+    taskConfigurationGateway = jasmine.createSpyObj('taskConfigurationGateway', ['getRequirementsXmlConfigurations']);
     organisationService = jasmine.createSpyObj('organisationService', ['get', 'subscribe']);
     inProgressService = jasmine.createSpyObj('inProgressService', ['start', 'end']);
     uploadService = jasmine.createSpyObj('uploadService', ['reset', 'addFile']);
     modalService = jasmine.createSpyObj('modalService', ['info', 'show']);
 
+    taskConfigurationGateway.getRequirementsXmlConfigurations.and.returnValue(promise.resolve({}));
+
     controller = new UploadFormController(
       null,                 // $state
       uploadGateway,
+      taskConfigurationGateway,
       modalService,
       ListDialog,
       organisationService,

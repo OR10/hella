@@ -7,6 +7,7 @@ class UploadFormController {
   /**
    * @param {$state} $state
    * @param {UploadGateway} uploadGateway
+   * @param {TaskConfigurationGateway} taskConfigurationGateway
    * @param {ModalService} modalService
    * @param {ListDialog.constructor} ListDialog
    * @param {OrganisationService} organisationService
@@ -14,7 +15,7 @@ class UploadFormController {
    * @param {angular.$timeout} $timeout
    * @param {UploadService} uploadService
    */
-  constructor($state, uploadGateway, modalService, ListDialog, organisationService, inProgressService, $timeout, uploadService) {
+  constructor($state, uploadGateway, taskConfigurationGateway, modalService, ListDialog, organisationService, inProgressService, $timeout, uploadService) {
     /**
      * @type {$state}
      * @private
@@ -32,6 +33,12 @@ class UploadFormController {
      * @private
      */
     this._uploadGateway = uploadGateway;
+
+    /**
+     * @type {TaskConfigurationGateway}
+     * @private
+     */
+    this._taskConfigurationGateway = taskConfigurationGateway;
 
     /**
      * @type {ModalService}
@@ -84,6 +91,30 @@ class UploadFormController {
      */
     this.currentOrganisationId = organisationService.get();
 
+    /**
+     * @type {boolean}
+     */
+    this.uploadDisplayTaskConfigurationOverwrite = false;
+
+    /**
+     * @type {bool}
+     */
+    this.overwriteRequirementsXml = false;
+
+    /**
+     * @type {string}
+     */
+    this.taskConfigurationToOverwrite = null;
+
+    /**
+     * @type {Array.<Object>}
+     */
+    this.requirementsXmlTaskConfigurations = [];
+
+    this._taskConfigurationGateway.getRequirementsXmlConfigurations().then(configurations => {
+      this.requirementsXmlTaskConfigurations = configurations;
+    });
+
     this.$flow = null;
 
     organisationService.subscribe(newOrganisation => {
@@ -92,7 +123,11 @@ class UploadFormController {
   }
 
   _uploadComplete() {
-    this._uploadGateway.markUploadAsFinished(this.uploadCompletePath)
+    let data;
+    if (this.overwriteRequirementsXml) {
+      data = {'taskConfigurationId': this.taskConfigurationToOverwrite};
+    }
+    this._uploadGateway.markUploadAsFinished(this.uploadCompletePath, data)
       .then(
         result => {
           this.uploadInProgress = false;
@@ -251,6 +286,7 @@ class UploadFormController {
 UploadFormController.$inject = [
   '$state',
   'uploadGateway',
+  'taskConfigurationGateway',
   'modalService',
   'ListDialog',
   'organisationService',
