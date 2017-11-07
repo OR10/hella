@@ -110,12 +110,16 @@ class Import
      * @param                                     $xmlImportFilePath
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
+     * @param                                     $taskConfigurationId
      *
      * @return array
      * @throws \Exception
      */
-    public function importXml($xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user)
+    public function importXml($xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user, $taskConfigurationId = null)
     {
+        if ($taskConfigurationId !== null) {
+            $this->requirementsXml = $this->requirementsXmlFacade->find($taskConfigurationId);
+        }
         $xmlImport = new \DOMDocument();
         $xmlImport->load($xmlImportFilePath);
 

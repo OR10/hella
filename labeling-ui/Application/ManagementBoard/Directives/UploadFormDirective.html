@@ -69,6 +69,18 @@
                             </div>
                         </div>
                     </div>
+                  <div ng-if="vm.uploadDisplayTaskConfigurationOverwrite" class="upload-overwrite">
+                    <input type="checkbox" ng-model="vm.overwriteRequirementsXml" /> Overwrite RequirementsXML
+                    <div class="grid-content" ng-if="vm.overwriteRequirementsXml">
+                      <select id="requirementsTaskConfig" ng-model="vm.taskConfigurationToOverwrite">
+                        <option value="" disabled selected>Select task configuration</option>
+                        <option ng-repeat="taskConfig in vm.requirementsXmlTaskConfigurations"
+                                value="{{taskConfig.id}}">
+                          {{taskConfig.name}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
                 </td>
             </tr>
         </table>

@@ -21,6 +21,7 @@ class RequirementsXml
     {
         $this->taskConfigurationFacade = $taskConfigurationFacade;
     }
+
     /**
      * @param Model\TaskConfiguration $taskConfiguration
      *
@@ -29,6 +30,16 @@ class RequirementsXml
     public function save(Model\TaskConfiguration $taskConfiguration)
     {
         return $this->taskConfigurationFacade->save($taskConfiguration);
+    }
+
+    /**
+     * @param $taskConfigurationId
+     *
+     * @return Model\TaskConfiguration
+     */
+    public function find($taskConfigurationId)
+    {
+        return $this->taskConfigurationFacade->find($taskConfigurationId);
     }
 
     /**
