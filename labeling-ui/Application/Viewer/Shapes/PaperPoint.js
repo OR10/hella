@@ -124,25 +124,17 @@ class PaperPoint extends PaperThingShape {
   _getCrosshairCooridantesOfCenter() {
     const centerX = this._centerPoint.x;
     const centerY = this._centerPoint.y;
-    const shapeWidth = PaperPoint.CONTROL_SIZE - PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE;
+    const shapeWidth = PaperPoint.CONTROL_SIZE + PaperPoint.CROSSHAIR_OVERFLOW * 2;
 
-    const fromLeftCenter = new paper.Point(centerX - PaperPoint.CONTROL_SIZE - PaperPoint.CROSSHAIR_OVERFLOW, centerY);
-    const toLeftCenter = new paper.Point(fromLeftCenter.x + PaperPoint.CROSSHAIR_OVERFLOW + shapeWidth, centerY);
+    const fromLeft = new paper.Point(centerX - shapeWidth / 2, centerY);
+    const toRight = new paper.Point(centerX + shapeWidth / 2, centerY);
 
-    const fromTopCenter = new paper.Point(centerX, centerY - PaperPoint.CONTROL_SIZE - PaperPoint.CROSSHAIR_OVERFLOW);
-    const toTopCenter = new paper.Point(centerX, fromTopCenter.y + shapeWidth + PaperPoint.CROSSHAIR_OVERFLOW);
-
-    const fromRightCenter = new paper.Point(centerX + PaperPoint.CONTROL_SIZE + PaperPoint.CROSSHAIR_OVERFLOW, centerY);
-    const toRightCenter = new paper.Point(fromRightCenter.x - shapeWidth - PaperPoint.CROSSHAIR_OVERFLOW, centerY);
-
-    const fromBottomCenter = new paper.Point(centerX, centerY + PaperPoint.CONTROL_SIZE + PaperPoint.CROSSHAIR_OVERFLOW);
-    const toBottomCenter = new paper.Point(centerX, fromBottomCenter.y - shapeWidth - PaperPoint.CROSSHAIR_OVERFLOW);
+    const fromTop = new paper.Point(centerX, centerY - shapeWidth / 2);
+    const toBottom = new paper.Point(centerX, centerY + shapeWidth / 2);
 
     return {
-      left: [fromLeftCenter, toLeftCenter],
-      top: [fromTopCenter, toTopCenter],
-      right: [fromRightCenter, toRightCenter],
-      bottom: [fromBottomCenter, toBottomCenter],
+      leftToRight: [fromLeft, toRight],
+      topToBottom: [fromTop, toBottom],
     };
   }
 
@@ -274,7 +266,6 @@ PaperPoint.getClass = () => {
 };
 
 PaperPoint.CONTROL_SIZE = 6;
-PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE = 2;
 PaperPoint.CROSSHAIR_OVERFLOW = 3;
 PaperPoint.RADIUS = PaperPoint.CONTROL_SIZE;
 PaperPoint.DIAMETER = PaperPoint.RADIUS * 2;
