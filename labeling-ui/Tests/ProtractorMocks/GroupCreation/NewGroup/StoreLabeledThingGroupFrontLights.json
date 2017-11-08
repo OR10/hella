@@ -3,6 +3,7 @@
   "groupIds": [],
   "identifierName": "front-lights",
   "lineColor": "2",
+  "incomplete": true,
   "type": "AnnoStationBundle.Model.LabeledThingGroup",
   "projectId": "{{:--project-id}}",
   "taskId": "{{:--task-id}}",
