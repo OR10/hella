@@ -181,12 +181,12 @@ class ProjectImporter extends Controller\Base
         clearstatcache();
         $user                 = $this->tokenStorage->getToken()->getUser();
         $uploadCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $uploadId]);
-        $taskConfigurationId  = $request->request->get('taskConfigurationId');
+        $overwriteTaskConfigurationId  = $request->request->get('taskConfigurationId');
         $tasks = [];
         try {
             foreach (glob(sprintf('%s%s*.xml', $uploadCacheDirectory, DIRECTORY_SEPARATOR)) as $filePath) {
                 $tasks = array_merge(
-                    $this->projectImporter->importXml($filePath, $organisation, $user, $taskConfigurationId),
+                    $this->projectImporter->importXml($filePath, $organisation, $user, $overwriteTaskConfigurationId),
                     $tasks
                 );
             }

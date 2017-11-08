@@ -323,15 +323,19 @@ class TaskCreator
                 }
 
                 foreach ($project->getRequirementsXmlTaskInstructions() as $requirementsXmlTaskInstruction) {
-                    $predefinedClasses   = [];
-                    $taskType            = null;
-                    $instruction         = null;
-                    $taskConfigurationId = $requirementsXmlTaskInstruction['taskConfigurationId'];
+                    $predefinedClasses         = [];
+                    $taskType                  = null;
+                    $instruction               = null;
+                    $taskConfiguration         = null;
+                    $previousTaskConfiguration = null;
+                    $taskConfigurationId       = $requirementsXmlTaskInstruction['taskConfigurationId'];
 
                     if ($taskConfigurationId !== null) {
                         $taskConfiguration = $this->taskConfigurationFacade->find($taskConfigurationId);
-                    } else {
-                        $taskConfiguration = null;
+                    }
+
+                    if (isset($requirementsXmlTaskInstruction['previousConfigurationId'])) {
+                        $previousTaskConfiguration = $this->taskConfigurationFacade->find($requirementsXmlTaskInstruction['previousConfigurationId']);
                     }
 
                     $this->checkGenericXmlTaskInstructionPermissions($requirementsXmlTaskInstruction, $user);
@@ -353,6 +357,7 @@ class TaskCreator
                         $minimalVisibleShapeOverflow,
                         $drawingToolOptions,
                         $taskConfiguration,
+                        $previousTaskConfiguration,
                         $labelDataImportInProgress
                     );
                 }
@@ -430,6 +435,7 @@ class TaskCreator
         $minimalVisibleShapeOverflow = null,
         $drawingToolOptions = [],
         Model\TaskConfiguration $taskConfiguration = null,
+        Model\TaskConfiguration $previousTaskConfiguration = null,
         $labelDataImportInProgress = false
     ) : Model\LabelingTask
     {
@@ -480,6 +486,9 @@ class TaskCreator
         $taskConfigurationId = $taskConfiguration !== null
             ? $taskConfiguration->getId()
             : null;
+        $previousTaskConfigurationId = $previousTaskConfiguration !== null
+            ? $previousTaskConfiguration->getId()
+            : null;
 
         $task = new Model\LabelingTask(
             $video,
@@ -490,7 +499,8 @@ class TaskCreator
             $predefinedClasses,
             $imageTypes,
             $hideAttributeSelector,
-            $taskConfigurationId
+            $taskConfigurationId,
+            $previousTaskConfigurationId
         );
 
         $task->setDescriptionTitle('Identify the person');
