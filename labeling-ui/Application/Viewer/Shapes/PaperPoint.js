@@ -88,7 +88,7 @@ class PaperPoint extends PaperThingShape {
       radius: PaperPoint.CONTROL_SIZE,
       selected: false,
       strokeColor: this._color.primary,
-      strokeWidth: 2,
+      strokeWidth: 1,
       strokeScaling: false,
       dashArray: this.dashArray,
       fillColor: new paper.Color(0, 0, 0, 0),
@@ -109,7 +109,7 @@ class PaperPoint extends PaperThingShape {
           to: points[1],
           strokeColor: this._color.primary,
           selected: false,
-          strokeWidth: 2,
+          strokeWidth: 1,
           strokeScaling: false,
         })
       );
@@ -124,25 +124,17 @@ class PaperPoint extends PaperThingShape {
   _getCrosshairCooridantesOfCenter() {
     const centerX = this._centerPoint.x;
     const centerY = this._centerPoint.y;
-    const shapeWidth = PaperPoint.CONTROL_SIZE - PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE;
+    const shapeWidth = PaperPoint.CONTROL_SIZE + PaperPoint.CROSSHAIR_OVERFLOW * 2;
 
-    const fromLeftCenter = new paper.Point(centerX - PaperPoint.CONTROL_SIZE - PaperPoint.CROSSHAIR_OVERFLOW, centerY);
-    const toLeftCenter = new paper.Point(fromLeftCenter.x + PaperPoint.CROSSHAIR_OVERFLOW + shapeWidth, centerY);
+    const fromLeft = new paper.Point(centerX - shapeWidth, centerY);
+    const toRight = new paper.Point(centerX + shapeWidth, centerY);
 
-    const fromTopCenter = new paper.Point(centerX, centerY - PaperPoint.CONTROL_SIZE - PaperPoint.CROSSHAIR_OVERFLOW);
-    const toTopCenter = new paper.Point(centerX, fromTopCenter.y + shapeWidth + PaperPoint.CROSSHAIR_OVERFLOW);
-
-    const fromRightCenter = new paper.Point(centerX + PaperPoint.CONTROL_SIZE + PaperPoint.CROSSHAIR_OVERFLOW, centerY);
-    const toRightCenter = new paper.Point(fromRightCenter.x - shapeWidth - PaperPoint.CROSSHAIR_OVERFLOW, centerY);
-
-    const fromBottomCenter = new paper.Point(centerX, centerY + PaperPoint.CONTROL_SIZE + PaperPoint.CROSSHAIR_OVERFLOW);
-    const toBottomCenter = new paper.Point(centerX, fromBottomCenter.y - shapeWidth - PaperPoint.CROSSHAIR_OVERFLOW);
+    const fromTop = new paper.Point(centerX, centerY - shapeWidth);
+    const toBottom = new paper.Point(centerX, centerY + shapeWidth);
 
     return {
-      left: [fromLeftCenter, toLeftCenter],
-      top: [fromTopCenter, toTopCenter],
-      right: [fromRightCenter, toRightCenter],
-      bottom: [fromBottomCenter, toBottomCenter],
+      leftToRight: [fromLeft, toRight],
+      topToBottom: [fromTop, toBottom],
     };
   }
 
@@ -183,11 +175,11 @@ class PaperPoint extends PaperThingShape {
    * @returns {{width: number, height: number}}
    */
   get bounds() {
-    const x = this._centerPoint.x - PaperPoint.RADIUS - PaperPoint.CROSSHAIR_OVERFLOW;
-    const y = this._centerPoint.y - PaperPoint.RADIUS - PaperPoint.CROSSHAIR_OVERFLOW;
+    const x = this._centerPoint.x - PaperPoint.RADIUS - (PaperPoint.CROSSHAIR_OVERFLOW * 2);
+    const y = this._centerPoint.y - PaperPoint.RADIUS - (PaperPoint.CROSSHAIR_OVERFLOW * 2);
     return {
-      width: PaperPoint.DIAMETER + (PaperPoint.CROSSHAIR_OVERFLOW * 2),
-      height: PaperPoint.DIAMETER + (PaperPoint.CROSSHAIR_OVERFLOW * 2),
+      width: PaperPoint.DIAMETER + (PaperPoint.CROSSHAIR_OVERFLOW * 4),
+      height: PaperPoint.DIAMETER + (PaperPoint.CROSSHAIR_OVERFLOW * 4),
       x: x,
       y: y,
       point: this._centerPoint,
@@ -274,7 +266,6 @@ PaperPoint.getClass = () => {
 };
 
 PaperPoint.CONTROL_SIZE = 6;
-PaperPoint.FREE_SPACE_BETWEEN_POINT_AND_LINE = 2;
 PaperPoint.CROSSHAIR_OVERFLOW = 3;
 PaperPoint.RADIUS = PaperPoint.CONTROL_SIZE;
 PaperPoint.DIAMETER = PaperPoint.RADIUS * 2;
