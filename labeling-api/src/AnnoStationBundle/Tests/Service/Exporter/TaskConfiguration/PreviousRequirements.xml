@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
+    <thing id="sign" shape="cuboid" name="Traffic Sign">
+        <class id="sign-type" name="Sign type">
+            <value id="u-turn" name="U-Turn"/>
+            <value id="speed-sign" name="Speed sign">
+                <class ref="speed" />
+            </value>
+        </class>
+        <class ref="country" />
+    </thing>
+    <private>
+        <class name="Country" id="country">
+            <value id="germany" name="Germany" />
+            <value id="spain" name="Spain" />
+            <value id="france" name="France" />
+        </class>
+    </private>
+</requirements>

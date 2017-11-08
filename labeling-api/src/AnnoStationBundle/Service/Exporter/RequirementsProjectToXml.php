@@ -18,6 +18,7 @@ class RequirementsProjectToXml
 {
     const XML_NAMESPACE = 'http://weblabel.hella-aglaia.com/schema/export';
     const REQUIREMENTS_XML_POSTFIX = 'labelconfiguration';
+    const REQUIREMENTS_XML_PREVIOUS_POSTFIX = 'old';
 
     /**
      * @var Facade\Exporter
@@ -172,17 +173,21 @@ class RequirementsProjectToXml
         $this->exporterFacade->save($export);
 
         try {
-            $zipData            = array();
-            $project            = $this->projectFacade->find($export->getProjectId());
-            $videoIterator      = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
-            $taskConfigurations = [];
+            $zipData                    = array();
+            $project                    = $this->projectFacade->find($export->getProjectId());
+            $videoIterator              = new Iterator\Video($this->projectFacade, $this->videoFacade, $project);
+            $taskConfigurations         = [];
+            $previousTaskConfigurations = [];
             foreach ($videoIterator as $video) {
                 $labelingTaskIterator = new Iterator\LabelingTask($this->labelingTaskFacade, $video);
                 /** @var Model\LabelingTask $task */
                 foreach ($labelingTaskIterator as $task) {
                     $xmlConfiguration = $this->taskConfiguration->find($task->getTaskConfigurationId());
-
                     $taskConfigurations[$task->getTaskConfigurationId()] = $xmlConfiguration;
+                    if ($task->getPreviousTaskConfigurationId() !== null) {
+                        $previousXmlConfiguration = $this->taskConfiguration->find($task->getPreviousTaskConfigurationId());
+                        $previousTaskConfigurations[$task->getPreviousTaskConfigurationId()] = $previousXmlConfiguration;
+                    }
                 }
                 $additionalFrameNumberMapping = null;
                 if ($project->getAdditionalFrameNumberMappingIdForVideo($video) !== null) {
@@ -341,6 +346,16 @@ class RequirementsProjectToXml
                     'xml'
                 );
                 $zipData[$filename] = $taskConfiguration->getRawData();
+            }
+            /** @var Model\TaskConfiguration $taskConfiguration */
+            foreach ($previousTaskConfigurations as $previousTaskConfiguration) {
+                $filename           = sprintf(
+                    '%s.%s.%s',
+                    basename($previousTaskConfiguration->getFilename(), '.xml'),
+                    self::REQUIREMENTS_XML_PREVIOUS_POSTFIX,
+                    'xml'
+                );
+                $zipData[$filename] = $previousTaskConfiguration->getRawData();
             }
 
             $zipContent = $this->compressData($zipData);

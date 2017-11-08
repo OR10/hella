@@ -653,15 +653,20 @@ class Project extends Base
     }
 
     /**
-     * @param $instruction
-     * @param $taskConfigurationId
+     * @param      $instruction
+     * @param      $taskConfigurationId
+     * @param null $previousConfigurationId
      */
-    public function addRequirementsXmlTaskInstruction($instruction, $taskConfigurationId)
-    {
+    public function addRequirementsXmlTaskInstruction(
+        $instruction,
+        $taskConfigurationId,
+        $previousConfigurationId = null
+    ) {
         $this->checkTaskInstructionProperty();
         $this->taskInstructions['requirementsXml'][] = [
-            'instruction'         => $instruction,
-            'taskConfigurationId' => $taskConfigurationId,
+            'instruction'             => $instruction,
+            'taskConfigurationId'     => $taskConfigurationId,
+            'previousConfigurationId' => $previousConfigurationId,
         ];
     }
 

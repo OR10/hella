@@ -188,6 +188,12 @@ class LabelingTask extends Base
     private $taskConfigurationId;
 
     /**
+     * @var string
+     * @CouchDB\Field(type="string")
+     */
+    private $previousTaskConfigurationId;
+
+    /**
      * @var array
      * @CouchDB\Field(type="mixed")
      */
@@ -202,15 +208,16 @@ class LabelingTask extends Base
     private $labelDataImportInProgress = false;
 
     /**
-     * @param Video     $video
-     * @param Project   $project
-     * @param array     $frameNumberMapping
-     * @param string    $taskType
-     * @param string    $drawingTool
-     * @param array     $predefinedClasses
-     * @param array     $requiredImageTypes
-     * @param bool      $hideAttributeSelector
-     * @param string    $taskConfigurationId
+     * @param Video       $video
+     * @param Project     $project
+     * @param array       $frameNumberMapping
+     * @param string      $taskType
+     * @param string      $drawingTool
+     * @param array       $predefinedClasses
+     * @param array       $requiredImageTypes
+     * @param bool        $hideAttributeSelector
+     * @param string      $taskConfigurationId
+     * @param string|null $previousTaskConfigurationId
      *
      * @return LabelingTask
      */
@@ -223,7 +230,8 @@ class LabelingTask extends Base
         array $predefinedClasses = array(),
         array $requiredImageTypes = array(),
         bool $hideAttributeSelector = false,
-        string $taskConfigurationId = null
+        string $taskConfigurationId = null,
+        string $previousTaskConfigurationId = null
     ) {
         return new static(
             $video,
@@ -234,20 +242,22 @@ class LabelingTask extends Base
             $predefinedClasses,
             $requiredImageTypes,
             $hideAttributeSelector,
-            $taskConfigurationId
+            $taskConfigurationId,
+            $previousTaskConfigurationId
         );
     }
 
     /**
-     * @param Video     $video
-     * @param Project   $project
-     * @param array     $frameNumberMapping
-     * @param string    $taskType
-     * @param string    $drawingTool
-     * @param array     $predefinedClasses
-     * @param array     $requiredImageTypes
-     * @param bool      $hideAttributeSelector
-     * @param string    $taskConfigurationId
+     * @param Video       $video
+     * @param Project     $project
+     * @param array       $frameNumberMapping
+     * @param string      $taskType
+     * @param string      $drawingTool
+     * @param array       $predefinedClasses
+     * @param array       $requiredImageTypes
+     * @param bool        $hideAttributeSelector
+     * @param string      $taskConfigurationId
+     * @param string|null $previousTaskConfigurationId
      */
     public function __construct(
         Video $video,
@@ -258,17 +268,19 @@ class LabelingTask extends Base
         array $predefinedClasses = array(),
         array $requiredImageTypes = array(),
         bool $hideAttributeSelector = false,
-        string $taskConfigurationId = null
+        string $taskConfigurationId = null,
+        string $previousTaskConfigurationId = null
     ) {
-        $this->videoId               = $video->getId();
-        $this->projectId             = $project->getId();
-        $this->frameNumberMapping    = $frameNumberMapping;
-        $this->taskType              = $taskType;
-        $this->drawingTool           = $drawingTool;
-        $this->predefinedClasses     = $predefinedClasses;
-        $this->requiredImageTypes    = $requiredImageTypes;
-        $this->hideAttributeSelector = $hideAttributeSelector;
-        $this->taskConfigurationId   = $taskConfigurationId;
+        $this->videoId                     = $video->getId();
+        $this->projectId                   = $project->getId();
+        $this->frameNumberMapping          = $frameNumberMapping;
+        $this->taskType                    = $taskType;
+        $this->drawingTool                 = $drawingTool;
+        $this->predefinedClasses           = $predefinedClasses;
+        $this->requiredImageTypes          = $requiredImageTypes;
+        $this->hideAttributeSelector       = $hideAttributeSelector;
+        $this->taskConfigurationId         = $taskConfigurationId;
+        $this->previousTaskConfigurationId = $previousTaskConfigurationId;
     }
 
     /**
@@ -651,6 +663,14 @@ class LabelingTask extends Base
     public function getTaskConfigurationId()
     {
         return $this->taskConfigurationId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPreviousTaskConfigurationId()
+    {
+        return $this->previousTaskConfigurationId;
     }
 
     /**

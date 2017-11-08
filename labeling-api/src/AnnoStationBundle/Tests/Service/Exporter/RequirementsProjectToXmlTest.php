@@ -29,34 +29,10 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
     public function testXmlExport()
     {
-        $labelManagerUser     = $this->createLabelManagerUser();
-        $date                 = new \DateTime('2017-01-20 16:00:00', new \DateTimeZone('UTC'));
-        $organisation         = $this->createOrganisation();
-        $xmlTaskConfiguration = file_get_contents(__DIR__ . '/TaskConfiguration/Requirements.xml');
-        $project              = $this->createProject('project-id-1', $organisation, $labelManagerUser, $date);
-        $project->addAdditionalFrameNumberMapping($this->createAdditionalFrameNumberMapping($organisation));
-        $this->projectFacade->save($project);
-        $video                = $this->createVideoWithCalibration($organisation);
-        $video->setOriginalId('e363906c1c4a5a5bd01e8902467d4b0e');
-        $this->videoFacade->save($video);
-        $task                 = $this->createTask(
-            $project,
-            $video,
-            $this->createTaskConfiguration(
-                $xmlTaskConfiguration,
-                $this->createOrganisation(),
-                $labelManagerUser,
-                'testconfig',
-                'testconfig.xml',
-                'application/xml',
-                'requirementsXml'
-            ),
-            null,
-            AppBundleModel\LabelingTask::TYPE_OBJECT_LABELING
-        );
-
-        $this->createCuboids($task);
-        $this->createLabeledFrames($task);
+        $labelManagerUser = $this->createLabelManagerUser();
+        $date             = new \DateTime('2017-01-20 16:00:00', new \DateTimeZone('UTC'));
+        $organisation     = $this->createOrganisation();
+        $project          = $this->getProject($organisation, $labelManagerUser, $date);
 
         $export = $this->exporterFacade->save(
             new AppBundleModel\Export($project, $labelManagerUser, $date)
@@ -71,6 +47,76 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         );
 
         $this->assertEquals(file_get_contents(__DIR__ . '/Expected/Requirements.xml'), $content);
+    }
+
+    public function testXmlExportWithPreviousConfigurationFile()
+    {
+        $labelManagerUser = $this->createLabelManagerUser();
+        $date             = new \DateTime('2017-01-20 16:00:00', new \DateTimeZone('UTC'));
+        $organisation     = $this->createOrganisation();
+        $project          = $this->getProject($organisation, $labelManagerUser, $date, true);
+
+        $export = $this->exporterFacade->save(
+            new AppBundleModel\Export($project, $labelManagerUser, $date)
+        );
+
+        $this->exporter->export($export);
+
+        $attachments = $export->getAttachments();
+
+        $this->assertEquals(
+            $this->getContentFromZip(reset($attachments)->getRawData(), 'testconfig.labelconfiguration.xml'),
+            file_get_contents(__DIR__ . '/TaskConfiguration/Requirements.xml')
+        );
+        $this->assertEquals(
+            $this->getContentFromZip(reset($attachments)->getRawData(), 'previoustestconfig.old.xml'),
+            file_get_contents(__DIR__ . '/TaskConfiguration/PreviousRequirements.xml')
+        );
+    }
+
+    private function getProject($organisation, $labelManagerUser, $date, $withPreviousTaskConfiguration = false)
+    {
+        $project              = $this->createProject('project-id-1', $organisation, $labelManagerUser, $date);
+        $project->addAdditionalFrameNumberMapping($this->createAdditionalFrameNumberMapping($organisation));
+        $this->projectFacade->save($project);
+        $video = $this->createVideoWithCalibration($organisation);
+        $video->setOriginalId('e363906c1c4a5a5bd01e8902467d4b0e');
+        $this->videoFacade->save($video);
+
+        $taskConfiguration         = $this->createTaskConfiguration(
+            file_get_contents(__DIR__ . '/TaskConfiguration/Requirements.xml'),
+            $this->createOrganisation(),
+            $labelManagerUser,
+            'testconfig',
+            'testconfig.xml',
+            'application/xml',
+            'requirementsXml'
+        );
+        $previousTaskConfiguration = null;
+        if ($withPreviousTaskConfiguration) {
+            $previousTaskConfiguration = $this->createTaskConfiguration(
+                file_get_contents(__DIR__ . '/TaskConfiguration/PreviousRequirements.xml'),
+                $this->createOrganisation(),
+                $labelManagerUser,
+                'previoustestconfig',
+                'previoustestconfig.xml',
+                'application/xml',
+                'requirementsXml'
+            );
+        }
+
+        $task = $this->createTask(
+            $project,
+            $video,
+            $taskConfiguration,
+            null,
+            AppBundleModel\LabelingTask::TYPE_OBJECT_LABELING,
+            $previousTaskConfiguration
+        );
+        $this->createCuboids($task);
+        $this->createLabeledFrames($task);
+
+        return $project;
     }
 
     private function removeIdValues($content)

@@ -92,6 +92,7 @@ class CouchDbTestCase extends Tests\WebTestCase
      * @param Model\TaskConfiguration $taskConfiguration
      * @param null                    $drawingTool
      * @param string                  $taskType
+     * @param TaskConfiguration|null  $previousTaskConfiguration
      *
      * @return Model\LabelingTask
      */
@@ -100,7 +101,8 @@ class CouchDbTestCase extends Tests\WebTestCase
         Model\Video $video,
         Model\TaskConfiguration $taskConfiguration = null,
         $drawingTool = null,
-        $taskType = Model\LabelingTask::TYPE_OBJECT_LABELING
+        $taskType = Model\LabelingTask::TYPE_OBJECT_LABELING,
+        Model\TaskConfiguration $previousTaskConfiguration = null
     ) {
         $task = Model\LabelingTask::create(
             $video,
@@ -111,7 +113,8 @@ class CouchDbTestCase extends Tests\WebTestCase
             [],
             [],
             false,
-            $taskConfiguration === null ? null : $taskConfiguration->getId()
+            $taskConfiguration === null ? null : $taskConfiguration->getId(),
+            $previousTaskConfiguration === null ? null : $previousTaskConfiguration->getId()
         );
         $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_IN_PROGRESS);
         $this->labelingTaskFacade->save($task);

@@ -22,6 +22,11 @@ class Import
     private $requirementsXml;
 
     /**
+     * @var Model\TaskConfiguration\RequirementsXml
+     */
+    private $previousRequirementsXml;
+
+    /**
      * @var Model\LabelingTask[]
      */
     private $tasks;
@@ -110,16 +115,13 @@ class Import
      * @param                                     $xmlImportFilePath
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
-     * @param                                     $taskConfigurationId
+     * @param                                     $overwriteTaskConfigurationId
      *
      * @return array
      * @throws \Exception
      */
-    public function importXml($xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user, $taskConfigurationId = null)
+    public function importXml($xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user, $overwriteTaskConfigurationId = null)
     {
-        if ($taskConfigurationId !== null) {
-            $this->requirementsXml = $this->requirementsXmlFacade->find($taskConfigurationId);
-        }
         $xmlImport = new \DOMDocument();
         $xmlImport->load($xmlImportFilePath);
 
@@ -143,6 +145,11 @@ class Import
 
         $xpath = new \DOMXPath($xmlImport);
         $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/export");
+
+        if ($overwriteTaskConfigurationId !== null) {
+            $this->requirementsXml = $this->requirementsXmlFacade->find($overwriteTaskConfigurationId);
+            $this->previousRequirementsXml = $this->createRequirementsXml($xpath, $xmlImportFilePath, $organisation, $user);
+        }
 
         if ($this->requirementsXml === null) {
             $requirementsXml       = $this->createRequirementsXml($xpath, $xmlImportFilePath, $organisation, $user);
@@ -227,7 +234,8 @@ class Import
         $project->setAvailableExports(['requirementsXml']);
         $project->addRequirementsXmlTaskInstruction(
             Model\LabelingTask::INSTRUCTION_MISCELLANEOUS,
-            $requirementsXml->getId()
+            $requirementsXml->getId(),
+            ($this->previousRequirementsXml === null) ? null : $this->previousRequirementsXml->getId()
         );
 
         $this->projectFacade->save($project);
