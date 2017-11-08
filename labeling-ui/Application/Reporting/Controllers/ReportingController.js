@@ -25,7 +25,9 @@ class ReportingController {
     this.project = project;
     this.report = report;
 
-    this.classesThingList = this._getClassesThingList(report.report.numberOfTotalClassesInLabeledThingInFrameByClasses);
+    if (report.report.reportType === 'requirements_xml') {
+      this.classesThingList = this._getClassesThingList(report.report.numberOfTotalClassesInLabeledThingInFrameByClasses);
+    }
   }
 
   goToTaskView(taskId) {
