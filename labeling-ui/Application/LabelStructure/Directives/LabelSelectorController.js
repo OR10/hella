@@ -163,6 +163,11 @@ export default class LabelSelectorController {
     this.selectedOnlyAccordionControl = {};
 
     /**
+     * @type {string}
+     */
+    this.searchAttributes = '';
+
+    /**
      * @type {ShapeSelectionService}
      * @private
      */
@@ -360,7 +365,7 @@ export default class LabelSelectorController {
     }
 
     const newChoices = {};
-    const newPages = [];
+    let newPages = [];
     const seenPages = {};
 
     list.forEach(node => {
@@ -375,6 +380,11 @@ export default class LabelSelectorController {
       page.responses = node.children.map(
         child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass})
       );
+      if (this.searchAttributes.length > 0) {
+        page.expandedOnDefault = true;
+      } else {
+        page.expandedOnDefault = false;
+      }
     });
 
     // Remove labels belonging to removed pages
@@ -395,12 +405,49 @@ export default class LabelSelectorController {
       });
     }
 
+    if (this.searchAttributes.length > 0) {
+      this.multiSelection = true;
+      newPages = newPages.filter(page => {
+        let returnValue = false;
+        if (page.challenge.toLowerCase().includes(this.searchAttributes.toLowerCase()) || page.id.toLowerCase().includes(this.searchAttributes.toLowerCase())) {
+          returnValue = true;
+        }
+
+        let foundInPages = false;
+        page.responses.forEach(res => {
+          if (res.response.toLowerCase().includes(this.searchAttributes.toLowerCase())) {
+            returnValue = true;
+            foundInPages = true;
+          }
+        });
+
+        if (foundInPages) {
+          page.responses = page.responses.filter(res => {
+            if (res.response.toLowerCase().includes(this.searchAttributes.toLowerCase())) {
+              return true;
+            }
+
+            return false;
+          });
+        }
+
+        return returnValue;
+      });
+    }
+
     this.pages = newPages;
     this.choices = newChoices;
 
     if (this.activePageIndex === null && this.pages.length > 0) {
       this.activePageIndex = 0;
     }
+  }
+
+  applySearchFilter() {
+    if (this.searchAttributes.length === 0) {
+      this.multiSelection = false;
+    }
+    this._updatePagesAndChoices();
   }
 
   /**
