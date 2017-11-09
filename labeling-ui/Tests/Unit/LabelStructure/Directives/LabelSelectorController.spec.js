@@ -164,4 +164,139 @@ describe('LabelSelectorController tests', () => {
       expect(returnValue).toEqual(id);
     });
   });
+
+  describe('pages', () => {
+    let controller;
+
+    beforeEach(() => {
+      controller = createController();
+      controller.selectedLabelStructureObject = new LabelStructureThing('1', 'foobar', 'tea-time');
+
+      const labeledObjectMock = jasmine.createSpyObj('LabeledObject', ['extractClassList']);
+      labeledObjectMock.extractClassList.and.returnValue(['Yellow']);
+
+      spyOn(controller, '_getSelectedLabeledObject').and.returnValue(labeledObjectMock);
+      spyOn(controller, '_labelStructureFitsLabeledObject').and.returnValue(true);
+
+      const labelStructure = jasmine.createSpyObj(
+        'requirementsLabelStructure',
+        ['getEnabledClassesForLabeledObjectAndClassList']
+      );
+      labelStructure.getEnabledClassesForLabeledObjectAndClassList.and.returnValue(
+        [
+          {
+            name: 'street_light',
+            metadata: {
+              challenge: 'Street Light',
+              value: 'Yellow',
+            },
+            children: [
+              {
+                name: 'Off',
+                metadata: {
+                  response: 'Off',
+                },
+              },
+              {
+                name: 'Red',
+                metadata: {
+                  response: 'Red',
+                },
+              },
+              {
+                name: 'Yellow',
+                metadata: {
+                  response: 'Yellow',
+                },
+              },
+            ],
+          },
+          {
+            name: 'road_type',
+            metadata: {
+              challenge: 'Road Type',
+              value: 'City',
+            },
+            children: [
+              {
+                name: 'City',
+                metadata: {
+                  response: 'City',
+                },
+              },
+              {
+                name: 'Highway',
+                metadata: {
+                  response: 'Highway',
+                },
+              },
+              {
+                name: 'Highway Exit',
+                metadata: {
+                  response: 'Highway Exit',
+                },
+              },
+            ],
+          },
+        ]
+      );
+      controller.labelStructure = labelStructure;
+    });
+
+    it('Update label selector pages', () => {
+      controller._updatePagesAndChoices();
+
+      const challenges = controller.pages.map(page => {
+        return page.challenge;
+      });
+
+      const values = {};
+      controller.pages.forEach(page => {
+        values[page.id] = page.responses.map(res => {
+          return res.response;
+        });
+      });
+
+      expect(challenges).toEqual(['Street Light', 'Road Type']);
+      expect(values).toEqual({street_light: ['Off', 'Red', 'Yellow'], road_type: ['City', 'Highway', 'Highway Exit']});
+    });
+
+    it('Update label selector pages with search query for challenges', () => {
+      controller.searchAttributes = 'Road';
+      controller._updatePagesAndChoices();
+
+      const challenges = controller.pages.map(page => {
+        return page.challenge;
+      });
+
+      const values = {};
+      controller.pages.forEach(page => {
+        values[page.id] = page.responses.map(res => {
+          return res.response;
+        });
+      });
+
+      expect(challenges).toEqual(['Road Type']);
+      expect(values).toEqual({road_type: ['City', 'Highway', 'Highway Exit']});
+    });
+
+    it('Update label selector pages with search query for values', () => {
+      controller.searchAttributes = 'Exit';
+      controller._updatePagesAndChoices();
+
+      const challenges = controller.pages.map(page => {
+        return page.challenge;
+      });
+
+      const values = {};
+      controller.pages.forEach(page => {
+        values[page.id] = page.responses.map(res => {
+          return res.response;
+        });
+      });
+
+      expect(challenges).toEqual(['Road Type']);
+      expect(values).toEqual({road_type: ['Highway Exit']});
+    });
+  });
 });
