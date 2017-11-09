@@ -426,7 +426,10 @@ export default class LabelSelectorController {
       this.multiSelection = true;
       newPages = newPages.filter(page => {
         let returnValue = false;
-        if (page.challenge.toLowerCase().includes(this.searchAttributes.toLowerCase()) || page.id.toLowerCase().includes(this.searchAttributes.toLowerCase())) {
+        const searchValueInChallenge = page.challenge.toLowerCase().includes(this.searchAttributes.toLowerCase());
+        const searchValueInId = page.id.toLowerCase().includes(this.searchAttributes.toLowerCase());
+
+        if (searchValueInChallenge || searchValueInId) {
           returnValue = true;
         }
 
