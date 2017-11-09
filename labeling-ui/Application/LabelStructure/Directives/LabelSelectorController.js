@@ -1,4 +1,5 @@
 import {equals} from 'angular';
+import angular from 'angular';
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
@@ -34,6 +35,7 @@ export default class LabelSelectorController {
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {$q} $q
    */
   constructor(
@@ -50,7 +52,8 @@ export default class LabelSelectorController {
     modalService,
     applicationState,
     taskGateway,
-    shapeSelectionService
+    shapeSelectionService,
+    keyboardShortcutService
   ) {
     /**
      * Pages displayed by the wizzards
@@ -163,11 +166,21 @@ export default class LabelSelectorController {
     this.selectedOnlyAccordionControl = {};
 
     /**
+     * @type {string}
+     */
+    this.searchAttributes = '';
+
+    /**
      * @type {ShapeSelectionService}
      * @private
      */
     this._shapeSelectionService = shapeSelectionService;
 
+    /**
+     * @type {KeyboardShortcutService}
+     * @private
+     */
+    this._keyboardShortcutService = keyboardShortcutService;
 
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
       if (newSelectedPaperShape === null) {
@@ -253,6 +266,15 @@ export default class LabelSelectorController {
       if (newStyle === 'selectedOnly') {
         this.selectedOnlyAccordionControl.expandAll();
       }
+    });
+
+    keyboardShortcutService.registerOverlay('label-selector', false);
+    this._keyboardShortcutService.addHotkey('label-selector', {
+      combo: ['ctrl+f'],
+      description: 'Set focus to search in the attribute list',
+      callback: () => {
+        angular.element(document.body).find('input').focus();
+      },
     });
   }
 
@@ -360,7 +382,7 @@ export default class LabelSelectorController {
     }
 
     const newChoices = {};
-    const newPages = [];
+    let newPages = [];
     const seenPages = {};
 
     list.forEach(node => {
@@ -375,6 +397,11 @@ export default class LabelSelectorController {
       page.responses = node.children.map(
         child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass})
       );
+      if (this.searchAttributes.length > 0) {
+        page.expandedOnDefault = true;
+      } else {
+        page.expandedOnDefault = false;
+      }
     });
 
     // Remove labels belonging to removed pages
@@ -395,12 +422,52 @@ export default class LabelSelectorController {
       });
     }
 
+    if (this.searchAttributes.length > 0) {
+      this.multiSelection = true;
+      newPages = newPages.filter(page => {
+        let returnValue = false;
+        const searchValueInChallenge = page.challenge.toLowerCase().includes(this.searchAttributes.toLowerCase());
+        const searchValueInId = page.id.toLowerCase().includes(this.searchAttributes.toLowerCase());
+
+        if (searchValueInChallenge || searchValueInId) {
+          returnValue = true;
+        }
+
+        let foundInPages = false;
+        page.responses.forEach(res => {
+          if (res.response.toLowerCase().includes(this.searchAttributes.toLowerCase())) {
+            returnValue = true;
+            foundInPages = true;
+          }
+        });
+
+        if (foundInPages) {
+          page.responses = page.responses.filter(res => {
+            if (res.response.toLowerCase().includes(this.searchAttributes.toLowerCase())) {
+              return true;
+            }
+
+            return false;
+          });
+        }
+
+        return returnValue;
+      });
+    }
+
     this.pages = newPages;
     this.choices = newChoices;
 
     if (this.activePageIndex === null && this.pages.length > 0) {
       this.activePageIndex = 0;
     }
+  }
+
+  applySearchFilter() {
+    if (this.searchAttributes.length === 0) {
+      this.multiSelection = false;
+    }
+    this._updatePagesAndChoices();
   }
 
   /**
@@ -603,4 +670,5 @@ LabelSelectorController.$inject = [
   'applicationState',
   'taskGateway',
   'shapeSelectionService',
+  'keyboardShortcutService',
 ];

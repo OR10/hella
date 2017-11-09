@@ -41,6 +41,7 @@
             </label>
         </div>
     </div>
+    <div><input type="text" id="searchAttributes" placeholder="Search" ng-model="vm.searchAttributes" ng-change="vm.applySearchFilter()" ng-show="vm.show()"></div>
 
     <!--Start accordion View-->
     <v-accordion class="accordion"
@@ -48,7 +49,7 @@
                  ng-show="vm.viewStyle === 'list' && vm.show()"
                  control="vm.accordionControl"
     >
-        <v-pane id="{{page.id}}" ng-repeat="page in vm.pages track by page.id">
+        <v-pane id="{{page.id}}" ng-repeat="page in vm.pages track by page.id" expanded="page.expandedOnDefault">
             <v-pane-header>
                 <div class="grid-block noscroll">
                     <div class="title">
