@@ -184,10 +184,16 @@ class RequirementsLabelStructure extends LabelStructure {
       const identifier = thingElement.attributes.id.value;
       const name = thingElement.attributes.name.value;
       const shape = thingElement.attributes.shape.value;
+      // optional fields
+      let multiSelect = false;
+      const multiSelectKey = thingElement.attributes['multi-selection'];
+      if (multiSelectKey !== undefined) {
+        multiSelect = multiSelectKey.value === 'true';
+      }
 
       thingMap.set(
         identifier,
-        new LabelStructureThing(identifier, name, shape)
+        new LabelStructureThing(identifier, name, shape, multiSelect)
       );
     }
 
@@ -209,10 +215,16 @@ class RequirementsLabelStructure extends LabelStructure {
       const identifier = groupElement.attributes.id.value;
       const name = groupElement.attributes.name.value;
       const shape = 'group-rectangle';
+      // optional fields
+      let multiSelect = false;
+      const multiSelectKey = groupElement.attributes['multi-selection'];
+      if (multiSelectKey !== undefined) {
+        multiSelect = multiSelectKey.value === 'true';
+      }
 
       groupMap.set(
         identifier,
-        new LabelStructureGroup(identifier, name, shape)
+        new LabelStructureGroup(identifier, name, shape, multiSelect)
       );
     }
 
