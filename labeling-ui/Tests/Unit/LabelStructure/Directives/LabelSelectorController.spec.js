@@ -23,6 +23,11 @@ describe('LabelSelectorController tests', () => {
    */
   let shapeSelectionService;
 
+  /**
+   * @type {KeyboardShortcutService}
+   */
+  let keyboardShortcutService;
+
   beforeEach(inject($rootScope => {
     rootScope = $rootScope;
     scope = $rootScope.$new();
@@ -31,6 +36,7 @@ describe('LabelSelectorController tests', () => {
   beforeEach(() => {
     shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count']);
     shapeSelectionService.count.and.returnValue(1);
+    keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey', 'registerOverlay']);
   });
 
   function createController() {
@@ -48,7 +54,8 @@ describe('LabelSelectorController tests', () => {
       null, // modalService
       null, // applicationState
       null, // taskGateway
-      shapeSelectionService
+      shapeSelectionService,
+      keyboardShortcutService
     );
   }
 

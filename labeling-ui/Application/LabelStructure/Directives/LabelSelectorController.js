@@ -34,6 +34,7 @@ export default class LabelSelectorController {
    * @param {ApplicationState} applicationState
    * @param {TaskGateway} taskGateway
    * @param {ShapeSelectionService} shapeSelectionService
+   * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {$q} $q
    */
   constructor(
@@ -50,7 +51,8 @@ export default class LabelSelectorController {
     modalService,
     applicationState,
     taskGateway,
-    shapeSelectionService
+    shapeSelectionService,
+    keyboardShortcutService
   ) {
     /**
      * Pages displayed by the wizzards
@@ -173,6 +175,11 @@ export default class LabelSelectorController {
      */
     this._shapeSelectionService = shapeSelectionService;
 
+    /**
+     * @type {KeyboardShortcutService}
+     * @private
+     */
+    this._keyboardShortcutService = keyboardShortcutService;
 
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
       if (newSelectedPaperShape === null) {
@@ -258,6 +265,15 @@ export default class LabelSelectorController {
       if (newStyle === 'selectedOnly') {
         this.selectedOnlyAccordionControl.expandAll();
       }
+    });
+
+    keyboardShortcutService.registerOverlay('label-selector', false);
+    this._keyboardShortcutService.addHotkey('label-selector', {
+      combo: ['ctrl+f'],
+      description: 'Set focus to search in the attribute list',
+      callback: () => {
+        angular.element(document.body).find('input').focus();
+      },
     });
   }
 
@@ -650,4 +666,5 @@ LabelSelectorController.$inject = [
   'applicationState',
   'taskGateway',
   'shapeSelectionService',
+  'keyboardShortcutService',
 ];
