@@ -403,6 +403,16 @@ title-bar {
   .upload-overwrite {
     padding-bottom: 24px;
   }
+  .alert-info {
+    padding: 15px;
+    border: 1px solid;
+    border-radius: 4px;
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 }
 .organisation-tag {
   background: $color-ut-yellow;

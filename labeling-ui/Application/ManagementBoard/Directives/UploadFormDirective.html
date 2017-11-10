@@ -72,6 +72,8 @@
                   <div ng-if="vm.uploadDisplayTaskConfigurationOverwrite" class="upload-overwrite">
                     <input type="checkbox" ng-model="vm.overwriteRequirementsXml" /> Overwrite RequirementsXML
                     <div class="grid-content" ng-if="vm.overwriteRequirementsXml">
+                        <div class="alert-info">If the imported shapes does not match any thing type it will be removed.<br />
+                            Any class that does not match with the requirements.xml will be removed from the shape.</div>
                       <select id="requirementsTaskConfig" ng-model="vm.taskConfigurationToOverwrite">
                         <option value="" disabled selected>Select task configuration</option>
                         <option ng-repeat="taskConfig in vm.requirementsXmlTaskConfigurations"
