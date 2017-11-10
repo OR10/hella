@@ -24,6 +24,7 @@ import ProjectsView from './Views/ProjectsView.html!';
 import ProjectCreateController from './Controllers/ProjectCreateController';
 import ProjectCreateView from './Views/ProjectCreateView.html!';
 import ProjectGateway from './Gateways/ProjectGateway';
+import CampaignGateway from './Gateways/CampaignGateway';
 import ProjectListDirective from './Directives/ProjectListDirective';
 import ProjectFlaggedController from './Controllers/ProjectFlaggedController';
 import ProjectFlaggedView from './Views/ProjectFlaggedView.html!';
@@ -271,6 +272,7 @@ class ManagementBoard extends Module {
     this.module.service('labelingGroupGateway', LabelingGroupGateway);
     this.module.service('taskConfigurationGateway', TaskConfigurationGateway);
     this.module.service('projectGateway', ProjectGateway);
+    this.module.service('campaignGateway', CampaignGateway);
     this.module.service('systemGateway', SystemGateway);
     this.module.service('uploadGateway', UploadGateway);
     this.module.service('uploadService', UploadService);
