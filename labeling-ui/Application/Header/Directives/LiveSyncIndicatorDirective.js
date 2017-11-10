@@ -27,6 +27,7 @@ class LiveSyncIndicatorDirective {
     this._liveSyncIndicatorService.on('syncstate:updated', (icon, toolTip) => {
       scope.syncState = icon;
       scope.syncTooltip = toolTip;
+      scope.$apply();
     });
   }
 }
