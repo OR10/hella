@@ -37,6 +37,7 @@ export default class LabelSelectorController {
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {$q} $q
+   * @param {$timeout} $timeout
    */
   constructor(
     $scope,
