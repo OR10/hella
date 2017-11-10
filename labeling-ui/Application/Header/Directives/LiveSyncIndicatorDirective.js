@@ -6,8 +6,9 @@ import liveSyncIndicatorTemplate from './LiveSyncIndicatorDirective.html!';
 class LiveSyncIndicatorDirective {
   /**
    * @param {LiveSyncIndicatorService} liveSyncIndicatorService
+   * @param {$timeout} $timeout
    */
-  constructor(liveSyncIndicatorService) {
+  constructor(liveSyncIndicatorService, $timeout) {
     /**
      * @type {LiveSyncIndicatorService}
      * @private
@@ -18,6 +19,12 @@ class LiveSyncIndicatorDirective {
      * @type {string}
      */
     this.template = liveSyncIndicatorTemplate;
+
+    /**
+     * @type {$timeout}
+     * @private
+     */
+    this._$timeout = $timeout;
   }
 
   link(scope) {
@@ -25,15 +32,17 @@ class LiveSyncIndicatorDirective {
     scope.syncTooltip = this._liveSyncIndicatorService.getToolTip();
 
     this._liveSyncIndicatorService.on('syncstate:updated', (icon, toolTip) => {
-      scope.syncState = icon;
-      scope.syncTooltip = toolTip;
-      scope.$apply();
+      this._$timeout(() => {
+        scope.syncState = icon;
+        scope.syncTooltip = toolTip;
+      });
     });
   }
 }
 
 LiveSyncIndicatorDirective.$inject = [
   'liveSyncIndicatorService',
+  '$timeout',
 ];
 
 export default LiveSyncIndicatorDirective;

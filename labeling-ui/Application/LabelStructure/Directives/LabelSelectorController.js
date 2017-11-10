@@ -37,6 +37,7 @@ export default class LabelSelectorController {
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {KeyboardShortcutService} keyboardShortcutService
    * @param {$q} $q
+   * @param {$timeout} $timeout
    */
   constructor(
     $scope,
@@ -53,7 +54,8 @@ export default class LabelSelectorController {
     applicationState,
     taskGateway,
     shapeSelectionService,
-    keyboardShortcutService
+    keyboardShortcutService,
+    $timeout
   ) {
     /**
      * Pages displayed by the wizzards
@@ -181,6 +183,12 @@ export default class LabelSelectorController {
      * @private
      */
     this._keyboardShortcutService = keyboardShortcutService;
+
+    /**
+     * @type {$timeout}
+     * @private
+     */
+    this._$timeout = $timeout;
 
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
       if (newSelectedPaperShape === null) {
@@ -397,11 +405,6 @@ export default class LabelSelectorController {
       page.responses = node.children.map(
         child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass})
       );
-      if (this.searchAttributes.length > 0) {
-        page.expandedOnDefault = true;
-      } else {
-        page.expandedOnDefault = false;
-      }
     });
 
     // Remove labels belonging to removed pages
@@ -468,6 +471,9 @@ export default class LabelSelectorController {
       this.multiSelection = false;
     }
     this._updatePagesAndChoices();
+    this._$timeout(() => {
+      this.expandOrCollapseAccordionOnMutiSelection();
+    });
   }
 
   /**
@@ -671,4 +677,5 @@ LabelSelectorController.$inject = [
   'taskGateway',
   'shapeSelectionService',
   'keyboardShortcutService',
+  '$timeout',
 ];
