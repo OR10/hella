@@ -515,8 +515,8 @@ class ProjectCreateController {
     this._modalService.show(
       new this._InputDialog(
         {
-          title: 'Add new Campaign.',
-          headline: `Add a new Campaign to this Organisation`,
+          title: 'Add new Label.',
+          headline: `Add a new Label to this Organisation`,
           message: ' Name:',
           confirmButtonText: 'Add',
         },

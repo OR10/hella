@@ -33,7 +33,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Campaigns</td>
+                            <td>Labeles</td>
                             <td>
                                 <div>
                                     <span class="organisation-tag" ng-repeat="campaign in vm.getCampaignsToAdd()">
@@ -47,7 +47,7 @@
                                     <span class="campaign-selection">
                                     <select id="campaignList" ng-model="vm.selectedCampaign"
                                             ng-change="vm.addCampaignToProject()">
-                                        <option value="" disabled selected>Select campaign to add</option>
+                                        <option value="" disabled selected>Select a label</option>
                                         <option ng-repeat="campaign in vm.organisationCampaigns"
                                                 value="{{campaign.id}}">
                                             {{campaign.name}}
@@ -55,7 +55,7 @@
                                     </select>
                                     </span>
                                     <span class="pull-right" ng-click="vm.showNewCampaignModel()">
-                                        <i class="fa fa-plus" tooltip="Add a new campaign to this organisation"></i>
+                                        <i class="fa fa-plus" tooltip="Add a new label to this organisation"></i>
                                     </span>
                                 </div>
                             </td>
