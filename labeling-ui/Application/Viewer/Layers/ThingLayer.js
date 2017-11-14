@@ -1161,10 +1161,6 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   _onMouseDown(event) {
-    if (this._$scope.vm.hideLabeledThingGroupsInFrame && (this._$scope.vm.selectedPaperShape instanceof PaperGroupShape)) {
-      this._$scope.vm.hideLabeledThingGroupsInFrame = false;
-      this._applyHiddenLabeledThingGroupsInFrameFilter();
-    };
     this._isMousePressed = true;
     this._lastMouseDownEvent = event;
   }
