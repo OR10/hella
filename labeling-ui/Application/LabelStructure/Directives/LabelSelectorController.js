@@ -281,7 +281,7 @@ export default class LabelSelectorController {
       combo: ['mod+f'],
       description: 'Set focus to search in the attribute list',
       callback: event => {
-        const searchAttributesElement = $('#searchAttributes');
+        const searchAttributesElement = angular.element(document.body).find('#searchAttributes');
         if (searchAttributesElement.val() !== undefined && event.preventDefault) {
           searchAttributesElement.focus();
           event.preventDefault();
