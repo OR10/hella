@@ -159,6 +159,14 @@
             </button>
         </div>
         <div class="grid-content noscroll">
+            <button ng-click="vm.handleHideLabeledThingGroupsInFrameToggle()"
+                    tooltip="Toggle all groups on or off">
+                <i class="icon icon-selection-off"
+                   ng-class="{'toggled': vm.hideLabeledThingGroupsInFrame}"
+                ></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
             <button ng-click="vm.handleShowCrosshairsToggle()"
                     tooltip="Show/Hide the crosshairs view inside the viewer">
                 <i class="icon fa fa-crosshairs"

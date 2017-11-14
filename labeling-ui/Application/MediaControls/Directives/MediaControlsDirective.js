@@ -24,6 +24,7 @@ class MediaControlsDirective {
       popupPanelState: '=',
       popupPanelOpen: '=',
       hideLabeledThingsInFrame: '=',
+      hideLabeledThingGroupsInFrame: '=',
       video: '=',
       bookmarkedFrameIndex: '=',
       readOnly: '@',

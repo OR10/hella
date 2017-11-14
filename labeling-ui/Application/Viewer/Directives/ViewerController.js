@@ -30,6 +30,7 @@ import {difference} from 'lodash';
  * @property {string} playbackDirection
  * @property {Viewport} viewport
  * @property {boolean} hideLabeledThingsInFrame
+ * @property {boolean} hideLabeledThingGroupsInFrame
  * @property {integer} bookmarkedFrameIndex
  * @property {integer} fps
  * @property {integer} frameSkip

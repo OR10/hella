@@ -8,6 +8,7 @@
  * @property {PaperShape} selectedPaperShape
  * @property {string} activeTool
  * @property {boolean} hideLabeledThingsInFrame
+ * @property {boolean} hideLabeledThingGroupsInFrame
  * @property {boolean} showCrosshairs
  */
 class MediaControlsController {
@@ -291,6 +292,13 @@ class MediaControlsController {
    */
   handleHideLabeledThingsInFrameToggle() {
     this.hideLabeledThingsInFrame = !this.hideLabeledThingsInFrame;
+  }
+
+  /**
+   * Handle the toggle of hiding all non selected {@link LabeledThingInFrame}
+   */
+  handleHideLabeledThingGroupsInFrameToggle() {
+    this.hideLabeledThingGroupsInFrame = !this.hideLabeledThingGroupsInFrame;
   }
 
   /**
