@@ -280,8 +280,12 @@ export default class LabelSelectorController {
     this._keyboardShortcutService.addHotkey('label-selector', {
       combo: ['mod+f'],
       description: 'Set focus to search in the attribute list',
-      callback: () => {
-        angular.element(document.body).find('input').focus();
+      callback: event => {
+        const searchAttributesElement = $('#searchAttributes');
+        if (searchAttributesElement.val() !== undefined && event.preventDefault) {
+          searchAttributesElement.focus();
+          event.preventDefault();
+        }
       },
     });
   }
