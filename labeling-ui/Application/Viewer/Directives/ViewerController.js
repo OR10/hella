@@ -31,6 +31,7 @@ import {difference} from 'lodash';
  * @property {Viewport} viewport
  * @property {boolean} hideLabeledThingsInFrame
  * @property {boolean} hideLabeledThingGroupsInFrame
+ * @property {string} drawLabeledThingGroupsInFrameAs
  * @property {integer} bookmarkedFrameIndex
  * @property {integer} fps
  * @property {integer} frameSkip
@@ -444,7 +445,7 @@ class ViewerController {
 
           if (groupIds.length === 0) {
             this._thingLayerContext.withScope(() => {
-              const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+              const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes, this.drawLabeledThingGroupsInFrameAs);
               this._storeGroup(newGroup, shapes);
               this._handleGroupAddAfterActions(newGroup);
             });
@@ -464,7 +465,7 @@ class ViewerController {
                 if (group === undefined) {
                   // create new group
                   this._thingLayerContext.withScope(() => {
-                    const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+                    const newGroup = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes, this.drawLabeledThingGroupsInFrameAs);
                     this._storeGroup(newGroup, shapes);
                     this._handleGroupAddAfterActions(newGroup);
                   });
@@ -509,7 +510,7 @@ class ViewerController {
           }
         } else {
           this._thingLayerContext.withScope(() => {
-            const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes);
+            const group = this._paperShapeFactory.createPaperGroupShape(labeledThingInGroupFrame, shapes, this.drawLabeledThingGroupsInFrameAs);
             this._storeGroup(group, shapes);
             this._handleGroupAddAfterActions(group);
           });
@@ -1354,7 +1355,7 @@ class ViewerController {
         });
 
         return this._thingLayerContext.withScope(() => {
-          return this._paperShapeFactory.createPaperGroupShape(ltgif, shapesBelongingToGroup);
+          return this._paperShapeFactory.createPaperGroupShape(ltgif, shapesBelongingToGroup, this.drawLabeledThingGroupsInFrameAs);
         });
       }
     );

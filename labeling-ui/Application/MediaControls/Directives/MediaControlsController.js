@@ -9,6 +9,7 @@
  * @property {string} activeTool
  * @property {boolean} hideLabeledThingsInFrame
  * @property {boolean} hideLabeledThingGroupsInFrame
+ * @property {boolean} drawLabeledThingGroupsInFrameAs
  * @property {boolean} showCrosshairs
  */
 class MediaControlsController {
@@ -298,15 +299,18 @@ class MediaControlsController {
    * Handle the toggle of hiding all non selected {@link LabeledThingInFrame}
    */
   handleHideLabeledThingGroupsInFrameToggle() {
-    switch (this.hideLabeledThingGroupsInFrame) {
-      case 1:
-        this.hideLabeledThingGroupsInFrame = 0.2;
-        break;
-      case 0.2:
-        this.hideLabeledThingGroupsInFrame = 0;
-        break;
-      default:
-        this.hideLabeledThingGroupsInFrame = 1;
+    if (this.hideLabeledThingGroupsInFrame) {
+      this.hideLabeledThingGroupsInFrame = false;
+      this.drawLabeledThingGroupsInFrameAs = 'rectangle';
+      this._$rootScope.$emit('framerange:change:after');
+    } else if (!this.hideLabeledThingGroupsInFrame && this.drawLabeledThingGroupsInFrameAs === 'rectangle') {
+      this.hideLabeledThingGroupsInFrame = false;
+      this.drawLabeledThingGroupsInFrameAs = 'line';
+      this._$rootScope.$emit('framerange:change:after');
+    } else {
+      this.hideLabeledThingGroupsInFrame = true;
+      this.drawLabeledThingGroupsInFrameAs = 'rectangle';
+      this._$rootScope.$emit('framerange:change:after');
     }
   }
 

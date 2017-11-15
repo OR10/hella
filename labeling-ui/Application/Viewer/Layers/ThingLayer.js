@@ -16,6 +16,7 @@ import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 import PaperPolyline from '../Shapes/PaperPolyline';
 import PaperGroupRectangleMulti from '../Shapes/PaperGroupRectangleMulti';
+import PaperGroupLineMulti from '../Shapes/PaperGroupLineMulti';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -672,7 +673,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       video,
       task,
       framePosition,
-      this._selectedLabelStructureObject.id
+      this._selectedLabelStructureObject.id,
+      this._$scope.vm.drawLabeledThingGroupsInFrameAs
     );
     tool.invokeDefaultShapeCreation(creationToolStruct)
       .then(paperShape => {
@@ -773,7 +775,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._framePosition,
       this._selectedLabelStructureObject.id,
       this._selectedLabelStructureObject.shape,
-      selectedPaperShape
+      selectedPaperShape,
+      this._$scope.vm.drawLabeledThingGroupsInFrameAs
     );
     this._activeTool.invoke(struct)
       .then(({paperShape, actionIdentifier}) => {
@@ -898,16 +901,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
       drawnShapes
         .forEach(
           paperShape => {
-            const visible = this._$scope.vm.hideLabeledThingGroupsInFrame;
+            const visible = !this._$scope.vm.hideLabeledThingGroupsInFrame;
             this._logger.log('thinglayer:hiddenlabels', (visible ? 'Showing ' : 'Hiding '), paperShape);
-            if (paperShape instanceof PaperGroupRectangleMulti) {
-              if (visible === 0) {
-                paperShape.visible = false;
-              } else {
-                paperShape.visible = true;
-                paperShape.setAlpha(visible);
-              }
-            }
+            paperShape.visible = visible;
           }
         );
 
