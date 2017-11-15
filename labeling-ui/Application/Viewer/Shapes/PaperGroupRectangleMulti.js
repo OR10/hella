@@ -19,6 +19,12 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
      */
     this._groupNameService = groupNameService;
 
+    /**
+     * @type {number}
+     * @private
+     */
+    this._alpha = 1.0;
+
     // Do not name it _bounds as this name is already used internally by paperjs
     this._allThingShapes = shapes.filter(shape => !(shape instanceof PaperGroupRectangle));
     this._drawShapes();
@@ -31,6 +37,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
 
     const groupRectangles = this._createGroupRectangles();
     this._addPadding(groupRectangles);
+    groupRectangles.forEach(rectangle => rectangle.strokeColor.alpha = this._alpha);
 
     if (this._isSelected) {
       groupRectangles.forEach(rectangle => rectangle.select());
@@ -101,6 +108,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
         justification: 'left',
         shadowOffset: new paper.Point(2, 2),
         content: groupNameText,
+        opacity: this._alpha,
       });
       paperGroupNames.push(topGroupName);
 
@@ -123,6 +131,7 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
         justification: 'right',
         shadowOffset: new paper.Point(2, 2),
         content: groupNameText,
+        opacity: this._alpha,
       });
       paperGroupNames.push(bottomGroupName);
     });
@@ -160,6 +169,14 @@ class PaperGroupRectangleMulti extends PaperGroupShape {
       this._allThingShapes.push(shape);
       this.update();
     }
+  }
+
+  /**
+   * @param alpha
+   */
+  setAlpha(alpha) {
+    this._alpha = alpha;
+    this.update();
   }
 
   /**

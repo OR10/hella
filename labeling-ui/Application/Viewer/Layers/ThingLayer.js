@@ -15,6 +15,7 @@ import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 import PaperPolyline from '../Shapes/PaperPolyline';
+import PaperGroupRectangleMulti from '../Shapes/PaperGroupRectangleMulti';
 
 /**
  * A Layer used to draw Things within the viewer
@@ -897,9 +898,16 @@ class ThingLayer extends PanAndZoomPaperLayer {
       drawnShapes
         .forEach(
           paperShape => {
-            const visible = !this._$scope.vm.hideLabeledThingGroupsInFrame;
+            const visible = this._$scope.vm.hideLabeledThingGroupsInFrame;
             this._logger.log('thinglayer:hiddenlabels', (visible ? 'Showing ' : 'Hiding '), paperShape);
-            paperShape.visible = visible;
+            if (paperShape instanceof PaperGroupRectangleMulti) {
+              if (visible === 0) {
+                paperShape.visible = false;
+              } else {
+                paperShape.visible = true;
+                paperShape.setAlpha(visible);
+              }
+            }
           }
         );
 

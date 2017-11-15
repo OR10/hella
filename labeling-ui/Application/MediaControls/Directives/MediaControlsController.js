@@ -298,7 +298,16 @@ class MediaControlsController {
    * Handle the toggle of hiding all non selected {@link LabeledThingInFrame}
    */
   handleHideLabeledThingGroupsInFrameToggle() {
-    this.hideLabeledThingGroupsInFrame = !this.hideLabeledThingGroupsInFrame;
+    switch (this.hideLabeledThingGroupsInFrame) {
+      case 1:
+        this.hideLabeledThingGroupsInFrame = 0.2;
+        break;
+      case 0.2:
+        this.hideLabeledThingGroupsInFrame = 0;
+        break;
+      default:
+        this.hideLabeledThingGroupsInFrame = 1;
+    }
   }
 
   /**
