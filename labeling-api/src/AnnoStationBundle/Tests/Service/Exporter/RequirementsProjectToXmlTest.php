@@ -69,7 +69,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             file_get_contents(__DIR__ . '/TaskConfiguration/Requirements.xml')
         );
         $this->assertEquals(
-            $this->getContentFromZip(reset($attachments)->getRawData(), 'previoustestconfig.old.xml'),
+            $this->getContentFromZip(reset($attachments)->getRawData(), 'previoustestconfig.labelconfiguration_old.xml'),
             file_get_contents(__DIR__ . '/TaskConfiguration/PreviousRequirements.xml')
         );
     }

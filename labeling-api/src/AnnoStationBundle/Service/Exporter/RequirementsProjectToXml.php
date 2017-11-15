@@ -18,7 +18,7 @@ class RequirementsProjectToXml
 {
     const XML_NAMESPACE = 'http://weblabel.hella-aglaia.com/schema/export';
     const REQUIREMENTS_XML_POSTFIX = 'labelconfiguration';
-    const REQUIREMENTS_XML_PREVIOUS_POSTFIX = 'old';
+    const REQUIREMENTS_XML_PREVIOUS_POSTFIX = 'labelconfiguration_old';
 
     /**
      * @var Facade\Exporter
