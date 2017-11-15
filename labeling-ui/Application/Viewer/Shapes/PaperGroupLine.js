@@ -64,7 +64,7 @@ class PaperGroupLine extends PaperGroupShape {
       selected: false,
       strokeWidth: 2,
       closed: false,
-      dashArray: this.dashArray,
+      dashArray: this._isSelected ? PaperShape.DASH : PaperShape.LINE,
       strokeScaling: false,
       fillColor: new paper.Color(0, 0, 0, 0),
       segments: this._points,
