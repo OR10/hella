@@ -15,8 +15,6 @@ import PaperThingShape from '../Shapes/PaperThingShape';
 import PaperGroupShape from '../Shapes/PaperGroupShape';
 import PaperVirtualShape from '../Shapes/PaperVirtualShape';
 import PaperPolyline from '../Shapes/PaperPolyline';
-import PaperGroupRectangleMulti from '../Shapes/PaperGroupRectangleMulti';
-import PaperGroupLineMulti from '../Shapes/PaperGroupLineMulti';
 
 /**
  * A Layer used to draw Things within the viewer

@@ -126,7 +126,6 @@ class GroupCreationTool extends CreationTool {
   }
 
   _createPaperGroup(id, toolActionStruct, shapes) {
-    console.error(toolActionStruct);
     const {color, colorIdString} = this._getColor();
 
     const labeledThingGroupInFrame = this._hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy(toolActionStruct);
