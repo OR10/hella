@@ -160,8 +160,10 @@ describe('MediaControlsController test suite', () => {
 
   describe('sliceShape', () => {
     it('canShapeBeSliced should return true if the papershape supports slicing', () => {
+      controller._shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['getAllShapes']);
       controller.selectedPaperShape = jasmine.createSpyObj('selectedPaperShape', ['canBeSliced']);
       controller.selectedPaperShape.canBeSliced.and.returnValue(true);
+      controller._shapeSelectionService.getAllShapes.and.returnValue(1);
 
       const actual = controller.canBeSliced();
       expect(actual).toBe(true);

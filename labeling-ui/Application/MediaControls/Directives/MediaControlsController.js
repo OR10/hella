@@ -418,7 +418,7 @@ class MediaControlsController {
    * @returns {boolean}
    */
   canBeSliced() {
-    return this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced();
+    return this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced() && !this._isMultiSelectionActive();
   }
 
   /**
@@ -635,7 +635,7 @@ class MediaControlsController {
    * @return {boolean}
    */
   canSelectedPaperShapeBeDeleted() {
-    return !(this.readOnly === true || this.selectedPaperShape === null) && this.selectedPaperShape.canBeDeleted();
+    return !(this.readOnly === true || this.selectedPaperShape === null) && this.selectedPaperShape.canBeDeleted() && !this._isMultiSelectionActive();
   }
 
   /**
@@ -649,8 +649,17 @@ class MediaControlsController {
     return (
       !isReadOnly &&
       shapeIsSelected &&
-      saysItCanBeInterpolated
+      saysItCanBeInterpolated &&
+      !this._isMultiSelectionActive()
     );
+  }
+
+  /**
+   * @returns {boolean}
+   * @private
+   */
+  _isMultiSelectionActive() {
+    return this._shapeSelectionService.getAllShapes().length > 1;
   }
 }
 

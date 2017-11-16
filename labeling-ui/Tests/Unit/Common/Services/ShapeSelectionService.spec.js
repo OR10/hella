@@ -118,7 +118,7 @@ describe('ShapeSelectionService', () => {
       expect(service.count()).toEqual(2);
     });
 
-    it('only allows shapes of the same type', () => {
+    it('allow shapes of different types', () => {
       const service = createShapeSelectionService();
       const cuboid = createCuboid();
       const rectangle = createRectangle();
@@ -129,7 +129,7 @@ describe('ShapeSelectionService', () => {
       const selectedShape = service.getSelectedShape();
 
       expect(selectedShape).toBe(cuboid);
-      expect(count).toEqual(1);
+      expect(count).toEqual(2);
     });
 
     it('should do nothing if no drawingContext is set', () => {

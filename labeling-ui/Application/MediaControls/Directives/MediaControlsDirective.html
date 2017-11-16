@@ -148,7 +148,7 @@
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-hide="vm.selectedPaperShape === null"
+            <button ng-hide="vm.selectedPaperShape === null || vm._isMultiSelectionActive()"
                     ng-click="vm.handleHideLabeledThingsInFrameToggle()"
                     tooltip="Toggle hiding all, but the active shape">
                 <i class="icon icon-selection-off"

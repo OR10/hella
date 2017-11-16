@@ -108,13 +108,6 @@ class ShapeSelectionService {
     }
 
     this._drawingContext.withScope(() => {
-      const firstShape = this.getSelectedShape();
-
-      // If the user tries to add a shape that is not the same, ignore
-      if (firstShape !== undefined && shape.constructor !== firstShape.constructor) {
-        return;
-      }
-
       if (this._shapes.has(shape.id)) {
         shape.deselect();
         this._shapes.delete(shape.id);
