@@ -481,6 +481,12 @@ export default class LabelSelectorController {
   }
 
   applySearchFilterSelection() {
+    if (this.pages.length === 1 && this.pages[0].responses.length === 1 && this.choices[this.pages[0].id] === this.pages[0].responses[0].response) {
+      this.searchAttributes = '';
+      this.applySearchFilter();
+
+      return;
+    }
     if (this.pages.length === 1 && this.pages[0].responses.length === 1) {
       this.choices[this.pages[0].id] = this.pages[0].responses[0].id;
     }
