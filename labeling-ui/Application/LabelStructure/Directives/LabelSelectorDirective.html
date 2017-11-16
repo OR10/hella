@@ -41,7 +41,17 @@
             </label>
         </div>
     </div>
-    <div><input type="text" id="searchAttributes" placeholder="Search Attribute/Value ..." ng-model="vm.searchAttributes" ng-change="vm.applySearchFilter()" ng-show="vm.show()"></div>
+    <div>
+        <form ng-submit="vm.applySearchFilterSelection()" autocomplete="off">
+            <input type="text"
+                   id="searchAttributes"
+                   placeholder="Search Attribute/Value ..."
+                   ng-model="vm.searchAttributes"
+                   ng-change="vm.applySearchFilter()"
+                   ng-show="vm.show()"
+            >
+        </form>
+    </div>
 
     <!--Start accordion View-->
     <v-accordion class="accordion"
