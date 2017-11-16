@@ -622,6 +622,12 @@ class MediaControlsController {
       description: 'Toggle crosshairs',
       callback: () => this.handleShowCrosshairsToggle(),
     });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: ['x'],
+      description: 'Change Group Presentation',
+      callback: this.handleHideLabeledThingGroupsInFrameToggle.bind(this),
+    });
   }
 
   /**
