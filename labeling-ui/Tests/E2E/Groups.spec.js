@@ -1129,6 +1129,46 @@ describe('Groups', () => {
     });
   });
 
+  describe('draw type toggle', () => {
+    const toggleDrawTypeButton = element(by.css('#toggle-group-presentation-button'));
+
+    beforeEach(() => {
+      bootstrapHttp(sharedMocks.concat([
+        assets.mocks.GroupCreation.Shared.TaskConfigurationFileMultipleGroups,
+      ]));
+      bootstrapPouch([
+        assets.documents.RectangleDrawing.DrawTwoRectanglesWithGroup.LabeledThingInFrame.frameIndex0,
+      ]);
+    });
+
+    it('Toggle group presentation', done => {
+      initApplication('/labeling/organisation/ORGANISATION-ID-1/projects/PROJECTID-PROJECTID/tasks/TASKID-TASKID/labeling')
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupDrawingTypeToggle', 'Rectangle')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(() => toggleDrawTypeButton.click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupDrawingTypeToggle', 'Lines')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(() => toggleDrawTypeButton.click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupDrawingTypeToggle', 'Invisible')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(() => toggleDrawTypeButton.click())
+        .then(() => mediumSleep())
+        .then(
+          // () => canvasInstructionLogManager.getAnnotationCanvasLogs('GroupDrawingTypeToggle', 'Rectangle')
+          () => canvasInstructionLogManager.getAnnotationCanvasLogs(),
+        )
+        .then(() => done());
+    });
+  });
+
   afterEach(() => {
     bootstrapHttp.teardown();
     bootstrapPouch.teardown();
