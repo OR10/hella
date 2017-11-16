@@ -8,6 +8,8 @@
  * @property {PaperShape} selectedPaperShape
  * @property {string} activeTool
  * @property {boolean} hideLabeledThingsInFrame
+ * @property {boolean} hideLabeledThingGroupsInFrame
+ * @property {boolean} drawLabeledThingGroupsInFrameAs
  * @property {boolean} showCrosshairs
  */
 class MediaControlsController {
@@ -291,6 +293,25 @@ class MediaControlsController {
    */
   handleHideLabeledThingsInFrameToggle() {
     this.hideLabeledThingsInFrame = !this.hideLabeledThingsInFrame;
+  }
+
+  /**
+   * Handle the toggle of hiding all non selected {@link LabeledThingInFrame}
+   */
+  handleHideLabeledThingGroupsInFrameToggle() {
+    if (this.hideLabeledThingGroupsInFrame) {
+      this.hideLabeledThingGroupsInFrame = false;
+      this.drawLabeledThingGroupsInFrameAs = 'rectangle';
+      this._$rootScope.$emit('framerange:change:after');
+    } else if (!this.hideLabeledThingGroupsInFrame && this.drawLabeledThingGroupsInFrameAs === 'rectangle') {
+      this.hideLabeledThingGroupsInFrame = false;
+      this.drawLabeledThingGroupsInFrameAs = 'line';
+      this._$rootScope.$emit('framerange:change:after');
+    } else {
+      this.hideLabeledThingGroupsInFrame = true;
+      this.drawLabeledThingGroupsInFrameAs = 'rectangle';
+      this._$rootScope.$emit('framerange:change:after');
+    }
   }
 
   /**

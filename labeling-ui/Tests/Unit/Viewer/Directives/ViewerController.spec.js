@@ -375,7 +375,7 @@ describe('ViewerController tests', () => {
 
         expect(hierarchyCreationService.createLabeledThingGroupInFrameWithHierarchy)
           .toHaveBeenCalledWith(jasmine.any(GroupToolActionStruct));
-        expect(paperShapeFactory.createPaperGroupShape).toHaveBeenCalledWith(ltgif, shapes);
+        expect(paperShapeFactory.createPaperGroupShape).toHaveBeenCalledWith(ltgif, shapes, undefined);
         expect(group.sendToBack).toHaveBeenCalled();
         expect(thingLayerContext.withScope).toHaveBeenCalled();
         expect(groupCreationService.showGroupSelector).toHaveBeenCalled();

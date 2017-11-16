@@ -128,6 +128,20 @@ class TaskController {
     this.hideLabeledThingsInFrame = false;
 
     /**
+     * Flag indicating whether all {@link LabeledThingGroupInFrame}, which are not selected should be hidden or not
+     *
+     * @type {boolean}
+     */
+    this.hideLabeledThingGroupsInFrame = false;
+
+    /**
+     * Flag indicating whether all {@link LabeledThingGroupInFrame}, which are not selected should be hidden or not
+     *
+     * @type {string}
+     */
+    this.drawLabeledThingGroupsInFrameAs = 'rectangle';
+
+    /**
      * Currently active frame position to be displayed inside the MediaControls
      *
      * This model will be manipulated by different directives in order to switch between frames.

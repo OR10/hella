@@ -1,5 +1,6 @@
 import CreationTool from '../CreationTool';
 import PaperGroupRectangleMulti from '../../Shapes/PaperGroupRectangleMulti';
+import PaperGroupLineMulti from '../../Shapes/PaperGroupLineMulti';
 
 class GroupCreationTool extends CreationTool {
   /**
@@ -132,13 +133,23 @@ class GroupCreationTool extends CreationTool {
 
     let paperGroup;
     this._context.withScope(() => {
-      paperGroup = new PaperGroupRectangleMulti(
-        this._groupNameService,
-        labeledThingGroupInFrame,
-        id,
-        shapes,
-        color
-      );
+      if (toolActionStruct.drawLabeledThingGroupsInFrameAs === 'line') {
+        paperGroup = new PaperGroupLineMulti(
+          this._groupNameService,
+          labeledThingGroupInFrame,
+          id,
+          shapes,
+          color
+        );
+      } else {
+        paperGroup = new PaperGroupRectangleMulti(
+          this._groupNameService,
+          labeledThingGroupInFrame,
+          id,
+          shapes,
+          color
+        );
+      }
 
       // Place this group shape behind all other shapes
       paperGroup.sendToBack();

@@ -24,6 +24,8 @@ export default class ViewerDirective {
       playbackDirection: '=',
       viewport: '=',
       hideLabeledThingsInFrame: '=',
+      hideLabeledThingGroupsInFrame: '=',
+      drawLabeledThingGroupsInFrameAs: '=',
       bookmarkedFrameIndex: '=',
       fps: '=',
       frameSkip: '=',

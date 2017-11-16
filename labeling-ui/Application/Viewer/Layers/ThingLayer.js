@@ -234,10 +234,15 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this.removePaperShapes(removedPaperThingShapes, false);
 
       this._applyHiddenLabeledThingsInFrameFilter();
+      this._applyHiddenLabeledThingGroupsInFrameFilter();
     });
 
     $scope.$watch('vm.hideLabeledThingsInFrame', () => {
       this._applyHiddenLabeledThingsInFrameFilter();
+    });
+
+    $scope.$watch('vm.hideLabeledThingGroupsInFrame', () => {
+      this._applyHiddenLabeledThingGroupsInFrameFilter();
     });
 
     $scope.$watch('vm.selectedPaperShape', (newShape, oldShape) => {
@@ -280,6 +285,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       }
 
       this._applyHiddenLabeledThingsInFrameFilter();
+      this._applyHiddenLabeledThingGroupsInFrameFilter();
     });
 
     this._framePosition.beforeFrameChangeAlways('disableTools', () => {
@@ -665,7 +671,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       video,
       task,
       framePosition,
-      this._selectedLabelStructureObject.id
+      this._selectedLabelStructureObject.id,
+      this._$scope.vm.drawLabeledThingGroupsInFrameAs
     );
     tool.invokeDefaultShapeCreation(creationToolStruct)
       .then(paperShape => {
@@ -766,7 +773,8 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._framePosition,
       this._selectedLabelStructureObject.id,
       this._selectedLabelStructureObject.shape,
-      selectedPaperShape
+      selectedPaperShape,
+      this._$scope.vm.drawLabeledThingGroupsInFrameAs
     );
     this._activeTool.invoke(struct)
       .then(({paperShape, actionIdentifier}) => {
@@ -877,16 +885,48 @@ class ThingLayer extends PanAndZoomPaperLayer {
   }
 
   /**
+   * Hide/Show all {@link PaperGroupShape}s according to the current value of `vm.hideLabeledThingGroupsInFrame`
+   *
+   * @private
+   */
+  _applyHiddenLabeledThingGroupsInFrameFilter() {
+    this._context.withScope(scope => {
+      const drawnShapes = scope.project
+        .getItems({
+          'class': PaperGroupShape,
+        });
+
+      drawnShapes
+        .forEach(
+          paperShape => {
+            const visible = !this._$scope.vm.hideLabeledThingGroupsInFrame;
+            this._logger.log('thinglayer:hiddenlabels', (visible ? 'Showing ' : 'Hiding '), paperShape);
+            paperShape.visible = visible;
+          }
+        );
+
+      scope.view.update();
+    });
+  }
+
+  /**
    * Hide/Show all {@link PaperShape}s according to the current value of `vm.hideLabeledThingsInFrame`
    *
    * @private
    */
   _applyHiddenLabeledThingsInFrameFilter() {
     this._context.withScope(scope => {
-      const drawnShapes = scope.project
+      let drawnShapes = scope.project
         .getItems({
           'class': PaperShape,
         });
+
+      if (this._$scope.vm.hideLabeledThingGroupsInFrame) {
+        drawnShapes = drawnShapes
+          .filter(
+            paperShape => !(paperShape instanceof PaperGroupShape)
+          );
+      }
 
       const toHideShapes = drawnShapes
         .filter(
