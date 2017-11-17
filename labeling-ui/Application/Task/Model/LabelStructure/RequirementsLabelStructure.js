@@ -224,7 +224,7 @@ class RequirementsLabelStructure extends LabelStructure {
   _extractClasses() {
     const classes = [];
     const classesSnapshot = this._evaluateXPath(
-      '/r:requirements/r:group//r:value|/r:requirements/r:thing//r:value',
+      '/r:requirements/r:group//r:value|/r:requirements/r:thing//r:value|/r:requirements/r:private//r:value',
       null,
       XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
     );
