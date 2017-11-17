@@ -140,6 +140,13 @@
             </button>
         </div>
         <div class="grid-content noscroll">
+            <button id="toggle-class-search-button"
+                    ng-click="vm.handleToggleClassSearch()"
+                    tooltip="Toggle the class search">
+                <i class="icon fa fa-filter"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
             <button id="cut-shape-button"
                     ng-hide="!vm.canBeSliced()"
                     ng-click="vm.handleCutShape()"

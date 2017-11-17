@@ -52,6 +52,16 @@ class RequirementsLabelStructure extends LabelStructure {
     this._thingMap = null;
 
     /**
+     * Contains all available classes
+     *
+     * Will be lazily filled once, requested.
+     *
+     * @type {Map|null}
+     * @private
+     */
+    this._classesMap = null;
+
+    /**
      * Map containing all {@link LabelStructureGroup} objects of this {@link LabelStructure} stored by their `id`.
      *
      * Will be lazily filled once, requested.
@@ -170,6 +180,17 @@ class RequirementsLabelStructure extends LabelStructure {
   }
 
   /**
+   * @returns {*}
+   */
+  getClasses() {
+    if (this._classesMap === null) {
+      this._classesMap = this._extractClasses();
+    }
+
+    return this._classesMap;
+  }
+
+  /**
    * Extracts all things from the {@link LabelStructure} and returns them in a Map.
    *
    * @returns {Map}
@@ -192,6 +213,31 @@ class RequirementsLabelStructure extends LabelStructure {
     }
 
     return thingMap;
+  }
+
+  /**
+   * Extracts all values from the {@link LabelStructure} and returns them as array.
+   *
+   * @returns {Map}
+   * @private
+   */
+  _extractClasses() {
+    const classes = [];
+    const classesSnapshot = this._evaluateXPath(
+      '/r:requirements/r:group//r:value|/r:requirements/r:thing//r:value',
+      null,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
+    );
+
+    for (let index = 0; index < classesSnapshot.snapshotLength; index++) {
+      const classElement = classesSnapshot.snapshotItem(index);
+      const identifier = classElement.attributes.id.value;
+      const name = classElement.attributes.name.value;
+
+      classes.push({identifier: identifier, name: name});
+    }
+
+    return classes;
   }
 
   /**

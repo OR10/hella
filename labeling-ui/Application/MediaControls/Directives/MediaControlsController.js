@@ -667,6 +667,10 @@ class MediaControlsController {
   _isMultiSelectionActive() {
     return this._shapeSelectionService.getAllShapes().length > 1;
   }
+
+  handleToggleClassSearch() {
+    this._$rootScope.$emit('toggle-class-search');
+  }
 }
 
 MediaControlsController.$inject = [

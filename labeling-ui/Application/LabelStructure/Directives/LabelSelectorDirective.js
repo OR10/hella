@@ -14,6 +14,8 @@ export default class LabelSelectorDirective {
       labelingInstructions: '=',
       readOnly: '@',
       selectedPaperShape: '=',
+      paperThingShapes: '=',
+      paperGroupShapes: '=',
     };
 
     this.template = labelSelectorTemplate;

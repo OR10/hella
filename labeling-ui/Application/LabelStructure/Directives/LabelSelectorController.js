@@ -36,6 +36,7 @@ export default class LabelSelectorController {
    * @param {TaskGateway} taskGateway
    * @param {ShapeSelectionService} shapeSelectionService
    * @param {KeyboardShortcutService} keyboardShortcutService
+   * @param {LabelStructureService} labelStructureService
    * @param {$q} $q
    * @param {$timeout} $timeout
    */
@@ -55,7 +56,9 @@ export default class LabelSelectorController {
     taskGateway,
     shapeSelectionService,
     keyboardShortcutService,
-    $timeout
+    labelStructureService,
+    $q,
+    $timeout,
   ) {
     /**
      * Pages displayed by the wizzards
@@ -185,10 +188,46 @@ export default class LabelSelectorController {
     this._keyboardShortcutService = keyboardShortcutService;
 
     /**
+     * @type {angular.$q}
+     * @private
+     */
+    this._$q = $q;
+
+    /**
      * @type {$timeout}
      * @private
      */
     this._$timeout = $timeout;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
+
+    /**
+     * @type {Array}
+     */
+    this.allPossibleChoices = [];
+
+    /**
+     * @type {String}
+     */
+    this.selectedClassFilter = '';
+
+    /**
+     * @type {Boolean}
+     */
+    this.showClassSearchBar = false;
+
+    this._labelStructureService.getLabelStructure(this.task)
+      .then(labelStructure => {
+        this.allPossibleChoices = labelStructure.getClasses();
+      });
+
+    $rootScope.$on('toggle-class-search', () => {
+      this.showClassSearchBar = !this.showClassSearchBar;
+    });
 
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
       if (newSelectedPaperShape === null) {
@@ -675,6 +714,114 @@ export default class LabelSelectorController {
         return labeledObjectShapeType;
     }
   }
+
+  /**
+   * Handle to jump to the next shape with class
+   */
+  handleJumpToNextShapeWithSelectedClass(direction = 'next') {
+    if (this.selectedClassFilter.length === 0) {
+      return;
+    }
+    this._labeledThingInFrameGateway.getLabeledThingInFrameByClassName(this.task, this.selectedClassFilter)
+      .then(response => {
+        if (response.length > 0) {
+          let index = 0;
+          const isActive = response.findIndex(ltif => {
+            if (this.selectedPaperShape === null || this.selectedPaperShape.labeledThingInFrame === undefined) {
+              return false;
+            }
+            return ltif.id === this.selectedPaperShape.labeledThingInFrame.id;
+          });
+
+          if (isActive !== -1 && direction === 'next' && (isActive + 1 < response.length)) {
+            index = isActive + 1;
+          }
+
+          if (isActive !== -1 && direction === 'previous') {
+            if (isActive - 1 === -1) {
+              index = response.length - 1;
+            } else {
+              index = isActive - 1;
+            }
+          }
+
+          if (response[index].frameIndex === this.framePosition.position) {
+            this._selectLabeledThingInFrame(response[index]);
+          } else {
+            this._$q(resolve => {
+              this.framePosition.afterFrameChangeOnce('selectNextShapeWithClass', () => {
+                this._selectLabeledThingInFrame(response[index])
+                  .then(() => resolve());
+              });
+              this.framePosition.goto(response[index].frameIndex);
+            });
+          }
+        }
+      });
+
+    this._labeledThingGroupGateway.getLabeledThingGroupInFrameByClassName(this.task, this.selectedClassFilter)
+      .then(response => {
+        if (response.length > 0) {
+          let index = 0;
+          const isActive = response.findIndex(ltif => {
+            if (this.selectedPaperShape === null || this.selectedPaperShape.labeledThingGroupInFrame === undefined) {
+              return false;
+            }
+            return ltif.id === this.selectedPaperShape.labeledThingGroupInFrame.id;
+          });
+
+          if (isActive !== -1 && direction === 'next' && (isActive + 1 < response.length)) {
+            index = isActive + 1;
+          }
+
+          if (isActive !== -1 && direction === 'previous') {
+            if (isActive - 1 === -1) {
+              index = response.length - 1;
+            } else {
+              index = isActive - 1;
+            }
+          }
+
+          if (response[index].frameIndex === this.framePosition.position) {
+            this._selectLabeledThingGroupInFrame(response[index]);
+          } else {
+            this._$q(resolve => {
+              this.framePosition.afterFrameChangeOnce('selectNextShapeWithClass', () => {
+                this._selectLabeledThingGroupInFrame(response[index])
+                  .then(() => resolve());
+              });
+              this.framePosition.goto(response[index].frameIndex);
+            });
+          }
+        }
+      });
+  }
+
+  _selectLabeledThingInFrame(shape) {
+    return this._$q(resolve => {
+      this._$timeout(() => {
+        const paperThingShape = this.paperThingShapes.find(thingShape => {
+          return shape.id === thingShape.labeledThingInFrame.id;
+        });
+        this.selectedPaperShape = paperThingShape;
+        this.hideLabeledThingsInFrame = true;
+        resolve();
+      });
+    });
+  }
+
+  _selectLabeledThingGroupInFrame(shape) {
+    return this._$q(resolve => {
+      this._$timeout(() => {
+        const paperGroupShapes = this.paperGroupShapes.find(thingShape => {
+          return shape.id === thingShape.labeledThingGroupInFrame.id;
+        });
+        this.selectedPaperShape = paperGroupShapes;
+        this.hideLabeledThingsInFrame = true;
+        resolve();
+      });
+    });
+  }
 }
 
 LabelSelectorController.$inject = [
@@ -693,5 +840,7 @@ LabelSelectorController.$inject = [
   'taskGateway',
   'shapeSelectionService',
   'keyboardShortcutService',
+  'labelStructureService',
+  '$q',
   '$timeout',
 ];

@@ -606,6 +606,44 @@ class LabeledThingGroupGateway {
     });
   }
 
+  getLabeledThingGroupInFrameByClassName(task, className) {
+    const startkey = [task.id, className];
+    const endkey = [task.id, className];
+
+    const db = this._pouchDbContextService.provideContextForTaskId(task.id);
+
+    // @TODO: What about error handling here? No global handling is possible this easily?
+    //       Monkey-patch pouchdb? Fix error handling at usage point?
+    return this._packagingExecutor.execute('labeledThingGroupInFrame', () => {
+      return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingGroupInFrameByClassName'), {
+        startkey,
+        endkey,
+      });
+    }).then(documentResult => {
+      const promises = [];
+      documentResult.rows.forEach(document => {
+        promises.push(db.get(document.id));
+      });
+      return this._$q.all(promises);
+    }).then(labeledThingGroupInFrameDocuments => {
+      const promises = [];
+
+      labeledThingGroupInFrameDocuments.forEach(doc => {
+        promises.push(db.get(doc.labeledThingGroupId));
+      });
+
+      return this._$q.all([this._$q.resolve(labeledThingGroupInFrameDocuments), this._$q.all(promises)]);
+    }).then(([labeledThingGroupInFrameDocuments, labeledThingGroupResponse]) => {
+      const labeledThingGroups = labeledThingGroupResponse.map(labeledThingGroupDocument => {
+        return this._couchDbModelDeserializer.deserializeLabeledThingGroup(labeledThingGroupDocument, task);
+      });
+
+      return labeledThingGroupInFrameDocuments.map(ltgifDocument => {
+        return this._couchDbModelDeserializer.deserializeLabeledThingGroupInFrame(ltgifDocument, labeledThingGroups.find(ltg => ltg.id === ltgifDocument.labeledThingGroupId));
+      });
+    });
+  }
+
   /**
    * @param {LabeledThingGroupInFrame} ltgif
    */
