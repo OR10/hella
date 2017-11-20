@@ -194,6 +194,28 @@
             <div class="grid-block label-selector-content-spacer"></div>
         </div>
     </div>
+    <div ng-show="vm.showClassSearchBar">
+        <div class="grid-block noscroll">
+            <select id="choicesShapeSelection" ng-model="vm.selectedClassFilter"
+                    ng-change="vm.handleJumpToNextShapeWithSelectedClass()">
+                <option value="" disabled selected>Select a class</option>
+                <option ng-repeat="class in vm.allPossibleChoices"
+                        value="{{class.identifier}}">
+                    {{class.name}} ({{class.identifier}})
+                </option>
+            </select>
+            <button id="select-previous-shape-with-class"
+                    ng-click="vm.handleJumpToNextShapeWithSelectedClass('previous')"
+                    tooltip="Find the previous shape with the selected class type">
+                <i class="icon icon-control-previous"></i>
+            </button>
+            <button id="select-next-shape-with-class"
+                    ng-click="vm.handleJumpToNextShapeWithSelectedClass('next')"
+                    tooltip="Find the next shape with the selected class type">
+                <i class="icon icon-control-next"></i>
+            </button>
+        </div>
+    </div>
     <!--End icon view-->
 
     <!--<div class="grid-block label-selector-button-wrapper" ng-if="vm.labeledObject">-->
