@@ -8,8 +8,9 @@ class CreationToolActionStruct extends ToolActionStruct {
    * @param {Task} task
    * @param {FramePosition} framePosition
    * @param {string} requirementsThingOrGroupId
+   * @param {string} drawLabeledThingGroupsInFrameAs
    */
-  constructor(options, viewport, video, task, framePosition, requirementsThingOrGroupId) {
+  constructor(options, viewport, video, task, framePosition, requirementsThingOrGroupId, drawLabeledThingGroupsInFrameAs = 'rectangle') {
     super(options, viewport);
 
     /**
@@ -31,6 +32,11 @@ class CreationToolActionStruct extends ToolActionStruct {
      * @type {string}
      */
     this.requirementsThingOrGroupId = requirementsThingOrGroupId;
+
+    /**
+     * @type {string}
+     */
+    this.drawLabeledThingGroupsInFrameAs = drawLabeledThingGroupsInFrameAs;
   }
 }
 

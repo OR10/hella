@@ -12,8 +12,9 @@ class MultiToolActionStruct extends ToolActionStruct {
    * @param {string} requirementsThingOrGroupId
    * @param {string} requirementsShape
    * @param {PaperShape|null} selectedPaperShape
+   * @param {string} drawLabeledThingGroupsInFrameAs
    */
-  constructor(options, viewport, delegatedOptions, readOnly, video, task, framePosition, requirementsThingOrGroupId, requirementsShape, selectedPaperShape) {
+  constructor(options, viewport, delegatedOptions, readOnly, video, task, framePosition, requirementsThingOrGroupId, requirementsShape, selectedPaperShape, drawLabeledThingGroupsInFrameAs = 'rectangle') {
     super(options, viewport);
 
     /**
@@ -55,6 +56,11 @@ class MultiToolActionStruct extends ToolActionStruct {
      * @type {PaperShape|null}
      */
     this.selectedPaperShape = selectedPaperShape;
+
+    /**
+     * @type {string}
+     */
+    this.drawLabeledThingGroupsInFrameAs = drawLabeledThingGroupsInFrameAs;
   }
 }
 

@@ -144,18 +144,23 @@
                     ng-hide="!vm.canBeSliced()"
                     ng-click="vm.handleCutShape()"
                     tooltip="Cut the active shape here">
-                <i class="icon fa fa-scissors"
-                   ng-class="{'toggled': vm.hideLabeledThingsInFrame}"
-                ></i>
+                <i class="icon fa fa-scissors"></i>
             </button>
         </div>
         <div class="grid-content noscroll">
-            <button ng-hide="vm.selectedPaperShape === null"
+            <button ng-hide="vm.selectedPaperShape === null || vm._isMultiSelectionActive()"
                     ng-click="vm.handleHideLabeledThingsInFrameToggle()"
                     tooltip="Toggle hiding all, but the active shape">
                 <i class="icon icon-selection-off"
                    ng-class="{'toggled': vm.hideLabeledThingsInFrame}"
                 ></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
+            <button id="toggle-group-presentation-button"
+                    ng-click="vm.handleHideLabeledThingGroupsInFrameToggle()"
+                    tooltip="Switch group presentation">
+                <i class="icon fa fa-object-ungroup"></i>
             </button>
         </div>
         <div class="grid-content noscroll">

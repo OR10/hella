@@ -1,6 +1,7 @@
 import paper from 'paper';
 import PaperRectangle from './PaperRectangle';
 import PaperGroupRectangleMulti from './PaperGroupRectangleMulti';
+import PaperGroupLineMulti from './PaperGroupLineMulti';
 import PaperPedestrian from './PaperPedestrian';
 import PaperCuboid from '../../ThirdDimension/Shapes/PaperCuboid';
 import PaperPolygon from './PaperPolygon';
@@ -64,6 +65,17 @@ class PaperShapeFactory {
    */
   _createGroupRectangle(labeledThingGroupInFrame, shapesInBound, color) {
     return new PaperGroupRectangleMulti(this._groupNameService, labeledThingGroupInFrame, labeledThingGroupInFrame.id, shapesInBound, color);
+  }
+
+  /**
+   * @param {LabeledThingInFrame} labeledThingGroupInFrame
+   * @param {Object} shapesInBound
+   * @param {{primary: string, secondary: string}} color
+   * @returns {PaperGroupRectangleMulti}
+   * @private
+   */
+  _createGroupLine(labeledThingGroupInFrame, shapesInBound, color) {
+    return new PaperGroupLineMulti(this._groupNameService, labeledThingGroupInFrame, labeledThingGroupInFrame.id, shapesInBound, color);
   }
 
   /**
@@ -166,10 +178,18 @@ class PaperShapeFactory {
     return result;
   }
 
-  createPaperGroupShape(labeledThingGroupInFrame, shapesInGroup) {
+  createPaperGroupShape(labeledThingGroupInFrame, shapesInGroup, drawType) {
     const colorId = parseInt(labeledThingGroupInFrame.labeledThingGroup.lineColor, 10);
     const color = this._entityColorService.getColorById(colorId);
-    const paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, shapesInGroup, color);
+
+    let paperGroup;
+    switch (drawType) {
+      case 'line':
+        paperGroup = this._createGroupLine(labeledThingGroupInFrame, shapesInGroup, color);
+        break;
+      default:
+        paperGroup = this._createGroupRectangle(labeledThingGroupInFrame, shapesInGroup, color);
+    }
 
     // Place this group shape behind all other shapes
     paperGroup.sendToBack();

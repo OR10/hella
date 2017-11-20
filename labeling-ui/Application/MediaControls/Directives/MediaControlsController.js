@@ -8,6 +8,8 @@
  * @property {PaperShape} selectedPaperShape
  * @property {string} activeTool
  * @property {boolean} hideLabeledThingsInFrame
+ * @property {boolean} hideLabeledThingGroupsInFrame
+ * @property {boolean} drawLabeledThingGroupsInFrameAs
  * @property {boolean} showCrosshairs
  */
 class MediaControlsController {
@@ -294,6 +296,25 @@ class MediaControlsController {
   }
 
   /**
+   * Handle the toggle of hiding all non selected {@link LabeledThingInFrame}
+   */
+  handleHideLabeledThingGroupsInFrameToggle() {
+    if (this.hideLabeledThingGroupsInFrame) {
+      this.hideLabeledThingGroupsInFrame = false;
+      this.drawLabeledThingGroupsInFrameAs = 'rectangle';
+      this._$rootScope.$emit('framerange:change:after');
+    } else if (!this.hideLabeledThingGroupsInFrame && this.drawLabeledThingGroupsInFrameAs === 'rectangle') {
+      this.hideLabeledThingGroupsInFrame = false;
+      this.drawLabeledThingGroupsInFrameAs = 'line';
+      this._$rootScope.$emit('framerange:change:after');
+    } else {
+      this.hideLabeledThingGroupsInFrame = true;
+      this.drawLabeledThingGroupsInFrameAs = 'rectangle';
+      this._$rootScope.$emit('framerange:change:after');
+    }
+  }
+
+  /**
    * Handle the toggle of showing the crosshairs
    */
   handleShowCrosshairsToggle() {
@@ -397,7 +418,7 @@ class MediaControlsController {
    * @returns {boolean}
    */
   canBeSliced() {
-    return this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced();
+    return this.selectedPaperShape !== null && this.selectedPaperShape.canBeSliced() && !this._isMultiSelectionActive();
   }
 
   /**
@@ -601,6 +622,12 @@ class MediaControlsController {
       description: 'Toggle crosshairs',
       callback: () => this.handleShowCrosshairsToggle(),
     });
+
+    this._keyboardShortcutService.addHotkey('labeling-task', {
+      combo: ['x'],
+      description: 'Change Group Presentation',
+      callback: this.handleHideLabeledThingGroupsInFrameToggle.bind(this),
+    });
   }
 
   /**
@@ -614,7 +641,7 @@ class MediaControlsController {
    * @return {boolean}
    */
   canSelectedPaperShapeBeDeleted() {
-    return !(this.readOnly === true || this.selectedPaperShape === null) && this.selectedPaperShape.canBeDeleted();
+    return !(this.readOnly === true || this.selectedPaperShape === null) && this.selectedPaperShape.canBeDeleted() && !this._isMultiSelectionActive();
   }
 
   /**
@@ -628,8 +655,17 @@ class MediaControlsController {
     return (
       !isReadOnly &&
       shapeIsSelected &&
-      saysItCanBeInterpolated
+      saysItCanBeInterpolated &&
+      !this._isMultiSelectionActive()
     );
+  }
+
+  /**
+   * @returns {boolean}
+   * @private
+   */
+  _isMultiSelectionActive() {
+    return this._shapeSelectionService.getAllShapes().length > 1;
   }
 }
 

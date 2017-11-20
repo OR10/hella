@@ -1,0 +1,14 @@
+{
+  "name": "BenchmarkTool",
+  "version": "1.0.0",
+  "description": "A CouchDB BenchmarkTool",
+  "main": "Benchmark.js",
+  "scripts": {
+    "start": "node ./Benchmark.js"
+  },
+  "dependencies": {
+    "pouchdb-node ": "^6.3.4"
+  },
+  "devDependencies": {
+  }
+}

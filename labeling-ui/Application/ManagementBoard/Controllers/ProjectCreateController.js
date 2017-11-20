@@ -14,8 +14,10 @@ class ProjectCreateController {
    * @param {ModalService} modalService
    * @param {OrganisationService} organisationService
    * @param {EntityIdService} entityIdService
+   * @param {CampaignGateway} campaignGateway
+   * @param {InputDialog} InputDialog
    */
-  constructor($scope, $state, user, userPermissions, projectGateway, taskConfigurationGateway, modalService, organisationService, entityIdService) {
+  constructor($scope, $state, user, userPermissions, projectGateway, taskConfigurationGateway, modalService, organisationService, entityIdService, campaignGateway, InputDialog) {
     /**
      * @type {$rootScope.$scope}
      * @private
@@ -181,6 +183,16 @@ class ProjectCreateController {
     this.uploadUuid = entityIdService.getUniqueId();
 
     /**
+     * @type {string}
+     */
+    this._campaignGateway = campaignGateway;
+
+    /**
+     * @type {string}
+     */
+    this.isCampaignListExpanded = false;
+
+    /**
      * @type {Array.<Object>}
      */
     this.taskTypes = [
@@ -219,6 +231,26 @@ class ProjectCreateController {
     this.taskConfigToAdd = '';
 
     /**
+     * @type {Array.<Object>}
+     */
+    this.organisationCampaigns = [];
+
+    /**
+     * @type {string}
+     */
+    this.selectedCampaign = '';
+    /**
+     * @type {Array}
+     */
+    this.campaignsToAdd = [];
+
+    /**
+     * @type {InputDialog}
+     * @private
+     */
+    this._InputDialog = InputDialog;
+
+    /**
      * @type {{username: boolean, frameSkip: boolean, startFrameNumber: boolean, splitEach: boolean}}
      */
     this.validation = {
@@ -238,6 +270,10 @@ class ProjectCreateController {
 
     this._taskConfigurationGateway.getRequirementsXmlConfigurations().then(configurations => {
       this.requirementsXmlTaskConfigurations = configurations;
+    });
+
+    this._campaignGateway.getCampaigns().then(campaings => {
+      this.organisationCampaigns = campaings;
     });
   }
 
@@ -320,6 +356,7 @@ class ProjectCreateController {
       projectType: 'requirementsXml',
       taskTypeConfigurations,
       dueDate: this.dueDate === null ? null : moment(this.dueDate).format('YYYY-MM-DD H:mm:ss.SSSSSS'),
+      campaigns: this.campaignsToAdd,
     };
 
     this._projectGateway.createProject(data)
@@ -452,6 +489,52 @@ class ProjectCreateController {
 
     return valid;
   }
+
+  addCampaignToProject() {
+    if (this.campaignsToAdd.indexOf(this.selectedCampaign) === -1) {
+      this.campaignsToAdd.push(this.selectedCampaign);
+    }
+    this.selectedCampaign = '';
+  }
+
+  getCampaignsToAdd() {
+    return this.organisationCampaigns.filter(campaign => {
+      if (this.campaignsToAdd.indexOf(campaign.id) !== -1) {
+        return true;
+      }
+
+      return false;
+    });
+  }
+
+  removeCampaignsToAdd(campaignId) {
+    this.campaignsToAdd.splice(this.campaignsToAdd.indexOf(campaignId), 1);
+  }
+
+  showNewCampaignModel() {
+    this._modalService.show(
+      new this._InputDialog(
+        {
+          title: 'Add new Label.',
+          headline: `Add a new Label to this Organisation`,
+          message: ' Name:',
+          confirmButtonText: 'Add',
+        },
+        input => {
+          this.loadingInProgress = true;
+          this._campaignGateway.createCampaign(input)
+            .then(campaign => {
+              this.campaignsToAdd.push(campaign.id);
+              return this._campaignGateway.getCampaigns();
+            })
+            .then(campaings => {
+              this.organisationCampaigns = campaings;
+              this.loadingInProgress = false;
+            });
+        }
+      )
+    );
+  }
 }
 
 ProjectCreateController.$inject = [
@@ -464,6 +547,8 @@ ProjectCreateController.$inject = [
   'modalService',
   'organisationService',
   'entityIdService',
+  'campaignGateway',
+  'InputDialog',
 ];
 
 export default ProjectCreateController;

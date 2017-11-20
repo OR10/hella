@@ -389,7 +389,7 @@ class MultiTool extends PaperTool {
    */
   _invokePaperToolDelegation(tool, actionIdentifier, shape, handle, point) {
     this._paperToolDelegationInvoked = true;
-    const {viewport, video, task, framePosition, requirementsThingOrGroupId, delegatedOptions} = this._toolActionStruct;
+    const {viewport, video, task, framePosition, requirementsThingOrGroupId, delegatedOptions, drawLabeledThingGroupsInFrameAs} = this._toolActionStruct;
     let promise = null;
     let struct = null;
 
@@ -403,7 +403,8 @@ class MultiTool extends PaperTool {
           video,
           task,
           framePosition,
-          requirementsThingOrGroupId
+          requirementsThingOrGroupId,
+          drawLabeledThingGroupsInFrameAs
         );
         promise = tool.invokeShapeCreation(struct);
         break;
@@ -577,13 +578,14 @@ class MultiTool extends PaperTool {
    */
   invokeDefaultShapeCreation(toolActionStruct) {
     this._getCreationToolForRequirementsShape(toolActionStruct.requirementsShape);
-    const {viewport, video, task, framePosition, requirementsThingOrGroupId} = this._toolActionStruct;
+    const {viewport, video, task, framePosition, requirementsThingOrGroupId, drawLabeledThingGroupsInFrameAs} = this._toolActionStruct;
     const struct = new CreationToolActionStruct(
       viewport,
       video,
       task,
       framePosition,
-      requirementsThingOrGroupId
+      requirementsThingOrGroupId,
+      drawLabeledThingGroupsInFrameAs
     );
 
     return this._activePaperTool.invokeDefaultShapeCreation(struct);
