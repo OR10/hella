@@ -717,6 +717,7 @@ export default class LabelSelectorController {
 
   /**
    * Handle to jump to the next shape with class
+   * @param {string} direction
    */
   handleJumpToNextShapeWithSelectedClass(direction = 'next') {
     if (this.selectedClassFilter.length === 0) {
