@@ -77,12 +77,18 @@ class Import
     private $taskCreatorService;
 
     /**
+     * @var Facade\Campaign
+     */
+    private $campaignFacade;
+
+    /**
      * Import constructor.
      *
      * @param Facade\Project         $projectFacade
      * @param Facade\RequirementsXml $requirementsXmlFacade
      * @param Facade\LabelingTask    $labelingTaskFacade
      * @param Facade\Video           $videoFacade
+     * @param Facade\Campaign        $campaignFacade
      * @param Service\VideoImporter  $videoImporter
      * @param Service\XmlValidator   $xmlValidatorForImportData
      * @param Service\XmlValidator   $xmlValidatorForRequirementsConfiguration
@@ -94,6 +100,7 @@ class Import
         Facade\RequirementsXml $requirementsXmlFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Video $videoFacade,
+        Facade\Campaign $campaignFacade,
         Service\VideoImporter $videoImporter,
         Service\XmlValidator $xmlValidatorForImportData,
         Service\XmlValidator $xmlValidatorForRequirementsConfiguration,
@@ -109,6 +116,7 @@ class Import
         $this->xmlValidatorForImportData                = $xmlValidatorForImportData;
         $this->taskCreatorService                       = $taskCreatorService;
         $this->xmlValidatorForRequirementsConfiguration = $xmlValidatorForRequirementsConfiguration;
+        $this->campaignFacade                           = $campaignFacade;
     }
 
     /**
@@ -238,9 +246,36 @@ class Import
             ($this->previousRequirementsXml === null) ? null : $this->previousRequirementsXml->getId()
         );
 
+        $tagsElement = $xpath->query('/x:export/x:metadata/x:tags/x:tag');
+
+        $campaignIds = [];
+        /** @var \DOMElement $tagName */
+        foreach($tagsElement as $tagName) {
+            $campaignIds[] = $this->createTagForProject($organisation, $tagName->nodeValue)->getid();
+        }
+        $project->setCampaigns($campaignIds);
+
         $this->projectFacade->save($project);
 
         return $project;
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param                                     $tagName
+     *
+     * @return AnnoStationBundleModel\Campaign
+     */
+    private function createTagForProject(AnnoStationBundleModel\Organisation $organisation, $tagName)
+    {
+        $existingCampaign = $this->campaignFacade->getCampaignByOrganisationAndName($organisation, $tagName);
+        if (!empty($existingCampaign)) {
+            return $existingCampaign[0];
+        }
+
+        $campaign = new AnnoStationBundleModel\Campaign($organisation, $tagName);
+
+        return $this->campaignFacade->save($campaign);
     }
 
     /**

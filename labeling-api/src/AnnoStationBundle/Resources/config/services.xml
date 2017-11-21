@@ -185,6 +185,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
             <argument type="service" id="annostation.labeling_api.database.facade.additional_frame_number_mapping"/>
             <argument type="service" id="annostation.labeling_api.database.facade.calibration_data"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
             <argument type="service" id="annostation.labeling_api.service.ghost_classes_propagation"/>
             <argument type="service" id="annostation.labeling_api.service.ghost_labeled_thing_group_in_frame_classes_propagation"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
@@ -299,6 +300,7 @@
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.requirements_xml"/>
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.service.project_importer.facade.video"/>
+            <argument type="service" id="annostation.labeling_api.service.project_importer.facade.campaign"/>
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
             <argument type="service" id="annostation.labeling_api.service.xml_validator_requirements_xml_import"/>
             <argument type="service" id="annostation.labeling_api.service.requirements_xml_validator"/>
@@ -333,6 +335,10 @@
 
         <service id="annostation.labeling_api.service.project_importer.facade.video" class="AnnoStationBundle\Service\ProjectImporter\Facade\Video">
             <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.project_importer.facade.campaign" class="AnnoStationBundle\Service\ProjectImporter\Facade\Campaign">
+            <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
         </service>
 
         <service id="annostation.labeling_api.service.project_importer.facade.labeled_thing_group" class="AnnoStationBundle\Service\ProjectImporter\Facade\LabeledThingGroup">

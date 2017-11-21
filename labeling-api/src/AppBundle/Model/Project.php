@@ -944,4 +944,12 @@ class Project extends Base
     {
         $this->diskUsageInBytes = (string) $diskUsageInBytes;
     }
+
+    /**
+     * @param mixed $campaigns
+     */
+    public function setCampaigns($campaigns)
+    {
+        $this->campaigns = $campaigns;
+    }
 }
