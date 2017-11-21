@@ -54,6 +54,9 @@ class Video extends ExportXml\Element
         }
         $video->setAttribute('filename', $this->video->getName());
 
+        $metadata = new Video\Metadata($this->namespace, $this->video);
+        $video->appendChild($metadata->getElement($document));
+
         if ($this->frame instanceof Video\FrameLabeling) {
             $video->appendChild($this->frame->getElement($document));
         }
