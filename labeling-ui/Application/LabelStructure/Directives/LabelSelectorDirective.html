@@ -81,7 +81,7 @@
             <v-pane-content>
                 <ul class="grid-block vertical">
                     <li class="grid-block shrink"
-                        ng-class="{ 'highlighted-grid-row': vm.isResponseSelected(page, response) }"
+                        ng-class="{ 'highlighted-grid-row': vm.isResponseSelected(response) }"
                         ng-repeat="response in page.responses track by response.id">
                         <input id="{{page.id}}-{{$index}}"
                                type="checkbox"
@@ -134,9 +134,9 @@
             <v-pane-content>
                 <ul class="grid-block vertical">
                     <li class="grid-block shrink"
-                        ng-class="{ 'highlighted-grid-row': vm.isResponseSelected(page, response) }"
+                        ng-class="{ 'highlighted-grid-row': vm.isResponseSelected(response) }"
                         ng-repeat="response in page.responses track by response.id"
-                        ng-hide="vm.hideWhenItemIsNotSelected(page, response)"
+                        ng-hide="vm.hideWhenItemIsNotSelected(response)"
                     >
                         <input id="accordionControl{{page.id}}-{{$index}}"
                                type="checkbox"

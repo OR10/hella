@@ -285,12 +285,11 @@ export default class LabelSelectorController {
   }
 
   /**
-   * @param {Object} page
    * @param {Object} response
    * @returns {boolean}
    */
-  hideWhenItemIsNotSelected(page, response) {
-    return this.choices[page.id] !== response.id;
+  hideWhenItemIsNotSelected(response) {
+    return !this.choices[response.id].selected;
   }
 
   /**
@@ -400,7 +399,7 @@ export default class LabelSelectorController {
       page.instructions = node.metadata.instructions;
 
       page.responses = node.children.map(
-        child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass, value: node.metadata.value.find(value => value === child.name)})
+        child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass, value: this.getCorrectValueForNodeFromChild(node, child)})
       );
 
       page.responses.forEach(response => {
@@ -465,6 +464,13 @@ export default class LabelSelectorController {
     if (this.activePageIndex === null && this.pages.length > 0) {
       this.activePageIndex = 0;
     }
+  }
+
+  getCorrectValueForNodeFromChild(node, child) {
+    if (node.metadata.value === undefined || node.metadata.value === null) {
+      return undefined;
+    }
+    return node.metadata.value.find(value => value === child.name);
   }
 
   applySearchFilter() {
@@ -596,7 +602,7 @@ export default class LabelSelectorController {
     return multiSelect;
   }
 
-  isResponseSelected(page, response) {
+  isResponseSelected(response) {
     if (this.choices === null) {
       return false;
     }
@@ -609,6 +615,9 @@ export default class LabelSelectorController {
       if (selectedLabeledObject !== null) {
         return selectedLabeledObject.classes.includes(response.id);
       }
+    }
+    if (this.choices[response.id] === undefined) {
+      return false;
     }
     return this.choices[response.id].selected;
   }
