@@ -87,7 +87,6 @@ grammar {
 
   Tags = element e:tags {
     element e:tag {
-      attribute key {text},
       text
     }*
   }

@@ -31,6 +31,11 @@ class Metadata extends ExportXml\Element
     private $labelingGroupFacade;
 
     /**
+     * @var Facade\Campaign
+     */
+    private $campaignFacade;
+
+    /**
      * @var array
      */
     private $taskConfigurations;
@@ -50,6 +55,7 @@ class Metadata extends ExportXml\Element
         Model\Project $project,
         Model\Export $export,
         Facade\LabelingGroup $labelingGroupFacade,
+        Facade\Campaign $campaignFacade,
         $taskConfigurations,
         $namespace,
         AnnoStationBundleModel\AdditionalFrameNumberMapping $additionalFrameNumberMapping = null
@@ -58,6 +64,7 @@ class Metadata extends ExportXml\Element
         $this->project                      = $project;
         $this->export                       = $export;
         $this->labelingGroupFacade          = $labelingGroupFacade;
+        $this->campaignFacade               = $campaignFacade;
         $this->taskConfigurations           = $taskConfigurations;
         $this->namespace                    = $namespace;
         $this->additionalFrameNumberMapping = $additionalFrameNumberMapping;
@@ -104,10 +111,13 @@ class Metadata extends ExportXml\Element
         /*
         $workflow = new Element\Metadata\Workflow();
         $metadata->appendChild($workflow->getElement($document));
-
-        $tags = new Element\Metadata\Tags();
-        $metadata->appendChild($tags->getElement($document));
         */
+
+        $tags        = new Element\Metadata\Tags($this->namespace, $this->project, $this->campaignFacade);
+        $tagsElement = $tags->getElement($document);
+        if ($tagsElement->hasChildNodes()) {
+            $metadata->appendChild($tags->getElement($document));
+        }
 
         return $metadata;
     }

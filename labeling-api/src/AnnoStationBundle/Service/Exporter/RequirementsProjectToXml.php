@@ -103,6 +103,11 @@ class RequirementsProjectToXml
     private $ghostLabeledThingGroupInFrameClassesPropagation;
 
     /**
+     * @var Facade\Campaign
+     */
+    private $campaignFacade;
+
+    /**
      * RequirementsProjectToXml constructor.
      *
      * @param Facade\Exporter                                         $exporterFacade
@@ -112,6 +117,7 @@ class RequirementsProjectToXml
      * @param Facade\TaskConfiguration                                $taskConfiguration
      * @param Facade\AdditionalFrameNumberMapping                     $additionalFrameNumberMappingFacade
      * @param Facade\CalibrationData                                  $calibrationDataFacade
+     * @param Facade\Campaign                                         $campaignFacade
      * @param Service\GhostClassesPropagation                         $ghostClassesPropagation
      * @param Service\GhostLabeledThingGroupInFrameClassesPropagation $ghostLabeledThingGroupInFrameClassesPropagation
      * @param AppBundleFacade\User                                    $userFacade
@@ -131,6 +137,7 @@ class RequirementsProjectToXml
         Facade\TaskConfiguration $taskConfiguration,
         Facade\AdditionalFrameNumberMapping $additionalFrameNumberMappingFacade,
         Facade\CalibrationData $calibrationDataFacade,
+        Facade\Campaign $campaignFacade,
         Service\GhostClassesPropagation $ghostClassesPropagation,
         Service\GhostLabeledThingGroupInFrameClassesPropagation $ghostLabeledThingGroupInFrameClassesPropagation,
         AppBundleFacade\User $userFacade,
@@ -159,6 +166,7 @@ class RequirementsProjectToXml
         $this->additionalFrameNumberMappingFacade              = $additionalFrameNumberMappingFacade;
         $this->depthBufferService                              = $depthBufferService;
         $this->calibrationDataFacade                           = $calibrationDataFacade;
+        $this->campaignFacade                                  = $campaignFacade;
     }
 
     /**
@@ -205,6 +213,7 @@ class RequirementsProjectToXml
                     $project,
                     $export,
                     $this->labelingGroupFacade,
+                    $this->campaignFacade,
                     $taskConfigurations,
                     self::XML_NAMESPACE,
                     $additionalFrameNumberMapping
