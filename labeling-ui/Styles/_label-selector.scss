@@ -11,20 +11,20 @@
   flex: 0;
   font-weight: bold;
 
-  input[type="radio"] {
+  input[type="radio"], input[type="checkbox"] {
     display: none;
   }
 
-  input[type="radio"] + label {
+  input[type="radio"] + label, input[type="checkbox"] + label {
     cursor: pointer;
     margin: 0 0 0 .5rem;
   }
 
-  input[type="radio"]:checked + label {
+  input[type="radio"]:checked + label, input[type="checkbox"]:checked + label {
     color: $color-ut-darkgrey-2;
   }
 
-  input[type="radio"]:checked + label {
+  input[type="radio"]:checked + label, input[type="checkbox"]:checked + label  {
     color: $color-ut-midgrey-2;
   }
 
@@ -69,11 +69,11 @@
       color: $color-ut-midgrey-2;
     }
 
-    input[type="radio"] {
+    input[type="radio"], input[type="checkbox"] {
       display: none;
     }
 
-    input[type="radio"] + label {
+    input[type="radio"] + label, input[type="checkbox"] + label {
       display: flex;
       margin-right: .1rem;
       cursor: pointer;
@@ -83,7 +83,7 @@
       padding: 0;
     }
 
-    input[type="radio"] + label:after {
+    input[type="radio"] + label:after, input[type="checkbox"] + label:after{
       @include grid-content(
               $size: shrink
       );
@@ -112,14 +112,14 @@
       //margin-right: .5rem;
     }
 
-    input[type="radio"]:checked + label {
+    input[type="radio"]:checked + label, input[type="checkbox"]:checked + label {
       .response {
         color: $color-ut-darkgrey-1;
         font-weight: bold;
       }
     }
 
-    input[type="radio"]:checked + label:after {
+    input[type="radio"]:checked + label:after, input[type="checkbox"]:checked + label:after {
       visibility: visible;
     }
   }

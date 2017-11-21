@@ -84,13 +84,13 @@
                         ng-class="{ 'highlighted-grid-row': vm.isResponseSelected(page, response) }"
                         ng-repeat="response in page.responses track by response.id">
                         <input id="{{page.id}}-{{$index}}"
-                               type="radio"
-                               name="{{page.id}}"
+                               type="checkbox"
+                               name="{{page.id}}-{{$index}}"
+                               ng-model="vm.choices[response.id].selected"
                                value="{{response.id}}"
-                               ng-model="vm.choices[page.id]"
                                ng-readonly="vm.readOnly"
                                ng-disabled="vm.readOnly"
-                               ng-click="vm.handleLabelSelectionClick(page.id)"
+                               ng-click="vm.handleLabelSelectionClick(page.id, response.id)"
                         />
                         <label class="grid-block"
                                for="{{page.id}}-{{$index}}">
@@ -139,12 +139,13 @@
                         ng-hide="vm.hideWhenItemIsNotSelected(page, response)"
                     >
                         <input id="accordionControl{{page.id}}-{{$index}}"
-                               type="radio"
-                               name="accordionControlName{{page.id}}"
+                               type="checkbox"
+                               name="accordionControlName{{page.id}}-{{$index}}"
+                               ng-model="vm.choices[response.id].selected"
                                value="{{response.id}}"
-                               ng-model="vm.choices[page.id]"
                                ng-readonly="true"
                                ng-disabled="true"
+
                         />
                         <label class="grid-block"
                                for="accordionControl{{page.id}}-{{$index}}">
@@ -185,7 +186,7 @@
                      class="grid-block label-selector-content-container wrap noscroll">
                     <div ng-repeat="response in page.responses" class="grid-content label-selector-item small-8"
                          ng-class="{selected: vm.isResponseSelected(page, response)}"
-                         ng-click="!vm.readOnly && (vm.choices[page.id] = response.id)">
+                         ng-click="!vm.readOnly && vm.handleChoiceSelection(page, response)">
                         <button><i class="icon {{response.iconClass}} noscroll"></i></button>
                         <p>{{response.response}}</p>
                     </div>
