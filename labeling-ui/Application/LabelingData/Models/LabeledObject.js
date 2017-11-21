@@ -110,6 +110,17 @@ class LabeledObject {
   }
 
   /**
+   * Add a new label to the currently stored list of labels
+   *
+   * It is ensured, that the label list stays unique
+   *
+   * @param {string} newClass
+   */
+  removeClass(toRemoveClass) {
+    this.setClasses([...this.classes.filter(item => item !== toRemoveClass)]);
+  }
+
+  /**
    * Convert this model into a datastructure suitable for backend storage
    *
    * @return {Object}

@@ -556,12 +556,11 @@ class RequirementsLabelStructure extends LabelStructure {
    */
   _annotateClassJsonWithActiveValue(classJson, classList) {
     const clonedClassJson = cloneDeep(classJson);
-    clonedClassJson.metadata.value = null;
+    clonedClassJson.metadata.value = [];
 
     for (const valueJson of clonedClassJson.children) {
       if (classList !== undefined && classList.includes(valueJson.name)) {
-        clonedClassJson.metadata.value = valueJson.name;
-        return clonedClassJson;
+        clonedClassJson.metadata.value.push(valueJson.name);
       }
     }
 
