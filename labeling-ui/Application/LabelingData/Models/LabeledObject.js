@@ -110,11 +110,11 @@ class LabeledObject {
   }
 
   /**
-   * Add a new label to the currently stored list of labels
+   * Remove label to the currently stored list of labels
    *
    * It is ensured, that the label list stays unique
    *
-   * @param {string} newClass
+   * @param {string} toRemoveClass
    */
   removeClass(toRemoveClass) {
     this.setClasses([...this.classes.filter(item => item !== toRemoveClass)]);

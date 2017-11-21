@@ -143,6 +143,21 @@ class LabeledThingInFrame extends LabeledObject {
   }
 
   /**
+   * Remove a label to the currently stored list of labels
+   *
+   * It is ensured, that the label list stays unique
+   *
+   * @param {string} deleteClass
+   */
+  removeClass(deleteClass) {
+    if (this.ghostClasses !== null) {
+      this.setClasses(this.ghostClasses);
+    }
+
+    super.removeClass(deleteClass);
+  }
+
+  /**
    * Realize a ghosted `LabeledThingInFrame`
    *
    * ** Who you gonna .call? **
