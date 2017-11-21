@@ -431,7 +431,7 @@ gulp.task('copy-canteen', () => {
 });
 
 gulp.task('webdriver-update', webdriverUpdate({
-  webdriverManagerArgs: ['--versions.chrome=2.30'],
+  webdriverManagerArgs: ['--versions.chrome=2.33'],
 }));
 
 gulp.task('test-e2e-run', ['webdriver-update', 'copy-canteen', 'clean-e2e-logs'], next => {
