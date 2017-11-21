@@ -35,8 +35,8 @@
         </workflow>
         <!-- #12 -->
         <tags>
-            <tag key="foo">bar</tag>
-            <tag key="bazz">blub</tag>
+            <tag>bar</tag>
+            <tag>blub</tag>
         </tags>
     </metadata>
     <video id="b177fd9beccd9fbc2f85307aa5bb4efc" filename="foobar.avi">

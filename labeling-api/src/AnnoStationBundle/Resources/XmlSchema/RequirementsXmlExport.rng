@@ -121,7 +121,6 @@
         <element name="e:tags">
             <zeroOrMore>
                 <element name="e:tag">
-                    <attribute name="key"/>
                     <text/>
                 </element>
             </zeroOrMore>
