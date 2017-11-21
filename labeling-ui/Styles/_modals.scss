@@ -4,33 +4,34 @@
 
   .modal {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    background-color: $color-ut-lightgrey-4;
+    background-color: $color-ut-lightgrey-3;
     padding: 0;
     margin-top: -30vh;
     z-index: 10001;
 
     .modal-header {
       padding: 0 20px;
-      border-bottom: 2px solid $color-ut-darkgrey-1;
 
       .modal-title {
         color: $color-ut-midgrey-3;
         text-transform: uppercase;
         font-weight: bold;
         font-size: 18px;
-        padding: 10px 0 5px 0;
+        padding: 20px 0 20px 0;
+        text-align: center;
       }
     }
 
     .modal-body {
-      padding: 15px 20px;
       overflow-y: scroll;
       max-height: 60vh;
 
       .modal-body-headline {
-        color: $color-ut-darkgrey-2;
-        font-size: 16px;
+        color: $color-ut-lightgrey-1;
+        font-size: 18px;
         font-weight: bold;
+        padding: 10px 10px 10px 10px;
+        background-color: $color-ut-midgrey-2
       }
 
       .modal-body-content {
@@ -38,6 +39,22 @@
         color: $color-ut-midgrey-3;
         font-size: 14px;
         font-weight: bold;
+        padding: 5px 10px;
+      }
+
+      .modal-body-selection {
+        padding: 0px 10px 10px 10px;
+        position: relative;
+      }
+
+      .modal-body-list {
+        padding: 0px 10px 10px 10px;
+        position: relative;
+      }
+
+      .modal-body-input {
+        padding: 0px 10px 10px 10px;
+        position: relative;
       }
     }
 

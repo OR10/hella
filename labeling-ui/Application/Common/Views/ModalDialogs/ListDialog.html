@@ -2,11 +2,13 @@
     <div class="modal-title">{{title}}</div>
 </div>
 <div class="modal-body noscrollbars">
-    <h3 class="modal-body-headline">{{headline}}</h3>
+    <p class="modal-body-headline">{{headline}}</p>
     <p class="modal-body-content">{{message}}</p>
-    <ul class="modal-list">
-        <li ng-repeat="item in data track by $index">{{item}}</li>
-    </ul>
+    <div class="modal-body-list">
+        <ul>
+            <li ng-repeat="item in data track by $index">{{item}}</li>
+        </ul>
+    </div>
 </div>
 <div class="modal-footer grid-block">
     <!-- Abortable Dialog -->
