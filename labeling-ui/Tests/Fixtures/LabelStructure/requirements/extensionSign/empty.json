@@ -2,7 +2,7 @@
   {
     "name": "extension-position",
     "metadata": {
-      "value": null,
+      "value": [],
       "challenge": "Position of the extension sign"
     },
     "children": [

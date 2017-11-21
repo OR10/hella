@@ -199,7 +199,7 @@ describe('LabelSelectorController tests', () => {
             name: 'street_light',
             metadata: {
               challenge: 'Street Light',
-              value: 'Yellow',
+              value: ['Yellow'],
             },
             children: [
               {
@@ -226,7 +226,7 @@ describe('LabelSelectorController tests', () => {
             name: 'road_type',
             metadata: {
               challenge: 'Road Type',
-              value: 'City',
+              value: ['City'],
             },
             children: [
               {
@@ -261,15 +261,15 @@ describe('LabelSelectorController tests', () => {
         return page.challenge;
       });
 
-      const values = {};
+      const values = [];
       controller.pages.forEach(page => {
-        values[page.id] = page.responses.map(res => {
+        values.push(page.responses.map(res => {
           return res.response;
-        });
+        }));
       });
 
       expect(challenges).toEqual(['Street Light', 'Road Type']);
-      expect(values).toEqual({street_light: ['Off', 'Red', 'Yellow'], road_type: ['City', 'Highway', 'Highway Exit']});
+      expect(values).toEqual([['Off', 'Red', 'Yellow'], ['City', 'Highway', 'Highway Exit']]);
     });
 
     it('Update label selector pages with search query for challenges', () => {
@@ -280,15 +280,15 @@ describe('LabelSelectorController tests', () => {
         return page.challenge;
       });
 
-      const values = {};
+      const values = [];
       controller.pages.forEach(page => {
-        values[page.id] = page.responses.map(res => {
+        values.push(page.responses.map(res => {
           return res.response;
-        });
+        }));
       });
 
       expect(challenges).toEqual(['Road Type']);
-      expect(values).toEqual({road_type: ['City', 'Highway', 'Highway Exit']});
+      expect(values).toEqual([['City', 'Highway', 'Highway Exit']]);
     });
 
     it('Update label selector pages with search query for values', () => {
@@ -299,15 +299,15 @@ describe('LabelSelectorController tests', () => {
         return page.challenge;
       });
 
-      const values = {};
+      const values = [];
       controller.pages.forEach(page => {
-        values[page.id] = page.responses.map(res => {
+        values.push(page.responses.map(res => {
           return res.response;
-        });
+        }));
       });
 
       expect(challenges).toEqual(['Road Type']);
-      expect(values).toEqual({road_type: ['Highway Exit']});
+      expect(values).toEqual([['Highway Exit']]);
     });
   });
 });

@@ -2,7 +2,7 @@
   {
     "name": "sign-type",
     "metadata": {
-      "value": null,
+      "value": [],
       "challenge": "Sign type"
     },
     "children": [

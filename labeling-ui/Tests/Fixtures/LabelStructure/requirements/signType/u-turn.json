@@ -2,7 +2,7 @@
   {
     "name": "sign-type",
     "metadata": {
-      "value": "u-turn",
+      "value": ["u-turn"],
       "challenge": "Sign type"
     },
     "children": [

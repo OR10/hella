@@ -2,7 +2,7 @@
   {
     "name": "extension-position",
     "metadata": {
-      "value": "position-above",
+      "value": ["position-above"],
       "challenge": "Position of the extension sign"
     },
     "children": [
@@ -23,7 +23,7 @@
   {
     "name": "extension-sign-subclass",
     "metadata": {
-      "value": "extension-sign-subclass-1",
+      "value": ["extension-sign-subclass-1"],
       "challenge": "Subclass"
     },
     "children": [

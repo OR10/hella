@@ -3,7 +3,7 @@
     "name": "sign-type",
     "metadata": {
       "challenge": "Sign type",
-      "value": "speed-sign"
+      "value": ["speed-sign"]
     },
     "children": [
       {
@@ -24,7 +24,7 @@
     "name": "speed-limit",
     "metadata": {
       "challenge": "Speed limit",
-      "value": null
+      "value": []
     },
     "children": [
       {
@@ -45,7 +45,7 @@
     "name": "limited-by-type",
     "metadata": {
       "challenge": "Limited by type",
-      "value": null
+      "value": []
     },
     "children": [
       {
