@@ -208,7 +208,7 @@ class LabeledThingInFrame extends LabeledObject {
       let incomplete = false;
       const totalIncomplete = list.reduce((total, current) => {
         let newTotal = total;
-        if (current.metadata.value === null) {
+        if (current.metadata.value.length === 0) {
           newTotal++;
         }
         return newTotal;
