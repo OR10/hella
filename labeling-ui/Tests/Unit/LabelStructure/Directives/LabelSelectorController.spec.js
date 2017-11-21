@@ -8,6 +8,8 @@ import TaskFixture from '../../../Fixtures/Models/Frontend/Task';
 import paper from 'paper';
 
 describe('LabelSelectorController tests', () => {
+  let angularQ;
+
   /**
    * @type {$rootScope}
    */
@@ -28,8 +30,14 @@ describe('LabelSelectorController tests', () => {
    */
   let keyboardShortcutService;
 
-  beforeEach(inject($rootScope => {
+  /**
+   * @type {LabelStructureService}
+   */
+  let labelStructureService;
+
+  beforeEach(inject(($rootScope, $q) => {
     rootScope = $rootScope;
+    angularQ = $q;
     scope = $rootScope.$new();
   }));
 
@@ -37,6 +45,8 @@ describe('LabelSelectorController tests', () => {
     shapeSelectionService = jasmine.createSpyObj('shapeSelectionService', ['count']);
     shapeSelectionService.count.and.returnValue(1);
     keyboardShortcutService = jasmine.createSpyObj('keyboardShortcutService', ['addHotkey', 'registerOverlay']);
+    labelStructureService = jasmine.createSpyObj('labelStructureService', ['getLabelStructure']);
+    labelStructureService.getLabelStructure.and.returnValue(angularQ.resolve());
   });
 
   function createController() {
@@ -55,7 +65,8 @@ describe('LabelSelectorController tests', () => {
       null, // applicationState
       null, // taskGateway
       shapeSelectionService,
-      keyboardShortcutService
+      keyboardShortcutService,
+      labelStructureService,
     );
   }
 

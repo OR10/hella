@@ -187,6 +187,16 @@ PouchDbViewService.VIEWS = {
       }
     },
   },
+  'labeledThingInFrameByClassName': {
+    map: function(doc) {
+      if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
+        doc.classes.forEach(
+          function(className) {
+            emit([doc.taskId, className]);
+          });
+      }
+    },
+  },
   'labeledThingInFrameIncomplete': {
     map: function(doc) {
       if (doc.type === 'AppBundle.Model.LabeledThingInFrame') {
@@ -242,6 +252,16 @@ PouchDbViewService.VIEWS = {
     map: function(doc) {
       if (doc.type === 'AnnoStationBundle.Model.LabeledThingGroupInFrame') {
         emit([doc.labeledThingGroupId, doc.frameIndex]);
+      }
+    },
+  },
+  'labeledThingGroupInFrameByClassName': {
+    map: function(doc) {
+      if (doc.type === 'AnnoStationBundle.Model.LabeledThingGroupInFrame') {
+        doc.classes.forEach(
+          function(className) {
+            emit([doc.taskId, className]);
+          });
       }
     },
   },
