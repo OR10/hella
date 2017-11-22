@@ -38,11 +38,6 @@ class VideoImporterTest extends Tests\KernelTestCase
      */
     private $workerPoolFacade;
 
-    /**
-     * @var JobInstruction\VideoFrameSplitter
-     */
-    private $videoFrameSplitterInstruction;
-
     public function setUpImplementation()
     {
         $this->workerPoolFacade = $this->getMockBuilder(WorkerPool\Facade::class)
@@ -65,7 +60,6 @@ class VideoImporterTest extends Tests\KernelTestCase
         $this->videoFacade                   = $this->getAnnostationService('database.facade.video');
         $this->projectFacade                 = $this->getAnnostationService('database.facade.project');
         $this->labelingTaskFacade            = $this->getAnnostationService('database.facade.labeling_task');
-        $this->videoFrameSplitterInstruction = $this->getAnnostationService('worker.job_instruction.video');
     }
 
     private function createVideoImporterService(array $mockedMethods = []): Service\VideoImporter

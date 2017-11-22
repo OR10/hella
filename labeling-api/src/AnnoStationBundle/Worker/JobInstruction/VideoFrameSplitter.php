@@ -14,6 +14,7 @@ use crosscan\WorkerPool\Job;
 use Doctrine\ODM\CouchDB;
 use Hagl\WorkerPoolBundle\JobInstruction;
 use League\Flysystem;
+use crosscan\WorkerPool\AMQP;
 
 class VideoFrameSplitter extends JobInstruction
 {
@@ -58,12 +59,18 @@ class VideoFrameSplitter extends JobInstruction
     private $projectFacade;
 
     /**
+     * @var AMQP\FacadeAMQP
+     */
+    private $amqpFacade;
+
+    /**
      * Video constructor.
      *
      * @param VideoService\VideoFrameSplitter    $videoFrameSplitter
      * @param Facade\Video                       $videoFacade
      * @param Facade\LabelingTask                $labelingTaskFacade
      * @param Facade\Project                     $projectFacade
+     * @param AMQP\FacadeAMQP                    $amqpFacade
      * @param Flysystem\Filesystem               $fileSystem
      * @param Service\VideoCdn                   $videoCdnService
      * @param Service\CouchDbUpdateConflictRetry $couchDbUpdateConflictRetryService
@@ -74,6 +81,7 @@ class VideoFrameSplitter extends JobInstruction
         Facade\Video $videoFacade,
         Facade\LabelingTask $labelingTaskFacade,
         Facade\Project $projectFacade,
+        AMQP\FacadeAMQP $amqpFacade,
         Flysystem\Filesystem $fileSystem,
         Service\VideoCdn $videoCdnService,
         Service\CouchDbUpdateConflictRetry $couchDbUpdateConflictRetryService,
@@ -87,6 +95,7 @@ class VideoFrameSplitter extends JobInstruction
         $this->cacheDir                          = $cacheDir;
         $this->videoCdnService                   = $videoCdnService;
         $this->couchDbUpdateConflictRetryService = $couchDbUpdateConflictRetryService;
+        $this->amqpFacade                        = $amqpFacade;
     }
 
     /**
@@ -138,8 +147,8 @@ class VideoFrameSplitter extends JobInstruction
                 );
             }
             foreach (array_unique($projectIds) as $projectId) {
-                $project = $this->projectFacade->find($projectId);
-                $this->updateProject($project, $this->videoFacade->calculateAggregatedeVideoSizeForProject($project));
+                $job = new Jobs\CalculateProjectDiskSize($projectId);
+                $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
             }
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
@@ -151,28 +160,6 @@ class VideoFrameSplitter extends JobInstruction
             if (!unlink($tmpFile)) {
                 throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
             }
-        }
-    }
-
-    /**
-     * @param Model\Project $project
-     * @param               $diskUsage
-     * @param int           $retryCount
-     * @param int           $maxRetries
-     *
-     * @throws CouchDB\UpdateConflictException
-     */
-    private function updateProject(Model\Project $project, $diskUsage, $retryCount = 0, $maxRetries = 1)
-    {
-        try {
-            $this->projectFacade->refresh($project);
-            $project->setDiskUsageInBytes($diskUsage);
-            $this->projectFacade->update();
-        } catch (CouchDB\UpdateConflictException $updateConflictException) {
-            if ($retryCount > $maxRetries) {
-                throw $updateConflictException;
-            }
-            $this->updateProject($project, $diskUsage, $retryCount + 1);
         }
     }
 
