@@ -2,11 +2,13 @@
     <div class="modal-title">{{title}}</div>
 </div>
 <div class="modal-body noscrollbars">
-    <h3 class="modal-body-headline">{{headline}}</h3>
+    <p class="modal-body-headline">{{headline}}</p>
     <p class="modal-body-content">{{message}}</p>
-    <select class="modal-select" ng-model="selection">
+    <div class="modal-body-selection">
+      <select class="modal-select" ng-model="selection">
         <option ng-repeat="option in data" value="{{option.id}}">{{option.name}}</option>
-    </select>
+      </select>
+    </div>
 </div>
 <div class="modal-footer grid-block">
     <!-- Abortable Dialog -->

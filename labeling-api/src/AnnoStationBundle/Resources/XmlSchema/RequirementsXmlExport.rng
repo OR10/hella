@@ -121,7 +121,6 @@
         <element name="e:tags">
             <zeroOrMore>
                 <element name="e:tag">
-                    <attribute name="key"/>
                     <text/>
                 </element>
             </zeroOrMore>
@@ -133,6 +132,9 @@
         <element name="e:video">
             <attribute name="id"/>
             <attribute name="filename"/>
+            <optional>
+                <ref name="VideoMetadata"/>
+            </optional>
             <zeroOrMore>
                 <ref name="FrameLabeling"/>
             </zeroOrMore>
@@ -430,6 +432,20 @@
         </element>
     </define>
     <!-- </references> -->
+    <!-- <metadata> -->
+    <define name="VideoMetadata">
+        <element name="e:metadata">
+            <zeroOrMore>
+                <element name="e:image-coordinate-system">
+                    <attribute name="top-left-x"/>
+                    <attribute name="top-left-y"/>
+                    <attribute name="bottom-right-x"/>
+                    <attribute name="bottom-right-y"/>
+                </element>
+            </zeroOrMore>
+        </element>
+    </define>
+    <!-- </metadata> -->
     <define name="Root">
         <element name="e:export">
             <ref name="Metadata"/>

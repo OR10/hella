@@ -87,7 +87,6 @@ grammar {
 
   Tags = element e:tags {
     element e:tag {
-      attribute key {text},
       text
     }*
   }
@@ -97,6 +96,7 @@ grammar {
   Video = element e:video {
     attribute id {text},
     attribute filename {text},
+    VideoMetadata?,
     FrameLabeling?,
     (Group | Thing)*
   }
@@ -237,6 +237,17 @@ grammar {
     }*
   }
 # </references>
+
+# <metadata>
+  VideoMetadata = element e:metadata {
+    element e:image-coordinate-system {
+      attribute top-left-x {text},
+      attribute top-left-y {text},
+      attribute bottom-right-x {text},
+      attribute bottom-right-y {text}
+    }*
+  }
+# </metadata>
 
   Root = element e:export {
     Metadata,

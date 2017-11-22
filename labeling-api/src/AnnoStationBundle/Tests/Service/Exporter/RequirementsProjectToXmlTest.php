@@ -404,6 +404,11 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
 
         $video = AppBundleModel\Video::create($organisation, 'labeling-video');
 
+        $videoMetadata = new AppBundleModel\Video\MetaData();
+        $videoMetadata->width = 1000;
+        $videoMetadata->height = 800;
+        $video->setMetaData($videoMetadata);
+
         $calibrationData = new AppBundleModel\CalibrationData($this->createOrganisation(), 'test_video');
         $calibrationData->setRawCalibration($calibrationFileConverter->getRawData());
         $calibrationData->setCameraMatrix($calibrationFileConverter->getCameraMatrix());
