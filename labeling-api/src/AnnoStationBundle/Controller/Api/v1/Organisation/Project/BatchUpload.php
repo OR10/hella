@@ -7,11 +7,14 @@ use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Controller\Api\v1\Organisation\Project\Exception as ProjectException;
 use AnnoStationBundle\Database\Facade;
-use AppBundle\Model;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service;
+use AnnoStationBundle\Worker\Jobs;
+use AppBundle\Model;
 use AppBundle\View;
 use crosscan\Logger\Facade\LoggerFacade;
+use crosscan\WorkerPool;
+use crosscan\WorkerPool\AMQP;
 use Flow;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Version;
@@ -77,6 +80,10 @@ class BatchUpload extends Controller\Base
      * @var Facade\Organisation
      */
     private $organisationFacade;
+    /**
+     * @var AMQP\FacadeAMQP
+     */
+    private $amqpFacade;
 
     /**
      * @param Storage\TokenStorage  $tokenStorage
@@ -84,6 +91,7 @@ class BatchUpload extends Controller\Base
      * @param Facade\Video          $videoFacade
      * @param Facade\LabelingTask   $taskFacade
      * @param Facade\Organisation   $organisationFacade
+     * @param AMQP\FacadeAMQP       $amqpFacade
      * @param Service\VideoImporter $videoImporter
      * @param Service\TaskCreator   $taskCreator
      * @param string                $cacheDirectory
@@ -96,6 +104,7 @@ class BatchUpload extends Controller\Base
         Facade\Video $videoFacade,
         Facade\LabelingTask $taskFacade,
         Facade\Organisation $organisationFacade,
+        AMQP\FacadeAMQP $amqpFacade,
         Service\VideoImporter $videoImporter,
         Service\TaskCreator $taskCreator,
         string $cacheDirectory,
@@ -111,7 +120,8 @@ class BatchUpload extends Controller\Base
         $this->cacheDirectory       = $cacheDirectory;
         $this->loggerFacade         = new LoggerFacade($logger, self::class);
         $this->authorizationService = $authorizationService;
-        $this->organisationFacade  = $organisationFacade;
+        $this->organisationFacade   = $organisationFacade;
+        $this->amqpFacade           = $amqpFacade;
 
         clearstatcache();
 
@@ -312,6 +322,9 @@ class BatchUpload extends Controller\Base
                 }
             }
         }
+
+        $job = new Jobs\CalculateProjectDiskSize($project->getId());
+        $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
 
         return new View\View(
             [
