@@ -94,6 +94,7 @@ class BatchUploadTest extends Tests\WebTestCase
         $project->addVideo($video);
 
         $requestWrapper = $this->createRequest(self::UPLOAD_COMPLETE_ROUTE, [$this->organisation->getId(), $project->getId()])
+            ->setQueryParameters(['skipProjectCalculation' => true])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
@@ -122,6 +123,7 @@ class BatchUploadTest extends Tests\WebTestCase
         $this->projectFacade->save($project);
 
         $requestWrapper = $this->createRequest(self::UPLOAD_COMPLETE_ROUTE, [$this->organisation->getId(), $project->getId()])
+            ->setQueryParameters(['skipProjectCalculation' => true])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
@@ -144,6 +146,7 @@ class BatchUploadTest extends Tests\WebTestCase
         $project->addVideo($video);
 
         $requestWrapper = $this->createRequest(self::UPLOAD_COMPLETE_ROUTE, [$this->organisation->getId(), $project->getId()])
+            ->setQueryParameters(['skipProjectCalculation' => true])
             ->setMethod(HttpFoundation\Request::METHOD_POST)
             ->execute();
 
