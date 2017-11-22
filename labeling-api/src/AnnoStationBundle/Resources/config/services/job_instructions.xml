@@ -114,5 +114,13 @@
             <argument>%couchdb_port%</argument>
             <tag name="hagl.workerpool.job_instruction"/>
         </service>
+
+        <service id="annostation.labeling_api.worker.job_instruction.calculate_project_disk_usage"
+                 class="AnnoStationBundle\Worker\JobInstruction\CalculateProjectDiskUsage">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
+            <tag name="hagl.workerpool.job_instruction"/>
+        </service>
     </services>
 </container>
