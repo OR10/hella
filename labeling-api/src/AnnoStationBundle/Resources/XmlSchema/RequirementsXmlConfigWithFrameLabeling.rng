@@ -63,9 +63,6 @@
     <define name="ThingLikeStructure">
         <attribute name="id"/>
         <attribute name="name"/>
-        <optional>
-            <attribute name="multi-selection"/>
-        </optional>
         <zeroOrMore>
             <ref name="Class"/>
         </zeroOrMore>
@@ -87,6 +84,9 @@
                 <group>
                     <attribute name="id"/>
                     <attribute name="name"/>
+                    <optional>
+                        <attribute name="multi-selection"/>
+                    </optional>
                     <oneOrMore>
                         <ref name="Value"/>
                     </oneOrMore>
