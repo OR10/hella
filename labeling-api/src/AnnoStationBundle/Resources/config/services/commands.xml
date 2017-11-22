@@ -180,6 +180,13 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
             <tag name="console.command"/>
         </service>
+
+        <service id="annostation.labeling_api.command.rebuild_project_disk_usage_from_video_docs"
+                 class="AnnoStationBundle\Command\RebuildProjectDiskUsageFromVideoDocs">
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.video"/>
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
 
