@@ -283,11 +283,16 @@ class BatchUpload extends Controller\Base
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
      *
+     * @param HttpFoundation\Request              $request
+     *
      * @return View\View
      * @throws \Exception
      */
-    public function uploadCompleteAction(AnnoStationBundleModel\Organisation $organisation, Model\Project $project)
-    {
+    public function uploadCompleteAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        HttpFoundation\Request $request
+    ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
         $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
@@ -323,8 +328,10 @@ class BatchUpload extends Controller\Base
             }
         }
 
-        $job = new Jobs\CalculateProjectDiskSize($project->getId());
-        $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
+        if (!$request->query->has('skipProjectCalculation')) {
+            $job = new Jobs\CalculateProjectDiskSize($project->getId());
+            $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
+        }
 
         return new View\View(
             [
