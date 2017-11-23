@@ -3,7 +3,8 @@
     "name": "sign-type",
     "metadata": {
       "challenge": "Sign type",
-      "value": ["speed-sign"]
+      "value": ["speed-sign"],
+      "multiSelect": false
     },
     "children": [
       {
@@ -24,7 +25,8 @@
     "name": "speed-limit",
     "metadata": {
       "challenge": "Speed limit",
-      "value": ["speed-30"]
+      "value": ["speed-30"],
+      "multiSelect": false
     },
     "children": [
       {
@@ -45,7 +47,8 @@
     "name": "inside-city",
     "metadata": {
       "challenge": "Inside City Limits",
-      "value": []
+      "value": [],
+      "multiSelect": false
     },
     "children": [
       {
@@ -66,7 +69,8 @@
     "name": "limited-by-type",
     "metadata": {
       "challenge": "Limited by type",
-      "value": []
+      "value": [],
+      "multiSelect": false
     },
     "children": [
       {

@@ -12,13 +12,13 @@ describe('LinearLabelStructureVisitor', () => {
     [
       [],
       [
-        {name: 'weather', metadata: {value: null}, children: [
+        {name: 'weather', metadata: {value: [], multiSelect: false}, children: [
           {name: 'sunny'},
           {name: 'rainy-day'},
           {name: 'foggy'},
           {name: 'solar-eclipse'},
         ]},
-        {name: 'country', metadata: {value: null}, children: [
+        {name: 'country', metadata: {value: [], multiSelect: false}, children: [
           {name: 'germany'},
           {name: 'england'},
           {name: 'france'},
@@ -28,13 +28,13 @@ describe('LinearLabelStructureVisitor', () => {
     [
       ['solar-eclipse'],
       [
-        {name: 'weather', metadata: {value: 'solar-eclipse'}, children: [
+        {name: 'weather', metadata: {value: ['solar-eclipse'], multiSelect: false}, children: [
           {name: 'sunny'},
           {name: 'rainy-day'},
           {name: 'foggy'},
           {name: 'solar-eclipse'},
         ]},
-        {name: 'country', metadata: {value: null}, children: [
+        {name: 'country', metadata: {value: [], multiSelect: false}, children: [
           {name: 'germany'},
           {name: 'england'},
           {name: 'france'},
@@ -44,17 +44,17 @@ describe('LinearLabelStructureVisitor', () => {
     [
       ['foggy'],
       [
-        {name: 'weather', metadata: {value: 'foggy'}, children: [
+        {name: 'weather', metadata: {value: ['foggy'], multiSelect: false}, children: [
           {name: 'sunny'},
           {name: 'rainy-day'},
           {name: 'foggy'},
           {name: 'solar-eclipse'},
         ]},
-        {name: 'foggy', metadata: {value: null}, children: [
+        {name: 'foggy', metadata: {value: [], multiSelect: false}, children: [
           {name: 'really-foggy'},
           {name: 'not-so-foggy'},
         ]},
-        {name: 'country', metadata: {value: null}, children: [
+        {name: 'country', metadata: {value: [], multiSelect: false}, children: [
           {name: 'germany'},
           {name: 'england'},
           {name: 'france'},
@@ -64,17 +64,17 @@ describe('LinearLabelStructureVisitor', () => {
     [
       ['foggy', 'really-foggy', 'england'],
       [
-        {name: 'weather', metadata: {value: 'foggy'}, children: [
+        {name: 'weather', metadata: {value: ['foggy'], multiSelect: false}, children: [
           {name: 'sunny'},
           {name: 'rainy-day'},
           {name: 'foggy'},
           {name: 'solar-eclipse'},
         ]},
-        {name: 'foggy', metadata: {value: 'really-foggy'}, children: [
+        {name: 'foggy', metadata: {value: ['really-foggy'], multiSelect: false}, children: [
           {name: 'really-foggy'},
           {name: 'not-so-foggy'},
         ]},
-        {name: 'country', metadata: {value: 'england'}, children: [
+        {name: 'country', metadata: {value: ['england'], multiSelect: false}, children: [
           {name: 'germany'},
           {name: 'england'},
           {name: 'france'},
@@ -84,13 +84,13 @@ describe('LinearLabelStructureVisitor', () => {
     [
       ['sunny', 'really-foggy', 'germany'],
       [
-        {name: 'weather', metadata: {value: 'sunny'}, children: [
+        {name: 'weather', metadata: {value: ['sunny'], multiSelect: false}, children: [
           {name: 'sunny'},
           {name: 'rainy-day'},
           {name: 'foggy'},
           {name: 'solar-eclipse'},
         ]},
-        {name: 'country', metadata: {value: 'germany'}, children: [
+        {name: 'country', metadata: {value: ['germany'], multiSelect: false}, children: [
           {name: 'germany'},
           {name: 'england'},
           {name: 'france'},

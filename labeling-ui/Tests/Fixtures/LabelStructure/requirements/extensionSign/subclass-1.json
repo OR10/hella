@@ -3,7 +3,8 @@
     "name": "extension-position",
     "metadata": {
       "value": ["position-above"],
-      "challenge": "Position of the extension sign"
+      "challenge": "Position of the extension sign",
+      "multiSelect": false
     },
     "children": [
       {
@@ -24,7 +25,8 @@
     "name": "extension-sign-subclass",
     "metadata": {
       "value": ["extension-sign-subclass-1"],
-      "challenge": "Subclass"
+      "challenge": "Subclass",
+      "multiSelect": false
     },
     "children": [
       {

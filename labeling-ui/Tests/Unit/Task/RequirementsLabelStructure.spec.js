@@ -37,8 +37,8 @@ describe('RequirementsLabelStructure', () => {
     const things = structure.getThings();
 
     const expectedThings = new Map();
-    expectedThings.set('sign', new LabelStructureThing('sign', 'Traffic Sign', 'rectangle', false));
-    expectedThings.set('time-range-sign', new LabelStructureThing('time-range-sign', 'Time Range Sign', 'rectangle', false));
+    expectedThings.set('sign', new LabelStructureThing('sign', 'Traffic Sign', 'rectangle'));
+    expectedThings.set('time-range-sign', new LabelStructureThing('time-range-sign', 'Time Range Sign', 'rectangle'));
 
     expect(things.size).toEqual(expectedThings.size);
 
@@ -50,7 +50,7 @@ describe('RequirementsLabelStructure', () => {
 
   it('should provide thing with specific id correctly', () => {
     const signThing = structure.getThingById('sign');
-    const expectedThing = new LabelStructureThing('sign', 'Traffic Sign', 'rectangle', false);
+    const expectedThing = new LabelStructureThing('sign', 'Traffic Sign', 'rectangle');
 
     expect(signThing).toEqual(expectedThing);
   });
@@ -70,14 +70,14 @@ describe('RequirementsLabelStructure', () => {
 
   describe('getEnabledThingClassesForThingAndClassList', () => {
     it('should throw if non existent thing is provided', () => {
-      const nonExistentThing = new LabelStructureThing('some-non-existent-id', 'Foobar', 'rectangle', false);
+      const nonExistentThing = new LabelStructureThing('some-non-existent-id', 'Foobar', 'rectangle');
       expect(
         () => structure.getEnabledClassesForLabeledObjectAndClassList(nonExistentThing, [])
       ).toThrow();
     });
 
     it('should throw if non existent group is provided', () => {
-      const nonExistentThing = new LabelStructureGroup('some-non-existent-id', 'Foobar', 'group-rectangle', false);
+      const nonExistentThing = new LabelStructureGroup('some-non-existent-id', 'Foobar', 'group-rectangle');
       expect(
         () => structure.getEnabledClassesForLabeledObjectAndClassList(nonExistentThing, [])
       ).toThrow();
@@ -99,7 +99,7 @@ describe('RequirementsLabelStructure', () => {
       [['speed-sign', 'speed-30'], signTypeSpeedSignSpeed30ClassListThingClasses],
     ], (classList, expectedThingClasses) => {
       it('should provide correct active thing classes for class list', () => {
-        const signThing = new LabelStructureThing('sign', 'Traffic Sign', 'rectangle', false);
+        const signThing = new LabelStructureThing('sign', 'Traffic Sign', 'rectangle');
         const thingClasses = structure.getEnabledClassesForLabeledObjectAndClassList(signThing, classList);
         expect(thingClasses).toEqual(expectedThingClasses);
       });
@@ -113,7 +113,7 @@ describe('RequirementsLabelStructure', () => {
       [['position-above', 'extension-sign-subclass-1'], extensionSignPositionSubclass1GroupClasses],
     ], (classList, expectedGroupClasses) => {
       it('should provide correct active group classes for class list', () => {
-        const group = new LabelStructureGroup('extension-sign-group', 'Sign with extension', 'group-rectangle', false);
+        const group = new LabelStructureGroup('extension-sign-group', 'Sign with extension', 'group-rectangle');
         const groupClasses = structure.getEnabledClassesForLabeledObjectAndClassList(group, classList);
         expect(groupClasses).toEqual(expectedGroupClasses);
       });

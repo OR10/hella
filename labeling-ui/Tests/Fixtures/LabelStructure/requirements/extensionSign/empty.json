@@ -3,7 +3,8 @@
     "name": "extension-position",
     "metadata": {
       "value": [],
-      "challenge": "Position of the extension sign"
+      "challenge": "Position of the extension sign",
+      "multiSelect": false
     },
     "children": [
       {

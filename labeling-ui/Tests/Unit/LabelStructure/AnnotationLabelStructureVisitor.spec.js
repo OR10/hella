@@ -18,24 +18,24 @@ describe('LabelStructureAnnotationVisitor', () => {
     ],
     [
       {name: 'root', children: [
-        {name: 'weather', metadata: {value: 'foggy'}, children: [
+        {name: 'weather', metadata: {value: ['foggy'], multiSelect: false}, children: [
           {name: 'sunny'},
           {name: 'rainy-day'},
           {name: 'foggy'},
           {name: 'solar-eclipse'},
         ]},
-        {name: 'foggy', metadata: {value: 'really-foggy'}, children: [
+        {name: 'foggy', metadata: {value: ['really-foggy'], multiSelect: false}, children: [
           {name: 'really-foggy'},
           {name: 'not-so-foggy'},
         ]},
-        {name: 'country', metadata: {value: 'england'}, children: [
+        {name: 'country', metadata: {value: ['england'], multiSelect: false}, children: [
           {name: 'germany'},
           {name: 'england'},
           {name: 'france'},
         ]},
       ]},
       {name: 'root', metadata: {}, children: [
-        {name: 'weather', metadata: {value: 'foggy', 'challenge': 'Wie ist das Wetter?'}, children: [
+        {name: 'weather', metadata: {value: ['foggy'], multiSelect: false, 'challenge': 'Wie ist das Wetter?'}, children: [
           {name: 'sunny', metadata: {response: 'Sonnig! :)'}},
           {name: 'rainy-day', metadata: {response: 'Regen und so...'}},
           {name: 'foggy', metadata: {
@@ -45,14 +45,15 @@ describe('LabelStructureAnnotationVisitor', () => {
           {name: 'solar-eclipse', metadata: {response: 'Alter! Totale Sonnenfinsternis!'}},
         ]},
         {name: 'foggy', metadata: {
-          value: 'really-foggy',
+          value: ['really-foggy'],
           challenge: 'Wie nebelig ist es denn so?',
+          multiSelect: false,
           response: 'Nebel!!1111elf!',
         }, children: [
           {name: 'really-foggy', metadata: {response: 'London-style Nebel'}},
           {name: 'not-so-foggy', metadata: {response: 'völlig harmlos'}},
         ]},
-        {name: 'country', metadata: {value: 'england', challenge: 'In welchem Land befinden wir uns?'}, children: [
+        {name: 'country', metadata: {value: ['england'], multiSelect: false, challenge: 'In welchem Land befinden wir uns?'}, children: [
           {name: 'germany', metadata: {response: 'Deutschland'}},
           {name: 'england', metadata: {response: 'England'}},
           {name: 'france', metadata: {response: 'Das Land der Baguettes'}},

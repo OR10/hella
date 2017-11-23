@@ -3,7 +3,8 @@
     "name": "sign-type",
     "metadata": {
       "value": [],
-      "challenge": "Sign type"
+      "challenge": "Sign type",
+      "multiSelect": false
     },
     "children": [
       {

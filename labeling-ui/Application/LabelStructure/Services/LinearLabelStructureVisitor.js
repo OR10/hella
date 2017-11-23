@@ -55,8 +55,12 @@ export default class LinearLabelStructureVisitor {
    */
   _visitLabelStructure(node, context) {
     const selectedNode = this._calculateSelectedChildForNode(node, context);
-    const value = selectedNode ? selectedNode.name : null;
-    const linearNode = {name: node.name, metadata: {value}};
+    const value = [];
+    if (selectedNode) {
+      value.push(selectedNode.name);
+    }
+    const multiSelect = false;
+    const linearNode = {name: node.name, metadata: {value, multiSelect}};
 
     // Attach children, but only one level of them
     if (node.children) {
