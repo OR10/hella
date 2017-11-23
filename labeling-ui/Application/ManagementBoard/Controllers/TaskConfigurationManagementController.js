@@ -171,7 +171,7 @@ class TaskConfigurationManagementController {
   }
 
   /**
-   * @param {array} projects
+   * @param {array<{id: string, name: string}>} projects
    */
   displayUsedProjectsModal(projects) {
     this._modalService.show(
