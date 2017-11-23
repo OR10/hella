@@ -5,9 +5,8 @@ class LabelStructureGroup extends LabelStructureObject {
    * @param {string} id
    * @param {string} name
    * @param {string} shape
-   * @param {boolean} multiSelect
    */
-  constructor(id, name, shape, multiSelect) {
+  constructor(id, name, shape) {
     super(id);
 
     /**
@@ -19,11 +18,6 @@ class LabelStructureGroup extends LabelStructureObject {
      * @type {string}
      */
     this.shape = shape;
-
-    /**
-     * @type {boolean}
-     */
-    this.multiSelect = multiSelect;
   }
 }
 
