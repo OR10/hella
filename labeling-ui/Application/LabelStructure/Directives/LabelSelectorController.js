@@ -681,12 +681,6 @@ export default class LabelSelectorController {
         selectedLabeledObject.removeClass(currentSelected.value);
         selectedLabeledObject.addClass(labels[0]);
       }
-      const index = this.pages.findIndex(element => {
-        return element.id === page.id;
-      });
-      if (this.pages[index + 1]) {
-        this.accordionControl.expand(this.pages[index + 1].id);
-      }
     }
     let labeledThingNeedsUpdate = false;
 
@@ -714,6 +708,15 @@ export default class LabelSelectorController {
 
     this._updatePagesAndChoices();
     this._storeUpdatedLabeledObject(labeledThingNeedsUpdate);
+
+    this._$timeout(() => {
+      const index = this.pages.findIndex(element => {
+        return element.id === page.id;
+      });
+      if (this.pages[index + 1]) {
+        this.accordionControl.expand(this.pages[index + 1].id);
+      }
+    }, 100);
   }
 
   handleChoiceSelection(page, response) {
