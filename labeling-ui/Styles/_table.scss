@@ -5,7 +5,14 @@ table.table {
 
   a {
     color: $color-ut-midgrey-2;
+    i {
+      color: $color-ut-midgrey-3;
+    }
     text-decoration: underline;
+  }
+
+  button[disabled]{
+    color: $color-ut-midgrey-1;
   }
 
   &.sortable {
