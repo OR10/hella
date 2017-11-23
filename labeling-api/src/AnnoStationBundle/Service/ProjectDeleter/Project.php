@@ -14,6 +14,11 @@ class Project
     private $projectFacade;
 
     /**
+     * @var Delete\Project
+     */
+    private $projectDelete;
+
+    /**
      * @var Delete\Exports
      */
     private $exportsDeleter;
@@ -32,17 +37,20 @@ class Project
      * Project constructor.
      *
      * @param Facade\Project       $projectFacade
+     * @param Delete\Project       $projectDelete
      * @param Delete\Exports       $exportsDeleter
      * @param Delete\Reports       $reportsDeleter
      * @param Delete\LabelingTasks $labelingTasksDeleter
      */
     public function __construct(
         Facade\Project $projectFacade,
+        Delete\Project $projectDelete,
         Delete\Exports $exportsDeleter,
         Delete\Reports $reportsDeleter,
         Delete\LabelingTasks $labelingTasksDeleter
     ) {
         $this->projectFacade        = $projectFacade;
+        $this->projectDelete        = $projectDelete;
         $this->exportsDeleter       = $exportsDeleter;
         $this->reportsDeleter       = $reportsDeleter;
         $this->labelingTasksDeleter = $labelingTasksDeleter;
@@ -56,6 +64,6 @@ class Project
         $this->exportsDeleter->delete($project);
         $this->reportsDeleter->delete($project);
         $this->labelingTasksDeleter->delete($project);
-        $this->projectFacade->delete($project);
+        $this->projectDelete->delete($project);
     }
 }

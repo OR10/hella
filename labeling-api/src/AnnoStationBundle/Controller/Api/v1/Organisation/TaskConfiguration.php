@@ -107,7 +107,7 @@ class TaskConfiguration extends Controller\Base
         $taskConfigurations = array_filter(
             $taskConfigurations,
             function (Model\TaskConfiguration $taskConfiguration) {
-                return $taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml;
+                return $taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml && !$taskConfiguration->isDeleted();
             }
         );
 
@@ -148,6 +148,39 @@ class TaskConfiguration extends Controller\Base
         return new View\View(
             new Response\SimpleTaskConfiguration($taskConfiguration)
         );
+    }
+
+    /**
+     * @Rest\Delete("/{organisation}/taskConfiguration/{taskConfiguration}")
+     *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param TaskConfigurationModel              $taskConfiguration
+     *
+     * @return View\View
+     */
+    public function deleteTaskConfigurationAction(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\TaskConfiguration $taskConfiguration
+    ) {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($user->getId() !== $taskConfiguration->getUserId()) {
+            throw new BadRequestHttpException();
+        }
+
+        $projectsInUse = $this->projectFacade->getProjectsByTaskConfiguration($taskConfiguration);
+        $taskConfigurationReferences = $this->taskConfigurationFacade->getPreviousTaskConfigurations($taskConfiguration);
+
+        if (count($projectsInUse) === 0 && count($taskConfigurationReferences) === 0) {
+            $this->taskConfigurationFacade->delete($taskConfiguration);
+        } else {
+            $taskConfiguration->setDeleted();
+            $this->taskConfigurationFacade->save($taskConfiguration);
+        }
+
+        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 
     /**

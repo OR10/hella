@@ -358,6 +358,7 @@
 
         <service id="annostation.labeling_api.service.project_deleter.project" class="AnnoStationBundle\Service\ProjectDeleter\Project">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.project"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.exports"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.reports"/>
             <argument type="service" id="annostation.labeling_api.service.project_deleter.delete.labeling_tasks"/>

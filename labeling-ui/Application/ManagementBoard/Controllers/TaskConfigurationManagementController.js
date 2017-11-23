@@ -159,6 +159,32 @@ class TaskConfigurationManagementController {
   }
 
   /**
+   * @param {string} configurationId
+   */
+  deleteTaskConfiguration(configurationId) {
+    this._modalService.info(
+      {
+        headline: 'Delete',
+        title: 'Delete Task Configuration',
+        message: 'Do you really want to delete this Task Configuration file?',
+      },
+      () => {
+        ++this.loadingInProgress;
+        this._taskConfigurationGateway.deleteTaskConfiguration(configurationId)
+          .then(this.getUploadedRequirementsConfigurations())
+          .then(() => {
+            --this.loadingInProgress;
+          });
+      },
+      undefined,
+      {
+        warning: true,
+        abortable: true,
+      }
+    );
+  }
+
+  /**
    * @param configurationId
    * @returns {string}
    */

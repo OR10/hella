@@ -49,6 +49,15 @@ class TaskConfiguration
     }
 
     /**
+     * @param Model\TaskConfiguration $taskConfiguration
+     */
+    public function delete(Model\TaskConfiguration $taskConfiguration)
+    {
+        $this->documentManager->remove($taskConfiguration);
+        $this->documentManager->flush();
+    }
+
+    /**
      * Return all task configurations for this user
      *
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -110,5 +119,26 @@ class TaskConfiguration
             ->onlyDocs(true)
             ->execute()
             ->toArray();
+    }
+
+    /**
+     * @param Model\TaskConfiguration $taskConfiguration
+     *
+     * @return mixed
+     */
+    public function getPreviousTaskConfigurations(Model\TaskConfiguration $taskConfiguration) {
+        $results = $this->documentManager
+            ->createQuery('annostation_project_by_previous_configuration_id_001', 'view')
+            ->setKey($taskConfiguration->getId())
+            ->onlyDocs(false)
+            ->execute()
+            ->toArray();
+
+        $taskConfigurations = [];
+        foreach($results as $result) {
+            $taskConfigurations[] = $this->find($result['value']);
+        }
+
+        return $taskConfigurations;
     }
 }

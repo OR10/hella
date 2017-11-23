@@ -41,4 +41,8 @@ interface TaskConfiguration
     public function setOrganisationId($organisationId);
 
     public function getTimestamp();
+
+    public function setDeleted();
+
+    public function isDeleted();
 }
