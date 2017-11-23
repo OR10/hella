@@ -556,10 +556,18 @@ class RequirementsLabelStructure extends LabelStructure {
    */
   _convertClassElementToClassJson(xmlClass) {
     const valueElements = this._getValueElementsFromClassElement(xmlClass);
+    // optional fields
+    let multiSelect = false;
+    const multiSelectKey = xmlClass.element.attributes['multi-selection'];
+    if (multiSelectKey !== undefined) {
+      multiSelect = multiSelectKey.value === 'true';
+    }
+
     const classJson = {
       name: xmlClass.element.attributes.id.value,
       metadata: {
         challenge: xmlClass.element.attributes.name.value,
+        multiSelect: multiSelect,
       },
       children: [],
     };
@@ -590,12 +598,11 @@ class RequirementsLabelStructure extends LabelStructure {
    */
   _annotateClassJsonWithActiveValue(classJson, classList) {
     const clonedClassJson = cloneDeep(classJson);
-    clonedClassJson.metadata.value = null;
+    clonedClassJson.metadata.value = [];
 
     for (const valueJson of clonedClassJson.children) {
       if (classList !== undefined && classList.includes(valueJson.name)) {
-        clonedClassJson.metadata.value = valueJson.name;
-        return clonedClassJson;
+        clonedClassJson.metadata.value.push(valueJson.name);
       }
     }
 

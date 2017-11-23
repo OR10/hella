@@ -2,8 +2,9 @@
   {
     "name": "time",
     "metadata": {
-      "value": null,
-      "challenge": "Time"
+      "value": [],
+      "challenge": "Time",
+      "multiSelect": false
     },
     "children": [
       {
@@ -23,8 +24,9 @@
   {
     "name": "weather",
     "metadata": {
-      "value": null,
-      "challenge": "Weather"
+      "value": [],
+      "challenge": "Weather",
+      "multiSelect": false
     },
     "children": [
       {
@@ -50,8 +52,9 @@
   {
     "name": "rain-level",
     "metadata": {
-      "value": null,
-      "challenge": "Rain level"
+      "value": [],
+      "challenge": "Rain level",
+      "multiSelect": false
     },
     "children": [
       {
@@ -77,8 +80,9 @@
   {
     "name": "country",
     "metadata": {
-      "value": null,
-      "challenge": "Country"
+      "value": [],
+      "challenge": "Country",
+      "multiSelect": false
     },
     "children": [
       {

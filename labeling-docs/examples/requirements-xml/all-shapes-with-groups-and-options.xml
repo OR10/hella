@@ -7,7 +7,7 @@
         <minimal-visible-shape-overflow>30</minimal-visible-shape-overflow>
         <minimal-height>40</minimal-height>
     </options>
-    <thing id="sign" shape="cuboid" name="Traffic Sign">
+    <thing id="sign" shape="cuboid" name="Traffic Sign" multi-selection="true">
         <class id="sign-type" name="Sign type">
             <value id="u-turn" name="U-Turn"/>
             <value id="speed-sign" name="Speed sign"/>

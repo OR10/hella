@@ -2,8 +2,9 @@
   {
     "name": "sign-type",
     "metadata": {
-      "value": "u-turn",
-      "challenge": "Sign type"
+      "value": ["u-turn"],
+      "challenge": "Sign type",
+      "multiSelect": false
     },
     "children": [
       {

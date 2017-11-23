@@ -1,8 +1,9 @@
 [
   {
     "metadata": {
-      "value": "sunny",
-      "challenge": "Wie ist das Wetter?"
+      "value": ["sunny"],
+      "challenge": "Wie ist das Wetter?",
+      "multiSelect": false
     },
     "name": "weather",
     "children": [
@@ -35,8 +36,9 @@
   },
   {
     "metadata": {
-      "value": "germany",
-      "challenge": "In welchem Land befinden wir uns?"
+      "value": ["germany"],
+      "challenge": "In welchem Land befinden wir uns?",
+      "multiSelect": false
     },
     "name": "country",
     "children": [

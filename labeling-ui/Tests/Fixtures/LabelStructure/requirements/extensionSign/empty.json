@@ -2,8 +2,9 @@
   {
     "name": "extension-position",
     "metadata": {
-      "value": null,
-      "challenge": "Position of the extension sign"
+      "value": [],
+      "challenge": "Position of the extension sign",
+      "multiSelect": false
     },
     "children": [
       {

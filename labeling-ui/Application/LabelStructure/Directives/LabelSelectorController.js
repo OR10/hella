@@ -1,4 +1,3 @@
-import {equals} from 'angular';
 import angular from 'angular';
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
@@ -69,7 +68,7 @@ export default class LabelSelectorController {
     /**
      * Choices selected by the user inside the wizzards
      *
-     * @type {Object.<string, string>}
+     * @type {Array.<string, string, bool>}
      */
     this.choices = {};
 
@@ -256,50 +255,6 @@ export default class LabelSelectorController {
       }
     );
 
-    // Store and process choices made by the user
-    $scope.$watch('vm.choices', newChoices => {
-      const labeledObject = this._getSelectedLabeledObject();
-      if (!labeledObject || newChoices === null) {
-        return;
-      }
-
-      const labels = Object.values(this.choices).filter(
-        choice => choice !== null
-      );
-
-      if (equals(labeledObject.classes, labels)) {
-        return;
-      }
-
-      labeledObject.setClasses(labels);
-      let labeledThingNeedsUpdate = false;
-
-      if (labeledObject instanceof LabeledThingInFrame) {
-        const labeledThingInFrame = labeledObject;
-        const {labeledThing} = labeledThingInFrame;
-
-        if (labeledThingInFrame.ghost === true) {
-          const {frameIndex} = labeledThingInFrame;
-          const ltifId = this._entityIdService.getUniqueId();
-
-          labeledThingInFrame.ghostBust(ltifId, labeledThingInFrame.frameIndex);
-
-          if (frameIndex > labeledThing.frameRange.endFrameIndex) {
-            labeledThing.frameRange.endFrameIndex = frameIndex;
-            labeledThingNeedsUpdate = true;
-          }
-
-          if (frameIndex < labeledThing.frameRange.startFrameIndex) {
-            labeledThing.frameRange.startFrameIndex = frameIndex;
-            labeledThingNeedsUpdate = true;
-          }
-        }
-      }
-
-      this._updatePagesAndChoices();
-      this._storeUpdatedLabeledObject(labeledThingNeedsUpdate);
-    }, true);
-
     $scope.$watch('vm.activePageIndex', newPageIndex => {
       if (newPageIndex !== undefined && newPageIndex !== null) {
         this.labelingInstructions = this.pages[newPageIndex].instructions;
@@ -330,12 +285,11 @@ export default class LabelSelectorController {
   }
 
   /**
-   * @param {Object} page
    * @param {Object} response
    * @returns {boolean}
    */
-  hideWhenItemIsNotSelected(page, response) {
-    return this.choices[page.id] !== response.id;
+  hideWhenItemIsNotSelected(response) {
+    return !this.choices[response.id].selected;
   }
 
   /**
@@ -421,33 +375,38 @@ export default class LabelSelectorController {
     }
 
     const classList = selectedLabeledObject.extractClassList();
+
     const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
       this.selectedLabelStructureObject,
       classList
     );
-
     // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
     // TODO: find the source of the race condition and eliminate the problem there!
     if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, this.selectedPaperShape)) {
       return;
     }
 
-    const newChoices = {};
+    const newChoices = [];
     let newPages = [];
     const seenPages = {};
-
     list.forEach(node => {
       const id = node.name;
       const page = {id};
       seenPages[id] = true;
-      newChoices[id] = node.metadata.value;
       newPages.push(page);
 
       page.challenge = node.metadata.challenge;
+      page.multiSelect = node.metadata.multiSelect;
       page.instructions = node.metadata.instructions;
+
       page.responses = node.children.map(
-        child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass})
+        child => ({id: child.name, response: child.metadata.response, iconClass: child.metadata.iconClass, value: this.getCorrectValueForNodeFromChild(node, child)})
       );
+
+      page.responses.forEach(response => {
+        const selected = response.value !== undefined;
+        newChoices[response.id] = {selected: selected};
+      });
     });
 
     // Remove labels belonging to removed pages
@@ -457,14 +416,16 @@ export default class LabelSelectorController {
         if (seenPages[id] === true) {
           return;
         }
-        if (this.choices[id] !== null) {
-          // Remove the chosen value from the labelsObject
-          selectedLabeledObject.setClasses(
-            selectedLabeledObject.classes.filter(
-              label => label !== this.choices[id]
-            )
-          );
-        }
+        page.responses.forEach(response => {
+          if (response.value !== undefined) {
+            // Remove the chosen value from the labelsObject
+            selectedLabeledObject.setClasses(
+              selectedLabeledObject.classes.filter(
+                label => label !== response.value
+              )
+            );
+          }
+        });
       });
     }
 
@@ -509,6 +470,13 @@ export default class LabelSelectorController {
     }
   }
 
+  getCorrectValueForNodeFromChild(node, child) {
+    if (node.metadata.value === undefined || node.metadata.value === null) {
+      return undefined;
+    }
+    return node.metadata.value.find(value => value === child.name);
+  }
+
   applySearchFilter() {
     if (this.searchAttributes.length === 0) {
       this.multiSelection = false;
@@ -520,14 +488,15 @@ export default class LabelSelectorController {
   }
 
   applySearchFilterSelection() {
-    if (this.pages.length === 1 && this.pages[0].responses.length === 1 && this.choices[this.pages[0].id] === this.pages[0].responses[0].response) {
-      this.searchAttributes = '';
-      this.applySearchFilter();
-
-      return;
-    }
     if (this.pages.length === 1 && this.pages[0].responses.length === 1) {
-      this.choices[this.pages[0].id] = this.pages[0].responses[0].id;
+      const id = this.pages[0].responses[0].id;
+      if (this.choices[id].selected) {
+        this.searchAttributes = '';
+        this.applySearchFilter();
+      } else {
+        this.choices[id] = {selected: true};
+        this.handleLabelSelectionClick(this.pages[0], id);
+      }
     }
   }
 
@@ -630,15 +599,34 @@ export default class LabelSelectorController {
     return index === this.activePageIndex;
   }
 
+  isMultiAttributeSelection(page) {
+    return page.multiSelect;
+  }
+
+  showCompleteCheckMark(page) {
+    let checked = false;
+    page.responses.forEach(response => {
+      if (response.value !== undefined) {
+        checked = true;
+      }
+    });
+    return checked;
+  }
+
   isResponseSelected(page, response) {
     if (this.choices === null) {
       return false;
     }
-    return this.choices[page.id] === response.id;
-  }
-
-  selectPage(index) {
-    this.activePageIndex = index;
+    if (this.isMultiAttributeSelection(page)) {
+      const selectedLabeledObject = this._getSelectedLabeledObject();
+      if (selectedLabeledObject !== null) {
+        return selectedLabeledObject.classes.includes(response.id);
+      }
+    }
+    if (this.choices[response.id] === undefined) {
+      return false;
+    }
+    return this.choices[response.id].selected;
   }
 
   nextPage() {
@@ -649,13 +637,83 @@ export default class LabelSelectorController {
     this.activePageIndex = Math.max(this.activePageIndex - 1, 0);
   }
 
-  handleLabelSelectionClick(id) {
-    const index = this.pages.findIndex(element => {
-      return element.id === id;
-    });
-    if (this.pages[index + 1]) {
-      this.accordionControl.expand(this.pages[index + 1].id);
+  handleLabelSelectionClick(page, response) {
+    const selectedLabeledObject = this._getSelectedLabeledObject();
+    if (!selectedLabeledObject || this.choices === null) {
+      return;
     }
+
+    const labels = Object.keys(this.choices).filter(
+      choice => this.choices[choice].selected && choice === response
+    );
+
+    let toDeleteLabel;
+    if (labels.length === 0) {
+      toDeleteLabel = Object.keys(this.choices).find(
+        choice => !this.choices[choice].selected && choice === response
+      );
+    }
+
+    if (angular.equals(selectedLabeledObject.classes, labels)) {
+      return;
+    }
+
+    if (this.isMultiAttributeSelection(page)) {
+      if (toDeleteLabel === undefined) {
+        if (selectedLabeledObject.classes.length === 0) {
+          selectedLabeledObject.setClasses(labels);
+        } else {
+          const concatAttributes = [...new Set(selectedLabeledObject.classes.concat(labels))];
+          selectedLabeledObject.setClasses(concatAttributes);
+        }
+      } else {
+        selectedLabeledObject.removeClass(toDeleteLabel);
+      }
+    } else {
+      const currentSelected = page.responses.find(resp => resp.value !== undefined);
+      if (currentSelected === undefined) {
+        selectedLabeledObject.addClass(labels[0]);
+      } else {
+        this.choices[currentSelected.id].selected = !this.choices[currentSelected.id].selected;
+        selectedLabeledObject.removeClass(currentSelected.value);
+        selectedLabeledObject.addClass(labels[0]);
+      }
+    }
+    let labeledThingNeedsUpdate = false;
+
+    if (selectedLabeledObject instanceof LabeledThingInFrame) {
+      const labeledThingInFrame = selectedLabeledObject;
+      const {labeledThing} = labeledThingInFrame;
+
+      if (labeledThingInFrame.ghost === true) {
+        const {frameIndex} = labeledThingInFrame;
+        const ltifId = this._entityIdService.getUniqueId();
+
+        labeledThingInFrame.ghostBust(ltifId, labeledThingInFrame.frameIndex);
+
+        if (frameIndex > labeledThing.frameRange.endFrameIndex) {
+          labeledThing.frameRange.endFrameIndex = frameIndex;
+          labeledThingNeedsUpdate = true;
+        }
+
+        if (frameIndex < labeledThing.frameRange.startFrameIndex) {
+          labeledThing.frameRange.startFrameIndex = frameIndex;
+          labeledThingNeedsUpdate = true;
+        }
+      }
+    }
+
+    this._updatePagesAndChoices();
+    this._storeUpdatedLabeledObject(labeledThingNeedsUpdate);
+
+    this._$timeout(() => {
+      const index = this.pages.findIndex(element => {
+        return element.id === page.id;
+      });
+      if (this.pages[index + 1]) {
+        this.accordionControl.expand(this.pages[index + 1].id);
+      }
+    }, 100);
   }
 
   /**
@@ -713,115 +771,6 @@ export default class LabelSelectorController {
       default:
         return labeledObjectShapeType;
     }
-  }
-
-  /**
-   * Handle to jump to the next shape with class
-   * @param {string} direction
-   */
-  handleJumpToNextShapeWithSelectedClass(direction = 'next') {
-    if (this.selectedClassFilter.length === 0) {
-      return;
-    }
-    this._labeledThingInFrameGateway.getLabeledThingInFrameByClassName(this.task, this.selectedClassFilter)
-      .then(response => {
-        if (response.length > 0) {
-          let index = 0;
-          const isActive = response.findIndex(ltif => {
-            if (this.selectedPaperShape === null || this.selectedPaperShape.labeledThingInFrame === undefined) {
-              return false;
-            }
-            return ltif.id === this.selectedPaperShape.labeledThingInFrame.id;
-          });
-
-          if (isActive !== -1 && direction === 'next' && (isActive + 1 < response.length)) {
-            index = isActive + 1;
-          }
-
-          if (isActive !== -1 && direction === 'previous') {
-            if (isActive - 1 === -1) {
-              index = response.length - 1;
-            } else {
-              index = isActive - 1;
-            }
-          }
-
-          if (response[index].frameIndex === this.framePosition.position) {
-            this._selectLabeledThingInFrame(response[index]);
-          } else {
-            this._$q(resolve => {
-              this.framePosition.afterFrameChangeOnce('selectNextShapeWithClass', () => {
-                this._selectLabeledThingInFrame(response[index])
-                  .then(() => resolve());
-              });
-              this.framePosition.goto(response[index].frameIndex);
-            });
-          }
-        }
-      });
-
-    this._labeledThingGroupGateway.getLabeledThingGroupInFrameByClassName(this.task, this.selectedClassFilter)
-      .then(response => {
-        if (response.length > 0) {
-          let index = 0;
-          const isActive = response.findIndex(ltif => {
-            if (this.selectedPaperShape === null || this.selectedPaperShape.labeledThingGroupInFrame === undefined) {
-              return false;
-            }
-            return ltif.id === this.selectedPaperShape.labeledThingGroupInFrame.id;
-          });
-
-          if (isActive !== -1 && direction === 'next' && (isActive + 1 < response.length)) {
-            index = isActive + 1;
-          }
-
-          if (isActive !== -1 && direction === 'previous') {
-            if (isActive - 1 === -1) {
-              index = response.length - 1;
-            } else {
-              index = isActive - 1;
-            }
-          }
-
-          if (response[index].frameIndex === this.framePosition.position) {
-            this._selectLabeledThingGroupInFrame(response[index]);
-          } else {
-            this._$q(resolve => {
-              this.framePosition.afterFrameChangeOnce('selectNextShapeWithClass', () => {
-                this._selectLabeledThingGroupInFrame(response[index])
-                  .then(() => resolve());
-              });
-              this.framePosition.goto(response[index].frameIndex);
-            });
-          }
-        }
-      });
-  }
-
-  _selectLabeledThingInFrame(shape) {
-    return this._$q(resolve => {
-      this._$timeout(() => {
-        const paperThingShape = this.paperThingShapes.find(thingShape => {
-          return shape.id === thingShape.labeledThingInFrame.id;
-        });
-        this.selectedPaperShape = paperThingShape;
-        this.hideLabeledThingsInFrame = true;
-        resolve();
-      });
-    });
-  }
-
-  _selectLabeledThingGroupInFrame(shape) {
-    return this._$q(resolve => {
-      this._$timeout(() => {
-        const paperGroupShapes = this.paperGroupShapes.find(thingShape => {
-          return shape.id === thingShape.labeledThingGroupInFrame.id;
-        });
-        this.selectedPaperShape = paperGroupShapes;
-        this.hideLabeledThingsInFrame = true;
-        resolve();
-      });
-    });
   }
 }
 

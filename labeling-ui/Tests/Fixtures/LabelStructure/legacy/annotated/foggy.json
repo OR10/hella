@@ -1,8 +1,9 @@
 [
   {
     "metadata": {
-      "value": "foggy",
-      "challenge": "Wie ist das Wetter?"
+      "value": ["foggy"],
+      "challenge": "Wie ist das Wetter?",
+      "multiSelect": false
     },
     "name": "weather",
     "children": [
@@ -35,9 +36,10 @@
   },
   {
     "metadata": {
-      "value": null,
+      "value": [],
       "challenge": "Wie nebelig ist es denn so?",
-      "response": "Nebel!!1111elf!"
+      "response": "Nebel!!1111elf!",
+      "multiSelect": false
     },
     "name": "foggy",
     "children": [
@@ -57,8 +59,9 @@
   },
   {
     "metadata": {
-      "value": null,
-      "challenge": "In welchem Land befinden wir uns?"
+      "value": [],
+      "challenge": "In welchem Land befinden wir uns?",
+      "multiSelect": false
     },
     "name": "country",
     "children": [

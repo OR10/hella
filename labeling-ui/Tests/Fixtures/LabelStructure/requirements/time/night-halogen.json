@@ -2,8 +2,9 @@
   {
     "name": "time",
     "metadata": {
-      "value": "night",
-      "challenge": "Time"
+      "value": ["night"],
+      "challenge": "Time",
+      "multiSelect": false
     },
     "children": [
       {
@@ -23,8 +24,9 @@
   {
     "name": "street-lights",
     "metadata": {
-      "value": "halogen",
-      "challenge": "Street lights"
+      "value": ["halogen"],
+      "challenge": "Street lights",
+      "multiSelect": false
     },
     "children": [
       {
@@ -50,8 +52,9 @@
   {
     "name": "lamp-color",
     "metadata": {
-      "value": null,
-      "challenge": "Lamp Color"
+      "value": [],
+      "challenge": "Lamp Color",
+      "multiSelect": false
     },
     "children": [
       {
@@ -71,8 +74,9 @@
   {
     "name": "weather",
     "metadata": {
-      "value": null,
-      "challenge": "Weather"
+      "value": [],
+      "challenge": "Weather",
+      "multiSelect": false
     },
     "children": [
       {
@@ -98,8 +102,9 @@
   {
     "name": "rain-level",
     "metadata": {
-      "value": null,
-      "challenge": "Rain level"
+      "value": [],
+      "challenge": "Rain level",
+      "multiSelect": false
     },
     "children": [
       {
@@ -125,8 +130,9 @@
   {
     "name": "country",
     "metadata": {
-      "value": null,
-      "challenge": "Country"
+      "value": [],
+      "challenge": "Country",
+      "multiSelect": false
     },
     "children": [
       {

@@ -6,18 +6,7 @@
             class="grid-block label-selector-title">
         <div class="grid-content noscroll">{{vm.getLabelSelectorTitle()}}</div>
         <div class="grid-content shrink view-style">
-            <input type="checkbox" ng-model="vm.multiSelection" ng-click="vm.expandOrCollapseAccordionOnMutiSelection()">
-            <input id="view-style-icon-view"
-                   class="icon-view"
-                   type="radio"
-                   name="view-style"
-                   value="icon"
-                   ng-model="vm.viewStyle"
-            />
-            <label for="view-style-icon-view">
-                <i class="fa fa-th"></i>
-            </label>
-
+            <input type="checkbox" class="default-checkbox" ng-model="vm.multiSelection" ng-click="vm.expandOrCollapseAccordionOnMutiSelection()">
             <input id="view-style-list-view"
                    class="list-view"
                    type="radio"
@@ -66,7 +55,7 @@
                         {{page.challenge}}
                     </div>
                     <div class="icons">
-                        <i ng-show="vm.choices[page.id]"
+                        <i ng-show="vm.showCompleteCheckMark(page)"
                            class="icon icon-check active">
                         </i>
                         <i ng-show="$pane.isExpanded()"
@@ -84,13 +73,13 @@
                         ng-class="{ 'highlighted-grid-row': vm.isResponseSelected(page, response) }"
                         ng-repeat="response in page.responses track by response.id">
                         <input id="{{page.id}}-{{$index}}"
-                               type="radio"
-                               name="{{page.id}}"
+                               type="checkbox"
+                               name="{{page.id}}-{{$index}}"
+                               ng-model="vm.choices[response.id].selected"
                                value="{{response.id}}"
-                               ng-model="vm.choices[page.id]"
                                ng-readonly="vm.readOnly"
                                ng-disabled="vm.readOnly"
-                               ng-click="vm.handleLabelSelectionClick(page.id)"
+                               ng-click="vm.handleLabelSelectionClick(page, response.id)"
                         />
                         <label class="grid-block"
                                for="{{page.id}}-{{$index}}">
@@ -119,7 +108,7 @@
                         {{page.challenge}}
                     </div>
                     <div class="icons">
-                        <i ng-show="vm.choices[page.id]"
+                        <i ng-show="vm.showCompleteCheckMark(page)"
                            class="icon icon-check active">
                         </i>
                         <i ng-show="$pane.isExpanded()"
@@ -136,15 +125,16 @@
                     <li class="grid-block shrink"
                         ng-class="{ 'highlighted-grid-row': vm.isResponseSelected(page, response) }"
                         ng-repeat="response in page.responses track by response.id"
-                        ng-hide="vm.hideWhenItemIsNotSelected(page, response)"
+                        ng-hide="vm.hideWhenItemIsNotSelected(response)"
                     >
                         <input id="accordionControl{{page.id}}-{{$index}}"
-                               type="radio"
-                               name="accordionControlName{{page.id}}"
+                               type="checkbox"
+                               name="accordionControlName{{page.id}}-{{$index}}"
+                               ng-model="vm.choices[response.id].selected"
                                value="{{response.id}}"
-                               ng-model="vm.choices[page.id]"
                                ng-readonly="true"
                                ng-disabled="true"
+
                         />
                         <label class="grid-block"
                                for="accordionControl{{page.id}}-{{$index}}">
@@ -157,66 +147,6 @@
         </v-pane>
     </v-accordion>
     <!--End accordion View-->
-
-
-    <!--Start icon view-->
-    <div class="grid-block vertical " ng-if="vm.show()" ng-show="vm.viewStyle === 'icon'">
-        <div class="grid-block label-selector-controlls">
-            <div class="grid-content control-left shrink noscroll">
-                <button ng-click="vm.previousPage()"><i class="icon icon-left"></i></button>
-            </div>
-            <div class="grid-block vertical page-header">
-                <div class="grid-content page-title text-center noscroll">{{vm.pages[vm.activePageIndex].challenge}}
-                </div>
-                <div class="grid-content page-indicator-container text-center noscroll">
-                    <ol class="page-indicators">
-                        <li ng-repeat="page in vm.pages" ng-class="{active: vm.isPageActive($index)}"
-                            ng-click="vm.selectPage($index)"></li>
-                    </ol>
-                </div>
-            </div>
-            <div class="grid-content control-right shrink noscroll">
-                <button ng-click="vm.nextPage()"><i class="icon icon-right"></i></button>
-            </div>
-        </div>
-        <div class="grid-block label-selector-content vertical ">
-            <div class="grid-block">
-                <div ng-repeat="page in vm.pages" ng-show="vm.isPageActive($index)"
-                     class="grid-block label-selector-content-container wrap noscroll">
-                    <div ng-repeat="response in page.responses" class="grid-content label-selector-item small-8"
-                         ng-class="{selected: vm.isResponseSelected(page, response)}"
-                         ng-click="!vm.readOnly && (vm.choices[page.id] = response.id)">
-                        <button><i class="icon {{response.iconClass}} noscroll"></i></button>
-                        <p>{{response.response}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="grid-block label-selector-content-spacer"></div>
-        </div>
-    </div>
-    <div ng-show="vm.showClassSearchBar">
-        <div class="grid-block noscroll">
-            <select id="choicesShapeSelection" ng-model="vm.selectedClassFilter"
-                    ng-change="vm.handleJumpToNextShapeWithSelectedClass()">
-                <option value="" disabled selected>Select a class</option>
-                <option ng-repeat="class in vm.allPossibleChoices"
-                        value="{{class.identifier}}">
-                    {{class.name}} ({{class.identifier}})
-                </option>
-            </select>
-            <button id="select-previous-shape-with-class"
-                    ng-click="vm.handleJumpToNextShapeWithSelectedClass('previous')"
-                    tooltip="Find the previous shape with the selected class type">
-                <i class="icon icon-control-previous"></i>
-            </button>
-            <button id="select-next-shape-with-class"
-                    ng-click="vm.handleJumpToNextShapeWithSelectedClass('next')"
-                    tooltip="Find the next shape with the selected class type">
-                <i class="icon icon-control-next"></i>
-            </button>
-        </div>
-    </div>
-    <!--End icon view-->
 
     <!--<div class="grid-block label-selector-button-wrapper" ng-if="vm.labeledObject">-->
     <!--<button class="grid-content label-selector-button text-center noscroll">Cancel</button>-->
