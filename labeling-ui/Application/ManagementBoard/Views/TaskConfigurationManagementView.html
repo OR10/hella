@@ -1,0 +1,76 @@
+<loading-mask ng-if="vm.loadingInProgress > 0" spinner="true"></loading-mask>
+<page-title title="Requirements File Management">
+  <back-link state-link="labeling.projects.list"
+             tooltip="Back to Project list"
+  ></back-link>
+</page-title>
+<div class="page-content">
+  <tab-view>
+    <tab header="overview">
+      <table class="table hover">
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>filename</th>
+            <th>creation Date</th>
+            <th>projects</th>
+            <th>action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="config in vm.requirementTaskConfigurations track by config.id">
+            <td>{{config.name}}</td>
+            <td>{{config.filename}}</td>
+            <td>{{config.creationDate}}</td>
+            <td>{{config.projects.length}}</td>
+            <td class="action-cell" ng-click="$event.stopPropagation()">
+              <button tooltip="Show used projects"
+                      ng-disabled="config.projects.length === 0"
+                      ng-click="vm.displayUsedProjectsModal(config.projects)">
+                <i class="fa fa-info"></i>
+              </button>
+              <a tooltip="Download Configuration File" ng-href="{{vm.getDownloadUrl(config.id)}}">
+                <i class="fa fa-download"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </tab>
+    <tab header="upload">
+      <form style="min-width: 600px;">
+        <table class="table formular-table">
+          <tr>
+            <td>Name</td>
+            <td>
+              <input type="text"
+                     ng-model="vm.requirementsConfigurationName"
+                     placeholder="Requirements Configuration Name"
+                     ng-class="{error: !vm.requirementsConfigurationValidation.name}" />
+            </td>
+          </tr>
+          <tr>
+            <td>XML File</td>
+            <td>
+              <input type="file"
+                     file-model="vm.requirementsConfigurationFile"
+                     ng-class="{error: !vm.requirementsConfigurationValidation.file}" />
+            </td>
+          </tr>
+        </table>
+        <div class="button-area">
+          <button class="pull-right"
+                  ng-click="vm.uploadRequirementsConfiguration()"
+          >
+            <i class="fa fa-cloud-upload"></i> Upload
+          </button>
+          <button class="pull-left"
+                  ui-sref="labeling.projects.list"
+          >
+            <i class="fa fa-close"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </tab>
+  </tab-view>
+</div>

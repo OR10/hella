@@ -1,15 +1,18 @@
 /**
  * Controller to handle TaskConfigurations Uploads
  */
-class TaskConfigurationUploadController {
+class TaskConfigurationManagementController {
   /**
    * @param {angular.$state} $state
    * @param {User} user
    * @param {Object} userPermissions
    * @param {TaskConfigurationGateway} taskConfigurationGateway
    * @param {ModalService} modalService
+   * @param {ListDialog} ListDialog
+   * @param {OrganisationService} organisationService
+   * @param {ApiService} ApiService
    */
-  constructor($state, user, userPermissions, taskConfigurationGateway, modalService) {
+  constructor($state, user, userPermissions, taskConfigurationGateway, modalService, ListDialog, organisationService, ApiService) {
     /**
      * @type {angular.$state}
      * @private
@@ -37,6 +40,24 @@ class TaskConfigurationUploadController {
      * @private
      */
     this._modalService = modalService;
+
+    /**
+     * @type {ListDialog}
+     * @private
+     */
+    this._ListDialog = ListDialog;
+
+    /**
+     * @type {OrganisationService}
+     * @private
+     */
+    this._organisationService = organisationService;
+
+    /**
+     * The api service for building urls
+     * @type {ApiService}
+     */
+    this._apiService = ApiService;
 
     /**
      * @type {string}
@@ -78,6 +99,13 @@ class TaskConfigurationUploadController {
       file: true,
       name: true,
     };
+
+    /**
+     * @type {Array}
+     */
+    this.requirementTaskConfigurations = [];
+
+    this.getUploadedRequirementsConfigurations();
   }
 
   uploadRequirementsConfiguration() {
@@ -119,6 +147,51 @@ class TaskConfigurationUploadController {
           }
         );
       });
+  }
+
+  getUploadedRequirementsConfigurations() {
+    ++this.loadingInProgress;
+    this._taskConfigurationGateway.getRequirementsXmlConfigurations()
+      .then(response => {
+        this.requirementTaskConfigurations = response;
+        --this.loadingInProgress;
+      });
+  }
+
+  /**
+   * @param configurationId
+   * @returns {string}
+   */
+  getDownloadUrl(configurationId) {
+    const organisationId = this._organisationService.get();
+
+    return this._apiService.getApiUrl(
+      `/organisation/${organisationId}/taskConfiguration/${configurationId}/file`
+    );
+  }
+
+  /**
+   * @param {array<{id: string, name: string}>} projects
+   */
+  displayUsedProjectsModal(projects) {
+    this._modalService.show(
+      new this._ListDialog(
+        {
+          title: 'Task configuration usage',
+          headline: 'Projects using this task configuration',
+          message: undefined,
+          confirmButtonText: 'Understood',
+          data: projects.map(project => {
+            return project.name;
+          }),
+        },
+        undefined,
+        undefined,
+        {
+          abortable: false,
+        }
+      )
+    );
   }
 
   uploadTaskConfiguration() {
@@ -179,12 +252,15 @@ class TaskConfigurationUploadController {
   }
 }
 
-TaskConfigurationUploadController.$inject = [
+TaskConfigurationManagementController.$inject = [
   '$state',
   'user',
   'userPermissions',
   'taskConfigurationGateway',
   'modalService',
+  'ListDialog',
+  'organisationService',
+  'ApiService',
 ];
 
-export default TaskConfigurationUploadController;
+export default TaskConfigurationManagementController;

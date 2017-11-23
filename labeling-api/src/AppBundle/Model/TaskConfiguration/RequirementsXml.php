@@ -269,4 +269,12 @@ class RequirementsXml extends Model\Base implements TaskConfiguration
     {
         $this->organisationId = $organisationId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTimestamp()
+    {
+        return $this->timestamp;
+    }
 }
