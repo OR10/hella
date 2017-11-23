@@ -170,6 +170,9 @@ class TaskConfigurationManagementController {
     );
   }
 
+  /**
+   * @param projects
+   */
   displayUsedProjectsModal(projects) {
     this._modalService.show(
       new this._ListDialog(
