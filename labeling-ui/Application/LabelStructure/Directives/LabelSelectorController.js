@@ -375,11 +375,11 @@ export default class LabelSelectorController {
     }
 
     const classList = selectedLabeledObject.extractClassList();
+
     const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
       this.selectedLabelStructureObject,
       classList
     );
-
     // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
     // TODO: find the source of the race condition and eliminate the problem there!
     if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, this.selectedPaperShape)) {
@@ -396,6 +396,7 @@ export default class LabelSelectorController {
       newPages.push(page);
 
       page.challenge = node.metadata.challenge;
+      page.multiSelect = node.metadata.multiSelect;
       page.instructions = node.metadata.instructions;
 
       page.responses = node.children.map(
@@ -407,6 +408,7 @@ export default class LabelSelectorController {
         newChoices[response.id] = {selected: selected};
       });
     });
+
     // Remove labels belonging to removed pages
     if (this.pages !== null) {
       this.pages.forEach(page => {
@@ -414,14 +416,16 @@ export default class LabelSelectorController {
         if (seenPages[id] === true) {
           return;
         }
-        if (this.choices[id] !== null) {
-          // Remove the chosen value from the labelsObject
-          selectedLabeledObject.setClasses(
-            selectedLabeledObject.classes.filter(
-              label => label !== this.choices[id]
-            )
-          );
-        }
+        page.responses.forEach(response => {
+          if (response.value !== undefined) {
+            // Remove the chosen value from the labelsObject
+            selectedLabeledObject.setClasses(
+              selectedLabeledObject.classes.filter(
+                label => label !== response.value
+              )
+            );
+          }
+        });
       });
     }
 
@@ -594,23 +598,25 @@ export default class LabelSelectorController {
     return index === this.activePageIndex;
   }
 
-  isMultiAttributeSelection() {
-    let multiSelect = false;
-    if (this.selectedLabelStructureObject !== null) {
-      multiSelect = this.selectedLabelStructureObject.multiSelect;
-    }
-    return multiSelect;
+  isMultiAttributeSelection(page) {
+    return page.multiSelect;
   }
 
-  isResponseSelected(response) {
+  showCompleteCheckMark(page) {
+    let checked = false;
+    page.responses.forEach(response => {
+      if (response.value !== undefined) {
+        checked = true;
+      }
+    });
+    return checked;
+  }
+
+  isResponseSelected(page, response) {
     if (this.choices === null) {
       return false;
     }
-    let multiSelect = false;
-    if (this.selectedLabelStructureObject !== null) {
-      multiSelect = this.selectedLabelStructureObject.multiSelect;
-    }
-    if (multiSelect) {
+    if (this.isMultiAttributeSelection(page)) {
       const selectedLabeledObject = this._getSelectedLabeledObject();
       if (selectedLabeledObject !== null) {
         return selectedLabeledObject.classes.includes(response.id);
@@ -634,7 +640,7 @@ export default class LabelSelectorController {
     this.activePageIndex = Math.max(this.activePageIndex - 1, 0);
   }
 
-  handleLabelSelectionClick(id, response) {
+  handleLabelSelectionClick(page, response) {
     const selectedLabeledObject = this._getSelectedLabeledObject();
     if (!selectedLabeledObject || this.choices === null) {
       return;
@@ -654,36 +660,34 @@ export default class LabelSelectorController {
     if (angular.equals(selectedLabeledObject.classes, labels)) {
       return;
     }
-    let multiSelect = false;
-    if (this.selectedLabelStructureObject !== null) {
-      multiSelect = this.selectedLabelStructureObject.multiSelect;
-    }
 
-    if (multiSelect) {
+    if (this.isMultiAttributeSelection(page)) {
       if (toDeleteLabel === undefined) {
         if (selectedLabeledObject.classes.length === 0) {
           selectedLabeledObject.setClasses(labels);
         } else {
           const concatAttributes = [...new Set(selectedLabeledObject.classes.concat(labels))];
-          selectedLabeledObject.setClasses([]);
-
-          concatAttributes.forEach(attribute => {
-            selectedLabeledObject.addClass(attribute);
-          });
+          selectedLabeledObject.setClasses(concatAttributes);
         }
       } else {
         selectedLabeledObject.removeClass(toDeleteLabel);
       }
     } else {
-      selectedLabeledObject.setClasses(labels);
+      const currentSelected = page.responses.find(resp => resp.value !== undefined);
+      if (currentSelected === undefined) {
+        selectedLabeledObject.addClass(labels[0]);
+      } else {
+        this.choices[currentSelected.id].selected = !this.choices[currentSelected.id].selected;
+        selectedLabeledObject.removeClass(currentSelected.value);
+        selectedLabeledObject.addClass(labels[0]);
+      }
       const index = this.pages.findIndex(element => {
-        return element.id === id;
+        return element.id === page.id;
       });
       if (this.pages[index + 1]) {
         this.accordionControl.expand(this.pages[index + 1].id);
       }
     }
-
     let labeledThingNeedsUpdate = false;
 
     if (selectedLabeledObject instanceof LabeledThingInFrame) {
