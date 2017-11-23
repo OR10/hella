@@ -12,23 +12,20 @@ class SimpleTaskConfigurationList
     private $result = [];
 
     /**
-     * @param Model\TaskConfiguration $taskConfigurations[]
+     * @param Model\TaskConfiguration[] $taskConfigurations
      */
     public function __construct(
         $taskConfigurations
     ) {
-        $this->result = array_map(function(Model\TaskConfiguration $taskConfiguration) {
-            $prefix = '';
-            if ($taskConfiguration instanceof Model\TaskConfiguration\SimpleXml) {
-                $prefix = 'SimpleXml';
-            }
-            if ($taskConfiguration instanceof Model\TaskConfiguration\RequirementsXml) {
-                $prefix = 'RequirementsXml';
-            }
-            return [
-                'id' => $taskConfiguration->getId(),
-                'name' => sprintf('%s (%s)', $taskConfiguration->getName(), $prefix),
-            ];
-        }, $taskConfigurations);
+        $this->result = array_map(
+            function (Model\TaskConfiguration $taskConfiguration) {
+                return [
+                    'id'       => $taskConfiguration->getId(),
+                    'name'     => $taskConfiguration->getName(),
+                    'filename' => $taskConfiguration->getFilename(),
+                ];
+            },
+            $taskConfigurations
+        );
     }
 }

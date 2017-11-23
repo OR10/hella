@@ -160,6 +160,10 @@ class TaskConfiguration extends Controller\Base
             HttpFoundation\Response::HTTP_OK,
             [
                 'Content-Type' => $taskConfiguration->getContentType(),
+                'Content-Disposition' => sprintf(
+                    'attachment; filename="%s"',
+                    $taskConfiguration->getFilename()
+                ),
             ]
         );
     }
