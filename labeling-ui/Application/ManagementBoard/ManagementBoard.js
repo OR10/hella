@@ -53,7 +53,7 @@ import LabelingGroupListDirective from './Directives/LabelingGroupListDirective'
 import LabelingGroupsDetailDirective from './Directives/LabelingGroupsDetailDirective';
 
 import TaskConfigurationGateway from './Gateways/TaskConfigurationGateway';
-import TaskConfigurationUploadController from './Controllers/TaskConfigurationUploadController';
+import TaskConfigurationManagementController from './Controllers/TaskConfigurationManagementController';
 import TaskConfigurationManagementView from './Views/TaskConfigurationManagementView.html!';
 
 import SingleRoleFilterProvider from './Filters/SingleRoleFilterProvider';
@@ -238,7 +238,7 @@ class ManagementBoard extends Module {
       url: '/manage',
       views: {
         '@organisation': {
-          controller: TaskConfigurationUploadController,
+          controller: TaskConfigurationManagementController,
           controllerAs: 'vm',
           template: TaskConfigurationManagementView,
         },
