@@ -28,12 +28,15 @@ class SimpleTaskConfigurationList
                     $projects[$taskConfiguration->getId()]
                 );
 
+                $date = new \DateTime('@' . $taskConfiguration->getTimestamp(), new \DateTimeZone('UTC'));
+
                 return [
-                    'id'          => $taskConfiguration->getId(),
-                    'name'        => $taskConfiguration->getName(),
-                    'filename'    => $taskConfiguration->getFilename(),
-                    'projects'    => $project,
-                    'isDeletable' => count($project) === 0,
+                    'id'           => $taskConfiguration->getId(),
+                    'name'         => $taskConfiguration->getName(),
+                    'filename'     => $taskConfiguration->getFilename(),
+                    'creationDate' => $date->format('d.m.Y'),
+                    'projects'     => $project,
+                    'isDeletable'  => count($project) === 0,
                 ];
             },
             $taskConfigurations

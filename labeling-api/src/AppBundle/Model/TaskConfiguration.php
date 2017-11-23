@@ -39,4 +39,6 @@ interface TaskConfiguration
     public function getOrganisationId();
 
     public function setOrganisationId($organisationId);
+
+    public function getTimestamp();
 }

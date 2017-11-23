@@ -12,6 +12,7 @@
           <tr>
             <th>Name</th>
             <th>Filename</th>
+            <th>Creation Date</th>
             <th>Projects</th>
             <th>Action</th>
           </tr>
@@ -20,6 +21,7 @@
           <tr ng-repeat="config in vm.requirementTaskConfigurations track by config.id">
             <td>{{config.name}}</td>
             <td>{{config.filename}}</td>
+            <td>{{config.creationDate}}</td>
             <td>{{config.projects.length}}</td>
             <td class="action-cell" ng-click="$event.stopPropagation()">
               <button tooltip="Show used projects"
