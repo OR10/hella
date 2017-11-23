@@ -54,7 +54,7 @@ class TaskConfiguration
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
      *
-     * @return array
+     * @return Model\TaskConfiguration[]
      */
     public function getTaskConfigurationsByUser(AnnoStationBundleModel\Organisation $organisation, Model\User $user)
     {

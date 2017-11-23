@@ -12,6 +12,7 @@
           <tr>
             <th>Name</th>
             <th>Filename</th>
+            <th>Projects</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -19,8 +20,14 @@
           <tr ng-repeat="config in vm.requirementTaskConfigurations track by config.id">
             <td>{{config.name}}</td>
             <td>{{config.filename}}</td>
+            <td>{{config.projects.length}}</td>
             <td class="action-cell" ng-click="$event.stopPropagation()">
-              <a ng-href="{{vm.getDownloadUrl(config.id)}}">
+              <button tooltip="Show used projects"
+                      ng-disabled="config.projects.length === 0"
+                      ng-click="vm.displayUsedProjectsModal(config.projects)">
+                <i class="fa fa-info"></i>
+              </button>
+              <a tooltip="Download Configuration File" ng-href="{{vm.getDownloadUrl(config.id)}}">
                 <i class="fa fa-download"></i>
               </a>
             </td>

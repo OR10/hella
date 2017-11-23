@@ -374,4 +374,21 @@ class Project
 
         return $numberOfProjectsByOrganisation;
     }
+
+    /**
+     * @param Model\TaskConfiguration $taskConfiguration
+     *
+     * @return Model\Project[]
+     */
+    public function getProjectsByTaskConfiguration(Model\TaskConfiguration $taskConfiguration)
+    {
+        $query = $this->documentManager
+            ->createQuery('annostation_project_by_configuration_id_001', 'view')
+            ->onlyDocs(true)
+            ->setKey($taskConfiguration->getId())
+            ->execute()
+            ->toArray();
+
+        return $query;
+    }
 }

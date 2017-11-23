@@ -8,10 +8,11 @@ class TaskConfigurationManagementController {
    * @param {Object} userPermissions
    * @param {TaskConfigurationGateway} taskConfigurationGateway
    * @param {ModalService} modalService
+   * @param {ListDialog} ListDialog
    * @param {OrganisationService} organisationService
    * @param {ApiService} ApiService
    */
-  constructor($state, user, userPermissions, taskConfigurationGateway, modalService, organisationService, ApiService) {
+  constructor($state, user, userPermissions, taskConfigurationGateway, modalService, ListDialog, organisationService, ApiService) {
     /**
      * @type {angular.$state}
      * @private
@@ -39,6 +40,12 @@ class TaskConfigurationManagementController {
      * @private
      */
     this._modalService = modalService;
+
+    /**
+     * @type {ListDialog}
+     * @private
+     */
+    this._ListDialog = ListDialog;
 
     /**
      * @type {OrganisationService}
@@ -163,6 +170,27 @@ class TaskConfigurationManagementController {
     );
   }
 
+  displayUsedProjectsModal(projects) {
+    this._modalService.show(
+      new this._ListDialog(
+        {
+          title: 'Task configuration usage',
+          headline: 'Projects using this task configuration',
+          message: undefined,
+          confirmButtonText: 'Understood',
+          data: projects.map(project => {
+            return project.name;
+          }),
+        },
+        undefined,
+        undefined,
+        {
+          abortable: false,
+        }
+      )
+    );
+  }
+
   uploadTaskConfiguration() {
     if (!this._validateTaskConfiguration()) {
       return;
@@ -227,6 +255,7 @@ TaskConfigurationManagementController.$inject = [
   'userPermissions',
   'taskConfigurationGateway',
   'modalService',
+  'ListDialog',
   'organisationService',
   'ApiService',
 ];

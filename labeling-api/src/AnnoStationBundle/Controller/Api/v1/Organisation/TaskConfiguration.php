@@ -34,6 +34,11 @@ class TaskConfiguration extends Controller\Base
     private $taskConfigurationFacade;
 
     /**
+     * @var Facade\Project
+     */
+    private $projectFacade;
+
+    /**
      * @var Storage\TokenStorage
      */
     private $tokenStorage;
@@ -60,6 +65,7 @@ class TaskConfiguration extends Controller\Base
 
     /**
      * @param Facade\TaskConfiguration                     $taskConfigurationFacade
+     * @param Facade\Project                               $projectFacade
      * @param Storage\TokenStorage                         $tokenStorage
      * @param Service\XmlValidator                         $simpleXmlValidator
      * @param Service\XmlValidator                         $requirementsXmlValidator
@@ -68,6 +74,7 @@ class TaskConfiguration extends Controller\Base
      */
     public function __construct(
         Facade\TaskConfiguration $taskConfigurationFacade,
+        Facade\Project $projectFacade,
         Storage\TokenStorage $tokenStorage,
         Service\XmlValidator $simpleXmlValidator,
         Service\XmlValidator $requirementsXmlValidator,
@@ -80,6 +87,7 @@ class TaskConfiguration extends Controller\Base
         $this->requirementsXmlValidator         = $requirementsXmlValidator;
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
         $this->authorizationService             = $authorizationService;
+        $this->projectFacade                    = $projectFacade;
     }
 
     /**
@@ -103,8 +111,16 @@ class TaskConfiguration extends Controller\Base
             }
         );
 
+        $projects = [];
+
+        foreach ($taskConfigurations as $taskConfiguration) {
+            $projects[$taskConfiguration->getId()] = $this->projectFacade->getProjectsByTaskConfiguration(
+                $taskConfiguration
+            );
+        }
+
         return new View\View(
-            new Response\SimpleTaskConfigurationList(array_values($taskConfigurations))
+            new Response\SimpleTaskConfigurationList(array_values($taskConfigurations), $projects)
         );
     }
 
