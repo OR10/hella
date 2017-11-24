@@ -210,7 +210,6 @@ export default class LabelSelectorController {
     this.showClassSearchBar = false;
 
     $rootScope.$on('toggle-class-search', () => {
-      console.log('here');
       this.showClassSearchBar = !this.showClassSearchBar;
     });
 
