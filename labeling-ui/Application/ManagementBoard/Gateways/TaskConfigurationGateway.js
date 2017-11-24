@@ -107,6 +107,23 @@ class TaskConfigurationGateway {
       }
     });
   }
+
+  /**
+   * Delete a task configuration by id
+   *
+   * @param {string} configurationId
+   * @returns {AbortablePromise}
+   */
+  deleteTaskConfiguration(configurationId) {
+    const organisationId = this._organisationService.get();
+    const url = this._apiService.getApiUrl(`/organisation/${organisationId}/taskConfiguration/${configurationId}`);
+
+    return this._bufferedHttp.delete(url, undefined, 'task-configuration').then(response => {
+      if (response.data && response.data.result) {
+        return response.data.result.success;
+      }
+    });
+  }
 }
 
 TaskConfigurationGateway.$inject = [

@@ -61,6 +61,11 @@ class SimpleXml extends Model\Base implements TaskConfiguration
     private $json;
 
     /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $deleted = false;
+
+    /**
      * TaskConfiguraion constructor.
      *
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -242,5 +247,18 @@ class SimpleXml extends Model\Base implements TaskConfiguration
     public function getTimestamp()
     {
         return $this->timestamp;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isDeleted()
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted()
+    {
+        $this->deleted = true;
     }
 }

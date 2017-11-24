@@ -24,14 +24,16 @@
             <td>{{config.creationDate}}</td>
             <td>{{config.projects.length}}</td>
             <td class="action-cell" ng-click="$event.stopPropagation()">
+              <a tooltip="Download Configuration File" ng-href="{{vm.getDownloadUrl(config.id)}}"><i class="fa fa-download"></i></a>
               <button tooltip="Show used projects"
                       ng-disabled="config.projects.length === 0"
                       ng-click="vm.displayUsedProjectsModal(config.projects)">
                 <i class="fa fa-info"></i>
               </button>
-              <a tooltip="Download Configuration File" ng-href="{{vm.getDownloadUrl(config.id)}}">
-                <i class="fa fa-download"></i>
-              </a>
+              <button tooltip="Remove Task Configuration"
+                      ng-click="vm.deleteTaskConfiguration(config.id)">
+                <i class="fa fa-close"></i>
+              </button>
             </td>
           </tr>
         </tbody>

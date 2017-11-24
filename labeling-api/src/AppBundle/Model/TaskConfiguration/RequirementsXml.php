@@ -66,6 +66,11 @@ class RequirementsXml extends Model\Base implements TaskConfiguration
     private $hashes;
 
     /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $deleted = false;
+
+    /**
      * @var \DOMDocument|null
      */
     private $document;
@@ -276,5 +281,18 @@ class RequirementsXml extends Model\Base implements TaskConfiguration
     public function getTimestamp()
     {
         return $this->timestamp;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isDeleted()
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted()
+    {
+        $this->deleted = true;
     }
 }
