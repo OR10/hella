@@ -109,6 +109,19 @@ class RequirementsLabelStructure extends LabelStructure {
     return enabledThingClasses;
   }
 
+  getClassesForLabeledObject(labelStructureObject, classList) {
+    const identifier = labelStructureObject.id;
+    if (!this._isLabelStructureObjectDefinedById(identifier)) {
+      throw new Error(`LabelStructureObject with identifier '${identifier}' could not be found in LabelStructure`);
+    }
+    const element = this._getLabelStructureObjectElementById(identifier);
+    const enabledElements = this._getElementsByStartingElement(element);
+    const enabledThingClasses = enabledElements.map(
+      enabledElement => this._annotateClassJsonWithActiveValue(this._convertClassElementToClassJson(enabledElement), classList));
+
+    return enabledThingClasses;
+  }
+
   /**
    * Retrieve information about whether a LabelStructureObject with a specific id is defined inside this {@link LabelStructure}
    *
@@ -381,6 +394,48 @@ class RequirementsLabelStructure extends LabelStructure {
     return [...uniqueMap.values()];
   }
 
+  _getElementsByStartingElement(rootElement, depth = 1) {
+    const classElementsPath = `./r:class`;
+    const classElementsSnapshot = this._evaluateXPath(classElementsPath, rootElement, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    if (classElementsPath.snapshotLength === 0) {
+      return [];
+    }
+
+    let xmlClassElements = [];
+    for (let index = 0; index < classElementsSnapshot.snapshotLength; index++) {
+      let xmlClass = new XMLClassElement(classElementsSnapshot.snapshotItem(index), depth);
+
+      // If classElement is a reference node, replace with the referenced class node
+      if (this._isRefElement(xmlClass)) {
+        xmlClass = this._getReferencedClassElement(xmlClass);
+      }
+
+      xmlClassElements.push(xmlClass);
+
+      const valueElements = this._getValueElementsFromClassElement(xmlClass);
+      valueElements.forEach(valueElement => { // eslint-disable-line no-loop-func
+        // Recursive search for further nodes in the tree below every value element
+        const childXMLClasses = this._getElementsByStartingElement(valueElement, depth + 1);
+        xmlClassElements = [...xmlClassElements, ...childXMLClasses];
+      });
+    }
+
+    // Filter through all found elements and only keep unique ids with the lowest depth
+    const uniqueMap = new Map();
+    xmlClassElements.forEach(xmlClass => {
+      if (!uniqueMap.has(xmlClass.element.attributes.id)) {
+        uniqueMap.set(xmlClass.element.attributes.id, xmlClass);
+        return;
+      }
+      if (xmlClass.depth < uniqueMap.get(xmlClass.element.attributes.id).depth) {
+        uniqueMap.delete(xmlClass.element.attributes.id);
+        uniqueMap.set(xmlClass.element.attributes.id, xmlClass);
+      }
+    });
+
+    return [...uniqueMap.values()];
+  }
+
   /**
    * Check if a specific `<class>` element is a class reference.
    *
@@ -607,6 +662,59 @@ class RequirementsLabelStructure extends LabelStructure {
     }
 
     return clonedClassJson;
+  }
+
+  fixAndAddPreviousResponseLabels(labelStructureObject, response) {
+    const previousValues = this._getPreviousValue(response);
+    const previousValuesToDelete = this._getPreviousValueToRemove(labelStructureObject, response, previousValues);
+
+    return previousValues;
+  }
+
+  _getPreviousValue(response) {
+    let previousValues = [];
+
+    const searchNodePath = `//r:class[r:value[@id="${response}"]]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    if (searchSnapshot.snapshotLength === 0) {
+      return [];
+    }
+    const classElement = searchSnapshot.snapshotItem(0);
+
+    const searchNodePathb = `//r:value[r:class[@id="${classElement.attributes.id.value}"]]|//r:value[r:class[@ref="${classElement.attributes.id.value}"]]`;
+    const searchSnapshotb = this._evaluateXPath(searchNodePathb, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    if (searchSnapshotb.snapshotLength > 0) {
+      const valueElement = searchSnapshotb.snapshotItem(0);
+      previousValues.push(valueElement.attributes.id.value);
+      previousValues = previousValues.concat(this._getPreviousValue(
+        valueElement.attributes.id.value
+      ));
+    }
+
+    return previousValues;
+  }
+
+  _getPreviousValueToRemove(labelStructureObject, response, keepValues) {
+    let previousValues = [];
+
+    const searchNodePath = `//r:class[r:value[@id="${response}"]]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    if (searchSnapshot.snapshotLength === 0) {
+      return [];
+    }
+    const classElement = searchSnapshot.snapshotItem(0);
+
+    const searchNodePathb = `//r:class[@id="${classElement.attributes.id.value}"]|//r:class[@ref="${classElement.attributes.id.value}"]`;
+    const searchSnapshotb = this._evaluateXPath(searchNodePathb, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    if (searchSnapshotb.snapshotLength > 0) {
+      const classElement = searchSnapshotb.snapshotItem(0);
+      console.error(classElement, this._getValueElementsFromClassElement(classElement));
+    }
+
+    return previousValues;
   }
 }
 

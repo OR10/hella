@@ -375,11 +375,16 @@ export default class LabelSelectorController {
     }
 
     const classList = selectedLabeledObject.extractClassList();
+    let list;
 
-    const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
-      this.selectedLabelStructureObject,
-      classList
-    );
+    if (this.searchAttributes.length === 0) {
+      list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
+        this.selectedLabelStructureObject,
+        classList
+      );
+    } else {
+      list = this.labelStructure.getClassesForLabeledObject(this.selectedLabelStructureObject, classList);
+    }
     // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
     // TODO: find the source of the race condition and eliminate the problem there!
     if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, this.selectedPaperShape)) {
@@ -643,7 +648,7 @@ export default class LabelSelectorController {
       return;
     }
 
-    const labels = Object.keys(this.choices).filter(
+    let labels = Object.keys(this.choices).filter(
       choice => this.choices[choice].selected && choice === response
     );
 
@@ -653,6 +658,12 @@ export default class LabelSelectorController {
         choice => !this.choices[choice].selected && choice === response
       );
     }
+
+    const needValues = this.labelStructure.fixAndAddPreviousResponseLabels(this.selectedLabelStructureObject, response);
+    console.error(labels, needValues);
+    needValues.forEach(value => {
+      selectedLabeledObject.addClass(value);
+    });
 
     if (angular.equals(selectedLabeledObject.classes, labels)) {
       return;
