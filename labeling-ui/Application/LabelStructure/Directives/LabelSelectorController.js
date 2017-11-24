@@ -205,26 +205,12 @@ export default class LabelSelectorController {
     this._labelStructureService = labelStructureService;
 
     /**
-     * @type {Array}
-     */
-    this.allPossibleChoices = [];
-
-    /**
-     * @type {String}
-     */
-    this.selectedClassFilter = '';
-
-    /**
      * @type {Boolean}
      */
     this.showClassSearchBar = false;
 
-    this._labelStructureService.getLabelStructure(this.task)
-      .then(labelStructure => {
-        this.allPossibleChoices = labelStructure.getClasses();
-      });
-
     $rootScope.$on('toggle-class-search', () => {
+      console.log('here');
       this.showClassSearchBar = !this.showClassSearchBar;
     });
 
