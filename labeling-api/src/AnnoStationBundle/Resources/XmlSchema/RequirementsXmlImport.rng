@@ -387,7 +387,9 @@
             <optional>
                 <attribute name="incomplete"/>
             </optional>
-            <ref name="References"/>
+            <optional>
+                <ref name="References"/>
+            </optional>
             <oneOrMore>
                 <ref name="Value"/>
             </oneOrMore>
