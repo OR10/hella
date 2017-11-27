@@ -682,12 +682,14 @@ export default class LabelSelectorController {
       }
     } else {
       const currentSelected = page.responses.find(resp => resp.value !== undefined);
-      if (currentSelected === undefined) {
+      if (currentSelected === undefined && labels[0] !== undefined) {
         selectedLabeledObject.addClass(labels[0]);
       } else {
         this.choices[currentSelected.id].selected = !this.choices[currentSelected.id].selected;
         selectedLabeledObject.removeClass(currentSelected.value);
-        selectedLabeledObject.addClass(labels[0]);
+        if (labels[0] !== undefined) {
+          selectedLabeledObject.addClass(labels[0]);
+        }
       }
     }
     let labeledThingNeedsUpdate = false;
