@@ -642,6 +642,14 @@ export default class LabelSelectorController {
     this.activePageIndex = Math.max(this.activePageIndex - 1, 0);
   }
 
+  _getRequiredValuesForValueToRemove(selectedLabeledObject, attribute) {
+    const valuesToRemove = this.labelStructure.getRequiredValuesForValueToRemove(selectedLabeledObject, attribute);
+    console.error('valuesToRemove', valuesToRemove);
+    valuesToRemove.forEach(value => {
+      selectedLabeledObject.removeClass(value);
+    });
+  }
+
   handleLabelSelectionClick(page, response) {
     const selectedLabeledObject = this._getSelectedLabeledObject();
     if (!selectedLabeledObject || this.choices === null) {
@@ -652,13 +660,7 @@ export default class LabelSelectorController {
       choice => this.choices[choice].selected && choice === response
     );
 
-
-
-    const valuesToRemove = this.labelStructure.getRequiredValuesForValueToRemove(selectedLabeledObject, response);
-    console.error('valuesToRemove', valuesToRemove);
-    valuesToRemove.forEach(value => {
-      selectedLabeledObject.removeClass(value);
-    });
+    this._getRequiredValuesForValueToRemove(selectedLabeledObject, response);
 
     const neededValues = this.labelStructure.getRequiredValuesForValue(response);
     neededValues.forEach(value => {
@@ -695,6 +697,11 @@ export default class LabelSelectorController {
       } else {
         this.choices[currentSelected.id].selected = !this.choices[currentSelected.id].selected;
         selectedLabeledObject.removeClass(currentSelected.value);
+        if (this.searchAttributes !== '') {
+          console.log('suche aktiv')
+          console.log('currentSelected.value', currentSelected.value)
+          this._getRequiredValuesForValueToRemove(selectedLabeledObject, currentSelected.value);
+        }
         if (labels[0] !== undefined) {
           selectedLabeledObject.addClass(labels[0]);
         }
