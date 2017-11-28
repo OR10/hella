@@ -648,7 +648,7 @@ export default class LabelSelectorController {
       return;
     }
 
-    let labels = Object.keys(this.choices).filter(
+    const labels = Object.keys(this.choices).filter(
       choice => this.choices[choice].selected && choice === response
     );
 
@@ -659,9 +659,13 @@ export default class LabelSelectorController {
       );
     }
 
-    const needValues = this.labelStructure.fixAndAddPreviousResponseLabels(this.selectedLabelStructureObject, response);
-    console.error(labels, needValues);
-    needValues.forEach(value => {
+    const valuesToRemove = this.labelStructure.getRequiredValuesForValueToRemove(selectedLabeledObject, response);
+    valuesToRemove.forEach(value => {
+      selectedLabeledObject.removeClass(value);
+    });
+
+    const neededValues = this.labelStructure.getRequiredValuesForValue(response);
+    neededValues.forEach(value => {
       selectedLabeledObject.addClass(value);
     });
 

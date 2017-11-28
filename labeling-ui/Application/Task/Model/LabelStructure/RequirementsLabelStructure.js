@@ -664,11 +664,16 @@ class RequirementsLabelStructure extends LabelStructure {
     return clonedClassJson;
   }
 
-  fixAndAddPreviousResponseLabels(labelStructureObject, response) {
-    const previousValues = this._getPreviousValue(response);
-    const previousValuesToDelete = this._getPreviousValueToRemove(labelStructureObject, response, previousValues);
+  getRequiredValuesForValue(response) {
+    let values = [response];
+    values = this._getPreviousValue(response).concat(values);
+    return values;
+  }
 
-    return previousValues;
+  getRequiredValuesForValueToRemove(labelStructureObject, response) {
+    const identifier = labelStructureObject.identifierName;
+
+    return this._getValuesTreeForValue(identifier, response);
   }
 
   _getPreviousValue(response) {
@@ -695,26 +700,51 @@ class RequirementsLabelStructure extends LabelStructure {
     return previousValues;
   }
 
-  _getPreviousValueToRemove(labelStructureObject, response, keepValues) {
-    let previousValues = [];
-
-    const searchNodePath = `//r:class[r:value[@id="${response}"]]`;
+  _getValuesTreeForValue(identifier, valueId) {
+    const searchNodePath = `//r:thing[@id="${identifier}"]//r:class[.//r:value[@id="${valueId}"]]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
     if (searchSnapshot.snapshotLength === 0) {
-      return [];
+      const searchNodePathAnywhere = `//r:class[.//r:value[@id="${valueId}"]]`;
+      const searchSnapshotAnywhere = this._evaluateXPath(
+        searchNodePathAnywhere,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
+      );
+      const referenceThingElement = searchSnapshotAnywhere.snapshotItem(0);
+
+      const referenceSearchNodePathInIdentifier = `//r:class[.//r:class[@ref="${referenceThingElement.id}"]]|//r:class[@ref="${referenceThingElement.id}"]`;
+      const referenceSearchSnapshotInIdentifier = this._evaluateXPath(
+        referenceSearchNodePathInIdentifier,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
+      );
+      const referenceThingElementInIdentifier = referenceSearchSnapshotInIdentifier.snapshotItem(0);
+
+      return this._getValuesFromClassId(referenceThingElementInIdentifier.id);
     }
-    const classElement = searchSnapshot.snapshotItem(0);
+    const thingElement = searchSnapshot.snapshotItem(0);
 
-    const searchNodePathb = `//r:class[@id="${classElement.attributes.id.value}"]|//r:class[@ref="${classElement.attributes.id.value}"]`;
-    const searchSnapshotb = this._evaluateXPath(searchNodePathb, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    return this._getValuesFromClassId(thingElement.id);
+  }
 
-    if (searchSnapshotb.snapshotLength > 0) {
-      const classElement = searchSnapshotb.snapshotItem(0);
-      console.error(classElement, this._getValueElementsFromClassElement(classElement));
+  _getValuesFromClassId(classId) {
+    let valueElements = [];
+
+    const searchNodePath = `//r:class[@id="${classId}"]//r:value|//r:class[@id="${classId}"]//r:class[@ref]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    for (let index = 0; index < searchSnapshot.snapshotLength; index++) {
+      const xmlClass = new XMLClassElement(searchSnapshot.snapshotItem(index), 1);
+      if (xmlClass.element.nodeName === 'value') {
+        valueElements.push(xmlClass.element.attributes.id.value);
+      }
+      if (xmlClass.element.nodeName === 'class') {
+        valueElements = valueElements.concat(this._getValuesFromClassId(xmlClass.element.attributes.ref.value));
+      }
     }
 
-    return previousValues;
+    return valueElements;
   }
 }
 
