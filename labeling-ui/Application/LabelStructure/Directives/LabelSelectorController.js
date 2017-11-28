@@ -652,14 +652,10 @@ export default class LabelSelectorController {
       choice => this.choices[choice].selected && choice === response
     );
 
-    let toDeleteLabel;
-    if (labels.length === 0) {
-      toDeleteLabel = Object.keys(this.choices).find(
-        choice => !this.choices[choice].selected && choice === response
-      );
-    }
+
 
     const valuesToRemove = this.labelStructure.getRequiredValuesForValueToRemove(selectedLabeledObject, response);
+    console.error('valuesToRemove', valuesToRemove);
     valuesToRemove.forEach(value => {
       selectedLabeledObject.removeClass(value);
     });
@@ -668,6 +664,14 @@ export default class LabelSelectorController {
     neededValues.forEach(value => {
       selectedLabeledObject.addClass(value);
     });
+    console.error('neededValues', neededValues);
+
+    let toDeleteLabel;
+    if (labels.length === 0) {
+      toDeleteLabel = Object.keys(this.choices).find(
+        choice => !this.choices[choice].selected && choice === response
+      );
+    }
 
     if (angular.equals(selectedLabeledObject.classes, labels)) {
       return;

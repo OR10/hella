@@ -671,9 +671,9 @@ class RequirementsLabelStructure extends LabelStructure {
   }
 
   getRequiredValuesForValueToRemove(labelStructureObject, response) {
-    const identifier = labelStructureObject.identifierName;
-
-    return this._getValuesTreeForValue(identifier, response);
+    let values = [response];
+    values = this._getNextValues(response).concat(values);
+    return values;
   }
 
   _getPreviousValue(response) {
@@ -700,6 +700,19 @@ class RequirementsLabelStructure extends LabelStructure {
     return previousValues;
   }
 
+  _getNextValues(response) {
+    let nextValues = [];
+
+    const searchNodePath = `//r:value[@id="${response}"]//r:class//r:value`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    for (let index = 0; index < searchSnapshot.snapshotLength; index++) {
+      const xmlClass = new XMLClassElement(searchSnapshot.snapshotItem(index), 1);
+      nextValues.push(xmlClass.element.attributes.id.value);
+    }
+
+    return nextValues;
+  }
+
   _getValuesTreeForValue(identifier, valueId) {
     const searchNodePath = `//r:thing[@id="${identifier}"]//r:class[.//r:value[@id="${valueId}"]]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
@@ -721,14 +734,14 @@ class RequirementsLabelStructure extends LabelStructure {
       );
       const referenceThingElementInIdentifier = referenceSearchSnapshotInIdentifier.snapshotItem(0);
 
-      return this._getValuesFromClassId(referenceThingElementInIdentifier.id);
+      return this._getValuesFromClassId(referenceThingElementInIdentifier.id, valueId);
     }
     const thingElement = searchSnapshot.snapshotItem(0);
 
-    return this._getValuesFromClassId(thingElement.id);
+    return this._getValuesFromClassId(thingElement.id, valueId);
   }
 
-  _getValuesFromClassId(classId) {
+  _getValuesFromClassId(classId, identifier) {
     let valueElements = [];
 
     const searchNodePath = `//r:class[@id="${classId}"]//r:value|//r:class[@id="${classId}"]//r:class[@ref]`;
@@ -737,14 +750,24 @@ class RequirementsLabelStructure extends LabelStructure {
     for (let index = 0; index < searchSnapshot.snapshotLength; index++) {
       const xmlClass = new XMLClassElement(searchSnapshot.snapshotItem(index), 1);
       if (xmlClass.element.nodeName === 'value') {
-        valueElements.push(xmlClass.element.attributes.id.value);
+        console.error(xmlClass.element.attributes.id.value, this._hasMultiselect(xmlClass.element.attributes.id.value, identifier));
+        //if (!this._hasMultiselect(xmlClass.element.attributes.id.value, identifier)) {
+          valueElements.push(xmlClass.element.attributes.id.value);
+        //}
       }
       if (xmlClass.element.nodeName === 'class') {
-        valueElements = valueElements.concat(this._getValuesFromClassId(xmlClass.element.attributes.ref.value));
+        valueElements = valueElements.concat(this._getValuesFromClassId(xmlClass.element.attributes.ref.value, identifier));
       }
     }
 
     return valueElements;
+  }
+
+  _hasMultiselect(classId, identifier) {
+    const searchNodePath = `//r:class[@multi-selection="true"]//r:value[@id="${identifier}"]|//r:class[@multi-selection="true"]//r:value[@id="${classId}"]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    return searchSnapshot.snapshotLength === 2;
   }
 }
 
