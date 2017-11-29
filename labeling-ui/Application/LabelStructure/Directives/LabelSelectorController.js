@@ -1,4 +1,5 @@
 import angular from 'angular';
+import {difference} from 'lodash';
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
@@ -385,7 +386,7 @@ export default class LabelSelectorController {
     } else {
       list = this.labelStructure.getClassesForLabeledObject(this.selectedLabelStructureObject, classList);
     }
-    // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
+    // There seems to be a race between selectedLabelStructure and labeledObject which could remove properties.
     // TODO: find the source of the race condition and eliminate the problem there!
     if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, this.selectedPaperShape)) {
       return;
@@ -644,9 +645,15 @@ export default class LabelSelectorController {
 
   _getRequiredValuesForValueToRemove(selectedLabeledObject, attribute) {
     const valuesToRemove = this.labelStructure.getRequiredValuesForValueToRemove(selectedLabeledObject, attribute);
-    console.error('valuesToRemove', valuesToRemove);
     valuesToRemove.forEach(value => {
       selectedLabeledObject.removeClass(value);
+    });
+  }
+
+  _getRequiredValuesForValue(selectedLabeledObject, response) {
+    const neededValues = this.labelStructure.getRequiredValuesForValue(response);
+    neededValues.forEach(value => {
+      selectedLabeledObject.addClass(value);
     });
   }
 
@@ -662,11 +669,7 @@ export default class LabelSelectorController {
 
     this._getRequiredValuesForValueToRemove(selectedLabeledObject, response);
 
-    const neededValues = this.labelStructure.getRequiredValuesForValue(response);
-    neededValues.forEach(value => {
-      selectedLabeledObject.addClass(value);
-    });
-    console.error('neededValues', neededValues);
+    this._getRequiredValuesForValue(selectedLabeledObject, response);
 
     let toDeleteLabel;
     if (labels.length === 0) {
@@ -693,13 +696,19 @@ export default class LabelSelectorController {
     } else {
       const currentSelected = page.responses.find(resp => resp.value !== undefined);
       if (currentSelected === undefined && labels[0] !== undefined) {
-        selectedLabeledObject.addClass(labels[0]);
+        if (this.searchAttributes !== '') {
+          console.log(currentSelected);
+          // selectedLabeledObject.setClasses([]);
+          const neededValues = this.labelStructure.getRequiredValuesForValue(labels[0]);
+          const remove = difference(selectedLabeledObject.classes, neededValues);
+          console.log('remove', remove)
+        } else {
+          selectedLabeledObject.addClass(labels[0]);
+        }
       } else {
         this.choices[currentSelected.id].selected = !this.choices[currentSelected.id].selected;
         selectedLabeledObject.removeClass(currentSelected.value);
         if (this.searchAttributes !== '') {
-          console.log('suche aktiv')
-          console.log('currentSelected.value', currentSelected.value)
           this._getRequiredValuesForValueToRemove(selectedLabeledObject, currentSelected.value);
         }
         if (labels[0] !== undefined) {
