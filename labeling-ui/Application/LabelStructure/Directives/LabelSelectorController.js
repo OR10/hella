@@ -1,5 +1,4 @@
 import angular from 'angular';
-import {difference} from 'lodash';
 import LabeledFrame from 'Application/LabelingData/Models/LabeledFrame';
 import LabeledThingInFrame from 'Application/LabelingData/Models/LabeledThingInFrame';
 
@@ -251,8 +250,7 @@ export default class LabelSelectorController {
         if (newLabelStructure === null || newSelectedLabelStructureObject === null) {
           return this._clearLabelSelector();
         }
-        this.searchAttributes = '';
-        this.applySearchFilter();
+        this._clearSearchFilter();
         this._startWithFirstPageOfLabelSelector();
         this.expandOrCollapseAccordionOnMutiSelection();
       }
@@ -293,6 +291,11 @@ export default class LabelSelectorController {
    */
   hideWhenItemIsNotSelected(response) {
     return !this.choices[response.id].selected;
+  }
+
+  _clearSearchFilter() {
+    this.searchAttributes = '';
+    this.applySearchFilter();
   }
 
   /**
@@ -499,8 +502,7 @@ export default class LabelSelectorController {
     if (this.pages.length === 1 && this.pages[0].responses.length === 1) {
       const id = this.pages[0].responses[0].id;
       if (this.choices[id].selected) {
-        this.searchAttributes = '';
-        this.applySearchFilter();
+        this._clearSearchFilter();
       } else {
         this.choices[id] = {selected: true};
         this.handleLabelSelectionClick(this.pages[0], id);
@@ -655,7 +657,7 @@ export default class LabelSelectorController {
   _getRequiredValuesForValue(selectedLabeledObject, response) {
     const neededValues = this.labelStructure.getRequiredValuesForValue(response);
     neededValues.forEach(value => {
-      if (!this.labelStructure.hasMultiselect(value)) {
+      if (!this.labelStructure.isClassMultiSelectXMLClass(value)) {
         this.labelStructure.getOtherClassesInnerClass(value).forEach(valueToRemove => {
           selectedLabeledObject.removeClass(valueToRemove);
         });
@@ -675,7 +677,6 @@ export default class LabelSelectorController {
     );
 
     this._getRequiredValuesForValueToRemove(selectedLabeledObject, response);
-
     this._getRequiredValuesForValue(selectedLabeledObject, response);
 
     let toDeleteLabel;
@@ -703,19 +704,11 @@ export default class LabelSelectorController {
     } else {
       const currentSelected = page.responses.find(resp => resp.value !== undefined);
       if (currentSelected === undefined && labels[0] !== undefined) {
-        if (this.searchAttributes !== '') {
-          console.log(currentSelected);
-          // selectedLabeledObject.setClasses([]);
-          const neededValues = this.labelStructure.getRequiredValuesForValue(labels[0]);
-          const remove = difference(selectedLabeledObject.classes, neededValues);
-          console.log('remove', remove)
-        } else {
-          selectedLabeledObject.addClass(labels[0]);
-        }
+        selectedLabeledObject.addClass(labels[0]);
       } else {
         this.choices[currentSelected.id].selected = !this.choices[currentSelected.id].selected;
         selectedLabeledObject.removeClass(currentSelected.value);
-        if (this.searchAttributes !== '') {
+        if (this.searchAttributes.length > 0) {
           this._getRequiredValuesForValueToRemove(selectedLabeledObject, currentSelected.value);
         }
         if (labels[0] !== undefined) {

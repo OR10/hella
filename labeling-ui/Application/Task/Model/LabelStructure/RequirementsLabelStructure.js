@@ -664,12 +664,24 @@ class RequirementsLabelStructure extends LabelStructure {
     return clonedClassJson;
   }
 
+  /**
+   * Get all class names for a given class that would be necessary to restore the class tree
+   *
+   * @param {string} response
+   * @returns {Array.<string>}
+   */
   getRequiredValuesForValue(response) {
     let values = [response];
     values = this._getPreviousValue(response).concat(values);
     return values;
   }
 
+  /**
+   * Get all class names for a given class that would be necessary to remove all depended classes
+   *
+   * @param {string} response
+   * @returns {Array.<string>}
+   */
   getRequiredValuesForValueToRemove(response) {
     let values = [response];
     values = this._getNextValues(response).concat(values);
@@ -687,10 +699,10 @@ class RequirementsLabelStructure extends LabelStructure {
     }
     const classElement = searchSnapshot.snapshotItem(0);
 
-    const searchNodePathb = `//r:value[r:class[@id="${classElement.attributes.id.value}"]]|//r:value[r:class[@ref="${classElement.attributes.id.value}"]]`;
-    const searchSnapshotb = this._evaluateXPath(searchNodePathb, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
-    if (searchSnapshotb.snapshotLength > 0) {
-      const valueElement = searchSnapshotb.snapshotItem(0);
+    const searchNodePathForFetchingClassTree = `//r:value[r:class[@id="${classElement.attributes.id.value}"]]|//r:value[r:class[@ref="${classElement.attributes.id.value}"]]`;
+    const searchSnapshotForFetchingClassTree = this._evaluateXPath(searchNodePathForFetchingClassTree, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    if (searchSnapshotForFetchingClassTree.snapshotLength > 0) {
+      const valueElement = searchSnapshotForFetchingClassTree.snapshotItem(0);
       previousValues.push(valueElement.attributes.id.value);
       previousValues = previousValues.concat(this._getPreviousValue(
         valueElement.attributes.id.value
@@ -705,6 +717,7 @@ class RequirementsLabelStructure extends LabelStructure {
 
     const searchNodePath = `//r:value[@id="${response}"]//r:class//r:value`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
     for (let index = 0; index < searchSnapshot.snapshotLength; index++) {
       const xmlClass = new XMLClassElement(searchSnapshot.snapshotItem(index), 1);
       nextValues.push(xmlClass.element.attributes.id.value);
@@ -713,17 +726,29 @@ class RequirementsLabelStructure extends LabelStructure {
     return nextValues;
   }
 
-  hasMultiselect(identifier) {
-    const searchNodePath = `//r:class[@multi-selection="true"]/r:value[@id="${identifier}"]`;
+  /**
+   * Returns `true` when a given class id is marked as multi-select="true"
+   *
+   * @param {string} response
+   * @returns {boolean}
+   */
+  isClassMultiSelectXMLClass(response) {
+    const searchNodePath = `//r:class[@multi-selection="true"]/r:value[@id="${response}"]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
     return searchSnapshot.snapshotLength > 0;
   }
 
-  getOtherClassesInnerClass(valueName) {
+  /**
+   * Get all other class names that are exist at the same level as given response
+   *
+   * @param {string} response
+   * @returns {Array}
+   */
+  getOtherClassesInnerClass(response) {
     const valueElements = [];
 
-    const searchNodePath = `//r:class[./r:value[@id="${valueName}"]]`;
+    const searchNodePath = `//r:class[./r:value[@id="${response}"]]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
     const classElement = searchSnapshot.snapshotItem(0);
