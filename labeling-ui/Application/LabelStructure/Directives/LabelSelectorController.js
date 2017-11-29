@@ -251,6 +251,8 @@ export default class LabelSelectorController {
         if (newLabelStructure === null || newSelectedLabelStructureObject === null) {
           return this._clearLabelSelector();
         }
+        this.searchAttributes = '';
+        this.applySearchFilter();
         this._startWithFirstPageOfLabelSelector();
         this.expandOrCollapseAccordionOnMutiSelection();
       }
