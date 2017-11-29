@@ -647,22 +647,22 @@ export default class LabelSelectorController {
     this.activePageIndex = Math.max(this.activePageIndex - 1, 0);
   }
 
-  _getRequiredValuesForValueToRemove(selectedLabeledObject, attribute) {
-    const valuesToRemove = this.labelStructure.getRequiredValuesForValueToRemove(attribute);
-    valuesToRemove.forEach(value => {
-      selectedLabeledObject.removeClass(value);
+  _getRequiredValuesForValueToRemove(selectedLabeledObject, response) {
+    const toRemoveResponses = this.labelStructure.getRequiredValuesForValueToRemove(response);
+    toRemoveResponses.forEach(toRemoveResponse => {
+      selectedLabeledObject.removeClass(toRemoveResponse);
     });
   }
 
   _getRequiredValuesForValue(selectedLabeledObject, response) {
-    const neededValues = this.labelStructure.getRequiredValuesForValue(response);
-    neededValues.forEach(value => {
-      if (!this.labelStructure.isClassMultiSelectXMLClass(value)) {
-        this.labelStructure.getOtherClassesInnerClass(value).forEach(valueToRemove => {
-          selectedLabeledObject.removeClass(valueToRemove);
+    const neededResponses = this.labelStructure.getRequiredValuesForValue(response);
+    neededResponses.forEach(neededResponse => {
+      if (!this.labelStructure.isClassMultiSelectXMLClass(neededResponse)) {
+        this.labelStructure.getOtherClassesInnerClass(neededResponse).forEach(responseToRemove => {
+          selectedLabeledObject.removeClass(responseToRemove);
         });
       }
-      selectedLabeledObject.addClass(value);
+      selectedLabeledObject.addClass(neededResponse);
     });
   }
 
@@ -672,7 +672,7 @@ export default class LabelSelectorController {
       return;
     }
 
-    const labels = Object.keys(this.choices).filter(
+    const responses = Object.keys(this.choices).filter(
       choice => this.choices[choice].selected && choice === response
     );
 
@@ -680,39 +680,39 @@ export default class LabelSelectorController {
     this._getRequiredValuesForValue(selectedLabeledObject, response);
 
     let toDeleteLabel;
-    if (labels.length === 0) {
+    if (responses.length === 0) {
       toDeleteLabel = Object.keys(this.choices).find(
         choice => !this.choices[choice].selected && choice === response
       );
     }
 
-    if (angular.equals(selectedLabeledObject.classes, labels)) {
+    if (angular.equals(selectedLabeledObject.classes, responses)) {
       return;
     }
 
     if (this.isMultiAttributeSelection(page)) {
       if (toDeleteLabel === undefined) {
         if (selectedLabeledObject.classes.length === 0) {
-          selectedLabeledObject.setClasses(labels);
+          selectedLabeledObject.setClasses(responses);
         } else {
-          const concatAttributes = [...new Set(selectedLabeledObject.classes.concat(labels))];
-          selectedLabeledObject.setClasses(concatAttributes);
+          const concatResponses = [...new Set(selectedLabeledObject.classes.concat(responses))];
+          selectedLabeledObject.setClasses(concatResponses);
         }
       } else {
         selectedLabeledObject.removeClass(toDeleteLabel);
       }
     } else {
-      const currentSelected = page.responses.find(resp => resp.value !== undefined);
-      if (currentSelected === undefined && labels[0] !== undefined) {
-        selectedLabeledObject.addClass(labels[0]);
+      const currentSelectedClass = page.responses.find(pageResponse => pageResponse.value !== undefined);
+      if (currentSelectedClass === undefined && responses[0] !== undefined) {
+        selectedLabeledObject.addClass(responses[0]);
       } else {
-        this.choices[currentSelected.id].selected = !this.choices[currentSelected.id].selected;
-        selectedLabeledObject.removeClass(currentSelected.value);
+        this.choices[currentSelectedClass.id].selected = !this.choices[currentSelectedClass.id].selected;
+        selectedLabeledObject.removeClass(currentSelectedClass.value);
         if (this.searchAttributes.length > 0) {
-          this._getRequiredValuesForValueToRemove(selectedLabeledObject, currentSelected.value);
+          this._getRequiredValuesForValueToRemove(selectedLabeledObject, currentSelectedClass.value);
         }
-        if (labels[0] !== undefined) {
-          selectedLabeledObject.addClass(labels[0]);
+        if (responses[0] !== undefined) {
+          selectedLabeledObject.addClass(responses[0]);
         }
       }
     }
