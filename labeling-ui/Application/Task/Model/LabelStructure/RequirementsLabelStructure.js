@@ -670,7 +670,7 @@ class RequirementsLabelStructure extends LabelStructure {
     return values;
   }
 
-  getRequiredValuesForValueToRemove(labelStructureObject, response) {
+  getRequiredValuesForValueToRemove(response) {
     let values = [response];
     values = this._getNextValues(response).concat(values);
     return values;
@@ -701,7 +701,7 @@ class RequirementsLabelStructure extends LabelStructure {
   }
 
   _getNextValues(response) {
-    let nextValues = [];
+    const nextValues = [];
 
     const searchNodePath = `//r:value[@id="${response}"]//r:class//r:value`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
@@ -713,61 +713,36 @@ class RequirementsLabelStructure extends LabelStructure {
     return nextValues;
   }
 
-  _getValuesTreeForValue(identifier, valueId) {
-    const searchNodePath = `//r:thing[@id="${identifier}"]//r:class[.//r:value[@id="${valueId}"]]`;
+  hasMultiselect(identifier) {
+    const searchNodePath = `//r:class[@multi-selection="true"]/r:value[@id="${identifier}"]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
-    if (searchSnapshot.snapshotLength === 0) {
-      const searchNodePathAnywhere = `//r:class[.//r:value[@id="${valueId}"]]`;
-      const searchSnapshotAnywhere = this._evaluateXPath(
-        searchNodePathAnywhere,
-        null,
-        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
-      );
-      const referenceThingElement = searchSnapshotAnywhere.snapshotItem(0);
-
-      const referenceSearchNodePathInIdentifier = `//r:class[.//r:class[@ref="${referenceThingElement.id}"]]|//r:class[@ref="${referenceThingElement.id}"]`;
-      const referenceSearchSnapshotInIdentifier = this._evaluateXPath(
-        referenceSearchNodePathInIdentifier,
-        null,
-        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
-      );
-      const referenceThingElementInIdentifier = referenceSearchSnapshotInIdentifier.snapshotItem(0);
-
-      return this._getValuesFromClassId(referenceThingElementInIdentifier.id, valueId);
-    }
-    const thingElement = searchSnapshot.snapshotItem(0);
-
-    return this._getValuesFromClassId(thingElement.id, valueId);
+    return searchSnapshot.snapshotLength > 0;
   }
 
-  _getValuesFromClassId(classId, identifier) {
-    let valueElements = [];
+  getOtherClassesInnerClass(valueName) {
+    const valueElements = [];
 
-    const searchNodePath = `//r:class[@id="${classId}"]//r:value|//r:class[@id="${classId}"]//r:class[@ref]`;
+    const searchNodePath = `//r:class[./r:value[@id="${valueName}"]]`;
     const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
 
-    for (let index = 0; index < searchSnapshot.snapshotLength; index++) {
-      const xmlClass = new XMLClassElement(searchSnapshot.snapshotItem(index), 1);
-      if (xmlClass.element.nodeName === 'value') {
-        console.error(xmlClass.element.attributes.id.value, this._hasMultiselect(xmlClass.element.attributes.id.value, identifier));
-        //if (!this._hasMultiselect(xmlClass.element.attributes.id.value, identifier)) {
-          valueElements.push(xmlClass.element.attributes.id.value);
-        //}
-      }
-      if (xmlClass.element.nodeName === 'class') {
-        valueElements = valueElements.concat(this._getValuesFromClassId(xmlClass.element.attributes.ref.value, identifier));
+    const classElement = searchSnapshot.snapshotItem(0);
+
+    if (searchSnapshot.snapshotLength > 0) {
+      const valueSearchNodePath = `//r:class[@id="${classElement.id}"]/r:value`;
+      const valueSearchSnapshot = this._evaluateXPath(
+        valueSearchNodePath,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
+      );
+
+      for (let index = 0; index < valueSearchSnapshot.snapshotLength; index++) {
+        const xmlClass = new XMLClassElement(valueSearchSnapshot.snapshotItem(index), 1);
+        valueElements.push(xmlClass.element.attributes.id.value);
       }
     }
 
     return valueElements;
-  }
-
-  _hasMultiselect(classId, identifier) {
-    const searchNodePath = `//r:class[@multi-selection="true"]//r:value[@id="${identifier}"]|//r:class[@multi-selection="true"]//r:value[@id="${classId}"]`;
-    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
-
-    return searchSnapshot.snapshotLength === 2;
   }
 }
 

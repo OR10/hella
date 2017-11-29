@@ -644,7 +644,7 @@ export default class LabelSelectorController {
   }
 
   _getRequiredValuesForValueToRemove(selectedLabeledObject, attribute) {
-    const valuesToRemove = this.labelStructure.getRequiredValuesForValueToRemove(selectedLabeledObject, attribute);
+    const valuesToRemove = this.labelStructure.getRequiredValuesForValueToRemove(attribute);
     valuesToRemove.forEach(value => {
       selectedLabeledObject.removeClass(value);
     });
@@ -653,6 +653,11 @@ export default class LabelSelectorController {
   _getRequiredValuesForValue(selectedLabeledObject, response) {
     const neededValues = this.labelStructure.getRequiredValuesForValue(response);
     neededValues.forEach(value => {
+      if (!this.labelStructure.hasMultiselect(value)) {
+        this.labelStructure.getOtherClassesInnerClass(value).forEach(valueToRemove => {
+          selectedLabeledObject.removeClass(valueToRemove);
+        });
+      }
       selectedLabeledObject.addClass(value);
     });
   }
