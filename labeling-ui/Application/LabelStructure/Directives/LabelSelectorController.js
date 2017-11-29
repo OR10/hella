@@ -650,12 +650,22 @@ export default class LabelSelectorController {
   _getRequiredValuesForValueToRemove(selectedLabeledObject, response) {
     const toRemoveResponses = this.labelStructure.getRequiredValuesForValueToRemove(response);
     toRemoveResponses.forEach(toRemoveResponse => {
+      if (!this.labelStructure.isClassMultiSelectXMLClass(toRemoveResponse)) {
+        this.labelStructure.getOtherClassesInnerClass(response).forEach(responseToRemove => {
+          if (!this.labelStructure.isClassMultiSelectXMLClass(responseToRemove)) {
+            this.labelStructure.getRequiredValuesForValueToRemove(responseToRemove).forEach(
+              responseResponseToRemove => {
+                selectedLabeledObject.removeClass(responseResponseToRemove);
+              });
+          }
+        });
+      }
       selectedLabeledObject.removeClass(toRemoveResponse);
     });
   }
 
   _getRequiredValuesForValue(selectedLabeledObject, response) {
-    const neededResponses = this.labelStructure.getRequiredValuesForValue(response);
+    const neededResponses = this.labelStructure.getRequiredValuesForValue(response, selectedLabeledObject.identifierName);
     neededResponses.forEach(neededResponse => {
       if (!this.labelStructure.isClassMultiSelectXMLClass(neededResponse)) {
         this.labelStructure.getOtherClassesInnerClass(neededResponse).forEach(responseToRemove => {
@@ -684,10 +694,6 @@ export default class LabelSelectorController {
       toDeleteLabel = Object.keys(this.choices).find(
         choice => !this.choices[choice].selected && choice === response
       );
-    }
-
-    if (angular.equals(selectedLabeledObject.classes, responses)) {
-      return;
     }
 
     if (this.isMultiAttributeSelection(page)) {
