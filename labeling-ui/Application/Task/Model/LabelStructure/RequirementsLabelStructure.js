@@ -109,6 +109,19 @@ class RequirementsLabelStructure extends LabelStructure {
     return enabledThingClasses;
   }
 
+  getClassesForLabeledObject(labelStructureObject, classList) {
+    const identifier = labelStructureObject.id;
+    if (!this._isLabelStructureObjectDefinedById(identifier)) {
+      throw new Error(`LabelStructureObject with identifier '${identifier}' could not be found in LabelStructure`);
+    }
+    const element = this._getLabelStructureObjectElementById(identifier);
+    const enabledElements = this._getElementsByStartingElement(element);
+    const enabledThingClasses = enabledElements.map(
+      enabledElement => this._annotateClassJsonWithActiveValue(this._convertClassElementToClassJson(enabledElement), classList));
+
+    return enabledThingClasses;
+  }
+
   /**
    * Retrieve information about whether a LabelStructureObject with a specific id is defined inside this {@link LabelStructure}
    *
@@ -381,6 +394,48 @@ class RequirementsLabelStructure extends LabelStructure {
     return [...uniqueMap.values()];
   }
 
+  _getElementsByStartingElement(rootElement, depth = 1) {
+    const classElementsPath = `./r:class`;
+    const classElementsSnapshot = this._evaluateXPath(classElementsPath, rootElement, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    if (classElementsPath.snapshotLength === 0) {
+      return [];
+    }
+
+    let xmlClassElements = [];
+    for (let index = 0; index < classElementsSnapshot.snapshotLength; index++) {
+      let xmlClass = new XMLClassElement(classElementsSnapshot.snapshotItem(index), depth);
+
+      // If classElement is a reference node, replace with the referenced class node
+      if (this._isRefElement(xmlClass)) {
+        xmlClass = this._getReferencedClassElement(xmlClass);
+      }
+
+      xmlClassElements.push(xmlClass);
+
+      const valueElements = this._getValueElementsFromClassElement(xmlClass);
+      valueElements.forEach(valueElement => { // eslint-disable-line no-loop-func
+        // Recursive search for further nodes in the tree below every value element
+        const childXMLClasses = this._getElementsByStartingElement(valueElement, depth + 1);
+        xmlClassElements = [...xmlClassElements, ...childXMLClasses];
+      });
+    }
+
+    // Filter through all found elements and only keep unique ids with the lowest depth
+    const uniqueMap = new Map();
+    xmlClassElements.forEach(xmlClass => {
+      if (!uniqueMap.has(xmlClass.element.attributes.id)) {
+        uniqueMap.set(xmlClass.element.attributes.id, xmlClass);
+        return;
+      }
+      if (xmlClass.depth < uniqueMap.get(xmlClass.element.attributes.id).depth) {
+        uniqueMap.delete(xmlClass.element.attributes.id);
+        uniqueMap.set(xmlClass.element.attributes.id, xmlClass);
+      }
+    });
+
+    return [...uniqueMap.values()];
+  }
+
   /**
    * Check if a specific `<class>` element is a class reference.
    *
@@ -607,6 +662,124 @@ class RequirementsLabelStructure extends LabelStructure {
     }
 
     return clonedClassJson;
+  }
+
+  /**
+   * Get all class names for a given class that would be necessary to restore the class tree
+   *
+   * @param {string} response
+   * @returns {Array.<string>}
+   */
+  getRequiredValuesForValue(response, identifier) {
+    let values = [response];
+    values = this._getPreviousValue(response, identifier).concat(values);
+    return values;
+  }
+
+  /**
+   * Get all class names for a given class that would be necessary to remove all depended classes
+   *
+   * @param {string} response
+   * @returns {Array.<string>}
+   */
+  getRequiredValuesForValueToRemove(response) {
+    let values = [response];
+    values = this._getNextValues(response).concat(values);
+    return values;
+  }
+
+  _getPreviousValue(response, identifier) {
+    let previousValues = [];
+
+    const searchNodePath = `//r:class[r:value[@id="${response}"]]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    if (searchSnapshot.snapshotLength === 0) {
+      return [];
+    }
+    const classElement = searchSnapshot.snapshotItem(0);
+
+    const searchNodePathForFetchingClassTree = `//r:value[r:class[@id="${classElement.attributes.id.value}"]]|//r:thing[@id="${identifier}"]//r:value[r:class[@ref="${classElement.attributes.id.value}"]]`;
+    const searchSnapshotForFetchingClassTree = this._evaluateXPath(searchNodePathForFetchingClassTree, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    if (searchSnapshotForFetchingClassTree.snapshotLength > 0) {
+      const valueElement = searchSnapshotForFetchingClassTree.snapshotItem(0);
+      previousValues.push(valueElement.attributes.id.value);
+      previousValues = previousValues.concat(this._getPreviousValue(
+        valueElement.attributes.id.value,
+        identifier
+      ));
+    }
+
+    return previousValues;
+  }
+
+  _getNextValues(response) {
+    let nextValues = [];
+
+    const searchNodePath = `//r:value[@id="${response}"]//r:class//r:value|//r:value[@id="${response}"]/r:class[@ref]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    for (let index = 0; index < searchSnapshot.snapshotLength; index++) {
+      const xmlClass = new XMLClassElement(searchSnapshot.snapshotItem(index), 1);
+      if (xmlClass.element.nodeName === 'value') {
+        nextValues.push(xmlClass.element.attributes.id.value);
+      }
+      if (xmlClass.element.nodeName === 'class') {
+        const refSearchNodePath = `//r:class[@id="${xmlClass.element.attributes.ref.value}"]//r:value`;
+        const refSearchSnapshot = this._evaluateXPath(refSearchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+        for (let refIndex = 0; refIndex < refSearchSnapshot.snapshotLength; refIndex++) {
+          const refXmlClass = new XMLClassElement(refSearchSnapshot.snapshotItem(refIndex), 1);
+          nextValues = nextValues.concat(this._getNextValues(refXmlClass.element.attributes.id.value));
+        }
+      }
+    }
+
+    return nextValues;
+  }
+
+  /**
+   * Returns `true` when a given class id is marked as multi-select="true"
+   *
+   * @param {string} response
+   * @returns {boolean}
+   */
+  isClassMultiSelectXMLClass(response) {
+    const searchNodePath = `//r:class[@multi-selection="true"]/r:value[@id="${response}"]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    return searchSnapshot.snapshotLength > 0;
+  }
+
+  /**
+   * Get all other class names that are exist at the same level as given response
+   *
+   * @param {string} response
+   * @returns {Array}
+   */
+  getOtherClassesInnerClass(response) {
+    const valueElements = [];
+
+    const searchNodePath = `//r:class[./r:value[@id="${response}"]]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    const classElement = searchSnapshot.snapshotItem(0);
+
+    if (searchSnapshot.snapshotLength > 0) {
+      const valueSearchNodePath = `//r:class[@id="${classElement.id}"]/r:value`;
+      const valueSearchSnapshot = this._evaluateXPath(
+        valueSearchNodePath,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
+      );
+
+      for (let index = 0; index < valueSearchSnapshot.snapshotLength; index++) {
+        const xmlClass = new XMLClassElement(valueSearchSnapshot.snapshotItem(index), 1);
+        valueElements.push(xmlClass.element.attributes.id.value);
+      }
+    }
+
+    return valueElements;
   }
 }
 

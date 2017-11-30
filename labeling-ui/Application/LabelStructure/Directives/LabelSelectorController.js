@@ -250,6 +250,7 @@ export default class LabelSelectorController {
         if (newLabelStructure === null || newSelectedLabelStructureObject === null) {
           return this._clearLabelSelector();
         }
+        this._clearSearchFilter();
         this._startWithFirstPageOfLabelSelector();
         this.expandOrCollapseAccordionOnMutiSelection();
       }
@@ -290,6 +291,11 @@ export default class LabelSelectorController {
    */
   hideWhenItemIsNotSelected(response) {
     return !this.choices[response.id].selected;
+  }
+
+  _clearSearchFilter() {
+    this.searchAttributes = '';
+    this.applySearchFilter();
   }
 
   /**
@@ -375,12 +381,17 @@ export default class LabelSelectorController {
     }
 
     const classList = selectedLabeledObject.extractClassList();
+    let list;
 
-    const list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
-      this.selectedLabelStructureObject,
-      classList
-    );
-    // There seems to be a race between selectedLabelStructure and labeledObject wich could remove properties.
+    if (this.searchAttributes.length === 0) {
+      list = this.labelStructure.getEnabledClassesForLabeledObjectAndClassList(
+        this.selectedLabelStructureObject,
+        classList
+      );
+    } else {
+      list = this.labelStructure.getClassesForLabeledObject(this.selectedLabelStructureObject, classList);
+    }
+    // There seems to be a race between selectedLabelStructure and labeledObject which could remove properties.
     // TODO: find the source of the race condition and eliminate the problem there!
     if (!this._labelStructureFitsLabeledObject(this.selectedLabelStructureObject, this.selectedPaperShape)) {
       return;
@@ -491,8 +502,7 @@ export default class LabelSelectorController {
     if (this.pages.length === 1 && this.pages[0].responses.length === 1) {
       const id = this.pages[0].responses[0].id;
       if (this.choices[id].selected) {
-        this.searchAttributes = '';
-        this.applySearchFilter();
+        this._clearSearchFilter();
       } else {
         this.choices[id] = {selected: true};
         this.handleLabelSelectionClick(this.pages[0], id);
@@ -637,47 +647,78 @@ export default class LabelSelectorController {
     this.activePageIndex = Math.max(this.activePageIndex - 1, 0);
   }
 
+  _getRequiredValuesForValueToRemove(selectedLabeledObject, response) {
+    const toRemoveResponses = this.labelStructure.getRequiredValuesForValueToRemove(response);
+    toRemoveResponses.forEach(toRemoveResponse => {
+      if (!this.labelStructure.isClassMultiSelectXMLClass(toRemoveResponse)) {
+        this.labelStructure.getOtherClassesInnerClass(response).forEach(responseToRemove => {
+          if (!this.labelStructure.isClassMultiSelectXMLClass(responseToRemove)) {
+            this.labelStructure.getRequiredValuesForValueToRemove(responseToRemove).forEach(
+              responseResponseToRemove => {
+                selectedLabeledObject.removeClass(responseResponseToRemove);
+              });
+          }
+        });
+      }
+      selectedLabeledObject.removeClass(toRemoveResponse);
+    });
+  }
+
+  _getRequiredValuesForValue(selectedLabeledObject, response) {
+    const neededResponses = this.labelStructure.getRequiredValuesForValue(response, selectedLabeledObject.identifierName);
+    neededResponses.forEach(neededResponse => {
+      if (!this.labelStructure.isClassMultiSelectXMLClass(neededResponse)) {
+        this.labelStructure.getOtherClassesInnerClass(neededResponse).forEach(responseToRemove => {
+          selectedLabeledObject.removeClass(responseToRemove);
+        });
+      }
+      selectedLabeledObject.addClass(neededResponse);
+    });
+  }
+
   handleLabelSelectionClick(page, response) {
     const selectedLabeledObject = this._getSelectedLabeledObject();
     if (!selectedLabeledObject || this.choices === null) {
       return;
     }
 
-    const labels = Object.keys(this.choices).filter(
+    const responses = Object.keys(this.choices).filter(
       choice => this.choices[choice].selected && choice === response
     );
 
+    this._getRequiredValuesForValueToRemove(selectedLabeledObject, response);
+    this._getRequiredValuesForValue(selectedLabeledObject, response);
+
     let toDeleteLabel;
-    if (labels.length === 0) {
+    if (responses.length === 0) {
       toDeleteLabel = Object.keys(this.choices).find(
         choice => !this.choices[choice].selected && choice === response
       );
     }
 
-    if (angular.equals(selectedLabeledObject.classes, labels)) {
-      return;
-    }
-
     if (this.isMultiAttributeSelection(page)) {
       if (toDeleteLabel === undefined) {
         if (selectedLabeledObject.classes.length === 0) {
-          selectedLabeledObject.setClasses(labels);
+          selectedLabeledObject.setClasses(responses);
         } else {
-          const concatAttributes = [...new Set(selectedLabeledObject.classes.concat(labels))];
-          selectedLabeledObject.setClasses(concatAttributes);
+          const concatResponses = [...new Set(selectedLabeledObject.classes.concat(responses))];
+          selectedLabeledObject.setClasses(concatResponses);
         }
       } else {
         selectedLabeledObject.removeClass(toDeleteLabel);
       }
     } else {
-      const currentSelected = page.responses.find(resp => resp.value !== undefined);
-      if (currentSelected === undefined && labels[0] !== undefined) {
-        selectedLabeledObject.addClass(labels[0]);
+      const currentSelectedClass = page.responses.find(pageResponse => pageResponse.value !== undefined);
+      if (currentSelectedClass === undefined && responses[0] !== undefined) {
+        selectedLabeledObject.addClass(responses[0]);
       } else {
-        this.choices[currentSelected.id].selected = !this.choices[currentSelected.id].selected;
-        selectedLabeledObject.removeClass(currentSelected.value);
-        if (labels[0] !== undefined) {
-          selectedLabeledObject.addClass(labels[0]);
+        this.choices[currentSelectedClass.id].selected = !this.choices[currentSelectedClass.id].selected;
+        selectedLabeledObject.removeClass(currentSelectedClass.value);
+        if (this.searchAttributes.length > 0) {
+          this._getRequiredValuesForValueToRemove(selectedLabeledObject, currentSelectedClass.value);
+        }
+        if (responses[0] !== undefined) {
+          selectedLabeledObject.addClass(responses[0]);
         }
       }
     }
