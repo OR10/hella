@@ -132,5 +132,123 @@ describe('RequirementsLabelStructure', () => {
         expect(frameClasses).toEqual(expectedFrameClasses);
       });
     });
+
+    it('should return the complete class ist', () => {
+      const expectedLabelStructureObject = [
+        {
+          name: 'sign-type',
+          metadata: {
+            challenge: 'Sign type',
+            multiSelect: false,
+            value: [],
+          },
+          children: [
+            {
+              name: 'u-turn',
+              metadata: {
+                response: 'U-Turn',
+              },
+            },
+            {
+              name: 'speed-sign',
+              metadata: {
+                response: 'Speed sign',
+              },
+            },
+          ],
+        },
+        {
+          name: 'speed-limit',
+          metadata: {
+            challenge: 'Speed limit',
+            multiSelect: false,
+            value: [],
+          },
+          children: [
+            {
+              name: 'speed-30',
+              metadata: {
+                response: 'Speed Limit 30',
+              },
+            },
+            {
+              name: 'speed-100',
+              metadata: {
+                response: 'Speed Limit 100',
+              },
+            },
+          ],
+        },
+        {
+          name: 'inside-city',
+          metadata: {
+            challenge: 'Inside City Limits',
+            multiSelect: false,
+            value: [],
+          },
+          children: [
+            {
+              name: 'inside-city-yes',
+              metadata: {
+                response: 'Yes',
+              },
+            },
+            {
+              name: 'inside-city-no',
+              metadata: {
+                response: 'No',
+              },
+            },
+          ],
+        },
+        {
+          name: 'limited-by-type',
+          metadata: {
+            challenge: 'Limited by type',
+            multiSelect: false,
+            value: [],
+          },
+          children: [
+            {
+              name: 'no-type-limit',
+              metadata: {
+                response: 'No type limit',
+              },
+            },
+            {
+              name: 'only-car',
+              metadata: {
+                response: 'Only car',
+              },
+            },
+            {
+              name: 'only-truck',
+              metadata: {
+                response: 'Only truck',
+              },
+            },
+          ],
+        },
+      ];
+
+      const thing = new LabelStructureFrame('sign', 'Traffic Sign', 'rectangle');
+      const classes = structure.getClassesForLabeledObject(thing, []);
+
+      expect(classes).toEqual(expectedLabelStructureObject);
+    });
+
+    it('should return the required class list', () => {
+      const expectedRequiredClasses = ['speed-30', 'speed-sign', 'inside-city-no'];
+      const classes = structure.getRequiredValuesForValue('inside-city-no', 'sign');
+
+      expect(classes).toEqual(expectedRequiredClasses);
+    });
+
+    it('should return the required class to delete list', () => {
+      const expectedRequiredClasses = ['inside-city-yes', 'inside-city-no', 'speed-30'];
+      const classes = structure.getRequiredValuesForValueToRemove('speed-30');
+
+      expect(classes).toEqual(expectedRequiredClasses);
+    });
   });
 });
