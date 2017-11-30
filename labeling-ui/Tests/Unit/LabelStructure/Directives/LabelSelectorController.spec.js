@@ -274,7 +274,7 @@ describe('LabelSelectorController tests', () => {
       expect(values).toEqual([['Off', 'Red', 'Yellow'], ['City', 'Highway', 'Highway Exit']]);
     });
 
-    fit('Update label selector pages with search query for challenges', () => {
+    it('Update label selector pages with search query for challenges', () => {
       controller.searchAttributes = 'Road';
       controller._updatePagesAndChoices();
 
