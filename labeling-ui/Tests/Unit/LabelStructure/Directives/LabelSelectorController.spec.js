@@ -191,66 +191,68 @@ describe('LabelSelectorController tests', () => {
 
       const labelStructure = jasmine.createSpyObj(
         'requirementsLabelStructure',
-        ['getEnabledClassesForLabeledObjectAndClassList']
+        ['getEnabledClassesForLabeledObjectAndClassList', 'getClassesForLabeledObject']
       );
-      labelStructure.getEnabledClassesForLabeledObjectAndClassList.and.returnValue(
-        [
-          {
-            name: 'street_light',
-            metadata: {
-              challenge: 'Street Light',
-              value: ['Yellow'],
-            },
-            children: [
-              {
-                name: 'Off',
-                metadata: {
-                  response: 'Off',
-                },
-              },
-              {
-                name: 'Red',
-                metadata: {
-                  response: 'Red',
-                },
-              },
-              {
-                name: 'Yellow',
-                metadata: {
-                  response: 'Yellow',
-                },
-              },
-            ],
+
+      const labelStructureObject = [
+        {
+          name: 'street_light',
+          metadata: {
+            challenge: 'Street Light',
+            value: ['Yellow'],
           },
-          {
-            name: 'road_type',
-            metadata: {
-              challenge: 'Road Type',
-              value: ['City'],
+          children: [
+            {
+              name: 'Off',
+              metadata: {
+                response: 'Off',
+              },
             },
-            children: [
-              {
-                name: 'City',
-                metadata: {
-                  response: 'City',
-                },
+            {
+              name: 'Red',
+              metadata: {
+                response: 'Red',
               },
-              {
-                name: 'Highway',
-                metadata: {
-                  response: 'Highway',
-                },
+            },
+            {
+              name: 'Yellow',
+              metadata: {
+                response: 'Yellow',
               },
-              {
-                name: 'Highway Exit',
-                metadata: {
-                  response: 'Highway Exit',
-                },
-              },
-            ],
+            },
+          ],
+        },
+        {
+          name: 'road_type',
+          metadata: {
+            challenge: 'Road Type',
+            value: ['City'],
           },
-        ]
-      );
+          children: [
+            {
+              name: 'City',
+              metadata: {
+                response: 'City',
+              },
+            },
+            {
+              name: 'Highway',
+              metadata: {
+                response: 'Highway',
+              },
+            },
+            {
+              name: 'Highway Exit',
+              metadata: {
+                response: 'Highway Exit',
+              },
+            },
+          ],
+        },
+      ];
+
+      labelStructure.getEnabledClassesForLabeledObjectAndClassList.and.returnValue(labelStructureObject);
+      labelStructure.getClassesForLabeledObject.and.returnValue(labelStructureObject);
       controller.labelStructure = labelStructure;
     });
 
@@ -272,7 +274,7 @@ describe('LabelSelectorController tests', () => {
       expect(values).toEqual([['Off', 'Red', 'Yellow'], ['City', 'Highway', 'Highway Exit']]);
     });
 
-    it('Update label selector pages with search query for challenges', () => {
+    fit('Update label selector pages with search query for challenges', () => {
       controller.searchAttributes = 'Road';
       controller._updatePagesAndChoices();
 
