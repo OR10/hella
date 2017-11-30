@@ -32,7 +32,10 @@ function processDbQueue() {
             const document = rawDocument.doc;
 
             // console.log(document);
-            if (document.type !== 'AppBundle.Model.LabeledThingInFrame') {
+            if (document.type !== 'AppBundle.Model.LabeledThingInFrame' &&
+                document.type !== 'AppBundle.Model.LabeledThing' &&
+                document.type !== 'AnnoStationBundle.Model.LabeledThingGroupInFrame' &&
+                document.type !== 'AppBundle.Model.LabeledFrame') {
                 return;
             }
 
