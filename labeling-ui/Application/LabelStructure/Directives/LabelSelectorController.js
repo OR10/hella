@@ -225,7 +225,9 @@ export default class LabelSelectorController {
       });
 
     $rootScope.$on('toggle-class-search', () => {
-      this.showClassSearchBar = !this.showClassSearchBar;
+      if (!this._isLegacyProject()) {
+        this.showClassSearchBar = !this.showClassSearchBar;
+      }
     });
 
     $rootScope.$on('selected-paper-shape:after', (event, newSelectedPaperShape, selectedLabeledStructureObject) => {
@@ -298,6 +300,13 @@ export default class LabelSelectorController {
     this.applySearchFilter();
   }
 
+  _isLegacyProject() {
+    if (this.selectedLabelStructureObject === null) {
+      return false;
+    }
+
+    return this.selectedLabelStructureObject.id === 'legacy';
+  }
   /**
    * This method expand or collapse the accordions depends on the multiSelection state
    */
@@ -319,7 +328,13 @@ export default class LabelSelectorController {
     const hasPaperShape = (selectedShape !== undefined && selectedShape !== null);
     const hasAtMostOneSelectedShape = (this._shapeSelectionService.count() <= 1);
     const isVirtualShape = selectedShape instanceof PaperVirtualShape;
+
     return hasPaperShape && hasAtMostOneSelectedShape && !isVirtualShape;
+  }
+
+  showSearchBar() {
+    const isLegacyProject = this._isLegacyProject();
+    return this.show() && !isLegacyProject;
   }
 
   /**
@@ -686,8 +701,10 @@ export default class LabelSelectorController {
       choice => this.choices[choice].selected && choice === response
     );
 
-    this._getRequiredValuesForValueToRemove(selectedLabeledObject, response);
-    this._getRequiredValuesForValue(selectedLabeledObject, response);
+    if (!this._isLegacyProject()) {
+      this._getRequiredValuesForValueToRemove(selectedLabeledObject, response);
+      this._getRequiredValuesForValue(selectedLabeledObject, response);
+    }
 
     let toDeleteLabel;
     if (responses.length === 0) {

@@ -43,6 +43,14 @@ class LabelStructure {
   }
 
   /**
+   * @abstract
+   * @return {Array.<string>}
+   */
+  getClasses() {
+    throw new Error('Abstract method must be implemented in child class');
+  }
+
+  /**
    * Retrieve a `Map` of all `Frames` defined inside the {@link LabelStructure}.
    *
    * @abstract
