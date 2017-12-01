@@ -100,6 +100,13 @@ class LegacyLabelStructure extends LabelStructure {
   }
 
   /**
+   * @returns {*}
+   */
+  getClasses() {
+    return [];
+  }
+
+  /**
    * Retrieve a `Map` of all `Frames` defined inside the {@link LabelStructure}
    *
    * As the LegacyLabelStructure does not support frames the map will be always empty.
