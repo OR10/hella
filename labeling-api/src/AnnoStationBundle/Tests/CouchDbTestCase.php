@@ -141,7 +141,8 @@ class CouchDbTestCase extends Tests\WebTestCase
         $frameIndex,
         $shapes = [],
         $classes = [],
-        $id = null
+        $id = null,
+        $identifier = null
     ) {
         $labeledThingInFrame = Model\LabeledThingInFrame::create(
             $labeledThing,
@@ -149,7 +150,11 @@ class CouchDbTestCase extends Tests\WebTestCase
             $classes,
             $shapes
         );
-        $labeledThingInFrame->setIdentifierName('fooobar');
+        if ($identifier === null) {
+            $labeledThingInFrame->setIdentifierName('fooobar');
+        }else{
+            $labeledThingInFrame->setIdentifierName($identifier);
+        }
         $labeledThingInFrame->setCreatedAt(new \DateTime('2017-03-10 10:00:00'));
         $labeledThingInFrame->setLastModifiedAt(new \DateTime('2017-03-10 10:00:00'));
 
