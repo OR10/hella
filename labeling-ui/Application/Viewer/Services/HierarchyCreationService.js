@@ -87,6 +87,7 @@ class HierarchyCreationService {
       identifierName: creationToolActionStruct.requirementsThingOrGroupId,
       groupIds: [],
       createdByUserId: this._currentUserService.get().id,
+      classes: [],
     });
 
     const newLabeledThingGroupInFrame = new LabeledThingGroupInFrame({
