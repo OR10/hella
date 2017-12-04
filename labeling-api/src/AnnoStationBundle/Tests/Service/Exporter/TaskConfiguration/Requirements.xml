@@ -2,12 +2,18 @@
 <requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
     <frame>
         <class id="weather" name="Weather">
-            <value id="sun" name="Sun" />
-            <value id="rain" name="Rain" />
-            <value id="thunderstorm" name="Thunderstorm" />
+            <value id="sun" name="Sun"/>
+            <value id="rain" name="Rain"/>
+            <value id="thunderstorm" name="Thunderstorm">
+                <class id="thunderstorm-1" name="thunderstorm-1">
+                    <value id="thunderstorm-1-a"/>
+                    <value id="thunderstorm-2-a"/>
+                    <value id="thunderstorm-3-a" default="true"/>
+                </class>
+            </value>
         </class>
         <class id="season" name="Season">
-            <value id="summer" name="Summer" />
+            <value id="summer" name="Summer"/>
         </class>
     </frame>
     <thing id="sign" shape="cuboid" name="Traffic Sign">

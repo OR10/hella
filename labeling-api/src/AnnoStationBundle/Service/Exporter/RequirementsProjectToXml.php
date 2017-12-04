@@ -572,6 +572,20 @@ class RequirementsProjectToXml
                             $id
                         )]
                     );
+                    $defaultValues = $this->getDefaultValuesForValue($id, $taskConfiguration);
+                    foreach($defaultValues as $defaultValue) {
+                        $xmlLabeledFrame->addValue(
+                            $xmlDocument,
+                            $this->findClassIdForValue($defaultValue, $taskConfiguration),
+                            $defaultValue,
+                            $taskFrameMapping[$labeledFrame->getFrameIndex()],
+                            $taskFrameMapping[$this->labeledFrameEndCalculationService->getEndOfForClassOfLabeledFrame(
+                                $labeledFrame,
+                                $defaultValue
+                            )],
+                            true
+                        );
+                    }
                 }
             }
             $previousLabeledFrame = $labeledFrame;
