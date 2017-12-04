@@ -154,6 +154,20 @@
             <value id="rainbow" name="Rainbow" />
         </class>
     </group>
+    <group id="group-default-test" name="Default group values">
+        <class id="default-a" name="A">
+            <value id="default-a-1">
+                <class id="default-b" name="B">
+                    <value id="default-b-1"/>
+                    <value id="default-b-2" default="true"/>
+                </class>
+            </value>
+            <value id="default-a-2"/>
+            <value id="default-a-3">
+                <class ref="daytime"/>
+            </value>
+        </class>
+    </group>
     <private>
         <class name="Country" id="country">
             <value id="germany" name="Germany" />

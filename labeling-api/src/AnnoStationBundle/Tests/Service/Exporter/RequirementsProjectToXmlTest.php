@@ -363,9 +363,23 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         );
         $this->createLabeledThingInFrame($pedestrianLabeledThing, 1, [$pedestrian->toArray()], ['hat-yes'], null, 'person');
 
+        $labeledThingGroupWithDefaults = Tests\Helper\LabeledThingGroupBuilder::create($task)
+            ->withIdentifierName('group-default-test')
+            ->withCreatedByUserId('some-user-foobar-123-id')
+            ->withLastModifiedUserId('some-user-foobar-789-id')
+            ->build();
+        $this->labeledThingGroupFacade->save($labeledThingGroupWithDefaults);
+        $labeledThingGroupInFrameWithDefaults = Tests\Helper\LabeledThingGroupInFrameBuilder::create(
+            $task,
+            $labeledThingGroupWithDefaults,
+            1
+        )->withClasses(['default-a-2'])->build();
+        $this->labeledThingGroupInFrameFacade->save($labeledThingGroupInFrameWithDefaults);
+
         $labeledThingWithDefaultValues = $this->createLabeledThing($task);
         $labeledThingWithDefaultValues->setOriginalId('e363906c1c4a5a5bd01easdas-default');
         $labeledThingWithDefaultValues->setFrameRange(new AppBundleModel\FrameIndexRange(1, 1));
+        $labeledThingWithDefaultValues->setGroupIds([$labeledThingGroupWithDefaults->getId()]);
         $this->labeledThingFacade->save($labeledThingWithDefaultValues);
         $shape = new Shapes\pedestrian(
             '3659ecca-7c2b-440b-8dfa-38426cy-default',

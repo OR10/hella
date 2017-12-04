@@ -274,8 +274,19 @@ class RequirementsProjectToXml
                                     $groupFrameRange
                                 );
 
-                                foreach($this->getLabeledThingGroupInFrameRanges($task, array_values($taskConfigurations)[0], $labeledThingGroupInFramesWithGhosts) as $value) {
+                                $taskConfiguration = array_values($taskConfigurations)[0];
+                                foreach($this->getLabeledThingGroupInFrameRanges($task, $taskConfiguration, $labeledThingGroupInFramesWithGhosts) as $value) {
                                     $groupElement->addValue($value['class'], $value['value'], $value['start'], $value['end']);
+                                    $defaultValues = $this->getDefaultValuesForValue($value['value'], $taskConfiguration);
+                                    foreach($defaultValues as $defaultValue) {
+                                        $groupElement->addValue(
+                                            $this->findClassIdForValue($defaultValue, $taskConfiguration),
+                                            $defaultValue,
+                                            $value['start'],
+                                            $value['end'],
+                                            true
+                                        );
+                                    }
                                 }
 
                                 $xmlVideo->addGroup(
@@ -320,13 +331,13 @@ class RequirementsProjectToXml
                         $taskConfiguration = array_values($taskConfigurations)[0];
                         foreach ($valuesForRanges as $value) {
                             $class = $this->findClassIdForValue($value['value'], $taskConfiguration);
-                            $defaultValues = $this->getDefaultValuesForValue($value['value'], $taskConfiguration);
                             $thing->addValue(
                                 $class,
                                 $value['value'],
                                 $frameMapping[$value['start']],
                                 $frameMapping[$value['end']]
                             );
+                            $defaultValues = $this->getDefaultValuesForValue($value['value'], $taskConfiguration);
                             foreach($defaultValues as $defaultValue) {
                                 $thing->addValue(
                                     $this->findClassIdForValue($defaultValue, $taskConfiguration),
