@@ -45,7 +45,6 @@ class Cuboid3d extends ExportXml\Element
     {
         $cuboid = $document->createElementNS($this->namespace, 'cuboid');
         $topLeftFrontPoints = $this->cuboid3d->getFrontTopLeft();
-
         if ($topLeftFrontPoints !== null) {
             $topLeftFront = $document->createElementNS($this->namespace, 'top-left-front');
             $topLeftFront->setAttribute('x', round($topLeftFrontPoints[0], 4));
@@ -131,10 +130,12 @@ class Cuboid3d extends ExportXml\Element
         ];
 
         foreach ($cuboidSites as $vertexName => $vertexPoint) {
-            $imagePoint = $document->createElementNS($this->namespace, 'image-' . $vertexName);
-            $imagePoint->setAttribute('x', round($vertices[0][$vertexPoint][0], 4));
-            $imagePoint->setAttribute('y', round($vertices[0][$vertexPoint][1],4));
-            $cuboid->appendChild($imagePoint);
+            if ($vertices[0][$vertexPoint][0] !== null && $vertices[0][$vertexPoint][1] !== null) {
+                $imagePoint = $document->createElementNS($this->namespace, 'image-' . $vertexName);
+                $imagePoint->setAttribute('x', round($vertices[0][$vertexPoint][0], 4));
+                $imagePoint->setAttribute('y', round($vertices[0][$vertexPoint][1],4));
+                $cuboid->appendChild($imagePoint);
+            }
         }
 
         return $cuboid;
