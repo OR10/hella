@@ -99,6 +99,9 @@
         <element name="r:value">
             <attribute name="id"/>
             <attribute name="name"/>
+            <optional>
+                <attribute name="default"/>
+            </optional>
             <zeroOrMore>
                 <ref name="Class"/>
             </zeroOrMore>

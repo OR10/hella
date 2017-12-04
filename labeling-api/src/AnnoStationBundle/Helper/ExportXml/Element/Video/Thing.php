@@ -131,6 +131,9 @@ class Thing extends ExportXml\Element
             $valueElement->setAttribute('class', $value['class']);
             $valueElement->setAttribute('start', $value['start']);
             $valueElement->setAttribute('end', $value['end']);
+            if ($value['default']) {
+                $valueElement->setAttribute('default', 'true');
+            }
             $thing->appendChild($valueElement);
         }
 
@@ -142,13 +145,14 @@ class Thing extends ExportXml\Element
         $this->shapes[] = $shape;
     }
 
-    public function addValue($class, $value, $start, $end)
+    public function addValue($class, $value, $start, $end, $default = false)
     {
         $this->values[] = [
-            'class' => $class,
-            'value' => $value,
-            'start' => $start,
-            'end'   => $end,
+            'class'   => $class,
+            'value'   => $value,
+            'start'   => $start,
+            'end'     => $end,
+            'default' => $default,
         ];
     }
 

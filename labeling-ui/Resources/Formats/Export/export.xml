@@ -110,6 +110,7 @@
             </shape>
             <!-- ... -->
             <value class="direction" id="direction-back" start="66" end="66" />
+            <value class="direction" id="direction-back" start="77" end="77" default="true" />
             <!-- ... -->
         </thing>
         <!-- ... -->

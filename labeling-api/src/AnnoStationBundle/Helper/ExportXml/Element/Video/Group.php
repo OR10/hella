@@ -106,6 +106,9 @@ class Group extends ExportXml\Element
             $valueElement->setAttribute('class', $value['class']);
             $valueElement->setAttribute('start', $value['start']);
             $valueElement->setAttribute('end', $value['end']);
+            if ($value['default']) {
+                $valueElement->setAttribute('default', 'true');
+            }
             $group->appendChild($valueElement);
         }
 
@@ -113,18 +116,20 @@ class Group extends ExportXml\Element
     }
 
     /**
-     * @param $class
-     * @param $value
-     * @param $start
-     * @param $end
+     * @param      $class
+     * @param      $value
+     * @param      $start
+     * @param      $end
+     * @param bool $default
      */
-    public function addValue($class, $value, $start, $end)
+    public function addValue($class, $value, $start, $end, $default = false)
     {
         $this->values[] = [
-            'class' => $class,
-            'value' => $value,
-            'start' => $start,
-            'end'   => $end,
+            'class'   => $class,
+            'value'   => $value,
+            'start'   => $start,
+            'end'     => $end,
+            'default' => $default,
         ];
     }
 

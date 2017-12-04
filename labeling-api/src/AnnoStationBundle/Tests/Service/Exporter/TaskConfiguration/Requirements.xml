@@ -2,12 +2,18 @@
 <requirements xmlns="http://weblabel.hella-aglaia.com/schema/requirements">
     <frame>
         <class id="weather" name="Weather">
-            <value id="sun" name="Sun" />
-            <value id="rain" name="Rain" />
-            <value id="thunderstorm" name="Thunderstorm" />
+            <value id="sun" name="Sun"/>
+            <value id="rain" name="Rain"/>
+            <value id="thunderstorm" name="Thunderstorm">
+                <class id="thunderstorm-1" name="thunderstorm-1">
+                    <value id="thunderstorm-1-a"/>
+                    <value id="thunderstorm-2-a"/>
+                    <value id="thunderstorm-3-a" default="true"/>
+                </class>
+            </value>
         </class>
         <class id="season" name="Season">
-            <value id="summer" name="Summer" />
+            <value id="summer" name="Summer"/>
         </class>
     </frame>
     <thing id="sign" shape="cuboid" name="Traffic Sign">
@@ -116,6 +122,31 @@
             <value id="time-limit-end-23" name="23" />
         </class>
     </thing>
+    <thing id="default-test" shape="rectangle" name="Default test">
+        <class id="default-test-class-a" name="A">
+            <value id="default-test-value-a-1" name="A-1"/>
+            <value id="default-test-value-a-2" name="A-2"/>
+            <value id="default-test-value-a-3" name="A-3"/>
+            <value id="default-test-value-a-4" name="A-4">
+                <class id="default-test-class-a-1-1" name="A-1-1">
+                    <value id="default-test-value-a-1-1" name="A-1-1" default="true"/>
+                </class>
+            </value>
+        </class>
+        <class id="default-test-class-b" name="B">
+            <value id="default-test-value-b-1" name="B-1"/>
+            <value id="default-test-value-b-2" name="B-2">
+                <class id="default-test-class-b-2" name="B-2">
+                    <value id="default-test-value-b-2-2-1" name="B-2-2-1"/>
+                    <value id="default-test-value-b-2-2-2" name="B-2-2-2" default="true">
+                        <class ref="daytime"/>
+                    </value>
+                </class>
+            </value>
+            <value id="default-test-value-b-3" name="B-3"/>
+            <value id="default-test-value-b-4" name="B-4" default="true"/>
+        </class>
+    </thing>
     <group id="extension-sign-group" name="Sign with extension">
         <class id="extension-position" name="Position of the extension sign">
             <value id="position-below" name="Below" />
@@ -129,11 +160,29 @@
             <value id="rainbow" name="Rainbow" />
         </class>
     </group>
+    <group id="group-default-test" name="Default group values">
+        <class id="default-a" name="A">
+            <value id="default-a-1">
+                <class id="default-b" name="B">
+                    <value id="default-b-1"/>
+                    <value id="default-b-2" default="true"/>
+                </class>
+            </value>
+            <value id="default-a-2"/>
+            <value id="default-a-3">
+                <class ref="daytime"/>
+            </value>
+        </class>
+    </group>
     <private>
         <class name="Country" id="country">
             <value id="germany" name="Germany" />
             <value id="spain" name="Spain" />
             <value id="france" name="France" />
+        </class>
+        <class name="daytime" id="daytime">
+            <value id="day" name="Day" default="true"/>
+            <value id="night" name="Night" />
         </class>
     </private>
 </requirements>

@@ -202,7 +202,8 @@ grammar {
 
   Value = element e:value {
     attribute id {text},
-    FrameRangeAttributes
+    FrameRangeAttributes,
+    attribute default {text}?
   }
 # </thing>
 

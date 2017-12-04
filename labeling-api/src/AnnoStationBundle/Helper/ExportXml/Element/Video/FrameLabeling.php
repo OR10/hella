@@ -70,14 +70,18 @@ class FrameLabeling extends ExportXml\Element
      * @param              $id
      * @param              $start
      * @param              $end
+     * @param bool         $default
      */
-    public function addValue(\DOMDocument $document, $class, $id, $start, $end)
+    public function addValue(\DOMDocument $document, $class, $id, $start, $end, $default = false)
     {
         $value = $document->createElementNS($this->namespace, 'value');
         $value->setAttribute('id', $id);
         $value->setAttribute('class', $class);
         $value->setAttribute('start', $start);
         $value->setAttribute('end', $end);
+        if ($default) {
+            $value->setAttribute('default', 'true');
+        }
 
         $this->values[] = $value;
     }
