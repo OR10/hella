@@ -20,7 +20,7 @@
       <created-by-user username="label_manager" email=""/>
     </export>
     <requirements id="" name="testconfig" filename="testconfig.labelconfiguration.xml">
-      <sha256>d10722917205aaf60b2a3c2f703d0ba870d0e6e378af25347c3b05834e276ba1</sha256>
+      <sha256>8adb1f4603b6a9e8aefab26909697af4774d3a812981896605d0e69183181063</sha256>
     </requirements>
     <additional-frame-number-mapping id="" filename="labeling-video.frame-index.csv">
       <sha256>33ffd1aa3fe909d336abfcae533eeb93d57e53357a736b6b53872405fbd6dc6f</sha256>
@@ -212,6 +212,28 @@
         </pedestrian>
       </shape>
       <value id="hat-yes" class="has-hat" start="2" end="2"/>
+    </thing>
+    <thing id="e363906c1c4a5a5bd01easdas-default" start="2" end="2" line-color="1" type="default-test" incomplete="true">
+      <created-by>some-user-foobar-123-id</created-by>
+      <created-at>2017-03-10T10:00:00+00:00</created-at>
+      <last-modified-by>some-user-foobar-789-id</last-modified-by>
+      <last-modified-at>2017-03-10T10:00:00+00:00</last-modified-at>
+      <references>
+        <task id=""/>
+      </references>
+      <shape id="3659ecca-7c2b-440b-8dfa-38426cy-default" start="2" end="2">
+        <pedestrian>
+          <top-center x="100" y="0"/>
+          <top-left x="29" y="0"/>
+          <bottom-center x="100" y="347"/>
+          <bottom-right x="171" y="347"/>
+          <aspect-ratio>0.41</aspect-ratio>
+        </pedestrian>
+      </shape>
+      <value id="default-test-value-a-1" class="default-test-class-a" start="2" end="2"/>
+      <value id="default-test-value-a-1-1" class="default-test-class-a-1-1" start="2" end="2" default="true"/>
+      <value id="default-test-value-b-2-2-1" class="default-test-class-b-2" start="2" end="2"/>
+      <value id="day" class="daytime" start="2" end="2" default="true"/>
     </thing>
   </video>
 </export>

@@ -362,6 +362,23 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
             100, 0, 100, 347
         );
         $this->createLabeledThingInFrame($pedestrianLabeledThing, 1, [$pedestrian->toArray()], ['hat-yes'], null, 'person');
+
+        $labeledThingWithDefaultValues = $this->createLabeledThing($task);
+        $labeledThingWithDefaultValues->setOriginalId('e363906c1c4a5a5bd01easdas-default');
+        $labeledThingWithDefaultValues->setFrameRange(new AppBundleModel\FrameIndexRange(1, 1));
+        $this->labeledThingFacade->save($labeledThingWithDefaultValues);
+        $shape = new Shapes\pedestrian(
+            '3659ecca-7c2b-440b-8dfa-38426cy-default',
+            100, 0, 100, 347
+        );
+        $this->createLabeledThingInFrame(
+            $labeledThingWithDefaultValues,
+            1,
+            [$shape->toArray()],
+            ['default-test-value-a-1', 'default-test-value-b-2-2-1'],
+            null,
+            'default-test'
+        );
     }
 
     private function getContentFromZip($data, $filename)

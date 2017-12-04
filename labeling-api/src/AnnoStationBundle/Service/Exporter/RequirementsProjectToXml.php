@@ -317,13 +317,25 @@ class RequirementsProjectToXml
                         }
 
                         $valuesForRanges = $this->getValuesRanges($labeledThingInFrameForLabeledThing);
+                        $taskConfiguration = array_values($taskConfigurations)[0];
                         foreach ($valuesForRanges as $value) {
+                            $class = $this->findClassIdForValue($value['value'], $taskConfiguration);
+                            $defaultValues = $this->getDefaultValuesForValue($value['value'], $taskConfiguration);
                             $thing->addValue(
-                                $this->findClassIdForValue($value['value'], array_values($taskConfigurations)[0]),
+                                $class,
                                 $value['value'],
                                 $frameMapping[$value['start']],
                                 $frameMapping[$value['end']]
                             );
+                            foreach($defaultValues as $defaultValue) {
+                                $thing->addValue(
+                                    $this->findClassIdForValue($defaultValue, $taskConfiguration),
+                                    $defaultValue,
+                                    $frameMapping[$value['start']],
+                                    $frameMapping[$value['end']],
+                                    'true'
+                                );
+                            }
                         }
                         $xmlVideo->addThing($thing);
                     }
@@ -384,6 +396,55 @@ class RequirementsProjectToXml
 
             throw $exception;
         }
+    }
+
+    /**
+     * @param                         $value
+     * @param Model\TaskConfiguration $taskConfiguration
+     *
+     * @return array
+     * @throws \Exception
+     * @internal param $class
+     */
+    private function getDefaultValuesForValue($value, Model\TaskConfiguration $taskConfiguration)
+    {
+        $class = $this->findClassIdForValue($value, $taskConfiguration);
+
+        $xmlImport = new \DOMDocument();
+        $xmlImport->loadXML($taskConfiguration->getRawData());
+
+        $xpath = new \DOMXPath($xmlImport);
+        $xpath->registerNamespace('x', "http://weblabel.hella-aglaia.com/schema/requirements");
+
+        $valueElements = $xpath->query(
+            sprintf(
+                '//x:class[@id="%s"]/x:value[not(@id="%s")]//x:value[@default="true"]|//x:class[@id="%s"]/x:value[not(@id="%s")]//x:class[@ref]',
+                $class,
+                $value,
+                $class,
+                $value
+            )
+        );
+
+        $values = [];
+        /** @var \DOMElement $valueElement */
+        foreach($valueElements as $valueElement) {
+            switch ($valueElement->tagName) {
+                case 'value':
+                    $values[] = $valueElement->getAttribute('id');
+                    break;
+                case 'class':
+                    $refValueElements = $xpath->query(sprintf('//x:class[@id="%s"]//x:value[@default="true"]', $valueElement->getAttribute('ref')));
+                    foreach($refValueElements as $refValueElement) {
+                        $values[] = $refValueElement->getAttribute('id');
+                    }
+                    break;
+                default:
+                    throw new \Exception('Unsupported tag: ' . $valueElement->tagName);
+            }
+        }
+
+        return $values;
     }
 
     /**
