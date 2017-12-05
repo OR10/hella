@@ -70,6 +70,9 @@
     <define name="Thing">
         <element name="r:thing">
             <attribute name="shape"/>
+            <optional>
+                <attribute name="prediction"/>
+            </optional>
             <ref name="ThingLikeStructure"/>
         </element>
     </define>
