@@ -151,7 +151,7 @@ class TaskIncomplete
      */
     public function isLabeledThingInFrameIncomplete(Model\LabeledThingInFrame $labeledThingInFrame)
     {
-        $labeledThingFacade = $this->getFacadeByProjectAndTaskId(
+        $labeledThingFacade        = $this->getFacadeByProjectAndTaskId(
             $this->labeledThingFactory,
             $labeledThingInFrame
         );
@@ -168,13 +168,33 @@ class TaskIncomplete
             return false;
         }
 
+        $prediction = $helper->getThingPrediction($labeledThingInFrame->getIdentifierName());
         if (empty($labeledThingInFrame->getClasses())) {
-            $labeledThingInFrame = $labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
-                $labeledThingInFrame
-            );
-            if ($labeledThingInFrame === null) {
-                return true;
+            switch ($prediction) {
+                case 'all':
+                    $labeledThingInFrameToTheRight = $labeledThingInFrameFacade->getNextLabeledThingInFrameWithClasses(
+                        $labeledThingInFrame,
+                        $task
+                    );
+                    $labeledThingInFrameToTheLeft  = $labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
+                        $labeledThingInFrame
+                    );
+                    if ($labeledThingInFrameToTheRight instanceof Model\LabeledThingInFrame) {
+                        $labeledThingInFrame = $labeledThingInFrameToTheLeft;
+                    }
+                    if ($labeledThingInFrameToTheLeft instanceof Model\LabeledThingInFrame) {
+                        $labeledThingInFrame = $labeledThingInFrameToTheLeft;
+                    }
+                    break;
+                default:
+                    $labeledThingInFrame = $labeledThingInFrameFacade->getPreviousLabeledThingInFrameWithClasses(
+                        $labeledThingInFrame
+                    );
             }
+        }
+
+        if ($labeledThingInFrame === null) {
+            return true;
         }
 
         foreach ($helper->getLabeledThingInFrameStructure($labeledThingInFrame) as $child) {
