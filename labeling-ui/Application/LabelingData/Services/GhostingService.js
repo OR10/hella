@@ -11,6 +11,7 @@ class GhostingService {
    * @param {CouchDbModelDeserializer} couchDbModelDeserializer
    * @param {RevisionManager} revisionManager
    * @param {EntityIdService} entityIdService
+   * @param {LabelStructureService} labelStructureService
    */
   constructor(
     $q,
@@ -18,7 +19,8 @@ class GhostingService {
     pouchDbViewService,
     couchDbModelDeserializer,
     revisionManager,
-    entityIdService
+    entityIdService,
+    labelStructureService
   ) {
     /**
      * @type {angular.$q}
@@ -55,6 +57,13 @@ class GhostingService {
      * @private
      */
     this._entityIdService = entityIdService;
+
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
   }
 
   /**
@@ -143,7 +152,23 @@ class GhostingService {
                   labeledThingInFrameClassesPropagationCache.set(labeledThingId, previousLabeledThingInFrameClasses);
                 })
                 .catch(() => {
-                  labeledThingInFrameClassesPropagationCache.set(labeledThingId, null);
+                  return this._labelStructureService.getLabelStructure(labeledThingInFrame.task).then(
+                    labelStructure => {
+                      const prediction = labelStructure.getPredictionForThing(labeledThingInFrame.identifierName);
+                      if (prediction === null) {
+                        return this._$q.reject();
+                      }
+                      return this._$q.resolve();
+                    })
+                    .then(() =>
+                      this._getNextLabeledThingInFrameClasses(labeledThingInFrame)
+                    )
+                    .then(nextLabeledThingInFrameClasses => {
+                      labeledThingInFrameClassesPropagationCache.set(labeledThingId, nextLabeledThingInFrameClasses);
+                    })
+                    .catch(() => {
+                      labeledThingInFrameClassesPropagationCache.set(labeledThingId, null);
+                    });
                 });
             }
           })
@@ -400,6 +425,30 @@ class GhostingService {
   }
 
   /**
+   * @param {LabeledThingInFrame} labeledThingInFrame
+   * @private
+   */
+  _getNextLabeledThingInFrameClasses(labeledThingInFrame) {
+    const labeledThing = labeledThingInFrame.labeledThing;
+    const db = this._pouchDbContextService.provideContextForTaskId(labeledThing.task.id);
+    const startkey = [labeledThing.id, labeledThingInFrame.frameIndex];
+    const endkey = [labeledThing.id, labeledThing.task.metaData.frameRange.endFrameNumber];
+
+    return db.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByFrameIndexWithClasses'), {
+      startkey,
+      endkey,
+      include_docs: true,
+      limit: 1,
+    })
+      .then(result => {
+        if (result.rows.length === 0) {
+          return this._$q.reject('Found no next ltif with classes');
+        }
+        return result.rows[0].doc.classes;
+      });
+  }
+
+  /**
    * @param {LabeledThingInFrame} ltif
    * @param {int} localGhostIndex
    * @return {LabeledThingInFrame}
@@ -447,6 +496,7 @@ GhostingService.$inject = [
   'couchDbModelDeserializer',
   'revisionManager',
   'entityIdService',
+  'labelStructureService',
 ];
 
 export default GhostingService;

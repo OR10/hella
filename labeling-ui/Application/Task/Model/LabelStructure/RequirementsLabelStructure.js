@@ -781,6 +781,22 @@ class RequirementsLabelStructure extends LabelStructure {
 
     return valueElements;
   }
+
+  /**
+   * @param identifier
+   * @returns {null}
+   */
+  getPredictionForThing(identifier) {
+    const searchNodePath = `//r:thing[@id="${identifier}" and @prediction]`;
+    const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+    if (searchSnapshot.snapshotLength === 0) {
+      return null;
+    }
+    const thingElement = searchSnapshot.snapshotItem(0);
+
+    return thingElement.attributes.prediction.value;
+  }
 }
 
 export default RequirementsLabelStructure;
