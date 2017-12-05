@@ -613,11 +613,16 @@ export default class LabelSelectorController {
     if (this.pages === null || this.pages.length === 0) {
       return false;
     }
+    let inComplete = false;
+    this.pages.forEach(page => {
+      page.responses.forEach(response => {
+        if (response.value !== undefined) {
+          inComplete = true;
+        }
+      });
+    });
 
-    return this.pages.reduce(
-      (isCompleted, page) => isCompleted === true && this.choices[page.id] !== null,
-      true
-    );
+    return inComplete;
   }
 
   isPageActive(index) {
