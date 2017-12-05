@@ -90,9 +90,12 @@ describe('ThingLayer', () => {
     );
     labeledThingGateway.deleteLabeledThing.and.returnValue(angularQ.resolve());
 
-    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['deleteLabeledThingGroup']
+    labeledThingGroupGateway = jasmine.createSpyObj('labeledThingGroupGateway', ['deleteLabeledThingGroup', 'getLabeledThingGroupsByIds']
     );
     labeledThingGroupGateway.deleteLabeledThingGroup.and.returnValue(angularQ.resolve());
+    const groupIds = [];
+    const promise = angularQ.resolve(groupIds);
+    labeledThingGroupGateway.getLabeledThingGroupsByIds.and.returnValue(promise);
     labeledThingGateway.unassignLabeledThingGroupFromLabeledThings.and.returnValue(angularQ.resolve());
 
     groupSelectionDialogFactory = jasmine.createSpyObj('GroupSelectionDialogFactory', ['createAsync']);
