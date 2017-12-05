@@ -378,6 +378,9 @@
         <element name="e:value">
             <attribute name="id"/>
             <ref name="FrameRangeAttributes"/>
+            <optional>
+                <attribute name="default"/>
+            </optional>
         </element>
     </define>
     <!-- </thing> -->
