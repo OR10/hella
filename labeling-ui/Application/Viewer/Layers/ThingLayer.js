@@ -533,6 +533,25 @@ class ThingLayer extends PanAndZoomPaperLayer {
 
         return selectedLabeledThing;
       })
+      .then(labeledThing => {
+        // delete associated groups of labeled thing
+        const groups = labeledThing.groupIds;
+        this._labeledThingGroupGateway.getLabeledThingGroupsByIds(viewModel.task, groups)
+          .then(labeledThingGroups => {
+            labeledThingGroups.forEach(labeledThingGroup => {
+              this._labeledThingGateway.getAssociatedLabeledThingsForLabeledThingGroup(labeledThingGroup)
+                .then(labeledThings => {
+                  if (labeledThings.length === 0) {
+                    this._labeledThingGroupGateway.deleteLabeledThingGroup(labeledThingGroup)
+                      .then(() => {
+                        this._context.withScope(scope => scope.view.update());
+                        this._$scope.$root.$emit('shape:delete:after');
+                      });
+                  }
+                });
+            });
+          });
+      })
       .then(() => {
         this._deleteAfterAction();
       })

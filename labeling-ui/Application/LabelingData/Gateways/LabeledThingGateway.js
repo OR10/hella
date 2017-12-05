@@ -223,9 +223,9 @@ class LabeledThingGateway {
   /**
    *
    * @param {LabeledThingGroup} labeledThingGroup
-   * @private
+   * @public
    */
-  _getAssociatedLabeledThingsForLabeledThingGroup(labeledThingGroup) {
+  getAssociatedLabeledThingsForLabeledThingGroup(labeledThingGroup) {
     const task = labeledThingGroup.task;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
 
@@ -254,7 +254,7 @@ class LabeledThingGateway {
   unassignLabeledThingGroupFromAllLabeledThings(labeledThingGroup) {
     return this._packagingExecutor.execute('labeledThing', () => {
       return this._$q.resolve()
-        .then(() => this._getAssociatedLabeledThingsForLabeledThingGroup(labeledThingGroup))
+        .then(() => this.getAssociatedLabeledThingsForLabeledThingGroup(labeledThingGroup))
         .then(labeledThings => this._unassignLabeledThingGroupFromLabeledThingsWithoutPackagingExecutor(labeledThings, labeledThingGroup));
     });
   }
