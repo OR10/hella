@@ -91,9 +91,18 @@ class User extends Controller\Base
     {
         $this->isUserAllowedToAssignTo($user);
         $phase = $task->getCurrentPhase();
+        $lastUserAssignmentId = $task->getLatestAssignedUserIdForPhase($phase);
 
-        if ($task->getLatestAssignedUserIdForPhase($phase) !== $user->getId()) {
-            throw new Exception\BadRequestHttpException('You are not allowed to delete this task assignment');
+        if ($lastUserAssignmentId !== $user->getId()) {
+            throw new Exception\BadRequestHttpException(
+                sprintf(
+                    'Failed to unassign user! This task "%s" in phase "%s" is currently assign to "%s" and you are trying to remove user "%s".',
+                    $task->getId(),
+                    $phase,
+                    $lastUserAssignmentId,
+                    $user->getId()
+                )
+            );
         }
 
         $task->addAssignmentHistory($phase, $task->getStatus($phase));
@@ -113,7 +122,7 @@ class User extends Controller\Base
         $currentUser = $this->tokenStorage->getToken()->getUser();
 
         if (!$this->userPermissions->hasPermission('canChangeUserTaskAssignment') && $currentUser !== $user) {
-            throw new Exception\AccessDeniedHttpException('You are not allowed to assign this task');
+            throw new Exception\AccessDeniedHttpException('You are not allowed to assign this task to someone else than yourself.');
         }
     }
 }
