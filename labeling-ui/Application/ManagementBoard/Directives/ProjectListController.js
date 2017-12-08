@@ -109,6 +109,10 @@ class ProjectListController {
      */
     this.projectCreators = new Map();
 
+    this.leadActionButton = [];
+    this.actionButtons = [];
+    this.openActionsToggle = [];
+
     // Reload upon request
     this._$scope.$on('project-list:reload-requested', () => {
       this.updatePage(this._currentPage, this._currentItemsPerPage);
@@ -160,9 +164,10 @@ class ProjectListController {
   }
 
   /**
-   * @param {number} projectId
+   * @param {object} project
    */
-  openProject(projectId) {
+  openProject(project) {
+    const projectId = project.id;
     if (this.userPermissions.canViewTaskList !== true) {
       return;
     }
@@ -171,17 +176,19 @@ class ProjectListController {
   }
 
   /**
-   * @param {number} projectId
+   * @param {object} project
    */
-  exportProject(projectId) {
+  exportProject(project) {
+    const projectId = project.id;
     this._$state.go('labeling.reporting.export', {projectId});
   }
 
   /**
-   * @param {string} projectId
-   * @param {string} projectName
+   * @param {object} project
    */
-  setProjectStatusToDeleted(projectId, projectName) {
+  setProjectStatusToDeleted(project) {
+    const projectId = project.id;
+    const projectName = project.name;
     this._modalService.show(
       new this._InputDialog(
         {
@@ -200,10 +207,11 @@ class ProjectListController {
   }
 
   /**
-   * @param {string} projectId
-   * @param {string} projectName
+   * @param {object} project
    */
-  deleteProject(projectId, projectName) {
+  deleteProject(project) {
+    const projectId = project.id;
+    const projectName = project.name;
     this._modalService.info(
       {
         title: 'Delete this Project.',
@@ -220,9 +228,10 @@ class ProjectListController {
   }
 
   /**
-   * @param {string} projectId
+   * @param {object} project
    */
-  repairProject(projectId) {
+  repairProject(project) {
+    const projectId = project.id;
     this.loadingInProgress = true;
     this._projectGateway.repairProject(projectId)
       .then(() => this._triggerReloadAll());
@@ -239,11 +248,12 @@ class ProjectListController {
   }
 
   /**
-   * @param {string} projectId
-   * @param {string} projectName
-   * @param {boolean} projectFinished
+   * @param {object} project
    */
-  closeProject(projectId, projectName, projectFinished) {
+  closeProject(project) {
+    const projectId = project.id;
+    const projectName = project.name;
+    const projectFinished = project.taskCount === project.taskFinishedCount;
     if (!projectFinished && !this.userPermissions.canMoveInProgressProjectToDone) {
       this._modalService.info(
         {
@@ -277,13 +287,12 @@ class ProjectListController {
   }
 
   /**
-   * @param {number} projectId
+   * @param {object} project
    */
-  reopenProject(projectId) { // eslint-disable-line no-unused-vars
-    // @TODO: Implement
-  }
-
-  acceptProject(projectId, projectName, taskInPreProcessingCount) {
+  acceptProject(project) {
+    const projectId = project.id;
+    const projectName = project.name;
+    const taskInPreProcessingCount = project.taskInPreProcessingCount;
     this.showLoadingMask = true;
 
     this._labelingGroupGateway.getMyLabelingGroups().then(reponse => {
@@ -351,7 +360,13 @@ class ProjectListController {
     });
   }
 
-  changeLabelGroupAssignment(projectId, currentLabelingGroup, projectName) {
+  /**
+   * @param {object} project
+   */
+  changeLabelGroupAssignment(project) {
+    const projectId = project.id;
+    const currentLabelingGroup = project.labelingGroupId;
+    const projectName = project.name;
     this.showLoadingMask = true;
 
     this._labelingGroupGateway.getMyLabelingGroups().then(reponse => {
@@ -482,10 +497,11 @@ class ProjectListController {
   }
 
   /**
-   * @param {String} projectId
-   * @param {int} taskInPreProcessingCount
+   * @param {object} project
    */
-  assignProject(projectId, taskInPreProcessingCount) {
+  assignProject(project) {
+    const projectId = project.id;
+    const taskInPreProcessingCount = project.taskInPreProcessingCount;
     this.showLoadingMask = true;
 
     this._labelingGroupGateway.getLabelManagers().then(response => {
@@ -566,13 +582,18 @@ class ProjectListController {
   }
 
   /**
-   * @param {number} projectId
+   * @param {object} project
    */
-  openReport(projectId) { // eslint-disable-line no-unused-vars
+  openReport(project) {
+    const projectId = project.id;
     this._$state.go('labeling.reporting.list', {projectId});
   }
 
-  showFlaggedTasks(projectId) {
+  /**
+   * @param {object} project
+   */
+  showFlaggedTasks(project) {
+    const projectId = project.id;
     this._$state.go('labeling.projects.flagged', {projectId});
   }
 
@@ -720,6 +741,160 @@ class ProjectListController {
       return 'disabled';
     }
     return '';
+  }
+
+  showUploadSpinner(project) {
+    return this.userPermissions.canDeleteProject && project.status === 'deleted' && (project.deletedState === 'pending' || project.deletedState === 'in_progress');
+  }
+
+  toggleActions(projectId) {
+    Object.keys(this.openActionsToggle).forEach(actionToggle => {
+      if (actionToggle === projectId) {
+        this.openActionsToggle[actionToggle] = !this.openActionsToggle[actionToggle];
+      } else {
+        this.openActionsToggle[actionToggle] = false;
+      }
+    });
+  }
+
+  isActionDropDownVisible() {
+    return this.actionButtons.filter(actionButton => actionButton.visible).length > 1;
+  }
+
+  createLeadAction(project) {
+    const visibleActions = this.actionButtons.filter(actionButton => actionButton.visible);
+    switch (project.status) {
+      case 'todo':
+        break;
+      case 'in_progress':
+        break;
+      case 'done':
+        break;
+      case 'delete':
+        break;
+      default:
+        break;
+    }
+    return visibleActions[0];
+  }
+  createActionButtons(project) {
+    this.actionButtons = [];
+    const uploadButton = {
+      id: 'upload',
+      text: this.getTooltipForUploadMedia(project),
+      shortText: 'Upload',
+      visible: this.userPermissions.canUploadNewVideo && project.status === 'todo',
+      action: () => this.goToUploadPage(project),
+      ngClass: this.isUploadTooltipDisabled(project),
+      icon: 'fa-cloud-upload',
+    };
+    const exportButton = {
+      id: 'export',
+      text: 'Export Project',
+      shortText: 'Export',
+      visible: this.userPermissions.canExportProject && project.status !== 'deleted',
+      action: () => this.exportProject(project),
+      ngClass: '',
+      icon: 'fa-external-link',
+    };
+    const flaggedTasksButton = {
+      id: 'flagged',
+      text: 'Show flagged Tasks',
+      shortText: 'Flag',
+      visible: this.userPermissions.canViewAttentionTasks && project.status !== 'deleted',
+      action: () => this.showFlaggedTasks(project),
+      ngClass: '',
+      icon: 'fa-flag',
+    };
+    const acceptProjectButton = {
+      id: 'accept-project',
+      text: 'Accept Project and assign to team',
+      shortText: 'Accept',
+      visible: this.userPermissions.canAcceptProject && project.status === 'todo',
+      action: () => this.acceptProject(project),
+      ngClass: '',
+      icon: 'fa-check-square-o',
+    };
+    const labelGroupAssignmentButton = {
+      id: 'label-group-assignment',
+      text: 'Change label group assignment',
+      shortText: 'Assignment',
+      visible: this.userPermissions.canChangeProjectLabelGroupAssignment && project.status === 'in_progress',
+      action: () => this.changeLabelGroupAssignment(project),
+      ngClass: '',
+      icon: 'fa-users',
+    };
+    const labelManagerButton = {
+      id: 'select-label-manager',
+      text: project.labelManager !== undefined ? 'Selected Label Manager: ' + project.labelManager.username : 'Assign project to a Label Manager',
+      shortText: 'Labelmanager',
+      visible: this.userPermissions.canAssignProject && project.status === 'todo',
+      action: () => this.assignProject(project),
+      ngClass: project.labelManager !== undefined ? 'green' : '',
+      icon: 'fa-user',
+    };
+    const closeProjectButton = {
+      id: 'close',
+      text: 'Close Project (Move to done)',
+      shortText: 'Close',
+      visible: this.userPermissions.canMoveInProgressProjectToDone && project.status === 'in_progress',
+      action: () => this.closeProject(project),
+      ngClass: '',
+      icon: 'fa-check-square',
+    };
+    const reportButton = {
+      id: 'report',
+      text: 'View Report of Project',
+      shortText: 'Report',
+      visible: this.userPermissions.canViewProjectReport && project.status !== 'deleted',
+      action: () => this.openReport(project),
+      ngClass: '',
+      icon: 'fa-check-square',
+    };
+    const deleteButton = {
+      id: 'delete-status',
+      text: 'Delete this Project. Data can be shown in delete tap',
+      shortText: 'Delete',
+      visible: this.userPermissions.canDeleteProject && (project.status === 'todo' || project.status === 'done'),
+      action: () => this.setProjectStatusToDeleted(project),
+      ngClass: '',
+      icon: 'fa-trash-o',
+    };
+    const deleteFinallyButton = {
+      id: 'delete-finally',
+      text: 'Delete this Project. Warning: All data related to this project will be deleted and they are no longer available.',
+      shortText: 'Delete',
+      visible: this.userPermissions.canDeleteProject && project.status === 'deleted' && project.deletedState === 'unaccepted',
+      action: () => this.deleteProject(project),
+      ngClass: '',
+      icon: 'fa-trash-o icon-fa warning-color',
+    };
+    const repairButton = {
+      id: 'repair',
+      text: 'Repair tasks',
+      shortText: 'Repair',
+      visible: this.userPermissions.canRepairProject && project.status !== 'deleted',
+      action: () => this.repairProject(project),
+      ngClass: '',
+      icon: 'fa-wrench icon-fa',
+    };
+
+    this.actionButtons.push(uploadButton);
+    this.actionButtons.push(exportButton);
+    this.actionButtons.push(flaggedTasksButton);
+    this.actionButtons.push(acceptProjectButton);
+    this.actionButtons.push(labelGroupAssignmentButton);
+    this.actionButtons.push(labelManagerButton);
+    this.actionButtons.push(closeProjectButton);
+    this.actionButtons.push(reportButton);
+    this.actionButtons.push(deleteButton);
+    this.actionButtons.push(deleteFinallyButton);
+    this.actionButtons.push(repairButton);
+
+    const leadActionButton = this.createLeadAction(project);
+    this.openActionsToggle[project.id] = false;
+    this.leadActionButton = leadActionButton;
+    this.actionButtons = this.actionButtons.filter(actionButton => actionButton !== leadActionButton);
   }
 }
 
